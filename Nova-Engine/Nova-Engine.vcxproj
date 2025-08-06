@@ -157,11 +157,15 @@
   <ItemGroup>
     <ClInclude Include="src\Export\Header\engine.h" />
     <ClInclude Include="src\Export\Header\export.h" />
+    <ClInclude Include="src\Graphics\renderer.h" />
+    <ClInclude Include="src\Graphics\shader.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Export\Source\engine.cpp" />
+    <ClCompile Include="src\Graphics\renderer.cpp" />
+    <ClCompile Include="src\Graphics\shader.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>

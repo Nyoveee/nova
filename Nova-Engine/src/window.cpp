@@ -2,15 +2,35 @@
 #include <GLFW/glfw3.h>
 
 #include <stdexcept>
+#include <iostream>
 
 #include "window.h"
 
-constexpr int windowWidth = 800;
-constexpr int windowHeight = 600;
+namespace {
+	void APIENTRY glDebugOutput(
+		GLenum source,
+		GLenum type,
+		unsigned int id,
+		GLenum severity,
+		GLsizei length,
+		const char* message,
+		const void* userParam
+	);
+
+	void window_size_callback(GLFWwindow* window, int width, int height);
+}
+
+constexpr int windowWidth = 1200;
+constexpr int windowHeight = 900;
 constexpr const char* name = "Nova Engine";
 constexpr bool vsync = true;
 constexpr float fixedFps = 60.f;
 constexpr int maxNumOfSteps = 4;
+
+Window& Window::instance() {
+	static Window window{};
+	return window;
+}
 
 Window::Window() : 
 	glfwWindow  {},
@@ -59,7 +79,7 @@ Window::Window() :
 	--*/
 
 	//glfwSetWindowFocusCallback(window, window_focus_callback);
-	//glfwSetFramebufferSizeCallback(window, window_size_callback);
+	glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
 	//glfwSetKeyCallback(window, key_callback);
 	//glfwSetCursorPosCallback(window, cursor_position_callback);
 	//glfwSetScrollCallback(window, scroll_callback);
@@ -74,11 +94,20 @@ Window::Window() :
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		throw std::runtime_error("Failed to initialise GLAD.");
 	}
-}
 
-Window& Window::instance() {
-	static Window window {};
-	return window;
+	// Setting up debug context
+	int flags;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(glDebugOutput, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	}
+	else {
+		//logger.error("Failed to initialise OpenGL's debug context.\n");
+	}
 }
 
 Window::~Window() {
@@ -120,5 +149,84 @@ void Window::run(std::function<void()> fixedUpdateFunc, std::function<void()> up
 
 		glfwSwapBuffers(glfwWindow);
 		glfwPollEvents();
+	}
+}
+
+namespace {
+	void APIENTRY glDebugOutput(
+		GLenum source,
+		GLenum type,
+		unsigned int id,
+		GLenum severity,
+		GLsizei length,
+		const char* message,
+		const void* userParam
+	) {
+		// Unused parameters
+		(void)length;
+		(void)userParam;
+
+		// Tip: Set a breakpoint here if you need to backtrace which function is causing the error, by viewing the stacktrace.
+
+		bool isAnError = true;
+
+		if (id == 131169 || id == 131185 || id == 131218 || id == 131204 || id == 7) {
+			isAnError = false;
+			return;
+		}
+
+		if (id == (1282)) {
+			// it's just gonna spam every game loop
+			return;
+		}
+
+		std::cout << "---------------" << std::endl;
+		std::cout << (isAnError ? "ERROR" : "Info") << " (" << id << "): " << message << std::endl;
+
+		// Don't need more details for info logging.
+		if (!isAnError) {
+			return;
+		}
+
+		switch (source)
+		{
+		case GL_DEBUG_SOURCE_API:             std::cout << "Source: API";				break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   std::cout << "Source: Window System";		break;
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: std::cout << "Source: Shader Compiler";	break;
+		case GL_DEBUG_SOURCE_THIRD_PARTY:     std::cout << "Source: Third Party";		break;
+		case GL_DEBUG_SOURCE_APPLICATION:     std::cout << "Source: Application";		break;
+		case GL_DEBUG_SOURCE_OTHER:           std::cout << "Source: Other";				break;
+		}
+
+		std::cout << '\n';
+
+		switch (type)
+		{
+		case GL_DEBUG_TYPE_ERROR:               std::cout << "Type: Error";					break;
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "Type: Deprecated Behaviour";	break;
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  std::cout << "Type: Undefined Behaviour";	break;
+		case GL_DEBUG_TYPE_PORTABILITY:         std::cout << "Type: Portability";			break;
+		case GL_DEBUG_TYPE_PERFORMANCE:         std::cout << "Type: Performance";			break;
+		case GL_DEBUG_TYPE_MARKER:              std::cout << "Type: Marker";				break;
+		case GL_DEBUG_TYPE_PUSH_GROUP:          std::cout << "Type: Push Group";			break;
+		case GL_DEBUG_TYPE_POP_GROUP:           std::cout << "Type: Pop Group";				break;
+		case GL_DEBUG_TYPE_OTHER:               std::cout << "Type: Other";					break;
+		}
+
+		std::cout << '\n';
+
+		switch (severity)
+		{
+		case GL_DEBUG_SEVERITY_HIGH:         std::cout << "Severity: high";					break;
+		case GL_DEBUG_SEVERITY_MEDIUM:       std::cout << "Severity: medium";				break;
+		case GL_DEBUG_SEVERITY_LOW:          std::cout << "Severity: low";					break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION: std::cout << "Severity: notification";			break;
+		}
+
+		std::cout << "\n\n";
+	}
+
+	void window_size_callback(GLFWwindow* window, int width, int height) {
+		glViewport(0, 0, width, height);
 	}
 }

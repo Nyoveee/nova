@@ -2,19 +2,20 @@
 
 #include "../Header/engine.h"
 #include "../../window.h"
+#include "../../Graphics/renderer.h"
 
 void Engine::run() {
-	Window& window = Window::instance();
+	Window&		window		= Window::instance();
+	Renderer&	renderer	= Renderer::instance();
 
 	window.run(
 		// fixed update.
-		[]() {
-			std::cout << "Hi, from fixed update!\n";
+		[&]() {
 		},
 
 		// normal update.
-		[]() {
-			std::cout << "Hi, from normal update!\n";
+		[&]() {
+			renderer.render();
 		}
 	);
 }
