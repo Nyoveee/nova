@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "window.h"
+#include "./Graphics/cameraSystem.h"
 
 namespace {
 	void APIENTRY glDebugOutput(
@@ -18,6 +19,8 @@ namespace {
 	);
 
 	void window_size_callback(GLFWwindow* window, int width, int height);
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn);
 }
 
 constexpr int constWindowWidth = 1200;
@@ -82,10 +85,12 @@ Window::Window() :
 
 	//glfwSetWindowFocusCallback(window, window_focus_callback);
 	glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
-	//glfwSetKeyCallback(window, key_callback);
-	//glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetKeyCallback(glfwWindow, key_callback);
+	glfwSetCursorPosCallback(glfwWindow, mouse_callback);
 	//glfwSetScrollCallback(window, scroll_callback);
 	//glfwSetMouseButtonCallback(window, mouse_button_callback);
+
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Handling VSync
 	glfwSwapInterval(vsync);
@@ -110,6 +115,7 @@ Window::Window() :
 	else {
 		//logger.error("Failed to initialise OpenGL's debug context.\n");
 	}
+
 }
 
 Window::~Window() {
@@ -117,7 +123,7 @@ Window::~Window() {
 	glfwTerminate();
 }
 
-void Window::run(std::function<void()> fixedUpdateFunc, std::function<void()> updateFunc) {
+void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc) {
 	double const fixedDeltaTime = 1. / fixedFps;
 	double accumulatedTime = 0.;
 	double before = 0;
@@ -131,7 +137,7 @@ void Window::run(std::function<void()> fixedUpdateFunc, std::function<void()> up
 			accumulatedTime -= fixedDeltaTime;
 			numOfFixedSteps++;
 
-			fixedUpdateFunc();
+			fixedUpdateFunc(static_cast<float>(fixedDeltaTime));
 
 			if (numOfFixedSteps >= maxNumOfSteps) {
 				break;
@@ -139,7 +145,7 @@ void Window::run(std::function<void()> fixedUpdateFunc, std::function<void()> up
 		}
 
 		// executes a normal update
-		updateFunc();
+		updateFunc(static_cast<float>(deltaTime));
 
 		double after = glfwGetTime();
 		deltaTime = after - before;
@@ -233,6 +239,60 @@ namespace {
 	}
 
 	void window_size_callback(GLFWwindow* window, int width, int height) {
+		(void) window;
 		glViewport(0, 0, width, height);
+	}
+
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+		(void) window;
+		(void) mods;
+		(void) scancode;
+
+		using enum CameraSystem::Movement;
+		CameraSystem& cameraSystem = CameraSystem::instance();
+
+		if (key == GLFW_KEY_W) { 
+			cameraSystem.setMovement(Front, action != GLFW_RELEASE);
+		}
+
+		if (key == GLFW_KEY_A) {
+			cameraSystem.setMovement(Left, action != GLFW_RELEASE);
+		}
+
+		if (key == GLFW_KEY_S) {
+			cameraSystem.setMovement(Back, action != GLFW_RELEASE);
+		}
+
+		if (key == GLFW_KEY_D) {
+			cameraSystem.setMovement(Right, action != GLFW_RELEASE);
+		}
+
+		if (key == GLFW_KEY_SPACE) {
+			cameraSystem.setMovement(Up, action != GLFW_RELEASE);
+		}
+
+		if (key == GLFW_KEY_Z) {
+			cameraSystem.setMovement(Down, action != GLFW_RELEASE);
+		}
+
+		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+			glfwSetWindowShouldClose(window, true);
+		}
+	}
+
+	void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn) {
+		(void) window;
+		
+		CameraSystem& cameraSystem = CameraSystem::instance();
+
+		static bool firstTime = true;
+
+		if (firstTime) {
+			firstTime = false;
+			cameraSystem.setLastMouse(static_cast<float>(xPosIn), static_cast<float>(yPosIn));
+		}
+		else {
+			cameraSystem.calculateEulerAngle(static_cast<float>(xPosIn), static_cast<float>(yPosIn));
+		}
 	}
 }

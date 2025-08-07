@@ -12,11 +12,12 @@ Renderer& Renderer::instance() {
 }
 
 Renderer::Renderer() : 
-	basicShader		{ "Assets/Shader/basic.vert", "Assets/Shader/basic.frag" },
-	standardShader	{ "Assets/Shader/standard.vert", "Assets/Shader/basic.frag" },
-	VAO			{},
-	VBO			{},
-	EBO			{}
+	basicShader			{ "Assets/Shader/basic.vert", "Assets/Shader/basic.frag" },
+	standardShader		{ "Assets/Shader/standard.vert", "Assets/Shader/basic.frag" },
+	VAO					{},
+	VBO					{},
+	EBO					{},
+	camera				{}
 {
 	glEnable(GL_DEPTH_TEST);
 
@@ -57,12 +58,20 @@ Renderer::Renderer() :
 	// associate attribute 0 and 1 to binding index 0. 
 	glVertexArrayAttribBinding(VAO, 0, bindingIndex);
 	glVertexArrayAttribBinding(VAO, 1, bindingIndex);
+
+	// enable backface culling.
+	glEnable(GL_CULL_FACE);
 }
 
 Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
+}
+
+void Renderer::update(float dt) {
+	(void) dt;
+	//camera.setPos(camera.getPos() + glm::vec3{ 0.f, 0.f, -1 * dt });
 }
 
 void Renderer::render() const {
@@ -78,11 +87,10 @@ void Renderer::render() const {
 	modelMatrix = glm::scale(modelMatrix, scale);
 
 	// View matrix.
-	glm::mat4x4 viewMatrix = glm::mat4x4{ 1 };
+	glm::mat4x4 viewMatrix = camera.view();
 
 	// Perspective matrix.
-	//glm::mat4x4 perspectiveMatrix = glm::mat4x4{ 1 };
-	glm::mat4x4 perspectiveMatrix = glm::perspective(glm::radians(45.0f), Window::instance().aspectRatio(), 0.1f, 100.0f);
+	glm::mat4x4 perspectiveMatrix = camera.projection();
 
 	standardShader.use();
 	standardShader.setMatrix("model", modelMatrix);
@@ -91,4 +99,12 @@ void Renderer::render() const {
 
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+Camera& Renderer::getCamera() {
+	return camera;
+}
+
+Camera const& Renderer::getCamera() const {
+	return camera;
 }

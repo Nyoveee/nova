@@ -157,18 +157,26 @@
   <ItemGroup>
     <ClInclude Include="src\Export\Header\engine.h" />
     <ClInclude Include="src\Export\Header\export.h" />
+    <ClInclude Include="src\Graphics\camera.h" />
+    <ClInclude Include="src\Graphics\cameraSystem.h" />
     <ClInclude Include="src\Graphics\renderer.h" />
     <ClInclude Include="src\Graphics\shader.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
+    <ClInclude Include="src\Libraries\type_alias.h" />
     <ClInclude Include="src\window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Export\Source\engine.cpp" />
+    <ClCompile Include="src\Graphics\camera.cpp" />
+    <ClCompile Include="src\Graphics\cameraSystem.cpp" />
     <ClCompile Include="src\Graphics\renderer.cpp" />
     <ClCompile Include="src\Graphics\shader.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
+    <ClInclude Include="src\Libraries\type_alias.ipp">
+      <FileType>CppCode</FileType>
+    </ClInclude>
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

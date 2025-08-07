@@ -1,0 +1,63 @@
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "camera.h"
+#include "../window.h"
+
+constexpr glm::vec3 defaultCameraFront = { 0.f, 0.f, -1.f };
+constexpr Radian defaultFovAngle = Degree{ 45.0f };
+constexpr float defaultNearPlaneDistance = 0.1f;
+constexpr float defaultFarPlaneDistance = 100.f;
+
+Camera::Camera() : 
+	cameraPos			{},
+	cameraFront			{ defaultCameraFront },
+	viewMatrix			{},
+	fovAngle			{ defaultFovAngle },
+	nearPlaneDistance	{ defaultNearPlaneDistance },
+	farPlaneDistance	{ defaultFarPlaneDistance },
+	aspectRatio			{ Window::instance().aspectRatio() }
+{
+	recalculateViewMatrix();
+	recalculateProjectionMatrix();
+}
+
+glm::mat4x4 Camera::view() const {
+	return viewMatrix;
+}
+
+glm::mat4x4 Camera::projection() const {
+	return projectionMatrix;
+}
+
+glm::vec3 Camera::getPos() const {
+	return cameraPos;
+}
+
+void Camera::setPos(glm::vec3 pos) {
+	cameraPos = pos;
+}
+
+void Camera::addPos(glm::vec3 pos) {
+	cameraPos = cameraPos + pos;
+}
+
+glm::vec3 Camera::getFront() const {
+	return cameraFront;
+}
+
+void Camera::setFront(glm::vec3 front) {
+	cameraFront = front;
+	cameraRight = glm::normalize(glm::cross(cameraFront, Up));
+}
+
+glm::vec3 Camera::getRight() const {
+	return cameraRight;
+}
+
+void Camera::recalculateViewMatrix() {
+	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, Up);
+}
+
+void Camera::recalculateProjectionMatrix() {
+	projectionMatrix = glm::perspective<float>(fovAngle, aspectRatio, nearPlaneDistance, farPlaneDistance);
+}

@@ -18,7 +18,7 @@ public:
 	Window& operator=(Window&& other)		= delete;
 
 public:
-	void run(std::function<void()> fixedUpdateFunc, std::function<void()> updateFunc); // runs the game loop! :)
+	void run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc); // runs the game loop! :)
 
 	float aspectRatio() const;
 
