@@ -20,8 +20,8 @@ namespace {
 	void window_size_callback(GLFWwindow* window, int width, int height);
 }
 
-constexpr int windowWidth = 1200;
-constexpr int windowHeight = 900;
+constexpr int constWindowWidth = 1200;
+constexpr int constWindowHeight = 900;
 constexpr const char* name = "Nova Engine";
 constexpr bool vsync = true;
 constexpr float fixedFps = 60.f;
@@ -33,9 +33,11 @@ Window& Window::instance() {
 }
 
 Window::Window() : 
-	glfwWindow  {},
-	deltaTime   {},
-	currentFps	{}
+	glfwWindow		{},
+	deltaTime		{},
+	currentFps		{},
+	windowWidth		{ constWindowWidth },
+	windowHeight	{ constWindowHeight }
 {
 	/*---
 		GLFW Initialisation
@@ -150,6 +152,10 @@ void Window::run(std::function<void()> fixedUpdateFunc, std::function<void()> up
 		glfwSwapBuffers(glfwWindow);
 		glfwPollEvents();
 	}
+}
+
+float Window::aspectRatio() const {
+	return static_cast<float>(windowWidth) / windowHeight;
 }
 
 namespace {

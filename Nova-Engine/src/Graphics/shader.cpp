@@ -27,9 +27,9 @@ void Shader::use() const {
 	glUseProgram(m_id);
 }
 
-void Shader::unuse() const {
-	glUseProgram(0);
-}
+//void Shader::unuse() const {
+//	glUseProgram(0);
+//}
 
 void Shader::compile() {
 	if (initialised) {
@@ -77,6 +77,7 @@ void Shader::compile() {
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
+		std::cerr << "Error! Compilation of vertex shader failed! " << infoLog << '\n';
 		//logger.error(std::string{ "Error! Compilation of vertex shader failed!" } + infoLog + '\n');
 	}
 
@@ -87,6 +88,7 @@ void Shader::compile() {
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
+		std::cerr << "Error! Compilation of fragment shader failed! " << infoLog << '\n';
 		//logger.error(std::string{ "Error! Compilation of fragment shader failed!" } + infoLog + '\n');
 
 	}

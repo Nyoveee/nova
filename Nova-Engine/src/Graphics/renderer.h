@@ -24,4 +24,5 @@ private:
 	GLuint EBO;
 
 	Shader basicShader;
+	Shader standardShader;
 };
