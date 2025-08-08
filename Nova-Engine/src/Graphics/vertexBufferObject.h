@@ -1,5 +1,7 @@
 #pragma once
 #include <limits>
+#include <vector>
+#include <iostream>
 
 using GLuint = unsigned int;
 
@@ -10,7 +12,14 @@ constexpr GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
 
 class VertexBufferObject {
 public:
-	VertexBufferObject();
+	enum class Usage {
+		StaticDraw,
+		DynamicDraw,
+		StreamDraw
+	};
+
+public:
+	VertexBufferObject(GLsizeiptr amountOfMemory, Usage usage = Usage::DynamicDraw);
 
 	~VertexBufferObject();
 	VertexBufferObject(VertexBufferObject const& other) = delete;
@@ -22,7 +31,26 @@ public:
 
 public:
 	GLuint id() const;
+	GLsizeiptr size() const;
+
+	template <typename T>
+	void uploadData(std::vector<T> const& vertices);
 
 private:
 	GLuint m_id;
+	GLsizeiptr allocatedMemory;
 };
+
+template<typename T>
+void VertexBufferObject::uploadData(std::vector<T> const& vertices) {
+	GLsizeiptr memoryRequired = vertices.size() * sizeof(T);
+
+	if (memoryRequired > allocatedMemory) {
+		std::cerr << "Attempting to upload data of more memory than currently allocated!\n";
+		std::cerr << "Allocated memory: " << allocatedMemory << " bytes, size of uploaded data: " << memoryRequired << " bytes.";
+		std::cerr << "Vertices: " << vertices.size() << ", sizeof(Vertex): " << sizeof(T) << "\n";
+		return;
+	}
+
+	glNamedBufferSubData(m_id, 0, vertices.size() * sizeof(T), vertices.data());
+}

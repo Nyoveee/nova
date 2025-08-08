@@ -3,8 +3,28 @@
 
 #include "VertexBufferObject.h"
 
-VertexBufferObject::VertexBufferObject() : m_id{ INVALID_ID } {
+VertexBufferObject::VertexBufferObject(GLsizeiptr amountOfMemory, Usage usage) : 
+	allocatedMemory	{ amountOfMemory },
+	m_id			{ INVALID_ID } 
+{
 	glCreateBuffers(1, &m_id);
+
+	GLenum drawMode = GL_DYNAMIC_DRAW;
+
+	switch (usage)
+	{
+	case VertexBufferObject::Usage::StaticDraw:
+		drawMode = GL_STATIC_DRAW;
+		break;
+	case VertexBufferObject::Usage::StreamDraw:
+		drawMode = GL_STREAM_DRAW;
+		break;
+	case VertexBufferObject::Usage::DynamicDraw:
+	default:
+		break;
+	}
+
+	glNamedBufferData(m_id, amountOfMemory, nullptr, drawMode);
 }
 
 VertexBufferObject::~VertexBufferObject() {
@@ -16,7 +36,8 @@ VertexBufferObject::~VertexBufferObject() {
 }
 
 VertexBufferObject::VertexBufferObject(VertexBufferObject&& other) noexcept :
-	m_id{ other.m_id }
+	m_id			{ other.m_id },
+	allocatedMemory { other.allocatedMemory }
 {
 	other.m_id = INVALID_ID;
 }
@@ -28,9 +49,14 @@ VertexBufferObject& VertexBufferObject::operator=(VertexBufferObject&& other) no
 }
 
 void VertexBufferObject::swap(VertexBufferObject& rhs) {
-	std::swap(m_id, rhs.m_id);
+	std::swap(m_id,				rhs.m_id);
+	std::swap(allocatedMemory,	rhs.allocatedMemory);
 }
 
 GLuint VertexBufferObject::id() const {
 	return m_id;
+}
+
+GLsizeiptr VertexBufferObject::size() const {
+	return allocatedMemory;
 }

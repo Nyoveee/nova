@@ -21,7 +21,7 @@ public:
 
 public:
 	void update(float dt);
-	void render() const;
+	void render();
 
 	Camera& getCamera();
 	Camera const& getCamera() const;

@@ -21,12 +21,11 @@ Renderer::Renderer() :
 	EBO					{},
 	camera				{}
 {
-	// construct 2 VBO.
-	VBOs.push_back({});
-	VBOs.push_back({});
+	// construct a VBO. Allocate 100 bytes of memory to this VBO.
+	VBOs.push_back({ 120 });
 
-	glEnable(GL_DEPTH_TEST);
 
+#if 0
 	std::array<Vertex, 6> vertices{
 		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
 		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
@@ -37,11 +36,11 @@ Renderer::Renderer() :
 		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
 	};
 
+	glNamedBufferData(VBOs[0].id(), vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+#endif
+
 	glCreateBuffers(1, &EBO);
 	glCreateVertexArrays(1, &VAO);
-
-	// copy data to VBO.
-	glNamedBufferData(VBOs[0].id(), vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 	// for this VAO, associate bindingIndex 0 with this VBO. 
 	GLuint bindingIndex = 0;
@@ -59,11 +58,9 @@ Renderer::Renderer() :
 	glVertexArrayAttribBinding(VAO, 0, bindingIndex);
 	glVertexArrayAttribBinding(VAO, 1, bindingIndex);
 
-	// enable backface culling.
+	// enable backface culling & depth testing.
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-
-	// construct the other VBO for general purpose batch rendering..
-	glNamedBufferData(VBOs[1].id(), vertices.size() * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
 }
 
 Renderer::~Renderer() {
@@ -73,13 +70,13 @@ Renderer::~Renderer() {
 
 void Renderer::update(float dt) {
 	(void) dt;
-	//camera.setPos(camera.getPos() + glm::vec3{ 0.f, 0.f, -1 * dt });
 }
 
-void Renderer::render() const {
+void Renderer::render() {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+#if 0
 	// for this VAO, associate bindingIndex 0 with 1st VBO.
 	glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
 
@@ -104,12 +101,14 @@ void Renderer::render() const {
 
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+#endif
 
-	// Now draw from other VBO.
+	standardShader.use();
+	standardShader.setMatrix("view", camera.view());
+	standardShader.setMatrix("projection", camera.projection());
+
+	// Retrieve all game objects and prepare them for batch rendering..
 	entt::registry& registry = ECS::instance().registry;
-
-	// for this VAO, associate bindingIndex 0 with 2nd VBO.
-	glVertexArrayVertexBuffer(VAO, 0, VBOs[1].id(), 0, sizeof(Vertex));
 
 	for (auto&& [entity, transform, mesh] : registry.view<Transform, Mesh>().each()) {
 		// Model matrix.
@@ -117,18 +116,15 @@ void Renderer::render() const {
 		modelMatrix = glm::translate(modelMatrix, transform.position);
 		modelMatrix = glm::scale(modelMatrix, transform.scale);
 
-		// View matrix.
-		glm::mat4x4 viewMatrix = camera.view();
-
-		// Perspective matrix.
-		glm::mat4x4 perspectiveMatrix = camera.projection();
+		// Copy mesh to VBO..
+		//glNamedBufferSubData(VBOs[1].id(), 0, 6 * sizeof(decltype(mesh.vertices)::value_type), mesh.vertices.data());
+		auto& VBO = VBOs[0];
+		VBO.uploadData(mesh.vertices);
 
 		standardShader.setMatrix("model", modelMatrix);
-		standardShader.setMatrix("view", viewMatrix);
-		standardShader.setMatrix("projection", perspectiveMatrix);
 
-		// Copy mesh to VBO..
-		glNamedBufferSubData(VBOs[1].id(), 0, 6 * sizeof(Vertex), mesh.vertices.data());
+		// set VBO to VAO's [0] binding index.
+		glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
