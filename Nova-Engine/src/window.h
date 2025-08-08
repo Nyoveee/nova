@@ -21,6 +21,7 @@ public:
 	void run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc); // runs the game loop! :)
 
 	float aspectRatio() const;
+	GLFWwindow* getGLFWwindow() const;
 
 private:
 	GLFWwindow* glfwWindow;

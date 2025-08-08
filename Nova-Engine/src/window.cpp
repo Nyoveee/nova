@@ -164,6 +164,10 @@ float Window::aspectRatio() const {
 	return static_cast<float>(windowWidth) / windowHeight;
 }
 
+GLFWwindow* Window::getGLFWwindow() const {
+	return glfwWindow;
+}
+
 namespace {
 	void APIENTRY glDebugOutput(
 		GLenum source,

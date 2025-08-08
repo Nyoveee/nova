@@ -1,9 +1,11 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <vector>
 
 #include "shader.h"
 #include "camera.h"
+#include "vertexBufferObject.h"
 
 class Renderer {
 	Renderer();
@@ -25,7 +27,8 @@ public:
 	Camera const& getCamera() const;
 
 private:
-	GLuint VBO;
+	std::vector<VertexBufferObject> VBOs;
+
 	GLuint VAO;
 	GLuint EBO;
 
