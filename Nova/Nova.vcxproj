@@ -73,11 +73,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>..\Nova-Engine\src\Export\Header;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Library\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Library\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
+    <ExternalIncludePath>$(SolutionDir)Include\dotnet;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\Nova-Engine\src\Export\Header;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Library\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Library\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
+    <ExternalIncludePath>$(SolutionDir)Include\dotnet;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -122,6 +124,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /s /r /y /q "$(SolutionDir)Nova-Scripts\bin\$(Configuration)\net6.0-windows\Nova-Scripts.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -142,6 +147,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /s /r /y /q "$(SolutionDir)Nova-Scripts\bin\$(Configuration)\net6.0-windows\Nova-Scripts.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
