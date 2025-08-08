@@ -4,7 +4,7 @@
 #include <array>
 
 #include "renderer.h"
-#include "../window.h"
+#include "../Export/Header/window.h"
 #include "vertex.h"
 #include "../ECS & Components/ECS.h"
 #include "../ECS & Components/component.h"
@@ -21,9 +21,8 @@ Renderer::Renderer() :
 	EBO					{},
 	camera				{}
 {
-	// construct a VBO. Allocate 100 bytes of memory to this VBO.
+	// construct a VBO. Allocate 120 bytes of memory to this VBO.
 	VBOs.push_back({ 120 });
-
 
 #if 0
 	std::array<Vertex, 6> vertices{

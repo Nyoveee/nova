@@ -1,5 +1,28 @@
 #include <iostream>
+#include <crtdbg.h>
+
+#include "engine.h"
+#include "window.h"
+
+#include "editor.h"
 
 int main() {
-	std::cout << "Hello World!\n";
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	Window window	{};
+	Engine engine	{ window };
+	Editor editor	{ window };
+
+	window.run(
+		// Fixed update loop
+		[&](float fixedDt) {
+			engine.fixedUpdate(fixedDt);
+		},
+
+		// Update loop.
+		[&](float dt) {
+			engine.update(dt);
+			editor.update();
+		}
+	);
 }

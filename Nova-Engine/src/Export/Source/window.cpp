@@ -4,8 +4,12 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "window.h"
-#include "./Graphics/cameraSystem.h"
+#include "../Header/window.h"
+#include "../../Graphics/cameraSystem.h"
+
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 namespace {
 	void APIENTRY glDebugOutput(
@@ -30,17 +34,13 @@ constexpr bool vsync = true;
 constexpr float fixedFps = 60.f;
 constexpr int maxNumOfSteps = 4;
 
-Window& Window::instance() {
-	static Window window{};
-	return window;
-}
-
 Window::Window() : 
 	glfwWindow		{},
 	deltaTime		{},
 	currentFps		{},
 	windowWidth		{ constWindowWidth },
-	windowHeight	{ constWindowHeight }
+	windowHeight	{ constWindowHeight },
+	imGuiContext	{}
 {
 	/*---
 		GLFW Initialisation
@@ -77,8 +77,6 @@ Window::Window() :
 	float topRightX = videoMode->height / 2.f - height / 2.f;
 	glfwSetWindowPos(glfwWindow, static_cast<int>(topLeftX), static_cast<int>(topRightX));
 
-	glfwMakeContextCurrent(glfwWindow);
-
 	/*--
 		Registering callbacks..
 	--*/
@@ -93,7 +91,7 @@ Window::Window() :
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Handling VSync
-	glfwSwapInterval(vsync);
+	//glfwSwapInterval(vsync);
 
 	/*---
 		Dynamically load OpenGL
@@ -115,7 +113,6 @@ Window::Window() :
 	else {
 		//logger.error("Failed to initialise OpenGL's debug context.\n");
 	}
-
 }
 
 Window::~Window() {
@@ -158,10 +155,6 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 		glfwSwapBuffers(glfwWindow);
 		glfwPollEvents();
 	}
-}
-
-float Window::aspectRatio() const {
-	return static_cast<float>(windowWidth) / windowHeight;
 }
 
 GLFWwindow* Window::getGLFWwindow() const {

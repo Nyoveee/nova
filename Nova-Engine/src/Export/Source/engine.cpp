@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "../Header/engine.h"
-#include "../../window.h"
+#include "../Header/window.h"
 #include "../../Graphics/renderer.h"
 #include "../../Graphics/cameraSystem.h"
 #include "../../ECS & Components/ECS.h"
@@ -9,56 +9,50 @@
 
 #include <GLFW/glfw3.h>
 
-Engine::Engine() :
-	window			{ Window::instance() },
+Engine::Engine(Window& window) :
+	window			{ window },
 	renderer		{ Renderer::instance() },
 	cameraSystem	{ CameraSystem::instance() },
 	ecs				{ ECS::instance() }
 {}
 
-void Engine::run() {
+void Engine::fixedUpdate(float dt) {
+	(void) dt;
+}
+
+void Engine::update(float dt) {
 	entt::registry& registry = ecs.registry;
 
-	window.run(
-		// fixed update.
-		[&](float fixedDt) {
-			(void) fixedDt;
-		},
+	if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_0) == GLFW_PRESS) {
+		auto entity = registry.create();
 
-		// normal update.
-		[&](float dt) {
+		static float zPos = 0;
+		zPos -= 5.f;
 
-			if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_0) == GLFW_PRESS) {
-				auto entity = registry.create();
+		Transform transform = {
+			{0.f, 0.f, zPos},
+			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f}
+		};
 
-				static float zPos = 0;
-				zPos -= 5.f;
-				Transform transform = {
-					{0.f, 0.f, zPos},
-					{1.f, 1.f, 1.f},
-					{1.f, 1.f, 1.f}
-				};
+		Mesh mesh = {
+			{
+				Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
+				Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
+				Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
 
-				Mesh mesh = {
-					{
-						Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-						Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-						Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
+				Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
+				Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
+				Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
+			},
+			Color{}
+		};
 
-						Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
-						Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-						Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-					},
-					Color{}
-				};
+		registry.emplace<Transform>(entity, std::move(transform));
+		registry.emplace<Mesh>(entity, std::move(mesh));
+	}
 
-				registry.emplace<Transform>(entity, std::move(transform));
-				registry.emplace<Mesh>(entity, std::move(mesh));
-			}
-
-			cameraSystem.update();
-			renderer.update(dt);
-			renderer.render();
-		}
-	);
+	cameraSystem.update();
+	renderer.update(dt);
+	renderer.render();
 }

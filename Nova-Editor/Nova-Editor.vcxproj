@@ -150,6 +150,12 @@
       <Project>{97e3acaa-f509-44ba-a393-c8c071952013}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Editor\ImGUI\ImGuizmo.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3_loader.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectDir)src\ImGui;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(ProjectDir)src\ImGui;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="src\ECS &amp; Components\component.h" />
     <ClInclude Include="src\ECS &amp; Components\ECS.h" />
+    <ClInclude Include="src\Export\Header\editor.h" />
     <ClInclude Include="src\Export\Header\engine.h" />
     <ClInclude Include="src\Export\Header\export.h" />
     <ClInclude Include="src\Graphics\camera.h" />
@@ -167,26 +168,43 @@
     <ClInclude Include="src\Graphics\shader.h" />
     <ClInclude Include="src\Graphics\vertex.h" />
     <ClInclude Include="src\Graphics\vertexBufferObject.h" />
+    <ClInclude Include="src\ImGui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="src\ImGui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\ImGui\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\ImGui\imconfig.h" />
+    <ClInclude Include="src\ImGui\imgui.h" />
+    <ClInclude Include="src\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="src\ImGui\imstb_textedit.h" />
+    <ClInclude Include="src\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
     <ClInclude Include="src\Libraries\type_alias.h" />
-    <ClInclude Include="src\window.h" />
+    <ClInclude Include="src\Export\Header\window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ECS &amp; Components\ECS.cpp" />
+    <ClCompile Include="src\Export\Source\editor.cpp" />
     <ClCompile Include="src\Export\Source\engine.cpp" />
     <ClCompile Include="src\Graphics\camera.cpp" />
     <ClCompile Include="src\Graphics\cameraSystem.cpp" />
     <ClCompile Include="src\Graphics\renderer.cpp" />
     <ClCompile Include="src\Graphics\shader.cpp" />
     <ClCompile Include="src\Graphics\vertexBufferObject.cpp" />
+    <ClCompile Include="src\ImGui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\ImGui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\ImGui\imgui.cpp" />
+    <ClCompile Include="src\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
       <FileType>CppCode</FileType>
     </ClInclude>
     <ClCompile Include="src\Libraries\type_alias.cpp" />
-    <ClCompile Include="src\window.cpp" />
+    <ClCompile Include="src\Export\Source\window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,7 +11,7 @@ class ECS;
 
 class Engine {
 public:
-	DLL_API Engine();
+	DLL_API Engine(Window& window);
 
 	DLL_API ~Engine()								= default;
 	DLL_API Engine(Engine const& other)				= delete;
@@ -20,7 +20,8 @@ public:
 	DLL_API Engine& operator=(Engine&& other)		= delete;
 
 public:
-	DLL_API void run();
+	DLL_API void fixedUpdate(float dt);
+	DLL_API void update(float dt);
 
 private:
 	Window&			window;
