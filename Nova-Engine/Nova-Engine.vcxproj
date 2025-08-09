@@ -162,6 +162,7 @@
     <ClInclude Include="src\Graphics\renderer.h" />
     <ClInclude Include="src\Graphics\shader.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
+    <ClInclude Include="src\Export\Header\ScriptingAPIManager.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
     <ClInclude Include="src\Libraries\type_alias.h" />
     <ClInclude Include="src\window.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="src\Graphics\renderer.cpp" />
     <ClCompile Include="src\Graphics\shader.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
+    <ClCompile Include="src\Export\Source\ScriptingAPIManager.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
       <FileType>CppCode</FileType>
