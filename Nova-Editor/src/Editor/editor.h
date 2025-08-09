@@ -2,12 +2,19 @@
 
 #include "export.h"
 
+#include "gameViewPort.h"
+#include "componentInspector.h"
+#include "assetManagerUi.h"
+
+using GLuint = unsigned int;
+
 class Window;
 class Engine;
+class InputManager;
 
 class Editor {
 public:
-	Editor(Window& window, Engine& engine);
+	Editor(Window& window, Engine& engine, InputManager& inputManager);
 
 	~Editor();
 	Editor(Editor const& other)				= delete;
@@ -24,4 +31,8 @@ private:
 private:
 	Window& window;
 	Engine& engine;
+
+	GameViewPort gameViewPort;
+	ComponentInspector componentInspector;
+	AssetManagerUI assetManagerUi;
 };

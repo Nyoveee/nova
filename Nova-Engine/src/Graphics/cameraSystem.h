@@ -18,14 +18,20 @@ public:
 	CameraSystem& operator=(CameraSystem&& other)		= delete;
 	
 public:
-	void update();
+	void update(float dt);
 
 	void setMovement(CameraMovement movement, bool toMove);
 
 	void setLastMouse(float mouseX, float mouseY);
 	void calculateEulerAngle(float mouseX, float mouseY);
 
+public:
+	float cameraSpeed;
+
 private:
+	bool isInControl;
+	bool toResetMousePos;
+
 	Engine& engine;
 	Camera& camera;
 

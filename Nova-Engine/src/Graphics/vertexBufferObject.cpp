@@ -3,6 +3,11 @@
 
 #include "vertexBufferObject.h"
 
+namespace {
+	// A VBO holding INVALID_ID means it's not holding to any dynamically allocated resource.
+	constexpr inline GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
+}
+
 VertexBufferObject::VertexBufferObject(GLsizeiptr amountOfMemory, Usage usage) : 
 	allocatedMemory	{ amountOfMemory },
 	m_id			{ INVALID_ID } 

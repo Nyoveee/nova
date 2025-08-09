@@ -10,10 +10,15 @@
 #include "component.h"
 #include "themes.h"
 
-Editor::Editor(Window& window, Engine& engine) :
-	window  { window },
-	engine	{ engine }
+Editor::Editor(Window& window, Engine& engine, InputManager& inputManager) :
+	window				{ window },
+	engine				{ engine },
+	gameViewPort		{ engine },
+	componentInspector	{},
+	assetManagerUi		{}
 {
+	(void) inputManager;
+
 	ImGui::CreateContext();
 
 	ImGuiIO& io = ImGui::GetIO();
@@ -32,7 +37,7 @@ void Editor::update() {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
-	//ImGui::DockSpaceOverViewport();
+	ImGui::DockSpaceOverViewport();
 
 	main();
 
@@ -48,9 +53,59 @@ void Editor::main() {
 	// Show all game objects..
 	ImGui::Begin("Game objects");
 
+	// ========================================
+	// STUB CODE!!!!
+	// ========================================
+
+	ImGui::SliderFloat("Camera Speed", &engine.cameraSystem.cameraSpeed, 0.f, 10.f);
+
+	if (ImGui::Button("(+) Add entity")) {
+		auto entity = registry.create();
+
+		static float zPos = 0;
+		zPos -= 5.f;
+
+		Transform transform = {
+			{0.f, 0.f, zPos},
+			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f}
+		};
+
+		Mesh mesh = {
+			{
+				Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
+				Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
+				Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
+
+				Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
+				Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
+				Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
+			},
+			Color{}
+		};
+
+		registry.emplace<Transform>(entity, std::move(transform));
+		registry.emplace<Mesh>(entity, std::move(mesh));
+	}	
+	
 	for (auto&& [entity, transform, mesh] : registry.view<Transform, Mesh>().each()) {
+		std::string textToDisplay =
+			"Entity ID: " + std::to_string(static_cast<entt::id_type>(entity))
+			+ ", pos: {"
+			+ std::to_string(transform.position.x) + " "
+			+ std::to_string(transform.position.y) + " "
+			+ std::to_string(transform.position.z) + "} ";
 		
+		ImGui::Text(textToDisplay.c_str());
 	}
+
+	// ========================================
+	// END OF STUB CODE
+	// ========================================
+
+	gameViewPort.update();
+	componentInspector.update();
+	assetManagerUi.update();
 
 	ImGui::End();
 }

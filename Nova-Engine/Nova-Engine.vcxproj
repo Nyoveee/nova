@@ -164,6 +164,7 @@
     <ClInclude Include="src\Export\Header\export.h" />
     <ClInclude Include="src\Graphics\camera.h" />
     <ClInclude Include="src\Graphics\cameraSystem.h" />
+    <ClInclude Include="src\Graphics\framebuffer.h" />
     <ClInclude Include="src\Graphics\renderer.h" />
     <ClInclude Include="src\Graphics\shader.h" />
     <ClInclude Include="src\Graphics\vertex.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="src\Export\Header\inputManager.h" />
     <ClInclude Include="src\InputManager\inputEvent.h" />
     <ClInclude Include="src\InputManager\observer.h" />
+    <ClInclude Include="src\InputManager\observer.ipp" />
     <ClInclude Include="src\Libraries\family.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
@@ -182,6 +184,7 @@
     <ClCompile Include="src\Export\Source\engine.cpp" />
     <ClCompile Include="src\Graphics\camera.cpp" />
     <ClCompile Include="src\Graphics\cameraSystem.cpp" />
+    <ClCompile Include="src\Graphics\framebuffer.cpp" />
     <ClCompile Include="src\Graphics\renderer.cpp" />
     <ClCompile Include="src\Graphics\shader.cpp" />
     <ClCompile Include="src\Graphics\vertexBufferObject.cpp" />

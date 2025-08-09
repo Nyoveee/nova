@@ -5,9 +5,7 @@
 
 #include "InputManager/inputEvent.h"
 
-InputManager::InputManager() {
-
-}
+InputManager::InputManager() {}
 
 void InputManager::handleMouseMovement(Window& window, double xPosIn, double yPosIn) {
 	(void) window;
@@ -52,7 +50,7 @@ void InputManager::handleKeyboardInput(Window& window, int key, int scancode, in
 		broadcast(CameraMovement::Descent, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
 	}
 
-	if (key == GLFW_KEY_ESCAPE && GLFW_PRESS) {
-		glfwSetWindowShouldClose(window.getGLFWwindow(), true);
+	if (key == GLFW_KEY_ESCAPE) {
+		broadcast(ToggleCursorControl::Sentinel, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
 	}
 }

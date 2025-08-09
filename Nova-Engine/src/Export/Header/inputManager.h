@@ -44,8 +44,8 @@ public:
 	template <typename InputEvent>
 	void subscribe(std::function<void(InputEvent)> pressCallback, std::function<void(InputEvent)> releaseCallback = {});
 
-private:
-	// Broadcast this input event to all interested observer.
+	// Input Manager calls broadcast which notifies all observers that are observing this specific InputEvent.
+	// Client can alternatively call this function directly to manually broadcast an event to all observers as well.
 	template <typename InputEvent>
 	void broadcast(InputEvent data, InputType inputType);
 

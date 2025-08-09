@@ -27,19 +27,20 @@ namespace {
 	void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn);
 }
 
-constexpr bool vsync = true;
+constexpr bool vsync = false;
 constexpr float fixedFps = 60.f;
 constexpr int maxNumOfSteps = 4;
 
-Window::Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager) :
-	inputManager	{ inputManager },
-	glfwWindow		{},
-	deltaTime		{},
-	currentFps		{},
-	windowWidth		{ dimension.width },
-	windowHeight	{ dimension.height },
-	imGuiContext	{},
-	isFullScreen	{}
+Window::Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager, Viewport viewportConfig) :
+	inputManager		{ inputManager },
+	glfwWindow			{},
+	deltaTime			{},
+	currentFps			{},
+	windowWidth			{ dimension.width },
+	windowHeight		{ dimension.height },
+	imGuiContext		{},
+	isFullScreen		{},
+	isControllingMouse	{}
 {
 	// Set the global variable of window to this 1 instance of Window. 
 	// This is required because GLFW callbacks work in the global scope.
@@ -94,7 +95,10 @@ Window::Window(const char* name, Dimension dimension, Configuration config, Inpu
 		Registering callbacks..
 	--*/
 
-	glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
+	if (viewportConfig == Viewport::ChangeDuringResize) {
+		glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
+	}
+
 	glfwSetKeyCallback(glfwWindow, key_callback);
 	glfwSetCursorPosCallback(glfwWindow, mouse_callback);
 	//glfwSetScrollCallback(window, scroll_callback);
@@ -125,14 +129,21 @@ Window::Window(const char* name, Dimension dimension, Configuration config, Inpu
 		break;
 	}
 
-	//glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Handling VSync
-	//glfwSwapInterval(vsync);
+	glfwSwapInterval(vsync);
 
 	// swap buffer once because the white window is flashing
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glfwSwapBuffers(glfwWindow);
+
+	// subscribe to input manager
+	inputManager.subscribe<ToggleCursorControl>(
+		[&](ToggleCursorControl) {
+			toggleMouseControl();
+		}
+	);
 }
 
 Window::~Window() {
@@ -201,6 +212,11 @@ DLL_API void Window::toggleFullScreen()
 	}
 
 	isFullScreen = !isFullScreen;
+}
+
+void Window::toggleMouseControl() {
+	isControllingMouse = !isControllingMouse;
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, isControllingMouse ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 }
 
 namespace {

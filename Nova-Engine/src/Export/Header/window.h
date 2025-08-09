@@ -19,13 +19,18 @@ public:
 		Restored	// retains the original size.
 	};
 
+	enum class Viewport {
+		ChangeDuringResize,
+		Constant
+	};
+
 	struct Dimension {
 		int width;
 		int height;
 	};
 
 public:
-	DLL_API Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager);
+	DLL_API Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager, Viewport viewportConfig);
 
 	DLL_API ~Window();
 	DLL_API Window(Window const& other)				= delete;
@@ -37,6 +42,7 @@ public:
 	DLL_API void run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc); // runs the game loop! :)
 	DLL_API GLFWwindow* getGLFWwindow() const;
 	DLL_API void toggleFullScreen();
+	DLL_API void toggleMouseControl();
 
 public:
 	// GLFW function callbacks are in the global scope and therefore do not have private access to Input Manager.
@@ -53,4 +59,5 @@ private:
 	int				windowHeight;
 
 	bool			isFullScreen;
+	bool			isControllingMouse;
 };

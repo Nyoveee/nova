@@ -7,13 +7,19 @@
 
 #include "Editor/editor.h"
 
+constexpr const char*	windowName		= "Nova Engine";
+constexpr int			windowWidth		= 1200;
+constexpr int			windowHeight	= 900;
+constexpr int			gameWidth		= 1920;
+constexpr int			gameHeight		= 1080;
+
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	InputManager inputManager	{};
-	Window		 window			{ "Nova Engine", {1200, 900}, Window::Configuration::Maximised, inputManager };
-	Engine		 engine			{ window, inputManager };
-	Editor		 editor			{ window, engine };
+	Window		 window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
+	Engine		 engine			{ window, inputManager, gameWidth, gameHeight };
+	Editor		 editor			{ window, engine, inputManager };
 
 	window.run(
 		// Fixed update loop
@@ -24,6 +30,7 @@ int main() {
 		// Update loop.
 		[&](float dt) {
 			engine.update(dt);
+			engine.render(Renderer::RenderTarget::ToMainFrameBuffer);
 			editor.update();
 		}
 	);

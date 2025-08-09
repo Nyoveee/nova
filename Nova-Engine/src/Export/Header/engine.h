@@ -18,7 +18,7 @@ class InputManager;
 
 class Engine {
 public:
-	DLL_API Engine(Window& window, InputManager& inputManager);
+	DLL_API Engine(Window& window, InputManager& inputManager, int gameWidth, int gameHeight);
 
 	DLL_API ~Engine()								= default;
 	DLL_API Engine(Engine const& other)				= delete;
@@ -29,12 +29,20 @@ public:
 public:
 	DLL_API void fixedUpdate(float dt);
 	DLL_API void update(float dt);
+	DLL_API void render(Renderer::RenderTarget target);
+
+public:
+	DLL_API int getGameWidth() const;
+	DLL_API int getGameHeight() const;
 
 public:
 	// allow all systems to have references of each other via the engine.
-
 	Window&			window;
 	Renderer		renderer;
 	CameraSystem	cameraSystem;
 	ECS				ecs;
+
+private:
+	int				gameWidth;
+	int				gameHeight;
 };

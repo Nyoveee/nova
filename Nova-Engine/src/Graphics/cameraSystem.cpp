@@ -15,7 +15,10 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 	lastMouseY		{},
 	camera			{ engine.renderer.getCamera() },
 	yaw				{ -90.f },
-	pitch			{}
+	pitch			{},
+	isInControl		{ true },
+	toResetMousePos	{ true },
+	cameraSpeed		{ 2.f }
 {
 	// Subscribe to the input manager that the camera system is interested in 
 	// any input related to CameraMovement
@@ -30,44 +33,54 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 
 	inputManager.subscribe<MousePosition>(
 		[&](MousePosition mousePos) {
-			static bool firstTime = true;
-
-			if (firstTime) {
+			if (toResetMousePos) {
 				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
-				firstTime = false;
+				toResetMousePos = false;
 			}
 			else {
-				calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+				if(isInControl) calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+			}
+		}
+	);
+
+	inputManager.subscribe<ToggleCursorControl>(
+		[&](ToggleCursorControl) {
+			isInControl = !isInControl;
+
+			if (isInControl) {
+				toResetMousePos = true;
 			}
 		}
 	);
 }
 
-void CameraSystem::update() {
-	constexpr float cameraSpeed = 0.05f; // adjust accordingly
+void CameraSystem::update(float dt) {
+	if (!isInControl) {
+		return;
+	}
 
 	if (isMovingFront) {
-		camera.addPos(cameraSpeed * camera.getFront());
+		camera.addPos(cameraSpeed * dt * camera.getFront());
 	}
 
 	if (isMovingLeft) {
-		camera.addPos(cameraSpeed * -camera.getRight());
+		camera.addPos(cameraSpeed * dt * -camera.getRight());
 	}
 
 	if (isMovingBack) {
-		camera.addPos(cameraSpeed * -camera.getFront());
+		camera.addPos(cameraSpeed * dt * -camera.getFront());
 	}
 
 	if (isMovingRight) {
-		camera.addPos(cameraSpeed * camera.getRight());
+		camera.addPos(cameraSpeed * dt * camera.getRight());
 	}
 
 	if (isMovingUp) {
-		camera.addPos(cameraSpeed * Camera::Up);
+		camera.addPos(cameraSpeed * dt * Camera::Up);
 	}
 
 	if (isMovingDown) {
-		camera.addPos(cameraSpeed * -Camera::Up);
+		camera.addPos(cameraSpeed * dt * -Camera::Up);
 	}
 
 	camera.recalculateViewMatrix();

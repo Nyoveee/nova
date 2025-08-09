@@ -3,9 +3,12 @@
 #include <glad/glad.h>
 #include <vector>
 
+#include "export.h"
+
 #include "shader.h"
 #include "camera.h"
 #include "vertexBufferObject.h"
+#include "framebuffer.h"
 
 class Engine;
 
@@ -19,8 +22,13 @@ public:
 		Disabled
 	};
 
+	enum class RenderTarget {
+		ToDefaultFrameBuffer,
+		ToMainFrameBuffer
+	};
+
 public:
-	Renderer(Engine& engine);
+	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
 	~Renderer();
 	Renderer(Renderer const& other)				= delete;
@@ -29,8 +37,14 @@ public:
 	Renderer& operator=(Renderer&& other)		= delete;
 
 public:
+	// used directly in the editor. i need to export this.
+	DLL_API GLuint getMainFrameBufferTexture() const;
+
+public:
 	void update(float dt);
-	void render();
+
+	// choose to either render to the default frame buffer or the main frame buffer.
+	void render(RenderTarget target);
 
 	Camera& getCamera();
 	Camera const& getCamera() const;
@@ -50,4 +64,7 @@ private:
 
 	Shader basicShader;
 	Shader standardShader;
+	Shader textureShader;
+
+	FrameBuffer mainFrameBuffer;
 };

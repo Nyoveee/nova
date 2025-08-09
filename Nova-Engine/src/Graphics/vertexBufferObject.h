@@ -1,15 +1,10 @@
 #pragma once
 #include <limits>
 #include <vector>
-#include <iostream>
 
 using GLuint = unsigned int;
 
-// A VBO holding INVALID_ID means it's not holding to any dynamically allocated resource.
-constexpr GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
-
 // We use the copy-and-swap idiom (but really move and swap idiom since copy semantics are disabled) to implement move semantics.
-
 class VertexBufferObject {
 public:
 	enum class Usage {
@@ -40,6 +35,8 @@ private:
 	GLuint m_id;
 	GLsizeiptr allocatedMemory;
 };
+
+#include <iostream>
 
 template<typename T>
 void VertexBufferObject::uploadData(std::vector<T> const& vertices) {

@@ -11,14 +11,19 @@
 
 #include "engine.h"
 
-Renderer::Renderer(Engine& engine) : 
+Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },
 	basicShader			{ "Assets/Shader/basic.vert", "Assets/Shader/basic.frag" },
 	standardShader		{ "Assets/Shader/standard.vert", "Assets/Shader/basic.frag" },
+	textureShader		{ "Assets/Shader/standard.vert", "Assets/Shader/image.frag" },
 	VAO					{},
 	EBO					{},
-	camera				{}
+	camera				{},
+	mainFrameBuffer		{ gameWidth, gameHeight }
 {
+	// Set the correct viewport
+	glViewport(0, 0, gameWidth, gameHeight);
+
 	// construct a VBO. Allocate 120 bytes of memory to this VBO.
 	VBOs.push_back({ 120 });
 
@@ -71,9 +76,22 @@ void Renderer::update(float dt) {
 	(void) dt;
 }
 
-void Renderer::render() {
+void Renderer::render(RenderTarget target) {
+	// Clear default framebuffer regardless.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Bind to and clear main frame buffer if in used.
+	switch (target)
+	{
+	case Renderer::RenderTarget::ToMainFrameBuffer:
+		glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+		glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		break;
+	}
 
 #if 0
 	std::vector<Vertex> vertices{
@@ -139,6 +157,13 @@ void Renderer::render() {
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
+
+	// Bind back to default FBO for ImGui to work on.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+GLuint Renderer::getMainFrameBufferTexture() const {
+	return mainFrameBuffer.textureId();
 }
 
 Camera& Renderer::getCamera() {
