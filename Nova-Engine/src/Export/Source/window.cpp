@@ -4,10 +4,14 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "../Header/window.h"
-#include "../../Graphics/cameraSystem.h"
+#include "window.h"
+#include "inputManager.h"
+#include "Graphics/cameraSystem.h"
 
 namespace {
+	// i don't know any other way..
+	Window* g_Window = nullptr;
+
 	void APIENTRY glDebugOutput(
 		GLenum source,
 		GLenum type,
@@ -23,21 +27,25 @@ namespace {
 	void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn);
 }
 
-constexpr int constWindowWidth = 1200;
-constexpr int constWindowHeight = 900;
-constexpr const char* name = "Nova Engine";
 constexpr bool vsync = true;
 constexpr float fixedFps = 60.f;
 constexpr int maxNumOfSteps = 4;
 
-Window::Window() : 
+Window::Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager) :
+	inputManager	{ inputManager },
 	glfwWindow		{},
 	deltaTime		{},
 	currentFps		{},
-	windowWidth		{ constWindowWidth },
-	windowHeight	{ constWindowHeight },
-	imGuiContext	{}
+	windowWidth		{ dimension.width },
+	windowHeight	{ dimension.height },
+	imGuiContext	{},
+	isFullScreen	{}
 {
+	// Set the global variable of window to this 1 instance of Window. 
+	// This is required because GLFW callbacks work in the global scope.
+	// I don't know if there is any clean way for routing input callbacks to my input manager.
+	g_Window = this;
+
 	/*---
 		GLFW Initialisation
 	---*/
@@ -60,34 +68,6 @@ Window::Window() :
 	}
 
 	glfwMakeContextCurrent(glfwWindow);
-	
-	/*--
-		Center GLFW window.
-	--*/
-	auto videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-	int width, height;
-	glfwGetWindowSize(glfwWindow, &width, &height);
-
-	float topLeftX = videoMode->width / 2.f - width / 2.f;
-	float topRightX = videoMode->height / 2.f - height / 2.f;
-	glfwSetWindowPos(glfwWindow, static_cast<int>(topLeftX), static_cast<int>(topRightX));
-
-	/*--
-		Registering callbacks..
-	--*/
-
-	//glfwSetWindowFocusCallback(window, window_focus_callback);
-	glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
-	glfwSetKeyCallback(glfwWindow, key_callback);
-	glfwSetCursorPosCallback(glfwWindow, mouse_callback);
-	//glfwSetScrollCallback(window, scroll_callback);
-	//glfwSetMouseButtonCallback(window, mouse_button_callback);
-
-	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	// Handling VSync
-	//glfwSwapInterval(vsync);
 
 	/*---
 		Dynamically load OpenGL
@@ -109,6 +89,50 @@ Window::Window() :
 	else {
 		//logger.error("Failed to initialise OpenGL's debug context.\n");
 	}
+
+	/*--
+		Registering callbacks..
+	--*/
+
+	glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
+	glfwSetKeyCallback(glfwWindow, key_callback);
+	glfwSetCursorPosCallback(glfwWindow, mouse_callback);
+	//glfwSetScrollCallback(window, scroll_callback);
+	//glfwSetMouseButtonCallback(window, mouse_button_callback);
+
+	/*--
+		Center GLFW window.
+	--*/
+	auto videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+	int width, height;
+	glfwGetWindowSize(glfwWindow, &width, &height);
+
+	float topLeftX = videoMode->width / 2.f - width / 2.f;
+	float topRightX = videoMode->height / 2.f - height / 2.f;
+	glfwSetWindowPos(glfwWindow, static_cast<int>(topLeftX), static_cast<int>(topRightX));
+
+	switch (config)
+	{
+	case Window::Configuration::FullScreen:
+		toggleFullScreen();
+		break;
+	case Window::Configuration::Maximised:
+		glfwMaximizeWindow(glfwWindow);
+		break;
+	case Window::Configuration::Restored:
+	default:
+		break;
+	}
+
+	//glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	// Handling VSync
+	//glfwSwapInterval(vsync);
+
+	// swap buffer once because the white window is flashing
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glfwSwapBuffers(glfwWindow);
 }
 
 Window::~Window() {
@@ -155,6 +179,28 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 
 GLFWwindow* Window::getGLFWwindow() const {
 	return glfwWindow;
+}
+
+DLL_API void Window::toggleFullScreen()
+{
+	int windowedXPos = 0, windowedYPos = 0;
+	if (!isFullScreen) glfwGetWindowPos(glfwWindow, &windowedXPos, &windowedYPos);
+
+	GLFWmonitor* monitor = isFullScreen ? nullptr : glfwGetPrimaryMonitor();
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+	if (isFullScreen) {
+		// Restore windowed mode
+		glfwSetWindowAttrib(glfwWindow, GLFW_DECORATED, GLFW_TRUE);
+		glfwSetWindowMonitor(glfwWindow, nullptr, windowedXPos, windowedYPos, windowWidth, windowHeight, 0);
+	}
+	else {
+		// Switch to fullscreen mode and hide title bar
+		glfwSetWindowAttrib(glfwWindow, GLFW_DECORATED, GLFW_FALSE);
+		glfwSetWindowMonitor(glfwWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+	}
+
+	isFullScreen = !isFullScreen;
 }
 
 namespace {
@@ -241,6 +287,9 @@ namespace {
 		(void) mods;
 		(void) scancode;
 
+		assert(g_Window);
+		g_Window->inputManager.handleKeyboardInput(*g_Window, key, scancode, action, mods);
+#if 0
 		using enum CameraSystem::Movement;
 		CameraSystem& cameraSystem = CameraSystem::instance();
 
@@ -271,11 +320,15 @@ namespace {
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, true);
 		}
+#endif
 	}
 
 	void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn) {
 		(void) window;
 		
+		assert(g_Window);
+		g_Window->inputManager.handleMouseMovement(*g_Window, xPosIn, yPosIn);
+#if 0
 		CameraSystem& cameraSystem = CameraSystem::instance();
 
 		static bool firstTime = true;
@@ -287,5 +340,6 @@ namespace {
 		else {
 			cameraSystem.calculateEulerAngle(static_cast<float>(xPosIn), static_cast<float>(yPosIn));
 		}
+#endif
 	}
 }

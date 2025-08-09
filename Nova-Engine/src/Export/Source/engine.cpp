@@ -1,19 +1,18 @@
 #include <iostream>
 
-#include "../Header/engine.h"
-#include "../Header/window.h"
-#include "../../Graphics/renderer.h"
-#include "../../Graphics/cameraSystem.h"
-#include "../../ECS & Components/ECS.h"
-#include "../../ECS & Components/component.h"
+#include "engine.h"
+#include "window.h"
+
+#include "component.h"
+#include "inputManager.h"
 
 #include <GLFW/glfw3.h>
 
-Engine::Engine(Window& window) :
+Engine::Engine(Window& window, InputManager& inputManager) :
 	window			{ window },
-	renderer		{ Renderer::instance() },
-	cameraSystem	{ CameraSystem::instance() },
-	ecs				{ ECS::instance() }
+	renderer		{ *this },
+	cameraSystem	{ *this, inputManager },
+	ecs				{}
 {}
 
 void Engine::fixedUpdate(float dt) {

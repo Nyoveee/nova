@@ -1,7 +1,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "camera.h"
-#include "../Export/Header/window.h"
+#include "window.h"
 
 constexpr glm::vec3 defaultCameraFront		= { 0.f, 0.f, -1.f };
 constexpr Radian defaultFovAngle			= Degree{ 45.0f };
@@ -12,6 +12,7 @@ constexpr float defaultAspectRatio			= 800.f / 600.f;
 Camera::Camera() : 
 	cameraPos			{},
 	cameraFront			{ defaultCameraFront },
+	cameraRight			{ glm::normalize(glm::cross(cameraFront, Up)) },
 	viewMatrix			{},
 	fovAngle			{ defaultFovAngle },
 	nearPlaneDistance	{ defaultNearPlaneDistance },

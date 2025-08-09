@@ -4,17 +4,15 @@
 #include <array>
 
 #include "renderer.h"
-#include "../Export/Header/window.h"
+#include "window.h"
 #include "vertex.h"
-#include "../ECS & Components/ECS.h"
-#include "../ECS & Components/component.h"
+#include "ECS.h"
+#include "component.h"
 
-Renderer& Renderer::instance() {
-	static Renderer renderer{};
-	return renderer;
-}
+#include "engine.h"
 
-Renderer::Renderer() : 
+Renderer::Renderer(Engine& engine) : 
+	engine				{ engine },
 	basicShader			{ "Assets/Shader/basic.vert", "Assets/Shader/basic.frag" },
 	standardShader		{ "Assets/Shader/standard.vert", "Assets/Shader/basic.frag" },
 	VAO					{},
@@ -60,6 +58,8 @@ Renderer::Renderer() :
 	// enable backface culling & depth testing.
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+	setBlendMode(BlendingConfig::AlphaBlending);
 }
 
 Renderer::~Renderer() {
@@ -76,8 +76,19 @@ void Renderer::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 #if 0
+	std::vector<Vertex> vertices{
+		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
+		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
+		Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
+
+		Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
+		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
+		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
+	};
+
 	// for this VAO, associate bindingIndex 0 with 1st VBO.
 	glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
+	VBOs[0].uploadData(vertices);
 
 	// Model matrix.
 	glm::vec3 pos = { 0.f, 0.f, -3.f};
@@ -107,7 +118,7 @@ void Renderer::render() {
 	standardShader.setMatrix("projection", camera.projection());
 
 	// Retrieve all game objects and prepare them for batch rendering..
-	entt::registry& registry = ECS::instance().registry;
+	entt::registry& registry = engine.ecs.registry;
 
 	for (auto&& [entity, transform, mesh] : registry.view<Transform, Mesh>().each()) {
 		// Model matrix.
@@ -136,4 +147,29 @@ Camera& Renderer::getCamera() {
 
 Camera const& Renderer::getCamera() const {
 	return camera;
+}
+
+void Renderer::setBlendMode(BlendingConfig configuration) {
+	switch (configuration) {
+		using enum BlendingConfig;
+	case AlphaBlending:
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+		break;
+	case AdditiveBlending:
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		break;
+	case PureAdditiveBlending:
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
+		break;
+	case PremultipliedAlpha:
+		glEnable(GL_BLEND);
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		break;
+	case Disabled:
+		glDisable(GL_BLEND);
+		break;
+	}
 }

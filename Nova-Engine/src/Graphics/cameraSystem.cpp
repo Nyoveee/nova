@@ -1,7 +1,10 @@
 #include "cameraSystem.h"
 #include "renderer.h"
+#include "engine.h"
+#include "inputManager.h"
 
-CameraSystem::CameraSystem() :
+CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
+	engine			{ engine },
 	isMovingDown	{},
 	isMovingUp		{},
 	isMovingFront	{},
@@ -10,14 +13,34 @@ CameraSystem::CameraSystem() :
 	isMovingRight	{},
 	lastMouseX		{},
 	lastMouseY		{},
-	camera			{ Renderer::instance().getCamera() },
+	camera			{ engine.renderer.getCamera() },
 	yaw				{ -90.f },
 	pitch			{}
-{}
+{
+	// Subscribe to the input manager that the camera system is interested in 
+	// any input related to CameraMovement
+	inputManager.subscribe<CameraMovement>(
+		[&](CameraMovement movement) {
+			setMovement(movement, true);
+		},
+		[&](CameraMovement movement) {
+			setMovement(movement, false);
+		}
+	);
 
-CameraSystem& CameraSystem::instance() {
-	static CameraSystem cameraSystem{};
-	return cameraSystem;
+	inputManager.subscribe<MousePosition>(
+		[&](MousePosition mousePos) {
+			static bool firstTime = true;
+
+			if (firstTime) {
+				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+				firstTime = false;
+			}
+			else {
+				calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+			}
+		}
+	);
 }
 
 void CameraSystem::update() {
@@ -51,26 +74,26 @@ void CameraSystem::update() {
 	camera.recalculateProjectionMatrix();
 }
 
-void CameraSystem::setMovement(Movement movement, bool toMove) {
+void CameraSystem::setMovement(CameraMovement movement, bool toMove) {
 	switch (movement)
 	{
-	case CameraSystem::Movement::Up:
-		isMovingUp = toMove;
-		break;
-	case CameraSystem::Movement::Down:
-		isMovingDown = toMove;
-		break;
-	case CameraSystem::Movement::Front:
+	case CameraMovement::Forward:
 		isMovingFront = toMove;
 		break;
-	case CameraSystem::Movement::Back:
+	case CameraMovement::Backward:
 		isMovingBack = toMove;
 		break;
-	case CameraSystem::Movement::Left:
+	case CameraMovement::Left:
 		isMovingLeft = toMove;
 		break;
-	case CameraSystem::Movement::Right:
+	case CameraMovement::Right:
 		isMovingRight = toMove;
+		break;
+	case CameraMovement::Ascend:
+		isMovingUp = toMove;
+		break;
+	case CameraMovement::Descent:
+		isMovingDown = toMove;
 		break;
 	default:
 		break;

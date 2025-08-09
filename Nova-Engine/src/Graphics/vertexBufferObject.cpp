@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <algorithm>
 
-#include "VertexBufferObject.h"
+#include "vertexBufferObject.h"
 
 VertexBufferObject::VertexBufferObject(GLsizeiptr amountOfMemory, Usage usage) : 
 	allocatedMemory	{ amountOfMemory },

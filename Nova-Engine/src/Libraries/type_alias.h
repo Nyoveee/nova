@@ -2,6 +2,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
+#include <cstddef>
 
 // We provide strong type alias here. Type strongly describes the value and can catch errors in compile time. 
 // Very useful for not using values unintended. For an example, you won't want to add GUIDs together, and 
@@ -63,6 +64,24 @@ struct ColorA {
 	constexpr explicit operator Color() const;
 private:
 	glm::vec4 color;
+};
+
+// ========================================
+// IDs
+// ========================================
+
+// Every InputEvent (a type) in Input Manager will be associated with a unique number.
+
+struct EventID {
+	constexpr explicit EventID(std::size_t id);
+
+public:
+	constexpr friend bool operator==(EventID const& lhs, EventID const& rhs);
+	constexpr friend bool operator<(EventID const& lhs, EventID const& rhs);
+	friend struct std::hash<EventID>;
+
+private:
+	std::size_t id;
 };
 
 #include "type_alias.ipp"

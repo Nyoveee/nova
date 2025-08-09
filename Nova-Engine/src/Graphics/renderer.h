@@ -7,11 +7,20 @@
 #include "camera.h"
 #include "vertexBufferObject.h"
 
+class Engine;
+
 class Renderer {
-	Renderer();
+public:
+	enum class BlendingConfig {
+		AlphaBlending,
+		AdditiveBlending,
+		PureAdditiveBlending,
+		PremultipliedAlpha,
+		Disabled
+	};
 
 public:
-	static Renderer& instance();
+	Renderer(Engine& engine);
 
 	~Renderer();
 	Renderer(Renderer const& other)				= delete;
@@ -27,6 +36,11 @@ public:
 	Camera const& getCamera() const;
 
 private:
+	void setBlendMode(BlendingConfig configuration);
+
+private:
+	Engine& engine;
+
 	std::vector<VertexBufferObject> VBOs;
 
 	GLuint VAO;
