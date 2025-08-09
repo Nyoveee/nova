@@ -2,7 +2,9 @@
 #include <array>
 #include <filesystem>
 
-#include "../Header/ScriptingAPIManager.h"
+#include "ScriptingAPIManager.h"
+
+#pragma comment(lib, "shlwapi.lib")
 
 ScriptingAPIManager::ScriptingAPIManager()
 	: coreClr{ nullptr }

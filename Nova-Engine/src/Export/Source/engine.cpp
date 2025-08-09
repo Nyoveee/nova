@@ -1,11 +1,11 @@
-#include <iostream>
-#include <GLFW/glfw3.h>
-
 #include "engine.h"
 #include "window.h"
 
 #include "component.h"
 #include "inputManager.h"
+
+#include <iostream>
+#include <GLFW/glfw3.h>
 
 Engine::Engine(Window& window, InputManager& inputManager, int gameWidth, int gameHeight) :
 	window			{ window },
@@ -42,6 +42,7 @@ void Engine::fixedUpdate(float dt) {
 void Engine::update(float dt) {
 	cameraSystem.update(dt);
 	renderer.update(dt);
+	scriptingAPIManager.update();
 }
 
 void Engine::render(Renderer::RenderTarget target) {

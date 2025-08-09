@@ -7,7 +7,6 @@
 
 #include <Windows.h>
 #include <sstream>
-#include <string.h>
 #include <iomanip>
 
 #include "../Include/dotnet/coreclrhost.h"
