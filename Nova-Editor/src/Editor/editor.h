@@ -4,7 +4,7 @@
 
 class Window;
 
-class DLL_API Editor {
+class Editor {
 public:
 	Editor(Window& window);
 

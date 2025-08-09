@@ -7,10 +7,6 @@
 #include "../Header/window.h"
 #include "../../Graphics/cameraSystem.h"
 
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-
 namespace {
 	void APIENTRY glDebugOutput(
 		GLenum source,
@@ -64,7 +60,7 @@ Window::Window() :
 	}
 
 	glfwMakeContextCurrent(glfwWindow);
-
+	
 	/*--
 		Center GLFW window.
 	--*/
