@@ -1,15 +1,34 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <vector>
+
+#include "export.h"
 
 #include "shader.h"
 #include "camera.h"
+#include "vertexBufferObject.h"
+#include "framebuffer.h"
+
+class Engine;
 
 class Renderer {
-	Renderer();
+public:
+	enum class BlendingConfig {
+		AlphaBlending,
+		AdditiveBlending,
+		PureAdditiveBlending,
+		PremultipliedAlpha,
+		Disabled
+	};
+
+	enum class RenderTarget {
+		ToDefaultFrameBuffer,
+		ToMainFrameBuffer
+	};
 
 public:
-	static Renderer& instance();
+	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
 	~Renderer();
 	Renderer(Renderer const& other)				= delete;
@@ -18,14 +37,26 @@ public:
 	Renderer& operator=(Renderer&& other)		= delete;
 
 public:
+	// used directly in the editor. i need to export this.
+	DLL_API GLuint getMainFrameBufferTexture() const;
+
+public:
 	void update(float dt);
-	void render() const;
+
+	// choose to either render to the default frame buffer or the main frame buffer.
+	void render(RenderTarget target);
 
 	Camera& getCamera();
 	Camera const& getCamera() const;
 
 private:
-	GLuint VBO;
+	void setBlendMode(BlendingConfig configuration);
+
+private:
+	Engine& engine;
+
+	std::vector<VertexBufferObject> VBOs;
+
 	GLuint VAO;
 	GLuint EBO;
 
@@ -33,4 +64,7 @@ private:
 
 	Shader basicShader;
 	Shader standardShader;
+	Shader textureShader;
+
+	FrameBuffer mainFrameBuffer;
 };

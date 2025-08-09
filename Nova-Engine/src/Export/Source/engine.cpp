@@ -1,41 +1,31 @@
 #include <iostream>
+#include <GLFW/glfw3.h>
 
+#include "engine.h"
+#include "window.h"
 
-#include "../Header/engine.h"
-#include "../../window.h"
-#include "../../Graphics/renderer.h"
-#include "../../Graphics/cameraSystem.h"
+#include "component.h"
+#include "inputManager.h"
 
-#pragma comment(lib, "shlwapi.lib")
-
-void Engine::run() {
-	Window&			window			= Window::instance();
-	Renderer&		renderer		= Renderer::instance();
-	CameraSystem&	cameraSystem	= CameraSystem::instance();
-	try{
+Engine::Engine(Window& window, InputManager& inputManager, int gameWidth, int gameHeight) :
+	window			{ window },
+	renderer		{ *this, gameWidth, gameHeight },
+	cameraSystem	{ *this, inputManager },
+	ecs				{},
+	gameWidth		{ gameWidth },
+	gameHeight		{ gameHeight }
+{
+	try {
 		scriptingAPIManager.initializeScriptingAPI();
 	}
 	catch (std::exception e) {
 		std::cout << e.what();
 		return;
 	}
-	
+}
 
-	window.run(
-		// fixed update.
-		[&](float fixedDt) {
-			(void) fixedDt;
-		},
-
-		// normal update.
-		[&](float dt) {
-			cameraSystem.update();
-			scriptingAPIManager.update();
-			renderer.update(dt);
-			renderer.render();
-			
-		}
-	);
+Engine::~Engine()
+{
 	try {
 		scriptingAPIManager.stopScriptingAPI();
 	}
@@ -43,4 +33,25 @@ void Engine::run() {
 		std::cout << e.what();
 		return;
 	}
+}
+
+void Engine::fixedUpdate(float dt) {
+	(void) dt;
+}
+
+void Engine::update(float dt) {
+	cameraSystem.update(dt);
+	renderer.update(dt);
+}
+
+void Engine::render(Renderer::RenderTarget target) {
+	renderer.render(target);
+}
+
+int Engine::getGameWidth() const {
+	return gameWidth;
+}
+
+int Engine::getGameHeight() const {
+	return gameHeight;
 }

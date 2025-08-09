@@ -1,11 +1,49 @@
 #pragma once
 
+#include <vector>
+#include <memory>
+
 #include "export.h"
 #include "ScriptingAPIManager.h"
+#include "ECS.h"
 
-class DLL_API Engine {
+#include "Graphics/renderer.h"
+#include "Graphics/cameraSystem.h"
+
+
+class Window;
+class Renderer;
+class CameraSystem;
+class ECS;
+class InputManager;
+
+class Engine {
 public:
-	void run();
-private:
+	DLL_API Engine(Window& window, InputManager& inputManager, int gameWidth, int gameHeight);
+
+	DLL_API ~Engine();
+	DLL_API Engine(Engine const& other)				= delete;
+	DLL_API Engine(Engine&& other)					= delete;
+	DLL_API Engine& operator=(Engine const& other)	= delete;
+	DLL_API Engine& operator=(Engine&& other)		= delete;
+
+public:
+	DLL_API void fixedUpdate(float dt);
+	DLL_API void update(float dt);
+	DLL_API void render(Renderer::RenderTarget target);
+
+public:
+	DLL_API int getGameWidth() const;
+	DLL_API int getGameHeight() const;
+
+public:
+	// allow all systems to have references of each other via the engine.
+	Window&			window;
+	Renderer		renderer;
+	CameraSystem	cameraSystem;
+	ECS				ecs;
 	ScriptingAPIManager scriptingAPIManager;
+private:
+	int				gameWidth;
+	int				gameHeight;
 };

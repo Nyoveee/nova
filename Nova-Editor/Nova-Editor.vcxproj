@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\Nova-Engine\src\Export\Header;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;..\Nova-Engine\src;..\Nova-Engine\src\Export\Header;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>..\Nova-Engine\src\Export\Header;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;..\Nova-Engine\src;..\Nova-Engine\src\Export\Header;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -119,8 +119,11 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy.exe "$(SolutionDir)DLL\Debug\glfw3.dll" /Y "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -139,16 +142,53 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy.exe "$(SolutionDir)DLL\Release\glfw3.dll" /Y "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Editor\assetManagerUi.cpp" />
+    <ClCompile Include="src\Editor\componentInspector.cpp" />
+    <ClCompile Include="src\Editor\editor.cpp" />
+    <ClCompile Include="src\Editor\gameViewPort.cpp" />
+    <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="src\Editor\themes.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nova-Engine\Nova-Engine.vcxproj">
       <Project>{97e3acaa-f509-44ba-a393-c8c071952013}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Editor\assetManagerUi.h" />
+    <ClInclude Include="src\Editor\editor.h" />
+    <ClInclude Include="src\Editor\gameViewPort.h" />
+    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\Editor\componentInspector.h" />
+    <ClInclude Include="src\Editor\ImGui\imconfig.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui.h" />
+    <ClInclude Include="src\Editor\ImGUI\ImGuizmo.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\Editor\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="src\Editor\ImGui\imstb_textedit.h" />
+    <ClInclude Include="src\Editor\ImGui\imstb_truetype.h" />
+    <ClInclude Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="src\Editor\themes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

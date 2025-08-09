@@ -1,5 +1,7 @@
 #include <numbers>
+#include <string>
 #include "type_alias.h"
+#include "family.h"
 
 // ========================================
 // DEGREE AND ANGLES.
@@ -28,5 +30,39 @@ constexpr Radian::operator float() const			{ return angle;				}
 constexpr Radian& Radian::operator+=(float f)		{ angle += f; return *this; }
 
 // ========================================
-// DEGREE AND ANGLES.
+// COLORS!
 // ========================================
+
+constexpr Color::Color()										: color	{}				{}
+constexpr Color::Color(glm::vec3 color)							: color	{ color }		{}
+constexpr Color::Color(float r, float g, float b)				: color	{ r, g, b }		{}
+constexpr Color::operator glm::vec3() const								{ return color; }
+
+constexpr ColorA::ColorA()										: color	{} {}
+constexpr ColorA::ColorA(glm::vec4 color)						: color	{ color } {}
+constexpr ColorA::ColorA(float r, float g, float b, float a)	: color	{ r, g, b, a } {}
+constexpr ColorA::operator glm::vec4() const							{ return color; }
+constexpr ColorA::operator glm::vec3() const							{ return Color{ color.r, color.g, color.g }; }
+constexpr ColorA::operator Color() const								{ return Color{ color.r, color.g, color.g }; }
+
+// ========================================
+// ID!
+// ========================================
+
+constexpr EventID::EventID(std::size_t id) : id{ id } {}
+
+// For hashing, we need to implement these member functions..
+constexpr bool operator==(EventID const& lhs, EventID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(EventID const& lhs, EventID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+template<>
+struct std::hash<EventID> {
+	std::size_t operator()(EventID const& eventId) const noexcept {
+		return std::hash<std::size_t>{}(eventId.id);
+	}
+};

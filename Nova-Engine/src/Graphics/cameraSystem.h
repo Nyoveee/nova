@@ -1,24 +1,15 @@
 #pragma once
 
-#include "../Libraries/type_alias.h"
+#include "Libraries/type_alias.h"
+#include "InputManager/inputEvent.h"
 
 class Camera;
+class Engine;
+class InputManager;
 
 class CameraSystem {
-	CameraSystem();
-
 public:
-	enum class Movement {
-		Up,
-		Down,
-		Front,
-		Back,
-		Left,
-		Right
-	};
-
-public:
-	static CameraSystem& instance();
+	CameraSystem(Engine& engine, InputManager& inputManager);
 
 	~CameraSystem()										= default;
 	CameraSystem(CameraSystem const& other)				= delete;
@@ -27,14 +18,21 @@ public:
 	CameraSystem& operator=(CameraSystem&& other)		= delete;
 	
 public:
-	void update();
+	void update(float dt);
 
-	void setMovement(Movement movement, bool toMove);
+	void setMovement(CameraMovement movement, bool toMove);
 
 	void setLastMouse(float mouseX, float mouseY);
 	void calculateEulerAngle(float mouseX, float mouseY);
 
+public:
+	float cameraSpeed;
+
 private:
+	bool isInControl;
+	bool toResetMousePos;
+
+	Engine& engine;
 	Camera& camera;
 
 	bool isMovingUp;

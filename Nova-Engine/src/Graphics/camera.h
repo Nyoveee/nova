@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Libraries/type_alias.h"
+#include "Libraries/type_alias.h"
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,14 +18,17 @@ public:
 	glm::mat4x4 view() const;
 	glm::mat4x4 projection() const;
 
-	glm::vec3 getPos() const;
-	void setPos(glm::vec3 pos);
-	void addPos(glm::vec3 pos);
+	// position related
+	glm::vec3	getPos() const;
+	void		setPos(glm::vec3 pos);
+	void		addPos(glm::vec3 pos);
 
-	glm::vec3 getFront() const;
-	void setFront(glm::vec3 front);
+	// camera directional vector
+	glm::vec3	getFront() const;
+	void		setFront(glm::vec3 front);
 
-	glm::vec3 getRight() const;
+	glm::vec3	getRight() const;
+
 public:
 	// only calculate view and projection matrix at the end of game loop once, for optimisation.
 	void recalculateViewMatrix();

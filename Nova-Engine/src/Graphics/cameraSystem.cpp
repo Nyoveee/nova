@@ -1,7 +1,10 @@
 #include "cameraSystem.h"
 #include "renderer.h"
+#include "engine.h"
+#include "inputManager.h"
 
-CameraSystem::CameraSystem() :
+CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
+	engine			{ engine },
 	isMovingDown	{},
 	isMovingUp		{},
 	isMovingFront	{},
@@ -10,67 +13,100 @@ CameraSystem::CameraSystem() :
 	isMovingRight	{},
 	lastMouseX		{},
 	lastMouseY		{},
-	camera			{ Renderer::instance().getCamera() },
+	camera			{ engine.renderer.getCamera() },
 	yaw				{ -90.f },
-	pitch			{}
-{}
+	pitch			{},
+	isInControl		{ true },
+	toResetMousePos	{ true },
+	cameraSpeed		{ 2.f }
+{
+	// Subscribe to the input manager that the camera system is interested in 
+	// any input related to CameraMovement
+	inputManager.subscribe<CameraMovement>(
+		[&](CameraMovement movement) {
+			setMovement(movement, true);
+		},
+		[&](CameraMovement movement) {
+			setMovement(movement, false);
+		}
+	);
 
-CameraSystem& CameraSystem::instance() {
-	static CameraSystem cameraSystem{};
-	return cameraSystem;
+	inputManager.subscribe<MousePosition>(
+		[&](MousePosition mousePos) {
+			if (toResetMousePos) {
+				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+				toResetMousePos = false;
+			}
+			else {
+				if(isInControl) calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+			}
+		}
+	);
+
+	inputManager.subscribe<ToggleCursorControl>(
+		[&](ToggleCursorControl) {
+			isInControl = !isInControl;
+
+			if (isInControl) {
+				toResetMousePos = true;
+			}
+		}
+	);
 }
 
-void CameraSystem::update() {
-	constexpr float cameraSpeed = 0.05f; // adjust accordingly
+void CameraSystem::update(float dt) {
+	if (!isInControl) {
+		return;
+	}
 
 	if (isMovingFront) {
-		camera.addPos(cameraSpeed * camera.getFront());
+		camera.addPos(cameraSpeed * dt * camera.getFront());
 	}
 
 	if (isMovingLeft) {
-		camera.addPos(cameraSpeed * -camera.getRight());
+		camera.addPos(cameraSpeed * dt * -camera.getRight());
 	}
 
 	if (isMovingBack) {
-		camera.addPos(cameraSpeed * -camera.getFront());
+		camera.addPos(cameraSpeed * dt * -camera.getFront());
 	}
 
 	if (isMovingRight) {
-		camera.addPos(cameraSpeed * camera.getRight());
+		camera.addPos(cameraSpeed * dt * camera.getRight());
 	}
 
 	if (isMovingUp) {
-		camera.addPos(cameraSpeed * Camera::Up);
+		camera.addPos(cameraSpeed * dt * Camera::Up);
 	}
 
 	if (isMovingDown) {
-		camera.addPos(cameraSpeed * -Camera::Up);
+		camera.addPos(cameraSpeed * dt * -Camera::Up);
 	}
 
 	camera.recalculateViewMatrix();
 	camera.recalculateProjectionMatrix();
 }
 
-void CameraSystem::setMovement(Movement movement, bool toMove) {
+void CameraSystem::setMovement(CameraMovement movement, bool toMove) {
 	switch (movement)
 	{
-	case CameraSystem::Movement::Up:
-		isMovingUp = toMove;
-		break;
-	case CameraSystem::Movement::Down:
-		isMovingDown = toMove;
-		break;
-	case CameraSystem::Movement::Front:
+	case CameraMovement::Forward:
 		isMovingFront = toMove;
 		break;
-	case CameraSystem::Movement::Back:
+	case CameraMovement::Backward:
 		isMovingBack = toMove;
 		break;
-	case CameraSystem::Movement::Left:
+	case CameraMovement::Left:
 		isMovingLeft = toMove;
 		break;
-	case CameraSystem::Movement::Right:
+	case CameraMovement::Right:
 		isMovingRight = toMove;
+		break;
+	case CameraMovement::Ascend:
+		isMovingUp = toMove;
+		break;
+	case CameraMovement::Descent:
+		isMovingDown = toMove;
 		break;
 	default:
 		break;
