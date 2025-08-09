@@ -15,25 +15,8 @@ Engine::Engine(Window& window, InputManager& inputManager, int gameWidth, int ga
 	gameWidth		{ gameWidth },
 	gameHeight		{ gameHeight }
 {
-	try {
-		scriptingAPIManager.initializeScriptingAPI();
-	}
-	catch (std::exception e) {
-		std::cout << e.what();
-		return;
-	}
 }
 
-Engine::~Engine()
-{
-	try {
-		scriptingAPIManager.stopScriptingAPI();
-	}
-	catch (std::exception e) {
-		std::cout << e.what();
-		return;
-	}
-}
 
 void Engine::fixedUpdate(float dt) {
 	(void) dt;

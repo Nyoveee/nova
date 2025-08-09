@@ -15,9 +15,12 @@ class ScriptingAPIManager {
 public:
 	// Functions needed to run the ScriptingAPI
 	ScriptingAPIManager();
-	void initializeScriptingAPI();
+	~ScriptingAPIManager();
+	ScriptingAPIManager(ScriptingAPIManager const& other) = delete;
+	ScriptingAPIManager(ScriptingAPIManager&& other) = delete;
+	ScriptingAPIManager& operator=(ScriptingAPIManager const& other) = delete;
+	ScriptingAPIManager& operator=(ScriptingAPIManager&& other) = delete;
 	void update();
-	void stopScriptingAPI();
 private:
 	std::string buildTPAList(const std::string& directory);
 

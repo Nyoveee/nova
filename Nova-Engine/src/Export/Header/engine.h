@@ -21,7 +21,7 @@ class Engine {
 public:
 	DLL_API Engine(Window& window, InputManager& inputManager, int gameWidth, int gameHeight);
 
-	DLL_API ~Engine();
+	DLL_API ~Engine()                               = default;
 	DLL_API Engine(Engine const& other)				= delete;
 	DLL_API Engine(Engine&& other)					= delete;
 	DLL_API Engine& operator=(Engine const& other)	= delete;

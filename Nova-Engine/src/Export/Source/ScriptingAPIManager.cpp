@@ -1,6 +1,7 @@
 #include <shlwapi.h>
 #include <array>
 #include <filesystem>
+#include <iostream>
 
 #include "ScriptingAPIManager.h"
 
@@ -15,10 +16,7 @@ ScriptingAPIManager::ScriptingAPIManager()
 	, shutdownCorePtr(nullptr)
 	, updateScripts{ nullptr } 
 	, addGameObjectScript{ nullptr }
-	, removeGameObjectScript{ nullptr } {}
-
-
-void ScriptingAPIManager::initializeScriptingAPI()
+	, removeGameObjectScript{ nullptr } 
 {
 	// Get the file path of the output directory containing coreclr.dll
 	std::string runtimePath{ std::string(MAX_PATH, '\0') };
@@ -40,8 +38,9 @@ void ScriptingAPIManager::initializeScriptingAPI()
 		createManagedDelegate = getCoreClrFuncPtr< coreclr_create_delegate_ptr>("coreclr_create_delegate");
 		shutdownCorePtr = getCoreClrFuncPtr<coreclr_shutdown_ptr>("coreclr_shutdown");
 	}
-	catch (...) {
-		throw;
+	catch (std::exception e) {
+		std::cout << e.what();
+		return;
 	}
 
 	// Construct AppDomain Properties used when starting the runtime
@@ -66,7 +65,7 @@ void ScriptingAPIManager::initializeScriptingAPI()
 		errorDetails << ")Failed to initialize CoreCLR";
 		throw std::runtime_error(errorDetails.str());
 	}
-	
+
 	// Get the functions to run the api
 	try {
 		void(*init)(void) = GetFunctionPtr<void(*)(void)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "init");
@@ -77,10 +76,27 @@ void ScriptingAPIManager::initializeScriptingAPI()
 		// Test Script 
 		addGameObjectScript(0, "TestScript");
 	}
-	catch (...) {
-		throw;
+	catch (std::exception e) {
+		std::cout << e.what();
+		return;
 	}
 }
+
+ScriptingAPIManager::~ScriptingAPIManager()
+{
+	// Exit Test 
+	removeGameObjectScript(0, "TestScript");
+	// Shut down CoreClr
+	int result{ shutdownCorePtr(hostHandle,domainID) };
+	if (result != S_OK) {
+		std::ostringstream errorDetails;
+		errorDetails << "(0x";
+		errorDetails << std::hex << result;
+		errorDetails << ")Failed to shut down CoreCLR";
+		std::cout << errorDetails.str() << std::endl;
+	}
+}
+
 
 std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 {
@@ -102,18 +118,4 @@ std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 
 void ScriptingAPIManager::update() {
 	updateScripts();
-}
-void ScriptingAPIManager::stopScriptingAPI()
-{
-	// Exit Test 
-	removeGameObjectScript(0, "TestScript");
-	// Shut down CoreClr
-	int result{ shutdownCorePtr(hostHandle,domainID) };
-	if (result != S_OK) {
-		std::ostringstream errorDetails;
-		errorDetails << "(0x";
-		errorDetails << std::hex << result;
-		errorDetails << ")Failed to shut down CoreCLR";
-		throw std::runtime_error(errorDetails.str());
-	}
 }
