@@ -22,9 +22,11 @@ namespace {
 		const void* userParam
 	);
 
-	void window_size_callback(GLFWwindow* window, int width, int height);
-	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn);
+	void window_size_callback	(GLFWwindow* window, int width, int height);
+	void key_callback			(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void mouse_callback			(GLFWwindow* window, double xPosIn, double yPosIn);
+	void mouse_button_callback	(GLFWwindow* window, int button, int action, int mods);
+	void scroll_callback		(GLFWwindow* window, double xOffset, double yOffset);
 }
 
 constexpr bool vsync = false;
@@ -39,8 +41,7 @@ Window::Window(const char* name, Dimension dimension, Configuration config, Inpu
 	windowWidth			{ dimension.width },
 	windowHeight		{ dimension.height },
 	imGuiContext		{},
-	isFullScreen		{},
-	isControllingMouse	{}
+	isFullScreen		{}
 {
 	// Set the global variable of window to this 1 instance of Window. 
 	// This is required because GLFW callbacks work in the global scope.
@@ -99,10 +100,10 @@ Window::Window(const char* name, Dimension dimension, Configuration config, Inpu
 		glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
 	}
 
-	glfwSetKeyCallback(glfwWindow, key_callback);
-	glfwSetCursorPosCallback(glfwWindow, mouse_callback);
-	//glfwSetScrollCallback(window, scroll_callback);
-	//glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetKeyCallback			(glfwWindow, key_callback);
+	glfwSetCursorPosCallback	(glfwWindow, mouse_callback);
+	glfwSetMouseButtonCallback	(glfwWindow, mouse_button_callback);
+	glfwSetScrollCallback		(glfwWindow, scroll_callback);
 
 	/*--
 		Center GLFW window.
@@ -129,7 +130,7 @@ Window::Window(const char* name, Dimension dimension, Configuration config, Inpu
 		break;
 	}
 
-	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Handling VSync
 	glfwSwapInterval(vsync);
@@ -138,10 +139,9 @@ Window::Window(const char* name, Dimension dimension, Configuration config, Inpu
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glfwSwapBuffers(glfwWindow);
 
-	// subscribe to input manager
-	inputManager.subscribe<ToggleCursorControl>(
-		[&](ToggleCursorControl) {
-			toggleMouseControl();
+	inputManager.subscribe<ToEnableCursor>(
+		[&](ToEnableCursor toEnable) {
+			toEnableMouse(toEnable == ToEnableCursor::Enable);
 		}
 	);
 }
@@ -214,9 +214,8 @@ DLL_API void Window::toggleFullScreen()
 	isFullScreen = !isFullScreen;
 }
 
-void Window::toggleMouseControl() {
-	isControllingMouse = !isControllingMouse;
-	glfwSetInputMode(glfwWindow, GLFW_CURSOR, isControllingMouse ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+void Window::toEnableMouse(bool toEnable) {
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, toEnable ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 }
 
 namespace {
@@ -305,38 +304,6 @@ namespace {
 
 		assert(g_Window);
 		g_Window->inputManager.handleKeyboardInput(*g_Window, key, scancode, action, mods);
-#if 0
-		using enum CameraSystem::Movement;
-		CameraSystem& cameraSystem = CameraSystem::instance();
-
-		if (key == GLFW_KEY_W) { 
-			cameraSystem.setMovement(Front, action != GLFW_RELEASE);
-		}
-
-		if (key == GLFW_KEY_A) {
-			cameraSystem.setMovement(Left, action != GLFW_RELEASE);
-		}
-
-		if (key == GLFW_KEY_S) {
-			cameraSystem.setMovement(Back, action != GLFW_RELEASE);
-		}
-
-		if (key == GLFW_KEY_D) {
-			cameraSystem.setMovement(Right, action != GLFW_RELEASE);
-		}
-
-		if (key == GLFW_KEY_SPACE) {
-			cameraSystem.setMovement(Up, action != GLFW_RELEASE);
-		}
-
-		if (key == GLFW_KEY_Z) {
-			cameraSystem.setMovement(Down, action != GLFW_RELEASE);
-		}
-
-		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-			glfwSetWindowShouldClose(window, true);
-		}
-#endif
 	}
 
 	void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn) {
@@ -344,18 +311,19 @@ namespace {
 		
 		assert(g_Window);
 		g_Window->inputManager.handleMouseMovement(*g_Window, xPosIn, yPosIn);
-#if 0
-		CameraSystem& cameraSystem = CameraSystem::instance();
+	}
+	
+	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+		(void) window;
 
-		static bool firstTime = true;
+		assert(g_Window);
+		g_Window->inputManager.handleMouseInput(*g_Window, button, action, mods);
+	}
 
-		if (firstTime) {
-			firstTime = false;
-			cameraSystem.setLastMouse(static_cast<float>(xPosIn), static_cast<float>(yPosIn));
-		}
-		else {
-			cameraSystem.calculateEulerAngle(static_cast<float>(xPosIn), static_cast<float>(yPosIn));
-		}
-#endif
+	void scroll_callback(GLFWwindow* window, double xOffset, double yOffset) {
+		(void) window;
+
+		assert(g_Window);
+		g_Window->inputManager.handleScroll(*g_Window, xOffset, yOffset);
 	}
 }

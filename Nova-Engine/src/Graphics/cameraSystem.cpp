@@ -16,7 +16,7 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 	camera			{ engine.renderer.getCamera() },
 	yaw				{ -90.f },
 	pitch			{},
-	isInControl		{ true },
+	isInControl		{ false },
 	toResetMousePos	{ true },
 	cameraSpeed		{ 2.f }
 {
@@ -43,13 +43,25 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 		}
 	);
 
-	inputManager.subscribe<ToggleCursorControl>(
-		[&](ToggleCursorControl) {
-			isInControl = !isInControl;
+	inputManager.subscribe<ToCameraControl>(
+		[&](ToCameraControl control) {
+			isInControl = control == ToCameraControl::Control;
 
 			if (isInControl) {
 				toResetMousePos = true;
 			}
+		}
+	);
+
+	inputManager.subscribe<AdjustCameraSpeed>(
+		[&](AdjustCameraSpeed value) {
+			if (!isInControl) {
+				return;
+			}
+
+			cameraSpeed += static_cast<float>(value.value);
+
+			if (cameraSpeed < 0) cameraSpeed = 0;
 		}
 	);
 }

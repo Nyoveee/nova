@@ -13,12 +13,11 @@ void InputManager::handleMouseMovement(Window& window, double xPosIn, double yPo
 	broadcast(MousePosition{ xPosIn, yPosIn }, InputType::Press);
 }
 
-void InputManager::handleMouseClick() {
+void InputManager::handleScroll(Window& window, double xOffset, double yOffset) {
+	(void) window;
+	(void) xOffset;
 
-}
-
-void InputManager::handleScroll() {
-
+	broadcast(AdjustCameraSpeed{ yOffset });
 }
 
 void InputManager::handleKeyboardInput(Window& window, int key, int scancode, int action, int mods) {
@@ -49,8 +48,13 @@ void InputManager::handleKeyboardInput(Window& window, int key, int scancode, in
 	if (key == GLFW_KEY_Z) {
 		broadcast(CameraMovement::Descent, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
 	}
+}
 
-	if (key == GLFW_KEY_ESCAPE) {
-		broadcast(ToggleCursorControl::Sentinel, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
+void InputManager::handleMouseInput(Window& window, int key, int action, int mods) {
+	(void) window;
+	(void) mods;
+
+	if (key == GLFW_MOUSE_BUTTON_RIGHT) {
+		broadcast(ToggleEditorControl::Sentinel, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
 	}
 }

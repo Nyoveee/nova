@@ -27,12 +27,16 @@ public:
 
 private:
 	void main();
+	void toggleEditorControl(bool toControl);
 
 private:
 	Window& window;
 	Engine& engine;
+	InputManager& inputManager;
 
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
+
+	bool hasEditorControl;
 };

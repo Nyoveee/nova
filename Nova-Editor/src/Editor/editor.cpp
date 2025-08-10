@@ -9,13 +9,18 @@
 #include "ECS.h"
 #include "component.h"
 #include "themes.h"
+#include "inputManager.h"
+
+#include <GLFW/glfw3.h>
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager) :
 	window				{ window },
 	engine				{ engine },
 	gameViewPort		{ engine },
+	inputManager		{ inputManager },
 	componentInspector	{},
-	assetManagerUi		{}
+	assetManagerUi		{},
+	hasEditorControl	{ false }
 {
 	(void) inputManager;
 
@@ -31,6 +36,16 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager) :
 	ImGui_ImplOpenGL3_Init("#version 450");							// or appropriate GLSL version
 
 	ImGuiTheme::Dark();
+
+	// Subscribe to input manager for editor control.
+	inputManager.subscribe<ToggleEditorControl>(
+		[&](ToggleEditorControl) {
+			if(gameViewPort.isHoveringOver) toggleEditorControl(true);
+		},
+		[&](ToggleEditorControl) {
+			toggleEditorControl(false);
+		}
+	);
 }
 
 void Editor::update() {
@@ -108,6 +123,20 @@ void Editor::main() {
 	assetManagerUi.update();
 
 	ImGui::End();
+}
+
+void Editor::toggleEditorControl(bool toControl) {
+	hasEditorControl = toControl;
+
+	if (hasEditorControl) {
+		inputManager.broadcast<ToCameraControl>(ToCameraControl::Control);
+		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Disable);
+		
+	}
+	else {
+		inputManager.broadcast<ToCameraControl>(ToCameraControl::Release);
+		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Enable);
+	}
 }
 
 Editor::~Editor() {
