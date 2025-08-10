@@ -72,12 +72,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export\Header;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export\Header;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

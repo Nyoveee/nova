@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Export\Header\engine.h">
+    <ClInclude Include="src\Export\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\Header\export.h">
+    <ClInclude Include="src\Export\export.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Libraries\reflection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\Header\window.h">
+    <ClInclude Include="src\Export\window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\renderer.h">
@@ -48,7 +48,7 @@
     <ClInclude Include="src\Graphics\cameraSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\Header\component.h">
+    <ClInclude Include="src\Component\component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS &amp; Components\ECS.h">
@@ -60,10 +60,10 @@
     <ClInclude Include="src\Graphics\vertexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\Header\ECS.h">
+    <ClInclude Include="src\Export\ECS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\Header\inputManager.h">
+    <ClInclude Include="src\Export\inputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\InputManager\inputEvent.h">
@@ -87,7 +87,7 @@
     <ClInclude Include="src\InputManager\glfwInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\Header\assetManager.h">
+    <ClInclude Include="src\Export\assetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AssetManager\Asset\asset.h">
@@ -101,10 +101,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Export\Source\engine.cpp">
+    <ClCompile Include="src\Engine\engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Export\Source\window.cpp">
+    <ClCompile Include="src\Engine\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Libraries\glad.cpp">
@@ -128,10 +128,10 @@
     <ClCompile Include="src\Graphics\vertexBufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Export\Source\ECS.cpp">
+    <ClCompile Include="src\Component\ECS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Export\Source\inputManager.cpp">
+    <ClCompile Include="src\InputManager\inputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\framebuffer.cpp">
@@ -140,7 +140,7 @@
     <ClCompile Include="src\InputManager\inputMapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Export\Source\assetManager.cpp">
+    <ClCompile Include="src\AssetManager\assetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AssetManager\Asset\asset.cpp">

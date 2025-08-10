@@ -7,9 +7,10 @@
 #include "window.h"
 #include "vertex.h"
 #include "ECS.h"
-#include "component.h"
 #include "engine.h"
 #include "assetManager.h"
+
+#include "Component/component.h"
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },

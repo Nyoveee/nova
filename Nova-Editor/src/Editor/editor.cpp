@@ -1,16 +1,15 @@
-#include "../Header/window.h"
-
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "window.h"
 #include "editor.h"
 #include "engine.h"
 #include "ECS.h"
-#include "component.h"
 #include "themes.h"
 #include "inputManager.h"
 
+#include "Component/component.h"
 #include <GLFW/glfw3.h>
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager) :

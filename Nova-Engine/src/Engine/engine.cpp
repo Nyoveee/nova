@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "window.h"
 
-#include "component.h"
+#include "Component/component.h"
 #include "inputManager.h"
 
 #include <GLFW/glfw3.h>
