@@ -4,6 +4,7 @@
 */
 
 #pragma once
+#include "export.h"
 
 #include <Windows.h>
 #include <sstream>
@@ -11,19 +12,22 @@
 
 #include "../Include/dotnet/coreclrhost.h"
 // Maybe make this follow the system in engine
+
+class Engine; // Don't need to call any function or variables, just pass in
+
 class ScriptingAPIManager {
 public:
 	// Functions needed to run the ScriptingAPI
-	ScriptingAPIManager();
-	~ScriptingAPIManager();
-	ScriptingAPIManager(ScriptingAPIManager const& other) = delete;
-	ScriptingAPIManager(ScriptingAPIManager&& other) = delete;
-	ScriptingAPIManager& operator=(ScriptingAPIManager const& other) = delete;
-	ScriptingAPIManager& operator=(ScriptingAPIManager&& other) = delete;
-	void update();
+	DLL_API ScriptingAPIManager(Engine& engine);
+	DLL_API ~ScriptingAPIManager();
+	DLL_API ScriptingAPIManager(ScriptingAPIManager const& other) = delete;
+	DLL_API ScriptingAPIManager(ScriptingAPIManager&& other) = delete;
+	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other) = delete;
+	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other) = delete;
+	DLL_API void update();
+	// Adding removing scripts into the api
+	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
 private:
-	std::string buildTPAList(const std::string& directory);
-
 	// coreCLR key components 
 	HMODULE coreClr;
 	void* hostHandle;
@@ -36,8 +40,10 @@ private:
 
 	// ScriptingAPI functions
 	void(*updateScripts)(void);
-	void(*addGameObjectScript)(int, const char*);
-	void(*removeGameObjectScript)(int, const char*);
+	void(*addGameObjectScript)(unsigned int, const char*);
+	void(*removeGameObjectScript)(unsigned int, const char*);
+
+	std::string buildTPAList(const std::string& directory);
 
 	template<typename Func>
 	Func getCoreClrFuncPtr(const std::string& functionName) {

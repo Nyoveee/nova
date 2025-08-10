@@ -1,20 +1,21 @@
 ﻿using ScriptingAPI;
-
 namespace Nova_Scripts
 {
     public class TestScript : Script
     {
         public override void Init()
         {
-            Console.WriteLine("Init");
+        
         }
         public override void update()
         {
-            Console.WriteLine("Update");
+            Transform_ transform = GetTransformComponent(); // Ideally, should be called once
+            Vector3 position = transform.position;
+            position.z += 1;
+            transform.position = position;    
         }  
-        public override void Exit()
+        public override void exit()
         {
-            Console.WriteLine("Exit");
 
         }
     }

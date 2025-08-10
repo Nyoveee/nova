@@ -9,6 +9,7 @@
 #include "ECS.h"
 #include "component.h"
 #include "themes.h"
+#include "ScriptingAPIManager.h"
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager) :
 	window				{ window },
@@ -61,7 +62,6 @@ void Editor::main() {
 
 	if (ImGui::Button("(+) Add entity")) {
 		auto entity = registry.create();
-
 		static float zPos = 0;
 		zPos -= 5.f;
 
@@ -86,6 +86,10 @@ void Editor::main() {
 
 		registry.emplace<Transform>(entity, std::move(transform));
 		registry.emplace<Mesh>(entity, std::move(mesh));
+
+		// Test
+		engine.scriptingAPIManager.loadScriptIntoAPI(static_cast<unsigned int>(entity), "TestScript");
+
 	}	
 	
 	for (auto&& [entity, transform, mesh] : registry.view<Transform, Mesh>().each()) {

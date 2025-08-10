@@ -12,6 +12,7 @@ Engine::Engine(Window& window, InputManager& inputManager, int gameWidth, int ga
 	renderer		{ *this, gameWidth, gameHeight },
 	cameraSystem	{ *this, inputManager },
 	ecs				{},
+	scriptingAPIManager{*this},
 	gameWidth		{ gameWidth },
 	gameHeight		{ gameHeight }
 {

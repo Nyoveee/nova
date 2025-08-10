@@ -4,11 +4,11 @@
 #include <memory>
 
 #include "export.h"
-#include "ScriptingAPIManager.h"
 #include "ECS.h"
 
 #include "Graphics/renderer.h"
 #include "Graphics/cameraSystem.h"
+#include "ScriptingAPIManager.h"
 
 
 class Window;
@@ -16,6 +16,7 @@ class Renderer;
 class CameraSystem;
 class ECS;
 class InputManager;
+class ScriptingAPIManager;
 
 class Engine {
 public:

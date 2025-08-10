@@ -5,9 +5,9 @@
 
 #include "ScriptingAPIManager.h"
 
-#pragma comment(lib, "shlwapi.lib")
+#pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
-ScriptingAPIManager::ScriptingAPIManager()
+ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	: coreClr{ nullptr }
 	, hostHandle{ nullptr }
 	, domainID{}
@@ -68,13 +68,11 @@ ScriptingAPIManager::ScriptingAPIManager()
 
 	// Get the functions to run the api
 	try {
-		void(*init)(void) = GetFunctionPtr<void(*)(void)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "init");
+		void(*init)(Engine& engine) = GetFunctionPtr<void(*)(Engine&)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "init");
 		updateScripts = GetFunctionPtr<void(*)(void)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "update");
-		addGameObjectScript = GetFunctionPtr<void(*)(int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "addGameObjectScript");
-		removeGameObjectScript = GetFunctionPtr<void(*)(int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "removeGameObjectScript");
-		init();
-		// Test Script 
-		addGameObjectScript(0, "TestScript");
+		addGameObjectScript = GetFunctionPtr<void(*)(unsigned int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "addGameObjectScript");
+		removeGameObjectScript = GetFunctionPtr<void(*)(unsigned int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "removeGameObjectScript");
+		init(engine);
 	}
 	catch (std::exception e) {
 		std::cout << e.what();
@@ -84,8 +82,6 @@ ScriptingAPIManager::ScriptingAPIManager()
 
 ScriptingAPIManager::~ScriptingAPIManager()
 {
-	// Exit Test 
-	removeGameObjectScript(0, "TestScript");
 	// Shut down CoreClr
 	int result{ shutdownCorePtr(hostHandle,domainID) };
 	if (result != S_OK) {
@@ -96,7 +92,6 @@ ScriptingAPIManager::~ScriptingAPIManager()
 		std::cout << errorDetails.str() << std::endl;
 	}
 }
-
 
 std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 {
@@ -115,7 +110,10 @@ std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 	}
 	return tpaList.str();
 }
+void ScriptingAPIManager::update() { updateScripts(); }
 
-void ScriptingAPIManager::update() {
-	updateScripts();
+void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName)
+{
+	addGameObjectScript(entityID, scriptName);
 }
+
