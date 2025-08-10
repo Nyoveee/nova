@@ -8,8 +8,8 @@
 #include "vertex.h"
 #include "ECS.h"
 #include "component.h"
-
 #include "engine.h"
+#include "assetManager.h"
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },
@@ -92,49 +92,22 @@ void Renderer::render(RenderTarget target) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		break;
 	}
+	
+	textureShader.use();
+	textureShader.setMatrix("view", camera.view());
+	textureShader.setMatrix("projection", camera.projection());
 
-#if 0
-	std::vector<Vertex> vertices{
-		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-		Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
+	// Set texture..
+	auto [asset, result] = engine.assetManager.getAsset<Texture>(0);
 
-		Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
-		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-	};
-
-	// for this VAO, associate bindingIndex 0 with 1st VBO.
-	glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
-	VBOs[0].uploadData(vertices);
-
-	// Model matrix.
-	glm::vec3 pos = { 0.f, 0.f, -3.f};
-	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
-
-	glm::mat4x4 modelMatrix = glm::mat4x4{ 1 };
-	modelMatrix = glm::translate(modelMatrix, pos);
-	modelMatrix = glm::scale(modelMatrix, scale);
-
-	// View matrix.
-	glm::mat4x4 viewMatrix = camera.view();
-
-	// Perspective matrix.
-	glm::mat4x4 perspectiveMatrix = camera.projection();
-
-	standardShader.use();
-	standardShader.setMatrix("model", modelMatrix);
-	standardShader.setMatrix("view", viewMatrix);
-	standardShader.setMatrix("projection", perspectiveMatrix);
-
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-#endif
-
-	standardShader.use();
-	standardShader.setMatrix("view", camera.view());
-	standardShader.setMatrix("projection", camera.projection());
-
+	if (!asset) {
+		std::cerr << "Error retrieving asset!\n";
+	}
+	else {
+		textureShader.setImageUniform("image", 0);
+		glBindTextureUnit(0, asset->getTextureId());
+	}
+	
 	// Retrieve all game objects and prepare them for batch rendering..
 	entt::registry& registry = engine.ecs.registry;
 
@@ -149,7 +122,7 @@ void Renderer::render(RenderTarget target) {
 		auto& VBO = VBOs[0];
 		VBO.uploadData(mesh.vertices);
 
-		standardShader.setMatrix("model", modelMatrix);
+		textureShader.setMatrix("model", modelMatrix);
 
 		// set VBO to VAO's [0] binding index.
 		glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));

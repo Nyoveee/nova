@@ -13,9 +13,10 @@
 
 #include <GLFW/glfw3.h>
 
-Editor::Editor(Window& window, Engine& engine, InputManager& inputManager) :
+Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager) :
 	window				{ window },
 	engine				{ engine },
+	assetManager		{ assetManager },
 	gameViewPort		{ engine },
 	inputManager		{ inputManager },
 	componentInspector	{},

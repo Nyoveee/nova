@@ -15,10 +15,11 @@ class Renderer;
 class CameraSystem;
 class ECS;
 class InputManager;
+class AssetManager;
 
 class Engine {
 public:
-	DLL_API Engine(Window& window, InputManager& inputManager, int gameWidth, int gameHeight);
+	DLL_API Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight);
 
 	DLL_API ~Engine()								= default;
 	DLL_API Engine(Engine const& other)				= delete;
@@ -38,6 +39,7 @@ public:
 public:
 	// allow all systems to have references of each other via the engine.
 	Window&			window;
+	AssetManager&	assetManager;
 	Renderer		renderer;
 	CameraSystem	cameraSystem;
 	ECS				ecs;

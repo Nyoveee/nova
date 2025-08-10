@@ -8,8 +8,9 @@
 
 #include <GLFW/glfw3.h>
 
-Engine::Engine(Window& window, InputManager& inputManager, int gameWidth, int gameHeight) :
+Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window			{ window },
+	assetManager	{ assetManager },
 	renderer		{ *this, gameWidth, gameHeight },
 	cameraSystem	{ *this, inputManager },
 	ecs				{},

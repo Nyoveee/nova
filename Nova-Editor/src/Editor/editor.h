@@ -11,10 +11,11 @@ using GLuint = unsigned int;
 class Window;
 class Engine;
 class InputManager;
+class AssetManager;
 
 class Editor {
 public:
-	Editor(Window& window, Engine& engine, InputManager& inputManager);
+	Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager);
 
 	~Editor();
 	Editor(Editor const& other)				= delete;
@@ -33,6 +34,7 @@ private:
 	Window& window;
 	Engine& engine;
 	InputManager& inputManager;
+	AssetManager& assetManager;
 
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;

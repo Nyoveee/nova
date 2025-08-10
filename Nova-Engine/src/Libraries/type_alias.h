@@ -84,4 +84,17 @@ private:
 	std::size_t id;
 };
 
+struct AssetID {
+	constexpr AssetID();
+	constexpr AssetID(std::size_t id);
+
+public:
+	constexpr friend bool operator==(AssetID const& lhs, AssetID const& rhs);
+	constexpr friend bool operator<(AssetID const& lhs, AssetID const& rhs);
+	friend struct std::hash<AssetID>;
+
+private:
+	std::size_t id;
+};
+
 #include "type_alias.ipp"

@@ -157,6 +157,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\AssetManager\assetMananger.ipp" />
+    <ClInclude Include="src\AssetManager\Asset\asset.h" />
+    <ClInclude Include="src\Export\Header\assetManager.h" />
+    <ClInclude Include="src\AssetManager\Asset\texture.h" />
     <ClInclude Include="src\Export\Header\component.h" />
     <ClInclude Include="src\ECS &amp; Components\ECS.h" />
     <ClInclude Include="src\Export\Header\ECS.h" />
@@ -182,6 +186,9 @@
     <ClInclude Include="src\Export\Header\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AssetManager\Asset\asset.cpp" />
+    <ClCompile Include="src\Export\Source\assetManager.cpp" />
+    <ClCompile Include="src\AssetManager\Asset\texture.cpp" />
     <ClCompile Include="src\Export\Source\ECS.cpp" />
     <ClCompile Include="src\Export\Source\engine.cpp" />
     <ClCompile Include="src\Graphics\camera.cpp" />
