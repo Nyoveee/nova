@@ -22,7 +22,5 @@ namespace ScriptingAPI {
 		}
 	private:
 		System::UInt32 entityID;
-		// To do, ask the scriptingAPi to call the engine to get the ecs reference then if it doesn't exist return null
-		Transform* getNativeComponent(System::UInt32 entityID);
 	};
 }
