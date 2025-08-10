@@ -132,7 +132,7 @@
       <AdditionalDependencies>glfw3dll.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\Bin" "$(OutDir)"</Command>
+      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\DLLs" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,7 +159,7 @@
       <AdditionalDependencies>glfw3dll.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\Bin" "$(OutDir)"</Command>
+      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\DLLs" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
