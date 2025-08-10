@@ -26,12 +26,24 @@ void InputManager::broadcast(InputEvent data, InputType inputType) {
 
 		switch (inputType)
 		{
-		case InputManager::InputType::Press:
+		case InputType::Press:
 			observer->notifyPress(data);
 			break;
-		case InputManager::InputType::Release:
+		case InputType::Release:
 			observer->notifyRelease(data);
 			break;
 		}
 	}
+}
+
+template<typename InputEvent>
+void InputManager::mapKeyBindInput(int key, KeyType type, InputEvent data) {
+	std::unique_ptr<IKeyBind> keyBind = std::make_unique<KeyBind<InputEvent>>(
+		KeyBind<InputEvent>{
+			data, [&](InputEvent data, InputType inputType) { broadcast<InputEvent>(data, inputType); }
+		}
+	);
+
+	GLFWInput input = { key, type };
+	mappedKeyBinds[input].push_back(std::move(keyBind));
 }

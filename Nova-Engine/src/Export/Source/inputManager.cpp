@@ -5,7 +5,9 @@
 
 #include "InputManager/inputEvent.h"
 
-InputManager::InputManager() {}
+InputManager::InputManager() {
+	mainKeyBindMapping();
+}
 
 void InputManager::handleMouseMovement(Window& window, double xPosIn, double yPosIn) {
 	(void) window;
@@ -25,36 +27,19 @@ void InputManager::handleKeyboardInput(Window& window, int key, int scancode, in
 	(void) mods;
 	(void) scancode;
 
-	if (key == GLFW_KEY_W) {
-		broadcast(CameraMovement::Forward, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
-	}
-
-	if (key == GLFW_KEY_S) {
-		broadcast(CameraMovement::Backward, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
-	}
-
-	if (key == GLFW_KEY_A) {
-		broadcast(CameraMovement::Left, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
-	}
-
-	if (key == GLFW_KEY_D) {
-		broadcast(CameraMovement::Right, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
-	}
-
-	if (key == GLFW_KEY_SPACE) {
-		broadcast(CameraMovement::Ascend, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
-	}
-
-	if (key == GLFW_KEY_Z) {
-		broadcast(CameraMovement::Descent, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
-	}
+	handleKeyInput({ key, KeyType::Keyboard }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
 }
 
 void InputManager::handleMouseInput(Window& window, int key, int action, int mods) {
 	(void) window;
 	(void) mods;
 
-	if (key == GLFW_MOUSE_BUTTON_RIGHT) {
-		broadcast(ToggleEditorControl::Sentinel, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
+	handleKeyInput({ key, KeyType::MouseClick }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
+}
+
+void InputManager::handleKeyInput(GLFWInput input, InputType inputType) {
+	for (std::unique_ptr<IKeyBind> const& keyBind : mappedKeyBinds[input]) {
+		keyBind->broadcast(inputType);
 	}
 }
+

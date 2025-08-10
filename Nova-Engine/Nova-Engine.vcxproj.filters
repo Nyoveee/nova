@@ -81,6 +81,12 @@
     <ClInclude Include="src\InputManager\observer.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\InputManager\keybind.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InputManager\glfwInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Export\Source\engine.cpp">
@@ -117,6 +123,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Graphics\framebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\InputManager\inputMapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

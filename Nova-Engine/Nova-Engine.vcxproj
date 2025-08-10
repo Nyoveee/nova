@@ -170,7 +170,9 @@
     <ClInclude Include="src\Graphics\vertex.h" />
     <ClInclude Include="src\Graphics\vertexBufferObject.h" />
     <ClInclude Include="src\Export\Header\inputManager.h" />
+    <ClInclude Include="src\InputManager\glfwInput.h" />
     <ClInclude Include="src\InputManager\inputEvent.h" />
+    <ClInclude Include="src\InputManager\keybind.h" />
     <ClInclude Include="src\InputManager\observer.h" />
     <ClInclude Include="src\InputManager\observer.ipp" />
     <ClInclude Include="src\Libraries\family.h" />
@@ -189,6 +191,7 @@
     <ClCompile Include="src\Graphics\shader.cpp" />
     <ClCompile Include="src\Graphics\vertexBufferObject.cpp" />
     <ClCompile Include="src\Export\Source\inputManager.cpp" />
+    <ClCompile Include="src\InputManager\inputMapping.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
