@@ -66,7 +66,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// enable backface culling & depth testing.
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	setBlendMode(BlendingConfig::AlphaBlending);
 }
@@ -100,23 +100,12 @@ void Renderer::render(RenderTarget target) {
 	textureShader.setMatrix("view", camera.view());
 	textureShader.setMatrix("projection", camera.projection());
 
-	// Set texture..
-	auto [texture, _] = assetManager.getAsset<Texture>(0);
-
-	if (!texture) {
-		std::cerr << "Error retrieving asset!\n";
-	}
-	else {
-		textureShader.setImageUniform("image", 0);
-		glBindTextureUnit(0, texture->getTextureId());
-	}
-	
 	// Retrieve all game objects and prepare them for batch rendering..
 	entt::registry& registry = engine.ecs.registry;
 
-	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, ModelRenderer>().each()) {
+	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		// Retrieves model asset from asset manager.
-		auto [model, _] = assetManager.getAsset<ModelAsset>(modelRenderer.modelId);
+		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
 
 		if (!model) {
 			continue;
@@ -125,14 +114,32 @@ void Renderer::render(RenderTarget target) {
 		// Model matrix.
 		glm::mat4x4 modelMatrix = glm::mat4x4{ 1 };
 		modelMatrix = glm::translate(modelMatrix, transform.position);
-		modelMatrix = glm::scale(modelMatrix, transform.scale / model->model.maxDimension);
+		modelMatrix = glm::scale(modelMatrix, transform.scale / model->maxDimension);
 
 		// Copy mesh to VBO..
 		auto& VBO = VBOs[0];
 		textureShader.setMatrix("model", modelMatrix);
 
 		// Draw every mesh of a given model.
-		for (auto const& mesh : model->model.meshes) {
+		for (auto const& mesh : model->meshes) {
+			// Get texture..
+			auto iterator = modelRenderer.materials.find(mesh.materialName);
+
+			if (iterator == modelRenderer.materials.end()) {
+				std::cerr << "this shouldn't happen.";
+				continue;
+			}
+			
+			auto [texture, _] = assetManager.getAsset<Texture>(iterator->second.diffuseTextureId);
+
+			if (!texture) {
+				std::cerr << "Error retrieving asset!\n";
+			}
+			else {
+				textureShader.setImageUniform("image", 0);
+				glBindTextureUnit(0, texture->getTextureId());
+			}
+
 			VBO.uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
 

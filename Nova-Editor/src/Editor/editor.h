@@ -29,6 +29,7 @@ public:
 private:
 	void main();
 	void toggleViewPortControl(bool toControl);
+	void updateMaterialMapping();
 
 private:
 	Window& window;

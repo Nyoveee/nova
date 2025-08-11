@@ -161,7 +161,7 @@
   <ItemGroup>
     <ClInclude Include="src\AssetManager\assetMananger.ipp" />
     <ClInclude Include="src\AssetManager\Asset\asset.h" />
-    <ClInclude Include="src\AssetManager\Asset\modelAsset.h" />
+    <ClInclude Include="src\AssetManager\Asset\model.h" />
     <ClInclude Include="src\AssetManager\modelLoader.h" />
     <ClInclude Include="src\Export\assetManager.h" />
     <ClInclude Include="src\AssetManager\Asset\texture.h" />
@@ -192,7 +192,7 @@
   <ItemGroup>
     <ClCompile Include="src\AssetManager\Asset\asset.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
-    <ClCompile Include="src\AssetManager\Asset\modelAsset.cpp" />
+    <ClCompile Include="src\AssetManager\Asset\model.cpp" />
     <ClCompile Include="src\AssetManager\Asset\texture.cpp" />
     <ClCompile Include="src\AssetManager\modelLoader.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />

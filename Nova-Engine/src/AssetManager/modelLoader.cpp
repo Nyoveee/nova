@@ -33,17 +33,17 @@ constexpr unsigned int PostProcessingFlags {
 	aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs 
 };
 
-std::optional<ModelAsset::Model> ModelLoader::loadModel(std::string const& filepath) const {
+bool ModelLoader::loadModel(Model& model) const {
 	Assimp::Importer importer;
 
-	aiScene const* scene = importer.ReadFile(filepath, PostProcessingFlags);
+	aiScene const* scene = importer.ReadFile(model.getFilePath(), PostProcessingFlags);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		std::cerr << "Error when importing model: " << importer.GetErrorString() << '\n';
-		return std::nullopt;
+		return false;
 	}
 
-	std::vector<ModelAsset::Mesh> meshes;
+	std::vector<Model::Mesh> meshes;
 	meshes.reserve(scene->mNumMeshes);
 
 	// This records the max width (or height or length) of a model in an attempts to normalize it.
@@ -52,12 +52,18 @@ std::optional<ModelAsset::Model> ModelLoader::loadModel(std::string const& filep
 	// Iterate through all the meshes in a scene..
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i) {
 		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension));
+		model.materialNames.insert(meshes[i].materialName);
+
+		std::cout << meshes[i].materialName << "\n";
 	}
 
-	return { ModelAsset::Model{ std::move(meshes), maxDimension }};
+	model.meshes = std::move(meshes);
+	model.maxDimension = maxDimension;
+
+	return true;
 }
 
-ModelAsset::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) const {
+Model::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) const {
 	// Get all the vertices data in this mesh.
 	std::vector<Vertex> vertices;
 	vertices.reserve(mesh->mNumVertices);
@@ -94,39 +100,13 @@ ModelAsset::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* sce
 		}
 	}
 
+	std::string materialName;
+
 	// Getting material info..
 	if (mesh->mMaterialIndex >= 0 && scene->mMaterials) {
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		
-		auto name = material->GetName();
-		std::cout << "Material: " << name.C_Str() << "\n";
-
-		getTextures(material, aiTextureType_BASE_COLOR);
+		materialName = material->GetName().C_Str();
 	}
-	//vector<Texture> loadMaterialTextures(aiMaterial * mat, aiTextureType type, string typeName)
-	//{
-	//	vector<Texture> textures;
-	//	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-	//	{
-	//		aiString str;
-	//		mat->GetTexture(type, i, &str);
-	//		Texture texture;
-	//		texture.id = TextureFromFile(str.C_Str(), directory);
-	//		texture.type = typeName;
-	//		texture.path = str;
-	//		textures.push_back(texture);
-	//	}
-	//	return textures;
-	//}
-	return { std::move(vertices), std::move(indices), static_cast<int>(mesh->mNumFaces) };
-}
 
-void ModelLoader::getTextures(aiMaterial* material, aiTextureType type) const {
-	for (unsigned int i = 0; i < material->GetTextureCount(type); i++) {
-		aiString str;
-		material->GetTexture(type, i, &str);
-
-		const char* filepath = str.C_Str();
-		std::cout << filepath << "\n";
-	}
+	return { std::move(vertices), std::move(indices), std::move(materialName), static_cast<int>(mesh->mNumFaces)};
 }

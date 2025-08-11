@@ -10,7 +10,7 @@
 #include "inputManager.h"
 #include "assetManager.h"
 
-#include "AssetManager/Asset/modelAsset.h"
+#include "AssetManager/Asset/model.h"
 
 #include "Component/component.h"
 #include <GLFW/glfw3.h>
@@ -71,6 +71,7 @@ void Editor::update() {
 void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
+	updateMaterialMapping();
 	entt::registry& registry = engine.ecs.registry;
 	
 	// Show all game objects..
@@ -121,7 +122,7 @@ void Editor::main() {
 	if (ImGui::Button("(+) Add 3D model")) {
 		auto entity = registry.create();
 
-		zPos -= 5.f;
+		zPos -= 2.f;
 
 		Transform transform = {
 			{0.f, 0.f, zPos},
@@ -131,21 +132,42 @@ void Editor::main() {
 
 		registry.emplace<Transform>(entity, std::move(transform));
 
+		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
 
-		registry.emplace<ModelRenderer>(entity, ModelRenderer{ alternate ? AssetID{1} : AssetID{2} });
+		AssetID modelAsset{ 1 };
+
+		if (alternate) {
+			materials["Table_frame_mtl"] = { AssetID{3} };
+			materials["Table_top_mtl"] = { AssetID{4} };
+		}
+		else {
+			materials["Material_50"] = { AssetID{0} };
+		}
+		
+		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
+		
 		alternate = !alternate;
 	}
 
-	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, ModelRenderer>().each()) {
+	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		std::string textToDisplay =
 			"Entity ID: " + std::to_string(static_cast<entt::id_type>(entity))
 			+ ", pos: {"
 			+ std::to_string(transform.position.x) + " "
 			+ std::to_string(transform.position.y) + " "
-			+ std::to_string(transform.position.z) + "} ";
+			+ std::to_string(transform.position.z) + "} "
 			+ ", asset id: " + std::to_string((std::size_t)modelRenderer.modelId);
 
 		ImGui::Text(textToDisplay.c_str());
+		
+		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
+		
+		if (!model) continue;
+
+		ImGui::Text("Materials:");
+		for (auto const& materialName : model->materialNames) {
+			ImGui::Text(std::string{ " 	-" + materialName }.c_str());
+		}
 	}
 
 	// ========================================
@@ -170,6 +192,43 @@ void Editor::toggleViewPortControl(bool toControl) {
 	else {
 		inputManager.broadcast<ToCameraControl>(ToCameraControl::Release);
 		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Enable);
+	}
+}
+
+void Editor::updateMaterialMapping() {
+	entt::registry& registry = engine.ecs.registry;
+
+	// Find all material names with the associated asset.
+	for (auto&& [entity, modelRenderer] : registry.view<MeshRenderer>().each()) {
+		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
+
+		if (!model) {
+			continue;
+		}
+
+		bool materialHasChanged = false;
+
+		// check if there is a match. if there is a mismatch, the material requirement
+		// of the mesh probably changed / changed mesh.
+		for (auto const& materialName : model->materialNames) {
+			auto iterator = modelRenderer.materials.find(materialName);
+
+			if (iterator == modelRenderer.materials.end()) {
+				materialHasChanged = true;
+				break;
+			}
+		}
+
+		if (!materialHasChanged) {
+			return;
+		}
+
+		// lets reupdate our map.
+		modelRenderer.materials.clear();
+
+		for (auto const& materialName : model->materialNames) {
+			modelRenderer.materials[materialName];
+		}
 	}
 }
 

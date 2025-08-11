@@ -6,7 +6,7 @@
 
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
-#include "AssetManager/Asset/modelAsset.h"
+#include "AssetManager/Asset/model.h"
 
 // Assets stored in the asset manager merely point to these assets in file location.
 // These assets could be loaded or not loaded.

@@ -3,7 +3,7 @@
 #include <optional>
 #include <assimp/material.h>
 
-#include "Asset/modelAsset.h"
+#include "Asset/model.h"
 
 struct aiMesh;
 struct aiScene;
@@ -13,11 +13,11 @@ class ModelLoader {
 public:
 	ModelLoader();
 
-	std::optional<ModelAsset::Model> loadModel(std::string const& filepath) const;
+	bool loadModel(Model& model) const;
 
 private:
-	ModelAsset::Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) const;
+	Model::Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) const;
 	
 	// get textures of a specific type from a given material
-	void getTextures(aiMaterial* material, aiTextureType type) const;
+	//void getTextures(aiMaterial* material, aiTextureType type) const;
 };
