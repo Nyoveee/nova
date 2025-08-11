@@ -9,19 +9,20 @@ void AssetManager::addAsset(std::string filepath, Args... args) {
 	assets[id] = std::move(newAsset);
 }
 
+// i love template programming
 template<typename T> requires std::derived_from<T, Asset>
 AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	auto iterator = assets.find(id);
 
 	if (iterator == assets.end()) {
-		return AssetQuery<T>{ nullptr, AssetQuery<T>::Invalid };
+		return AssetQuery<T>{ nullptr, QueryResult::Invalid };
 	}
 
 	auto&& [_, asset] = *iterator;
 
 	if (asset->isLoaded()) {
 		T* typedAsset = dynamic_cast<T*>(asset.get());
-		return AssetQuery<T>{typedAsset, typedAsset ? AssetQuery<T>::Success : AssetQuery<T>::WrongType };
+		return AssetQuery<T>{typedAsset, typedAsset ? QueryResult::Success : QueryResult::WrongType };
 	}
 	else {
 		asset->load();
@@ -29,10 +30,10 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 		// Is the load operation asynchronous? Does it run on seperate thread?
 		if (asset->isLoaded()) {
 			T* typedAsset = dynamic_cast<T*>(asset.get());
-			return AssetQuery<T>{typedAsset, typedAsset ? AssetQuery<T>::Success : AssetQuery<T>::WrongType };
+			return AssetQuery<T>{typedAsset, typedAsset ? QueryResult::Success : QueryResult::WrongType };
 		}
 		else {
-			return AssetQuery<T>{ nullptr, AssetQuery<T>::Loading };
+			return AssetQuery<T>{ nullptr, QueryResult::Loading };
 		}
 	}
 }

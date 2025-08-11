@@ -57,7 +57,7 @@
     <ClInclude Include="src\Graphics\vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graphics\vertexBufferObject.h">
+    <ClInclude Include="src\Graphics\bufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Export\ECS.h">
@@ -99,6 +99,12 @@
     <ClInclude Include="src\AssetManager\assetMananger.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AssetManager\modelLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AssetManager\Asset\modelAsset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\engine.cpp">
@@ -125,7 +131,7 @@
     <ClCompile Include="src\Graphics\cameraSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graphics\vertexBufferObject.cpp">
+    <ClCompile Include="src\Graphics\bufferObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Component\ECS.cpp">
@@ -147,6 +153,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AssetManager\Asset\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AssetManager\modelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AssetManager\Asset\modelAsset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

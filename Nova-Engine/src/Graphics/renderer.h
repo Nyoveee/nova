@@ -7,10 +7,11 @@
 
 #include "shader.h"
 #include "camera.h"
-#include "vertexBufferObject.h"
+#include "bufferObject.h"
 #include "framebuffer.h"
 
 class Engine;
+class AssetManager;
 
 class Renderer {
 public:
@@ -54,11 +55,12 @@ private:
 
 private:
 	Engine& engine;
+	AssetManager& assetManager;
 
-	std::vector<VertexBufferObject> VBOs;
-
+	std::vector<BufferObject> VBOs;
+	
+	BufferObject EBO;
 	GLuint VAO;
-	GLuint EBO;
 
 	Camera camera;
 

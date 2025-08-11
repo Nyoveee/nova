@@ -84,9 +84,12 @@ private:
 	std::size_t id;
 };
 
+// Game objects hold reference to assets by using an ID.
+
 struct AssetID {
 	constexpr AssetID();
 	constexpr AssetID(std::size_t id);
+	constexpr explicit operator std::size_t() const;
 
 public:
 	constexpr friend bool operator==(AssetID const& lhs, AssetID const& rhs);

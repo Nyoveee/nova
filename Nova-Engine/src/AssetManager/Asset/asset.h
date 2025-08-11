@@ -3,11 +3,12 @@
 #include <string>
 
 #include "Libraries/type_alias.h"
+#include "export.h"
 
 // Unfortunately, copy-and-swap idiom doesn't work well with base abstract classes.
 class Asset {
 public:
-	Asset(std::string filepath);
+	DLL_API Asset(std::string filepath);
 
 	virtual ~Asset() = 0;
 	Asset(Asset const& other)				= delete;
@@ -16,11 +17,11 @@ public:
 	Asset& operator=(Asset&& other)			= default;
 
 public:
-	virtual void load  () = 0;
-	virtual void unload() = 0;
+	DLL_API virtual void load  () = 0;
+	DLL_API virtual void unload() = 0;
 
-	std::string const& getFilePath() const;
-	bool isLoaded() const;
+	DLL_API std::string const& getFilePath() const;
+	DLL_API bool isLoaded() const;
 
 protected:
 	bool hasLoaded;

@@ -84,3 +84,7 @@ struct std::hash<AssetID> {
 		return std::hash<std::size_t>{}(assetId.id);
 	}
 };
+
+constexpr AssetID::operator std::size_t() const {
+	return id;
+}

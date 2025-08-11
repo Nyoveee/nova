@@ -8,19 +8,23 @@
 #include "ECS.h"
 #include "themes.h"
 #include "inputManager.h"
+#include "assetManager.h"
+
+#include "AssetManager/Asset/modelAsset.h"
 
 #include "Component/component.h"
 #include <GLFW/glfw3.h>
 
+
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager) :
-	window				{ window },
-	engine				{ engine },
-	assetManager		{ assetManager },
-	gameViewPort		{ engine },
-	inputManager		{ inputManager },
-	componentInspector	{},
-	assetManagerUi		{},
-	hasEditorControl	{ false }
+	window					{ window },
+	engine					{ engine },
+	assetManager			{ assetManager },
+	gameViewPort			{ engine },
+	inputManager			{ inputManager },
+	componentInspector		{},
+	assetManagerUi			{},
+	isControllingInViewPort	{ false }
 {
 	(void) inputManager;
 
@@ -40,10 +44,14 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	// Subscribe to input manager for editor control.
 	inputManager.subscribe<ToggleEditorControl>(
 		[&](ToggleEditorControl) {
-			if(gameViewPort.isHoveringOver) toggleEditorControl(true);
+			if (gameViewPort.isHoveringOver) {
+				toggleViewPortControl(true);
+				ImGui::GetIO().WantCaptureMouse = false;
+			}
 		},
 		[&](ToggleEditorControl) {
-			toggleEditorControl(false);
+			toggleViewPortControl(false);
+			ImGui::GetIO().WantCaptureMouse = true;
 		}
 	);
 }
@@ -62,7 +70,7 @@ void Editor::update() {
 
 void Editor::main() {
 	ImGui::ShowDemoWindow();
-
+	
 	entt::registry& registry = engine.ecs.registry;
 	
 	// Show all game objects..
@@ -74,10 +82,10 @@ void Editor::main() {
 
 	ImGui::SliderFloat("Camera Speed", &engine.cameraSystem.cameraSpeed, 0.f, 10.f);
 
-	if (ImGui::Button("(+) Add entity")) {
+#if 0
+	if (ImGui::Button("(+) Add plane")) {
 		auto entity = registry.create();
 
-		static float zPos = 0;
 		zPos -= 5.f;
 
 		Transform transform = {
@@ -86,31 +94,57 @@ void Editor::main() {
 			{1.f, 1.f, 1.f}
 		};
 
-		Mesh mesh = {
+		std::vector<unsigned int> indices = {  // note that we start from 0!
+			0, 1, 3,   // first triangle
+			1, 2, 3    // second triangle
+		};
+
+		ModelAsset::Mesh mesh = {
 			{
 				Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-				Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
 				Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
-
-				Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
 				Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-				Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
+				Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
 			},
-			Color{}
+			std::move(indices),
+			2
 		};
 
 		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<Mesh>(entity, std::move(mesh));
+		registry.emplace<ModelRenderer>(entity, std::move(ModelRenderer{2}));
 	}	
-	
-	for (auto&& [entity, transform, mesh] : registry.view<Transform, Mesh>().each()) {
+#endif
+
+	static float zPos = 0;
+	static bool alternate = true;
+
+	if (ImGui::Button("(+) Add 3D model")) {
+		auto entity = registry.create();
+
+		zPos -= 5.f;
+
+		Transform transform = {
+			{0.f, 0.f, zPos},
+			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f}
+		};
+
+		registry.emplace<Transform>(entity, std::move(transform));
+
+
+		registry.emplace<ModelRenderer>(entity, ModelRenderer{ alternate ? AssetID{1} : AssetID{2} });
+		alternate = !alternate;
+	}
+
+	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, ModelRenderer>().each()) {
 		std::string textToDisplay =
 			"Entity ID: " + std::to_string(static_cast<entt::id_type>(entity))
 			+ ", pos: {"
 			+ std::to_string(transform.position.x) + " "
 			+ std::to_string(transform.position.y) + " "
 			+ std::to_string(transform.position.z) + "} ";
-		
+			+ ", asset id: " + std::to_string((std::size_t)modelRenderer.modelId);
+
 		ImGui::Text(textToDisplay.c_str());
 	}
 
@@ -125,10 +159,10 @@ void Editor::main() {
 	ImGui::End();
 }
 
-void Editor::toggleEditorControl(bool toControl) {
-	hasEditorControl = toControl;
+void Editor::toggleViewPortControl(bool toControl) {
+	isControllingInViewPort = toControl;
 
-	if (hasEditorControl) {
+	if (isControllingInViewPort) {
 		inputManager.broadcast<ToCameraControl>(ToCameraControl::Control);
 		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Disable);
 		

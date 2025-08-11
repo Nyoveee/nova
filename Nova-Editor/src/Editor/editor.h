@@ -28,7 +28,7 @@ public:
 
 private:
 	void main();
-	void toggleEditorControl(bool toControl);
+	void toggleViewPortControl(bool toControl);
 
 private:
 	Window& window;
@@ -40,5 +40,6 @@ private:
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
 
-	bool hasEditorControl;
+	// This indicates whether the camera is active in the game's viewport.
+	bool isControllingInViewPort;
 };

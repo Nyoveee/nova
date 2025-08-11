@@ -14,7 +14,7 @@ public:
 
 	Texture(Texture const& other) = delete;
 	Texture(Texture&& other) noexcept;
-	Texture& operator=(Asset const& other) = delete;
+	Texture& operator=(Texture const& other) = delete;
 	Texture& operator=(Texture&& other) noexcept;
 
 public:

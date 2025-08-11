@@ -1,12 +1,12 @@
 #pragma once
 
 #include "export.h"
-
 #include <memory>
 #include <unordered_map>
 
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
+#include "AssetManager/Asset/modelAsset.h"
 
 // Assets stored in the asset manager merely point to these assets in file location.
 // These assets could be loaded or not loaded.
@@ -14,17 +14,18 @@
 
 class AssetManager {
 public:
+	enum class QueryResult {
+		Success,
+		Invalid,	// is never recorded in asset manager
+		WrongType,	// asset exist and is loaded, but is not of type T. (most likely code error, this shouldn't happen)
+		Loading		// exist but is not loaded, asset manager is attempting to load it now.
+	};
+
 	template <typename T>
 	struct AssetQuery {
 		// Raw pointer representing non-owning, potentially null resource.
 		T* asset;
-
-		enum Result {
-			Success,	
-			Invalid,	// is never recorded in asset manager
-			WrongType,	// asset exist and is loaded, but is not of type T. (most likely code error, this shouldn't happen)
-			Loading		// exist but is not loaded, asset manager is attempting to load it now.
-		} result;
+		QueryResult result;
 	};
 
 public:
