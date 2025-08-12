@@ -28,8 +28,8 @@ namespace ScriptingAPI {
 		for each (System::Type^ type in scriptTypes) {
 			if (type->Name == scriptName) {
 				Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(type));
+				newScript->LoadEntityID(entityID);
 				newScript->Init();
-				newScript->SetEntityID(entityID);
 				Scripts^ list = gcnew Scripts();
 				if (!gameObjectScripts->ContainsKey(entityID))
 					gameObjectScripts->Add(entityID,list);

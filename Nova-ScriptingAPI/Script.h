@@ -3,16 +3,22 @@
 //https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
 #pragma once
 #include "ManagedComponents.h"
-#include "../Nova-Engine/src/Export/Header/ECS.h"
 namespace ScriptingAPI {
 	public ref class Script abstract
 	{
+	internal:
+		void LoadEntityID(System::UInt32 entityID) { this->entityID = entityID; }
 	public:
 		virtual void Init() {};
 		virtual void update() {};
 		virtual void exit() {};	
-		Transform_ GetTransformComponent();
-		void SetEntityID(System::UInt32 newEntityID); // Make this not overridable by the inherited scripts
+		generic<typename Component> where Component: ManagedComponent 
+		Component getComponent() { 
+			// Can't use constructor cause it assumes it's a function for some reason
+			Component component;
+			component->SetEntityID(entityID);
+			return component; 
+		};
 	private:
 		System::UInt32 entityID;
 	};

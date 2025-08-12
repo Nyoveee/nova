@@ -9,7 +9,7 @@ namespace Nova_Scripts
         }
         public override void update()
         {
-            Transform_ transform = GetTransformComponent(); // Ideally, should be called once
+            Transform_ transform = getComponent<Transform_>(); // Ideally, should be called once
             Vector3 position = transform.position;
             position.z += 1;
             transform.position = position;    
