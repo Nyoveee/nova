@@ -21,7 +21,10 @@
     <ClInclude Include="Script.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ManagedComponents.h">
+    <ClInclude Include="ManagedTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagedTypeMacros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,10 +32,7 @@
     <ClCompile Include="ScriptingAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ManagedComponents.cpp">
+    <ClCompile Include="ManagedTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

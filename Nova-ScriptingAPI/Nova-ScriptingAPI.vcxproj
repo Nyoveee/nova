@@ -19,12 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ManagedComponents.h" />
+    <ClInclude Include="ManagedTypes.h" />
+    <ClInclude Include="ManagedTypeMacros.h" />
     <ClInclude Include="Script.h" />
     <ClInclude Include="ScriptingAPI.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ManagedComponents.cpp" />
+    <ClCompile Include="ManagedTypes.cpp" />
     <ClCompile Include="ScriptingAPI.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -97,6 +98,7 @@
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <AdditionalDependencies>Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -129,6 +131,7 @@
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <AdditionalDependencies>Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
