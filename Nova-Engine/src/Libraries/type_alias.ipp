@@ -66,3 +66,25 @@ struct std::hash<EventID> {
 		return std::hash<std::size_t>{}(eventId.id);
 	}
 };
+
+constexpr AssetID::AssetID() : id{} {}
+constexpr AssetID::AssetID(std::size_t id) : id{ id } {}
+
+constexpr bool operator==(AssetID const& lhs, AssetID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(AssetID const& lhs, AssetID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+template<>
+struct std::hash<AssetID> {
+	std::size_t operator()(AssetID const& assetId) const noexcept {
+		return std::hash<std::size_t>{}(assetId.id);
+	}
+};
+
+constexpr AssetID::operator std::size_t() const {
+	return id;
+}

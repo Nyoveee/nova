@@ -5,11 +5,13 @@
 #include "imgui.h"
 
 GameViewPort::GameViewPort(Engine& engine) :
-	engine { engine }
+	engine			{ engine },
+	isHoveringOver	{ false }
 {}
 
 void GameViewPort::update() {
 	ImGui::Begin("Game");
+	isHoveringOver = ImGui::IsWindowHovered();
 
 	// Get ImGui window's top left and bottom right.
 	ImVec2 gameWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();

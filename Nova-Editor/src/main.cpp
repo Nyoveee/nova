@@ -4,7 +4,7 @@
 #include "engine.h"
 #include "window.h"
 #include "inputManager.h"
-
+#include "assetManager.h"
 #include "Editor/editor.h"
 
 constexpr const char*	windowName		= "Nova Engine";
@@ -17,9 +17,10 @@ int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	InputManager inputManager	{};
+	AssetManager assetManager   {};
 	Window		 window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
-	Engine		 engine			{ window, inputManager, gameWidth, gameHeight };
-	Editor		 editor			{ window, engine, inputManager };
+	Engine		 engine			{ window, inputManager, assetManager, gameWidth, gameHeight };
+	Editor		 editor			{ window, engine, inputManager, assetManager };
 
 	window.run(
 		// Fixed update loop

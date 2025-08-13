@@ -72,14 +72,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export\Header;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Library\Debug;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
-    <ExternalIncludePath>$(SolutionDir)Include\dotnet;$(ExternalIncludePath)</ExternalIncludePath>
+    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export\Header;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Library\Release;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(OutDir)</LibraryPath>
-    <ExternalIncludePath>$(SolutionDir)Include\dotnet;$(ExternalIncludePath)</ExternalIncludePath>
+    <IncludePath>$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -122,11 +122,11 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3dll.lib;;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /s /r /y /q "$(SolutionDir)Nova-Scripts\bin\$(Configuration)\net6.0-windows\Nova-Scripts.dll" "$(OutDir)"</Command>
-      <Command>xcopy.exe "$(SolutionDir)DLL\Debug\glfw3.dll" /Y "$(OutDir)"</Command>
+      <Command>xcopy.exe "$(SolutionDir)DLL\Debug\*.*" /Y "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,11 +146,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3dll.lib;;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /s /r /y /q "$(SolutionDir)Nova-Scripts\bin\$(Configuration)\net6.0-windows\Nova-Scripts.dll" "$(OutDir)"</Command>
-      <Command>xcopy.exe "$(SolutionDir)DLL\Release\glfw3.dll" /Y "$(OutDir)"</Command>
+      <Command>xcopy.exe "$(SolutionDir)DLL\Release\*.*" /Y "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

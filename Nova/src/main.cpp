@@ -4,6 +4,7 @@
 #include "engine.h"
 #include "window.h"
 #include "inputManager.h"
+#include "assetManager.h"
 
 constexpr const char*	windowName		= "Nova Game";
 constexpr int			windowWidth		= 1200;
@@ -15,8 +16,9 @@ int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	InputManager inputManager	{};
+	AssetManager assetManager   {};
 	Window		 window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Restored, inputManager, Window::Viewport::ChangeDuringResize };
-	Engine		 engine			{ window, inputManager, gameWidth, gameHeight };
+	Engine		 engine			{ window, inputManager, assetManager, gameWidth, gameHeight };
 
 	window.run(
 		// Fixed update loop

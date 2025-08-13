@@ -11,10 +11,11 @@ using GLuint = unsigned int;
 class Window;
 class Engine;
 class InputManager;
+class AssetManager;
 
 class Editor {
 public:
-	Editor(Window& window, Engine& engine, InputManager& inputManager);
+	Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager);
 
 	~Editor();
 	Editor(Editor const& other)				= delete;
@@ -27,12 +28,19 @@ public:
 
 private:
 	void main();
+	void toggleViewPortControl(bool toControl);
+	void updateMaterialMapping();
 
 private:
 	Window& window;
 	Engine& engine;
+	InputManager& inputManager;
+	AssetManager& assetManager;
 
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
+
+	// This indicates whether the camera is active in the game's viewport.
+	bool isControllingInViewPort;
 };

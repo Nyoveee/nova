@@ -7,25 +7,27 @@
 #include "window.h"
 #include "vertex.h"
 #include "ECS.h"
-#include "component.h"
-
 #include "engine.h"
+#include "assetManager.h"
+
+#include "Component/component.h"
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },
+	assetManager		{ engine.assetManager },
 	basicShader			{ "Assets/Shader/basic.vert", "Assets/Shader/basic.frag" },
 	standardShader		{ "Assets/Shader/standard.vert", "Assets/Shader/basic.frag" },
 	textureShader		{ "Assets/Shader/standard.vert", "Assets/Shader/image.frag" },
 	VAO					{},
-	EBO					{},
+	EBO					{ 200000, BufferObject::Type::ElememtBuffer },
 	camera				{},
 	mainFrameBuffer		{ gameWidth, gameHeight }
 {
 	// Set the correct viewport
 	glViewport(0, 0, gameWidth, gameHeight);
 
-	// construct a VBO. Allocate 120 bytes of memory to this VBO.
-	VBOs.push_back({ 120 });
+	// construct a VBO. Allocate 50000 bytes of memory to this VBO.
+	VBOs.push_back({ 200000, BufferObject::Type::VertexBuffer });
 
 #if 0
 	std::array<Vertex, 6> vertices{
@@ -41,8 +43,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glNamedBufferData(VBOs[0].id(), vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 #endif
 
-	glCreateBuffers(1, &EBO);
 	glCreateVertexArrays(1, &VAO);
+
+	// Bind this EBO to this VAO.
+	glVertexArrayElementBuffer(VAO, EBO.id());
 
 	// for this VAO, associate bindingIndex 0 with this VBO. 
 	GLuint bindingIndex = 0;
@@ -69,7 +73,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &EBO);
 }
 
 void Renderer::update(float dt) {
@@ -92,70 +95,60 @@ void Renderer::render(RenderTarget target) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		break;
 	}
-
-#if 0
-	std::vector<Vertex> vertices{
-		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-		Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
-
-		Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
-		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-	};
-
-	// for this VAO, associate bindingIndex 0 with 1st VBO.
-	glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
-	VBOs[0].uploadData(vertices);
-
-	// Model matrix.
-	glm::vec3 pos = { 0.f, 0.f, -3.f};
-	glm::vec3 scale = { 1.0f, 1.0f, 1.0f };
-
-	glm::mat4x4 modelMatrix = glm::mat4x4{ 1 };
-	modelMatrix = glm::translate(modelMatrix, pos);
-	modelMatrix = glm::scale(modelMatrix, scale);
-
-	// View matrix.
-	glm::mat4x4 viewMatrix = camera.view();
-
-	// Perspective matrix.
-	glm::mat4x4 perspectiveMatrix = camera.projection();
-
-	standardShader.use();
-	standardShader.setMatrix("model", modelMatrix);
-	standardShader.setMatrix("view", viewMatrix);
-	standardShader.setMatrix("projection", perspectiveMatrix);
-
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-#endif
-
-	standardShader.use();
-	standardShader.setMatrix("view", camera.view());
-	standardShader.setMatrix("projection", camera.projection());
+	
+	textureShader.use();
+	textureShader.setMatrix("view", camera.view());
+	textureShader.setMatrix("projection", camera.projection());
 
 	// Retrieve all game objects and prepare them for batch rendering..
 	entt::registry& registry = engine.ecs.registry;
 
-	for (auto&& [entity, transform, mesh] : registry.view<Transform, Mesh>().each()) {
+	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
+		// Retrieves model asset from asset manager.
+		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
+
+		if (!model) {
+			continue;
+		}
+
 		// Model matrix.
 		glm::mat4x4 modelMatrix = glm::mat4x4{ 1 };
 		modelMatrix = glm::translate(modelMatrix, transform.position);
-		modelMatrix = glm::scale(modelMatrix, transform.scale);
+		modelMatrix = glm::scale(modelMatrix, transform.scale / model->maxDimension);
 
 		// Copy mesh to VBO..
-		//glNamedBufferSubData(VBOs[1].id(), 0, 6 * sizeof(decltype(mesh.vertices)::value_type), mesh.vertices.data());
 		auto& VBO = VBOs[0];
-		VBO.uploadData(mesh.vertices);
+		textureShader.setMatrix("model", modelMatrix);
 
-		standardShader.setMatrix("model", modelMatrix);
+		// Draw every mesh of a given model.
+		for (auto const& mesh : model->meshes) {
+			// Get texture..
+			auto iterator = modelRenderer.materials.find(mesh.materialName);
 
-		// set VBO to VAO's [0] binding index.
-		glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
+			if (iterator == modelRenderer.materials.end()) {
+				std::cerr << "this shouldn't happen.";
+				continue;
+			}
+			
+			auto [texture, _] = assetManager.getAsset<Texture>(iterator->second.diffuseTextureId);
 
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+			if (!texture) {
+				std::cerr << "Error retrieving asset!\n";
+			}
+			else {
+				textureShader.setImageUniform("image", 0);
+				glBindTextureUnit(0, texture->getTextureId());
+			}
+
+			VBO.uploadData(mesh.vertices);
+			EBO.uploadData(mesh.indices);
+
+			// set VBO to VAO's [0] binding index.
+			glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
+
+			glBindVertexArray(VAO);
+			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+		}
 	}
 
 	// Bind back to default FBO for ImGui to work on.
