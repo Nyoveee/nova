@@ -2,7 +2,7 @@
 // Reference: https://www.codeproject.com/Articles/320761/Cplusplus-CLI-Cheat-Sheet
 #pragma once
 #include "Script.h"
-#include "../Nova-Engine/src/Export/Header/engine.h"
+#include "../Nova-Engine/src/Export/engine.h"
 namespace ScriptingAPI {
 	public ref class Interface
 	{

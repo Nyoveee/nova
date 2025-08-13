@@ -1,6 +1,5 @@
 #include <shlwapi.h>
 #include <array>
-#include <filesystem>
 #include <iostream>
 
 #include "ScriptingAPIManager.h"
@@ -25,8 +24,6 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	runtimePath.resize(std::strlen(runtimePath.data()));
 	std::string coreClrPath{ runtimePath };
 	coreClrPath += "\\Coreclr.dll";
-
-	std::filesystem::current_path(runtimePath);
 
 	// Load coreclr.dll
 	coreClr = LoadLibraryExA(coreClrPath.c_str(), nullptr, 0);
@@ -115,5 +112,10 @@ void ScriptingAPIManager::update() { updateScripts(); }
 void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName)
 {
 	addGameObjectScript(entityID, scriptName);
+}
+
+void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName)
+{
+	removeGameObjectScript(entityID, scriptName);
 }
 

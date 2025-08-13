@@ -25,8 +25,8 @@ public:
 	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other) = delete;
 	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other) = delete;
 	DLL_API void update();
-	// Adding removing scripts into the api
 	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
+	DLL_API void removeScriptFromAPI(unsigned int entityID, const char* scriptName);
 private:
 	// coreCLR key components 
 	HMODULE coreClr;

@@ -151,7 +151,7 @@ void Editor::main() {
 		alternate = !alternate;
 
 		// Test
-		engine.scriptingAPIManager.loadScriptIntoAPI(static_cast<unsigned int>(entity), "TestScript");
+		//engine.scriptingAPIManager.loadScriptIntoAPI(static_cast<unsigned int>(entity), "TestScript");
 	}
 
 	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {

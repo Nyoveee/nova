@@ -134,7 +134,7 @@
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\DLLs" "$(OutDir)"</Command>
+      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\DLLs\*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -161,7 +161,7 @@
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\DLLs" "$(OutDir)"</Command>
+      <Command>xcopy /s /r /y /q "$(SolutionDir)Include\dotnet\DLLs\*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -176,6 +176,7 @@
     <ClInclude Include="src\Export\ECS.h" />
     <ClInclude Include="src\Export\engine.h" />
     <ClInclude Include="src\Export\export.h" />
+    <ClInclude Include="src\Export\ScriptingAPIManager.h" />
     <ClInclude Include="src\Graphics\camera.h" />
     <ClInclude Include="src\Graphics\cameraSystem.h" />
     <ClInclude Include="src\Graphics\framebuffer.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="src\AssetManager\modelLoader.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />
+    <ClCompile Include="src\Engine\ScriptingAPIManager.cpp" />
     <ClCompile Include="src\Graphics\camera.cpp" />
     <ClCompile Include="src\Graphics\cameraSystem.cpp" />
     <ClCompile Include="src\Graphics\framebuffer.cpp" />
@@ -213,7 +215,6 @@
     <ClCompile Include="src\InputManager\inputManager.cpp" />
     <ClCompile Include="src\InputManager\inputMapping.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
-    <ClCompile Include="src\Export\Source\ScriptingAPIManager.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
       <FileType>CppCode</FileType>

@@ -16,7 +16,7 @@ Usage of macros:
 		After that go to ManagedComponents.cpp to set up the definition macros
 */
 #pragma once
-#include "../Nova-Engine/src/Export/Header/component.h"
+#include "../Nova-Engine/src/Component/component.h"
 #include "ManagedTypeMacros.h"
 namespace ScriptingAPI {
 	ManagedStruct(Vector3, glm::vec3, float, x, float, y, float, z)
