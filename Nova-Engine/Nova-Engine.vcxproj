@@ -133,6 +133,10 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,6 +161,10 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\AssetManager\assetMananger.ipp" />
@@ -170,6 +178,7 @@
     <ClInclude Include="src\Export\ECS.h" />
     <ClInclude Include="src\Export\engine.h" />
     <ClInclude Include="src\Export\export.h" />
+    <ClInclude Include="src\Export\ScriptingAPIManager.h" />
     <ClInclude Include="src\Graphics\camera.h" />
     <ClInclude Include="src\Graphics\cameraSystem.h" />
     <ClInclude Include="src\Graphics\framebuffer.h" />
@@ -185,6 +194,7 @@
     <ClInclude Include="src\InputManager\observer.ipp" />
     <ClInclude Include="src\Libraries\family.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
+    <ClInclude Include="src\Export\Header\ScriptingAPIManager.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
     <ClInclude Include="src\Libraries\type_alias.h" />
     <ClInclude Include="src\Export\window.h" />
@@ -197,6 +207,7 @@
     <ClCompile Include="src\AssetManager\modelLoader.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />
+    <ClCompile Include="src\Engine\ScriptingAPIManager.cpp" />
     <ClCompile Include="src\Graphics\camera.cpp" />
     <ClCompile Include="src\Graphics\cameraSystem.cpp" />
     <ClCompile Include="src\Graphics\framebuffer.cpp" />

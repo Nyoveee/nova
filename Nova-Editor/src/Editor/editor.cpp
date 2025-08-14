@@ -1,3 +1,6 @@
+#include "ScriptingAPIManager.h"
+
+#include <glad/glad.h>
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -13,8 +16,6 @@
 #include "AssetManager/Asset/model.h"
 
 #include "Component/component.h"
-#include <GLFW/glfw3.h>
-
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager) :
 	window					{ window },

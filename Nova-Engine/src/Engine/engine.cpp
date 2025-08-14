@@ -1,12 +1,10 @@
-#include <iostream>
-
 #include "engine.h"
 #include "window.h"
 
 #include "Component/component.h"
 #include "inputManager.h"
 
-#include <GLFW/glfw3.h>
+#include <iostream>
 
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window			{ window },
@@ -14,9 +12,12 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	renderer		{ *this, gameWidth, gameHeight },
 	cameraSystem	{ *this, inputManager },
 	ecs				{},
+	scriptingAPIManager{*this},
 	gameWidth		{ gameWidth },
 	gameHeight		{ gameHeight }
-{}
+{
+}
+
 
 void Engine::fixedUpdate(float dt) {
 	(void) dt;
@@ -25,6 +26,7 @@ void Engine::fixedUpdate(float dt) {
 void Engine::update(float dt) {
 	static float zPos = 0.f;
 
+#if 0
 	if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_0)) {
 		auto entity = ecs.registry.create();
 
@@ -46,9 +48,10 @@ void Engine::update(float dt) {
 
 		ecs.registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}
-
+#endif
 	cameraSystem.update(dt);
 	renderer.update(dt);
+	scriptingAPIManager.update();
 }
 
 void Engine::render(Renderer::RenderTarget target) {

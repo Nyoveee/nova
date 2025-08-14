@@ -3,15 +3,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
 
+#include "engine.h"
 #include "renderer.h"
 #include "window.h"
 #include "vertex.h"
 #include "ECS.h"
-#include "engine.h"
 #include "assetManager.h"
 
 #include <fstream>
 #include "Component/component.h"
+
+#undef max
 
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 constexpr std::size_t colorIndex = 0;
@@ -205,7 +207,7 @@ void Renderer::render(RenderTarget target) {
 				std::cerr << "this shouldn't happen.";
 			}
 			else {
-				auto [texture, _] = assetManager.getAsset<Texture>(iterator->second.diffuseTextureId);
+				auto [texture, __] = assetManager.getAsset<Texture>(iterator->second.diffuseTextureId);
 
 				if (!texture) {
 					std::cerr << "Error retrieving asset!\n";

@@ -1,11 +1,12 @@
 #include <iostream>
-#include <crtdbg.h>
 
 #include "engine.h"
 #include "window.h"
 #include "inputManager.h"
 #include "assetManager.h"
 #include "Editor/editor.h"
+
+#include <crtdbg.h>
 
 constexpr const char*	windowName		= "Nova Engine";
 constexpr int			windowWidth		= 1200;

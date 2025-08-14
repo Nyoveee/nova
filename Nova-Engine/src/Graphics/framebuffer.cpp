@@ -62,7 +62,7 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 
 	// link respective color attachments to draw buffers in a multi render target framebuffer..
 	if (colorAttachments.size() > 1) {
-		glNamedFramebufferDrawBuffers(FBO_id, colorAttachments.size(), colorAttachments.data());
+		glNamedFramebufferDrawBuffers(FBO_id, static_cast<GLsizei>(colorAttachments.size()), colorAttachments.data());
 	}
 
 	// Generating renderbuffer object for depth / stencil testing

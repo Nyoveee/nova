@@ -124,7 +124,8 @@
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy.exe "$(SolutionDir)DLL\Debug\*.*" /Y "$(OutDir)"</Command>
+      <Command>xcopy "$(SolutionDir)DLL\Debug\*.dll" /Y "$(OutDir)"
+xcopy /r /y "$(SolutionDir)Include\dotnet\DLLs\*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,7 +148,7 @@
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy.exe "$(SolutionDir)DLL\Release\*.*" /Y "$(OutDir)"</Command>
+      <Command>xcopy "$(SolutionDir)DLL\Release\*.dll" /Y "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
