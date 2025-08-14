@@ -71,7 +71,9 @@ void Editor::update() {
 void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
+	handleEntitySelection();
 	updateMaterialMapping();
+
 	entt::registry& registry = engine.ecs.registry;
 	
 	// Show all game objects..
@@ -81,40 +83,14 @@ void Editor::main() {
 	// STUB CODE!!!!
 	// ========================================
 
-	ImGui::SliderFloat("Camera Speed", &engine.cameraSystem.cameraSpeed, 0.f, 10.f);
+	static bool wireFrameMode = false;
 
-#if 0
-	if (ImGui::Button("(+) Add plane")) {
-		auto entity = registry.create();
+	if (ImGui::Button("Wireframe mode.")) {
+		wireFrameMode = !wireFrameMode;
+		engine.renderer.enableWireframeMode(wireFrameMode);
+	}
 
-		zPos -= 5.f;
-
-		Transform transform = {
-			{0.f, 0.f, zPos},
-			{1.f, 1.f, 1.f},
-			{1.f, 1.f, 1.f}
-		};
-
-		std::vector<unsigned int> indices = {  // note that we start from 0!
-			0, 1, 3,   // first triangle
-			1, 2, 3    // second triangle
-		};
-
-		ModelAsset::Mesh mesh = {
-			{
-				Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-				Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
-				Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-				Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
-			},
-			std::move(indices),
-			2
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<ModelRenderer>(entity, std::move(ModelRenderer{2}));
-	}	
-#endif
+	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
 
 	static float zPos = 0;
 	static bool alternate = true;
@@ -147,6 +123,10 @@ void Editor::main() {
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 		
 		alternate = !alternate;
+	}
+
+	if (ImGui::Button("asd")) {
+		engine.renderer.getObjectId({ 0, 0 });
 	}
 
 	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
@@ -230,6 +210,43 @@ void Editor::updateMaterialMapping() {
 			modelRenderer.materials[materialName];
 		}
 	}
+}
+
+void Editor::handleEntitySelection() {
+	ImGui::Begin("text");
+	ImGui::Text("%u", hoveringEntity);
+	ImGui::End();
+	if (	
+			gameViewPort.mouseRelativeToViewPort.x < 0.f 
+		||	gameViewPort.mouseRelativeToViewPort.x >= 1.f
+		||	gameViewPort.mouseRelativeToViewPort.y < 0.f
+		||	gameViewPort.mouseRelativeToViewPort.y >= 1.f
+	) {
+		return;
+	}
+
+	entt::entity newHoveringEntity =
+		static_cast<entt::entity>(engine.renderer.getObjectId({ gameViewPort.mouseRelativeToViewPort.x, gameViewPort.mouseRelativeToViewPort.y }));
+
+	if (newHoveringEntity == hoveringEntity) {
+		return;
+	}
+	
+	// new entity hovered.
+	entt::registry& registry = engine.ecs.registry;
+	
+	// has component mesh renderer.
+	if (registry.all_of<MeshRenderer>(newHoveringEntity)) {
+		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(newHoveringEntity);
+		meshRenderer.toRenderOutline = true;
+	}
+
+	if (registry.all_of<MeshRenderer>(hoveringEntity)) {
+		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(hoveringEntity);
+		meshRenderer.toRenderOutline = false;
+	}
+
+	hoveringEntity = newHoveringEntity;
 }
 
 Editor::~Editor() {

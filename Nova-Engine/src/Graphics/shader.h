@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.h"
 #include <glad/glad.h>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
@@ -22,10 +23,10 @@ public:
 
 	// use/activate the shader
 	void use() const;
-	//void unuse() const;
+	void unuse() const;
 
 	// recompile shader based on vertexPath and fragmentPath
-	void compile();
+	DLL_API void compile();
 
 	// retrieve filepaths
 	const char* getVertexPath() const;
@@ -35,6 +36,7 @@ public:
 	// setting uniform functions
 	void setBool			(const std::string& name, bool value) const;
 	void setInt				(const std::string& name, int value) const;
+	void setUInt			(const std::string& name, unsigned int value) const;
 	void setFloat			(const std::string& name, float value) const;
 	void setVec2			(const std::string& name, float x, float y) const;
 	void setVec2			(const std::string& name, glm::vec2 const& list) const;

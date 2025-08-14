@@ -27,6 +27,10 @@ void Shader::use() const {
 	glUseProgram(m_id);
 }
 
+void Shader::unuse() const {
+	glUseProgram(0);
+}
+
 //void Shader::unuse() const {
 //	glUseProgram(0);
 //}
@@ -85,6 +89,9 @@ void Shader::compile() {
 	glShaderSource(fragment, 1, &fShaderCode, nullptr);
 	glCompileShader(fragment);
 
+	// print compile errors if any
+	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
@@ -103,7 +110,7 @@ void Shader::compile() {
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-		//logger.error(std::string{ "Error! Linking of shaders failed!" } + infoLog + '\n');
+		std::cerr << "Error! Linking of shaders failed! " << infoLog << '\n';
 	}
 
 	// delete shaders; they're linked into our program and no longer necessary
@@ -117,6 +124,10 @@ void Shader::setBool(const std::string& name, bool const value) const {
 
 void Shader::setInt(const std::string& name, int const value) const {
 	glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
+}
+
+void Shader::setUInt(const std::string& name, unsigned int value) const {
+	glUniform1ui(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::setFloat(const std::string& name, float const value) const {

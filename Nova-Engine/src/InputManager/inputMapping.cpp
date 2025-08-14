@@ -3,7 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
-// In this file, you determine the mapping of physical keys to arbitary input events for interested observers.
+// In this file, you determine the mapping of physical keys to arbitrary input events for interested observers.
 
 void InputManager::mainKeyBindMapping() {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

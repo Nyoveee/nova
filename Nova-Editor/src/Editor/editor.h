@@ -1,7 +1,9 @@
 #pragma once
 
-#include "export.h"
+#include <vector>
 
+#include "ecs.h"
+#include "export.h"
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
@@ -30,6 +32,7 @@ private:
 	void main();
 	void toggleViewPortControl(bool toControl);
 	void updateMaterialMapping();
+	void handleEntitySelection();
 
 private:
 	Window& window;
@@ -40,6 +43,10 @@ private:
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
+
+private:
+	std::vector<entt::entity> selectedEntities;
+	entt::entity hoveringEntity;
 
 	// This indicates whether the camera is active in the game's viewport.
 	bool isControllingInViewPort;

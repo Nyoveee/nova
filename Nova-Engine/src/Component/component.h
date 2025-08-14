@@ -26,4 +26,6 @@ struct MeshRenderer {
 
 	// maps a material name from the model to a specific material texture
 	std::unordered_map<MaterialName, Material> materials;
+
+	bool toRenderOutline = false;
 };

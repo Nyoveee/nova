@@ -1,5 +1,6 @@
 #pragma once
 
+#include "export.h"
 #include "Libraries/type_alias.h"
 #include "InputManager/inputEvent.h"
 
@@ -21,14 +22,19 @@ public:
 	void update(float dt);
 
 	void setMovement(CameraMovement movement, bool toMove);
-
 	void setLastMouse(float mouseX, float mouseY);
 	void calculateEulerAngle(float mouseX, float mouseY);
 
 public:
-	float cameraSpeed;
+	// the formula of camera speed is e^x, to appropriately scale speed. 
+	float cameraSpeedExponent;
+	
+public:
+	DLL_API float getCameraSpeed() const;
 
 private:
+	float cameraSpeed;
+
 	bool isInControl;
 	bool toResetMousePos;
 

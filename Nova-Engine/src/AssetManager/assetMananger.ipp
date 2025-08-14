@@ -6,6 +6,7 @@ void AssetManager::addAsset(std::string filepath, Args... args) {
 	);
 
 	AssetID id{ assets.size() };
+
 	assets[id] = std::move(newAsset);
 }
 

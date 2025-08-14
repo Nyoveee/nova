@@ -1,24 +1,27 @@
+#include <cmath>
+
 #include "cameraSystem.h"
 #include "renderer.h"
 #include "engine.h"
 #include "inputManager.h"
 
 CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
-	engine			{ engine },
-	isMovingDown	{},
-	isMovingUp		{},
-	isMovingFront	{},
-	isMovingBack	{},
-	isMovingLeft	{},
-	isMovingRight	{},
-	lastMouseX		{},
-	lastMouseY		{},
-	camera			{ engine.renderer.getCamera() },
-	yaw				{ -90.f },
-	pitch			{},
-	isInControl		{ false },
-	toResetMousePos	{ true },
-	cameraSpeed		{ 2.f }
+	engine				{ engine },
+	isMovingDown		{},
+	isMovingUp			{},
+	isMovingFront		{},
+	isMovingBack		{},
+	isMovingLeft		{},
+	isMovingRight		{},
+	lastMouseX			{},
+	lastMouseY			{},
+	camera				{ engine.renderer.getCamera() },
+	yaw					{ -90.f },
+	pitch				{},
+	isInControl			{ false },
+	toResetMousePos		{ true },
+	cameraSpeedExponent { 2.f },
+	cameraSpeed			{ std::exp(cameraSpeedExponent) }
 {
 	// Subscribe to the input manager that the camera system is interested in 
 	// any input related to CameraMovement
@@ -59,9 +62,8 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 				return;
 			}
 
-			cameraSpeed += static_cast<float>(value.value);
-
-			if (cameraSpeed < 0) cameraSpeed = 0;
+			constexpr float adjustmentMultiplier = 0.1f;
+			cameraSpeedExponent += static_cast<float>(value.value) * adjustmentMultiplier;
 		}
 	);
 }
@@ -70,6 +72,8 @@ void CameraSystem::update(float dt) {
 	if (!isInControl) {
 		return;
 	}
+
+	cameraSpeed = std::exp(cameraSpeedExponent);
 
 	if (isMovingFront) {
 		camera.addPos(cameraSpeed * dt * camera.getFront());
@@ -128,6 +132,10 @@ void CameraSystem::setMovement(CameraMovement movement, bool toMove) {
 void CameraSystem::setLastMouse(float mouseX, float mouseY) {
 	lastMouseX = mouseX;
 	lastMouseY = mouseY;
+}
+
+float CameraSystem::getCameraSpeed() const {
+	return cameraSpeed;
 }
 
 void CameraSystem::calculateEulerAngle(float mouseX, float mouseY) {

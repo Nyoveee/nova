@@ -10,7 +10,7 @@ constexpr float defaultFarPlaneDistance		= 1000.f;
 constexpr float defaultAspectRatio			= 800.f / 600.f;
 
 Camera::Camera() : 
-	cameraPos			{},
+	cameraPos			{ 0.f, 2.f, 2.f },
 	cameraFront			{ defaultCameraFront },
 	cameraRight			{ glm::normalize(glm::cross(cameraFront, Up)) },
 	viewMatrix			{},
