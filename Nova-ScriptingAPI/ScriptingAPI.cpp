@@ -6,7 +6,6 @@
 namespace ScriptingAPI {
 	void Interface::init(Engine& newEngine, const char* runtimePath)
 	{
-		runtimePath;
 		engine = &newEngine;
 		// Intialize the dictionary
 		gameObjectScripts = gcnew System::Collections::Generic::Dictionary <System::UInt32, Scripts^>();
