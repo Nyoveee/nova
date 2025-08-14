@@ -63,4 +63,3 @@ namespace ScriptingAPI {
 				script->update();
 	}
 }
-

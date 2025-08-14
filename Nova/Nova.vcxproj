@@ -127,7 +127,7 @@
     <PostBuildEvent>
       <Command>xcopy /s /r /y /q "$(SolutionDir)Nova-Scripts\bin\$(Configuration)\net6.0-windows\Nova-Scripts.dll" "$(OutDir)"</Command>
       <Command>xcopy "$(SolutionDir)DLL\Debug\*.dll" /Y "$(OutDir)"
-xcopy /r /y "$(SolutionDir)Include\dotnet\DLLs\*.dll" "$(OutDir)"</Command>
+xcopy /r /y "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,7 +152,7 @@ xcopy /r /y "$(SolutionDir)Include\dotnet\DLLs\*.dll" "$(OutDir)"</Command>
     <PostBuildEvent>
       <Command>xcopy /s /r /y /q "$(SolutionDir)Nova-Scripts\bin\$(Configuration)\net6.0-windows\Nova-Scripts.dll" "$(OutDir)"</Command>
       <Command>xcopy "$(SolutionDir)DLL\Release\*.dll" /Y "$(OutDir)"
-xcopy /r /y "$(SolutionDir)Include\dotnet\DLLs\*.dll" "$(OutDir)"</Command>
+xcopy /r /y "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

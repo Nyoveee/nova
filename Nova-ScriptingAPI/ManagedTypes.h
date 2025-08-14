@@ -16,10 +16,20 @@ Usage of macros:
 		After that go to ManagedComponents.cpp to set up the definition macros
 */
 #pragma once
-#include "../Nova-Engine/src/Component/component.h"
+#include "Component/component.h"
 #include "ManagedTypeMacros.h"
-namespace ScriptingAPI {
-	ManagedStruct(Vector3, glm::vec3, float, x, float, y, float, z)
 
-	ManagedComponentDeclaration(Transform_, Vector3, position, Vector3, rotation, Vector3, scale)
+namespace ScriptingAPI {
+	public value struct Vector3 {
+		Vector3(glm::vec3 native) : x{ native.x }, y{ native.y }, z{ native.z }, type{ "Vector3" } {
+		} glm::vec3 native() {
+			return { x, y, z, };
+		} float x; float y; float z; System::String^ type;
+	};
+
+	public value class Transform_ : IManagedComponent {
+	public: virtual void SetEntityID(System::UInt32 p_entityID) {
+		this->entityID = p_entityID;
+	}; property Vector3 position { Vector3 get(); void set(Vector3 value); } property Vector3 rotation { Vector3 get(); void set(Vector3 value); } property Vector3 scale { Vector3 get(); void set(Vector3 value); } private: System::UInt32 entityID;
+	};
 }

@@ -126,8 +126,12 @@ void Editor::main() {
 		alternate = !alternate;
 	}
 
-	if (ImGui::Button("asd")) {
-		engine.renderer.getObjectId({ 0, 0 });
+	if (ImGui::Button("test script")) {
+		entt::entity testSubject{ 0 };
+
+		if (registry.valid(testSubject)) {
+			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, "TestScript");
+		}
 	}
 
 	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
