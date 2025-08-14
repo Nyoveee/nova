@@ -65,11 +65,11 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 
 	// Get the functions to run the api
 	try {
-		void(*init)(Engine& engine) = GetFunctionPtr<void(*)(Engine&)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "init");
+		void(*init)(Engine&,const char*) = GetFunctionPtr<void(*)(Engine&,const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "init");
 		updateScripts = GetFunctionPtr<void(*)(void)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "update");
 		addGameObjectScript = GetFunctionPtr<void(*)(unsigned int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "addGameObjectScript");
 		removeGameObjectScript = GetFunctionPtr<void(*)(unsigned int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "removeGameObjectScript");
-		init(engine);
+		init(engine,runtimePath.c_str());
 	}
 	catch (std::exception e) {
 		std::cout << e.what();

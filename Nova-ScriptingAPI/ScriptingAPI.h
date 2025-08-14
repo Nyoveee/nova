@@ -7,7 +7,7 @@ namespace ScriptingAPI {
 	public ref class Interface
 	{
 	public:
-		static void init(Engine& newEngine);
+		static void init(Engine& newEngine, const char* runtimePath);
 		static void update();
 		// GameObjectID should be unique and created somewhere else
 		static void addGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
