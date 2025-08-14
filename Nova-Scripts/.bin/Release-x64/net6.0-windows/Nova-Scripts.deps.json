@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Nova-Scripts/1.0.0": {
+        "dependencies": {
+          "Nova-ScriptingAPI": "1.0.0"
+        },
+        "runtime": {
+          "Nova-Scripts.dll": {}
+        }
+      },
+      "Nova-ScriptingAPI/1.0.0": {
+        "runtime": {
+          "Nova-ScriptingAPI.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Nova-Scripts/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Nova-ScriptingAPI/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
