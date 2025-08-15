@@ -3,7 +3,7 @@
 #pragma once
 #include "Script.h"
 #include "engine.h"
-
+#include <vector>
 namespace ScriptingAPI {
 	public ref class Interface
 	{
@@ -13,6 +13,7 @@ namespace ScriptingAPI {
 		// GameObjectID should be unique and created somewhere else
 		static void addGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
 		static void removeGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
+		static std::vector<std::string> getScriptNames();
 		// This should get the Entt reference from the engine
 		template<typename T> static T* findNativeComponent(System::UInt32 entityID) {
 			entt::registry& registry{ Interface::engine->ecs.registry };
@@ -20,7 +21,6 @@ namespace ScriptingAPI {
 			if (!registry.any_of<T>(entity)) {
 				throw std::runtime_error("Entity does not contain component/Component is Invalid");
 			}
-
 			return &(registry.get<T>(entity));
 		}
 	private:

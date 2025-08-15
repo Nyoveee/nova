@@ -9,7 +9,7 @@
 #include <Windows.h>
 #include <sstream>
 #include <iomanip>
-
+#include <vector>
 #include "../Include/dotnet/coreclrhost.h"
 // Maybe make this follow the system in engine
 
@@ -27,6 +27,7 @@ public:
 	DLL_API void update();
 	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
 	DLL_API void removeScriptFromAPI(unsigned int entityID, const char* scriptName);
+	DLL_API std::vector<std::string> getAvailableScripts();
 private:
 	// coreCLR key components 
 	HMODULE coreClr;
@@ -42,6 +43,7 @@ private:
 	void(*updateScripts)(void);
 	void(*addGameObjectScript)(unsigned int, const char*);
 	void(*removeGameObjectScript)(unsigned int, const char*);
+	std::vector<std::string>(*getScriptNames)(void);
 
 	std::string buildTPAList(const std::string& directory);
 

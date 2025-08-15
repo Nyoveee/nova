@@ -125,12 +125,12 @@ void Editor::main() {
 		
 		alternate = !alternate;
 	}
-
-	if (ImGui::Button("test script")) {
+	std::string testScript{ engine.scriptingAPIManager.getAvailableScripts()[0] };
+	if (ImGui::Button(testScript.c_str())) {
 		entt::entity testSubject{ 0 };
 
 		if (registry.valid(testSubject)) {
-			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, "TestScript");
+			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, testScript.c_str());
 		}
 	}
 

@@ -69,6 +69,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		updateScripts = GetFunctionPtr<void(*)(void)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "update");
 		addGameObjectScript = GetFunctionPtr<void(*)(unsigned int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "addGameObjectScript");
 		removeGameObjectScript = GetFunctionPtr<void(*)(unsigned int, const char*)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "removeGameObjectScript");
+		getScriptNames = GetFunctionPtr<std::vector<std::string>(*)(void)>("Nova-ScriptingAPI", "ScriptingAPI.Interface", "getScriptNames");
 		init(engine,runtimePath.c_str());
 	}
 	catch (std::exception e) {
@@ -108,14 +109,7 @@ std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 	return tpaList.str();
 }
 void ScriptingAPIManager::update() { updateScripts(); }
-
-void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName)
-{
-	addGameObjectScript(entityID, scriptName);
-}
-
-void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName)
-{
-	removeGameObjectScript(entityID, scriptName);
-}
+void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName){ addGameObjectScript(entityID, scriptName); }
+void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName) { removeGameObjectScript(entityID, scriptName); }
+std::vector<std::string> ScriptingAPIManager::getAvailableScripts(){ return getScriptNames(); }
 
