@@ -10,7 +10,14 @@
 #include <sstream>
 #include <iomanip>
 
-#include "../Include/dotnet/coreclrhost.h"
+#include <dotnet/coreclrhost.h>
+
+// More readable function pointer syntax because C lmaoo
+using UpdateFunctionPtr			= void (*)();
+using AddScriptFunctionPtr		= void (*)(unsigned int, const char*);
+using RemoveScriptFunctionPtr	= void (*)(unsigned int, const char*);
+
+
 // Maybe make this follow the system in engine
 
 class Engine; // Don't need to call any function or variables, just pass in
@@ -19,14 +26,28 @@ class ScriptingAPIManager {
 public:
 	// Functions needed to run the ScriptingAPI
 	DLL_API ScriptingAPIManager(Engine& engine);
+
 	DLL_API ~ScriptingAPIManager();
-	DLL_API ScriptingAPIManager(ScriptingAPIManager const& other) = delete;
-	DLL_API ScriptingAPIManager(ScriptingAPIManager&& other) = delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other) = delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other) = delete;
+	DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
+	DLL_API ScriptingAPIManager(ScriptingAPIManager&& other)					= delete;
+	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other)	= delete;
+	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
+
+public:
 	DLL_API void update();
 	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
 	DLL_API void removeScriptFromAPI(unsigned int entityID, const char* scriptName);
+
+private:
+	template<typename Func>
+	Func getCoreClrFuncPtr(const std::string& functionName);
+
+	// Get Function from ScriptingAPI
+	template<typename Func>
+	Func GetFunctionPtr(std::string typeName, std::string functionName);
+
+	std::string buildTPAList(const std::string& directory);
+
 private:
 	// coreCLR key components 
 	HMODULE coreClr;
@@ -38,41 +59,11 @@ private:
 	coreclr_create_delegate_ptr createManagedDelegate;
 	coreclr_shutdown_ptr shutdownCorePtr;
 
-	// ScriptingAPI functions
-	void(*updateScripts)(void);
-	void(*addGameObjectScript)(unsigned int, const char*);
-	void(*removeGameObjectScript)(unsigned int, const char*);
-
-	std::string buildTPAList(const std::string& directory);
-
-	template<typename Func>
-	Func getCoreClrFuncPtr(const std::string& functionName) {
-		// Get function from dll
-		Func fptr = reinterpret_cast<Func>(GetProcAddress(coreClr, functionName.c_str()));
-		if (!fptr)
-			throw std::runtime_error("Unable to get pointer to function.");
-		return fptr;
-	}
-
-	// Get Function from ScriptingAPI
-	template<typename Func>
-	Func GetFunctionPtr(std::string assemblyName, std::string typeName, std::string functionName) {
-		Func managedDelegate{ nullptr };
-		int result = createManagedDelegate(
-			hostHandle,
-			domainID,
-			assemblyName.data(),
-			typeName.data(),
-			functionName.data(),
-			reinterpret_cast<void**>(&managedDelegate)
-		);
-		if (result != S_OK) {
-			std::ostringstream errorDetails;
-			errorDetails << "(0x";
-			errorDetails << std::hex << result;
-			errorDetails << std::string{ ") Unable to Get Function " + assemblyName + '|' + typeName + '|' + functionName }.c_str();
-			throw std::runtime_error(errorDetails.str());
-		}
-		return managedDelegate;
-	}
+private:
+	// Function pointers to interact directly with ScriptingAPI
+	UpdateFunctionPtr updateScripts;
+	AddScriptFunctionPtr addGameObjectScript;
+	RemoveScriptFunctionPtr removeGameObjectScript;
 };
+
+#include "Engine/ScriptingAPIManager.ipp"

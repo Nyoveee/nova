@@ -1,20 +1,25 @@
 // Manages the c# scripts for each gameobject
 // Reference: https://www.codeproject.com/Articles/320761/Cplusplus-CLI-Cheat-Sheet
 #pragma once
-#include "Script.h"
+#include "Script.hxx"
 #include "engine.h"
 
 namespace ScriptingAPI {
 	public ref class Interface
 	{
+	// Public facing functions for ScriptAPIManager in unmanaged code to interact with..
 	public:
 		static void init(Engine& newEngine, const char* runtimePath);
 		static void update();
+
 		// GameObjectID should be unique and created somewhere else
 		static void addGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
 		static void removeGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
+	
+	public:
 		// This should get the Entt reference from the engine
-		template<typename T> static T* findNativeComponent(System::UInt32 entityID) {
+		template<typename T>
+		static T* findNativeComponent(System::UInt32 entityID) {
 			entt::registry& registry{ Interface::engine->ecs.registry };
 			entt::entity entity{ static_cast<entt::entity>(entityID) };
 			if (!registry.any_of<T>(entity)) {
@@ -23,6 +28,7 @@ namespace ScriptingAPI {
 
 			return &(registry.get<T>(entity));
 		}
+
 	private:
 		static Engine* engine;
 		using Scripts = System::Collections::Generic::List<Script^>;
@@ -32,3 +38,4 @@ namespace ScriptingAPI {
 	
 }
 
+#include "ManagedTypes.hxx"

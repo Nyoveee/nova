@@ -15,6 +15,9 @@ struct Transform {
 	glm::vec3 rotation;
 
 	glm::mat4x4 modelMatrix;
+
+	float test1;
+	int test2;
 };
 
 struct MeshRenderer {

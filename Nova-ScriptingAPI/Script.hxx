@@ -2,7 +2,11 @@
 // https://learn.microsoft.com/en-us/cpp/dotnet/cpp-cli-tasks?view=msvc-170
 //https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
 #pragma once
-#include "ManagedTypes.h"
+
+public interface class IManagedComponent {
+	void SetEntityID(System::UInt32 entityID);
+};
+
 namespace ScriptingAPI {
 	public ref class Script abstract
 	{

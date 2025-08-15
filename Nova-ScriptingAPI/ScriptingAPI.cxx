@@ -1,19 +1,20 @@
 #include <sstream>
 #include <filesystem>
-#include "ScriptingAPI.h"
+#include "ScriptingAPI.hxx"
 
 // Some Weird intellisense error is happening in this file, but no build error 
 namespace ScriptingAPI {
 	void Interface::init(Engine& newEngine, const char* runtimePath)
 	{
 		engine = &newEngine;
-		// Intialize the dictionary
-		gameObjectScripts = gcnew System::Collections::Generic::Dictionary <System::UInt32, Scripts^>();
+		gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
+
 		// Load the dll for calling the functions
 		std::filesystem::path originalPath{ std::filesystem::current_path() };
 		std::filesystem::current_path(runtimePath); // Set to the output directory to load nova-scripts.dll from
 		System::Reflection::Assembly::LoadFrom("Nova-Scripts.dll");
 		std::filesystem::current_path(originalPath); // Reset the path	
+
 		// Load all the c# scripts to run
 		for each (System::Reflection::Assembly ^ assembly in System::AppDomain::CurrentDomain->GetAssemblies()) {
 			if (assembly->GetName()->Name != "Nova-Scripts")
@@ -25,6 +26,7 @@ namespace ScriptingAPI {
 			}
 		}
 	}
+
 	void Interface::addGameObjectScript(System::UInt32 entityID, System::String^ scriptName)
 	{
 		for each (System::Type^ type in scriptTypes) {
