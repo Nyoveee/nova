@@ -9,16 +9,14 @@
 #include <Windows.h>
 #include <sstream>
 #include <iomanip>
-
+#include <vector>
 #include <dotnet/coreclrhost.h>
 
 // More readable function pointer syntax because C lmaoo
-using UpdateFunctionPtr			= void (*)();
+using UpdateFunctionPtr			= void (*)(void);
 using AddScriptFunctionPtr		= void (*)(unsigned int, const char*);
 using RemoveScriptFunctionPtr	= void (*)(unsigned int, const char*);
-
-
-// Maybe make this follow the system in engine
+using GetScriptsFunctionPtr		= std::vector<std::string> (*)(void);
 
 class Engine; // Don't need to call any function or variables, just pass in
 
@@ -37,6 +35,7 @@ public:
 	DLL_API void update();
 	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
 	DLL_API void removeScriptFromAPI(unsigned int entityID, const char* scriptName);
+	DLL_API std::vector<std::string> getAvailableScripts();
 
 private:
 	template<typename Func>
@@ -47,6 +46,7 @@ private:
 	Func GetFunctionPtr(std::string typeName, std::string functionName);
 
 	std::string buildTPAList(const std::string& directory);
+
 
 private:
 	// coreCLR key components 
@@ -64,6 +64,7 @@ private:
 	UpdateFunctionPtr updateScripts;
 	AddScriptFunctionPtr addGameObjectScript;
 	RemoveScriptFunctionPtr removeGameObjectScript;
+	GetScriptsFunctionPtr getScriptNames;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

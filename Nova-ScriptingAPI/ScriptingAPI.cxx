@@ -1,8 +1,10 @@
+// Converting to native type: https://learn.microsoft.com/en-us/cpp/dotnet/overview-of-marshaling-in-cpp?view=msvc-170
 #include <sstream>
 #include <filesystem>
 #include "ScriptingAPI.hxx"
-
+#include <msclr/marshal_cppstd.h>
 // Some Weird intellisense error is happening in this file, but no build error 
+using namespace msclr::interop;
 namespace ScriptingAPI {
 	void Interface::init(Engine& newEngine, const char* runtimePath)
 	{
@@ -57,6 +59,14 @@ namespace ScriptingAPI {
 		std::ostringstream errorDetails;
 		errorDetails << "(ID = " << std::to_string(static_cast<entt::id_type>(entityID)) << ") Script not found for removal";
 		throw std::runtime_error(errorDetails.str());
+	}
+
+	std::vector<std::string> Interface::getScriptNames()
+	{
+		std::vector<std::string> scriptNames{};
+		for each (System::Type^ type in scriptTypes)
+			scriptNames.push_back(marshal_as<std::string,System::String^>(type->Name));
+		return scriptNames;
 	}
 
 	void ScriptingAPI::Interface::update(){

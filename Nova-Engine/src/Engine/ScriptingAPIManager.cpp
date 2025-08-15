@@ -98,8 +98,9 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("ScriptingAPI.Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("ScriptingAPI.Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("ScriptingAPI.Interface", "removeGameObjectScript");
+		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("ScriptingAPI.Interface", "getScriptNames");
 
-		initScriptAPIFuncPtr(engine,runtimePath.c_str());
+		initScriptAPIFuncPtr(engine, runtimePath.c_str());
 	}
 	catch (std::exception e) {
 		std::cout << e.what();
@@ -140,14 +141,7 @@ std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 	return tpaList.str();
 }
 void ScriptingAPIManager::update() { updateScripts(); }
-
-void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName)
-{
-	addGameObjectScript(entityID, scriptName);
-}
-
-void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName)
-{
-	removeGameObjectScript(entityID, scriptName);
-}
+void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName){ addGameObjectScript(entityID, scriptName); }
+void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName) { removeGameObjectScript(entityID, scriptName); }
+std::vector<std::string> ScriptingAPIManager::getAvailableScripts(){ return getScriptNames(); }
 
