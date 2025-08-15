@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ManagedTypes.hxx" />
-    <ClInclude Include="ManagedTypeMacros.hxx" />
-    <ClInclude Include="RecursiveMacros.hxx" />
-    <ClInclude Include="Script.hxx" />
-    <ClInclude Include="ScriptingAPI.hxx" />
+    <ClInclude Include="src\ManagedTypes.hxx" />
+    <ClInclude Include="src\ManagedTypeMacros.hxx" />
+    <ClInclude Include="src\RecursiveMacros.hxx" />
+    <ClInclude Include="src\Script.hxx" />
+    <ClInclude Include="src\ScriptingAPI.hxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ScriptingAPI.cxx" />
+    <ClCompile Include="src\ScriptingAPI.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nova-Engine\Nova-Engine.vcxproj">

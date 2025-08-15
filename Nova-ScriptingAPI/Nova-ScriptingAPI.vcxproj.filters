@@ -15,24 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ScriptingAPI.hxx">
+    <ClInclude Include="src\ScriptingAPI.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Script.hxx">
+    <ClInclude Include="src\Script.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ManagedTypes.hxx">
+    <ClInclude Include="src\ManagedTypes.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ManagedTypeMacros.hxx">
+    <ClInclude Include="src\ManagedTypeMacros.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RecursiveMacros.hxx">
+    <ClInclude Include="src\RecursiveMacros.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ScriptingAPI.cxx">
+    <ClCompile Include="src\ScriptingAPI.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

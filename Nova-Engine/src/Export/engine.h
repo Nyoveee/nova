@@ -42,11 +42,12 @@ public:
 
 public:
 	// allow all systems to have references of each other via the engine.
-	Window&			window;
-	AssetManager&	assetManager;
-	Renderer		renderer;
-	CameraSystem	cameraSystem;
-	ECS				ecs;
+	Window&				window;
+	AssetManager&		assetManager;
+
+	Renderer			renderer;
+	CameraSystem		cameraSystem;
+	ECS					ecs;
 	ScriptingAPIManager scriptingAPIManager;
 private:
 	int				gameWidth;

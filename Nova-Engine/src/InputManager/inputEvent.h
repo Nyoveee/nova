@@ -12,12 +12,6 @@ enum class CameraMovement {
 	Descent
 };
 
-// Moving mouse position
-struct MousePosition {
-	double xPos;
-	double yPos;
-};
-
 // This event is emitted to toggle control in game for editor.
 // Editor shall act as the authority in editor control, coordinating with other systems..
 
@@ -39,6 +33,13 @@ enum class ToCameraControl {
 enum class ToEnableCursor {
 	Enable,
 	Disable
+};
+
+// ======= Mouse movement and scroll specific ==========
+// Moving mouse position
+struct MousePosition {
+	double xPos;
+	double yPos;
 };
 
 // This event adjusts the editor's camera speed based on scroll.

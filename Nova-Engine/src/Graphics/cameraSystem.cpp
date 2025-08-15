@@ -34,6 +34,16 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 		}
 	);
 
+	inputManager.subscribe<ToCameraControl>(
+		[&](ToCameraControl control) {
+			isInControl = control == ToCameraControl::Control;
+
+			if (isInControl) {
+				toResetMousePos = true;
+			}
+		}
+	);
+
 	inputManager.subscribe<MousePosition>(
 		[&](MousePosition mousePos) {
 			if (toResetMousePos) {
@@ -46,15 +56,7 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 		}
 	);
 
-	inputManager.subscribe<ToCameraControl>(
-		[&](ToCameraControl control) {
-			isInControl = control == ToCameraControl::Control;
 
-			if (isInControl) {
-				toResetMousePos = true;
-			}
-		}
-	);
 
 	inputManager.subscribe<AdjustCameraSpeed>(
 		[&](AdjustCameraSpeed value) {
