@@ -161,6 +161,7 @@ xcopy /r /y "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui.cpp" />
+    <ClCompile Include="src\Editor\ImGui\ImGuizmo.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_demo.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_draw.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_tables.cpp" />

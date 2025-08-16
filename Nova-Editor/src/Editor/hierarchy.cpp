@@ -25,6 +25,8 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 	EntityData const& entityData = registry.get<EntityData>(entity);
 	bool toDisplayTreeNode = false;
 
+	ImGui::PushID(static_cast<unsigned>(entity));
+
 	if (entityData.children.empty()) {
 		ImGui::Bullet();
 		ImGui::SameLine();
@@ -70,6 +72,8 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 		ImGui::EndDragDropTarget();
 	}
 
+	ImGui::PopID();
+	
 	// recursively displays tree hierarchy..
 	if (toDisplayTreeNode) {
 		for (entt::entity child : entityData.children) {

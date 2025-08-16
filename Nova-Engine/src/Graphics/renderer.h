@@ -81,4 +81,5 @@ public:
 	Shader standardShader;
 	Shader textureShader;
 	Shader gridShader;
+	Shader outlineShader;
 };

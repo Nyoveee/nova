@@ -26,6 +26,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	standardShader		{ "Assets/Shader/standard.vert",	"Assets/Shader/basic.frag" },
 	textureShader		{ "Assets/Shader/standard.vert",	"Assets/Shader/image.frag" },
 	gridShader			{ "Assets/Shader/grid.vert",		"Assets/Shader/grid.frag" },
+	outlineShader		{ "Assets/Shader/outline.vert",		"Assets/Shader/outline.frag" },
 	VAO					{},
 	EBO					{ 200000, BufferObject::Type::ElememtBuffer },
 	camera				{},
@@ -66,23 +67,20 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate attribute index 0 and 1 with the respective attribute properties.
 	glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, pos));
-	glVertexArrayAttribFormat(VAO, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
-	//glVertexArrayAttribIFormat(VAO, 2, 1, GL_INT, offsetof(Vertex, objectId));
+	glVertexArrayAttribFormat(VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+	glVertexArrayAttribFormat(VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
 
 	// enable attributes
 	glEnableVertexArrayAttrib(VAO, 0);
 	glEnableVertexArrayAttrib(VAO, 1);
-	//glEnableVertexArrayAttrib(VAO, 2);
+	glEnableVertexArrayAttrib(VAO, 2);
 
 	// associate attribute 0 and 1 to binding index 0. 
 	glVertexArrayAttribBinding(VAO, 0, bindingIndex);
 	glVertexArrayAttribBinding(VAO, 1, bindingIndex);
-	//glVertexArrayAttribBinding(VAO, 2, bindingIndex);
+	glVertexArrayAttribBinding(VAO, 2, bindingIndex);
 
-	// enable backface culling & depth testing.
 	glEnable(GL_STENCIL_TEST);
-
-	//setBlendMode(BlendingConfig::AlphaBlending);
 
 	// sounds useless :rofl:
 	glDisable(GL_DITHER);
@@ -146,7 +144,6 @@ void Renderer::render(RenderTarget target) {
 
 		glClearNamedFramebufferfv(mainFrameBuffer.fboId(), GL_COLOR, 0, floatingClearValues);
 		glClearNamedFramebufferuiv(mainFrameBuffer.fboId(), GL_COLOR, 1, &nullEntity);
-		//glClearNamedFramebufferfv(mainFrameBuffer.fboId(), GL_DEPTH, 0, &initialDepth);
 		glClearNamedFramebufferfi(mainFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 		break;
 	}
@@ -183,12 +180,7 @@ void Renderer::render(RenderTarget target) {
 			continue;
 		}
 
-		// Model matrix.
-		glm::mat4x4 modelMatrix = glm::mat4x4{ 1 };
-		modelMatrix = glm::translate(modelMatrix, transform.position);
-		modelMatrix = glm::scale(modelMatrix, transform.scale / model->maxDimension);
-
-		textureShader.setMatrix("model", modelMatrix);
+		textureShader.setMatrix("model", transform.modelMatrix);
 
 		// Set up stencil operation
 		if (meshRenderer.toRenderOutline) {
@@ -231,9 +223,9 @@ void Renderer::render(RenderTarget target) {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);	// test if the fragment of the outline is within the stencil buffer, discard if it is.
 	glDisable(GL_DEPTH_TEST);				// i want to render my lines over other objects even if its in front.
 
-	standardShader.use();
-	standardShader.setMatrix("view", camera.view());
-	standardShader.setMatrix("projection", camera.projection());
+	outlineShader.use();
+	outlineShader.setMatrix("view", camera.view());
+	outlineShader.setMatrix("projection", camera.projection());
 
 	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		if (!meshRenderer.toRenderOutline) {
@@ -246,12 +238,8 @@ void Renderer::render(RenderTarget target) {
 			continue;
 		}
 
-		// Model matrix.
-		glm::mat4x4 modelMatrix = glm::mat4x4{ 1 };
-		modelMatrix = glm::translate(modelMatrix, transform.position);
-		modelMatrix = glm::scale(modelMatrix, (transform.scale + glm::vec3{0.02, 0.02, 0.02}) / model->maxDimension);
-
-		standardShader.setMatrix("model", modelMatrix);
+		outlineShader.setMatrix("model", transform.modelMatrix);
+		outlineShader.setVec3("color", { 0.8f, 0.8f, 0.8f });
 
 		for (auto const& mesh : model->meshes) {
 			VBO.uploadData(mesh.vertices);

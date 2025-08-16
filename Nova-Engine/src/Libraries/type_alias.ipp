@@ -88,3 +88,6 @@ struct std::hash<AssetID> {
 constexpr AssetID::operator std::size_t() const {
 	return id;
 }
+
+#undef max
+constexpr inline AssetID INVALID_ASSET_ID{ std::numeric_limits<std::size_t>::max() };

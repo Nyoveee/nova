@@ -20,6 +20,8 @@
 
 #include "Component/component.h"
 
+#include <GLFW/glfw3.h>
+
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -228,16 +230,15 @@ void Editor::sandboxWindow() {
 	if (ImGui::Button("(+) Add 3D model")) {
 		auto entity = registry.create();
 
-		zPos -= 2.f;
-
 		Transform transform = {
 			{0.f, 0.f, zPos},
-			{1.f, 1.f, 1.f},
+			{1.f / 300.f, 1.f / 300.f, 1.f / 300.f},
 			{1.f, 1.f, 1.f}
 		};
 
 		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model" });
+		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model " + std::to_string(zPos) });
+		zPos -= 10.f;
 
 		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
 
@@ -288,6 +289,14 @@ void Editor::sandboxWindow() {
 	ImGui::Text(ICON_FA_ARROW_RIGHT " icon test!!");
 
 	ImGui::End();
+
+	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_0)) {
+		registry.get<Transform>(entt::entity{ 0 }).position.z += 0.01;
+	}
+
+	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {
+		registry.get<Transform>(entt::entity{ 1 }).position.z -= 1;
+	}
 }
 
 Editor::~Editor() {

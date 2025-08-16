@@ -3,10 +3,12 @@
 #include "export.h"
 #include <entt/entt.hpp>
 
-// A singleton ECS wrapper around the entt framework for ease of access from other classes.
+class Engine;
+
+// A ECS wrapper around the entt framework for ease of access from other classes.
 class ECS {
 public:
-	DLL_API ECS();
+	DLL_API ECS(Engine& engine);
 
 	DLL_API ~ECS();
 	DLL_API ECS(ECS const& other)				= delete;
@@ -22,7 +24,11 @@ public:
 
 	// Finds out if a given entity is a descendant of parent (direct and indirect children).
 	DLL_API bool isDescendantOf(entt::entity entity, entt::entity parent);
+
 public:
 	// public!
 	entt::registry registry;
+
+private:
+	Engine& engine;
 };

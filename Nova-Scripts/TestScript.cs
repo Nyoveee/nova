@@ -17,9 +17,6 @@ namespace Nova_Scripts
             Vector3 position = transform.position;
             position.z += (float) 0.01;
             transform.position = position;
-
-            transform.test1 += (float) 0.5;
-            Console.WriteLine(transform.test1);
         }  
 
         public override void exit()

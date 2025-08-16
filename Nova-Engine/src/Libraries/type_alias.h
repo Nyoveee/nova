@@ -3,6 +3,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <cstddef>
+#include <limits>
 
 // We provide strong type alias here. Type strongly describes the value and can catch errors in compile time. 
 // Very useful for not using values unintended. For an example, you won't want to add GUIDs together, and 

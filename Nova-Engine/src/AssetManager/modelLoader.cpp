@@ -77,7 +77,10 @@ Model::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, f
 			maxDimension = std::max(std::max(position.x, position.y), position.z);
 		}
 
-		// 2. Texture Coordinates
+		// 2. Normal
+		glm::vec3 normal = toGlmVec3(mesh->mNormals[i]);
+
+		// 3. Texture Coordinates
 		glm::vec2 textureCoords;
 		if (mesh->mTextureCoords[0]) {
 			textureCoords = toGlmVec2(mesh->mTextureCoords[0][i]);
@@ -86,7 +89,7 @@ Model::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, f
 			textureCoords = glm::vec2(0.0f, 0.0f);
 		}
 		
-		vertices.push_back({ position, textureCoords });
+		vertices.push_back({ position, normal, textureCoords });
 	}
 
 	// Getting indices..

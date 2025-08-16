@@ -11,7 +11,7 @@
 #include "ECS.h"
 
 #include "Graphics/cameraSystem.h"
-
+#include "Engine/transformationSystem.h"
 
 class Window;
 class Renderer;
@@ -42,13 +42,15 @@ public:
 
 public:
 	// allow all systems to have references of each other via the engine.
-	Window&				window;
-	AssetManager&		assetManager;
+	Window&					window;
+	AssetManager&			assetManager;
 
-	Renderer			renderer;
-	CameraSystem		cameraSystem;
-	ECS					ecs;
-	ScriptingAPIManager scriptingAPIManager;
+	Renderer				renderer;
+	CameraSystem			cameraSystem;
+	ECS						ecs;
+	ScriptingAPIManager		scriptingAPIManager;
+	TransformationSystem	transformationSystem;
+
 private:
 	int				gameWidth;
 	int				gameHeight;

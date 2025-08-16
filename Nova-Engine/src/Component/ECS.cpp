@@ -1,10 +1,15 @@
 #include <ranges>
 #include <iostream>
 
+#include "engine.h"
 #include "ECS.h"
 #include "Component/component.h"
 
-ECS::ECS() : registry{} {}
+ECS::ECS(Engine& engine) : 
+	registry	{}, 
+	engine		{ engine } 
+{}
+
 ECS::~ECS() {}
 
 void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity) {
@@ -45,14 +50,17 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 		}
 	}
 
-	// 2. Add itself to the new parent.
+	// 3. Add itself to the new parent.
 	childEntityData.parent = newParentEntity;
 	newParentEntityData.children.push_back(childEntity);
+
+	// 4. Properly set the local transform of the entity.
+	engine.transformationSystem.setLocalBasedOnWorld(childEntity);
 }
 
 void ECS::removeEntityParent(entt::entity childEntity) {
 	EntityData& childEntityData = registry.get<EntityData>(childEntity);
-	
+
 	if (childEntityData.parent == entt::null) {
 		return;
 	}
@@ -73,7 +81,6 @@ void ECS::removeEntityParent(entt::entity childEntity) {
 bool ECS::isDescendantOf(entt::entity entity, entt::entity parent) {
 	if (entity == parent) return false;
 
-	EntityData& entityData = registry.get<EntityData>(entity);
 	EntityData& parentData = registry.get<EntityData>(parent);
 
 	bool isDescendant = false;
