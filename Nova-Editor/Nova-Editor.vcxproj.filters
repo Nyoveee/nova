@@ -57,6 +57,9 @@
     <ClCompile Include="src\Editor\gameViewPort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\hierarchy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\ImGUI\imgui_impl_glfw.h">
@@ -114,6 +117,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\gameViewPort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\hierarchy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\ImGui\IconsFontAwesome6.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

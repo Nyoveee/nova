@@ -1,5 +1,7 @@
 #pragma once
 
+#include <entt/entt.hpp>
+#include <string>
 #include <vector>
 #include <glm/mat4x4.hpp>
 #include <unordered_map>
@@ -8,6 +10,12 @@
 #include "Graphics/vertex.h"
 
 using MaterialName = std::string;
+
+struct EntityData {
+	std::string name;
+	entt::entity parent = entt::null;
+	std::vector<entt::entity> children = {};
+};
 
 struct Transform {
 	glm::vec3 position;

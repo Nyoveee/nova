@@ -56,8 +56,6 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 		}
 	);
 
-
-
 	inputManager.subscribe<AdjustCameraSpeed>(
 		[&](AdjustCameraSpeed value) {
 			if (!isInControl) {

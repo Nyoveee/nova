@@ -193,6 +193,7 @@
     <ClInclude Include="src\InputManager\keybind.h" />
     <ClInclude Include="src\InputManager\observer.h" />
     <ClInclude Include="src\InputManager\observer.ipp" />
+    <ClInclude Include="src\Libraries\backward.hpp" />
     <ClInclude Include="src\Libraries\family.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Export\Header\ScriptingAPIManager.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="src\Graphics\bufferObject.cpp" />
     <ClCompile Include="src\InputManager\inputManager.cpp" />
     <ClCompile Include="src\InputManager\inputMapping.cpp" />
+    <ClCompile Include="src\Libraries\backward.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">

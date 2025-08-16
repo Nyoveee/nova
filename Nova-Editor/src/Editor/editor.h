@@ -1,12 +1,13 @@
 #pragma once
 
-#include <vector>
+#include <unordered_set>
 
 #include "ecs.h"
 #include "export.h"
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
+#include "hierarchy.h"
 
 using GLuint = unsigned int;
 
@@ -28,11 +29,17 @@ public:
 public:
 	void update();
 
+public:
+	// other editor systems have access to these
+	std::unordered_set<entt::entity> selectedEntities;
+	entt::entity hoveringEntity;
+
 private:
 	void main();
 	void toggleViewPortControl(bool toControl);
 	void updateMaterialMapping();
 	void handleEntitySelection();
+	void sandboxWindow();
 
 private:
 	Window& window;
@@ -43,11 +50,9 @@ private:
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
+	Hierarchy hierarchyList;
 
 private:
-	std::vector<entt::entity> selectedEntities;
-	entt::entity hoveringEntity;
-
 	// This indicates whether the camera is active in the game's viewport.
 	bool isControllingInViewPort;
 };

@@ -1,6 +1,9 @@
 #include "ScriptingAPIManager.h"
 
 #include <glad/glad.h>
+
+#include "IconsFontAwesome6.h"
+
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -17,6 +20,11 @@
 
 #include "Component/component.h"
 
+constexpr float baseFontSize = 15.0f;
+constexpr const char* fontFileName = 
+	"System\\Font\\"
+	"NotoSans-Medium.ttf";
+
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager) :
 	window					{ window },
 	engine					{ engine },
@@ -25,24 +33,50 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager			{ inputManager },
 	componentInspector		{},
 	assetManagerUi			{},
+	hierarchyList			{ engine.ecs, *this },
 	isControllingInViewPort	{ false }
 {
 	(void) inputManager;
 
+	// ======================================= 
+	// Preparing some ImGui config..
+	// ======================================= 
+
 	ImGui::CreateContext();
+	ImGuiTheme::Dark();
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
-	// Setup platform/renderer bindings (example with GLFW and OpenGL)
+	// ======================================= 
+	// Prepare Font Awesome and custom font.
+	// ======================================= 
+	float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
+	
+	ImFont* myFont = io.Fonts->AddFontFromFileTTF(fontFileName, baseFontSize);
+	io.FontDefault = myFont;
+
+	// merge in icons from Font Awesome
+	static const ImWchar icons_ranges[] = { ICON_MIN_FA, ICON_MAX_16_FA, 0 };
+	ImFontConfig icons_config;
+	icons_config.MergeMode = true;
+	icons_config.PixelSnapH = true;
+	icons_config.GlyphMinAdvanceX = iconFontSize;
+	io.Fonts->AddFontFromFileTTF("System\\Font\\" FONT_ICON_FILE_NAME_FAS, iconFontSize, &icons_config, icons_ranges);
+
+	// ======================================= 
+	// Provide ImGui with our backend (GLFW + OpenGL)
+	// ======================================= 
+	
 	ImGui_ImplGlfw_InitForOpenGL(window.getGLFWwindow(), true);		// window is your GLFW window
 	ImGui_ImplOpenGL3_Init("#version 450");							// or appropriate GLSL version
 
-	ImGuiTheme::Dark();
-
-	// Subscribe to input manager for editor control.
+	// ======================================= 
+	// 	Subscribe to input manager for editor control.
+	// ======================================= 
+		
 	inputManager.subscribe<ToggleEditorControl>(
 		[&](ToggleEditorControl) {
 			if (gameViewPort.isHoveringOver) {
@@ -69,101 +103,19 @@ void Editor::update() {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+// Our main bulk of code should go here, in the main function.
 void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
 	handleEntitySelection();
 	updateMaterialMapping();
-
-	entt::registry& registry = engine.ecs.registry;
 	
-	// Show all game objects..
-	ImGui::Begin("Game objects");
-
-	// ========================================
-	// STUB CODE!!!!
-	// ========================================
-
-	static bool wireFrameMode = false;
-
-	if (ImGui::Button("Wireframe mode.")) {
-		wireFrameMode = !wireFrameMode;
-		engine.renderer.enableWireframeMode(wireFrameMode);
-	}
-
-	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
-
-	static float zPos = 0;
-	static bool alternate = true;
-
-	if (ImGui::Button("(+) Add 3D model")) {
-		auto entity = registry.create();
-
-		zPos -= 2.f;
-
-		Transform transform = {
-			{0.f, 0.f, zPos},
-			{1.f, 1.f, 1.f},
-			{1.f, 1.f, 1.f}
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-
-		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
-
-		AssetID modelAsset{ 1 };
-
-		if (alternate) {
-			materials["Table_frame_mtl"] = { AssetID{3} };
-			materials["Table_top_mtl"] = { AssetID{4} };
-		}
-		else {
-			materials["Material_50"] = { AssetID{0} };
-		}
-		
-		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-		
-		alternate = !alternate;
-	}
-	std::string testScript{ engine.scriptingAPIManager.getAvailableScripts()[0] };
-	if (ImGui::Button(testScript.c_str())) {
-		entt::entity testSubject{ 0 };
-
-		if (registry.valid(testSubject)) {
-			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, testScript.c_str());
-		}
-	}
-
-	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
-		std::string textToDisplay =
-			"Entity ID: " + std::to_string(static_cast<entt::id_type>(entity))
-			+ ", pos: {"
-			+ std::to_string(transform.position.x) + " "
-			+ std::to_string(transform.position.y) + " "
-			+ std::to_string(transform.position.z) + "} "
-			+ ", asset id: " + std::to_string((std::size_t)modelRenderer.modelId);
-
-		ImGui::Text(textToDisplay.c_str());
-		
-		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
-		
-		if (!model) continue;
-
-		ImGui::Text("Materials:");
-		for (auto const& materialName : model->materialNames) {
-			ImGui::Text(std::string{ " 	-" + materialName }.c_str());
-		}
-	}
-
-	// ========================================
-	// END OF STUB CODE
-	// ========================================
+	sandboxWindow();
 
 	gameViewPort.update();
 	componentInspector.update();
 	assetManagerUi.update();
-
-	ImGui::End();
+	hierarchyList.update();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -252,6 +204,90 @@ void Editor::handleEntitySelection() {
 	}
 
 	hoveringEntity = newHoveringEntity;
+}
+
+// throw all your ooga booga testing code here code quality doesnt matter
+void Editor::sandboxWindow() {
+
+	ImGui::Begin("ooga booga sandbox area");
+
+	entt::registry& registry = engine.ecs.registry;
+
+	static bool wireFrameMode = false;
+
+	if (ImGui::Button("Wireframe mode.")) {
+		wireFrameMode = !wireFrameMode;
+		engine.renderer.enableWireframeMode(wireFrameMode);
+	}
+
+	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
+
+	static float zPos = 0;
+	static bool alternate = true;
+
+	if (ImGui::Button("(+) Add 3D model")) {
+		auto entity = registry.create();
+
+		zPos -= 2.f;
+
+		Transform transform = {
+			{0.f, 0.f, zPos},
+			{1.f, 1.f, 1.f},
+			{1.f, 1.f, 1.f}
+		};
+
+		registry.emplace<Transform>(entity, std::move(transform));
+		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model" });
+
+		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
+
+		AssetID modelAsset{ 1 };
+
+		if (alternate) {
+			materials["Table_frame_mtl"] = { AssetID{3} };
+			materials["Table_top_mtl"] = { AssetID{4} };
+		}
+		else {
+			materials["Material_50"] = { AssetID{0} };
+		}
+
+		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
+
+		alternate = !alternate;
+	}
+	std::string testScript{ engine.scriptingAPIManager.getAvailableScripts()[0] };
+	if (ImGui::Button(testScript.c_str())) {
+		entt::entity testSubject{ 0 };
+
+		if (registry.valid(testSubject)) {
+			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, testScript.c_str());
+		}
+	}
+
+	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
+		std::string textToDisplay =
+			"Entity ID: " + std::to_string(static_cast<entt::id_type>(entity))
+			+ ", pos: {"
+			+ std::to_string(transform.position.x) + " "
+			+ std::to_string(transform.position.y) + " "
+			+ std::to_string(transform.position.z) + "} "
+			+ ", asset id: " + std::to_string((std::size_t)modelRenderer.modelId);
+
+		ImGui::Text(textToDisplay.c_str());
+
+		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
+
+		if (!model) continue;
+
+		ImGui::Text("Materials:");
+		for (auto const& materialName : model->materialNames) {
+			ImGui::Text(std::string{ " 	-" + materialName }.c_str());
+		}
+	}
+
+	ImGui::Text(ICON_FA_ARROW_RIGHT " icon test!!");
+
+	ImGui::End();
 }
 
 Editor::~Editor() {

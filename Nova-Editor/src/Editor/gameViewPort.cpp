@@ -1,8 +1,6 @@
 #include "engine.h"
 #include "gameViewPort.h"
 
-
-
 GameViewPort::GameViewPort(Engine& engine) :
 	engine					{ engine },
 	isHoveringOver			{ false },

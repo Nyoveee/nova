@@ -114,6 +114,9 @@
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Libraries\backward.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\engine.cpp">
@@ -171,6 +174,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Engine\ScriptingAPIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Libraries\backward.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
