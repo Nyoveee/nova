@@ -39,9 +39,14 @@ struct Transform {
 	glm::vec3 localScale	= { 1.f, 1.f, 1.f };
 	glm::vec3 localRotation = {};
 
+	glm::vec3 lastLocalPosition = {};
+	glm::vec3 lastLocalScale = { 1.f, 1.f, 1.f };
+	glm::vec3 lastLocalRotation = {};
+
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
 	// When first created set it to true.
-	bool recentlyUpdated = true;
+	bool worldHasChanged = true;
+	bool localHasChanged = false;
 };
 
 struct MeshRenderer {

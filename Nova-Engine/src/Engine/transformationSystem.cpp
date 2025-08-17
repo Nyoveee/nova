@@ -36,68 +36,108 @@ void TransformationSystem::update() {
 	entt::registry& registry = ecs.registry;
 
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
-		//// Figure out if the entity requires updating it's model view matrix.
-		//if (!transform.recentlyUpdated) {
-		//	if (
-		//			transform.position	!= transform.lastPosition
-		//		||	transform.scale		!= transform.lastScale
-		//		||	transform.rotation	!= transform.lastRotation
-		//	) {
-		//		transform.recentlyUpdated = true;
+		// Figure out if the entity requires updating it's world matrix.
+		if (
+				transform.position	!= transform.lastPosition
+			||	transform.scale		!= transform.lastScale
+			||	transform.rotation	!= transform.lastRotation
+		) {
+			transform.lastPosition	= transform.position;
+			transform.lastScale		= transform.scale;
+			transform.lastRotation	= transform.rotation;
 
-		//		transform.lastPosition	= transform.position;
-		//		transform.lastScale		= transform.scale;
-		//		transform.lastRotation	= transform.rotation;
-		//	}
-		//}
+			// Let's update the world matrix.
+			transform.worldHasChanged = true;
 
-		//// Calculate their model matrix, if there is a change in transform.
-		//if (!transform.recentlyUpdated) {
-		//	continue;
-		//}
-
-		if (entityData.parent == entt::null) {
 			transform.modelMatrix = { 1 };
 			transform.modelMatrix = glm::translate(transform.modelMatrix, transform.position);
 			transform.modelMatrix = glm::scale(transform.modelMatrix, transform.scale);
 		}
-		else {
+
+		// Figure out if the entity requires updating it's local matrix.
+		// Root entities have no use for local transforms.
+		if (entityData.parent == entt::null) {
+			continue;
+		}
+		
+		// We ignore local transformation changes if there is already a world change.
+		// Our world matrix has already been calculated.
+		if (transform.worldHasChanged) {
+			continue;
+		}
+
+		if (
+				transform.localPosition	!= transform.lastLocalPosition
+			||	transform.localScale	!= transform.lastLocalScale
+			||	transform.localRotation	!= transform.lastLocalRotation
+		) {
+			transform.localHasChanged = true;
+
+			// We recalculate local matrix if there is a change in local transform.
+			transform.lastLocalPosition	= transform.localPosition;
+			transform.lastLocalScale	= transform.localScale;
+			transform.lastLocalRotation	= transform.localRotation;
+
 			transform.localMatrix = { 1 };
 			transform.localMatrix = glm::translate(transform.localMatrix, transform.localPosition);
 			transform.localMatrix = glm::scale(transform.localMatrix, transform.localScale);
 		}
 	}
 
-	// Calculate the model matrix of all child objects.
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
-		// We find out if itself or any ancestor has changed their transform.
-		// If so, we update the child objects model matrix.
-
-		// We ignore root game objects because they have no parents haha
+		// Root entities do not need to worry about hirerarchy.
 		if (entityData.parent == entt::null) {
-			transform.recentlyUpdated = false;
-			continue;
+			goto endOfLoop;
 		}
 
-		//// Itself and ancestors has no changed
-		//if (!hasAncestorChanged(entity)) {
-		//	continue;
-		//}
+		if (!transform.worldHasChanged) {
+			// World transform did not change. This means it has not been directly edited.
+			// In that case we want to change world transform if any of the ancestors has been transformed 
+			// (regardless local or world)
+			// This creates the hierarchy effect.
 
-		// Recalculate model matrix if so..
-		transform.modelMatrix = calculateModelMatrix(entity);
+			if (!hasAncestorChanged(entity)) {
+				// No transform changes in the hirerarchy.
+				continue;
+			}
 
-		// Set the appropriate new world position
-		auto [position, rotation, scale] = TransformationSystem::decomposeMtx(transform.modelMatrix);
-		transform.position = position;
-		//transform.rotation = rotation;
-		transform.scale = scale;
+			glm::mat4x4 parentWorldMatrix = registry.get<Transform>(entityData.parent).modelMatrix;
+			transform.modelMatrix = parentWorldMatrix * transform.localMatrix;
+
+			// Let's set the appropriate new world transforms via matrix decomposition.
+			auto [position, rotation, scale] = TransformationSystem::decomposeMtx(transform.modelMatrix);
+			transform.position = position;
+			transform.scale = scale;
+			
+			transform.lastPosition = position;
+			transform.lastScale = scale;
+		}
+		else {
+			// World transform has changed. This means it has been directly edited.
+			// In this case we want to calculate the appropriate local transform corresponding to this world transform.
+			// This preserves the hierarchy effect for the future.
+
+			glm::mat4x4 parentInverseWorld = glm::inverse(registry.get<Transform>(entityData.parent).modelMatrix);
+			transform.localMatrix = parentInverseWorld * transform.modelMatrix;
+
+			// Let's set the appropriate new local transforms via matrix decomposition.
+			auto [localPosition, localRotation, localScale] = TransformationSystem::decomposeMtx(transform.localMatrix);
+			transform.localPosition = localPosition;
+			transform.localScale = localScale;
+
+			transform.lastLocalPosition = localPosition;
+			transform.lastLocalScale = localScale;
+		}
+
+	endOfLoop:
+		transform.worldHasChanged = false;
+		transform.localHasChanged = false;
 	}
 }
 
 bool TransformationSystem::hasAncestorChanged(entt::entity entity) {
 	entt::registry& registry = ecs.registry;
-	bool hasChanged = registry.get<Transform>(entity).recentlyUpdated;
+	bool hasChanged = registry.get<Transform>(entity).localHasChanged || registry.get<Transform>(entity).worldHasChanged;
 
 	if (hasChanged) {
 		return true;

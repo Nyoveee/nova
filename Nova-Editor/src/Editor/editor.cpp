@@ -295,7 +295,7 @@ void Editor::sandboxWindow() {
 	}
 
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {
-		registry.get<Transform>(entt::entity{ 1 }).position.z -= 1;
+		registry.get<Transform>(entt::entity{ 1 }).localPosition.z -= 1;
 	}
 }
 
