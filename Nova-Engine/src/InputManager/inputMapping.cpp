@@ -22,5 +22,6 @@ void InputManager::mainKeyBindMapping() {
 	// 	Mapping editor control via right click in the level editor..
 	//
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_RIGHT,	KeyType::MouseClick,	ToggleEditorControl::Sentinel		);
+	mapKeyBindInput(	GLFW_MOUSE_BUTTON_LEFT,		KeyType::MouseClick,	ToSelectGameObject::Sentinel		);
 
 }

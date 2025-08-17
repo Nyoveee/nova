@@ -13,10 +13,11 @@ TransformationSystem::DecomposedMatrix TransformationSystem::decomposeMtx(glm::m
 	for (int i = 0; i < 3; i++)
 		scale[i] = glm::length(glm::vec3(m[i]));
 
+	
 	const glm::mat3 rotMtx(
-		glm::vec3(m[0]) / scale[0],
-		glm::vec3(m[1]) / scale[1],
-		glm::vec3(m[2]) / scale[2]
+		glm::vec3(m[0]) / (scale[0] == 0 ? 1 : scale[0]),
+		glm::vec3(m[1]) / (scale[1] == 0 ? 1 : scale[1]),
+		glm::vec3(m[2]) / (scale[2] == 0 ? 1 : scale[2])
 	);
 	
 	glm::quat rot = glm::quat_cast(rotMtx);
@@ -38,7 +39,8 @@ void TransformationSystem::update() {
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
 		// Figure out if the entity requires updating it's world matrix.
 		if (
-				transform.position	!= transform.lastPosition
+				transform.worldHasChanged
+			||	transform.position	!= transform.lastPosition
 			||	transform.scale		!= transform.lastScale
 			||	transform.rotation	!= transform.lastRotation
 		) {
@@ -98,7 +100,7 @@ void TransformationSystem::update() {
 
 			if (!hasAncestorChanged(entity)) {
 				// No transform changes in the hirerarchy.
-				continue;
+				goto endOfLoop;
 			}
 
 			glm::mat4x4 parentWorldMatrix = registry.get<Transform>(entityData.parent).modelMatrix;

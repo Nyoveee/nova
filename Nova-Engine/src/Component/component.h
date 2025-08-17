@@ -8,6 +8,7 @@
 
 #include "Libraries/type_alias.h"
 #include "Graphics/vertex.h"
+#include "Libraries/reflection.h"
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -23,30 +24,40 @@ struct EntityData {
 
 struct Transform {
 	glm::vec3 position;
-	glm::vec3 scale;
-	glm::vec3 rotation;
+	glm::vec3 scale			{ 1.0f, 1.0f, 1.0f };
+	glm::vec3 rotation		{};
 
-	glm::vec3 lastPosition;
-	glm::vec3 lastScale;
-	glm::vec3 lastRotation;
+	glm::vec3 lastPosition	{ position };
+	glm::vec3 lastScale		{ scale };
+	glm::vec3 lastRotation	{ rotation };
 
 	glm::mat4x4 modelMatrix;			// model matrix represents the final matrix to change a object to world space.
 
 	// ====== Hierarchy related data =======
-	glm::mat4x4 localMatrix{};	// transformation matrix in respect to parent!
+	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
 
-	glm::vec3 localPosition = {};
-	glm::vec3 localScale	= { 1.f, 1.f, 1.f };
-	glm::vec3 localRotation = {};
+	glm::vec3 localPosition		{};
+	glm::vec3 localScale		{ 1.f, 1.f, 1.f };
+	glm::vec3 localRotation		{};
 
-	glm::vec3 lastLocalPosition = {};
-	glm::vec3 lastLocalScale = { 1.f, 1.f, 1.f };
-	glm::vec3 lastLocalRotation = {};
+	glm::vec3 lastLocalPosition {};
+	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
+	glm::vec3 lastLocalRotation	{};
 
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
 	// When first created set it to true.
 	bool worldHasChanged = true;
 	bool localHasChanged = false;
+	
+	// Reflect these data members for level editor to display
+	REFLECTABLE(
+		position,
+		scale,
+		rotation,
+		localPosition,
+		localScale,
+		localRotation
+	)
 };
 
 struct MeshRenderer {
@@ -60,4 +71,9 @@ struct MeshRenderer {
 	std::unordered_map<MaterialName, Material> materials;
 
 	bool toRenderOutline = false;
+
+	REFLECTABLE(
+		modelId,
+		materials
+	)
 };

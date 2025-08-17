@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_set>
+#include <vector>
 
 #include "ecs.h"
 #include "export.h"
@@ -28,22 +28,27 @@ public:
 
 public:
 	void update();
+	bool isEntitySelected(entt::entity entity);
 
 public:
 	// other editor systems have access to these
-	std::unordered_set<entt::entity> selectedEntities;
+	std::vector<entt::entity> selectedEntities;
 	entt::entity hoveringEntity;
 
 private:
 	void main();
 	void toggleViewPortControl(bool toControl);
 	void updateMaterialMapping();
+	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
+	
+public:
+	// so that all editors have access to engine interface.
+	Engine& engine;
 
 private:
 	Window& window;
-	Engine& engine;
 	InputManager& inputManager;
 	AssetManager& assetManager;
 

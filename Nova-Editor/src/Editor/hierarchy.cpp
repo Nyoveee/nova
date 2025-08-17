@@ -6,6 +6,8 @@
 #include "IconsFontAwesome6.h"
 #include "Component/component.h"
 
+#include <ranges>
+
 Hierarchy::Hierarchy(ECS& ecs, Editor& editor) : 
 	ecs		{ ecs },
 	editor	{ editor }
@@ -31,16 +33,16 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 		ImGui::Bullet();
 		ImGui::SameLine();
 
-		if (ImGui::Selectable(entityData.name.c_str(), editor.selectedEntities.contains(entity))) {
+		if (ImGui::Selectable(entityData.name.c_str(), editor.isEntitySelected(entity))) {
 			editor.selectedEntities.clear();
-			editor.selectedEntities.insert(entity);
+			editor.selectedEntities.push_back(entity);
 		}
 	}
 	else {
 		// Display children recursively..
 		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
 
-		if (editor.selectedEntities.contains(entity)) {
+		if (editor.isEntitySelected(entity)) {
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
 
@@ -48,7 +50,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 			editor.selectedEntities.clear();
-			editor.selectedEntities.insert(entity);
+			editor.selectedEntities.push_back(entity);
 		}
 	}
 		
@@ -92,6 +94,24 @@ void Hierarchy::update() {
 
 	ImGui::Text("Scene loaded: Sample Scene");
 	ImGui::Text("Entities: %zu", registry.view<EntityData>().size());
+	ImGui::Text("Selected entity: ");
+	ImGui::SameLine();
+
+	if (editor.selectedEntities.empty()) {
+		ImGui::Text("None.");
+	}
+	else {
+		std::string text = "";
+
+		for (entt::entity entity : editor.selectedEntities) {
+			std::string const& name = registry.get<EntityData>(entity).name;
+			text += name + " (id: " + std::to_string(static_cast<unsigned int>(entity)) + ") ";
+		}
+
+		ImGui::Text(text.c_str());
+	}
+
+	ImGui::Separator();
 
 	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Create new entity")) {
 		createGameObject();

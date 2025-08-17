@@ -74,11 +74,13 @@
     <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(ProjectDir)..\Nova-Engine\src;$(ProjectDir)..\Nova-Engine\src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(ProjectDir)..\Nova-Engine\src;$(ProjectDir)..\Nova-Engine\src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,6 +119,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +142,7 @@ xcopy /r /y "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -177,6 +181,7 @@ xcopy /r /y "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\assetManagerUi.h" />
+    <ClInclude Include="src\Editor\displayComponent.ipp" />
     <ClInclude Include="src\Editor\editor.h" />
     <ClInclude Include="src\Editor\hierarchy.h" />
     <ClInclude Include="src\Editor\gameViewPort.h" />

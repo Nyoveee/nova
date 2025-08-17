@@ -12,6 +12,11 @@ enum class CameraMovement {
 	Descent
 };
 
+// This event tells the editor that there is an attempt to select a game object.
+enum class ToSelectGameObject {
+	Sentinel
+};
+
 // This event is emitted to toggle control in game for editor.
 // Editor shall act as the authority in editor control, coordinating with other systems..
 

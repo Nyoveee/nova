@@ -21,6 +21,7 @@
 #include "Component/component.h"
 
 #include <GLFW/glfw3.h>
+#include <ranges>
 
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
@@ -33,7 +34,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	assetManager			{ assetManager },
 	gameViewPort			{ engine },
 	inputManager			{ inputManager },
-	componentInspector		{},
+	componentInspector		{ *this, engine.ecs },
 	assetManagerUi			{},
 	hierarchyList			{ engine.ecs, *this },
 	isControllingInViewPort	{ false }
@@ -83,12 +84,17 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		[&](ToggleEditorControl) {
 			if (gameViewPort.isHoveringOver) {
 				toggleViewPortControl(true);
-				ImGui::GetIO().WantCaptureMouse = false;
+				ImGui::SetWindowFocus(nullptr);
 			}
 		},
 		[&](ToggleEditorControl) {
 			toggleViewPortControl(false);
-			ImGui::GetIO().WantCaptureMouse = true;
+		}
+	);
+
+	inputManager.subscribe<ToSelectGameObject>(
+		[&](ToSelectGameObject) {
+			handleEntitySelection();
 		}
 	);
 }
@@ -105,19 +111,22 @@ void Editor::update() {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+bool Editor::isEntitySelected(entt::entity entity) {
+	return std::ranges::find(selectedEntities, entity) != std::end(selectedEntities);
+}
+
 // Our main bulk of code should go here, in the main function.
 void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
-	handleEntitySelection();
-	updateMaterialMapping();
-	
-	sandboxWindow();
-
 	gameViewPort.update();
 	componentInspector.update();
 	assetManagerUi.update();
 	hierarchyList.update();
+
+	handleEntityHovering();
+	updateMaterialMapping();
+	sandboxWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -171,7 +180,7 @@ void Editor::updateMaterialMapping() {
 	}
 }
 
-void Editor::handleEntitySelection() {
+void Editor::handleEntityHovering() {
 	ImGui::Begin("text");
 	ImGui::Text("%u", hoveringEntity);
 	ImGui::End();
@@ -202,10 +211,41 @@ void Editor::handleEntitySelection() {
 
 	if (registry.all_of<MeshRenderer>(hoveringEntity)) {
 		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(hoveringEntity);
-		meshRenderer.toRenderOutline = false;
+
+		// dont render outline
+		if (!isEntitySelected(hoveringEntity)) {
+			meshRenderer.toRenderOutline = false;
+		}
 	}
 
 	hoveringEntity = newHoveringEntity;
+}
+
+void Editor::handleEntitySelection() {	
+	if (!gameViewPort.isHoveringOver) {
+		return;
+	}
+
+	if (isEntitySelected(hoveringEntity)) {
+		return;
+	}
+
+	entt::registry& registry = engine.ecs.registry;
+	for (entt::entity entity : selectedEntities) {
+		MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
+
+		if (meshRenderer) {
+			meshRenderer->toRenderOutline = false;
+		}
+	}
+
+	selectedEntities.clear();
+
+	if (hoveringEntity == entt::null) {
+		return;
+	}
+
+	selectedEntities.push_back(hoveringEntity);
 }
 
 // throw all your ooga booga testing code here code quality doesnt matter
@@ -291,7 +331,7 @@ void Editor::sandboxWindow() {
 	ImGui::End();
 
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_0)) {
-		registry.get<Transform>(entt::entity{ 0 }).position.z += 0.01;
+		registry.get<Transform>(entt::entity{ 0 }).position.z += 0.01f;
 	}
 
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {

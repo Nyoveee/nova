@@ -239,7 +239,7 @@ void Renderer::render(RenderTarget target) {
 		}
 
 		outlineShader.setMatrix("model", transform.modelMatrix);
-		outlineShader.setVec3("color", { 0.8f, 0.8f, 0.8f });
+		outlineShader.setVec3("color", { 255.f / 255.f, 136.f / 255.f, 0.f });
 
 		for (auto const& mesh : model->meshes) {
 			VBO.uploadData(mesh.vertices);

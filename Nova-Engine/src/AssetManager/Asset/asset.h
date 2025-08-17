@@ -10,7 +10,7 @@ class Asset {
 public:
 	DLL_API Asset(std::string filepath);
 
-	virtual ~Asset() = 0;
+	DLL_API virtual ~Asset() = 0;
 	Asset(Asset const& other)				= delete;
 	Asset(Asset&& other)					= default;
 	Asset& operator=(Asset const& other)	= delete;

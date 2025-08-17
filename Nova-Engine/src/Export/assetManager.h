@@ -38,6 +38,11 @@ public:
 	template <typename T> requires std::derived_from<T, Asset>
 	AssetQuery<T> getAsset(AssetID id);
 
+	// this is only used to get metadata / info about the assets (like name, is asset loaded..)
+	// this doesnt not load the asset!!
+	// since there is no loading of asset, you retrieve the data instantly.
+	DLL_API Asset* getAssetInfo(AssetID id);
+
 private:
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
 };

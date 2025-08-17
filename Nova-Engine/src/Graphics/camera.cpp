@@ -7,7 +7,7 @@ constexpr glm::vec3 defaultCameraFront		= { 0.f, 0.f, -1.f };
 constexpr Radian defaultFovAngle			= Degree{ 45.0f };
 constexpr float defaultNearPlaneDistance	= 0.1f;
 constexpr float defaultFarPlaneDistance		= 1000.f;
-constexpr float defaultAspectRatio			= 800.f / 600.f;
+constexpr float defaultAspectRatio			= 1.f;
 
 Camera::Camera() : 
 	cameraPos			{ 0.f, 2.f, 2.f },

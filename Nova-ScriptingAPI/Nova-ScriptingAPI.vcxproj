@@ -93,10 +93,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -106,6 +108,7 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <DisableSpecificWarnings>4679</DisableSpecificWarnings>
       <UseDynamicDebugging>false</UseDynamicDebugging>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <AdditionalDependencies>Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -140,6 +143,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <DisableSpecificWarnings>4679</DisableSpecificWarnings>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <AdditionalDependencies>Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
