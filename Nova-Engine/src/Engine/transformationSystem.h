@@ -25,8 +25,6 @@ public:
 		glm::vec3 scale;
 	};
 
-	static DecomposedMatrix decomposeMtx(glm::mat4 const& m);
-
 	// Sets the world matrix and position, scale and rotation based on the local matrix of the entity.
 	// just a more convenient public facing function that doesnt require additional parameters.
 	void setLocalTransformFromWorld(entt::entity entity);

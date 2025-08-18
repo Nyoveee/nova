@@ -1,5 +1,7 @@
 #pragma once
 
+#include "export.h"
+
 #include "Libraries/type_alias.h"
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -15,9 +17,10 @@ public:
 
 public:
 	// gets the view matrix
-	glm::mat4x4 view() const;
-	glm::mat4x4 projection() const;
+	DLL_API glm::mat4x4 view() const;
+	DLL_API glm::mat4x4 projection() const;
 
+public:
 	// position related
 	glm::vec3	getPos() const;
 	void		setPos(glm::vec3 pos);

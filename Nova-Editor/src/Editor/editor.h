@@ -28,30 +28,39 @@ public:
 
 public:
 	void update();
+	
 	bool isEntitySelected(entt::entity entity);
+	bool hasAnyEntitySelected() const;
+	
+	void selectEntities(std::vector<entt::entity> entities);
+	std::vector<entt::entity> const& getSelectedEntities() const;
+
+	bool isActive() const;
+	bool isEntityValid(entt::entity entity) const;
+	void deleteEntity(entt::entity entity);
 
 public:
-	// other editor systems have access to these
-	std::vector<entt::entity> selectedEntities;
 	entt::entity hoveringEntity;
 
 private:
 	void main();
 	void toggleViewPortControl(bool toControl);
 	void updateMaterialMapping();
+	void handleEntityValidity();
 	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
-	
-	// loses keyboard and window focus of any window.
-	void loseFocus();
+
+	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
+
+
 public:
 	// so that all editors have access to engine interface.
 	Engine& engine;
+	InputManager& inputManager;
 
 private:
 	Window& window;
-	InputManager& inputManager;
 	AssetManager& assetManager;
 
 	GameViewPort gameViewPort;
@@ -60,7 +69,8 @@ private:
 	Hierarchy hierarchyList;
 
 private:
+	std::vector<entt::entity> selectedEntities;
+
 	// This indicates whether the camera is active in the game's viewport.
 	bool isControllingInViewPort;
-	bool toLoseFocus;
 };

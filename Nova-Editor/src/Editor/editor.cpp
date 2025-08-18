@@ -5,6 +5,7 @@
 #include "IconsFontAwesome6.h"
 
 #include "imgui.h"
+#include "ImGuizmo.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -32,12 +33,13 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	window					{ window },
 	engine					{ engine },
 	assetManager			{ assetManager },
-	gameViewPort			{ engine },
+	gameViewPort			{ *this },
 	inputManager			{ inputManager },
 	componentInspector		{ *this, engine.ecs },
 	assetManagerUi			{},
 	hierarchyList			{ engine.ecs, *this },
-	isControllingInViewPort	{ false }
+	isControllingInViewPort	{ false },
+	hoveringEntity			{ entt::null }
 {
 	(void) inputManager;
 
@@ -84,7 +86,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		[&](ToggleEditorControl) {
 			if (gameViewPort.isHoveringOver) {
 				toggleViewPortControl(true);
-				loseFocus();
+				ImGui::SetWindowFocus(nullptr);
 			}
 		},
 		[&](ToggleEditorControl) {
@@ -97,6 +99,15 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			handleEntitySelection();
 		}
 	);
+
+	inputManager.subscribe<DeleteSelectedEntity>(
+		[&](DeleteSelectedEntity) {
+			// @TODO: Confirmation prompt LMAOO
+			for (entt::entity entity : selectedEntities) {
+				deleteEntity(entity);
+			}
+		}
+	);
 }
 
 void Editor::update() {
@@ -105,10 +116,8 @@ void Editor::update() {
 	ImGui::NewFrame();
 	ImGui::DockSpaceOverViewport();
 
-	if (toLoseFocus) {
-		ImGui::SetWindowFocus(nullptr);
-		toLoseFocus = false;
-	}
+	ImGuizmo::BeginFrame();
+	ImGuizmo::Enable(true);
 
 	main();
 
@@ -120,8 +129,44 @@ bool Editor::isEntitySelected(entt::entity entity) {
 	return std::ranges::find(selectedEntities, entity) != std::end(selectedEntities);
 }
 
+bool Editor::hasAnyEntitySelected() const {
+	return selectedEntities.size();
+}
+
+void Editor::selectEntities(std::vector<entt::entity> entities) {
+	toOutline(selectedEntities, false);
+	selectedEntities = std::move(entities);
+	toOutline(selectedEntities, true);
+}
+
+std::vector<entt::entity> const& Editor::getSelectedEntities() const {
+	return selectedEntities;
+}
+
+bool Editor::isActive() const {
+	return !isControllingInViewPort;
+}
+
+bool Editor::isEntityValid(entt::entity entity) const {
+	return engine.ecs.registry.all_of<EntityData, Transform>(entity);
+}
+
+void Editor::deleteEntity(entt::entity entity) {
+	if (!engine.ecs.registry.valid(entity)) {
+		return;
+	}
+
+	ImGuizmo::Enable(false); 
+	ImGuizmo::Enable(true);   
+
+	engine.ecs.registry.destroy(entity);
+}
+
 // Our main bulk of code should go here, in the main function.
 void Editor::main() {
+	// Verify the validity of selected and hovered entities.
+	handleEntityValidity();
+
 	ImGui::ShowDemoWindow();
 	
 	gameViewPort.update();
@@ -185,10 +230,42 @@ void Editor::updateMaterialMapping() {
 	}
 }
 
+void Editor::handleEntityValidity() {
+	if (!isEntityValid(hoveringEntity) && hoveringEntity != entt::null) {
+		deleteEntity(hoveringEntity);
+		hoveringEntity = entt::null;
+	}
+
+	bool foundInvalidSelectedEntity = false;
+
+	for (entt::entity entity : selectedEntities) {
+		if (isEntityValid(entity)) {
+			continue;
+		}
+
+		// we found some invalid entity.
+		if (entity != entt::null) {
+			deleteEntity(entity);
+			foundInvalidSelectedEntity = true;
+		}
+	}
+
+	// deselect all entities.
+	if (foundInvalidSelectedEntity) {
+		selectEntities({}); // by selecting 0 entities haha
+		//ImGuizmo::
+	}
+}
+
 void Editor::handleEntityHovering() {
-	ImGui::Begin("text");
-	ImGui::Text("%u", hoveringEntity);
-	ImGui::End();
+	if (!isActive()) {
+		return;
+	}
+
+	if (ImGuizmo::IsUsing() || ImGuizmo::IsOver()) {
+		return;
+	}
+
 	if (	
 			gameViewPort.mouseRelativeToViewPort.x < 0.f 
 		||	gameViewPort.mouseRelativeToViewPort.x >= 1.f
@@ -226,24 +303,23 @@ void Editor::handleEntityHovering() {
 	hoveringEntity = newHoveringEntity;
 }
 
+// handles object picker in game viewport
 void Editor::handleEntitySelection() {	
 	if (!gameViewPort.isHoveringOver) {
 		return;
 	}
 	
+	// hovered entity has already been selected.
 	if (isEntitySelected(hoveringEntity)) {
 		return;
 	}
 
-	entt::registry& registry = engine.ecs.registry;
-	for (entt::entity entity : selectedEntities) {
-		MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
-
-		if (meshRenderer) {
-			meshRenderer->toRenderOutline = false;
-		}
+	// not actually trying to deselect anything, am using imguizmo controls.
+	if (ImGuizmo::IsUsing() || ImGuizmo::IsOver()) {
+		return;
 	}
 
+	toOutline(selectedEntities, false);
 	selectedEntities.clear();
 
 	if (hoveringEntity == entt::null) {
@@ -251,6 +327,7 @@ void Editor::handleEntitySelection() {
 	}
 
 	selectedEntities.push_back(hoveringEntity);
+	toOutline(selectedEntities, true);
 }
 
 // throw all your ooga booga testing code here code quality doesnt matter
@@ -309,27 +386,6 @@ void Editor::sandboxWindow() {
 		}
 	}
 
-	for (auto&& [entity, transform, modelRenderer] : registry.view<Transform, MeshRenderer>().each()) {
-		std::string textToDisplay =
-			"Entity ID: " + std::to_string(static_cast<entt::id_type>(entity))
-			+ ", pos: {"
-			+ std::to_string(transform.position.x) + " "
-			+ std::to_string(transform.position.y) + " "
-			+ std::to_string(transform.position.z) + "} "
-			+ ", asset id: " + std::to_string((std::size_t)modelRenderer.modelId);
-
-		ImGui::Text(textToDisplay.c_str());
-
-		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
-
-		if (!model) continue;
-
-		ImGui::Text("Materials:");
-		for (auto const& materialName : model->materialNames) {
-			ImGui::Text(std::string{ " 	-" + materialName }.c_str());
-		}
-	}
-
 	ImGui::Text(ICON_FA_ARROW_RIGHT " icon test!!");
 
 	ImGui::End();
@@ -343,8 +399,16 @@ void Editor::sandboxWindow() {
 	}
 }
 
-void Editor::loseFocus() {
-	toLoseFocus = true;
+void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline) const {
+	entt::registry& registry = engine.ecs.registry;
+
+	for (entt::entity entity : entities) {
+		MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
+
+		if (meshRenderer) {
+			meshRenderer->toRenderOutline = toOutline;
+		}
+	}
 }
 
 Editor::~Editor() {

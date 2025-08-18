@@ -19,6 +19,16 @@ void InputManager::mainKeyBindMapping() {
 	mapKeyBindInput(	GLFW_KEY_Q,					KeyType::Keyboard,		CameraMovement::Ascend				);
 	mapKeyBindInput(	GLFW_KEY_E,					KeyType::Keyboard,		CameraMovement::Descent				);
 	//
+	// 	Mapping gizmo controls in the level editor..
+	//
+	mapKeyBindInput(	GLFW_KEY_Q,					KeyType::Keyboard,		GizmoMode::Translate				);
+	mapKeyBindInput(	GLFW_KEY_W,					KeyType::Keyboard,		GizmoMode::Rotate					);
+	mapKeyBindInput(	GLFW_KEY_E,					KeyType::Keyboard,		GizmoMode::Scale					);
+	//
+	// 	Mapping delete in the level editor..
+	//
+	mapKeyBindInput(	GLFW_KEY_DELETE,			KeyType::Keyboard,		DeleteSelectedEntity::Sentinel		);
+	//
 	// 	Mapping editor control via right click in the level editor..
 	//
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_RIGHT,	KeyType::MouseClick,	ToggleEditorControl::Sentinel		);

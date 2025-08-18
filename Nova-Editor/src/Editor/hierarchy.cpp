@@ -34,8 +34,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 		ImGui::SameLine();
 
 		if (ImGui::Selectable(entityData.name.c_str(), editor.isEntitySelected(entity))) {
-			editor.selectedEntities.clear();
-			editor.selectedEntities.push_back(entity);
+			editor.selectEntities({ entity });
 		}
 	}
 	else {
@@ -49,8 +48,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 		toDisplayTreeNode = ImGui::TreeNodeEx(entityData.name.c_str(), flags);
 
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
-			editor.selectedEntities.clear();
-			editor.selectedEntities.push_back(entity);
+			editor.selectEntities({ entity });
 		}
 	}
 		
@@ -97,13 +95,13 @@ void Hierarchy::update() {
 	ImGui::Text("Selected entity: ");
 	ImGui::SameLine();
 
-	if (editor.selectedEntities.empty()) {
+	if (!editor.hasAnyEntitySelected()) {
 		ImGui::Text("None.");
 	}
 	else {
 		std::string text = "";
 
-		for (entt::entity entity : editor.selectedEntities) {
+		for (entt::entity entity : editor.getSelectedEntities()) {
 			std::string const& name = registry.get<EntityData>(entity).name;
 			text += name + " (id: " + std::to_string(static_cast<unsigned int>(entity)) + ") ";
 		}

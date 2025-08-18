@@ -1,8 +1,10 @@
+#include "editor.h"
 #include "engine.h"
 #include "gameViewPort.h"
 
-GameViewPort::GameViewPort(Engine& engine) :
-	engine					{ engine },
+GameViewPort::GameViewPort(Editor& editor) :
+	engine					{ editor.engine },
+	gizmo					{ editor, engine.ecs },
 	isHoveringOver			{ false },
 	mouseRelativeToViewPort {}
 {}
@@ -63,6 +65,8 @@ void GameViewPort::update() {
 
 	// Flip y..
 	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+
+	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 
 	ImGui::End();
 }

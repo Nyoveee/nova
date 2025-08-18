@@ -200,6 +200,7 @@
     <ClInclude Include="src\InputManager\observer.ipp" />
     <ClInclude Include="src\Libraries\backward.hpp" />
     <ClInclude Include="src\Libraries\family.h" />
+    <ClInclude Include="src\Libraries\math.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Export\Header\ScriptingAPIManager.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
@@ -226,6 +227,7 @@
     <ClCompile Include="src\InputManager\inputMapping.cpp" />
     <ClCompile Include="src\Libraries\backward.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
+    <ClCompile Include="src\Libraries\math.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
       <FileType>CppCode</FileType>

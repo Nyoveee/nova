@@ -23,9 +23,8 @@ namespace {
 	void displayIndividualComponent(ComponentInspector& componentInspector, entt::entity entity) {
 		entt::registry& registry = componentInspector.ecs.registry;
 
-		if (registry.all_of<T>(entity)
-		) {
-			::displayComponent<T>(componentInspector, entity, registry.get<T>(entity));
+		if (registry.all_of<T>(entity)) {
+			displayComponent<T>(componentInspector, entity, registry.get<T>(entity));
 		}
 
 		if constexpr (sizeof...(Components) > 0) {
@@ -43,6 +42,7 @@ namespace {
 
 	// ================================================================================
 	// List all the components you want to show in the component inspector UI here!!
+	// Make sure you reflect the individual data members you want to show.
 	// ================================================================================
 	ComponentFunctor<
 		Transform,
@@ -61,7 +61,7 @@ void ComponentInspector::update() {
 	ImGui::Begin("Component Inspector");
 
 	// Begin displaying entity meta data..
-	if (editor.selectedEntities.empty()) {
+	if (!editor.hasAnyEntitySelected()) {
 		ImGui::Text("No entity selected.");
 		ImGui::End();
 		return;
@@ -69,7 +69,7 @@ void ComponentInspector::update() {
 
 	// I code with the assumption of only 1 entity selected first.
 	// @TODO: Extend for multi select.
-	entt::entity selectedEntity = editor.selectedEntities[0];
+	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 	entt::registry& registry = ecs.registry;
 	
 	// Display entity metadata.

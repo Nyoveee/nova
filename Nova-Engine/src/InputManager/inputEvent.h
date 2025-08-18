@@ -26,6 +26,11 @@ enum class ToggleEditorControl {
 	Sentinel
 };
 
+// This event is to notify the editor to attempt to delete the currently selected entity.
+enum class DeleteSelectedEntity {
+	Sentinel
+};
+
 // This input event is to notify the camera system to whether be active or inactive.
 // This input event is not mapped to any keybind is manually emitted by the editor.
 enum class ToCameraControl {
@@ -38,6 +43,13 @@ enum class ToCameraControl {
 enum class ToEnableCursor {
 	Enable,
 	Disable
+};
+
+// This input event is to change Gizmo mode.
+enum class GizmoMode {
+	Scale,
+	Rotate,
+	Translate
 };
 
 // ======= Mouse movement and scroll specific ==========

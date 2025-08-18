@@ -49,14 +49,14 @@ public:
 	// retrieves the value in that position of the framebuffer.
 	DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
 
+	DLL_API Camera& getCamera();
+	DLL_API Camera const& getCamera() const;
+
 public:
 	void update(float dt);
 
 	// choose to either render to the default frame buffer or the main frame buffer.
 	void render(RenderTarget target);
-
-	Camera& getCamera();
-	Camera const& getCamera() const;
 
 private:
 	void setBlendMode(BlendingConfig configuration);

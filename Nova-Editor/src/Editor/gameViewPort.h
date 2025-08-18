@@ -1,14 +1,16 @@
 #pragma once
 
 #include <glad/glad.h>
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
+#include "gizmo.h"
 
 class Engine;
 
 class GameViewPort {
 public:
-	GameViewPort(Engine& engine);
+	GameViewPort(Editor& editor);
 	void update();
 
 public:
@@ -20,4 +22,5 @@ public:
 
 private:
 	Engine& engine;
+	Gizmo gizmo;
 };

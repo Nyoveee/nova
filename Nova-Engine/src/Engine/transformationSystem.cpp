@@ -4,30 +4,7 @@
 #include "ecs.h"
 
 #include "Component/component.h"
-
-// Reference: https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
-TransformationSystem::DecomposedMatrix TransformationSystem::decomposeMtx(glm::mat4 const& m) {
-	glm::vec3 pos = m[3];
-	glm::vec3 scale;
-
-	for (int i = 0; i < 3; i++)
-		scale[i] = glm::length(glm::vec3(m[i]));
-
-	
-	const glm::mat3 rotMtx(
-		glm::vec3(m[0]) / (scale[0] == 0 ? 1 : scale[0]),
-		glm::vec3(m[1]) / (scale[1] == 0 ? 1 : scale[1]),
-		glm::vec3(m[2]) / (scale[2] == 0 ? 1 : scale[2])
-	);
-	
-	glm::quat rot = glm::quat_cast(rotMtx);
-
-	return {
-		pos,
-		rot,
-		scale
-	};
-}
+#include "Libraries/math.h"
 
 TransformationSystem::TransformationSystem(ECS& ecs) :
 	registry {ecs.registry}
@@ -148,7 +125,7 @@ void TransformationSystem::setLocalTransformFromWorld(Transform& transform, Enti
 	glm::mat4 inverseParentWorldMatrix = glm::inverse(parentTransform.modelMatrix);
 	transform.localMatrix = inverseParentWorldMatrix * transform.modelMatrix;
 
-	auto [localPosition, localRotation, localScale] = TransformationSystem::decomposeMtx(transform.localMatrix);
+	auto [localPosition, localRotation, localScale] = Math::decomposeMatrix(transform.localMatrix);
 	transform.localPosition = localPosition;
 	transform.localScale = localScale;
 	transform.localRotation = localRotation;
@@ -177,7 +154,7 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 		transform.needsRecalculating = false;
 
 		// Let's set the appropriate new world transforms via matrix decomposition.
-		auto [position, rotation, scale] = TransformationSystem::decomposeMtx(transform.modelMatrix);
+		auto [position, rotation, scale] = Math::decomposeMatrix(transform.modelMatrix);
 		transform.position = position;
 		transform.scale = scale;
 		transform.rotation = rotation;

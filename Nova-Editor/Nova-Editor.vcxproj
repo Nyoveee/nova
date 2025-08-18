@@ -160,6 +160,7 @@ xcopy /r /y "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
     <ClCompile Include="src\Editor\assetManagerUi.cpp" />
     <ClCompile Include="src\Editor\componentInspector.cpp" />
     <ClCompile Include="src\Editor\editor.cpp" />
+    <ClCompile Include="src\Editor\gizmo.cpp" />
     <ClCompile Include="src\Editor\hierarchy.cpp" />
     <ClCompile Include="src\Editor\gameViewPort.cpp" />
     <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_glfw.cpp" />
@@ -183,6 +184,7 @@ xcopy /r /y "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
     <ClInclude Include="src\Editor\assetManagerUi.h" />
     <ClInclude Include="src\Editor\displayComponent.ipp" />
     <ClInclude Include="src\Editor\editor.h" />
+    <ClInclude Include="src\Editor\gizmo.h" />
     <ClInclude Include="src\Editor\hierarchy.h" />
     <ClInclude Include="src\Editor\gameViewPort.h" />
     <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_glfw.h" />
