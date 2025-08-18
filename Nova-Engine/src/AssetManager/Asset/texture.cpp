@@ -51,7 +51,7 @@ void Texture::load() {
 		return;
 	}
 
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(getFilePath().c_str(), &width, &height, &numChannels, 0);
 
 	if (!data) {

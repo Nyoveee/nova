@@ -1,5 +1,8 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include <glm/gtx/quaternion.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <cstddef>
@@ -99,6 +102,21 @@ public:
 
 private:
 	std::size_t id;
+};
+
+// ========================================
+// Euler angles (in radians)
+// ========================================
+struct EulerAngles {
+	constexpr EulerAngles(glm::vec3 eulerAngles);
+	EulerAngles(glm::quat quartenion);
+
+	constexpr operator glm::quat() const;
+	constexpr explicit operator glm::vec3() const;
+	constexpr friend bool operator==(EulerAngles const& lhs, EulerAngles const& rhs);
+
+private:
+	glm::vec3 eulerAngles;
 };
 
 #include "type_alias.ipp"

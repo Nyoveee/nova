@@ -15,19 +15,29 @@ void TransformationSystem::update() {
 		// Figure out if the entity requires updating it's world matrix due to world transform change.
 		if (
 				transform.worldHasChanged
-			||	transform.position	!= transform.lastPosition
-			||	transform.scale		!= transform.lastScale
-			||	transform.rotation	!= transform.lastRotation
+			||	transform.position		!= transform.lastPosition
+			||	transform.scale			!= transform.lastScale
+			||	transform.eulerAngles	!= transform.lastEulerAngles
+			||	!glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))
 		) {
 			// Let's update the world matrix.
 			transform.worldHasChanged = true;
 			
-			// Normalise all quartenions!!
-			transform.rotation = glm::normalize(transform.rotation);
+			// Quartenions changed, let's update our euler angles.
+			if (!glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))) {
+				transform.rotation = glm::normalize(transform.rotation);
+				transform.eulerAngles = transform.rotation;
+			}
+			// Euler angles changed, let's update our quartenions.
+			else if (transform.eulerAngles != transform.lastEulerAngles) {
+				transform.rotation = transform.eulerAngles;
+				transform.rotation = glm::normalize(transform.rotation);
+			}
 
-			transform.lastPosition	= transform.position;
-			transform.lastScale		= transform.scale;
-			transform.lastRotation	= transform.rotation;
+			transform.lastPosition		= transform.position;
+			transform.lastScale			= transform.scale;
+			transform.lastRotation		= transform.rotation;
+			transform.lastEulerAngles	= transform.eulerAngles;
 
 			transform.modelMatrix = { 1 };
 			transform.modelMatrix = glm::translate(transform.modelMatrix, transform.position);
@@ -51,9 +61,10 @@ void TransformationSystem::update() {
 		}
 
 		if (
-				transform.localPosition	!= transform.lastLocalPosition
-			||	transform.localScale	!= transform.lastLocalScale
-			||	transform.localRotation	!= transform.lastLocalRotation
+				transform.localPosition		!= transform.lastLocalPosition
+			||	transform.localScale		!= transform.lastLocalScale
+			||	transform.localEulerAngles	!= transform.lastLocalEulerAngles		// Euler angles not consistent with quartenions anymore.
+			||	!glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))
 		) {
 			// World matrix needs recalculating because local matrix has been modified.
 			transform.needsRecalculating = true;
@@ -61,13 +72,22 @@ void TransformationSystem::update() {
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
 
-			// Normalise all quartenions!!
-			transform.localRotation = glm::normalize(transform.localRotation);
+			// Quartenions changed, let's update our euler angles.
+			if (!glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))) {
+				transform.localRotation = glm::normalize(transform.localRotation);
+				transform.localEulerAngles = transform.localRotation;
+			}
+			// Euler angles changed, let's update our quartenions.
+			else if (!glm::all(glm::epsilonEqual(transform.localRotation, glm::quat{ transform.localEulerAngles }, 1e-4f))) {
+				transform.localRotation = transform.localEulerAngles;
+				transform.localRotation = glm::normalize(transform.localRotation);
+			}
 
 			// We recalculate local matrix if there is a change in local transform.
-			transform.lastLocalPosition	= transform.localPosition;
-			transform.lastLocalScale	= transform.localScale;
-			transform.lastLocalRotation	= transform.localRotation;
+			transform.lastLocalPosition		= transform.localPosition;
+			transform.lastLocalScale		= transform.localScale;
+			transform.lastLocalRotation		= transform.localRotation;
+			transform.lastLocalEulerAngles	= transform.localEulerAngles;
 
 			transform.localMatrix = { 1 };
 			transform.localMatrix = glm::translate(transform.localMatrix, transform.localPosition);
@@ -128,11 +148,14 @@ void TransformationSystem::setLocalTransformFromWorld(Transform& transform, Enti
 	auto [localPosition, localRotation, localScale] = Math::decomposeMatrix(transform.localMatrix);
 	transform.localPosition = localPosition;
 	transform.localScale = localScale;
-	transform.localRotation = localRotation;
+	transform.localRotation = glm::normalize(localRotation);
 
 	transform.lastLocalPosition = localPosition;
 	transform.lastLocalScale = localScale;
-	transform.lastLocalRotation = localRotation;
+	transform.lastLocalRotation = glm::normalize(localRotation);
+
+	transform.localEulerAngles = transform.localRotation;
+	transform.lastLocalEulerAngles = transform.localEulerAngles;
 }
 
 void TransformationSystem::setChildrenDirtyFlag(entt::entity entity) {
@@ -157,11 +180,14 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 		auto [position, rotation, scale] = Math::decomposeMatrix(transform.modelMatrix);
 		transform.position = position;
 		transform.scale = scale;
-		transform.rotation = rotation;
+		transform.rotation = glm::normalize(rotation);
 
 		transform.lastPosition = position;
 		transform.lastScale = scale;
-		transform.lastRotation = rotation;
+		transform.lastRotation = glm::normalize(rotation);
+
+		transform.eulerAngles = transform.rotation;
+		transform.lastEulerAngles = transform.eulerAngles;
 	}
 
 	return transform.modelMatrix;

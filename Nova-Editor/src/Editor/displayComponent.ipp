@@ -99,6 +99,7 @@ namespace {
 						ImGui::TableNextColumn();
 						ImGui::Text((std::string{ dataMemberName } + "\n(quarternion)").c_str());
 
+						ImGui::BeginDisabled();
 						ImGui::TableNextColumn();
 						ImGui::SliderFloat("a", &dataMember.w, -1, 1);
 
@@ -110,6 +111,7 @@ namespace {
 
 						ImGui::TableNextColumn();
 						ImGui::SliderFloat("dk", &dataMember.z, -1, 1);
+						ImGui::EndDisabled();
 
 						ImGui::EndTable();
 					}
@@ -117,6 +119,41 @@ namespace {
 					if (ImGui::Button(ICON_FA_RECYCLE " Reset")) {
 						dataMember = {};
 					}
+				}
+
+				if constexpr (std::same_as<DataMemberType, EulerAngles>) {
+					// convert from radian to degrees for display..
+					glm::vec3 eulerAngles = static_cast<glm::vec3>(dataMember);
+					eulerAngles.x = toDegree(eulerAngles.x);
+					eulerAngles.y = toDegree(eulerAngles.y);
+					eulerAngles.z = toDegree(eulerAngles.z);
+
+					if (ImGui::BeginTable("MyTable", 4, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+						ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+						ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+
+						ImGui::TableNextRow();
+
+						ImGui::TableNextColumn();
+						ImGui::Text((std::string{ dataMemberName } + "\n(degrees)").c_str());
+
+						ImGui::TableNextColumn();
+						ImGui::InputFloat("pitch", &eulerAngles.x);
+
+						ImGui::TableNextColumn();
+						ImGui::InputFloat("yaw", &eulerAngles.y);
+
+						ImGui::TableNextColumn();
+						ImGui::InputFloat("roll", &eulerAngles.z);
+
+						ImGui::EndTable();
+					}
+
+					// Clamp result..
+					eulerAngles.x = std::clamp(eulerAngles.x, -180.f, 180.f);
+					eulerAngles.y = std::clamp(eulerAngles.y, -90.f, 90.f);
+					eulerAngles.z = std::clamp(eulerAngles.z, -180.f, 180.f);
+					dataMember = EulerAngles{ {toRadian(eulerAngles.x), toRadian(eulerAngles.y), toRadian(eulerAngles.z)} };
 				}
 
 				if constexpr (std::same_as<DataMemberType, AssetID>) {

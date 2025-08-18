@@ -91,3 +91,22 @@ constexpr AssetID::operator std::size_t() const {
 
 #undef max
 constexpr inline AssetID INVALID_ASSET_ID{ std::numeric_limits<std::size_t>::max() };
+
+// ========================================
+// Euler angles
+// ========================================
+
+constexpr EulerAngles::EulerAngles(glm::vec3 eulerAngles) : eulerAngles{ eulerAngles } {}
+inline EulerAngles::EulerAngles(glm::quat quartenion)  : eulerAngles{ glm::eulerAngles(glm::normalize(quartenion)) } {};
+
+constexpr EulerAngles::operator glm::quat() const {
+	return glm::quat{ eulerAngles };
+}
+
+constexpr EulerAngles::operator glm::vec3() const {
+	return eulerAngles;
+}
+
+constexpr bool operator==(EulerAngles const& lhs, EulerAngles const& rhs) {
+	return lhs.eulerAngles == rhs.eulerAngles;
+}

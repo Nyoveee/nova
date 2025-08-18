@@ -36,6 +36,9 @@ struct Transform {
 
 	glm::mat4x4 modelMatrix;			// model matrix represents the final matrix to change a object to world space.
 
+	EulerAngles eulerAngles		{ rotation };			// this will be derieved from quartenions
+	EulerAngles lastEulerAngles	{ rotation };			
+
 	// ====== Hierarchy related data =======
 	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
 
@@ -47,6 +50,9 @@ struct Transform {
 	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
 	glm::quat lastLocalRotation	{};
 
+	EulerAngles localEulerAngles { localRotation };	// this will be derieved from quartenions
+	EulerAngles lastLocalEulerAngles{ localRotation };
+
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
 	// When first created set it to true.
 	bool worldHasChanged = true;
@@ -57,9 +63,11 @@ struct Transform {
 		position,
 		scale,
 		rotation,
+		eulerAngles,
 		localPosition,
 		localScale,
-		localRotation
+		localRotation,
+		localEulerAngles
 	)
 };
 
