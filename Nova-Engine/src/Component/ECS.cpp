@@ -55,7 +55,7 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 	newParentEntityData.children.push_back(childEntity);
 
 	// 4. Properly set the local transform of the entity.
-	engine.transformationSystem.setLocalBasedOnWorld(childEntity);
+	engine.transformationSystem.setLocalTransformFromWorld(childEntity);
 }
 
 void ECS::removeEntityParent(entt::entity childEntity) {

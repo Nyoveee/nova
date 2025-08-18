@@ -5,24 +5,20 @@
 #include "ECS.h"
 
 #include "misc/cpp/imgui_stdlib.h"
-#include <memory>
+
+#include "IconsFontAwesome6.h"
 
 namespace {
-	//#define ComponentsToDisplay \
-	//	g_displayComponentFunctor = std::make_unique<>
+	// ================================================================================
+	// I love C++ TEMPLATE META PROGRAMMING :D 
+	// ================================================================================
 
-	// welcome to my favourite template metaprogramming strategy trick of all.
-	// is this an abomination? who knows.
-	// please ask me for explanation if you need.
-	struct Functor {
-		virtual ~Functor() = 0 {};
-		virtual void displayComponent(ComponentInspector& componentInspector, entt::entity entity) = 0;
-	};
-
-	// Eventually this function will be invoked 
+	// displayComponent, like the function suggests, is responsible for displaying a component's properties in the inspector UI.
 	template <typename Component>
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component);
 
+	// This functor allows the use of variadic template arguments to recursively invoke displayComponent, such
+	// that it displays all the listed components of a given entity.
 	template <typename T, typename... Components>
 	void displayIndividualComponent(ComponentInspector& componentInspector, entt::entity entity) {
 		entt::registry& registry = componentInspector.ecs.registry;
@@ -37,27 +33,29 @@ namespace {
 		}
 	}
 
+	// Using functors such that we can "store" types into our objects. (woah!)
 	template <typename... Components>
-	struct ComponentFunctor : public Functor {
-		void displayComponent(ComponentInspector& componentInspector, entt::entity entity) final {
+	struct ComponentFunctor {
+		void operator()(ComponentInspector& componentInspector, entt::entity entity) const {
 			displayIndividualComponent<Components...>(componentInspector, entity);
 		}
 	};
 
-	std::unique_ptr<Functor> g_displayComponentFunctor = nullptr;
+	// ================================================================================
+	// List all the components you want to show in the component inspector UI here!!
+	// ================================================================================
+	ComponentFunctor<
+		Transform,
+		MeshRenderer
+		// + add here
+	> 
+	g_displayComponentFunctor{};
 }
 
 ComponentInspector::ComponentInspector(Editor& editor, ECS& ecs) :
 	editor	{ editor },
 	ecs		{ ecs }
-{
-	g_displayComponentFunctor = std::make_unique<
-		ComponentFunctor<
-			Transform,
-			MeshRenderer
-		>
-	>();
-}
+{}
 
 void ComponentInspector::update() {
 	ImGui::Begin("Component Inspector");
@@ -97,7 +95,7 @@ void ComponentInspector::update() {
 	}
 
 	// Display the rest of the components via reflection.
-	g_displayComponentFunctor->displayComponent(*this, selectedEntity);
+	g_displayComponentFunctor(*this, selectedEntity);
 
 	ImGui::End();
 }

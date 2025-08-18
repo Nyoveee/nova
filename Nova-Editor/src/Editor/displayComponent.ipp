@@ -34,6 +34,7 @@ namespace {
 				return;
 			}
 
+			ImGui::PushID(static_cast<int>(entity));
 			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
 
 			// Visits each of the component's data member.
@@ -66,6 +67,9 @@ namespace {
 
 				if constexpr (std::same_as<DataMemberType, glm::vec3>) {
 					if (ImGui::BeginTable("MyTable", 4, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+						ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+						ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+
 						ImGui::TableNextRow();
 
 						ImGui::TableNextColumn();
@@ -82,6 +86,36 @@ namespace {
 						ImGui::InputFloat("z", &dataMember.z);
 
 						ImGui::EndTable();
+					}
+				}
+
+				if constexpr (std::same_as<DataMemberType, glm::quat>) {
+					if (ImGui::BeginTable("MyTable", 5, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+						ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+						ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+
+						ImGui::TableNextRow();
+
+						ImGui::TableNextColumn();
+						ImGui::Text((std::string{ dataMemberName } + "\n(quarternion)").c_str());
+
+						ImGui::TableNextColumn();
+						ImGui::SliderFloat("a", &dataMember.w, -1, 1);
+
+						ImGui::TableNextColumn();
+						ImGui::SliderFloat("bi", &dataMember.x, -1, 1);
+
+						ImGui::TableNextColumn();
+						ImGui::SliderFloat("cj", &dataMember.y, -1, 1);
+
+						ImGui::TableNextColumn();
+						ImGui::SliderFloat("dk", &dataMember.z, -1, 1);
+
+						ImGui::EndTable();
+					}
+
+					if (ImGui::Button(ICON_FA_RECYCLE " Reset")) {
+						dataMember = {};
 					}
 				}
 
@@ -102,6 +136,7 @@ namespace {
 				ImGui::PopID();
 			}, component);
 
+			ImGui::PopID();
 			ImGui::PopID();
 		}
 	}

@@ -84,7 +84,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		[&](ToggleEditorControl) {
 			if (gameViewPort.isHoveringOver) {
 				toggleViewPortControl(true);
-				ImGui::SetWindowFocus(nullptr);
+				loseFocus();
 			}
 		},
 		[&](ToggleEditorControl) {
@@ -104,6 +104,11 @@ void Editor::update() {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
 	ImGui::DockSpaceOverViewport();
+
+	if (toLoseFocus) {
+		ImGui::SetWindowFocus(nullptr);
+		toLoseFocus = false;
+	}
 
 	main();
 
@@ -225,7 +230,7 @@ void Editor::handleEntitySelection() {
 	if (!gameViewPort.isHoveringOver) {
 		return;
 	}
-
+	
 	if (isEntitySelected(hoveringEntity)) {
 		return;
 	}
@@ -272,13 +277,12 @@ void Editor::sandboxWindow() {
 
 		Transform transform = {
 			{0.f, 0.f, zPos},
-			{1.f / 300.f, 1.f / 300.f, 1.f / 300.f},
-			{1.f, 1.f, 1.f}
+			{1.f / 300.f, 1.f / 300.f, 1.f / 300.f}
 		};
 
 		registry.emplace<Transform>(entity, std::move(transform));
 		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model " + std::to_string(zPos) });
-		zPos -= 10.f;
+		zPos -= 2.f;
 
 		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
 
@@ -337,6 +341,10 @@ void Editor::sandboxWindow() {
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {
 		registry.get<Transform>(entt::entity{ 1 }).localPosition.z -= 1;
 	}
+}
+
+void Editor::loseFocus() {
+	toLoseFocus = true;
 }
 
 Editor::~Editor() {

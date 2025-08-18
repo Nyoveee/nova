@@ -43,6 +43,8 @@ private:
 	void handleEntitySelection();
 	void sandboxWindow();
 	
+	// loses keyboard and window focus of any window.
+	void loseFocus();
 public:
 	// so that all editors have access to engine interface.
 	Engine& engine;
@@ -60,4 +62,5 @@ private:
 private:
 	// This indicates whether the camera is active in the game's viewport.
 	bool isControllingInViewPort;
+	bool toLoseFocus;
 };

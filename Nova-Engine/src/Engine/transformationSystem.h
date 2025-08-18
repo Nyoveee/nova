@@ -8,6 +8,8 @@
 #include <glm/vec3.hpp>
 
 class ECS;
+struct Transform;
+struct EntityData;
 
 class TransformationSystem {
 public:
@@ -25,14 +27,23 @@ public:
 
 	static DecomposedMatrix decomposeMtx(glm::mat4 const& m);
 
+	// Sets the world matrix and position, scale and rotation based on the local matrix of the entity.
+	// just a more convenient public facing function that doesnt require additional parameters.
+	void setLocalTransformFromWorld(entt::entity entity);
+
+private:
 	// Sets the local matrix and position, scale and rotation based on the world matrix of the entity.
-	void setLocalBasedOnWorld(entt::entity entity);
+	void setLocalTransformFromWorld(Transform& transform, EntityData& entityData);
+
+	void setChildrenDirtyFlag(entt::entity entity);
+
+	// Gets the most updated model matrix of a given entity.
+	// Recalculates the model matrix if required.
+	glm::mat4x4 const& getUpdatedModelMatrix(entt::entity entity);
+	
+	// Recalculate model matrix due to changes in ancestor's world transform.
+	void recalculateModelMatrix(entt::entity entity);
 
 private:
-	bool hasAncestorChanged(entt::entity entity);
-	glm::mat4x4 calculateModelMatrix(entt::entity entity);
-	glm::mat4x4 calculateLocalMatrix(entt::entity entity);
-
-private:
-	ECS& ecs;
+	entt::registry& registry;
 };

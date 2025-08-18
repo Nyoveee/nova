@@ -1,9 +1,12 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <entt/entt.hpp>
 #include <string>
 #include <vector>
 #include <glm/mat4x4.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <unordered_map>
 
 #include "Libraries/type_alias.h"
@@ -25,11 +28,11 @@ struct EntityData {
 struct Transform {
 	glm::vec3 position;
 	glm::vec3 scale			{ 1.0f, 1.0f, 1.0f };
-	glm::vec3 rotation		{};
+	glm::quat rotation		{};
 
 	glm::vec3 lastPosition	{ position };
 	glm::vec3 lastScale		{ scale };
-	glm::vec3 lastRotation	{ rotation };
+	glm::quat lastRotation	{ rotation };
 
 	glm::mat4x4 modelMatrix;			// model matrix represents the final matrix to change a object to world space.
 
@@ -38,16 +41,16 @@ struct Transform {
 
 	glm::vec3 localPosition		{};
 	glm::vec3 localScale		{ 1.f, 1.f, 1.f };
-	glm::vec3 localRotation		{};
+	glm::quat localRotation		{};
 
 	glm::vec3 lastLocalPosition {};
 	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
-	glm::vec3 lastLocalRotation	{};
+	glm::quat lastLocalRotation	{};
 
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
 	// When first created set it to true.
 	bool worldHasChanged = true;
-	bool localHasChanged = false;
+	bool needsRecalculating = false;
 	
 	// Reflect these data members for level editor to display
 	REFLECTABLE(

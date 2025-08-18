@@ -54,8 +54,7 @@ namespace ScriptingAPI {
 	ManagedComponentDeclaration(
 		Transform,					// Creates a new managed component Transform_ that is associated with the Transform component
 		Vector3, position,			// Transform_ now has data member position, of type Vector3 which is associated with glm::vec3 (type of original data member).
-		Vector3, scale,
-		Vector3, rotation
+		Vector3, scale
 	)
 	// We created a Managed Component named Transform_, with data members position, scale, rotation, test1 and test2.
 }
