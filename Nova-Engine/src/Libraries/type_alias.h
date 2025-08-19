@@ -104,6 +104,21 @@ private:
 	std::size_t id;
 };
 
+
+struct FolderID {
+	constexpr FolderID();
+	constexpr FolderID(std::size_t id);
+	constexpr explicit operator std::size_t() const;
+
+public:
+	constexpr friend bool operator==(FolderID const& lhs, FolderID const& rhs);
+	constexpr friend bool operator<(FolderID const& lhs, FolderID const& rhs);
+	friend struct std::hash<FolderID>;
+
+private:
+	std::size_t id;
+};
+
 // ========================================
 // Euler angles (in radians)
 // ========================================
@@ -115,8 +130,8 @@ struct EulerAngles {
 	constexpr explicit operator glm::vec3() const;
 	constexpr friend bool operator==(EulerAngles const& lhs, EulerAngles const& rhs);
 
-private:
-	glm::vec3 eulerAngles;
+public:
+	glm::vec3 angles;
 };
 
 #include "type_alias.ipp"

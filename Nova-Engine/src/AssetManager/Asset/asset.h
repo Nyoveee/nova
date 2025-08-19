@@ -11,10 +11,10 @@ public:
 	DLL_API Asset(std::string filepath);
 
 	DLL_API virtual ~Asset() = 0;
-	Asset(Asset const& other)				= delete;
-	Asset(Asset&& other)					= default;
-	Asset& operator=(Asset const& other)	= delete;
-	Asset& operator=(Asset&& other)			= default;
+	DLL_API Asset(Asset const& other)				= delete;
+	DLL_API Asset(Asset&& other)					= default;
+	DLL_API Asset& operator=(Asset const& other)	= delete;
+	DLL_API Asset& operator=(Asset&& other)			= default;
 
 public:
 	DLL_API virtual void load  () = 0;

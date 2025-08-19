@@ -2,6 +2,8 @@
 #include "engine.h"
 #include "gameViewPort.h"
 
+#include "IconsFontAwesome6.h"
+
 GameViewPort::GameViewPort(Editor& editor) :
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
@@ -10,7 +12,7 @@ GameViewPort::GameViewPort(Editor& editor) :
 {}
 
 void GameViewPort::update() {
-	ImGui::Begin("Game");
+	ImGui::Begin(ICON_FA_GAMEPAD " Game");
 	isHoveringOver = ImGui::IsWindowHovered();
 
 	// Get ImGui window's top left and bottom right.

@@ -9,20 +9,20 @@ using GLuint = unsigned int;
 
 class Texture : public Asset {
 public:
-	Texture(std::string filepath);
-	~Texture();
+	DLL_API Texture(std::string filepath);
+	DLL_API ~Texture();
 
-	Texture(Texture const& other) = delete;
-	Texture(Texture&& other) noexcept;
-	Texture& operator=(Texture const& other) = delete;
-	Texture& operator=(Texture&& other) noexcept;
-
-public:
-	void load() final;
-	void unload() final;
+	DLL_API Texture(Texture const& other) = delete;
+	DLL_API Texture(Texture&& other) noexcept;
+	DLL_API Texture& operator=(Texture const& other) = delete;
+	DLL_API Texture& operator=(Texture&& other) noexcept;
 
 public:
-	GLuint getTextureId() const;
+	DLL_API void load() final;
+	DLL_API void unload() final;
+
+public:
+	DLL_API GLuint getTextureId() const;
 
 private:
 	GLuint textureId;

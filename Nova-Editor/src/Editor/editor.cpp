@@ -36,7 +36,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	gameViewPort			{ *this },
 	inputManager			{ inputManager },
 	componentInspector		{ *this, engine.ecs },
-	assetManagerUi			{},
+	assetManagerUi			{ assetManager },
 	hierarchyList			{ engine.ecs, *this },
 	isControllingInViewPort	{ false },
 	hoveringEntity			{ entt::null }
@@ -391,11 +391,11 @@ void Editor::sandboxWindow() {
 	ImGui::End();
 
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_0)) {
-		registry.get<Transform>(entt::entity{ 0 }).position.z += 0.01f;
+		registry.get<Transform>(entt::entity{ 0 }).eulerAngles.angles.y += 0.01f;
 	}
 
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {
-		registry.get<Transform>(entt::entity{ 1 }).localPosition.z -= 1;
+		registry.get<Transform>(entt::entity{ 1 }).position.z -= 0.01f;
 	}
 }
 

@@ -58,7 +58,7 @@ ComponentInspector::ComponentInspector(Editor& editor, ECS& ecs) :
 {}
 
 void ComponentInspector::update() {
-	ImGui::Begin("Component Inspector");
+	ImGui::Begin(ICON_FA_WRENCH " Component Inspector");
 
 	// Begin displaying entity meta data..
 	if (!editor.hasAnyEntitySelected()) {

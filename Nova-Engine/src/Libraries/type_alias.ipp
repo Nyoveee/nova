@@ -92,21 +92,50 @@ constexpr AssetID::operator std::size_t() const {
 #undef max
 constexpr inline AssetID INVALID_ASSET_ID{ std::numeric_limits<std::size_t>::max() };
 
+constexpr FolderID::FolderID() : id{} {}
+constexpr FolderID::FolderID(std::size_t id) : id{ id } {}
+
+constexpr bool operator==(FolderID const& lhs, FolderID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(FolderID const& lhs, FolderID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+template<>
+struct std::hash<FolderID> {
+	std::size_t operator()(FolderID const& folderId) const noexcept {
+		return std::hash<std::size_t>{}(folderId.id);
+	}
+};
+
+constexpr FolderID::operator std::size_t() const {
+	return id;
+}
+
+constexpr inline FolderID NONE{ std::numeric_limits<std::size_t>::max() };
+
 // ========================================
 // Euler angles
 // ========================================
 
-constexpr EulerAngles::EulerAngles(glm::vec3 eulerAngles) : eulerAngles{ eulerAngles } {}
-inline EulerAngles::EulerAngles(glm::quat quartenion)  : eulerAngles{ glm::eulerAngles(glm::normalize(quartenion)) } {};
+constexpr EulerAngles::EulerAngles(glm::vec3 eulerAngles) : 
+	angles{ eulerAngles }
+{}
+
+inline EulerAngles::EulerAngles(glm::quat quartenion) : 
+	angles{ glm::eulerAngles(glm::normalize(quartenion)) }
+{};
 
 constexpr EulerAngles::operator glm::quat() const {
-	return glm::quat{ eulerAngles };
+	return glm::quat{ angles };
 }
 
 constexpr EulerAngles::operator glm::vec3() const {
-	return eulerAngles;
+	return angles;
 }
 
 constexpr bool operator==(EulerAngles const& lhs, EulerAngles const& rhs) {
-	return lhs.eulerAngles == rhs.eulerAngles;
+	return lhs.angles == rhs.angles;
 }
