@@ -11,6 +11,8 @@
 #include "bufferObject.h"
 #include "framebuffer.h"
 
+#include "AssetManager/Asset/model.h"
+
 class Engine;
 class AssetManager;
 
@@ -52,6 +54,9 @@ public:
 	DLL_API Camera& getCamera();
 	DLL_API Camera const& getCamera() const;
 
+	// most probably for ease of development.
+	DLL_API void recompileShaders();
+
 public:
 	void update(float dt);
 
@@ -59,6 +64,20 @@ public:
 	void render(RenderTarget target);
 
 private:
+	// set up proper configurations and clear framebuffers..
+	void prepareRendering(RenderTarget target);
+
+	// render all MeshRenderers
+	void renderModels();
+
+	// renders a outline during object hovering and selection.
+	void renderOutline();
+
+	// submit the properties of the material to the shader, given a mesh and the corresponding component.
+	bool setMaterial(Shader& shader, MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
+
+private:
+
 	void setBlendMode(BlendingConfig configuration);
 	void printOpenGLDriverDetails() const;
 
@@ -82,4 +101,5 @@ public:
 	Shader textureShader;
 	Shader gridShader;
 	Shader outlineShader;
+	Shader blinnPhongShader;
 };

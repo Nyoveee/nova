@@ -25,6 +25,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	basicShader			{ "System/Shader/basic.vert",		"System/Shader/basic.frag" },
 	standardShader		{ "System/Shader/standard.vert",	"System/Shader/basic.frag" },
 	textureShader		{ "System/Shader/standard.vert",	"System/Shader/image.frag" },
+	blinnPhongShader	{ "System/Shader/blinnPhong.vert",	"System/Shader/blinnPhong.frag" },
 	gridShader			{ "System/Shader/grid.vert",		"System/Shader/grid.frag" },
 	outlineShader		{ "System/Shader/outline.vert",		"System/Shader/outline.frag" },
 	VAO					{},
@@ -118,6 +119,42 @@ void Renderer::update(float dt) {
 }
 
 void Renderer::render(RenderTarget target) {
+	prepareRendering(target);
+
+	renderModels();
+
+	renderOutline();
+
+	// Bind back to default FBO for ImGui to work on.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+std::vector<GLuint> const& Renderer::getMainFrameBufferTextures() const {
+	return mainFrameBuffer.textureIds();
+}
+
+DLL_API void Renderer::enableWireframeMode(bool toEnable) const {
+	if (toEnable) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+}
+
+Camera& Renderer::getCamera() {
+	return camera;
+}
+
+Camera const& Renderer::getCamera() const {
+	return camera;
+}
+
+DLL_API void Renderer::recompileShaders() {
+	blinnPhongShader.compile();
+}
+
+void Renderer::prepareRendering(RenderTarget target) {
 	glEnable(GL_DEPTH_TEST);
 	glStencilMask(0xFF);
 
@@ -147,22 +184,12 @@ void Renderer::render(RenderTarget target) {
 		glClearNamedFramebufferfi(mainFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 		break;
 	}
-	
-#if 0
-	// Let's render grid lines first.
-	glVertexArrayVertexBuffer(VAO, 0, VBOs[0].id(), 0, sizeof(Vertex));
-	glBindVertexArray(VAO);
-	gridShader.use();
-	gridShader.setMatrix("view", camera.view());
-	gridShader.setMatrix("projection", camera.projection());
-	gridShader.setVec3("cameraPos", camera.getPos());
+}
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-#endif
-
-	textureShader.setMatrix("view", camera.view());
-	textureShader.setMatrix("projection", camera.projection());
-		
+void Renderer::renderModels() {
+	blinnPhongShader.use();
+	blinnPhongShader.setMatrix("view", camera.view());
+	blinnPhongShader.setMatrix("projection", camera.projection());
 	// Retrieve all game objects and prepare them for batch rendering..
 	entt::registry& registry = engine.ecs.registry;
 
@@ -172,6 +199,20 @@ void Renderer::render(RenderTarget target) {
 
 	auto& VBO = VBOs[0];
 
+	blinnPhongShader.setVec3("cameraPos", camera.getPos());
+
+	// STUB CODE!
+	// just in case we have no light objects.
+	blinnPhongShader.setVec3("lightPos", glm::vec3{ 0.f, 0.f, 0.f });
+	blinnPhongShader.setVec3("lightColor", glm::vec3{ 1.f, 1.f, 1.f });
+
+	// we need to set up light data..
+	// FOR NOW WE WORK WITH ONE!
+	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
+		blinnPhongShader.setVec3("lightPos", transform.position);
+		blinnPhongShader.setVec3("lightColor", light.color);
+	}
+
 	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		// Retrieves model asset from asset manager.
 		auto [model, _] = assetManager.getAsset<Model>(meshRenderer.modelId);
@@ -180,7 +221,8 @@ void Renderer::render(RenderTarget target) {
 			continue;
 		}
 
-		textureShader.setMatrix("model", transform.modelMatrix);
+		blinnPhongShader.setMatrix("model", transform.modelMatrix);
+		blinnPhongShader.setMatrix("normalMatrix", transform.normalMatrix);
 
 		// Set up stencil operation
 		if (meshRenderer.toRenderOutline) {
@@ -192,31 +234,21 @@ void Renderer::render(RenderTarget target) {
 
 		// Draw every mesh of a given model.
 		for (auto const& mesh : model->meshes) {
-			// Get texture..
-			auto iterator = meshRenderer.materials.find(mesh.materialName);
-
-			if (iterator == meshRenderer.materials.end()) {
-				std::cerr << "this shouldn't happen.";
-			}
-			else {
-				auto [texture, __] = assetManager.getAsset<Texture>(iterator->second.diffuseTextureId);
-
-				if (!texture) {
-					//std::cerr << "Error retrieving asset!\n";
-				}
-				else {
-					textureShader.setImageUniform("image", 0);
-					glBindTextureUnit(0, texture->getTextureId());
-				}
+			if (!setMaterial(blinnPhongShader, meshRenderer, mesh)) {
+				continue;
 			}
 
 			VBO.uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
 
-			textureShader.setUInt("objectId", static_cast<GLuint>(entity));
+			blinnPhongShader.setUInt("objectId", static_cast<GLuint>(entity));
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
+}
+
+void Renderer::renderOutline() {
+	entt::registry& registry = engine.ecs.registry;
 
 	// time to render the outlines..
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	// we don't need to write to the stencil buffer anymore, we focus on testing..
@@ -242,35 +274,54 @@ void Renderer::render(RenderTarget target) {
 		outlineShader.setVec3("color", { 255.f / 255.f, 136.f / 255.f, 0.f });
 
 		for (auto const& mesh : model->meshes) {
-			VBO.uploadData(mesh.vertices);
+			VBOs[0].uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
-
-	// Bind back to default FBO for ImGui to work on.
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-std::vector<GLuint> const& Renderer::getMainFrameBufferTextures() const {
-	return mainFrameBuffer.textureIds();
-}
+bool Renderer::setMaterial(Shader& shader, MeshRenderer const& meshRenderer, Model::Mesh const& mesh) {
+	// Get material...
+	auto iterator = meshRenderer.materials.find(mesh.materialName);
 
-DLL_API void Renderer::enableWireframeMode(bool toEnable) const {
-	if (toEnable) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	if (iterator == meshRenderer.materials.end()) {
+		std::cerr << "this shouldn't happen. material in component does not correspond to material on mesh.";
+		return false;
 	}
-	else {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-}
+	
+	// We have successfully retrieved the materials. Let's retrieve the individual components.
+	auto&& [__, material] = *iterator;
 
-Camera& Renderer::getCamera() {
-	return camera;
-}
+	// Handle albedo.
+	std::visit([&](auto&& albedo) {
+		using T = std::decay_t<decltype(albedo)>;
 
-Camera const& Renderer::getCamera() const {
-	return camera;
+		if constexpr (std::same_as<T, AssetID>) {
+			auto&& [texture, result] = assetManager.getAsset<Texture>(albedo);
+
+			if (!texture) {
+				// fallback..
+				shader.setBool("isUsingAlbedoMap", false);
+				shader.setVec3("albedo", { 0.2f, 0.2f, 0.2f });
+			}
+			else {
+				shader.setBool("isUsingAlbedoMap", true);
+				glBindTextureUnit(0, texture->getTextureId());
+				shader.setImageUniform("albedoMap", 0);
+			}
+		}
+		else /* it's glm::vec3. */ {
+			shader.setBool("isUsingAlbedoMap", false);
+			shader.setVec3("albedo", albedo);
+		}
+		
+	}, material.albedo);
+	
+	shader.setFloat("ambientFactor", material.ambient);
+	//shader.setVec3();
+
+	return true;
 }
 
 void Renderer::setBlendMode(BlendingConfig configuration) {

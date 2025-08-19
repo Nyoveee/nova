@@ -44,6 +44,8 @@ void TransformationSystem::update() {
 			transform.modelMatrix = transform.modelMatrix * glm::mat4_cast(transform.rotation);
 			transform.modelMatrix = glm::scale(transform.modelMatrix, transform.scale);
 
+			transform.normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform.modelMatrix)));
+
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
 		}
@@ -188,6 +190,8 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 
 		transform.eulerAngles = transform.rotation;
 		transform.lastEulerAngles = transform.eulerAngles;
+
+		transform.normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform.modelMatrix)));
 	}
 
 	return transform.modelMatrix;

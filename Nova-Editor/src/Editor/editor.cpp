@@ -360,7 +360,7 @@ void Editor::sandboxWindow() {
 		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model " + std::to_string(zPos) });
 		zPos -= 2.f;
 
-		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
+		std::unordered_map<MaterialName, Material> materials;
 
 		AssetID modelAsset{ 4632685791199811577 };
 
@@ -378,7 +378,29 @@ void Editor::sandboxWindow() {
 		}
 	}
 
-	ImGui::Text(ICON_FA_ARROW_RIGHT " icon test!!");
+	if (ImGui::Button("(+) Add Light")) {
+		auto entity = registry.create();
+
+		Transform transform = {
+			{0.f, 2.f, 5.f},
+			{0.2f, 0.2f, 0.2f}
+		};
+
+		registry.emplace<Transform>(entity, std::move(transform));
+		registry.emplace<EntityData>(entity, EntityData{ "Light" });
+		registry.emplace<Light>(entity, Light{ Color{1.f, 1.f, 1.f} });
+
+		std::unordered_map<MaterialName, Material> materials;
+
+		AssetID modelAsset{ 7438934177240228906 };
+		materials["Material"] = { Color{1.f, 1.f, 1.f} };
+
+		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
+	}
+
+	if (ImGui::Button("recompile shaders")) {
+		engine.renderer.recompileShaders();
+	}
 
 	ImGui::End();
 

@@ -46,7 +46,8 @@ namespace {
 	// ================================================================================
 	ComponentFunctor<
 		Transform,
-		MeshRenderer
+		MeshRenderer,
+		Light
 		// + add here
 	> 
 	g_displayComponentFunctor{};

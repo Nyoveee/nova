@@ -6,8 +6,11 @@
 #include <string>
 #include <vector>
 #include <glm/mat4x4.hpp>
+#include <glm/mat3x3.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <unordered_map>
+#include <variant>
+#include <optional>
 
 #include "Libraries/type_alias.h"
 #include "Graphics/vertex.h"
@@ -35,6 +38,7 @@ struct Transform {
 	glm::quat lastRotation	{ rotation };
 
 	glm::mat4x4 modelMatrix;			// model matrix represents the final matrix to change a object to world space.
+	glm::mat3x3 normalMatrix;			// normal matrix is used to transform normals.
 
 	EulerAngles eulerAngles		{ rotation };			// this will be derieved from quartenions
 	EulerAngles lastEulerAngles	{ rotation };			
@@ -71,11 +75,28 @@ struct Transform {
 	)
 };
 
-struct MeshRenderer {
-	struct Material {
-		AssetID diffuseTextureId;
-	};
+struct Light {
+	Color color;
+	float intensity;
 
+	REFLECTABLE(
+		color,
+		intensity
+	)
+};
+
+struct Material {
+	// either texture map or constant.
+	std::variant<AssetID, Color>	albedo				= Color{ 0.1f, 0.1f, 0.1f };
+	std::variant<AssetID, float>	roughness			= 0.5f;
+	std::variant<AssetID, float>	metallic			= 0.f;
+	std::optional<AssetID>			normalMap			= std::nullopt;
+	std::optional<AssetID>			ambientOcculusion	= std::nullopt;
+
+	float ambient = 0.2f;
+};
+
+struct MeshRenderer {
 	AssetID modelId;
 
 	// maps a material name from the model to a specific material texture

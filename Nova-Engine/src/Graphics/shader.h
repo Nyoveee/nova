@@ -44,6 +44,7 @@ public:
 	void setVec3			(const std::string& name, float x, float y, float z) const;
 	void setVec4			(const std::string& name, glm::vec4 const& list) const;
 	void setMatrix			(const std::string& name, const glm::mat4x4& matrix, bool transpose = false) const;
+	void setMatrix			(const std::string& name, const glm::mat3x3& matrix, bool transpose = false) const;
 	void setImageUniform	(const std::string& name, int uniform) const;
 
 private:

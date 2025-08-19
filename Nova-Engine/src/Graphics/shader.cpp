@@ -142,6 +142,10 @@ void Shader::setMatrix(const std::string& name, const glm::mat4x4& matrix, bool 
 	glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
 }
 
+void Shader::setMatrix(const std::string& name, const glm::mat3x3& matrix, bool transpose) const {
+	glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
+}
+
 void Shader::setImageUniform(const std::string& name, int uniform) const {
 	glUniform1i(glGetUniformLocation(m_id, name.c_str()), uniform);
 }

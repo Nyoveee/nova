@@ -2,6 +2,7 @@
 #include "engine.h"
 #include "assetManager.h"
 
+#include <glm/gtc/type_ptr.hpp>
 #include <concepts>
 
 namespace {
@@ -87,6 +88,13 @@ namespace {
 
 						ImGui::EndTable();
 					}
+				}
+
+				if constexpr (std::same_as<DataMemberType, Color>) {
+					ImGui::Text(fieldData.name());
+					glm::vec3 vec = dataMember;
+					ImGui::ColorEdit3("##", glm::value_ptr(vec));
+					dataMember = vec;
 				}
 
 				if constexpr (std::same_as<DataMemberType, glm::quat>) {
