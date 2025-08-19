@@ -1,11 +1,12 @@
 #include "assetManager.h"
 template <typename T, typename ...Args> requires std::derived_from<T, Asset>
-void AssetManager::addAsset(AssetID id, std::string filepath, Args... args) {
+Asset& AssetManager::addAsset(AssetID id, std::string filepath, Args... args) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
 		T{ filepath, args... }
 	);
 
 	assets[id] = std::move(newAsset);
+	return *assets[id].get();
 }
 
 // i love template programming
@@ -39,7 +40,7 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 
 template<typename T> requires std::derived_from<T, Asset>
 void AssetManager::recordAssetFile(std::filesystem::path const& path) {
-	AssetID assetId = generateAssetID(path);
+	auto [assetId, name] = parseMetaDataFile(path);
 
 	// Save asset entry in the parent folder.
 	std::filesystem::path parentPath = path.parent_path();
@@ -60,5 +61,5 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 		std::cerr << "strange.\n";
 	}
 
-	addAsset<T>(assetId, path.string());
+	addAsset<T>(assetId, path.string()).name = name;
 }

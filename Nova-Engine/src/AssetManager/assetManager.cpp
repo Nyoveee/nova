@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <fstream>
 
 #include "AssetManager.h"
 #include "Libraries/FileWatch.hpp"
@@ -116,6 +117,55 @@ AssetID AssetManager::generateAssetID(std::filesystem::path const& path) {
 	static AssetID id{ 10 };
 	id = std::size_t{ id } + 1;
 	return id;
+}
+
+AssetManager::AssetMetaInfo AssetManager::parseMetaDataFile(std::filesystem::path const& path) {
+	// Attempt to read corresponding metafile.
+	std::string metaDataFilename = path.string() + ".nova_meta";
+
+	std::ifstream metaDataFile{ metaDataFilename };
+
+	if (!metaDataFile) {
+		return createMetaDataFile(path);
+	}
+
+	std::string line;
+	AssetID assetId;
+
+	// reads the 1st line.
+	std::getline(metaDataFile, line);
+
+	try {
+		assetId = std::stoull(line);
+	}
+	catch (std::exception const& exception) {
+		std::cerr << "Failure when trying to parse asset id. " << exception.what() << "\n";
+		return createMetaDataFile(path);
+	}
+
+	// reads the 2nd line.
+	std::getline(metaDataFile, line);
+
+	std::cout << "Successfully parsed metadata file for " << path << '\n';
+	return { assetId, line };
+}
+
+AssetManager::AssetMetaInfo AssetManager::createMetaDataFile(std::filesystem::path const& path) {
+	AssetID assetId = generateAssetID(path);
+	std::string name = path.filename().string();
+
+	std::string metaDataFilename = path.string() + ".nova_meta";
+	std::ofstream metaDataFile{ metaDataFilename };
+
+	if (!metaDataFile) {
+		std::cerr << "Error creating metadata file: " << metaDataFilename << "!\n";
+		return { assetId, name };
+	}
+
+	// write to file
+	metaDataFile << static_cast<std::size_t>(assetId) << "\n" << name;
+	std::cout << "Successfully created metadata file for " << path << '\n';
+	return { assetId, name };
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

@@ -260,7 +260,9 @@ void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char c
 		}
 	}
 
+	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);
+	ImGui::PopTextWrapPos();
 
 	ImGui::EndChild();
 	ImGui::PopID();

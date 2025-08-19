@@ -29,6 +29,11 @@ public:
 		QueryResult result;
 	};
 
+	struct AssetMetaInfo {
+		AssetID id;
+		std::string name;
+	};
+
 public:
 	DLL_API AssetManager();
 
@@ -56,7 +61,7 @@ private:
 	// Parsing of the assets directory..
 	// =========================================================
 	template <typename T, typename ...Args> requires std::derived_from<T, Asset>
-	void addAsset(AssetID id, std::string filepath, Args... args);
+	Asset& addAsset(AssetID id, std::string filepath, Args... args);
 
 	void recordFolder(
 		FolderID folderId, 
@@ -74,6 +79,10 @@ private:
 	);
 
 	AssetID generateAssetID(std::filesystem::path const& path);
+
+	// will generate a new asset meta data if it's missing.
+	AssetMetaInfo parseMetaDataFile(std::filesystem::path const& path);
+	AssetManager::AssetMetaInfo createMetaDataFile(std::filesystem::path const& path);
 
 private:
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
