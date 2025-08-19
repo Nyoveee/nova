@@ -1,3 +1,5 @@
+#include "engine.h"
+
 #include <glm/gtc/type_ptr.hpp>
 
 #include "imgui.h"
@@ -6,7 +8,6 @@
 #include "gizmo.h"
 #include "editor.h"
 #include "ecs.h"
-#include "engine.h"
 #include "inputManager.h"
 #include "InputManager/inputEvent.h"
 #include "Component/component.h"

@@ -57,7 +57,7 @@ void AssetManagerUI::displayRightContentPanel() {
 	allUpperCaseSearchQuery.reserve(searchQuery.size());
 
 	for (char& character : searchQuery) {
-		allUpperCaseSearchQuery.push_back(std::toupper(character));
+		allUpperCaseSearchQuery.push_back(static_cast<char>(std::toupper(character)));
 	}
 	// ====================================================
 	
@@ -276,7 +276,7 @@ bool AssetManagerUI::isAMatchWithSearchQuery(std::string const& name) const {
 	allUpperCaseName.reserve(name.size());
 
 	for (char const& character : name) {
-		allUpperCaseName.push_back(std::toupper(character));
+		allUpperCaseName.push_back(static_cast<char>(std::toupper(character)));
 	}
 	return allUpperCaseName.find(allUpperCaseSearchQuery) != std::string::npos;
 }

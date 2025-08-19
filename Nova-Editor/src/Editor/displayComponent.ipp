@@ -1,5 +1,4 @@
 #include "Libraries/reflection.h"
-#include "engine.h"
 #include "assetManager.h"
 
 #include <glm/gtc/type_ptr.hpp>

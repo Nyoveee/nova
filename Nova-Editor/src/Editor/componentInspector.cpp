@@ -1,3 +1,4 @@
+#include "engine.h"
 #include "componentInspector.h"
 #include "imgui.h"
 #include "editor.h"
