@@ -115,36 +115,35 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 
 	auto&& [_, folder] = *iterator;
 
-	if (folder.childDirectories.empty()) {
-		ImGui::Bullet();
-		ImGui::SameLine();
+	// Display children recursively..
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_DrawLinesToNodes;
 
-		if (ImGui::Selectable(folder.name.c_str(), selectedFolderId == folderId)) {
-			selectedFolderId = folderId;
-		}
+	if (selectedFolderId == folderId) {
+		flags |= ImGuiTreeNodeFlags_Selected;
 	}
-	else {
-		// Display children recursively..
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
 
-		if (selectedFolderId == folderId) {
-			flags |= ImGuiTreeNodeFlags_Selected;
+	if (folder.childDirectories.empty()) {
+		flags |= ImGuiTreeNodeFlags_Leaf;
+		ImGui::Unindent(20.f);
+	}
+
+	bool showTreeNode = ImGui::TreeNodeEx(folder.name.c_str(), flags);
+
+	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+		selectedFolderId = folderId;
+	}
+
+	if (showTreeNode) {
+		// display children recursively..
+		for (FolderID childDirectoryId : folder.childDirectories) {
+			displayFolderTreeNode(childDirectoryId);
 		}
 
-		bool showTreeNode = ImGui::TreeNodeEx(folder.name.c_str(), flags);
+		ImGui::TreePop();
+	}
 
-		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
-			selectedFolderId = folderId;
-		}
-
-		if (showTreeNode) {
-			// display children recursively..
-			for (FolderID childDirectoryId : folder.childDirectories) {
-				displayFolderTreeNode(childDirectoryId);
-			}
-
-			ImGui::TreePop();
-		}
+	if (folder.childDirectories.empty()) {
+		ImGui::Indent(20.f);
 	}
 }
 

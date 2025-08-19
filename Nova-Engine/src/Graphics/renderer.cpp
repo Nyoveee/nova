@@ -202,7 +202,7 @@ void Renderer::render(RenderTarget target) {
 				auto [texture, __] = assetManager.getAsset<Texture>(iterator->second.diffuseTextureId);
 
 				if (!texture) {
-					std::cerr << "Error retrieving asset!\n";
+					//std::cerr << "Error retrieving asset!\n";
 				}
 				else {
 					textureShader.setImageUniform("image", 0);

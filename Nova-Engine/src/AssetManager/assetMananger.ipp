@@ -5,8 +5,16 @@ Asset& AssetManager::addAsset(AssetID id, std::string filepath, Args... args) {
 		T{ filepath, args... }
 	);
 
-	assets[id] = std::move(newAsset);
-	return *assets[id].get();
+	auto [iterator, success] = assets.insert({ id, std::move(newAsset) });
+
+	if (!success) {
+		// asset id collision occur! this shouldn't happen though.
+		std::cerr << "Asset ID collision occur for: " << filepath << "!\n";
+	}
+
+	auto&& [assetId, asset] = *iterator;
+
+	return *asset.get();
 }
 
 // i love template programming

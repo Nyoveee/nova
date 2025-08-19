@@ -347,7 +347,6 @@ void Editor::sandboxWindow() {
 	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
 
 	static float zPos = 0;
-	static bool alternate = true;
 
 	if (ImGui::Button("(+) Add 3D model")) {
 		auto entity = registry.create();
@@ -363,19 +362,12 @@ void Editor::sandboxWindow() {
 
 		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
 
-		AssetID modelAsset{ 1 };
+		AssetID modelAsset{ 4632685791199811577 };
 
-		if (alternate) {
-			materials["Table_frame_mtl"] = { AssetID{3} };
-			materials["Table_top_mtl"] = { AssetID{4} };
-		}
-		else {
-			materials["Material_50"] = { AssetID{0} };
-		}
+		materials["Table_frame_mtl"] = { AssetID{ 7029893134548182575 } };
+		materials["Table_top_mtl"] = { AssetID{ 13216639657323870350 } };
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-
-		alternate = !alternate;
 	}
 	std::string testScript{ engine.scriptingAPIManager.getAvailableScripts()[0] };
 	if (ImGui::Button(testScript.c_str())) {

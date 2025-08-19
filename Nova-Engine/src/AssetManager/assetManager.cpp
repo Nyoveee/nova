@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <fstream>
+#include <chrono>
 
 #include "AssetManager.h"
 #include "Libraries/FileWatch.hpp"
@@ -13,14 +14,6 @@ namespace {
 }
 
 AssetManager::AssetManager() {
-	// ========= STUB CODE ==========
-	addAsset<Texture>(0, "Assets/Texture/PICHU.png");
-	addAsset<Model>(1, "Assets/Model/FarmTable_Textured.fbx");
-	addAsset<Model>(2, "Assets/Model/box.fbx");
-	addAsset<Texture>(3, "Assets/Texture/Table_frame_mtl_Base_color.png");
-	addAsset<Texture>(4, "Assets/Texture/Table_top_mtl_Base_color.png");
-	// ==============================
-
 	std::filesystem::path assetDirectory = std::filesystem::current_path();
 	assetDirectory /= "Assets";
 
@@ -111,11 +104,21 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 }
 
 AssetID AssetManager::generateAssetID(std::filesystem::path const& path) {
-	(void) path;
+	// We don't need complex id generation code.
+	// We just need to make sure our id is unique everytime a metadata file is generated in the context of our system
+	// The easiest way is to utilise the current time + the filepath.
+	
+	AssetID id;
 
-	// STUB CODE!!
-	static AssetID id{ 10 };
-	id = std::size_t{ id } + 1;
+	do {
+		// average c++ attempting to get time line of code..
+		std::size_t time = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		std::string combined = path.string() + "_" + std::to_string(time);
+		id = { std::hash<std::string>{}(combined) };
+	}
+	// collision, regenerate.
+	while (assets.contains(id));
+
 	return id;
 }
 
