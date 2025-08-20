@@ -364,8 +364,8 @@ void Editor::sandboxWindow() {
 
 		AssetID modelAsset{ 5394145554098620737 };
 
-		materials["Table_frame_mtl"] = { AssetID{ 10628925746169402462 }, 0.5f, 0.f, AssetID{ 2610993271272464625 } };
-		materials["Table_top_mtl"] = { AssetID{ 12328958427352406389 }, 0.5f, 0.f, AssetID{ 9093688546574377480 } };
+		materials["Table_frame_mtl"] = { AssetID{ 10628925746169402462 }, Material::Config{ 0.5f, 0.f, 0.f }, AssetID{ 2610993271272464625 } };
+		materials["Table_top_mtl"] = { AssetID{ 12328958427352406389 }, Material::Config{ 0.5f, 0.f, 0.f }, AssetID{ 9093688546574377480 } };
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}
@@ -412,7 +412,7 @@ void Editor::sandboxWindow() {
 		std::unordered_map<MaterialName, Material> materials;
 
 		AssetID modelAsset{ 16424904817436751277 };
-		materials["Material"] = { Color{1.f, 1.f, 1.f}, 0.5f, 0.f, AssetID{ 15988662213738176872 }};
+		materials["Material"] = { Color{1.f, 1.f, 1.f}, Material::Config{ 0.5f, 0.f, 0.f }, AssetID{ 15988662213738176872 }};
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}

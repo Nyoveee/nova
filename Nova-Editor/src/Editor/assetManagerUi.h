@@ -7,6 +7,7 @@
 #include "AssetManager/Asset/texture.h"
 #include "Libraries/type_alias.h"
 
+#undef max
 constexpr ImTextureID NO_TEXTURE = std::numeric_limits<ImTextureID>::max();
 
 class AssetManager;

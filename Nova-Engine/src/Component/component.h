@@ -86,14 +86,18 @@ struct Light {
 };
 
 struct Material {
+	struct Config {
+		float roughness;
+		float metallic;
+		float occulusion;
+	};
+
 	// either texture map or constant.
 	std::variant<AssetID, Color>	albedo				= Color{ 0.1f, 0.1f, 0.1f };
-	std::variant<AssetID, float>	roughness			= 0.5f;
-	std::variant<AssetID, float>	metallic			= 0.f;
+	std::variant<AssetID, Config>	config				= Config{ 0.5f, 0.f, 0.f };
 	std::optional<AssetID>			normalMap			= std::nullopt;
-	std::optional<AssetID>			ambientOcculusion	= std::nullopt;
 
-	float ambient = 0.2f;
+	float ambient = 0.1f;
 };
 
 struct MeshRenderer {

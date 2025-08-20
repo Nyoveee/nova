@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <optional>
+#include <functional>
 
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
@@ -61,6 +62,14 @@ public:
 	// since there is no loading of asset, you retrieve the data instantly.
 	DLL_API Asset* getAssetInfo(AssetID id);
 
+	// retrieve all assets of a given type.
+	template <ValidAsset T>
+	std::vector<std::reference_wrapper<Asset>> const& getAllAssets() const;
+
+	// retrieve 1 asset id of a given type. (should never be invalid asset id, but still should handle the chance of it being invalid).
+	template <ValidAsset T>
+	AssetID getSomeAssetID() const;
+	
 public:
 	// =========================================================
 	// Getters (no setters!)
@@ -72,6 +81,8 @@ private:
 	// =========================================================
 	// Parsing of the assets directory..
 	// =========================================================
+
+	// the king.
 	template <ValidAsset T>
 	Asset& addAsset(AssetInfo<T> const& assetInfo);
 
@@ -124,7 +135,11 @@ private:
 
 private:
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
-
+	
+	// groups all assets based on their type.
+	// reference wrapper because i dont want a chance of null pointer.
+	std::unordered_map<AssetTypeID, std::vector<std::reference_wrapper<Asset>>> assetsByType;
+	
 	// welcome to template metaprogramming black magic.
 	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
 

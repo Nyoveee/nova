@@ -104,6 +104,21 @@ private:
 	std::size_t id;
 };
 
+// an id given to the template type parameter of assets.
+// for an example, type Texture could have id of 5, and Model could have id of 7.
+struct AssetTypeID {
+	constexpr AssetTypeID();
+	constexpr AssetTypeID(std::size_t id);
+	constexpr explicit operator std::size_t() const;
+
+public:
+	constexpr friend bool operator==(AssetTypeID const& lhs, AssetTypeID const& rhs);
+	constexpr friend bool operator<(AssetTypeID const& lhs, AssetTypeID const& rhs);
+	friend struct std::hash<AssetTypeID>;
+
+private:
+	std::size_t id;
+};
 
 struct FolderID {
 	constexpr FolderID();

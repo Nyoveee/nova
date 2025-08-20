@@ -55,11 +55,14 @@ namespace {
 }
 
 ComponentInspector::ComponentInspector(Editor& editor, ECS& ecs) :
-	editor	{ editor },
-	ecs		{ ecs }
+	editor			{ editor },
+	ecs				{ ecs },
+	assetManager	{ editor.engine.assetManager }
 {}
 
 void ComponentInspector::update() {
+	imguiCounter = 0;
+
 	ImGui::Begin(ICON_FA_WRENCH " Component Inspector");
 
 	// Begin displaying entity meta data..

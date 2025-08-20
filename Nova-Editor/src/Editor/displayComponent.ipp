@@ -4,7 +4,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
 
+void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
+
 namespace {
+
 	template<typename Component>
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
 		(void) componentInspector;
@@ -174,6 +177,19 @@ namespace {
 					}
 					else {
 						ImGui::Text("Asset ID: [%zu]", static_cast<std::size_t>(dataMember));
+					}
+				}
+
+				if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
+					int i = 0;
+					for (auto&& [name, material] : dataMember) {
+						ImGui::PushID(i);
+
+						ImGui::Text(std::string{ "Material [" + std::to_string(i) + "]: " + name }.c_str());
+						displayMaterialUI(material, componentInspector);
+						++i;
+
+						ImGui::PopID();
 					}
 				}
 

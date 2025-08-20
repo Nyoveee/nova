@@ -49,6 +49,7 @@ constexpr ColorA::operator Color() const								{ return Color{ color.r, color.g
 // ID!
 // ========================================
 
+// ================ EventID ==================
 constexpr EventID::EventID(std::size_t id) : id{ id } {}
 
 // For hashing, we need to implement these member functions..
@@ -67,6 +68,7 @@ struct std::hash<EventID> {
 	}
 };
 
+// ================ AssetID ==================
 constexpr AssetID::AssetID() : id{} {}
 constexpr AssetID::AssetID(std::size_t id) : id{ id } {}
 
@@ -92,6 +94,30 @@ constexpr AssetID::operator std::size_t() const {
 #undef max
 constexpr inline AssetID INVALID_ASSET_ID{ std::numeric_limits<std::size_t>::max() };
 
+// ================ AssetTypeID ==================
+constexpr AssetTypeID::AssetTypeID() : id{} {}
+constexpr AssetTypeID::AssetTypeID(std::size_t id) : id{ id } {}
+
+constexpr bool operator==(AssetTypeID const& lhs, AssetTypeID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(AssetTypeID const& lhs, AssetTypeID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+template<>
+struct std::hash<AssetTypeID> {
+	std::size_t operator()(AssetTypeID const& assetTypeId) const noexcept {
+		return std::hash<std::size_t>{}(assetTypeId.id);
+	}
+};
+
+constexpr AssetTypeID::operator std::size_t() const {
+	return id;
+}
+
+// ================ FolderID ==================
 constexpr FolderID::FolderID() : id{} {}
 constexpr FolderID::FolderID(std::size_t id) : id{ id } {}
 

@@ -20,6 +20,9 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	// this will be used for serialisation. this is how we obtain the original type associated with the asset id.
 	serialiseAssetFunctors[assetInfo.id] = std::make_unique<SerialiseAssetFunctor<T>>(SerialiseAssetFunctor<T>{});
 
+	// record this asset to the corresponding asset type.
+	assetsByType[Family::id<T>()].push_back(*asset.get());
+
 	return *asset.get();
 }
 
@@ -51,6 +54,39 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 			return AssetQuery<T>{ nullptr, QueryResult::Loading };
 		}
 	}
+}
+
+template<ValidAsset T>
+std::vector<std::reference_wrapper<Asset>> const& AssetManager::getAllAssets() const {
+	auto iterator = assetsByType.find(Family::id<T>());
+
+	if (iterator == assetsByType.end()) {
+		std::cerr << "this should never happen.\n. attempting to query invalid asset type?\n";
+		static std::vector<std::reference_wrapper<Asset>> empty;
+		return empty;
+	}
+
+	auto&& [_, allAssets] = *iterator;
+	return allAssets;
+}
+
+template<ValidAsset T>
+AssetID AssetManager::getSomeAssetID() const {
+	auto iterator = assetsByType.find(Family::id<T>());
+
+	if (iterator == assetsByType.end()) {
+		std::cerr << "this should never happen.\n. attempting to query invalid asset type?\n";
+		return INVALID_ASSET_ID;
+	}
+
+	auto&& [_, allAssets] = *iterator;
+	
+	if (allAssets.empty()) {
+		std::cerr << "empty asset??\n";
+		return INVALID_ASSET_ID;
+	}
+
+	return allAssets[0].get().id;
 }
 
 template <ValidAsset T>

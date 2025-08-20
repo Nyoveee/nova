@@ -161,6 +161,7 @@ xcopy /r /y /Q "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
   <ItemGroup>
     <ClCompile Include="src\Editor\assetManagerUi.cpp" />
     <ClCompile Include="src\Editor\componentInspector.cpp" />
+    <ClCompile Include="src\Editor\displayMaterial.cpp" />
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\gizmo.cpp" />
     <ClCompile Include="src\Editor\hierarchy.cpp" />
