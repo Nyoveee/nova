@@ -9,7 +9,7 @@
 AssetManagerUI::AssetManagerUI(AssetManager& assetManager) :
 	assetManager	 { assetManager },
 	selectedFolderId { NONE },
-	folderIcon		 { "System/Image/folder.png" }
+	folderIcon		 { "System/Image/folder.png", false }
 {
 	folderIcon.load();
 }

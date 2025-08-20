@@ -4,12 +4,13 @@
 #include <glad/glad.h>
 #include <iostream>
 
-Texture::Texture(std::string filepath) :
+Texture::Texture(std::string filepath, bool toFlip) :
 	Asset			 { filepath },
 	width			 {},
 	height			 {},
 	numChannels		 {},
-	textureId		 {}
+	textureId		 {},
+	toFlip			 { toFlip }
 {}
 
 Texture::~Texture() {
@@ -25,7 +26,8 @@ Texture::Texture(Texture&& other) noexcept :
 	width			 { other.width },
 	height			 { other.height },
 	numChannels		 { other.numChannels },
-	textureId		 { other.textureId }
+	textureId		 { other.textureId },
+	toFlip			 { other.toFlip }
 {
 	other.textureId = 0;
 }
@@ -39,6 +41,7 @@ Texture& Texture::operator=(Texture&& other) noexcept {
 	height			 = other.height;
 	numChannels		 = other.numChannels;
 	textureId		 = other.textureId;
+	toFlip			 = other.toFlip;
 
 	other.textureId = 0;
 
@@ -51,7 +54,13 @@ void Texture::load() {
 		return;
 	}
 
-	//stbi_set_flip_vertically_on_load(true);
+	if (toFlip) {
+		stbi_set_flip_vertically_on_load(true);
+	}
+	else {
+		stbi_set_flip_vertically_on_load(false);
+	}
+
 	unsigned char* data = stbi_load(getFilePath().c_str(), &width, &height, &numChannels, 0);
 
 	if (!data) {
@@ -61,8 +70,26 @@ void Texture::load() {
 
 	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
 
-	GLint internalFormat = numChannels == 4 ? GL_RGBA16 : GL_RGB16;
-	GLint format = numChannels == 4 ? GL_RGBA : GL_RGB;
+	// black and white binary.
+	GLint internalFormat;
+	GLint format;
+
+	if (numChannels == 1) {
+		internalFormat = GL_R8;
+		format = GL_RED;
+	}
+	else if (numChannels == 3) {
+		internalFormat = GL_RGB16;
+		format = GL_RGB;
+	}
+	else if (numChannels == 4) {
+		internalFormat = GL_RGBA16;
+		format = GL_RGBA;
+	}
+	else {
+		std::cerr << "Weird number of channels? " << getFilePath() << " has " << numChannels << " channels?\n";
+		return;
+	}
 
 	glTextureStorage2D(textureId, 1, internalFormat, width, height);
 	glTextureSubImage2D(textureId, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, data);
@@ -85,4 +112,8 @@ void Texture::unload() {
 
 GLuint Texture::getTextureId() const {
 	return textureId;
+}
+
+DLL_API bool Texture::isFlipped() const {
+	return toFlip;
 }

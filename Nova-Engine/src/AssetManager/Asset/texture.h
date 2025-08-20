@@ -4,12 +4,9 @@
 
 using GLuint = unsigned int;
 
-// 2 phase initialisation is generally frown upon in RAII practice, but in this case I may need to load and unload the texture often in a single lifetime.
-// Similar to a default constructed std::ifstream not holding to any resource or std::function pointing to a nullptr
-
 class Texture : public Asset {
 public:
-	DLL_API Texture(std::string filepath);
+	DLL_API Texture(std::string filepath, bool toFlip);
 	DLL_API ~Texture();
 
 	DLL_API Texture(Texture const& other) = delete;
@@ -23,10 +20,27 @@ public:
 
 public:
 	DLL_API GLuint getTextureId() const;
+	DLL_API bool isFlipped() const;
 
 private:
 	GLuint textureId;
 	int width;
 	int height;
 	int numChannels;
+
+	bool toFlip;
 };
+
+// Explicitly define an extension of the asset metadata
+// Try to provide default values if possible!
+template <>
+struct AssetInfo<Texture> : public BasicAssetInfo {
+	bool isFlipped = false;
+};
+
+// Define a way to create 
+// inline keyword for multiple definitions of the same function.
+template <>
+inline Texture createAsset(AssetInfo<Texture> const& assetInfo) { 
+	return Texture{ assetInfo.filepath, assetInfo.isFlipped }; 
+}

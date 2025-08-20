@@ -29,11 +29,11 @@ namespace {
 
 ModelLoader::ModelLoader() {}
 
-constexpr unsigned int PostProcessingFlags { 
-	aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs 
-};
-
 bool ModelLoader::loadModel(Model& model) const {
+	constexpr unsigned int PostProcessingFlags {
+		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
+	};
+
 	Assimp::Importer importer;
 
 	aiScene const* scene = importer.ReadFile(model.getFilePath(), PostProcessingFlags);
@@ -77,10 +77,7 @@ Model::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, f
 			maxDimension = std::max(std::max(position.x, position.y), position.z);
 		}
 
-		// 2. Normal
-		glm::vec3 normal = toGlmVec3(mesh->mNormals[i]);
-
-		// 3. Texture Coordinates
+		// 2. Texture Coordinates
 		glm::vec2 textureCoords;
 		if (mesh->mTextureCoords[0]) {
 			textureCoords = toGlmVec2(mesh->mTextureCoords[0][i]);
@@ -88,8 +85,17 @@ Model::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, f
 		else {
 			textureCoords = glm::vec2(0.0f, 0.0f);
 		}
+
+		// 3. Normal
+		glm::vec3 normal = toGlmVec3(mesh->mNormals[i]);
+
+		// 4. Tangents
+		glm::vec3 tangent = toGlmVec3(mesh->mTangents[i]);
+
+		// 5. Bitangents
+		glm::vec3 bitangent = toGlmVec3(mesh->mBitangents[i]);
 		
-		vertices.push_back({ position, normal, textureCoords });
+		vertices.push_back({ position, textureCoords, normal, tangent, bitangent });
 	}
 
 	// Getting indices..

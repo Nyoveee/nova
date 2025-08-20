@@ -33,3 +33,21 @@ public:
 private:
 	std::string filepath;
 };
+
+// generic asset meta info that all assets have.
+struct BasicAssetInfo {
+	AssetID id;
+	std::string filepath;
+	std::string name;
+};
+
+// specific asset meta info.
+// 1. each asset type will need to explicitly specialise this asset type, if they require additional info!
+template <typename T> requires std::derived_from<T, Asset>
+struct AssetInfo : public BasicAssetInfo {};
+
+// creates the specific asset based on it's respective asset info.
+// 2. each asset type will need to explicit specialise this function to create an instance of the asset, if they are using a explicitly
+// specialised asset info!
+template<typename T>
+T createAsset(AssetInfo<T> const& assetInfo) { return T{ assetInfo.filepath }; }

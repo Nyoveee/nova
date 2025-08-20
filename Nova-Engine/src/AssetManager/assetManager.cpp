@@ -43,6 +43,28 @@ AssetManager::AssetManager() {
 	}
 }
 
+AssetManager::~AssetManager() {
+	// let's serialise the asset meta data of all our stored info.
+	for (auto&& [id, assetPtr] : assets) {
+		Asset* asset = assetPtr.get();
+
+		if (!asset) {
+			std::cerr << "This should have never happened.\n";
+			continue;
+		}
+
+		auto&& serialiseFunctorPtr = serialiseAssetFunctors[id];
+
+		if (!serialiseFunctorPtr) {
+			std::cerr << "This should have also never happened.\n";
+			continue;
+		}
+
+		// cool syntax? or abomination?
+		serialiseFunctorPtr->operator()(*asset, *this);
+	}
+}
+
 Asset* AssetManager::getAssetInfo(AssetID id) {
 	auto iterator = assets.find(id);
 
@@ -94,12 +116,12 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 		recordAssetFile<Model>(path);
 	}
 
-	else if (fileExtension == ".png") {
+	else if (fileExtension == ".png" || fileExtension == ".jpg") {
 		recordAssetFile<Texture>(path);
 	}
 
 	else {
-		std::cout << "Unsupported file type of: " << path << "has been found.\n";
+		std::cout << "Unsupported file type of: " << path << " has been found.\n";
 	}
 }
 
@@ -122,14 +144,10 @@ AssetID AssetManager::generateAssetID(std::filesystem::path const& path) {
 	return id;
 }
 
-AssetManager::AssetMetaInfo AssetManager::parseMetaDataFile(std::filesystem::path const& path) {
+std::optional<BasicAssetInfo> AssetManager::parseMetaDataFile(std::filesystem::path const& path, std::ifstream& metaDataFile) {
 	// Attempt to read corresponding metafile.
-	std::string metaDataFilename = path.string() + ".nova_meta";
-
-	std::ifstream metaDataFile{ metaDataFilename };
-
 	if (!metaDataFile) {
-		return createMetaDataFile(path);
+		return std::nullopt;
 	}
 
 	std::string line;
@@ -143,32 +161,32 @@ AssetManager::AssetMetaInfo AssetManager::parseMetaDataFile(std::filesystem::pat
 	}
 	catch (std::exception const& exception) {
 		std::cerr << "Failure when trying to parse asset id. " << exception.what() << "\n";
-		return createMetaDataFile(path);
+		return std::nullopt;
 	}
 
 	// reads the 2nd line.
 	std::getline(metaDataFile, line);
 
 	std::cout << "Successfully parsed metadata file for " << path << '\n';
-	return { assetId, line };
+	return {{ assetId, path.string(), line }};
 }
 
-AssetManager::AssetMetaInfo AssetManager::createMetaDataFile(std::filesystem::path const& path) {
-	AssetID assetId = generateAssetID(path);
-	std::string name = path.filename().string();
-
-	std::string metaDataFilename = path.string() + ".nova_meta";
-	std::ofstream metaDataFile{ metaDataFilename };
+BasicAssetInfo AssetManager::createMetaDataFile(std::filesystem::path const& path, std::ofstream& metaDataFile) {
+	BasicAssetInfo assetInfo = { generateAssetID(path), path.string(), path.filename().string() };
 
 	if (!metaDataFile) {
-		std::cerr << "Error creating metadata file: " << metaDataFilename << "!\n";
-		return { assetId, name };
+		std::cerr << "Error creating metadata file for file: " << path << "!\n";
+		return assetInfo;
 	}
 
 	// write to file
-	metaDataFile << static_cast<std::size_t>(assetId) << "\n" << name;
-	std::cout << "Successfully created metadata file for " << path << '\n';
-	return { assetId, name };
+	metaDataFile << static_cast<std::size_t>(assetInfo.id) << "\n" << assetInfo.name << "\n";
+
+	return assetInfo;
+}
+
+void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile) {
+	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

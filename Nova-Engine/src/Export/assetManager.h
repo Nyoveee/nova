@@ -3,6 +3,7 @@
 #include "export.h"
 #include <memory>
 #include <unordered_map>
+#include <optional>
 
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
@@ -13,6 +14,16 @@
 // These assets could be loaded or not loaded.
 // Asset Manager merely acts as a bookkeep to all possible assets in the engine.
 
+// A valid asset must
+// 1. Inherit from base class asset
+// 2. Corresponding asset info inherit from BasicAssetInfo
+//
+// dont remove this concept! it's meant to save you from shooting yourself in the foot.
+template <typename T>
+concept ValidAsset = std::derived_from<T, Asset> && std::derived_from<AssetInfo<T>, BasicAssetInfo>;
+
+#include "AssetManager/serialiseAssetFunctor.h"
+
 class AssetManager {
 public:
 	enum class QueryResult {
@@ -22,26 +33,27 @@ public:
 		Loading		// exist but is not loaded, asset manager is attempting to load it now.
 	};
 
-	template <typename T>
+	template <ValidAsset T>
 	struct AssetQuery {
 		// Raw pointer representing non-owning, potentially null resource.
 		T* asset;
 		QueryResult result;
 	};
 
-	struct AssetMetaInfo {
-		AssetID id;
-		std::string name;
-	};
-
 public:
 	DLL_API AssetManager();
+
+	DLL_API ~AssetManager();
+	DLL_API AssetManager(AssetManager const& other)				= delete;
+	DLL_API AssetManager(AssetManager&& other)					= delete;
+	DLL_API AssetManager& operator=(AssetManager const& other)	= delete;
+	DLL_API AssetManager& operator=(AssetManager&& other)		= delete;
 
 public:
 	// =========================================================
 	// Retrieving assets and info..
 	// =========================================================
-	template <typename T> requires std::derived_from<T, Asset>
+	template <ValidAsset T>
 	AssetQuery<T> getAsset(AssetID id);
 
 	// this is only used to get metadata / info about the assets (like name, is asset loaded..)
@@ -60,8 +72,8 @@ private:
 	// =========================================================
 	// Parsing of the assets directory..
 	// =========================================================
-	template <typename T, typename ...Args> requires std::derived_from<T, Asset>
-	Asset& addAsset(AssetID id, std::string filepath, Args... args);
+	template <ValidAsset T>
+	Asset& addAsset(AssetInfo<T> const& assetInfo);
 
 	void recordFolder(
 		FolderID folderId, 
@@ -73,19 +85,48 @@ private:
 		std::filesystem::path const& path
 	);
 
-	template <typename T> requires std::derived_from<T, Asset>
+	template <ValidAsset T>
 	void recordAssetFile(
 		std::filesystem::path const& path
 	);
 
 	AssetID generateAssetID(std::filesystem::path const& path);
 
-	// will generate a new asset meta data if it's missing.
-	AssetMetaInfo parseMetaDataFile(std::filesystem::path const& path);
-	AssetManager::AssetMetaInfo createMetaDataFile(std::filesystem::path const& path);
+	// =========================================================
+	// Parsing meta data file associated with the asset.
+	// Each asset will contain a generic metadata (id and name)
+	// Each specific type asset has additional metadata as well.
+	// =========================================================
+	
+	// ==== Parse specific a specific asset type. ====
+	// These functions will invoke the general functions below first which parses generic metadata info first
+	// before performing additional parsing based on asset type.
+	template <ValidAsset T>
+	AssetInfo<T> parseMetaDataFile(std::filesystem::path const& path);
+	
+	template <ValidAsset T>
+	AssetInfo<T> createMetaDataFile(std::filesystem::path const& path);
+
+	// === Parse generic metadata info. These functions are invoked by the functions above first. ====
+	
+	// optional because parsing may fail.
+	std::optional<BasicAssetInfo> parseMetaDataFile(std::filesystem::path const& path, std::ifstream& metaDataFile);
+	BasicAssetInfo createMetaDataFile(std::filesystem::path const& path, std::ofstream& metaDataFile);
+
+	// =========================================================
+	// Serialising asset meta data..
+	template <ValidAsset T>
+	friend struct SerialiseAssetFunctor;
+
+	template <ValidAsset T>
+	void serialiseAssetMetaData(T const& asset);
+	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
 
 private:
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
+
+	// welcome to template metaprogramming black magic.
+	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
 
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
@@ -94,3 +135,4 @@ private:
 };
 
 #include "AssetManager/assetMananger.ipp"
+#include "AssetManager/serialiseAssetFunctor.ipp"

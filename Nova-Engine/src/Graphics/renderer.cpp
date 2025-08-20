@@ -19,6 +19,9 @@ constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 constexpr std::size_t colorIndex = 0;
 constexpr std::size_t objectIdIndex = 1;
 
+// 100 MB should be nothing right?
+constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100000000;
+
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },
 	assetManager		{ engine.assetManager },
@@ -29,34 +32,20 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	gridShader			{ "System/Shader/grid.vert",		"System/Shader/grid.frag" },
 	outlineShader		{ "System/Shader/outline.vert",		"System/Shader/outline.frag" },
 	VAO					{},
-	EBO					{ 200000, BufferObject::Type::ElememtBuffer },
+	EBO					{ AMOUNT_OF_MEMORY_ALLOCATED, BufferObject::Type::ElememtBuffer },
 	camera				{},
+
 	// main FBO shall contain color attachment 0 of vec4 and color attachment 1 of 32 byte int.
 	// color attachment 0 is to store the resulting color, color attachment 1 is to store object id for object picking.
 	mainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16, GL_R32UI } }
 {
+	// 10 MB should be nothing.
+	VBOs.push_back({ AMOUNT_OF_MEMORY_ALLOCATED, BufferObject::Type::VertexBuffer });
+
 	printOpenGLDriverDetails();
 
 	// Set the correct viewport
 	glViewport(0, 0, gameWidth, gameHeight);
-
-	// construct a VBO. Allocate some amount of bytes of memory to this VBO.
-	VBOs.push_back({ 200000, BufferObject::Type::VertexBuffer });
-
-#if 0
-	std::array<Vertex, 6> vertices{
-		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-		Vertex{{  0.5f, -0.5f,  0.f }, { 1.0f, 0.0f }},	// bottom right
-							    
-		Vertex{{ -0.5f,  0.5f,  0.f }, { 0.0f, 1.0f }},	// top left
-		Vertex{{ -0.5f, -0.5f,  0.f }, { 0.0f, 0.0f }},	// bottom left
-		Vertex{{  0.5f,  0.5f,  0.f }, { 1.0f, 1.0f }},	// top right
-	};
-
-	glNamedBufferData(VBOs[0].id(), vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
-#endif
-
 	glCreateVertexArrays(1, &VAO);
 
 	// Bind this EBO to this VAO.
@@ -68,22 +57,28 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate attribute index 0 and 1 with the respective attribute properties.
 	glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, pos));
-	glVertexArrayAttribFormat(VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-	glVertexArrayAttribFormat(VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
+	glVertexArrayAttribFormat(VAO, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
+	glVertexArrayAttribFormat(VAO, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+	glVertexArrayAttribFormat(VAO, 3, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, tangent));
+	glVertexArrayAttribFormat(VAO, 4, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, bitangent));
 
 	// enable attributes
 	glEnableVertexArrayAttrib(VAO, 0);
 	glEnableVertexArrayAttrib(VAO, 1);
 	glEnableVertexArrayAttrib(VAO, 2);
+	glEnableVertexArrayAttrib(VAO, 3);
+	glEnableVertexArrayAttrib(VAO, 4);
 
-	// associate attribute 0 and 1 to binding index 0. 
+	// associate vertex attributes to binding index 0. 
 	glVertexArrayAttribBinding(VAO, 0, bindingIndex);
 	glVertexArrayAttribBinding(VAO, 1, bindingIndex);
 	glVertexArrayAttribBinding(VAO, 2, bindingIndex);
+	glVertexArrayAttribBinding(VAO, 3, bindingIndex);
+	glVertexArrayAttribBinding(VAO, 4, bindingIndex);
 
-	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_STENCIL_TEST);	
 
-	// sounds useless :rofl:
+	// sounds useless :rofl: (it's interfering with my MRT attempt)
 	glDisable(GL_DITHER);
 }
 
@@ -318,6 +313,20 @@ bool Renderer::setMaterial(Shader& shader, MeshRenderer const& meshRenderer, Mod
 		
 	}, material.albedo);
 	
+	// Handle normal map
+	if (material.normalMap) {
+		auto&& [normalMap, result] = assetManager.getAsset<Texture>(material.normalMap.value());
+
+		if (normalMap) {
+			shader.setBool("isUsingNormalMap", true);
+			glBindTextureUnit(1, normalMap->getTextureId());
+			shader.setImageUniform("normalMap", 1);
+		}
+	}
+	else {
+		shader.setBool("isUsingNormalMap", false);
+	}
+
 	shader.setFloat("ambientFactor", material.ambient);
 	//shader.setVec3();
 
