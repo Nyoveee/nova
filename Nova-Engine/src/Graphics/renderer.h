@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "bufferObject.h"
 #include "framebuffer.h"
+#include "ECS.h"
 
 #include "AssetManager/Asset/model.h"
 
@@ -67,14 +68,23 @@ private:
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering(RenderTarget target);
 
-	// render all MeshRenderers
+	// render all MeshRenderers.
 	void renderModels();
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
-	// submit the properties of the material to the shader, given a mesh and the corresponding component.
-	bool setMaterial(Shader& shader, MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
+	// the different rendering pipelines..
+	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
+	void setupBlinnPhongShader(Material const& material);
+	void setupPBRShader(Material const& material);
+	void setupColorShader(Material const& material);
+
+	// sets model specific uniforms for all rendering pipeline. (like model matrix)
+	void setModelUniforms(Transform const& transform, entt::entity entity);
+
+	// attempts to get the appropriate material from meshrenderer.
+	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
 
 private:
 
@@ -84,9 +94,9 @@ private:
 private:
 	Engine& engine;
 	AssetManager& assetManager;
+	entt::registry& registry;
 
-	std::vector<BufferObject> VBOs;
-	
+	BufferObject VBO;
 	BufferObject EBO;
 	GLuint VAO;
 
@@ -99,6 +109,7 @@ public:
 	Shader basicShader;
 	Shader standardShader;
 	Shader textureShader;
+	Shader colorShader;
 	Shader gridShader;
 	Shader outlineShader;
 	Shader blinnPhongShader;

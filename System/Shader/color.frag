@@ -1,16 +1,13 @@
 #version 450 core
 
-uniform sampler2D image;
 uniform uint objectId;
-
-in vec2 textureUnit;
+uniform vec3 color;
 
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out uint ObjectId;
 
 void main()
 {
-    vec4 color = texture(image, textureUnit);
-    FragColor = color;
+    FragColor = vec4(color, 1);
     ObjectId = objectId;
 }

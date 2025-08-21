@@ -8,8 +8,50 @@
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector) {
 	ImGui::BeginChild("Material UI", ImVec2{0, 400.f}, ImGuiChildFlags_Borders);
 
-	// Handle albedo display.
-	ImGui::SeparatorText("Albedo / Base color");
+	// ============================================
+	// Handle rendering pipeline dropdown box.
+	// ============================================
+
+	ImGui::SeparatorText("Rendering pipeline.");
+
+	const char* pipelineName;
+
+	switch (material.renderingPipeline)
+	{
+	case Material::Pipeline::PBR:
+		pipelineName = "Physical Based Rendering.";
+		break;
+	case Material::Pipeline::BlinnPhong:
+		pipelineName = "Blinn-Phong Shading.";
+		break;
+	case Material::Pipeline::Color:
+		pipelineName = "Plain old color.";
+		break;
+	default:
+		pipelineName = "easter egg!";
+	}
+
+	if (ImGui::BeginCombo("##pipeline", pipelineName)) {
+		if (ImGui::Selectable("Physical Based Rendering.", material.renderingPipeline == Material::Pipeline::PBR)) {
+			material.renderingPipeline = Material::Pipeline::PBR;
+		}
+
+		if (ImGui::Selectable("Blinn-Phong Shading.", material.renderingPipeline == Material::Pipeline::BlinnPhong)) {
+			material.renderingPipeline = Material::Pipeline::BlinnPhong;
+		}
+
+		if (ImGui::Selectable("Plain old color.", material.renderingPipeline == Material::Pipeline::Color)) {
+			material.renderingPipeline = Material::Pipeline::Color;
+		}
+
+		ImGui::EndCombo();
+	}
+
+	// ============================================
+	// Handle albedo property display.
+	// ============================================
+
+	ImGui::SeparatorText(material.renderingPipeline == Material::Pipeline::Color ? "Color" : "Albedo / Base color");
 
 	std::visit([&](auto&& albedo) {
 		using T = std::decay_t<decltype(albedo)>;
@@ -29,7 +71,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 			ImGui::ColorEdit3("color", glm::value_ptr(color));
 			material.albedo = color;
 
-			if (ImGui::Button("Use albedo map instead.")) {
+			if (ImGui::Button(material.renderingPipeline == Material::Pipeline::Color ? "Use texture instead." : "Use albedo map instead.")) {
 				material.albedo = componentInspector.assetManager.getSomeAssetID<Texture>();
 				return;
 			}
@@ -37,8 +79,17 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 
 	}, material.albedo);
 	
+	// ============================================
+	// Handle Roughness, Metallic and Occulusion property display.
+	// ============================================
+
 	ImGui::SeparatorText("Roughness, Metallic and Occulusion");
-	
+
+	if (material.renderingPipeline != Material::Pipeline::PBR) {
+		ImGui::BeginDisabled();
+		ImGui::Text("Only PBR pipeline uses these properties.");
+	}
+
 	std::visit([&](auto&& configuration) {
 		using T = std::decay_t<decltype(configuration)>;
 
@@ -65,7 +116,19 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 
 	}, material.config);
 
+	if (material.renderingPipeline != Material::Pipeline::PBR) {
+		ImGui::EndDisabled();
+	}
+
+	// ============================================
+	// Handle normal property display.
+	// ============================================
 	ImGui::SeparatorText("Normal");
+
+	if (material.renderingPipeline == Material::Pipeline::Color) {
+		ImGui::BeginDisabled();
+		ImGui::Text("The color pipeline does not use a normal map.");
+	}
 
 	if (!material.normalMap) {
 		if (ImGui::Button("Use a normal map.")) {
@@ -80,6 +143,10 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		if (ImGui::Button("Remove normal map.")) {
 			material.normalMap = std::nullopt;
 		}
+	}
+
+	if (material.renderingPipeline == Material::Pipeline::Color) {
+		ImGui::EndDisabled();
 	}
 
 	ImGui::EndChild();

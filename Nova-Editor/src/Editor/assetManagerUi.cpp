@@ -240,7 +240,7 @@ void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char c
 	constexpr float textHeight = 20.f;
 
 	ImGui::PushID(imguiId);
-	ImGui::BeginChild("Thumbnail", ImVec2{ columnWidth, columnWidth + textHeight + 2 * padding.y });
+	ImGui::BeginChild("Thumbnail", ImVec2{ columnWidth, columnWidth + textHeight + 2 * padding.y }, ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
 
 	ImVec2 buttonSize = ImVec2{ columnWidth - 2 * padding.x, columnWidth - 2 * padding.x };
 

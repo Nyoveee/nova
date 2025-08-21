@@ -119,35 +119,55 @@ void Shader::compile() {
 }
 
 void Shader::setBool(const std::string& name, bool const value) const {
-	glUniform1i(glGetUniformLocation(m_id, name.c_str()), static_cast<int>(value));
+	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), static_cast<int>(value));
 }
 
 void Shader::setInt(const std::string& name, int const value) const {
-	glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
+	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::setUInt(const std::string& name, unsigned int value) const {
-	glUniform1ui(glGetUniformLocation(m_id, name.c_str()), value);
+	glProgramUniform1ui(m_id, glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::setFloat(const std::string& name, float const value) const {
-	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
+	glProgramUniform1f(m_id, glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::setVec2(const std::string& name, glm::vec2 const& list) const {
-	glUniform2f(glGetUniformLocation(m_id, name.c_str()), list[0], list[1]);
+	glProgramUniform2f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1]);
 }
 
 void Shader::setMatrix(const std::string& name, const glm::mat4x4& matrix, bool transpose) const {
-	glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
+	glProgramUniformMatrix4fv(m_id, glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
 }
 
 void Shader::setMatrix(const std::string& name, const glm::mat3x3& matrix, bool transpose) const {
-	glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
+	glProgramUniformMatrix3fv(m_id, glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
 }
 
 void Shader::setImageUniform(const std::string& name, int uniform) const {
-	glUniform1i(glGetUniformLocation(m_id, name.c_str()), uniform);
+	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), uniform);
+}
+
+void Shader::setVec3(const std::string& name, glm::vec3 const& list) const {
+	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
+}
+
+void Shader::setVec2(const std::string& name, float x, float y) const {
+	glProgramUniform2f(m_id, glGetUniformLocation(m_id, name.c_str()), x, y);
+}
+
+void Shader::setVec3(const std::string& name, float x, float y, float z) const {
+	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name.c_str()), x, y, z);
+}
+
+void Shader::setVec4(const std::string& name, glm::vec4 const& list) const {
+	glProgramUniform4f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2], list[3]);
+}
+
+GLuint Shader::id() const {
+	return m_id;
 }
 
 const char* Shader::getVertexPath() const {
@@ -156,24 +176,4 @@ const char* Shader::getVertexPath() const {
 
 const char* Shader::getFragmentPath() const {
 	return fragmentPath;
-}
-
-void Shader::setVec3(const std::string& name, glm::vec3 const& list) const {
-	glUniform3f(glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
-}
-
-void Shader::setVec2(const std::string& name, float x, float y) const {
-	glUniform2f(glGetUniformLocation(m_id, name.c_str()), x, y);
-}
-
-void Shader::setVec3(const std::string& name, float x, float y, float z) const {
-	glUniform3f(glGetUniformLocation(m_id, name.c_str()), x, y, z);
-}
-
-void Shader::setVec4(const std::string& name, glm::vec4 const& list) const {
-	glUniform4f(glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2], list[3]);
-}
-
-GLuint Shader::id() const {
-	return m_id;
 }

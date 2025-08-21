@@ -90,11 +90,19 @@ struct Light {
 };
 
 struct Material {
+	enum class Pipeline {
+		PBR,			// uses everything.
+		BlinnPhong,		// use albedo and normal map.
+		Color			// only uses albedo.
+	};
+
 	struct Config {
 		float roughness;
 		float metallic;
 		float occulusion;
 	};
+
+	Pipeline renderingPipeline = Pipeline::BlinnPhong;
 
 	// either texture map or constant.
 	std::variant<AssetID, Color>	albedo		= Color{ 0.1f, 0.1f, 0.1f };
