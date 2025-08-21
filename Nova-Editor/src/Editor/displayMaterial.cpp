@@ -15,7 +15,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		using T = std::decay_t<decltype(albedo)>;
 
 		if constexpr (std::same_as<T, AssetID>) {
-			componentInspector.displayAssetDropDownList<Texture>(albedo, [&](AssetID selectedAssetId) {
+			componentInspector.displayAssetDropDownList<Texture>(albedo, "Albedo Map", [&](AssetID selectedAssetId) {
 				material.albedo = selectedAssetId;
 			});
 			
@@ -43,7 +43,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		using T = std::decay_t<decltype(configuration)>;
 
 		if constexpr (std::same_as<T, AssetID>) {
-			componentInspector.displayAssetDropDownList<Texture>(configuration, [&](AssetID selectedAssetId) {
+			componentInspector.displayAssetDropDownList<Texture>(configuration, "Packed Texture Map", [&](AssetID selectedAssetId) {
 				material.config = selectedAssetId;
 			});
 
@@ -73,7 +73,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		}
 	}
 	else {
-		componentInspector.displayAssetDropDownList<Texture>(material.normalMap.value(), [&](AssetID selectedAssetId) {
+		componentInspector.displayAssetDropDownList<Texture>(material.normalMap.value(), "Normal Map", [&](AssetID selectedAssetId) {
 			material.normalMap = selectedAssetId;
 		});
 

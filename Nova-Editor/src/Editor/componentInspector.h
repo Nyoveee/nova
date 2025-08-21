@@ -18,7 +18,7 @@ public:
 
 public:
 	template <typename T>
-	void displayAssetDropDownList(AssetID id, std::function<void(AssetID)> onClickCallback);
+	void displayAssetDropDownList(AssetID id, const char* labelName, std::function<void(AssetID)> onClickCallback);
 
 public:
 	ECS& ecs;
@@ -32,12 +32,12 @@ public:
 #include "imgui.h"
 
 template<typename T>
-void ComponentInspector::displayAssetDropDownList(AssetID id, std::function<void(AssetID)> onClickCallback) {
+void ComponentInspector::displayAssetDropDownList(AssetID id, const char* labelName, std::function<void(AssetID)> onClickCallback) {
 	ImGui::PushID(imguiCounter);
 	++imguiCounter;
 
 	Asset* selectedAsset = assetManager.getAssetInfo(id);
-	auto allAssets = assetManager.getAllAssets<Texture>();
+	auto allAssets = assetManager.getAllAssets<T>();
 
 	char const* selectedAssetName;
 
@@ -48,7 +48,7 @@ void ComponentInspector::displayAssetDropDownList(AssetID id, std::function<void
 		selectedAssetName = selectedAsset->name.c_str();
 	}
 
-	if (ImGui::BeginCombo("asset list", selectedAssetName)) {
+	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
 		for (auto&& asset : allAssets) {
 			if (ImGui::Selectable(asset.get().name.c_str(), id == asset.get().id)) {
 				onClickCallback(asset.get().id);

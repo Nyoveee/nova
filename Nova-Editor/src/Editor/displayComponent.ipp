@@ -7,6 +7,11 @@
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
 
 namespace {
+	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
+	template<class T>
+	concept IsTypedAssetID = requires(T x) {
+		{ TypedAssetID{ x } } -> std::same_as<T>;
+	};
 
 	template<typename Component>
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
@@ -178,6 +183,15 @@ namespace {
 					else {
 						ImGui::Text("Asset ID: [%zu]", static_cast<std::size_t>(dataMember));
 					}
+				}
+
+				if constexpr (IsTypedAssetID<DataMemberType>) {
+					// dataMember is of type TypedAssetID<T>
+					using OriginalAssetType = DataMemberType::AssetType;
+
+					componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](AssetID assetId) {
+						dataMember = DataMemberType{ assetId };
+					});
 				}
 
 				if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {

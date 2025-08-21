@@ -16,6 +16,10 @@
 #include "Graphics/vertex.h"
 #include "Libraries/reflection.h"
 
+// Forward declaring..
+class Model;
+class Texture;
+
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
 // Components should only hold data! Let systems work on these components.
@@ -93,15 +97,15 @@ struct Material {
 	};
 
 	// either texture map or constant.
-	std::variant<AssetID, Color>	albedo				= Color{ 0.1f, 0.1f, 0.1f };
-	std::variant<AssetID, Config>	config				= Config{ 0.5f, 0.f, 0.f };
-	std::optional<AssetID>			normalMap			= std::nullopt;
+	std::variant<AssetID, Color>	albedo		= Color{ 0.1f, 0.1f, 0.1f };
+	std::variant<AssetID, Config>	config		= Config{ 0.5f, 0.f, 0.f };
+	std::optional<AssetID>			normalMap	= std::nullopt;
 
 	float ambient = 0.1f;
 };
 
 struct MeshRenderer {
-	AssetID modelId;
+	TypedAssetID<Model> modelId;
 
 	// maps a material name from the model to a specific material texture
 	std::unordered_map<MaterialName, Material> materials;

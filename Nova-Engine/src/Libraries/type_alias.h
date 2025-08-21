@@ -89,7 +89,6 @@ private:
 };
 
 // Game objects hold reference to assets by using an ID.
-
 struct AssetID {
 	constexpr AssetID();
 	constexpr AssetID(std::size_t id);
@@ -102,6 +101,14 @@ public:
 
 private:
 	std::size_t id;
+};
+
+// it's essentially AssetID but carrying additional type info of the original asset type. 
+// useful in editor to retrieve the original asset type.
+// TypedAssetID can implicitly convert to AssetID anytime, and vice versa.
+template <typename T>
+struct TypedAssetID : public AssetID {
+	using AssetType = T;
 };
 
 // an id given to the template type parameter of assets.

@@ -87,13 +87,31 @@ Model::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, f
 		}
 
 		// 3. Normal
-		glm::vec3 normal = toGlmVec3(mesh->mNormals[i]);
+		glm::vec3 normal;
+		if (mesh->mNormals) {
+			normal = toGlmVec3(mesh->mNormals[i]);
+		}
+		else {
+			normal = glm::vec3{ 0.0f, 0.0f, 0.f };
+		}
 
 		// 4. Tangents
-		glm::vec3 tangent = toGlmVec3(mesh->mTangents[i]);
+		glm::vec3 tangent;
+		if (mesh->mTangents) {
+			tangent = toGlmVec3(mesh->mTangents[i]);
+		}
+		else {
+			tangent = glm::vec3{ 0.0f, 0.0f, 0.f };
+		}
 
 		// 5. Bitangents
-		glm::vec3 bitangent = toGlmVec3(mesh->mBitangents[i]);
+		glm::vec3 bitangent;
+		if (mesh->mBitangents) {
+			bitangent = toGlmVec3(mesh->mBitangents[i]);
+		}
+		else {
+			bitangent = glm::vec3{ 0.0f, 0.0f, 0.f };
+		}
 		
 		vertices.push_back({ position, textureCoords, normal, tangent, bitangent });
 	}
