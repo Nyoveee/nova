@@ -80,10 +80,18 @@ struct Transform {
 };
 
 struct Light {
+	enum class Type : unsigned int {
+		PointLight = 0,
+		Directional = 1,
+		Spotlight = 2
+	};
+
 	Color color;
 	float intensity;
-
+	Type type = Light::Type::PointLight;
+	
 	REFLECTABLE(
+		type,
 		color,
 		intensity
 	)

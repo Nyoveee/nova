@@ -3,9 +3,12 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTextureUnit;
 
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+};
+
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 
 out vec2 textureUnit;
 

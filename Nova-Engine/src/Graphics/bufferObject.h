@@ -7,19 +7,15 @@ using GLuint = unsigned int;
 // We use the copy-and-swap idiom (but really move and swap idiom since copy semantics are disabled) to implement move semantics.
 class BufferObject {
 public:
-	enum class Usage {
-		StaticDraw,
-		DynamicDraw,
-		StreamDraw
-	};
-
 	enum class Type {
 		VertexBuffer,
 		ElememtBuffer,
+		SSBO,
+		UBO
 	};
 
 public:
-	BufferObject(GLsizeiptr amountOfMemory, Type type, Usage usage = Usage::DynamicDraw);
+	BufferObject(GLsizeiptr amountOfMemory, Type type);
 
 	~BufferObject();
 	BufferObject(BufferObject  const& other) = delete;
@@ -46,15 +42,15 @@ private:
 #include <iostream>
 
 template<typename T>
-void BufferObject::uploadData(std::vector<T> const& vertices) {
-	GLsizeiptr memoryRequired = vertices.size() * sizeof(T);
+void BufferObject::uploadData(std::vector<T> const& data) {
+	GLsizeiptr memoryRequired = data.size() * sizeof(T);
 
 	if (memoryRequired > allocatedMemory) {
 		std::cerr << "Attempting to upload data of more memory than currently allocated!\n";
 		std::cerr << "Allocated memory: " << allocatedMemory << " bytes, size of uploaded data: " << memoryRequired << " bytes.";
-		std::cerr << "Vertices: " << vertices.size() << ", sizeof(Vertex): " << sizeof(T) << "\n";
+		std::cerr << "Number of data: " << data.size() << ", sizeof(Data): " << sizeof(T) << "\n";
 		return;
 	}
 
-	glNamedBufferSubData(m_id, 0, vertices.size() * sizeof(T), vertices.data());
+	glNamedBufferSubData(m_id, 0, data.size() * sizeof(T), data.data());
 }

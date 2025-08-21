@@ -43,7 +43,6 @@ public:
 
 public:
 	// used directly in the editor. i need to export this.
-	
 	DLL_API std::vector<GLuint> const& getMainFrameBufferTextures() const;
 	DLL_API void enableWireframeMode(bool toEnable) const;
 
@@ -98,6 +97,8 @@ private:
 
 	BufferObject VBO;
 	BufferObject EBO;
+	BufferObject LightSSBO;
+	BufferObject SharedUBO;
 	GLuint VAO;
 
 	Camera camera;

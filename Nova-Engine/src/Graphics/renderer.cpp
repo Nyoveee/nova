@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "engine.h"
 #include "renderer.h"
 #include "window.h"
@@ -22,6 +24,9 @@ constexpr std::size_t objectIdIndex = 1;
 // 100 MB should be nothing right?
 constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100000000;
 
+// ok right?
+constexpr int MAX_NUMBER_OF_LIGHT = 100;
+
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },
 	assetManager		{ engine.assetManager },
@@ -36,6 +41,12 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	VAO					{},
 	VBO					{ AMOUNT_OF_MEMORY_ALLOCATED, BufferObject::Type::VertexBuffer },
 	EBO					{ AMOUNT_OF_MEMORY_ALLOCATED, BufferObject::Type::ElememtBuffer },
+
+						// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
+	LightSSBO			{ MAX_NUMBER_OF_LIGHT * sizeof(LightData) + alignof(LightData), BufferObject::Type::SSBO},
+
+						// we allocate memory for view and projection matrix.
+	SharedUBO			{ 2 * sizeof(glm::mat4), BufferObject::Type::UBO },
 	camera				{},
 
 	// main FBO shall contain color attachment 0 of vec4 and color attachment 1 of 32 byte int.
@@ -43,6 +54,12 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	mainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16, GL_R32UI } }
 {
 	printOpenGLDriverDetails();
+
+	// prepare the light SSBO. we bind light SSBO to binding point of 0.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, LightSSBO.id());
+
+	// prepare the shared UBO. we bind UBO to binding point of 0.
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, SharedUBO.id());
 
 	// Set the correct viewport
 	glViewport(0, 0, gameWidth, gameHeight);
@@ -118,7 +135,7 @@ void Renderer::render(RenderTarget target) {
 
 	renderModels();
 
-	renderOutline();
+	//renderOutline();
 
 	// Bind back to default FBO for ImGui to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -198,34 +215,43 @@ void Renderer::prepareRendering(RenderTarget target) {
 	// @TODO: Use a UBO to share common uniforms across all shaders like view and projection.
 	// Note: calling shader.use() before setting uniforms is redundant because we are using DSA.
 	// =================================================================
+	// Shared across all shaders. We use a shared UBO for this.
+	glNamedBufferSubData(SharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
+	glNamedBufferSubData(SharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection())); // offset bcuz 2nd data member.
+
 	// ==== Blinn Phong ====
-	blinnPhongShader.setMatrix("view", camera.view());
-	blinnPhongShader.setMatrix("projection", camera.projection());
 	blinnPhongShader.setVec3("cameraPos", camera.getPos());
 
-	// STUB CODE!
-	// just in case we have no light objects.
-	blinnPhongShader.setVec3("lightPos", glm::vec3{ 0.f, 0.f, 0.f });
-	blinnPhongShader.setVec3("lightColor", glm::vec3{ 1.f, 1.f, 1.f });
-
 	// we need to set up light data..
-	// FOR NOW WE WORK WITH ONE!
+	std::array<LightData, MAX_NUMBER_OF_LIGHT> lightData;
+
+	unsigned int numOfLights = 0;
 	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
-		blinnPhongShader.setVec3("lightPos", transform.position);
-		blinnPhongShader.setVec3("lightColor", light.color);
+		if (numOfLights == MAX_NUMBER_OF_LIGHT) {
+			std::cerr << "Max number of lights reached!\n";
+			break;
+		}
+
+		lightData[numOfLights] = { transform.position, glm::vec3{ light.color } * light.intensity, static_cast<unsigned int>(light.type) };
+		++numOfLights;
 	}
 
-	// ==== Color shader ====
-	colorShader.setMatrix("view", camera.view());
-	colorShader.setMatrix("projection", camera.projection());
+	// Send it over to SSBO.
+	glNamedBufferSubData(LightSSBO.id(), 0, sizeof(unsigned int), &numOfLights);	// copy the unsigned int representing number of lights into SSBO.
 
+	// copy all the light data to the SSBO.
+	// offset is an alignment of LightData!! because of alignment requirements of this struct!
+	// omdayz..
+	glNamedBufferSubData(LightSSBO.id(), alignof(LightData), numOfLights * sizeof(LightData), lightData.data());
+
+	// ==== Color shader ====
+	// ..
+	
 	// ==== Texture shader ====
-	textureShader.setMatrix("view", camera.view());
-	textureShader.setMatrix("projection", camera.projection());
+	// ..
 
 	// ==== Outline Shader ====
-	outlineShader.setMatrix("view", camera.view());
-	outlineShader.setMatrix("projection", camera.projection());
+	// ..
 }
 
 void Renderer::renderModels() {

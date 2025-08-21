@@ -5,6 +5,8 @@
 
 #include "componentInspector.h"
 
+#include "Libraries/magic_enum.hpp"
+
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector) {
 	ImGui::BeginChild("Material UI", ImVec2{0, 400.f}, ImGuiChildFlags_Borders);
 

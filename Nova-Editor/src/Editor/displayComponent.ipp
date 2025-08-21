@@ -4,6 +4,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
 
+#include "Libraries/magic_enum.hpp"
+
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
 
 namespace {
@@ -204,6 +206,23 @@ namespace {
 						++i;
 
 						ImGui::PopID();
+					}
+				}
+
+				// it's an enum. let's display a dropdown box for this enum.
+				// how? using enum reflection provided by "magic_enum.hpp" :D
+				if constexpr (std::is_enum_v<DataMemberType>) {
+					// get the list of all possible enum values
+					constexpr auto listOfEnumValues = magic_enum::enum_entries<DataMemberType>();
+
+					if (ImGui::BeginCombo(dataMemberName, std::string{ magic_enum::enum_name<DataMemberType>(dataMember) }.c_str())) {
+						for (auto&& [enumValue, enumInString] : listOfEnumValues) {
+							if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == dataMember)) {
+								dataMember = enumValue;
+							}
+						}
+
+						ImGui::EndCombo();
 					}
 				}
 

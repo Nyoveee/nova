@@ -6,12 +6,13 @@ layout (location = 2) in vec3 normal;
 layout (location = 3) in vec3 tangent;
 layout (location = 4) in vec3 bitangent;
 
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+};
+
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-
 uniform mat3 normalMatrix;
-
 uniform bool isUsingNormalMap;
 
 out VS_OUT {

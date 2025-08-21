@@ -388,7 +388,7 @@ void Editor::sandboxWindow() {
 
 		registry.emplace<Transform>(entity, std::move(transform));
 		registry.emplace<EntityData>(entity, EntityData{ "Light" });
-		registry.emplace<Light>(entity, Light{ Color{1.f, 1.f, 1.f} });
+		registry.emplace<Light>(entity, Light{ Color{1.f, 1.f, 1.f}, 1.f, Light::Type::PointLight });
 
 		std::unordered_map<MaterialName, Material> materials;
 

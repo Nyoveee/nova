@@ -20,51 +20,74 @@ uniform sampler2D albedoMap;
 uniform float ambientFactor;
 
 // === LIGHT PROPERTIES ===
-uniform vec3 lightPos;
-uniform vec3 lightColor;
+// corresponds to the enum in C++
+const int PointLight = 0;
+const int DirectionalLight = 1;
+const int SpotLight = 2;
+
+struct Light {
+    vec3 position;
+    vec3 color;
+    int type;
+};
+
+layout(std430, binding = 0) buffer Lights {
+    uint lightCount;
+    Light lights[];
+};
+
 uniform vec3 cameraPos;
 
 // === NORMAL MAPPING ===
 uniform bool isUsingNormalMap;
 uniform sampler2D normalMap;
 
+// calculate the resulting color caused by this one light.
+vec3 calculateLight(Light light, vec3 normal, vec3 baseColor) {
+    // this is really from fragment position to light position. 
+    // we do this to align with the normal.
+    vec3 lightDir = normalize(light.position - fsIn.fragWorldPos);
+
+    // hehe we will be using this in the PBR rendering next time!!
+    float cosTheta = max(dot(lightDir, normal), 0);
+
+    // this is our diffuse.
+    vec3 diffuseColor = baseColor * cosTheta * light.color;
+
+    // let's calculate specular
+    vec3 viewDir = normalize(cameraPos - fsIn.fragWorldPos);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * light.color;
+
+    return diffuseColor + specularColor;
+}
+
 void main() {
     // For object picking, not part of blinn-phong.
     ObjectId = objectId;
 
+    // Getting the normals..
     vec3 normal;
 
     if(isUsingNormalMap) {
         vec3 sampledNormal = vec3(texture(normalMap, fsIn.textureUnit));
         sampledNormal = sampledNormal * 2.0 - 1.0; 
-        // sampledNormal = vec3(sampledNormal.r, sampledNormal.g, sampledNormal.b);
-        // FragColor = vec4(fsIn.TBN * sampledNormal, 1);
-        
-        // return;
         normal = normalize(fsIn.TBN * sampledNormal);
     }
     else {
         normal = normalize(fsIn.normal);
     }
 
-    // this is really from world position to light position. 
-    // we do this to align with the normal.
-    vec3 lightDir = normalize(lightPos - fsIn.fragWorldPos);
-
-    // hehe we will be using this in the PBR rendering next time!!
-    float cosTheta = max(dot(lightDir, normal), 0);
-
-    // this is our diffuse.
+    // Getting base color
     vec3 baseColor = isUsingAlbedoMap ? vec3(texture(albedoMap, fsIn.textureUnit)) : albedo;
-    vec3 diffuseColor = baseColor * cosTheta * lightColor;
 
     // ambient is the easiest.
-    vec3 ambientColor = baseColor * ambientFactor;
+    vec3 finalColor = baseColor * ambientFactor;
 
-    // let's calculate specular
-    vec3 viewDir = normalize(cameraPos - fsIn.fragWorldPos);
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * lightColor * 0.5;
+    // Calculate diffuse and specular light for each light.
+    for(int i = 0; i < lightCount; ++i) {
+        finalColor += calculateLight(lights[i], normal, baseColor);
+    }
 
-    FragColor = vec4(ambientColor + diffuseColor + specularColor, 1);
+    FragColor = vec4(finalColor, 1);
 }
