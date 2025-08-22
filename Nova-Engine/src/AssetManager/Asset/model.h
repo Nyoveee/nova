@@ -31,7 +31,7 @@ public:
 	Model& operator=(Model&& other) = default;
 
 public:
-	void load() final;
+	void load(AssetManager& assetManager) final;
 	void unload() final;
 
 public:

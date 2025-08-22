@@ -1,4 +1,5 @@
 #include "assetManager.h"
+#include "editor.h"
 
 #include "assetManagerUi.h"
 #include "imgui.h"
@@ -6,12 +7,12 @@
 
 #include "ImGui/misc/cpp/imgui_stdlib.h"
 
-AssetManagerUI::AssetManagerUI(AssetManager& assetManager) :
-	assetManager	 { assetManager },
+AssetManagerUI::AssetManagerUI(Editor& editor) :
+	assetManager	 { editor.assetManager },
 	selectedFolderId { NONE },
 	folderIcon		 { "System/Image/folder.png", false }
 {
-	folderIcon.load();
+	folderIcon.load(assetManager);
 }
 
 void AssetManagerUI::update() {
@@ -28,7 +29,7 @@ void AssetManagerUI::displayLeftNavigationPanel() {
 	ImGui::BeginChild("(Left) Navigation Panel", ImVec2(200, 0), true);
 	bool toShow = ImGui::TreeNodeEx("Content", ImGuiTreeNodeFlags_DefaultOpen);
 
-	// Seperator has some inbuilt indentable so let's unindent it fo  qqr a border effect.
+	// Seperator has some inbuilt indentable so let's unindent it for a border effect.
 	ImGui::Unindent(20.f);
 	ImGui::Separator();
 	ImGui::Indent(20.f);

@@ -33,11 +33,12 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	window					{ window },
 	engine					{ engine },
 	assetManager			{ assetManager },
-	gameViewPort			{ *this },
 	inputManager			{ inputManager },
-	componentInspector		{ *this, engine.ecs },
-	assetManagerUi			{ assetManager },
-	hierarchyList			{ engine.ecs, *this },
+	gameViewPort			{ *this },
+	componentInspector		{ *this },
+	assetManagerUi			{ *this },
+	hierarchyList			{ *this },
+	debugUi					{ *this },
 	isControllingInViewPort	{ false },
 	hoveringEntity			{ entt::null }
 {
@@ -173,6 +174,7 @@ void Editor::main() {
 	componentInspector.update();
 	assetManagerUi.update();
 	hierarchyList.update();
+	debugUi.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();

@@ -13,6 +13,8 @@
 #include "Graphics/cameraSystem.h"
 #include "Engine/transformationSystem.h"
 
+#include "Libraries/BS_thread_pool.hpp"
+
 class Window;
 class Renderer;
 class CameraSystem;

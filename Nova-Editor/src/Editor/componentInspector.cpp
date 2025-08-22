@@ -54,9 +54,9 @@ namespace {
 	g_displayComponentFunctor{};
 }
 
-ComponentInspector::ComponentInspector(Editor& editor, ECS& ecs) :
+ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
-	ecs				{ ecs },
+	ecs				{ editor.engine.ecs },
 	assetManager	{ editor.engine.assetManager }
 {}
 

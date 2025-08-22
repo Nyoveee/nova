@@ -5,13 +5,13 @@
 
 #include "Libraries/type_alias.h"
 
-class Editor;
 class ECS;
+class Editor;
 class AssetManager;
 
 class ComponentInspector {
 public:
-	ComponentInspector(Editor& editor, ECS& ecs);
+	ComponentInspector(Editor& editor);
 
 public:
 	void update();

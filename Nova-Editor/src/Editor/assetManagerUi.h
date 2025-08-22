@@ -10,11 +10,12 @@
 #undef max
 constexpr ImTextureID NO_TEXTURE = std::numeric_limits<ImTextureID>::max();
 
+class Editor;
 class AssetManager;
 
 class AssetManagerUI {
 public:
-	AssetManagerUI(AssetManager& assetManager);
+	AssetManagerUI(Editor& assetManager);
 
 public:
 	void update();

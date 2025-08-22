@@ -15,7 +15,7 @@ public:
 	DLL_API Texture& operator=(Texture&& other) noexcept;
 
 public:
-	DLL_API void load() final;
+	DLL_API void load(AssetManager& assetManager) final;
 	DLL_API void unload() final;
 
 public:

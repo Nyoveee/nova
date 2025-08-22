@@ -5,8 +5,18 @@
 #include "Libraries/type_alias.h"
 #include "export.h"
 
+class AssetManager;
+
 // Unfortunately, copy-and-swap idiom doesn't work well with base abstract classes.
 class Asset {
+public:
+	enum class LoadStatus {
+		NotLoaded,
+		Loading,
+		LoadingFailed,
+		Loaded
+	};
+
 public:
 	DLL_API Asset(std::string filepath);
 
@@ -17,14 +27,22 @@ public:
 	DLL_API Asset& operator=(Asset&& other)			= default;
 
 public:
-	DLL_API virtual void load  () = 0;
-	DLL_API virtual void unload() = 0;
-
 	DLL_API std::string const& getFilePath() const;
-	DLL_API bool isLoaded() const;
+	DLL_API LoadStatus getLoadStatus() const;
+	DLL_API	bool isLoaded() const;
+
+public:
+	// we provide a public interface to these instead of the virtual functions directly
+	// to properly set the load status.
+	DLL_API void toLoad(AssetManager& assetManager);
+	DLL_API void toUnload();
 
 protected:
-	bool hasLoaded;
+	DLL_API virtual void load  (AssetManager& assetManager) = 0;
+	DLL_API virtual void unload()							= 0;
+
+protected:
+	LoadStatus loadStatus;
 
 public:
 	std::string name;

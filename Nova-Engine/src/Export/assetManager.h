@@ -1,6 +1,7 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
+#include "Libraries/BS_thread_pool.hpp"
 
 #include "export.h"
 
@@ -8,6 +9,8 @@
 #include <unordered_map>
 #include <optional>
 #include <functional>
+#include <queue>
+#include <mutex>
 
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
@@ -31,10 +34,12 @@ concept ValidAsset = std::derived_from<T, Asset> && std::derived_from<AssetInfo<
 class AssetManager {
 public:
 	enum class QueryResult {
-		Success,
-		Invalid,	// is never recorded in asset manager
-		WrongType,	// asset exist and is loaded, but is not of type T. (most likely code error, this shouldn't happen)
-		Loading		// exist but is not loaded, asset manager is attempting to load it now.
+		Success,		// if this enum is return, the pointer is valid
+
+		Invalid,		// is never recorded in asset manager
+		WrongType,		// asset exist and is loaded, but is not of type T. (most likely code error, this shouldn't happen)
+		Loading,		// exist but is not loaded, asset manager is attempting to load it now.
+		LoadingFailed	// there was an attempt to load the asset but it failed.
 	};
 
 	template <ValidAsset T>
@@ -54,6 +59,10 @@ public:
 	DLL_API AssetManager& operator=(AssetManager&& other)		= delete;
 
 public:
+	// The asset manager needs to check if there are any completed queue request
+	// that needs to be done on the main thread.
+	void update();
+
 	// =========================================================
 	// Retrieving assets and info..
 	// =========================================================
@@ -79,6 +88,7 @@ public:
 	// =========================================================
 	DLL_API std::unordered_map<FolderID, Folder> const& getDirectories() const;
 	DLL_API std::vector<FolderID> const& getRootDirectories() const;
+	DLL_API void getAssetLoadingStatus() const;
 
 private:
 	// =========================================================
@@ -136,9 +146,17 @@ private:
 	void serialiseAssetMetaData(T const& asset);
 	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
 
+public:
+	// Thread pool to manage loading in another thread.
+	BS::thread_pool<BS::tp::none> threadPool;
+
+	// as this function may be invoked from different threads, we need to control access to
+	// the callback queue.
+	void submitCallback(std::function<void()> callback);
+
 private:
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
-	
+
 	// groups all assets based on their type.
 	// reference wrapper because i dont want a chance of null pointer.
 	std::unordered_map<AssetTypeID, std::vector<std::reference_wrapper<Asset>>> assetsByType;
@@ -150,6 +168,12 @@ private:
 	std::unordered_map<FolderID, Folder> directories;
 	std::vector<FolderID> rootDirectories;
 	std::unordered_map<std::string, FolderID> folderNameToId;
+
+	// when an asset has finished loading, and requires the asset manager to do some post work,
+	// the asset will provide a callback here.
+	// the asset manager then checks every game frame if there is any callback request.
+	std::queue<std::function<void()>> completedLoadingCallback;
+	std::mutex queueCallbackMutex;	// protects the callback queue.
 };
 
 #include "AssetManager/assetMananger.ipp"

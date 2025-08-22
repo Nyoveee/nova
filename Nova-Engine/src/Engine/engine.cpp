@@ -4,6 +4,8 @@
 #include "Component/component.h"
 #include "inputManager.h"
 
+#include "assetManager.h"
+
 #include <iostream>
 
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
@@ -53,6 +55,8 @@ void Engine::update(float dt) {
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);
+
+	assetManager.update();
 }
 
 void Engine::render(Renderer::RenderTarget target) {

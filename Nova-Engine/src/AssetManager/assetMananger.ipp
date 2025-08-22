@@ -35,24 +35,34 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	if (iterator == assets.end()) {
 		return AssetQuery<T>{ nullptr, QueryResult::Invalid };
 	}
-
+	
 	auto&& [_, asset] = *iterator;
+
+	switch (asset->getLoadStatus())
+	{
+	case Asset::LoadStatus::NotLoaded:
+		asset->toLoad(*this);
+		break;
+	case Asset::LoadStatus::Loaded:
+		break;
+	case Asset::LoadStatus::Loading:
+		return AssetQuery<T>{ nullptr, QueryResult::Loading };
+	case Asset::LoadStatus::LoadingFailed:
+		spdlog::error("Loading operator for asset id of {} has failed. Retrying..", static_cast<std::size_t>(id));
+		asset->toLoad(*this);
+		break;
+	}
 
 	if (asset->isLoaded()) {
 		T* typedAsset = dynamic_cast<T*>(asset.get());
-		return AssetQuery<T>{typedAsset, typedAsset ? QueryResult::Success : QueryResult::WrongType };
+		return AssetQuery<T>{ typedAsset, typedAsset ? QueryResult::Success : QueryResult::WrongType };
+	}
+
+	if (asset->getLoadStatus() == Asset::LoadStatus::LoadingFailed) {
+		return AssetQuery<T>{ nullptr, QueryResult::LoadingFailed };
 	}
 	else {
-		asset->load();
-
-		// Is the load operation asynchronous? Does it run on seperate thread?
-		if (asset->isLoaded()) {
-			T* typedAsset = dynamic_cast<T*>(asset.get());
-			return AssetQuery<T>{typedAsset, typedAsset ? QueryResult::Success : QueryResult::WrongType };
-		}
-		else {
-			return AssetQuery<T>{ nullptr, QueryResult::Loading };
-		}
+		return AssetQuery<T>{ nullptr, QueryResult::Loading };
 	}
 }
 

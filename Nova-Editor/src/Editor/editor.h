@@ -8,6 +8,7 @@
 #include "componentInspector.h"
 #include "assetManagerUi.h"
 #include "hierarchy.h"
+#include "debugUI.h"
 
 using GLuint = unsigned int;
 
@@ -58,15 +59,16 @@ public:
 	// so that all editors have access to engine interface.
 	Engine& engine;
 	InputManager& inputManager;
+	AssetManager& assetManager;
 
 private:
 	Window& window;
-	AssetManager& assetManager;
 
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
 	Hierarchy hierarchyList;
+	DebugUI debugUi;
 
 private:
 	std::vector<entt::entity> selectedEntities;

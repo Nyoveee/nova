@@ -7,7 +7,7 @@ class Editor;
 
 class Hierarchy {
 public:
-	Hierarchy(ECS& ecs, Editor& editor);
+	Hierarchy(Editor& editor);
 
 public:
 	void update();

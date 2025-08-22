@@ -11,9 +11,17 @@ struct aiMaterial;
 
 class ModelLoader {
 public:
-	ModelLoader();
+	// kinda the same definition as the one defined in model.h (minus the asset inheritance)
+	// but we need a separate class because we cannot modify the model instance directly
+	// as we are loading this in another thread.
+	struct ModelData {
+		std::vector<Model::Mesh> meshes;
+		std::unordered_set<MaterialName> materialNames;
 
-	bool loadModel(Model& model) const;
+		float maxDimension;
+	};
+
+	std::optional<ModelData> loadModel(std::string const& filepath) const;
 
 private:
 	Model::Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) const;

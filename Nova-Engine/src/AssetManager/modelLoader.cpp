@@ -29,23 +29,23 @@ namespace {
 	}
 }
 
-ModelLoader::ModelLoader() {}
-
-bool ModelLoader::loadModel(Model& model) const {
+std::optional<ModelLoader::ModelData> ModelLoader::loadModel(std::string const& filepath) const {
 	constexpr unsigned int PostProcessingFlags {
 		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
 	};
 
 	Assimp::Importer importer;
 
-	aiScene const* scene = importer.ReadFile(model.getFilePath(), PostProcessingFlags);
+	aiScene const* scene = importer.ReadFile(filepath, PostProcessingFlags);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		spdlog::error("Error when importing model: {}", importer.GetErrorString());
-		return false;
+		return std::nullopt;
 	}
 
 	std::vector<Model::Mesh> meshes;
+	std::unordered_set<MaterialName> materialNames;
+
 	meshes.reserve(scene->mNumMeshes);
 
 	// This records the max width (or height or length) of a model in an attempts to normalize it.
@@ -54,13 +54,10 @@ bool ModelLoader::loadModel(Model& model) const {
 	// Iterate through all the meshes in a scene..
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i) {
 		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension));
-		model.materialNames.insert(meshes[i].materialName);
+		materialNames.insert(meshes[i].materialName);
 	}
 
-	model.meshes = std::move(meshes);
-	model.maxDimension = maxDimension;
-
-	return true;
+	return {{ std::move(meshes), std::move(materialNames), maxDimension }};
 }
 
 Model::Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) const {

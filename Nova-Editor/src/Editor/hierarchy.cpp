@@ -1,3 +1,4 @@
+#include "engine.h"
 #include "editor.h"
 
 #include "hierarchy.h"
@@ -9,8 +10,8 @@
 
 #include <ranges>
 
-Hierarchy::Hierarchy(ECS& ecs, Editor& editor) : 
-	ecs		{ ecs },
+Hierarchy::Hierarchy(Editor& editor) : 
+	ecs		{ editor.engine.ecs },
 	editor	{ editor }
 {}
 

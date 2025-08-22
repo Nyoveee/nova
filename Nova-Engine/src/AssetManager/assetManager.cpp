@@ -15,7 +15,9 @@ namespace {
 	}
 }
 
-AssetManager::AssetManager() {
+AssetManager::AssetManager() :
+	threadPool {}
+{
 	std::filesystem::path assetDirectory = std::filesystem::current_path();
 	assetDirectory /= "Assets";
 
@@ -64,6 +66,16 @@ AssetManager::~AssetManager() {
 
 		// cool syntax? or abomination?
 		serialiseFunctorPtr->operator()(*asset, *this);
+	}
+}
+
+void AssetManager::update() {
+	while (completedLoadingCallback.size()) {
+		std::function<void()> callback = completedLoadingCallback.front();
+		
+		callback();
+
+		completedLoadingCallback.pop();
 	}
 }
 
@@ -191,10 +203,20 @@ void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& met
 	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
 }
 
+void AssetManager::submitCallback(std::function<void()> callback) {
+	std::lock_guard lock{ queueCallbackMutex };
+
+	completedLoadingCallback.push(std::move(callback));
+}
+
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
 	return directories;
 }
 
 std::vector<FolderID> const& AssetManager::getRootDirectories() const {
 	return rootDirectories;
+}
+
+void AssetManager::getAssetLoadingStatus() const {
+	
 }
