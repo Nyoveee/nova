@@ -3,12 +3,14 @@
 #include <filesystem>
 #include "ScriptingAPI.hxx"
 #include <msclr/marshal_cppstd.h>
+#include "ecs.h"
+
 // Some Weird intellisense error is happening in this file, but no build error 
 using namespace msclr::interop;
 namespace ScriptingAPI {
-	void Interface::init(Engine& newEngine, const char* runtimePath)
+	void Interface::init(ECS& ecs, const char* runtimePath)
 	{
-		engine = &newEngine;
+		registry = &ecs.registry;
 		gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
 
 		// Load the dll for calling the functions

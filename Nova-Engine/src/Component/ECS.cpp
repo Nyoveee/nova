@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include <ranges>
 #include <iostream>
 
@@ -33,7 +35,7 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 	// 1. We need to check for potential cycle.
 	// A cycle happens when if the childEntity's descendant contains newParentEntity.
 	if (isDescendantOf(newParentEntity, childEntity)) {
-		std::cerr << "Cyclic relationship detected. Failed to set " << newParentEntityData.name << " as " << childEntityData.name << "'s new parent.\n";
+		spdlog::error("Cyclic relationship detected. Failed to set {} as {}'s new parent.", newParentEntityData.name, childEntityData.name);
 		return;
 	}
 
@@ -43,7 +45,7 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 		auto iterator = std::ranges::find(oldParentEntityData.children, childEntity);
 
 		if (iterator == std::end(oldParentEntityData.children)) {
-			std::cerr << "This really shouldn't happen.. The invariant of parent child relationship has been broken.\n";
+			spdlog::error("This really shouldn't happen.. The invariant of parent child relationship has been broken.");
 		}
 		else {
 			oldParentEntityData.children.erase(iterator);
@@ -69,7 +71,7 @@ void ECS::removeEntityParent(entt::entity childEntity) {
 	auto iterator = std::ranges::find(oldParentEntityData.children, childEntity);
 
 	if (iterator == std::end(oldParentEntityData.children)) {
-		std::cerr << "This really shouldn't happen.. The invariant of parent child relationship has been broken.\n";
+		spdlog::error("This really shouldn't happen.. The invariant of parent child relationship has been broken.");
 	}
 	else {
 		oldParentEntityData.children.erase(iterator);

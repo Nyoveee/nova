@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include <filesystem>
 #include <fstream>
 #include <chrono>
@@ -39,7 +41,7 @@ AssetManager::AssetManager() {
 		}
 	}
 	catch (const std::filesystem::filesystem_error& ex) {
-		std::cerr << "Filesystem error: " << ex.what() << std::endl;
+		spdlog::error("Filesystem error: {}", ex.what());
 	}
 }
 
@@ -49,14 +51,14 @@ AssetManager::~AssetManager() {
 		Asset* asset = assetPtr.get();
 
 		if (!asset) {
-			std::cerr << "This should have never happened.\n";
+			spdlog::error("Asset manager is storing an invalid asset!");
 			continue;
 		}
 
 		auto&& serialiseFunctorPtr = serialiseAssetFunctors[id];
 
 		if (!serialiseFunctorPtr) {
-			std::cerr << "This should have also never happened.\n";
+			spdlog::error("Asset manager failed to record the appropriate serialisation functor!");
 			continue;
 		}
 
@@ -121,7 +123,7 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 	}
 
 	else {
-		std::cout << "Unsupported file type of: " << path << " has been found.\n";
+		spdlog::warn("Unsupported file type of: {} has been found.", path.string());
 	}
 }
 
@@ -160,14 +162,14 @@ std::optional<BasicAssetInfo> AssetManager::parseMetaDataFile(std::filesystem::p
 		assetId = std::stoull(line);
 	}
 	catch (std::exception const& exception) {
-		std::cerr << "Failure when trying to parse asset id. " << exception.what() << "\n";
+		spdlog::warn("Failed to parse metadata file for file {}.\nException: {}", path.string(), exception.what());
 		return std::nullopt;
 	}
 
 	// reads the 2nd line.
 	std::getline(metaDataFile, line);
 
-	std::cout << "Successfully parsed metadata file for " << path << '\n';
+	spdlog::info("Successfully parsed metadata file for {}", path.string());
 	return {{ assetId, path.string(), line }};
 }
 
@@ -175,7 +177,7 @@ BasicAssetInfo AssetManager::createMetaDataFile(std::filesystem::path const& pat
 	BasicAssetInfo assetInfo = { generateAssetID(path), path.string(), path.filename().string() };
 
 	if (!metaDataFile) {
-		std::cerr << "Error creating metadata file for file: " << path << "!\n";
+		spdlog::error("Error creating metadata file for {}", path.string());
 		return assetInfo;
 	}
 

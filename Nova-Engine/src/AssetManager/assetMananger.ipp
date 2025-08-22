@@ -11,7 +11,7 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 
 	if (!success) {
 		// asset id collision occur! this shouldn't happen though.
-		std::cerr << "Asset ID collision occur for: " << assetInfo.filepath << "!\n";
+		spdlog::error("Asset ID collision occured for: {}", assetInfo.filepath);
 	}
 
 	auto&& [assetId, asset] = *iterator;
@@ -61,7 +61,7 @@ std::vector<std::reference_wrapper<Asset>> const& AssetManager::getAllAssets() c
 	auto iterator = assetsByType.find(Family::id<T>());
 
 	if (iterator == assetsByType.end()) {
-		std::cerr << "this should never happen.\n. attempting to query invalid asset type?\n";
+		spdlog::error("Attempt to retrieve all assets of an invalid type?");
 		static std::vector<std::reference_wrapper<Asset>> empty;
 		return empty;
 	}
@@ -75,14 +75,14 @@ AssetID AssetManager::getSomeAssetID() const {
 	auto iterator = assetsByType.find(Family::id<T>());
 
 	if (iterator == assetsByType.end()) {
-		std::cerr << "this should never happen.\n. attempting to query invalid asset type?\n";
+		spdlog::error("Attempt to get an asset id of an invalid type?");
 		return INVALID_ASSET_ID;
 	}
 
 	auto&& [_, allAssets] = *iterator;
 	
 	if (allAssets.empty()) {
-		std::cerr << "empty asset??\n";
+		spdlog::error("This asset type has no asset?");
 		return INVALID_ASSET_ID;
 	}
 
@@ -96,20 +96,14 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 	// Save asset entry in the parent folder.
 	std::filesystem::path parentPath = path.parent_path();
 
-	if (std::filesystem::is_directory(parentPath)) {
-		auto iterator = folderNameToId.find(parentPath.string());
+	auto iterator = folderNameToId.find(parentPath.string());
 
-		if (iterator == std::end(folderNameToId)) {
-			std::cerr << "Attempting to add asset to a non existing parent folder?\n";
-		}
-		else {
-			auto&& [_, parentFolderId] = *iterator;
-			directories[parentFolderId].assets.push_back(assetInfo.id);
-		}
+	if (iterator == std::end(folderNameToId)) {
+		spdlog::error("Attempting to add asset to a non existing parent folder?");
 	}
 	else {
-		// it should be a directory but just in case
-		std::cerr << "strange.\n";
+		auto&& [_, parentFolderId] = *iterator;
+		directories[parentFolderId].assets.push_back(assetInfo.id);
 	}
 	
 	// Record the asset into the asset manager's database.
@@ -144,7 +138,7 @@ AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) 
 		bool toFlip;
 
 		if (!(std::stringstream{ line } >> toFlip)) {
-			std::cerr << "Failure when trying to parse toFlip boolean for file: " << path << "\n";
+			spdlog::error("Failure when trying to parse toFlip boolean for file: {}", path.string());
 			return createMetaDataFile<T>(path);
 		}
 		else {
@@ -152,6 +146,7 @@ AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) 
 		}
 	}
 
+	// ============================
 	return assetInfo;
 }
 
@@ -171,7 +166,8 @@ AssetInfo<T> AssetManager::createMetaDataFile(std::filesystem::path const& path)
 		metaDataFile << false << "\n";
 	}
 
-	std::cout << "Successfully created metadata file for " << path << '\n';
+	// ============================
+	spdlog::info("Successfully created metadata file for: {}", path.string());
 	return assetInfo;
 }
 
@@ -181,7 +177,8 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 	std::ofstream metaDataFile{ metaDataFilename };
 	
 	if (!metaDataFile) {
-		std::cerr << "Failure to serialise asset metadata file of: " << metaDataFilename << "\n";
+		spdlog::error("Failure to serialise asset metadata file of: {}", metaDataFilename);
+		return;
 	}
 
 	serialiseAssetMetaData(asset, metaDataFile);
@@ -195,5 +192,6 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 		metaDataFile << asset.isFlipped() << "\n";
 	}
 
-	std::cout << "Successfully serialised metadata file for " << asset.getFilePath() << '\n';
+	// ============================
+	spdlog::info("Successfully serialised metadata file for {}", asset.getFilePath());
 }

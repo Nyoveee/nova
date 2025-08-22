@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -228,7 +230,7 @@ void Renderer::prepareRendering(RenderTarget target) {
 	unsigned int numOfLights = 0;
 	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
 		if (numOfLights == MAX_NUMBER_OF_LIGHT) {
-			std::cerr << "Max number of lights reached!\n";
+			spdlog::warn("Max number of lights reached!");
 			break;
 		}
 
@@ -384,7 +386,7 @@ void Renderer::setupBlinnPhongShader(Material const& material) {
 }
 
 void Renderer::setupPBRShader(Material const& material) {
-
+	(void) material;
 }
 
 void Renderer::setupColorShader(Material const& material) {
@@ -430,7 +432,7 @@ Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Model
 	auto iterator = meshRenderer.materials.find(mesh.materialName);
 
 	if (iterator == meshRenderer.materials.end()) {
-		std::cerr << "this shouldn't happen. material in component does not correspond to material on mesh.";
+		spdlog::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
 		return nullptr;
 	}
 
@@ -471,15 +473,15 @@ void Renderer::printOpenGLDriverDetails() const {
 	GLubyte const* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
 	if (vendor) {
-		std::cout << "OpenGL Vendor: " << vendor << std::endl;
+		spdlog::info("OpenGL Vendor: {}", reinterpret_cast<const char*>(vendor));
 	}
 	if (renderer) {
-		std::cout << "OpenGL Renderer: " << renderer << std::endl;
+		spdlog::info("OpenGL Renderer: {}", reinterpret_cast<const char*>(renderer));
 	}
 	if (version) {
-		std::cout << "OpenGL Version: " << version << std::endl;
+		spdlog::info("OpenGL Version: {}", reinterpret_cast<const char*>(version));
 	}
 	if (glslVersion) {
-		std::cout << "GLSL Version: " << glslVersion << std::endl;
+		spdlog::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
 	}
 }

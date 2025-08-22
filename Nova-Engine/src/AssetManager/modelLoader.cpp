@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include <Assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/mesh.h>
@@ -39,7 +41,7 @@ bool ModelLoader::loadModel(Model& model) const {
 	aiScene const* scene = importer.ReadFile(model.getFilePath(), PostProcessingFlags);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		std::cerr << "Error when importing model: " << importer.GetErrorString() << '\n';
+		spdlog::error("Error when importing model: {}", importer.GetErrorString());
 		return false;
 	}
 
@@ -53,8 +55,6 @@ bool ModelLoader::loadModel(Model& model) const {
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i) {
 		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension));
 		model.materialNames.insert(meshes[i].materialName);
-
-		std::cout << meshes[i].materialName << "\n";
 	}
 
 	model.meshes = std::move(meshes);

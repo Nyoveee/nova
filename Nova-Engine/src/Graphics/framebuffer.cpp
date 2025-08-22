@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include <glad/glad.h>
 #include <algorithm>
 #include <iostream>
@@ -26,6 +28,7 @@ namespace {
 // - FrameBuffer{800, 400, { GL_RGBA16, GLR32UI });
 // Creates a frame buffer with 2 color attachments, with COLOR_ATTACHMENT0 as GL_RGBA16 and COLOR_ATTACHMENT1 as GLR32UI.
 // =============================================
+
 FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachmentProperties) :
 	FBO_id		{ INVALID_ID },
 	texture_ids	{},
@@ -34,7 +37,7 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 	height		{ height }
 {
 	if (colorAttachmentProperties.size() > 8) {
-		std::cerr << "Too many render targets specified.\n";
+		spdlog::error("Too many render targets specified.");
 		return;
 	}
 
@@ -73,7 +76,7 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 	glNamedFramebufferRenderbuffer(FBO_id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO_id);
 
 	if (glCheckNamedFramebufferStatus(FBO_id, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		std::cerr << "Error: Framebuffer incomplete!\n";
+		spdlog::error("Error: Framebuffer incomplete!");
 	}
 }
 

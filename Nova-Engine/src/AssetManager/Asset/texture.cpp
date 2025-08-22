@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include "texture.h"
 #include "Libraries/stb_image.hpp"
 
@@ -50,7 +52,7 @@ Texture& Texture::operator=(Texture&& other) noexcept {
 
 void Texture::load() {
 	if (hasLoaded) {
-		std::cerr << "Attempting to load texture when there's already something loaded!\n";
+		spdlog::error("Attempting to load texture when there's already something loaded!");
 		return;
 	}
 
@@ -64,7 +66,7 @@ void Texture::load() {
 	unsigned char* data = stbi_load(getFilePath().c_str(), &width, &height, &numChannels, 0);
 
 	if (!data) {
-		std::cerr << "Failed to load texture! Filepath provided: " + getFilePath() + "\n";
+		spdlog::error("Failed to load texture! Filepath provided: {}", getFilePath());
 		return;
 	}
 
@@ -87,7 +89,7 @@ void Texture::load() {
 		format = GL_RGBA;
 	}
 	else {
-		std::cerr << "Weird number of channels? " << getFilePath() << " has " << numChannels << " channels?\n";
+		spdlog::error("Weird number of channels? {} has {} channels? Texture not created.", getFilePath(), numChannels);
 		return;
 	}
 

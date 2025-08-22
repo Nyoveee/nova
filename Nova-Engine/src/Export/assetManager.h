@@ -1,6 +1,9 @@
 #pragma once
 
+#include <spdlog/spdlog.h>
+
 #include "export.h"
+
 #include <memory>
 #include <unordered_map>
 #include <optional>

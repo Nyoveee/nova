@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include "ScriptingAPIManager.h"
 
 #include <shlwapi.h>
@@ -5,6 +6,10 @@
 #include <iostream>
 
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
+
+#include "engine.h"
+
+class ECS;
 
 ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	: coreClr					{ nullptr }
@@ -34,8 +39,10 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	// Load coreclr.dll
 	coreClr = LoadLibraryA(coreClrPath.c_str());
 
-	if (!coreClr)
-		throw std::runtime_error("Failed to load CoreCLR.");
+	if (!coreClr) {
+		spdlog::error("Failed to load CoreCLR.");
+		return;
+	}
 
 	// ==========================================================
 	// 2. Retrieve function pointers to interact with Core CLR.
@@ -46,7 +53,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		shutdownCorePtr			= getCoreClrFuncPtr<coreclr_shutdown_ptr>("coreclr_shutdown");
 	}
 	catch (std::exception e) {
-		std::cout << e.what();
+		spdlog::error("Error when attempting to retrieve function pointers from Core CLR: {}", e.what());
 		return;
 	}
 
@@ -92,7 +99,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	
 	// Get the functions to run the api
 	try {
-		using InitFunctionPtr = void(*)(Engine&, const char*);
+		using InitFunctionPtr = void(*)(ECS&, const char*);
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("ScriptingAPI.Interface", "init");
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("ScriptingAPI.Interface", "update");
@@ -100,10 +107,10 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("ScriptingAPI.Interface", "removeGameObjectScript");
 		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("ScriptingAPI.Interface", "getScriptNames");
 
-		initScriptAPIFuncPtr(engine, runtimePath.c_str());
+		initScriptAPIFuncPtr(engine.ecs, runtimePath.c_str());
 	}
 	catch (std::exception e) {
-		std::cout << e.what();
+		spdlog::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
 		return;
 	}
 }
@@ -112,12 +119,14 @@ ScriptingAPIManager::~ScriptingAPIManager()
 {
 	// Shut down CoreClr
 	int result{ shutdownCorePtr(hostHandle,domainID) };
+
 	if (result != S_OK) {
 		std::ostringstream errorDetails;
 		errorDetails << "(0x";
 		errorDetails << std::hex << result;
 		errorDetails << ")Failed to shut down CoreCLR";
-		std::cout << errorDetails.str() << std::endl;
+
+		spdlog::error("{}", errorDetails.str());
 	}
 
 	//if(coreClr) FreeLibrary(coreClr);

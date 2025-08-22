@@ -1,8 +1,9 @@
+#include <spdlog/spdlog.h>
+
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include <string>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -81,8 +82,7 @@ void Shader::compile() {
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-		std::cerr << "Error! Compilation of vertex shader failed! " << infoLog << '\n';
-		//logger.error(std::string{ "Error! Compilation of vertex shader failed!" } + infoLog + '\n');
+		spdlog::error("Error! Compilation of vertex shader failed! {}", infoLog);
 	}
 
 	GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -95,9 +95,7 @@ void Shader::compile() {
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-		std::cerr << "Error! Compilation of fragment shader failed! " << infoLog << '\n';
-		//logger.error(std::string{ "Error! Compilation of fragment shader failed!" } + infoLog + '\n');
-
+		spdlog::error("Error! Compilation of fragment shader failed! {}", infoLog);
 	}
 
 	m_id = glCreateProgram();
@@ -110,7 +108,7 @@ void Shader::compile() {
 	if (!success) {
 		char infoLog[512];
 		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-		std::cerr << "Error! Linking of shaders failed! " << infoLog << '\n';
+		spdlog::error("Error! Linking of shaders failed! {}", infoLog);
 	}
 
 	// delete shaders; they're linked into our program and no longer necessary

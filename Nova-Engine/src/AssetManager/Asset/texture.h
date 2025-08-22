@@ -38,7 +38,7 @@ struct AssetInfo<Texture> : public BasicAssetInfo {
 	bool isFlipped = false;
 };
 
-// Define a way to create 
+// Explicitly define how to construct your type given asset info
 // inline keyword for multiple definitions of the same function.
 template <>
 inline Texture createAsset(AssetInfo<Texture> const& assetInfo) { 

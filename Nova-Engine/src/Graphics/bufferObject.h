@@ -1,4 +1,6 @@
 #pragma once
+
+#include <spdlog/spdlog.h>
 #include <limits>
 #include <vector>
 
@@ -46,9 +48,9 @@ void BufferObject::uploadData(std::vector<T> const& data) {
 	GLsizeiptr memoryRequired = data.size() * sizeof(T);
 
 	if (memoryRequired > allocatedMemory) {
-		std::cerr << "Attempting to upload data of more memory than currently allocated!\n";
-		std::cerr << "Allocated memory: " << allocatedMemory << " bytes, size of uploaded data: " << memoryRequired << " bytes.";
-		std::cerr << "Number of data: " << data.size() << ", sizeof(Data): " << sizeof(T) << "\n";
+		spdlog::error("Attempting to upload data of more memory than currently allocated!");
+		spdlog::error("Allocated memory: {} bytes, size of uploaded data: {} bytes.", allocatedMemory, memoryRequired);
+		spdlog::error("Number of data: {}, sizeof(Data): {} bytes.", data.size(), sizeof(T));
 		return;
 	}
 

@@ -1,7 +1,8 @@
+#include "editor.h"
+
 #include "hierarchy.h"
 #include "imgui.h"
 #include "ECS.h"
-#include "editor.h"
 
 #include "IconsFontAwesome6.h"
 #include "Component/component.h"
