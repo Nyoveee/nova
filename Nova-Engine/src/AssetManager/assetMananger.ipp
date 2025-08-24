@@ -1,12 +1,11 @@
 #include "assetManager.h"
 #include <sstream>
-
+#include "Libraries/Profiling.h"
 template <ValidAsset T>
 Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
 		createAsset<T>(assetInfo)
 	);
-
 	auto [iterator, success] = assets.insert({ assetInfo.id, std::move(newAsset) });
 
 	if (!success) {
@@ -155,7 +154,6 @@ AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) 
 			assetInfo.isFlipped = toFlip;
 		}
 	}
-
 	// ============================
 	return assetInfo;
 }

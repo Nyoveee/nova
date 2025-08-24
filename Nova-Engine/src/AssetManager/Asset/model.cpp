@@ -35,6 +35,7 @@ void Model::load(AssetManager& assetManager) {
 
 			// remember to set loading to Loaded to inform the asset manager that you are done loading!
 			this->loadStatus = LoadStatus::Loaded;
+			TracyAlloc(this, sizeof(*this));
 		});
 	});
 }
@@ -42,4 +43,5 @@ void Model::load(AssetManager& assetManager) {
 void Model::unload() {
 	meshes.clear();
 	materialNames.clear();
+	TracyFree(this);
 }

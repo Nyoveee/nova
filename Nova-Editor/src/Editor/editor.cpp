@@ -23,7 +23,8 @@
 
 #include <GLFW/glfw3.h>
 #include <ranges>
-
+#include <Windows.h>
+#include <tracyprofiler/tracy/Tracy.hpp>
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -112,6 +113,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 }
 
 void Editor::update() {
+	ZoneScopedC(tracy::Color::Orange);
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
@@ -340,7 +342,9 @@ void Editor::sandboxWindow() {
 	entt::registry& registry = engine.ecs.registry;
 
 	static bool wireFrameMode = false;
-
+	if (ImGui::Button("Profiler")) {
+		launchProfiler();
+	}
 	if (ImGui::Button("Wireframe mode.")) {
 		wireFrameMode = !wireFrameMode;
 		engine.renderer.enableWireframeMode(wireFrameMode);
@@ -413,6 +417,21 @@ void Editor::sandboxWindow() {
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {
 		registry.get<Transform>(entt::entity{ 1 }).position.z -= 0.01f;
 	}
+}
+
+void Editor::launchProfiler()
+{
+	// Launch the profiler server connecting to the engine client
+	// Todo: If the profiler is running, this should not be called
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+	TCHAR path[]{ TEXT("ExternalApplication/tracy-profiler.exe") };
+	CreateProcess(NULL, path, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
 }
 
 void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline) const {

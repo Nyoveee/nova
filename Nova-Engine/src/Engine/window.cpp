@@ -1,5 +1,4 @@
 #include <spdlog/spdlog.h>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -10,7 +9,7 @@
 #include "window.h"
 #include "inputManager.h"
 #include "Graphics/cameraSystem.h"
-
+#include "Libraries/Profiling.h"
 namespace {
 	// i don't know any other way..
 	Window* g_Window = nullptr;
@@ -160,6 +159,7 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 	double before = 0;
 
 	while (!glfwWindowShouldClose(glfwWindow)) {
+		ZoneScoped;
 		// executes fixed update based on accumulated time.
 		int numOfFixedSteps = 0;
 		accumulatedTime += deltaTime;
@@ -185,9 +185,15 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 
 		// account for vsync duration in delta time calculation
 		before = glfwGetTime();
-
-		glfwSwapBuffers(glfwWindow);
-		glfwPollEvents();
+		{
+			ZoneScopedNC("glfwSwapBuffers", tracy::Color::AliceBlue);
+			glfwSwapBuffers(glfwWindow);
+		}
+		{
+			ZoneScopedNC("glfwPollEvents", tracy::Color::AliceBlue);
+			glfwPollEvents();
+		}
+		FrameMark;
 	}
 }
 

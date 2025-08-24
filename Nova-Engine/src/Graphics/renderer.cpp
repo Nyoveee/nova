@@ -16,6 +16,7 @@
 
 #include <fstream>
 #include "Component/component.h"
+#include "Libraries/Profiling.h"
 
 #undef max
 
@@ -129,10 +130,12 @@ DLL_API GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 }
 
 void Renderer::update(float dt) {
+	ZoneScoped;
 	(void) dt;
 }
 
 void Renderer::render(RenderTarget target) {
+	ZoneScoped;
 	prepareRendering(target);
 
 	renderModels();
@@ -169,6 +172,7 @@ DLL_API void Renderer::recompileShaders() {
 }
 
 void Renderer::prepareRendering(RenderTarget target) {
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	// =================================================================
 	// Configure pre rendering settings
 	// =================================================================
@@ -257,6 +261,7 @@ void Renderer::prepareRendering(RenderTarget target) {
 }
 
 void Renderer::renderModels() {
+	ZoneScopedC(tracy::Color::PaleVioletRed1);	
 	// preparing the stencil buffer for rendering outlines..
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// replaces the value in stencil buffer if both stencil buffer and depth buffer passed.
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);			// stencil test will always pass, mask of 0xFF means full byte comparison.

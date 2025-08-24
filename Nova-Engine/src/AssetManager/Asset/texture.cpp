@@ -109,7 +109,7 @@ void Texture::load(AssetManager& assetManager) {
 			glGenerateTextureMipmap(textureId);
 			stbi_image_free(data);
 
-			loadStatus = Asset::LoadStatus::Loaded;
+			TracyAlloc(this, sizeof(*this));
 		});
 	});
 }
@@ -117,6 +117,7 @@ void Texture::load(AssetManager& assetManager) {
 void Texture::unload() {
 	glDeleteTextures(1, &textureId);
 	loadStatus = Asset::LoadStatus::NotLoaded;
+	TracyFree(this);
 }
 
 GLuint Texture::getTextureId() const {

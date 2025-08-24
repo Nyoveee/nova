@@ -70,6 +70,7 @@ AssetManager::~AssetManager() {
 }
 
 void AssetManager::update() {
+	ZoneScoped;
 	while (completedLoadingCallback.size()) {
 		std::function<void()> callback = completedLoadingCallback.front();
 		

@@ -4,6 +4,7 @@
 #include "cameraSystem.h"
 #include "renderer.h"
 #include "inputManager.h"
+#include "Libraries/Profiling.h"
 
 CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 	engine				{ engine },
@@ -69,6 +70,7 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 }
 
 void CameraSystem::update(float dt) {
+	ZoneScoped;
 	if (!isInControl) {
 		return;
 	}

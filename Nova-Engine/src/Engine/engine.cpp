@@ -1,13 +1,13 @@
+
+#include <iostream>
+
 #include "engine.h"
 #include "window.h"
 
 #include "Component/component.h"
 #include "inputManager.h"
-
 #include "assetManager.h"
-
-#include <iostream>
-
+#include "Libraries/Profiling.h"
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window					{ window },
 	assetManager			{ assetManager },
@@ -22,11 +22,13 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 
 
 void Engine::fixedUpdate(float dt) {
+	ZoneScoped;
 	(void) dt;
 	scriptingAPIManager.update();
 }
 
 void Engine::update(float dt) {
+	ZoneScoped;
 #if 0
 	static float zPos = 0.f;
 	if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_0)) {
@@ -51,7 +53,6 @@ void Engine::update(float dt) {
 		ecs.registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}
 #endif
-
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);
@@ -60,6 +61,7 @@ void Engine::update(float dt) {
 }
 
 void Engine::render(Renderer::RenderTarget target) {
+	ZoneScoped;
 	renderer.render(target);
 }
 

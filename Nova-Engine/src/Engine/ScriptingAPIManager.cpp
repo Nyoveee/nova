@@ -5,6 +5,8 @@
 #include <array>
 #include <iostream>
 
+#include "Libraries/Profiling.h"
+
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
 #include "engine.h"
@@ -149,7 +151,10 @@ std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 	}
 	return tpaList.str();
 }
-void ScriptingAPIManager::update() { updateScripts(); }
+void ScriptingAPIManager::update() {
+	ZoneScoped;
+	updateScripts();
+}
 void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName){ addGameObjectScript(entityID, scriptName); }
 void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName) { removeGameObjectScript(entityID, scriptName); }
 std::vector<std::string> ScriptingAPIManager::getAvailableScripts(){ return getScriptNames(); }
