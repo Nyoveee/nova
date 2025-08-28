@@ -1,7 +1,6 @@
 #pragma once
 
 // Calling Macro for double parameters / Idea from reflection.h :) 
-// Calling Macro for double parameters / Idea from reflection.h :) 
 #define Macro_Double_1(Macro, a, b) Macro(a,b)
 #define Macro_Double_2(Macro, a, b, c, d) Macro(a,b) Macro_Double_1(Macro,c,d)
 #define Macro_Double_3(Macro, a, b, c, d, e, f) Macro(a,b) Macro_Double_2(Macro,c,d,e,f)

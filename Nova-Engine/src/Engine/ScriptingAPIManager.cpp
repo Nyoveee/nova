@@ -103,12 +103,11 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	try {
 		using InitFunctionPtr = void(*)(ECS&, const char*);
 
-		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("ScriptingAPI.Interface", "init");
-		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("ScriptingAPI.Interface", "update");
-		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("ScriptingAPI.Interface", "addGameObjectScript");
-		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("ScriptingAPI.Interface", "removeGameObjectScript");
-		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("ScriptingAPI.Interface", "getScriptNames");
-
+		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
+		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
+		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
+		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
+		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("Interface", "getScriptNames");
 		initScriptAPIFuncPtr(engine.ecs, runtimePath.c_str());
 	}
 	catch (std::exception e) {
@@ -130,8 +129,6 @@ ScriptingAPIManager::~ScriptingAPIManager()
 
 		spdlog::error("{}", errorDetails.str());
 	}
-
-	//if(coreClr) FreeLibrary(coreClr);
 }
 
 std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
