@@ -7,6 +7,7 @@
 GameViewPort::GameViewPort(Editor& editor) :
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
+	controlOverlay			{ editor },
 	isHoveringOver			{ false },
 	mouseRelativeToViewPort {}
 {}
@@ -69,6 +70,7 @@ void GameViewPort::update() {
 	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
 
 	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
+	controlOverlay.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 
 	ImGui::End();
 }

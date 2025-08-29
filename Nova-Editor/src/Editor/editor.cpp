@@ -30,20 +30,20 @@ constexpr const char* fontFileName =
 	"NotoSans-Medium.ttf";
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager) :
-	window					{ window },
-	engine					{ engine },
-	assetManager			{ assetManager },
-	inputManager			{ inputManager },
-	gameViewPort			{ *this },
-	componentInspector		{ *this },
-	assetManagerUi			{ *this },
-	hierarchyList			{ *this },
-	debugUi					{ *this },
-	isControllingInViewPort	{ false },
-	hoveringEntity			{ entt::null }
+	window							{ window },
+	engine							{ engine },
+	assetManager					{ assetManager },
+	inputManager					{ inputManager },
+	gameViewPort					{ *this },
+	componentInspector				{ *this },
+	assetManagerUi					{ *this },
+	hierarchyList					{ *this },
+	debugUi							{ *this },
+	isControllingInViewPort			{ false },
+	hoveringEntity					{ entt::null },
+	inSimulationMode				{ false },
+	isThereChangeInSimulationMode	{ false }
 {
-	(void) inputManager;
-
 	// ======================================= 
 	// Preparing some ImGui config..
 	// ======================================= 
@@ -111,7 +111,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	);
 }
 
-void Editor::update() {
+void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
@@ -121,6 +121,12 @@ void Editor::update() {
 	ImGuizmo::Enable(true);
 
 	main();
+
+	// inform the engine if there is a change in simulation mode.
+	if (isThereChangeInSimulationMode) {
+		changeSimulationCallback(inSimulationMode);
+		isThereChangeInSimulationMode = false;
+	}
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -425,6 +431,30 @@ void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline
 			meshRenderer->toRenderOutline = toOutline;
 		}
 	}
+}
+
+void Editor::startSimulation() {
+	if (inSimulationMode) {
+		return; // already in simulation mode.
+	}
+
+	engine.startSimulation();
+	inSimulationMode = true;
+	isThereChangeInSimulationMode = true;
+}
+
+void Editor::stopSimulation() {
+	if (!inSimulationMode) {
+		return; // already not in simulation mode.
+	}
+
+	engine.stopSimulation();
+	inSimulationMode = false;
+	isThereChangeInSimulationMode = true;
+}
+
+bool Editor::isInSimulationMode() const {
+	return inSimulationMode;
 }
 
 Editor::~Editor() {

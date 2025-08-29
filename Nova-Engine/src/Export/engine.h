@@ -4,6 +4,8 @@
 
 #include <vector>
 #include <memory>
+#include <optional>
+#include <functional>
 
 #include "Graphics/renderer.h"
 
@@ -38,6 +40,11 @@ public:
 	DLL_API void fixedUpdate(float dt);
 	DLL_API void update(float dt);
 	DLL_API void render(Renderer::RenderTarget target);
+	
+	DLL_API void startSimulation();
+	DLL_API void stopSimulation();
+	DLL_API void setupSimulation();
+	DLL_API bool isInSimulationMode() const;
 
 public:
 	DLL_API int getGameWidth() const;
@@ -58,4 +65,13 @@ public:
 private:
 	int				gameWidth;
 	int				gameHeight;
+
+	bool			inSimulationMode;
+
+	// when transitioning between from non simulation mode to simulation mode and vice versa,
+	// we will need to do some setup. 
+	// this function contains the neccessary steps to setup when entering a simulation or when exiting a simulation
+	// this function is assigned in the startSimulation and stopSimulation function.
+	// function returns false if setup has failed.
+	std::optional<std::function<void()>> setupSimulationFunction;
 };

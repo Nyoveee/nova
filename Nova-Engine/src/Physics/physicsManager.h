@@ -18,6 +18,8 @@ public:
 	PhysicsManager& operator=(PhysicsManager&& other)		= delete;
 
 public:
+	void initialise();
+	void clear();
 	void update(float dt);
 
 private:

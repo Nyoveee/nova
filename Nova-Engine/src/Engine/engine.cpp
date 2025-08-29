@@ -18,13 +18,15 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	transformationSystem	{ ecs },
 	physicsManager			{},
 	gameWidth				{ gameWidth },
-	gameHeight				{ gameHeight }
+	gameHeight				{ gameHeight },
+	inSimulationMode		{ false }
 {}
 
-
 void Engine::fixedUpdate(float dt) {
-	scriptingAPIManager.update();
-	physicsManager.update(dt);
+	if (inSimulationMode) {
+		scriptingAPIManager.update();
+		physicsManager.update(dt);
+	}
 }
 
 void Engine::update(float dt) {
@@ -35,8 +37,44 @@ void Engine::update(float dt) {
 	assetManager.update();
 }
 
+void Engine::setupSimulation() {
+	// do any setup if required.
+	if (!setupSimulationFunction) {
+		return;
+	}
+
+	setupSimulationFunction.value()();
+	setupSimulationFunction = std::nullopt;
+}
+
 void Engine::render(Renderer::RenderTarget target) {
 	renderer.render(target);
+}
+
+void Engine::startSimulation() {
+	if (setupSimulationFunction) {
+		return; // already prompted for simulation change.
+	}
+
+	setupSimulationFunction = [&]() {
+		physicsManager.initialise();
+		scriptingAPIManager.loadAllScripts();
+		
+		inSimulationMode = true;
+	};
+}
+
+void Engine::stopSimulation() {
+	if (setupSimulationFunction) {
+		return; // already prompted for simulation change.
+	}
+
+	setupSimulationFunction = [&]() {
+		physicsManager.clear();
+		scriptingAPIManager.unloadAllScripts();
+
+		inSimulationMode = false;
+	};
 }
 
 int Engine::getGameWidth() const {
@@ -45,4 +83,8 @@ int Engine::getGameWidth() const {
 
 int Engine::getGameHeight() const {
 	return gameHeight;
+}
+
+bool Engine::isInSimulationMode() const {
+	return inSimulationMode;
 }

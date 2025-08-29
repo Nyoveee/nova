@@ -5,6 +5,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "gizmo.h"
+#include "controlOverlay.h"
 
 class Engine;
 
@@ -23,4 +24,5 @@ public:
 private:
 	Engine& engine;
 	Gizmo gizmo;
+	ControlOverlay controlOverlay;
 };

@@ -55,6 +55,11 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 	float const* cameraProjection = glm::value_ptr(editor.engine.renderer.getCamera().projection());
 
 	ImGuizmo::Manipulate(cameraView, cameraProjection, operation, ImGuizmo::WORLD, glm::value_ptr(transform.modelMatrix));
+
+	if (!ImGuizmo::IsUsing()) {
+		return;
+	}
+
 	auto [position, rotation, scale] = Math::decomposeMatrix(transform.modelMatrix);
 
 	transform.position = position;

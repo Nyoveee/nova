@@ -126,6 +126,14 @@ PhysicsManager::~PhysicsManager() {
 	delete JPH::Factory::sInstance;
 }
 
+void PhysicsManager::initialise() {
+
+}
+
+void PhysicsManager::clear() {
+
+}
+
 void PhysicsManager::update(float dt) {
 	physicsSystem.Update(dt, 1, &temp_allocator, &job_system);	
 }
@@ -134,7 +142,7 @@ void PhysicsManager::createPrimitiveShapes() {
 	// ===========================================
 	// 1. Constructing a box shape.
 	// ===========================================
-	JPH::BoxShapeSettings boxSettings { JPH::Vec3{1.f, 1.f, 1.f} };
+	JPH::BoxShapeSettings boxSettings { JPH::Vec3{ 0.5f, 0.5f, 0.5f } };
 	boxSettings.SetEmbedded();	// box settings is allocated on the stack, and this class is actually a smart pointer that does reference counting 
 								// (for some reason) so we have to disable it
 
@@ -143,7 +151,7 @@ void PhysicsManager::createPrimitiveShapes() {
 	// ===========================================
 	// 2. Constructing a sphere shape.
 	// ===========================================
-	JPH::SphereShapeSettings sphereSettings{ };
+	JPH::SphereShapeSettings sphereSettings { 0.5f };
 	sphereSettings.SetEmbedded(); // whatever i just yapped at the top
 
 	sphere = sphereSettings.Create().Get();
