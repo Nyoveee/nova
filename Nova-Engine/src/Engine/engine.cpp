@@ -16,42 +16,18 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
 	transformationSystem	{ ecs },
+	physicsManager			{},
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight }
 {}
 
 
 void Engine::fixedUpdate(float dt) {
-	(void) dt;
 	scriptingAPIManager.update();
+	physicsManager.update(dt);
 }
 
 void Engine::update(float dt) {
-#if 0
-	static float zPos = 0.f;
-	if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_0)) {
-		auto entity = ecs.registry.create();
-
-		zPos -= 2.f;
-
-		Transform transform = {
-			{0.f, 0.f, zPos},
-			{1.f, 1.f, 1.f},
-			{1.f, 1.f, 1.f}
-		};
-
-		ecs.registry.emplace<Transform>(entity, std::move(transform));
-
-		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
-
-		AssetID modelAsset{ 1 };
-		materials["Table_frame_mtl"] = { AssetID{3} };
-		materials["Table_top_mtl"] = { AssetID{4} };
-
-		ecs.registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-#endif
-
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);

@@ -12,6 +12,7 @@
 
 #include "Graphics/cameraSystem.h"
 #include "Engine/transformationSystem.h"
+#include "Physics/physicsManager.h"
 
 #include "Libraries/BS_thread_pool.hpp"
 
@@ -52,6 +53,7 @@ public:
 	ECS						ecs;
 	ScriptingAPIManager		scriptingAPIManager;
 	TransformationSystem	transformationSystem;
+	PhysicsManager			physicsManager;
 
 private:
 	int				gameWidth;

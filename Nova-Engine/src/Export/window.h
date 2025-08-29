@@ -42,7 +42,8 @@ public:
 	DLL_API void run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc); // runs the game loop! :)
 	DLL_API GLFWwindow* getGLFWwindow() const;
 	DLL_API void toggleFullScreen();
-	
+	DLL_API float fps() const;
+
 private:
 	void toEnableMouse(bool toEnable);
 

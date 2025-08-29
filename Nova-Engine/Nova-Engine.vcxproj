@@ -120,7 +120,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>FMT_UNICODE=0;NOVA_DLL_EXPORT;_DEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NOVA_DLL_EXPORT;_DEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -147,7 +147,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>FMT_UNICODE=0;NOVA_DLL_EXPORT;NDEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NOVA_DLL_EXPORT;NDEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -212,6 +212,8 @@
     <ClInclude Include="src\Libraries\stb_image.hpp" />
     <ClInclude Include="src\Libraries\type_alias.h" />
     <ClInclude Include="src\Export\window.h" />
+    <ClInclude Include="src\Physics\joltPhysicsInterface.h" />
+    <ClInclude Include="src\Physics\physicsManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AssetManager\Asset\asset.cpp" />
@@ -235,6 +237,7 @@
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\Libraries\math.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
+    <ClCompile Include="src\Physics\physicsManager.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
       <FileType>CppCode</FileType>
     </ClInclude>
