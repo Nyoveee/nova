@@ -1,10 +1,9 @@
-#include <spdlog/spdlog.h>
-
 #include <glad/glad.h>
 #include <algorithm>
 #include <iostream>
 
 #include "framebuffer.h"
+#include "Logger.h"
 
 namespace {
 	// A FBO holding INVALID_ID means it's not holding to any dynamically allocated resource.
@@ -37,7 +36,7 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 	height		{ height }
 {
 	if (colorAttachmentProperties.size() > 8) {
-		spdlog::error("Too many render targets specified.");
+		Logger::error("Too many render targets specified.");
 		return;
 	}
 
@@ -76,7 +75,7 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 	glNamedFramebufferRenderbuffer(FBO_id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO_id);
 
 	if (glCheckNamedFramebufferStatus(FBO_id, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-		spdlog::error("Error: Framebuffer incomplete!");
+		Logger::error("Error: Framebuffer incomplete!");
 	}
 }
 

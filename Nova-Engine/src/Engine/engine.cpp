@@ -7,7 +7,7 @@
 #include "Component/component.h"
 #include "inputManager.h"
 #include "assetManager.h"
-#include "Libraries/Profiling.h"
+#include "Debugging/Profiling.h"
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window					{ window },
 	assetManager			{ assetManager },
@@ -20,7 +20,8 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false }
-{}
+{
+}
 
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;

@@ -1,11 +1,10 @@
-#include <spdlog/spdlog.h>
-
 #include <filesystem>
 #include <fstream>
 #include <chrono>
 
 #include "AssetManager.h"
 #include "Libraries/FileWatch.hpp"
+#include "Logger.h"
 
 namespace {
 	// we usually don't want to increment ids
@@ -43,7 +42,7 @@ AssetManager::AssetManager() :
 		}
 	}
 	catch (const std::filesystem::filesystem_error& ex) {
-		spdlog::error("Filesystem error: {}", ex.what());
+		Logger::error("Filesystem error: {}", ex.what());
 	}
 }
 
@@ -53,14 +52,14 @@ AssetManager::~AssetManager() {
 		Asset* asset = assetPtr.get();
 
 		if (!asset) {
-			spdlog::error("Asset manager is storing an invalid asset!");
+			Logger::error("Asset manager is storing an invalid asset!");
 			continue;
 		}
 
 		auto&& serialiseFunctorPtr = serialiseAssetFunctors[id];
 
 		if (!serialiseFunctorPtr) {
-			spdlog::error("Asset manager failed to record the appropriate serialisation functor!");
+			Logger::error("Asset manager failed to record the appropriate serialisation functor!");
 			continue;
 		}
 
@@ -136,7 +135,7 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 	}
 
 	else {
-		spdlog::warn("Unsupported file type of: {} has been found.", path.string());
+		Logger::warn("Unsupported file type of: {} has been found.", path.string());
 	}
 }
 
@@ -175,14 +174,14 @@ std::optional<BasicAssetInfo> AssetManager::parseMetaDataFile(std::filesystem::p
 		assetId = std::stoull(line);
 	}
 	catch (std::exception const& exception) {
-		spdlog::warn("Failed to parse metadata file for file {}.\nException: {}", path.string(), exception.what());
+		Logger::warn("Failed to parse metadata file for file {}.\nException: {}", path.string(), exception.what());
 		return std::nullopt;
 	}
 
 	// reads the 2nd line.
 	std::getline(metaDataFile, line);
 
-	spdlog::info("Successfully parsed metadata file for {}", path.string());
+	Logger::info("Successfully parsed metadata file for {}", path.string());
 	return {{ assetId, path.string(), line }};
 }
 
@@ -190,7 +189,7 @@ BasicAssetInfo AssetManager::createMetaDataFile(std::filesystem::path const& pat
 	BasicAssetInfo assetInfo = { generateAssetID(path), path.string(), path.filename().string() };
 
 	if (!metaDataFile) {
-		spdlog::error("Error creating metadata file for {}", path.string());
+		Logger::error("Error creating metadata file for {}", path.string());
 		return assetInfo;
 	}
 

@@ -1,4 +1,3 @@
-#include <spdlog/spdlog.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -9,7 +8,8 @@
 #include "window.h"
 #include "inputManager.h"
 #include "Graphics/cameraSystem.h"
-#include "Libraries/Profiling.h"
+#include "Debugging/Profiling.h"
+#include "Logger.h"
 namespace {
 	// i don't know any other way..
 	Window* g_Window = nullptr;
@@ -305,7 +305,7 @@ namespace {
 		}
 
 		ss << "\n\n";
-		spdlog::error("{}", ss.str());
+		Logger::error("{}", ss.str());
 	}
 
 	void window_size_callback(GLFWwindow* window, int width, int height) {

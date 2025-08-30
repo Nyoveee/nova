@@ -1,9 +1,8 @@
 #pragma once
-
-#include <spdlog/spdlog.h>
 #include <limits>
 #include <vector>
 
+#include "Logger.h"
 using GLuint = unsigned int;
 
 // We use the copy-and-swap idiom (but really move and swap idiom since copy semantics are disabled) to implement move semantics.
@@ -48,9 +47,9 @@ void BufferObject::uploadData(std::vector<T> const& data) {
 	GLsizeiptr memoryRequired = data.size() * sizeof(T);
 
 	if (memoryRequired > allocatedMemory) {
-		spdlog::error("Attempting to upload data of more memory than currently allocated!");
-		spdlog::error("Allocated memory: {} bytes, size of uploaded data: {} bytes.", allocatedMemory, memoryRequired);
-		spdlog::error("Number of data: {}, sizeof(Data): {} bytes.", data.size(), sizeof(T));
+		Logger::error("Attempting to upload data of more memory than currently allocated!");
+		Logger::error("Allocated memory: {} bytes, size of uploaded data: {} bytes.", allocatedMemory, memoryRequired);
+		Logger::error("Number of data: {}, sizeof(Data): {} bytes.", data.size(), sizeof(T));
 		return;
 	}
 

@@ -1,6 +1,4 @@
 #pragma once
-
-#include <spdlog/spdlog.h>
 #include "Libraries/BS_thread_pool.hpp"
 
 #include "export.h"
@@ -16,6 +14,7 @@
 #include "AssetManager/Asset/texture.h"
 #include "AssetManager/Asset/model.h"
 #include "AssetManager/folder.h"
+#include "Logger.h"
 
 // Assets stored in the asset manager merely point to these assets in file location.
 // These assets could be loaded or not loaded.

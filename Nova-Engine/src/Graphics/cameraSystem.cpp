@@ -4,7 +4,7 @@
 #include "cameraSystem.h"
 #include "renderer.h"
 #include "inputManager.h"
-#include "Libraries/Profiling.h"
+#include "Debugging/Profiling.h"
 
 CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 	engine				{ engine },

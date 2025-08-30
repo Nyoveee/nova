@@ -5,7 +5,7 @@
 
 #include "Component/component.h"
 #include "Libraries/math.h"
-#include "Libraries/Profiling.h"
+#include "Debugging/Profiling.h"
 
 TransformationSystem::TransformationSystem(ECS& ecs) :
 	registry {ecs.registry}

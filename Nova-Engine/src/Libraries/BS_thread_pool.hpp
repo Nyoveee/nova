@@ -13,7 +13,8 @@
  *
  * @brief `BS::thread_pool`: a fast, lightweight, modern, and easy-to-use C++17/C++20/C++23 thread pool library. This header file contains the entire library, and is the only file needed to use the library.
  */
-
+#undef max
+#undef min
 #ifndef BS_THREAD_POOL_HPP
 #define BS_THREAD_POOL_HPP
 

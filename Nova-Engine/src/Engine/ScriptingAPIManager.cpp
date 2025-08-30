@@ -1,11 +1,11 @@
-#include <spdlog/spdlog.h>
 #include "ScriptingAPIManager.h"
 
 #include <shlwapi.h>
 #include <array>
 #include <iostream>
 
-#include "Libraries/Profiling.h"
+#include "Debugging/Profiling.h"
+#include "Logger.h"
 
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
@@ -42,7 +42,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	coreClr = LoadLibraryA(coreClrPath.c_str());
 
 	if (!coreClr) {
-		spdlog::error("Failed to load CoreCLR.");
+		Logger::error("Failed to load CoreCLR.");
 		return;
 	}
 
@@ -55,7 +55,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		shutdownCorePtr			= getCoreClrFuncPtr<coreclr_shutdown_ptr>("coreclr_shutdown");
 	}
 	catch (std::exception e) {
-		spdlog::error("Error when attempting to retrieve function pointers from Core CLR: {}", e.what());
+		Logger::error("Error when attempting to retrieve function pointers from Core CLR: {}", e.what());
 		return;
 	}
 
@@ -111,7 +111,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		initScriptAPIFuncPtr(engine.ecs, runtimePath.c_str());
 	}
 	catch (std::exception e) {
-		spdlog::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
+		Logger::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
 		return;
 	}
 }
@@ -127,7 +127,7 @@ ScriptingAPIManager::~ScriptingAPIManager()
 		errorDetails << std::hex << result;
 		errorDetails << ")Failed to shut down CoreCLR";
 
-		spdlog::error("{}", errorDetails.str());
+		Logger::error("{}", errorDetails.str());
 	}
 }
 

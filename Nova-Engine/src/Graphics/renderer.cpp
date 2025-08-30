@@ -1,5 +1,3 @@
-#include <spdlog/spdlog.h>
-
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -16,7 +14,8 @@
 
 #include <fstream>
 #include "Component/component.h"
-#include "Libraries/Profiling.h"
+#include "Debugging/Profiling.h"
+#include "Logger.h"
 
 #undef max
 
@@ -234,7 +233,7 @@ void Renderer::prepareRendering(RenderTarget target) {
 	unsigned int numOfLights = 0;
 	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
 		if (numOfLights == MAX_NUMBER_OF_LIGHT) {
-			spdlog::warn("Max number of lights reached!");
+			Logger::warn("Max number of lights reached!");
 			break;
 		}
 
@@ -437,7 +436,7 @@ Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Model
 	auto iterator = meshRenderer.materials.find(mesh.materialName);
 
 	if (iterator == meshRenderer.materials.end()) {
-		spdlog::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
+		Logger::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
 		return nullptr;
 	}
 
@@ -478,15 +477,15 @@ void Renderer::printOpenGLDriverDetails() const {
 	GLubyte const* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
 	if (vendor) {
-		spdlog::info("OpenGL Vendor: {}", reinterpret_cast<const char*>(vendor));
+		Logger::info("OpenGL Vendor: {}", reinterpret_cast<const char*>(vendor));
 	}
 	if (renderer) {
-		spdlog::info("OpenGL Renderer: {}", reinterpret_cast<const char*>(renderer));
+		Logger::info("OpenGL Renderer: {}", reinterpret_cast<const char*>(renderer));
 	}
 	if (version) {
-		spdlog::info("OpenGL Version: {}", reinterpret_cast<const char*>(version));
+		Logger::info("OpenGL Version: {}", reinterpret_cast<const char*>(version));
 	}
 	if (glslVersion) {
-		spdlog::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
+		Logger::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
 	}
 }
