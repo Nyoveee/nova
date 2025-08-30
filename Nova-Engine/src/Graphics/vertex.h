@@ -12,13 +12,17 @@ struct Vertex {
 	glm::vec3 bitangent;
 };
 
+struct SimpleVertex {
+	glm::vec3 pos;
+};
+
 // this struct will be used to send to SSBO.
 // our SSBO follows the std430 alignment rule,
 // this caveat means that we have to be mightful of alignments of 
-// vec3s like color for an example.
+// our native types, especially for vec3s like color for an example.
 
 #pragma warning( push )
-#pragma warning(disable : 4324)			// disable warning abut structure being padded, that's exactly what i wanted.
+#pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
 struct alignas(16) LightData {
 	alignas(16) glm::vec3 lightPos;		// this will represent light direction for directional light

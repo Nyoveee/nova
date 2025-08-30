@@ -26,7 +26,7 @@ class Texture;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, BoxCollider
+	EntityData, Transform, Light, MeshRenderer, BoxCollider, SphereCollider
 
 using MaterialName = std::string;
 
@@ -145,5 +145,13 @@ struct BoxCollider {
 	REFLECTABLE(
 		scaleMultiplier,
 		scaleWithTransform
+	)
+};
+
+struct SphereCollider {
+	float radius;
+
+	REFLECTABLE(
+		radius
 	)
 };

@@ -377,6 +377,7 @@ void Editor::sandboxWindow() {
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}
+
 	std::string testScript{ engine.scriptingAPIManager.getAvailableScripts()[0] };
 	if (ImGui::Button(testScript.c_str())) {
 		entt::entity testSubject{ 0 };
@@ -401,7 +402,26 @@ void Editor::sandboxWindow() {
 		std::unordered_map<MaterialName, Material> materials;
 
 		AssetID modelAsset{ 16424904817436751277 };
-		materials["Material"] = { Material::Pipeline::Color, Color{1.f, 1.f, 1.f}, Material::Config{ 0.5f, 0.f, 0.f }, AssetID{ 15988662213738176872 }};
+		materials["Material"] = { Material::Pipeline::Color, Color{1.f, 1.f, 1.f}};
+
+		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
+	}
+
+	if (ImGui::Button("(+) Add Floor")) {
+		auto entity = registry.create();
+
+		Transform transform = {
+			{0.f, -2.f, 0.f},
+			{10.f, 1.f, 10.f}
+		};
+
+		registry.emplace<Transform>(entity, std::move(transform));
+		registry.emplace<EntityData>(entity, EntityData{ "Floor" });
+
+		std::unordered_map<MaterialName, Material> materials;
+
+		AssetID modelAsset{ 16424904817436751277 };
+		materials["Material"] = { Material::Pipeline::BlinnPhong, Color{0.1f, 0.1f, 0.1f}};
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}

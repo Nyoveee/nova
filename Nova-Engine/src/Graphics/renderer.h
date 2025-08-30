@@ -42,9 +42,19 @@ public:
 	Renderer& operator=(Renderer&& other)		= delete;
 
 public:
+	void update(float dt);
+
+	// choose to either render to the default frame buffer or the main frame buffer.
+	void render(RenderTarget target, bool toRenderDebug);
+
+public:
+	// =============================================
+	// Public facing API.
+	// =============================================
+
 	// used directly in the editor. i need to export this.
 	DLL_API std::vector<GLuint> const& getMainFrameBufferTextures() const;
-	DLL_API void enableWireframeMode(bool toEnable) const;
+	DLL_API void enableWireframeMode(bool toEnable);
 
 	// gets object id from color attachment 1 of the main framebuffer.
 	// parameter normalisedPosition expects value of range [0, 1], representing the spot in the color attachment from bottom left.
@@ -58,12 +68,18 @@ public:
 	DLL_API void recompileShaders();
 
 public:
-	void update(float dt);
+	// =============================================
+	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
+	// =============================================
 
-	// choose to either render to the default frame buffer or the main frame buffer.
-	void render(RenderTarget target);
+	// submit triangles to be rendered at the end
+	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color);
 
 private:
+	// =============================================
+	// Private internal helper functions.
+	// =============================================
+
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering(RenderTarget target);
 
@@ -72,6 +88,9 @@ private:
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();
+
+	// render a debug triangles in physics
+	void debugRender();
 
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
@@ -85,8 +104,6 @@ private:
 	// attempts to get the appropriate material from meshrenderer.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
 
-private:
-
 	void setBlendMode(BlendingConfig configuration);
 	void printOpenGLDriverDetails() const;
 
@@ -95,16 +112,30 @@ private:
 	AssetManager& assetManager;
 	entt::registry& registry;
 
-	BufferObject VBO;
+	// Main VAO and their related buffers
+	GLuint mainVAO;
+	BufferObject mainVBO;
 	BufferObject EBO;
-	BufferObject LightSSBO;
-	BufferObject SharedUBO;
-	GLuint VAO;
+
+	// SSBO and UBO.
+	BufferObject lightSSBO;
+	BufferObject sharedUBO;
+
+	// Debug Physics VAO and it's corresponding VBO.	
+	GLuint debugPhysicsVAO;
+	BufferObject debugPhysicsVBO;
 
 	Camera camera;
 
 	// contains all the final rendering.
 	FrameBuffer mainFrameBuffer;
+
+	// contains all physics debug rendering..
+	FrameBuffer physicsDebugFrameBuffer;
+
+private:
+	int numOfDebugTriangles;
+	bool isOnWireframeMode;
 
 public:
 	Shader basicShader;
@@ -114,4 +145,6 @@ public:
 	Shader gridShader;
 	Shader outlineShader;
 	Shader blinnPhongShader;
+	Shader debugShader;
+	Shader debugOverlayShader;
 };

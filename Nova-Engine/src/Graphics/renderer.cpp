@@ -24,7 +24,11 @@ constexpr std::size_t colorIndex = 0;
 constexpr std::size_t objectIdIndex = 1;
 
 // 100 MB should be nothing right?
-constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100000000;
+constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
+
+// we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
+constexpr int MAX_DEBUG_TRIANGLES = 10000;
+constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(SimpleVertex);
 
 // ok right?
 constexpr int MAX_NUMBER_OF_LIGHT = 100;
@@ -33,76 +37,112 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },
 	assetManager		{ engine.assetManager },
 	registry			{ engine.ecs.registry },
-	basicShader			{ "System/Shader/basic.vert",		"System/Shader/basic.frag" },
-	standardShader		{ "System/Shader/standard.vert",	"System/Shader/basic.frag" },
-	textureShader		{ "System/Shader/standard.vert",	"System/Shader/image.frag" },
-	colorShader			{ "System/Shader/standard.vert",	"System/Shader/color.frag" },
-	blinnPhongShader	{ "System/Shader/blinnPhong.vert",	"System/Shader/blinnPhong.frag" },
-	gridShader			{ "System/Shader/grid.vert",		"System/Shader/grid.frag" },
-	outlineShader		{ "System/Shader/outline.vert",		"System/Shader/outline.frag" },
-	VAO					{},
-	VBO					{ AMOUNT_OF_MEMORY_ALLOCATED, BufferObject::Type::VertexBuffer },
-	EBO					{ AMOUNT_OF_MEMORY_ALLOCATED, BufferObject::Type::ElememtBuffer },
+	basicShader			{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
+	standardShader		{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
+	textureShader		{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
+	colorShader			{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
+	blinnPhongShader	{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
+	gridShader			{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
+	outlineShader		{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
+	debugShader			{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
+	debugOverlayShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
+	mainVAO				{},
+	debugPhysicsVAO		{},
+	mainVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
+	debugPhysicsVBO		{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	EBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 
 						// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
-	LightSSBO			{ MAX_NUMBER_OF_LIGHT * sizeof(LightData) + alignof(LightData), BufferObject::Type::SSBO},
+	lightSSBO			{ MAX_NUMBER_OF_LIGHT * sizeof(LightData) + alignof(LightData)},
 
 						// we allocate memory for view and projection matrix.
-	SharedUBO			{ 2 * sizeof(glm::mat4), BufferObject::Type::UBO },
+	sharedUBO			{ 2 * sizeof(glm::mat4) },
 	camera				{},
+	numOfDebugTriangles	{},
+	isOnWireframeMode	{},
 
 	// main FBO shall contain color attachment 0 of vec4 and color attachment 1 of 32 byte int.
 	// color attachment 0 is to store the resulting color, color attachment 1 is to store object id for object picking.
-	mainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16, GL_R32UI } }
+	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16, GL_R32UI } },
+	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } }
 {
 	printOpenGLDriverDetails();
 
-	// prepare the light SSBO. we bind light SSBO to binding point of 0.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, LightSSBO.id());
-
-	// prepare the shared UBO. we bind UBO to binding point of 0.
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, SharedUBO.id());
-
-	// Set the correct viewport
-	glViewport(0, 0, gameWidth, gameHeight);
-	glCreateVertexArrays(1, &VAO);
-
-	// Bind this EBO to this VAO.
-	glVertexArrayElementBuffer(VAO, EBO.id());
-
-	// for this VAO, associate bindingIndex 0 with this VBO. 
-	GLuint bindingIndex = 0;
-	glVertexArrayVertexBuffer(VAO, bindingIndex, VBO.id(), 0, sizeof(Vertex));
-
-	// associate attribute index 0 and 1 with the respective attribute properties.
-	glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, pos));
-	glVertexArrayAttribFormat(VAO, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
-	glVertexArrayAttribFormat(VAO, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-	glVertexArrayAttribFormat(VAO, 3, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, tangent));
-	glVertexArrayAttribFormat(VAO, 4, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, bitangent));
-
-	// enable attributes
-	glEnableVertexArrayAttrib(VAO, 0);
-	glEnableVertexArrayAttrib(VAO, 1);
-	glEnableVertexArrayAttrib(VAO, 2);
-	glEnableVertexArrayAttrib(VAO, 3);
-	glEnableVertexArrayAttrib(VAO, 4);
-
-	// associate vertex attributes to binding index 0. 
-	glVertexArrayAttribBinding(VAO, 0, bindingIndex);
-	glVertexArrayAttribBinding(VAO, 1, bindingIndex);
-	glVertexArrayAttribBinding(VAO, 2, bindingIndex);
-	glVertexArrayAttribBinding(VAO, 3, bindingIndex);
-	glVertexArrayAttribBinding(VAO, 4, bindingIndex);
-
-	glEnable(GL_STENCIL_TEST);	
+	glEnable(GL_STENCIL_TEST);
 
 	// sounds useless :rofl: (it's interfering with my MRT attempt)
 	glDisable(GL_DITHER);
+
+	// ======================================================
+	// Prepare shared UBO, that will be used by all shaders. (like view and projection matrix.)
+	// ======================================================
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
+
+	// prepare the light SSBO. we bind light SSBO to binding point of 0.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.id());
+
+	// Set the correct viewport
+	glViewport(0, 0, gameWidth, gameHeight);
+
+	// ======================================================
+	// Main VAO configuration
+	// - Bind the proper EBO
+	// - Define and configure the proper vertex attributes
+	// - Bind the proper VBO to	these vertex attributes
+	// ======================================================
+	glCreateVertexArrays(1, &mainVAO);
+
+	// Bind this EBO to this VAO.
+	glVertexArrayElementBuffer(mainVAO, EBO.id());
+
+	// for this VAO, associate bindingIndex 0 with this VBO. 
+	constexpr GLuint bindingIndex = 0;
+	glVertexArrayVertexBuffer(mainVAO, bindingIndex, mainVBO.id(), 0, sizeof(Vertex));
+
+	// associate attribute index 0 and 1 with the respective attribute properties.
+	glVertexArrayAttribFormat(mainVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, pos));
+	glVertexArrayAttribFormat(mainVAO, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
+	glVertexArrayAttribFormat(mainVAO, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+	glVertexArrayAttribFormat(mainVAO, 3, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, tangent));
+	glVertexArrayAttribFormat(mainVAO, 4, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, bitangent));
+
+	// enable attributes
+	glEnableVertexArrayAttrib(mainVAO, 0);
+	glEnableVertexArrayAttrib(mainVAO, 1);
+	glEnableVertexArrayAttrib(mainVAO, 2);
+	glEnableVertexArrayAttrib(mainVAO, 3);
+	glEnableVertexArrayAttrib(mainVAO, 4);
+
+	// associate vertex attributes to binding index 0. 
+	glVertexArrayAttribBinding(mainVAO, 0, bindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 1, bindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 2, bindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 3, bindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 4, bindingIndex);
+
+	// ======================================================
+	// Debug Physics VAO configuration
+	// - No EBO. A much simpler VAO containing only position.
+	// ======================================================
+	glCreateVertexArrays(1, &debugPhysicsVAO);
+	
+	// for this VAO, associate bindingIndex 1 with this VBO. 
+	constexpr GLuint debugBindingIndex = 1;
+
+	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+
+	// associate attribute index 0 with the respective attribute properties.
+	glVertexArrayAttribFormat(debugPhysicsVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(SimpleVertex, pos));
+
+	// enable attribute
+	glEnableVertexArrayAttrib(debugPhysicsVAO, 0);
+
+	// associate vertex attribute 0 with binding index 1.
+	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
 }
 
 Renderer::~Renderer() {
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &mainVAO);
 }
 
 DLL_API GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -132,12 +172,16 @@ void Renderer::update(float dt) {
 	(void) dt;
 }
 
-void Renderer::render(RenderTarget target) {
+void Renderer::render(RenderTarget target, bool toRenderDebug) {
 	prepareRendering(target);
 
 	renderModels();
 
 	//renderOutline();
+
+	if (toRenderDebug) {
+		debugRender();
+	}
 
 	// Bind back to default FBO for ImGui to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -147,12 +191,14 @@ std::vector<GLuint> const& Renderer::getMainFrameBufferTextures() const {
 	return mainFrameBuffer.textureIds();
 }
 
-void Renderer::enableWireframeMode(bool toEnable) const {
+void Renderer::enableWireframeMode(bool toEnable) {
 	if (toEnable) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		isOnWireframeMode = toEnable;
 	}
 	else {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		isOnWireframeMode = toEnable;
 	}
 }
 
@@ -168,24 +214,84 @@ DLL_API void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 }
 
+void Renderer::debugRender() {
+	// ================================================
+	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
+	// ================================================
+	glBindVertexArray(debugPhysicsVAO);
+	glBindFramebuffer(GL_FRAMEBUFFER, physicsDebugFrameBuffer.fboId());
+
+	// Clear physics debug framebuffer.
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glDisable(GL_STENCIL_TEST);
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+
+	// enable wireframe mode only for debug overlay.
+	if (!isOnWireframeMode) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 1.f });
+	glDrawArrays(GL_TRIANGLES, 0, numOfDebugTriangles * 3);
+
+	glDisable(GL_DEPTH_TEST);
+	debugOverlayShader.use();
+	numOfDebugTriangles = 0;
+
+	// ================================================
+	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
+	// (so post processing)
+	// ================================================
+
+	// disable wireframe mode, restoring to normal fill
+	if (!isOnWireframeMode) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+
+	setBlendMode(BlendingConfig::AlphaBlending);
+	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	
+	// set image uniform accordingly..
+	glBindTextureUnit(0, physicsDebugFrameBuffer.textureIds()[0]);
+	debugOverlayShader.setImageUniform("debugOverlay", 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color) {
+	if (numOfDebugTriangles > MAX_DEBUG_TRIANGLES) {
+		std::cerr << "too much triangles!\n";
+		return;
+	}
+
+	debugPhysicsVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfDebugTriangles * sizeof(SimpleVertex));
+	++numOfDebugTriangles;
+}
+
 void Renderer::prepareRendering(RenderTarget target) {
 	// =================================================================
 	// Configure pre rendering settings
 	// =================================================================
-
+	
 	// of course.
 	glEnable(GL_DEPTH_TEST);
 	glStencilMask(0xFF);
+	glDisable(GL_BLEND);
 
-	// set VBO to VAO's [0] binding index.
-	glVertexArrayVertexBuffer(VAO, 0, VBO.id(), 0, sizeof(Vertex));
-	glBindVertexArray(VAO);
+	// set VBO to VAO's [0] binding index and bind to main VAO.
+	glVertexArrayVertexBuffer(mainVAO, 0, mainVBO.id(), 0, sizeof(Vertex));
+	glBindVertexArray(mainVAO);
 
 	// =================================================================
 	// Clear frame buffers.
 	// =================================================================
 	
 	// Clear default framebuffer.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -214,12 +320,11 @@ void Renderer::prepareRendering(RenderTarget target) {
 
 	// =================================================================
 	// Set up the uniforms for my respective shaders
-	// @TODO: Use a UBO to share common uniforms across all shaders like view and projection.
 	// Note: calling shader.use() before setting uniforms is redundant because we are using DSA.
 	// =================================================================
 	// Shared across all shaders. We use a shared UBO for this.
-	glNamedBufferSubData(SharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
-	glNamedBufferSubData(SharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection())); // offset bcuz 2nd data member.
+	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
+	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection())); // offset bcuz 2nd data member.
 
 	// ==== Blinn Phong ====
 	blinnPhongShader.setVec3("cameraPos", camera.getPos());
@@ -239,12 +344,12 @@ void Renderer::prepareRendering(RenderTarget target) {
 	}
 
 	// Send it over to SSBO.
-	glNamedBufferSubData(LightSSBO.id(), 0, sizeof(unsigned int), &numOfLights);	// copy the unsigned int representing number of lights into SSBO.
+	glNamedBufferSubData(lightSSBO.id(), 0, sizeof(unsigned int), &numOfLights);	// copy the unsigned int representing number of lights into SSBO.
 
 	// copy all the light data to the SSBO.
 	// offset is an alignment of LightData!! because of alignment requirements of this struct!
 	// omdayz..
-	glNamedBufferSubData(LightSSBO.id(), alignof(LightData), numOfLights * sizeof(LightData), lightData.data());
+	glNamedBufferSubData(lightSSBO.id(), alignof(LightData), numOfLights * sizeof(LightData), lightData.data());
 
 	// ==== Color shader ====
 	// ..
@@ -303,7 +408,7 @@ void Renderer::renderModels() {
 			}
 
 			// time to draw!
-			VBO.uploadData(mesh.vertices);
+			mainVBO.uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
@@ -331,7 +436,7 @@ void Renderer::renderOutline() {
 		outlineShader.setVec3("color", { 255.f / 255.f, 136.f / 255.f, 0.f });
 
 		for (auto const& mesh : model->meshes) {
-			VBO.uploadData(mesh.vertices);
+			mainVBO.uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}

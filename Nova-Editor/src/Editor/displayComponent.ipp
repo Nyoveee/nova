@@ -213,8 +213,11 @@ namespace {
 					for (auto&& [name, material] : dataMember) {
 						ImGui::PushID(i);
 
-						ImGui::Text(std::string{ "Material [" + std::to_string(i) + "]: " + name }.c_str());
-						displayMaterialUI(material, componentInspector);
+						if (ImGui::TreeNode(std::string{ "Material [" + std::to_string(i) + "]: " + name }.c_str())) {
+							displayMaterialUI(material, componentInspector);
+							ImGui::TreePop();
+						}
+
 						++i;
 
 						ImGui::PopID();

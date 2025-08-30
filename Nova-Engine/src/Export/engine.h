@@ -62,6 +62,9 @@ public:
 	TransformationSystem	transformationSystem;
 	PhysicsManager			physicsManager;
 
+	// allows direct modification to render debug info for physics.
+	bool					toDebugRenderPhysics;
+
 private:
 	int				gameWidth;
 	int				gameHeight;

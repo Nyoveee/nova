@@ -1,15 +1,18 @@
 #pragma once
 
+class Renderer;
+
 // The Jolt headers don't include Jolt.h. Always include Jolt.h before including any other Jolt header.
 // You can use Jolt.h in your precompiled header to speed up compilation. (nah)
 #include <Jolt/Jolt.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 
 #include "joltPhysicsInterface.h"
+#include "debugRenderer.h"
 
 class PhysicsManager {
 public:
-	PhysicsManager();
+	PhysicsManager(Renderer& renderer);
 
 	~PhysicsManager();
 	PhysicsManager(PhysicsManager const& other)				= delete;
@@ -21,6 +24,7 @@ public:
 	void initialise();
 	void clear();
 	void update(float dt);
+	void debugRender();
 
 private:
 	void createPrimitiveShapes();
@@ -55,6 +59,9 @@ private:
 	JPH::JobSystemThreadPool job_system;
 
 	JPH::BodyInterface& bodyInterface;
+
+	// Our own debug renderer..
+	DebugRenderer debugRenderer;
 
 private:
 	// We let this physics manager owns some basic primitive shapes.

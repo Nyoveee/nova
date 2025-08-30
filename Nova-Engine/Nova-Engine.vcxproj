@@ -212,6 +212,7 @@
     <ClInclude Include="src\Libraries\stb_image.hpp" />
     <ClInclude Include="src\Libraries\type_alias.h" />
     <ClInclude Include="src\Export\window.h" />
+    <ClInclude Include="src\Physics\debugRenderer.h" />
     <ClInclude Include="src\Physics\joltPhysicsInterface.h" />
     <ClInclude Include="src\Physics\physicsManager.h" />
   </ItemGroup>
@@ -237,6 +238,7 @@
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\Libraries\math.cpp" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
+    <ClCompile Include="src\Physics\debugRenderer.cpp" />
     <ClCompile Include="src\Physics\physicsManager.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
       <FileType>CppCode</FileType>

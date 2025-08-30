@@ -69,7 +69,7 @@ constexpr unsigned int maxBodyPairs = 1024;
 // Note: This value is low because this is a simple test. For a real project use something in the order of 10240.
 constexpr unsigned int maxContactConstraints = 1024;
 
-PhysicsManager::PhysicsManager() :
+PhysicsManager::PhysicsManager(Renderer& renderer) :
 	// we use a placeholder to invoke a function before constructing the rest of the data member.
 	placeholder		{ [&](){ 
 		// Register allocation hook. In this example we'll just let Jolt use malloc / free but you can override these if you want (see Memory.h).
@@ -84,7 +84,8 @@ PhysicsManager::PhysicsManager() :
 	// The main way to interact with the bodies in the physics system is through the body interface. There is a locking and a non-locking
 	// variant of this. We're going to use the locking version (even though we're not planning to access bodies from multiple threads)
 	// @ IF SOMETHING SEGFAULTS HERE ITS PROBABLY CAUSE I CALL .GETBODYINTERFACE BEFORE .INIT.
-	bodyInterface  { physicsSystem.GetBodyInterface() }
+	bodyInterface	{ physicsSystem.GetBodyInterface() },
+	debugRenderer	{ renderer }
 {
 	// Install trace and assert callbacks
 	JPH::Trace = TraceImpl;
@@ -119,6 +120,21 @@ PhysicsManager::PhysicsManager() :
 	physics_system.SetContactListener(&contact_listener);
 #endif
 
+	// We create 2 body for testing..
+	JPH::BodyCreationSettings bodySettings {
+		box,						// shape
+		{},							// position
+		JPH::Quat::sIdentity(),		// rotation (in quartenions)
+		JPH::EMotionType::Static,	// motion type
+		Layers::NON_MOVING			// in which layer?
+	};
+
+	bodyInterface.CreateAndAddBody(bodySettings, JPH::EActivation::Activate);
+
+	bodySettings.mPosition = { 0.f, 2.f, 0.f };
+
+	bodyInterface.CreateAndAddBody(bodySettings, JPH::EActivation::Activate);
+
 }
 
 PhysicsManager::~PhysicsManager() {
@@ -136,6 +152,11 @@ void PhysicsManager::clear() {
 
 void PhysicsManager::update(float dt) {
 	physicsSystem.Update(dt, 1, &temp_allocator, &job_system);	
+}
+
+void PhysicsManager::debugRender() {
+	constexpr JPH::BodyManager::DrawSettings debugDrawSettings {};
+	physicsSystem.DrawBodies(debugDrawSettings, &debugRenderer);
 }
 
 void PhysicsManager::createPrimitiveShapes() {

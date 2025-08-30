@@ -15,8 +15,7 @@ DebugUI::DebugUI(Editor& editor) :
 	renderer{ editor.engine.renderer },
 	assetManager{ editor.engine.assetManager },
 	window{ editor.engine.window }
-{
-}
+{}
 
 void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
@@ -33,5 +32,10 @@ void DebugUI::update() {
 	);
 
 	ImGui::Text(threadPoolStats.c_str());
+
+	ImGui::SeparatorText("Physics");
+
+	ImGui::Checkbox("Physics debug render", &engine.toDebugRenderPhysics);
+
 	ImGui::End();
 }

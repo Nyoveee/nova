@@ -8,10 +8,9 @@ namespace {
 	constexpr inline GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
 }
 
-BufferObject::BufferObject(GLsizeiptr amountOfMemory, Type type) :
+BufferObject::BufferObject(GLsizeiptr amountOfMemory) :
 	allocatedMemory	{ amountOfMemory },
-	m_id			{ INVALID_ID },
-	m_type			{ type }
+	m_id			{ INVALID_ID }
 {
 	glCreateBuffers(1, &m_id);
 	glNamedBufferStorage(m_id, amountOfMemory, nullptr, GL_DYNAMIC_STORAGE_BIT);
@@ -33,7 +32,7 @@ BufferObject::BufferObject(BufferObject&& other) noexcept :
 }
 
 BufferObject& BufferObject ::operator=(BufferObject&& other) noexcept {
-	BufferObject  tmp{ std::move(other) };
+	BufferObject tmp{ std::move(other) };
 	swap(other);
 	return *this;
 }
@@ -49,8 +48,4 @@ GLuint BufferObject::id() const {
 
 GLsizeiptr BufferObject::size() const {
 	return allocatedMemory;
-}
-
-BufferObject::Type BufferObject::type() const {
-	return m_type;
 }

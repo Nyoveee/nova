@@ -16,10 +16,11 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
 	transformationSystem	{ ecs },
-	physicsManager			{},
+	physicsManager			{ renderer },
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
-	inSimulationMode		{ false }
+	inSimulationMode		{ false },
+	toDebugRenderPhysics	{ false }
 {}
 
 void Engine::fixedUpdate(float dt) {
@@ -48,7 +49,11 @@ void Engine::setupSimulation() {
 }
 
 void Engine::render(Renderer::RenderTarget target) {
-	renderer.render(target);
+	if (toDebugRenderPhysics) {
+		physicsManager.debugRender();
+	}
+
+	renderer.render(target, toDebugRenderPhysics);
 }
 
 void Engine::startSimulation() {
