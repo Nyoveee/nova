@@ -5,21 +5,25 @@
 
 #pragma once
 #include "IManagedComponent.hxx"
-public ref class Script abstract : IManagedComponent
+public ref class Script abstract
 {
 public:
 	// Get reference to the component
-	generic<typename Component> where Component : IManagedComponent
-	Component getComponent();
+	generic<typename T> where T : IManagedComponent
+	T getComponent();
+	generic<typename T> where T : Script
+	T getScript();
 internal:
 	// C++/cli doesn't support friend class so this is a way to make sure scripts cannot access the init update exit functions of other scripts
 	// These also includes exception handling for scripts
 	void callInit();
 	void callUpdate();
 	void callExit();
-	virtual bool exist(System::UInt32) override sealed;
+	void setEntityID(System::UInt32 p_entityID);
 protected:
 	virtual void init() {};
 	virtual void update() {};
 	virtual void exit() {};
+private:
+	System::UInt32 entityID;
 };

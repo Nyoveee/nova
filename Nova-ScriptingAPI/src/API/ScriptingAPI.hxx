@@ -21,14 +21,13 @@ internal:
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
-	generic<typename T> where T : IManagedComponent
-	static T getComponentReference(System::UInt32 entityID);
+	generic<typename T> where T : Script
+	static T tryGetScriptReference(System::UInt32 entityID);
 private:
 	static entt::registry* registry;
 	using Scripts = System::Collections::Generic::List<Script^>;
 	using Components = System::Collections::Generic::List<IManagedComponent^> ;
 	static System::Collections::Generic::Dictionary<System::UInt32, Scripts^>^ gameObjectScripts;
-	static System::Collections::Generic::Dictionary<System::UInt32, Components^>^ gameObjectComponents;
 	static System::Collections::Generic::List<System::Type^> scriptTypes;
 }; 
 #include "ScriptingAPI.ixx"

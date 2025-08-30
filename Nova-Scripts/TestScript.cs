@@ -3,9 +3,8 @@
     TestScript2? testScript2;
     protected override void init()
     {
-        testScript2 = getComponent<TestScript2>();
+        testScript2 = getScript<TestScript2>();
     }
-
     protected override void update()
     {
         if (testScript2 != null)

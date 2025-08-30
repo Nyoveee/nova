@@ -38,14 +38,14 @@ NativeType native(ManagedType& managedType) {																		\
 // =====================================================
 // Managed component macro generator.
 // =====================================================
-#define PropertyDeclaration(ComponentType, Type, Name)																					\
-property Type Name																														\
-{																																		\
-	Type get()				{ return Type(Interface::getNativeComponent<ComponentType>(entityID)->Name); }				                \
-	void set(Type value)	{																											\
-		using NativeType = decltype(Interface::getNativeComponent<ComponentType>(entityID)->Name);							            \
-		Interface::getNativeComponent<ComponentType>(entityID)->Name = native<Type, NativeType>(value);	                                \
-	}																																	\
+#define PropertyDeclaration(ComponentType, Type, Name)					\
+property Type Name														\
+{																		\
+	Type get()				{ return Type(componentReference->Name); }	\
+	void set(Type value)	{											\
+		using NativeType = decltype(componentReference->Name);			\
+		componentReference->Name = native<Type, NativeType>(value);	    \
+	}																	\
 }
 
 #define ManagedComponentDeclaration(ComponentType, ...) \
@@ -53,7 +53,12 @@ public ref class ComponentType##_ : IManagedComponent { \
 public: \
 	Call_Macro_Double_C(PropertyDeclaration, ComponentType, __VA_ARGS__) \
 internal: \
-virtual bool exist(System::UInt32 p_entityID) override sealed { return Interface::getNativeComponent<ComponentType>(p_entityID) != nullptr; } \
+	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override { \
+		entityID = p_entityID; \
+		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID))) \
+			return true; \
+		return false; \
+	} \
 private: \
-	System::UInt32 entityID; \
+	ComponentType* componentReference; \
 };

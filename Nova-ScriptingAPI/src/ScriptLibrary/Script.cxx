@@ -3,8 +3,17 @@
 // Generics behave just like a normal function, this definition is compiled through clr at compile time
 // Specializations are created at runtime
 // https://learn.microsoft.com/en-us/cpp/extensions/overview-of-generics-in-visual-cpp?view=msvc-170
-generic<typename Component> where Component : IManagedComponent
-Component Script::getComponent() { return Interface::getComponentReference<Component>(entityID); }
+generic<typename T> where T : IManagedComponent
+T Script::getComponent() { 
+	// We try to load the component data from the entity itself
+	T component = safe_cast<T>(System::Activator::CreateInstance(T::typeid)); 
+	if (!component->LoadDetailsFromEntity(entityID))
+		return T(); // Component will be garbage collected, return null
+	return component;
+}
+
+generic<typename T> where T : Script
+T Script::getScript(){ return Interface::tryGetScriptReference<T>(entityID); }
 
 // C++/cli doesn't support friend class so this is a way to make sure scripts cannot access the init update exit functions of other scripts
 // These also includes exception handling for scripts
@@ -29,4 +38,8 @@ void Script::callExit() {
 	}
 }
 
-bool Script::exist(System::UInt32) { return true; }
+void Script::setEntityID(System::UInt32 p_entityID)
+{
+	entityID = p_entityID;
+}
+
