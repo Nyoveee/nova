@@ -26,9 +26,62 @@ public:
 	DLL_API bool isDescendantOf(entt::entity entity, entt::entity parent);
 
 public:
+	// This makes a copy of the registry. We need to indicate the components to copy.
+	template <typename ...Components>
+	void makeRegistryCopy();
+
+	// This rolls back the registry to the previous copied state.
+	template <typename ...Components>
+	void rollbackRegistry();
+
+public:
 	// public!
 	entt::registry registry;
 
 private:
 	Engine& engine;
+
+	// We make a copy of the registry when the engine stars simulation mode.
+	// We rollback to the original state when we end simulation mode.
+	entt::registry copiedRegistry;
 };
+
+template <typename ...Components>
+void ECS::makeRegistryCopy() {
+	copiedRegistry.clear();
+
+	// iterate through all the entities and make a copy.
+	for (auto entity : registry.view<entt::entity>()) { 
+		entity = copiedRegistry.create(entity);
+
+		// We use fold expression to perform a certain action. 
+		// Because a lamda is 1 expression, we can utilise the comma operator to invoke the lambda for every component.
+		([&]() {
+			auto* component = registry.try_get<Components>(entity);
+
+			if (component) {
+				copiedRegistry.emplace<Components>(entity, *component);
+			}
+		}(), ...);
+	}
+}
+
+template <typename ...Components>
+void ECS::rollbackRegistry() {
+	registry.clear();
+
+	// iterate through all the entities and make a copy.
+	for (auto entity : copiedRegistry.view<entt::entity>()) {
+		entity = registry.create(entity);
+
+		// We use fold expression to perform a certain action. 
+		// Because a lamda is 1 expression, we can utilise the comma operator to invoke the lambda for every component.
+		([&]() {
+			auto* component = copiedRegistry.try_get<Components>(entity);
+
+			if (component) {
+				registry.emplace<Components>(entity, std::move(*component));
+			}
+		}(), ...);
+	}
+}

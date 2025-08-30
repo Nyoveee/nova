@@ -24,6 +24,10 @@ class Texture;
 // This means it extremely easy for systems to work with these components
 // Components should only hold data! Let systems work on these components.
 
+// List all the component types. This is used as a variadic argument to certain functions.
+#define ALL_COMPONENTS \
+	EntityData, Transform, Light, MeshRenderer
+
 using MaterialName = std::string;
 
 struct EntityData {

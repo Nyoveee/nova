@@ -40,10 +40,11 @@ int main() {
 			});
 
 			// every frame, check if there is a need to change simulation and initialise / clear systems.
+			// this will set the simulation mode of the engine accordingly.
 			engine.setupSimulation();
 
 			// we update the editor the simulation mode of the engine. this is because simulation may stop abruptly outside of
-			// the editor's control.
+			// the editor's control. during simulation setup, it may fail too.
 			engine.isInSimulationMode() ? editor.startSimulation() : editor.stopSimulation();
 		}
 	);

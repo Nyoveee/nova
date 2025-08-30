@@ -46,11 +46,9 @@ namespace {
 	// Make sure you reflect the individual data members you want to show.
 	// ================================================================================
 	ComponentFunctor<
-		Transform,
-		MeshRenderer,
-		Light
-		// + add here
+		ALL_COMPONENTS
 	> 
+
 	g_displayComponentFunctor{};
 }
 

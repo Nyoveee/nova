@@ -60,6 +60,10 @@ void Engine::startSimulation() {
 		physicsManager.initialise();
 		scriptingAPIManager.loadAllScripts();
 		
+		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+
+		// We set simulation mode to true to indicate that the change of simulation is successful.
+		// Don't set simulation mode to true if set up falied.
 		inSimulationMode = true;
 	};
 }
@@ -73,6 +77,7 @@ void Engine::stopSimulation() {
 		physicsManager.clear();
 		scriptingAPIManager.unloadAllScripts();
 
+		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		inSimulationMode = false;
 	};
 }
