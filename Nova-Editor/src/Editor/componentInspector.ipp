@@ -1,0 +1,68 @@
+#include "assetManager.h"
+#include "imgui.h"
+#include "ECS.h"
+
+template<typename T>
+void ComponentInspector::displayAssetDropDownList(AssetID id, const char* labelName, std::function<void(AssetID)> onClickCallback) {
+	ImGui::PushID(imguiCounter);
+	++imguiCounter;
+
+	Asset* selectedAsset = assetManager.getAssetInfo(id);
+	auto allAssets = assetManager.getAllAssets<T>();
+
+	char const* selectedAssetName;
+
+	if (!selectedAsset) {
+		selectedAssetName = "Invalid asset.";
+	}
+	else {
+		selectedAssetName = selectedAsset->name.c_str();
+	}
+
+	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
+		for (auto&& asset : allAssets) {
+			if (ImGui::Selectable(asset.get().name.c_str(), id == asset.get().id)) {
+				onClickCallback(asset.get().id);
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+
+	ImGui::PopID();
+}
+
+template<typename ...Components>
+void ComponentInspector::displayComponentDropDownList(entt::entity entity) {
+	if (ImGui::BeginCombo("##", "Add Component")) {
+
+		// using fold expression, comma operator and lambda expression.
+		([&]() {
+			// ignore EntityData or Transform.. this component should be hidden and not be allowed to add directly.
+			if constexpr (!std::same_as<Components, EntityData> && !std::same_as<Components, Transform>) {
+				// if entity already has this component, don't display option..
+				if (ecs.registry.all_of<Components>(entity)) {
+					return;
+				}
+
+#if defined(_MSC_VER)
+				// let's hope msvc doesnt change implementation haha
+				// removes the `struct ` infront of type name.
+
+				// 2 local variable of string because of lifetime :c
+				std::string originalTypeName = typeid(Components).name();
+				std::string typeName = originalTypeName.substr(6);
+
+				char const* name = typeName.c_str();
+#else
+				constexpr char const* name = typeid(Components).name();
+#endif
+				if (ImGui::Selectable(name)) {
+					ecs.registry.emplace_or_replace<Components>(entity, Components{});
+				}
+			}
+		}(), ...);
+
+		ImGui::EndCombo();
+	}
+}

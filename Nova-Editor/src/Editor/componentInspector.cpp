@@ -100,6 +100,9 @@ void ComponentInspector::update() {
 	// Display the rest of the components via reflection.
 	g_displayComponentFunctor(*this, selectedEntity);
 
+	// Display add component button.
+	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);
+
 	ImGui::End();
 }
 

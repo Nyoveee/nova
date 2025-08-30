@@ -187,6 +187,7 @@ xcopy /r /y /Q "$(SolutionDir)DLL\dotnet\*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\assetManagerUi.h" />
+    <ClInclude Include="src\Editor\componentInspector.ipp" />
     <ClInclude Include="src\Editor\controlOverlay.h" />
     <ClInclude Include="src\Editor\debugUI.h" />
     <ClInclude Include="src\Editor\displayComponent.ipp" />

@@ -29,7 +29,7 @@ namespace {
 #if defined(_MSC_VER)
 			// let's hope msvc doesnt change implementation haha
 			// removes the `struct ` infront of type name.
-			
+
 			// 2 local variable of string because of lifetime :c
 			std::string originalTypeName = typeid(Component).name();
 			std::string typeName = originalTypeName.substr(6);
@@ -38,16 +38,28 @@ namespace {
 #else
 			constexpr char const* name = typeid(Component).name();
 #endif
-			bool toDisplay = ImGui::CollapsingHeader(name);
+			bool toDisplay;
+			bool toShowHeader = true;
+
+			// show the close button only for components that are not transform.
+			if constexpr (!std::same_as<Component, Transform>) {
+				toDisplay = ImGui::CollapsingHeader(name, &toShowHeader);
+			}
+			else {
+				(void) toShowHeader;
+				toDisplay = ImGui::CollapsingHeader(name);
+			}
 
 			if (!toDisplay) {
-				return;
+				// don't bother rendering each data member's ui if the collapsing header
+				// is not active, go straight to end.
+				goto end;
 			}
 
 			ImGui::PushID(static_cast<int>(entity));
 			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
 
-			// Visits each of the component's data member.
+			// Visits each of the component's data member and renders them.
 			reflection::visit([&](auto fieldData) {
 				auto& dataMember = fieldData.get();
 				constexpr const char* dataMemberName = fieldData.name();
@@ -193,7 +205,7 @@ namespace {
 
 					componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](AssetID assetId) {
 						dataMember = DataMemberType{ assetId };
-					});
+						});
 				}
 
 				if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
@@ -227,10 +239,16 @@ namespace {
 				}
 
 				ImGui::PopID();
-			}, component);
+				}, component);
 
 			ImGui::PopID();
 			ImGui::PopID();
+
+		end:
+			// prompted to delete component.
+			if (!toShowHeader) {
+				componentInspector.ecs.registry.erase<Component>(entity);
+			}
 		}
 	}
 }
