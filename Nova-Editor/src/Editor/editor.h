@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <functional>
 
 #include "ecs.h"
 #include "export.h"
@@ -28,7 +29,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
-	void update();
+	void update(std::function<void(bool)> changeSimulationCallback);
 	
 	bool isEntitySelected(entt::entity entity);
 	bool hasAnyEntitySelected() const;
@@ -39,6 +40,10 @@ public:
 	bool isActive() const;
 	bool isEntityValid(entt::entity entity) const;
 	void deleteEntity(entt::entity entity);
+
+	void startSimulation();
+	void stopSimulation();
+	bool isInSimulationMode() const;
 
 public:
 	entt::entity hoveringEntity;
@@ -54,7 +59,6 @@ private:
 	void launchProfiler();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
-
 
 public:
 	// so that all editors have access to engine interface.
@@ -76,4 +80,8 @@ private:
 
 	// This indicates whether the camera is active in the game's viewport.
 	bool isControllingInViewPort;
+
+	// This indicates whether the editor is in simulation mode.
+	bool inSimulationMode;
+	bool isThereChangeInSimulationMode;
 };

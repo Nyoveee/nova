@@ -227,6 +227,10 @@ void Window::toEnableMouse(bool toEnable) {
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, toEnable ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 }
 
+float Window::fps() const {
+	return static_cast<float>(currentFps);
+}
+
 namespace {
 	void APIENTRY glDebugOutput(
 		GLenum source,

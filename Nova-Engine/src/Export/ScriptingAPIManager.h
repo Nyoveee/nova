@@ -33,8 +33,13 @@ public:
 
 public:
 	DLL_API void update();
+
+	DLL_API void loadAllScripts();
+	DLL_API void unloadAllScripts();
+
 	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
 	DLL_API void removeScriptFromAPI(unsigned int entityID, const char* scriptName);
+
 	DLL_API std::vector<std::string> getAvailableScripts();
 
 private:

@@ -142,6 +142,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Libraries\Profiling.h">
+	   <Filter>Header Files</Filter>
+	</ClInclude>
+    <ClInclude Include="src\Physics\joltPhysicsInterface.h">
+       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\physicsManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -210,6 +216,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Libraries\math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\physicsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -16,43 +16,21 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
 	transformationSystem	{ ecs },
+	physicsManager			{},
 	gameWidth				{ gameWidth },
-	gameHeight				{ gameHeight }
+	gameHeight				{ gameHeight },
+	inSimulationMode		{ false }
 {}
-
 
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
-	(void) dt;
-	scriptingAPIManager.update();
+	if (inSimulationMode) {
+		scriptingAPIManager.update();
+		physicsManager.update(dt);
+	}
 }
 
 void Engine::update(float dt) {
-	ZoneScoped;
-#if 0
-	static float zPos = 0.f;
-	if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_0)) {
-		auto entity = ecs.registry.create();
-
-		zPos -= 2.f;
-
-		Transform transform = {
-			{0.f, 0.f, zPos},
-			{1.f, 1.f, 1.f},
-			{1.f, 1.f, 1.f}
-		};
-
-		ecs.registry.emplace<Transform>(entity, std::move(transform));
-
-		std::unordered_map<MaterialName, MeshRenderer::Material> materials;
-
-		AssetID modelAsset{ 1 };
-		materials["Table_frame_mtl"] = { AssetID{3} };
-		materials["Table_top_mtl"] = { AssetID{4} };
-
-		ecs.registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-#endif
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);
@@ -60,9 +38,45 @@ void Engine::update(float dt) {
 	assetManager.update();
 }
 
+void Engine::setupSimulation() {
+	// do any setup if required.
+	if (!setupSimulationFunction) {
+		return;
+	}
+
+	setupSimulationFunction.value()();
+	setupSimulationFunction = std::nullopt;
+}
+
 void Engine::render(Renderer::RenderTarget target) {
 	ZoneScoped;
 	renderer.render(target);
+}
+
+void Engine::startSimulation() {
+	if (setupSimulationFunction) {
+		return; // already prompted for simulation change.
+	}
+
+	setupSimulationFunction = [&]() {
+		physicsManager.initialise();
+		scriptingAPIManager.loadAllScripts();
+		
+		inSimulationMode = true;
+	};
+}
+
+void Engine::stopSimulation() {
+	if (setupSimulationFunction) {
+		return; // already prompted for simulation change.
+	}
+
+	setupSimulationFunction = [&]() {
+		physicsManager.clear();
+		scriptingAPIManager.unloadAllScripts();
+
+		inSimulationMode = false;
+	};
 }
 
 int Engine::getGameWidth() const {
@@ -71,4 +85,8 @@ int Engine::getGameWidth() const {
 
 int Engine::getGameHeight() const {
 	return gameHeight;
+}
+
+bool Engine::isInSimulationMode() const {
+	return inSimulationMode;
 }

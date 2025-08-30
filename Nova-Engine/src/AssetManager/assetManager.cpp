@@ -16,7 +16,7 @@ namespace {
 }
 
 AssetManager::AssetManager() :
-	threadPool {}
+	threadPool { static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }
 {
 	std::filesystem::path assetDirectory = std::filesystem::current_path();
 	assetDirectory /= "Assets";
