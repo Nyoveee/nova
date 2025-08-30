@@ -46,11 +46,9 @@ namespace {
 	// Make sure you reflect the individual data members you want to show.
 	// ================================================================================
 	ComponentFunctor<
-		Transform,
-		MeshRenderer,
-		Light
-		// + add here
+		ALL_COMPONENTS
 	> 
+
 	g_displayComponentFunctor{};
 }
 
@@ -101,6 +99,9 @@ void ComponentInspector::update() {
 
 	// Display the rest of the components via reflection.
 	g_displayComponentFunctor(*this, selectedEntity);
+
+	// Display add component button.
+	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);
 
 	ImGui::End();
 }

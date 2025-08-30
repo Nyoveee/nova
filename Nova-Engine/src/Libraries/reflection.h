@@ -189,6 +189,8 @@ struct FieldData<index, Object> \
 	}\
 }; \
 
+#define REFLECT_NAME(className) static constexpr char _name[] = className;
+
 namespace reflection {
 	// class that has access to reflected private data members
 	struct query {

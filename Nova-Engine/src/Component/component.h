@@ -24,6 +24,10 @@ class Texture;
 // This means it extremely easy for systems to work with these components
 // Components should only hold data! Let systems work on these components.
 
+// List all the component types. This is used as a variadic argument to certain functions.
+#define ALL_COMPONENTS \
+	EntityData, Transform, Light, MeshRenderer, BoxCollider
+
 using MaterialName = std::string;
 
 struct EntityData {
@@ -86,8 +90,8 @@ struct Light {
 		Spotlight = 2
 	};
 
-	Color color;
-	float intensity;
+	Color color = Color{ 1.f, 1.f, 1.f };
+	float intensity = 1.f;
 	Type type = Light::Type::PointLight;
 	
 	REFLECTABLE(
@@ -131,5 +135,15 @@ struct MeshRenderer {
 	REFLECTABLE(
 		modelId,
 		materials
+	)
+};
+
+struct BoxCollider {
+	glm::vec3 scaleMultiplier { 1.f, 1.f, 1.f };
+	bool scaleWithTransform = false;
+
+	REFLECTABLE(
+		scaleMultiplier,
+		scaleWithTransform
 	)
 };
