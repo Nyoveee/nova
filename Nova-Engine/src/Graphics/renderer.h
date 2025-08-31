@@ -13,6 +13,7 @@
 #include "ECS.h"
 
 #include "AssetManager/Asset/model.h"
+#include "AssetManager/Asset/cubemap.h"
 
 class Engine;
 class AssetManager;
@@ -82,6 +83,9 @@ private:
 
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering(RenderTarget target);
+
+	// render skybox
+	void renderSkyBox();
 
 	// render all MeshRenderers.
 	void renderModels();
@@ -154,4 +158,5 @@ public:
 	Shader debugShader;
 	Shader debugOverlayShader;
 	Shader objectIdShader;
+	Shader skyboxShader;
 };

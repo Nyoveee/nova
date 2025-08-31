@@ -45,6 +45,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	debugShader			{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
 	debugOverlayShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
 	objectIdShader		{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
+	skyboxShader		{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	mainVAO				{},
 	debugPhysicsVAO		{},
 	mainVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -65,11 +66,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } }
 {
 	printOpenGLDriverDetails();
-
-	glEnable(GL_STENCIL_TEST);
-
-	// sounds useless :rofl: (it's interfering with my MRT attempt)
-	glDisable(GL_DITHER);
 
 	glLineWidth(2.f);
 
@@ -176,6 +172,8 @@ void Renderer::render(RenderTarget target, bool toRenderDebug) {
 	ZoneScoped;
 	prepareRendering(target);
 
+	renderSkyBox();
+
 	renderModels();
 
 	//renderOutline();
@@ -213,6 +211,7 @@ Camera const& Renderer::getCamera() const {
 
 DLL_API void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
+	skyboxShader.compile();
 }
 
 void Renderer::debugRender() {
@@ -364,12 +363,35 @@ void Renderer::prepareRendering(RenderTarget target) {
 	// ..
 }
 
+void Renderer::renderSkyBox() {
+	glDisable(GL_DEPTH_TEST);
+
+	for (auto&& [entityId, skyBox] : registry.view<SkyBox>().each()) {
+		auto [asset, status] = assetManager.getAsset<CubeMap>(skyBox.cubeMapId);
+
+		// skybox not loaded..
+		if (!asset) {
+			continue;
+		}
+
+		skyboxShader.use();
+		skyboxShader.setImageUniform("equirectangularMap", 0);
+		glBindTextureUnit(0, asset->getTextureId());
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		// only render the very first skybox.
+		return;
+	}
+}
+
 void Renderer::renderModels() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);	
 
 	// enable back face culling for our 3d models..
 	glEnable(GL_CULL_FACE);
-	
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+
 	// preparing the stencil buffer for rendering outlines..
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// replaces the value in stencil buffer if both stencil buffer and depth buffer passed.
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);			// stencil test will always pass, mask of 0xFF means full byte comparison.

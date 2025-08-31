@@ -108,6 +108,7 @@ void Texture::load(AssetManager& assetManager) {
 			glGenerateTextureMipmap(textureId);
 			stbi_image_free(data);
 
+			loadStatus = Asset::LoadStatus::Loaded;
 			TracyAlloc(this, sizeof(*this));
 		});
 	});

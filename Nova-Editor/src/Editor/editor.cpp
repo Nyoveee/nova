@@ -440,6 +440,14 @@ void Editor::sandboxWindow() {
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}
 
+	if (ImGui::Button("(+) Add Skybox")) {
+		auto entity = registry.create();
+
+		registry.emplace<Transform>(entity, Transform{});
+		registry.emplace<EntityData>(entity, EntityData{ "Skybox" });
+		registry.emplace<SkyBox>(entity, SkyBox{ AssetID{ 2183533701078487406 } });
+	}
+
 	if (ImGui::Button("recompile shaders")) {
 		engine.renderer.recompileShaders();
 	}

@@ -23,6 +23,7 @@
 // Forward declaring..
 class Model;
 class Texture;
+class CubeMap;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -30,7 +31,7 @@ class Texture;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox
 
 using MaterialName = std::string;
 
@@ -173,5 +174,13 @@ struct SphereCollider {
 
 	REFLECTABLE(
 		radius
+	)
+};
+
+struct SkyBox {
+	TypedAssetID<CubeMap> cubeMapId;
+	
+	REFLECTABLE(
+		cubeMapId
 	)
 };

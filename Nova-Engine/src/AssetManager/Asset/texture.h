@@ -2,7 +2,7 @@
 
 #include "asset.h"
 
-using GLuint = unsigned int;
+using GLuint = unsigned int; 
 
 class Texture : public Asset {
 public:

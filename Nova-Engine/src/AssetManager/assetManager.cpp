@@ -6,6 +6,8 @@
 #include "Libraries/FileWatch.hpp"
 #include "Logger.h"
 
+#include "Asset/cubemap.h"
+
 namespace {
 	// we usually don't want to increment ids
 	// but in this case we want so we are explicit about it.
@@ -132,6 +134,10 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
 		recordAssetFile<Texture>(path);
+	}
+
+	else if (fileExtension == ".exr") {
+		recordAssetFile<CubeMap>(path);
 	}
 
 	else {

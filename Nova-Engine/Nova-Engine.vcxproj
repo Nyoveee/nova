@@ -171,6 +171,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\AssetManager\Asset\cubemap.h" />
     <ClInclude Include="src\Export\Logger.h" />
     <ClInclude Include="src\AssetManager\assetMananger.ipp" />
     <ClInclude Include="src\AssetManager\Asset\asset.h" />
@@ -210,9 +211,11 @@
     <ClInclude Include="src\Libraries\magic_enum.hpp" />
     <ClInclude Include="src\Libraries\math.h" />
     <ClInclude Include="src\Debugging\Profiling.h" />
+    <ClInclude Include="src\Libraries\miniz.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Export\Header\ScriptingAPIManager.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
+    <ClInclude Include="src\Libraries\tinyexr.h" />
     <ClInclude Include="src\Libraries\type_alias.h" />
     <ClInclude Include="src\Export\window.h" />
     <ClInclude Include="src\Physics\debugRenderer.h" />
@@ -222,6 +225,7 @@
   <ItemGroup>
     <ClCompile Include="src\AssetManager\Asset\asset.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
+    <ClCompile Include="src\AssetManager\Asset\cubemap.cpp" />
     <ClCompile Include="src\AssetManager\Asset\model.cpp" />
     <ClCompile Include="src\AssetManager\Asset\texture.cpp" />
     <ClCompile Include="src\AssetManager\modelLoader.cpp" />
@@ -241,7 +245,9 @@
     <ClCompile Include="src\Libraries\backward.cpp" />
     <ClCompile Include="src\Libraries\glad.cpp" />
     <ClCompile Include="src\Libraries\math.cpp" />
+    <ClCompile Include="src\Libraries\miniz.c" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
+    <ClCompile Include="src\Libraries\tinyexr.cpp" />
     <ClCompile Include="src\Physics\debugRenderer.cpp" />
     <ClCompile Include="src\Physics\physicsManager.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
