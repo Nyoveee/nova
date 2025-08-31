@@ -101,14 +101,14 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	
 	// Get the functions to run the api
 	try {
-		using InitFunctionPtr = void(*)(ECS&, const char*);
+		using InitFunctionPtr = void(*)(Engine&, const char*);
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
 		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("Interface", "getScriptNames");
-		initScriptAPIFuncPtr(engine.ecs, runtimePath.c_str());
+		initScriptAPIFuncPtr(engine, runtimePath.c_str());
 	}
 	catch (std::exception e) {
 		Logger::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
