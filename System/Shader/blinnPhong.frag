@@ -1,7 +1,6 @@
 #version 450 core
 
-layout (location = 0) out vec4 FragColor;
-layout (location = 1) out uint ObjectId;
+out vec4 FragColor;
 
 in VS_OUT {
     vec2 textureUnit;
@@ -9,8 +8,6 @@ in VS_OUT {
     vec3 fragWorldPos;
     mat3 TBN;
 } fsIn;
-
-uniform uint objectId;
 
 // === ALBEDO FOR BLINN PHONG ===
 uniform vec3 albedo;
@@ -63,9 +60,6 @@ vec3 calculateLight(Light light, vec3 normal, vec3 baseColor) {
 }
 
 void main() {
-    // For object picking, not part of blinn-phong.
-    ObjectId = objectId;
-
     // Getting the normals..
     vec3 normal;
 

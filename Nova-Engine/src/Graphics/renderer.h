@@ -89,6 +89,9 @@ private:
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
+	// renders the object id to the object id framebuffer.
+	void renderObjectId(GLsizei count);
+
 	// render a debug triangles in physics
 	void debugRender();
 
@@ -133,6 +136,9 @@ private:
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
+	// contains objectIds for object picking.
+	FrameBuffer objectIdFrameBuffer;
+
 private:
 	int numOfDebugTriangles;
 	bool isOnWireframeMode;
@@ -147,4 +153,5 @@ public:
 	Shader blinnPhongShader;
 	Shader debugShader;
 	Shader debugOverlayShader;
+	Shader objectIdShader;
 };

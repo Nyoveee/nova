@@ -20,8 +20,6 @@
 #undef max
 
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
-constexpr std::size_t colorIndex = 0;
-constexpr std::size_t objectIdIndex = 1;
 
 // 100 MB should be nothing right?
 constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
@@ -46,6 +44,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	outlineShader		{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader			{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
 	debugOverlayShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
+	objectIdShader		{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
 	mainVAO				{},
 	debugPhysicsVAO		{},
 	mainVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -61,10 +60,9 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfDebugTriangles	{},
 	isOnWireframeMode	{},
 
-	// main FBO shall contain color attachment 0 of vec4 and color attachment 1 of 32 byte int.
-	// color attachment 0 is to store the resulting color, color attachment 1 is to store object id for object picking.
-	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16, GL_R32UI } },
-	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } }
+	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16 } },
+	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } },
+	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } }
 {
 	printOpenGLDriverDetails();
 
@@ -72,6 +70,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// sounds useless :rofl: (it's interfering with my MRT attempt)
 	glDisable(GL_DITHER);
+
+	glLineWidth(2.f);
 
 	// ======================================================
 	// Prepare shared UBO, that will be used by all shaders. (like view and projection matrix.)
@@ -146,14 +146,13 @@ Renderer::~Renderer() {
 }
 
 DLL_API GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
-	std::vector<GLuint> objectIds;
-	objectIds.resize(1, 5);
+	GLuint objectId;
 
-	int xOffset = static_cast<int>(normalisedPosition.x * mainFrameBuffer.getWidth());	// x offset
-	int yOffset = static_cast<int>(normalisedPosition.y * mainFrameBuffer.getHeight());	// y offset
+	int xOffset = static_cast<int>(normalisedPosition.x * objectIdFrameBuffer.getWidth());	// x offset
+	int yOffset = static_cast<int>(normalisedPosition.y * objectIdFrameBuffer.getHeight());	// y offset
 
 	glGetTextureSubImage(
-		mainFrameBuffer.textureIds()[objectIdIndex], 
+		objectIdFrameBuffer.textureIds()[0], 
 		0,					// mipmap level (0 = base image)
 		xOffset,			// x offset
 		yOffset,			// y offset
@@ -162,10 +161,10 @@ DLL_API GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 		GL_RED_INTEGER,
 		GL_UNSIGNED_INT, 
 		sizeof(GLuint),		// size of pixels to be read
-		objectIds.data()	// output parameter.
+		&objectId			// output parameter.
 	);
 
-	return objectIds[0];
+	return objectId;
 }
 
 void Renderer::update(float dt) {
@@ -296,28 +295,24 @@ void Renderer::prepareRendering(RenderTarget target) {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// For some reason, for framebuffers with multiple color attachments
-	// we need to bind to a shader that writes to all the other color attachments
+	// Clear main framebuffer.
+	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	
+	// Clear object id framebuffer.
+
+	// For some reason, for framebuffers with integer color attachments
+	// we need to bind to a shader that writes to integer output
 	// even though clear operation does not use our shader at all
-	// seems to be a differing implementation for NVIDIA GPUs..
-	textureShader.use();
+	// seems to be a differing / conflicting implementation for NVIDIA GPUs..
+	objectIdShader.use();
 
-	// Bind to and clear main frame buffer if in used.
-	switch (target)
-	{
-	case Renderer::RenderTarget::ToMainFrameBuffer:
-		glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	constexpr GLuint	nullEntity			= entt::null;
+	constexpr GLfloat	initialDepth		= 1.f;
+	constexpr GLint		initialStencilValue = 0;
 
-		constexpr GLfloat floatingClearValues[] = { 0.2f, 0.2f, 0.2f, 1.f };
-		constexpr GLuint nullEntity = entt::null;
-		constexpr GLfloat initialDepth = 1.f;
-		constexpr GLint initialStencilValue = 0;
-
-		glClearNamedFramebufferfv(mainFrameBuffer.fboId(), GL_COLOR, 0, floatingClearValues);
-		glClearNamedFramebufferuiv(mainFrameBuffer.fboId(), GL_COLOR, 1, &nullEntity);
-		glClearNamedFramebufferfi(mainFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
-		break;
-	}
+	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
+	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 
 	// =================================================================
 	// Set up the uniforms for my respective shaders
@@ -363,6 +358,9 @@ void Renderer::prepareRendering(RenderTarget target) {
 }
 
 void Renderer::renderModels() {
+	// enable back face culling for our 3d models..
+	glEnable(GL_CULL_FACE);
+
 	// preparing the stencil buffer for rendering outlines..
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// replaces the value in stencil buffer if both stencil buffer and depth buffer passed.
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);			// stencil test will always pass, mask of 0xFF means full byte comparison.
@@ -412,8 +410,13 @@ void Renderer::renderModels() {
 			mainVBO.uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+
+			// render object id into object id FBO.
+			renderObjectId(mesh.numOfTriangles * 3);
 		}
 	}
+
+	glDisable(GL_CULL_FACE);
 }
 
 void Renderer::renderOutline() {
@@ -442,6 +445,13 @@ void Renderer::renderOutline() {
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
+}
+
+void Renderer::renderObjectId(GLsizei count) {
+	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
+	objectIdShader.use();
+	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
 }
 
 void Renderer::setupBlinnPhongShader(Material const& material) {
@@ -525,13 +535,13 @@ void Renderer::setupColorShader(Material const& material) {
 void Renderer::setModelUniforms(Transform const& transform, entt::entity entity) {
 	blinnPhongShader.setMatrix("model", transform.modelMatrix);
 	blinnPhongShader.setMatrix("normalMatrix", transform.normalMatrix);
-	blinnPhongShader.setUInt("objectId", static_cast<GLuint>(entity));
 
 	colorShader.setMatrix("model", transform.modelMatrix);
-	colorShader.setUInt("objectId", static_cast<GLuint>(entity));
 
 	textureShader.setMatrix("model", transform.modelMatrix);
-	textureShader.setUInt("objectId", static_cast<GLuint>(entity));
+
+	objectIdShader.setMatrix("model", transform.modelMatrix);
+	objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 }
 
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh) {
