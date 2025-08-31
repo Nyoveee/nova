@@ -16,7 +16,7 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
 	transformationSystem	{ ecs },
-	physicsManager			{ renderer },
+	physicsManager			{ *this },
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },

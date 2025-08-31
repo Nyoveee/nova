@@ -260,6 +260,7 @@ void Renderer::debugRender() {
 	debugOverlayShader.setImageUniform("debugOverlay", 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisable(GL_BLEND);
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color) {

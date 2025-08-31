@@ -12,6 +12,10 @@
 #include <variant>
 #include <optional>
 
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/MotionType.h>
+#include <Jolt/Physics/Body/BodyID.h>
+
 #include "Libraries/type_alias.h"
 #include "Graphics/vertex.h"
 #include "Libraries/reflection.h"
@@ -26,7 +30,7 @@ class Texture;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, BoxCollider, SphereCollider
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider
 
 using MaterialName = std::string;
 
@@ -39,7 +43,7 @@ struct EntityData {
 struct Transform {
 	glm::vec3 position;
 	glm::vec3 scale			{ 1.0f, 1.0f, 1.0f };
-	glm::quat rotation		{};
+	glm::quat rotation		{ 1.0f, 0.f, 0.f, 0.f };
 
 	glm::vec3 lastPosition	{ position };
 	glm::vec3 lastScale		{ scale };
@@ -56,7 +60,7 @@ struct Transform {
 
 	glm::vec3 localPosition		{};
 	glm::vec3 localScale		{ 1.f, 1.f, 1.f };
-	glm::quat localRotation		{};
+	glm::quat localRotation		{ 1.0f, 0.f, 0.f, 0.f };
 
 	glm::vec3 lastLocalPosition {};
 	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
@@ -138,9 +142,25 @@ struct MeshRenderer {
 	)
 };
 
+struct Rigidbody {
+	JPH::EMotionType motionType;
+
+	enum class Layer {
+		NonMoving,
+		Moving
+	} layer;
+
+	JPH::BodyID bodyId {}; // default constructed body ID is invalid.
+
+	REFLECTABLE(
+		motionType,
+		layer
+	)
+};
+
 struct BoxCollider {
 	glm::vec3 scaleMultiplier { 1.f, 1.f, 1.f };
-	bool scaleWithTransform = false;
+	bool scaleWithTransform = true;
 
 	REFLECTABLE(
 		scaleMultiplier,

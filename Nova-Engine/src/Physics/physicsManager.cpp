@@ -1,3 +1,4 @@
+#include "engine.h"
 #include "physicsManager.h"
 
 #include <iostream>
@@ -13,6 +14,7 @@
 #include <Jolt/Physics/PhysicsSettings.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
+#include <Jolt/Physics/Collision/Shape/ScaledShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
@@ -39,6 +41,23 @@ namespace {
 		// Breakpoint
 		return true;
 	};
+
+	JPH::RVec3Arg toJPHVec3(glm::vec3 const& glmVec3) {
+		return { glmVec3.x, glmVec3.y, glmVec3.z };
+	}
+
+	glm::vec3 toGlmVec3(JPH::RVec3Arg const& jphVec3) {
+		return { jphVec3.GetX(), jphVec3.GetY(), jphVec3.GetZ() };
+	}
+
+	JPH::Quat toJPHQuat(glm::quat const& glmQuat) {
+		return { glmQuat.x, glmQuat.y, glmQuat.z, glmQuat.w };
+	}
+
+	glm::quat toGlmQuat(JPH::Quat const& jphQuat) {
+		// because glm built different.
+		return { jphQuat.GetW(), jphQuat.GetX(), jphQuat.GetY(), jphQuat.GetZ() };
+	}
 }
 
 // We need a temp allocator for temporary allocations during the physics update. We're
@@ -69,7 +88,7 @@ constexpr unsigned int maxBodyPairs = 1024;
 // Note: This value is low because this is a simple test. For a real project use something in the order of 10240.
 constexpr unsigned int maxContactConstraints = 1024;
 
-PhysicsManager::PhysicsManager(Renderer& renderer) :
+PhysicsManager::PhysicsManager(Engine& engine) :
 	// we use a placeholder to invoke a function before constructing the rest of the data member.
 	placeholder		{ [&](){ 
 		// Register allocation hook. In this example we'll just let Jolt use malloc / free but you can override these if you want (see Memory.h).
@@ -85,7 +104,8 @@ PhysicsManager::PhysicsManager(Renderer& renderer) :
 	// variant of this. We're going to use the locking version (even though we're not planning to access bodies from multiple threads)
 	// @ IF SOMETHING SEGFAULTS HERE ITS PROBABLY CAUSE I CALL .GETBODYINTERFACE BEFORE .INIT.
 	bodyInterface	{ physicsSystem.GetBodyInterface() },
-	debugRenderer	{ renderer }
+	debugRenderer	{ engine.renderer },
+	registry		{ engine.ecs.registry }
 {
 	// Install trace and assert callbacks
 	JPH::Trace = TraceImpl;
@@ -120,21 +140,6 @@ PhysicsManager::PhysicsManager(Renderer& renderer) :
 	physics_system.SetContactListener(&contact_listener);
 #endif
 
-	// We create 2 body for testing..
-	JPH::BodyCreationSettings bodySettings {
-		box,						// shape
-		{},							// position
-		JPH::Quat::sIdentity(),		// rotation (in quartenions)
-		JPH::EMotionType::Static,	// motion type
-		Layers::NON_MOVING			// in which layer?
-	};
-
-	bodyInterface.CreateAndAddBody(bodySettings, JPH::EActivation::Activate);
-
-	bodySettings.mPosition = { 0.f, 2.f, 0.f };
-
-	bodyInterface.CreateAndAddBody(bodySettings, JPH::EActivation::Activate);
-
 }
 
 PhysicsManager::~PhysicsManager() {
@@ -143,15 +148,81 @@ PhysicsManager::~PhysicsManager() {
 }
 
 void PhysicsManager::initialise() {
-	// Retrieves all 
+	for (auto&& [entityId, transform, rigidbody, boxCollider] : registry.view<Transform, Rigidbody, BoxCollider>().each()) {
+		// Create and add body based on entity's component.
+		JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidbody.layer);
+
+		JPH::BodyCreationSettings bodySettings{
+			new JPH::ScaledShape(box, toJPHVec3(transform.scale * boxCollider.scaleMultiplier)),	// scaled shape
+			toJPHVec3(transform.position),															// position
+			JPH::Quat::sIdentity(),																	// rotation (in quartenions)
+			rigidbody.motionType,																	// motion type
+			layer																					// in which layer?
+		};
+
+		JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
+			bodySettings, 
+			rigidbody.motionType == JPH::EMotionType::Dynamic ? JPH::EActivation::Activate : JPH::EActivation::DontActivate
+		);
+
+		createdBodies.push_back(bodyId);
+
+		rigidbody.bodyId = bodyId;
+	}
 }
 
 void PhysicsManager::clear() {
+	bodyInterface.RemoveBodies(createdBodies.data(), createdBodies.size());
+	bodyInterface.DestroyBodies(createdBodies.data(), createdBodies.size());
+	createdBodies.clear();
 
+	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+		rigidbody.bodyId = JPH::BodyID{}; // default constructed bodyID is invalid.
+	}
 }
 
 void PhysicsManager::update(float dt) {
+	// =============================================================
+	// 1. Update all physics body to the current object's transform.
+	// @TODO: Don't update every frame! Only update when there is a change in transform.
+	// =============================================================
+	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
+			continue;
+		}
+
+		// our engine doesnt move static objects.
+		if (rigidbody.motionType == JPH::EMotionType::Static) {
+			continue;
+		}
+
+		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
+	}
+
+	// run physics simulation.
 	physicsSystem.Update(dt, 1, &temp_allocator, &job_system);	
+
+	// =============================================================
+	// 2. Update all object transform after running physics simulation.
+	// @TODO: Don't update every frame! Only update when there is a change in transform.
+	// =============================================================
+
+	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
+			continue;
+		}
+
+		if (rigidbody.motionType == JPH::EMotionType::Static) {
+			continue;
+		}
+
+		JPH::Vec3 pos;
+		JPH::Quat rotation;
+
+		bodyInterface.GetPositionAndRotation(rigidbody.bodyId, pos, rotation);
+		transform.position = toGlmVec3(pos);
+		transform.rotation = toGlmQuat(rotation);
+	}
 }
 
 void PhysicsManager::debugRender() {
@@ -163,7 +234,7 @@ void PhysicsManager::createPrimitiveShapes() {
 	// ===========================================
 	// 1. Constructing a box shape.
 	// ===========================================
-	JPH::BoxShapeSettings boxSettings { JPH::Vec3{ 0.5f, 0.5f, 0.5f } };
+	JPH::BoxShapeSettings boxSettings { JPH::Vec3{ 1.f, 1.f, 1.f } };
 	boxSettings.SetEmbedded();	// box settings is allocated on the stack, and this class is actually a smart pointer that does reference counting 
 								// (for some reason) so we have to disable it
 

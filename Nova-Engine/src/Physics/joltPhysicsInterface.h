@@ -75,9 +75,9 @@ public:
 		switch (inLayer1)
 		{
 		case Layers::NON_MOVING:
-			return inLayer2 == BroadPhaseLayers::MOVING;
+			return inLayer2 == BroadPhaseLayers::MOVING; // Non moving only collides with moving
 		case Layers::MOVING:
-			return true;
+			return true;								 // Moving collides with everything
 		default:
 			JPH_ASSERT(false);
 			return false;

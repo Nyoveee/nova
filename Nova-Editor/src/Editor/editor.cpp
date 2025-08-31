@@ -366,6 +366,9 @@ void Editor::sandboxWindow() {
 
 		registry.emplace<Transform>(entity, std::move(transform));
 		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model " + std::to_string(zPos) });
+		registry.emplace<Rigidbody>(entity, Rigidbody{ JPH::EMotionType::Dynamic, Rigidbody::Layer::Moving });
+		registry.emplace<BoxCollider>(entity, BoxCollider{ { 300.f, 200.f, 300.f } });
+
 		zPos -= 2.f;
 
 		std::unordered_map<MaterialName, Material> materials;
@@ -417,6 +420,8 @@ void Editor::sandboxWindow() {
 
 		registry.emplace<Transform>(entity, std::move(transform));
 		registry.emplace<EntityData>(entity, EntityData{ "Floor" });
+		registry.emplace<Rigidbody>(entity, Rigidbody{ JPH::EMotionType::Static, Rigidbody::Layer::NonMoving });
+		registry.emplace<BoxCollider>(entity, BoxCollider{});
 
 		std::unordered_map<MaterialName, Material> materials;
 

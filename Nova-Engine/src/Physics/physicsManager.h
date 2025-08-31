@@ -1,6 +1,9 @@
 #pragma once
 
-class Renderer;
+#include <entt/entt.hpp>
+#include <vector>
+
+class Engine;
 
 // The Jolt headers don't include Jolt.h. Always include Jolt.h before including any other Jolt header.
 // You can use Jolt.h in your precompiled header to speed up compilation. (nah)
@@ -12,7 +15,7 @@ class Renderer;
 
 class PhysicsManager {
 public:
-	PhysicsManager(Renderer& renderer);
+	PhysicsManager(Engine& engine);
 
 	~PhysicsManager();
 	PhysicsManager(PhysicsManager const& other)				= delete;
@@ -63,8 +66,12 @@ private:
 	// Our own debug renderer..
 	DebugRenderer debugRenderer;
 
+	entt::registry& registry;
+
 private:
 	// We let this physics manager owns some basic primitive shapes.
 	JPH::Ref<JPH::Shape> box;
 	JPH::Ref<JPH::Shape> sphere;
+
+	std::vector<JPH::BodyID> createdBodies;
 };
