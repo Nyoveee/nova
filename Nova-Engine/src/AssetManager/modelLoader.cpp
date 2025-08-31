@@ -1,5 +1,3 @@
-#include <spdlog/spdlog.h>
-
 #include <Assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/mesh.h>
@@ -14,6 +12,7 @@
 
 #include "modelLoader.h"
 #include "Component/component.h"
+#include "Logger.h"
 
 namespace {
 	glm::vec3 toGlmVec3(aiVector3D vec3) {
@@ -39,7 +38,7 @@ std::optional<ModelLoader::ModelData> ModelLoader::loadModel(std::string const& 
 	aiScene const* scene = importer.ReadFile(filepath, PostProcessingFlags);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		spdlog::error("Error when importing model: {}", importer.GetErrorString());
+		Logger::error("Error when importing model: {}", importer.GetErrorString());
 		return std::nullopt;
 	}
 

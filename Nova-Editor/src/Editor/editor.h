@@ -56,6 +56,7 @@ private:
 	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
+	void launchProfiler();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 

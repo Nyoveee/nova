@@ -171,6 +171,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Export\Logger.h" />
     <ClInclude Include="src\AssetManager\assetMananger.ipp" />
     <ClInclude Include="src\AssetManager\Asset\asset.h" />
     <ClInclude Include="src\AssetManager\Asset\model.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="src\AssetManager\modelLoader.h" />
     <ClInclude Include="src\AssetManager\serialiseAssetFunctor.h" />
     <ClInclude Include="src\AssetManager\serialiseAssetFunctor.ipp" />
+    <ClInclude Include="src\Debugging\Logger.ipp" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp" />
     <ClInclude Include="src\Engine\transformationSystem.h" />
     <ClInclude Include="src\Export\assetManager.h" />
@@ -207,6 +209,7 @@
     <ClInclude Include="src\Libraries\FileWatch.hpp" />
     <ClInclude Include="src\Libraries\magic_enum.hpp" />
     <ClInclude Include="src\Libraries\math.h" />
+    <ClInclude Include="src\Debugging\Profiling.h" />
     <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Export\Header\ScriptingAPIManager.h" />
     <ClInclude Include="src\Libraries\stb_image.hpp" />
@@ -223,6 +226,7 @@
     <ClCompile Include="src\AssetManager\Asset\texture.cpp" />
     <ClCompile Include="src\AssetManager\modelLoader.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
+    <ClCompile Include="src\Debugging\Logger.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />
     <ClCompile Include="src\Engine\ScriptingAPIManager.cpp" />
     <ClCompile Include="src\Engine\transformationSystem.cpp" />

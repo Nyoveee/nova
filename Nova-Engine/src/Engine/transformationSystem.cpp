@@ -5,12 +5,14 @@
 
 #include "Component/component.h"
 #include "Libraries/math.h"
+#include "Debugging/Profiling.h"
 
 TransformationSystem::TransformationSystem(ECS& ecs) :
 	registry {ecs.registry}
 {}
 
 void TransformationSystem::update() {
+	ZoneScoped;
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
 		// Figure out if the entity requires updating it's world matrix due to world transform change.
 		if (

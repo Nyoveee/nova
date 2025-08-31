@@ -172,8 +172,8 @@ void PhysicsManager::initialise() {
 }
 
 void PhysicsManager::clear() {
-	bodyInterface.RemoveBodies(createdBodies.data(), createdBodies.size());
-	bodyInterface.DestroyBodies(createdBodies.data(), createdBodies.size());
+	bodyInterface.RemoveBodies(createdBodies.data(), static_cast<int>(createdBodies.size()));
+	bodyInterface.DestroyBodies(createdBodies.data(), static_cast<int>(createdBodies.size()));
 	createdBodies.clear();
 
 	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {

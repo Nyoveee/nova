@@ -1,22 +1,18 @@
 #pragma once
-
-#include "ScriptingAPIManager.h"
-
 #include <vector>
 #include <memory>
 #include <optional>
 #include <functional>
 
-#include "Graphics/renderer.h"
+#include "ScriptingAPIManager.h"
 
 #include "export.h"
+#include "Graphics/renderer.h"
 #include "ECS.h"
-
 #include "Graphics/cameraSystem.h"
 #include "Engine/transformationSystem.h"
 #include "Physics/physicsManager.h"
 
-#include "Libraries/BS_thread_pool.hpp"
 
 class Window;
 class Renderer;

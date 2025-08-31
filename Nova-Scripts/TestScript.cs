@@ -1,27 +1,13 @@
-﻿using ScriptingAPI;
-using System;
-
-namespace Nova_Scripts
+﻿class TestScript : Script
 {
-    public class TestScript : Script
+    TestScript2? testScript2;
+    protected override void init()
     {
-        Transform_ transform;
-
-        public override void Init()
-        {
-            transform = getComponent<Transform_>();
-        }
-
-        public override void update()
-        {
-            Vector3 position = transform.position;
-            position.z += (float) 0.01;
-            transform.position = position;
-        }  
-
-        public override void exit()
-        {
-
-        }
+        testScript2 = getScript<TestScript2>();
     }
+    protected override void update()
+    {
+        if (testScript2 != null)
+            testScript2.MoveTable();
+    }  
 }

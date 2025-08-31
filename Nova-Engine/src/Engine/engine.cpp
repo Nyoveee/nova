@@ -1,13 +1,13 @@
+
+#include <iostream>
+
 #include "engine.h"
 #include "window.h"
 
 #include "Component/component.h"
 #include "inputManager.h"
-
 #include "assetManager.h"
-
-#include <iostream>
-
+#include "Debugging/Profiling.h"
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window					{ window },
 	assetManager			{ assetManager },
@@ -21,9 +21,11 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
-{}
+{
+}
 
 void Engine::fixedUpdate(float dt) {
+	ZoneScoped;
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
@@ -49,6 +51,7 @@ void Engine::setupSimulation() {
 }
 
 void Engine::render(Renderer::RenderTarget target) {
+	ZoneScoped;
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}

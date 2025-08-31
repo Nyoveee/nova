@@ -23,7 +23,8 @@
 
 #include <GLFW/glfw3.h>
 #include <ranges>
-
+#include <Windows.h>
+#include <tracyprofiler/tracy/Tracy.hpp>
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -112,6 +113,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 }
 
 void Editor::update(std::function<void(bool)> changeSimulationCallback) {
+	ZoneScopedC(tracy::Color::Orange);
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
@@ -346,7 +348,9 @@ void Editor::sandboxWindow() {
 	entt::registry& registry = engine.ecs.registry;
 
 	static bool wireFrameMode = false;
-
+	if (ImGui::Button("Profiler")) {
+		launchProfiler();
+	}
 	if (ImGui::Button("Wireframe mode.")) {
 		wireFrameMode = !wireFrameMode;
 		engine.renderer.enableWireframeMode(wireFrameMode);
@@ -382,11 +386,16 @@ void Editor::sandboxWindow() {
 	}
 
 	std::string testScript{ engine.scriptingAPIManager.getAvailableScripts()[0] };
+	std::string testScript2{ engine.scriptingAPIManager.getAvailableScripts()[1] };
 	if (ImGui::Button(testScript.c_str())) {
 		entt::entity testSubject{ 0 };
 
 		if (registry.valid(testSubject)) {
+			// There's no proper start/stop yet so they are init as soon as the script load
+			// testScript1 needs to reference testscript2 so testscript2 is loaded first
+			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, testScript2.c_str());
 			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, testScript.c_str());
+
 		}
 	}
 
@@ -444,6 +453,21 @@ void Editor::sandboxWindow() {
 	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {
 		registry.get<Transform>(entt::entity{ 1 }).position.z -= 0.01f;
 	}
+}
+
+void Editor::launchProfiler()
+{
+	// Launch the profiler server connecting to the engine client
+	// Todo: If the profiler is running, this should not be called
+	STARTUPINFO si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+	TCHAR path[]{ TEXT("ExternalApplication/tracy-profiler.exe") };
+	CreateProcess(NULL, path, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
 }
 
 void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline) const {

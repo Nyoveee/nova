@@ -1,5 +1,3 @@
-#include <spdlog/spdlog.h>
-
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -16,6 +14,8 @@
 
 #include <fstream>
 #include "Component/component.h"
+#include "Debugging/Profiling.h"
+#include "Logger.h"
 
 #undef max
 
@@ -168,10 +168,12 @@ DLL_API GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 }
 
 void Renderer::update(float dt) {
+	ZoneScoped;
 	(void) dt;
 }
 
 void Renderer::render(RenderTarget target, bool toRenderDebug) {
+	ZoneScoped;
 	prepareRendering(target);
 
 	renderModels();
@@ -263,6 +265,8 @@ void Renderer::debugRender() {
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color) {
+	(void) color;
+
 	if (numOfDebugTriangles > MAX_DEBUG_TRIANGLES) {
 		std::cerr << "too much triangles!\n";
 		return;
@@ -273,6 +277,9 @@ void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 
 }
 
 void Renderer::prepareRendering(RenderTarget target) {
+	(void) target;
+
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	// =================================================================
 	// Configure pre rendering settings
 	// =================================================================
@@ -331,7 +338,7 @@ void Renderer::prepareRendering(RenderTarget target) {
 	unsigned int numOfLights = 0;
 	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
 		if (numOfLights == MAX_NUMBER_OF_LIGHT) {
-			spdlog::warn("Max number of lights reached!");
+			Logger::warn("Max number of lights reached!");
 			break;
 		}
 
@@ -358,9 +365,11 @@ void Renderer::prepareRendering(RenderTarget target) {
 }
 
 void Renderer::renderModels() {
+	ZoneScopedC(tracy::Color::PaleVioletRed1);	
+
 	// enable back face culling for our 3d models..
 	glEnable(GL_CULL_FACE);
-
+	
 	// preparing the stencil buffer for rendering outlines..
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// replaces the value in stencil buffer if both stencil buffer and depth buffer passed.
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);			// stencil test will always pass, mask of 0xFF means full byte comparison.
@@ -548,7 +557,7 @@ Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Model
 	auto iterator = meshRenderer.materials.find(mesh.materialName);
 
 	if (iterator == meshRenderer.materials.end()) {
-		spdlog::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
+		Logger::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
 		return nullptr;
 	}
 
@@ -589,15 +598,15 @@ void Renderer::printOpenGLDriverDetails() const {
 	GLubyte const* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
 	if (vendor) {
-		spdlog::info("OpenGL Vendor: {}", reinterpret_cast<const char*>(vendor));
+		Logger::info("OpenGL Vendor: {}", reinterpret_cast<const char*>(vendor));
 	}
 	if (renderer) {
-		spdlog::info("OpenGL Renderer: {}", reinterpret_cast<const char*>(renderer));
+		Logger::info("OpenGL Renderer: {}", reinterpret_cast<const char*>(renderer));
 	}
 	if (version) {
-		spdlog::info("OpenGL Version: {}", reinterpret_cast<const char*>(version));
+		Logger::info("OpenGL Version: {}", reinterpret_cast<const char*>(version));
 	}
 	if (glslVersion) {
-		spdlog::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
+		Logger::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
 	}
 }

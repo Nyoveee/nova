@@ -15,24 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ScriptingAPI.hxx">
+    <ClInclude Include="src\API\ScriptingAPI.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Script.hxx">
+    <ClInclude Include="src\API\ManagedTypeMacros.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ManagedTypes.hxx">
+    <ClInclude Include="src\ScriptLibrary\ManagedTypes.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ManagedTypeMacros.hxx">
+    <ClInclude Include="src\API\RecursiveMacros.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\RecursiveMacros.hxx">
+    <ClInclude Include="src\ScriptLibrary\Script.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\IManagedComponent.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Time.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\API\ScriptingAPI.ixx">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ScriptingAPI.cxx">
+    <ClCompile Include="src\API\ScriptingAPI.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScriptLibrary\Script.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Export\Export.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

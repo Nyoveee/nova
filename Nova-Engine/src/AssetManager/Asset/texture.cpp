@@ -1,5 +1,3 @@
-#include <spdlog/spdlog.h>
-
 #include "texture.h"
 #include "Libraries/stb_image.hpp"
 
@@ -7,6 +5,7 @@
 #include <iostream>
 
 #include "assetManager.h"
+#include "Logger.h"
 
 Texture::Texture(std::string filepath, bool toFlip) :
 	Asset			 { filepath },
@@ -54,7 +53,7 @@ Texture& Texture::operator=(Texture&& other) noexcept {
 
 void Texture::load(AssetManager& assetManager) {
 	if (isLoaded()) {
-		spdlog::error("Attempting to load texture when there's already something loaded!");
+		Logger::error("Attempting to load texture when there's already something loaded!");
 		return;
 	}
 
@@ -66,7 +65,7 @@ void Texture::load(AssetManager& assetManager) {
 		// back to main thread, we can submit data to GPU.
 		assetManager.submitCallback([data, width, height, numChannels, this]() {
 			if (!data) {
-				spdlog::error("Failed to load texture! Filepath provided: {}", getFilePath());
+				Logger::error("Failed to load texture! Filepath provided: {}", getFilePath());
 				loadStatus = Asset::LoadStatus::LoadingFailed;
 				return;
 			}
@@ -94,7 +93,7 @@ void Texture::load(AssetManager& assetManager) {
 				format = GL_RGBA;
 			}
 			else {
-				spdlog::error("Weird number of channels? {} has {} channels? Texture not created.", getFilePath(), numChannels);
+				Logger::error("Weird number of channels? {} has {} channels? Texture not created.", getFilePath(), numChannels);
 				return;
 			}
 
@@ -109,7 +108,7 @@ void Texture::load(AssetManager& assetManager) {
 			glGenerateTextureMipmap(textureId);
 			stbi_image_free(data);
 
-			loadStatus = Asset::LoadStatus::Loaded;
+			TracyAlloc(this, sizeof(*this));
 		});
 	});
 }
@@ -117,6 +116,7 @@ void Texture::load(AssetManager& assetManager) {
 void Texture::unload() {
 	glDeleteTextures(1, &textureId);
 	loadStatus = Asset::LoadStatus::NotLoaded;
+	TracyFree(this);
 }
 
 GLuint Texture::getTextureId() const {

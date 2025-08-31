@@ -1,17 +1,16 @@
 #include "assetManager.h"
 #include <sstream>
-
+#include "Debugging/Profiling.h"
 template <ValidAsset T>
 Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
 		createAsset<T>(assetInfo)
 	);
-
 	auto [iterator, success] = assets.insert({ assetInfo.id, std::move(newAsset) });
 
 	if (!success) {
 		// asset id collision occur! this shouldn't happen though.
-		spdlog::error("Asset ID collision occured for: {}", assetInfo.filepath);
+		Logger::error("Asset ID collision occured for: {}", assetInfo.filepath);
 	}
 
 	auto&& [assetId, asset] = *iterator;
@@ -48,7 +47,7 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	case Asset::LoadStatus::Loading:
 		return AssetQuery<T>{ nullptr, QueryResult::Loading };
 	case Asset::LoadStatus::LoadingFailed:
-		spdlog::error("Loading operator for asset id of {} has failed. Retrying..", static_cast<std::size_t>(id));
+		Logger::error("Loading operator for asset id of {} has failed. Retrying..", static_cast<std::size_t>(id));
 		asset->toLoad(*this);
 		break;
 	}
@@ -71,7 +70,7 @@ std::vector<std::reference_wrapper<Asset>> const& AssetManager::getAllAssets() c
 	auto iterator = assetsByType.find(Family::id<T>());
 
 	if (iterator == assetsByType.end()) {
-		spdlog::error("Attempt to retrieve all assets of an invalid type?");
+		Logger::error("Attempt to retrieve all assets of an invalid type?");
 		static std::vector<std::reference_wrapper<Asset>> empty;
 		return empty;
 	}
@@ -85,14 +84,14 @@ AssetID AssetManager::getSomeAssetID() const {
 	auto iterator = assetsByType.find(Family::id<T>());
 
 	if (iterator == assetsByType.end()) {
-		spdlog::error("Attempt to get an asset id of an invalid type?");
+		Logger::error("Attempt to get an asset id of an invalid type?");
 		return INVALID_ASSET_ID;
 	}
 
 	auto&& [_, allAssets] = *iterator;
 	
 	if (allAssets.empty()) {
-		spdlog::error("This asset type has no asset?");
+		Logger::error("This asset type has no asset?");
 		return INVALID_ASSET_ID;
 	}
 
@@ -109,7 +108,7 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 	auto iterator = folderNameToId.find(parentPath.string());
 
 	if (iterator == std::end(folderNameToId)) {
-		spdlog::error("Attempting to add asset to a non existing parent folder?");
+		Logger::error("Attempting to add asset to a non existing parent folder?");
 	}
 	else {
 		auto&& [_, parentFolderId] = *iterator;
@@ -148,14 +147,13 @@ AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) 
 		bool toFlip;
 
 		if (!(std::stringstream{ line } >> toFlip)) {
-			spdlog::error("Failure when trying to parse toFlip boolean for file: {}", path.string());
+			Logger::error("Failure when trying to parse toFlip boolean for file: {}", path.string());
 			return createMetaDataFile<T>(path);
 		}
 		else {
 			assetInfo.isFlipped = toFlip;
 		}
 	}
-
 	// ============================
 	return assetInfo;
 }
@@ -177,7 +175,7 @@ AssetInfo<T> AssetManager::createMetaDataFile(std::filesystem::path const& path)
 	}
 
 	// ============================
-	spdlog::info("Successfully created metadata file for: {}", path.string());
+	Logger::info("Successfully created metadata file for: {}", path.string());
 	return assetInfo;
 }
 
@@ -187,7 +185,7 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 	std::ofstream metaDataFile{ metaDataFilename };
 	
 	if (!metaDataFile) {
-		spdlog::error("Failure to serialise asset metadata file of: {}", metaDataFilename);
+		Logger::error("Failure to serialise asset metadata file of: {}", metaDataFilename);
 		return;
 	}
 
@@ -203,5 +201,5 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 	}
 
 	// ============================
-	spdlog::info("Successfully serialised metadata file for {}", asset.getFilePath());
+	Logger::info("Successfully serialised metadata file for {}", asset.getFilePath());
 }

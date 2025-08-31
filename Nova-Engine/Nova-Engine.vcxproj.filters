@@ -141,10 +141,19 @@
     <ClInclude Include="src\Libraries\BS_thread_pool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Debugging\Profiling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Physics\joltPhysicsInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics\physicsManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Export\Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debugging\Logger.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics\debugRenderer.h">
@@ -219,6 +228,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics\physicsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Debugging\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics\debugRenderer.cpp">

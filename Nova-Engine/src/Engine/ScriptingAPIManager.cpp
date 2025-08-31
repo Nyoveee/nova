@@ -1,9 +1,11 @@
-#include <spdlog/spdlog.h>
 #include "ScriptingAPIManager.h"
 
 #include <shlwapi.h>
 #include <array>
 #include <iostream>
+
+#include "Debugging/Profiling.h"
+#include "Logger.h"
 
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
@@ -40,7 +42,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	coreClr = LoadLibraryA(coreClrPath.c_str());
 
 	if (!coreClr) {
-		spdlog::error("Failed to load CoreCLR.");
+		Logger::error("Failed to load CoreCLR.");
 		return;
 	}
 
@@ -53,7 +55,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		shutdownCorePtr			= getCoreClrFuncPtr<coreclr_shutdown_ptr>("coreclr_shutdown");
 	}
 	catch (std::exception e) {
-		spdlog::error("Error when attempting to retrieve function pointers from Core CLR: {}", e.what());
+		Logger::error("Error when attempting to retrieve function pointers from Core CLR: {}", e.what());
 		return;
 	}
 
@@ -101,16 +103,15 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	try {
 		using InitFunctionPtr = void(*)(ECS&, const char*);
 
-		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("ScriptingAPI.Interface", "init");
-		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("ScriptingAPI.Interface", "update");
-		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("ScriptingAPI.Interface", "addGameObjectScript");
-		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("ScriptingAPI.Interface", "removeGameObjectScript");
-		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("ScriptingAPI.Interface", "getScriptNames");
-
+		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
+		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
+		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
+		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
+		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("Interface", "getScriptNames");
 		initScriptAPIFuncPtr(engine.ecs, runtimePath.c_str());
 	}
 	catch (std::exception e) {
-		spdlog::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
+		Logger::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
 		return;
 	}
 }
@@ -126,10 +127,8 @@ ScriptingAPIManager::~ScriptingAPIManager()
 		errorDetails << std::hex << result;
 		errorDetails << ")Failed to shut down CoreCLR";
 
-		spdlog::error("{}", errorDetails.str());
+		Logger::error("{}", errorDetails.str());
 	}
-
-	//if(coreClr) FreeLibrary(coreClr);
 }
 
 std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
@@ -150,7 +149,10 @@ std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 	return tpaList.str();
 }
 
-void ScriptingAPIManager::update() { updateScripts(); }
+void ScriptingAPIManager::update() { 	
+	ZoneScoped;
+	updateScripts(); 
+}
 
 void ScriptingAPIManager::loadAllScripts() {
 

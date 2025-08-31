@@ -435,7 +435,7 @@ struct Trace {
 		addr(0), idx(0) {}
 
 	explicit Trace(void* addr, size_t idx):
-		addr(addr), idx(idx) {}
+		addr(addr), idx(static_cast<unsigned int>(idx)) {}
 };
 
 struct ResolvedTrace: public Trace {

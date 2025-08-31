@@ -20,19 +20,26 @@ DebugRenderer::DebugRenderer(Renderer& renderer) :
 	JPH::DebugRenderer::Initialize();
 }
 
-DebugRenderer::~DebugRenderer() {
-
-}
+DebugRenderer::~DebugRenderer() {}
 
 void DebugRenderer::DrawLine(JPH::RVec3Arg from, JPH::RVec3Arg to, JPH::ColorArg color) {
-
+	(void) from;
+	(void) to;
+	(void) color;
 }
 
 void DebugRenderer::DrawTriangle(JPH::RVec3Arg vertice1, JPH::RVec3Arg vertice2, JPH::RVec3Arg vertice3, JPH::ColorArg color, ECastShadow castShadow) {
+	(void) castShadow;
+
 	renderer.submitTriangle(toGlmVec3(vertice1), toGlmVec3(vertice2), toGlmVec3(vertice3), toColorA(color));
 }
 
 void DebugRenderer::DrawText3D(JPH::RVec3Arg position, JPH::string_view const& string, JPH::ColorArg color, float height) {
+	(void) position;
+	(void) string;
+	(void) color;
+	(void) height;
+	
 	// our engine has no text support yet.
 	return;
 }
