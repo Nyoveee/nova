@@ -3,6 +3,8 @@
 #include <shlwapi.h>
 #include <array>
 #include <iostream>
+#include <filesystem>
+#include <tuple>
 
 #include "Debugging/Profiling.h"
 #include "Logger.h"
@@ -29,13 +31,17 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	// (this project assumes that the dll is located right next to the executable.
 	// ==========================================================
 	
-	// Get the file path of the output directory containing coreclr.dll
-	std::string runtimePath{ std::string(MAX_PATH, '\0') };
-	GetModuleFileNameA(nullptr, runtimePath.data(), MAX_PATH);
-	PathRemoveFileSpecA(runtimePath.data());
-	runtimePath.resize(std::strlen(runtimePath.data()));
-	std::string coreClrPath{ runtimePath };
+	// Get directory containing coreclr.dll
+	std::string directory{ getDotNetRuntimeDirectory()};
 
+	// Get the run time directory
+	std::string runtimedirectory{ std::string(MAX_PATH, '\0') };
+	GetModuleFileNameA(nullptr, runtimedirectory.data(), MAX_PATH);
+	PathRemoveFileSpecA(runtimedirectory.data());
+	runtimedirectory.resize(std::strlen(runtimedirectory.data()));
+
+	// Get the path of the coreclr.dll
+	std::string coreClrPath{ directory };
 	coreClrPath += "\\Coreclr.dll";
 
 	// Load coreclr.dll
@@ -65,9 +71,9 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	// ==========================================================
 
 	// Builds a TPA List, which is a string containing all dlls relative to the executable delimited by a ;.
-	std::string tpaList			{ buildTPAList(runtimePath) };
+	std::string tpaList			{ buildTPAList(directory) + buildTPAList(runtimedirectory)};
 	std::array propertyKeys		{ "TRUSTED_PLATFORM_ASSEMBLIES", "APP_PATHS" };
-	std::array propertyValues	{ tpaList.c_str(),runtimePath.c_str() };
+	std::array propertyValues	{ tpaList.c_str(),directory.c_str() };
 
 	// ==========================================================
 	// 4. Initializes the Core CLR through function pointers obtained in 2.
@@ -75,7 +81,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	
 	// Start CoreClr runtime
 	int result = intializeCoreClr(
-		runtimePath.c_str(),
+		directory.c_str(),
 		"Nova-Host",
 		static_cast<int>(propertyKeys.size()),
 		propertyKeys.data(),
@@ -108,7 +114,9 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
 		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("Interface", "getScriptNames");
-		initScriptAPIFuncPtr(engine, runtimePath.c_str());
+
+		// Intialize the scriptingAPI
+		initScriptAPIFuncPtr(engine, runtimedirectory.c_str());
 	}
 	catch (std::exception e) {
 		Logger::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
@@ -147,6 +155,30 @@ std::string ScriptingAPIManager::buildTPAList(const std::string& directory)
 		FindClose(fileHandle);
 	}
 	return tpaList.str();
+}
+
+std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
+{
+	// Check if .net is installed
+	const std::filesystem::path PATH = std::filesystem::path("C:\\Program Files\\dotnet\\shared\\Microsoft.NETCore.App");
+	if (!std::filesystem::exists(PATH))
+		return {};
+	// Find the latest version 
+	std::tuple<int, int, std::filesystem::path> latestVersion = { -1,-1,{} };
+	for (const std::filesystem::directory_entry& dir_Entry : std::filesystem::directory_iterator(PATH))
+	{
+		if (!dir_Entry.is_directory())
+			continue;
+		std::filesystem::path dir = dir_Entry.path();
+		std::string dirName = (--(dir.end()))->string();
+		const int ver_Major{ std::stoi(dirName.substr(0, dirName.find_first_of('.')))};
+		const int ver_Minor{ std::stoi(dirName.substr(dirName.find_last_of('.')+1, dirName.size())) };
+		const int lastest_Major = std::get<0>(latestVersion);
+		const int lastest_Minor = std::get<1>(latestVersion);
+		if (ver_Major > lastest_Major || (ver_Major == lastest_Major && ver_Minor > lastest_Minor))
+			latestVersion = { ver_Major,ver_Minor, dirName };
+	}
+	return PATH.string() + "\\" + std::get<2>(latestVersion).string();
 }
 
 void ScriptingAPIManager::update() { 	

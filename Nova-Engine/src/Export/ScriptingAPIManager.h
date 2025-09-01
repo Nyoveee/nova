@@ -51,7 +51,7 @@ private:
 	Func GetFunctionPtr(std::string typeName, std::string functionName);
 
 	std::string buildTPAList(const std::string& directory);
-
+	std::string getDotNetRuntimeDirectory();
 
 private:
 	// coreCLR key components 
