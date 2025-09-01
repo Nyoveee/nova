@@ -28,6 +28,9 @@ void InputManager::handleKeyboardInput(Window& window, int key, int scancode, in
 	(void) scancode;
 
 	handleKeyInput({ key, KeyType::Keyboard }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
+
+	// broadcast all ScriptingInputEvent regardless of registered key mapping.
+	broadcast(ScriptingInputEvents{ key }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
 }
 
 void InputManager::handleMouseInput(Window& window, int key, int action, int mods) {

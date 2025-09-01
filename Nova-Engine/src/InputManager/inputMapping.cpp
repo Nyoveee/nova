@@ -34,4 +34,5 @@ void InputManager::mainKeyBindMapping() {
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_RIGHT,	KeyType::MouseClick,	ToggleEditorControl::Sentinel		);
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_LEFT,		KeyType::MouseClick,	ToSelectGameObject::Sentinel		);
 
+	//mapKeyBindInput(GLFW_KEY_A, KeyType::Keyboard, ScriptingInputEvents::KeyA);
 }

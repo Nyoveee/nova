@@ -317,8 +317,10 @@ void Renderer::prepareRendering(RenderTarget target) {
 	constexpr GLfloat	initialDepth		= 1.f;
 	constexpr GLint		initialStencilValue = 0;
 
+	glDisable(GL_DITHER);
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
+	glEnable(GL_DITHER);
 
 	// =================================================================
 	// Set up the uniforms for my respective shaders
@@ -479,10 +481,14 @@ void Renderer::renderOutline() {
 }
 
 void Renderer::renderObjectId(GLsizei count) {
+	glDisable(GL_DITHER);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
 	objectIdShader.use();
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+
+	glEnable(GL_DITHER);
 }
 
 void Renderer::setupBlinnPhongShader(Material const& material) {

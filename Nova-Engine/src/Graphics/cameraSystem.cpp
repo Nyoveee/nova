@@ -6,7 +6,7 @@
 #include "inputManager.h"
 #include "Debugging/Profiling.h"
 
-CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
+CameraSystem::CameraSystem(Engine& engine) :
 	engine				{ engine },
 	isMovingDown		{},
 	isMovingUp			{},
@@ -26,7 +26,7 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 {
 	// Subscribe to the input manager that the camera system is interested in 
 	// any input related to CameraMovement
-	inputManager.subscribe<CameraMovement>(
+	engine.inputManager.subscribe<CameraMovement>(
 		[&](CameraMovement movement) {
 			setMovement(movement, true);
 		},
@@ -35,7 +35,7 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 		}
 	);
 
-	inputManager.subscribe<ToCameraControl>(
+	engine.inputManager.subscribe<ToCameraControl>(
 		[&](ToCameraControl control) {
 			isInControl = control == ToCameraControl::Control;
 
@@ -45,7 +45,7 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 		}
 	);
 
-	inputManager.subscribe<MousePosition>(
+	engine.inputManager.subscribe<MousePosition>(
 		[&](MousePosition mousePos) {
 			if (toResetMousePos) {
 				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
@@ -57,7 +57,7 @@ CameraSystem::CameraSystem(Engine& engine, InputManager& inputManager) :
 		}
 	);
 
-	inputManager.subscribe<AdjustCameraSpeed>(
+	engine.inputManager.subscribe<AdjustCameraSpeed>(
 		[&](AdjustCameraSpeed value) {
 			if (!isInControl) {
 				return;

@@ -10,7 +10,7 @@ class InputManager;
 
 class CameraSystem {
 public:
-	CameraSystem(Engine& engine, InputManager& inputManager);
+	CameraSystem(Engine& engine);
 
 	~CameraSystem()										= default;
 	CameraSystem(CameraSystem const& other)				= delete;

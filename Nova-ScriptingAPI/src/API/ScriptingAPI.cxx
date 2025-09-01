@@ -1,11 +1,13 @@
 // Converting to native type: https://learn.microsoft.com/en-us/cpp/dotnet/overview-of-marshaling-in-cpp?view=msvc-170
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
-#include "ecs.h"
+#include "engine.h"
 
 #include <sstream>
 #include <filesystem>
 #include <msclr/marshal_cppstd.h>
+
+
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
 {
@@ -13,11 +15,11 @@ T Interface::tryGetScriptReference(System::UInt32 entityID)
 	for each (Script^ script in gameObjectScripts[entityID])
 		if (script->GetType() == T::typeid)
 			return safe_cast<T>(script); // Casting from one reference type to another
-	return T(); // <---- WHY IS THIS CONSIDERED A NULLPTR?
+	return T(); // return null
 }
-void Interface::init(ECS& ecs, const char* runtimePath)
+void Interface::init(Engine& p_engine, const char* runtimePath)
 {
-	registry = &ecs.registry;
+	engine = &p_engine;
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
 	// Load the dll for calling the functions
 	std::filesystem::path originalPath{ std::filesystem::current_path() };

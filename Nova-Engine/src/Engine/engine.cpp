@@ -11,8 +11,9 @@
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window					{ window },
 	assetManager			{ assetManager },
+	inputManager            { inputManager },
 	renderer				{ *this, gameWidth, gameHeight },
-	cameraSystem			{ *this, inputManager },
+	cameraSystem			{ *this },
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
 	transformationSystem	{ ecs },

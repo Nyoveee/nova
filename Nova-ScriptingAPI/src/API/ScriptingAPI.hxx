@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 
+class Engine;
 class ECS;
 ref class Script;
 ref class IManagedComponent;
@@ -13,7 +14,7 @@ public ref class Interface
 {
 // This is set to internal so c# scripts cannot access
 internal:
-	static void init(ECS& ecs, const char* runtimePath);
+	static void init(Engine& p_engine, const char* runtimePath);
 	static void update();
 	static void addGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
 	static void removeGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
@@ -23,8 +24,9 @@ internal:
 	static T* getNativeComponent(System::UInt32 entityID);
 	generic<typename T> where T : Script
 	static T tryGetScriptReference(System::UInt32 entityID);
+internal:
+	static Engine* engine;
 private:
-	static entt::registry* registry;
 	using Scripts = System::Collections::Generic::List<Script^>;
 	using Components = System::Collections::Generic::List<IManagedComponent^> ;
 	static System::Collections::Generic::Dictionary<System::UInt32, Scripts^>^ gameObjectScripts;

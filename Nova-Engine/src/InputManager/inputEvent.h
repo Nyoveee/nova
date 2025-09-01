@@ -1,5 +1,5 @@
 #pragma once
-
+#include <GLFW/glfw3.h>
 // These are abstract input events that systems can subscribe to.
 
 // Movement in the editor.
@@ -52,6 +52,18 @@ enum class GizmoMode {
 	Translate
 };
 
+enum class ScriptingEvents
+{
+	Press,
+	Release 
+	// Collision, etc.
+};
+
+enum class ScriptingInputEvents
+{
+	KeyA = GLFW_KEY_A
+};
+
 // ======= Mouse movement and scroll specific ==========
 // Moving mouse position
 struct MousePosition {
@@ -63,3 +75,4 @@ struct MousePosition {
 struct AdjustCameraSpeed {
 	double value;
 };
+

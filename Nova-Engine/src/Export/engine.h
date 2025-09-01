@@ -50,6 +50,7 @@ public:
 	// allow all systems to have references of each other via the engine.
 	Window&					window;
 	AssetManager&			assetManager;
+	InputManager&           inputManager;
 
 	Renderer				renderer;
 	CameraSystem			cameraSystem;

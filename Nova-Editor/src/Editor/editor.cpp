@@ -453,14 +453,6 @@ void Editor::sandboxWindow() {
 	}
 
 	ImGui::End();
-
-	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_0)) {
-		registry.get<Transform>(entt::entity{ 0 }).eulerAngles.angles.y += 0.01f;
-	}
-
-	if (glfwGetKey(engine.window.getGLFWwindow(), GLFW_KEY_1)) {
-		registry.get<Transform>(entt::entity{ 1 }).position.z -= 0.01f;
-	}
 }
 
 void Editor::launchProfiler()
