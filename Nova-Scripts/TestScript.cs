@@ -5,6 +5,7 @@
     {
         testScript2 = getScript<TestScript2>();
         Input.MapKey(Key.A, OnKeyPressA, OnKeyReleaseA);
+        Input.MapKey(Key._0, OnKeyPressA, OnKeyReleaseA);
     }
     private void OnKeyPressA()
     {

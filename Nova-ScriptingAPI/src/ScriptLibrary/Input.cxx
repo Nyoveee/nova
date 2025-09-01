@@ -18,5 +18,6 @@ void Input::MapKey(Key key, InputCallback^ pressCallback, InputCallback^ release
 		if (callbackWrapper && static_cast<int>(inputEvent) == keyValue)
 			callbackWrapper.operator->()(); // Bit of a weird syntax, first get the object of type InputCallback^, then call the function 
 	};
+
 	Interface::engine->inputManager.subscribe<ScriptingInputEvents>(pressCallbackFunction, releaseCallbackFunction);
 }
