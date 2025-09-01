@@ -31,8 +31,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	// (this project assumes that the dll is located right next to the executable.
 	// ==========================================================
 	
-	// Get directory containing coreclr.dll
-	std::string directory{ getDotNetRuntimeDirectory()};
+	// Get the dotnet directory
+	std::string dotnetDirectory{ getDotNetRuntimeDirectory()};
 
 	// Get the run time directory
 	std::string runtimedirectory{ std::string(MAX_PATH, '\0') };
@@ -41,7 +41,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	runtimedirectory.resize(std::strlen(runtimedirectory.data()));
 
 	// Get the path of the coreclr.dll
-	std::string coreClrPath{ directory };
+	std::string coreClrPath{ dotnetDirectory };
 	coreClrPath += "\\Coreclr.dll";
 
 	// Load coreclr.dll
@@ -71,9 +71,10 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	// ==========================================================
 
 	// Builds a TPA List, which is a string containing all dlls relative to the executable delimited by a ;.
-	std::string tpaList			{ buildTPAList(directory) + buildTPAList(runtimedirectory)};
+	std::string tpaList			{ buildTPAList(dotnetDirectory) + buildTPAList(runtimedirectory)};
 	std::array propertyKeys		{ "TRUSTED_PLATFORM_ASSEMBLIES", "APP_PATHS" };
-	std::array propertyValues	{ tpaList.c_str(),directory.c_str() };
+	// App path is the location of the c++/cli assembly to check. In part 5, the assembly is shown as "Interface", matching the one in scriptingapi project
+	std::array propertyValues	{ tpaList.c_str(), runtimedirectory.c_str()};
 
 	// ==========================================================
 	// 4. Initializes the Core CLR through function pointers obtained in 2.
@@ -81,7 +82,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	
 	// Start CoreClr runtime
 	int result = intializeCoreClr(
-		directory.c_str(),
+		dotnetDirectory.c_str(),
 		"Nova-Host",
 		static_cast<int>(propertyKeys.size()),
 		propertyKeys.data(),
