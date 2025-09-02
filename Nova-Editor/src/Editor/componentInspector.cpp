@@ -88,13 +88,13 @@ void ComponentInspector::update() {
 
 		ImGui::Text("Direct children: ");
 
-		if (ImGui::BeginChild("Direct children", ImVec2{ 0.f, 70.f }, ImGuiChildFlags_Borders)) {
-			for (entt::entity child : entityData.children) {
-				ImGui::BulletText(registry.get<EntityData>(child).name.c_str());
-			}
-
-			ImGui::EndChild();
+		ImGui::BeginChild("Direct children", ImVec2{ 0.f, 70.f }, ImGuiChildFlags_Borders);
+		for (entt::entity child : entityData.children) {
+			ImGui::BulletText(registry.get<EntityData>(child).name.c_str());
 		}
+
+		ImGui::EndChild();
+		
 	}
 
 	// Display the rest of the components via reflection.
