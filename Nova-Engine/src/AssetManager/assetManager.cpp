@@ -5,6 +5,7 @@
 #include "AssetManager.h"
 #include "Libraries/FileWatch.hpp"
 #include "Logger.h"
+#include "Fmod/fmod.hpp"    // fmod.hpp allows access to FMOD CORE API
 
 #include "Asset/cubemap.h"
 
