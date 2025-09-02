@@ -17,17 +17,26 @@ T Interface::tryGetScriptReference(System::UInt32 entityID)
 			return safe_cast<T>(script); // Casting from one reference type to another
 	return T(); // return null
 }
-void Interface::init(Engine& p_engine, const char* runtimePath)
+void Interface::init(Engine& p_engine, const char* p_runtimePath)
 {
+	// Get the reference to the engine
 	engine = &p_engine;
-	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
-	// Load the dll for calling the functions
+
+	// Load assembly from the dll
+	runtimePath = p_runtimePath;
+	assemblyLoadContext = gcnew System::Runtime::Loader::AssemblyLoadContext(nullptr, true);
 	std::filesystem::path originalPath{ std::filesystem::current_path() };
-	std::filesystem::current_path(runtimePath); // Set to the output directory to load nova-scripts.dll from
-	System::Reflection::Assembly::LoadFrom("Nova-Scripts.dll");
+	std::filesystem::current_path(p_runtimePath); // Set to the output directory to load nova-scripts.dll from
+	System::IO::FileStream^ scriptLibFile = System::IO::File::Open(
+		"Nova-Scripts.dll",
+		System::IO::FileMode::Open, System::IO::FileAccess::Read
+	);
 	std::filesystem::current_path(originalPath); // Reset the path	
+	assemblyLoadContext->LoadFromStream(scriptLibFile);
+	scriptLibFile->Close();
 
 	// Load all the c# scripts to run
+	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
 	for each (System::Reflection::Assembly ^ assembly in System::AppDomain::CurrentDomain->GetAssemblies()) {
 		if (assembly->GetName()->Name != "Nova-Scripts")
 			continue;
@@ -86,4 +95,23 @@ void Interface::update() {
 	for each (System::UInt32 entityID in gameObjectScripts->Keys)
 		for each (Script ^ script in gameObjectScripts[entityID])
 			script->callUpdate();
+}
+
+void Interface::hotReload()
+{
+	// Clear existing scripts
+	gameObjectScripts->Clear();
+	scriptTypes.Clear();
+
+	// Unload the assembly
+	assemblyLoadContext->Unload();
+	assemblyLoadContext = nullptr;
+
+	// Garbage Collect existing memory
+	System::GC::Collect();
+	// Wait from assembly to finish unloading
+	System::GC::WaitForPendingFinalizers();
+
+	// Intialize the scriptingAPI again
+	init(*engine,runtimePath);
 }

@@ -10,6 +10,7 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <string>
 #include <dotnet/coreclrhost.h>
 
 // More readable function pointer syntax because C lmaoo
@@ -52,7 +53,7 @@ private:
 
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
-
+	void compileScriptAssembly(std::string runtimePath);
 private:
 	// coreCLR key components 
 	HMODULE coreClr;

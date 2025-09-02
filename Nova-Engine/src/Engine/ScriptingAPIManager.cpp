@@ -117,6 +117,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("Interface", "getScriptNames");
 
 		// Intialize the scriptingAPI
+		compileScriptAssembly(runtimedirectory);
 		initScriptAPIFuncPtr(engine, runtimedirectory.c_str());
 	}
 	catch (std::exception e) {
@@ -181,6 +182,74 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 	}
 	return PATH.string() + "\\" + std::get<2>(latestVersion).string();
 }
+
+void ScriptingAPIManager::compileScriptAssembly(std::string runtimePath)
+{
+	// Project path and build command
+	std::string proj_path{runtimePath + "\\Nova-Scripts\\Nova-Scripts.csproj"};
+#ifdef _DEBUG
+	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
+		+ L"\" -c Debug --no-self-contained -o "
+		+ L"\"" + std::filesystem::absolute(runtimePath).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+#else
+	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
+		+ L"\" -c Release --no-self-contained -o "
+		+ L"\"" + std::filesystem::absolute(runtimePath).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+#endif
+	STARTUPINFOW startInfo;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&startInfo, sizeof(startInfo));
+	ZeroMemory(&pi, sizeof(pi));
+	startInfo.cb = sizeof(startInfo);
+	// Start Compiler 
+	const auto launch_success = CreateProcess
+	(
+		L"C:\\Program Files\\dotnet\\dotnet.exe", buildCmd.data(),
+		nullptr, nullptr, true, NULL, nullptr, nullptr,
+		&startInfo, &pi
+	);
+	
+	if (!launch_success)
+	{
+		auto err{ GetLastError() };
+		std::stringstream hexCode{};
+		hexCode << std::hex << err;
+		Logger::error("Failed to launch compiler. Error code: {}", hexCode.str());
+		return;
+	}
+	// Wait until compiling is done
+	DWORD exitCode{};
+	while (true)
+	{
+		const auto exec_success = GetExitCodeProcess(pi.hProcess, &exitCode);
+		if (!exec_success)
+		{
+			auto err{ GetLastError() };
+			std::stringstream hexCode{};
+			hexCode << std::hex << err;
+			Logger::error("Failed to query process. Error code: {}", hexCode.str());
+			return;
+		}
+		if (exitCode != STILL_ACTIVE)
+			break;
+	}
+	// Copy the compiled dlls into the output directory if compilation is successful
+	if (exitCode == 0)
+	{
+		std::filesystem::copy_file
+		(
+			(runtimePath + "/Nova-Scripts/.tmp_build/Nova-Scripts.dll"), // Source
+			(runtimePath + "\\Nova-Scripts.dll"), // Destination
+			std::filesystem::copy_options::overwrite_existing
+		);
+	}
+	else
+	{
+		Logger::error("Failed to build Nova-Scripts");
+	}
+
+}
+
 
 void ScriptingAPIManager::update() { 	
 	ZoneScoped;

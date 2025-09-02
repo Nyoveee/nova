@@ -14,8 +14,9 @@ public ref class Interface
 {
 // This is set to internal so c# scripts cannot access
 internal:
-	static void init(Engine& p_engine, const char* runtimePath);
+	static void init(Engine& p_engine, const char* p_runtimeDirectory);
 	static void update();
+	static void hotReload();
 	static void addGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
 	static void removeGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
 	static std::vector<std::string> getScriptNames();
@@ -31,5 +32,9 @@ private:
 	using Components = System::Collections::Generic::List<IManagedComponent^> ;
 	static System::Collections::Generic::Dictionary<System::UInt32, Scripts^>^ gameObjectScripts;
 	static System::Collections::Generic::List<System::Type^> scriptTypes;
+private:
+	// Assembly information
+	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;
+	static const char* runtimePath;
 }; 
 #include "ScriptingAPI.ixx"
