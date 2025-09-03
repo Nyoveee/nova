@@ -35,7 +35,7 @@ private:
 	void displayAssetThumbnail(AssetID assetId);
 	void displayFolderThumbnail(FolderID folderId);
 
-	void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback);
+	void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
 
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;

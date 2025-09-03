@@ -200,17 +200,22 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 
 void AssetManagerUI::displayAssetThumbnail(AssetID assetId) {
 	Asset* asset = assetManager.getAssetInfo(assetId);
+
 	if (!asset) {
 		return;
 	}
-	if (std::filesystem::path(asset->getFilePath()).extension() == ".cs")
-	{
-		displayThumbnail(
-			static_cast<int>(static_cast<std::size_t>(assetId)),
-			NO_TEXTURE,
-			asset->name.empty() ? "<no name>" : asset->name.c_str(),
-			// callback when the thumbnail gets clicked.
-			[&]() {
+
+	displayThumbnail(
+		static_cast<int>(static_cast<std::size_t>(assetId)),
+		NO_TEXTURE,
+		asset->name.empty() ? "<no name>" : asset->name.c_str(),
+
+		// callback when the thumbnail gets clicked.
+		[&]() {},
+
+		// callback when the thumbnail gets double clicked.
+		[&]() {
+			if (assetManager.isAsset<ScriptAsset>(assetId)) {
 				static STARTUPINFO si;
 				static PROCESS_INFORMATION pi;
 				ZeroMemory(&si, sizeof(si));
@@ -220,23 +225,12 @@ void AssetManagerUI::displayAssetThumbnail(AssetID assetId) {
 				wss << " /Edit \"" << asset->getFilePath().c_str() << "\"";
 				std::wstring path{ wss.str() };
 				// The path can be applied to createprocess
-				https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
-				CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe", 
+				// https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
+				CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe",
 					const_cast<LPWSTR>(path.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 				CloseHandle(pi.hProcess);
 				CloseHandle(pi.hThread);
 			}
-		);
-		return;
-	}
-	displayThumbnail(
-		static_cast<int>(static_cast<std::size_t>(assetId)),
-		NO_TEXTURE,
-		asset->name.empty() ? "<no name>" : asset->name.c_str(),
-
-		// callback when the thumbnail gets clicked.
-		[&]() {
-
 		}
 	);
 }
@@ -255,11 +249,14 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		// callback when the thumbnail gets clicked.
 		[&]() {
 			selectedFolderId = folderId;
-		}
+		},
+
+		// callback when the thumbnail gets double clicked.
+		[&]() {}
 	);
 }
 
-void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback) {
+void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
 	if (!isAMatchWithSearchQuery(name)) {
 		return;
 	}
@@ -286,6 +283,10 @@ void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char c
 	else {
 		if (ImGui::Button("##", buttonSize)) {
 			clickCallback();
+		}
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			doubleClickCallback();
 		}
 	}
 

@@ -29,7 +29,7 @@
 template <typename T>
 concept ValidAsset = std::derived_from<T, Asset> && std::derived_from<AssetInfo<T>, BasicAssetInfo>;
 
-#include "AssetManager/serialiseAssetFunctor.h"
+#include "AssetManager/assetFunctor.h"
 
 class AssetManager {
 public:
@@ -82,6 +82,10 @@ public:
 	template <ValidAsset T>
 	AssetID getSomeAssetID() const;
 	
+	// given an asset id, is the original asset type of T?
+	template <ValidAsset T>
+	bool isAsset(AssetID id) const;
+
 public:
 	// =========================================================
 	// Getters (no setters!)
@@ -161,9 +165,13 @@ private:
 	// reference wrapper because i dont want a chance of null pointer.
 	std::unordered_map<AssetTypeID, std::vector<std::reference_wrapper<Asset>>> assetsByType;
 	
-	// welcome to template metaprogramming black magic.
-	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
+	// associates an asset id with the corresponding asset type.
+	std::unordered_map<AssetID, AssetTypeID> assetIdToType;
 
+	// -- welcome to template metaprogramming black magic. --
+	// associates an asset id with it's corresponding serialising function, containining the original asset type.	
+	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
+	
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
 	std::vector<FolderID> rootDirectories;
@@ -177,4 +185,4 @@ private:
 };
 
 #include "AssetManager/assetMananger.ipp"
-#include "AssetManager/serialiseAssetFunctor.ipp"
+#include "AssetManager/assetFunctor.ipp"

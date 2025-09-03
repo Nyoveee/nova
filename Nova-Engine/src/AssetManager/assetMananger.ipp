@@ -22,6 +22,9 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	// record this asset to the corresponding asset type.
 	assetsByType[Family::id<T>()].push_back(*asset.get());
 
+	// associate this asset id with this asset type.
+	assetIdToType[assetInfo.id] = Family::id<T>();
+
 	return *asset.get();
 }
 
@@ -96,6 +99,16 @@ AssetID AssetManager::getSomeAssetID() const {
 	}
 
 	return allAssets[0].get().id;
+}
+
+template<ValidAsset T>
+bool AssetManager::isAsset(AssetID id) const {
+	auto iterator = assetIdToType.find(id);
+
+	assert(iterator != assetIdToType.end() && "asset id doesn't exist / have no associated asset type id?");
+
+	auto [_, assetTypeId] = *iterator;
+	return assetTypeId == Family::id<T>();
 }
 
 template <ValidAsset T>
