@@ -32,5 +32,16 @@ AudioSystem::~AudioSystem() {
 }
 
 void AudioSystem::update() {
+	fmodSystem->update();
+}
+
+void AudioSystem::loadAllSounds() {
+	Logger::info("Attempting to load all sounds");
+	
+	
+}
+
+void AudioSystem::unloadAllSounds() {
+	Logger::info("Unload all sounds");
 
 }

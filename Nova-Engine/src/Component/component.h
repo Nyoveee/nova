@@ -31,7 +31,7 @@ class CubeMap;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent
 
 using MaterialName = std::string;
 
@@ -182,5 +182,13 @@ struct SkyBox {
 	
 	REFLECTABLE(
 		cubeMapId
+	)
+};
+
+struct AudioComponent {
+	AssetID audio;
+
+	REFLECTABLE(
+		audio
 	)
 };

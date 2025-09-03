@@ -71,7 +71,8 @@ void Engine::startSimulation() {
 	setupSimulationFunction = [&]() {
 		physicsManager.initialise();
 		scriptingAPIManager.loadAllScripts();
-		
+		audioSystem.loadAllSounds();
+
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
@@ -88,6 +89,7 @@ void Engine::stopSimulation() {
 	setupSimulationFunction = [&]() {
 		physicsManager.clear();
 		scriptingAPIManager.unloadAllScripts();
+		audioSystem.unloadAllSounds();
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		inSimulationMode = false;

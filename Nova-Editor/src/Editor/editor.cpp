@@ -345,6 +345,10 @@ void Editor::sandboxWindow() {
 
 	ImGui::Begin("ooga booga sandbox area");
 
+	if (ImGui::Button("audio test")) {
+		/* code here */
+	}
+
 	entt::registry& registry = engine.ecs.registry;
 
 	static bool wireFrameMode = false;

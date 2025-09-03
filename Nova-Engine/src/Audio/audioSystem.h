@@ -18,7 +18,14 @@ public:
 public:
 	void update();
 
+public:
+	void loadAllSounds();
+	void unloadAllSounds();
+
 private:
 	FMOD::System* fmodSystem;
 	Engine& engine;
+
+private:
+
 };
