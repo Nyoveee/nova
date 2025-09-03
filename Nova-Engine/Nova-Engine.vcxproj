@@ -137,8 +137,8 @@
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy "$(SolutionDir)Nova-Scripts\" /Y /S /E "$(OutDir)Nova-Scripts\"
+xcopy "$(SolutionDir)Assets\" /Y /S /E "$(OutDir)Assets\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,8 +166,8 @@
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy "$(SolutionDir)Nova-Scripts\" /Y /S /E "$(OutDir)Nova-Scripts\"
+xcopy "$(SolutionDir)Assets\" /Y /S /E "$(OutDir)Assets\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

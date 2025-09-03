@@ -266,11 +266,8 @@ bool ScriptingAPIManager::loadAllScripts() {
 	loadScripts();
 	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
 	{
-		for (ScriptData& scriptData : scripts.scriptDatas) {
-			std::string script{ scriptData.name };
-			script = script.substr(0, script.find_first_of('.'));
-			addGameObjectScript(static_cast<unsigned int>(entityId), script.c_str());
-		}
+		for (ScriptData& scriptData : scripts.scriptDatas)
+			addGameObjectScript(static_cast<unsigned int>(entityId), scriptData.name.c_str());
 	}
 	initalizeScripts();
 	return true;

@@ -231,10 +231,10 @@ namespace {
 						AssetManager& assetManager{ componentInspector.assetManager };
 						for (auto& scriptAsset : assetManager.getAllAssets<ScriptAsset>())
 						{
-							if (ImGui::Selectable(scriptAsset.get().name.c_str())) {
+							std::string scriptName{ scriptAsset.get().name };
+							scriptName = scriptName.substr(0, scriptName.find_first_of('.'));
+							if (ImGui::Selectable(scriptName.c_str())) {
 								ScriptData newData;
-								std::string scriptName{ scriptAsset.get().name };
-								scriptName = scriptName.substr(0, scriptName.find_first_of('.'));
 								newData.name = scriptName;
 								scriptDatas.push_back(newData);
 							}
