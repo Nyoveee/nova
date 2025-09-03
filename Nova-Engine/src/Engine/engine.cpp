@@ -66,9 +66,13 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
+		if (!scriptingAPIManager.loadAllScripts())
+		{
+			stopSimulation();
+			return;
+		}
 		physicsManager.initialise();
-		scriptingAPIManager.loadAllScripts();
-		
+
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
