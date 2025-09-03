@@ -8,6 +8,9 @@
 #include "inputManager.h"
 #include "assetManager.h"
 #include "Debugging/Profiling.h"
+
+#include "Serialisation/serialisation.h"
+
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window					{ window },
 	assetManager			{ assetManager },
@@ -23,6 +26,10 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
 {
+}
+
+Engine::~Engine() {
+	Serialiser::serialiseComponent();
 }
 
 void Engine::fixedUpdate(float dt) {
