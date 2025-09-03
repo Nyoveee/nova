@@ -29,7 +29,7 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 }
 
 Engine::~Engine() {
-	Serialiser::serialiseComponent();
+	Serialiser::serialiseComponent(ecs);
 }
 
 void Engine::fixedUpdate(float dt) {

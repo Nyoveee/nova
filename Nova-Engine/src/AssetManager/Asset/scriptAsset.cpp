@@ -2,5 +2,4 @@
 
 ScriptAsset::ScriptAsset(std::string filepath)
 	: Asset(filepath)
-{
-}
+{}

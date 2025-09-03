@@ -9,7 +9,8 @@
 
 #include <sstream>
 #include <Windows.h>
-#undef max;
+
+#undef max
 
 AssetManagerUI::AssetManagerUI(Editor& editor) :
 	assetManager	 { editor.assetManager },
