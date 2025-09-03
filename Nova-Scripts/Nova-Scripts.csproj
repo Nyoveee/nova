@@ -17,9 +17,8 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nova-ScriptingAPI\Nova-ScriptingAPI.vcxproj" />
+    <Reference Include = "Nova-ScriptingAPI">
+      <HintPath>..\Nova-ScriptingAPI.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /s /r /y /q &quot;$(ProjectDir).bin\$(Configuration)-$(Platform)\net9.0-windows10.0.26100.0\Nova-Scripts.dll&quot; &quot;$(SolutionDir)$(Platform)\$(Configuration)\&quot;" />
-  </Target>
 </Project>

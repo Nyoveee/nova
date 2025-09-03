@@ -19,7 +19,12 @@ namespace {
 AssetManager::AssetManager() :
 	threadPool { static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }
 {
-	std::filesystem::path assetDirectory = std::filesystem::current_path();
+	// Get the run time directory
+	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
+	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
+	PathRemoveFileSpecA(runtimeDirectory.data());
+	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
+	std::filesystem::path assetDirectory = runtimeDirectory;
 	assetDirectory /= "Assets";
 
 	FolderID folderId{ 0 };
@@ -27,7 +32,6 @@ AssetManager::AssetManager() :
 	try {
 		for (const auto& entry : std::filesystem::recursive_directory_iterator{ assetDirectory }) {
 			std::filesystem::path currentPath = entry.path();
-			
 			// our own meta file, not an asset.
 			if (currentPath.extension() == ".nova_meta") {
 				continue;
@@ -138,6 +142,9 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 
 	else if (fileExtension == ".exr") {
 		recordAssetFile<CubeMap>(path);
+	}
+	else if (fileExtension == ".cs") {
+		recordAssetFile<ScriptAsset>(path);
 	}
 
 	else {

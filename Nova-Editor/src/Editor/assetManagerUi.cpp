@@ -7,6 +7,11 @@
 
 #include "ImGui/misc/cpp/imgui_stdlib.h"
 
+#include <sstream>
+#include <Windows.h>
+
+#undef max
+
 AssetManagerUI::AssetManagerUI(Editor& editor) :
 	assetManager	 { editor.assetManager },
 	selectedFolderId { NONE },
@@ -195,11 +200,35 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 
 void AssetManagerUI::displayAssetThumbnail(AssetID assetId) {
 	Asset* asset = assetManager.getAssetInfo(assetId);
-	
 	if (!asset) {
 		return;
 	}
-
+	if (std::filesystem::path(asset->getFilePath()).extension() == ".cs")
+	{
+		displayThumbnail(
+			static_cast<int>(static_cast<std::size_t>(assetId)),
+			NO_TEXTURE,
+			asset->name.empty() ? "<no name>" : asset->name.c_str(),
+			// callback when the thumbnail gets clicked.
+			[&]() {
+				static STARTUPINFO si;
+				static PROCESS_INFORMATION pi;
+				ZeroMemory(&si, sizeof(si));
+				si.cb = sizeof(si);
+				ZeroMemory(&pi, sizeof(pi));
+				std::wostringstream wss;
+				wss << " /Edit \"" << asset->getFilePath().c_str() << "\"";
+				std::wstring path{ wss.str() };
+				// The path can be applied to createprocess
+				https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
+				CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe", 
+					const_cast<LPWSTR>(path.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+				CloseHandle(pi.hProcess);
+				CloseHandle(pi.hThread);
+			}
+		);
+		return;
+	}
 	displayThumbnail(
 		static_cast<int>(static_cast<std::size_t>(assetId)),
 		NO_TEXTURE,

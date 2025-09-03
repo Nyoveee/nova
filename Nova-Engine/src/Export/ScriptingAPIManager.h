@@ -10,20 +10,23 @@
 #include <sstream>
 #include <iomanip>
 #include <vector>
+#include <string>
 #include <dotnet/coreclrhost.h>
+
+class Engine; // Don't need to call any function or variables, just pass in
 
 // More readable function pointer syntax because C lmaoo
 using UpdateFunctionPtr			= void (*)(void);
 using AddScriptFunctionPtr		= void (*)(unsigned int, const char*);
 using RemoveScriptFunctionPtr	= void (*)(unsigned int, const char*);
-using GetScriptsFunctionPtr		= std::vector<std::string> (*)(void);
-
-class Engine; // Don't need to call any function or variables, just pass in
+using LoadScriptsFunctionPtr = void (*)(void);
+using UnloadScriptsFunctionPtr = void(*)(void);
+using IntializeScriptsFunctionPtr = void(*)(void);
 
 class ScriptingAPIManager {
 public:
 	// Functions needed to run the ScriptingAPI
-	DLL_API ScriptingAPIManager(Engine& engine);
+	DLL_API ScriptingAPIManager(Engine& p_engine);
 
 	DLL_API ~ScriptingAPIManager();
 	DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
@@ -34,14 +37,8 @@ public:
 public:
 	DLL_API void update();
 
-	DLL_API void loadAllScripts();
+	DLL_API bool loadAllScripts();
 	DLL_API void unloadAllScripts();
-
-	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
-	DLL_API void removeScriptFromAPI(unsigned int entityID, const char* scriptName);
-
-	DLL_API std::vector<std::string> getAvailableScripts();
-
 private:
 	template<typename Func>
 	Func getCoreClrFuncPtr(const std::string& functionName);
@@ -52,7 +49,10 @@ private:
 
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
-
+	bool compileScriptAssembly();
+private:
+	Engine& engine;
+	std::string runtimeDirectory;
 private:
 	// coreCLR key components 
 	HMODULE coreClr;
@@ -63,13 +63,14 @@ private:
 	coreclr_initialize_ptr intializeCoreClr;
 	coreclr_create_delegate_ptr createManagedDelegate;
 	coreclr_shutdown_ptr shutdownCorePtr;
-
 private:
 	// Function pointers to interact directly with ScriptingAPI
 	UpdateFunctionPtr updateScripts;
 	AddScriptFunctionPtr addGameObjectScript;
 	RemoveScriptFunctionPtr removeGameObjectScript;
-	GetScriptsFunctionPtr getScriptNames;
+	LoadScriptsFunctionPtr loadScripts;
+	UnloadScriptsFunctionPtr unloadScripts;
+	IntializeScriptsFunctionPtr initalizeScripts;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

@@ -29,7 +29,7 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 }
 
 Engine::~Engine() {
-	Serialiser::serialiseComponent();
+	Serialiser::serialiseComponent(ecs);
 }
 
 void Engine::fixedUpdate(float dt) {
@@ -73,9 +73,13 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
+		if (!scriptingAPIManager.loadAllScripts())
+		{
+			stopSimulation();
+			return;
+		}
 		physicsManager.initialise();
-		scriptingAPIManager.loadAllScripts();
-		
+
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
