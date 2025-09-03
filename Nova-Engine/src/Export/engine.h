@@ -12,6 +12,7 @@
 #include "Graphics/cameraSystem.h"
 #include "Engine/transformationSystem.h"
 #include "Physics/physicsManager.h"
+#include "Audio/audioSystem.h"
 
 
 class Window;
@@ -58,6 +59,7 @@ public:
 	ScriptingAPIManager		scriptingAPIManager;
 	TransformationSystem	transformationSystem;
 	PhysicsManager			physicsManager;
+	AudioSystem				audioSystem;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;

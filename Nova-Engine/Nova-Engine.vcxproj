@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\AssetManager\Asset\cubemap.h" />
+    <ClInclude Include="src\Audio\audioSystem.h" />
     <ClInclude Include="src\Export\Logger.h" />
     <ClInclude Include="src\AssetManager\assetMananger.ipp" />
     <ClInclude Include="src\AssetManager\Asset\asset.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="src\AssetManager\Asset\model.cpp" />
     <ClCompile Include="src\AssetManager\Asset\texture.cpp" />
     <ClCompile Include="src\AssetManager\modelLoader.cpp" />
+    <ClCompile Include="src\Audio\audioSystem.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
     <ClCompile Include="src\Debugging\Logger.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />

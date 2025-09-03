@@ -8,6 +8,7 @@
 #include "inputManager.h"
 #include "assetManager.h"
 #include "Debugging/Profiling.h"
+
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window					{ window },
 	assetManager			{ assetManager },
@@ -18,6 +19,7 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	scriptingAPIManager		{ *this },
 	transformationSystem	{ ecs },
 	physicsManager			{ *this },
+	audioSystem				{ *this },
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
@@ -34,6 +36,7 @@ void Engine::fixedUpdate(float dt) {
 }
 
 void Engine::update(float dt) {
+	audioSystem.update();
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);
