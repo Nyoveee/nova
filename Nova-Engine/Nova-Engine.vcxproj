@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\AssetManager\Asset\cubemap.h" />
+    <ClInclude Include="src\AssetManager\Asset\scriptAsset.h" />
     <ClInclude Include="src\Audio\audioSystem.h" />
     <ClInclude Include="src\Export\Logger.h" />
     <ClInclude Include="src\AssetManager\assetMananger.ipp" />
@@ -222,12 +223,14 @@
     <ClInclude Include="src\Physics\debugRenderer.h" />
     <ClInclude Include="src\Physics\joltPhysicsInterface.h" />
     <ClInclude Include="src\Physics\physicsManager.h" />
+    <ClInclude Include="src\Serialisation\serialisation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AssetManager\Asset\asset.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
     <ClCompile Include="src\AssetManager\Asset\cubemap.cpp" />
     <ClCompile Include="src\AssetManager\Asset\model.cpp" />
+    <ClCompile Include="src\AssetManager\Asset\scriptAsset.cpp" />
     <ClCompile Include="src\AssetManager\Asset\texture.cpp" />
     <ClCompile Include="src\AssetManager\modelLoader.cpp" />
     <ClCompile Include="src\Audio\audioSystem.cpp" />
@@ -252,6 +255,7 @@
     <ClCompile Include="src\Libraries\tinyexr.cpp" />
     <ClCompile Include="src\Physics\debugRenderer.cpp" />
     <ClCompile Include="src\Physics\physicsManager.cpp" />
+    <ClCompile Include="src\Serialisation\serialisation.cpp" />
     <ClInclude Include="src\Libraries\type_alias.ipp">
       <FileType>CppCode</FileType>
     </ClInclude>

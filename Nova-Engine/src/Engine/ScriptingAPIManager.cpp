@@ -15,8 +15,10 @@
 
 class ECS;
 
-ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
-	: coreClr					{ nullptr }
+ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
+	: engine{p_engine}
+	, runtimeDirectory{}
+	, coreClr					{ nullptr }
 	, hostHandle				{ nullptr }
 	, domainID					{}
 	, intializeCoreClr			{ nullptr }
@@ -35,10 +37,10 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	std::string dotnetDirectory{ getDotNetRuntimeDirectory()};
 
 	// Get the run time directory
-	std::string runtimedirectory{ std::string(MAX_PATH, '\0') };
-	GetModuleFileNameA(nullptr, runtimedirectory.data(), MAX_PATH);
-	PathRemoveFileSpecA(runtimedirectory.data());
-	runtimedirectory.resize(std::strlen(runtimedirectory.data()));
+	runtimeDirectory = std::string(MAX_PATH, '\0');
+	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
+	PathRemoveFileSpecA(runtimeDirectory.data());
+	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
 
 	// Get the path of the coreclr.dll
 	std::string coreClrPath{ dotnetDirectory };
@@ -71,10 +73,10 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 	// ==========================================================
 
 	// Builds a TPA List, which is a string containing all dlls relative to the executable delimited by a ;.
-	std::string tpaList			{ buildTPAList(dotnetDirectory) + buildTPAList(runtimedirectory)};
+	std::string tpaList			{ buildTPAList(dotnetDirectory) + buildTPAList(runtimeDirectory)};
 	std::array propertyKeys		{ "TRUSTED_PLATFORM_ASSEMBLIES", "APP_PATHS" };
 	// App path is the location of the c++/cli assembly to check. In part 5, the assembly is shown as "Interface", matching the one in scriptingapi project
-	std::array propertyValues	{ tpaList.c_str(), runtimedirectory.c_str()};
+	std::array propertyValues	{ tpaList.c_str(), runtimeDirectory.c_str()};
 
 	// ==========================================================
 	// 4. Initializes the Core CLR through function pointers obtained in 2.
@@ -114,10 +116,12 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& engine)
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		getScriptNames							= GetFunctionPtr<GetScriptsFunctionPtr>("Interface", "getScriptNames");
-
+		loadScripts							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
+		unloadScripts                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		// Intialize the scriptingAPI
-		initScriptAPIFuncPtr(engine, runtimedirectory.c_str());
+		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
+
 	}
 	catch (std::exception e) {
 		Logger::error("Failed to get function pointers from C++/CLI API side. {}", e.what());
@@ -182,20 +186,95 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 	return PATH.string() + "\\" + std::get<2>(latestVersion).string();
 }
 
+bool ScriptingAPIManager::compileScriptAssembly()
+{
+	// Project path and build command
+	std::string proj_path{runtimeDirectory + "\\Nova-Scripts\\Nova-Scripts.csproj"};
+#ifdef _DEBUG
+	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
+		+ L"\" -c Debug --no-self-contained -o "
+		+ L"\"" + std::filesystem::absolute(runtimeDirectory).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+#else
+	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
+		+ L"\" -c Release --no-self-contained -o "
+		+ L"\"" + std::filesystem::absolute(runtimeDirectory).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+#endif
+	STARTUPINFOW startInfo;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&startInfo, sizeof(startInfo));
+	ZeroMemory(&pi, sizeof(pi));
+	startInfo.cb = sizeof(startInfo);
+	// Start Compiler 
+	const auto launch_success = CreateProcess
+	(
+		L"C:\\Program Files\\dotnet\\dotnet.exe", buildCmd.data(),
+		nullptr, nullptr, true, NULL, nullptr, nullptr,
+		&startInfo, &pi
+	);
+	
+	if (!launch_success)
+	{
+		auto err{ GetLastError() };
+		std::stringstream hexCode{};
+		hexCode << std::hex << err;
+		Logger::error("Failed to launch compiler. Error code: {}", hexCode.str());
+		return false;
+	}
+	// Wait until compiling is done
+	DWORD exitCode{};
+	while (true)
+	{
+		const auto exec_success = GetExitCodeProcess(pi.hProcess, &exitCode);
+		if (!exec_success)
+		{
+			auto err{ GetLastError() };
+			std::stringstream hexCode{};
+			hexCode << std::hex << err;
+			Logger::error("Failed to query process. Error code: {}", hexCode.str());
+			return false;
+		}
+		if (exitCode != STILL_ACTIVE)
+			break;
+	}
+	// Copy the compiled dlls into the output directory if compilation is successful
+	if (exitCode == 0)
+	{
+		std::filesystem::copy_file
+		(
+			(runtimeDirectory + "/Nova-Scripts/.tmp_build/Nova-Scripts.dll"), // Source
+			(runtimeDirectory + "\\Nova-Scripts.dll"), // Destination
+			std::filesystem::copy_options::overwrite_existing
+		);
+	}
+	else
+	{
+		Logger::error("Failed to build Nova-Scripts");
+		return false;
+	}
+	return true;
+}
+
+
 void ScriptingAPIManager::update() { 	
 	ZoneScoped;
 	updateScripts(); 
 }
 
-void ScriptingAPIManager::loadAllScripts() {
-
+bool ScriptingAPIManager::loadAllScripts() {
+	if (!compileScriptAssembly())
+		return false;
+	loadScripts();
+	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
+	{
+		for (ScriptData& scriptData : scripts.scriptDatas)
+			addGameObjectScript(static_cast<unsigned int>(entityId), scriptData.name.c_str());
+	}
+	initalizeScripts();
+	return true;
 }
 
 void ScriptingAPIManager::unloadAllScripts() {
-
+	unloadScripts();
 }
 
-void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName){ addGameObjectScript(entityID, scriptName); }
-void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName) { removeGameObjectScript(entityID, scriptName); }
-std::vector<std::string> ScriptingAPIManager::getAvailableScripts(){ return getScriptNames(); }
 

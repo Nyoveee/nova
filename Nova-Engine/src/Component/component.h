@@ -31,9 +31,10 @@ class CubeMap;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts
 
 using MaterialName = std::string;
+using ScriptName   = std::string;
 
 struct EntityData {
 	std::string name;
@@ -182,6 +183,18 @@ struct SkyBox {
 	
 	REFLECTABLE(
 		cubeMapId
+	)
+};
+struct ScriptData
+{
+	std::string name;
+	// Additional data includes those properties in the scripts
+};
+struct Scripts
+{
+	std::vector<ScriptData> scriptDatas;
+	REFLECTABLE(
+		scriptDatas
 	)
 };
 

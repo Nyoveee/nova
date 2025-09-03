@@ -13,6 +13,7 @@
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
 #include "AssetManager/Asset/model.h"
+#include "AssetManager/Asset/scriptAsset.h"
 #include "AssetManager/folder.h"
 #include "Logger.h"
 

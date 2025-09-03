@@ -128,7 +128,8 @@
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)DLL\Debug\*.dll" /Y /Q "$(OutDir)"</Command>
+      <Command>xcopy "$(SolutionDir)DLL\Debug\*.dll" /Y /Q "$(OutDir)"
+xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,7 +154,8 @@
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)DLL\Release\*.dll" /Y /Q "$(OutDir)"</Command>
+      <Command>xcopy "$(SolutionDir)DLL\Release\*.dll" /Y /Q "$(OutDir)"
+xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

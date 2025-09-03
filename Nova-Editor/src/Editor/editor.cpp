@@ -389,20 +389,6 @@ void Editor::sandboxWindow() {
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}
 
-	std::string testScript{ engine.scriptingAPIManager.getAvailableScripts()[0] };
-	std::string testScript2{ engine.scriptingAPIManager.getAvailableScripts()[1] };
-	if (ImGui::Button(testScript.c_str())) {
-		entt::entity testSubject{ 0 };
-
-		if (registry.valid(testSubject)) {
-			// There's no proper start/stop yet so they are init as soon as the script load
-			// testScript1 needs to reference testscript2 so testscript2 is loaded first
-			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, testScript2.c_str());
-			engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, testScript.c_str());
-
-		}
-	}
-
 	if (ImGui::Button("(+) Add Light")) {
 		auto entity = registry.create();
 

@@ -223,7 +223,42 @@ namespace {
 						ImGui::PopID();
 					}
 				}
-
+				if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+					std::vector<ScriptData> &scriptDatas{ dataMember };
+					// Adding of Scripts
+					if (ImGui::BeginCombo("##", "Add new script"))
+					{
+						AssetManager& assetManager{ componentInspector.assetManager };
+						for (auto& scriptAsset : assetManager.getAllAssets<ScriptAsset>())
+						{
+							std::string scriptName{ scriptAsset.get().name };
+							scriptName = scriptName.substr(0, scriptName.find_first_of('.'));
+							if (ImGui::Selectable(scriptName.c_str())) {
+								ScriptData newData;
+								newData.name = scriptName;
+								scriptDatas.push_back(newData);
+							}
+						}
+						ImGui::EndCombo();
+					}
+					// List of Scripts
+					int i{};
+					auto displayScriptInfo = [&i](ScriptData& scriptData) {
+						ImGui::PushID(i++);
+						bool keepScript = true;
+						if (ImGui::CollapsingHeader(scriptData.name.c_str(), &keepScript)) {
+							// To do display additional data
+						}
+						ImGui::PopID();
+						return !keepScript;
+					};
+					// Removal of Scripts
+					ImGui::BeginChild("", ImVec2(0, 400), ImGuiChildFlags_Border);
+					std::vector<ScriptData>::iterator it = std::remove_if(std::begin(scriptDatas), std::end(scriptDatas), std::bind(displayScriptInfo, std::placeholders::_1));
+					ImGui::EndChild();
+					if(it != std::end(scriptDatas))
+						scriptDatas.erase(it);
+				}
 				// it's an enum. let's display a dropdown box for this enum.
 				// how? using enum reflection provided by "magic_enum.hpp" :D
 				if constexpr (std::is_enum_v<DataMemberType>) {

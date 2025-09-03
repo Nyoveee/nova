@@ -9,6 +9,9 @@
 #include "assetManager.h"
 #include "Debugging/Profiling.h"
 
+#include "Serialisation/serialisation.h"
+
+
 Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
 	window					{ window },
 	assetManager			{ assetManager },
@@ -25,6 +28,10 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
 {
+}
+
+Engine::~Engine() {
+	Serialiser::serialiseComponent(ecs);
 }
 
 void Engine::fixedUpdate(float dt) {
@@ -69,6 +76,11 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
+		if (!scriptingAPIManager.loadAllScripts())
+		{
+			stopSimulation();
+			return;
+		}
 		physicsManager.initialise();
 		scriptingAPIManager.loadAllScripts();
 		audioSystem.loadAllSounds();
