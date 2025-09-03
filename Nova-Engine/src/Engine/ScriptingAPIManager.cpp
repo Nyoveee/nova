@@ -118,6 +118,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
 		loadScripts							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
 		unloadScripts                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -263,12 +264,15 @@ bool ScriptingAPIManager::loadAllScripts() {
 	if (!compileScriptAssembly())
 		return false;
 	loadScripts();
-	entt::entity testSubject{ 0 };
-	// To do, get all script components to load this
-	if (engine.ecs.registry.valid(testSubject)) {
-		engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, "TestScript2");
-		engine.scriptingAPIManager.loadScriptIntoAPI((unsigned int)testSubject, "TestScript");
+	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
+	{
+		for (ScriptData& scriptData : scripts.scriptDatas) {
+			std::string script{ scriptData.name };
+			script = script.substr(0, script.find_first_of('.'));
+			addGameObjectScript(static_cast<unsigned int>(entityId), script.c_str());
+		}
 	}
+	initalizeScripts();
 	return true;
 }
 
@@ -276,6 +280,4 @@ void ScriptingAPIManager::unloadAllScripts() {
 	unloadScripts();
 }
 
-void ScriptingAPIManager::loadScriptIntoAPI(unsigned int entityID, const char* scriptName){ addGameObjectScript(entityID, scriptName); }
-void ScriptingAPIManager::removeScriptFromAPI(unsigned int entityID, const char* scriptName) { removeGameObjectScript(entityID, scriptName); }
 

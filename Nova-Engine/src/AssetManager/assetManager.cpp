@@ -139,6 +139,9 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 	else if (fileExtension == ".exr") {
 		recordAssetFile<CubeMap>(path);
 	}
+	else if (fileExtension == ".cs") {
+		recordAssetFile<ScriptAsset>(path);
+	}
 
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", path.string());

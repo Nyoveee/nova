@@ -21,6 +21,7 @@ internal:
 
 	static void addGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
 	static void removeGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
+	static void intializeAllScripts();
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);

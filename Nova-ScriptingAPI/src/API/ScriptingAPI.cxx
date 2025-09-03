@@ -34,8 +34,6 @@ void Interface::addGameObjectScript(System::UInt32 entityID, System::String^ scr
 			}
 			Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(type));
 			newScript->setEntityID(entityID);
-			newScript->callInit();
-
 			gameObjectScripts[entityID]->Add(newScript);
 			return;
 		}
@@ -56,6 +54,13 @@ void Interface::removeGameObjectScript(System::UInt32 entityID, System::String^ 
 	std::ostringstream errorDetails;
 	errorDetails << "(ID = " << std::to_string(static_cast<entt::id_type>(entityID)) << ") Script not found for removal";
 	throw std::runtime_error(errorDetails.str());
+}
+
+void Interface::intializeAllScripts()
+{
+	for each (System::UInt32 entityID in gameObjectScripts->Keys)
+		for each (Script ^ script in gameObjectScripts[entityID])
+			script->callInit();
 }
 
 void Interface::update() {

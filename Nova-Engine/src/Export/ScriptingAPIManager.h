@@ -21,6 +21,7 @@ using AddScriptFunctionPtr		= void (*)(unsigned int, const char*);
 using RemoveScriptFunctionPtr	= void (*)(unsigned int, const char*);
 using LoadScriptsFunctionPtr = void (*)(void);
 using UnloadScriptsFunctionPtr = void(*)(void);
+using IntializeScriptsFunctionPtr = void(*)(void);
 
 class ScriptingAPIManager {
 public:
@@ -38,11 +39,6 @@ public:
 
 	DLL_API bool loadAllScripts();
 	DLL_API void unloadAllScripts();
-
-	DLL_API void loadScriptIntoAPI(unsigned int entityID, const char* scriptName);
-	DLL_API void removeScriptFromAPI(unsigned int entityID, const char* scriptName);
-
-
 private:
 	template<typename Func>
 	Func getCoreClrFuncPtr(const std::string& functionName);
@@ -74,6 +70,7 @@ private:
 	RemoveScriptFunctionPtr removeGameObjectScript;
 	LoadScriptsFunctionPtr loadScripts;
 	UnloadScriptsFunctionPtr unloadScripts;
+	IntializeScriptsFunctionPtr initalizeScripts;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"
