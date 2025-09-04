@@ -171,6 +171,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\AssetManager\Asset\audio.h" />
     <ClInclude Include="src\AssetManager\Asset\cubemap.h" />
     <ClInclude Include="src\Audio\audioSystem.h" />
     <ClInclude Include="src\Export\Logger.h" />
@@ -226,6 +227,7 @@
   <ItemGroup>
     <ClCompile Include="src\AssetManager\Asset\asset.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
+    <ClCompile Include="src\AssetManager\Asset\audio.cpp" />
     <ClCompile Include="src\AssetManager\Asset\cubemap.cpp" />
     <ClCompile Include="src\AssetManager\Asset\model.cpp" />
     <ClCompile Include="src\AssetManager\Asset\texture.cpp" />

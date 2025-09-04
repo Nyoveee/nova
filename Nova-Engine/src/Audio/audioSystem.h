@@ -2,6 +2,8 @@
 
 #include <FMOD/fmod.hpp>
 #include "export.h"
+#include <unordered_map>
+#include <string>
 
 class Engine;
 
@@ -25,7 +27,6 @@ public:
 private:
 	FMOD::System* fmodSystem;
 	Engine& engine;
-
-private:
-
+	std::unordered_map<std::string, FMOD::Sound*> sounds;
+	std::unordered_map<std::string, std::string> soundFilePathMap;
 };
