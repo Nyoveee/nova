@@ -19,13 +19,10 @@ namespace {
 
 AssetManager::AssetManager() :
 	threadPool { static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }
+	, assetDirectoryWatcher{*this, GetRunTimeDirectory()}
 {
 	// Get the run time directory
-	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
-	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
-	PathRemoveFileSpecA(runtimeDirectory.data());
-	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
-	std::filesystem::path assetDirectory = runtimeDirectory;
+	std::filesystem::path assetDirectory = GetRunTimeDirectory();
 	assetDirectory /= "Assets";
 
 	FolderID folderId{ 0 };
@@ -51,6 +48,9 @@ AssetManager::AssetManager() :
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
 	}
+	// Register callbacks for the watcher
+	RegisterCallbackAssetContentChanged(std::bind(&AssetManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
+	RegisterCallbackAssetContentDeleted(std::bind(&AssetManager::OnAssetContentDeletedCallback, this));
 }
 
 AssetManager::~AssetManager() {
@@ -212,9 +212,32 @@ BasicAssetInfo AssetManager::createMetaDataFile(std::filesystem::path const& pat
 
 	return assetInfo;
 }
-
+void AssetManager::RegisterCallbackAssetContentChanged(std::function<void(AssetTypeID)> callback) {
+	assetDirectoryWatcher.RegisterCallbackAssetContentChanged(callback);
+}
+void AssetManager::RegisterCallbackAssetContentDeleted(std::function<void(void)> callback) {
+	assetDirectoryWatcher.RegisterCallbackAssetContentDeleted(callback);
+}
 void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile) {
 	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
+}
+
+void AssetManager::OnAssetContentChangedCallback(AssetTypeID assetTypeID){
+	(void)assetTypeID;
+	Logger::info("Called Asset Directory Modified");
+}
+
+void AssetManager::OnAssetContentDeletedCallback(){
+	Logger::info("Called Asset Directory Content Deleted");
+}
+
+std::string AssetManager::GetRunTimeDirectory()
+{
+	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
+	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
+	PathRemoveFileSpecA(runtimeDirectory.data());
+	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
+	return runtimeDirectory;
 }
 
 void AssetManager::submitCallback(std::function<void()> callback) {

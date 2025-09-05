@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <dotnet/coreclrhost.h>
+#include <Libraries/type_alias.h>
 
 class Engine; // Don't need to call any function or variables, just pass in
 
@@ -50,6 +51,9 @@ private:
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
 	bool compileScriptAssembly();
+private:
+	// This is the callback when the assets files are modified/added/renamed
+	void OnAssetContentChangedCallback(AssetTypeID assetTypeID);
 private:
 	Engine& engine;
 	std::string runtimeDirectory;

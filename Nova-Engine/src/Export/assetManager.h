@@ -15,6 +15,8 @@
 #include "AssetManager/Asset/model.h"
 #include "AssetManager/Asset/scriptAsset.h"
 #include "AssetManager/folder.h"
+#include "AssetManager/AssetDirectoryWatcher.h"
+
 #include "Logger.h"
 
 // Assets stored in the asset manager merely point to these assets in file location.
@@ -30,6 +32,8 @@ template <typename T>
 concept ValidAsset = std::derived_from<T, Asset> && std::derived_from<AssetInfo<T>, BasicAssetInfo>;
 
 #include "AssetManager/assetFunctor.h"
+
+class AssetDirectoryWatcher;
 
 class AssetManager {
 public:
@@ -149,8 +153,21 @@ private:
 	template <ValidAsset T>
 	void serialiseAssetMetaData(T const& asset);
 	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
-
 public:
+	// These just tell the watcher the callback, for outside assetmanager uses like editor
+	void RegisterCallbackAssetContentChanged(std::function<void(AssetTypeID)> callback);
+	void RegisterCallbackAssetContentDeleted(std::function<void(void)> callback);
+private:
+	// This is the callback when the assets files are modified/added/renamed
+	void OnAssetContentChangedCallback(AssetTypeID assetTypeID);
+	// This is the callback when any asset file is deleted, as you are unable to check the file since it's gone
+	void OnAssetContentDeletedCallback();
+
+	std::string GetRunTimeDirectory();
+public:
+	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
+	AssetDirectoryWatcher assetDirectoryWatcher;
+
 	// Thread pool to manage loading in another thread.
 	BS::thread_pool<BS::tp::none> threadPool;
 

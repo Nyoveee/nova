@@ -228,7 +228,7 @@ namespace filewatch {
 
 		static constexpr std::size_t _buffer_size = { 1024 * 256 };
 
-		// only used if watch a single file
+		// only used if assetDirectoryWatcher a single file
 		StringType _filename;
 
 		std::function<void(const StringType& file, const Event event_type)> _callback;

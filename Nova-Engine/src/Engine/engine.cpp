@@ -82,7 +82,6 @@ void Engine::startSimulation() {
 			return;
 		}
 		physicsManager.initialise();
-		scriptingAPIManager.loadAllScripts();
 		audioSystem.loadAllSounds();
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();

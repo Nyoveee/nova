@@ -1,13 +1,15 @@
 #include "ScriptingAPIManager.h"
 
+#include "AssetManager.h"
+#include "AssetManager/Asset/scriptAsset.h"
+#include "Debugging/Profiling.h"
+#include "Logger.h"
+
 #include <shlwapi.h>
 #include <array>
 #include <iostream>
 #include <filesystem>
 #include <tuple>
-
-#include "Debugging/Profiling.h"
-#include "Logger.h"
 
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
@@ -28,6 +30,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
 {
+	engine.assetManager.RegisterCallbackAssetContentChanged(std::bind(&ScriptingAPIManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
 	// (this project assumes that the dll is located right next to the executable.
@@ -41,7 +44,6 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
 	PathRemoveFileSpecA(runtimeDirectory.data());
 	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
-
 	// Get the path of the coreclr.dll
 	std::string coreClrPath{ dotnetDirectory };
 	coreClrPath += "\\Coreclr.dll";
@@ -277,4 +279,9 @@ void ScriptingAPIManager::unloadAllScripts() {
 	unloadScripts();
 }
 
+void ScriptingAPIManager::OnAssetContentChangedCallback(AssetTypeID assetTypeID)
+{
+	if (assetTypeID == Family::id<ScriptAsset>())
+		Logger::info("ScriptingAPIManager::OnAssetContentChangedCallback(ScriptAsset)");
+}
 
