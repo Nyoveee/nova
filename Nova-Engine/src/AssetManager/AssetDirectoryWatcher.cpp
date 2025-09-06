@@ -17,12 +17,17 @@ AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, std::fi
 					}
 {}
 
-void AssetDirectoryWatcher::RegisterCallbackAssetContentChanged(std::function<void(AssetID)> callback){
-	std::lock_guard<std::mutex> lock{ contentChangeCallbackMutex };
-	assetContentChangedCallbacks.push_back(callback);
+void AssetDirectoryWatcher::RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback){
+	std::lock_guard<std::mutex> lock{ contentAddCallbackMutex };
+	assetContentAddCallbacks.push_back(callback);
 }
 
-void AssetDirectoryWatcher::RegisterCallbackAssetContentDeleted(std::function<void(void)> callback){
+void AssetDirectoryWatcher::RegisterCallbackAssetContentModified(std::function<void(AssetID)> callback){
+	std::lock_guard<std::mutex> lock{ contentModifiedCallbackMutex };
+	assetContentModifiedCallbacks.push_back(callback);
+}
+
+void AssetDirectoryWatcher::RegisterCallbackAssetContentDeleted(std::function<void(AssetID)> callback){
 	std::lock_guard<std::mutex> lock{ contentDeleteCallbackMutex };
 	assetContentDeletedCallbacks.push_back(callback);
 }
@@ -32,48 +37,47 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	if (engineIsDestructing) {
 		return;
 	}
-
-	std::filesystem::path currentPath{ path };
-
-	if (std::filesystem::is_directory(currentPath)) return;
-	
-	if (change_type != filewatch::Event::removed) {
-		std::string absPath{ rootDirectory.string() + "\\" + currentPath.string() };
-		
-		// Attempts to finds the appropriate asset id.
-		std::optional<AssetID> assetIdOptional = assetManager.getAssetId(absPath);
-
-		if (!assetIdOptional) {
-			return;
+	std::filesystem::path absPath{ rootDirectory.string() + "\\" + std::filesystem::path(path).string()};
+	// New File added
+	if (change_type == filewatch::Event::added) {
+		std::lock_guard<std::mutex> lock{ contentAddCallbackMutex };
+		// Thread safe callback submission
+		for (std::function<void(std::string)> callback : assetContentAddCallbacks) {
+			assetManager.submitCallback([callback,absPath]() {
+				callback(absPath.string());
+			});
 		}
-
-		AssetID assetId = assetIdOptional.value();
-
+	}
+	// Attempts to finds the appropriate asset id.
+	std::optional<AssetID> assetIdOptional = assetManager.getAssetId(absPath.string());
+	if (!assetIdOptional)
+		return;
+	AssetID assetId = assetIdOptional.value();
+	if (change_type != filewatch::Event::removed) {
 		// There is a known bug in filewatch(Since 2021...) where modified is called twice, including when it's added
 		// Therefore this will check the file with the existing time before updating it(Works except copy pasting from existing files)
 		// jq: sadge :(
 		std::filesystem::file_time_type time{ std::filesystem::last_write_time(absPath) };
 		
-		if (lastWriteTimes[absPath] != time) {
-			lastWriteTimes[absPath] = time;
+		if (lastWriteTimes[absPath.string()] != time) {
+			lastWriteTimes[absPath.string()] = time;
 		
-			std::lock_guard<std::mutex> lock{ contentChangeCallbackMutex };
+			std::lock_guard<std::mutex> lock{ contentModifiedCallbackMutex };
 
 			// Thread safe callback submission
-			for (std::function<void(AssetID)> callback : assetContentChangedCallbacks) {
+			for (std::function<void(AssetID)> callback : assetContentModifiedCallbacks) {
 				assetManager.submitCallback([callback, assetId]() {
 					callback(assetId);
 				});
 			}
 		}
 	}
-	// Thread safe callback submission
-	else /*change_type == filewatch::Event::removed*/ {
-
+	else{
 		std::lock_guard<std::mutex> lock{ contentDeleteCallbackMutex };
-
-		for (std::function<void(void)> callback : assetContentDeletedCallbacks) {
-			assetManager.submitCallback(callback);
+		for (std::function<void(AssetID)> callback : assetContentDeletedCallbacks) {
+			assetManager.submitCallback([callback, assetId]() {
+				callback(assetId);
+			});
 		}
 	}
 }

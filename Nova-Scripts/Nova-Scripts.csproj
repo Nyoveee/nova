@@ -18,7 +18,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include = "Nova-ScriptingAPI">
-      <HintPath>..\Nova-ScriptingAPI.dll</HintPath>
+      <HintPath>Debug/Nova-ScriptingAPI.dll</HintPath>
+      <HintPath>Release/Nova-ScriptingAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

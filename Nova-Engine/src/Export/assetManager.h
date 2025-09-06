@@ -159,10 +159,12 @@ private:
 	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
 
 private:
-	// This is the callback when the assets files are modified/added/renamed
-	void OnAssetContentChangedCallback(AssetID assetTypeID);
-	// This is the callback when any asset file is deleted, as you are unable to check the file since it's gone
-	void OnAssetContentDeletedCallback();
+	// This is the callback when assets file are added
+	void OnAssetContentAddedCallback(std::string abspath);
+	// This is the callback when the assets files are modified/renamed
+	void OnAssetContentModifiedCallback(AssetID assetId);
+	// This is the callback when any asset file is deleted
+	void OnAssetContentDeletedCallback(AssetID assetId);
 
 	std::string GetRunTimeDirectory();
 

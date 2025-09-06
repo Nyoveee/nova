@@ -19,10 +19,10 @@ namespace {
 
 AssetManager::AssetManager() :
 	threadPool			{ static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }, 
-	directoryWatcher	{ *this, std::filesystem::path{ GetRunTimeDirectory() } /= "Assets" }
+	directoryWatcher	{ *this, std::filesystem::current_path() /= "Assets" }
 {
 	// Get the run time directory
-	std::filesystem::path assetDirectory = std::filesystem::path{ GetRunTimeDirectory() } /= "Assets";
+	std::filesystem::path assetDirectory = std::filesystem::current_path() /= "Assets";
 
 	FolderID folderId{ 0 };
 		
@@ -47,13 +47,10 @@ AssetManager::AssetManager() :
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
 	}
-
 	// Register callbacks for the watcher
-	//RegisterCallbackAssetContentChanged(std::bind(&AssetManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
-	//RegisterCallbackAssetContentDeleted(std::bind(&AssetManager::OnAssetContentDeletedCallback, this));
-
-	directoryWatcher.RegisterCallbackAssetContentChanged([&](AssetID assetId) { OnAssetContentChangedCallback(assetId); });
-	directoryWatcher.RegisterCallbackAssetContentDeleted([&]() { OnAssetContentDeletedCallback(); });
+	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });
+	directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
+	directoryWatcher.RegisterCallbackAssetContentDeleted([&](AssetID assetID) { OnAssetContentDeletedCallback(assetID); });
 }
 
 AssetManager::~AssetManager() {
@@ -223,12 +220,17 @@ void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& met
 	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
 }
 
-void AssetManager::OnAssetContentChangedCallback(AssetID assetId){
+void AssetManager::OnAssetContentAddedCallback(std::string abspath)
+{
+	Logger::info("Called Asset Directory Added, {}", abspath);
+}
+
+void AssetManager::OnAssetContentModifiedCallback(AssetID assetId){
 	Logger::info("Called Asset Directory Modified, {}", static_cast<std::size_t>(assetId));
 }
 
-void AssetManager::OnAssetContentDeletedCallback(){
-	Logger::info("Called Asset Directory Content Deleted");
+void AssetManager::OnAssetContentDeletedCallback(AssetID assetId){
+	Logger::info("Called Asset Directory Content Deleted, {}", static_cast<std::size_t>(assetId));
 }
 
 std::string AssetManager::GetRunTimeDirectory() {

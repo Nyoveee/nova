@@ -24,8 +24,9 @@ public:
 	AssetDirectoryWatcher& operator=(AssetDirectoryWatcher&&)		= delete;
 
 public:
-	void RegisterCallbackAssetContentChanged(std::function<void(AssetID)> callback);
-	void RegisterCallbackAssetContentDeleted(std::function<void(void)> callback);
+	void RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback);
+	void RegisterCallbackAssetContentModified(std::function<void(AssetID)> callback);
+	void RegisterCallbackAssetContentDeleted(std::function<void(AssetID)> callback);
 
 private:
 	void HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type);
@@ -40,10 +41,12 @@ private:
 	
 	std::unordered_map<std::string, std::filesystem::file_time_type> lastWriteTimes;
 
-	std::vector<std::function<void(AssetID)>> assetContentChangedCallbacks;
-	std::vector<std::function<void(void)>> assetContentDeletedCallbacks;
+	std::vector<std::function<void(std::string)>> assetContentAddCallbacks;
+	std::vector<std::function<void(AssetID)>> assetContentModifiedCallbacks;
+	std::vector<std::function<void(AssetID)>> assetContentDeletedCallbacks;
 
-	std::mutex contentChangeCallbackMutex;
+	std::mutex contentAddCallbackMutex;
+	std::mutex contentModifiedCallbackMutex;
 	std::mutex contentDeleteCallbackMutex;
 };
 

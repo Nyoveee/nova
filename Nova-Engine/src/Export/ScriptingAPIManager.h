@@ -54,7 +54,7 @@ private:
 
 private:
 	// This is the callback when the assets files are modified/added/renamed
-	void OnAssetContentChangedCallback(AssetID assetTypeID);
+	void OnAssetContentModifiedCallback(AssetID assetTypeID);
 
 private:
 	Engine& engine;

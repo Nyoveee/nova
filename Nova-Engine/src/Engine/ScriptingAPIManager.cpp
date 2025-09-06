@@ -30,8 +30,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
 {
-	//engine.assetManager.RegisterCallbackAssetContentChanged(std::bind(&ScriptingAPIManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
-	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentChanged([&](AssetID assetId) { OnAssetContentChangedCallback(assetId); });
+	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
 
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
@@ -193,15 +192,15 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 bool ScriptingAPIManager::compileScriptAssembly()
 {
 	// Project path and build command
-	std::string proj_path{runtimeDirectory + "\\Nova-Scripts\\Nova-Scripts.csproj"};
+	std::string proj_path{std::filesystem::current_path().string() + "\\Nova-Scripts\\Nova-Scripts.csproj"};
 #ifdef _DEBUG
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Debug --no-self-contained -o "
-		+ L"\"" + std::filesystem::absolute(runtimeDirectory).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\"";
 #else
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Release --no-self-contained -o "
-		+ L"\"" + std::filesystem::absolute(runtimeDirectory).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\"";
 #endif
 	STARTUPINFOW startInfo;
 	PROCESS_INFORMATION pi;
@@ -245,7 +244,7 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	{
 		std::filesystem::copy_file
 		(
-			(runtimeDirectory + "/Nova-Scripts/.tmp_build/Nova-Scripts.dll"), // Source
+			(std::filesystem::current_path().string() + "\\Nova-Scripts\\.bin\\Nova-Scripts.dll"), // Source
 			(runtimeDirectory + "\\Nova-Scripts.dll"), // Destination
 			std::filesystem::copy_options::overwrite_existing
 		);
@@ -281,7 +280,7 @@ void ScriptingAPIManager::unloadAllScripts() {
 	unloadScripts();
 }
 
-void ScriptingAPIManager::OnAssetContentChangedCallback(AssetID assetId)
+void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
 {
 	if (engine.assetManager.isAsset<ScriptAsset>(assetId)) {
 		Logger::info("ScriptingAPIManager::OnAssetContentChangedCallback(ScriptAsset) {}", static_cast<std::size_t>(assetId));
