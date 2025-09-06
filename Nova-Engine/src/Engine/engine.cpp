@@ -28,6 +28,7 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
 {
+	Serialiser::deserialiseComponent(ecs);
 }
 
 Engine::~Engine() {
