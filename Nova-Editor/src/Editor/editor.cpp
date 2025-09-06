@@ -9,7 +9,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-//#include "AssetManager/Asset/audio.h"		// To Test audio system
+#include "Audio/audioSystem.h"
 #include "window.h"
 #include "editor.h"
 #include "engine.h"
@@ -346,12 +346,28 @@ void Editor::sandboxWindow() {
 
 	ImGui::Begin("ooga booga sandbox area");
 
-	if (ImGui::Button("Audio Test")) {
-		
-		
+	if (ImGui::Button("SFX NonInstance Audio Test")) 
+	{
 		/* code here */
+		engine.audioSystem.playSFXNonInst("SFX_AudioTest1.wav", 0.0f, 0.0f, 0.0f);
+	}
 
+	if (ImGui::Button("SFX Inst Audio Test"))
+	{
+		/* code here */
+		engine.audioSystem.playSFXInst("SFX_AudioTest1.wav", 0.0f, 0.0f, 0.0f);
+	}
 
+	if (ImGui::Button("BGM Audio Test"))
+	{
+		/* code here */
+		engine.audioSystem.playBGM("BGM_AudioTest.wav");
+	}
+
+	if (ImGui::Button("BGM Audio Test 2"))
+	{
+		/* code here */
+		engine.audioSystem.playBGM("BGM_AudioTest2.wav");
 	}
 
 	entt::registry& registry = engine.ecs.registry;
