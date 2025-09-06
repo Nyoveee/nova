@@ -13,6 +13,8 @@
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
 #include "AssetManager/Asset/model.h"
+#include "AssetManager/Asset/audio.h"
+
 #include "AssetManager/Asset/scriptAsset.h"
 #include "AssetManager/folder.h"
 #include "Logger.h"
@@ -74,9 +76,9 @@ public:
 	// since there is no loading of asset, you retrieve the data instantly.
 	DLL_API Asset* getAssetInfo(AssetID id);
 
-	// retrieve all assets of a given type.
+	// retrieve all asset ids of a given type.
 	template <ValidAsset T>
-	std::vector<std::reference_wrapper<Asset>> const& getAllAssets() const;
+	std::vector<AssetID> const& getAllAssets() const;
 
 	// retrieve 1 asset id of a given type. (should never be invalid asset id, but still should handle the chance of it being invalid).
 	template <ValidAsset T>
@@ -158,8 +160,7 @@ private:
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
 
 	// groups all assets based on their type.
-	// reference wrapper because i dont want a chance of null pointer.
-	std::unordered_map<AssetTypeID, std::vector<std::reference_wrapper<Asset>>> assetsByType;
+	std::unordered_map<AssetTypeID, std::vector<AssetID>> assetsByType;
 	
 	// welcome to template metaprogramming black magic.
 	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;

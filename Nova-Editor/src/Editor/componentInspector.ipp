@@ -20,9 +20,11 @@ void ComponentInspector::displayAssetDropDownList(AssetID id, const char* labelN
 	}
 
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
-		for (auto&& asset : allAssets) {
-			if (ImGui::Selectable(asset.get().name.c_str(), id == asset.get().id)) {
-				onClickCallback(asset.get().id);
+		for (auto&& assetId : allAssets) {
+			Asset* asset = assetManager.getAssetInfo(assetId);
+
+			if (ImGui::Selectable(asset->name.c_str(), id == asset->id)) {
+				onClickCallback(asset->id);
 			}
 		}
 

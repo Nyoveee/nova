@@ -142,6 +142,29 @@ constexpr FolderID::operator std::size_t() const {
 
 constexpr inline FolderID NONE{ std::numeric_limits<std::size_t>::max() };
 
+// ================ AudioInstanceID ==================
+constexpr AudioInstanceID::AudioInstanceID() : id{} {}
+constexpr AudioInstanceID::AudioInstanceID(std::size_t id) : id{ id } {}
+
+constexpr bool operator==(AudioInstanceID const& lhs, AudioInstanceID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(AudioInstanceID const& lhs, AudioInstanceID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+template<>
+struct std::hash<AudioInstanceID> {
+	std::size_t operator()(AudioInstanceID const& folderId) const noexcept {
+		return std::hash<std::size_t>{}(folderId.id);
+	}
+};
+
+constexpr AudioInstanceID::operator std::size_t() const {
+	return id;
+}
+
 // ========================================
 // Euler angles
 // ========================================

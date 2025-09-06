@@ -229,9 +229,10 @@ namespace {
 					if (ImGui::BeginCombo("##", "Add new script"))
 					{
 						AssetManager& assetManager{ componentInspector.assetManager };
-						for (auto& scriptAsset : assetManager.getAllAssets<ScriptAsset>())
+						for (auto& id : assetManager.getAllAssets<ScriptAsset>())
 						{
-							std::string scriptName{ scriptAsset.get().name };
+							Asset* scriptAsset = assetManager.getAssetInfo(id);
+							std::string scriptName{ scriptAsset->name };
 							scriptName = scriptName.substr(0, scriptName.find_first_of('.'));
 							if (ImGui::Selectable(scriptName.c_str())) {
 								ScriptData newData;
