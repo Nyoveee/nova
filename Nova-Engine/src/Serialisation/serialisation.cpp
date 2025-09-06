@@ -1,18 +1,35 @@
 #include "serialisation.h"
-#include <json/json.hpp>
 #include "Component/component.h"
 #include "ECS.h"
 
 #include <fstream>
 #include <iomanip>
+constexpr const char* filetest2path = "test2.json";
 constexpr const char* filepath = "test.json";
 
-using json = nlohmann::json;
-
 namespace Serialiser {
-	void Serialiser::serialiseComponent(ECS& ecs) {
+	void Serialiser::serialiseScene(ECS& ecs) {
+		std::ofstream file(filetest2path);
+
+		if (!file) {
+			return;
+		}
+
 		entt::registry& registry = ecs.registry;
 
+		json js;
+		std::vector<json> jsonVec;
+
+		for (auto&& [entity] : registry.view<entt::entity>().each()) {
+			json componentsJson = serialiseComponents<ALL_COMPONENTS>(registry, entity);
+			jsonVec.push_back(componentsJson);
+		}
+		
+		// save to output file
+		js["entities"] = jsonVec;
+		file << std::setw(4) << js << std::endl;
+
+#if 0
 		// add your implementation here.
 		
 		json tempJson;
@@ -68,14 +85,22 @@ namespace Serialiser {
 
 		js["entities"] = jsonVec;
 		file << std::setw(4) << js << std::endl;
+#endif
 	}
 
-	void deserialiseComponent(ECS& ecs) {
-		json j;
+	void deserialiseScene(ECS& ecs) {
+		(void)ecs;
+
 		std::ifstream file(filepath);
 
 		if (!file.is_open())
 			return;
+
+		//for (entt::entity entity : registry.view<entt::entity>().each()) {
+		//	deserialiseComponents<ALL_COMPONENTS>(registry, entity, file);
+		//}
+#if 1
+		json j;
 
 		file >> j;
 		entt::registry& registry = ecs.registry;
@@ -93,5 +118,6 @@ namespace Serialiser {
 			registry.emplace<Transform>(entity, std::move(transform));
 			registry.emplace<EntityData>(entity, EntityData{ en["EntityData"]["name"], en["EntityData"]["parent"], en["EntityData"]["children"] });
 		}
+#endif
 	}
 };

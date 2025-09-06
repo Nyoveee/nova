@@ -28,11 +28,11 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
 {
-	Serialiser::deserialiseComponent(ecs);
+	Serialiser::deserialiseScene(ecs);
 }
 
 Engine::~Engine() {
-	Serialiser::serialiseComponent(ecs);
+	Serialiser::serialiseScene(ecs);
 }
 
 void Engine::fixedUpdate(float dt) {
