@@ -18,12 +18,11 @@ namespace {
 }
 
 AssetManager::AssetManager() :
-	threadPool { static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }
-	, assetDirectoryWatcher{*this, GetRunTimeDirectory()}
+	threadPool			{ static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }, 
+	directoryWatcher	{ *this, std::filesystem::path{ GetRunTimeDirectory() } /= "Assets" }
 {
 	// Get the run time directory
-	std::filesystem::path assetDirectory = GetRunTimeDirectory();
-	assetDirectory /= "Assets";
+	std::filesystem::path assetDirectory = std::filesystem::path{ GetRunTimeDirectory() } /= "Assets";
 
 	FolderID folderId{ 0 };
 		
@@ -48,9 +47,13 @@ AssetManager::AssetManager() :
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
 	}
+
 	// Register callbacks for the watcher
-	RegisterCallbackAssetContentChanged(std::bind(&AssetManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
-	RegisterCallbackAssetContentDeleted(std::bind(&AssetManager::OnAssetContentDeletedCallback, this));
+	//RegisterCallbackAssetContentChanged(std::bind(&AssetManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
+	//RegisterCallbackAssetContentDeleted(std::bind(&AssetManager::OnAssetContentDeletedCallback, this));
+
+	directoryWatcher.RegisterCallbackAssetContentChanged([&](AssetID assetId) { OnAssetContentChangedCallback(assetId); });
+	directoryWatcher.RegisterCallbackAssetContentDeleted([&]() { OnAssetContentDeletedCallback(); });
 }
 
 AssetManager::~AssetManager() {
@@ -77,6 +80,9 @@ AssetManager::~AssetManager() {
 
 void AssetManager::update() {
 	ZoneScoped;
+
+	std::lock_guard lock{ queueCallbackMutex };
+
 	while (completedLoadingCallback.size()) {
 		std::function<void()> callback = completedLoadingCallback.front();
 		
@@ -212,27 +218,20 @@ BasicAssetInfo AssetManager::createMetaDataFile(std::filesystem::path const& pat
 
 	return assetInfo;
 }
-void AssetManager::RegisterCallbackAssetContentChanged(std::function<void(AssetTypeID)> callback) {
-	assetDirectoryWatcher.RegisterCallbackAssetContentChanged(callback);
-}
-void AssetManager::RegisterCallbackAssetContentDeleted(std::function<void(void)> callback) {
-	assetDirectoryWatcher.RegisterCallbackAssetContentDeleted(callback);
-}
+
 void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile) {
 	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
 }
 
-void AssetManager::OnAssetContentChangedCallback(AssetTypeID assetTypeID){
-	(void)assetTypeID;
-	Logger::info("Called Asset Directory Modified");
+void AssetManager::OnAssetContentChangedCallback(AssetID assetId){
+	Logger::info("Called Asset Directory Modified, {}", static_cast<std::size_t>(assetId));
 }
 
 void AssetManager::OnAssetContentDeletedCallback(){
 	Logger::info("Called Asset Directory Content Deleted");
 }
 
-std::string AssetManager::GetRunTimeDirectory()
-{
+std::string AssetManager::GetRunTimeDirectory() {
 	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
 	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
 	PathRemoveFileSpecA(runtimeDirectory.data());
@@ -244,6 +243,17 @@ void AssetManager::submitCallback(std::function<void()> callback) {
 	std::lock_guard lock{ queueCallbackMutex };
 
 	completedLoadingCallback.push(std::move(callback));
+}
+
+std::optional<AssetID> AssetManager::getAssetId(std::string const& filepath) const {
+	auto iterator = filepathToAssetId.find(filepath);
+
+	if (iterator == filepathToAssetId.end()) {
+		return std::nullopt;
+	}
+
+	auto&& [_, id] = *iterator;
+	return id;
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

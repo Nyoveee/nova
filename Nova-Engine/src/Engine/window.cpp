@@ -10,6 +10,10 @@
 #include "Graphics/cameraSystem.h"
 #include "Debugging/Profiling.h"
 #include "Logger.h"
+
+// Definition. Should live only in 1 TU.
+std::atomic<bool> engineIsDestructing = false;
+
 namespace {
 	// i don't know any other way..
 	Window* g_Window = nullptr;
@@ -195,6 +199,9 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 		}
 		FrameMark;
 	}
+
+	// game loop stops, the whole app starts destructing..
+	engineIsDestructing = true;
 }
 
 GLFWwindow* Window::getGLFWwindow() const {

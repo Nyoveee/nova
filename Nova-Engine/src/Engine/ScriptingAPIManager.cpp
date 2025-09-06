@@ -30,14 +30,16 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
 {
-	engine.assetManager.RegisterCallbackAssetContentChanged(std::bind(&ScriptingAPIManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
+	//engine.assetManager.RegisterCallbackAssetContentChanged(std::bind(&ScriptingAPIManager::OnAssetContentChangedCallback, this, std::placeholders::_1));
+	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentChanged([&](AssetID assetId) { OnAssetContentChangedCallback(assetId); });
+
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
 	// (this project assumes that the dll is located right next to the executable.
 	// ==========================================================
 	
 	// Get the dotnet directory
-	std::string dotnetDirectory{ getDotNetRuntimeDirectory()};
+	std::string dotnetDirectory{ getDotNetRuntimeDirectory() };
 
 	// Get the run time directory
 	runtimeDirectory = std::string(MAX_PATH, '\0');
@@ -279,9 +281,10 @@ void ScriptingAPIManager::unloadAllScripts() {
 	unloadScripts();
 }
 
-void ScriptingAPIManager::OnAssetContentChangedCallback(AssetTypeID assetTypeID)
+void ScriptingAPIManager::OnAssetContentChangedCallback(AssetID assetId)
 {
-	if (assetTypeID == Family::id<ScriptAsset>())
-		Logger::info("ScriptingAPIManager::OnAssetContentChangedCallback(ScriptAsset)");
+	if (engine.assetManager.isAsset<ScriptAsset>(assetId)) {
+		Logger::info("ScriptingAPIManager::OnAssetContentChangedCallback(ScriptAsset) {}", static_cast<std::size_t>(assetId));
+	}
 }
 

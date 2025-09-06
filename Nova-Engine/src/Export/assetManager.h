@@ -9,6 +9,7 @@
 #include <functional>
 #include <queue>
 #include <mutex>
+#include <atomic>
 
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
@@ -90,6 +91,9 @@ public:
 	template <ValidAsset T>
 	bool isAsset(AssetID id) const;
 
+	// attempts to retrieve asset id given full file path
+	std::optional<AssetID> getAssetId(std::string const& filepath) const;
+
 public:
 	// =========================================================
 	// Getters (no setters!)
@@ -153,20 +157,18 @@ private:
 	template <ValidAsset T>
 	void serialiseAssetMetaData(T const& asset);
 	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
-public:
-	// These just tell the watcher the callback, for outside assetmanager uses like editor
-	void RegisterCallbackAssetContentChanged(std::function<void(AssetTypeID)> callback);
-	void RegisterCallbackAssetContentDeleted(std::function<void(void)> callback);
+
 private:
 	// This is the callback when the assets files are modified/added/renamed
-	void OnAssetContentChangedCallback(AssetTypeID assetTypeID);
+	void OnAssetContentChangedCallback(AssetID assetTypeID);
 	// This is the callback when any asset file is deleted, as you are unable to check the file since it's gone
 	void OnAssetContentDeletedCallback();
 
 	std::string GetRunTimeDirectory();
+
 public:
 	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
-	AssetDirectoryWatcher assetDirectoryWatcher;
+	AssetDirectoryWatcher directoryWatcher;
 
 	// Thread pool to manage loading in another thread.
 	BS::thread_pool<BS::tp::none> threadPool;
@@ -176,7 +178,11 @@ public:
 	void submitCallback(std::function<void()> callback);
 
 private:
+	// main container containing all assets.
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
+
+	// maps filepath to asset id.
+	std::unordered_map<std::string, AssetID> filepathToAssetId;
 
 	// groups all assets based on their type.
 	// reference wrapper because i dont want a chance of null pointer.

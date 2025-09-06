@@ -51,9 +51,11 @@ private:
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
 	bool compileScriptAssembly();
+
 private:
 	// This is the callback when the assets files are modified/added/renamed
-	void OnAssetContentChangedCallback(AssetTypeID assetTypeID);
+	void OnAssetContentChangedCallback(AssetID assetTypeID);
+
 private:
 	Engine& engine;
 	std::string runtimeDirectory;

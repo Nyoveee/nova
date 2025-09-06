@@ -25,6 +25,9 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	// associate this asset id with this asset type.
 	assetIdToType[assetInfo.id] = Family::id<T>();
 
+	// associate absolute filepath to this asset id.
+	filepathToAssetId[assetInfo.filepath] = assetInfo.id;
+
 	return *asset.get();
 }
 

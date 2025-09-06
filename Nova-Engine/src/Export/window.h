@@ -10,6 +10,9 @@ struct ImGuiContext;
 
 class InputManager;
 
+// indicates if whole app is in the midst of destruction.
+extern std::atomic<bool> engineIsDestructing;
+
 class Window {
 public:
 	// Q: why not just use a bool? A: enums are a lot more expressive and improves readability.
