@@ -169,7 +169,7 @@ void Editor::deleteEntity(entt::entity entity) {
 	ImGuizmo::Enable(false); 
 	ImGuizmo::Enable(true);   
 
-	engine.ecs.registry.destroy(entity);
+	engine.ecs.deleteEntity(entity);
 }
 
 // Our main bulk of code should go here, in the main function.
