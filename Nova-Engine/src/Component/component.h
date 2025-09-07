@@ -24,6 +24,7 @@
 class Model;
 class Texture;
 class CubeMap;
+class ScriptAsset;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -185,11 +186,13 @@ struct SkyBox {
 		cubeMapId
 	)
 };
+
 struct ScriptData
 {
-	std::string name;
+	TypedAssetID<ScriptAsset> scriptId;
 	// Additional data includes those properties in the scripts
 };
+
 struct Scripts
 {
 	std::vector<ScriptData> scriptDatas;

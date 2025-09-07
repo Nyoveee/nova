@@ -12,6 +12,10 @@ ref class IManagedComponent;
 
 public ref class Interface
 {
+public:
+	using ScriptID = System::UInt64;
+	using EntityID = System::UInt32;
+
 // This is set to internal so c# scripts cannot access
 internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
@@ -19,9 +23,10 @@ internal:
 	static void unload();
 	static void update();
 
-	static void addGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
-	static void removeGameObjectScript(System::UInt32 entityID, System::String^ scriptName);
+	static void addGameObjectScript(EntityID entityID, ScriptID scriptId);
+	static void removeGameObjectScript(EntityID entityID, ScriptID scriptId);
 	static void intializeAllScripts();
+
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
@@ -32,9 +37,14 @@ internal:
 
 private:
 	using Scripts = System::Collections::Generic::List<Script^>;
-	using Components = System::Collections::Generic::List<IManagedComponent^> ;
-	static System::Collections::Generic::Dictionary<System::UInt32, Scripts^>^ gameObjectScripts;
-	static System::Collections::Generic::List<System::Type^> scriptTypes;
+	using Components = System::Collections::Generic::List<IManagedComponent^>;
+
+	// Stores all of the loaded scripts of a given game object.
+	static System::Collections::Generic::Dictionary<EntityID, Scripts^>^ gameObjectScripts;
+	
+	// Store all unique script type. To be used for instantiation.
+	// We map an Asset ID to the corresponding script type.
+	static System::Collections::Generic::Dictionary<ScriptID, System::Type^>^ scriptTypes;
 
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;

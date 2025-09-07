@@ -141,6 +141,20 @@ private:
 	std::size_t id;
 };
 
+struct AudioInstanceID {
+	constexpr AudioInstanceID();
+	constexpr AudioInstanceID(std::size_t id);
+	constexpr explicit operator std::size_t() const;
+
+public:
+	constexpr friend bool operator==(AudioInstanceID const& lhs, AudioInstanceID const& rhs);
+	constexpr friend bool operator<(AudioInstanceID const& lhs, AudioInstanceID const& rhs);
+	friend struct std::hash<AudioInstanceID>;
+
+private:
+	std::size_t id;
+};
+
 // ========================================
 // Euler angles (in radians)
 // ========================================

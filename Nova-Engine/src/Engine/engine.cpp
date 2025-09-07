@@ -31,6 +31,9 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 }
 
 Engine::~Engine() {
+	stopSimulation();
+	setupSimulationFunction.value()();
+
 	Serialiser::serialiseComponent(ecs);
 }
 

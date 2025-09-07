@@ -139,18 +139,18 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 	if (fileExtension == ".fbx") {
 		recordAssetFile<Model>(path);
 	}
-
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
 		recordAssetFile<Texture>(path);
 	}
-
 	else if (fileExtension == ".exr") {
 		recordAssetFile<CubeMap>(path);
 	}
 	else if (fileExtension == ".cs") {
 		recordAssetFile<ScriptAsset>(path);
 	}
-
+	else if (fileExtension == ".wav") {
+		recordAssetFile<Audio>(path);
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", path.string());
 	}

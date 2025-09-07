@@ -1,6 +1,8 @@
-#include "assetManager.h"
 #include <sstream>
+
+#include "assetManager.h"
 #include "Debugging/Profiling.h"
+
 template <ValidAsset T>
 Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
@@ -20,7 +22,7 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	serialiseAssetFunctors[assetInfo.id] = std::make_unique<SerialiseAssetFunctor<T>>(SerialiseAssetFunctor<T>{});
 
 	// record this asset to the corresponding asset type.
-	assetsByType[Family::id<T>()].push_back(*asset.get());
+	assetsByType[Family::id<T>()].push_back(assetInfo.id);
 
 	// associate this asset id with this asset type.
 	assetIdToType[assetInfo.id] = Family::id<T>();
@@ -72,12 +74,12 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 }
 
 template<ValidAsset T>
-std::vector<std::reference_wrapper<Asset>> const& AssetManager::getAllAssets() const {
+std::vector<AssetID> const& AssetManager::getAllAssets() const {
 	auto iterator = assetsByType.find(Family::id<T>());
 
 	if (iterator == assetsByType.end()) {
 		Logger::error("Attempt to retrieve all assets of an invalid type?");
-		static std::vector<std::reference_wrapper<Asset>> empty;
+		static std::vector<AssetID> empty;
 		return empty;
 	}
 
@@ -101,7 +103,7 @@ AssetID AssetManager::getSomeAssetID() const {
 		return INVALID_ASSET_ID;
 	}
 
-	return allAssets[0].get().id;
+	return allAssets[0];
 }
 
 template<ValidAsset T>
@@ -170,6 +172,22 @@ AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) 
 			assetInfo.isFlipped = toFlip;
 		}
 	}
+
+	if constexpr (std::same_as<T, Audio>) {
+		std::string line;
+		std::getline(metaDataFile, line);
+
+		bool is3D;
+
+		if (!(std::stringstream{ line } >> is3D)) {
+			Logger::error("Failure when trying to parse is3D boolean for file: {}", path.string());
+			return createMetaDataFile<T>(path);
+		}
+		else {
+			assetInfo.is3D = is3D;
+		}
+	}
+
 	// ============================
 	return assetInfo;
 }
@@ -186,7 +204,10 @@ AssetInfo<T> AssetManager::createMetaDataFile(std::filesystem::path const& path)
 	// Do any metadata specific to any type default creation here!!
 	// ============================
 	if constexpr (std::same_as<T, Texture>) {
-		// default value of false.
+		metaDataFile << false << "\n";
+	}
+
+	if constexpr (std::same_as<T, Audio>) {
 		metaDataFile << false << "\n";
 	}
 
@@ -214,6 +235,10 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 
 	if constexpr (std::same_as<T, Texture>) {
 		metaDataFile << asset.isFlipped() << "\n";
+	}
+
+	if constexpr (std::same_as<T, Audio>) {
+		metaDataFile << asset.isAudio3D() << "\n";
 	}
 
 	// ============================

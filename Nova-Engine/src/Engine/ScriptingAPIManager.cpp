@@ -266,11 +266,13 @@ void ScriptingAPIManager::update() {
 bool ScriptingAPIManager::loadAllScripts() {
 	if (!compileScriptAssembly())
 		return false;
+	
 	loadScripts();
+	
 	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
 	{
 		for (ScriptData& scriptData : scripts.scriptDatas)
-			addGameObjectScript(static_cast<unsigned int>(entityId), scriptData.name.c_str());
+			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
 	}
 	initalizeScripts();
 	return true;

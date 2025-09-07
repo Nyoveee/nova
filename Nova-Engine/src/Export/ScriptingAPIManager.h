@@ -17,12 +17,12 @@
 class Engine; // Don't need to call any function or variables, just pass in
 
 // More readable function pointer syntax because C lmaoo
-using UpdateFunctionPtr			= void (*)(void);
-using AddScriptFunctionPtr		= void (*)(unsigned int, const char*);
-using RemoveScriptFunctionPtr	= void (*)(unsigned int, const char*);
-using LoadScriptsFunctionPtr = void (*)(void);
-using UnloadScriptsFunctionPtr = void(*)(void);
-using IntializeScriptsFunctionPtr = void(*)(void);
+using UpdateFunctionPtr				= void (*)(void);
+using AddScriptFunctionPtr			= void (*)(unsigned int, std::size_t);
+using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
+using LoadScriptsFunctionPtr		= void (*)(void);
+using UnloadScriptsFunctionPtr		= void (*)(void);
+using IntializeScriptsFunctionPtr	= void (*)(void);
 
 class ScriptingAPIManager {
 public:
