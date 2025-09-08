@@ -13,6 +13,7 @@
 #include <string>
 #include <dotnet/coreclrhost.h>
 #include <Libraries/type_alias.h>
+#include <unordered_map>
 
 class Engine; // Don't need to call any function or variables, just pass in
 
@@ -37,6 +38,7 @@ public:
 
 public:
 	DLL_API void update();
+	DLL_API void checkModifiedScripts();
 
 	DLL_API bool loadAllScripts();
 	DLL_API void unloadAllScripts();
@@ -78,9 +80,12 @@ private:
 	UpdateFunctionPtr updateScripts;
 	AddScriptFunctionPtr addGameObjectScript;
 	RemoveScriptFunctionPtr removeGameObjectScript;
-	LoadScriptsFunctionPtr loadScripts;
-	UnloadScriptsFunctionPtr unloadScripts;
+	LoadScriptsFunctionPtr loadAssembly;
+	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
+private:
+	float debouncingTime;
+	std::unordered_map<AssetID, float> timeSinceSave;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

@@ -108,7 +108,7 @@ void Interface::load()
 	// ========================================================
 	System::Reflection::Assembly^ novaScriptAssembly = nullptr;
 
-	for each (System::Reflection::Assembly ^ assembly in System::AppDomain::CurrentDomain->GetAssemblies()) {
+	for each (System::Reflection::Assembly ^ assembly in assemblyLoadContext->Assemblies) {
 		if (assembly->GetName()->Name == "Nova-Scripts") {
 			novaScriptAssembly = assembly;
 			break;
@@ -126,7 +126,6 @@ void Interface::load()
 	
 	// We maintain a temporary dictionary mapping class names to script types.
 	System::Collections::Generic::Dictionary<System::String^, System::Type^> classNameToScriptType;
-
 	for each (System::Type ^ type in novaScriptAssembly->GetTypes()) {
 		if (!type->IsSubclassOf(Script::typeid))
 			continue;
@@ -137,7 +136,6 @@ void Interface::load()
 	// 5. We define mapping from Asset IDs to script types.
 	// ========================================================
 	auto&& scripts = engine->assetManager.getAllAssets<ScriptAsset>();
-
 	for (auto&& scriptId : scripts) {
 		auto&& [script, _] = engine->assetManager.getAsset<ScriptAsset>(scriptId);
 		assert(script && "Script should always be instantly available.");

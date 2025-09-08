@@ -49,8 +49,5 @@ private:
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;
 	static const char* runtimePath;
-
-	// Script Checking Information
-	System::IO::FileSystemWatcher^ scriptWatcher;
 }; 
 #include "ScriptingAPI.ixx"

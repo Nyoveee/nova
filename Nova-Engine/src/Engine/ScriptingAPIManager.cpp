@@ -9,7 +9,7 @@
 #include <iostream>
 #include <filesystem>
 #include <tuple>
-
+#include "window.h"
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
 #include "engine.h"
@@ -28,6 +28,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, updateScripts				{ nullptr } 
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
+	, debouncingTime{3.f}
+	, timeSinceSave{}
 {
 	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
 
@@ -118,8 +120,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		loadScripts							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
-		unloadScripts                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		loadAssembly							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
+		unloadAssembly                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
@@ -268,11 +270,25 @@ void ScriptingAPIManager::update() {
 	updateScripts(); 
 }
 
+DLL_API void ScriptingAPIManager::checkModifiedScripts()
+{
+	bool compile{ !timeSinceSave.empty() };
+	for (std::pair<const AssetID, float>& time : timeSinceSave) {
+		time.second += 1 / 60.f;
+		if (time.second < debouncingTime)
+			compile = false;
+	}
+	if (compile) {
+		timeSinceSave.clear();
+		compileScriptAssembly();
+	}
+}
+
 bool ScriptingAPIManager::loadAllScripts() {
 	if (!compileScriptAssembly())
 		return false;
 	
-	loadScripts();
+	loadAssembly();
 	
 	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
 	{
@@ -284,19 +300,19 @@ bool ScriptingAPIManager::loadAllScripts() {
 }
 
 void ScriptingAPIManager::unloadAllScripts() {
-	unloadScripts();
+	unloadAssembly();
 }
 
 void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
-
+	if (std::filesystem::path(absPath).extension() == ".cs")
+		compileScriptAssembly();
 }
 void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
 {
-	if (engine.assetManager.isAsset<ScriptAsset>(assetId)) {
-		Logger::info("ScriptingAPIManager::OnAssetContentChangedCallback(ScriptAsset) {}", static_cast<std::size_t>(assetId));
-	}
+	if (engine.assetManager.isAsset<ScriptAsset>(assetId))
+		timeSinceSave[assetId] = 0.f;
 }
 void ScriptingAPIManager::OnAssetContentDeletedCallback(AssetID assetID) {
-
+	// AssetID might disappear if assetmanager deletes it, maybe do typedAssetID or filepath instead(Overloaded callback?) 
 }
 

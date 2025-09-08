@@ -43,6 +43,10 @@ void Engine::fixedUpdate(float dt) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
 	}
+	else
+	{
+		scriptingAPIManager.checkModifiedScripts();
+	}
 }
 
 void Engine::update(float dt) {
