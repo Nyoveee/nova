@@ -29,6 +29,8 @@ AssetManager::AssetManager() :
 	try {
 		for (const auto& entry : std::filesystem::recursive_directory_iterator{ assetDirectory }) {
 			std::filesystem::path currentPath = entry.path();
+			if (directoryWatcher.IsPathHidden(currentPath))
+				continue;
 			// our own meta file, not an asset.
 			if (currentPath.extension() == ".nova_meta") {
 				continue;

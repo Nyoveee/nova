@@ -6,10 +6,10 @@
     <Nullable>enable</Nullable>
     <PlatformTarget>x64</PlatformTarget>
     <Platforms>x64</Platforms>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>$(ProjectDir).bin\$(Configuration)-$(Platform)\</OutputPath>
+
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -18,8 +18,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include = "Nova-ScriptingAPI">
-      <HintPath>Debug/Nova-ScriptingAPI.dll</HintPath>
-      <HintPath>Release/Nova-ScriptingAPI.dll</HintPath>
+      <HintPath>.Nova-Scripts-Reference/Debug/Nova-ScriptingAPI.dll</HintPath>
+      <HintPath>.Nova-Scripts-Reference/Release/Nova-ScriptingAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

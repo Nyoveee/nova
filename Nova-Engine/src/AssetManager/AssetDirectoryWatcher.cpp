@@ -5,6 +5,7 @@
 #include "Asset/texture.h"
 #include "assetManager.h"
 
+
 AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, std::filesystem::path rootDirectory) : 
 	assetManager	{ assetManager },
 	rootDirectory	{ rootDirectory },
@@ -34,10 +35,11 @@ void AssetDirectoryWatcher::RegisterCallbackAssetContentDeleted(std::function<vo
 
 void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type) {
 	// the app is destructing, don't do anything.
-	if (engineIsDestructing) {
+	if (engineIsDestructing)
 		return;
-	}
 	std::filesystem::path absPath{ rootDirectory.string() + "\\" + std::filesystem::path(path).string()};
+	if (IsPathHidden(absPath))
+		return;
 	// New File added
 	if (change_type == filewatch::Event::added) {
 		std::lock_guard<std::mutex> lock{ contentAddCallbackMutex };
@@ -81,4 +83,13 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 			});
 		}
 	}
+}
+
+bool AssetDirectoryWatcher::IsPathHidden(std::filesystem::path path)
+{
+	if (GetFileAttributesA(path.string().c_str()) & FILE_ATTRIBUTE_HIDDEN)
+		return true;
+	if (path == std::filesystem::current_path())
+		return false;
+	return IsPathHidden(path.parent_path());
 }
