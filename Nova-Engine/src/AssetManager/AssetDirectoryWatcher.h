@@ -27,10 +27,9 @@ public:
 	void RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback);
 	void RegisterCallbackAssetContentModified(std::function<void(AssetID)> callback);
 	void RegisterCallbackAssetContentDeleted(std::function<void(AssetID)> callback);
-
+	bool IsPathHidden(std::filesystem::path path);
 private:
 	void HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type);
-
 private:
 	AssetManager& assetManager;
 

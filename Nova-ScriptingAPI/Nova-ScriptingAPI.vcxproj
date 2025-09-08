@@ -138,7 +138,7 @@
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Nova-Scripts\$(Configuration)\"</Command>
+      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Assets\.Nova-Scripts-Reference\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -173,7 +173,7 @@
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Nova-Scripts\$(Configuration)\"</Command>
+      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Assets\.Nova-Scripts-Reference\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -53,8 +53,12 @@ private:
 	bool compileScriptAssembly();
 
 private:
-	// This is the callback when the assets files are modified/added/renamed
+	// This is the callback when the assets files are Added
+	void OnAssetContentAddedCallback(std::string abspath);
+	// This is the callback when the assets files are Modified
 	void OnAssetContentModifiedCallback(AssetID assetTypeID);
+	// This is the callback when the assets files are deleted
+	void OnAssetContentDeletedCallback(AssetID assetTypeID);
 
 private:
 	Engine& engine;
