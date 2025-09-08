@@ -154,6 +154,9 @@ private:
 	// =========================================================
 	// Serialising asset meta data..
 	template <ValidAsset T>
+	friend struct SerialiseMetaDataFunctor;
+
+	template <ValidAsset T>
 	friend struct SerialiseAssetFunctor;
 
 	template <ValidAsset T>
@@ -196,7 +199,8 @@ private:
 
 	// -- welcome to template metaprogramming black magic. --
 	// associates an asset id with it's corresponding serialising function, containining the original asset type.	
-	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
+	std::unordered_map<AssetID, std::unique_ptr<SerialiseMetaData>> serialiseMetaDataFunctors;
+	//std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
 	
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;

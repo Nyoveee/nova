@@ -105,7 +105,7 @@ namespace Serialiser {
 
 				else {
 					// int, float, std::string,
-					componentJson[dataMemberName] = dataMember;
+					//componentJson[dataMemberName] = dataMember;
 				}
 
 			}, component);

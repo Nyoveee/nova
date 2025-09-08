@@ -5,7 +5,6 @@
 #include "AssetManager.h"
 #include "Libraries/FileWatch.hpp"
 #include "Logger.h"
-#include "Fmod/fmod.hpp"    // fmod.hpp allows access to FMOD CORE API
 
 #include "Asset/cubemap.h"
 
@@ -21,6 +20,7 @@ AssetManager::AssetManager() :
 	threadPool			{ static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }, 
 	directoryWatcher	{ *this, std::filesystem::current_path() /= "Assets" }
 {
+
 	// Get the run time directory
 	std::filesystem::path assetDirectory = std::filesystem::current_path() /= "Assets";
 
@@ -63,7 +63,7 @@ AssetManager::~AssetManager() {
 			continue;
 		}
 
-		auto&& serialiseFunctorPtr = serialiseAssetFunctors[id];
+		auto&& serialiseFunctorPtr = serialiseMetaDataFunctors[id];
 
 		if (!serialiseFunctorPtr) {
 			Logger::error("Asset manager failed to record the appropriate serialisation functor!");

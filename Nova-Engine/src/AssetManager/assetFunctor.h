@@ -1,10 +1,19 @@
 #pragma once
 
-// dont worry about the intellisense error, VS2022 doesnt know when it is getting included.
+// contains functors to serialise each type of assets
 
 class AssetManager;
 
-using SerialiseAssetFunctorID = std::size_t;
+struct SerialiseMetaData {
+public:
+	virtual ~SerialiseMetaData() = 0 {};
+	virtual void operator()(Asset& asset, AssetManager& assetManager) const = 0;
+};
+
+template <ValidAsset T>
+struct SerialiseMetaDataFunctor : public SerialiseMetaData {
+	void operator()(Asset& asset, AssetManager& assetManager) const final;
+};
 
 struct SerialiseAsset {
 public:
