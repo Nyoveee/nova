@@ -76,6 +76,10 @@ public:
 	// submit triangles to be rendered at the end
 	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color);
 
+public:
+	//Vector to hold references
+	std::vector<std::unique_ptr<Camera>> allCameras;
+
 private:
 	// =============================================
 	// Private internal helper functions.

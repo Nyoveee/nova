@@ -37,6 +37,12 @@ public:
 	void recalculateViewMatrix();
 	void recalculateProjectionMatrix();
 
+public:
+	//Deciding which camera is the focus of viewport
+	bool isActive;
+	bool getStatus();
+	void setStatus(bool newStatus);
+
 private:
 	glm::vec3 cameraPos;
 	glm::vec3 cameraFront;
