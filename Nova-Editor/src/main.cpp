@@ -4,6 +4,7 @@
 #include "window.h"
 #include "inputManager.h"
 #include "assetManager.h"
+#include "ResourceManager/resourceManager.h"
 #include "Editor/editor.h"
 
 #include <crtdbg.h>
@@ -17,6 +18,7 @@ constexpr int			gameHeight		= 1080;
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	ResourceManager resourceManager {};
 	InputManager inputManager	{};
 	AssetManager assetManager   {};
 	Window		 window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };

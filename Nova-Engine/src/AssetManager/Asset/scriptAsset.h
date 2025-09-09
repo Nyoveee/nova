@@ -1,5 +1,7 @@
 #pragma once
+
 #include "asset.h"
+
 class ScriptAsset : public Asset
 {
 public:
@@ -10,8 +12,15 @@ public:
 	ScriptAsset(ScriptAsset&& other) = default;
 	ScriptAsset& operator=(ScriptAsset const& other) = delete;
 	ScriptAsset& operator=(ScriptAsset&& other) = default;
+
 public:
-	void load(AssetManager&) final {};
-	void unload() final {};
+	void load(AssetManager&) final;
+	void unload() final;
+
+public:
+	DLL_API std::string getClassName() const;
+
+private:
+	//std::string className;
 };
 

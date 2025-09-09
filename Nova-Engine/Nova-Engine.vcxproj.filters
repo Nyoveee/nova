@@ -129,10 +129,10 @@
     <ClInclude Include="src\AssetManager\folder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AssetManager\serialiseAssetFunctor.h">
+    <ClInclude Include="src\AssetManager\assetFunctor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AssetManager\serialiseAssetFunctor.ipp">
+    <ClInclude Include="src\AssetManager\assetFunctor.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Libraries\magic_enum.hpp">
@@ -178,6 +178,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Serialisation\serialisation.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AssetManager\Asset\audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceManager\resourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceManager\resourceManager.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -273,6 +285,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Audio\audioSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AssetManager\Asset\audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceManager\resourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

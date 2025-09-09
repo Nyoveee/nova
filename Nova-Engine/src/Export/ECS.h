@@ -25,6 +25,9 @@ public:
 	// Finds out if a given entity is a descendant of parent (direct and indirect children).
 	DLL_API bool isDescendantOf(entt::entity entity, entt::entity parent);
 
+	// this deletes an entity whilst preserving transform hirearchy invariant.
+	DLL_API void deleteEntity(entt::entity entity);
+
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
 	template <typename ...Components>

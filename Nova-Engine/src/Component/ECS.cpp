@@ -99,3 +99,37 @@ bool ECS::isDescendantOf(entt::entity entity, entt::entity parent) {
 
 	return isDescendant;
 }
+
+void ECS::deleteEntity(entt::entity entity) {
+	// =======================
+	// 1. Update it's children' parent.
+	// Set the children's new parent to the current's entity parent, if any.
+	// =======================
+	EntityData& entityData = registry.get<EntityData>(entity);
+	entt::entity parent = entityData.parent;
+
+	for (entt::entity child : entityData.children) {
+		EntityData& childEntityData = registry.get<EntityData>(child);
+		childEntityData.parent = parent;
+	}
+
+	// =======================
+	// 2. Update parent's children array.
+	// =======================
+	if (parent != entt::null) {
+		// Remove this entity from list of children
+		EntityData& parentEntityData = registry.get<EntityData>(entityData.parent);
+
+		auto iterator = std::ranges::find(parentEntityData.children, entity);
+		assert(iterator != parentEntityData.children.end() && "Invariant broken.");
+		parentEntityData.children.erase(iterator);
+
+		// Inherit grandchildren as the new children.
+		for (entt::entity child : entityData.children) {
+			parentEntityData.children.push_back(child);
+		}
+	}
+
+	// 3. Delete the entity!
+	registry.destroy(entity);
+}

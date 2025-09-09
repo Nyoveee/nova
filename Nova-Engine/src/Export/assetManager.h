@@ -9,27 +9,22 @@
 #include <functional>
 #include <queue>
 #include <mutex>
+#include <atomic>
 
 #include "AssetManager/Asset/asset.h"
 #include "AssetManager/Asset/texture.h"
 #include "AssetManager/Asset/model.h"
+#include "AssetManager/Asset/audio.h"
+
 #include "AssetManager/Asset/scriptAsset.h"
 #include "AssetManager/folder.h"
+#include "AssetManager/AssetDirectoryWatcher.h"
+
 #include "Logger.h"
 
-// Assets stored in the asset manager merely point to these assets in file location.
-// These assets could be loaded or not loaded.
-// Asset Manager merely acts as a bookkeep to all possible assets in the engine.
+#include "AssetManager/assetFunctor.h"
 
-// A valid asset must
-// 1. Inherit from base class asset
-// 2. Corresponding asset info inherit from BasicAssetInfo
-//
-// dont remove this concept! it's meant to save you from shooting yourself in the foot.
-template <typename T>
-concept ValidAsset = std::derived_from<T, Asset> && std::derived_from<AssetInfo<T>, BasicAssetInfo>;
-
-#include "AssetManager/serialiseAssetFunctor.h"
+class AssetDirectoryWatcher;
 
 class AssetManager {
 public:
@@ -74,14 +69,21 @@ public:
 	// since there is no loading of asset, you retrieve the data instantly.
 	DLL_API Asset* getAssetInfo(AssetID id);
 
-	// retrieve all assets of a given type.
+	// retrieve all asset ids of a given type.
 	template <ValidAsset T>
-	std::vector<std::reference_wrapper<Asset>> const& getAllAssets() const;
+	std::vector<AssetID> const& getAllAssets() const;
 
 	// retrieve 1 asset id of a given type. (should never be invalid asset id, but still should handle the chance of it being invalid).
 	template <ValidAsset T>
 	AssetID getSomeAssetID() const;
 	
+	// given an asset id, is the original asset type of T?
+	template <ValidAsset T>
+	bool isAsset(AssetID id) const;
+
+	// attempts to retrieve asset id given full file path
+	std::optional<AssetID> getAssetId(std::string const& filepath) const;
+
 public:
 	// =========================================================
 	// Getters (no setters!)
@@ -140,13 +142,29 @@ private:
 	// =========================================================
 	// Serialising asset meta data..
 	template <ValidAsset T>
+	friend struct SerialiseMetaDataFunctor;
+
+	template <ValidAsset T>
 	friend struct SerialiseAssetFunctor;
 
 	template <ValidAsset T>
 	void serialiseAssetMetaData(T const& asset);
 	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
 
+private:
+	// This is the callback when assets file are added
+	void OnAssetContentAddedCallback(std::string abspath);
+	// This is the callback when the assets files are modified/renamed
+	void OnAssetContentModifiedCallback(AssetID assetId);
+	// This is the callback when any asset file is deleted
+	void OnAssetContentDeletedCallback(AssetID assetId);
+
+	std::string GetRunTimeDirectory();
+
 public:
+	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
+	AssetDirectoryWatcher directoryWatcher;
+
 	// Thread pool to manage loading in another thread.
 	BS::thread_pool<BS::tp::none> threadPool;
 
@@ -155,15 +173,28 @@ public:
 	void submitCallback(std::function<void()> callback);
 
 private:
+	std::filesystem::path assetDirectory;
+	std::filesystem::path descriptorDirectory;
+	std::filesystem::path resourceDirectory;
+
+private:
+	// main container containing all assets.
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
 
-	// groups all assets based on their type.
-	// reference wrapper because i dont want a chance of null pointer.
-	std::unordered_map<AssetTypeID, std::vector<std::reference_wrapper<Asset>>> assetsByType;
-	
-	// welcome to template metaprogramming black magic.
-	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
+	// maps filepath to asset id.
+	std::unordered_map<std::string, AssetID> filepathToAssetId;
 
+	// groups all assets based on their type.
+	std::unordered_map<AssetTypeID, std::vector<AssetID>> assetsByType;
+	
+	// associates an asset id with the corresponding asset type.
+	std::unordered_map<AssetID, AssetTypeID> assetIdToType;
+
+	// -- welcome to template metaprogramming black magic. --
+	// associates an asset id with it's corresponding serialising function, containining the original asset type.	
+	std::unordered_map<AssetID, std::unique_ptr<SerialiseMetaData>> serialiseMetaDataFunctors;
+	//std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
+	
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
 	std::vector<FolderID> rootDirectories;
@@ -177,4 +208,4 @@ private:
 };
 
 #include "AssetManager/assetMananger.ipp"
-#include "AssetManager/serialiseAssetFunctor.ipp"
+#include "AssetManager/assetFunctor.ipp"

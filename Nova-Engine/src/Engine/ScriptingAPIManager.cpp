@@ -1,14 +1,15 @@
 #include "ScriptingAPIManager.h"
 
+#include "AssetManager.h"
+#include "AssetManager/Asset/scriptAsset.h"
+#include "Debugging/Profiling.h"
+#include "Logger.h"
 #include <shlwapi.h>
 #include <array>
 #include <iostream>
 #include <filesystem>
 #include <tuple>
-
-#include "Debugging/Profiling.h"
-#include "Logger.h"
-
+#include "window.h"
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
 #include "engine.h"
@@ -27,21 +28,24 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, updateScripts				{ nullptr } 
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
+	, debouncingTime{3.f}
+	, timeSinceSave{}
 {
+	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
+
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
 	// (this project assumes that the dll is located right next to the executable.
 	// ==========================================================
 	
 	// Get the dotnet directory
-	std::string dotnetDirectory{ getDotNetRuntimeDirectory()};
+	std::string dotnetDirectory{ getDotNetRuntimeDirectory() };
 
 	// Get the run time directory
 	runtimeDirectory = std::string(MAX_PATH, '\0');
 	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
 	PathRemoveFileSpecA(runtimeDirectory.data());
 	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
-
 	// Get the path of the coreclr.dll
 	std::string coreClrPath{ dotnetDirectory };
 	coreClrPath += "\\Coreclr.dll";
@@ -116,8 +120,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		loadScripts							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
-		unloadScripts                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		loadAssembly							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
+		unloadAssembly                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
@@ -189,15 +193,18 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 bool ScriptingAPIManager::compileScriptAssembly()
 {
 	// Project path and build command
-	std::string proj_path{runtimeDirectory + "\\Nova-Scripts\\Nova-Scripts.csproj"};
+	std::string proj_path{std::filesystem::current_path().string() + "\\Assets\\Nova-Scripts.csproj"};
+
 #ifdef _DEBUG
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Debug --no-self-contained -o "
-		+ L"\"" + std::filesystem::absolute(runtimeDirectory).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\" -r \"win-x64\""
+		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\"";
 #else
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Release --no-self-contained -o "
-		+ L"\"" + std::filesystem::absolute(runtimeDirectory).wstring() + L"/Nova-Scripts/.tmp_build/\" -r \"win-x64\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\" -r \"win-x64\""
+		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\"";
 #endif
 	STARTUPINFOW startInfo;
 	PROCESS_INFORMATION pi;
@@ -205,13 +212,16 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	ZeroMemory(&pi, sizeof(pi));
 	startInfo.cb = sizeof(startInfo);
 	// Start Compiler 
+	std::string intermediateFilePath{ std::filesystem::current_path().string() + "/Assets/.bin" };
+	if (!std::filesystem::exists(intermediateFilePath))
+		std::filesystem::create_directory(intermediateFilePath);
+	SetFileAttributesA(intermediateFilePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
 	const auto launch_success = CreateProcess
 	(
 		L"C:\\Program Files\\dotnet\\dotnet.exe", buildCmd.data(),
 		nullptr, nullptr, true, NULL, nullptr, nullptr,
 		&startInfo, &pi
 	);
-	
 	if (!launch_success)
 	{
 		auto err{ GetLastError() };
@@ -241,7 +251,7 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	{
 		std::filesystem::copy_file
 		(
-			(runtimeDirectory + "/Nova-Scripts/.tmp_build/Nova-Scripts.dll"), // Source
+			(std::filesystem::current_path().string() + "\\Assets\\.bin\\Nova-Scripts.dll"), // Source
 			(runtimeDirectory + "\\Nova-Scripts.dll"), // Destination
 			std::filesystem::copy_options::overwrite_existing
 		);
@@ -260,21 +270,49 @@ void ScriptingAPIManager::update() {
 	updateScripts(); 
 }
 
+DLL_API void ScriptingAPIManager::checkModifiedScripts()
+{
+	bool compile{ !timeSinceSave.empty() };
+	for (std::pair<const AssetID, float>& time : timeSinceSave) {
+		time.second += 1 / 60.f;
+		if (time.second < debouncingTime)
+			compile = false;
+	}
+	if (compile) {
+		timeSinceSave.clear();
+		compileScriptAssembly();
+	}
+}
+
 bool ScriptingAPIManager::loadAllScripts() {
 	if (!compileScriptAssembly())
 		return false;
-	loadScripts();
+	
+	loadAssembly();
+	
 	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
 	{
 		for (ScriptData& scriptData : scripts.scriptDatas)
-			addGameObjectScript(static_cast<unsigned int>(entityId), scriptData.name.c_str());
+			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
 	}
 	initalizeScripts();
 	return true;
 }
 
 void ScriptingAPIManager::unloadAllScripts() {
-	unloadScripts();
+	unloadAssembly();
 }
 
+void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
+	if (std::filesystem::path(absPath).extension() == ".cs")
+		compileScriptAssembly();
+}
+void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
+{
+	if (engine.assetManager.isAsset<ScriptAsset>(assetId))
+		timeSinceSave[assetId] = 0.f;
+}
+void ScriptingAPIManager::OnAssetContentDeletedCallback(AssetID assetID) {
+	// AssetID might disappear if assetmanager deletes it, maybe do typedAssetID or filepath instead(Overloaded callback?) 
+}
 

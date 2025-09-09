@@ -9,6 +9,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "Audio/audioSystem.h"
 #include "window.h"
 #include "editor.h"
 #include "engine.h"
@@ -168,7 +169,7 @@ void Editor::deleteEntity(entt::entity entity) {
 	ImGuizmo::Enable(false); 
 	ImGuizmo::Enable(true);   
 
-	engine.ecs.registry.destroy(entity);
+	engine.ecs.deleteEntity(entity);
 }
 
 // Our main bulk of code should go here, in the main function.
@@ -345,8 +346,19 @@ void Editor::sandboxWindow() {
 
 	ImGui::Begin("ooga booga sandbox area");
 
-	if (ImGui::Button("audio test")) {
-		/* code here */
+	if (ImGui::Button("SFX Audio Test"))
+	{
+		engine.audioSystem.playSFX(AssetID { 16975844738926411222 }, 0.0f, 0.0f, 0.0f);
+	}
+
+	if (ImGui::Button("BGM Audio Test"))
+	{
+		engine.audioSystem.playBGM(AssetID{ 2788544812328019992 });
+	}
+
+	if (ImGui::Button("BGM Audio Test 2"))
+	{
+		engine.audioSystem.playBGM(AssetID{ 492974696075952017 });
 	}
 
 	entt::registry& registry = engine.ecs.registry;

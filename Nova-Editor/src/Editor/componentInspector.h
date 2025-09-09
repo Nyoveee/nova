@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <functional>
+#include <optional>
 
 #include "Libraries/type_alias.h"
 class ECS;
@@ -16,8 +17,10 @@ public:
 	void update();
 
 public:
+	// displays a ImGui combo drop down box of all the assets related to type T.
+	// first parameter is used to specific which asset id is selected.
 	template <typename T>
-	void displayAssetDropDownList(AssetID id, const char* labelName, std::function<void(AssetID)> onClickCallback);
+	void displayAssetDropDownList(std::optional<AssetID> id, const char* labelName, std::function<void(AssetID)> onClickCallback);
 
 	template <typename ...Components>
 	void displayComponentDropDownList(entt::entity entity);

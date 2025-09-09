@@ -12,16 +12,18 @@
 #include <vector>
 #include <string>
 #include <dotnet/coreclrhost.h>
+#include <Libraries/type_alias.h>
+#include <unordered_map>
 
 class Engine; // Don't need to call any function or variables, just pass in
 
 // More readable function pointer syntax because C lmaoo
-using UpdateFunctionPtr			= void (*)(void);
-using AddScriptFunctionPtr		= void (*)(unsigned int, const char*);
-using RemoveScriptFunctionPtr	= void (*)(unsigned int, const char*);
-using LoadScriptsFunctionPtr = void (*)(void);
-using UnloadScriptsFunctionPtr = void(*)(void);
-using IntializeScriptsFunctionPtr = void(*)(void);
+using UpdateFunctionPtr				= void (*)(void);
+using AddScriptFunctionPtr			= void (*)(unsigned int, std::size_t);
+using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
+using LoadScriptsFunctionPtr		= void (*)(void);
+using UnloadScriptsFunctionPtr		= void (*)(void);
+using IntializeScriptsFunctionPtr	= void (*)(void);
 
 class ScriptingAPIManager {
 public:
@@ -36,6 +38,7 @@ public:
 
 public:
 	DLL_API void update();
+	DLL_API void checkModifiedScripts();
 
 	DLL_API bool loadAllScripts();
 	DLL_API void unloadAllScripts();
@@ -50,6 +53,15 @@ private:
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
 	bool compileScriptAssembly();
+
+private:
+	// This is the callback when the assets files are Added
+	void OnAssetContentAddedCallback(std::string abspath);
+	// This is the callback when the assets files are Modified
+	void OnAssetContentModifiedCallback(AssetID assetTypeID);
+	// This is the callback when the assets files are deleted
+	void OnAssetContentDeletedCallback(AssetID assetTypeID);
+
 private:
 	Engine& engine;
 	std::string runtimeDirectory;
@@ -68,9 +80,12 @@ private:
 	UpdateFunctionPtr updateScripts;
 	AddScriptFunctionPtr addGameObjectScript;
 	RemoveScriptFunctionPtr removeGameObjectScript;
-	LoadScriptsFunctionPtr loadScripts;
-	UnloadScriptsFunctionPtr unloadScripts;
+	LoadScriptsFunctionPtr loadAssembly;
+	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
+private:
+	float debouncingTime;
+	std::unordered_map<AssetID, float> timeSinceSave;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

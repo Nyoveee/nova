@@ -5,7 +5,6 @@
 #include "AssetManager.h"
 #include "Libraries/FileWatch.hpp"
 #include "Logger.h"
-#include "Fmod/fmod.hpp"    // fmod.hpp allows access to FMOD CORE API
 
 #include "Asset/cubemap.h"
 
@@ -18,21 +17,21 @@ namespace {
 }
 
 AssetManager::AssetManager() :
-	threadPool { static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }
+	assetDirectory		{ std::filesystem::current_path() /= "Assets" },
+	descriptorDirectory	{ std::filesystem::current_path() /= "Descriptors" },
+	resourceDirectory	{ std::filesystem::current_path() /= "Resources" },
+	threadPool			{ static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }, 
+	directoryWatcher	{ *this, std::filesystem::current_path() /= "Assets" }
 {
-	// Get the run time directory
-	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
-	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
-	PathRemoveFileSpecA(runtimeDirectory.data());
-	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
-	std::filesystem::path assetDirectory = runtimeDirectory;
-	assetDirectory /= "Assets";
 
 	FolderID folderId{ 0 };
-		
+	
 	try {
+#if 1
 		for (const auto& entry : std::filesystem::recursive_directory_iterator{ assetDirectory }) {
 			std::filesystem::path currentPath = entry.path();
+			if (directoryWatcher.IsPathHidden(currentPath))
+				continue;
 			// our own meta file, not an asset.
 			if (currentPath.extension() == ".nova_meta") {
 				continue;
@@ -47,10 +46,19 @@ AssetManager::AssetManager() :
 				parseAssetFile(currentPath);
 			}
 		}
+#endif
+		//for (const auto& entry : std::filesystem::recursive_directory_iterator{ descriptorDirectory }) {
+		//
+		//}
 	}
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
 	}
+
+	// Register callbacks for the watcher
+	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });
+	directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
+	directoryWatcher.RegisterCallbackAssetContentDeleted([&](AssetID assetID) { OnAssetContentDeletedCallback(assetID); });
 }
 
 AssetManager::~AssetManager() {
@@ -63,7 +71,7 @@ AssetManager::~AssetManager() {
 			continue;
 		}
 
-		auto&& serialiseFunctorPtr = serialiseAssetFunctors[id];
+		auto&& serialiseFunctorPtr = serialiseMetaDataFunctors[id];
 
 		if (!serialiseFunctorPtr) {
 			Logger::error("Asset manager failed to record the appropriate serialisation functor!");
@@ -77,6 +85,9 @@ AssetManager::~AssetManager() {
 
 void AssetManager::update() {
 	ZoneScoped;
+
+	std::lock_guard lock{ queueCallbackMutex };
+
 	while (completedLoadingCallback.size()) {
 		std::function<void()> callback = completedLoadingCallback.front();
 		
@@ -136,18 +147,18 @@ void AssetManager::parseAssetFile(std::filesystem::path const& path) {
 	if (fileExtension == ".fbx") {
 		recordAssetFile<Model>(path);
 	}
-
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
 		recordAssetFile<Texture>(path);
 	}
-
 	else if (fileExtension == ".exr") {
 		recordAssetFile<CubeMap>(path);
 	}
 	else if (fileExtension == ".cs") {
 		recordAssetFile<ScriptAsset>(path);
 	}
-
+	else if (fileExtension == ".wav") {
+		recordAssetFile<Audio>(path);
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", path.string());
 	}
@@ -217,10 +228,42 @@ void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& met
 	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
 }
 
+void AssetManager::OnAssetContentAddedCallback(std::string abspath)
+{
+	Logger::info("Called Asset Directory Added, {}", abspath);
+}
+
+void AssetManager::OnAssetContentModifiedCallback(AssetID assetId){
+	Logger::info("Called Asset Directory Modified, {}", static_cast<std::size_t>(assetId));
+}
+
+void AssetManager::OnAssetContentDeletedCallback(AssetID assetId){
+	Logger::info("Called Asset Directory Content Deleted, {}", static_cast<std::size_t>(assetId));
+}
+
+std::string AssetManager::GetRunTimeDirectory() {
+	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
+	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
+	PathRemoveFileSpecA(runtimeDirectory.data());
+	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
+	return runtimeDirectory;
+}
+
 void AssetManager::submitCallback(std::function<void()> callback) {
 	std::lock_guard lock{ queueCallbackMutex };
 
 	completedLoadingCallback.push(std::move(callback));
+}
+
+std::optional<AssetID> AssetManager::getAssetId(std::string const& filepath) const {
+	auto iterator = filepathToAssetId.find(filepath);
+
+	if (iterator == filepathToAssetId.end()) {
+		return std::nullopt;
+	}
+
+	auto&& [_, id] = *iterator;
+	return id;
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

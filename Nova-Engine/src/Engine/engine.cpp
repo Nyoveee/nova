@@ -32,6 +32,9 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 }
 
 Engine::~Engine() {
+	stopSimulation();
+	setupSimulationFunction.value()();
+
 	Serialiser::serialiseScene(ecs);
 }
 
@@ -40,6 +43,10 @@ void Engine::fixedUpdate(float dt) {
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
+	}
+	else
+	{
+		scriptingAPIManager.checkModifiedScripts();
 	}
 }
 
@@ -83,7 +90,6 @@ void Engine::startSimulation() {
 			return;
 		}
 		physicsManager.initialise();
-		scriptingAPIManager.loadAllScripts();
 		audioSystem.loadAllSounds();
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
