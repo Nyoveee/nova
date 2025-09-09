@@ -15,7 +15,11 @@
 // Providing association here also allows you to declare data members of Managed Components
 // later in 2. with the managed type.
 // ===========================================================================================
-
+ManagedStruct(
+	Vector2, glm::vec2,
+	float, x,
+	float, y
+)
 ManagedStruct(
 	Vector3, glm::vec3,		// Creates a new managed type Vector3 that is associated with glm::vec3
 	float, x,

@@ -31,7 +31,7 @@ public value struct ManagedType {																				    \
 };																													\
 																													\
 template <>																											\
-NativeType native(ManagedType& managedType) {																		\
+inline NativeType native(ManagedType& managedType) {																		\
 	return managedType.native();																					\
 }	
 

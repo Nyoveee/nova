@@ -42,6 +42,9 @@
     <ClInclude Include="src\ScriptLibrary\Input.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\API\CallbackHandler.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\API\ScriptingAPI.cxx">
@@ -54,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ScriptLibrary\Input.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\API\CallbackHandler.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

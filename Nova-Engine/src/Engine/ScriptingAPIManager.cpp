@@ -313,6 +313,6 @@ void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
 		timeSinceSave[assetId] = 0.f;
 }
 void ScriptingAPIManager::OnAssetContentDeletedCallback(AssetID assetID) {
-	// AssetID might disappear if assetmanager deletes it, maybe do typedAssetID or filepath instead(Overloaded callback?) 
+	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
 }
 
