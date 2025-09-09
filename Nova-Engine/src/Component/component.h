@@ -41,6 +41,12 @@ struct EntityData {
 	std::string name;
 	entt::entity parent = entt::null;
 	std::vector<entt::entity> children = {};
+
+	REFLECTABLE(
+		name,
+		//parent,
+		children
+	)
 };
 
 struct Transform {

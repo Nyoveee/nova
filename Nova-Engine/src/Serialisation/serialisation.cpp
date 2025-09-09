@@ -96,10 +96,21 @@ namespace Serialiser {
 		if (!file.is_open())
 			return;
 
+		json j;
+
+		file >> j;
+		entt::registry& registry = ecs.registry;
+		for (const auto& en : j["entities"]) {
+			auto entity = registry.create(en["id"]);
+			deserialiseComponents(registry, entity, file, en);
+		}
+		
+
+
 		//for (entt::entity entity : registry.view<entt::entity>().each()) {
 		//	deserialiseComponents<ALL_COMPONENTS>(registry, entity, file);
 		//}
-#if 1
+#if 0
 		json j;
 
 		file >> j;
