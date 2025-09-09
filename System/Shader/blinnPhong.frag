@@ -41,9 +41,15 @@ uniform sampler2D normalMap;
 
 // calculate the resulting color caused by this one light.
 vec3 calculateLight(Light light, vec3 normal, vec3 baseColor) {
+    // Attenuation vals
+    const float lightConst = 1.0;
+    const float lightLinear = 0.09;
+    const float lightQuad = 0.032;
+
     // this is really from fragment position to light position. 
     // we do this to align with the normal.
-    vec3 lightDir = normalize(light.position - fsIn.fragWorldPos);
+    vec3 lightDiff = light.position - fsIn.fragWorldPos;
+    vec3 lightDir = normalize(lightDiff);
 
     // hehe we will be using this in the PBR rendering next time!!
     float cosTheta = max(dot(lightDir, normal), 0);
@@ -55,6 +61,13 @@ vec3 calculateLight(Light light, vec3 normal, vec3 baseColor) {
     vec3 viewDir = normalize(cameraPos - fsIn.fragWorldPos);
     vec3 halfwayDir = normalize(lightDir + viewDir);
     vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * light.color;
+
+    // Attenuation
+    float dist = length(lightDiff);
+    float attenuation = 1.0 / (lightConst + lightLinear * dist + 
+    		    lightQuad * (dist * dist));  
+    diffuseColor *= attenuation;
+    specularColor *= attenuation;
 
     return diffuseColor + specularColor;
 }
