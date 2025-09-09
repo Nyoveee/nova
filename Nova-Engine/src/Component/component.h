@@ -32,8 +32,7 @@ class ScriptAsset;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts, ObjectCamera
-
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts
 using MaterialName = std::string;
 using ScriptName   = std::string;
 

@@ -64,6 +64,8 @@ public:
 
 	DLL_API Camera& getCamera();
 	DLL_API Camera const& getCamera() const;
+	DLL_API void setCamera(Camera* newCam);
+	DLL_API void chooseCamera(Camera* newCam);
 
 	// most probably for ease of development.
 	DLL_API void recompileShaders();
@@ -78,7 +80,7 @@ public:
 
 public:
 	//Vector to hold references
-	std::vector<std::unique_ptr<Camera>> allCameras;
+	std::vector<Camera*> allCameras;
 
 private:
 	// =============================================
