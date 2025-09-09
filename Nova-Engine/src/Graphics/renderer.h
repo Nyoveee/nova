@@ -12,8 +12,8 @@
 #include "framebuffer.h"
 #include "ECS.h"
 
-#include "AssetManager/Asset/model.h"
-#include "AssetManager/Asset/cubemap.h"
+#include "model.h"
+#include "cubemap.h"
 
 class Engine;
 class AssetManager;

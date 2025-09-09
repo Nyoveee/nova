@@ -1,5 +1,5 @@
 #pragma once
-#include "Libraries/BS_thread_pool.hpp"
+#include "BS_thread_pool.hpp"
 
 #include "export.h"
 
@@ -11,12 +11,12 @@
 #include <mutex>
 #include <atomic>
 
-#include "AssetManager/Asset/asset.h"
-#include "AssetManager/Asset/texture.h"
-#include "AssetManager/Asset/model.h"
-#include "AssetManager/Asset/audio.h"
+#include "asset.h"
+#include "texture.h"
+#include "model.h"
+#include "audio.h"
 
-#include "AssetManager/Asset/scriptAsset.h"
+#include "scriptAsset.h"
 #include "AssetManager/folder.h"
 #include "AssetManager/AssetDirectoryWatcher.h"
 

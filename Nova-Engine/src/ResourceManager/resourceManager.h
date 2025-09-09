@@ -1,7 +1,7 @@
 #pragma once
 
 #include "export.h"
-#include "AssetManager/Asset/asset.h"
+#include "asset.h"
 
 #include <concepts>
 #include <unordered_map>
@@ -36,12 +36,19 @@ public:
 	DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
 
 public:
-	// the king.
+	// parses a given resource file.
 	template <ValidAsset T>
-	Asset& addAsset();
+	void parseResourceFile(std::filesystem::path const& filepath);
+
+private:
+	// loads all the given resources in a given directory,
+	template <ValidAsset T>
+	void loadAllResources(std::filesystem::path const& directory);
 
 private:
 	std::filesystem::path resourceDirectory;
+	std::filesystem::path textureDirectory;
+	std::filesystem::path modelDirectory;
 
 	// main container containing all assets.
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;

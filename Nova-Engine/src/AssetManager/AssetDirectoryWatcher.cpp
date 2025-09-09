@@ -1,8 +1,8 @@
 #include "AssetDirectoryWatcher.h"
-#include "Asset/scriptAsset.h"
-#include "Asset/model.h"
-#include "Asset/cubemap.h"
-#include "Asset/texture.h"
+#include "scriptAsset.h"
+#include "model.h"
+#include "cubemap.h"
+#include "texture.h"
 #include "assetManager.h"
 
 

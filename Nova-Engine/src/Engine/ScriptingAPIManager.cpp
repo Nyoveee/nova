@@ -1,8 +1,8 @@
 #include "ScriptingAPIManager.h"
 
 #include "AssetManager.h"
-#include "AssetManager/Asset/scriptAsset.h"
-#include "Debugging/Profiling.h"
+#include "scriptAsset.h"
+#include "Profiling.h"
 #include "Logger.h"
 #include <shlwapi.h>
 #include <array>

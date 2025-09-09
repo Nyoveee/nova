@@ -4,7 +4,8 @@
 #include <functional>
 #include <optional>
 
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
+
 class ECS;
 class Editor;
 class AssetManager;

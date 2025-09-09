@@ -7,7 +7,7 @@
 
 #include "export.h"
 
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 #include "InputManager/observer.h"
 #include "InputManager/keybind.h"
 #include "InputManager/glfwInput.h"

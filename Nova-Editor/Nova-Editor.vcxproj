@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(ProjectDir)..\Nova-Engine\src;$(ProjectDir)..\Nova-Engine\src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(ProjectDir)..\Nova-Engine\src;$(ProjectDir)..\Nova-Engine\src\Export;$(SolutionDir)Include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(ProjectDir)..\Nova-Engine\src;$(ProjectDir)..\Nova-Engine\src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(ProjectDir)..\Nova-Engine\src;$(ProjectDir)..\Nova-Engine\src\Export;$(SolutionDir)Include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
@@ -114,13 +114,14 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,13 +138,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,6 +184,12 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
   <ItemGroup>
     <ProjectReference Include="..\Nova-Engine\Nova-Engine.vcxproj">
       <Project>{97e3acaa-f509-44ba-a393-c8c071952013}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Nova-Framework\Nova-Framework.vcxproj">
+      <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Nova-Resource\Resource.vcxproj">
+      <Project>{380aadcf-1df3-403d-8190-404b143deab0}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

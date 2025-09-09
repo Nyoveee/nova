@@ -4,7 +4,7 @@
 #include <functional>
 #include <vector>
 #include <string>
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 
 struct Folder {
 	FolderID id;		// each folder is assigned a id such that it is able to references one another.

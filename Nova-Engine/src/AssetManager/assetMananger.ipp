@@ -1,7 +1,7 @@
 #include <sstream>
 
 #include "assetManager.h"
-#include "Debugging/Profiling.h"
+#include "Profiling.h"
 
 template <ValidAsset T>
 Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
@@ -48,7 +48,7 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	switch (asset->getLoadStatus())
 	{
 	case Asset::LoadStatus::NotLoaded:
-		asset->toLoad(*this);
+		asset->toLoad();
 		break;
 	case Asset::LoadStatus::Loaded:
 		break;
@@ -56,7 +56,7 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 		return AssetQuery<T>{ nullptr, QueryResult::Loading };
 	case Asset::LoadStatus::LoadingFailed:
 		Logger::error("Loading operator for asset id of {} has failed. Retrying..", static_cast<std::size_t>(id));
-		asset->toLoad(*this);
+		asset->toLoad();
 		break;
 	}
 

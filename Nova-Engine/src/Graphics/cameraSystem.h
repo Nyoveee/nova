@@ -1,7 +1,7 @@
 #pragma once
 
 #include "export.h"
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 #include "InputManager/inputEvent.h"
 
 class Camera;

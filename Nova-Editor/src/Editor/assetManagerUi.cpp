@@ -17,7 +17,7 @@ AssetManagerUI::AssetManagerUI(Editor& editor) :
 	selectedFolderId { NONE },
 	folderIcon		 { "System/Image/folder.png", false }
 {
-	folderIcon.load(assetManager);
+	folderIcon.load();
 }
 
 void AssetManagerUI::update() {

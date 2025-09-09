@@ -7,7 +7,7 @@
 #include "Component/component.h"
 #include "inputManager.h"
 #include "assetManager.h"
-#include "Debugging/Profiling.h"
+#include "Profiling.h"
 
 #include "Serialisation/serialisation.h"
 

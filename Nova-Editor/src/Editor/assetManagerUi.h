@@ -4,8 +4,8 @@
 #include <functional>
 
 #include "imgui.h"
-#include "AssetManager/Asset/texture.h"
-#include "Libraries/type_alias.h"
+#include "texture.h"
+#include "type_alias.h"
 
 #undef max
 constexpr ImTextureID NO_TEXTURE = std::numeric_limits<ImTextureID>::max();

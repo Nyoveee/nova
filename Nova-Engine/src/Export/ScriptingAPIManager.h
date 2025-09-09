@@ -5,6 +5,7 @@
 
 #pragma once
 #include "export.h"
+#include "type_alias.h"
 
 #include <Windows.h>
 #include <sstream>
@@ -12,8 +13,8 @@
 #include <vector>
 #include <string>
 #include <dotnet/coreclrhost.h>
-#include <Libraries/type_alias.h>
 #include <unordered_map>
+
 
 class Engine; // Don't need to call any function or variables, just pass in
 

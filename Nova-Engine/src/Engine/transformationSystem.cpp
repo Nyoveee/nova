@@ -4,8 +4,8 @@
 #include "ecs.h"
 
 #include "Component/component.h"
-#include "Libraries/math.h"
-#include "Debugging/Profiling.h"
+#include "nova_math.h"
+#include "Profiling.h"
 
 TransformationSystem::TransformationSystem(ECS& ecs) :
 	registry {ecs.registry}

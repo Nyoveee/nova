@@ -1,10 +1,10 @@
-#include "Libraries/reflection.h"
+#include "reflection.h"
 #include "assetManager.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
 
-#include "Libraries/magic_enum.hpp"
+#include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
 

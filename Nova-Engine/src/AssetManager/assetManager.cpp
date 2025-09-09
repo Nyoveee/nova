@@ -3,10 +3,10 @@
 #include <chrono>
 
 #include "AssetManager.h"
-#include "Libraries/FileWatch.hpp"
+#include "FileWatch.hpp"
 #include "Logger.h"
 
-#include "Asset/cubemap.h"
+#include "cubemap.h"
 
 namespace {
 	// we usually don't want to increment ids

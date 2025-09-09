@@ -11,7 +11,7 @@
 #include "inputManager.h"
 #include "InputManager/inputEvent.h"
 #include "Component/component.h"
-#include "Libraries/math.h"
+#include "nova_math.h"
 
 Gizmo::Gizmo(Editor& editor, ECS& ecs) : 
 	editor		{ editor },

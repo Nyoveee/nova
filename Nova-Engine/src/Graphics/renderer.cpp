@@ -14,7 +14,7 @@
 
 #include <fstream>
 #include "Component/component.h"
-#include "Debugging/Profiling.h"
+#include "Profiling.h"
 #include "Logger.h"
 
 #undef max

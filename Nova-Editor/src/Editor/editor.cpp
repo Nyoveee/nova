@@ -18,7 +18,7 @@
 #include "inputManager.h"
 #include "assetManager.h"
 
-#include "AssetManager/Asset/model.h"
+#include "model.h"
 
 #include "Component/component.h"
 

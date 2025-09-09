@@ -16,9 +16,9 @@
 #include <Jolt/Physics/Body/MotionType.h>
 #include <Jolt/Physics/Body/BodyID.h>
 
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 #include "Graphics/vertex.h"
-#include "Libraries/reflection.h"
+#include "reflection.h"
 
 // Forward declaring..
 class Model;

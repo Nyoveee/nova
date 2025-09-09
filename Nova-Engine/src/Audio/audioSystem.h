@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <string>
 
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 
 class Engine;
 class AssetManager;

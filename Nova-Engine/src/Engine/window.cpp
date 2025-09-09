@@ -8,7 +8,7 @@
 #include "window.h"
 #include "inputManager.h"
 #include "Graphics/cameraSystem.h"
-#include "Debugging/Profiling.h"
+#include "Profiling.h"
 #include "Logger.h"
 
 // Definition. Should live only in 1 TU.

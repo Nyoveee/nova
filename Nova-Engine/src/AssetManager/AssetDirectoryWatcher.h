@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Libraries/type_alias.h"
-#include "Libraries/FileWatch.hpp"
+#include "type_alias.h"
+#include "FileWatch.hpp"
 #include <filesystem>
 #include <unordered_map>
 #include <vector>

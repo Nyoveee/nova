@@ -46,6 +46,12 @@
     <ProjectReference Include="..\Nova-Engine\Nova-Engine.vcxproj">
       <Project>{97e3acaa-f509-44ba-a393-c8c071952013}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Nova-Framework\Nova-Framework.vcxproj">
+      <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Nova-Resource\Resource.vcxproj">
+      <Project>{380aadcf-1df3-403d-8190-404b143deab0}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ScriptLibrary\Input.cxx" />
@@ -115,24 +121,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <DisableSpecificWarnings>4679</DisableSpecificWarnings>
       <UseDynamicDebugging>false</UseDynamicDebugging>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -162,12 +169,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
-      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <DisableSpecificWarnings>4679</DisableSpecificWarnings>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
