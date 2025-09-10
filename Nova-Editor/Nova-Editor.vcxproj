@@ -176,6 +176,17 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="src\Editor\Recast\Recast.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastAlloc.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastArea.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastAssert.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastContour.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastFilter.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastLayers.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastMesh.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastMeshDetail.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastRasterization.cpp" />
+    <ClCompile Include="src\Editor\Recast\RecastRegion.cpp" />
     <ClCompile Include="src\Editor\themes.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -210,6 +221,9 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\Editor\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="src\Editor\Recast\Recast.h" />
+    <ClInclude Include="src\Editor\Recast\RecastAlloc.h" />
+    <ClInclude Include="src\Editor\Recast\RecastAssert.h" />
     <ClInclude Include="src\Editor\themes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -450,6 +450,13 @@ void Editor::sandboxWindow() {
 		registry.emplace<SkyBox>(entity, SkyBox{ AssetID{ 2183533701078487406 } });
 	}
 
+	if (ImGui::Button("Build NavMesh")) {
+
+
+
+	}
+
+
 	if (ImGui::Button("recompile shaders")) {
 		engine.renderer.recompileShaders();
 	}
