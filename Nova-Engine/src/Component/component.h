@@ -25,6 +25,7 @@ class Model;
 class Texture;
 class CubeMap;
 class ScriptAsset;
+class Audio;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -201,10 +202,25 @@ struct Scripts
 	)
 };
 
+struct AudioData
+{
+	TypedAssetID<Audio> AudioId;
+	float Volume;
+	bool MuteAudio;
+
+};
+
 struct AudioComponent {
-	AssetID audio;
+	// Original, for backup
+	// AssetID audio;
+	// 
+	// REFLECTABLE(
+	// 	audio
+	// )
+
+	std::vector<AudioData> AudioList;
 
 	REFLECTABLE(
-		audio
+		AudioList
 	)
 };

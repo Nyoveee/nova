@@ -99,72 +99,12 @@ void AudioSystem::loadAllSounds() {
         return;
     }
 
-#if 0
-    std::string fileName{ "Assets/Audio/AudioFilesToRead.txt" };
-    std::ifstream file(fileName);
-    if (!file.is_open())
-    {
-        std::cout << "Error: Txt File: " << fileName << " could not be opened\n";
-        return;
-    }
-
-    int counter = 1;
-
-    while (!file.eof())
-    {
-        std::string to3D;
-        bool loop;
-        std::string wavPath;
-
-        file >> to3D >> loop >> wavPath;
-
-        if (file.fail()) {
-            break;
-        }
-        std::string soundName{ std::filesystem::path(wavPath).filename().string() };
-        Logger::info("Audio File " + std::to_string(counter) + ". Loading " + soundName);
-#endif
-
 	// Get all audio assets.
 	auto&& audios = assetManager.getAllAssets<Audio>();
 
 	for (AssetID audioId : audios) {
 		loadSound(audioId);
 	}
-
-  //      // Determine sound mode
-  //      FMOD_MODE mode = FMOD_DEFAULT | ((to3D == "3D") ? FMOD_3D : FMOD_2D);
-  //      if (loop) {
-  //          mode |= FMOD_LOOP_NORMAL;
-  //      }
-
-  //      FMOD::Sound* audio = nullptr;
-
-  //      auto result = fmodSystem->createSound(wavPath.c_str(), mode, nullptr, &audio);
-  //      if (result != FMOD_OK)
-  //      {
-  //          Logger::info("Audio File " + std::to_string(counter) + ". " + soundName + " [Failed]");
-  //          counter++;
-  //          continue; 
-  //      }
-
-  //      // Configure 3D properties
-  //      if (to3D == "3D" && audio)
-  //      {
-  //          audio->set3DMinMaxDistance(100.0f, 200.0f);
-  //      }
-
-  //      Logger::info("Audio File " + std::to_string(counter) + ". " + soundName + " [Success]");
-  //      
-  //      counter++;
-
-  //      // Store the sound
-  //      sounds[soundName] = audio;
-  //      soundFilePathMap[wavPath] = soundName;
-#if 0    
-	}
-    file.close();
-#endif
 }
 
 void AudioSystem::unloadAllSounds() {
@@ -217,22 +157,9 @@ FMOD::Sound* AudioSystem::getSound(AssetID audioId) const {
 	return sound;
 }
 
-//void AudioSystem::stopAudio(const std::string& stringID)
-//{
-//    for (auto& [soundID, channel] : channels) {
-//        if (channel && soundID == stringID) {          // Ensure the channel pointer is valid
-//            channel->stop();                           // Stops the channel
-//        }
-//    }
-//}
-
 // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
 void AudioSystem::playSFX(AssetID id, float x, float y, float z)
 {
-	// not used?
-    //FMOD_MODE mode{};
-    //audio->getMode(&mode);
-
     // Play the sound
 	AudioInstance* audioInstance = createSoundInstance(id);
 
@@ -246,48 +173,6 @@ void AudioSystem::playSFX(AssetID id, float x, float y, float z)
 	audioInstance->channel->set3DAttributes(&position, &velocity);
 	audioInstance->channel->setPaused(false);
 }
-
-#if 0
-void AudioSystem::playSFXNonInst(AssetID id, float x, float y, float z)
-{
-    FMOD::Sound* audio = getSound(soundID);
-    if (!audio) {
-        Logger::info("Sound not found: " + soundID);
-        return;
-    }
-
-    // Check if the sound already has a channel
-    auto it = channels.find(soundID);
-    if (it != channels.end() && it->second) {
-        bool isPlaying = false;
-        it->second->isPlaying(&isPlaying);
-
-        if (isPlaying) {
-            return;
-        }
-    }
-
-    FMOD::Channel* channel = nullptr;
-    fmodSystem->playSound(audio, nullptr, false, &channel);
-
-    if (channel) {
-        FMOD_VECTOR position = { x, y, z };
-        FMOD_VECTOR velocity = { 0.0f, 0.0f, 0.0f };
-
-        channel->set3DAttributes(&position, &velocity);
-
-        float volume = 1.0f;
-        if (channelVolumes.contains(soundID)) {
-            volume = channelVolumes[soundID];
-        }
-        channel->setVolume(volume);
-        channel->setPaused(false);
-
-        // Store channel for reuse
-        channels[soundID] = channel;
-    }
-}
-#endif
 
 void AudioSystem::playBGM(AssetID id)
 {

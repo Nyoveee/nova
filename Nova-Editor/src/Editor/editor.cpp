@@ -348,17 +348,17 @@ void Editor::sandboxWindow() {
 
 	if (ImGui::Button("SFX Audio Test"))
 	{
-		engine.audioSystem.playSFX(AssetID { 16975844738926411222 }, 0.0f, 0.0f, 0.0f);
+		engine.audioSystem.playSFX(AssetID { 7948646037367790380 }, 0.0f, 0.0f, 0.0f);
 	}
 
 	if (ImGui::Button("BGM Audio Test"))
 	{
-		engine.audioSystem.playBGM(AssetID{ 2788544812328019992 });
+		engine.audioSystem.playBGM(AssetID{ 7534678074011327270 });
 	}
 
 	if (ImGui::Button("BGM Audio Test 2"))
 	{
-		engine.audioSystem.playBGM(AssetID{ 492974696075952017 });
+		engine.audioSystem.playBGM(AssetID{ 2656782158917682081 });
 	}
 
 	entt::registry& registry = engine.ecs.registry;

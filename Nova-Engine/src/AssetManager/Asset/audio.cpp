@@ -18,3 +18,7 @@ void Audio::unload() {}
 bool Audio::isAudio3D() const {
 	return is3D;
 }
+
+std::string Audio::getClassName() const {
+	return std::filesystem::path{ getFilePath() }.stem().string();
+}
