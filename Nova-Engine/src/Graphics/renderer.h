@@ -125,7 +125,9 @@ private:
 	BufferObject EBO;
 
 	// SSBO and UBO.
-	BufferObject lightSSBO;
+	BufferObject pointLightSSBO;
+	BufferObject directionalLightSSBO;
+	BufferObject spotLightSSBO;
 	BufferObject sharedUBO;
 
 	// Debug Physics VAO and it's corresponding VBO.	

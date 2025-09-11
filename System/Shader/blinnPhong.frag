@@ -18,19 +18,43 @@ uniform float ambientFactor;
 
 // === LIGHT PROPERTIES ===
 // corresponds to the enum in C++
-const int PointLight = 0;
-const int DirectionalLight = 1;
-const int SpotLight = 2;
+const int PointLightEnum = 0;
+const int DirectionalLightEnum = 1;
+const int SpotLightEnum = 2;
 
-struct Light {
+struct PointLight {
     vec3 position;
+    vec3 color;
+    vec3 attenuation;
+    int type;
+};
+struct DirectionalLight {
+    vec3 direction;
     vec3 color;
     int type;
 };
+struct SpotLight {
+    vec3 position;
+    vec3 direction;
+    vec3 color;
+	float cutoffAngle;
+	float outerCutoffAngle;
+    int type;
+};
 
-layout(std430, binding = 0) buffer Lights {
-    uint lightCount;
-    Light lights[];
+layout(std430, binding = 0) buffer PointLights {
+    uint pointLightCount;
+    PointLight pointLights[];
+};
+
+layout(std430, binding = 1) buffer DirectionalLights {
+    uint dirLightCount;
+    DirectionalLight dirLights[];
+};
+
+layout(std430, binding = 2) buffer SpotLights {
+    uint spotLightCount;
+    PointLight spotLights[];
 };
 
 uniform vec3 cameraPos;
@@ -40,12 +64,7 @@ uniform bool isUsingNormalMap;
 uniform sampler2D normalMap;
 
 // calculate the resulting color caused by this one light.
-vec3 calculateLight(Light light, vec3 normal, vec3 baseColor) {
-    // Attenuation vals
-    const float lightConst = 1.0;
-    const float lightLinear = 0.09;
-    const float lightQuad = 0.032;
-
+vec3 calculatePointLight(PointLight light, vec3 normal, vec3 baseColor) {
     // this is really from fragment position to light position. 
     // we do this to align with the normal.
     vec3 lightDiff = light.position - fsIn.fragWorldPos;
@@ -62,12 +81,30 @@ vec3 calculateLight(Light light, vec3 normal, vec3 baseColor) {
     vec3 halfwayDir = normalize(lightDir + viewDir);
     vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * light.color;
 
-    // Attenuation
+    // Attenuation vals
     float dist = length(lightDiff);
-    float attenuation = 1.0 / (lightConst + lightLinear * dist + 
-    		    lightQuad * (dist * dist));  
-    diffuseColor *= attenuation;
-    specularColor *= attenuation;
+    float attenVal = 1.0 / (light.attenuation[0] + light.attenuation[1] * dist + 
+    		    light.attenuation[2] * (dist * dist));  
+    diffuseColor *= attenVal;
+    specularColor *= attenVal;
+
+    return diffuseColor + specularColor;
+}
+
+// calculate the resulting color caused by this one light.
+vec3 calculateDirLight(DirectionalLight light, vec3 normal, vec3 baseColor) {
+    vec3 lightDir = normalize(-light.direction);
+
+    // hehe we will be using this in the PBR rendering next time!!
+    float cosTheta = max(dot(lightDir, normal), 0);
+
+    // this is our diffuse.
+    vec3 diffuseColor = baseColor * cosTheta * light.color;
+
+    // let's calculate specular
+    vec3 viewDir = normalize(cameraPos - fsIn.fragWorldPos);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * light.color;
 
     return diffuseColor + specularColor;
 }
@@ -92,8 +129,14 @@ void main() {
     vec3 finalColor = baseColor * ambientFactor;
 
     // Calculate diffuse and specular light for each light.
-    for(int i = 0; i < lightCount; ++i) {
-        finalColor += calculateLight(lights[i], normal, baseColor);
+    for(int i = 0; i < pointLightCount; ++i) {
+        finalColor += calculatePointLight(pointLights[i], normal, baseColor);
+    }
+    for(int i = 0; i < dirLightCount; ++i) {
+        finalColor += calculateDirLight(dirLights[i], normal, baseColor);
+    }
+    for(int i = 0; i < spotLightCount; ++i) {
+        finalColor += calculatePointLight(spotLights[i], normal, baseColor);
     }
 
     FragColor = vec4(finalColor, 1);
