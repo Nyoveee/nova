@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Nova-Editor", "Nova-Editor\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Nova-ScriptingAPI", "Nova-ScriptingAPI\Nova-ScriptingAPI.vcxproj", "{F0EBD9FE-3678-3611-839C-9741CD9195E3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureCompiler", "TextureCompiler\TextureCompiler.vcxproj", "{8BC0C4AE-1B85-4B9D-82CD-0AADBD531026}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,6 +41,10 @@ Global
 		{F0EBD9FE-3678-3611-839C-9741CD9195E3}.Debug|x64.Build.0 = Debug|x64
 		{F0EBD9FE-3678-3611-839C-9741CD9195E3}.Release|x64.ActiveCfg = Release|x64
 		{F0EBD9FE-3678-3611-839C-9741CD9195E3}.Release|x64.Build.0 = Release|x64
+		{8BC0C4AE-1B85-4B9D-82CD-0AADBD531026}.Debug|x64.ActiveCfg = Debug|x64
+		{8BC0C4AE-1B85-4B9D-82CD-0AADBD531026}.Debug|x64.Build.0 = Debug|x64
+		{8BC0C4AE-1B85-4B9D-82CD-0AADBD531026}.Release|x64.ActiveCfg = Release|x64
+		{8BC0C4AE-1B85-4B9D-82CD-0AADBD531026}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
