@@ -382,8 +382,9 @@ void Renderer::prepareRendering(RenderTarget target) {
 				transform.position,
 				light.direction,
 				glm::vec3{ light.color } * light.intensity,
-				light.cutoffAngle,
-				light.outerCutoffAngle,
+				light.attenuation,
+				light.cutOffAngle,
+				light.outerCutOffAngle,
 				static_cast<unsigned int>(light.type)
 			};
 			break;

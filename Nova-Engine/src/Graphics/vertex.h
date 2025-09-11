@@ -29,24 +29,22 @@ struct alignas(16) PointLightData {
 	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
 	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
 	unsigned int type;					// this will hold the corresponding enum values of Light::Type
-	//unsigned int padding[3];			// Extra padding to ensure alignment to multiple of 16
 };
 
 struct alignas(16) DirectionalLightData{
 	alignas(16) glm::vec3 lightDir;		// this will represent light direction for directional light
 	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
 	unsigned int type;					// this will hold the corresponding enum values of Light::Type
-	//unsigned int padding[3];			// Extra padding to ensure alignment to multiple of 16
 };
 
 struct alignas(16) SpotLightData {
 	alignas(16) glm::vec3 lightPos;		// this will represent light position for spot light
 	alignas(16) glm::vec3 lightDir;		// this will represent light direction for spot light
 	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
-	float cutoffAngle;
-	float outerCutoffAngle;
+	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
+	float cutOffAngle;					// Inner cutoff angle which shows full brightness
+	float outerCutOffAngle;				// Outer cutoff angle where the light will dim from inner to outer range
 	unsigned int type;					// this will hold the corresponding enum values of Light::Type
-	//unsigned int padding[1];			// Extra padding to ensure alignment to multiple of 16
 };
 
 #pragma warning( pop )

@@ -28,17 +28,20 @@ struct PointLight {
     vec3 attenuation;
     int type;
 };
+
 struct DirectionalLight {
     vec3 direction;
     vec3 color;
     int type;
 };
+
 struct SpotLight {
     vec3 position;
     vec3 direction;
     vec3 color;
-	float cutoffAngle;
-	float outerCutoffAngle;
+    vec3 attenuation;
+	float cutOffAngle;
+	float outerCutOffAngle;
     int type;
 };
 
@@ -54,7 +57,7 @@ layout(std430, binding = 1) buffer DirectionalLights {
 
 layout(std430, binding = 2) buffer SpotLights {
     uint spotLightCount;
-    PointLight spotLights[];
+    SpotLight spotLights[];
 };
 
 uniform vec3 cameraPos;
@@ -94,8 +97,6 @@ vec3 calculatePointLight(PointLight light, vec3 normal, vec3 baseColor) {
 // calculate the resulting color caused by this one light.
 vec3 calculateDirLight(DirectionalLight light, vec3 normal, vec3 baseColor) {
     vec3 lightDir = normalize(-light.direction);
-
-    // hehe we will be using this in the PBR rendering next time!!
     float cosTheta = max(dot(lightDir, normal), 0);
 
     // this is our diffuse.
@@ -105,6 +106,42 @@ vec3 calculateDirLight(DirectionalLight light, vec3 normal, vec3 baseColor) {
     vec3 viewDir = normalize(cameraPos - fsIn.fragWorldPos);
     vec3 halfwayDir = normalize(lightDir + viewDir);
     vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * light.color;
+
+    return diffuseColor + specularColor;
+}
+
+// calculate the resulting color caused by this one light.
+vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 baseColor) {
+    // this is really from fragment position to light position. 
+    // we do this to align with the normal.
+    vec3 lightDiff = light.position - fsIn.fragWorldPos;
+    vec3 lightDir = normalize(lightDiff);
+
+    float theta     = dot(lightDir, normalize(-light.direction));
+    float epsilon   = light.cutOffAngle - light.outerCutOffAngle;
+    float spotIntensity = (theta - light.outerCutOffAngle) / epsilon; 
+
+    // Early return if outside spotlight
+    if (spotIntensity <= 0.0) {
+        return vec3(0.0);
+    }
+    spotIntensity = clamp(spotIntensity, 0.0, 1.0);
+
+    // this is our diffuse.
+    float cosTheta = max(dot(lightDir, normal), 0);
+    vec3 diffuseColor = baseColor * cosTheta * light.color;
+
+    // let's calculate specular
+    vec3 viewDir = normalize(cameraPos - fsIn.fragWorldPos);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * light.color;
+
+    // Attenuation vals
+    float dist = length(lightDiff);
+    float attenVal = 1.0 / (light.attenuation[0] + light.attenuation[1] * dist + 
+    		    light.attenuation[2] * (dist * dist));  
+    diffuseColor *= attenVal;
+    specularColor *= attenVal;
 
     return diffuseColor + specularColor;
 }
@@ -136,7 +173,7 @@ void main() {
         finalColor += calculateDirLight(dirLights[i], normal, baseColor);
     }
     for(int i = 0; i < spotLightCount; ++i) {
-        finalColor += calculatePointLight(spotLights[i], normal, baseColor);
+        finalColor += calculateSpotLight(spotLights[i], normal, baseColor);
     }
 
     FragColor = vec4(finalColor, 1);
