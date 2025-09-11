@@ -222,6 +222,7 @@
     <ClInclude Include="src\Libraries\tinyexr.h" />
     <ClInclude Include="src\Libraries\type_alias.h" />
     <ClInclude Include="src\Export\window.h" />
+    <ClInclude Include="src\Navigation\Navigation.h" />
     <ClInclude Include="src\Physics\debugRenderer.h" />
     <ClInclude Include="src\Physics\joltPhysicsInterface.h" />
     <ClInclude Include="src\Physics\physicsManager.h" />
@@ -260,6 +261,7 @@
     <ClCompile Include="src\Libraries\miniz.c" />
     <ClCompile Include="src\Libraries\stb_image.cpp" />
     <ClCompile Include="src\Libraries\tinyexr.cpp" />
+    <ClCompile Include="src\Navigation\Navigation.cpp" />
     <ClCompile Include="src\Physics\debugRenderer.cpp" />
     <ClCompile Include="src\Physics\physicsManager.cpp" />
     <ClCompile Include="src\ResourceManager\resourceManager.cpp" />

@@ -13,10 +13,12 @@
 #include "Engine/transformationSystem.h"
 #include "Physics/physicsManager.h"
 #include "Audio/audioSystem.h"
+#include "Navigation/Navigation.h"
 
 
 class Window;
 class Renderer;
+class NavigationSystem;
 class CameraSystem;
 class ECS;
 class InputManager;
@@ -60,6 +62,7 @@ public:
 	TransformationSystem	transformationSystem;
 	PhysicsManager			physicsManager;
 	AudioSystem				audioSystem;
+	NavigationSystem		navigationSystem;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;

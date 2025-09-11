@@ -9,6 +9,7 @@
 #include "assetManager.h"
 #include "Debugging/Profiling.h"
 
+
 #include "Serialisation/serialisation.h"
 
 
@@ -23,6 +24,7 @@ Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetMa
 	transformationSystem	{ ecs },
 	physicsManager			{ *this },
 	audioSystem				{ *this },
+	navigationSystem		{ *this }, 
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
