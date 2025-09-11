@@ -187,6 +187,17 @@ namespace {
 						dataMember = EulerAngles{ {toRadian(eulerAngles.x), toRadian(eulerAngles.y), toRadian(eulerAngles.z)} };
 					}
 
+					if constexpr (std::same_as<DataMemberType, Radian>) {
+						// convert from radian to degrees for display..
+						float angle = static_cast<float>(dataMember);
+						angle = toDegree(angle);
+						ImGui::InputFloat(fieldData.name(), &angle);
+
+						// Clamp result..
+						angle = std::clamp(angle, -180.f, 180.f);
+						dataMember = toRadian(angle);
+					}
+
 					if constexpr (std::same_as<DataMemberType, AssetID>) {
 						ImGui::Text(dataMemberName);
 

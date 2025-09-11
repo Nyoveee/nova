@@ -117,9 +117,12 @@ vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 baseColor) {
     vec3 lightDiff = light.position - fsIn.fragWorldPos;
     vec3 lightDir = normalize(lightDiff);
 
+    // Cutoff angles for spotlight
+    float cutOffAngle = cos(light.cutOffAngle);
+    float outerCutOffAngle = cos(light.outerCutOffAngle);
     float theta     = dot(lightDir, normalize(-light.direction));
-    float epsilon   = light.cutOffAngle - light.outerCutOffAngle;
-    float spotIntensity = (theta - light.outerCutOffAngle) / epsilon; 
+    float epsilon   = cutOffAngle - outerCutOffAngle;
+    float spotIntensity = (theta - outerCutOffAngle) / epsilon; 
 
     // Early return if outside spotlight
     if (spotIntensity <= 0.0) {
