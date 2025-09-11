@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Component/component.h"
-#include "IManagedComponent.hxx"
+#include "API/IManagedComponent.hxx"
 #include "API/ManagedTypeMacros.hxx"
 
 // ===========================================================================================

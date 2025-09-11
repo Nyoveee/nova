@@ -4,7 +4,7 @@
 // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html 
 
 #pragma once
-#include "IManagedComponent.hxx"
+#include "API/IManagedComponent.hxx"
 public ref class Script abstract
 {
 public:

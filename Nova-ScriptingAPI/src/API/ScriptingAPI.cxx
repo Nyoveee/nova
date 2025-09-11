@@ -1,4 +1,3 @@
-// Converting to native type: https://learn.microsoft.com/en-us/cpp/dotnet/overview-of-marshaling-in-cpp?view=msvc-170
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
 #include "engine.h"
@@ -6,7 +5,7 @@
 
 #include <sstream>
 #include <filesystem>
-#include <msclr/marshal_cppstd.h>
+
 #include "ScriptLibraryHandler.hxx"
 
 generic<typename T> where T : Script

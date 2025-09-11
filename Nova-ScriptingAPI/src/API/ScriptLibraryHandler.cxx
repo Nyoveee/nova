@@ -11,7 +11,7 @@ void ScriptLibraryHandler::init()
 		Input::mousePosition_.y = static_cast<float>(currentMousePos.yPos);
 	});
 	Interface::engine->inputManager.subscribe<AdjustCameraSpeed>([](AdjustCameraSpeed adjustCameraSpeed) {
-		Input::scrollOffsetY_ = KeyValuePairFloat(true,adjustCameraSpeed.value);
+		Input::scrollOffsetY_ = KeyValuePairFloat(true, static_cast<float>(adjustCameraSpeed.value));
 	});
 }
 
