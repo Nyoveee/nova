@@ -14,8 +14,11 @@
 
 #include "engine.h"
 
-class ECS;
-
+namespace {
+	constexpr int SCRIPT_COMPILING = 0x1;
+	constexpr int SCRIPT_COMPILED = 0x2;
+	constexpr float DEBOUNCING_TIME = 3.0f;
+}
 ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	: engine{p_engine}
 	, runtimeDirectory{}
@@ -28,8 +31,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, updateScripts				{ nullptr } 
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
-	, debouncingTime{3.f}
 	, timeSinceSave{}
+	, compileFlags{}
 {
 	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
 
@@ -270,23 +273,22 @@ void ScriptingAPIManager::update() {
 	updateScripts(); 
 }
 
-DLL_API void ScriptingAPIManager::checkModifiedScripts()
+void ScriptingAPIManager::checkModifiedScripts()
 {
-	bool compile{ !timeSinceSave.empty() };
-	for (std::pair<const AssetID, float>& time : timeSinceSave) {
-		time.second += 1 / 60.f;
-		if (time.second < debouncingTime)
-			compile = false;
-	}
-	if (compile) {
-		timeSinceSave.clear();
-		compileScriptAssembly();
+	if (compileFlags & SCRIPT_COMPILING) {
+		timeSinceSave += 1 / 60.f;
+		if (timeSinceSave >= DEBOUNCING_TIME) {
+			compileScriptAssembly();
+			compileFlags = SCRIPT_COMPILED & ~SCRIPT_COMPILING;
+		}
 	}
 }
 
 bool ScriptingAPIManager::loadAllScripts() {
-	if (!compileScriptAssembly())
-		return false;
+	if (!(compileFlags & SCRIPT_COMPILED)) {
+		if (!compileScriptAssembly()) return false;
+		compileFlags = SCRIPT_COMPILED & ~SCRIPT_COMPILING;
+	}
 	
 	loadAssembly();
 	
@@ -309,8 +311,10 @@ void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
 }
 void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
 {
-	if (engine.assetManager.isAsset<ScriptAsset>(assetId))
-		timeSinceSave[assetId] = 0.f;
+	if (engine.assetManager.isAsset<ScriptAsset>(assetId)) {
+		compileFlags = SCRIPT_COMPILING & ~SCRIPT_COMPILED;
+		timeSinceSave = 0.f;
+	}
 }
 void ScriptingAPIManager::OnAssetContentDeletedCallback(AssetID assetID) {
 	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 

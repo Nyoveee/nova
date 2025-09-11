@@ -84,8 +84,9 @@ private:
 	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
 private:
-	float debouncingTime;
-	std::unordered_map<AssetID, float> timeSinceSave;
+	int compileFlags;
+	float timeSinceSave;
+
 };
 
 #include "Engine/ScriptingAPIManager.ipp"
