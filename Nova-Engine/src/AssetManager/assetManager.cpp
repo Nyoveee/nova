@@ -17,16 +17,17 @@ namespace {
 }
 
 AssetManager::AssetManager() :
+	assetDirectory		{ std::filesystem::current_path() /= "Assets" },
+	descriptorDirectory	{ std::filesystem::current_path() /= "Descriptors" },
+	resourceDirectory	{ std::filesystem::current_path() /= "Resources" },
 	threadPool			{ static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }, 
 	directoryWatcher	{ *this, std::filesystem::current_path() /= "Assets" }
 {
 
-	// Get the run time directory
-	std::filesystem::path assetDirectory = std::filesystem::current_path() /= "Assets";
-
 	FolderID folderId{ 0 };
-		
+	
 	try {
+#if 1
 		for (const auto& entry : std::filesystem::recursive_directory_iterator{ assetDirectory }) {
 			std::filesystem::path currentPath = entry.path();
 			if (directoryWatcher.IsPathHidden(currentPath))
@@ -45,10 +46,15 @@ AssetManager::AssetManager() :
 				parseAssetFile(currentPath);
 			}
 		}
+#endif
+		//for (const auto& entry : std::filesystem::recursive_directory_iterator{ descriptorDirectory }) {
+		//
+		//}
 	}
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
 	}
+
 	// Register callbacks for the watcher
 	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });
 	directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
