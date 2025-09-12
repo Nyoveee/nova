@@ -4,12 +4,13 @@
 
 #include <fstream>
 #include <iomanip>
-constexpr const char* filetest2path = "test2.json";
+//constexpr const char* filetest2path = "test2.json";
 constexpr const char* filepath = "test.json";
 
 namespace Serialiser {
 	void Serialiser::serialiseScene(ECS& ecs) {
-		std::ofstream file(filetest2path);
+		//std::ofstream file(filetest2path);
+		std::ofstream file(filepath);
 
 		if (!file) {
 			return;
@@ -102,14 +103,8 @@ namespace Serialiser {
 		entt::registry& registry = ecs.registry;
 		for (const auto& en : j["entities"]) {
 			auto entity = registry.create(en["id"]);
-			deserialiseComponents(registry, entity, file, en);
+			deserialiseComponents<ALL_COMPONENTS>(registry, entity, en);
 		}
-		
-
-
-		//for (entt::entity entity : registry.view<entt::entity>().each()) {
-		//	deserialiseComponents<ALL_COMPONENTS>(registry, entity, file);
-		//}
 #if 0
 		json j;
 
