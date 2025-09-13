@@ -3,8 +3,10 @@
 #include <vector>
 #include <functional>
 
-#include "ecs.h"
 #include "export.h"
+
+#include "Component/ecs.h"
+
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
@@ -17,10 +19,11 @@ class Window;
 class Engine;
 class InputManager;
 class AssetManager;
+class ResourceManager;
 
 class Editor {
 public:
-	Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager);
+	Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager);
 
 	~Editor();
 	Editor(Editor const& other)				= delete;
@@ -65,6 +68,7 @@ public:
 	Engine& engine;
 	InputManager& inputManager;
 	AssetManager& assetManager;
+	ResourceManager& resourceManager;
 
 private:
 	Window& window;

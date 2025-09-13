@@ -1,8 +1,8 @@
 #include "ScriptingAPIManager.h"
 
-#include "AssetManager.h"
-#include "AssetManager/Asset/scriptAsset.h"
-#include "Debugging/Profiling.h"
+#include "ResourceManager/resourceManager.h"
+#include "scriptAsset.h"
+#include "Profiling.h"
 #include "Logger.h"
 #include <shlwapi.h>
 #include <array>
@@ -14,8 +14,9 @@
 
 #include "engine.h"
 
-class ECS;
-
+namespace {
+	constexpr float DEBOUNCING_TIME = 3.0f;
+}
 ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	: engine{p_engine}
 	, runtimeDirectory{}
@@ -28,10 +29,10 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, updateScripts				{ nullptr } 
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
-	, debouncingTime{3.f}
-	, timeSinceSave{}
+	, timeSinceSave				{}
+	, compileState				{ CompileState::NotCompiled }
 {
-	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
+	//assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](ResourceID resourceId) { OnAssetContentModifiedCallback(resourceId); });
 
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
@@ -120,8 +121,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		loadAssembly							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
-		unloadAssembly                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		loadAssembly							= GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
+		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
@@ -193,18 +194,18 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 bool ScriptingAPIManager::compileScriptAssembly()
 {
 	// Project path and build command
-	std::string proj_path{std::filesystem::current_path().string() + "\\Assets\\Nova-Scripts.csproj"};
+	std::string proj_path{std::filesystem::current_path().string() + "\\Nova-Scripts\\Nova-Scripts.csproj"};
 
 #ifdef _DEBUG
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Debug --no-self-contained -o "
-		+ L"\"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\" -r \"win-x64\""
-		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\""
+		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\"";
 #else
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Release --no-self-contained -o "
-		+ L"\"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\" -r \"win-x64\""
-		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\""
+		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\"";
 #endif
 	STARTUPINFOW startInfo;
 	PROCESS_INFORMATION pi;
@@ -212,10 +213,6 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	ZeroMemory(&pi, sizeof(pi));
 	startInfo.cb = sizeof(startInfo);
 	// Start Compiler 
-	std::string intermediateFilePath{ std::filesystem::current_path().string() + "/Assets/.bin" };
-	if (!std::filesystem::exists(intermediateFilePath))
-		std::filesystem::create_directory(intermediateFilePath);
-	SetFileAttributesA(intermediateFilePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
 	const auto launch_success = CreateProcess
 	(
 		L"C:\\Program Files\\dotnet\\dotnet.exe", buildCmd.data(),
@@ -251,7 +248,7 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	{
 		std::filesystem::copy_file
 		(
-			(std::filesystem::current_path().string() + "\\Assets\\.bin\\Nova-Scripts.dll"), // Source
+			(std::filesystem::current_path().string() + "\\Nova-Scripts\\.bin\\Nova-Scripts.dll"), // Source
 			(runtimeDirectory + "\\Nova-Scripts.dll"), // Destination
 			std::filesystem::copy_options::overwrite_existing
 		);
@@ -267,26 +264,30 @@ bool ScriptingAPIManager::compileScriptAssembly()
 
 void ScriptingAPIManager::update() { 	
 	ZoneScoped;
-	updateScripts(); 
+	updateScripts();
 }
 
-DLL_API void ScriptingAPIManager::checkModifiedScripts()
+void ScriptingAPIManager::checkModifiedScripts(float dt)
 {
-	bool compile{ !timeSinceSave.empty() };
-	for (std::pair<const AssetID, float>& time : timeSinceSave) {
-		time.second += 1 / 60.f;
-		if (time.second < debouncingTime)
-			compile = false;
-	}
-	if (compile) {
-		timeSinceSave.clear();
-		compileScriptAssembly();
+	if (compileState == CompileState::ToBeCompiled) {
+		timeSinceSave += dt;
+
+		if (timeSinceSave >= DEBOUNCING_TIME) {
+			if (compileScriptAssembly()) {
+				compileState = CompileState::Compiled;
+			}
+			else {
+				compileState = CompileState::NotCompiled;
+			}
+		}
 	}
 }
 
 bool ScriptingAPIManager::loadAllScripts() {
-	if (!compileScriptAssembly())
-		return false;
+	if (compileState != CompileState::Compiled) {
+		if (!compileScriptAssembly()) return false;
+		compileState = CompileState::Compiled;
+	}
 	
 	loadAssembly();
 	
@@ -307,12 +308,14 @@ void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
 	if (std::filesystem::path(absPath).extension() == ".cs")
 		compileScriptAssembly();
 }
-void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
+void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId)
 {
-	if (engine.assetManager.isAsset<ScriptAsset>(assetId))
-		timeSinceSave[assetId] = 0.f;
+	if (engine.resourceManager.isResource<ScriptAsset>(resourceId)) {
+		compileState = CompileState::ToBeCompiled;
+		timeSinceSave = 0.f;
+	}
 }
-void ScriptingAPIManager::OnAssetContentDeletedCallback(AssetID assetID) {
-	// AssetID might disappear if assetmanager deletes it, maybe do typedAssetID or filepath instead(Overloaded callback?) 
+void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
+	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
 }
 

@@ -2,7 +2,7 @@
 
 #include "export.h"
 
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>

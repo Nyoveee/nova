@@ -1,15 +1,16 @@
 #include "serialisation.h"
 #include "Component/component.h"
-#include "ECS.h"
+#include "Component/ECS.h"
 
 #include <fstream>
 #include <iomanip>
-constexpr const char* filetest2path = "test2.json";
+//constexpr const char* filetest2path = "test2.json";
 constexpr const char* filepath = "test.json";
 
 namespace Serialiser {
 	void Serialiser::serialiseScene(ECS& ecs) {
-		std::ofstream file(filetest2path);
+		//std::ofstream file(filetest2path);
+		std::ofstream file(filepath);
 
 		if (!file) {
 			return;
@@ -96,28 +97,14 @@ namespace Serialiser {
 		if (!file.is_open())
 			return;
 
-		//for (entt::entity entity : registry.view<entt::entity>().each()) {
-		//	deserialiseComponents<ALL_COMPONENTS>(registry, entity, file);
-		//}
-#if 1
 		json j;
 
 		file >> j;
 		entt::registry& registry = ecs.registry;
 
-		for (const auto& en : j["entities"])
-		{
+		for (const auto& en : j["entities"]) {
 			auto entity = registry.create(en["id"]);
-
-			Transform transform = {
-				{en["Transform"]["position"]["x"], en["Transform"]["position"]["y"], en["Transform"]["position"]["z"]},
-				{en["Transform"]["scale"]["x"], en["Transform"]["scale"]["y"], en["Transform"]["scale"]["z"]},
-				{en["Transform"]["rotation"]["w"], en["Transform"]["rotation"]["x"], en["Transform"]["rotation"]["y"], en["Transform"]["rotation"]["z"]}
-			};
-
-			registry.emplace<Transform>(entity, std::move(transform));
-			registry.emplace<EntityData>(entity, EntityData{ en["EntityData"]["name"], en["EntityData"]["parent"], en["EntityData"]["children"] });
+			deserialiseComponents<ALL_COMPONENTS>(registry, entity, en);
 		}
-#endif
 	}
 };

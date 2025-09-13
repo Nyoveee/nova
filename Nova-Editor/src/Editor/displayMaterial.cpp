@@ -5,7 +5,7 @@
 
 #include "componentInspector.h"
 
-#include "Libraries/magic_enum.hpp"
+#include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector) {
 	ImGui::BeginChild("Material UI", ImVec2{0, 400.f}, ImGuiChildFlags_Borders);
@@ -58,8 +58,8 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 	std::visit([&](auto&& albedo) {
 		using T = std::decay_t<decltype(albedo)>;
 
-		if constexpr (std::same_as<T, AssetID>) {
-			componentInspector.displayAssetDropDownList<Texture>(albedo, "Albedo Map", [&](AssetID selectedAssetId) {
+		if constexpr (std::same_as<T, ResourceID>) {
+			componentInspector.displayAssetDropDownList<Texture>(albedo, "Albedo Map", [&](ResourceID selectedAssetId) {
 				material.albedo = selectedAssetId;
 			});
 			
@@ -74,7 +74,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 			material.albedo = color;
 
 			if (ImGui::Button(material.renderingPipeline == Material::Pipeline::Color ? "Use texture instead." : "Use albedo map instead.")) {
-				material.albedo = componentInspector.assetManager.getSomeAssetID<Texture>();
+				material.albedo = componentInspector.resourceManager.getSomeResourceID<Texture>();
 				return;
 			}
 		}
@@ -95,8 +95,8 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 	std::visit([&](auto&& configuration) {
 		using T = std::decay_t<decltype(configuration)>;
 
-		if constexpr (std::same_as<T, AssetID>) {
-			componentInspector.displayAssetDropDownList<Texture>(configuration, "Packed Texture Map", [&](AssetID selectedAssetId) {
+		if constexpr (std::same_as<T, ResourceID>) {
+			componentInspector.displayAssetDropDownList<Texture>(configuration, "Packed Texture Map", [&](ResourceID selectedAssetId) {
 				material.config = selectedAssetId;
 			});
 
@@ -111,7 +111,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 			ImGui::SliderFloat("Occulusion", &configuration.occulusion, 0.f, 1.f, "%.3f", ImGuiSliderFlags_AlwaysClamp);
 
 			if (ImGui::Button("Use packed map instead.")) {
-				material.config = componentInspector.assetManager.getSomeAssetID<Texture>();
+				material.config = componentInspector.resourceManager.getSomeResourceID<Texture>();
 				return;
 			}
 		}
@@ -134,12 +134,12 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 
 	if (!material.normalMap) {
 		if (ImGui::Button("Use a normal map.")) {
-			material.normalMap = componentInspector.assetManager.getSomeAssetID<Texture>();
+			material.normalMap = componentInspector.resourceManager.getSomeResourceID<Texture>();
 		}
 	}
 	else {
-		componentInspector.displayAssetDropDownList<Texture>(material.normalMap.value(), "Normal Map", [&](AssetID selectedAssetId) {
-			material.normalMap = selectedAssetId;
+		componentInspector.displayAssetDropDownList<Texture>(material.normalMap.value(), "Normal Map", [&](ResourceID selectedResourceId) {
+			material.normalMap = selectedResourceId;
 		});
 
 		if (ImGui::Button("Remove normal map.")) {

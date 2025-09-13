@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(ProjectDir)src;$(ProjectDir)src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(ProjectDir)src;$(ProjectDir)src\Export;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
@@ -120,7 +120,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NOVA_DLL_EXPORT;_DEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NOVA_DLL_EXPORT;_DEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -128,7 +128,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <ShowIncludes>false</ShowIncludes>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,7 +148,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NOVA_DLL_EXPORT;NDEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;FMT_UNICODE=0;NOVA_DLL_EXPORT;NDEBUG;NOVAENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -155,7 +156,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <ShowIncludes>false</ShowIncludes>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,30 +173,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\AssetManager\Asset\audio.h" />
-    <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />
-    <ClInclude Include="src\AssetManager\Asset\cubemap.h" />
-    <ClInclude Include="src\AssetManager\Asset\scriptAsset.h" />
     <ClInclude Include="src\Audio\audioSystem.h" />
-    <ClInclude Include="src\Export\Logger.h" />
-    <ClInclude Include="src\AssetManager\assetMananger.ipp" />
-    <ClInclude Include="src\AssetManager\Asset\asset.h" />
-    <ClInclude Include="src\AssetManager\Asset\model.h" />
-    <ClInclude Include="src\AssetManager\folder.h" />
-    <ClInclude Include="src\AssetManager\modelLoader.h" />
-    <ClInclude Include="src\AssetManager\assetFunctor.h" />
-    <ClInclude Include="src\AssetManager\assetFunctor.ipp" />
-    <ClInclude Include="src\Debugging\Logger.ipp" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp" />
     <ClInclude Include="src\Engine\transformationSystem.h" />
-    <ClInclude Include="src\Export\assetManager.h" />
-    <ClInclude Include="src\AssetManager\Asset\texture.h" />
     <ClInclude Include="src\Component\component.h" />
     <ClInclude Include="src\ECS &amp; Components\ECS.h" />
-    <ClInclude Include="src\Export\ECS.h" />
-    <ClInclude Include="src\Export\engine.h" />
-    <ClInclude Include="src\Export\export.h" />
-    <ClInclude Include="src\Export\ScriptingAPIManager.h" />
+    <ClInclude Include="src\Component\ECS.h" />
+    <ClInclude Include="src\Engine\engine.h" />
+    <ClInclude Include="src\Engine\ScriptingAPIManager.h" />
     <ClInclude Include="src\Graphics\camera.h" />
     <ClInclude Include="src\Graphics\cameraSystem.h" />
     <ClInclude Include="src\Graphics\framebuffer.h" />
@@ -202,26 +188,14 @@
     <ClInclude Include="src\Graphics\shader.h" />
     <ClInclude Include="src\Graphics\vertex.h" />
     <ClInclude Include="src\Graphics\bufferObject.h" />
-    <ClInclude Include="src\Export\inputManager.h" />
+    <ClInclude Include="src\InputManager\inputManager.h" />
     <ClInclude Include="src\InputManager\glfwInput.h" />
     <ClInclude Include="src\InputManager\inputEvent.h" />
     <ClInclude Include="src\InputManager\keybind.h" />
     <ClInclude Include="src\InputManager\observer.h" />
     <ClInclude Include="src\InputManager\observer.ipp" />
-    <ClInclude Include="src\Libraries\backward.hpp" />
-    <ClInclude Include="src\Libraries\BS_thread_pool.hpp" />
-    <ClInclude Include="src\Libraries\family.h" />
-    <ClInclude Include="src\Libraries\FileWatch.hpp" />
-    <ClInclude Include="src\Libraries\magic_enum.hpp" />
-    <ClInclude Include="src\Libraries\math.h" />
-    <ClInclude Include="src\Debugging\Profiling.h" />
-    <ClInclude Include="src\Libraries\miniz.h" />
-    <ClInclude Include="src\Libraries\reflection.h" />
     <ClInclude Include="src\Export\Header\ScriptingAPIManager.h" />
-    <ClInclude Include="src\Libraries\stb_image.hpp" />
-    <ClInclude Include="src\Libraries\tinyexr.h" />
-    <ClInclude Include="src\Libraries\type_alias.h" />
-    <ClInclude Include="src\Export\window.h" />
+    <ClInclude Include="src\Engine\window.h" />
     <ClInclude Include="src\Physics\debugRenderer.h" />
     <ClInclude Include="src\Physics\joltPhysicsInterface.h" />
     <ClInclude Include="src\Physics\physicsManager.h" />
@@ -231,18 +205,8 @@
     <ClInclude Include="src\Serialisation\serialisation.ipp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp" />
-    <ClCompile Include="src\AssetManager\Asset\asset.cpp" />
-    <ClCompile Include="src\AssetManager\assetManager.cpp" />
-    <ClCompile Include="src\AssetManager\Asset\audio.cpp" />
-    <ClCompile Include="src\AssetManager\Asset\cubemap.cpp" />
-    <ClCompile Include="src\AssetManager\Asset\model.cpp" />
-    <ClCompile Include="src\AssetManager\Asset\scriptAsset.cpp" />
-    <ClCompile Include="src\AssetManager\Asset\texture.cpp" />
-    <ClCompile Include="src\AssetManager\modelLoader.cpp" />
     <ClCompile Include="src\Audio\audioSystem.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
-    <ClCompile Include="src\Debugging\Logger.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />
     <ClCompile Include="src\Engine\ScriptingAPIManager.cpp" />
     <ClCompile Include="src\Engine\transformationSystem.cpp" />
@@ -254,23 +218,22 @@
     <ClCompile Include="src\Graphics\bufferObject.cpp" />
     <ClCompile Include="src\InputManager\inputManager.cpp" />
     <ClCompile Include="src\InputManager\inputMapping.cpp" />
-    <ClCompile Include="src\Libraries\backward.cpp" />
-    <ClCompile Include="src\Libraries\glad.cpp" />
-    <ClCompile Include="src\Libraries\math.cpp" />
-    <ClCompile Include="src\Libraries\miniz.c" />
-    <ClCompile Include="src\Libraries\stb_image.cpp" />
-    <ClCompile Include="src\Libraries\tinyexr.cpp" />
     <ClCompile Include="src\Physics\debugRenderer.cpp" />
     <ClCompile Include="src\Physics\physicsManager.cpp" />
     <ClCompile Include="src\ResourceManager\resourceManager.cpp" />
     <ClCompile Include="src\Serialisation\serialisation.cpp" />
-    <ClInclude Include="src\Libraries\type_alias.ipp">
-      <FileType>CppCode</FileType>
-    </ClInclude>
     <ClCompile Include="src\Engine\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\InputManager\inputManager.ipp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nova-Framework\Nova-Framework.vcxproj">
+      <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Nova-Resource\Resource.vcxproj">
+      <Project>{380aadcf-1df3-403d-8190-404b143deab0}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

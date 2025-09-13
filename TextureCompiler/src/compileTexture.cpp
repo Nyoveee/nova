@@ -1,3 +1,0 @@
-namespace TextureCompiler {
-	void compile() {}
-}

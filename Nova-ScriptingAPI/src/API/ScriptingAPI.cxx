@@ -1,13 +1,12 @@
-// Converting to native type: https://learn.microsoft.com/en-us/cpp/dotnet/overview-of-marshaling-in-cpp?view=msvc-170
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
-#include "engine.h"
-#include "assetManager.h"
+#include "Engine/engine.h"
+#include "ResourceManager/resourceManager.h"
 
 #include <sstream>
 #include <filesystem>
-#include <msclr/marshal_cppstd.h>
 
+#include "ScriptLibraryHandler.hxx"
 
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
@@ -26,6 +25,7 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	runtimePath = p_runtimePath;
 	gameObjectScripts = nullptr;
 	scriptTypes = nullptr;
+	ScriptLibraryHandler::init();
 }
 
 void Interface::addGameObjectScript(System::UInt32 entityID, ScriptID scriptId)
@@ -73,6 +73,7 @@ void Interface::intializeAllScripts()
 }
 
 void Interface::update() {
+	ScriptLibraryHandler::update();
 	for each (System::UInt32 entityID in gameObjectScripts->Keys)
 		for each (Script ^ script in gameObjectScripts[entityID])
 			script->callUpdate();
@@ -133,11 +134,11 @@ void Interface::load()
 	}
 	
 	// ========================================================
-	// 5. We define mapping from Asset IDs to script types.
+	// 5. We define mapping from Resource IDs to script types.
 	// ========================================================
-	auto&& scripts = engine->assetManager.getAllAssets<ScriptAsset>();
+	auto&& scripts = engine->resourceManager.getAllResources<ScriptAsset>();
 	for (auto&& scriptId : scripts) {
-		auto&& [script, _] = engine->assetManager.getAsset<ScriptAsset>(scriptId);
+		auto&& [script, _] = engine->resourceManager.getResource<ScriptAsset>(scriptId);
 		assert(script && "Script should always be instantly available.");
 
 		System::String^ className = gcnew System::String(script->getClassName().c_str());

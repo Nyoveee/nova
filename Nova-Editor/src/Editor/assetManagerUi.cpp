@@ -1,4 +1,5 @@
-#include "assetManager.h"
+#include "AssetManager/assetManager.h"
+#include "ResourceManager/resourceManager.h"
 #include "editor.h"
 
 #include "assetManagerUi.h"
@@ -14,10 +15,11 @@
 
 AssetManagerUI::AssetManagerUI(Editor& editor) :
 	assetManager	 { editor.assetManager },
+	resourceManager	 { editor.resourceManager },
 	selectedFolderId { NONE },
 	folderIcon		 { "System/Image/folder.png", false }
 {
-	folderIcon.load(assetManager);
+	folderIcon.load();
 }
 
 void AssetManagerUI::update() {
@@ -183,7 +185,7 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 		}
 
 		// Display all asset thumbnails..
-		for (AssetID assetId : folder.assets) {
+		for (ResourceID assetId : folder.assets) {
 			displayAssetThumbnail(assetId);
 			++itemsToDisplay;
 		}
@@ -198,15 +200,15 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 	}
 }
 
-void AssetManagerUI::displayAssetThumbnail(AssetID assetId) {
-	Asset* asset = assetManager.getAssetInfo(assetId);
+void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
+	Asset* asset = resourceManager.getResourceInfo(resourceId);
 
 	if (!asset) {
 		return;
 	}
 
 	displayThumbnail(
-		static_cast<int>(static_cast<std::size_t>(assetId)),
+		static_cast<int>(static_cast<std::size_t>(resourceId)),
 		NO_TEXTURE,
 		asset->name.empty() ? "<no name>" : asset->name.c_str(),
 
@@ -215,27 +217,13 @@ void AssetManagerUI::displayAssetThumbnail(AssetID assetId) {
 
 		// callback when the thumbnail gets double clicked.
 		[&]() {
-			if (assetManager.isAsset<ScriptAsset>(assetId)) {
-				static STARTUPINFO si;
-				static PROCESS_INFORMATION pi;
-				ZeroMemory(&si, sizeof(si));
-				si.cb = sizeof(si);
-				ZeroMemory(&pi, sizeof(pi));
-				std::wostringstream wss;
-				wss << " /Edit \"" << asset->getFilePath().c_str() << "\"";
-				std::wstring path{ wss.str() };
-				// The path can be applied to createprocess
-				// https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
-				CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe",
-					const_cast<LPWSTR>(path.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
-				CloseHandle(pi.hProcess);
-				CloseHandle(pi.hThread);
-			}
+			handleThumbnailDoubleClick(*asset);
 		}
 	);
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
+#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. attempting to display invalid folder id.");
 
@@ -254,6 +242,7 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		// callback when the thumbnail gets double clicked.
 		[&]() {}
 	);
+#endif
 }
 
 void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
@@ -310,4 +299,24 @@ bool AssetManagerUI::isAMatchWithSearchQuery(std::string const& name) const {
 		allUpperCaseName.push_back(static_cast<char>(std::toupper(character)));
 	}
 	return allUpperCaseName.find(allUpperCaseSearchQuery) != std::string::npos;
+}
+
+void AssetManagerUI::handleThumbnailDoubleClick(Asset& resource) {
+	if (resourceManager.isResource<ScriptAsset>(resource.id)) {
+		// Launch a process that opens visual studio with the scripts.
+		static STARTUPINFO si;
+		static PROCESS_INFORMATION pi;
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+		std::wostringstream wss;
+		wss << " /Edit \"" << resource.getFilePath().c_str() << "\"";
+		std::wstring path{ wss.str() };
+		// The path can be applied to createprocess
+		// https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
+		CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe",
+			const_cast<LPWSTR>(path.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
 }
