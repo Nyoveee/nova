@@ -1,9 +1,9 @@
-#include "engine.h"
+#include "Engine/engine.h"
 #include "componentInspector.h"
 #include "imgui.h"
 #include "editor.h"
 #include "Component/component.h"
-#include "ECS.h"
+#include "Component/ECS.h"
 
 #include "misc/cpp/imgui_stdlib.h"
 
@@ -55,7 +55,7 @@ namespace {
 ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
 	ecs				{ editor.engine.ecs },
-	assetManager	{ editor.engine.assetManager }
+	resourceManager { editor.engine.resourceManager }
 {}
 
 void ComponentInspector::update() {

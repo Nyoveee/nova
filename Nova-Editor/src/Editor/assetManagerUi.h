@@ -32,7 +32,7 @@ private:
 	
 	void displayFolderTreeNode(FolderID folderId);
 	void displayFolderContent(FolderID folderId);
-	void displayAssetThumbnail(AssetID assetId);
+	void displayAssetThumbnail(ResourceID assetId);
 	void displayFolderThumbnail(FolderID folderId);
 
 	void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);

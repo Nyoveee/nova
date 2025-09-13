@@ -52,8 +52,8 @@ void CubeMap::load() {
 	}
 	
 	float* data; // width * height * RGBA
-	int width;
-	int height;
+	//int width;
+	//int height;
 	const char* err = nullptr; // or nullptr in C++11
 
 	int status = LoadEXR(&data, &width, &height, getFilePath().c_str(), &err);

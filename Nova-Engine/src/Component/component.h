@@ -124,15 +124,15 @@ struct Material {
 	Pipeline renderingPipeline = Pipeline::BlinnPhong;
 
 	// either texture map or constant.
-	std::variant<AssetID, Color>	albedo		= Color{ 0.1f, 0.1f, 0.1f };
-	std::variant<AssetID, Config>	config		= Config{ 0.5f, 0.f, 0.f };
-	std::optional<AssetID>			normalMap	= std::nullopt;
+	std::variant<ResourceID, Color>		albedo		= Color{ 0.1f, 0.1f, 0.1f };
+	std::variant<ResourceID, Config>	config		= Config{ 0.5f, 0.f, 0.f };
+	std::optional<ResourceID>			normalMap	= std::nullopt;
 
 	float ambient = 0.1f;
 };
 
 struct MeshRenderer {
-	TypedAssetID<Model> modelId;
+	TypedResourceID<Model> modelId;
 
 	// maps a material name from the model to a specific material texture
 	std::unordered_map<MaterialName, Material> materials;
@@ -180,7 +180,7 @@ struct SphereCollider {
 };
 
 struct SkyBox {
-	TypedAssetID<CubeMap> cubeMapId;
+	TypedResourceID<CubeMap> cubeMapId;
 	
 	REFLECTABLE(
 		cubeMapId
@@ -189,7 +189,7 @@ struct SkyBox {
 
 struct ScriptData
 {
-	TypedAssetID<ScriptAsset> scriptId;
+	TypedResourceID<ScriptAsset> scriptId;
 	// Additional data includes those properties in the scripts
 };
 
@@ -202,7 +202,7 @@ struct Scripts
 };
 
 struct AudioComponent {
-	AssetID audio;
+	ResourceID audio;
 
 	REFLECTABLE(
 		audio

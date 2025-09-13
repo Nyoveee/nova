@@ -8,13 +8,13 @@
 #include "type_alias.h"
 
 class Engine;
-class AssetManager;
+class ResourceManager;
 
 class AudioSystem {
 public:
 	struct AudioInstance {
 		AudioInstanceID id;			// an id representing this audio instance
-		AssetID audioId;			// holds an id back to the original audio file
+		ResourceID audioId;			// holds an id back to the original audio file
 		FMOD::Channel* channel;		// contains audio instance specific data 
 		
 		float volume = 1.f;
@@ -41,28 +41,28 @@ public:
 	void stopAudioInstance(AudioInstanceID audioInstanceId);
 
     // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
-	DLL_API void playSFX(AssetID audioId, float x, float y, float z);
+	DLL_API void playSFX(ResourceID audioId, float x, float y, float z);
 	//DLL_API	void playSFXNonInst(AssetID audioId, float x, float y, float z);
 
-	DLL_API void playBGM(AssetID audioId);
+	DLL_API void playBGM(ResourceID audioId);
 
 	void handleFinishedAudioInstance(FMOD::Channel* channel);
 
 private:
-	FMOD::Sound* getSound(AssetID audioId) const;
-	void loadSound(AssetID audioId);
+	FMOD::Sound* getSound(ResourceID audioId) const;
+	void loadSound(ResourceID audioId);
 
 	AudioInstanceID getNewAudioInstanceId();
-	AudioInstance* createSoundInstance(AssetID audioId, float volume = 1.f);
+	AudioInstance* createSoundInstance(ResourceID audioId, float volume = 1.f);
 
 private:
 	FMOD::System* fmodSystem;
 	Engine& engine;
-	AssetManager& assetManager;
+	ResourceManager& resourceManager;
 
 private:
 	AudioInstance* currentBGM;
-	std::unordered_map<AssetID, FMOD::Sound*> sounds;
+	std::unordered_map<ResourceID, FMOD::Sound*> sounds;
 
 	AudioInstanceID nextAudioInstanceId = 0;
 

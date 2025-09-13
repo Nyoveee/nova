@@ -38,7 +38,7 @@ std::optional<ModelLoader::ModelData> ModelLoader::loadModel(std::string const& 
 	aiScene const* scene = importer.ReadFile(filepath, PostProcessingFlags);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-		Logger::error("Error when importing model: {}", importer.GetErrorString());
+		Logger::error("Error when importing model with filepath {} : {}", filepath, importer.GetErrorString());
 		return std::nullopt;
 	}
 

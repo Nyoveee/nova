@@ -1,7 +1,7 @@
 #include <GLFW/glfw3.h>
 
-#include "inputManager.h"
-#include "window.h"
+#include "InputManager/inputManager.h"
+#include "Engine/window.h"
 
 #include "InputManager/inputEvent.h"
 

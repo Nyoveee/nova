@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Export\engine.h">
+    <ClInclude Include="src\Engine\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\window.h">
+    <ClInclude Include="src\Engine\window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Graphics\renderer.h">
@@ -48,10 +48,10 @@
     <ClInclude Include="src\Graphics\bufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\ECS.h">
+    <ClInclude Include="src\Component\ECS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\inputManager.h">
+    <ClInclude Include="src\InputManager\inputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\InputManager\inputEvent.h">
@@ -72,13 +72,13 @@
     <ClInclude Include="src\InputManager\glfwInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\assetManager.h">
+    <ClInclude Include="src\AssetManager\assetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AssetManager\assetMananger.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Export\ScriptingAPIManager.h">
+    <ClInclude Include="src\Engine\ScriptingAPIManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp">

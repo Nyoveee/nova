@@ -59,9 +59,9 @@ private:
 	// This is the callback when the assets files are Added
 	void OnAssetContentAddedCallback(std::string abspath);
 	// This is the callback when the assets files are Modified
-	void OnAssetContentModifiedCallback(AssetID assetTypeID);
+	void OnAssetContentModifiedCallback(ResourceID assetTypeID);
 	// This is the callback when the assets files are deleted
-	void OnAssetContentDeletedCallback(AssetID assetTypeID);
+	void OnAssetContentDeletedCallback(ResourceID assetTypeID);
 
 private:
 	Engine& engine;
@@ -86,7 +86,7 @@ private:
 	IntializeScriptsFunctionPtr initalizeScripts;
 private:
 	float debouncingTime;
-	std::unordered_map<AssetID, float> timeSinceSave;
+	std::unordered_map<ResourceID, float> timeSinceSave;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

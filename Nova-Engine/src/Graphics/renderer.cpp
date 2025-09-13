@@ -5,12 +5,12 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine.h"
+#include "Engine/engine.h"
 #include "renderer.h"
-#include "window.h"
+#include "Engine/window.h"
 #include "vertex.h"
-#include "ECS.h"
-#include "assetManager.h"
+#include "Component/ECS.h"
+#include "ResourceManager/resourceManager.h"
 
 #include <fstream>
 #include "Component/component.h"
@@ -33,7 +33,7 @@ constexpr int MAX_NUMBER_OF_LIGHT = 100;
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine				{ engine },
-	assetManager		{ engine.assetManager },
+	resourceManager		{ engine.resourceManager },
 	registry			{ engine.ecs.registry },
 	basicShader			{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
 	standardShader		{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
@@ -369,7 +369,7 @@ void Renderer::renderSkyBox() {
 	glDisable(GL_DEPTH_TEST);
 
 	for (auto&& [entityId, skyBox] : registry.view<SkyBox>().each()) {
-		auto [asset, status] = assetManager.getAsset<CubeMap>(skyBox.cubeMapId);
+		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
 
 		// skybox not loaded..
 		if (!asset) {
@@ -400,7 +400,7 @@ void Renderer::renderModels() {
 
 	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		// Retrieves model asset from asset manager.
-		auto [model, _] = assetManager.getAsset<Model>(meshRenderer.modelId);
+		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
 
 		if (!model) {
 			// missing model.
@@ -463,7 +463,7 @@ void Renderer::renderOutline() {
 			continue;
 		}
 
-		auto [model, _] = assetManager.getAsset<Model>(meshRenderer.modelId);
+		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
 
 		if (!model) {
 			continue;
@@ -496,8 +496,8 @@ void Renderer::setupBlinnPhongShader(Material const& material) {
 	std::visit([&](auto&& albedo) {
 		using T = std::decay_t<decltype(albedo)>;
 
-		if constexpr (std::same_as<T, AssetID>) {
-			auto&& [texture, result] = assetManager.getAsset<Texture>(albedo);
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
 
 			if (!texture) {
 				// fallback..
@@ -519,7 +519,7 @@ void Renderer::setupBlinnPhongShader(Material const& material) {
 
 	// Handle normal map
 	if (material.normalMap) {
-		auto&& [normalMap, result] = assetManager.getAsset<Texture>(material.normalMap.value());
+		auto&& [normalMap, result] = resourceManager.getResource<Texture>(material.normalMap.value());
 
 		if (normalMap) {
 			blinnPhongShader.setBool("isUsingNormalMap", true);
@@ -547,8 +547,8 @@ void Renderer::setupColorShader(Material const& material) {
 	std::visit([&](auto&& albedo) {
 		using T = std::decay_t<decltype(albedo)>;
 
-		if constexpr (std::same_as<T, AssetID>) {
-			auto&& [texture, result] = assetManager.getAsset<Texture>(albedo);
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
 
 			if (!texture) {
 				// fallback..

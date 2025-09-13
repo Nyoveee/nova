@@ -1,6 +1,6 @@
 #include "ScriptingAPIManager.h"
 
-#include "AssetManager.h"
+#include "ResourceManager/resourceManager.h"
 #include "scriptAsset.h"
 #include "Profiling.h"
 #include "Logger.h"
@@ -31,7 +31,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, debouncingTime{3.f}
 	, timeSinceSave{}
 {
-	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
+	//engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
 
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
@@ -272,12 +272,14 @@ void ScriptingAPIManager::update() {
 
 DLL_API void ScriptingAPIManager::checkModifiedScripts()
 {
-	bool compile{ !timeSinceSave.empty() };
-	for (std::pair<const AssetID, float>& time : timeSinceSave) {
-		time.second += 1 / 60.f;
-		if (time.second < debouncingTime)
+	bool compile = !timeSinceSave.empty();
+
+	for (auto&& [_, time] : timeSinceSave) {
+		time += 1 / 60.f;
+		if (time < debouncingTime)
 			compile = false;
 	}
+
 	if (compile) {
 		timeSinceSave.clear();
 		compileScriptAssembly();
@@ -307,12 +309,12 @@ void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
 	if (std::filesystem::path(absPath).extension() == ".cs")
 		compileScriptAssembly();
 }
-void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
+void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId)
 {
-	if (engine.assetManager.isAsset<ScriptAsset>(assetId))
-		timeSinceSave[assetId] = 0.f;
+	//if (engine.assetManager.isAsset<ScriptAsset>(assetId))
+	//	timeSinceSave[assetId] = 0.f;
 }
-void ScriptingAPIManager::OnAssetContentDeletedCallback(AssetID assetID) {
+void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
 	// AssetID might disappear if assetmanager deletes it, maybe do typedAssetID or filepath instead(Overloaded callback?) 
 }
 

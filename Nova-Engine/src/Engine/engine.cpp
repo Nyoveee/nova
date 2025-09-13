@@ -5,16 +5,16 @@
 #include "window.h"
 
 #include "Component/component.h"
-#include "inputManager.h"
-#include "assetManager.h"
+#include "InputManager/inputManager.h"
+#include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
 
 #include "Serialisation/serialisation.h"
 
 
-Engine::Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight) :
+Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight) :
 	window					{ window },
-	assetManager			{ assetManager },
+	resourceManager			{ resourceManager },
 	inputManager            { inputManager },
 	renderer				{ *this, gameWidth, gameHeight },
 	cameraSystem			{ *this },
@@ -56,7 +56,7 @@ void Engine::update(float dt) {
 	transformationSystem.update();
 	renderer.update(dt);
 
-	assetManager.update();
+	//assetManager.update();
 }
 
 void Engine::setupSimulation() {

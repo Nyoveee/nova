@@ -2,7 +2,9 @@
 
 #include "assetManager.h"
 #include "Profiling.h"
+#include "ResourceManager/resourceManager.h"
 
+#if 0
 template <ValidAsset T>
 Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
@@ -139,84 +141,7 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 	asset.id = assetInfo.id;
 }
 
-template <ValidAsset T>
-AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) {
-	
-	std::string metaDataFilename = path.string() + ".nova_meta";
 
-	std::ifstream metaDataFile{ metaDataFilename };
-
-	// parse the generic asset metadata info first.
-	std::optional<BasicAssetInfo> parsedAssetInfo = parseMetaDataFile(path, metaDataFile);
-
-	// parsing failed, time to create a new metadata file.
-	if (!parsedAssetInfo) {
-		return createMetaDataFile<T>(path);
-	}
-
-	AssetInfo<T> assetInfo{ parsedAssetInfo.value() };
-
-	// ============================
-	// Filestream is now pointing at the 3rd line.
-	// Do any metadata specific to any type parsing here!!
-	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		std::string line;
-		std::getline(metaDataFile, line);
-
-		bool toFlip;
-
-		if (!(std::stringstream{ line } >> toFlip)) {
-			Logger::error("Failure when trying to parse toFlip boolean for file: {}", path.string());
-			return createMetaDataFile<T>(path);
-		}
-		else {
-			assetInfo.isFlipped = toFlip;
-		}
-	}
-
-	if constexpr (std::same_as<T, Audio>) {
-		std::string line;
-		std::getline(metaDataFile, line);
-
-		bool is3D;
-
-		if (!(std::stringstream{ line } >> is3D)) {
-			Logger::error("Failure when trying to parse is3D boolean for file: {}", path.string());
-			return createMetaDataFile<T>(path);
-		}
-		else {
-			assetInfo.is3D = is3D;
-		}
-	}
-
-	// ============================
-	return assetInfo;
-}
-
-template <ValidAsset T>
-AssetInfo<T> AssetManager::createMetaDataFile(std::filesystem::path const& path) {
-	std::string metaDataFilename = path.string() + ".nova_meta";
-	std::ofstream metaDataFile{ metaDataFilename };
-
-	AssetInfo<T> assetInfo{ createMetaDataFile(path, metaDataFile) };
-
-	// ============================
-	// Filestream is now pointing at the 3rd line.
-	// Do any metadata specific to any type default creation here!!
-	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		metaDataFile << false << "\n";
-	}
-
-	if constexpr (std::same_as<T, Audio>) {
-		metaDataFile << false << "\n";
-	}
-
-	// ============================
-	Logger::info("Successfully created metadata file for: {}", path.string());
-	return assetInfo;
-}
 
 template<ValidAsset T>
 void AssetManager::serialiseAssetMetaData(T const& asset) {
@@ -245,4 +170,118 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 
 	// ============================
 	Logger::info("Successfully serialised metadata file for {}", asset.getFilePath());
+}
+#endif
+
+template<ValidAsset T>
+std::string AssetManager::getMetaDataFilename(std::filesystem::path const& path) const {
+	auto iterator = subAssetDirectories.find(Family::id<T>());
+	assert(iterator != subAssetDirectories.end() && "Sub asset directory not recorded.");
+
+	auto&& [_, subAssetDirectory] = *iterator;
+	return std::filesystem::path{ subAssetDirectory / path.stem() }.string() + ".desc";
+}
+
+template<ValidAsset T>
+void AssetManager::loadAllDescriptorFiles(std::filesystem::path const& directory) {
+	// recursively iterate through a directory and parse all descriptor files.
+	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
+		std::filesystem::path currentPath = entry.path();
+
+		if (!entry.is_regular_file()) {
+			continue;
+		}
+
+		if (currentPath.extension() == ".desc") {
+			// parse the descriptor file.
+			AssetInfo<T> descriptor = parseDescriptorFile<T>(currentPath);
+
+			// we record all encountered intermediary assets with corresponding descriptor.
+			loadedIntermediaryAssets.insert(descriptor.filepath);
+
+			// check if resource manager has this particular resources already loaded.
+			// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
+			// the resource manager.
+			if (!resourceManager.doesResourceExist(descriptor.id)) {
+				resourceManager.addResourceFile(descriptor);
+			}
+		}
+	}
+}
+
+template <ValidAsset T>
+AssetInfo<T> AssetManager::parseDescriptorFile(std::filesystem::path const& path) {
+	std::string metaDataFilename = getMetaDataFilename<T>(path);
+	std::ifstream metaDataFile{ metaDataFilename };
+
+	// parse the generic asset metadata info first.
+	std::optional<BasicAssetInfo> parsedAssetInfo = parseDescriptorFile(path, metaDataFile);
+
+	// parsing failed, time to create a new metadata file.
+	if (!parsedAssetInfo) {
+		return createDescriptorFile<T>(path);
+	}
+
+	AssetInfo<T> assetInfo{ parsedAssetInfo.value() };
+
+	// ============================
+	// Filestream is now pointing at the 4th line.
+	// Do any metadata specific to any type parsing here!!
+	// ============================
+	if constexpr (std::same_as<T, Texture>) {
+		std::string line;
+		std::getline(metaDataFile, line);
+
+		bool toFlip;
+
+		if (!(std::stringstream{ line } >> toFlip)) {
+			Logger::error("Failure when trying to parse toFlip boolean for file: {}", path.string());
+			return createDescriptorFile<T>(path);
+		}
+		else {
+			assetInfo.isFlipped = toFlip;
+		}
+	}
+
+	if constexpr (std::same_as<T, Audio>) {
+		std::string line;
+		std::getline(metaDataFile, line);
+
+		bool is3D;
+
+		if (!(std::stringstream{ line } >> is3D)) {
+			Logger::error("Failure when trying to parse is3D boolean for file: {}", path.string());
+			return createDescriptorFile<T>(path);
+		}
+		else {
+			assetInfo.is3D = is3D;
+		}
+	}
+
+	// ============================
+	return assetInfo;
+}
+
+template <ValidAsset T>
+AssetInfo<T> AssetManager::createDescriptorFile(std::filesystem::path const& path) {
+	std::string metaDataFilename = getMetaDataFilename<T>(path);
+	std::ofstream metaDataFile{ metaDataFilename };
+
+	AssetInfo<T> assetInfo{ createDescriptorFile(path, metaDataFile) };
+
+	// ============================
+	// Filestream is now pointing at the 4th line.
+	// Do any metadata specific to any type default creation here!!
+	// ============================
+	if constexpr (std::same_as<T, Texture>) {
+		metaDataFile << false << "\n";
+	}
+
+	if constexpr (std::same_as<T, Audio>) {
+		metaDataFile << false << "\n";
+	}
+
+	// ============================
+	Logger::info("Successfully created metadata file for: {}", path.string());
+	return assetInfo;
 }

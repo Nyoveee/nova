@@ -44,7 +44,7 @@ protected:
 
 public:
 	std::string name;
-	AssetID id;
+	ResourceID id;
 
 private:
 	std::string filepath;
@@ -52,9 +52,9 @@ private:
 
 // generic asset meta info that all assets have.
 struct BasicAssetInfo {
-	AssetID id;
-	std::string filepath;
+	ResourceID id;
 	std::string name;
+	std::string filepath;
 };
 
 // specific asset meta info.

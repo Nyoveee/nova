@@ -69,51 +69,51 @@ struct std::hash<EventID> {
 };
 
 // ================ AssetID ==================
-constexpr AssetID::AssetID() : id{} {}
-constexpr AssetID::AssetID(std::size_t id) : id{ id } {}
+constexpr ResourceID::ResourceID() : id{} {}
+constexpr ResourceID::ResourceID(std::size_t id) : id{ id } {}
 
-constexpr bool operator==(AssetID const& lhs, AssetID const& rhs) {
+constexpr bool operator==(ResourceID const& lhs, ResourceID const& rhs) {
 	return lhs.id == rhs.id;
 }
 
-constexpr bool operator<(AssetID const& lhs, AssetID const& rhs) {
+constexpr bool operator<(ResourceID const& lhs, ResourceID const& rhs) {
 	return lhs.id < rhs.id;
 }
 
 template<>
-struct std::hash<AssetID> {
-	std::size_t operator()(AssetID const& assetId) const noexcept {
+struct std::hash<ResourceID> {
+	std::size_t operator()(ResourceID const& assetId) const noexcept {
 		return std::hash<std::size_t>{}(assetId.id);
 	}
 };
 
-constexpr AssetID::operator std::size_t() const {
+constexpr ResourceID::operator std::size_t() const {
 	return id;
 }
 
 #undef max
-constexpr inline AssetID INVALID_ASSET_ID{ std::numeric_limits<std::size_t>::max() };
+constexpr inline ResourceID INVALID_ASSET_ID{ std::numeric_limits<std::size_t>::max() };
 
 // ================ AssetTypeID ==================
-constexpr AssetTypeID::AssetTypeID() : id{} {}
-constexpr AssetTypeID::AssetTypeID(std::size_t id) : id{ id } {}
+constexpr ResourceTypeID::ResourceTypeID() : id{} {}
+constexpr ResourceTypeID::ResourceTypeID(std::size_t id) : id{ id } {}
 
-constexpr bool operator==(AssetTypeID const& lhs, AssetTypeID const& rhs) {
+constexpr bool operator==(ResourceTypeID const& lhs, ResourceTypeID const& rhs) {
 	return lhs.id == rhs.id;
 }
 
-constexpr bool operator<(AssetTypeID const& lhs, AssetTypeID const& rhs) {
+constexpr bool operator<(ResourceTypeID const& lhs, ResourceTypeID const& rhs) {
 	return lhs.id < rhs.id;
 }
 
 template<>
-struct std::hash<AssetTypeID> {
-	std::size_t operator()(AssetTypeID const& assetTypeId) const noexcept {
+struct std::hash<ResourceTypeID> {
+	std::size_t operator()(ResourceTypeID const& assetTypeId) const noexcept {
 		return std::hash<std::size_t>{}(assetTypeId.id);
 	}
 };
 
-constexpr AssetTypeID::operator std::size_t() const {
+constexpr ResourceTypeID::operator std::size_t() const {
 	return id;
 }
 

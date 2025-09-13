@@ -1,8 +1,8 @@
 #include <ranges>
 #include <iostream>
 
-#include "engine.h"
-#include "ECS.h"
+#include "Engine/engine.h"
+#include "Component/ECS.h"
 #include "Component/component.h"
 #include "Logger.h"
 

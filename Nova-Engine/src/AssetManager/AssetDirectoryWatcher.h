@@ -25,9 +25,9 @@ public:
 
 public:
 	void RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback);
-	void RegisterCallbackAssetContentModified(std::function<void(AssetID)> callback);
-	void RegisterCallbackAssetContentDeleted(std::function<void(AssetID)> callback);
-	bool IsPathHidden(std::filesystem::path path);
+	void RegisterCallbackAssetContentModified(std::function<void(ResourceID)> callback);
+	void RegisterCallbackAssetContentDeleted(std::function<void(ResourceID)> callback);
+	bool IsPathHidden(std::filesystem::path const& path) const;
 private:
 	void HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type);
 private:
@@ -41,8 +41,8 @@ private:
 	std::unordered_map<std::string, std::filesystem::file_time_type> lastWriteTimes;
 
 	std::vector<std::function<void(std::string)>> assetContentAddCallbacks;
-	std::vector<std::function<void(AssetID)>> assetContentModifiedCallbacks;
-	std::vector<std::function<void(AssetID)>> assetContentDeletedCallbacks;
+	std::vector<std::function<void(ResourceID)>> assetContentModifiedCallbacks;
+	std::vector<std::function<void(ResourceID)>> assetContentDeletedCallbacks;
 
 	std::mutex contentAddCallbackMutex;
 	std::mutex contentModifiedCallbackMutex;

@@ -89,15 +89,15 @@ private:
 };
 
 // Game objects hold reference to assets by using an ID.
-struct AssetID {
-	constexpr AssetID();
-	constexpr AssetID(std::size_t id);
+struct ResourceID {
+	constexpr ResourceID();
+	constexpr ResourceID(std::size_t id);
 	constexpr explicit operator std::size_t() const;
 
 public:
-	constexpr friend bool operator==(AssetID const& lhs, AssetID const& rhs);
-	constexpr friend bool operator<(AssetID const& lhs, AssetID const& rhs);
-	friend struct std::hash<AssetID>;
+	constexpr friend bool operator==(ResourceID const& lhs, ResourceID const& rhs);
+	constexpr friend bool operator<(ResourceID const& lhs, ResourceID const& rhs);
+	friend struct std::hash<ResourceID>;
 
 private:
 	std::size_t id;
@@ -107,21 +107,21 @@ private:
 // useful in editor to retrieve the original asset type.
 // TypedAssetID can implicitly convert to AssetID anytime, and vice versa.
 template <typename T>
-struct TypedAssetID : public AssetID {
+struct TypedResourceID : public ResourceID {
 	using AssetType = T;
 };
 
 // an id given to the template type parameter of assets.
 // for an example, type Texture could have id of 5, and Model could have id of 7.
-struct AssetTypeID {
-	constexpr AssetTypeID();
-	constexpr AssetTypeID(std::size_t id);
+struct ResourceTypeID {
+	constexpr ResourceTypeID();
+	constexpr ResourceTypeID(std::size_t id);
 	constexpr explicit operator std::size_t() const;
 
 public:
-	constexpr friend bool operator==(AssetTypeID const& lhs, AssetTypeID const& rhs);
-	constexpr friend bool operator<(AssetTypeID const& lhs, AssetTypeID const& rhs);
-	friend struct std::hash<AssetTypeID>;
+	constexpr friend bool operator==(ResourceTypeID const& lhs, ResourceTypeID const& rhs);
+	constexpr friend bool operator<(ResourceTypeID const& lhs, ResourceTypeID const& rhs);
+	friend struct std::hash<ResourceTypeID>;
 
 private:
 	std::size_t id;

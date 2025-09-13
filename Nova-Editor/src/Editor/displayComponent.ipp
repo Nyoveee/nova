@@ -1,5 +1,5 @@
 #include "reflection.h"
-#include "assetManager.h"
+#include "ResourceManager/resourceManager.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
@@ -11,16 +11,16 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 	template<class T>
-	concept IsTypedAssetID = requires(T x) {
-		{ TypedAssetID{ x } } -> std::same_as<T>;
+	concept IsTypedResourceID = requires(T x) {
+		{ TypedResourceID{ x } } -> std::same_as<T>;
 	};
 
 	template<typename Component>
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
 		(void) entity;
 
-		AssetManager& assetManager = componentInspector.assetManager;
-		(void) assetManager;
+		ResourceManager& resourceManager = componentInspector.resourceManager;
+		(void) resourceManager;
 
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
@@ -187,10 +187,10 @@ namespace {
 						dataMember = EulerAngles{ {toRadian(eulerAngles.x), toRadian(eulerAngles.y), toRadian(eulerAngles.z)} };
 					}
 
-					if constexpr (std::same_as<DataMemberType, AssetID>) {
+					if constexpr (std::same_as<DataMemberType, ResourceID>) {
 						ImGui::Text(dataMemberName);
 
-						Asset* asset = assetManager.getAssetInfo(dataMember);
+						Asset* asset = resourceManager.getResourceInfo(dataMember);
 
 						if (!asset) {
 							ImGui::Text("This asset id [%zu] is invalid!", static_cast<std::size_t>(dataMember));
@@ -200,12 +200,12 @@ namespace {
 						}
 					}
 
-					if constexpr (IsTypedAssetID<DataMemberType>) {
+					if constexpr (IsTypedResourceID<DataMemberType>) {
 						// dataMember is of type TypedAssetID<T>
 						using OriginalAssetType = DataMemberType::AssetType;
 
-						componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](AssetID assetId) {
-							dataMember = DataMemberType{ assetId };
+						componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
+							dataMember = DataMemberType{ resourceId };
 						});
 					}
 
@@ -227,8 +227,8 @@ namespace {
 					if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 
-						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](AssetID assetId) {
-							scriptDatas.push_back(ScriptData{ assetId });
+						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
+							scriptDatas.push_back(ScriptData{ resourceId });
 						});
 
 						// List of Scripts
@@ -241,7 +241,7 @@ namespace {
 							ImGui::PushID(i++);
 							bool keepScript = true;
 
-							auto&& [scriptAsset, _] = assetManager.getAsset<ScriptAsset>(scriptData.scriptId);
+							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
 							assert(scriptAsset);
 
 							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript)) {

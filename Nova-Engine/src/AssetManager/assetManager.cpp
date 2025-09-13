@@ -8,6 +8,12 @@
 
 #include "cubemap.h"
 
+#define RecordAssetSubdirectory(AssetType) \
+	subAssetDirectories.insert({ Family::id<AssetType>(), descriptorDirectory / #AssetType })
+
+#define LoadAllDescriptorFiles(AssetType) \
+	loadAllDescriptorFiles<AssetType>(subAssetDirectories[Family::id<AssetType>()])
+
 namespace {
 	// we usually don't want to increment ids
 	// but in this case we want so we are explicit about it.
@@ -16,52 +22,85 @@ namespace {
 	}
 }
 
-AssetManager::AssetManager() :
-	assetDirectory		{ std::filesystem::current_path() /= "Assets" },
-	descriptorDirectory	{ std::filesystem::current_path() /= "Descriptors" },
+AssetManager::AssetManager(ResourceManager& resourceManager) :
+	assetDirectory		{ std::filesystem::current_path() / "Assets" },
+	descriptorDirectory	{ std::filesystem::current_path() / "Descriptors" },
+	resourceManager		{ resourceManager },
+	directoryWatcher	{ *this, std::filesystem::current_path() / "Assets" }
+
+#if 0
 	resourceDirectory	{ std::filesystem::current_path() /= "Resources" },
 	threadPool			{ static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }, 
-	directoryWatcher	{ *this, std::filesystem::current_path() /= "Assets" }
-{
-
-	FolderID folderId{ 0 };
-	
-	try {
-#if 1
-		for (const auto& entry : std::filesystem::recursive_directory_iterator{ assetDirectory }) {
-			std::filesystem::path currentPath = entry.path();
-			if (directoryWatcher.IsPathHidden(currentPath))
-				continue;
-			// our own meta file, not an asset.
-			if (currentPath.extension() == ".nova_meta") {
-				continue;
-			}
-
-			if (entry.is_directory()) {
-				recordFolder(folderId, currentPath, assetDirectory);
-				incrementFolderId(folderId);
-			}
-
-			else if (entry.is_regular_file()) {
-				parseAssetFile(currentPath);
-			}
-		}
 #endif
-		//for (const auto& entry : std::filesystem::recursive_directory_iterator{ descriptorDirectory }) {
-		//
-		//}
-	}
-	catch (const std::filesystem::filesystem_error& ex) {
-		Logger::error("Filesystem error: {}", ex.what());
+{
+	// ========================================
+	// 1. Record all the different asset subdirectories into our map.
+	// ========================================
+	RecordAssetSubdirectory(Texture);
+	RecordAssetSubdirectory(Model);
+	RecordAssetSubdirectory(CubeMap);
+	RecordAssetSubdirectory(ScriptAsset);
+	RecordAssetSubdirectory(Audio);
+
+	// ========================================
+	// 2. Check if the descriptor directory exist, and the respective asset subdirectories.
+	// ========================================
+
+	// Checking if the main descriptor directory exist.
+	if (!std::filesystem::exists(descriptorDirectory)) {
+		std::filesystem::create_directory(descriptorDirectory);
 	}
 
+	// Checking if the sub directories exist..
+	for (auto&& [_, subAssetDirectory] : subAssetDirectories) {
+		if (!std::filesystem::exists(subAssetDirectory)) {
+			std::filesystem::create_directory(subAssetDirectory);
+		}
+	}
+
+	// ========================================
+	// 3. We check if there's new intermediary assets the resource manager has not keep tracked off.
+	// Our descriptors act as the source of truth.
+	// With descriptors, we verify if every intermediary file has it's corresponding resources asset compiled.
+	// If not, we compile the intermediary asset to it's specific resource file and load it into the resources manager.
+	// ========================================
+	LoadAllDescriptorFiles(Texture);
+	LoadAllDescriptorFiles(Model);
+	LoadAllDescriptorFiles(CubeMap);
+	LoadAllDescriptorFiles(ScriptAsset);
+	LoadAllDescriptorFiles(Audio);
+
+	// ========================================
+	// 4. We need to check if every intermediary assets has a corresponding descriptor pointing to it.
+	// When we add new intermediary assets to the Assets folder, we need to generate it's corresponding descriptor.
+	// ========================================
+	for (const auto& entry : std::filesystem::recursive_directory_iterator{ assetDirectory }) {
+		std::filesystem::path currentPath = entry.path();
+
+		if (directoryWatcher.IsPathHidden(currentPath)) {
+			continue;
+		}
+
+		if (!entry.is_regular_file()) {
+			continue;
+		}
+
+		if (!loadedIntermediaryAssets.count(currentPath.string())) {
+			// we need to generate the corresponding descriptor file for this intermediary file.
+			parseIntermediaryAssetFile(currentPath);
+		}
+	}
+
+#if 0
 	// Register callbacks for the watcher
 	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });
-	directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
-	directoryWatcher.RegisterCallbackAssetContentDeleted([&](AssetID assetID) { OnAssetContentDeletedCallback(assetID); });
+	directoryWatcher.RegisterCallbackAssetContentModified([&](ResourceID resourceId) { OnAssetContentModifiedCallback(resourceId); });
+	directoryWatcher.RegisterCallbackAssetContentDeleted([&](ResourceID resourceId) { OnAssetContentDeletedCallback(resourceId); });
+#endif
 }
 
 AssetManager::~AssetManager() {
+#if 0
 	// let's serialise the asset meta data of all our stored info.
 	for (auto&& [id, assetPtr] : assets) {
 		Asset* asset = assetPtr.get();
@@ -81,33 +120,10 @@ AssetManager::~AssetManager() {
 		// cool syntax? or abomination?
 		serialiseFunctorPtr->operator()(*asset, *this);
 	}
+#endif
 }
 
-void AssetManager::update() {
-	ZoneScoped;
-
-	std::lock_guard lock{ queueCallbackMutex };
-
-	while (completedLoadingCallback.size()) {
-		std::function<void()> callback = completedLoadingCallback.front();
-		
-		callback();
-
-		completedLoadingCallback.pop();
-	}
-}
-
-Asset* AssetManager::getAssetInfo(AssetID id) {
-	auto iterator = assets.find(id);
-
-	if (iterator == std::end(assets)) {
-		return nullptr;
-	}
-
-	auto&& [_, asset] = *iterator;
-	return asset.get();
-}
-
+#if 0
 void AssetManager::recordFolder(
 	FolderID folderId,
 	std::filesystem::path const& path,
@@ -140,90 +156,6 @@ void AssetManager::recordFolder(
 	folderNameToId[path.string()] = folderId;
 }
 
-void AssetManager::parseAssetFile(std::filesystem::path const& path) {
-	// time to check if file has valid file extension.
-	std::string fileExtension = path.extension().string();
-
-	if (fileExtension == ".fbx") {
-		recordAssetFile<Model>(path);
-	}
-	else if (fileExtension == ".png" || fileExtension == ".jpg") {
-		recordAssetFile<Texture>(path);
-	}
-	else if (fileExtension == ".exr") {
-		recordAssetFile<CubeMap>(path);
-	}
-	else if (fileExtension == ".cs") {
-		recordAssetFile<ScriptAsset>(path);
-	}
-	else if (fileExtension == ".wav") {
-		recordAssetFile<Audio>(path);
-	}
-	else {
-		Logger::warn("Unsupported file type of: {} has been found.", path.string());
-	}
-}
-
-AssetID AssetManager::generateAssetID(std::filesystem::path const& path) {
-	// We don't need complex id generation code.
-	// We just need to make sure our id is unique everytime a metadata file is generated in the context of our system
-	// The easiest way is to utilise the current time + the filepath.
-	
-	AssetID id;
-
-	do {
-		// average c++ attempting to get time line of code..
-		std::size_t time = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		std::string combined = path.string() + "_" + std::to_string(time);
-		id = { std::hash<std::string>{}(combined) };
-	}
-	// collision, regenerate.
-	while (assets.contains(id));
-
-	return id;
-}
-
-std::optional<BasicAssetInfo> AssetManager::parseMetaDataFile(std::filesystem::path const& path, std::ifstream& metaDataFile) {
-	// Attempt to read corresponding metafile.
-	if (!metaDataFile) {
-		return std::nullopt;
-	}
-
-	std::string line;
-	AssetID assetId;
-
-	// reads the 1st line.
-	std::getline(metaDataFile, line);
-
-	try {
-		assetId = std::stoull(line);
-	}
-	catch (std::exception const& exception) {
-		Logger::warn("Failed to parse metadata file for file {}.\nException: {}", path.string(), exception.what());
-		return std::nullopt;
-	}
-
-	// reads the 2nd line.
-	std::getline(metaDataFile, line);
-
-	Logger::info("Successfully parsed metadata file for {}", path.string());
-	return {{ assetId, path.string(), line }};
-}
-
-BasicAssetInfo AssetManager::createMetaDataFile(std::filesystem::path const& path, std::ofstream& metaDataFile) {
-	BasicAssetInfo assetInfo = { generateAssetID(path), path.string(), path.filename().string() };
-
-	if (!metaDataFile) {
-		Logger::error("Error creating metadata file for {}", path.string());
-		return assetInfo;
-	}
-
-	// write to file
-	metaDataFile << static_cast<std::size_t>(assetInfo.id) << "\n" << assetInfo.name << "\n";
-
-	return assetInfo;
-}
-
 void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile) {
 	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
 }
@@ -249,23 +181,6 @@ std::string AssetManager::GetRunTimeDirectory() {
 	return runtimeDirectory;
 }
 
-void AssetManager::submitCallback(std::function<void()> callback) {
-	std::lock_guard lock{ queueCallbackMutex };
-
-	completedLoadingCallback.push(std::move(callback));
-}
-
-std::optional<AssetID> AssetManager::getAssetId(std::string const& filepath) const {
-	auto iterator = filepathToAssetId.find(filepath);
-
-	if (iterator == filepathToAssetId.end()) {
-		return std::nullopt;
-	}
-
-	auto&& [_, id] = *iterator;
-	return id;
-}
-
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
 	return directories;
 }
@@ -276,4 +191,102 @@ std::vector<FolderID> const& AssetManager::getRootDirectories() const {
 
 void AssetManager::getAssetLoadingStatus() const {
 	
+}
+#endif
+
+std::optional<BasicAssetInfo> AssetManager::parseDescriptorFile(std::filesystem::path const& path, std::ifstream& metaDataFile) {
+	// Attempt to read corresponding metafile.
+	if (!metaDataFile) {
+		return std::nullopt;
+	}
+
+	std::string line;
+	ResourceID resourceId;
+
+	// reads the 1st line.
+	std::getline(metaDataFile, line);
+
+	try {
+		resourceId = std::stoull(line);
+	}
+	catch (std::exception const& exception) {
+		Logger::warn("Failed to parse metadata file for file {}.\nException: {}", path.string(), exception.what());
+		return std::nullopt;
+	}
+
+	// reads the 2nd line, name.
+
+	std::string name;
+	std::getline(metaDataFile, name);
+
+	// reads the 3rd line, relative filepath.
+	std::string relativeFilepath;
+	std::getline(metaDataFile, relativeFilepath);
+	std::string fullFilepath = std::filesystem::path{ assetDirectory / relativeFilepath }.string();
+
+	Logger::info("Successfully parsed metadata file for {}", path.string());
+	return { { resourceId, std::move(name), std::move(fullFilepath) } };
+}
+
+BasicAssetInfo AssetManager::createDescriptorFile(std::filesystem::path const& path, std::ofstream& metaDataFile) {
+	// calculate relative path to the Assets directory.
+	std::filesystem::path relativePath = std::filesystem::relative(path, assetDirectory);
+
+	BasicAssetInfo assetInfo = { generateResourceID(path), path.filename().string(), path.string() };
+
+	if (!metaDataFile) {
+		Logger::error("Error creating metadata file for {}", path.string());
+		return assetInfo;
+	}
+
+	// write to file
+	metaDataFile << static_cast<std::size_t>(assetInfo.id) << '\n' << assetInfo.name << '\n' << relativePath.string() << '\n';
+
+	return assetInfo;
+}
+
+ResourceID AssetManager::generateResourceID(std::filesystem::path const& path) const {
+	// We don't need complex id generation code.
+	// We just need to make sure our id is unique everytime a metadata file is generated in the context of our system
+	// The easiest way is to utilise the current time + the filepath.
+
+	// average c++ attempting to get time line of code..
+	std::size_t time = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	std::string combined = path.string() + "_" + std::to_string(time);
+	ResourceID id { std::hash<std::string>{}(combined) };
+
+	return id;
+}
+
+void AssetManager::parseIntermediaryAssetFile(std::filesystem::path const& path) {
+	// time to check if file has valid file extension.
+	std::string fileExtension = path.extension().string();
+
+	// lambda creates descriptor file, loads it to the resource manager and records it as loaded.
+	auto loadDescriptorFile = [&]<typename T>() {
+		auto assetInfo = createDescriptorFile<T>(path);
+		resourceManager.addResourceFile(assetInfo);
+		loadedIntermediaryAssets.insert(assetInfo.filepath);
+	};
+
+	if (fileExtension == ".fbx") {
+		loadDescriptorFile.template operator()<Model>();
+	}
+	else if (fileExtension == ".png" || fileExtension == ".jpg") {
+		loadDescriptorFile.template operator()<Texture>();
+	}
+	else if (fileExtension == ".exr") {
+		loadDescriptorFile.template operator()<CubeMap>();
+	}
+	else if (fileExtension == ".cs") {
+		loadDescriptorFile.template operator()<ScriptAsset>();
+	}
+	else if (fileExtension == ".wav") {
+		loadDescriptorFile.template operator()<Audio>();
+	}
+	else {
+		Logger::warn("Unsupported file type of: {} has been found.", path.string());
+		return;
+	}
+
 }

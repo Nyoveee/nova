@@ -8,12 +8,11 @@
 
 #include "export.h"
 #include "Graphics/renderer.h"
-#include "ECS.h"
+#include "Component/ECS.h"
 #include "Graphics/cameraSystem.h"
 #include "Engine/transformationSystem.h"
 #include "Physics/physicsManager.h"
 #include "Audio/audioSystem.h"
-
 
 class Window;
 class Renderer;
@@ -21,11 +20,11 @@ class CameraSystem;
 class ECS;
 class InputManager;
 class ScriptingAPIManager;
-class AssetManager;
+class ResourceManager;
 
 class Engine {
 public:
-	DLL_API Engine(Window& window, InputManager& inputManager, AssetManager& assetManager, int gameWidth, int gameHeight);
+	DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight);
 
 	DLL_API ~Engine();
 	DLL_API Engine(Engine const& other)				= delete;
@@ -50,7 +49,7 @@ public:
 public:
 	// allow all systems to have references of each other via the engine.
 	Window&					window;
-	AssetManager&			assetManager;
+	ResourceManager&		resourceManager;
 	InputManager&           inputManager;
 
 	Renderer				renderer;

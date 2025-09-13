@@ -6,7 +6,7 @@
 #include <iostream>
 
 #include "window.h"
-#include "inputManager.h"
+#include "InputManager/inputManager.h"
 #include "Graphics/cameraSystem.h"
 #include "Profiling.h"
 #include "Logger.h"

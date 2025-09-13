@@ -24,7 +24,7 @@
 
 #include "AssetManager/assetFunctor.h"
 
-class AssetDirectoryWatcher;
+class ResourceManager;
 
 class AssetManager {
 public:
@@ -45,7 +45,7 @@ public:
 	};
 
 public:
-	DLL_API AssetManager();
+	DLL_API AssetManager(ResourceManager& resourceManager);
 
 	DLL_API ~AssetManager();
 	DLL_API AssetManager(AssetManager const& other)				= delete;
@@ -54,6 +54,7 @@ public:
 	DLL_API AssetManager& operator=(AssetManager&& other)		= delete;
 
 public:
+#if 0
 	// The asset manager needs to check if there are any completed queue request
 	// that needs to be done on the main thread.
 	void update();
@@ -107,37 +108,10 @@ private:
 		std::filesystem::path const& assetDirectory
 	);
 
-	void parseAssetFile(
-		std::filesystem::path const& path
-	);
-
 	template <ValidAsset T>
 	void recordAssetFile(
 		std::filesystem::path const& path
 	);
-
-	AssetID generateAssetID(std::filesystem::path const& path);
-
-	// =========================================================
-	// Parsing meta data file associated with the asset.
-	// Each asset will contain a generic metadata (id and name)
-	// Each specific type asset has additional metadata as well.
-	// =========================================================
-	
-	// ==== Parse specific a specific asset type. ====
-	// These functions will invoke the general functions below first which parses generic metadata info first
-	// before performing additional parsing based on asset type.
-	template <ValidAsset T>
-	AssetInfo<T> parseMetaDataFile(std::filesystem::path const& path);
-	
-	template <ValidAsset T>
-	AssetInfo<T> createMetaDataFile(std::filesystem::path const& path);
-
-	// === Parse generic metadata info. These functions are invoked by the functions above first. ====
-	
-	// optional because parsing may fail.
-	std::optional<BasicAssetInfo> parseMetaDataFile(std::filesystem::path const& path, std::ifstream& metaDataFile);
-	BasicAssetInfo createMetaDataFile(std::filesystem::path const& path, std::ofstream& metaDataFile);
 
 	// =========================================================
 	// Serialising asset meta data..
@@ -162,9 +136,6 @@ private:
 	std::string GetRunTimeDirectory();
 
 public:
-	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
-	AssetDirectoryWatcher directoryWatcher;
-
 	// Thread pool to manage loading in another thread.
 	BS::thread_pool<BS::tp::none> threadPool;
 
@@ -178,6 +149,7 @@ private:
 	std::filesystem::path resourceDirectory;
 
 private:
+
 	// main container containing all assets.
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
 
@@ -194,7 +166,7 @@ private:
 	// associates an asset id with it's corresponding serialising function, containining the original asset type.	
 	std::unordered_map<AssetID, std::unique_ptr<SerialiseMetaData>> serialiseMetaDataFunctors;
 	//std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
-	
+
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
 	std::vector<FolderID> rootDirectories;
@@ -205,6 +177,55 @@ private:
 	// the asset manager then checks every game frame if there is any callback request.
 	std::queue<std::function<void()>> completedLoadingCallback;
 	std::mutex queueCallbackMutex;	// protects the callback queue.
+#endif
+
+private:
+	ResourceID generateResourceID(std::filesystem::path const& path) const;
+
+	void parseIntermediaryAssetFile(std::filesystem::path const& path);
+	
+	template <ValidAsset T>
+	std::string getMetaDataFilename(std::filesystem::path const& path) const;
+
+	// =========================================================
+	// Parsing meta data file associated with the asset.
+	// Each asset will contain a generic metadata (id and name)
+	// Each specific type asset has additional metadata as well.
+	// =========================================================
+	
+	template <ValidAsset T>
+	void loadAllDescriptorFiles(std::filesystem::path const& directory);
+
+	// ==== Parse specific a specific asset type. ====
+	// These functions will invoke the general functions below first which parses generic metadata info first
+	// before performing additional parsing based on asset type.
+	template <ValidAsset T>
+	AssetInfo<T> parseDescriptorFile(std::filesystem::path const& path);
+	
+	template <ValidAsset T>
+	AssetInfo<T> createDescriptorFile(std::filesystem::path const& path);
+
+	// === Parse generic metadata info. These functions are invoked by the functions above first. ====
+	
+	// optional because parsing may fail.
+	std::optional<BasicAssetInfo> parseDescriptorFile(std::filesystem::path const& path, std::ifstream& metaDataFile);
+
+	BasicAssetInfo createDescriptorFile(std::filesystem::path const& path, std::ofstream& metaDataFile);
+
+private:
+	ResourceManager& resourceManager;
+	
+	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
+	AssetDirectoryWatcher directoryWatcher;
+
+	std::filesystem::path assetDirectory;
+	std::filesystem::path descriptorDirectory;
+
+	// holds the directory of each sub asset.
+	std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetDirectories;
+	
+	// records all loaded intermediary assets with corresponding descriptor files.
+	std::unordered_set<std::string> loadedIntermediaryAssets;	
 };
 
 #include "AssetManager/assetMananger.ipp"

@@ -4,6 +4,8 @@
 
 class AssetManager;
 
+#if 0
+
 struct SerialiseMetaData {
 public:
 	virtual ~SerialiseMetaData() = 0 {};
@@ -25,3 +27,5 @@ template <ValidAsset T>
 struct SerialiseAssetFunctor : public SerialiseAsset {
 	void operator()(Asset& asset, AssetManager& assetManager) const final;
 };
+
+#endif

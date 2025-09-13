@@ -2,9 +2,9 @@
 #include "Logger.h"
 
 ResourceManager::ResourceManager() :
-	resourceDirectory	{ std::filesystem::current_path() /= "Resources" },
-	textureDirectory	{ resourceDirectory /= "Texture" },
-	modelDirectory		{ resourceDirectory /= "Model" }
+	resourceDirectory	{ std::filesystem::current_path() / "Resources" },
+	textureDirectory	{ resourceDirectory / "Texture" },
+	modelDirectory		{ resourceDirectory / "Model" }
 {
 	try {
 		// ========================================
@@ -35,4 +35,19 @@ ResourceManager::ResourceManager() :
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
 	}
+}
+
+Asset* ResourceManager::getResourceInfo(ResourceID id) {
+	auto iterator = resources.find(id);
+	
+	if (iterator == std::end(resources)) {
+		return nullptr;
+	}
+	
+	auto&& [_, resource] = *iterator;
+	return resource.get();
+}
+
+bool ResourceManager::doesResourceExist(ResourceID id) const {
+	return resources.find(id) != resources.end();
 }

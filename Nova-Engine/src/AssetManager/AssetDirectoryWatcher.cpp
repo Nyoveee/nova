@@ -23,17 +23,18 @@ void AssetDirectoryWatcher::RegisterCallbackAssetContentAdded(std::function<void
 	assetContentAddCallbacks.push_back(callback);
 }
 
-void AssetDirectoryWatcher::RegisterCallbackAssetContentModified(std::function<void(AssetID)> callback){
+void AssetDirectoryWatcher::RegisterCallbackAssetContentModified(std::function<void(ResourceID)> callback){
 	std::lock_guard<std::mutex> lock{ contentModifiedCallbackMutex };
 	assetContentModifiedCallbacks.push_back(callback);
 }
 
-void AssetDirectoryWatcher::RegisterCallbackAssetContentDeleted(std::function<void(AssetID)> callback){
+void AssetDirectoryWatcher::RegisterCallbackAssetContentDeleted(std::function<void(ResourceID)> callback){
 	std::lock_guard<std::mutex> lock{ contentDeleteCallbackMutex };
 	assetContentDeletedCallbacks.push_back(callback);
 }
 
 void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type) {
+#if 0
 	// the app is destructing, don't do anything.
 	if (engineIsDestructing)
 		return;
@@ -83,9 +84,10 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 			});
 		}
 	}
+#endif
 }
 
-bool AssetDirectoryWatcher::IsPathHidden(std::filesystem::path path)
+bool AssetDirectoryWatcher::IsPathHidden(std::filesystem::path const& path) const
 {
 	if (GetFileAttributesA(path.string().c_str()) & FILE_ATTRIBUTE_HIDDEN)
 		return true;

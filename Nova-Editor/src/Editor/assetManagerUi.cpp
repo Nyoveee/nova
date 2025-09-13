@@ -1,4 +1,4 @@
-#include "assetManager.h"
+#include "AssetManager/assetManager.h"
 #include "editor.h"
 
 #include "assetManagerUi.h"
@@ -43,9 +43,11 @@ void AssetManagerUI::displayLeftNavigationPanel() {
 		// Remove indentation temporarily
 		ImGui::Unindent(20.f);
 
+#if 0
 		for (FolderID folderId : assetManager.getRootDirectories()) {
 			displayFolderTreeNode(folderId);
 		}
+#endif
 
 		ImGui::Indent(20.f);
 		ImGui::TreePop();
@@ -86,6 +88,7 @@ void AssetManagerUI::displaySelectedFolderRelativePath() {
 }
 
 void AssetManagerUI::displayClickableFolderPath(FolderID folderId, bool toDisplayCaret) {
+#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. selecting an invalid folder.");
 
@@ -113,9 +116,11 @@ void AssetManagerUI::displayClickableFolderPath(FolderID folderId, bool toDispla
 		ImGui::Text("> ");
 		ImGui::SameLine();
 	}
+#endif
 }
 
 void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
+#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. root directories contain folder id to invalid directory.");
 
@@ -151,9 +156,11 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 	if (folder.childDirectories.empty()) {
 		ImGui::Indent(20.f);
 	}
+#endif
 }
 
 void AssetManagerUI::displayFolderContent(FolderID folderId) {
+#if 0
 	// This displays a table of asset content
 	// We need to calculate the number of columns based on a fixed size of the asset thumbnail.
 
@@ -183,7 +190,7 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 		}
 
 		// Display all asset thumbnails..
-		for (AssetID assetId : folder.assets) {
+		for (ResourceID assetId : folder.assets) {
 			displayAssetThumbnail(assetId);
 			++itemsToDisplay;
 		}
@@ -196,9 +203,11 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 	if (!itemsToDisplay) {
 		ImGui::Text("This folder is empty.");
 	}
+#endif
 }
 
-void AssetManagerUI::displayAssetThumbnail(AssetID assetId) {
+void AssetManagerUI::displayAssetThumbnail(ResourceID assetId) {
+#if 0
 	Asset* asset = assetManager.getAssetInfo(assetId);
 
 	if (!asset) {
@@ -233,9 +242,11 @@ void AssetManagerUI::displayAssetThumbnail(AssetID assetId) {
 			}
 		}
 	);
+#endif
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
+#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. attempting to display invalid folder id.");
 
@@ -254,6 +265,7 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		// callback when the thumbnail gets double clicked.
 		[&]() {}
 	);
+#endif
 }
 
 void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {

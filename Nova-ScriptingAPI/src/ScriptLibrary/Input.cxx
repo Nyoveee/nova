@@ -1,7 +1,8 @@
 #include "Input.hxx"
 #include "API/ScriptingAPI.hxx"
-#include "inputManager.h"
+#include "InputManager/inputManager.h"
 #include <vcclr.h>
+
 void Input::MapKey(Key key, InputCallback^ pressCallback, InputCallback^ releaseCallback)
 {
 	gcroot<InputCallback^> callbackWrapper; // For Wrapping the callback function in a native class gcroot since lambda can't use the callbacks directly

@@ -1,6 +1,7 @@
 #include "ScriptingAPI.hxx"
-#include "engine.h"
+#include "Engine/engine.h"
 #include <iostream>
+
 template<typename T>
 T* Interface::getNativeComponent(System::UInt32 entityID) {
 	// Get the Entt reference from the engine

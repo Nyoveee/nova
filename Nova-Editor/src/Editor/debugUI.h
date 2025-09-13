@@ -3,7 +3,7 @@
 class Editor;
 class Engine;
 class Renderer;
-class AssetManager;
+class ResourceManager;
 class Window;
 
 class DebugUI {
@@ -16,6 +16,6 @@ public:
 private:
 	Engine& engine;
 	Renderer& renderer;
-	AssetManager& assetManager;
+	ResourceManager& resourceManager;
 	Window& window;
 };

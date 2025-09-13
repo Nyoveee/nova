@@ -1,8 +1,8 @@
 // Converting to native type: https://learn.microsoft.com/en-us/cpp/dotnet/overview-of-marshaling-in-cpp?view=msvc-170
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
-#include "engine.h"
-#include "assetManager.h"
+#include "Engine/engine.h"
+#include "ResourceManager/resourceManager.h"
 
 #include <sstream>
 #include <filesystem>
@@ -135,9 +135,9 @@ void Interface::load()
 	// ========================================================
 	// 5. We define mapping from Asset IDs to script types.
 	// ========================================================
-	auto&& scripts = engine->assetManager.getAllAssets<ScriptAsset>();
+	auto&& scripts = engine->resourceManager.getAllResources<ScriptAsset>();
 	for (auto&& scriptId : scripts) {
-		auto&& [script, _] = engine->assetManager.getAsset<ScriptAsset>(scriptId);
+		auto&& [script, _] = engine->resourceManager.getResource<ScriptAsset>(scriptId);
 		assert(script && "Script should always be instantly available.");
 
 		System::String^ className = gcnew System::String(script->getClassName().c_str());

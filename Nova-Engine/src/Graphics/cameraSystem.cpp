@@ -1,9 +1,9 @@
 #include <cmath>
 
-#include "engine.h"
+#include "Engine/engine.h"
 #include "cameraSystem.h"
 #include "renderer.h"
-#include "inputManager.h"
+#include "InputManager/inputManager.h"
 #include "Profiling.h"
 
 CameraSystem::CameraSystem(Engine& engine) :

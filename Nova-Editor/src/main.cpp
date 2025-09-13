@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "engine.h"
-#include "window.h"
-#include "inputManager.h"
-#include "assetManager.h"
+#include "Engine/engine.h"
+#include "Engine/window.h"
+#include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
+#include "AssetManager/assetManager.h"
 #include "Editor/editor.h"
 
 #include <crtdbg.h>
@@ -18,12 +18,12 @@ constexpr int			gameHeight		= 1080;
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	InputManager	inputManager	{};
 	ResourceManager resourceManager {};
-	InputManager inputManager	{};
-	AssetManager assetManager   {};
-	Window		 window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
-	Engine		 engine			{ window, inputManager, assetManager, gameWidth, gameHeight };
-	Editor		 editor			{ window, engine, inputManager, assetManager };
+	AssetManager	assetManager	{ resourceManager };
+	Window			window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
+	Engine			engine			{ window, inputManager, resourceManager, gameWidth, gameHeight };
+	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 
 	window.run(
 		// Fixed update loop

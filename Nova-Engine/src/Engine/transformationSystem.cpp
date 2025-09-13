@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "transformationSystem.h"
-#include "ecs.h"
+#include "Component/ECS.h"
 
 #include "Component/component.h"
 #include "nova_math.h"

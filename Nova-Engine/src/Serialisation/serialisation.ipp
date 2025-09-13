@@ -1,15 +1,15 @@
 #include <string>
 
 #include "serialisation.h"
-#include "ecs.h"
+#include "Component/ECS.h"
 #include "reflection.h"
 
 #include "Component/component.h"
 
 namespace Serialiser {
 	template<class T>
-	concept IsTypedAssetID = requires(T x) {
-		{ TypedAssetID{ x } } -> std::same_as<T>;
+	concept IsTypedResourceID = requires(T x) {
+		{ TypedResourceID{ x } } -> std::same_as<T>;
 	};
 
 	template<typename ...Components>
@@ -81,11 +81,11 @@ namespace Serialiser {
 
 				}
 
-				else if constexpr (std::same_as<DataMemberType, AssetID>) {
+				else if constexpr (std::same_as<DataMemberType, ResourceID>) {
 
 				}
 
-				else if constexpr (IsTypedAssetID<DataMemberType>) {
+				else if constexpr (IsTypedResourceID<DataMemberType>) {
 
 				}
 

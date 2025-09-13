@@ -56,7 +56,7 @@ void Texture::load() {
 		return;
 	}
 
-	int width, height, numChannels;
+	//int width, height, numChannels;
 	unsigned char* data = stbi_load(getFilePath().c_str(), &width, &height, &numChannels, 0);
 
 	if (!data) {
@@ -65,9 +65,9 @@ void Texture::load() {
 		return;
 	}
 
-	this->width = width;
-	this->height = height;
-	this->numChannels = numChannels;
+	//this->width = width;
+	//this->height = height;
+	//this->numChannels = numChannels;
 
 	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
 
