@@ -1,4 +1,5 @@
 #include "AssetManager/assetManager.h"
+#include "ResourceManager/resourceManager.h"
 #include "editor.h"
 
 #include "assetManagerUi.h"
@@ -14,6 +15,7 @@
 
 AssetManagerUI::AssetManagerUI(Editor& editor) :
 	assetManager	 { editor.assetManager },
+	resourceManager	 { editor.resourceManager },
 	selectedFolderId { NONE },
 	folderIcon		 { "System/Image/folder.png", false }
 {
@@ -43,11 +45,9 @@ void AssetManagerUI::displayLeftNavigationPanel() {
 		// Remove indentation temporarily
 		ImGui::Unindent(20.f);
 
-#if 0
 		for (FolderID folderId : assetManager.getRootDirectories()) {
 			displayFolderTreeNode(folderId);
 		}
-#endif
 
 		ImGui::Indent(20.f);
 		ImGui::TreePop();
@@ -88,7 +88,6 @@ void AssetManagerUI::displaySelectedFolderRelativePath() {
 }
 
 void AssetManagerUI::displayClickableFolderPath(FolderID folderId, bool toDisplayCaret) {
-#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. selecting an invalid folder.");
 
@@ -116,11 +115,9 @@ void AssetManagerUI::displayClickableFolderPath(FolderID folderId, bool toDispla
 		ImGui::Text("> ");
 		ImGui::SameLine();
 	}
-#endif
 }
 
 void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
-#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. root directories contain folder id to invalid directory.");
 
@@ -156,11 +153,9 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 	if (folder.childDirectories.empty()) {
 		ImGui::Indent(20.f);
 	}
-#endif
 }
 
 void AssetManagerUI::displayFolderContent(FolderID folderId) {
-#if 0
 	// This displays a table of asset content
 	// We need to calculate the number of columns based on a fixed size of the asset thumbnail.
 
@@ -203,19 +198,17 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 	if (!itemsToDisplay) {
 		ImGui::Text("This folder is empty.");
 	}
-#endif
 }
 
-void AssetManagerUI::displayAssetThumbnail(ResourceID assetId) {
-#if 0
-	Asset* asset = assetManager.getAssetInfo(assetId);
+void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
+	Asset* asset = resourceManager.getResourceInfo(resourceId);
 
 	if (!asset) {
 		return;
 	}
 
 	displayThumbnail(
-		static_cast<int>(static_cast<std::size_t>(assetId)),
+		static_cast<int>(static_cast<std::size_t>(resourceId)),
 		NO_TEXTURE,
 		asset->name.empty() ? "<no name>" : asset->name.c_str(),
 
@@ -224,25 +217,9 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID assetId) {
 
 		// callback when the thumbnail gets double clicked.
 		[&]() {
-			if (assetManager.isAsset<ScriptAsset>(assetId)) {
-				static STARTUPINFO si;
-				static PROCESS_INFORMATION pi;
-				ZeroMemory(&si, sizeof(si));
-				si.cb = sizeof(si);
-				ZeroMemory(&pi, sizeof(pi));
-				std::wostringstream wss;
-				wss << " /Edit \"" << asset->getFilePath().c_str() << "\"";
-				std::wstring path{ wss.str() };
-				// The path can be applied to createprocess
-				// https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
-				CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe",
-					const_cast<LPWSTR>(path.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
-				CloseHandle(pi.hProcess);
-				CloseHandle(pi.hThread);
-			}
+			handleThumbnailDoubleClick(*asset);
 		}
 	);
-#endif
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
@@ -322,4 +299,24 @@ bool AssetManagerUI::isAMatchWithSearchQuery(std::string const& name) const {
 		allUpperCaseName.push_back(static_cast<char>(std::toupper(character)));
 	}
 	return allUpperCaseName.find(allUpperCaseSearchQuery) != std::string::npos;
+}
+
+void AssetManagerUI::handleThumbnailDoubleClick(Asset& resource) {
+	if (resourceManager.isResource<ScriptAsset>(resource.id)) {
+		// Launch a process that opens visual studio with the scripts.
+		static STARTUPINFO si;
+		static PROCESS_INFORMATION pi;
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+		std::wostringstream wss;
+		wss << " /Edit \"" << resource.getFilePath().c_str() << "\"";
+		std::wstring path{ wss.str() };
+		// The path can be applied to createprocess
+		// https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
+		CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe",
+			const_cast<LPWSTR>(path.c_str()), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
 }

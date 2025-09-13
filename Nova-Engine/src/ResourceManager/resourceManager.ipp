@@ -92,6 +92,9 @@ void ResourceManager::addResourceFile(AssetInfo<T> assetInfo) {
 
 	// associate this asset id with this asset type.
 	resourceIdToType[assetInfo.id] = Family::id<T>();
+
+	// associates this filepath with this asset id.
+	filepathToResourceId[assetInfo.filepath] = assetInfo.id;
 }
 
 template<ValidAsset T>

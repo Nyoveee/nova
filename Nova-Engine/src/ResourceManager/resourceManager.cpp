@@ -51,3 +51,14 @@ Asset* ResourceManager::getResourceInfo(ResourceID id) {
 bool ResourceManager::doesResourceExist(ResourceID id) const {
 	return resources.find(id) != resources.end();
 }
+
+ResourceID ResourceManager::getResourceID(std::filesystem::path const& path) const {
+	auto iterator = filepathToResourceId.find(path.string());
+
+	if (iterator == filepathToResourceId.end()) {
+		return INVALID_ASSET_ID;
+	}
+
+	auto&& [_, resourceId] = *iterator;
+	return resourceId;
+}

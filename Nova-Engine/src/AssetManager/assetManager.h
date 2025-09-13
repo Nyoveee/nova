@@ -89,8 +89,7 @@ public:
 	// =========================================================
 	// Getters (no setters!)
 	// =========================================================
-	DLL_API std::unordered_map<FolderID, Folder> const& getDirectories() const;
-	DLL_API std::vector<FolderID> const& getRootDirectories() const;
+
 	DLL_API void getAssetLoadingStatus() const;
 
 private:
@@ -167,11 +166,6 @@ private:
 	std::unordered_map<AssetID, std::unique_ptr<SerialiseMetaData>> serialiseMetaDataFunctors;
 	//std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
 
-	// Folder metadata (for tree traversal)
-	std::unordered_map<FolderID, Folder> directories;
-	std::vector<FolderID> rootDirectories;
-	std::unordered_map<std::string, FolderID> folderNameToId;
-
 	// when an asset has finished loading, and requires the asset manager to do some post work,
 	// the asset will provide a callback here.
 	// the asset manager then checks every game frame if there is any callback request.
@@ -179,13 +173,19 @@ private:
 	std::mutex queueCallbackMutex;	// protects the callback queue.
 #endif
 
+public:
+	DLL_API std::unordered_map<FolderID, Folder> const& getDirectories() const;
+	DLL_API std::vector<FolderID> const& getRootDirectories() const;
+
 private:
 	ResourceID generateResourceID(std::filesystem::path const& path) const;
 
 	void parseIntermediaryAssetFile(std::filesystem::path const& path);
-	
-	template <ValidAsset T>
-	std::string getMetaDataFilename(std::filesystem::path const& path) const;
+
+	void recordFolder(
+		FolderID folderId,
+		std::filesystem::path const& path
+	);
 
 	// =========================================================
 	// Parsing meta data file associated with the asset.
@@ -193,6 +193,9 @@ private:
 	// Each specific type asset has additional metadata as well.
 	// =========================================================
 	
+	template <ValidAsset T>
+	std::string getMetaDataFilename(std::filesystem::path const& path) const;
+
 	template <ValidAsset T>
 	void loadAllDescriptorFiles(std::filesystem::path const& directory);
 
@@ -226,6 +229,11 @@ private:
 	
 	// records all loaded intermediary assets with corresponding descriptor files.
 	std::unordered_set<std::string> loadedIntermediaryAssets;	
+
+	// Folder metadata (for tree traversal)
+	std::unordered_map<FolderID, Folder> directories;
+	std::vector<FolderID> rootDirectories;
+	std::unordered_map<std::string, FolderID> folderNameToId;
 };
 
 #include "AssetManager/assetMananger.ipp"

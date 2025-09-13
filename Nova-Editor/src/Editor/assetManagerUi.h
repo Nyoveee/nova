@@ -12,6 +12,7 @@ constexpr ImTextureID NO_TEXTURE = std::numeric_limits<ImTextureID>::max();
 
 class Editor;
 class AssetManager;
+class ResourceManager;
 
 class AssetManagerUI {
 public:
@@ -32,7 +33,7 @@ private:
 	
 	void displayFolderTreeNode(FolderID folderId);
 	void displayFolderContent(FolderID folderId);
-	void displayAssetThumbnail(ResourceID assetId);
+	void displayAssetThumbnail(ResourceID resourceId);
 	void displayFolderThumbnail(FolderID folderId);
 
 	void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
@@ -40,8 +41,12 @@ private:
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;
 
+	void handleThumbnailDoubleClick(Asset& resource);
+
 private:
 	AssetManager& assetManager;
+	ResourceManager& resourceManager;
+
 	FolderID selectedFolderId;
 
 	std::string searchQuery;

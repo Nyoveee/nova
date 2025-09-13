@@ -79,6 +79,9 @@ private:
 	template <ValidAsset T>
 	void loadAllResources(std::filesystem::path const& directory);
 
+	// get the resource id for a given filepath. may be INVALID_ASSET_ID.
+	ResourceID getResourceID(std::filesystem::path const& path) const;
+
 private:
 	std::filesystem::path resourceDirectory;
 	std::filesystem::path textureDirectory;
@@ -95,6 +98,9 @@ private:
 
 	// holds the directory of each sub asset.
 	std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetDirectories;
+
+	// maps filepath to resource ID.
+	std::unordered_map<std::string, ResourceID> filepathToResourceId;
 };
 
 #include "resourceManager.ipp"

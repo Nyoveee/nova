@@ -133,7 +133,7 @@ void Interface::load()
 	}
 	
 	// ========================================================
-	// 5. We define mapping from Asset IDs to script types.
+	// 5. We define mapping from Resource IDs to script types.
 	// ========================================================
 	auto&& scripts = engine->resourceManager.getAllResources<ScriptAsset>();
 	for (auto&& scriptId : scripts) {

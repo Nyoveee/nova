@@ -73,7 +73,12 @@ AssetManager::AssetManager(ResourceManager& resourceManager) :
 	// ========================================
 	// 4. We need to check if every intermediary assets has a corresponding descriptor pointing to it.
 	// When we add new intermediary assets to the Assets folder, we need to generate it's corresponding descriptor.
+	// 
+	// When we iterate through all the intermediate assets, we also keep track of the directory it is in to record
+	// the entire directory structure for asset viewer UI.
 	// ========================================
+	FolderID folderId{ 0 };
+
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ assetDirectory }) {
 		std::filesystem::path currentPath = entry.path();
 
@@ -81,7 +86,12 @@ AssetManager::AssetManager(ResourceManager& resourceManager) :
 			continue;
 		}
 
-		if (!entry.is_regular_file()) {
+		if (entry.is_directory()) {
+			recordFolder(folderId, currentPath);
+			incrementFolderId(folderId);
+		}
+
+		else if (!entry.is_regular_file()) {
 			continue;
 		}
 
@@ -89,6 +99,29 @@ AssetManager::AssetManager(ResourceManager& resourceManager) :
 			// we need to generate the corresponding descriptor file for this intermediary file.
 			parseIntermediaryAssetFile(currentPath);
 		}
+		
+		// ------------------------------------------
+		// Save resource entry in the parent folder.
+		// ------------------------------------------
+		ResourceID resourceId = resourceManager.getResourceID(currentPath);
+
+		// found some intermediary asset file that is not supported.
+		if (resourceId == INVALID_ASSET_ID) {
+			continue;
+		}
+
+		std::filesystem::path parentPath = currentPath.parent_path();
+
+		auto iterator = folderNameToId.find(parentPath.string());
+
+		if (iterator == std::end(folderNameToId)) {
+			Logger::error("Attempting to add asset to a non existing parent folder?");
+		}
+		else {
+			auto&& [_, parentFolderId] = *iterator;
+			directories[parentFolderId].assets.push_back(resourceId);
+		}
+		// ------------------------------------------
 	}
 
 #if 0
@@ -124,37 +157,7 @@ AssetManager::~AssetManager() {
 }
 
 #if 0
-void AssetManager::recordFolder(
-	FolderID folderId,
-	std::filesystem::path const& path,
-	std::filesystem::path const& assetDirectory
-) {
-	// Get parent directory.
-	std::filesystem::path parentPath = path.parent_path();
 
-	FolderID parentFolderId;
-
-	// This directory is at the root asset folder -> no parent.
-	if (parentPath == assetDirectory) {
-		parentFolderId = NONE;
-		rootDirectories.push_back(folderId);
-	}
-	else {
-		parentFolderId = folderNameToId[parentPath.string()];
-		directories[parentFolderId].childDirectories.push_back(folderId);
-	}
-
-	directories[folderId] = Folder{
-		folderId,
-		parentFolderId,
-		{},
-		{},
-		path.filename().string(),
-		std::filesystem::relative(path, assetDirectory)
-	};
-
-	folderNameToId[path.string()] = folderId;
-}
 
 void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile) {
 	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
@@ -181,17 +184,6 @@ std::string AssetManager::GetRunTimeDirectory() {
 	return runtimeDirectory;
 }
 
-std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
-	return directories;
-}
-
-std::vector<FolderID> const& AssetManager::getRootDirectories() const {
-	return rootDirectories;
-}
-
-void AssetManager::getAssetLoadingStatus() const {
-	
-}
 #endif
 
 std::optional<BasicAssetInfo> AssetManager::parseDescriptorFile(std::filesystem::path const& path, std::ifstream& metaDataFile) {
@@ -288,5 +280,40 @@ void AssetManager::parseIntermediaryAssetFile(std::filesystem::path const& path)
 		Logger::warn("Unsupported file type of: {} has been found.", path.string());
 		return;
 	}
+}
 
+void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& path) {
+	// Get parent directory.
+	std::filesystem::path parentPath = path.parent_path();
+
+	FolderID parentFolderId;
+
+	// This directory is at the root asset folder -> no parent.
+	if (parentPath == assetDirectory) {
+		parentFolderId = NONE;
+		rootDirectories.push_back(folderId);
+	}
+	else {
+		parentFolderId = folderNameToId[parentPath.string()];
+		directories[parentFolderId].childDirectories.push_back(folderId);
+	}
+
+	directories[folderId] = Folder{
+		folderId,
+		parentFolderId,
+		{},
+		{},
+		path.filename().string(),
+		std::filesystem::relative(path, assetDirectory)
+	};
+
+	folderNameToId[path.string()] = folderId;
+}
+
+std::vector<FolderID> const& AssetManager::getRootDirectories() const {
+	return rootDirectories;
+}
+
+std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
+	return directories;
 }
