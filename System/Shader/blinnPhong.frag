@@ -17,22 +17,15 @@ uniform sampler2D albedoMap;
 uniform float ambientFactor;
 
 // === LIGHT PROPERTIES ===
-// corresponds to the enum in C++
-const int PointLightEnum = 0;
-const int DirectionalLightEnum = 1;
-const int SpotLightEnum = 2;
-
 struct PointLight {
     vec3 position;
     vec3 color;
     vec3 attenuation;
-    int type;
 };
 
 struct DirectionalLight {
     vec3 direction;
     vec3 color;
-    int type;
 };
 
 struct SpotLight {
@@ -42,7 +35,6 @@ struct SpotLight {
     vec3 attenuation;
 	float cutOffAngle;
 	float outerCutOffAngle;
-    int type;
 };
 
 layout(std430, binding = 0) buffer PointLights {
@@ -143,8 +135,8 @@ vec3 calculateSpotLight(SpotLight light, vec3 normal, vec3 baseColor) {
     float dist = length(lightDiff);
     float attenVal = 1.0 / (light.attenuation[0] + light.attenuation[1] * dist + 
     		    light.attenuation[2] * (dist * dist));  
-    diffuseColor *= attenVal;
-    specularColor *= attenVal;
+    diffuseColor *= attenVal * spotIntensity;
+    specularColor *= attenVal * spotIntensity;
 
     return diffuseColor + specularColor;
 }

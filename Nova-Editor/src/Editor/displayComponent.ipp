@@ -191,11 +191,9 @@ namespace {
 						// convert from radian to degrees for display..
 						float angle = static_cast<float>(dataMember);
 						angle = toDegree(angle);
-						ImGui::InputFloat(fieldData.name(), &angle);
-
-						// Clamp result..
-						angle = std::clamp(angle, -180.f, 180.f);
-						dataMember = toRadian(angle);
+						if (ImGui::SliderFloat(fieldData.name(), &angle, -180.f, 180.f)) {
+							dataMember = toRadian(angle);
+						}
 					}
 
 					if constexpr (std::same_as<DataMemberType, AssetID>) {

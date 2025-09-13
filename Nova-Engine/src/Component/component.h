@@ -100,7 +100,6 @@ struct Light {
 	Color color = Color{ 1.f, 1.f, 1.f };
 	float intensity = 1.f;
 	Type type = Light::Type::PointLight;
-	glm::vec3 direction = glm::vec3{ 0.f, -1.f, 0.f };
 	glm::vec3 attenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 	Radian cutOffAngle = glm::radians(12.5f);
 	Radian outerCutOffAngle = glm::radians(17.5f);
@@ -108,7 +107,6 @@ struct Light {
 	REFLECTABLE(
 		type,
 		color,
-		direction,
 		intensity,
 		cutOffAngle,
 		outerCutOffAngle

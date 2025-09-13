@@ -356,38 +356,41 @@ void Renderer::prepareRendering(RenderTarget target) {
 			pointLightData[numOfPtLights++] = {
 				transform.position,
 				glm::vec3{ light.color } * light.intensity,
-				light.attenuation,
-				static_cast<unsigned int>(light.type)
+				light.attenuation
 			};
 			break;
 
 		case Light::Type::Directional:
+		{
 			if (numOfDirLights >= MAX_NUMBER_OF_LIGHT) {
 				Logger::warn("Max number of directional lights reached!");
 				continue;
 			}
+			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
 			directionalLightData[numOfDirLights++] = {
-				light.direction, 
-				glm::vec3{ light.color } * light.intensity,
-				static_cast<unsigned int>(light.type)
+				glm::normalize(forward),
+				glm::vec3{ light.color } *light.intensity
 			};
 			break;
+		}
 
 		case Light::Type::Spotlight:
+		{
 			if (numOfSpotLights >= MAX_NUMBER_OF_LIGHT) {
 				Logger::warn("Max number of spot lights reached!");
 				continue;
 			}
+			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
 			spotLightData[numOfSpotLights++] = {
 				transform.position,
-				light.direction,
-				glm::vec3{ light.color } * light.intensity,
+				glm::normalize(forward),
+				glm::vec3{ light.color } *light.intensity,
 				light.attenuation,
 				light.cutOffAngle,
-				light.outerCutOffAngle,
-				static_cast<unsigned int>(light.type)
+				light.outerCutOffAngle
 			};
 			break;
+		}
 
 		}
 	}
