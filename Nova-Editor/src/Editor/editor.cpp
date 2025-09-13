@@ -361,6 +361,11 @@ void Editor::sandboxWindow() {
 		engine.audioSystem.playBGM(AssetID{ 2656782158917682081 });
 	}
 
+	if (ImGui::Button("Stop Audio Test"))
+	{
+		engine.audioSystem.StopAllAudio();
+	}
+
 	entt::registry& registry = engine.ecs.registry;
 
 	static bool wireFrameMode = false;

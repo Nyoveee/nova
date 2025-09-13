@@ -157,7 +157,6 @@ FMOD::Sound* AudioSystem::getSound(AssetID audioId) const {
 	return sound;
 }
 
-// PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
 void AudioSystem::playSFX(AssetID id, float x, float y, float z)
 {
     // Play the sound
@@ -187,6 +186,109 @@ void AudioSystem::playBGM(AssetID id)
     // Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
+	}
+}
+
+void AudioSystem::pauseSound(AssetID audioId, bool paused)
+{
+	// Find all instances that were created from this audioId
+	for (auto& [id, audioInstance] : audioInstances)
+	{
+		if (audioInstance.audioId == audioId && audioInstance.channel)
+		{
+			audioInstance.channel->setPaused(paused);
+		}
+	}
+}
+
+void AudioSystem::StopAllAudio()
+{
+	for (auto& [instanceId, audioInstance] : audioInstances)
+	{
+		if (audioInstance.channel)
+		{
+			audioInstance.channel->stop();
+		}
+	}
+
+	audioInstances.clear();
+	currentBGM = nullptr;
+}
+
+void AudioSystem::StopAudio(AssetID audioId)
+{
+	for (auto it = audioInstances.begin(); it != audioInstances.end(); )
+	{
+		auto& [instanceId, audioInstance] = *it;
+
+		if (audioInstance.audioId == audioId && audioInstance.channel)
+		{
+			audioInstance.channel->stop();
+			it = audioInstances.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	if (currentBGM && currentBGM->audioId == audioId)
+	{
+		currentBGM = nullptr;
+	}
+}
+
+void AudioSystem::AdjustVol(AssetID audioId, float volume) 
+{
+	for (auto& [instanceId, audioInstance] : audioInstances)
+	{
+		if (audioInstance.audioId == audioId && audioInstance.channel)
+		{
+			audioInstance.channel->setVolume(volume);
+			audioInstance.volume = volume;
+		}
+	}
+
+	if (currentBGM && currentBGM->audioId == audioId && currentBGM->channel)
+	{
+		currentBGM->channel->setVolume(volume);
+		currentBGM->volume = volume;
+	}
+}
+
+// ** Changes the Overall game volume level **
+void AudioSystem::AdjustGlobalVol(float volume)
+{
+	globalVolume = volume;
+	AudioSystem::AdjustSFXVol(sfxVolume);
+	AudioSystem::AdjustSFXVol(bgmVolume);
+}
+
+// Sets the game SFX volume level
+void AudioSystem::AdjustSFXVol(float volume)
+{
+	sfxVolume = volume;
+
+	if (globalVolume <= 0) 
+	{
+		sfxGlobal = 0.0f;
+		buttonVol = sfxGlobal;
+	} else {
+		sfxGlobal = std::min(sfxVolume * globalVolume, volCap);
+		buttonVol = sfxGlobal;
+	}
+}
+
+// Sets the game BGM volume level
+void AudioSystem::AdjustBGMVol(float volume)
+{
+	bgmVolume = volume;
+	bgmGlobal = std::min(bgmVolume * globalVolume, volCap);
+
+	if (currentBGM && currentBGM->channel)
+	{
+		currentBGM->channel->setVolume(volume);
+		currentBGM->volume = volume;
 	}
 }
 
