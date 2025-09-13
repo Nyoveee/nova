@@ -54,6 +54,7 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	std::optional<AssetID> assetIdOptional = assetManager.getAssetId(absPath.string());
 	if (!assetIdOptional)
 		return;
+
 	AssetID assetId = assetIdOptional.value();
 	if (change_type != filewatch::Event::removed) {
 		// There is a known bug in filewatch(Since 2021...) where modified is called twice, including when it's added

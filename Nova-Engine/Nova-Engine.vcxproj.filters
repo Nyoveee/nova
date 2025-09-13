@@ -177,10 +177,19 @@
     <ClInclude Include="src\Audio\audioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Serialisation\serialisation.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\AssetManager\Asset\audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceManager\resourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceManager\resourceManager.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -282,6 +291,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceManager\resourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

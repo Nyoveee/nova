@@ -57,9 +57,16 @@
 
 namespace reflection {
 	template <typename T>
-	concept isForEachIterable = requires (T && foo) {
+	concept isForEachIterable = requires (T foo) {
 		std::begin(foo);
 		std::end(foo);
+		std::cbegin(foo);
+		std::cend(foo);
+	};
+
+	enum class Option {
+		IgnoreContainers,
+		IterateThroughContainers
 	};
 
 	// For each data member, print it's name and value to stdout. Assumes the data member overloads the operator<<
@@ -81,24 +88,47 @@ namespace reflection {
 	*
 	*	The function is designed such that template arguments are deduced automatically.
 	*
-	* @tparam Functor		: The type should ideally be a templated lambda with the following format: [](auto&&){}
-	*						  Capture clause doesn't matter here. Only the argument type.
-	* @tparam T				: The type of object you want to reflect.
+	* @tparam option				:	Whether you want reflection to iterate through containers.
+	* @tparam Functor				:	The type should ideally be a templated lambda with the following format: [](auto&&){}
+	*									Capture clause doesn't matter here. Only the argument type. Type to be deduced.
+	* @tparam T						:	The type of object you want to reflect. Type to be deduced.
 	*
-	* @param [in] x			: The object you want to reflect.
-	* @param [in] func		: Unary function object, which will be invoked for every reflected data member.
-	*						  fieldData.get() to retrieve reference to data member.
-	*						  fieldData.name() to retrieve name of data member.
+	* @param [in] func				: Unary function object, which will be invoked for every reflected data member.
+	*									fieldData.get() to retrieve reference to data member.
+	*									fieldData.name() to retrieve name of data member.
+	* @param [in] x					: The object you want to reflect.
 	*
 	**************************************************************************/
-	template<typename Functor, typename T>
+	template<Option option = Option::IgnoreContainers, typename Functor, typename T>
 	void visit(Functor&& func, T&& x);
 
-	// similar to visit, but invokes enterFunc when first encountering a reflectable data member before recursing and invokes exitFunc after finishing iterating.
-	template<typename Functor, typename Functor2, typename Functor3, typename T>
+	/*!***********************************************************************
+	* @brief
+	*	This function is the same as visit, but invokes Functor `enterFunc` when first
+	*   encountering a reflectable member (or container if toHandleContainers is true).
+	*
+	*	When we finish recursively iterate a reflectable data member or container, invokes
+	*	Functor `exitFunc`.
+	*
+	*	This is commonly used in recursively reflection, where you want to do something and after
+	*	when iterating through a reflectable data member.
+	*
+	* @tparam option				:	Whether you want reflection to iterate through containers.
+	* @tparam Functor				:	The type should ideally be a templated lambda with the following format: [](auto&&){}
+	*									Capture clause doesn't matter here. Only the argument type. Type to be deduced.
+	* @tparam Functor2				:	Same as Functor. Type to be deduced.
+	* @tparam Functor3				:	Same as Functor. Type to be deduced.
+	* @tparam T						:	The type of object you want to reflect. Type to be deduced.
+	*
+	* @param [in] func				: Unary function object, which will be invoked for every reflected data member.
+	* @param [in] enterFunc			: Unary function object, which will be invoked when first encounter a reflectable data member.
+	* @param [in] exitFunc			: Unary function object, which will be invoked after finish recursively iterate through a reflectable data member.
+	* @param [in] x					: The object you want to reflect.
+	*
+	**************************************************************************/
+	template<Option option = Option::IgnoreContainers, typename Functor, typename Functor2, typename Functor3, typename T>
 	void visit(Functor&& func, Functor2&& enterFunc, Functor3&& exitFunc, T&& x);
 }
-
 
 /*!========================================================================
 	Implementation details..
@@ -189,9 +219,28 @@ struct FieldData<index, Object> \
 	}\
 }; \
 
-#define REFLECT_NAME(className) static constexpr char _name[] = className;
-
 namespace reflection {
+	// element field data defer from field data in that
+	template <typename T>
+	struct ElementFieldData {
+		ElementFieldData(T&& element) : element{ element } {};
+
+		constexpr std::remove_reference_t<T>& get() const requires(!std::is_const_v<std::remove_reference_t<T>>) {
+			return element;
+		}
+
+		constexpr std::remove_reference_t<T> const& get() const requires(std::is_const_v<std::remove_reference_t<T>>) {
+			return element;
+		}
+
+		constexpr char const* name() const {
+			return "[element]";
+		}
+
+	public:
+		T&& element;
+	};
+
 	// class that has access to reflected private data members
 	struct query {
 		template <typename T>
@@ -211,6 +260,8 @@ namespace reflection {
 		static auto getFieldData(T&& object) {
 			return typename std::remove_cvref_t<T>::template FieldData<N, T&&>{std::forward<T>(object)};
 		}
+
+
 	};
 
 	template <typename T>
@@ -233,46 +284,104 @@ namespace reflection {
 		forEach(std::forward<T>(x), func, std::make_integer_sequence<std::size_t, query::getNumberOfFields<T>()>());
 	}
 
-	template<typename Functor, typename T>
+	template<Option option, typename Functor, typename Functor2, typename Functor3, typename T>
+	void _internal_visit(Functor&& func, Functor2&& enterFunc, Functor3&& exitFunc, T&& fieldData) {
+		enterFunc(std::forward<T>(fieldData));
+
+		if constexpr (option == Option::IterateThroughContainers && isForEachIterable<std::remove_cvref_t<decltype(fieldData.get())>>) {
+			for (auto&& element : fieldData.get()) {
+				// is element itself reflectable?
+				if constexpr (isReflectable<typename std::remove_cvref_t<decltype(element)>>()) {
+					_internal_visit<option>(
+						std::forward<Functor>(func),
+						std::forward<Functor2>(enterFunc),
+						std::forward<Functor3>(exitFunc),
+						ElementFieldData<decltype(element)>{ element }
+					);
+				}
+				else {
+					func(ElementFieldData<decltype(element)>{ element });
+				}
+			}
+		}
+		else {
+			iterateThroughMember(std::forward<T>(fieldData).get(), [&]<typename U>(U && internalFieldData) {
+				if constexpr (
+					isReflectable<typename std::remove_cvref_t<U>::type>()
+					|| (option == Option::IterateThroughContainers && isForEachIterable<typename std::remove_cvref_t<U>::type>)
+					) {
+					_internal_visit<option>(
+						std::forward<Functor>(func),
+						std::forward<Functor2>(enterFunc),
+						std::forward<Functor3>(exitFunc),
+						std::forward<U>(internalFieldData)
+					);
+				}
+				else {
+					func(std::forward<U>(internalFieldData));
+				}
+			});
+		}
+
+		exitFunc(std::forward<T>(fieldData));
+	}
+
+	template<Option option, typename Functor, typename T>
 	void visit(Functor&& func, T&& x) {
-		visit(std::forward<Functor>(func), [] {}, [] {}, std::forward<T>(x));
+		visit<option>(std::forward<Functor>(func), [](auto&& dataMember) { (void)dataMember; }, [](auto&& dataMember) { (void)dataMember; }, std::forward<T>(x));
 	}
 
-	template<typename Functor, typename Functor2, typename Functor3, typename T>
+	template<Option option, typename Functor, typename Functor2, typename Functor3, typename T>
 	void visit(Functor&& func, Functor2&& enterFunc, Functor3&& exitFunc, T&& x) {
-		static_assert(isReflectable<T>(), "Class provided is not reflectable! Did you forget to provide the REFLECTABLE macro?");
+		static_assert(isReflectable<T>() || isForEachIterable<T>, "Class provided is not reflectable! Did you forget to provide the REFLECTABLE macro?");
 
-		iterateThroughMember(std::forward<T>(x), [&]<typename U>(U && fieldData) {
-			if constexpr (isReflectable<typename std::remove_cvref_t<U>::type>()) {
-				_internal_visit(std::forward<Functor>(func), std::forward<Functor2>(enterFunc), std::forward<Functor3>(exitFunc), std::forward<U>(fieldData).get());
-			}
-			else {
-				func(std::forward<U>(fieldData));
-			}
-		});
-	}
+		if constexpr (option == Option::IterateThroughContainers && isForEachIterable<std::remove_cvref_t<T>>) {
+			enterFunc(ElementFieldData<decltype(x)>{x});
 
-	template<typename Functor, typename Functor2, typename Functor3, typename T>
-	void _internal_visit(Functor&& func, Functor2&& enterFunc, Functor3&& exitFunc, T&& x) {
-		enterFunc();
-
-		iterateThroughMember(std::forward<T>(x), [&]<typename U>(U && fieldData) {
-			if constexpr (isReflectable<typename std::remove_cvref_t<U>::type>()) {
-				_internal_visit(std::forward<Functor>(func), std::forward<Functor2>(enterFunc), std::forward<Functor3>(exitFunc), std::forward<U>(fieldData).get());
+			for (auto&& element : x) {
+				// is element itself reflectable?
+				if constexpr (isReflectable<typename std::remove_cvref_t<decltype(element)>>()) {
+					visit<option>(
+						std::forward<Functor>(func),
+						std::forward<Functor2>(enterFunc),
+						std::forward<Functor3>(exitFunc),
+						element
+					);
+				}
+				else {
+					func(ElementFieldData<decltype(element)>{ element });
+				}
 			}
-			else {
-				func(std::forward<U>(fieldData));
-			}
-		});
 
-		exitFunc();
+			exitFunc(ElementFieldData<decltype(x)>{x});
+		}
+		else {
+			// iterate through all data members..
+			iterateThroughMember(std::forward<T>(x), [&]<typename U>(U && fieldData) {
+
+				// if data member is reflectable or is a container, iterate through its data members..
+				if constexpr (
+					isReflectable<typename std::remove_cvref_t<U>::type>()
+					|| (option == Option::IterateThroughContainers && isForEachIterable<typename std::remove_cvref_t<U>::type>)
+					) {
+					_internal_visit<option>(
+						std::forward<Functor>(func),
+						std::forward<Functor2>(enterFunc),
+						std::forward<Functor3>(exitFunc),
+						std::forward<U>(fieldData)
+					);
+				}
+				else {
+					// call provided lambda if data member itself is not reflectable.
+					func(std::forward<U>(fieldData));
+				}
+			});
+		}
 	}
 
 	template <typename T>
 	void print(T&& x) {
-		static_assert(isReflectable<T>(), "Class provided is not reflectable! Did you forget to provide the REFLECTABLE macro?");
-
-		visit([](auto fieldData) {
+		visit<Option::IterateThroughContainers>([](auto fieldData) {
 			std::cout << fieldData.name() << " = ";
 
 			if constexpr (!std::same_as<std::string, std::decay_t<decltype(fieldData.get())>> && isForEachIterable<std::decay_t<decltype(fieldData.get())>>) {
@@ -298,24 +407,28 @@ namespace reflection {
 
 		std::cout << "{\n";
 
-		visit(
-			[&recursionDepth](auto fieldData) {
+		reflection::visit(
+			// functor that will be invoked for each data member.
+			[&](auto fieldData) {
 				for (int i = 0; i < recursionDepth + 1; ++i) {
 					std::cout << "    ";
 				}
 
 				std::cout << fieldData.name() << " = " << fieldData.get() << ",\n";
 			},
-			[&recursionDepth]() {
+
+			// enter functor that is invoked when first encountering a reflectable data member.
+			[&](auto fieldData) {
 				++recursionDepth;
 
 				for (int i = 0; i < recursionDepth; ++i) {
 					std::cout << "    ";
 				}
-				std::cout << "{\n";
-
+				std::cout << fieldData.name() << ": {\n";
 			},
-			[&recursionDepth]() {
+
+			// exit functor that is invoked after finishing iterating a reflectable data member.
+			[&](auto fieldData) {
 				for (int i = 0; i < recursionDepth; ++i) {
 					std::cout << "    ";
 				}
@@ -324,8 +437,7 @@ namespace reflection {
 				--recursionDepth;
 			},
 
-			std::forward<T>(x)
-		);
+			x);
 
 		std::cout << "}\n";
 	}
