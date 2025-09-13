@@ -187,6 +187,10 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\Recast\RecastMeshDetail.cpp" />
     <ClCompile Include="src\Editor\Recast\RecastRasterization.cpp" />
     <ClCompile Include="src\Editor\Recast\RecastRegion.cpp" />
+    <ClCompile Include="src\Editor\Recast_DebugUtils\DebugDraw.cpp" />
+    <ClCompile Include="src\Editor\Recast_DebugUtils\DetourDebugDraw.cpp" />
+    <ClCompile Include="src\Editor\Recast_DebugUtils\RecastDebugDraw.cpp" />
+    <ClCompile Include="src\Editor\Recast_DebugUtils\RecastDump.cpp" />
     <ClCompile Include="src\Editor\themes.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -224,6 +228,10 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\Recast\Recast.h" />
     <ClInclude Include="src\Editor\Recast\RecastAlloc.h" />
     <ClInclude Include="src\Editor\Recast\RecastAssert.h" />
+    <ClInclude Include="src\Editor\Recast_DebugUtils\DebugDraw.h" />
+    <ClInclude Include="src\Editor\Recast_DebugUtils\DetourDebugDraw.h" />
+    <ClInclude Include="src\Editor\Recast_DebugUtils\RecastDebugDraw.h" />
+    <ClInclude Include="src\Editor\Recast_DebugUtils\RecastDump.h" />
     <ClInclude Include="src\Editor\themes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
