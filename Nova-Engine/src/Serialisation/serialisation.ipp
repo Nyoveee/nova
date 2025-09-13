@@ -102,6 +102,14 @@ namespace Serialiser {
 					componentJson[dataMemberName]["z"] = dataMember.angles.z;
 				}
 
+				else if constexpr (std::same_as<DataMemberType, Radian>) {
+					componentJson[dataMemberName] = static_cast<float>(dataMember);
+				}
+
+				else if constexpr (std::same_as<DataMemberType, Degree>) {
+					componentJson[dataMemberName] = static_cast<float>(dataMember);
+				}
+
 				else if constexpr (std::same_as<DataMemberType, ResourceID>) {
 					componentJson[dataMemberName] = static_cast<size_t>(dataMember);
 				}
@@ -190,139 +198,153 @@ namespace Serialiser {
 		if (jsonComponent.find(componentName) == jsonComponent.end())
 			return;
 
-		reflection::visit([&](auto fieldData) {
-			auto& dataMember = fieldData.get();
-			constexpr const char* dataMemberName = fieldData.name();
-			using DataMemberType = std::decay_t<decltype(dataMember)>;
+		try {
+			reflection::visit([&](auto fieldData) {
+				auto& dataMember = fieldData.get();
+				constexpr const char* dataMemberName = fieldData.name();
+				using DataMemberType = std::decay_t<decltype(dataMember)>;
 
-			if constexpr (std::same_as<DataMemberType, glm::vec3>) {
-				glm::vec3 vec{	jsonComponent[componentName][dataMemberName]["x"],
-								jsonComponent[componentName][dataMemberName]["y"],
-								jsonComponent[componentName][dataMemberName]["z"] };
-				dataMember = vec;
-			}
-
-			else if constexpr (std::same_as<DataMemberType, entt::entity>) {
-				try {
-					unsigned int entityNum = jsonComponent[componentName][dataMemberName];
-					entt::entity entity = entityNum == std::numeric_limits<unsigned int>::max() ? entt::null : static_cast<entt::entity>(entityNum);
-					dataMember = entity;
+				if constexpr (std::same_as<DataMemberType, glm::vec3>) {
+					glm::vec3 vec{ jsonComponent[componentName][dataMemberName]["x"],
+									jsonComponent[componentName][dataMemberName]["y"],
+									jsonComponent[componentName][dataMemberName]["z"] };
+					dataMember = vec;
 				}
-				catch (std::exception const& ex) {
-					Logger::warn("Failed to parse entity data member. {}", ex.what());
-					dataMember = entt::null;
+
+				else if constexpr (std::same_as<DataMemberType, entt::entity>) {
+					try {
+						unsigned int entityNum = jsonComponent[componentName][dataMemberName];
+						entt::entity entity = entityNum == std::numeric_limits<unsigned int>::max() ? entt::null : static_cast<entt::entity>(entityNum);
+						dataMember = entity;
+					}
+					catch (std::exception const& ex) {
+						Logger::warn("Failed to parse entity data member. {}", ex.what());
+						dataMember = entt::null;
+					}
 				}
-			}
 
-			else if constexpr (std::same_as<DataMemberType, std::vector<entt::entity>>) {
-				std::vector<entt::entity> vec;
-				for (auto a : jsonComponent[componentName][dataMemberName])
-				{
-					vec.push_back(static_cast<entt::entity>(a));
+				else if constexpr (std::same_as<DataMemberType, std::vector<entt::entity>>) {
+					std::vector<entt::entity> vec;
+					for (auto a : jsonComponent[componentName][dataMemberName])
+					{
+						vec.push_back(static_cast<entt::entity>(a));
+					}
+					dataMember = vec;
 				}
-				dataMember = vec;
-			}
 
-			else if constexpr (std::same_as<DataMemberType, Color>) {
-				glm::vec3 vec{	jsonComponent[componentName][dataMemberName]["r"],
-								jsonComponent[componentName][dataMemberName]["g"],
-								jsonComponent[componentName][dataMemberName]["b"] };
-				dataMember = vec;
-			}
+				else if constexpr (std::same_as<DataMemberType, Color>) {
+					glm::vec3 vec{ jsonComponent[componentName][dataMemberName]["r"],
+									jsonComponent[componentName][dataMemberName]["g"],
+									jsonComponent[componentName][dataMemberName]["b"] };
+					dataMember = vec;
+				}
 
-			else if constexpr (std::same_as<DataMemberType, glm::quat>) {
-				glm::quat vec{	jsonComponent[componentName][dataMemberName]["w"],
-								jsonComponent[componentName][dataMemberName]["x"],
-								jsonComponent[componentName][dataMemberName]["y"],
-								jsonComponent[componentName][dataMemberName]["z"] };
-				dataMember = vec;
-			}
+				else if constexpr (std::same_as<DataMemberType, glm::quat>) {
+					glm::quat vec{ jsonComponent[componentName][dataMemberName]["w"],
+									jsonComponent[componentName][dataMemberName]["x"],
+									jsonComponent[componentName][dataMemberName]["y"],
+									jsonComponent[componentName][dataMemberName]["z"] };
+					dataMember = vec;
+				}
 
-			else if constexpr (std::same_as<DataMemberType, EulerAngles>) {
-				glm::vec3 vec{	jsonComponent[componentName][dataMemberName]["x"],
-								jsonComponent[componentName][dataMemberName]["y"],
-								jsonComponent[componentName][dataMemberName]["z"] };
-				dataMember = vec;
-			}
+				else if constexpr (std::same_as<DataMemberType, EulerAngles>) {
+					glm::vec3 vec{ jsonComponent[componentName][dataMemberName]["x"],
+									jsonComponent[componentName][dataMemberName]["y"],
+									jsonComponent[componentName][dataMemberName]["z"] };
+					dataMember = vec;
+				}
 
-			else if constexpr (std::same_as<DataMemberType, ResourceID>) {
-				dataMember = static_cast<ResourceID>((jsonComponent[componentName][dataMemberName]));
-			}
+				else if constexpr (std::same_as<DataMemberType, Radian>) {
+					float angle = jsonComponent[componentName][dataMemberName];
+					dataMember = Radian{ angle };
+				}
 
-			else if constexpr (IsTypedResourceID<DataMemberType>) {
-				using OriginalAssetType = DataMemberType::AssetType;
+				else if constexpr (std::same_as<DataMemberType, Degree>) {
+					float angle = jsonComponent[componentName][dataMemberName];
+					dataMember = Degree{ angle };
+				}
 
-				dataMember = TypedResourceID<OriginalAssetType>{ static_cast<std::size_t>(jsonComponent[componentName][dataMemberName]) };
-			}
+				else if constexpr (std::same_as<DataMemberType, ResourceID>) {
+					dataMember = static_cast<ResourceID>((jsonComponent[componentName][dataMemberName]));
+				}
 
-			else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
-				std::unordered_map<MaterialName, Material> map;
-				//material and model id
-				for (auto a : jsonComponent[componentName]["materials"]) {
-					Material m;
-					m.ambient = a["ambient"];
+				else if constexpr (IsTypedResourceID<DataMemberType>) {
+					using OriginalAssetType = DataMemberType::AssetType;
 
-					std::string str = a["renderingPipeline"].dump();
+					dataMember = TypedResourceID<OriginalAssetType>{ static_cast<std::size_t>(jsonComponent[componentName][dataMemberName]) };
+				}
+
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
+					std::unordered_map<MaterialName, Material> map;
+					//material and model id
+					for (auto a : jsonComponent[componentName]["materials"]) {
+						Material m;
+						m.ambient = a["ambient"];
+
+						std::string str = a["renderingPipeline"].dump();
+						str = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
+
+						std::optional<Material::Pipeline> temp = magic_enum::enum_cast<Material::Pipeline>(str.c_str());
+						if (temp.has_value()) {
+							m.renderingPipeline = temp.value();
+						}
+
+						if (a["renderingPipeline"] == "BlinnPhong" || a["renderingPipeline"] == "PBR") {
+							if (a["normalMap"] != nullptr) {
+								m.normalMap = static_cast<ResourceID>(a["normalMap"]);
+							}
+							else {
+								m.normalMap = std::nullopt;
+							}
+						}
+
+						if (a["renderingPipeline"] == "PBR") {
+							Material::Config c;
+							c.roughness = a["config"]["roughness"];
+							c.metallic = a["config"]["metallic"];
+							c.occulusion = a["config"]["occulusion"];
+							m.config = c;
+						}
+
+						if (a.find("albedo") != a.end()) {
+							glm::vec3 colorVec = { a["albedo"]["r"], a["albedo"]["g"] , a["albedo"]["b"] };
+							m.albedo = colorVec;
+						}
+
+						map[a["materialName"]] = m;
+					}
+					dataMember = map;
+				}
+
+				else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+
+				}
+
+				// it's an enum. let's display a dropdown box for this enum.
+				// how? using enum reflection provided by "magic_enum.hpp" :D
+				else if constexpr (std::is_enum_v<DataMemberType>) {
+
+					std::string str = jsonComponent[componentName][dataMemberName].dump();
 					str = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
 
-					std::optional<Material::Pipeline> temp = magic_enum::enum_cast<Material::Pipeline>(str.c_str());
+					std::optional<DataMemberType> temp = magic_enum::enum_cast<DataMemberType>(str.c_str());
+
 					if (temp.has_value()) {
-						m.renderingPipeline = temp.value();
+						dataMember = temp.value();
 					}
-
-					if (a["renderingPipeline"] == "BlinnPhong" || a["renderingPipeline"] == "PBR") {
-						if (a["normalMap"] != nullptr) {
-							m.normalMap = static_cast<ResourceID>(a["normalMap"]);
-						}
-						else {
-							m.normalMap = std::nullopt;
-						}
-					}
-
-					if (a["renderingPipeline"] == "PBR") {
-						Material::Config c;
-						c.roughness = a["config"]["roughness"];
-						c.metallic = a["config"]["metallic"];
-						c.occulusion = a["config"]["occulusion"];
-						m.config = c;
-					}
-
-					if (a.find("albedo") != a.end()) {
-						glm::vec3 colorVec = { a["albedo"]["r"], a["albedo"]["g"] , a["albedo"]["b"] };
-						m.albedo = colorVec;
-					}
-
-					map[a["materialName"]] = m;
 				}
-				dataMember = map;
-			}
 
-			else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
-
-			}
-
-			// it's an enum. let's display a dropdown box for this enum.
-			// how? using enum reflection provided by "magic_enum.hpp" :D
-			else if constexpr (std::is_enum_v<DataMemberType>) {
- 
-				std::string str = jsonComponent[componentName][dataMemberName].dump();
-				str = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
-
-				std::optional<DataMemberType> temp = magic_enum::enum_cast<DataMemberType>(str.c_str());
-
-				if (temp.has_value()) {
-					dataMember = temp.value();
+				else {
+					// int, float, std::string,
+					//componentJson[dataMemberName] = dataMember;
+					dataMember = jsonComponent[componentName][dataMemberName];
 				}
-			}
 
-			else {
-				// int, float, std::string,
-				//componentJson[dataMemberName] = dataMember;
-				dataMember = jsonComponent[componentName][dataMemberName];
-			}
-
-			}, component);
-		registry.emplace<T>(entity, std::move(component));
-
+				}, component);
+			registry.emplace<T>(entity, std::move(component));
+		}
+		catch (std::exception const& ex) {
+			Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
+		}
 	}
 }

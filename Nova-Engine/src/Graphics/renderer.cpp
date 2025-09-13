@@ -53,7 +53,9 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	EBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 
 						// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
-	lightSSBO			{ MAX_NUMBER_OF_LIGHT * sizeof(LightData) + alignof(LightData)},
+	pointLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(PointLightData) + alignof(PointLightData)},
+	directionalLightSSBO{ MAX_NUMBER_OF_LIGHT * sizeof(DirectionalLightData) + alignof(DirectionalLightData)},
+	spotLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(SpotLightData) + alignof(SpotLightData)},
 
 						// we allocate memory for view and projection matrix.
 	sharedUBO			{ 2 * sizeof(glm::mat4) },
@@ -74,8 +76,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
 
-	// prepare the light SSBO. we bind light SSBO to binding point of 0.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.id());
+	// prepare the light SSBOs. we bind light SSBO to binding point of 0.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, pointLightSSBO.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, directionalLightSSBO.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, spotLightSSBO.id());
 
 	// Set the correct viewport
 	glViewport(0, 0, gameWidth, gameHeight);
@@ -334,26 +338,74 @@ void Renderer::prepareRendering(RenderTarget target) {
 	blinnPhongShader.setVec3("cameraPos", camera.getPos());
 
 	// we need to set up light data..
-	std::array<LightData, MAX_NUMBER_OF_LIGHT> lightData;
+	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
+	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
+	std::array<SpotLightData, MAX_NUMBER_OF_LIGHT>			spotLightData;
 
-	unsigned int numOfLights = 0;
+	unsigned int numOfPtLights = 0;
+	unsigned int numOfDirLights = 0;
+	unsigned int numOfSpotLights = 0;
 	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
-		if (numOfLights == MAX_NUMBER_OF_LIGHT) {
-			Logger::warn("Max number of lights reached!");
+		switch (light.type)
+		{
+		case Light::Type::PointLight:
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of point lights reached!");
+				continue;
+			}
+			pointLightData[numOfPtLights++] = {
+				transform.position,
+				glm::vec3{ light.color } * light.intensity,
+				light.attenuation
+			};
+			break;
+
+		case Light::Type::Directional:
+		{
+			if (numOfDirLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of directional lights reached!");
+				continue;
+			}
+			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+			directionalLightData[numOfDirLights++] = {
+				glm::normalize(forward),
+				glm::vec3{ light.color } *light.intensity
+			};
 			break;
 		}
 
-		lightData[numOfLights] = { transform.position, glm::vec3{ light.color } * light.intensity, static_cast<unsigned int>(light.type) };
-		++numOfLights;
+		case Light::Type::Spotlight:
+		{
+			if (numOfSpotLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of spot lights reached!");
+				continue;
+			}
+			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+			spotLightData[numOfSpotLights++] = {
+				transform.position,
+				glm::normalize(forward),
+				glm::vec3{ light.color } *light.intensity,
+				light.attenuation,
+				light.cutOffAngle,
+				light.outerCutOffAngle
+			};
+			break;
+		}
+
+		}
 	}
 
 	// Send it over to SSBO.
-	glNamedBufferSubData(lightSSBO.id(), 0, sizeof(unsigned int), &numOfLights);	// copy the unsigned int representing number of lights into SSBO.
+	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
+	glNamedBufferSubData(directionalLightSSBO.id(), 0, sizeof(unsigned int), &numOfDirLights);
+	glNamedBufferSubData(spotLightSSBO.id(), 0, sizeof(unsigned int), &numOfSpotLights);
 
 	// copy all the light data to the SSBO.
 	// offset is an alignment of LightData!! because of alignment requirements of this struct!
 	// omdayz..
-	glNamedBufferSubData(lightSSBO.id(), alignof(LightData), numOfLights * sizeof(LightData), lightData.data());
+	glNamedBufferSubData(pointLightSSBO.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
+	glNamedBufferSubData(directionalLightSSBO.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
+	glNamedBufferSubData(spotLightSSBO.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
 
 	// ==== Color shader ====
 	// ..
