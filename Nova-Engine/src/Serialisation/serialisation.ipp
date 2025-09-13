@@ -170,6 +170,10 @@ namespace Serialiser {
 
 				}
 
+				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+
+				}
+
 				// it's an enum. let's display a dropdown box for this enum.
 				// how? using enum reflection provided by "magic_enum.hpp" :D
 				else if constexpr (std::is_enum_v<DataMemberType>) {
@@ -317,6 +321,10 @@ namespace Serialiser {
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+
+				}
+
+				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
 
 				}
 

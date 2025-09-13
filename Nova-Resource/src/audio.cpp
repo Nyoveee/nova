@@ -1,4 +1,5 @@
 #include "audio.h"
+#include <filesystem>
 
 Audio::Audio(std::string filepath, bool is3D) :
 	Asset	{ filepath },
@@ -15,4 +16,8 @@ void Audio::unload() {}
 
 bool Audio::isAudio3D() const {
 	return is3D;
+}
+
+std::string Audio::getClassName() const {
+	return std::filesystem::path{ getFilePath() }.stem().string();
 }

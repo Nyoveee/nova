@@ -16,6 +16,7 @@ public:
 	// Leave blank as loading and unloading is done in audioSystem
 	DLL_API void load() final;
 	DLL_API void unload() final;
+	DLL_API std::string getClassName() const;
 
 public:
 	DLL_API bool isAudio3D() const;

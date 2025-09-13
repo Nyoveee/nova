@@ -10,6 +10,9 @@
 #include <fmod/fmod.hpp>
 #include <fmod/fmod_errors.h>
 
+#undef max
+#undef min
+
 namespace {
 	AudioSystem* g_audioSystem = nullptr;
 
@@ -100,72 +103,12 @@ void AudioSystem::loadAllSounds() {
         return;
     }
 
-#if 0
-    std::string fileName{ "Assets/Audio/AudioFilesToRead.txt" };
-    std::ifstream file(fileName);
-    if (!file.is_open())
-    {
-        std::cout << "Error: Txt File: " << fileName << " could not be opened\n";
-        return;
-    }
-
-    int counter = 1;
-
-    while (!file.eof())
-    {
-        std::string to3D;
-        bool loop;
-        std::string wavPath;
-
-        file >> to3D >> loop >> wavPath;
-
-        if (file.fail()) {
-            break;
-        }
-        std::string soundName{ std::filesystem::path(wavPath).filename().string() };
-        Logger::info("Audio File " + std::to_string(counter) + ". Loading " + soundName);
-#endif
-
 	// Get all audio assets.
 	auto&& audios = resourceManager.getAllResources<Audio>();
 
 	for (ResourceID audioId : audios) {
 		loadSound(audioId);
 	}
-
-  //      // Determine sound mode
-  //      FMOD_MODE mode = FMOD_DEFAULT | ((to3D == "3D") ? FMOD_3D : FMOD_2D);
-  //      if (loop) {
-  //          mode |= FMOD_LOOP_NORMAL;
-  //      }
-
-  //      FMOD::Sound* audio = nullptr;
-
-  //      auto result = fmodSystem->createSound(wavPath.c_str(), mode, nullptr, &audio);
-  //      if (result != FMOD_OK)
-  //      {
-  //          Logger::info("Audio File " + std::to_string(counter) + ". " + soundName + " [Failed]");
-  //          counter++;
-  //          continue; 
-  //      }
-
-  //      // Configure 3D properties
-  //      if (to3D == "3D" && audio)
-  //      {
-  //          audio->set3DMinMaxDistance(100.0f, 200.0f);
-  //      }
-
-  //      Logger::info("Audio File " + std::to_string(counter) + ". " + soundName + " [Success]");
-  //      
-  //      counter++;
-
-  //      // Store the sound
-  //      sounds[soundName] = audio;
-  //      soundFilePathMap[wavPath] = soundName;
-#if 0    
-	}
-    file.close();
-#endif
 }
 
 void AudioSystem::unloadAllSounds() {
@@ -230,10 +173,6 @@ FMOD::Sound* AudioSystem::getSound(ResourceID audioId) const {
 // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
 void AudioSystem::playSFX(ResourceID id, float x, float y, float z)
 {
-	// not used?
-    //FMOD_MODE mode{};
-    //audio->getMode(&mode);
-
     // Play the sound
 	AudioInstance* audioInstance = createSoundInstance(id);
 
@@ -303,6 +242,109 @@ void AudioSystem::playBGM(ResourceID id)
     // Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
+	}
+}
+
+void AudioSystem::pauseSound(ResourceID audioId, bool paused)
+{
+	// Find all instances that were created from this audioId
+	for (auto& [id, audioInstance] : audioInstances)
+	{
+		if (audioInstance.audioId == audioId && audioInstance.channel)
+		{
+			audioInstance.channel->setPaused(paused);
+		}
+	}
+}
+
+void AudioSystem::StopAllAudio()
+{
+	for (auto& [instanceId, audioInstance] : audioInstances)
+	{
+		if (audioInstance.channel)
+		{
+			audioInstance.channel->stop();
+		}
+	}
+
+	audioInstances.clear();
+	currentBGM = nullptr;
+}
+
+void AudioSystem::StopAudio(ResourceID audioId)
+{
+	for (auto it = audioInstances.begin(); it != audioInstances.end(); )
+	{
+		auto& [instanceId, audioInstance] = *it;
+
+		if (audioInstance.audioId == audioId && audioInstance.channel)
+		{
+			audioInstance.channel->stop();
+			it = audioInstances.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	if (currentBGM && currentBGM->audioId == audioId)
+	{
+		currentBGM = nullptr;
+	}
+}
+
+void AudioSystem::AdjustVol(ResourceID audioId, float volume)
+{
+	for (auto& [instanceId, audioInstance] : audioInstances)
+	{
+		if (audioInstance.audioId == audioId && audioInstance.channel)
+		{
+			audioInstance.channel->setVolume(volume);
+			audioInstance.volume = volume;
+		}
+	}
+
+	if (currentBGM && currentBGM->audioId == audioId && currentBGM->channel)
+	{
+		currentBGM->channel->setVolume(volume);
+		currentBGM->volume = volume;
+	}
+}
+
+// ** Changes the Overall game volume level **
+void AudioSystem::AdjustGlobalVol(float volume)
+{
+	globalVolume = volume;
+	AudioSystem::AdjustSFXVol(sfxVolume);
+	AudioSystem::AdjustSFXVol(bgmVolume);
+}
+
+// Sets the game SFX volume level
+void AudioSystem::AdjustSFXVol(float volume)
+{
+	sfxVolume = volume;
+
+	if (globalVolume <= 0) 
+	{
+		sfxGlobal = 0.0f;
+		buttonVol = sfxGlobal;
+	} else {
+		sfxGlobal = std::min(sfxVolume * globalVolume, volCap);
+		buttonVol = sfxGlobal;
+	}
+}
+
+// Sets the game BGM volume level
+void AudioSystem::AdjustBGMVol(float volume)
+{
+	bgmVolume = volume;
+	bgmGlobal = std::min(bgmVolume * globalVolume, volCap);
+
+	if (currentBGM && currentBGM->channel)
+	{
+		currentBGM->channel->setVolume(volume);
+		currentBGM->volume = volume;
 	}
 }
 

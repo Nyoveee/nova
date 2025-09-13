@@ -274,6 +274,47 @@ namespace {
 						ImGui::Text("%s: %u", dataMemberName, dataMember);
 					}
 
+					if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+						std::vector<AudioData>& audioDatas{ dataMember };
+
+						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId) {
+							audioDatas.push_back(AudioData{ resourceId });
+						});
+
+						// List of Audio Files
+						int i{};
+
+						ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
+
+						std::vector<AudioData>::iterator it = std::remove_if(std::begin(audioDatas), std::end(audioDatas), [&](AudioData& audioData) {
+							ImGui::PushID(i++);
+							bool keepAudioFile = true;
+
+							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
+							assert(audioAsset);
+
+							if (ImGui::CollapsingHeader(audioAsset->getClassName().c_str(), &keepAudioFile)) {
+								// Able to see and adjust Volume in Editor
+								if (ImGui::DragFloat( "Volume", & audioData.Volume, 1.0f, 0.0f, 1.0f)) {
+									// Update Playback Volume
+								}
+								// Adjust Mute/Unmute in Editor
+								if (ImGui::Checkbox("MuteAudio", &audioData.MuteAudio)) {
+									// Update Playback Mute/UnMute
+								}
+							}
+
+							ImGui::PopID();
+							return !keepAudioFile;
+						});
+
+						ImGui::EndChild();
+
+						if(it != std::end(audioDatas))
+							audioDatas.erase(it);
+					}
+
+
 					// it's an enum. let's display a dropdown box for this enum.
 					// how? using enum reflection provided by "magic_enum.hpp" :D
 					else if constexpr (std::is_enum_v<DataMemberType>) {
