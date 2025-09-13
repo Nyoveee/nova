@@ -34,8 +34,6 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 Engine::~Engine() {
 	stopSimulation();
 	setupSimulationFunction.value()();
-
-	Serialiser::serialiseScene(ecs);
 }
 
 void Engine::fixedUpdate(float dt) {
@@ -108,6 +106,8 @@ void Engine::stopSimulation() {
 		physicsManager.clear();
 		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
+
+		Serialiser::serialiseScene(ecs);
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		inSimulationMode = false;

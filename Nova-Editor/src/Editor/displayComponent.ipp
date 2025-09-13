@@ -25,6 +25,9 @@ namespace {
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
 		}
+		else if constexpr (std::same_as<Component, EntityData>) {
+			return;
+		}
 		else {
 
 #if defined(_MSC_VER)
@@ -74,22 +77,22 @@ namespace {
 						ImGui::InputInt(fieldData.name(), &dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, float>) {
+					else if constexpr (std::same_as<DataMemberType, float>) {
 						ImGui::InputFloat(fieldData.name(), &dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, bool>) {
+					else if constexpr (std::same_as<DataMemberType, bool>) {
 						ImGui::Checkbox(fieldData.name(), &dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, std::string>) {
+					else if constexpr (std::same_as<DataMemberType, std::string>) {
 						ImGui::PushTextWrapPos();
 						ImGui::Text(fieldData.name());
 						ImGui::InputText("##", &dataMember);
 						ImGui::PopTextWrapPos();
 					}
 
-					if constexpr (std::same_as<DataMemberType, glm::vec3>) {
+					else if constexpr (std::same_as<DataMemberType, glm::vec3>) {
 						if (ImGui::BeginTable("MyTable", 4, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
 							ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
 							ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
@@ -113,14 +116,14 @@ namespace {
 						}
 					}
 
-					if constexpr (std::same_as<DataMemberType, Color>) {
+					else if constexpr (std::same_as<DataMemberType, Color>) {
 						ImGui::Text(fieldData.name());
 						glm::vec3 vec = dataMember;
 						ImGui::ColorEdit3("##", glm::value_ptr(vec));
 						dataMember = vec;
 					}
 
-					if constexpr (std::same_as<DataMemberType, glm::quat>) {
+					else if constexpr (std::same_as<DataMemberType, glm::quat>) {
 						if (ImGui::BeginTable("MyTable", 5, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
 							ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
 							ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
@@ -152,7 +155,7 @@ namespace {
 						}
 					}
 
-					if constexpr (std::same_as<DataMemberType, EulerAngles>) {
+					else if constexpr (std::same_as<DataMemberType, EulerAngles>) {
 						// convert from radian to degrees for display..
 						glm::vec3 eulerAngles = static_cast<glm::vec3>(dataMember);
 						eulerAngles.x = toDegree(eulerAngles.x);
@@ -209,7 +212,7 @@ namespace {
 						});
 					}
 
-					if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
+					else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
 						int i = 0;
 						for (auto&& [name, material] : dataMember) {
 							ImGui::PushID(i);
@@ -224,7 +227,7 @@ namespace {
 							ImGui::PopID();
 						}
 					}
-					if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 
 						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
@@ -258,9 +261,13 @@ namespace {
 							scriptDatas.erase(it);
 					}
 
+					else if constexpr (std::same_as<DataMemberType, entt::entity>) {
+						ImGui::Text("%s: %u", dataMemberName, dataMember);
+					}
+
 					// it's an enum. let's display a dropdown box for this enum.
 					// how? using enum reflection provided by "magic_enum.hpp" :D
-					if constexpr (std::is_enum_v<DataMemberType>) {
+					else if constexpr (std::is_enum_v<DataMemberType>) {
 						// get the list of all possible enum values
 						constexpr auto listOfEnumValues = magic_enum::enum_entries<DataMemberType>();
 
