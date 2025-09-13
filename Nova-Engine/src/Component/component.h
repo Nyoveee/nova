@@ -45,25 +45,25 @@ struct EntityData {
 
 struct Transform {
 	glm::vec3 position;
-	glm::vec3 scale			{ 1.0f, 1.0f, 1.0f };
-	glm::quat rotation		{ 1.0f, 0.f, 0.f, 0.f };
-
-	glm::vec3 lastPosition	{ position };
-	glm::vec3 lastScale		{ scale };
-	glm::quat lastRotation	{ rotation };
-
-	glm::mat4x4 modelMatrix;			// model matrix represents the final matrix to change a object to world space.
-	glm::mat3x3 normalMatrix;			// normal matrix is used to transform normals.
-
-	EulerAngles eulerAngles		{ rotation };			// this will be derieved from quartenions
-	EulerAngles lastEulerAngles	{ rotation };			
-
-	// ====== Hierarchy related data =======
-	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
+	glm::vec3 scale				{ 1.0f, 1.0f, 1.0f };
+	glm::quat rotation			{ 1.0f, 0.f, 0.f, 0.f };
 
 	glm::vec3 localPosition		{};
 	glm::vec3 localScale		{ 1.f, 1.f, 1.f };
 	glm::quat localRotation		{ 1.0f, 0.f, 0.f, 0.f };
+
+	glm::vec3 lastPosition		{ position };
+	glm::vec3 lastScale			{ scale };
+	glm::quat lastRotation		{ rotation };
+
+	// ====== These data members are calculated by the systems and do not need to be serialised. =======
+	glm::mat4x4 modelMatrix;					// model matrix represents the final matrix to change a object to world space.
+	glm::mat3x3 normalMatrix;					// normal matrix is used to transform normals.
+
+	EulerAngles eulerAngles		{ rotation };	// this will be derieved from quartenions
+	EulerAngles lastEulerAngles	{ rotation };			
+
+	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
 
 	glm::vec3 lastLocalPosition {};
 	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };

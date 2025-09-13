@@ -19,7 +19,7 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 
 	// associates a specific typed instance of serialise functor to a given id.
 	// this will be used for serialisation. this is how we obtain the original type associated with the asset id.
-	serialiseAssetFunctors[assetInfo.id] = std::make_unique<SerialiseAssetFunctor<T>>(SerialiseAssetFunctor<T>{});
+	serialiseMetaDataFunctors[assetInfo.id] = std::make_unique<SerialiseMetaDataFunctor<T>>(SerialiseMetaDataFunctor<T>{});
 
 	// record this asset to the corresponding asset type.
 	assetsByType[Family::id<T>()].push_back(assetInfo.id);
@@ -141,7 +141,9 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 
 template <ValidAsset T>
 AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) {
+	
 	std::string metaDataFilename = path.string() + ".nova_meta";
+
 	std::ifstream metaDataFile{ metaDataFilename };
 
 	// parse the generic asset metadata info first.

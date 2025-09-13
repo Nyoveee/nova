@@ -22,18 +22,6 @@
 
 #include "Logger.h"
 
-// Assets stored in the asset manager merely point to these assets in file location.
-// These assets could be loaded or not loaded.
-// Asset Manager merely acts as a bookkeep to all possible assets in the engine.
-
-// A valid asset must
-// 1. Inherit from base class asset
-// 2. Corresponding asset info inherit from BasicAssetInfo
-//
-// dont remove this concept! it's meant to save you from shooting yourself in the foot.
-template <typename T>
-concept ValidAsset = std::derived_from<T, Asset> && std::derived_from<AssetInfo<T>, BasicAssetInfo>;
-
 #include "AssetManager/assetFunctor.h"
 
 class AssetDirectoryWatcher;
@@ -154,6 +142,9 @@ private:
 	// =========================================================
 	// Serialising asset meta data..
 	template <ValidAsset T>
+	friend struct SerialiseMetaDataFunctor;
+
+	template <ValidAsset T>
 	friend struct SerialiseAssetFunctor;
 
 	template <ValidAsset T>
@@ -182,6 +173,11 @@ public:
 	void submitCallback(std::function<void()> callback);
 
 private:
+	std::filesystem::path assetDirectory;
+	std::filesystem::path descriptorDirectory;
+	std::filesystem::path resourceDirectory;
+
+private:
 	// main container containing all assets.
 	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
 
@@ -196,7 +192,8 @@ private:
 
 	// -- welcome to template metaprogramming black magic. --
 	// associates an asset id with it's corresponding serialising function, containining the original asset type.	
-	std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
+	std::unordered_map<AssetID, std::unique_ptr<SerialiseMetaData>> serialiseMetaDataFunctors;
+	//std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
 	
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
