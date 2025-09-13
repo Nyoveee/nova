@@ -14,10 +14,3 @@ NavigationSystem::~NavigationSystem()
 {
 }
 
-bool NavigationSystem::BuildNavMesh()
-{
-
-
-
-	return false;
-}

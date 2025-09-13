@@ -510,7 +510,7 @@ public:
 	/// Returns true if the polygon reference is in the closed list. 
 	///  @param[in]		ref		The reference id of the polygon to check.
 	/// @returns True if the polygon is in closed list.
-	bool isInClosedList(dtPolyRef ref) const;
+	DLL_API bool isInClosedList(dtPolyRef ref) const;
 	
 	/// Gets the node pool.
 	/// @returns The node pool.

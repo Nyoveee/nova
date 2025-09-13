@@ -22,7 +22,6 @@ public:
 	NavigationSystem& operator=(NavigationSystem const& other) = delete;
 	NavigationSystem& operator=(NavigationSystem&& other) = delete;
 
-	bool BuildNavMesh(); //in the future take input as agent type??
 
 private:
 

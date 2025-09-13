@@ -188,6 +188,7 @@ void Editor::main() {
 	handleEntityHovering();
 	updateMaterialMapping();
 	sandboxWindow();
+	navigationWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -450,11 +451,6 @@ void Editor::sandboxWindow() {
 		registry.emplace<SkyBox>(entity, SkyBox{ AssetID{ 2183533701078487406 } });
 	}
 
-	if (ImGui::Button("Build NavMesh")) {
-
-
-
-	}
 
 
 	if (ImGui::Button("recompile shaders")) {
@@ -462,6 +458,18 @@ void Editor::sandboxWindow() {
 	}
 
 	ImGui::End();
+}
+
+//Ooga Booga window will cause me more trouble later
+void Editor::navigationWindow()
+{
+	ImGui::Begin("Navigation");
+
+	ImGui::Text("Hello from the editor example window!");
+	ImGui::Separator();
+
+	ImGui::End();
+
 }
 
 void Editor::launchProfiler()

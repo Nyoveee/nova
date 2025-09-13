@@ -158,6 +158,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Editor\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\assetManagerUi.cpp" />
     <ClCompile Include="src\Editor\componentInspector.cpp" />
     <ClCompile Include="src\Editor\controlOverlay.cpp" />
@@ -200,6 +201,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Editor\navMeshGeneration.h" />
     <ClInclude Include="src\Editor\assetManagerUi.h" />
     <ClInclude Include="src\Editor\componentInspector.ipp" />
     <ClInclude Include="src\Editor\controlOverlay.h" />
