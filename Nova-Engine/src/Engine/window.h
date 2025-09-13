@@ -11,7 +11,7 @@ struct ImGuiContext;
 class InputManager;
 
 // indicates if whole app is in the midst of destruction.
-extern std::atomic<bool> engineIsDestructing;
+DLL_API extern std::atomic<bool> engineIsDestructing;
 
 class Window {
 public:

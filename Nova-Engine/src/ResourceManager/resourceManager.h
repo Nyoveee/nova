@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 
 #include "export.h"
 #include "asset.h"
@@ -46,11 +46,6 @@ public:
 	template <ValidAsset T>
 	ResourceQuery<T> getResource(ResourceID id);
 
-	// this is only used to get metadata / info about the resources (like name, is asset loaded..)
-	// this doesnt not load the resource!!
-	// since there is no loading of resource, you retrieve the data instantly.
-	DLL_API Asset* getResourceInfo(ResourceID id);
-
 	// retrieve all resource ids of a given type.
 	template <ValidAsset T>
 	std::vector<ResourceID> const& getAllResources() const;
@@ -63,7 +58,16 @@ public:
 	template <ValidAsset T>
 	bool isResource(ResourceID id) const;
 
-	bool doesResourceExist(ResourceID id) const;
+public:
+	// this is only used to get metadata / info about the resources (like name, is asset loaded..)
+	// this doesnt not load the resource!!
+	// since there is no loading of resource, you retrieve the data instantly.
+	DLL_API Asset* getResourceInfo(ResourceID id);
+
+	// get the resource id for a given filepath. may be INVALID_ASSET_ID.
+	DLL_API ResourceID getResourceID(std::filesystem::path const& path) const;
+
+	DLL_API bool doesResourceExist(ResourceID id) const;
 
 private:
 	friend AssetManager;
@@ -78,9 +82,6 @@ private:
 	// loads all the given resources in a given directory,
 	template <ValidAsset T>
 	void loadAllResources(std::filesystem::path const& directory);
-
-	// get the resource id for a given filepath. may be INVALID_ASSET_ID.
-	ResourceID getResourceID(std::filesystem::path const& path) const;
 
 private:
 	std::filesystem::path resourceDirectory;

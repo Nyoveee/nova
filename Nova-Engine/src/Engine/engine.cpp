@@ -40,13 +40,14 @@ Engine::~Engine() {
 
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
+
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
 	}
 	else
 	{
-		scriptingAPIManager.checkModifiedScripts();
+		scriptingAPIManager.checkModifiedScripts(dt);
 	}
 }
 
@@ -55,8 +56,6 @@ void Engine::update(float dt) {
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);
-
-	//assetManager.update();
 }
 
 void Engine::setupSimulation() {

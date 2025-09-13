@@ -28,6 +28,13 @@ using IntializeScriptsFunctionPtr	= void (*)(void);
 
 class ScriptingAPIManager {
 public:
+	enum class CompileState {
+		NotCompiled,
+		ToBeCompiled,
+		Compiled
+	};
+
+public:
 	// Functions needed to run the ScriptingAPI
 	DLL_API ScriptingAPIManager(Engine& p_engine);
 
@@ -39,10 +46,20 @@ public:
 
 public:
 	DLL_API void update();
-	DLL_API void checkModifiedScripts();
+	DLL_API void checkModifiedScripts(float dt);
 
 	DLL_API bool loadAllScripts();
 	DLL_API void unloadAllScripts();
+
+	// This is the callback when the assets files are Added
+	DLL_API void OnAssetContentAddedCallback(std::string abspath);
+
+	// This is the callback when the assets files are Modified
+	DLL_API void OnAssetContentModifiedCallback(ResourceID assetTypeID);
+
+	// This is the callback when the assets files are deleted
+	DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
+
 private:
 	template<typename Func>
 	Func getCoreClrFuncPtr(const std::string& functionName);
@@ -54,14 +71,6 @@ private:
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
 	bool compileScriptAssembly();
-
-private:
-	// This is the callback when the assets files are Added
-	void OnAssetContentAddedCallback(std::string abspath);
-	// This is the callback when the assets files are Modified
-	void OnAssetContentModifiedCallback(ResourceID assetTypeID);
-	// This is the callback when the assets files are deleted
-	void OnAssetContentDeletedCallback(ResourceID assetTypeID);
 
 private:
 	Engine& engine;
@@ -85,8 +94,9 @@ private:
 	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
 private:
-	float debouncingTime;
-	std::unordered_map<ResourceID, float> timeSinceSave;
+	CompileState compileState;
+	float timeSinceSave;
+
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

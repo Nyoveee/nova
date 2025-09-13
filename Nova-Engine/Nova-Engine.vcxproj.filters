@@ -72,12 +72,6 @@
     <ClInclude Include="src\InputManager\glfwInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AssetManager\assetManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\assetMananger.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\ScriptingAPIManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -85,15 +79,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Engine\transformationSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\folder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\assetFunctor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\assetFunctor.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics\joltPhysicsInterface.h">
@@ -114,16 +99,10 @@
     <ClInclude Include="src\Serialisation\serialisation.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ResourceManager\resourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceManager\resourceManager.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\FileWatch.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -161,9 +140,6 @@
     <ClCompile Include="src\InputManager\inputMapping.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AssetManager\assetManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\ScriptingAPIManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -180,9 +156,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Audio\audioSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceManager\resourceManager.cpp">

@@ -6,19 +6,29 @@ namespace Logger
 	template<typename ...Args>
 	void warn(std::string_view rt_fmt_str, Args && ...args)
 	{
-		std::cout << getCurrentTime()
-			<< " [Warning] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+		std::size_t argSize{ sizeof...(args) };
+		if (argSize == 0)
+			std::cout << getCurrentTime() << " [Warning] " << rt_fmt_str << std::endl;
+		else
+			std::cout << getCurrentTime() << " [Warning] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
 	}
 	template<typename ...Args>
 	void Logger::info(std::string_view rt_fmt_str, Args && ...args)
 	{
-		std::cout << getCurrentTime()
-			<< " [Info] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+		std::size_t argSize{ sizeof...(args) };
+		if (argSize == 0)
+			std::cout << getCurrentTime() << " [Info] " << rt_fmt_str << std::endl;
+		else
+			std::cout << getCurrentTime() << " [Info] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+		
 	}
 	template<typename ...Args>
 	void error(std::string_view rt_fmt_str, Args && ...args)
 	{
-		std::cout <<getCurrentTime()
-			<< " [Error] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+		std::size_t argSize{ sizeof...(args) };
+		if (argSize == 0)
+			std::cout << getCurrentTime() << " [Error] " << rt_fmt_str << std::endl;
+		else
+			std::cout << getCurrentTime() << " [Error] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
 	}
 }

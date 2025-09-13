@@ -14,8 +14,9 @@
 
 #include "engine.h"
 
-class ECS;
-
+namespace {
+	constexpr float DEBOUNCING_TIME = 3.0f;
+}
 ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	: engine{p_engine}
 	, runtimeDirectory{}
@@ -28,10 +29,10 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, updateScripts				{ nullptr } 
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
-	, debouncingTime{3.f}
-	, timeSinceSave{}
+	, timeSinceSave				{}
+	, compileState				{ CompileState::NotCompiled }
 {
-	//engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
+	//assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](ResourceID resourceId) { OnAssetContentModifiedCallback(resourceId); });
 
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
@@ -120,8 +121,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		loadAssembly							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
-		unloadAssembly                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		loadAssembly							= GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
+		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
@@ -267,28 +268,30 @@ bool ScriptingAPIManager::compileScriptAssembly()
 
 void ScriptingAPIManager::update() { 	
 	ZoneScoped;
-	updateScripts(); 
+	updateScripts();
 }
 
-DLL_API void ScriptingAPIManager::checkModifiedScripts()
+void ScriptingAPIManager::checkModifiedScripts(float dt)
 {
-	bool compile = !timeSinceSave.empty();
+	if (compileState == CompileState::ToBeCompiled) {
+		timeSinceSave += dt;
 
-	for (auto&& [_, time] : timeSinceSave) {
-		time += 1 / 60.f;
-		if (time < debouncingTime)
-			compile = false;
-	}
-
-	if (compile) {
-		timeSinceSave.clear();
-		compileScriptAssembly();
+		if (timeSinceSave >= DEBOUNCING_TIME) {
+			if (compileScriptAssembly()) {
+				compileState = CompileState::Compiled;
+			}
+			else {
+				compileState = CompileState::NotCompiled;
+			}
+		}
 	}
 }
 
 bool ScriptingAPIManager::loadAllScripts() {
-	if (!compileScriptAssembly())
-		return false;
+	if (compileState != CompileState::Compiled) {
+		if (!compileScriptAssembly()) return false;
+		compileState = CompileState::Compiled;
+	}
 	
 	loadAssembly();
 	
@@ -311,10 +314,12 @@ void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
 }
 void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId)
 {
-	//if (engine.assetManager.isAsset<ScriptAsset>(assetId))
-	//	timeSinceSave[assetId] = 0.f;
+	if (engine.resourceManager.isResource<ScriptAsset>(resourceId)) {
+		compileState = CompileState::ToBeCompiled;
+		timeSinceSave = 0.f;
+	}
 }
 void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
-	// AssetID might disappear if assetmanager deletes it, maybe do typedAssetID or filepath instead(Overloaded callback?) 
+	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
 }
 

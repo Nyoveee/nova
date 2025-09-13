@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ScriptLibrary\Debug.h" />
+    <ClInclude Include="src\API\ScriptLibraryHandler.hxx" />
     <ClInclude Include="src\ScriptLibrary\Input.hxx" />
     <ClInclude Include="src\API\ScriptingAPI.hxx" />
     <ClInclude Include="src\API\ManagedTypeMacros.hxx" />
@@ -26,7 +28,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\IManagedComponent.hxx" />
+    <ClInclude Include="src\API\IManagedComponent.hxx" />
     <ClInclude Include="src\ScriptLibrary\ManagedTypes.hxx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
@@ -54,13 +56,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ScriptLibrary\Debug.cpp" />
+    <ClCompile Include="src\API\ScriptLibraryHandler.cxx" />
     <ClCompile Include="src\ScriptLibrary\Input.cxx" />
     <ClCompile Include="src\API\ScriptingAPI.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\Export\Export.cxx" />
     <ClCompile Include="src\ScriptLibrary\Script.cxx" />
+    <ClCompile Include="src\ScriptLibrary\Time.cxx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -145,7 +149,7 @@
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Assets\.Nova-Scripts-Reference\$(Configuration)\"</Command>
+      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Assets\.Nova-Scripts-Reference\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -181,7 +185,7 @@
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Assets\.Nova-Scripts-Reference\$(Configuration)\"</Command>
+      <Command>xcopy "$(OutDir)Nova-ScriptingAPI.dll" /Y /Q "$(SolutionDir)Assets\.Nova-Scripts-Reference\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

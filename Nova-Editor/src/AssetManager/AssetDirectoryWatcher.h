@@ -8,14 +8,17 @@
 
 #include <mutex>
 
-extern std::atomic<bool> engineIsDestructing;
+// variable is defined in Window class.
+DLL_API extern std::atomic<bool> engineIsDestructing;
 
 class AssetManager;
+class ResourceManager;
+class Engine;
 
 class AssetDirectoryWatcher
 {
 public:
-	AssetDirectoryWatcher(AssetManager& assetManager, std::filesystem::path rootDirectory);
+	AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine, std::filesystem::path rootDirectory);
 	
 	~AssetDirectoryWatcher() = default;
 	AssetDirectoryWatcher(AssetDirectoryWatcher const&)				= delete;
@@ -24,14 +27,20 @@ public:
 	AssetDirectoryWatcher& operator=(AssetDirectoryWatcher&&)		= delete;
 
 public:
+#if 0
 	void RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback);
 	void RegisterCallbackAssetContentModified(std::function<void(ResourceID)> callback);
 	void RegisterCallbackAssetContentDeleted(std::function<void(ResourceID)> callback);
+#endif
+
 	bool IsPathHidden(std::filesystem::path const& path) const;
 private:
 	void HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type);
+
 private:
 	AssetManager& assetManager;
+	ResourceManager& resourceManager;
+	Engine& engine;
 
 	std::filesystem::path rootDirectory;
 	filewatch::FileWatch<std::wstring> watch;
@@ -40,6 +49,7 @@ private:
 	
 	std::unordered_map<std::string, std::filesystem::file_time_type> lastWriteTimes;
 
+#if 0
 	std::vector<std::function<void(std::string)>> assetContentAddCallbacks;
 	std::vector<std::function<void(ResourceID)>> assetContentModifiedCallbacks;
 	std::vector<std::function<void(ResourceID)>> assetContentDeletedCallbacks;
@@ -47,5 +57,6 @@ private:
 	std::mutex contentAddCallbackMutex;
 	std::mutex contentModifiedCallbackMutex;
 	std::mutex contentDeleteCallbackMutex;
+#endif
 };
 

@@ -173,16 +173,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />
-    <ClInclude Include="src\AssetManager\FileWatch.hpp" />
     <ClInclude Include="src\Audio\audioSystem.h" />
-    <ClInclude Include="src\AssetManager\assetMananger.ipp" />
-    <ClInclude Include="src\AssetManager\folder.h" />
-    <ClInclude Include="src\AssetManager\assetFunctor.h" />
-    <ClInclude Include="src\AssetManager\assetFunctor.ipp" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp" />
     <ClInclude Include="src\Engine\transformationSystem.h" />
-    <ClInclude Include="src\AssetManager\assetManager.h" />
     <ClInclude Include="src\Component\component.h" />
     <ClInclude Include="src\ECS &amp; Components\ECS.h" />
     <ClInclude Include="src\Component\ECS.h" />
@@ -212,8 +205,6 @@
     <ClInclude Include="src\Serialisation\serialisation.ipp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp" />
-    <ClCompile Include="src\AssetManager\assetManager.cpp" />
     <ClCompile Include="src\Audio\audioSystem.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />

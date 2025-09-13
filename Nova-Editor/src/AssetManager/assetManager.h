@@ -1,8 +1,6 @@
 #pragma once
 #include "BS_thread_pool.hpp"
 
-#include "export.h"
-
 #include <memory>
 #include <unordered_map>
 #include <optional>
@@ -25,6 +23,7 @@
 #include "AssetManager/assetFunctor.h"
 
 class ResourceManager;
+class Engine;
 
 class AssetManager {
 public:
@@ -45,13 +44,13 @@ public:
 	};
 
 public:
-	DLL_API AssetManager(ResourceManager& resourceManager);
+	AssetManager(ResourceManager& resourceManager, Engine& engine);
 
-	DLL_API ~AssetManager();
-	DLL_API AssetManager(AssetManager const& other)				= delete;
-	DLL_API AssetManager(AssetManager&& other)					= delete;
-	DLL_API AssetManager& operator=(AssetManager const& other)	= delete;
-	DLL_API AssetManager& operator=(AssetManager&& other)		= delete;
+	~AssetManager();
+	AssetManager(AssetManager const& other)				= delete;
+	AssetManager(AssetManager&& other)					= delete;
+	AssetManager& operator=(AssetManager const& other)	= delete;
+	AssetManager& operator=(AssetManager&& other)		= delete;
 
 public:
 #if 0
@@ -101,12 +100,6 @@ private:
 	template <ValidAsset T>
 	Asset& addAsset(AssetInfo<T> const& assetInfo);
 
-	void recordFolder(
-		FolderID folderId, 
-		std::filesystem::path const& path, 
-		std::filesystem::path const& assetDirectory
-	);
-
 	template <ValidAsset T>
 	void recordAssetFile(
 		std::filesystem::path const& path
@@ -138,15 +131,6 @@ public:
 	// Thread pool to manage loading in another thread.
 	BS::thread_pool<BS::tp::none> threadPool;
 
-	// as this function may be invoked from different threads, we need to control access to
-	// the callback queue.
-	void submitCallback(std::function<void()> callback);
-
-private:
-	std::filesystem::path assetDirectory;
-	std::filesystem::path descriptorDirectory;
-	std::filesystem::path resourceDirectory;
-
 private:
 
 	// main container containing all assets.
@@ -169,13 +153,18 @@ private:
 	// when an asset has finished loading, and requires the asset manager to do some post work,
 	// the asset will provide a callback here.
 	// the asset manager then checks every game frame if there is any callback request.
-	std::queue<std::function<void()>> completedLoadingCallback;
-	std::mutex queueCallbackMutex;	// protects the callback queue.
+
 #endif
 
 public:
-	DLL_API std::unordered_map<FolderID, Folder> const& getDirectories() const;
-	DLL_API std::vector<FolderID> const& getRootDirectories() const;
+	std::unordered_map<FolderID, Folder> const& getDirectories() const;
+	std::vector<FolderID> const& getRootDirectories() const;
+
+	void update();
+
+	// as this function may be invoked from different threads, we need to control access to
+	// the callback queue.
+	void submitCallback(std::function<void()> callback);
 
 private:
 	ResourceID generateResourceID(std::filesystem::path const& path) const;
@@ -217,7 +206,8 @@ private:
 
 private:
 	ResourceManager& resourceManager;
-	
+	Engine& engine;
+
 	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
 	AssetDirectoryWatcher directoryWatcher;
 
@@ -234,6 +224,11 @@ private:
 	std::unordered_map<FolderID, Folder> directories;
 	std::vector<FolderID> rootDirectories;
 	std::unordered_map<std::string, FolderID> folderNameToId;
+
+	// the asset manager stores a queue of callbacks that other threads could submit to
+	// this ensures thread safety.
+	std::queue<std::function<void()>> callbacks;
+	std::mutex queueCallbackMutex;	// protects the callback queue.
 };
 
 #include "AssetManager/assetMananger.ipp"

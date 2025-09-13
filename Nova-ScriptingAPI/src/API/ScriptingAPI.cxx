@@ -1,4 +1,3 @@
-// Converting to native type: https://learn.microsoft.com/en-us/cpp/dotnet/overview-of-marshaling-in-cpp?view=msvc-170
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
 #include "Engine/engine.h"
@@ -6,8 +5,8 @@
 
 #include <sstream>
 #include <filesystem>
-#include <msclr/marshal_cppstd.h>
 
+#include "ScriptLibraryHandler.hxx"
 
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
@@ -26,6 +25,7 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	runtimePath = p_runtimePath;
 	gameObjectScripts = nullptr;
 	scriptTypes = nullptr;
+	ScriptLibraryHandler::init();
 }
 
 void Interface::addGameObjectScript(System::UInt32 entityID, ScriptID scriptId)
@@ -73,6 +73,7 @@ void Interface::intializeAllScripts()
 }
 
 void Interface::update() {
+	ScriptLibraryHandler::update();
 	for each (System::UInt32 entityID in gameObjectScripts->Keys)
 		for each (Script ^ script in gameObjectScripts[entityID])
 			script->callUpdate();

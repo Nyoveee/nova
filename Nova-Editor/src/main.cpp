@@ -18,11 +18,14 @@ constexpr int			gameHeight		= 1080;
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	// Nova Engine base applications.
 	InputManager	inputManager	{};
 	ResourceManager resourceManager {};
-	AssetManager	assetManager	{ resourceManager };
 	Window			window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
 	Engine			engine			{ window, inputManager, resourceManager, gameWidth, gameHeight };
+
+	// Editor specific applications.
+	AssetManager	assetManager	{ resourceManager, engine };
 	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 
 	window.run(

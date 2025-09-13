@@ -15,6 +15,7 @@
 #include "Engine/engine.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
+#include "AssetManager/assetManager.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -125,6 +126,7 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ImGuizmo::Enable(true);
 
 	main();
+	assetManager.update();
 
 	// inform the engine if there is a change in simulation mode.
 	if (isThereChangeInSimulationMode) {

@@ -22,11 +22,12 @@ namespace {
 	}
 }
 
-AssetManager::AssetManager(ResourceManager& resourceManager) :
+AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
+	resourceManager		{ resourceManager },
+	engine				{ engine },
 	assetDirectory		{ std::filesystem::current_path() / "Assets" },
 	descriptorDirectory	{ std::filesystem::current_path() / "Descriptors" },
-	resourceManager		{ resourceManager },
-	directoryWatcher	{ *this, std::filesystem::current_path() / "Assets" }
+	directoryWatcher	{ *this, resourceManager, engine, std::filesystem::current_path() / "Assets" }
 
 #if 0
 	resourceDirectory	{ std::filesystem::current_path() /= "Resources" },
@@ -185,6 +186,21 @@ std::string AssetManager::GetRunTimeDirectory() {
 }
 
 #endif
+
+void AssetManager::submitCallback(std::function<void()> callback) {
+	std::lock_guard lock{ queueCallbackMutex };
+	callbacks.push(std::move(callback));
+}
+
+void AssetManager::update() {
+	std::lock_guard lock{ queueCallbackMutex };
+	
+	while (callbacks.size()) {
+		std::function<void()> callback = callbacks.front();
+		callbacks.pop();
+		callback();
+	}
+}
 
 std::optional<BasicAssetInfo> AssetManager::parseDescriptorFile(std::filesystem::path const& path, std::ifstream& metaDataFile) {
 	// Attempt to read corresponding metafile.
