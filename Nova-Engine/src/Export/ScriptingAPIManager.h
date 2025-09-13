@@ -27,6 +27,13 @@ using IntializeScriptsFunctionPtr	= void (*)(void);
 
 class ScriptingAPIManager {
 public:
+	enum class CompileState {
+		NotCompiled,
+		ToBeCompiled,
+		Compiled
+	};
+
+public:
 	// Functions needed to run the ScriptingAPI
 	DLL_API ScriptingAPIManager(Engine& p_engine);
 
@@ -38,10 +45,11 @@ public:
 
 public:
 	DLL_API void update();
-	DLL_API void checkModifiedScripts();
+	DLL_API void checkModifiedScripts(float dt);
 
 	DLL_API bool loadAllScripts();
 	DLL_API void unloadAllScripts();
+
 private:
 	template<typename Func>
 	Func getCoreClrFuncPtr(const std::string& functionName);
@@ -84,7 +92,7 @@ private:
 	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
 private:
-	int compileFlags;
+	CompileState compileState;
 	float timeSinceSave;
 
 };

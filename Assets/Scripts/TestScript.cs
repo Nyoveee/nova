@@ -13,6 +13,7 @@
     private void OnKeyPressA()
     {
         Console.WriteLine("Pressed A");
+        //Console.WriteLine(Input.mousePosition);
     }
     private void OnKeyReleaseA()
     {

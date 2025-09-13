@@ -15,8 +15,6 @@
 #include "engine.h"
 
 namespace {
-	constexpr int SCRIPT_COMPILING = 0x1;
-	constexpr int SCRIPT_COMPILED = 0x2;
 	constexpr float DEBOUNCING_TIME = 3.0f;
 }
 ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
@@ -31,8 +29,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, updateScripts				{ nullptr } 
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
-	, timeSinceSave{}
-	, compileFlags{}
+	, timeSinceSave				{}
+	, compileState				{ CompileState::NotCompiled }
 {
 	engine.assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](AssetID assetId) { OnAssetContentModifiedCallback(assetId); });
 
@@ -123,8 +121,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		loadAssembly							    = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
-		unloadAssembly                           = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		loadAssembly							= GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
+		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
@@ -270,24 +268,29 @@ bool ScriptingAPIManager::compileScriptAssembly()
 
 void ScriptingAPIManager::update() { 	
 	ZoneScoped;
-	updateScripts(); 
+	updateScripts();
 }
 
-void ScriptingAPIManager::checkModifiedScripts()
+void ScriptingAPIManager::checkModifiedScripts(float dt)
 {
-	if (compileFlags & SCRIPT_COMPILING) {
-		timeSinceSave += 1 / 60.f;
+	if (compileState == CompileState::ToBeCompiled) {
+		timeSinceSave += dt;
+
 		if (timeSinceSave >= DEBOUNCING_TIME) {
-			compileScriptAssembly();
-			compileFlags = SCRIPT_COMPILED & ~SCRIPT_COMPILING;
+			if (compileScriptAssembly()) {
+				compileState = CompileState::Compiled;
+			}
+			else {
+				compileState = CompileState::NotCompiled;
+			}
 		}
 	}
 }
 
 bool ScriptingAPIManager::loadAllScripts() {
-	if (!(compileFlags & SCRIPT_COMPILED)) {
+	if (compileState != CompileState::Compiled) {
 		if (!compileScriptAssembly()) return false;
-		compileFlags = SCRIPT_COMPILED & ~SCRIPT_COMPILING;
+		compileState = CompileState::Compiled;
 	}
 	
 	loadAssembly();
@@ -312,7 +315,7 @@ void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
 void ScriptingAPIManager::OnAssetContentModifiedCallback(AssetID assetId)
 {
 	if (engine.assetManager.isAsset<ScriptAsset>(assetId)) {
-		compileFlags = SCRIPT_COMPILING & ~SCRIPT_COMPILED;
+		compileState = CompileState::ToBeCompiled;
 		timeSinceSave = 0.f;
 	}
 }
