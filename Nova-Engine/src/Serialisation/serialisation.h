@@ -9,8 +9,9 @@ class ECS;
 using json = nlohmann::json;
 
 namespace Serialiser {
-	void serialiseScene(ECS& ecs);
-	void deserialiseScene(ECS& ecs);
+	void serialiseScene(ECS& ecs, const char* fileName);
+	void deserialiseScene(ECS& ecs, const char* fileName);
+	//void deserialiseScene(ECS& ecs, std::ifstream& inputFile);
 
 	template <typename ...Components>
 	json serialiseComponents(entt::registry& registry, entt::entity entity);

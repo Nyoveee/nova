@@ -8,9 +8,9 @@
 constexpr const char* filepath = "test.json";
 
 namespace Serialiser {
-	void Serialiser::serialiseScene(ECS& ecs) {
+	void Serialiser::serialiseScene(ECS& ecs, const char* fileName) {
 		//std::ofstream file(filetest2path);
-		std::ofstream file(filepath);
+		std::ofstream file(fileName);
 
 		if (!file) {
 			return;
@@ -89,10 +89,10 @@ namespace Serialiser {
 #endif
 	}
 
-	void deserialiseScene(ECS& ecs) {
+	void deserialiseScene(ECS& ecs, const char* fileName) {
 		(void)ecs;
 
-		std::ifstream file(filepath);
+		std::ifstream file(fileName);
 
 		if (!file.is_open())
 			return;

@@ -173,6 +173,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\SceneManager\SceneManager.h" />
     <ClInclude Include="src\Audio\audioSystem.h" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp" />
     <ClInclude Include="src\Engine\transformationSystem.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="src\Serialisation\serialisation.ipp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\SceneManager\SceneManager.cpp" />
     <ClCompile Include="src\Audio\audioSystem.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />

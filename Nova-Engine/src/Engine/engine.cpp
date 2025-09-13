@@ -10,6 +10,7 @@
 #include "Profiling.h"
 
 #include "Serialisation/serialisation.h"
+#include "SceneManager/SceneManager.h"
 
 
 Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight) :
@@ -28,7 +29,12 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
 {
-	Serialiser::deserialiseScene(ecs);
+	//Serialiser::deserialiseScene(ecs);
+	//std::ifstream file("test.json");
+	SceneManager::SceneManager sm(ecs, "test.json");
+
+
+
 }
 
 Engine::~Engine() {
@@ -107,7 +113,7 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
 
-		Serialiser::serialiseScene(ecs);
+		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		inSimulationMode = false;
