@@ -9,7 +9,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutputPath>$(ProjectDir).bin\$(Configuration)-$(Platform)\</OutputPath>
-
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -18,7 +17,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include = "Nova-ScriptingAPI">
-      <HintPath>.Nova-Scripts-Reference/Nova-ScriptingAPI.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include = "../Assets/**/*.cs"></Compile>
   </ItemGroup>
 </Project>

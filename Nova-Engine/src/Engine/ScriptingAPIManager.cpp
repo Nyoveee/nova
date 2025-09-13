@@ -194,18 +194,18 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 bool ScriptingAPIManager::compileScriptAssembly()
 {
 	// Project path and build command
-	std::string proj_path{std::filesystem::current_path().string() + "\\Assets\\Nova-Scripts.csproj"};
+	std::string proj_path{std::filesystem::current_path().string() + "\\Nova-Scripts\\Nova-Scripts.csproj"};
 
 #ifdef _DEBUG
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Debug --no-self-contained -o "
-		+ L"\"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\" -r \"win-x64\""
-		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\""
+		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\"";
 #else
 	std::wstring buildCmd = L" build \"" + std::filesystem::absolute(proj_path).wstring()
 		+ L"\" -c Release --no-self-contained -o "
-		+ L"\"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\" -r \"win-x64\""
-		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Assets/.bin/\"";
+		+ L"\"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\" -r \"win-x64\""
+		+ L" --artifacts-path \"" + std::filesystem::current_path().wstring() + L"/Nova-Scripts/.bin/\"";
 #endif
 	STARTUPINFOW startInfo;
 	PROCESS_INFORMATION pi;
@@ -213,10 +213,6 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	ZeroMemory(&pi, sizeof(pi));
 	startInfo.cb = sizeof(startInfo);
 	// Start Compiler 
-	std::string intermediateFilePath{ std::filesystem::current_path().string() + "/Assets/.bin" };
-	if (!std::filesystem::exists(intermediateFilePath))
-		std::filesystem::create_directory(intermediateFilePath);
-	SetFileAttributesA(intermediateFilePath.c_str(), FILE_ATTRIBUTE_HIDDEN);
 	const auto launch_success = CreateProcess
 	(
 		L"C:\\Program Files\\dotnet\\dotnet.exe", buildCmd.data(),
@@ -252,7 +248,7 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	{
 		std::filesystem::copy_file
 		(
-			(std::filesystem::current_path().string() + "\\Assets\\.bin\\Nova-Scripts.dll"), // Source
+			(std::filesystem::current_path().string() + "\\Nova-Scripts\\.bin\\Nova-Scripts.dll"), // Source
 			(runtimeDirectory + "\\Nova-Scripts.dll"), // Destination
 			std::filesystem::copy_options::overwrite_existing
 		);
