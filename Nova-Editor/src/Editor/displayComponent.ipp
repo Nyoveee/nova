@@ -194,7 +194,7 @@ namespace {
 						// convert from radian to degrees for display..
 						float angle = static_cast<float>(dataMember);
 						angle = toDegree(angle);
-						if (ImGui::SliderFloat(fieldData.name(), &angle, 0.f, 180.f)) {
+						if (ImGui::SliderFloat(fieldData.name(), &angle, 0.f, 360.f)) {
 							dataMember = toRadian(angle);
 						}
 					}
