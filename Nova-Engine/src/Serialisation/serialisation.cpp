@@ -101,29 +101,10 @@ namespace Serialiser {
 
 		file >> j;
 		entt::registry& registry = ecs.registry;
+
 		for (const auto& en : j["entities"]) {
 			auto entity = registry.create(en["id"]);
 			deserialiseComponents<ALL_COMPONENTS>(registry, entity, en);
 		}
-#if 0
-		json j;
-
-		file >> j;
-		entt::registry& registry = ecs.registry;
-
-		for (const auto& en : j["entities"])
-		{
-			auto entity = registry.create(en["id"]);
-
-			Transform transform = {
-				{en["Transform"]["position"]["x"], en["Transform"]["position"]["y"], en["Transform"]["position"]["z"]},
-				{en["Transform"]["scale"]["x"], en["Transform"]["scale"]["y"], en["Transform"]["scale"]["z"]},
-				{en["Transform"]["rotation"]["w"], en["Transform"]["rotation"]["x"], en["Transform"]["rotation"]["y"], en["Transform"]["rotation"]["z"]}
-			};
-
-			registry.emplace<Transform>(entity, std::move(transform));
-			registry.emplace<EntityData>(entity, EntityData{ en["EntityData"]["name"], en["EntityData"]["parent"], en["EntityData"]["children"] });
-		}
-#endif
 	}
 };

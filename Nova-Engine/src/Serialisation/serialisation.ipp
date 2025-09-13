@@ -7,6 +7,7 @@
 #include "Component/component.h"
 #include "Libraries/magic_enum.hpp"
 
+#include "Logger.h"
 
 namespace Serialiser {
 	template<class T>
@@ -68,6 +69,10 @@ namespace Serialiser {
 					componentJson[dataMemberName]["x"] = dataMember.x;
 					componentJson[dataMemberName]["y"] = dataMember.y;
 					componentJson[dataMemberName]["z"] = dataMember.z;
+				}
+
+				else if constexpr (std::same_as<DataMemberType, entt::entity>) {
+					componentJson[dataMemberName] = static_cast<unsigned int>(dataMember);
 				}
 
 				else if constexpr (std::same_as<DataMemberType, entt::entity>) {
@@ -181,10 +186,6 @@ namespace Serialiser {
 
 		if (jsonComponent.find(componentName) == jsonComponent.end())
 			return;
-		if (componentName == "EntityData") {
-			registry.emplace<EntityData>(entity, EntityData{ jsonComponent["EntityData"]["name"], entt::null, jsonComponent["EntityData"]["children"] });
-			return;
-		}
 
 		reflection::visit([&](auto fieldData) {
 			auto& dataMember = fieldData.get();
@@ -199,15 +200,13 @@ namespace Serialiser {
 			}
 
 			else if constexpr (std::same_as<DataMemberType, entt::entity>) {
-				std::cout << typeid(jsonComponent[componentName][dataMemberName]).name() << std::endl;
-				std::string str = jsonComponent[componentName][dataMemberName];
-				str = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
-
-				std::optional<entt::entity> temp = magic_enum::enum_cast<entt::entity>(str.c_str());
-				if (temp.has_value()) {
-					dataMember = temp.value();
+				try {
+					unsigned int entityNum = jsonComponent[componentName][dataMemberName];
+					entt::entity entity = entityNum == std::numeric_limits<unsigned int>::max() ? entt::null : static_cast<entt::entity>(entityNum);
+					dataMember = entity;
 				}
-				else {
+				catch (std::exception const& ex) {
+					Logger::warn("Failed to parse entity data member. {}", ex.what());
 					dataMember = entt::null;
 				}
 			}

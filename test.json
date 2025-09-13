@@ -1,99 +1,12 @@
 {
     "entities": [
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 300.0,
-                    "y": 200.0,
-                    "z": 300.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
-                "children": [],
-                "name": "My 3D Model -2.000000"
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "b": 0.10000000149011612,
-                            "g": 0.10000000149011612,
-                            "r": 0.10000000149011612
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Table_frame_mtl",
-                        "normalMap": 2610993271272464625,
-                        "renderingPipeline": "BlinnPhong"
-                    },
-                    {
-                        "albedo": {
-                            "b": 0.10000000149011612,
-                            "g": 0.10000000149011612,
-                            "r": 0.10000000149011612
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Table_top_mtl",
-                        "normalMap": 9093688546574377480,
-                        "renderingPipeline": "BlinnPhong"
-                    }
+                "children": [
+                    3
                 ],
-                "modelId": 5394145554098620737
-            },
-            "Rigidbody": {
-                "layer": "Moving",
-                "motionType": "Dynamic"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": -2.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.0033333334140479565,
-                    "z": 0.0033333334140479565
-                }
-            },
-            "id": 1048624
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light"
+                "name": "Light Parent",
+                "parent": 4294967295
             },
             "Light": {
                 "color": {
@@ -110,171 +23,6 @@
                         "albedo": {
                             "b": 1.0,
                             "g": 1.0,
-                            "r": 0.0
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Material",
-                        "renderingPipeline": "Color"
-                    }
-                ],
-                "modelId": 16424904817436751277
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -0.00029374659061431885,
-                    "y": 2.0,
-                    "z": 0.15769723057746887
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048625
-        },
-        {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 300.0,
-                    "y": 200.0,
-                    "z": 300.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "My 3D Model 0.000000"
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "b": 0.10000000149011612,
-                            "g": 0.10000000149011612,
-                            "r": 0.10000000149011612
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Table_frame_mtl",
-                        "normalMap": 2610993271272464625,
-                        "renderingPipeline": "BlinnPhong"
-                    },
-                    {
-                        "albedo": {
-                            "b": 0.10000000149011612,
-                            "g": 0.10000000149011612,
-                            "r": 0.10000000149011612
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Table_top_mtl",
-                        "normalMap": 9093688546574377480,
-                        "renderingPipeline": "BlinnPhong"
-                    }
-                ],
-                "modelId": 5394145554098620737
-            },
-            "Rigidbody": {
-                "layer": "Moving",
-                "motionType": "Dynamic"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 2.8522799015045166,
-                    "y": 0.0854654312133789,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.0033333334140479565,
-                    "z": 0.0033333334140479565
-                }
-            },
-            "id": 1048626
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light"
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "intensity": 1.0,
-                "type": "PointLight"
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "b": 1.0,
-                            "g": 0.0,
                             "r": 1.0
                         },
                         "ambient": 0.10000000149011612,
@@ -312,9 +60,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 2.3853237628936768,
-                    "y": 0.9388949871063232,
-                    "z": 0.5947912931442261
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": 5.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -326,6 +74,439 @@
                     "x": 0.20000000298023224,
                     "y": 0.20000000298023224,
                     "z": 0.20000000298023224
+                }
+            },
+            "id": 5
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Floor",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "b": 0.10000000149011612,
+                            "g": 0.10000000149011612,
+                            "r": 0.10000000149011612
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "BlinnPhong"
+                    }
+                ],
+                "modelId": 16424904817436751277
+            },
+            "Rigidbody": {
+                "layer": "NonMoving",
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": -2.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                }
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Light",
+                "parent": 5
+            },
+            "Light": {
+                "color": {
+                    "b": 0.9361473917961121,
+                    "g": 1.0,
+                    "r": 0.38275861740112305
+                },
+                "intensity": 1.0,
+                "type": "PointLight"
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "b": 0.959235668182373,
+                            "g": 1.0,
+                            "r": 0.6000000238418579
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Material",
+                        "renderingPipeline": "Color"
+                    }
+                ],
+                "modelId": 16424904817436751277
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -41.299072265625
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": -3.2598142623901367
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.20000000298023224,
+                    "y": 0.20000000298023224,
+                    "z": 0.20000000298023224
+                }
+            },
+            "id": 3
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 300.0,
+                    "y": 200.0,
+                    "z": 300.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [
+                    1
+                ],
+                "name": "My 3D Model -4.000000",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "b": 0.10000000149011612,
+                            "g": 0.10000000149011612,
+                            "r": 0.10000000149011612
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Table_frame_mtl",
+                        "normalMap": 2610993271272464625,
+                        "renderingPipeline": "BlinnPhong"
+                    },
+                    {
+                        "albedo": {
+                            "b": 0.10000000149011612,
+                            "g": 0.10000000149011612,
+                            "r": 0.10000000149011612
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Table_top_mtl",
+                        "normalMap": 9093688546574377480,
+                        "renderingPipeline": "BlinnPhong"
+                    }
+                ],
+                "modelId": 5394145554098620737
+            },
+            "Rigidbody": {
+                "layer": "Moving",
+                "motionType": "Dynamic"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -4.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.0033333334140479565,
+                    "y": 0.0033333334140479565,
+                    "z": 0.0033333334140479565
+                }
+            },
+            "id": 2
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 300.0,
+                    "y": 200.0,
+                    "z": 300.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [
+                    0
+                ],
+                "name": "My 3D Model -2.000000",
+                "parent": 2
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "b": 0.10000000149011612,
+                            "g": 0.10000000149011612,
+                            "r": 0.10000000149011612
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Table_frame_mtl",
+                        "normalMap": 2610993271272464625,
+                        "renderingPipeline": "BlinnPhong"
+                    },
+                    {
+                        "albedo": {
+                            "b": 0.10000000149011612,
+                            "g": 0.10000000149011612,
+                            "r": 0.10000000149011612
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Table_top_mtl",
+                        "normalMap": 9093688546574377480,
+                        "renderingPipeline": "BlinnPhong"
+                    }
+                ],
+                "modelId": 5394145554098620737
+            },
+            "Rigidbody": {
+                "layer": "Moving",
+                "motionType": "Dynamic"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 599.9999389648438
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999995827674866,
+                    "y": 0.9999995827674866,
+                    "z": 0.9999995827674866
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -2.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.0033333320170640945,
+                    "y": 0.0033333320170640945,
+                    "z": 0.0033333320170640945
+                }
+            },
+            "id": 1
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 300.0,
+                    "y": 200.0,
+                    "z": 300.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "My 3D Model 0.000000",
+                "parent": 1
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "b": 0.10000000149011612,
+                            "g": 0.10000000149011612,
+                            "r": 0.10000000149011612
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Table_frame_mtl",
+                        "normalMap": 2610993271272464625,
+                        "renderingPipeline": "BlinnPhong"
+                    },
+                    {
+                        "albedo": {
+                            "b": 0.10000000149011612,
+                            "g": 0.10000000149011612,
+                            "r": 0.10000000149011612
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Table_top_mtl",
+                        "normalMap": 9093688546574377480,
+                        "renderingPipeline": "BlinnPhong"
+                    }
+                ],
+                "modelId": 5394145554098620737
+            },
+            "Rigidbody": {
+                "layer": "Moving",
+                "motionType": "Dynamic"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 599.9999389648438
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999997615814209,
+                    "y": 0.9999997615814209,
+                    "z": 0.9999997615814209
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -9.5367431640625e-07
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.0033333313185721636,
+                    "y": 0.0033333313185721636,
+                    "z": 0.0033333313185721636
                 }
             },
             "id": 0

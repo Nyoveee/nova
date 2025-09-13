@@ -44,7 +44,7 @@ struct EntityData {
 
 	REFLECTABLE(
 		name,
-		//parent,
+		parent,
 		children
 	)
 };
