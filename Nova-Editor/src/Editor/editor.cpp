@@ -40,8 +40,9 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
-	assetManagerUi					{ *this },
+	assetManagerUi					{ *this },	
 	hierarchyList					{ *this },
+	navMeshGenerator				{ *this },
 	debugUi							{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
@@ -191,6 +192,7 @@ void Editor::main() {
 	handleEntityHovering();
 	updateMaterialMapping();
 	sandboxWindow();
+	navigationWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -453,11 +455,25 @@ void Editor::sandboxWindow() {
 		registry.emplace<SkyBox>(entity, SkyBox{ ResourceID{ 12369249828857649982 } });
 	}
 
+
+
 	if (ImGui::Button("recompile shaders")) {
 		engine.renderer.recompileShaders();
 	}
 
 	ImGui::End();
+}
+
+//Ooga Booga window will cause me more trouble later
+void Editor::navigationWindow()
+{
+	ImGui::Begin("Navigation");
+
+
+
+
+	ImGui::End();
+
 }
 
 void Editor::launchProfiler()
