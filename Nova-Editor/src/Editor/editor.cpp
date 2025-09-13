@@ -38,8 +38,9 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
-	assetManagerUi					{ *this },
+	assetManagerUi					{ *this },	
 	hierarchyList					{ *this },
+	navMeshGenerator				{ *this },
 	debugUi							{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
@@ -465,8 +466,8 @@ void Editor::navigationWindow()
 {
 	ImGui::Begin("Navigation");
 
-	ImGui::Text("Hello from the editor example window!");
-	ImGui::Separator();
+
+
 
 	ImGui::End();
 

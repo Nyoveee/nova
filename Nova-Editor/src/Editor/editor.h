@@ -8,6 +8,7 @@
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
+#include "navMeshGeneration.h"
 #include "hierarchy.h"
 #include "debugUI.h"
 
@@ -74,6 +75,7 @@ private:
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
 	Hierarchy hierarchyList;
+	NavMeshGeneration navMeshGenerator;
 	DebugUI debugUi;
 
 private:
