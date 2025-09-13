@@ -141,7 +141,9 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 
 template <ValidAsset T>
 AssetInfo<T> AssetManager::parseMetaDataFile(std::filesystem::path const& path) {
+	
 	std::string metaDataFilename = path.string() + ".nova_meta";
+
 	std::ifstream metaDataFile{ metaDataFilename };
 
 	// parse the generic asset metadata info first.

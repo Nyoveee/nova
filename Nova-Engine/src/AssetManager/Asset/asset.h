@@ -69,3 +69,15 @@ struct AssetInfo : public BasicAssetInfo {};
 // specialised asset info!
 template<typename T>
 T createAsset(AssetInfo<T> const& assetInfo) { return T{ assetInfo.filepath }; }
+
+// Assets stored in the asset manager merely point to these assets in file location.
+// These assets could be loaded or not loaded.
+// Asset Manager merely acts as a bookkeep to all possible assets in the engine.
+
+// A valid asset must
+// 1. Inherit from base class asset
+// 2. Corresponding asset info inherit from BasicAssetInfo
+
+// dont remove this concept! it's meant to save you from shooting yourself in the foot.
+template <typename T>
+concept ValidAsset = std::derived_from<T, Asset>&& std::derived_from<AssetInfo<T>, BasicAssetInfo>;
