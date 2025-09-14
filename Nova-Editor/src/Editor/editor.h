@@ -50,6 +50,7 @@ public:
 
 public:
 	entt::entity hoveringEntity;
+	std::vector<entt::entity> copiedEntityVec;
 
 private:
 	void main();

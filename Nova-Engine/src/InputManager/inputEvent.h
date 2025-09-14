@@ -76,3 +76,11 @@ struct AdjustCameraSpeed {
 	double value;
 };
 
+enum class CopyEntity {
+	Copy
+};
+
+enum class PasteEntity {
+	Paste
+};
+

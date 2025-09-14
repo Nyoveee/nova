@@ -2,6 +2,7 @@
 
 #include "export.h"
 #include <entt/entt.hpp>
+#include "Component/component.h"
 
 class Engine;
 
@@ -36,6 +37,10 @@ public:
 	// This rolls back the registry to the previous copied state.
 	template <typename ...Components>
 	void rollbackRegistry();
+
+	// this copies the entities in a given vector
+	template<typename ...Components>
+	void copyEntities(std::vector<entt::entity> const& entityVec);
 
 public:
 	// public!
@@ -86,5 +91,26 @@ void ECS::rollbackRegistry() {
 				registry.emplace<Components>(entity, std::move(*component));
 			}
 		}(), ...);
+	}
+}
+
+template<typename ...Components>
+void ECS::copyEntities(std::vector<entt::entity> const& entityVec)
+{
+	for (auto en : entityVec) {
+		auto tempEntity = registry.create();
+		([&]() {
+			Components* component = registry.try_get<Components>(en);
+			if (component) {
+				registry.emplace<Components>(tempEntity, *component);
+			}
+			}(), ...);
+
+		EntityData* ed = registry.try_get<EntityData>(en);
+		if (ed->parent != entt::null) {
+			EntityData* parent = registry.try_get<EntityData>(ed->parent);
+			parent->children.push_back(tempEntity);
+
+		}
 	}
 }

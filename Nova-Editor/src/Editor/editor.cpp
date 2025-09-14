@@ -113,6 +113,25 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		}
 	);
+
+	inputManager.subscribe<CopyEntity>(
+		[&](CopyEntity) {
+			if (selectedEntities.size()) {
+				for (entt::entity entity : selectedEntities) {
+					copiedEntityVec.push_back(entity);
+				}
+			}
+		}
+	);
+
+	inputManager.subscribe<PasteEntity>(
+		[&](PasteEntity) {
+			if (!copiedEntityVec.empty()) {
+				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
+				copiedEntityVec.clear();
+			}
+		}
+	);
 }
 
 void Editor::update(std::function<void(bool)> changeSimulationCallback) {
