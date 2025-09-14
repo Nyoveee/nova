@@ -54,10 +54,21 @@ namespace Serialiser {
 		// 
 		
 		//std::cout<<"testing" << en.size();
+		std::cout << ">>> entered deserialiseComponents\n";
+		// manual run to test this works 
+	   //	deserialiseComponent<Transform>(en);
+	   //deserialiseComponent<Rigidbody>(en);
+		
 
 		([&]() {
-			deserialiseComponent<Components>(en);
+			std::cout << "Expanding component...\n";
+			//deserialiseComponent<Components>(registry, entity, test, en);
+			    deserialiseComponent<Components>(en); 
+			//deserialiseComponent<Components>(registry, entity, en);
+			
 		}(), ...);
+
+		std::cout << "Components pack size = " << sizeof...(Components) << "\n";
 	}
 
 	template<typename T>
@@ -135,11 +146,11 @@ namespace Serialiser {
 					std::vector<json> jVec;
 					json tempJson;
 
-					for (ScriptData s : dataMember) {
+				/*	for (ScriptData s : dataMember) {
 						tempJson[dataMemberName] = s.name;
 						jVec.push_back(tempJson);
 						tempJson.clear();
-					}
+					}*/
 
 					componentJson[dataMemberName] = jVec;
 				}
@@ -165,7 +176,7 @@ namespace Serialiser {
 			return componentJson;
 		}
 	}
-
+	// this was the starting point
 	template<typename T>
 	//void deserialiseComponent(std::ifstream& outputFile, json jsonComponent) {
 	void deserialiseComponent(json jsonComponent) {
@@ -178,4 +189,27 @@ namespace Serialiser {
 
 			}, component);
 	}
+
+	//template<typename T>
+	//void deserialiseComponent(entt::registry& registry, entt::entity entity, const json& en) {
+	//	// Check if the JSON contains this component
+	//	if (!en.contains(T::GetTypeName())) 
+	//		return;
+
+	//	const json& jsonComponent = en[T::GetTypeName()];
+	//	T component;
+
+	//	std::cout << "Deserialising component: " << T::GetTypeName() << std::endl;
+
+	//	// Use reflection to populate component fields from JSON
+	//	reflection::visit([&](auto& fieldData, auto& fieldName) {
+	//		if (jsonComponent.contains(fieldName)) { 
+	//			fieldData = jsonComponent[fieldName].get<std::decay_t<decltype(fieldData)>>();
+	//		}
+	//		}, component);
+
+	//	// Finally, attach component to entity
+	//	registry.emplace<T>(entity, component);
+	//}
+
 }

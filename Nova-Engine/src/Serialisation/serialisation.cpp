@@ -102,7 +102,7 @@ namespace Serialiser {
 		entt::registry& registry = ecs.registry;
 		for (const auto& en : j["entities"]) {
 			auto entity = registry.create(en["id"]);
-			deserialiseComponents(registry, entity, file, en);
+			deserialiseComponents<ALL_COMPONENTS>(registry, entity, file, en);
 		}
 		
 

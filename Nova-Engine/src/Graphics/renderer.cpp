@@ -297,7 +297,9 @@ void Renderer::prepareRendering(RenderTarget target) {
 	// =================================================================
 	
 	// Clear default framebuffer.
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
+	// default FBO already bound at end of render loop 
+	// glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
