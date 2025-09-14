@@ -5,6 +5,9 @@
 
 #pragma once
 #include "API/IManagedComponent.hxx"
+[System::AttributeUsage(System::AttributeTargets::Field)]
+public ref class SerializableField : System::Attribute {};
+
 public ref class Script abstract
 {
 public:

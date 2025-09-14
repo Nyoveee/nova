@@ -1,6 +1,6 @@
 ﻿class TestScript : Script
 {
-    Transform_? transform;
+    public Transform_? transform;
     TestScript2? testScript2;
     protected override void init()
     {

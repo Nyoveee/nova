@@ -7,6 +7,7 @@
 #include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
+void displayScriptFields(TypedResourceID<ScriptAsset> scriptID, entt::entity entity, ComponentInspector& componentInspector);
 
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
@@ -238,9 +239,11 @@ namespace {
 					}
 					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
-
+						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
+						// Adding Scripts
 						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
 							scriptDatas.push_back(ScriptData{ resourceId });
+							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
 						});
 
 						// List of Scripts
@@ -256,18 +259,19 @@ namespace {
 							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
 							assert(scriptAsset);
 
-							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript)) {
-								// To do display additional data
-							}
+							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
+								displayScriptFields(scriptData.scriptId, entity, componentInspector);
 
 							ImGui::PopID();
 							return !keepScript;
 						});
 
 						ImGui::EndChild();
-
-						if(it != std::end(scriptDatas))
+						if (it != std::end(scriptDatas)) {
+							scriptingAPIManager.removeEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(it->scriptId));
 							scriptDatas.erase(it);
+						}
+				
 					}
 
 					else if constexpr (std::same_as<DataMemberType, entt::entity>) {
@@ -335,7 +339,6 @@ namespace {
 					ImGui::PopID();
 				},
 			component);
-
 			ImGui::PopID();
 			ImGui::PopID();
 

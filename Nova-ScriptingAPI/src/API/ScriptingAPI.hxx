@@ -4,6 +4,7 @@
 #include <entt/entt.hpp>
 #include <vector>
 #include <string>
+#include "Engine/engine.h"
 
 class Engine;
 class ECS;
@@ -15,8 +16,6 @@ public ref class Interface
 public:
 	using ScriptID = System::UInt64;
 	using EntityID = System::UInt32;
-
-// This is set to internal so c# scripts cannot access
 internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
 	static void load();
@@ -25,7 +24,10 @@ internal:
 
 	static void addGameObjectScript(EntityID entityID, ScriptID scriptId);
 	static void removeGameObjectScript(EntityID entityID, ScriptID scriptId);
+	static void clearAllScripts();
 	static void intializeAllScripts();
+	static std::vector<FieldData> getScriptFieldDatas(EntityID entityID, ScriptID scriptID);
+	//static void setScriptData(EntityID entityID, ScriptID scriptId, const char* name, void* value);
 
 internal:
 	template<typename T>

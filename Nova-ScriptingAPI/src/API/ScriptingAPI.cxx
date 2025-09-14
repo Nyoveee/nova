@@ -1,12 +1,16 @@
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
-#include "Engine/engine.h"
+#include "ScriptLibraryHandler.hxx"
+#include "IManagedComponent.hxx"
+#include "IManagedStruct.h"
 #include "ResourceManager/resourceManager.h"
+
 
 #include <sstream>
 #include <filesystem>
+#include <msclr/marshal_cppstd.h>
 
-#include "ScriptLibraryHandler.hxx"
+
 
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
@@ -26,9 +30,59 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	gameObjectScripts = nullptr;
 	scriptTypes = nullptr;
 	ScriptLibraryHandler::init();
+	// Instantiate the containers
+	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
+	scriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
 }
 
-void Interface::addGameObjectScript(System::UInt32 entityID, ScriptID scriptId)
+void Interface::intializeAllScripts()
+{
+	for each (System::UInt32 entityID in gameObjectScripts->Keys)
+		for each (Script ^ script in gameObjectScripts[entityID])
+			script->callInit();
+}
+
+std::vector<FieldData> Interface::getScriptFieldDatas(EntityID entityID, ScriptID scriptID)
+{
+	std::vector<FieldData> fieldDatas{};
+	System::Type^ scriptType = scriptTypes[scriptID];
+	for each (Script ^ script in gameObjectScripts[entityID]) {
+		if (script->GetType() != scriptType)
+			continue;
+		array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields();
+		for (int i = 0; i < fieldInfos->Length; ++i) {
+			System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
+			FieldData field{};
+			field.first = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
+			// Component
+			if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
+				IManagedComponent^ component = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
+				field.second = entt::entity(component ? component->entityID : entt::null);
+				fieldDatas.push_back(field);
+				continue;
+			}
+			// Struct
+			if (fieldType->IsSubclassOf(IManagedStruct::typeid)) {
+				continue;
+			}
+			// Primitives
+			if (fieldType->IsPrimitive) {
+				continue;
+			}
+		}
+		break;
+	}
+	return fieldDatas;
+}
+
+void Interface::update() {
+	ScriptLibraryHandler::update();
+	for each (System::UInt32 entityID in gameObjectScripts->Keys)
+		for each (Script ^ script in gameObjectScripts[entityID])
+			script->callUpdate();
+}
+
+void Interface::addGameObjectScript(EntityID entityID, ScriptID scriptId)
 {
 	if (!scriptTypes->ContainsKey(scriptId)) {
 		Logger::error("Failed to add script {} for entity {}!", scriptId, entityID);
@@ -47,7 +101,7 @@ void Interface::addGameObjectScript(System::UInt32 entityID, ScriptID scriptId)
 	gameObjectScripts[entityID]->Add(newScript);
 }
 
-void Interface::removeGameObjectScript(System::UInt32 entityID, ScriptID scriptId)
+void Interface::removeGameObjectScript(EntityID entityID, ScriptID scriptId)
 {
 	if (!scriptTypes->ContainsKey(scriptId)) {
 		Logger::error("Failed to remove script {} for entity {}!", scriptId, entityID);
@@ -65,18 +119,9 @@ void Interface::removeGameObjectScript(System::UInt32 entityID, ScriptID scriptI
 	}
 }
 
-void Interface::intializeAllScripts()
+void Interface::clearAllScripts()
 {
-	for each (System::UInt32 entityID in gameObjectScripts->Keys)
-		for each (Script ^ script in gameObjectScripts[entityID])
-			script->callInit();
-}
-
-void Interface::update() {
-	ScriptLibraryHandler::update();
-	for each (System::UInt32 entityID in gameObjectScripts->Keys)
-		for each (Script ^ script in gameObjectScripts[entityID])
-			script->callUpdate();
+	if (gameObjectScripts)	gameObjectScripts->Clear();
 }
 
 void Interface::load()
@@ -99,13 +144,7 @@ void Interface::load()
 	scriptLibFile->Close();
 
 	// ========================================================
-	// 2. Instantiate the respective containers.
-	// ========================================================
-	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
-	scriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
-
-	// ========================================================
-	// 3. We first find our loaded nova script assembly.
+	// 2. We first find our loaded nova script assembly.
 	// ========================================================
 	System::Reflection::Assembly^ novaScriptAssembly = nullptr;
 
@@ -122,7 +161,7 @@ void Interface::load()
 	}
 
 	// ========================================================
-	// 4. Load all script types in loaded assembly.
+	// 3. Load all script types in loaded assembly.
 	// ========================================================
 	
 	// We maintain a temporary dictionary mapping class names to script types.
@@ -134,7 +173,7 @@ void Interface::load()
 	}
 	
 	// ========================================================
-	// 5. We define mapping from Resource IDs to script types.
+	// 4. We define mapping from Resource IDs to script types.
 	// ========================================================
 	auto&& scripts = engine->resourceManager.getAllResources<ScriptAsset>();
 	for (auto&& scriptId : scripts) {
@@ -156,9 +195,9 @@ void Interface::load()
 void Interface::unload()
 {
 	// Clear existing scripts
-	if(gameObjectScripts)	gameObjectScripts->Clear();
-	if(scriptTypes)			scriptTypes->Clear();
-
+	clearAllScripts();
+	if (scriptTypes)
+		scriptTypes->Clear();
 	if (assemblyLoadContext) {
 		// Unload the assembly
 		assemblyLoadContext->Unload();

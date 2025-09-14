@@ -81,7 +81,7 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		if (!scriptingAPIManager.loadAllScripts())
+		if (!scriptingAPIManager.startSimulation())
 		{
 			stopSimulation();
 			return;
@@ -104,7 +104,7 @@ void Engine::stopSimulation() {
 
 	setupSimulationFunction = [&]() {
 		physicsManager.clear();
-		scriptingAPIManager.unloadAllScripts();
+		scriptingAPIManager.stopSimulation();
 		audioSystem.unloadAllSounds();
 
 		Serialiser::serialiseScene(ecs);

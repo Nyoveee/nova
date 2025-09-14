@@ -1,5 +1,8 @@
 #pragma once
 
+#include "IManagedStruct.h"
+#include "IManagedComponent.hxx"
+
 #include "RecursiveMacros.hxx"
 #include "ScriptingAPI.hxx"
 #include <type_traits>
@@ -21,10 +24,9 @@ NativeType native(ManagedType& managedType) {
 #define Declaration(Type, Name) Type Name;
 #define ConstructorDefinition(Type, Name) Name{native.Name}
 #define ListInitialization(Type, Name) Name
-#define GetString(Type, Name) Name.ToString()
 
 #define ManagedStruct(ManagedType,NativeType,...)														        \
-public value struct ManagedType {																		        \
+public value struct ManagedType : IManagedStruct {																\
 	ManagedType(NativeType native) : Call_MacroComma_Double(ConstructorDefinition, __VA_ARGS__) {}              \
 	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}                   \
 	virtual System::String^ ToString() override sealed{                                                         \

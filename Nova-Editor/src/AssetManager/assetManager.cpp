@@ -7,6 +7,7 @@
 #include "Logger.h"
 
 #include "cubemap.h"
+#include "Engine/engine.h"
 
 #define RecordAssetSubdirectory(AssetType) \
 	subAssetDirectories.insert({ Family::id<AssetType>(), descriptorDirectory / #AssetType })
@@ -124,7 +125,10 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		}
 		// ------------------------------------------
 	}
-
+	// By now everything should be serialized, loadAll the entityscripts containing the serializablefield data
+	// Putting it here for now, until there is a better location
+	if (engine.scriptingAPIManager.compileScriptAssembly())
+		engine.scriptingAPIManager.loadEntityScriptsFromScene();
 #if 0
 	// Register callbacks for the watcher
 	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });

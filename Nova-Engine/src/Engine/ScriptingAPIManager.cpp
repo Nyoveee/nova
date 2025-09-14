@@ -29,11 +29,9 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, updateScripts				{ nullptr } 
 	, addGameObjectScript		{ nullptr }
 	, removeGameObjectScript	{ nullptr } 
-	, timeSinceSave				{}
+	, timeSinceSave				{  }
 	, compileState				{ CompileState::NotCompiled }
 {
-	//assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](ResourceID resourceId) { OnAssetContentModifiedCallback(resourceId); });
-
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
 	// (this project assumes that the dll is located right next to the executable.
@@ -119,11 +117,13 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
 		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
+		loadAssembly                            = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
+		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
 		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
 		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		loadAssembly							= GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
-		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
+		getScriptFieldDatas_                    = GetFunctionPtr<GetScriptFieldFunctionPtr>("Interface", "getScriptFieldDatas");
+		clearAllScripts_                        = GetFunctionPtr< ClearAllScriptsFunctionPtr>("Interface", "clearAllScripts");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -193,6 +193,8 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 
 bool ScriptingAPIManager::compileScriptAssembly()
 {
+	compileState = CompileState::NotCompiled;
+	unloadAssembly();
 	// Project path and build command
 	std::string proj_path{std::filesystem::current_path().string() + "\\Nova-Scripts\\Nova-Scripts.csproj"};
 
@@ -258,10 +260,28 @@ bool ScriptingAPIManager::compileScriptAssembly()
 		Logger::error("Failed to build Nova-Scripts");
 		return false;
 	}
+	compileState = CompileState::Compiled;
+	loadAssembly();
 	return true;
 }
 
+void ScriptingAPIManager::loadEntityScriptsFromScene()
+{
+	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
+		for (ScriptData& scriptData : scripts.scriptDatas)
+			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
+}
 
+DLL_API void ScriptingAPIManager::loadEntityScript(unsigned int entityID, unsigned long long scriptID)
+{
+	addGameObjectScript(entityID, scriptID);
+}
+
+DLL_API void ScriptingAPIManager::removeEntityScript(unsigned int entityID, unsigned long long scriptID)
+{
+	removeGameObjectScript(entityID, scriptID);
+}
+	
 void ScriptingAPIManager::update() { 	
 	ZoneScoped;
 	updateScripts();
@@ -271,37 +291,31 @@ void ScriptingAPIManager::checkModifiedScripts(float dt)
 {
 	if (compileState == CompileState::ToBeCompiled) {
 		timeSinceSave += dt;
-
 		if (timeSinceSave >= DEBOUNCING_TIME) {
-			if (compileScriptAssembly()) {
-				compileState = CompileState::Compiled;
-			}
-			else {
-				compileState = CompileState::NotCompiled;
-			}
+			if (compileScriptAssembly())
+				loadEntityScriptsFromScene();
 		}
 	}
 }
 
-bool ScriptingAPIManager::loadAllScripts() {
+DLL_API std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(unsigned int entityID, unsigned long long scriptID)
+{
+	return getScriptFieldDatas_(entityID, scriptID);
+}
+
+bool ScriptingAPIManager::startSimulation() {
 	if (compileState != CompileState::Compiled) {
-		if (!compileScriptAssembly()) return false;
-		compileState = CompileState::Compiled;
-	}
-	
-	loadAssembly();
-	
-	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
-	{
-		for (ScriptData& scriptData : scripts.scriptDatas)
-			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
+		if (!compileScriptAssembly()) 
+			return false;
+		loadEntityScriptsFromScene();
 	}
 	initalizeScripts();
 	return true;
 }
 
-void ScriptingAPIManager::unloadAllScripts() {
-	unloadAssembly();
+void ScriptingAPIManager::stopSimulation() {
+	clearAllScripts_();
+	loadEntityScriptsFromScene();
 }
 
 void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {

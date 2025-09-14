@@ -7,16 +7,29 @@
 #include "export.h"
 #include "type_alias.h"
 
+#include <entt/entt.hpp>
+#include <dotnet/coreclrhost.h>
+
 #include <Windows.h>
 #include <sstream>
 #include <iomanip>
 #include <vector>
 #include <string>
-#include <dotnet/coreclrhost.h>
 #include <unordered_map>
+#include <variant>
 
+// Field Information
+#ifndef ALL_FIELD_PRIMITIVES
+#define ALL_FIELD_PRIMITIVES \
+		bool, int, float, double, const char*
+#endif
+#ifndef ALL_FIELD_TYPES
+	#define ALL_FIELD_TYPES \
+		glm::vec2, glm::vec3, entt::entity, \
+		ALL_FIELD_PRIMITIVES
+#endif
 
-class Engine; // Don't need to call any function or variables, just pass in
+using FieldData = std::pair<std::string, std::variant<ALL_FIELD_TYPES>>;
 
 // More readable function pointer syntax because C lmaoo
 using UpdateFunctionPtr				= void (*)(void);
@@ -25,6 +38,10 @@ using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
 using LoadScriptsFunctionPtr		= void (*)(void);
 using UnloadScriptsFunctionPtr		= void (*)(void);
 using IntializeScriptsFunctionPtr	= void (*)(void);
+using ClearAllScriptsFunctionPtr    = void (*)(void);
+using GetScriptFieldFunctionPtr     = std::vector<FieldData>(*)(unsigned int, unsigned long long);
+
+class Engine;
 
 class ScriptingAPIManager {
 public:
@@ -45,11 +62,24 @@ public:
 	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
 
 public:
+	DLL_API bool compileScriptAssembly();
+	DLL_API void loadEntityScriptsFromScene();
+
+	// Editor function
+	DLL_API void loadEntityScript(unsigned int entityID, unsigned long long scriptID);
+	DLL_API void removeEntityScript(unsigned int entityID, unsigned long long scriptID);
+
+	// Simulation
+	DLL_API bool startSimulation();
+	DLL_API void stopSimulation();
+
+	// Update
 	DLL_API void update();
 	DLL_API void checkModifiedScripts(float dt);
 
-	DLL_API bool loadAllScripts();
-	DLL_API void unloadAllScripts();
+	// Serializable Field Reference
+	DLL_API std::vector<FieldData> getScriptFieldDatas(unsigned int entityID, unsigned long long scriptID);
+
 
 	// This is the callback when the assets files are Added
 	DLL_API void OnAssetContentAddedCallback(std::string abspath);
@@ -70,7 +100,7 @@ private:
 
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
-	bool compileScriptAssembly();
+
 
 private:
 	Engine& engine;
@@ -93,6 +123,8 @@ private:
 	LoadScriptsFunctionPtr loadAssembly;
 	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
+	GetScriptFieldFunctionPtr getScriptFieldDatas_;
+	ClearAllScriptsFunctionPtr clearAllScripts_;
 private:
 	CompileState compileState;
 	float timeSinceSave;

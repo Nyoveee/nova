@@ -167,6 +167,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\controlOverlay.cpp" />
     <ClCompile Include="src\Editor\debugUI.cpp" />
     <ClCompile Include="src\Editor\displayMaterial.cpp" />
+    <ClCompile Include="src\Editor\displayScripts.cpp" />
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\gizmo.cpp" />
     <ClCompile Include="src\Editor\hierarchy.cpp" />
