@@ -36,29 +36,29 @@ public:
 
 public:
 	// Functions needed to run the ScriptingAPI
-	DLL_API ScriptingAPIManager(Engine& p_engine);
+	ENGINE_DLL_API ScriptingAPIManager(Engine& p_engine);
 
-	DLL_API ~ScriptingAPIManager();
-	DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
-	DLL_API ScriptingAPIManager(ScriptingAPIManager&& other)					= delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other)	= delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
+	ENGINE_DLL_API ~ScriptingAPIManager();
+	ENGINE_DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
+	ENGINE_DLL_API ScriptingAPIManager(ScriptingAPIManager&& other)					= delete;
+	ENGINE_DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other)	= delete;
+	ENGINE_DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
 
 public:
-	DLL_API void update();
-	DLL_API void checkModifiedScripts(float dt);
+	ENGINE_DLL_API void update();
+	ENGINE_DLL_API void checkModifiedScripts(float dt);
 
-	DLL_API bool loadAllScripts();
-	DLL_API void unloadAllScripts();
+	ENGINE_DLL_API bool loadAllScripts();
+	ENGINE_DLL_API void unloadAllScripts();
 
 	// This is the callback when the assets files are Added
-	DLL_API void OnAssetContentAddedCallback(std::string abspath);
+	ENGINE_DLL_API void OnAssetContentAddedCallback(std::string abspath);
 
 	// This is the callback when the assets files are Modified
-	DLL_API void OnAssetContentModifiedCallback(ResourceID assetTypeID);
+	ENGINE_DLL_API void OnAssetContentModifiedCallback(ResourceID assetTypeID);
 
 	// This is the callback when the assets files are deleted
-	DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
+	ENGINE_DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
 
 private:
 	template<typename Func>

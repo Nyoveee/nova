@@ -26,27 +26,27 @@ class ResourceManager;
 
 class Engine {
 public:
-	DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight);
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight);
 
-	DLL_API ~Engine();
-	DLL_API Engine(Engine const& other)				= delete;
-	DLL_API Engine(Engine&& other)					= delete;
-	DLL_API Engine& operator=(Engine const& other)	= delete;
-	DLL_API Engine& operator=(Engine&& other)		= delete;
+	ENGINE_DLL_API ~Engine();
+	ENGINE_DLL_API Engine(Engine const& other)				= delete;
+	ENGINE_DLL_API Engine(Engine&& other)					= delete;
+	ENGINE_DLL_API Engine& operator=(Engine const& other)	= delete;
+	ENGINE_DLL_API Engine& operator=(Engine&& other)		= delete;
 
 public:
-	DLL_API void fixedUpdate(float dt);
-	DLL_API void update(float dt);
-	DLL_API void render(Renderer::RenderTarget target);
+	ENGINE_DLL_API void fixedUpdate(float dt);
+	ENGINE_DLL_API void update(float dt);
+	ENGINE_DLL_API void render(Renderer::RenderTarget target);
 	
-	DLL_API void startSimulation();
-	DLL_API void stopSimulation();
-	DLL_API void setupSimulation();
-	DLL_API bool isInSimulationMode() const;
+	ENGINE_DLL_API void startSimulation();
+	ENGINE_DLL_API void stopSimulation();
+	ENGINE_DLL_API void setupSimulation();
+	ENGINE_DLL_API bool isInSimulationMode() const;
 
 public:
-	DLL_API int getGameWidth() const;
-	DLL_API int getGameHeight() const;
+	ENGINE_DLL_API int getGameWidth() const;
+	ENGINE_DLL_API int getGameHeight() const;
 
 public:
 	// allow all systems to have references of each other via the engine.

@@ -1,36 +1,33 @@
 #include "resourceManager.h"
 #include "Logger.h"
+#include "descriptor.h"
 
-ResourceManager::ResourceManager() :
-	resourceDirectory	{ std::filesystem::current_path() / "Resources" },
-	textureDirectory	{ resourceDirectory / "Texture" },
-	modelDirectory		{ resourceDirectory / "Model" }
-{
+ResourceManager::ResourceManager() {
 	try {
 		// ========================================
 		// 1. Check if the resource directory exist, and the respective sub assets folder exist.
 		// ========================================
 		
 		// Checking if the main resource directory exist.
-		if (!std::filesystem::exists(resourceDirectory)) {
-			std::filesystem::create_directory(resourceDirectory);
+		if (!std::filesystem::exists(Descriptor::resourceDirectory)) {
+			std::filesystem::create_directory(Descriptor::resourceDirectory);
 		}
 
-		// Checking if the sub folders Texture and Model exist.
-		if (!std::filesystem::exists(textureDirectory)) {
-			std::filesystem::create_directory(textureDirectory);
-		}
-
-		if (!std::filesystem::exists(modelDirectory)) {
-			std::filesystem::create_directory(modelDirectory);
+		// Checking if the sub directories exist..
+		for (auto&& [_, subResourceDirectory] : Descriptor::subResourceDirectories) {
+			if (!std::filesystem::exists(subResourceDirectory)) {
+				std::filesystem::create_directory(subResourceDirectory);
+			}
 		}
 
 		// ========================================
 		// 2. Load all the resources.
 		// ========================================
-		loadAllResources<Texture>(textureDirectory);
-		loadAllResources<Model>(modelDirectory);
-	
+		loadAllResources<Texture>();
+		loadAllResources<Model>();
+		loadAllResources<CubeMap>();
+		loadAllResources<ScriptAsset>();
+		loadAllResources<Model>();
 }
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());

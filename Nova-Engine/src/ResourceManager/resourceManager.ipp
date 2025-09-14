@@ -4,6 +4,7 @@
 
 #include "Logger.h"
 #include "resourceManager.h"
+#include "descriptor.h"
 
 template <ValidAsset T>
 ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
@@ -68,6 +69,7 @@ void ResourceManager::addResourceFile(std::filesystem::path const& filepath) {
 	// assetIdToType[assetInfo.id] = Family::id<T>();
 }
 
+#if 0
 template<ValidAsset T>
 void ResourceManager::addResourceFile(AssetInfo<T> assetInfo) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
@@ -96,9 +98,14 @@ void ResourceManager::addResourceFile(AssetInfo<T> assetInfo) {
 	// associates this filepath with this asset id.
 	filepathToResourceId[assetInfo.filepath] = assetInfo.id;
 }
+#endif
 
 template<ValidAsset T>
-void ResourceManager::loadAllResources(std::filesystem::path const& directory) {
+void ResourceManager::loadAllResources() {
+	auto iterator = Descriptor::subResourceDirectories.find(Family::id<T>());
+	assert(iterator != Descriptor::subResourceDirectories.end() && "This descriptor sub directory is not recorded.");
+	std::filesystem::path const& directory = iterator->second;
+
 	// recursively iterate through a directory and parse all resource files.
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
 		std::filesystem::path currentPath = entry.path();

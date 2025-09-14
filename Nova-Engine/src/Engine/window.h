@@ -11,7 +11,7 @@ struct ImGuiContext;
 class InputManager;
 
 // indicates if whole app is in the midst of destruction.
-DLL_API extern std::atomic<bool> engineIsDestructing;
+ENGINE_DLL_API extern std::atomic<bool> engineIsDestructing;
 
 class Window {
 public:
@@ -33,19 +33,19 @@ public:
 	};
 
 public:
-	DLL_API Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager, Viewport viewportConfig);
+	ENGINE_DLL_API Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager, Viewport viewportConfig);
 
-	DLL_API ~Window();
-	DLL_API Window(Window const& other)				= delete;
-	DLL_API Window(Window&& other)					= delete;
-	DLL_API Window& operator=(Window const& other)	= delete;
-	DLL_API Window& operator=(Window&& other)		= delete;
+	ENGINE_DLL_API ~Window();
+	ENGINE_DLL_API Window(Window const& other)				= delete;
+	ENGINE_DLL_API Window(Window&& other)					= delete;
+	ENGINE_DLL_API Window& operator=(Window const& other)	= delete;
+	ENGINE_DLL_API Window& operator=(Window&& other)		= delete;
 
 public:
-	DLL_API void run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc); // runs the game loop! :)
-	DLL_API GLFWwindow* getGLFWwindow() const;
-	DLL_API void toggleFullScreen();
-	DLL_API float fps() const;
+	ENGINE_DLL_API void run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc); // runs the game loop! :)
+	ENGINE_DLL_API GLFWwindow* getGLFWwindow() const;
+	ENGINE_DLL_API void toggleFullScreen();
+	ENGINE_DLL_API float fps() const;
 
 private:
 	void toEnableMouse(bool toEnable);

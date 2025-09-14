@@ -15,5 +15,5 @@ namespace Math {
 		glm::vec3 scale;
 	};
 
-	DLL_API DecomposedMatrix decomposeMatrix(glm::mat4 const& m);
+	FRAMEWORK_DLL_API DecomposedMatrix decomposeMatrix(glm::mat4 const& m);
 }

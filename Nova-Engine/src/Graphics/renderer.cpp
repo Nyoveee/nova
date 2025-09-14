@@ -145,7 +145,7 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &mainVAO);
 }
 
-DLL_API GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
+GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 	GLuint objectId;
 
 	int xOffset = static_cast<int>(normalisedPosition.x * objectIdFrameBuffer.getWidth());	// x offset
@@ -213,7 +213,7 @@ Camera const& Renderer::getCamera() const {
 	return camera;
 }
 
-DLL_API void Renderer::recompileShaders() {
+void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 	skyboxShader.compile();
 }

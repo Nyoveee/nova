@@ -167,8 +167,6 @@ public:
 	void submitCallback(std::function<void()> callback);
 
 private:
-	ResourceID generateResourceID(std::filesystem::path const& path) const;
-
 	void parseIntermediaryAssetFile(std::filesystem::path const& path);
 
 	void recordFolder(
@@ -176,33 +174,17 @@ private:
 		std::filesystem::path const& path
 	);
 
+	template <ValidAsset T>
+	void compileIntermediaryFile(std::filesystem::path const& path);
+
 	// =========================================================
 	// Parsing meta data file associated with the asset.
 	// Each asset will contain a generic metadata (id and name)
 	// Each specific type asset has additional metadata as well.
 	// =========================================================
-	
-	template <ValidAsset T>
-	std::string getMetaDataFilename(std::filesystem::path const& path) const;
 
 	template <ValidAsset T>
-	void loadAllDescriptorFiles(std::filesystem::path const& directory);
-
-	// ==== Parse specific a specific asset type. ====
-	// These functions will invoke the general functions below first which parses generic metadata info first
-	// before performing additional parsing based on asset type.
-	template <ValidAsset T>
-	AssetInfo<T> parseDescriptorFile(std::filesystem::path const& path);
-	
-	template <ValidAsset T>
-	AssetInfo<T> createDescriptorFile(std::filesystem::path const& path);
-
-	// === Parse generic metadata info. These functions are invoked by the functions above first. ====
-	
-	// optional because parsing may fail.
-	std::optional<BasicAssetInfo> parseDescriptorFile(std::filesystem::path const& path, std::ifstream& metaDataFile);
-
-	BasicAssetInfo createDescriptorFile(std::filesystem::path const& path, std::ofstream& metaDataFile);
+	void loadAllDescriptorFiles();
 
 private:
 	ResourceManager& resourceManager;
@@ -210,12 +192,6 @@ private:
 
 	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
 	AssetDirectoryWatcher directoryWatcher;
-
-	std::filesystem::path assetDirectory;
-	std::filesystem::path descriptorDirectory;
-
-	// holds the directory of each sub asset.
-	std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetDirectories;
 	
 	// records all loaded intermediary assets with corresponding descriptor files.
 	std::unordered_set<std::string> loadedIntermediaryAssets;	

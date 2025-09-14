@@ -11,6 +11,8 @@
 #include "bufferObject.h"
 #include "framebuffer.h"
 #include "Component/ECS.h"
+#include "Component/Component.h"
+#include "vertex.h"
 
 #include "model.h"
 #include "cubemap.h"
@@ -54,19 +56,19 @@ public:
 	// =============================================
 
 	// used directly in the editor. i need to export this.
-	DLL_API std::vector<GLuint> const& getMainFrameBufferTextures() const;
-	DLL_API void enableWireframeMode(bool toEnable);
+	ENGINE_DLL_API std::vector<GLuint> const& getMainFrameBufferTextures() const;
+	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// gets object id from color attachment 1 of the main framebuffer.
 	// parameter normalisedPosition expects value of range [0, 1], representing the spot in the color attachment from bottom left.
 	// retrieves the value in that position of the framebuffer.
-	DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
+	ENGINE_DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
 
-	DLL_API Camera& getCamera();
-	DLL_API Camera const& getCamera() const;
+	ENGINE_DLL_API Camera& getCamera();
+	ENGINE_DLL_API Camera const& getCamera() const;
 
 	// most probably for ease of development.
-	DLL_API void recompileShaders();
+	ENGINE_DLL_API void recompileShaders();
 
 public:
 	// =============================================

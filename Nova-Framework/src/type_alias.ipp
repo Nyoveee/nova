@@ -1,6 +1,5 @@
 #include <numbers>
 #include <string>
-#include "type_alias.h"
 #include "family.h"
 
 // ========================================

@@ -8,25 +8,25 @@ class Engine;
 // A ECS wrapper around the entt framework for ease of access from other classes.
 class ECS {
 public:
-	DLL_API ECS(Engine& engine);
+	ENGINE_DLL_API ECS(Engine& engine);
 
-	DLL_API ~ECS();
-	DLL_API ECS(ECS const& other)				= delete;
-	DLL_API ECS(ECS&& other)					= delete;
-	DLL_API ECS& operator=(ECS const& other)	= delete;
-	DLL_API ECS& operator=(ECS&& other)			= delete;
+	ENGINE_DLL_API ~ECS();
+	ENGINE_DLL_API ECS(ECS const& other)				= delete;
+	ENGINE_DLL_API ECS(ECS&& other)					= delete;
+	ENGINE_DLL_API ECS& operator=(ECS const& other)	= delete;
+	ENGINE_DLL_API ECS& operator=(ECS&& other)			= delete;
 
 public:
 	// Set newParentEntity as the new parent for childEntity.
 	// You can pass entt::null as the new parent and this makes the child entity a root entity with no parent.
-	DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity);
-	DLL_API void removeEntityParent(entt::entity childEntity);
+	ENGINE_DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity);
+	ENGINE_DLL_API void removeEntityParent(entt::entity childEntity);
 
 	// Finds out if a given entity is a descendant of parent (direct and indirect children).
-	DLL_API bool isDescendantOf(entt::entity entity, entt::entity parent);
+	ENGINE_DLL_API bool isDescendantOf(entt::entity entity, entt::entity parent);
 
 	// this deletes an entity whilst preserving transform hirearchy invariant.
-	DLL_API void deleteEntity(entt::entity entity);
+	ENGINE_DLL_API void deleteEntity(entt::entity entity);
 
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.

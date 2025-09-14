@@ -117,7 +117,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,27 +136,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="src\asset.cpp" />
-    <ClCompile Include="src\audio.cpp" />
-    <ClCompile Include="src\cubemap.cpp" />
-    <ClCompile Include="src\loader\modelLoader.cpp" />
-    <ClCompile Include="src\model.cpp" />
-    <ClCompile Include="src\scriptAsset.cpp" />
-    <ClCompile Include="src\texture.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\asset.h" />
-    <ClInclude Include="src\audio.h" />
-    <ClInclude Include="src\cubemap.h" />
-    <ClInclude Include="src\loader\modelLoader.h" />
-    <ClInclude Include="src\model.h" />
-    <ClInclude Include="src\scriptAsset.h" />
-    <ClInclude Include="src\texture.h" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nova-Framework\Nova-Framework.vcxproj">
       <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>

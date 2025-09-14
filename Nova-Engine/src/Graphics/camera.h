@@ -17,8 +17,8 @@ public:
 
 public:
 	// gets the view matrix
-	DLL_API glm::mat4x4 view() const;
-	DLL_API glm::mat4x4 projection() const;
+	ENGINE_DLL_API glm::mat4x4 view() const;
+	ENGINE_DLL_API glm::mat4x4 projection() const;
 
 public:
 	// position related

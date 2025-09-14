@@ -5,7 +5,7 @@
 
 namespace Logger
 {
-	DLL_API std::string getCurrentTime();
+	FRAMEWORK_DLL_API std::string getCurrentTime();
 	template<typename ...Args>
 	void warn(std::string_view rt_fmt_str, Args&&... args);
 	template<typename ...Args>

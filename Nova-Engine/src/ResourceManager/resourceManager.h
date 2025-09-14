@@ -6,6 +6,7 @@
 #include "texture.h"
 #include "model.h"
 #include "audio.h"
+#include "cubemap.h"
 #include "scriptAsset.h"
 
 #include <concepts>
@@ -34,13 +35,13 @@ public:
 	};
 
 public:
-	DLL_API ResourceManager();
+	ENGINE_DLL_API ResourceManager();
 
-	DLL_API ~ResourceManager()											= default;
-	DLL_API ResourceManager(ResourceManager const& other)				= delete;
-	DLL_API ResourceManager(ResourceManager&& other)					= delete;
-	DLL_API ResourceManager& operator=(ResourceManager const& other)	= delete;
-	DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
+	ENGINE_DLL_API ~ResourceManager()											= default;
+	ENGINE_DLL_API ResourceManager(ResourceManager const& other)				= delete;
+	ENGINE_DLL_API ResourceManager(ResourceManager&& other)						= delete;
+	ENGINE_DLL_API ResourceManager& operator=(ResourceManager const& other)		= delete;
+	ENGINE_DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
 
 public:
 	template <ValidAsset T>
@@ -62,12 +63,12 @@ public:
 	// this is only used to get metadata / info about the resources (like name, is asset loaded..)
 	// this doesnt not load the resource!!
 	// since there is no loading of resource, you retrieve the data instantly.
-	DLL_API Asset* getResourceInfo(ResourceID id);
+	ENGINE_DLL_API Asset* getResourceInfo(ResourceID id);
 
 	// get the resource id for a given filepath. may be INVALID_ASSET_ID.
-	DLL_API ResourceID getResourceID(std::filesystem::path const& path) const;
+	ENGINE_DLL_API ResourceID getResourceID(std::filesystem::path const& path) const;
 
-	DLL_API bool doesResourceExist(ResourceID id) const;
+	ENGINE_DLL_API bool doesResourceExist(ResourceID id) const;
 
 private:
 	friend AssetManager;
@@ -76,18 +77,14 @@ private:
 	template <ValidAsset T>
 	void addResourceFile(std::filesystem::path const& filepath);
 
-	template <ValidAsset T>
-	void addResourceFile(AssetInfo<T> assetInfo);
+	// template <ValidAsset T>
+	// void addResourceFile(AssetInfo<T> assetInfo);
 
 	// loads all the given resources in a given directory,
 	template <ValidAsset T>
-	void loadAllResources(std::filesystem::path const& directory);
+	void loadAllResources();
 
 private:
-	std::filesystem::path resourceDirectory;
-	std::filesystem::path textureDirectory;
-	std::filesystem::path modelDirectory;
-
 	// main container containing all assets.
 	std::unordered_map<ResourceID, std::unique_ptr<Asset>> resources;
 
@@ -96,9 +93,6 @@ private:
 
 	// associates an resource id with the corresponding resource type.
 	std::unordered_map<ResourceID, ResourceTypeID> resourceIdToType;
-
-	// holds the directory of each sub asset.
-	std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetDirectories;
 
 	// maps filepath to resource ID.
 	std::unordered_map<std::string, ResourceID> filepathToResourceId;

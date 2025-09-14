@@ -17,7 +17,7 @@
 #include <Jolt/Physics/Body/BodyID.h>
 
 #include "type_alias.h"
-#include "Graphics/vertex.h"
+#include "vertex.h"
 #include "reflection.h"
 
 // Forward declaring..
@@ -118,29 +118,6 @@ struct Light {
 		cutOffAngle,
 		outerCutOffAngle
 	)
-};
-
-struct Material {
-	enum class Pipeline {
-		PBR,			// uses everything.
-		BlinnPhong,		// use albedo and normal map.
-		Color			// only uses albedo.
-	};
-
-	struct Config {
-		float roughness;
-		float metallic;
-		float occulusion;
-	};
-
-	Pipeline renderingPipeline = Pipeline::BlinnPhong;
-
-	// either texture map or constant.
-	std::variant<ResourceID, Color>		albedo		= Color{ 0.1f, 0.1f, 0.1f };
-	std::variant<ResourceID, Config>	config		= Config{ 0.5f, 0.f, 0.f };
-	std::optional<ResourceID>			normalMap	= std::nullopt;
-
-	float ambient = 0.1f;
 };
 
 struct MeshRenderer {
