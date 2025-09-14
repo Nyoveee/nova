@@ -10,6 +10,7 @@
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
+#include "navMeshGeneration.h"
 #include "hierarchy.h"
 #include "debugUI.h"
 
@@ -59,6 +60,7 @@ private:
 	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
+	void navigationWindow();
 	void launchProfiler();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
@@ -77,6 +79,7 @@ private:
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
 	Hierarchy hierarchyList;
+	NavMeshGeneration navMeshGenerator;
 	DebugUI debugUi;
 
 private:
