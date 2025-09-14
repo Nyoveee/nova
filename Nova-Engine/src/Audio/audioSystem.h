@@ -54,6 +54,9 @@ public:
 	void stopAudioInstance(AudioInstance& audioInstance);
 	void stopAudioInstance(AudioInstanceID audioInstanceId);
 
+	// Retrieves resourceID from the unorderedmap using filename
+	DLL_API ResourceID getResourceId(const std::string& string);
+
     // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
 	DLL_API void playSFX(ResourceID audioId, float x, float y, float z);
 	//DLL_API	void playSFXNonInst(AssetID audioId, float x, float y, float z);
@@ -100,7 +103,7 @@ private:
 
 	AudioInstanceID nextAudioInstanceId = 0;
 
-	//std::unordered_map<std::string, std::string> soundFilePathMap;
+	std::unordered_map<std::string, ResourceID> fileData;
 	
 	// contains all playing sound instances..
 	std::unordered_map<AudioInstanceID, AudioInstance> audioInstances;

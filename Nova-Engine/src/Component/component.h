@@ -216,6 +216,7 @@ struct Scripts
 struct AudioData
 {
 	TypedResourceID<Audio> AudioId;
+	
 	float Volume;
 	bool MuteAudio;
 
@@ -228,6 +229,9 @@ struct AudioComponent {
 	// REFLECTABLE(
 	// 	audio
 	// )
+
+	// Error in Serialisation.ipp
+	 std::unordered_map<std::string, ResourceID> data;
 
 	std::vector<AudioData> AudioList;
 
