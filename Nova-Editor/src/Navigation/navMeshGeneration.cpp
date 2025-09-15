@@ -1,49 +1,50 @@
 #include "navMeshGeneration.h"
 
 #include "Engine/engine.h"
-#include "editor.h"
-#include "hierarchy.h"
+#include "Editor/editor.h"
+#include "Editor/hierarchy.h"
 #include "ResourceManager/resourceManager.h"
 #include "Component/component.h"
-#include "../../Nova-Engine/src/Detour/Detour/DetourNavMesh.h"
-#include "../../Nova-Engine/src/Detour/Detour/DetourNavMeshBuilder.h"
-#include "../../Nova-Engine/src/Detour/Detour/DetourAlloc.h"
+#include "Detour/Detour/DetourNavMesh.h"
+#include "Detour/Detour/DetourNavMeshBuilder.h"
+#include "Detour/Detour/DetourAlloc.h"
 #include <vector>
 #include <array>
 #include <limits>
-#undef min and max
+
+#undef min 
+#undef max
 
 NavMeshGeneration::NavMeshGeneration(Editor& editor) :
-	ecs{ editor.engine.ecs },
-	editor{ editor },
-	resourceManager{ editor.resourceManager },
-
+	ecs				{ editor.engine.ecs },
+	editor			{ editor },
+	resourceManager	{ editor.resourceManager },
 	//Recast Objects
-	m_triareas	{ nullptr },
-	navData		{ nullptr },
-	m_solid		{ nullptr },
-	m_chf		{ nullptr },
-	m_cset		{ nullptr },
-	m_pmesh		{ nullptr },
-	m_cfg		{},
-	m_ctx		{},
-	m_dmesh		{ nullptr }
+	m_triareas		{ nullptr },
+	navData			{ nullptr },
+	m_solid			{ nullptr },
+	m_chf			{ nullptr },
+	m_cset			{ nullptr },
+	m_pmesh			{ nullptr },
+	m_cfg			{},
+	m_ctx			{},
+	m_dmesh			{ nullptr }
 {
-	buildSettings.agentName = std::string{ "Humanoid" };
-	buildSettings.cellSize = 0.3f;
-	buildSettings.cellHeight = 0.2f;
-	buildSettings.agentHeight = 2.0f;
-	buildSettings.agentRadius = 0.6f;
-	buildSettings.agentMaxClimb = 0.9f;
-	buildSettings.agentMaxSlope = 45.0f;
-	buildSettings.regionMinSize = 8;
-	buildSettings.regionMergeSize = 20;
-	buildSettings.edgeMaxLen = 12.0f;
-	buildSettings.edgeMaxError = 1.3f;
-	buildSettings.vertsPerPoly = 6.0f;
-	buildSettings.detailSampleDist = 6.0f;
-	buildSettings.detailSampleMaxError = 1.0f;
-	buildSettings.partitionType = 0;
+	buildSettings.agentName				= "Humanoid";
+	buildSettings.cellSize				= 0.3f;
+	buildSettings.cellHeight			= 0.2f;
+	buildSettings.agentHeight			= 2.0f;
+	buildSettings.agentRadius			= 0.6f;
+	buildSettings.agentMaxClimb			= 0.9f;
+	buildSettings.agentMaxSlope			= 45.0f;
+	buildSettings.regionMinSize			= 8;
+	buildSettings.regionMergeSize		= 20;
+	buildSettings.edgeMaxLen			= 12.0f;
+	buildSettings.edgeMaxError			= 1.3f;
+	buildSettings.vertsPerPoly			= 6.0f;
+	buildSettings.detailSampleDist		= 6.0f;
+	buildSettings.detailSampleMaxError	= 1.0f;
+	buildSettings.partitionType			= 0;
 }
 
 NavMeshGeneration::~NavMeshGeneration()
@@ -78,6 +79,10 @@ void NavMeshGeneration::BuildNavMesh()
 			
 		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
 		
+		if (!model) {
+			continue;
+		}
+
 		for (const Model::Mesh& meshData : model->meshes)
 		{
 			for (const Vertex& vertex : meshData.vertices)
@@ -95,7 +100,6 @@ void NavMeshGeneration::BuildNavMesh()
 				if (worldPos.x > boundaryMax[0]) { boundaryMax[0] = worldPos.x; }
 				if (worldPos.y > boundaryMax[1]) { boundaryMax[1] = worldPos.y; }
 				if (worldPos.z > boundaryMax[2]) { boundaryMax[2] = worldPos.z; }
-
 			}
 
 			//map triangle soup with corresponding indices in each mesh
@@ -120,23 +124,30 @@ void NavMeshGeneration::BuildNavMesh()
 		return;
 	}
 
-	//Initialise configurations -> Step 1
-	memset(&m_cfg, 0, sizeof(m_cfg));
-	m_cfg.cs = buildSettings.cellSize;
-	m_cfg.ch = buildSettings.cellHeight;
-	m_cfg.walkableSlopeAngle = buildSettings.agentMaxSlope;
-	m_cfg.walkableHeight = (int)ceilf(buildSettings.agentHeight / m_cfg.ch);
-	m_cfg.walkableClimb = (int)floorf(buildSettings.agentMaxClimb / m_cfg.ch);
-	m_cfg.walkableRadius = (int)ceilf(buildSettings.agentRadius / m_cfg.cs);
-	m_cfg.maxEdgeLen = (int)(buildSettings.edgeMaxLen / buildSettings.cellSize);
-	m_cfg.maxSimplificationError = buildSettings.edgeMaxError;
-	m_cfg.minRegionArea = (int)rcSqr(buildSettings.regionMinSize);		// Note: area = size*size
-	m_cfg.mergeRegionArea = (int)rcSqr(buildSettings.regionMergeSize);	// Note: area = size*size
-	m_cfg.maxVertsPerPoly = (int)buildSettings.vertsPerPoly;
-	m_cfg.detailSampleDist = buildSettings.detailSampleDist < 0.9f ? 0 : buildSettings.cellSize * buildSettings.detailSampleDist;
-	m_cfg.detailSampleMaxError = buildSettings.cellHeight * buildSettings.detailSampleMaxError;
+	// ======================================
+	// 1. Initialise configurations
+	// ======================================
 
-	//bounding area
+	memset(&m_cfg, 0, sizeof(m_cfg));
+
+	m_cfg.cs						= buildSettings.cellSize;
+	m_cfg.ch						= buildSettings.cellHeight;
+	m_cfg.walkableSlopeAngle		= buildSettings.agentMaxSlope;
+	m_cfg.walkableHeight			= (int)ceilf(buildSettings.agentHeight / m_cfg.ch);
+	m_cfg.walkableClimb				= (int)floorf(buildSettings.agentMaxClimb / m_cfg.ch);
+	m_cfg.walkableRadius			= (int)ceilf(buildSettings.agentRadius / m_cfg.cs);
+	m_cfg.maxEdgeLen				= (int)(buildSettings.edgeMaxLen / buildSettings.cellSize);
+	m_cfg.maxSimplificationError	= buildSettings.edgeMaxError;
+	m_cfg.minRegionArea				= (int)rcSqr(buildSettings.regionMinSize);		// Note: area = size*size
+	m_cfg.mergeRegionArea			= (int)rcSqr(buildSettings.regionMergeSize);	// Note: area = size*size
+	m_cfg.maxVertsPerPoly			= (int)buildSettings.vertsPerPoly;
+	m_cfg.detailSampleDist			= buildSettings.detailSampleDist < 0.9f ? 0 : buildSettings.cellSize * buildSettings.detailSampleDist;
+	m_cfg.detailSampleMaxError		= buildSettings.cellHeight * buildSettings.detailSampleMaxError;
+
+	// ======================================
+	// 2. Bounding area
+	// ======================================
+	
 	rcVcopy(m_cfg.bmin, boundaryMin.data());
 	rcVcopy(m_cfg.bmax, boundaryMax.data());
 	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
@@ -345,6 +356,10 @@ void NavMeshGeneration::BuildNavMesh()
 		//	//return false;
 		//}
 	}
+}
+
+dtNavMesh const* NavMeshGeneration::getNavMesh() const {
+	return m_navMesh;
 }
 
 void NavMeshGeneration::CleanUp()

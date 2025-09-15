@@ -18,9 +18,8 @@
 
 #include <string.h>
 #include "DebugDraw.h"
-#include "../../../Nova-Engine/src/Detour/Detour/DetourMath.h"
-#include "../../../Nova-Engine/src/Detour/Detour/DetourNavMesh.h"
-
+#include "Detour/Detour/DetourMath.h"
+#include "Detour/Detour/DetourNavMesh.h"
 
 duDebugDraw::~duDebugDraw()
 {

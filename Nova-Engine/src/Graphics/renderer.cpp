@@ -32,40 +32,42 @@ constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(Simp
 constexpr int MAX_NUMBER_OF_LIGHT = 100;
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
-	engine				{ engine },
-	resourceManager		{ engine.resourceManager },
-	registry			{ engine.ecs.registry },
-	basicShader			{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
-	standardShader		{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
-	textureShader		{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
-	colorShader			{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	blinnPhongShader	{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	gridShader			{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
-	outlineShader		{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
-	debugShader			{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
-	debugOverlayShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
-	objectIdShader		{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
-	skyboxShader		{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
-	mainVAO				{},
-	debugPhysicsVAO		{},
-	mainVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
-	debugPhysicsVBO		{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	EBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
+	engine						{ engine },
+	resourceManager				{ engine.resourceManager },
+	registry					{ engine.ecs.registry },
+	basicShader					{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
+	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
+	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
+	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
+	blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
+	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
+	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
+	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
+	debugOverlayShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
+	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
+	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
+	mainVAO						{},
+	debugPhysicsVAO				{},
+	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
+	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	EBO							{ AMOUNT_OF_MEMORY_ALLOCATED },
 
-						// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
-	pointLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(PointLightData) + alignof(PointLightData)},
-	directionalLightSSBO{ MAX_NUMBER_OF_LIGHT * sizeof(DirectionalLightData) + alignof(DirectionalLightData)},
-	spotLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(SpotLightData) + alignof(SpotLightData)},
+								// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
+	pointLightSSBO				{ MAX_NUMBER_OF_LIGHT * sizeof(PointLightData) + alignof(PointLightData)},
+	directionalLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(DirectionalLightData) + alignof(DirectionalLightData)},
+	spotLightSSBO				{ MAX_NUMBER_OF_LIGHT * sizeof(SpotLightData) + alignof(SpotLightData)},
 
-						// we allocate memory for view and projection matrix.
-	sharedUBO			{ 2 * sizeof(glm::mat4) },
-	camera				{},
-	numOfDebugTriangles	{},
-	isOnWireframeMode	{},
+								// we allocate memory for view and projection matrix.
+	sharedUBO					{ 2 * sizeof(glm::mat4) },
+	camera						{},
+	numOfPhysicsDebugTriangles	{},
+	numOfNavMeshDebugTriangles	{},
+	isOnWireframeMode			{},
 
-	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16 } },
-	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } },
-	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } }
+	mainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16 } },
+	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
+	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } }
 {
 	printOpenGLDriverDetails();
 
@@ -126,8 +128,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	glCreateVertexArrays(1, &debugPhysicsVAO);
 	
-	// for this VAO, associate bindingIndex 1 with this VBO. 
-	constexpr GLuint debugBindingIndex = 1;
+	// for this VAO, associate bindingIndex 0 with this VBO. 
+	constexpr GLuint debugBindingIndex = 0;
 
 	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
 
@@ -184,13 +186,9 @@ void Renderer::render(RenderTarget target, bool toRenderDebugPhysics, bool toRen
 	if (toRenderDebugPhysics) {
 		debugRenderPhysicsCollider();
 	}
-
 	
-	if(toRenderDebugNavMesh)
-	{
-		//Insert it here
-
-	
+	else if (toRenderDebugNavMesh) {
+		debugRenderNavMesh();
 	}
 
 	// Bind back to default FBO for ImGui to work on.
@@ -226,6 +224,10 @@ DLL_API void Renderer::recompileShaders() {
 }
 
 void Renderer::debugRenderPhysicsCollider() {
+	// Bind Debug Physics VBO to VAO.
+	constexpr GLuint debugBindingIndex = 0;
+	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+
 	// ================================================
 	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
 	// ================================================
@@ -247,11 +249,11 @@ void Renderer::debugRenderPhysicsCollider() {
 
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 1.f });
-	glDrawArrays(GL_TRIANGLES, 0, numOfDebugTriangles * 3);
+	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	glDisable(GL_DEPTH_TEST);
 	debugOverlayShader.use();
-	numOfDebugTriangles = 0;
+	numOfPhysicsDebugTriangles = 0;
 
 	// ================================================
 	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
@@ -274,20 +276,45 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDisable(GL_BLEND);
 }
 
-void Renderer::debugRenderNavMesh()
-{
+void Renderer::debugRenderNavMesh() {
+	// Bind Debug Navmesh VBO to VAO.
+	constexpr GLuint debugBindingIndex = 0;
+	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
+
+	glBindVertexArray(debugPhysicsVAO);
+	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+
+	glDisable(GL_STENCIL_TEST);
+	setBlendMode(BlendingConfig::AlphaBlending);
+	glEnable(GL_DEPTH_TEST);
+
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f, 0.8f, 0.8f, 0.5f });
+	glDrawArrays(GL_TRIANGLES, 0, numOfNavMeshDebugTriangles * 3);
+
+	glDisable(GL_DEPTH_TEST);
+	setBlendMode(BlendingConfig::Disabled);
+	numOfNavMeshDebugTriangles = 0;
 }
 
-void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color) {
-	(void) color;
-
-	if (numOfDebugTriangles > MAX_DEBUG_TRIANGLES) {
+void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
+	if (numOfPhysicsDebugTriangles > MAX_DEBUG_TRIANGLES) {
 		std::cerr << "too much triangles!\n";
 		return;
 	}
 
-	debugPhysicsVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfDebugTriangles * sizeof(SimpleVertex));
-	++numOfDebugTriangles;
+	debugPhysicsVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfPhysicsDebugTriangles * sizeof(SimpleVertex));
+	++numOfPhysicsDebugTriangles;
+}
+
+void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3){
+	if (numOfNavMeshDebugTriangles > MAX_DEBUG_TRIANGLES) {
+		std::cerr << "too much triangles!\n";
+		return;
+	}
+
+	debugNavMeshVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfNavMeshDebugTriangles * sizeof(SimpleVertex));
+	++numOfNavMeshDebugTriangles;
 }
 
 void Renderer::prepareRendering(RenderTarget target) {
@@ -699,5 +726,46 @@ void Renderer::printOpenGLDriverDetails() const {
 	}
 	if (glslVersion) {
 		Logger::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
+	}
+}
+
+void Renderer::renderNavMesh(dtNavMesh const& mesh) {
+	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
+		const dtMeshTile* tile = mesh.getTile(tileNum);
+		if (!tile->header) continue;
+
+		dtPolyRef base = mesh.getPolyRefBase(tile);
+
+		for (int i = 0; i < tile->header->polyCount; ++i) {
+			const dtPoly* p = &tile->polys[i];
+			if (p->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip off-mesh links.
+				continue;
+
+			const dtPolyDetail* polyDetail = &tile->detailMeshes[i];
+
+			unsigned int col;
+
+			for (int j = 0; j < polyDetail->triCount; ++j) {
+				const unsigned char* t = &tile->detailTris[(polyDetail->triBase + j) * 4];
+
+				std::array<glm::vec3, 3> triangleVertices;
+
+				// triangle
+				for (int k = 0; k < 3; ++k) {
+					float* vertex;
+
+					if (t[k] < p->vertCount) {
+						vertex = &tile->verts[p->verts[t[k]] * 3];
+					}
+					else {
+						vertex = &tile->detailVerts[(polyDetail->vertBase + t[k] - p->vertCount) * 3];
+					}
+
+					triangleVertices[k] = { vertex[0], vertex[1], vertex[2] };
+				}
+
+				submitNavMeshTriangle(triangleVertices[0], triangleVertices[1], triangleVertices[2]);
+			}
+		}
 	}
 }

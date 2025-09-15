@@ -174,23 +174,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Audio\audioSystem.h" />
-    <ClInclude Include="src\Detour\DetourCrowd\DetourCrowd.h" />
-    <ClInclude Include="src\Detour\DetourCrowd\DetourLocalBoundary.h" />
-    <ClInclude Include="src\Detour\DetourCrowd\DetourObstacleAvoidance.h" />
-    <ClInclude Include="src\Detour\DetourCrowd\DetourPathCorridor.h" />
-    <ClInclude Include="src\Detour\DetourCrowd\DetourPathQueue.h" />
-    <ClInclude Include="src\Detour\DetourCrowd\DetourProximityGrid.h" />
-    <ClInclude Include="src\Detour\DetourTileCache\DetourTileCache.h" />
-    <ClInclude Include="src\Detour\DetourTileCache\DetourTileCacheBuilder.h" />
-    <ClInclude Include="src\Detour\Detour\DetourAlloc.h" />
-    <ClInclude Include="src\Detour\Detour\DetourAssert.h" />
-    <ClInclude Include="src\Detour\Detour\DetourCommon.h" />
-    <ClInclude Include="src\Detour\Detour\DetourMath.h" />
-    <ClInclude Include="src\Detour\Detour\DetourNavMesh.h" />
-    <ClInclude Include="src\Detour\Detour\DetourNavMeshBuilder.h" />
-    <ClInclude Include="src\Detour\Detour\DetourNavMeshQuery.h" />
-    <ClInclude Include="src\Detour\Detour\DetourNode.h" />
-    <ClInclude Include="src\Detour\Detour\DetourStatus.h" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp" />
     <ClInclude Include="src\Engine\transformationSystem.h" />
     <ClInclude Include="src\Component\component.h" />
@@ -225,21 +208,6 @@
   <ItemGroup>
     <ClCompile Include="src\Audio\audioSystem.cpp" />
     <ClCompile Include="src\Component\ECS.cpp" />
-    <ClCompile Include="src\Detour\DetourCrowd\DetourCrowd.cpp" />
-    <ClCompile Include="src\Detour\DetourCrowd\DetourLocalBoundary.cpp" />
-    <ClCompile Include="src\Detour\DetourCrowd\DetourObstacleAvoidance.cpp" />
-    <ClCompile Include="src\Detour\DetourCrowd\DetourPathCorridor.cpp" />
-    <ClCompile Include="src\Detour\DetourCrowd\DetourPathQueue.cpp" />
-    <ClCompile Include="src\Detour\DetourCrowd\DetourProximityGrid.cpp" />
-    <ClCompile Include="src\Detour\DetourTileCache\DetourTileCache.cpp" />
-    <ClCompile Include="src\Detour\DetourTileCache\DetourTileCacheBuilder.cpp" />
-    <ClCompile Include="src\Detour\Detour\DetourAlloc.cpp" />
-    <ClCompile Include="src\Detour\Detour\DetourAssert.cpp" />
-    <ClCompile Include="src\Detour\Detour\DetourCommon.cpp" />
-    <ClCompile Include="src\Detour\Detour\DetourNavMesh.cpp" />
-    <ClCompile Include="src\Detour\Detour\DetourNavMeshBuilder.cpp" />
-    <ClCompile Include="src\Detour\Detour\DetourNavMeshQuery.cpp" />
-    <ClCompile Include="src\Detour\Detour\DetourNode.cpp" />
     <ClCompile Include="src\Engine\engine.cpp" />
     <ClCompile Include="src\Engine\ScriptingAPIManager.cpp" />
     <ClCompile Include="src\Engine\transformationSystem.cpp" />

@@ -277,7 +277,7 @@ void AssetManager::parseIntermediaryAssetFile(std::filesystem::path const& path)
 		loadedIntermediaryAssets.insert(assetInfo.filepath);
 	};
 
-	if (fileExtension == ".fbx") {
+	if (fileExtension == ".fbx" || fileExtension == ".obj") {
 		loadDescriptorFile.template operator()<Model>();
 	}
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {

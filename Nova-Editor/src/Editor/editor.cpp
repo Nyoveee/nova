@@ -17,6 +17,7 @@
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "AssetManager/assetManager.h"
+#include "Navigation/navMeshGeneration.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -28,6 +29,7 @@
 #include <ranges>
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
+
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -119,6 +121,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ZoneScopedC(tracy::Color::Orange);
+
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
@@ -138,6 +141,14 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	if (engine.toDebugRenderNavMesh) {
+		auto const* navMesh = navMeshGenerator.getNavMesh();
+
+		if (navMesh) {
+			engine.renderer.renderNavMesh(*navMesh);
+		}
+	}
 }
 
 bool Editor::isEntitySelected(entt::entity entity) {

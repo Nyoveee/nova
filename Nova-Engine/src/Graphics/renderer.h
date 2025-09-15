@@ -15,6 +15,8 @@
 #include "model.h"
 #include "cubemap.h"
 
+#include "Detour/Detour/DetourNavMesh.h"
+
 class Engine;
 class ResourceManager;
 
@@ -68,13 +70,18 @@ public:
 	// most probably for ease of development.
 	DLL_API void recompileShaders();
 
+	DLL_API void setBlendMode(BlendingConfig configuration);
+
+	DLL_API void renderNavMesh(dtNavMesh const& navMesh);
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
 	// =============================================
 
 	// submit triangles to be rendered at the end
-	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color);
+	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
+	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 
 private:
 	// =============================================
@@ -114,7 +121,6 @@ private:
 	// attempts to get the appropriate material from meshrenderer.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
 
-	void setBlendMode(BlendingConfig configuration);
 	void printOpenGLDriverDetails() const;
 
 private:
@@ -136,6 +142,7 @@ private:
 	// Debug Physics VAO and it's corresponding VBO.	
 	GLuint debugPhysicsVAO;
 	BufferObject debugPhysicsVBO;
+	BufferObject debugNavMeshVBO;
 
 	Camera camera;
 
@@ -149,7 +156,9 @@ private:
 	FrameBuffer objectIdFrameBuffer;
 
 private:
-	int numOfDebugTriangles;
+	int numOfPhysicsDebugTriangles;
+	int numOfNavMeshDebugTriangles;
+
 	bool isOnWireframeMode;
 
 public:
