@@ -82,18 +82,19 @@ void NavMeshGeneration::BuildNavMesh()
 		{
 			for (const Vertex& vertex : meshData.vertices)
 			{
-				vertexSoup.push_back(vertex.pos.x);
-				vertexSoup.push_back(vertex.pos.y);
-				vertexSoup.push_back(vertex.pos.z);
+				glm::vec4 worldPos = transform.modelMatrix * glm::vec4(vertex.pos, 1.0f);
+				vertexSoup.push_back(worldPos.x);
+				vertexSoup.push_back(worldPos.y);
+				vertexSoup.push_back(worldPos.z);
 
 				//Bounds checking to find the most extreme vertexes 
-				if (vertex.pos.x < boundaryMin[0]) { boundaryMin[0] = vertex.pos.x; }
-				if (vertex.pos.y < boundaryMin[1]) { boundaryMin[1] = vertex.pos.y; }
-				if (vertex.pos.z < boundaryMin[2]) { boundaryMin[2] = vertex.pos.z; }
+				if (worldPos.x < boundaryMin[0]) { boundaryMin[0] = worldPos.x; }
+				if (worldPos.y < boundaryMin[1]) { boundaryMin[1] = worldPos.y; }
+				if (worldPos.z < boundaryMin[2]) { boundaryMin[2] = worldPos.z; }
 
-				if (vertex.pos.x > boundaryMax[0]) { boundaryMax[0] = vertex.pos.x; }
-				if (vertex.pos.y > boundaryMax[1]) { boundaryMax[1] = vertex.pos.y; }
-				if (vertex.pos.z > boundaryMax[2]) { boundaryMax[2] = vertex.pos.z; }
+				if (worldPos.x > boundaryMax[0]) { boundaryMax[0] = worldPos.x; }
+				if (worldPos.y > boundaryMax[1]) { boundaryMax[1] = worldPos.y; }
+				if (worldPos.z > boundaryMax[2]) { boundaryMax[2] = worldPos.z; }
 
 			}
 
@@ -146,7 +147,7 @@ void NavMeshGeneration::BuildNavMesh()
 
 	if (!rcCreateHeightfield(&m_ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.bmin, m_cfg.bmax, m_cfg.cs, m_cfg.ch))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
 		//return false;
 	}
 
@@ -162,7 +163,7 @@ void NavMeshGeneration::BuildNavMesh()
 	rcMarkWalkableTriangles(&m_ctx, m_cfg.walkableSlopeAngle, vertexSoup.data(), vertexCount, triangleSoup.data(), triangleCount, m_triareas); //use walkable triangles first. maybe can check how to exclude
 	if (!rcRasterizeTriangles(&m_ctx, vertexSoup.data(), vertexCount, triangleSoup.data(), m_triareas, triangleCount, *m_solid, m_cfg.walkableClimb))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not rasterize triangles.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not rasterize triangles.");
 		//return false;
 	}
 
@@ -183,7 +184,7 @@ void NavMeshGeneration::BuildNavMesh()
 
 	if (!rcBuildCompactHeightfield(&m_ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid, *m_chf))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
 		//return false;
 	}
 
@@ -193,7 +194,7 @@ void NavMeshGeneration::BuildNavMesh()
 	// Erode the walkable area by agent radius.
 	if (!rcErodeWalkableArea(&m_ctx, m_cfg.walkableRadius, *m_chf))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
 		//return false;
 	}
 
@@ -201,14 +202,14 @@ void NavMeshGeneration::BuildNavMesh()
 	// Prepare for region partitioning, by calculating distance field along the walkable surface.
 	if (!rcBuildDistanceField(&m_ctx, *m_chf))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build distance field.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not build distance field.");
 		//return false;
 	}
 
 	// Partition the walkable surface into simple regions without holes.
 	if (!rcBuildRegions(&m_ctx, *m_chf, 0, m_cfg.minRegionArea, m_cfg.mergeRegionArea))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build watershed regions.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not build watershed regions.");
 		//return false;
 	}
 
@@ -217,7 +218,7 @@ void NavMeshGeneration::BuildNavMesh()
 	m_cset = rcAllocContourSet();
 	if (!rcBuildContours(&m_ctx, *m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen, *m_cset))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create contours.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not create contours.");
 		//return false;
 	}
 
@@ -227,7 +228,7 @@ void NavMeshGeneration::BuildNavMesh()
 	m_pmesh = rcAllocPolyMesh();
 	if (!rcBuildPolyMesh(&m_ctx, *m_cset, m_cfg.maxVertsPerPoly, *m_pmesh))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not triangulate contours.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not triangulate contours.");
 		//return false;
 	}
 
@@ -236,7 +237,7 @@ void NavMeshGeneration::BuildNavMesh()
 	m_dmesh = rcAllocPolyMeshDetail();
 	if (!rcBuildPolyMeshDetail(&m_ctx, *m_pmesh, *m_chf, m_cfg.detailSampleDist, m_cfg.detailSampleMaxError, *m_dmesh))
 	{
-		//m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build detail mesh.");
+		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not build detail mesh.");
 		//return false;
 	}
 
@@ -246,6 +247,12 @@ void NavMeshGeneration::BuildNavMesh()
 	rcFreeContourSet(m_cset);
 	m_cset = nullptr;
 
+	//NOTE if m_dmesh fails to build dtCreateNavMeshData fails to initilise and it will crash , so return here
+	if (m_dmesh->tris == nullptr)
+	{
+		return; 
+	}
+
 	//
 	// Step 8. Create Detour data from Recast poly mesh.
 	if (m_cfg.maxVertsPerPoly <= DT_VERTS_PER_POLYGON)
@@ -254,26 +261,26 @@ void NavMeshGeneration::BuildNavMesh()
 		int navDataSize = 0;
 
 		// Update poly flags from areas.
-		//for (int i = 0; i < m_pmesh->npolys; ++i)
-		//{
-		//	if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
-		//		m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
+		for (int i = 0; i < m_pmesh->npolys; ++i)
+		{
+			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
+				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
 
-		//	if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
-		//		m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
-		//		m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
-		//	{
-		//		m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
-		//	}
-		//	else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
-		//	{
-		//		m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
-		//	}
-		//	else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
-		//	{
-		//		m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
-		//	}
-		//}
+			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
+				m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
+				m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
+			{
+				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
+			}
+			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
+			{
+				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
+			}
+			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
+			{
+				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
+			}
+		}
 
 
 		dtNavMeshCreateParams params;
@@ -306,9 +313,9 @@ void NavMeshGeneration::BuildNavMesh()
 		params.ch = m_cfg.ch;
 		params.buildBvTree = true;
 
-		if (!dtCreateNavMeshData(&params, &navData, &navDataSize))
+		if (!dtCreateNavMeshData(&params, &navData, &navDataSize)) //Serialisation
 		{
-			//m_ctx->log(RC_LOG_ERROR, "Could not build Detour navmesh.");
+			m_ctx.log(RC_LOG_ERROR, "Could not build Detour navmesh.");
 			//return false;
 		}
 

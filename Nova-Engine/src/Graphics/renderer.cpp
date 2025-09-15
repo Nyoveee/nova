@@ -185,11 +185,11 @@ void Renderer::render(RenderTarget target, bool toRenderDebugPhysics, bool toRen
 		debugRenderPhysicsCollider();
 	}
 
-	//resolve this next time btw
+	
 	if(toRenderDebugNavMesh)
 	{
 		//Insert it here
-		//debugRenderPhysicsCollider();
+
 	
 	}
 
