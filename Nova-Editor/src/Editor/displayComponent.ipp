@@ -7,7 +7,7 @@
 #include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
-void displayScriptFields(TypedResourceID<ScriptAsset> scriptID, entt::entity entity, ComponentInspector& componentInspector);
+void displayScriptFields(ScriptData& scriptData, ComponentInspector& componentInspector);
 
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
@@ -242,16 +242,15 @@ namespace {
 						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
 						// Adding Scripts
 						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
-							scriptDatas.push_back(ScriptData{ resourceId });
+							ScriptData scriptData{ resourceId };
 							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
+							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(static_cast<unsigned int>(entity), static_cast<std::size_t>(scriptData.scriptId));
+							scriptDatas.push_back(scriptData);
 						});
 
-						// List of Scripts
 						int i{};
-
 						// Removal of Scripts
 						ImGui::BeginChild("", ImVec2(0, 400), ImGuiChildFlags_Border);
-
 						std::vector<ScriptData>::iterator it = std::remove_if(std::begin(scriptDatas), std::end(scriptDatas), [&](ScriptData& scriptData) {
 							ImGui::PushID(i++);
 							bool keepScript = true;
@@ -260,12 +259,11 @@ namespace {
 							assert(scriptAsset);
 
 							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
-								displayScriptFields(scriptData.scriptId, entity, componentInspector);
+								displayScriptFields(scriptData, componentInspector);
 
 							ImGui::PopID();
 							return !keepScript;
 						});
-
 						ImGui::EndChild();
 						if (it != std::end(scriptDatas)) {
 							scriptingAPIManager.removeEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(it->scriptId));

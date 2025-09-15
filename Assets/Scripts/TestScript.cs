@@ -1,14 +1,18 @@
 ﻿class TestScript : Script
 {
-    public Transform_? transform;
-    TestScript2? testScript2;
+    public Transform_? transform = null;
+    public TestScript2? testScript2 = null;
+    [SerializableField]
+    protected int integer = 0;
+    [SerializableField]
+    public Vector2 test = new Vector2(0, 0);
+
     protected override void init()
     {
         transform = getComponent<Transform_>();
         testScript2 = getScript<TestScript2>();
         Input.MapKey(Key.A, OnKeyPressA, OnKeyReleaseA);
         Input.MapKey(Key._0, OnKeyPressA, OnKeyReleaseA);
-     
     }
     private void OnKeyPressA()
     {
@@ -17,9 +21,7 @@
     }
     private void OnKeyReleaseA()
     {
-        Vector2 test;
-        test.x = 0;
-        test.y = 0;
+        test = new Vector2(0, 0);
         if(transform != null)
             Debug.Print(test);
 

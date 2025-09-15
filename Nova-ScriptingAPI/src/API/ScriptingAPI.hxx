@@ -34,6 +34,9 @@ internal:
 	static T* getNativeComponent(System::UInt32 entityID);
 	generic<typename T> where T : Script
 	static T tryGetScriptReference(System::UInt32 entityID);
+	// Append Primitive data value to the fielddata
+	template<typename Type, typename ...Types>
+	static bool AppendPrimitiveData(FieldData& fieldData, Object^ object);
 internal:
 	static Engine* engine;
 

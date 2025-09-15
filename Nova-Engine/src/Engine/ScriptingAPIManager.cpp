@@ -268,8 +268,11 @@ bool ScriptingAPIManager::compileScriptAssembly()
 void ScriptingAPIManager::loadEntityScriptsFromScene()
 {
 	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
-		for (ScriptData& scriptData : scripts.scriptDatas)
+		for (ScriptData& scriptData : scripts.scriptDatas) {
 			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
+			scriptData.fields = getScriptFieldDatas_(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
+		}
+		
 }
 
 DLL_API void ScriptingAPIManager::loadEntityScript(unsigned int entityID, unsigned long long scriptID)

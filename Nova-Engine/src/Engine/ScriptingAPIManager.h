@@ -20,8 +20,8 @@
 
 // Field Information
 #ifndef ALL_FIELD_PRIMITIVES
-#define ALL_FIELD_PRIMITIVES \
-		bool, int, float, double, const char*
+	#define ALL_FIELD_PRIMITIVES \
+		bool, int, float, double
 #endif
 #ifndef ALL_FIELD_TYPES
 	#define ALL_FIELD_TYPES \

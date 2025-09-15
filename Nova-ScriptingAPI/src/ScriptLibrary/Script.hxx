@@ -27,6 +27,6 @@ protected:
 	virtual void init() {};
 	virtual void update() {};
 	virtual void exit() {};
-private:
+internal:
 	System::UInt32 entityID;
 };

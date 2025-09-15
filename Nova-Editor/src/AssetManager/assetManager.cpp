@@ -126,9 +126,8 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		// ------------------------------------------
 	}
 	// By now everything should be serialized, loadAll the entityscripts containing the serializablefield data
-	// Putting it here for now, until there is a better location
-	if (engine.scriptingAPIManager.compileScriptAssembly())
-		engine.scriptingAPIManager.loadEntityScriptsFromScene();
+	// Putting it here unless there is a better location
+	engine.scriptingAPIManager.compileScriptAssembly();
 #if 0
 	// Register callbacks for the watcher
 	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });

@@ -27,8 +27,6 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	// Get the reference to the engine
 	engine = &p_engine;
 	runtimePath = p_runtimePath;
-	gameObjectScripts = nullptr;
-	scriptTypes = nullptr;
 	ScriptLibraryHandler::init();
 	// Instantiate the containers
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::List<Script^>^>();
@@ -49,26 +47,48 @@ std::vector<FieldData> Interface::getScriptFieldDatas(EntityID entityID, ScriptI
 	for each (Script ^ script in gameObjectScripts[entityID]) {
 		if (script->GetType() != scriptType)
 			continue;
-		array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields();
+		using BindingFlags = System::Reflection::BindingFlags;
+		array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
 		for (int i = 0; i < fieldInfos->Length; ++i) {
+			// Ignore the base class
+			if (fieldInfos[i]->DeclaringType == Script::typeid)
+				continue;
 			System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
 			FieldData field{};
+			// Private and Protected members will only be added if they have the serializablefield attribute
+			if (!fieldInfos[i]->IsPublic && !fieldInfos[i]->GetCustomAttributes(SerializableField::typeid,false))
+				continue;
 			field.first = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
-			// Component
-			if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
-				IManagedComponent^ component = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
-				field.second = entt::entity(component ? component->entityID : entt::null);
+			// Struct
+			if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
+				managedStruct->AppendNativeData(field);
 				fieldDatas.push_back(field);
 				continue;
 			}
-			// Struct
-			if (fieldType->IsSubclassOf(IManagedStruct::typeid)) {
+			// Component
+			if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
+				IManagedComponent^ managedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
+				field.second = entt::entity(managedComponent ? managedComponent->entityID : entt::null);
+				fieldDatas.push_back(field);
+				continue;
+			}
+			// Scripts
+			if (fieldType->IsSubclassOf(Script::typeid)) {
+				Script^ managedScripts = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
+				field.second = entt::entity(managedScripts ? managedScripts->entityID : entt::null);
+				fieldDatas.push_back(field);
 				continue;
 			}
 			// Primitives
-			if (fieldType->IsPrimitive) {
+			if (AppendPrimitiveData<ALL_FIELD_PRIMITIVES>(field, fieldInfos[i]->GetValue(script))) {
+				fieldDatas.push_back(field);
 				continue;
 			}
+			if (fieldType->IsPrimitive) {
+				Logger::warn("Unknown Primitive in script currently not supported for script serialization {}",
+					msclr::interop::marshal_as<std::string>(fieldType->ToString()));
+			}
+			
 		}
 		break;
 	}
