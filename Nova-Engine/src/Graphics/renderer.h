@@ -46,7 +46,7 @@ public:
 	void update(float dt);
 
 	// choose to either render to the default frame buffer or the main frame buffer.
-	void render(RenderTarget target, bool toRenderDebug);
+	void render(RenderTarget target, bool toRenderDebugPhysics, bool toRenderDebugNavMesh);
 
 public:
 	// =============================================
@@ -97,7 +97,10 @@ private:
 	void renderObjectId(GLsizei count);
 
 	// render a debug triangles in physics
-	void debugRender();
+	void debugRenderPhysicsCollider();
+
+	// render a debug triangles in navMesh
+	void debugRenderNavMesh();
 
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.

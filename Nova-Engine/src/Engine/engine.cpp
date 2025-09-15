@@ -74,7 +74,7 @@ void Engine::render(Renderer::RenderTarget target) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(target, toDebugRenderPhysics);
+	renderer.render(target, toDebugRenderPhysics, toDebugRenderNavMesh);
 }
 
 void Engine::startSimulation() {

@@ -172,7 +172,7 @@ void Renderer::update(float dt) {
 	(void) dt;
 }
 
-void Renderer::render(RenderTarget target, bool toRenderDebug) {
+void Renderer::render(RenderTarget target, bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
 	ZoneScoped;
 	prepareRendering(target);
 
@@ -181,9 +181,16 @@ void Renderer::render(RenderTarget target, bool toRenderDebug) {
 	renderModels();
 
 	//renderOutline();
+	if (toRenderDebugPhysics) {
+		debugRenderPhysicsCollider();
+	}
 
-	if (toRenderDebug) {
-		debugRender();
+	//resolve this next time btw
+	if(toRenderDebugNavMesh)
+	{
+		//Insert it here
+		//debugRenderPhysicsCollider();
+	
 	}
 
 	// Bind back to default FBO for ImGui to work on.
@@ -218,7 +225,7 @@ DLL_API void Renderer::recompileShaders() {
 	skyboxShader.compile();
 }
 
-void Renderer::debugRender() {
+void Renderer::debugRenderPhysicsCollider() {
 	// ================================================
 	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
 	// ================================================
@@ -265,6 +272,10 @@ void Renderer::debugRender() {
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisable(GL_BLEND);
+}
+
+void Renderer::debugRenderNavMesh()
+{
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color) {
