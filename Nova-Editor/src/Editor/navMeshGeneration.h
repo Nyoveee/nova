@@ -1,10 +1,14 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include "Recast/Recast.h"
 #include <string>
 
 class ECS;
 class Editor;
+class ResourceManager;
+class dtNavMesh;
+class dtNavMeshQuery;
 
 struct BuildSettings
 {
@@ -53,6 +57,8 @@ class NavMeshGeneration
 public:
 	NavMeshGeneration(Editor& editor);
 
+	~NavMeshGeneration();
+
 	BuildSettings& GetBuildSettings();
 
 	void ResetBuildSetting();
@@ -60,11 +66,29 @@ public:
 	void BuildNavMesh();
 
 private:
+
+	//helper functions to free objects
+	void CleanUp();
+
 	ECS& ecs;
 	BuildSettings buildSettings;
 	Editor& editor;
+	ResourceManager& resourceManager;
 
+	//Recast Objects
+	unsigned char* m_triareas; //for marking walkable or unwalkable surfaces
+	unsigned char* navData;
+	rcHeightfield* m_solid;
+	rcCompactHeightfield* m_chf;
+	rcContourSet* m_cset;
+	rcPolyMesh* m_pmesh;
+	rcConfig m_cfg;
+	rcPolyMeshDetail* m_dmesh;
+	rcContext m_ctx;
 
+	//NavMesh Objects
+	class dtNavMesh* m_navMesh;
+	class dtNavMeshQuery* m_navQuery;
 
 
 };

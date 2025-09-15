@@ -356,7 +356,7 @@ public:
 	///  @param[in]	flags		The tile flags. (See: #dtTileFlags)
 	/// @return The status flags for the operation.
 	///  @see dtCreateNavMeshData
-	dtStatus init(unsigned char* data, const int dataSize, const int flags);
+	DLL_API dtStatus init(unsigned char* data, const int dataSize, const int flags);
 	
 	/// The navigation mesh initialization params.
 	const dtNavMeshParams* getParams() const;
@@ -680,12 +680,12 @@ private:
 /// Allocates a navigation mesh object using the Detour allocator.
 /// @return A navigation mesh that is ready for initialization, or null on failure.
 ///  @ingroup detour
-dtNavMesh* dtAllocNavMesh();
+DLL_API dtNavMesh* dtAllocNavMesh();
 
 /// Frees the specified navigation mesh object using the Detour allocator.
 ///  @param[in]	navmesh		A navigation mesh allocated using #dtAllocNavMesh
 ///  @ingroup detour
-void dtFreeNavMesh(dtNavMesh* navmesh);
+DLL_API void dtFreeNavMesh(dtNavMesh* navmesh);
 
 #endif // DETOURNAVMESH_H
 
