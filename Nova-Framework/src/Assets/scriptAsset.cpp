@@ -1,12 +1,12 @@
 #include "scriptAsset.h"
 #include <filesystem>
 
-ScriptAsset::ScriptAsset(std::string filepath)
-	: Asset(filepath)
+ScriptAsset::ScriptAsset(ResourceFilePath filepath)
+	: Asset{ std::move(filepath) }
 {}
 
-void ScriptAsset::load() {	
-	loadStatus = LoadStatus::Loaded;
+bool ScriptAsset::load() {
+	return false;
 }
 
 void ScriptAsset::unload() {

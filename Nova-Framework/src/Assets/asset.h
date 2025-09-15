@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 
 #include "type_alias.h"
 #include "export.h"
@@ -16,7 +17,7 @@ public:
 	};
 
 public:
-	FRAMEWORK_DLL_API Asset(std::string filepath);
+	FRAMEWORK_DLL_API Asset(ResourceFilePath filepath);
 
 	FRAMEWORK_DLL_API virtual ~Asset() = 0;
 	FRAMEWORK_DLL_API Asset(Asset const& other) = delete;
@@ -36,37 +37,33 @@ public:
 	FRAMEWORK_DLL_API void toUnload();
 
 protected:
-	FRAMEWORK_DLL_API virtual void load  () = 0;
+	// boolean to indicate if loading is successful.
+	FRAMEWORK_DLL_API virtual bool load  () = 0;
 	FRAMEWORK_DLL_API virtual void unload() = 0;
+
+private:
+	ResourceFilePath filepath;
 
 protected:
 	LoadStatus loadStatus;
+	std::ifstream resourceFile;
 
 public:
 	std::string name;
 	ResourceID id;
-
-private:
-	std::string filepath;
 };
 
-// generic asset meta info that all assets have.
+// this contains descriptor data that points back to the original asset.
 struct BasicAssetInfo {
 	ResourceID id;
 	std::string name;
-	std::string filepath;
+	AssetFilePath filepath;
 };
 
 // specific asset meta info.
 // 1. each asset type will need to explicitly specialise this asset type, if they require additional info!
 template <typename T> requires std::derived_from<T, Asset>
 struct AssetInfo : public BasicAssetInfo {};
-
-// creates the specific asset based on it's respective asset info.
-// 2. each asset type will need to explicit specialise this function to create an instance of the asset, if they are using a explicitly
-// specialised asset info!
-template<typename T>
-T createAsset(AssetInfo<T> const& assetInfo) { return T{ assetInfo.filepath }; }
 
 // Assets stored in the asset manager merely point to these assets in file location.
 // These assets could be loaded or not loaded.

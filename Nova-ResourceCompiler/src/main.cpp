@@ -5,7 +5,7 @@
 #include "compiler.h"
 #include "Logger.h"
 
-#define TESTING true
+#define TESTING false
 
 // This program expects an argc count of 2, <executable> <path to descriptor file>
 int main(int argc, const char* argv[]) {

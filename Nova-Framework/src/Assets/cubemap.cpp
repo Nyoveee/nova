@@ -4,8 +4,8 @@
 #include <glad/glad.h>
 #include "Logger.h"
 
-CubeMap::CubeMap(std::string filepath) :
-	Asset			 { filepath },
+CubeMap::CubeMap(ResourceFilePath filepath) :
+	Asset			 { std::move(filepath) },
 	width			 {},
 	height			 {},
 	numChannels		 {},
@@ -45,7 +45,7 @@ CubeMap& CubeMap::operator=(CubeMap&& other) noexcept {
 	return *this;
 }
 
-void CubeMap::load() {
+bool CubeMap::load() {
 #if 0
 	if (isLoaded()) {
 		Logger::error("Attempting to load texture when there's already something loaded!");
@@ -90,7 +90,7 @@ void CubeMap::load() {
 	loadStatus = Asset::LoadStatus::Loaded;
 	//TracyAlloc(this, sizeof(*this));
 #endif
-	loadStatus = Asset::LoadStatus::LoadingFailed;
+	return false;
 }
 
 void CubeMap::unload() {

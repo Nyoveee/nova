@@ -6,8 +6,8 @@
 #include "descriptor.h"
 
 template <ValidAsset T>
-std::optional<AssetInfo<T>> Descriptor::parseDescriptorFile(std::filesystem::path const& descriptorFilepath) {
-	std::ifstream descriptorFile{ descriptorFilepath.string() };
+std::optional<AssetInfo<T>> Descriptor::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
+	std::ifstream descriptorFile{ descriptorFilepath };
 
 	// Attempt to read corresponding metafile.
 	if (!descriptorFile) {
@@ -61,9 +61,9 @@ std::optional<AssetInfo<T>> Descriptor::parseDescriptorFile(std::filesystem::pat
 }
 
 template <ValidAsset T>
-AssetInfo<T> Descriptor::createDescriptorFile(std::filesystem::path const& path) {
-	std::string metaDataFilename = getMetaDataFilename<T>(path);
-	std::ofstream metaDataFile{ metaDataFilename };
+AssetInfo<T> Descriptor::createDescriptorFile(AssetFilePath const& path) {
+	DescriptorFilePath descriptorFileName = getDescriptorFilename<T>(path);
+	std::ofstream metaDataFile{ descriptorFileName };
 
 	AssetInfo<T> assetInfo{ createDescriptorFile(path, metaDataFile) };
 
@@ -80,24 +80,23 @@ AssetInfo<T> Descriptor::createDescriptorFile(std::filesystem::path const& path)
 	}
 
 	// ============================
-	Logger::info("Successfully created metadata file for: {}", path.string());
 	return assetInfo;
 }
 
 template<ValidAsset T>
-std::string Descriptor::getMetaDataFilename(std::filesystem::path const& path) {
+DescriptorFilePath Descriptor::getDescriptorFilename(AssetFilePath const& assetPath) {
 	auto iterator = subDescriptorDirectories.find(Family::id<T>());
 	assert(iterator != subDescriptorDirectories.end() && "Sub asset directory not recorded.");
 
 	auto&& [_, subDescriptorDirectory] = *iterator;
-	return std::filesystem::path{ subDescriptorDirectory / path.stem() }.string() + ".desc";
+	return std::filesystem::path{ subDescriptorDirectory / std::filesystem::path{ assetPath }.stem() }.string() + ".desc";
 }
 
 template<ValidAsset T>
-std::string Descriptor::getResourceFilename(std::filesystem::path const& descriptorPath) {
+ResourceFilePath Descriptor::getResourceFilename(DescriptorFilePath const& descriptorPath) {
 	auto iterator = subResourceDirectories.find(Family::id<T>());
 	assert(iterator != subResourceDirectories.end() && "Sub asset directory not recorded.");
 
 	auto&& [_, subResourceDirectory] = *iterator;
-	return std::filesystem::path{ subResourceDirectory / descriptorPath.stem() }.string();
+	return std::filesystem::path{ subResourceDirectory / std::filesystem::path{ descriptorPath }.stem() }.string();
 }

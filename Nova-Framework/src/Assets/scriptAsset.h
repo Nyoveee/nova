@@ -5,7 +5,7 @@
 class ScriptAsset : public Asset
 {
 public:
-	FRAMEWORK_DLL_API ScriptAsset(std::string filepath);
+	FRAMEWORK_DLL_API ScriptAsset(ResourceFilePath filepath);
 
 	FRAMEWORK_DLL_API ~ScriptAsset() = default;
 	FRAMEWORK_DLL_API ScriptAsset(ScriptAsset const& other) = delete;
@@ -14,7 +14,7 @@ public:
 	FRAMEWORK_DLL_API ScriptAsset& operator=(ScriptAsset&& other) = default;
 
 public:
-	FRAMEWORK_DLL_API void load() final;
+	FRAMEWORK_DLL_API bool load() final;
 	FRAMEWORK_DLL_API void unload() final;
 
 public:

@@ -1,4 +1,7 @@
 #include "descriptor.h"
+
+#include "xresource_guid.h"
+
 #include <filesystem>
 #include <fstream>
 
@@ -60,14 +63,14 @@ std::optional<BasicAssetInfo> Descriptor::parseDescriptorFile(std::ifstream& des
 	return { { resourceId, std::move(name), std::move(fullFilepath) } };
 }
 
-BasicAssetInfo Descriptor::createDescriptorFile(std::filesystem::path const& path, std::ofstream& metaDataFile) {
+BasicAssetInfo Descriptor::createDescriptorFile(AssetFilePath const& path, std::ofstream& metaDataFile) {
 	// calculate relative path to the Assets directory.
-	std::filesystem::path relativePath = std::filesystem::relative(path, assetDirectory);
+	std::filesystem::path relativePath = std::filesystem::relative(std::filesystem::path{ path }, assetDirectory);
 
-	BasicAssetInfo assetInfo = { generateResourceID(path), path.filename().string(), path.string() };
+	BasicAssetInfo assetInfo = { generateResourceID(), std::filesystem::path{ path }.filename().string(), path };
 
 	if (!metaDataFile) {
-		Logger::error("Error creating metadata file for {}", path.string());
+		Logger::error("Error creating metadata file for {}", path.string);
 		return assetInfo;
 	}
 
@@ -77,15 +80,7 @@ BasicAssetInfo Descriptor::createDescriptorFile(std::filesystem::path const& pat
 	return assetInfo;
 }
 
-ResourceID Descriptor::generateResourceID(std::filesystem::path const& path) {
-	// We don't need complex id generation code.
-	// We just need to make sure our id is unique everytime a metadata file is generated in the context of our system
-	// The easiest way is to utilise the current time + the filepath.
-
-	// average c++ attempting to get time line of code..
-	std::size_t time = duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	std::string combined = path.string() + "_" + std::to_string(time);
-	ResourceID id{ std::hash<std::string>{}(combined) };
-
-	return id;
+ResourceID Descriptor::generateResourceID() {
+	xresource::instance_guid guid = xresource::instance_guid::GenerateGUIDCopy();
+	return guid.m_Value;
 }

@@ -4,7 +4,7 @@
 
 class Audio : public Asset {
 public:
-	FRAMEWORK_DLL_API Audio(std::string filepath, bool is3D = false);
+	FRAMEWORK_DLL_API Audio(ResourceFilePath filepath, bool is3D = false);
 	FRAMEWORK_DLL_API ~Audio();
 
 	FRAMEWORK_DLL_API Audio(Audio const& other) = delete;
@@ -14,7 +14,7 @@ public:
 
 public:
 	// Leave blank as loading and unloading is done in audioSystem
-	FRAMEWORK_DLL_API void load() final;
+	FRAMEWORK_DLL_API bool load() final;
 	FRAMEWORK_DLL_API void unload() final;
 	FRAMEWORK_DLL_API std::string getClassName() const;
 
@@ -31,10 +31,3 @@ template <>
 struct AssetInfo<Audio> : public BasicAssetInfo {
 	bool is3D;
 };
-
-// Explicitly define how to construct your type given asset info
-// inline keyword for multiple definitions of the same function.
-template <>
-inline Audio createAsset(AssetInfo<Audio> const& assetInfo) {
-	return Audio{ assetInfo.filepath, assetInfo.is3D };
-}

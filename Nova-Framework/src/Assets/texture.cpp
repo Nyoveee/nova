@@ -5,13 +5,12 @@
 
 #include "Logger.h"
 
-Texture::Texture(std::string filepath, bool toFlip) :
-	Asset			 { filepath },
+Texture::Texture(ResourceFilePath filepath) :
+	Asset			 { std::move(filepath) },
 	width			 {},
 	height			 {},
 	numChannels		 {},
-	textureId		 {},
-	toFlip			 { toFlip }
+	textureId		 {}
 {}
 
 Texture::~Texture() {
@@ -49,7 +48,7 @@ Texture& Texture::operator=(Texture&& other) noexcept {
 	return *this;
 }
 
-void Texture::load() {
+bool Texture::load() {
 #if 0
 	if (isLoaded()) {
 		Logger::error("Attempting to load texture when there's already something loaded!");
@@ -106,8 +105,7 @@ void Texture::load() {
 	loadStatus = Asset::LoadStatus::Loaded;
 	//TracyAlloc(this, sizeof(*this));
 #endif
-	loadStatus = Asset::LoadStatus::LoadingFailed;
-
+	return false;
 }
 
 void Texture::unload() {

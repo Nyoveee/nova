@@ -43,6 +43,11 @@ public:
 		QueryResult result;
 	};
 
+	struct Filepaths {
+		DescriptorFilePath descriptorFilepath;
+		ResourceFilePath resourceFilepath;
+	};
+
 public:
 	AssetManager(ResourceManager& resourceManager, Engine& engine);
 
@@ -167,7 +172,7 @@ public:
 	void submitCallback(std::function<void()> callback);
 
 private:
-	void parseIntermediaryAssetFile(std::filesystem::path const& path);
+	void parseIntermediaryAssetFile(AssetFilePath const& path);
 
 	void recordFolder(
 		FolderID folderId,
@@ -175,7 +180,7 @@ private:
 	);
 
 	template <ValidAsset T>
-	void compileIntermediaryFile(std::filesystem::path const& path);
+	void compileIntermediaryFile(AssetFilePath const& path);
 
 	// =========================================================
 	// Parsing meta data file associated with the asset.
@@ -186,6 +191,9 @@ private:
 	template <ValidAsset T>
 	void loadAllDescriptorFiles();
 
+	template <ValidAsset T>
+	void createResourceFile(AssetInfo<T> descriptor);
+
 private:
 	ResourceManager& resourceManager;
 	Engine& engine;
@@ -193,8 +201,8 @@ private:
 	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
 	AssetDirectoryWatcher directoryWatcher;
 	
-	// records all loaded intermediary assets with corresponding descriptor files.
-	std::unordered_set<std::string> loadedIntermediaryAssets;	
+	// records all loaded intermediary assets mapped to it's corresponding descriptor and resource filepath.
+	std::unordered_map<AssetFilePath, Filepaths> intermediaryAssetsToFilepaths;
 
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;

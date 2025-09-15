@@ -7,6 +7,7 @@
 #include <glm/vec4.hpp>
 #include <cstddef>
 #include <limits>
+#include <filesystem>
 
 // We provide strong type alias here. Type strongly describes the value and can catch errors in compile time. 
 // Very useful for not using values unintended. For an example, you won't want to add GUIDs together, and 
@@ -168,6 +169,60 @@ struct EulerAngles {
 
 public:
 	glm::vec3 angles;
+};
+
+
+// ========================================
+// Filepaths
+// (The different filepaths were way too confusing to keep track)
+// 
+// AssetFilePath		-> represents the filepath to the intermediary asset file.
+// DescriptorFilePath	-> represents the filepath to the descriptor file
+// ResourceFilePath		-> represents the filepath to the resource file
+// ========================================
+struct AssetFilePath {
+	constexpr AssetFilePath() = default;
+			  AssetFilePath(std::filesystem::path path);
+	constexpr AssetFilePath(std::string path);
+
+			  explicit operator std::filesystem::path() const;
+	constexpr operator std::string() const;
+
+	constexpr friend bool operator==(AssetFilePath const& lhs, AssetFilePath const& rhs);
+	friend struct std::hash<AssetFilePath>;
+
+public:
+	std::string string;
+};
+
+struct DescriptorFilePath {
+	constexpr DescriptorFilePath() = default;
+			  DescriptorFilePath(std::filesystem::path path);
+	constexpr DescriptorFilePath(std::string path);
+
+			  explicit operator std::filesystem::path() const;
+	constexpr operator std::string() const;
+
+	constexpr friend bool operator==(DescriptorFilePath const& lhs, DescriptorFilePath const& rhs);
+	friend struct std::hash<DescriptorFilePath>;
+
+public:
+	std::string string;
+};
+
+struct ResourceFilePath {
+	constexpr ResourceFilePath() = default;
+			  ResourceFilePath(std::filesystem::path path);
+	constexpr ResourceFilePath(std::string path);
+
+			  explicit operator std::filesystem::path() const;
+	constexpr operator std::string() const;
+
+	constexpr friend bool operator==(ResourceFilePath const& lhs, ResourceFilePath const& rhs);
+	friend struct std::hash<ResourceFilePath>;
+
+public:
+	std::string string;
 };
 
 #include "type_alias.ipp"

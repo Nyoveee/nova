@@ -21,7 +21,7 @@ public:
 	};
 
 public:
-	FRAMEWORK_DLL_API Model(std::string filepath);
+	FRAMEWORK_DLL_API Model(ResourceFilePath filepath);
 	
 	FRAMEWORK_DLL_API ~Model() = default;
 	FRAMEWORK_DLL_API Model(Model const& other) = delete;
@@ -30,7 +30,7 @@ public:
 	FRAMEWORK_DLL_API Model& operator=(Model&& other) = default;
 
 public:
-	FRAMEWORK_DLL_API void load() final;
+	FRAMEWORK_DLL_API bool load() final;
 	FRAMEWORK_DLL_API void unload() final;
 
 public:

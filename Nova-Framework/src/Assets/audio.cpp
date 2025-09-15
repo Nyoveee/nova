@@ -1,15 +1,15 @@
 #include "audio.h"
 #include <filesystem>
 
-Audio::Audio(std::string filepath, bool is3D) :
-	Asset	{ filepath },
+Audio::Audio(ResourceFilePath filepath, bool is3D) :
+	Asset	{ std::move(filepath) },
 	is3D	{ is3D }
 {}
 
 Audio::~Audio() {}
 
-void Audio::load() {
-	Asset::loadStatus = Asset::LoadStatus::Loaded;
+bool Audio::load() {
+	return false;
 }
 
 void Audio::unload() {}

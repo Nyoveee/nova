@@ -1,31 +1,130 @@
 #include "model.h"
+#include "Logger.h"
 
-Model::Model(std::string filepath) :
-	Asset			{filepath},
+#include <glm/gtc/type_ptr.hpp>
+
+namespace {
+	template <typename T>
+	void readFromFile(std::ifstream& inputFile, T& data) {
+		inputFile.read(reinterpret_cast<char*>(&data), sizeof(data));
+	}
+
+	bool readNextByteIfNull(std::ifstream& inputFile) {
+		char c;
+		inputFile.read(&c, 1);
+
+		return c == 0;
+	}
+}
+Model::Model(ResourceFilePath filepath) :
+	Asset			{ std::move(filepath) },
 	maxDimension	{}
 {}
 
-void Model::load() {
-#if 0
-	ModelLoader modelLoader;
-	auto model = modelLoader.loadModel(getFilePath());
+bool Model::load() {
+	// =================================
+	// Model file format
+	// - First 8 bytes => indicate number of meshes, M
+	// - Next series of bytes => M * mesh file format.
+	// 
+	// Mesh file format
+	// - First 8 bytes => indicate number of vertices, V
+	// - Next 8 bytes => indicate number of indices, I
+	// - Next 8 bytes => indicate the number of characters that make up the material name, C
+	// - Next 4 bytes => indicate the number of triangles.
+	// - Next V * (12 pos + 8 TU + 12 normal + 12 tangent + 12 bitangent) bytes => series of vertices data
+	// - Next 1 byte => null terminator. used for error checking to make sure it matches V.
+	// - Next I * 4 bytes => series of indices data.
+	// - Next 1 byte => null terminator. used for error checking to make sure it matches I.
+	// - Next C bytes => series of characters representing material name.
+	// - Next 1 byte => null terminator. used for error checking and to end the mesh file format.
+	// =================================
 
-	if (!model) {
-		this->loadStatus = LoadStatus::LoadingFailed;
-		return;
+	// read M.
+	std::size_t numOfMeshes;
+	readFromFile(resourceFile, numOfMeshes);
+
+	std::vector<Mesh> localMeshes;
+	localMeshes.reserve(numOfMeshes);
+	
+	// for each mesh..
+	for (std::size_t i = 0; i < numOfMeshes; ++i) {
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
+
+		// read V, I, C & num of triangles.
+		std::size_t numOfVertices;
+		std::size_t numOfIndices;
+		std::size_t numOfCharacters;
+		int numOfTriangles;
+
+		readFromFile(resourceFile, numOfVertices);
+		readFromFile(resourceFile, numOfIndices);
+		readFromFile(resourceFile, numOfCharacters);
+		readFromFile(resourceFile, numOfTriangles);
+
+		vertices.reserve(numOfVertices);
+		indices.reserve(numOfIndices);
+
+		// read all vertices..
+		for (std::size_t vertex = 0; vertex < numOfVertices; ++vertex) {
+			glm::vec3 pos;
+			glm::vec2 textureUnit;
+			glm::vec3 normal;
+			glm::vec3 tangent;
+			glm::vec3 bitangent;
+
+			resourceFile.read(reinterpret_cast<char*>(glm::value_ptr(pos)),			sizeof(pos));
+			resourceFile.read(reinterpret_cast<char*>(glm::value_ptr(textureUnit)),	sizeof(textureUnit));
+			resourceFile.read(reinterpret_cast<char*>(glm::value_ptr(normal)),		sizeof(normal));
+			resourceFile.read(reinterpret_cast<char*>(glm::value_ptr(tangent)),		sizeof(tangent));
+			resourceFile.read(reinterpret_cast<char*>(glm::value_ptr(bitangent)),	sizeof(bitangent));
+
+			vertices.push_back({
+				pos,
+				textureUnit,
+				normal,
+				tangent,
+				bitangent
+			});
+		}
+
+		// read null byte delimiter.
+		if (!readNextByteIfNull(resourceFile)) {
+			Logger::error("Failed to parse model.");
+			return false;
+		}
+
+		// read all indices..
+		for (std::size_t index = 0; index < numOfIndices; ++index) {
+			unsigned int indice;
+			readFromFile(resourceFile, indice);
+			indices.push_back(indice);
+		}
+
+		// read null byte delimiter.
+		if (!readNextByteIfNull(resourceFile)) {
+			Logger::error("Failed to parse model.");
+			return false;
+		}
+
+		// read material name.
+		std::string materialName;
+		materialName.resize(numOfCharacters);
+
+		resourceFile.read(materialName.data(), numOfCharacters);
+
+		// read null byte delimiter.
+		if (!readNextByteIfNull(resourceFile)) {
+			Logger::error("Failed to parse model.");
+			return false;
+		}
+
+		localMeshes.push_back({ std::move(vertices), std::move(indices), std::move(materialName), numOfTriangles });
 	}
 
-	// abusing move semantic to not make unnecesary copies ;)
-	auto [meshes, materialNames, maxDimension] = std::move(model).value();
-	this->meshes = std::move(meshes);
-	this->materialNames = std::move(materialNames);
-	this->maxDimension = maxDimension;
-
-	// remember to set loading to Loaded to inform the asset manager that you are done loading!
-	this->loadStatus = LoadStatus::Loaded;
-	//TracyAlloc(this, sizeof(*this));
-#endif
-	loadStatus = LoadStatus::LoadingFailed;
+	meshes = std::move(localMeshes);
+	return true;
 }
 
 void Model::unload() {

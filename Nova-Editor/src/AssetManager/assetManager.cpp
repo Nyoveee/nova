@@ -20,11 +20,6 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	resourceManager		{ resourceManager },
 	engine				{ engine },
 	directoryWatcher	{ *this, resourceManager, engine, Descriptor::assetDirectory }
-
-#if 0
-	resourceDirectory	{ std::filesystem::current_path() /= "Resources" },
-	threadPool			{ static_cast<std::size_t>(std::thread::hardware_concurrency() / 2U - 1U) }, 
-#endif
 {
 	// ========================================
 	// 1. Check if the descriptor directory exist, and the respective asset subdirectories.
@@ -48,6 +43,10 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	// With descriptors, we verify if every intermediary file has it's corresponding resources asset compiled.
 	// If not, we compile the intermediary asset to it's specific resource file and load it into the resources manager.
 	// ========================================
+	Logger::info("===========================");
+	Logger::info("Loading all descriptor files..");
+	Logger::info("===========================\n");
+
 	loadAllDescriptorFiles<Texture>();
 	loadAllDescriptorFiles<Model>();
 	loadAllDescriptorFiles<CubeMap>();
@@ -61,17 +60,21 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	// When we iterate through all the intermediate assets, we also keep track of the directory it is in to record
 	// the entire directory structure for asset viewer UI.
 	// ========================================
+	Logger::info("===========================");
+	Logger::info("Verifying every intermediary assets..");
+	Logger::info("===========================\n");
+
 	FolderID folderId{ 0 };
 
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ Descriptor::assetDirectory }) {
-		std::filesystem::path currentPath = entry.path();
+		std::filesystem::path assetPath = entry.path();
 
-		if (directoryWatcher.IsPathHidden(currentPath)) {
+		if (directoryWatcher.IsPathHidden(assetPath)) {
 			continue;
 		}
 
 		if (entry.is_directory()) {
-			recordFolder(folderId, currentPath);
+			recordFolder(folderId, assetPath);
 			incrementFolderId(folderId);
 			continue;
 		}
@@ -80,30 +83,36 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 			continue;
 		}
 
-		if (!loadedIntermediaryAssets.count(currentPath.string())) {
-			// we need to generate the corresponding descriptor file for this intermediary file.
-			parseIntermediaryAssetFile(currentPath);
-		}
+		// intermediary asset not recorded (missing corresponding descriptor).
+		auto iterator = intermediaryAssetsToFilepaths.find(assetPath);
 		
+		if (iterator == std::end(intermediaryAssetsToFilepaths)) {
+			Logger::info("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string());
+
+			// we need to generate the corresponding descriptor file for this intermediary file.
+			parseIntermediaryAssetFile(assetPath);
+			Logger::info("");
+		}
+
 		// ------------------------------------------
 		// Save resource entry in the parent folder.
 		// ------------------------------------------
-		ResourceID resourceId = resourceManager.getResourceID(currentPath);
+		ResourceID resourceId = resourceManager.getResourceID(intermediaryAssetsToFilepaths[assetPath].resourceFilepath);
 
 		// found some intermediary asset file that is not supported.
 		if (resourceId == INVALID_ASSET_ID) {
 			continue;
 		}
 
-		std::filesystem::path parentPath = currentPath.parent_path();
+		std::filesystem::path parentPath = assetPath.parent_path();
 
-		auto iterator = folderNameToId.find(parentPath.string());
+		auto folderIterator = folderNameToId.find(parentPath.string());
 
-		if (iterator == std::end(folderNameToId)) {
+		if (folderIterator == std::end(folderNameToId)) {
 			Logger::error("Attempting to add asset to a non existing parent folder?");
 		}
 		else {
-			auto&& [_, parentFolderId] = *iterator;
+			auto&& [_, parentFolderId] = *folderIterator;
 			directories[parentFolderId].assets.push_back(resourceId);
 		}
 		// ------------------------------------------
@@ -179,15 +188,19 @@ void AssetManager::update() {
 	}
 }
 
-void AssetManager::parseIntermediaryAssetFile(std::filesystem::path const& path) {
+void AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFilePath) {
 	// time to check if file has valid file extension.
-	std::string fileExtension = path.extension().string();
+	std::string fileExtension = std::filesystem::path{ assetFilePath }.extension().string();
 
 	// lambda creates descriptor file, loads it to the resource manager and records it as loaded.
 	auto loadDescriptorFile = [&]<typename T>() {
-		auto assetInfo = Descriptor::createDescriptorFile<T>(path);
-		loadedIntermediaryAssets.insert(assetInfo.filepath);
-		compileIntermediaryFile<T>(path);
+		auto assetInfo = Descriptor::createDescriptorFile<T>(assetFilePath);
+
+		DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(assetFilePath);
+		ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(descriptorFilePath);
+
+		intermediaryAssetsToFilepaths.insert({ assetFilePath, { descriptorFilePath, resourceFilePath } });
+		createResourceFile<T>(assetInfo);
 	};
 
 	if (fileExtension == ".fbx") {
@@ -206,7 +219,7 @@ void AssetManager::parseIntermediaryAssetFile(std::filesystem::path const& path)
 		loadDescriptorFile.template operator()<Audio>();
 	}
 	else {
-		Logger::warn("Unsupported file type of: {} has been found.", path.string());
+		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return;
 	}
 }

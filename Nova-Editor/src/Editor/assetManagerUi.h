@@ -55,5 +55,5 @@ private:
 private:
 	float columnWidth = 100.f;
 
-	Texture folderIcon;
+	//Texture folderIcon;
 };

@@ -6,7 +6,7 @@ using GLuint = unsigned int;
 
 class CubeMap : public Asset {
 public:
-	FRAMEWORK_DLL_API CubeMap(std::string filepath);
+	FRAMEWORK_DLL_API CubeMap(ResourceFilePath filepath);
 	FRAMEWORK_DLL_API ~CubeMap();
 
 	FRAMEWORK_DLL_API CubeMap(CubeMap const& other) = delete;
@@ -15,7 +15,7 @@ public:
 	FRAMEWORK_DLL_API CubeMap& operator=(CubeMap&& other) noexcept;
 
 public:
-	FRAMEWORK_DLL_API void load() final;
+	FRAMEWORK_DLL_API bool load() final;
 	FRAMEWORK_DLL_API void unload() final;
 
 public:

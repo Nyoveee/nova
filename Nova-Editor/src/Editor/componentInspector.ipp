@@ -27,7 +27,7 @@ void ComponentInspector::displayAssetDropDownList(std::optional<ResourceID> id, 
 		for (auto&& resourceId : allResources) {
 			Asset* asset = resourceManager.getResourceInfo(resourceId);
 
-			if (ImGui::Selectable(asset->name.c_str(), id ? id.value() == asset->id : false)) {
+			if (ImGui::Selectable(asset->name == "" ? "<no name>" : asset->name.c_str(), id ? id.value() == asset->id : false)) {
 				onClickCallback(asset->id);
 			}
 		}

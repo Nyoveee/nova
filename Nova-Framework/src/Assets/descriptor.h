@@ -15,19 +15,21 @@ public:
 
 	// retrieve an appropriate descriptor filepath based on a given intermediary asset path.
 	template <ValidAsset T>
-	static std::string getMetaDataFilename(std::filesystem::path const& assetPath);
+	static DescriptorFilePath getDescriptorFilename(AssetFilePath const& assetPath);
 
 	// retrieve an appropriate resource filepath based on a given descriptor path.
 	template <ValidAsset T>
-	static std::string getResourceFilename(std::filesystem::path const& descriptorPath);
+	static ResourceFilePath getResourceFilename(DescriptorFilePath const& descriptorPath);
 
+	// reads a given descriptor file.
 	template <ValidAsset T>
-	static std::optional<AssetInfo<T>> parseDescriptorFile(std::filesystem::path const& descriptorFilepath);
+	static std::optional<AssetInfo<T>> parseDescriptorFile(DescriptorFilePath const& descriptorFilepath);
 
+	// creates an appropriate descriptor file based on intermediary asset.
 	template <ValidAsset T>
-	static AssetInfo<T> createDescriptorFile(std::filesystem::path const& path);
+	static AssetInfo<T> createDescriptorFile(AssetFilePath const& path);
 
-	static ResourceID generateResourceID(std::filesystem::path const& path);
+	static ResourceID generateResourceID();
 
 public:
 	FRAMEWORK_DLL_API static const std::filesystem::path assetDirectory;
@@ -40,7 +42,7 @@ public:
 private:
 	// === Parse generic metadata info. These functions are invoked by the functions above first. ====
 	FRAMEWORK_DLL_API static std::optional<BasicAssetInfo> parseDescriptorFile(std::ifstream& descriptorFile);
-	FRAMEWORK_DLL_API static BasicAssetInfo createDescriptorFile(std::filesystem::path const& path, std::ofstream& metaDataFile);
+	FRAMEWORK_DLL_API static BasicAssetInfo createDescriptorFile(AssetFilePath const& path, std::ofstream& metaDataFile);
 };
 
 #include "descriptor.ipp"

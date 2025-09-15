@@ -187,3 +187,76 @@ constexpr EulerAngles::operator glm::vec3() const {
 constexpr bool operator==(EulerAngles const& lhs, EulerAngles const& rhs) {
 	return lhs.angles == rhs.angles;
 }
+
+// ========================================
+// Filepaths
+// ========================================
+
+// ================ AssetFilePath ==================
+inline AssetFilePath::AssetFilePath(std::filesystem::path path) : string{ std::move(path).string() } {}
+constexpr AssetFilePath::AssetFilePath(std::string path) : string{ std::move(path) } {}
+
+inline AssetFilePath::operator std::filesystem::path() const {
+	return { string };
+}
+
+constexpr AssetFilePath::operator std::string() const {
+	return string;
+}
+
+constexpr bool operator==(AssetFilePath const& lhs, AssetFilePath const& rhs) {
+	return lhs.string == rhs.string;
+}
+
+template<>
+struct std::hash<AssetFilePath> {
+	std::size_t operator()(AssetFilePath const& assetFilePath) const noexcept {
+		return std::hash<std::string>{}(assetFilePath.string);
+	}
+};
+
+// ================ DescriptorFilePath ==================
+inline DescriptorFilePath::DescriptorFilePath(std::filesystem::path path) : string{ std::move(path).string() } {}
+constexpr DescriptorFilePath::DescriptorFilePath(std::string path) : string{ std::move(path) } {}
+
+inline DescriptorFilePath::operator std::filesystem::path() const {
+	return { string };
+}
+
+constexpr DescriptorFilePath::operator std::string() const {
+	return string;
+}
+
+constexpr bool operator==(DescriptorFilePath const& lhs, DescriptorFilePath const& rhs) {
+	return lhs.string == rhs.string;
+}
+
+template<>
+struct std::hash<DescriptorFilePath> {
+	std::size_t operator()(DescriptorFilePath const& descriptorFilePath) const noexcept {
+		return std::hash<std::string>{}(descriptorFilePath.string);
+	}
+};
+
+// ================ ResourceFilePath ==================
+inline ResourceFilePath::ResourceFilePath(std::filesystem::path path) : string{ std::move(path).string() } {}
+constexpr ResourceFilePath::ResourceFilePath(std::string path) : string{ std::move(path) } {}
+
+inline ResourceFilePath::operator std::filesystem::path() const {
+	return { string };
+}
+
+constexpr ResourceFilePath::operator std::string() const {
+	return string;
+}
+
+constexpr bool operator==(ResourceFilePath const& lhs, ResourceFilePath const& rhs) {
+	return lhs.string == rhs.string;
+}
+
+template<>
+struct std::hash<ResourceFilePath> {
+	std::size_t operator()(ResourceFilePath const& resourceFilePath) const noexcept {
+		return std::hash<std::string>{}(resourceFilePath.string);
+	}
+};

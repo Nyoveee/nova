@@ -27,7 +27,8 @@ ResourceManager::ResourceManager() {
 		loadAllResources<Model>();
 		loadAllResources<CubeMap>();
 		loadAllResources<ScriptAsset>();
-		loadAllResources<Model>();
+		loadAllResources<Audio>();
+
 }
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
@@ -49,8 +50,8 @@ bool ResourceManager::doesResourceExist(ResourceID id) const {
 	return resources.find(id) != resources.end();
 }
 
-ResourceID ResourceManager::getResourceID(std::filesystem::path const& path) const {
-	auto iterator = filepathToResourceId.find(path.string());
+ResourceID ResourceManager::getResourceID(ResourceFilePath const& path) const {
+	auto iterator = filepathToResourceId.find(path.string);
 
 	if (iterator == filepathToResourceId.end()) {
 		return INVALID_ASSET_ID;

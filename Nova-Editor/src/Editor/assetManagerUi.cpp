@@ -16,10 +16,10 @@
 AssetManagerUI::AssetManagerUI(Editor& editor) :
 	assetManager	 { editor.assetManager },
 	resourceManager	 { editor.resourceManager },
-	selectedFolderId { NONE },
-	folderIcon		 { "System/Image/folder.png", false }
+	selectedFolderId { NONE }
+	//folderIcon		 { "System/Image/folder.png", false }
 {
-	folderIcon.load();
+	//folderIcon.load();
 }
 
 void AssetManagerUI::update() {
@@ -223,7 +223,6 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
-#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. attempting to display invalid folder id.");
 
@@ -231,7 +230,7 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 
 	displayThumbnail(
 		static_cast<int>(static_cast<std::size_t>(folderId)),
-		folderIcon.getTextureId(),
+		NO_TEXTURE,
 		folder.name.c_str(),
 		
 		// callback when the thumbnail gets clicked.
@@ -242,7 +241,6 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		// callback when the thumbnail gets double clicked.
 		[&]() {}
 	);
-#endif
 }
 
 void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {

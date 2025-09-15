@@ -1,13 +1,28 @@
 #include "asset.h"
-//namespace {
-//	constexpr inline AssetID INVALID_ID = static_cast<AssetID>(std::numeric_limits<int>::max());
-//}
+#include "Logger.h"
+#include <fstream>
 
-Asset::Asset(std::string filepath) : filepath{ filepath }, name{}, id{}, loadStatus{ LoadStatus::NotLoaded } {}
+Asset::Asset(ResourceFilePath p_filepath) :
+	filepath		{ std::move(p_filepath) },
+	resourceFile	{ filepath, std::ios::binary },
+	name			{}, 
+	id				{ INVALID_ASSET_ID }, 
+	loadStatus		{ LoadStatus::NotLoaded } 
+{
+	if (!resourceFile) {
+		Logger::error("Failed to construct asset with filepath {}", filepath.string);
+		return;
+	}
+
+	std::size_t id_sizet;
+	resourceFile.read(reinterpret_cast<char*>(&id_sizet), sizeof(id_sizet));
+	id = id_sizet;
+}
+
 Asset::~Asset(){}
 
 std::string const& Asset::getFilePath() const {
-	return filepath;
+	return filepath.string;
 }
 
 Asset::LoadStatus Asset::getLoadStatus() const {
@@ -20,7 +35,17 @@ bool Asset::isLoaded() const {
 
 void Asset::toLoad() {
 	loadStatus = LoadStatus::Loading;
-	load();
+
+	// reset file pointer. skipped to the 1st 8 bytes because it's used as resource id.
+	resourceFile.clear();
+	resourceFile.seekg(8);
+
+	if (!load()) {
+		loadStatus = LoadStatus::LoadingFailed;
+	}
+	else {
+		loadStatus = LoadStatus::Loaded;
+	}
 }
 
 void Asset::toUnload() {

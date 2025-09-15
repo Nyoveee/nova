@@ -176,7 +176,7 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 #endif
 
 template<ValidAsset T>
-void AssetManager::compileIntermediaryFile(std::filesystem::path const& path) {
+void AssetManager::compileIntermediaryFile(AssetFilePath const& path) {
 #if _DEBUG
 	const char* executableConfiguration = "Debug";
 #else
@@ -185,10 +185,16 @@ void AssetManager::compileIntermediaryFile(std::filesystem::path const& path) {
 	constexpr const char* executableName = "Nova-ResourceCompiler.exe";
 
 	std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
-	std::string command = compilerPath.string() + " \"" + Descriptor::getMetaDataFilename<T>(path) + "\"";
+	
+	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(path);
+	std::string command = compilerPath.string() + " \"" + descriptorFilePath.string + "\"";
 
 	if (std::system(command.c_str())) {
-		Logger::error("Error compiling {}", path.string());
+		Logger::error("Error compiling {}", descriptorFilePath.string);
+	}
+	else {
+		Logger::info("Successful compiling {}", descriptorFilePath.string);
+		Logger::info("Resource file created: {}", Descriptor::getResourceFilename<T>(descriptorFilePath).string);
 	}
 }
 
@@ -198,28 +204,72 @@ void AssetManager::loadAllDescriptorFiles() {
 	assert(iterator != Descriptor::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
 	std::filesystem::path const& directory = iterator->second;
 
+	Logger::info("===========================");
+	Logger::info("Loading all {} descriptors.", directory.stem().string());
+	Logger::info("----");
+
 	// recursively iterate through a directory and parse all descriptor files.
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
-		std::filesystem::path currentPath = entry.path();
+		std::filesystem::path descriptorFilepath = entry.path();
 
 		if (!entry.is_regular_file()) {
 			continue;
 		}
 
-		if (currentPath.extension() == ".desc") {
-			// parse the descriptor file.
-			std::optional<AssetInfo<T>> opt = Descriptor::parseDescriptorFile<T>(currentPath);
-			AssetInfo<T> descriptor = opt ? opt.value() : Descriptor::createDescriptorFile<T>(currentPath);
-
-			// we record all encountered intermediary assets with corresponding descriptor.
-			loadedIntermediaryAssets.insert(descriptor.filepath);
-
-			// check if resource manager has this particular resources already loaded.
-			// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
-			// the resource manager.
-			if (!resourceManager.doesResourceExist(descriptor.id)) {
-				compileIntermediaryFile<T>(currentPath);
-			}
+		if (descriptorFilepath.extension() != ".desc") {
+			continue;
 		}
+
+		Logger::info("Parsing {}..", descriptorFilepath.string());
+
+		// parse the descriptor file.
+		std::optional<AssetInfo<T>> opt = Descriptor::parseDescriptorFile<T>(descriptorFilepath);
+		AssetInfo<T> descriptor;
+
+		if (!opt) {
+			Logger::info("Failed parsing, recreating a new descriptor file..");
+			descriptor = Descriptor::createDescriptorFile<T>(descriptorFilepath);
+		}
+		else {
+			Logger::info("Sucessfully parsed descriptor file.");
+			descriptor = opt.value();
+		}
+
+		// check if resource manager has this particular resources already loaded.
+		// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
+		// the resource manager.
+
+		Asset* resource = resourceManager.getResourceInfo(descriptor.id);
+		if (!resource) {
+			Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}", descriptor.filepath.string);
+			createResourceFile<T>(descriptor);
+		}
+		else {
+			Logger::info("Resource file exist.");
+			resource->name = descriptor.name;
+		}
+
+		Logger::info("");
+
+		// we record all encountered intermediary assets with corresponding filepaths.
+		intermediaryAssetsToFilepaths.insert({ descriptor.filepath, { descriptorFilepath, Descriptor::getResourceFilename<T>(descriptorFilepath) } });
+	}
+
+	Logger::info("===========================\n");
+}
+
+template<ValidAsset T>
+void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
+	// this compiles a resource file corresponding to the intermediary asset.
+	compileIntermediaryFile<T>(descriptor.filepath);
+
+	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.filepath);
+	ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(descriptorFilePath);
+
+	// we can now add this resource to the resource manager.
+	T* resource = resourceManager.addResourceFile<T>(resourceFilePath);
+
+	if (resource) {
+		resource->name = descriptor.name;
 	}
 }

@@ -20,36 +20,39 @@ void Compiler::compileAsset(std::filesystem::path const& descriptorFilepath) {
 	std::optional<AssetInfo<T>> optAssetInfo = Descriptor::parseDescriptorFile<T>(descriptorFilepath);
 
 	if (!optAssetInfo) {
-		Logger::error("Failed to parse descriptor file: {}", descriptorFilepath.string());
+		Logger::error("Failed to parse descriptor file: {}. Compilation failed.", descriptorFilepath.string());
 		return;
 	}
 
 	AssetInfo<T> assetInfo = optAssetInfo.value();
-	
+
 	std::ofstream resourceFile { Descriptor::getResourceFilename<T>(descriptorFilepath), std::ios::binary };
 
 	if (!resourceFile) {
-		Logger::error("Failed to create resource file: {}", Descriptor::getResourceFilename<T>(descriptorFilepath));
+		Logger::error("Failed to create resource file: {}. Compilation failed.", Descriptor::getResourceFilename<T>(descriptorFilepath).string);
 		return;
 	}
 
 	// 1st 8 bytes for resource id.
-	resourceFile.write(reinterpret_cast<const char*>(&assetInfo.id), sizeof(assetInfo.id));
+	std::size_t resourceId{ assetInfo.id };
+	Logger::info("Generated resource id: {}", resourceId);
+
+	resourceFile.write(reinterpret_cast<const char*>(&resourceId), sizeof(resourceId));
 
 	if constexpr (std::same_as<T, Texture>) {
-		compileTexture(resourceFile);
+		compileTexture(resourceFile, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, Model>) {
-		compileModel(resourceFile);
+		compileModel(resourceFile, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, CubeMap>) {
-		compileCubeMap(resourceFile);
+		compileCubeMap(resourceFile, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, Audio>) {
-		compileAudio(resourceFile);
+		compileAudio(resourceFile, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
-		compileScriptAsset(resourceFile);
+		compileScriptAsset(resourceFile, assetInfo.filepath);
 	}
 	else {
 		[] <bool flag = true>() {

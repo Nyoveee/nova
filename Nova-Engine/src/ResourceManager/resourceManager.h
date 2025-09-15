@@ -65,8 +65,8 @@ public:
 	// since there is no loading of resource, you retrieve the data instantly.
 	ENGINE_DLL_API Asset* getResourceInfo(ResourceID id);
 
-	// get the resource id for a given filepath. may be INVALID_ASSET_ID.
-	ENGINE_DLL_API ResourceID getResourceID(std::filesystem::path const& path) const;
+	// get the resource id for a given resource filepath. may be INVALID_ASSET_ID.
+	ENGINE_DLL_API ResourceID getResourceID(ResourceFilePath const& path) const;
 
 	ENGINE_DLL_API bool doesResourceExist(ResourceID id) const;
 
@@ -75,7 +75,7 @@ private:
 
 	// parses a given resource file.
 	template <ValidAsset T>
-	void addResourceFile(std::filesystem::path const& filepath);
+	T* addResourceFile(ResourceFilePath const& filepath);
 
 	// template <ValidAsset T>
 	// void addResourceFile(AssetInfo<T> assetInfo);
@@ -93,9 +93,9 @@ private:
 
 	// associates an resource id with the corresponding resource type.
 	std::unordered_map<ResourceID, ResourceTypeID> resourceIdToType;
-
+	
 	// maps filepath to resource ID.
-	std::unordered_map<std::string, ResourceID> filepathToResourceId;
+	std::unordered_map<ResourceFilePath, ResourceID> filepathToResourceId;
 };
 
 #include "resourceManager.ipp"
