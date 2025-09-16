@@ -75,6 +75,18 @@ void CameraSystem::update(float dt) {
 		return;
 	}
 
+	for (auto&& [entityID, CamComponent] : engine.ecs.registry.view<CamComponent>().each())
+	{
+		if (CamComponent.camStatus)
+		{
+			Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
+			// Use Transform data to set camera variables.
+			camera.setPos(objTransform.position);
+			//camera.setFront();
+			
+		}
+	}
+
 	cameraSpeed = std::exp(cameraSpeedExponent);
 
 	if (isMovingFront) {

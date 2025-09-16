@@ -140,7 +140,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
 
-	allCameras.push_back(&camera);
+	//allCameras.push_back(&camera);
 }
 
 Renderer::~Renderer() {
@@ -171,13 +171,6 @@ DLL_API GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 
 void Renderer::update(float dt) {
 	ZoneScoped;
-	for (auto cam : allCameras) {
-		if (cam->getStatus()) {
-			camera = *cam;
-			break;
-		}
-			
-	}
 	(void) dt;
 }
 
@@ -220,21 +213,6 @@ Camera& Renderer::getCamera() {
 
 Camera const& Renderer::getCamera() const {
 	return camera;
-}
-
-void Renderer::setCamera(Camera* newCam) {
-	camera = *newCam;
-}
-
-void Renderer::chooseCamera(Camera* newCam) {
-	newCam->setStatus(true);
-	for (auto cam : allCameras) {
-		if (cam != newCam)
-			cam->setStatus(false);
-		else
-			continue;
-	}
-	setCamera(newCam);
 }
 
 DLL_API void Renderer::recompileShaders() {

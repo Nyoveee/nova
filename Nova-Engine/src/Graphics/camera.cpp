@@ -17,8 +17,8 @@ Camera::Camera() :
 	fovAngle			{ defaultFovAngle },
 	nearPlaneDistance	{ defaultNearPlaneDistance },
 	farPlaneDistance	{ defaultFarPlaneDistance },
-	aspectRatio			{ defaultAspectRatio },
-	isActive			{ true }
+	aspectRatio			{ defaultAspectRatio }
+	//isActive			{ true }
 {
 	recalculateViewMatrix();
 	recalculateProjectionMatrix();
@@ -65,10 +65,10 @@ void Camera::recalculateProjectionMatrix() {
 	projectionMatrix = glm::perspective<float>(fovAngle, aspectRatio, nearPlaneDistance, farPlaneDistance);
 }
 
-bool Camera::getStatus() {
-	return isActive;
-}
-
-void Camera::setStatus(bool newStatus) {
-	isActive = newStatus;
-}
+//bool Camera::getStatus() {
+//	return isActive;
+//}
+//
+//void Camera::setStatus(bool newStatus) {
+//	isActive = newStatus;
+//}
