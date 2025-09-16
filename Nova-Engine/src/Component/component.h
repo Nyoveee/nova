@@ -27,13 +27,14 @@ class CubeMap;
 class ScriptAsset;
 class Audio;
 
+
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
 // Components should only hold data! Let systems work on these components.
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts, CamComponent
 using MaterialName = std::string;
 using ScriptName   = std::string;
 
@@ -235,3 +236,10 @@ struct AudioComponent {
 	)
 };
 
+struct CamComponent {
+	bool camStatus;
+
+	REFLECTABLE(
+		camStatus
+	)
+};
