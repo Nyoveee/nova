@@ -39,5 +39,12 @@ void DebugUI::update() {
 
 	ImGui::Checkbox("Physics debug render", &engine.toDebugRenderPhysics);
 
+	ImGui::SeparatorText("HDR");
+
+	float exposure = renderer.getHDRExposure();
+	if (ImGui::SliderFloat("Exposure", &exposure, 0.1f, 5.0f, "%.2f")) {
+		renderer.setHDRExposure(exposure);
+	}
+
 	ImGui::End();
 }

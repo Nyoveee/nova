@@ -46,6 +46,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	debugOverlayShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
 	objectIdShader		{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
 	skyboxShader		{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
+	toneMappingShader	{ "System/Shader/quad.vert",				"System/Shader/tonemap.frag" },
 	mainVAO				{},
 	debugPhysicsVAO		{},
 	mainVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -62,10 +63,12 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	camera				{},
 	numOfDebugTriangles	{},
 	isOnWireframeMode	{},
+	hdrExposure			{ 0.25f },
 
-	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16 } },
+	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
 	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } },
-	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } }
+	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
+	postProcessFrameBuffer	{ gameWidth, gameHeight, { GL_RGBA8 } }
 {
 	printOpenGLDriverDetails();
 
@@ -139,6 +142,29 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
+
+	// ======================================================
+	// Fullscreen Quad VAO configuration for post-processing
+	// ======================================================
+	const float quadVertices[] = {
+		// positions   // texCoords
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+	};
+
+	glGenVertexArrays(1, &quadVAO);
+	glGenBuffers(1, &quadVBO);
+
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }
 
 Renderer::~Renderer() {
@@ -186,12 +212,15 @@ void Renderer::render(RenderTarget target, bool toRenderDebug) {
 		debugRender();
 	}
 
+	// Apply HDR tone mapping post-processing
+	renderHDRTonemapping();
+
 	// Bind back to default FBO for ImGui to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 std::vector<GLuint> const& Renderer::getMainFrameBufferTextures() const {
-	return mainFrameBuffer.textureIds();
+	return postProcessFrameBuffer.textureIds();
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -216,6 +245,7 @@ Camera const& Renderer::getCamera() const {
 DLL_API void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 	skyboxShader.compile();
+	toneMappingShader.compile();
 }
 
 void Renderer::debugRender() {
@@ -689,4 +719,40 @@ void Renderer::printOpenGLDriverDetails() const {
 	if (glslVersion) {
 		Logger::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
 	}
+}
+
+void Renderer::renderHDRTonemapping() {
+	ZoneScoped;
+
+	// Bind the post-processing framebuffer for LDR output
+	glBindFramebuffer(GL_FRAMEBUFFER, postProcessFrameBuffer.fboId());
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// Disable depth testing for fullscreen quad
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	// Set up tone mapping shader
+	toneMappingShader.use();
+	toneMappingShader.setFloat("exposure", hdrExposure);
+	toneMappingShader.setFloat("gamma", 2.2f);
+
+	// Bind the HDR texture from main framebuffer
+	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]);
+	toneMappingShader.setImageUniform("hdrBuffer", 0);
+
+	// Render fullscreen triangle (more efficient than quad)
+	// This technique uses a large triangle that covers the screen
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	// Re-enable depth testing
+	glEnable(GL_DEPTH_TEST);
+}
+
+void Renderer::setHDRExposure(float exposure) {
+	hdrExposure = exposure;
+}
+
+float Renderer::getHDRExposure() const {
+	return hdrExposure;
 }

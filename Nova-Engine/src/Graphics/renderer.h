@@ -68,6 +68,10 @@ public:
 	// most probably for ease of development.
 	DLL_API void recompileShaders();
 
+	// HDR controls
+	DLL_API void setHDRExposure(float exposure);
+	DLL_API float getHDRExposure() const;
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
@@ -98,6 +102,9 @@ private:
 
 	// render a debug triangles in physics
 	void debugRender();
+
+	// HDR post-processing functions
+	void renderHDRTonemapping();
 
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
@@ -130,9 +137,13 @@ private:
 	BufferObject spotLightSSBO;
 	BufferObject sharedUBO;
 
-	// Debug Physics VAO and it's corresponding VBO.	
+	// Debug Physics VAO and it's corresponding VBO.
 	GLuint debugPhysicsVAO;
 	BufferObject debugPhysicsVBO;
+
+	// Fullscreen quad VAO and VBO for post-processing
+	GLuint quadVAO;
+	GLuint quadVBO;
 
 	Camera camera;
 
@@ -145,9 +156,13 @@ private:
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
 
+	// HDR post-processing framebuffer (LDR output)
+	FrameBuffer postProcessFrameBuffer;
+
 private:
 	int numOfDebugTriangles;
 	bool isOnWireframeMode;
+	
 
 public:
 	Shader basicShader;
@@ -161,4 +176,10 @@ public:
 	Shader debugOverlayShader;
 	Shader objectIdShader;
 	Shader skyboxShader;
+	
+	// HDR tone mapping shader
+	Shader toneMappingShader;
+
+	// HDR parameters
+	float hdrExposure;
 };
