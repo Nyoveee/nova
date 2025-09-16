@@ -63,11 +63,11 @@ std::optional<BasicAssetInfo> Descriptor::parseDescriptorFile(std::ifstream& des
 	return { { resourceId, std::move(name), std::move(fullFilepath) } };
 }
 
-BasicAssetInfo Descriptor::createDescriptorFile(AssetFilePath const& path, std::ofstream& metaDataFile) {
+BasicAssetInfo Descriptor::createDescriptorFile(ResourceID id, AssetFilePath const& path, std::ofstream& metaDataFile) {
 	// calculate relative path to the Assets directory.
 	std::filesystem::path relativePath = std::filesystem::relative(std::filesystem::path{ path }, assetDirectory);
 
-	BasicAssetInfo assetInfo = { generateResourceID(), std::filesystem::path{ path }.filename().string(), path };
+	BasicAssetInfo assetInfo = { id, std::filesystem::path{ path }.filename().string(), path };
 
 	if (!metaDataFile) {
 		Logger::error("Error creating metadata file for {}", path.string);

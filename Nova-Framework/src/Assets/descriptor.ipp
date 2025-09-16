@@ -62,10 +62,11 @@ std::optional<AssetInfo<T>> Descriptor::parseDescriptorFile(DescriptorFilePath c
 
 template <ValidAsset T>
 AssetInfo<T> Descriptor::createDescriptorFile(AssetFilePath const& path) {
-	DescriptorFilePath descriptorFileName = getDescriptorFilename<T>(path);
+	ResourceID id = generateResourceID();
+	DescriptorFilePath descriptorFileName = getDescriptorFilename<T>(id);
 	std::ofstream metaDataFile{ descriptorFileName };
 
-	AssetInfo<T> assetInfo{ createDescriptorFile(path, metaDataFile) };
+	AssetInfo<T> assetInfo{ createDescriptorFile(id, path, metaDataFile) };
 
 	// ============================
 	// Filestream is now pointing at the 4th line.
@@ -84,19 +85,19 @@ AssetInfo<T> Descriptor::createDescriptorFile(AssetFilePath const& path) {
 }
 
 template<ValidAsset T>
-DescriptorFilePath Descriptor::getDescriptorFilename(AssetFilePath const& assetPath) {
+DescriptorFilePath Descriptor::getDescriptorFilename(ResourceID id) {
 	auto iterator = subDescriptorDirectories.find(Family::id<T>());
 	assert(iterator != subDescriptorDirectories.end() && "Sub asset directory not recorded.");
 
 	auto&& [_, subDescriptorDirectory] = *iterator;
-	return std::filesystem::path{ subDescriptorDirectory / std::filesystem::path{ assetPath }.stem() }.string() + ".desc";
+	return std::filesystem::path{ subDescriptorDirectory / std::filesystem::path{ std::to_string(static_cast<std::size_t>(id)) }.stem() }.string() + ".desc";
 }
 
 template<ValidAsset T>
-ResourceFilePath Descriptor::getResourceFilename(DescriptorFilePath const& descriptorPath) {
+ResourceFilePath Descriptor::getResourceFilename(ResourceID id) {
 	auto iterator = subResourceDirectories.find(Family::id<T>());
 	assert(iterator != subResourceDirectories.end() && "Sub asset directory not recorded.");
 
 	auto&& [_, subResourceDirectory] = *iterator;
-	return std::filesystem::path{ subResourceDirectory / std::filesystem::path{ descriptorPath }.stem() }.string();
+	return std::filesystem::path{ subResourceDirectory / std::filesystem::path{ std::to_string(static_cast<std::size_t>(id)) }.stem() }.string();
 }

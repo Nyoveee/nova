@@ -196,8 +196,8 @@ void AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFilePath
 	auto loadDescriptorFile = [&]<typename T>() {
 		auto assetInfo = Descriptor::createDescriptorFile<T>(assetFilePath);
 
-		DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(assetFilePath);
-		ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(descriptorFilePath);
+		DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(assetInfo.id);
+		ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(assetInfo.id);
 
 		intermediaryAssetsToFilepaths.insert({ assetFilePath, { descriptorFilePath, resourceFilePath } });
 		createResourceFile<T>(assetInfo);

@@ -176,7 +176,7 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 #endif
 
 template<ValidAsset T>
-void AssetManager::compileIntermediaryFile(AssetFilePath const& path) {
+void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
 #if _DEBUG
 	const char* executableConfiguration = "Debug";
 #else
@@ -186,15 +186,19 @@ void AssetManager::compileIntermediaryFile(AssetFilePath const& path) {
 
 	std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
 	
-	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(path);
-	std::string command = compilerPath.string() + " \"" + descriptorFilePath.string + "\"";
+	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.id);
+
+	// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
+	std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
+
+	Logger::info("Running command: {}", command);
 
 	if (std::system(command.c_str())) {
 		Logger::error("Error compiling {}", descriptorFilePath.string);
 	}
 	else {
 		Logger::info("Successful compiling {}", descriptorFilePath.string);
-		Logger::info("Resource file created: {}", Descriptor::getResourceFilename<T>(descriptorFilePath).string);
+		Logger::info("Resource file created: {}", Descriptor::getResourceFilename<T>(descriptor.id).string);
 	}
 }
 
@@ -252,7 +256,7 @@ void AssetManager::loadAllDescriptorFiles() {
 		Logger::info("");
 
 		// we record all encountered intermediary assets with corresponding filepaths.
-		intermediaryAssetsToFilepaths.insert({ descriptor.filepath, { descriptorFilepath, Descriptor::getResourceFilename<T>(descriptorFilepath) } });
+		intermediaryAssetsToFilepaths.insert({ descriptor.filepath, { descriptorFilepath, Descriptor::getResourceFilename<T>(descriptor.id) } });
 	}
 
 	Logger::info("===========================\n");
@@ -261,10 +265,10 @@ void AssetManager::loadAllDescriptorFiles() {
 template<ValidAsset T>
 void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	// this compiles a resource file corresponding to the intermediary asset.
-	compileIntermediaryFile<T>(descriptor.filepath);
+	compileIntermediaryFile<T>(descriptor);
 
-	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.filepath);
-	ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(descriptorFilePath);
+	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.id);
+	ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(descriptor.id);
 
 	// we can now add this resource to the resource manager.
 	T* resource = resourceManager.addResourceFile<T>(resourceFilePath);

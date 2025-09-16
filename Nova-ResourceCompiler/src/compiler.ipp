@@ -26,10 +26,10 @@ void Compiler::compileAsset(std::filesystem::path const& descriptorFilepath) {
 
 	AssetInfo<T> assetInfo = optAssetInfo.value();
 
-	std::ofstream resourceFile { Descriptor::getResourceFilename<T>(descriptorFilepath), std::ios::binary };
+	std::ofstream resourceFile { Descriptor::getResourceFilename<T>(assetInfo.id), std::ios::binary };
 
 	if (!resourceFile) {
-		Logger::error("Failed to create resource file: {}. Compilation failed.", Descriptor::getResourceFilename<T>(descriptorFilepath).string);
+		Logger::error("Failed to create resource file: {}. Compilation failed.", Descriptor::getResourceFilename<T>(assetInfo.id).string);
 		return;
 	}
 

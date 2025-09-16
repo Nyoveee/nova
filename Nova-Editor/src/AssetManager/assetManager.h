@@ -180,7 +180,7 @@ private:
 	);
 
 	template <ValidAsset T>
-	void compileIntermediaryFile(AssetFilePath const& path);
+	void compileIntermediaryFile(AssetInfo<T> descriptor);
 
 	// =========================================================
 	// Parsing meta data file associated with the asset.
