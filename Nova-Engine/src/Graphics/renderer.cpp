@@ -11,6 +11,7 @@
 #include "vertex.h"
 #include "Component/ECS.h"
 #include "ResourceManager/resourceManager.h"
+#include "frustumCulling.h"
 
 #include <fstream>
 #include "Component/component.h"
@@ -180,7 +181,7 @@ void Renderer::render(RenderTarget target, bool toRenderDebug) {
 
 	renderModels();
 
-	//renderOutline();
+	renderOutline();
 
 	if (toRenderDebug) {
 		debugRender();
@@ -320,6 +321,7 @@ void Renderer::prepareRendering(RenderTarget target) {
 	constexpr GLuint	nullEntity			= entt::null;
 	constexpr GLfloat	initialDepth		= 1.f;
 	constexpr GLint		initialStencilValue = 0;
+	drawcallCounter = 0;
 
 	glDisable(GL_DITHER);
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
@@ -439,6 +441,15 @@ void Renderer::renderSkyBox() {
 }
 
 void Renderer::renderModels() {
+	frustum cameraFrustum;
+	cameraFrustum.createFrustumFromCamera(
+		camera,
+		camera.getAspectRatio(),
+		camera.getFov(),
+		camera.getNearPlane(),
+		camera.getFarPlane()
+	);
+
 	ZoneScopedC(tracy::Color::PaleVioletRed1);	
 
 	// enable back face culling for our 3d models..
@@ -458,7 +469,11 @@ void Renderer::renderModels() {
 			// missing model.
 			continue;
 		}
+		sphere modelSphere = sphere::makeBoundingSphere(transform, model->maxDimension);
 
+		if (cameraFrustum.checkFrustumCulling(modelSphere) == cullResult::isOutside) {
+			continue; // Skip rendering this model
+		}
 		setModelUniforms(transform, entity);
 
 		// Set up stencil operation
@@ -494,13 +509,12 @@ void Renderer::renderModels() {
 			// time to draw!
 			mainVBO.uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
+			++drawcallCounter;
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
-
 			// render object id into object id FBO.
 			renderObjectId(mesh.numOfTriangles * 3);
 		}
 	}
-
 	glDisable(GL_CULL_FACE);
 }
 
@@ -530,6 +544,7 @@ void Renderer::renderOutline() {
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
+
 }
 
 void Renderer::renderObjectId(GLsizei count) {
@@ -689,4 +704,9 @@ void Renderer::printOpenGLDriverDetails() const {
 	if (glslVersion) {
 		Logger::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
 	}
+}
+
+unsigned int Renderer::drawCalls()
+{
+	return drawcallCounter;
 }

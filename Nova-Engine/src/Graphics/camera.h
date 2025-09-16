@@ -32,6 +32,11 @@ public:
 
 	glm::vec3	getRight() const;
 
+	// camera private access functions
+	float getAspectRatio()const;
+	float getFov()const;
+	float getNearPlane()const;
+	float getFarPlane()const;
 public:
 	// only calculate view and projection matrix at the end of game loop once, for optimisation.
 	void recalculateViewMatrix();

@@ -148,7 +148,11 @@ private:
 private:
 	int numOfDebugTriangles;
 	bool isOnWireframeMode;
+	unsigned int drawcallCounter;
 
+public:
+	// get the drawcall
+	DLL_API unsigned int drawCalls();
 public:
 	Shader basicShader;
 	Shader standardShader;

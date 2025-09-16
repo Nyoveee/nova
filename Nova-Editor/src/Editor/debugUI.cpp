@@ -23,7 +23,7 @@ void DebugUI::update() {
 	ImGui::SeparatorText("Performance");
 
 	ImGui::Text("FPS: %.2f", window.fps());
-
+	ImGui::Text("Drawcall: %d", renderer.drawCalls());
 #if 0
 	ImGui::SeparatorText("Asset Manager");
 	std::string threadPoolStats = std::format("{} tasks total, {} tasks running, {} tasks queued.",

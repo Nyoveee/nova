@@ -56,6 +56,26 @@ glm::vec3 Camera::getRight() const {
 	return cameraRight;
 }
 
+float Camera::getAspectRatio() const
+{
+	return aspectRatio;
+}
+
+float Camera::getFov() const
+{
+	return fovAngle;
+}
+
+float Camera::getNearPlane() const
+{
+	return nearPlaneDistance;
+}
+
+float Camera::getFarPlane() const
+{
+	return farPlaneDistance;
+}
+
 void Camera::recalculateViewMatrix() {
 	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, Up);
 }
