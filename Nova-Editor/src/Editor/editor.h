@@ -12,6 +12,7 @@
 #include "assetManagerUi.h"
 #include "hierarchy.h"
 #include "debugUI.h"
+#include "console.h"
 
 using GLuint = unsigned int;
 
@@ -79,6 +80,7 @@ private:
 	AssetManagerUI assetManagerUi;
 	Hierarchy hierarchyList;
 	DebugUI debugUi;
+	Console console;
 
 private:
 	std::vector<entt::entity> selectedEntities;

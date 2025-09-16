@@ -206,6 +206,7 @@ void Editor::main() {
 	assetManagerUi.update();
 	hierarchyList.update();
 	debugUi.update();
+	console.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();
