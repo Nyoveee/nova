@@ -19,26 +19,35 @@ NativeType native(ManagedType& managedType) {
 // For managed structs -> to convert native types to managed types for interaction
 // =====================================================
 #define Declaration(Type, Name) Type Name;
-#define ConstructorDefinition(Type, Name) Name{native.Name},
-#define ListInitialization(Type, Name) Name,
+#define ConstructorDefinition(Type, Name) Name{native.Name}
+#define ListInitialization(Type, Name) Name
+#define GetString(Type, Name) Name.ToString()
 
-#define ManagedStruct(ManagedType,NativeType,...)																	\
-public value struct ManagedType {																				    \
-	ManagedType(NativeType native) : Call_Macro_Double(ConstructorDefinition, __VA_ARGS__) type { #ManagedType } {} \
-	NativeType native() { return {Call_Macro_Double(ListInitialization, __VA_ARGS__)};}								\
-	Call_Macro_Double(Declaration,__VA_ARGS__)																		\
-	System::String^ type;																							\
-};																													\
-																													\
-template <>																											\
-NativeType native(ManagedType& managedType) {																		\
-	return managedType.native();																					\
+#define ManagedStruct(ManagedType,NativeType,...)														        \
+public value struct ManagedType {																		        \
+	ManagedType(NativeType native) : Call_MacroComma_Double(ConstructorDefinition, __VA_ARGS__) {}              \
+	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}                   \
+	virtual System::String^ ToString() override sealed{                                                         \
+		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();                             \
+		System::String^ result = "{";                                                                           \
+		for (int i = 0; i < fieldInfos->Length; ++i) {                                                          \
+			result += fieldInfos[i]->GetValue(*this)->ToString();                                               \
+			if (i != fieldInfos->Length - 1) result += ", ";                                                    \
+		}																									    \
+		result += "}";                                                                                          \
+		return result;                                                                                          \
+	}                                                                                                           \
+	Call_Macro_Double(Declaration,__VA_ARGS__)															        \
+};																										        \
+template <>																								        \
+inline NativeType native(ManagedType& managedType) {													        \
+	return managedType.native();																		        \
 }	
 
 // =====================================================
 // Managed component macro generator.
 // =====================================================
-#define PropertyDeclaration(ComponentType, Type, Name)					\
+#define PropertyDeclaration(Type, Name)					                \
 property Type Name														\
 {																		\
 	Type get()				{ return Type(componentReference->Name); }	\
@@ -51,7 +60,18 @@ property Type Name														\
 #define ManagedComponentDeclaration(ComponentType, ...) \
 public ref class ComponentType##_ : IManagedComponent { \
 public: \
-	Call_Macro_Double_C(PropertyDeclaration, ComponentType, __VA_ARGS__) \
+	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__) \
+	virtual System::String^ ToString() override sealed{ \
+		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties(); \
+		System::String^ result = #ComponentType + "_{"; \
+		for (int i = 0; i < propertyInfos->Length; ++i) { \
+			result += propertyInfos[i]->Name; \
+			result += propertyInfos[i]->GetValue(this)->ToString(); \
+			if (i != propertyInfos->Length - 1) result += ", "; \
+		} \
+		result += "}"; \
+		return result; \
+	} \
 internal: \
 	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override { \
 		entityID = p_entityID; \

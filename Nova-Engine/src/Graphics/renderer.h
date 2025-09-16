@@ -10,13 +10,13 @@
 #include "camera.h"
 #include "bufferObject.h"
 #include "framebuffer.h"
-#include "ECS.h"
+#include "Component/ECS.h"
 
-#include "AssetManager/Asset/model.h"
-#include "AssetManager/Asset/cubemap.h"
+#include "model.h"
+#include "cubemap.h"
 
 class Engine;
-class AssetManager;
+class ResourceManager;
 
 class Renderer {
 public:
@@ -116,7 +116,7 @@ private:
 
 private:
 	Engine& engine;
-	AssetManager& assetManager;
+	ResourceManager& resourceManager;
 	entt::registry& registry;
 
 	// Main VAO and their related buffers
@@ -125,7 +125,9 @@ private:
 	BufferObject EBO;
 
 	// SSBO and UBO.
-	BufferObject lightSSBO;
+	BufferObject pointLightSSBO;
+	BufferObject directionalLightSSBO;
+	BufferObject spotLightSSBO;
 	BufferObject sharedUBO;
 
 	// Debug Physics VAO and it's corresponding VBO.	

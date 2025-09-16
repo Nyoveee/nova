@@ -1,4 +1,4 @@
-#include "engine.h"
+#include "Engine/engine.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -7,11 +7,11 @@
 
 #include "gizmo.h"
 #include "editor.h"
-#include "ecs.h"
-#include "inputManager.h"
+#include "Component/ecs.h"
+#include "InputManager/inputManager.h"
 #include "InputManager/inputEvent.h"
 #include "Component/component.h"
-#include "Libraries/math.h"
+#include "nova_math.h"
 
 Gizmo::Gizmo(Editor& editor, ECS& ecs) : 
 	editor		{ editor },

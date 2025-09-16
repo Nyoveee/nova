@@ -3,13 +3,16 @@
 #include <vector>
 #include <functional>
 
-#include "ecs.h"
 #include "export.h"
+
+#include "Component/ecs.h"
+
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
 #include "hierarchy.h"
 #include "debugUI.h"
+#include "console.h"
 
 using GLuint = unsigned int;
 
@@ -17,10 +20,11 @@ class Window;
 class Engine;
 class InputManager;
 class AssetManager;
+class ResourceManager;
 
 class Editor {
 public:
-	Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager);
+	Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager);
 
 	~Editor();
 	Editor(Editor const& other)				= delete;
@@ -47,6 +51,7 @@ public:
 
 public:
 	entt::entity hoveringEntity;
+	std::vector<entt::entity> copiedEntityVec;
 
 private:
 	void main();
@@ -65,6 +70,7 @@ public:
 	Engine& engine;
 	InputManager& inputManager;
 	AssetManager& assetManager;
+	ResourceManager& resourceManager;
 
 private:
 	Window& window;
@@ -74,6 +80,7 @@ private:
 	AssetManagerUI assetManagerUi;
 	Hierarchy hierarchyList;
 	DebugUI debugUi;
+	Console console;
 
 private:
 	std::vector<entt::entity> selectedEntities;

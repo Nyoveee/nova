@@ -1,15 +1,16 @@
 #include "serialisation.h"
 #include "Component/component.h"
-#include "ECS.h"
+#include "Component/ECS.h"
 
 #include <fstream>
 #include <iomanip>
-constexpr const char* filetest2path = "test2.json";
+//constexpr const char* filetest2path = "test2.json";
 constexpr const char* filepath = "test.json";
 
 namespace Serialiser {
-	void Serialiser::serialiseScene(ECS& ecs) {
-		std::ofstream file(filetest2path);
+	void Serialiser::serialiseScene(ECS& ecs, const char* fileName) {
+		//std::ofstream file(filetest2path);
+		std::ofstream file(fileName);
 
 		if (!file) {
 			return;
@@ -88,10 +89,10 @@ namespace Serialiser {
 #endif
 	}
 
-	void deserialiseScene(ECS& ecs) {
+	void deserialiseScene(ECS& ecs, const char* fileName) {
 		(void)ecs;
 
-		std::ifstream file(filepath);
+		std::ifstream file(fileName);
 
 		if (!file.is_open())
 			return;
@@ -100,35 +101,10 @@ namespace Serialiser {
 
 		file >> j;
 		entt::registry& registry = ecs.registry;
+
 		for (const auto& en : j["entities"]) {
 			auto entity = registry.create(en["id"]);
-			deserialiseComponents<ALL_COMPONENTS>(registry, entity, file, en);
+			deserialiseComponents<ALL_COMPONENTS>(registry, entity, en);
 		}
-		
-
-
-		//for (entt::entity entity : registry.view<entt::entity>().each()) {
-		//	deserialiseComponents<ALL_COMPONENTS>(registry, entity, file);
-		//}
-#if 0
-		json j;
-
-		file >> j;
-		entt::registry& registry = ecs.registry;
-
-		for (const auto& en : j["entities"])
-		{
-			auto entity = registry.create(en["id"]);
-
-			Transform transform = {
-				{en["Transform"]["position"]["x"], en["Transform"]["position"]["y"], en["Transform"]["position"]["z"]},
-				{en["Transform"]["scale"]["x"], en["Transform"]["scale"]["y"], en["Transform"]["scale"]["z"]},
-				{en["Transform"]["rotation"]["w"], en["Transform"]["rotation"]["x"], en["Transform"]["rotation"]["y"], en["Transform"]["rotation"]["z"]}
-			};
-
-			registry.emplace<Transform>(entity, std::move(transform));
-			registry.emplace<EntityData>(entity, EntityData{ en["EntityData"]["name"], en["EntityData"]["parent"], en["EntityData"]["children"] });
-		}
-#endif
 	}
 };

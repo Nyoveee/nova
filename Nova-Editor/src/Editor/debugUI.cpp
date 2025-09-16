@@ -1,9 +1,9 @@
-#include "engine.h"
+#include "Engine/engine.h"
 
 #include "debugUI.h"
 #include "editor.h"
-#include "assetManager.h"
-#include "window.h"
+#include "ResourceManager/resourceManager.h"
+#include "Engine/window.h"
 #include "Graphics/renderer.h"
 
 #include "IconsFontAwesome6.h"
@@ -11,10 +11,10 @@
 #include <format>
 
 DebugUI::DebugUI(Editor& editor) :
-	engine{ editor.engine },
-	renderer{ editor.engine.renderer },
-	assetManager{ editor.engine.assetManager },
-	window{ editor.engine.window }
+	engine			{ editor.engine },
+	renderer		{ editor.engine.renderer },
+	resourceManager	{ editor.engine.resourceManager },
+	window			{ editor.engine.window }
 {}
 
 void DebugUI::update() {
@@ -24,6 +24,7 @@ void DebugUI::update() {
 
 	ImGui::Text("FPS: %.2f", window.fps());
 
+#if 0
 	ImGui::SeparatorText("Asset Manager");
 	std::string threadPoolStats = std::format("{} tasks total, {} tasks running, {} tasks queued.",
 		assetManager.threadPool.get_tasks_total(),
@@ -32,6 +33,7 @@ void DebugUI::update() {
 	);
 
 	ImGui::Text(threadPoolStats.c_str());
+#endif
 
 	ImGui::SeparatorText("Physics");
 

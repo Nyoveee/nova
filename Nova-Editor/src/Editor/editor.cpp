@@ -1,4 +1,4 @@
-#include "ScriptingAPIManager.h"
+#include "Engine/ScriptingAPIManager.h"
 
 #include <glad/glad.h>
 
@@ -10,15 +10,16 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "Audio/audioSystem.h"
-#include "window.h"
-#include "editor.h"
-#include "engine.h"
-#include "ECS.h"
-#include "themes.h"
-#include "inputManager.h"
-#include "assetManager.h"
+#include "Engine/window.h"
+#include "Component/ECS.h"
+#include "Engine/engine.h"
+#include "InputManager/inputManager.h"
+#include "ResourceManager/resourceManager.h"
+#include "AssetManager/assetManager.h"
 
-#include "AssetManager/Asset/model.h"
+#include "editor.h"
+#include "themes.h"
+#include "model.h"
 
 #include "Component/component.h"
 
@@ -31,10 +32,11 @@ constexpr const char* fontFileName =
 	"System\\Font\\"
 	"NotoSans-Medium.ttf";
 
-Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager) :
+Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager) :
 	window							{ window },
 	engine							{ engine },
 	assetManager					{ assetManager },
+	resourceManager					{ resourceManager },
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
@@ -111,6 +113,25 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		}
 	);
+
+	inputManager.subscribe<CopyEntity>(
+		[&](CopyEntity) {
+			if (selectedEntities.size()) {
+				for (entt::entity entity : selectedEntities) {
+					copiedEntityVec.push_back(entity);
+				}
+			}
+		}
+	);
+
+	inputManager.subscribe<PasteEntity>(
+		[&](PasteEntity) {
+			if (!copiedEntityVec.empty()) {
+				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
+				copiedEntityVec.clear();
+			}
+		}
+	);
 }
 
 void Editor::update(std::function<void(bool)> changeSimulationCallback) {
@@ -124,6 +145,7 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ImGuizmo::Enable(true);
 
 	main();
+	assetManager.update();
 
 	// inform the engine if there is a change in simulation mode.
 	if (isThereChangeInSimulationMode) {
@@ -184,6 +206,7 @@ void Editor::main() {
 	assetManagerUi.update();
 	hierarchyList.update();
 	debugUi.update();
+	console.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();
@@ -209,7 +232,7 @@ void Editor::updateMaterialMapping() {
 
 	// Find all material names with the associated asset.
 	for (auto&& [entity, modelRenderer] : registry.view<MeshRenderer>().each()) {
-		auto [model, _] = assetManager.getAsset<Model>(modelRenderer.modelId);
+		auto [model, _] = resourceManager.getResource<Model>(modelRenderer.modelId);
 
 		if (!model) {
 			continue;
@@ -348,17 +371,17 @@ void Editor::sandboxWindow() {
 
 	if (ImGui::Button("SFX Audio Test"))
 	{
-		engine.audioSystem.playSFX(AssetID { 16975844738926411222 }, 0.0f, 0.0f, 0.0f);
+		engine.audioSystem.playSFX(ResourceID{ 16443787899298411226 }, 0.0f, 0.0f, 0.0f);
 	}
 
 	if (ImGui::Button("BGM Audio Test"))
 	{
-		engine.audioSystem.playBGM(AssetID{ 2788544812328019992 });
+		engine.audioSystem.playBGM(ResourceID{ 11241155678047256416 });
 	}
 
 	if (ImGui::Button("BGM Audio Test 2"))
 	{
-		engine.audioSystem.playBGM(AssetID{ 492974696075952017 });
+		engine.audioSystem.playBGM(ResourceID{ 11186877718248447534 });
 	}
 
 	entt::registry& registry = engine.ecs.registry;
@@ -393,10 +416,10 @@ void Editor::sandboxWindow() {
 
 		std::unordered_map<MaterialName, Material> materials;
 
-		AssetID modelAsset{ 5394145554098620737 };
+		ResourceID modelAsset{ 1857211565665677573 };
 
-		materials["Table_frame_mtl"] = { Material::Pipeline::BlinnPhong, AssetID{ 10628925746169402462 }, Material::Config{ 0.5f, 0.f, 0.f }, AssetID{ 2610993271272464625 } };
-		materials["Table_top_mtl"] = { Material::Pipeline::BlinnPhong, AssetID{ 12328958427352406389 }, Material::Config{ 0.5f, 0.f, 0.f }, AssetID{ 9093688546574377480 } };
+		materials["Table_frame_mtl"] = { Material::Pipeline::BlinnPhong, ResourceID{ 11363069911457047527 }, Material::Config{ 0.5f, 0.f, 0.f }, ResourceID{ 16882922978321767798 } };
+		materials["Table_top_mtl"] = { Material::Pipeline::BlinnPhong, ResourceID{ 1363583670394709573 }, Material::Config{ 0.5f, 0.f, 0.f }, ResourceID{ 11291724444234068892 } };
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
 	}
@@ -415,7 +438,7 @@ void Editor::sandboxWindow() {
 
 		std::unordered_map<MaterialName, Material> materials;
 
-		AssetID modelAsset{ 16424904817436751277 };
+		ResourceID modelAsset{ 12932563721038612588 };
 		materials["Material"] = { Material::Pipeline::Color, Color{1.f, 1.f, 1.f}};
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
@@ -436,7 +459,7 @@ void Editor::sandboxWindow() {
 
 		std::unordered_map<MaterialName, Material> materials;
 
-		AssetID modelAsset{ 16424904817436751277 };
+		ResourceID modelAsset{ 12932563721038612588 };
 		materials["Material"] = { Material::Pipeline::BlinnPhong, Color{0.1f, 0.1f, 0.1f}};
 
 		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
@@ -447,7 +470,7 @@ void Editor::sandboxWindow() {
 
 		registry.emplace<Transform>(entity, Transform{});
 		registry.emplace<EntityData>(entity, EntityData{ "Skybox" });
-		registry.emplace<SkyBox>(entity, SkyBox{ AssetID{ 2183533701078487406 } });
+		registry.emplace<SkyBox>(entity, SkyBox{ ResourceID{ 12369249828857649982 } });
 	}
 
 	if (ImGui::Button("recompile shaders")) {

@@ -1,28 +1,31 @@
-#include "Libraries/reflection.h"
-#include "assetManager.h"
+#include "reflection.h"
+#include "ResourceManager/resourceManager.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
 
-#include "Libraries/magic_enum.hpp"
+#include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
 
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 	template<class T>
-	concept IsTypedAssetID = requires(T x) {
-		{ TypedAssetID{ x } } -> std::same_as<T>;
+	concept IsTypedResourceID = requires(T x) {
+		{ TypedResourceID{ x } } -> std::same_as<T>;
 	};
 
 	template<typename Component>
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
 		(void) entity;
 
-		AssetManager& assetManager = componentInspector.assetManager;
-		(void) assetManager;
+		ResourceManager& resourceManager = componentInspector.resourceManager;
+		(void) resourceManager;
 
 		if constexpr (!reflection::isReflectable<Component>()) {
+			return;
+		}
+		else if constexpr (std::same_as<Component, EntityData>) {
 			return;
 		}
 		else {
@@ -74,22 +77,22 @@ namespace {
 						ImGui::InputInt(fieldData.name(), &dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, float>) {
+					else if constexpr (std::same_as<DataMemberType, float>) {
 						ImGui::InputFloat(fieldData.name(), &dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, bool>) {
+					else if constexpr (std::same_as<DataMemberType, bool>) {
 						ImGui::Checkbox(fieldData.name(), &dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, std::string>) {
+					else if constexpr (std::same_as<DataMemberType, std::string>) {
 						ImGui::PushTextWrapPos();
 						ImGui::Text(fieldData.name());
 						ImGui::InputText("##", &dataMember);
 						ImGui::PopTextWrapPos();
 					}
 
-					if constexpr (std::same_as<DataMemberType, glm::vec3>) {
+					else if constexpr (std::same_as<DataMemberType, glm::vec3>) {
 						if (ImGui::BeginTable("MyTable", 4, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
 							ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
 							ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
@@ -113,14 +116,14 @@ namespace {
 						}
 					}
 
-					if constexpr (std::same_as<DataMemberType, Color>) {
+					else if constexpr (std::same_as<DataMemberType, Color>) {
 						ImGui::Text(fieldData.name());
 						glm::vec3 vec = dataMember;
 						ImGui::ColorEdit3("##", glm::value_ptr(vec));
 						dataMember = vec;
 					}
 
-					if constexpr (std::same_as<DataMemberType, glm::quat>) {
+					else if constexpr (std::same_as<DataMemberType, glm::quat>) {
 						if (ImGui::BeginTable("MyTable", 5, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
 							ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
 							ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
@@ -152,7 +155,7 @@ namespace {
 						}
 					}
 
-					if constexpr (std::same_as<DataMemberType, EulerAngles>) {
+					else if constexpr (std::same_as<DataMemberType, EulerAngles>) {
 						// convert from radian to degrees for display..
 						glm::vec3 eulerAngles = static_cast<glm::vec3>(dataMember);
 						eulerAngles.x = toDegree(eulerAngles.x);
@@ -187,10 +190,19 @@ namespace {
 						dataMember = EulerAngles{ {toRadian(eulerAngles.x), toRadian(eulerAngles.y), toRadian(eulerAngles.z)} };
 					}
 
-					if constexpr (std::same_as<DataMemberType, AssetID>) {
+					if constexpr (std::same_as<DataMemberType, Radian>) {
+						// convert from radian to degrees for display..
+						float angle = static_cast<float>(dataMember);
+						angle = toDegree(angle);
+						if (ImGui::SliderFloat(fieldData.name(), &angle, 0.f, 180.f)) {
+							dataMember = toRadian(angle);
+						}
+					}
+
+					if constexpr (std::same_as<DataMemberType, ResourceID>) {
 						ImGui::Text(dataMemberName);
 
-						Asset* asset = assetManager.getAssetInfo(dataMember);
+						Asset* asset = resourceManager.getResourceInfo(dataMember);
 
 						if (!asset) {
 							ImGui::Text("This asset id [%zu] is invalid!", static_cast<std::size_t>(dataMember));
@@ -200,16 +212,16 @@ namespace {
 						}
 					}
 
-					if constexpr (IsTypedAssetID<DataMemberType>) {
+					if constexpr (IsTypedResourceID<DataMemberType>) {
 						// dataMember is of type TypedAssetID<T>
 						using OriginalAssetType = DataMemberType::AssetType;
 
-						componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](AssetID assetId) {
-							dataMember = DataMemberType{ assetId };
+						componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
+							dataMember = DataMemberType{ resourceId };
 						});
 					}
 
-					if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
+					else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
 						int i = 0;
 						for (auto&& [name, material] : dataMember) {
 							ImGui::PushID(i);
@@ -224,11 +236,11 @@ namespace {
 							ImGui::PopID();
 						}
 					}
-					if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 
-						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](AssetID assetId) {
-							scriptDatas.push_back(ScriptData{ assetId });
+						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
+							scriptDatas.push_back(ScriptData{ resourceId });
 						});
 
 						// List of Scripts
@@ -241,7 +253,7 @@ namespace {
 							ImGui::PushID(i++);
 							bool keepScript = true;
 
-							auto&& [scriptAsset, _] = assetManager.getAsset<ScriptAsset>(scriptData.scriptId);
+							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
 							assert(scriptAsset);
 
 							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript)) {
@@ -258,9 +270,54 @@ namespace {
 							scriptDatas.erase(it);
 					}
 
+					else if constexpr (std::same_as<DataMemberType, entt::entity>) {
+						ImGui::Text("%s: %u", dataMemberName, dataMember);
+					}
+
+					if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+						std::vector<AudioData>& audioDatas{ dataMember };
+
+						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId) {
+							audioDatas.push_back(AudioData{ resourceId });
+						});
+
+						// List of Audio Files
+						int i{};
+
+						ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
+
+						std::vector<AudioData>::iterator it = std::remove_if(std::begin(audioDatas), std::end(audioDatas), [&](AudioData& audioData) {
+							ImGui::PushID(i++);
+							bool keepAudioFile = true;
+
+							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
+							assert(audioAsset);
+
+							if (ImGui::CollapsingHeader(audioAsset->getClassName().c_str(), &keepAudioFile)) {
+								// Able to see and adjust Volume in Editor
+								if (ImGui::DragFloat( "Volume", & audioData.Volume, 1.0f, 0.0f, 1.0f)) {
+									// Update Playback Volume
+								}
+								// Adjust Mute/Unmute in Editor
+								if (ImGui::Checkbox("MuteAudio", &audioData.MuteAudio)) {
+									// Update Playback Mute/UnMute
+								}
+							}
+
+							ImGui::PopID();
+							return !keepAudioFile;
+						});
+
+						ImGui::EndChild();
+
+						if(it != std::end(audioDatas))
+							audioDatas.erase(it);
+					}
+
+
 					// it's an enum. let's display a dropdown box for this enum.
 					// how? using enum reflection provided by "magic_enum.hpp" :D
-					if constexpr (std::is_enum_v<DataMemberType>) {
+					else if constexpr (std::is_enum_v<DataMemberType>) {
 						// get the list of all possible enum values
 						constexpr auto listOfEnumValues = magic_enum::enum_entries<DataMemberType>();
 

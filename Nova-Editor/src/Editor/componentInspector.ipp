@@ -1,16 +1,16 @@
-#include "assetManager.h"
+#include "ResourceManager/resourceManager.h"
 #include "imgui.h"
-#include "ECS.h"
+#include "Component/ECS.h"
 
 template<typename T>
-void ComponentInspector::displayAssetDropDownList(std::optional<AssetID> id, const char* labelName, std::function<void(AssetID)> onClickCallback) {
+void ComponentInspector::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback) {
 	ImGui::PushID(imguiCounter);
 	++imguiCounter;
 
 	char const* selectedAssetName = "";
 
 	if (id) {
-		Asset* selectedAsset = assetManager.getAssetInfo(id.value());
+		Asset* selectedAsset = resourceManager.getResourceInfo(id.value());
 
 		if (!selectedAsset) {
 			selectedAssetName = "Invalid asset.";
@@ -20,11 +20,11 @@ void ComponentInspector::displayAssetDropDownList(std::optional<AssetID> id, con
 		}
 	}
 
-	auto allAssets = assetManager.getAllAssets<T>();
+	auto allResources = resourceManager.getAllResources<T>();
 
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
-		for (auto&& assetId : allAssets) {
-			Asset* asset = assetManager.getAssetInfo(assetId);
+		for (auto&& resourceId : allResources) {
+			Asset* asset = resourceManager.getResourceInfo(resourceId);
 
 			if (ImGui::Selectable(asset->name.c_str(), id ? id.value() == asset->id : false)) {
 				onClickCallback(asset->id);

@@ -16,15 +16,16 @@
 #include <Jolt/Physics/Body/MotionType.h>
 #include <Jolt/Physics/Body/BodyID.h>
 
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 #include "Graphics/vertex.h"
-#include "Libraries/reflection.h"
+#include "reflection.h"
 
 // Forward declaring..
 class Model;
 class Texture;
 class CubeMap;
 class ScriptAsset;
+class Audio;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -44,7 +45,7 @@ struct EntityData {
 
 	REFLECTABLE(
 		name,
-		//parent,
+		parent,
 		children
 	)
 };
@@ -106,11 +107,16 @@ struct Light {
 	Color color = Color{ 1.f, 1.f, 1.f };
 	float intensity = 1.f;
 	Type type = Light::Type::PointLight;
+	glm::vec3 attenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
+	Radian cutOffAngle = glm::radians(12.5f);
+	Radian outerCutOffAngle = glm::radians(17.5f);
 	
 	REFLECTABLE(
 		type,
 		color,
-		intensity
+		intensity,
+		cutOffAngle,
+		outerCutOffAngle
 	)
 };
 
@@ -130,15 +136,15 @@ struct Material {
 	Pipeline renderingPipeline = Pipeline::BlinnPhong;
 
 	// either texture map or constant.
-	std::variant<AssetID, Color>	albedo		= Color{ 0.1f, 0.1f, 0.1f };
-	std::variant<AssetID, Config>	config		= Config{ 0.5f, 0.f, 0.f };
-	std::optional<AssetID>			normalMap	= std::nullopt;
+	std::variant<ResourceID, Color>		albedo		= Color{ 0.1f, 0.1f, 0.1f };
+	std::variant<ResourceID, Config>	config		= Config{ 0.5f, 0.f, 0.f };
+	std::optional<ResourceID>			normalMap	= std::nullopt;
 
 	float ambient = 0.1f;
 };
 
 struct MeshRenderer {
-	TypedAssetID<Model> modelId;
+	TypedResourceID<Model> modelId;
 
 	// maps a material name from the model to a specific material texture
 	std::unordered_map<MaterialName, Material> materials;
@@ -186,7 +192,7 @@ struct SphereCollider {
 };
 
 struct SkyBox {
-	TypedAssetID<CubeMap> cubeMapId;
+	TypedResourceID<CubeMap> cubeMapId;
 	
 	REFLECTABLE(
 		cubeMapId
@@ -195,7 +201,7 @@ struct SkyBox {
 
 struct ScriptData
 {
-	TypedAssetID<ScriptAsset> scriptId;
+	TypedResourceID<ScriptAsset> scriptId;
 	// Additional data includes those properties in the scripts
 };
 
@@ -207,10 +213,25 @@ struct Scripts
 	)
 };
 
+struct AudioData
+{
+	TypedResourceID<Audio> AudioId;
+	float Volume;
+	bool MuteAudio;
+
+};
+
 struct AudioComponent {
-	AssetID audio;
+	// Original, for backup
+	// AssetID audio;
+	// 
+	// REFLECTABLE(
+	// 	audio
+	// )
+
+	std::vector<AudioData> AudioList;
 
 	REFLECTABLE(
-		audio
+		AudioList
 	)
 };

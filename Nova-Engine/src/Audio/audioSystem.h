@@ -5,16 +5,16 @@
 #include <unordered_map>
 #include <string>
 
-#include "Libraries/type_alias.h"
+#include "type_alias.h"
 
 class Engine;
-class AssetManager;
+class ResourceManager;
 
 class AudioSystem {
 public:
 	struct AudioInstance {
 		AudioInstanceID id;			// an id representing this audio instance
-		AssetID audioId;			// holds an id back to the original audio file
+		ResourceID audioId;			// holds an id back to the original audio file
 		FMOD::Channel* channel;		// contains audio instance specific data 
 		
 		float volume = 1.f;
@@ -23,7 +23,6 @@ public:
 
 public:
 	DLL_API AudioSystem(Engine& engine);
-
 	DLL_API ~AudioSystem();
 	DLL_API AudioSystem(AudioSystem const& other)				= delete;
 	DLL_API AudioSystem(AudioSystem&& other)					= delete;
@@ -31,9 +30,24 @@ public:
 	DLL_API AudioSystem& operator=(AudioSystem&& other)			= delete;
 
 public:
-	void update();
+	float volCap = 2.0f;
+	float sfxVolume;
+	float sfxGlobal;  // stores sfxVolume * globalVolume
+
+	float bgmVolume;
+	float bgmGlobal;  // stores bgmVolume * globalVolume
+
+	float globalVolume;
+	float buttonVol;
+	
+	// For Screen Transitions
+	// float prevSceneBGMVol;
+	// float currBGMVol;
+	// bool isFadingOut;
+	// bool isFadingIn;
 
 public:
+	void update();
 	void loadAllSounds();
 	void unloadAllSounds();
 
@@ -41,28 +55,48 @@ public:
 	void stopAudioInstance(AudioInstanceID audioInstanceId);
 
     // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
-	DLL_API void playSFX(AssetID audioId, float x, float y, float z);
+	DLL_API void playSFX(ResourceID audioId, float x, float y, float z);
 	//DLL_API	void playSFXNonInst(AssetID audioId, float x, float y, float z);
 
-	DLL_API void playBGM(AssetID audioId);
+	// PlayBGM based on ResourceID audioId
+	DLL_API void playBGM(ResourceID audioId);
+
+	// Pause the sound of the sfx based on AssetID
+	DLL_API void pauseSound(ResourceID audioId, bool paused);
+
+	// Stops all currently playing audio files
+	DLL_API void StopAllAudio();
+
+	// Stops all currently playing audio files with AssetID audioId
+	DLL_API void StopAudio(ResourceID audioId);
+
+	DLL_API void AdjustVol(ResourceID audioId, float volume);
+
+	DLL_API void AdjustGlobalVol(float volume);
+
+	// Sets the game SFX volume level
+	DLL_API void AdjustSFXVol(float volume);
+
+	// Sets the game BGM volume level
+	DLL_API void AdjustBGMVol(float volume);
 
 	void handleFinishedAudioInstance(FMOD::Channel* channel);
 
 private:
-	FMOD::Sound* getSound(AssetID audioId) const;
-	void loadSound(AssetID audioId);
+	FMOD::Sound* getSound(ResourceID audioId) const;
+	void loadSound(ResourceID audioId);
 
 	AudioInstanceID getNewAudioInstanceId();
-	AudioInstance* createSoundInstance(AssetID audioId, float volume = 1.f);
+	AudioInstance* createSoundInstance(ResourceID audioId, float volume = 1.f);
 
 private:
 	FMOD::System* fmodSystem;
 	Engine& engine;
-	AssetManager& assetManager;
+	ResourceManager& resourceManager;
 
 private:
 	AudioInstance* currentBGM;
-	std::unordered_map<AssetID, FMOD::Sound*> sounds;
+	std::unordered_map<ResourceID, FMOD::Sound*> sounds;
 
 	AudioInstanceID nextAudioInstanceId = 0;
 

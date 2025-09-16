@@ -1,9 +1,9 @@
-#include "engine.h"
+#include "Engine/engine.h"
 #include "editor.h"
 
 #include "hierarchy.h"
 #include "imgui.h"
-#include "ECS.h"
+#include "Component/ECS.h"
 
 #include "IconsFontAwesome6.h"
 #include "Component/component.h"

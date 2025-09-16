@@ -24,10 +24,24 @@ struct SimpleVertex {
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
-struct alignas(16) LightData {
-	alignas(16) glm::vec3 lightPos;		// this will represent light direction for directional light
+struct alignas(16) PointLightData {
+	alignas(16) glm::vec3 lightPos;		// this will represent light position for point light
 	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
-	unsigned int type;					// this will hold the corresponding enum values of Light::Type
+	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
+};
+
+struct alignas(16) DirectionalLightData{
+	alignas(16) glm::vec3 lightDir;		// this will represent light direction for directional light
+	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
+};
+
+struct alignas(16) SpotLightData {
+	alignas(16) glm::vec3 lightPos;		// this will represent light position for spot light
+	alignas(16) glm::vec3 lightDir;		// this will represent light direction for spot light
+	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
+	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
+	float cutOffAngle;					// Inner cutoff angle which shows full brightness
+	float outerCutOffAngle;				// Outer cutoff angle where the light will dim from inner to outer range
 };
 
 #pragma warning( pop )
