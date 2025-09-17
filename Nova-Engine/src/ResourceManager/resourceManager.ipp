@@ -1,113 +1,82 @@
 #include "asset.h"
-#include "model.h"
-#include "texture.h"
 
 #include "Logger.h"
 #include "resourceManager.h"
-#include "descriptor.h"
+#include "assetIO.h"
+
+#include "model.h"
+#include "texture.h"
+#include "audio.h"
+#include "cubemap.h"
+#include "scriptAsset.h"
 
 template <ValidAsset T>
 ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
-	// Let's find our resource in the map.
-	auto iterator = resources.find(id);
+	// Let's find our loaded resource in the map
+	auto iterator = loadedResources.find(id);
 
-	// resource doesn't exist in map.
-	if (iterator == resources.end()) {
+	// resource is already loaded, let's return it.
+	if (iterator != loadedResources.end()) {
+		T* resource = dynamic_cast<T*>(iterator->second.get());
+		return ResourceQuery<T>{ resource, resource ? QueryResult::Success : QueryResult::WrongType };
+	}
+
+	// resource is not loaded, let's load it via our loaders.
+	// we first get the filepath of this resource id.
+	auto filepathIterator = resourceFilePaths.find(id);
+
+	// this resource file was never recorded. invalid resource id?
+	if (filepathIterator == resourceFilePaths.end()) {
 		return ResourceQuery<T>{ nullptr, QueryResult::Invalid };
 	}
 
-	// We retrieve the resource, and attempts to load it if it's not loaded.
-	auto&& [_, resource] = *iterator;
+	auto&& [_, resourceFilePath] = *filepathIterator;
 
-	switch (resource->getLoadStatus())
-	{
-	case Asset::LoadStatus::NotLoaded:
-		resource->toLoad();
-		break;
-	case Asset::LoadStatus::Loaded:
-		break;
-	case Asset::LoadStatus::Loading:
-		return ResourceQuery<T>{ nullptr, QueryResult::Loading };
-	case Asset::LoadStatus::LoadingFailed:
-		Logger::error("Loading operator for asset id of {} has failed. Retrying..", static_cast<std::size_t>(id));
-		resource->toLoad();
-		break;
-	}
+	// attempts to load the resource..
+	std::optional<ResourceConstructor> resourceConstructor = ResourceLoader<T>::load(resourceFilePath);
 
-	// Asset has already been loaded after we attempt to load it. (Single-threaded loading, no multi threading.)
-	if (resource->isLoaded()) {
-		T* typedAsset = dynamic_cast<T*>(resource.get());
-		return ResourceQuery<T>{ typedAsset, typedAsset ? QueryResult::Success : QueryResult::WrongType };
-	}
-
-	if (resource->getLoadStatus() == Asset::LoadStatus::LoadingFailed) {
+	if (!resourceConstructor) {
 		return ResourceQuery<T>{ nullptr, QueryResult::LoadingFailed };
 	}
-	else {
-		return ResourceQuery<T>{ nullptr, QueryResult::Loading };
+
+	// constructs the resource..
+	auto resourcePtr = resourceConstructor.value()();
+	auto&& [resourceIterator, __]  = loadedResources.insert({id, std::move(resourcePtr)});
+	assert(resourceIterator != loadedResources.end());
+
+	T* resource = dynamic_cast<T*>(resourceIterator->second.get());
+	return ResourceQuery<T>{ resource, resource ? QueryResult::Success : QueryResult::WrongType };
+}
+
+template<ValidAsset T>
+ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
+	try {
+		// Retrieve the Resource ID from filepath.
+		// May throw an exception.
+		ResourceID id = std::stoull(std::filesystem::path{ filepath }.filename().string());
+		auto [iterator, success] = resourceFilePaths.insert({ id, filepath });
+
+		if (!success) {
+			// asset id collision occur! this shouldn't happen though.
+			Logger::error("Asset ID collision occured {} for: {}", static_cast<std::size_t>(id), filepath.string);
+			return INVALID_ASSET_ID;
+		}
+
+		// record this asset to the corresponding asset type.
+		resourcesByType[Family::id<T>()].push_back(id);
+
+		return id;
+	}
+	catch (std::exception const& ex) {
+		Logger::error("Failed to add resource file. {}", ex.what());
+		return INVALID_ASSET_ID;
 	}
 }
 
 template<ValidAsset T>
-T* ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
-	std::unique_ptr<T> newAsset = std::make_unique<T>(T{ filepath });
-
-	ResourceID id = newAsset->id;
-	auto [iterator, success] = resources.insert({ id, std::move(newAsset) });
-
-	if (!success) {
-		// asset id collision occur! this shouldn't happen though.
-		Logger::error("Asset ID collision occured {} for: {}", static_cast<std::size_t>(id), filepath.string);
-		return nullptr;
-	}
-
-	// record this asset to the corresponding asset type.
-	resourcesByType[Family::id<T>()].push_back(id);
-
-	// associate this asset id with this asset type.
-	resourceIdToType[id] = Family::id<T>();
-
-	// associates this filepath with this asset id.
-	filepathToResourceId[filepath] = id;
-
-	return static_cast<T*>(iterator->second.get());
-}
-
-#if 0
-template<ValidAsset T>
-void ResourceManager::addResourceFile(AssetInfo<T> assetInfo) {
-	std::unique_ptr<T> newAsset = std::make_unique<T>(	
-		createAsset<T>(assetInfo)
-	);
-
-	newAsset->id = assetInfo.id;
-	newAsset->name = assetInfo.name;
-
-	auto [iterator, success] = resources.insert({ assetInfo.id, std::move(newAsset) });
-
-	if (!success) {
-		// asset id collision occur! this shouldn't happen though.
-		Logger::error("Asset ID collision occured for: {}", assetInfo.filepath);
-		return;
-	}
-
-	auto&& [assetId, asset] = *iterator;
-
-	// record this asset to the corresponding asset type.
-	resourcesByType[Family::id<T>()].push_back(assetInfo.id);
-
-	// associate this asset id with this asset type.
-	resourceIdToType[assetInfo.id] = Family::id<T>();
-
-	// associates this filepath with this asset id.
-	filepathToResourceId[assetInfo.filepath] = assetInfo.id;
-}
-#endif
-
-template<ValidAsset T>
-void ResourceManager::loadAllResources() {
-	auto iterator = Descriptor::subResourceDirectories.find(Family::id<T>());
-	assert(iterator != Descriptor::subResourceDirectories.end() && "This descriptor sub directory is not recorded.");
+void ResourceManager::recordAllResources() {
+	auto iterator = AssetIO::subResourceDirectories.find(Family::id<T>());
+	assert(iterator != AssetIO::subResourceDirectories.end() && "This descriptor sub directory is not recorded.");
 	std::filesystem::path const& directory = iterator->second;
 
 	// recursively iterate through a directory and parse all resource files.
@@ -155,10 +124,11 @@ ResourceID ResourceManager::getSomeResourceID() const {
 
 template<ValidAsset T>
 bool ResourceManager::isResource(ResourceID id) const {
-	auto iterator = resourceIdToType.find(id);
+	auto iterator = resourcesByType.find(Family::id<T>());
+	assert(iterator != resourcesByType.end() && "Asset type not recorded.");
 
-	assert(iterator != resourceIdToType.end() && "asset id doesn't exist / have no associated asset type id?");
+	auto&& [_, resourceIds] = *iterator;
 
-	auto [_, resourceTypeId] = *iterator;
-	return resourceTypeId == Family::id<T>();
+	auto findIterator = std::ranges::find(resourceIds, id);
+	return findIterator != resourceIds.end();
 }

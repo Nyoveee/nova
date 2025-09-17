@@ -3,10 +3,9 @@
 #include "texture.h"
 #include "audio.h"
 #include "Logger.h"
-#include "descriptor.h"
 
 template <ValidAsset T>
-std::optional<AssetInfo<T>> Descriptor::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
+std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
 	std::ifstream descriptorFile{ descriptorFilepath };
 
 	// Attempt to read corresponding metafile.
@@ -61,7 +60,7 @@ std::optional<AssetInfo<T>> Descriptor::parseDescriptorFile(DescriptorFilePath c
 }
 
 template <ValidAsset T>
-AssetInfo<T> Descriptor::createDescriptorFile(AssetFilePath const& path) {
+AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	ResourceID id = generateResourceID();
 	DescriptorFilePath descriptorFileName = getDescriptorFilename<T>(id);
 	std::ofstream metaDataFile{ descriptorFileName };
@@ -85,7 +84,7 @@ AssetInfo<T> Descriptor::createDescriptorFile(AssetFilePath const& path) {
 }
 
 template<ValidAsset T>
-DescriptorFilePath Descriptor::getDescriptorFilename(ResourceID id) {
+DescriptorFilePath AssetIO::getDescriptorFilename(ResourceID id) {
 	auto iterator = subDescriptorDirectories.find(Family::id<T>());
 	assert(iterator != subDescriptorDirectories.end() && "Sub asset directory not recorded.");
 
@@ -94,7 +93,7 @@ DescriptorFilePath Descriptor::getDescriptorFilename(ResourceID id) {
 }
 
 template<ValidAsset T>
-ResourceFilePath Descriptor::getResourceFilename(ResourceID id) {
+ResourceFilePath AssetIO::getResourceFilename(ResourceID id) {
 	auto iterator = subResourceDirectories.find(Family::id<T>());
 	assert(iterator != subResourceDirectories.end() && "Sub asset directory not recorded.");
 

@@ -44,6 +44,7 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	if (engineIsDestructing)
 		return;
 
+#if 0
 	std::filesystem::path absPath{ rootDirectory.string() + "\\" + std::filesystem::path(path).string()};
 
 	if (IsPathHidden(absPath))
@@ -60,7 +61,7 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	}
 
 	// Attempts to finds the appropriate asset id.
-	ResourceID resourceId = resourceManager.getResourceID(absPath);
+	ResourceID resourceId = assetManager.getResourceID(absPath);
 
 	if (resourceId == INVALID_ASSET_ID)
 		return;
@@ -84,6 +85,7 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 			engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
 		});
 	}
+#endif
 }
 
 bool AssetDirectoryWatcher::IsPathHidden(std::filesystem::path const& path) const

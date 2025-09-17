@@ -5,7 +5,6 @@
 Asset::Asset(ResourceFilePath p_filepath) :
 	filepath		{ std::move(p_filepath) },
 	resourceFile	{ filepath, std::ios::binary },
-	name			{}, 
 	id				{ INVALID_ASSET_ID }, 
 	loadStatus		{ LoadStatus::NotLoaded } 
 {

@@ -1,6 +1,10 @@
 #include "resourceManager.h"
 #include "Logger.h"
-#include "descriptor.h"
+
+#include "cubemap.h"
+#include "scriptAsset.h"
+
+#include "family.h"
 
 ResourceManager::ResourceManager() {
 	try {
@@ -9,25 +13,25 @@ ResourceManager::ResourceManager() {
 		// ========================================
 		
 		// Checking if the main resource directory exist.
-		if (!std::filesystem::exists(Descriptor::resourceDirectory)) {
-			std::filesystem::create_directory(Descriptor::resourceDirectory);
+		if (!std::filesystem::exists(AssetIO::resourceDirectory)) {
+			std::filesystem::create_directory(AssetIO::resourceDirectory);
 		}
 
 		// Checking if the sub directories exist..
-		for (auto&& [_, subResourceDirectory] : Descriptor::subResourceDirectories) {
+		for (auto&& [_, subResourceDirectory] : AssetIO::subResourceDirectories) {
 			if (!std::filesystem::exists(subResourceDirectory)) {
 				std::filesystem::create_directory(subResourceDirectory);
 			}
 		}
 
 		// ========================================
-		// 2. Load all the resources.
+		// 2. Record all resources..
 		// ========================================
-		loadAllResources<Texture>();
-		loadAllResources<Model>();
-		loadAllResources<CubeMap>();
-		loadAllResources<ScriptAsset>();
-		loadAllResources<Audio>();
+		recordAllResources<Texture>();
+		recordAllResources<Model>();
+		recordAllResources<CubeMap>();
+		recordAllResources<ScriptAsset>();
+		recordAllResources<Audio>();
 
 }
 	catch (const std::filesystem::filesystem_error& ex) {
@@ -35,28 +39,21 @@ ResourceManager::ResourceManager() {
 	}
 }
 
-Asset* ResourceManager::getResourceInfo(ResourceID id) {
-	auto iterator = resources.find(id);
+void ResourceManager::update() {
+	std::lock_guard lock{ initialisationQueueMutex };
 	
-	if (iterator == std::end(resources)) {
-		return nullptr;
+	while (initialisationQueue.size()) {
+		std::function<void()> callback = std::move(initialisationQueue.front());
+		initialisationQueue.pop();
+		callback();
 	}
-	
-	auto&& [_, resource] = *iterator;
-	return resource.get();
 }
 
 bool ResourceManager::doesResourceExist(ResourceID id) const {
-	return resources.find(id) != resources.end();
+	return resourceFilePaths.find(id) != resourceFilePaths.end();
 }
 
-ResourceID ResourceManager::getResourceID(ResourceFilePath const& path) const {
-	auto iterator = filepathToResourceId.find(path.string);
-
-	if (iterator == filepathToResourceId.end()) {
-		return INVALID_ASSET_ID;
-	}
-
-	auto&& [_, resourceId] = *iterator;
-	return resourceId;
+void ResourceManager::submitInitialisationCallback(std::function<void()> callback) {
+	std::lock_guard lock{ initialisationQueueMutex };
+	initialisationQueue.push(std::move(callback));
 }

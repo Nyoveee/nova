@@ -19,19 +19,19 @@ namespace {
 AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	resourceManager		{ resourceManager },
 	engine				{ engine },
-	directoryWatcher	{ *this, resourceManager, engine, Descriptor::assetDirectory }
+	directoryWatcher	{ *this, resourceManager, engine, AssetIO::assetDirectory }
 {
 	// ========================================
 	// 1. Check if the descriptor directory exist, and the respective asset subdirectories.
 	// ========================================
 
 	// Checking if the main descriptor directory exist.
-	if (!std::filesystem::exists(Descriptor::descriptorDirectory)) {
-		std::filesystem::create_directory(Descriptor::descriptorDirectory);
+	if (!std::filesystem::exists(AssetIO::descriptorDirectory)) {
+		std::filesystem::create_directory(AssetIO::descriptorDirectory);
 	}
 
 	// Checking if the sub directories exist..
-	for (auto&& [_, subDescriptorDirectory] : Descriptor::subDescriptorDirectories) {
+	for (auto&& [_, subDescriptorDirectory] : AssetIO::subDescriptorDirectories) {
 		if (!std::filesystem::exists(subDescriptorDirectory)) {
 			std::filesystem::create_directory(subDescriptorDirectory);
 		}
@@ -66,7 +66,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 
 	FolderID folderId{ 0 };
 
-	for (const auto& entry : std::filesystem::recursive_directory_iterator{ Descriptor::assetDirectory }) {
+	for (const auto& entry : std::filesystem::recursive_directory_iterator{ AssetIO::assetDirectory }) {
 		std::filesystem::path assetPath = entry.path();
 
 		if (directoryWatcher.IsPathHidden(assetPath)) {
@@ -83,26 +83,33 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 			continue;
 		}
 
-		// intermediary asset not recorded (missing corresponding descriptor).
-		auto iterator = intermediaryAssetsToFilepaths.find(assetPath);
+		// ------------------------------------------
+		// Attempt to retrieve resource id from asset file path.
+		// ------------------------------------------
+		ResourceID resourceId = INVALID_ASSET_ID;
+		auto iterator = intermediaryAssetsToDescriptor.find(assetPath);
 		
-		if (iterator == std::end(intermediaryAssetsToFilepaths)) {
+		// intermediary asset not recorded (missing corresponding descriptor and resource file.)
+		if (iterator == std::end(intermediaryAssetsToDescriptor)) {
 			Logger::info("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string());
 
 			// we need to generate the corresponding descriptor file for this intermediary file.
-			parseIntermediaryAssetFile(assetPath);
+			resourceId = parseIntermediaryAssetFile(assetPath);
 			Logger::info("");
 		}
-
-		// ------------------------------------------
-		// Save resource entry in the parent folder.
-		// ------------------------------------------
-		ResourceID resourceId = resourceManager.getResourceID(intermediaryAssetsToFilepaths[assetPath].resourceFilepath);
+		// intermediary asset recorded, retrieve id..
+		else {
+			resourceId = iterator->second.descriptor.id;
+		}
 
 		// found some intermediary asset file that is not supported.
 		if (resourceId == INVALID_ASSET_ID) {
 			continue;
 		}
+
+		// ------------------------------------------
+		// Save resource entry in the parent folder.
+		// ------------------------------------------
 
 		std::filesystem::path parentPath = assetPath.parent_path();
 
@@ -188,39 +195,39 @@ void AssetManager::update() {
 	}
 }
 
-void AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFilePath) {
+ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFilePath) {
 	// time to check if file has valid file extension.
 	std::string fileExtension = std::filesystem::path{ assetFilePath }.extension().string();
 
-	// lambda creates descriptor file, loads it to the resource manager and records it as loaded.
-	auto loadDescriptorFile = [&]<typename T>() {
-		auto assetInfo = Descriptor::createDescriptorFile<T>(assetFilePath);
+	// lambda creates descriptor file, creates the resource file, and loads it to the resource manager.
+	auto initialiseResourceFile = [&]<typename T>() {
+		auto assetInfo = AssetIO::createDescriptorFile<T>(assetFilePath);
 
-		DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(assetInfo.id);
-		ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(assetInfo.id);
+		DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(assetInfo.id);
 
-		intermediaryAssetsToFilepaths.insert({ assetFilePath, { descriptorFilePath, resourceFilePath } });
+		intermediaryAssetsToDescriptor.insert({ assetFilePath, { descriptorFilePath, assetInfo } });
 		createResourceFile<T>(assetInfo);
+		return assetInfo.id;
 	};
 
 	if (fileExtension == ".fbx") {
-		loadDescriptorFile.template operator()<Model>();
+		return initialiseResourceFile.template operator()<Model>();
 	}
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
-		loadDescriptorFile.template operator()<Texture>();
+		return initialiseResourceFile.template operator()<Texture>();
 	}
 	else if (fileExtension == ".exr") {
-		loadDescriptorFile.template operator()<CubeMap>();
+		return initialiseResourceFile.template operator()<CubeMap>();
 	}
 	else if (fileExtension == ".cs") {
-		loadDescriptorFile.template operator()<ScriptAsset>();
+		return initialiseResourceFile.template operator()<ScriptAsset>();
 	}
 	else if (fileExtension == ".wav") {
-		loadDescriptorFile.template operator()<Audio>();
+		return initialiseResourceFile.template operator()<Audio>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
-		return;
+		return INVALID_ASSET_ID;
 	}
 }
 
@@ -231,7 +238,7 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 	FolderID parentFolderId;
 
 	// This directory is at the root asset folder -> no parent.
-	if (parentPath == Descriptor::assetDirectory) {
+	if (parentPath == AssetIO::assetDirectory) {
 		parentFolderId = NONE;
 		rootDirectories.push_back(folderId);
 	}
@@ -246,7 +253,7 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 		{},
 		{},
 		path.filename().string(),
-		std::filesystem::relative(path, Descriptor::assetDirectory)
+		std::filesystem::relative(path, AssetIO::assetDirectory)
 	};
 
 	folderNameToId[path.string()] = folderId;
@@ -254,6 +261,30 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 
 std::vector<FolderID> const& AssetManager::getRootDirectories() const {
 	return rootDirectories;
+}
+
+std::string const& AssetManager::getName(ResourceID id) const {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		static std::string invalidAssetName = "Invalid Asset.";
+		return invalidAssetName;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+	return descriptor.name;
+}
+
+AssetFilePath const& AssetManager::getFilepath(ResourceID id) const {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		static AssetFilePath invalidFilePath{};
+		return invalidFilePath;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+	return descriptor.filepath;
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

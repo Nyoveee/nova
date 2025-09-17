@@ -202,9 +202,7 @@ namespace {
 					if constexpr (std::same_as<DataMemberType, ResourceID>) {
 						ImGui::Text(dataMemberName);
 
-						Asset* asset = resourceManager.getResourceInfo(dataMember);
-
-						if (!asset) {
+						if (!resourceManager.doesResourceExist(dataMember)) {
 							ImGui::Text("This asset id [%zu] is invalid!", static_cast<std::size_t>(dataMember));
 						}
 						else {
@@ -293,7 +291,7 @@ namespace {
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
 							assert(audioAsset);
 
-							if (ImGui::CollapsingHeader(audioAsset->getClassName().c_str(), &keepAudioFile)) {
+							if (ImGui::CollapsingHeader(audioAsset->getFilePath().string.c_str(), &keepAudioFile)) {
 								// Able to see and adjust Volume in Editor
 								if (ImGui::DragFloat( "Volume", & audioData.Volume, 1.0f, 0.0f, 1.0f)) {
 									// Update Playback Volume

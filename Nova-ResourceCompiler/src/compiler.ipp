@@ -4,7 +4,7 @@
 #include "model.h"
 #include "scriptAsset.h"
 #include "Logger.h"
-#include "descriptor.h"
+#include "assetIO.h"
 
 #include <filesystem>
 #include <sstream>
@@ -17,7 +17,7 @@
 template <ValidAsset T>
 void Compiler::compileAsset(std::filesystem::path const& descriptorFilepath) {
 	// Retrieve descriptor info.
-	std::optional<AssetInfo<T>> optAssetInfo = Descriptor::parseDescriptorFile<T>(descriptorFilepath);
+	std::optional<AssetInfo<T>> optAssetInfo = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
 
 	if (!optAssetInfo) {
 		Logger::error("Failed to parse descriptor file: {}. Compilation failed.", descriptorFilepath.string());
@@ -26,18 +26,12 @@ void Compiler::compileAsset(std::filesystem::path const& descriptorFilepath) {
 
 	AssetInfo<T> assetInfo = optAssetInfo.value();
 
-	std::ofstream resourceFile { Descriptor::getResourceFilename<T>(assetInfo.id), std::ios::binary };
+	std::ofstream resourceFile { AssetIO::getResourceFilename<T>(assetInfo.id), std::ios::binary };
 
 	if (!resourceFile) {
-		Logger::error("Failed to create resource file: {}. Compilation failed.", Descriptor::getResourceFilename<T>(assetInfo.id).string);
+		Logger::error("Failed to create resource file: {}. Compilation failed.", AssetIO::getResourceFilename<T>(assetInfo.id).string);
 		return;
 	}
-
-	// 1st 8 bytes for resource id.
-	std::size_t resourceId{ assetInfo.id };
-	Logger::info("Generated resource id: {}", resourceId);
-
-	resourceFile.write(reinterpret_cast<const char*>(&resourceId), sizeof(resourceId));
 
 	if constexpr (std::same_as<T, Texture>) {
 		compileTexture(resourceFile, assetInfo.filepath);

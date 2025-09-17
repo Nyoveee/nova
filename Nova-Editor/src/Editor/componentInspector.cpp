@@ -4,7 +4,7 @@
 #include "editor.h"
 #include "Component/component.h"
 #include "Component/ECS.h"
-
+#include "AssetManager/assetManager.h"
 #include "misc/cpp/imgui_stdlib.h"
 
 #include "IconsFontAwesome6.h"
@@ -55,7 +55,8 @@ namespace {
 ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
 	ecs				{ editor.engine.ecs },
-	resourceManager { editor.engine.resourceManager }
+	resourceManager { editor.engine.resourceManager },
+	assetManager	{ editor.assetManager }
 {}
 
 void ComponentInspector::update() {

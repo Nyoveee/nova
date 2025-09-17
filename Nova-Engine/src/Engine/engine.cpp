@@ -56,6 +56,8 @@ void Engine::update(float dt) {
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);
+
+	resourceManager.update();
 }
 
 void Engine::setupSimulation() {

@@ -8,6 +8,8 @@
 
 #include "ScriptLibraryHandler.hxx"
 
+#include "scriptAsset.h"
+
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
 {
@@ -144,7 +146,7 @@ void Interface::load()
 		System::String^ className = gcnew System::String(script->getClassName().c_str());
 		if (!classNameToScriptType.ContainsKey(className)) {
 			Logger::warn("Script asset {} contains invalid class name. Filename and class name probably don't match."
-						 "\nThis script is not loaded.", script->getFilePath());
+						 "\nThis script is not loaded.", static_cast<std::size_t>(scriptId));
 			continue;
 		}
 

@@ -4,7 +4,7 @@
 #include "assetManager.h"
 #include "Profiling.h"
 #include "ResourceManager/resourceManager.h"
-#include "descriptor.h"
+#include "assetIO.h"
 
 #if 0
 template <ValidAsset T>
@@ -186,7 +186,7 @@ void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
 
 	std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
 	
-	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.id);
+	DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
 
 	// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
 	std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
@@ -198,14 +198,14 @@ void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
 	}
 	else {
 		Logger::info("Successful compiling {}", descriptorFilePath.string);
-		Logger::info("Resource file created: {}", Descriptor::getResourceFilename<T>(descriptor.id).string);
+		Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
 	}
 }
 
 template<ValidAsset T>
 void AssetManager::loadAllDescriptorFiles() {
-	auto iterator = Descriptor::subDescriptorDirectories.find(Family::id<T>());
-	assert(iterator != Descriptor::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
+	auto iterator = AssetIO::subDescriptorDirectories.find(Family::id<T>());
+	assert(iterator != AssetIO::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
 	std::filesystem::path const& directory = iterator->second;
 
 	Logger::info("===========================");
@@ -227,12 +227,12 @@ void AssetManager::loadAllDescriptorFiles() {
 		Logger::info("Parsing {}..", descriptorFilepath.string());
 
 		// parse the descriptor file.
-		std::optional<AssetInfo<T>> opt = Descriptor::parseDescriptorFile<T>(descriptorFilepath);
+		std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
 		AssetInfo<T> descriptor;
 
 		if (!opt) {
 			Logger::info("Failed parsing, recreating a new descriptor file..");
-			descriptor = Descriptor::createDescriptorFile<T>(descriptorFilepath);
+			descriptor = AssetIO::createDescriptorFile<T>(descriptorFilepath);
 		}
 		else {
 			Logger::info("Sucessfully parsed descriptor file.");
@@ -243,20 +243,21 @@ void AssetManager::loadAllDescriptorFiles() {
 		// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
 		// the resource manager.
 
-		Asset* resource = resourceManager.getResourceInfo(descriptor.id);
-		if (!resource) {
+		if (!resourceManager.doesResourceExist(descriptor.id)) {
 			Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}", descriptor.filepath.string);
 			createResourceFile<T>(descriptor);
 		}
 		else {
 			Logger::info("Resource file exist.");
-			resource->name = descriptor.name;
 		}
 
 		Logger::info("");
 
 		// we record all encountered intermediary assets with corresponding filepaths.
-		intermediaryAssetsToFilepaths.insert({ descriptor.filepath, { descriptorFilepath, Descriptor::getResourceFilename<T>(descriptor.id) } });
+		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
+
+		// we associate resource id with a name.
+		assetToDescriptor.insert({ descriptor.id, descriptor });
 	}
 
 	Logger::info("===========================\n");
@@ -267,13 +268,14 @@ void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	// this compiles a resource file corresponding to the intermediary asset.
 	compileIntermediaryFile<T>(descriptor);
 
-	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.id);
-	ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(descriptor.id);
+	DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
+	ResourceFilePath resourceFilePath = AssetIO::getResourceFilename<T>(descriptor.id);
 
 	// we can now add this resource to the resource manager.
-	T* resource = resourceManager.addResourceFile<T>(resourceFilePath);
+	ResourceID id = resourceManager.addResourceFile<T>(resourceFilePath);
 
-	if (resource) {
-		resource->name = descriptor.name;
+	if (id != INVALID_ASSET_ID) {
+		// we associate resource id with a name.
+		assetToDescriptor.insert({ id, descriptor });
 	}
 }

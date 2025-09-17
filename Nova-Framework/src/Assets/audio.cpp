@@ -1,23 +1,17 @@
 #include "audio.h"
 #include <filesystem>
 
-Audio::Audio(ResourceFilePath filepath, bool is3D) :
-	Asset	{ std::move(filepath) },
+Audio::Audio(ResourceID id, ResourceFilePath resourceFilePath, bool is3D) :
+	Asset	{ id },
 	is3D	{ is3D }
 {}
 
 Audio::~Audio() {}
 
-bool Audio::load() {
-	return false;
-}
-
-void Audio::unload() {}
-
 bool Audio::isAudio3D() const {
 	return is3D;
 }
 
-std::string Audio::getClassName() const {
-	return std::filesystem::path{ getFilePath() }.stem().string();
+ResourceFilePath const& Audio::getFilePath() const {
+	return resourceFilePath;
 }

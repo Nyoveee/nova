@@ -372,10 +372,10 @@ void AudioSystem::loadSound(ResourceID audioId) {
 	FMOD::Sound* sound = nullptr;
 	FMOD_MODE mode = audio->isAudio3D() ? FMOD_3D : FMOD_2D;
 
-	FMOD_RESULT result = fmodSystem->createSound(audio->getFilePath().c_str(), mode, nullptr, &sound);
+	FMOD_RESULT result = fmodSystem->createSound(audio->getFilePath().string.c_str(), mode, nullptr, &sound);
 
 	if (result != FMOD_OK) {
-	    Logger::warn("Failed to load audio file with asset id of: {}, filepath of {}.", static_cast<std::size_t>(audioId), audio->getFilePath());
+	    Logger::warn("Failed to load audio file with asset id of: {}, filepath of {}.", static_cast<std::size_t>(audioId), audio->getFilePath().string);
 	    return; 
 	}
 

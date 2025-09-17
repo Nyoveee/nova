@@ -5,50 +5,17 @@
 
 #include "Logger.h"
 
-Texture::Texture(ResourceFilePath filepath) :
-	Asset			 { std::move(filepath) },
+namespace {
+	GLuint TEXTURE_NOT_LOADED = std::numeric_limits<GLuint>::max();
+}
+
+Texture::Texture(ResourceID id) :
+	Asset			 { id },
 	width			 {},
 	height			 {},
 	numChannels		 {},
-	textureId		 {}
-{}
-
-Texture::~Texture() {
-	if (!isLoaded()) {
-		return;
-	}
-
-	unload();
-}
-
-Texture::Texture(Texture&& other) noexcept :
-	Asset			 { std::move(other) },
-	width			 { other.width },
-	height			 { other.height },
-	numChannels		 { other.numChannels },
-	textureId		 { other.textureId },
-	toFlip			 { other.toFlip }
+	textureId		 { TEXTURE_NOT_LOADED }
 {
-	other.textureId = 0;
-}
-
-Texture& Texture::operator=(Texture&& other) noexcept {
-	Asset::operator=(std::move(other));
-
-	if(isLoaded()) unload();
-
-	width			 = other.width;
-	height			 = other.height;
-	numChannels		 = other.numChannels;
-	textureId		 = other.textureId;
-	toFlip			 = other.toFlip;
-
-	other.textureId = 0;
-
-	return *this;
-}
-
-bool Texture::load() {
 #if 0
 	if (isLoaded()) {
 		Logger::error("Attempting to load texture when there's already something loaded!");
@@ -105,13 +72,41 @@ bool Texture::load() {
 	loadStatus = Asset::LoadStatus::Loaded;
 	//TracyAlloc(this, sizeof(*this));
 #endif
-	return false;
 }
 
-void Texture::unload() {
-	glDeleteTextures(1, &textureId);
-	loadStatus = Asset::LoadStatus::NotLoaded;
-	//TracyFree(this);
+Texture::~Texture() {
+	if (textureId != TEXTURE_NOT_LOADED) {
+		glDeleteTextures(1, &textureId);
+	}
+}
+
+Texture::Texture(Texture&& other) noexcept :
+	Asset			 { std::move(other) },
+	width			 { other.width },
+	height			 { other.height },
+	numChannels		 { other.numChannels },
+	textureId		 { other.textureId },
+	toFlip			 { other.toFlip }
+{
+	other.textureId = TEXTURE_NOT_LOADED;
+}
+
+Texture& Texture::operator=(Texture&& other) noexcept {
+	Asset::operator=(std::move(other));
+
+	if (textureId != TEXTURE_NOT_LOADED) {
+		glDeleteTextures(1, &textureId);
+	}
+
+	width			 = other.width;
+	height			 = other.height;
+	numChannels		 = other.numChannels;
+	textureId		 = other.textureId;
+	toFlip			 = other.toFlip;
+
+	other.textureId = TEXTURE_NOT_LOADED;
+
+	return *this;
 }
 
 GLuint Texture::getTextureId() const {

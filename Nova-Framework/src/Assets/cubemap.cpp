@@ -4,54 +4,23 @@
 #include <glad/glad.h>
 #include "Logger.h"
 
-CubeMap::CubeMap(ResourceFilePath filepath) :
-	Asset			 { std::move(filepath) },
+namespace {
+	GLuint TEXTURE_NOT_LOADED = std::numeric_limits<GLuint>::max();
+}
+
+CubeMap::CubeMap(ResourceID id) :
+	Asset			 { id },
 	width			 {},
 	height			 {},
 	numChannels		 {},
-	textureId		 {}
-{}
-
-CubeMap::~CubeMap() {
-	if (!isLoaded()) {
-		return;
-	}
-
-	unload();
-}
-
-CubeMap::CubeMap(CubeMap&& other) noexcept :
-	Asset			 { std::move(other) },
-	width			 { other.width },
-	height			 { other.height },
-	numChannels		 { other.numChannels },
-	textureId		 { other.textureId }
+	textureId		 { TEXTURE_NOT_LOADED }
 {
-	other.textureId = 0;
-}
-
-CubeMap& CubeMap::operator=(CubeMap&& other) noexcept {
-	Asset::operator=(std::move(other));
-
-	if(isLoaded()) unload();
-
-	width			 = other.width;
-	height			 = other.height;
-	numChannels		 = other.numChannels;
-	textureId		 = other.textureId;
-
-	other.textureId = 0;
-
-	return *this;
-}
-
-bool CubeMap::load() {
 #if 0
 	if (isLoaded()) {
 		Logger::error("Attempting to load texture when there's already something loaded!");
 		return;
 	}
-	
+
 	float* data; // width * height * RGBA
 	//int width;
 	//int height;
@@ -90,14 +59,39 @@ bool CubeMap::load() {
 	loadStatus = Asset::LoadStatus::Loaded;
 	//TracyAlloc(this, sizeof(*this));
 #endif
-	return false;
 }
 
-void CubeMap::unload() {
-	glDeleteTextures(1, &textureId);
-	loadStatus = Asset::LoadStatus::NotLoaded;
-	
-	//TracyFree(this);
+CubeMap::~CubeMap() {
+	if (textureId != TEXTURE_NOT_LOADED) {
+		glDeleteTextures(1, &textureId);
+	}
+}
+
+CubeMap::CubeMap(CubeMap&& other) noexcept :
+	Asset			 { std::move(other) },
+	width			 { other.width },
+	height			 { other.height },
+	numChannels		 { other.numChannels },
+	textureId		 { other.textureId }
+{
+	other.textureId = TEXTURE_NOT_LOADED;
+}
+
+CubeMap& CubeMap::operator=(CubeMap&& other) noexcept {
+	Asset::operator=(std::move(other));
+
+	if (textureId != TEXTURE_NOT_LOADED) {
+		glDeleteTextures(1, &textureId);
+	}
+
+	width			 = other.width;
+	height			 = other.height;
+	numChannels		 = other.numChannels;
+	textureId		 = other.textureId;
+
+	other.textureId = TEXTURE_NOT_LOADED;
+
+	return *this;
 }
 
 GLuint CubeMap::getTextureId() const {

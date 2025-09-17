@@ -9,6 +9,7 @@
 class ECS;
 class Editor;
 class ResourceManager;
+class AssetManager;
 
 class ComponentInspector {
 public:
@@ -30,6 +31,7 @@ public:
 	ECS& ecs;
 	Editor& editor;
 	ResourceManager& resourceManager;
+	AssetManager& assetManager;
 
 	int imguiCounter = 0;
 };

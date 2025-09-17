@@ -7,7 +7,8 @@
 
 #include "asset.h"
 
-class Descriptor {
+// Contains shared utility functions for AssetManager, ResourceManager, Asset Compilers and Resource Loaders.
+class AssetIO {
 public:
 	// ==== Parse specific a specific asset type. ====
 	// These functions will invoke the general functions below first which parses generic metadata info first
@@ -45,4 +46,4 @@ private:
 	FRAMEWORK_DLL_API static BasicAssetInfo createDescriptorFile(ResourceID id, AssetFilePath const& path, std::ofstream& metaDataFile);
 };
 
-#include "descriptor.ipp"
+#include "assetIO.ipp"

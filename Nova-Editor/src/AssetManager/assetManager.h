@@ -43,9 +43,9 @@ public:
 		QueryResult result;
 	};
 
-	struct Filepaths {
+	struct Descriptor {
 		DescriptorFilePath descriptorFilepath;
-		ResourceFilePath resourceFilepath;
+		BasicAssetInfo descriptor;
 	};
 
 public:
@@ -59,57 +59,6 @@ public:
 
 public:
 #if 0
-	// The asset manager needs to check if there are any completed queue request
-	// that needs to be done on the main thread.
-	void update();
-
-	// =========================================================
-	// Retrieving assets and info..
-	// =========================================================
-	template <ValidAsset T>
-	AssetQuery<T> getAsset(AssetID id);
-
-	// this is only used to get metadata / info about the assets (like name, is asset loaded..)
-	// this doesnt not load the asset!!
-	// since there is no loading of asset, you retrieve the data instantly.
-	DLL_API Asset* getAssetInfo(AssetID id);
-
-	// retrieve all asset ids of a given type.
-	template <ValidAsset T>
-	std::vector<AssetID> const& getAllAssets() const;
-
-	// retrieve 1 asset id of a given type. (should never be invalid asset id, but still should handle the chance of it being invalid).
-	template <ValidAsset T>
-	AssetID getSomeAssetID() const;
-	
-	// given an asset id, is the original asset type of T?
-	template <ValidAsset T>
-	bool isAsset(AssetID id) const;
-
-	// attempts to retrieve asset id given full file path
-	std::optional<AssetID> getAssetId(std::string const& filepath) const;
-
-public:
-	// =========================================================
-	// Getters (no setters!)
-	// =========================================================
-
-	DLL_API void getAssetLoadingStatus() const;
-
-private:
-	// =========================================================
-	// Parsing of the assets directory..
-	// =========================================================
-
-	// the king.
-	template <ValidAsset T>
-	Asset& addAsset(AssetInfo<T> const& assetInfo);
-
-	template <ValidAsset T>
-	void recordAssetFile(
-		std::filesystem::path const& path
-	);
-
 	// =========================================================
 	// Serialising asset meta data..
 	template <ValidAsset T>
@@ -121,49 +70,14 @@ private:
 	template <ValidAsset T>
 	void serialiseAssetMetaData(T const& asset);
 	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
-
-private:
-	// This is the callback when assets file are added
-	void OnAssetContentAddedCallback(std::string abspath);
-	// This is the callback when the assets files are modified/renamed
-	void OnAssetContentModifiedCallback(AssetID assetId);
-	// This is the callback when any asset file is deleted
-	void OnAssetContentDeletedCallback(AssetID assetId);
-
-	std::string GetRunTimeDirectory();
-
-public:
-	// Thread pool to manage loading in another thread.
-	BS::thread_pool<BS::tp::none> threadPool;
-
-private:
-
-	// main container containing all assets.
-	std::unordered_map<AssetID, std::unique_ptr<Asset>> assets;
-
-	// maps filepath to asset id.
-	std::unordered_map<std::string, AssetID> filepathToAssetId;
-
-	// groups all assets based on their type.
-	std::unordered_map<AssetTypeID, std::vector<AssetID>> assetsByType;
-	
-	// associates an asset id with the corresponding asset type.
-	std::unordered_map<AssetID, AssetTypeID> assetIdToType;
-
-	// -- welcome to template metaprogramming black magic. --
-	// associates an asset id with it's corresponding serialising function, containining the original asset type.	
-	std::unordered_map<AssetID, std::unique_ptr<SerialiseMetaData>> serialiseMetaDataFunctors;
-	//std::unordered_map<AssetID, std::unique_ptr<SerialiseAsset>> serialiseAssetFunctors;
-
-	// when an asset has finished loading, and requires the asset manager to do some post work,
-	// the asset will provide a callback here.
-	// the asset manager then checks every game frame if there is any callback request.
-
 #endif
 
 public:
 	std::unordered_map<FolderID, Folder> const& getDirectories() const;
 	std::vector<FolderID> const& getRootDirectories() const;
+
+	std::string const& getName(ResourceID id) const;
+	AssetFilePath const& getFilepath(ResourceID id) const;
 
 	void update();
 
@@ -172,7 +86,7 @@ public:
 	void submitCallback(std::function<void()> callback);
 
 private:
-	void parseIntermediaryAssetFile(AssetFilePath const& path);
+	ResourceID parseIntermediaryAssetFile(AssetFilePath const& path);
 
 	void recordFolder(
 		FolderID folderId,
@@ -201,8 +115,12 @@ private:
 	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
 	AssetDirectoryWatcher directoryWatcher;
 	
-	// records all loaded intermediary assets mapped to it's corresponding descriptor and resource filepath.
-	std::unordered_map<AssetFilePath, Filepaths> intermediaryAssetsToFilepaths;
+	// records all loaded intermediary assets mapped to it's corresponding descriptor.
+	std::unordered_map<AssetFilePath, Descriptor> intermediaryAssetsToDescriptor;
+
+	// records metadata for each resource id. these metadata are only used in the editor, like interacting with the
+	// the intermediary asset & getting asset name.
+	std::unordered_map<ResourceID, BasicAssetInfo> assetToDescriptor;
 
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
