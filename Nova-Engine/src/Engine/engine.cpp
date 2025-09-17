@@ -70,13 +70,18 @@ void Engine::setupSimulation() {
 	setupSimulationFunction = std::nullopt;
 }
 
-void Engine::render(Renderer::RenderTarget target) {
+void Engine::render(RenderTarget target) {
 	ZoneScoped;
+
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(target, toDebugRenderPhysics);
+	renderer.render(toDebugRenderPhysics);
+
+	if (target == RenderTarget::DefaultFrameBuffer) {
+		renderer.renderToDefaultFBO();
+	}
 }
 
 void Engine::startSimulation() {

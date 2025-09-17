@@ -20,7 +20,7 @@ namespace {
 	}
 }
 
-std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceFilePath const& resourceFilePath) {
+std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
 	Logger::info("Loading model resource file {}", resourceFilePath.string);
 
 	std::ifstream resourceFile{ resourceFilePath.string, std::ios::binary };
@@ -33,9 +33,6 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceFilePath 
 	resourceFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	
 	try {
-		ResourceID resourceId = std::stoull(std::filesystem::path{ resourceFilePath }.filename().string());
-		assert(resourceId != INVALID_ASSET_ID && "Stored ID is a sentinel value of invalid asset id?");
-	
 		// =================================
 		// Model file format
 		// - First 8 bytes => indicate number of meshes, M
@@ -140,9 +137,9 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceFilePath 
 		Logger::info("Successfully load resource.\n");
 		
 		// returns a resource constructor
-		return {{[resourceId, meshes = std::move(meshes), materialNames = std::move(materialNames)]() {
-			return std::make_unique<Model>(resourceId, std::move(meshes), std::move(materialNames));
-		}}};
+		return { ResourceConstructor{[id, meshes = std::move(meshes), materialNames = std::move(materialNames)]() {
+			return std::make_unique<Model>(id, std::move(meshes), std::move(materialNames));
+		}} };
 	}
 	catch (std::exception const& ex) {
 		Logger::error("Failed to load resource, {}", ex.what());

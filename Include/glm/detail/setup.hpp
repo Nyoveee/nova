@@ -22,6 +22,9 @@
 #define GLM_GET_VERSION_MINOR(version) (((uint32_t)(version) >> 12U) & 0x3FFU)
 #define GLM_GET_VERSION_PATCH(version) ((uint32_t)(version) & 0xFFFU)
 
+#undef min
+#undef max
+
 ///////////////////////////////////////////////////////////////////////////////////
 // Active states
 

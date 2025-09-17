@@ -37,7 +37,7 @@ int main() {
 		// Update loop.
 		[&](float dt) {
 			engine.update(dt);
-			engine.render(Renderer::RenderTarget::ToMainFrameBuffer);
+			engine.render(Engine::RenderTarget::MainFrameBuffer);
 			
 			// this callback is invoked when the editor wants to change simulation mode.
 			editor.update([&](bool toStartSimulation) {

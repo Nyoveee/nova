@@ -33,7 +33,7 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 	auto&& [_, resourceFilePath] = *filepathIterator;
 
 	// attempts to load the resource..
-	std::optional<ResourceConstructor> resourceConstructor = ResourceLoader<T>::load(resourceFilePath);
+	std::optional<ResourceConstructor> resourceConstructor = ResourceLoader<T>::load(id, resourceFilePath);
 
 	if (!resourceConstructor) {
 		return ResourceQuery<T>{ nullptr, QueryResult::LoadingFailed };
@@ -53,7 +53,7 @@ ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
 	try {
 		// Retrieve the Resource ID from filepath.
 		// May throw an exception.
-		ResourceID id = std::stoull(std::filesystem::path{ filepath }.filename().string());
+		ResourceID id = std::stoull(std::filesystem::path{ filepath }.stem().string());
 		auto [iterator, success] = resourceFilePaths.insert({ id, filepath });
 
 		if (!success) {

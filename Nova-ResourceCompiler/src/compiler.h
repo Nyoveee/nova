@@ -17,11 +17,11 @@ private:
 	template <ValidAsset T>
 	static void compileAsset		(std::filesystem::path const& descriptorFilepath);
 
-	static void compileTexture		(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath);
-	static void compileModel		(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath);
-	static void compileCubeMap		(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath);
-	static void compileScriptAsset	(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath);
-	static void compileAudio		(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath);
+	static void compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static void compileModel		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static void compileCubeMap		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static void compileScriptAsset	(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static void compileAudio		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
 };
 
 #include "compiler.ipp"

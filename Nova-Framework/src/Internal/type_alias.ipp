@@ -1,6 +1,7 @@
 #include <numbers>
 #include <string>
 #include "family.h"
+#include "type_alias.h"
 
 // ========================================
 // DEGREE AND ANGLES.
@@ -36,9 +37,16 @@ constexpr Color::Color()										: color	{}				{}
 constexpr Color::Color(glm::vec3 color)							: color	{ color }		{}
 constexpr Color::Color(float r, float g, float b)				: color	{ r, g, b }		{}
 constexpr Color::operator glm::vec3() const								{ return color; }
+constexpr float Color::r() const										{ return color.x; };
+constexpr float Color::g() const										{ return color.y; };
+constexpr float Color::b() const										{ return color.z; };
 
 constexpr ColorA::ColorA()										: color	{} {}
 constexpr ColorA::ColorA(glm::vec4 color)						: color	{ color } {}
+constexpr float ColorA::r() const										{ return color.x; };
+constexpr float ColorA::g() const										{ return color.y; };
+constexpr float ColorA::b() const										{ return color.z; };
+constexpr float ColorA::a() const										{ return color.w; };
 constexpr ColorA::ColorA(float r, float g, float b, float a)	: color	{ r, g, b, a } {}
 constexpr ColorA::operator glm::vec4() const							{ return color; }
 constexpr ColorA::operator glm::vec3() const							{ return Color{ color.r, color.g, color.g }; }

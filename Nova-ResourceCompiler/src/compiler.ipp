@@ -26,27 +26,20 @@ void Compiler::compileAsset(std::filesystem::path const& descriptorFilepath) {
 
 	AssetInfo<T> assetInfo = optAssetInfo.value();
 
-	std::ofstream resourceFile { AssetIO::getResourceFilename<T>(assetInfo.id), std::ios::binary };
-
-	if (!resourceFile) {
-		Logger::error("Failed to create resource file: {}. Compilation failed.", AssetIO::getResourceFilename<T>(assetInfo.id).string);
-		return;
-	}
-
 	if constexpr (std::same_as<T, Texture>) {
-		compileTexture(resourceFile, assetInfo.filepath);
+		compileTexture(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, Model>) {
-		compileModel(resourceFile, assetInfo.filepath);
+		compileModel(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, CubeMap>) {
-		compileCubeMap(resourceFile, assetInfo.filepath);
+		compileCubeMap(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, Audio>) {
-		compileAudio(resourceFile, assetInfo.filepath);
+		compileAudio(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
-		compileScriptAsset(resourceFile, assetInfo.filepath);
+		compileScriptAsset(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
 	}
 	else {
 		[] <bool flag = true>() {

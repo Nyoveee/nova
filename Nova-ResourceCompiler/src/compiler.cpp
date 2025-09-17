@@ -11,14 +11,45 @@
 #include <vector>
 #include <iostream>
 
+#include <gli/gli.hpp>
+
+#include "Library/stb_image.hpp"
+
 namespace {
 	template <typename T>
 	void writeBytesToFile(std::ofstream& resourceFile, T const& data) {
 		resourceFile.write(reinterpret_cast<const char*>(&data), sizeof(data));
 	}
 }
-void Compiler::compileTexture(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath) {
+void Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	int width, height, numChannels;
+	stbi_uc* data = stbi_load(intermediaryAssetFilepath.string.c_str(), &width, &height, &numChannels, 0);
 
+	if (!data) {
+		Logger::error("Failed to load texture! Filepath provided: {}", intermediaryAssetFilepath.string);
+		return;
+	}
+
+	enum gli::format format = gli::format::FORMAT_RGBA8_SRGB_PACK8;
+
+	if (numChannels == 1) {
+		format = gli::format::FORMAT_R8_UNORM_PACK8;
+	}
+	else if (numChannels == 3) {
+		format = gli::format::FORMAT_RGB8_UNORM_PACK8;
+	}
+
+	// Create a GLI 2D texture with the same dimensions
+	gli::texture2d tex{
+		format,
+		gli::extent2d(width, height)
+	};
+
+	// Copy pixel data into the GLI texture
+	std::memcpy(tex.data(), data, width * height * numChannels);
+	stbi_image_free(data);
+
+	gli::save_dds(tex, resourceFilePath.string);
 }
 
 // =================================
@@ -39,7 +70,14 @@ void Compiler::compileTexture(std::ofstream& resourceFile, std::string const& in
 // - Next 1 byte => null terminator. used for error checking and to end the mesh file format.
 // =================================
 
-void Compiler::compileModel(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath) {
+void Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
+
+	if (!resourceFile) {
+		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
+		return;
+	}
+
 	auto optModelData = ModelLoader::loadModel(intermediaryAssetFilepath);
 
 	if (!optModelData) {
@@ -100,13 +138,13 @@ void Compiler::compileModel(std::ofstream& resourceFile, std::string const& inte
 	}
 }
 
-void Compiler::compileCubeMap(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath) {
+void Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 }
 
-void Compiler::compileScriptAsset(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath) {
+void Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 }
 
-void Compiler::compileAudio(std::ofstream& resourceFile, std::string const& intermediaryAssetFilepath) {
+void Compiler::compileAudio(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 }
 
 void Compiler::compile(std::filesystem::path const& descriptorFilepath) {
@@ -137,12 +175,6 @@ void Compiler::compile(std::filesystem::path const& descriptorFilepath) {
 void Compiler::test() {
 	std::vector descriptorPaths {
 		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\Texture\\Farm_Table_Low_Table_frame_mtl_BaseColor.desc",
-		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\Model\\Farm_Table_Low.desc",
-		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\Model\\box.desc",
-		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\Model\\smallbox.desc",
-		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\Audio\\SFX_AudioTest1.desc",
-		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\CubeMap\\citrus_orchard_road_puresky_2k.desc",
-		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\ScriptAsset\\TestScript.desc"
 	};
 
 	for (auto&& filepath : descriptorPaths) {

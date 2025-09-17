@@ -54,6 +54,10 @@ struct Color {
 	constexpr Color(glm::vec3 color);
 	constexpr Color(float r, float g, float b);
 
+	constexpr float r() const;
+	constexpr float g() const;
+	constexpr float b() const;
+
 	constexpr operator glm::vec3() const;
 private:
 	glm::vec3 color;
@@ -63,6 +67,11 @@ struct ColorA {
 	constexpr ColorA();
 	constexpr ColorA(glm::vec4 color);
 	constexpr ColorA(float r, float g, float b, float a);
+
+	constexpr float r() const;
+	constexpr float g() const;
+	constexpr float b() const;
+	constexpr float a() const;
 
 	constexpr operator glm::vec4() const;
 	constexpr explicit operator glm::vec3() const;

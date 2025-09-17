@@ -26,6 +26,12 @@ class ResourceManager;
 
 class Engine {
 public:
+	enum class RenderTarget {
+		MainFrameBuffer,
+		DefaultFrameBuffer
+	};
+
+public:
 	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight);
 
 	ENGINE_DLL_API ~Engine();
@@ -37,7 +43,7 @@ public:
 public:
 	ENGINE_DLL_API void fixedUpdate(float dt);
 	ENGINE_DLL_API void update(float dt);
-	ENGINE_DLL_API void render(Renderer::RenderTarget target);
+	ENGINE_DLL_API void render(RenderTarget target);
 	
 	ENGINE_DLL_API void startSimulation();
 	ENGINE_DLL_API void stopSimulation();

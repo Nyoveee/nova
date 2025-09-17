@@ -172,15 +172,13 @@ void Renderer::update(float dt) {
 	(void) dt;
 }
 
-void Renderer::render(RenderTarget target, bool toRenderDebug) {
+void Renderer::render(bool toRenderDebug) {
 	ZoneScoped;
-	prepareRendering(target);
+	prepareRendering();
 
 	renderSkyBox();
 
 	renderModels();
-
-	//renderOutline();
 
 	if (toRenderDebug) {
 		debugRender();
@@ -188,6 +186,14 @@ void Renderer::render(RenderTarget target, bool toRenderDebug) {
 
 	// Bind back to default FBO for ImGui to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::renderToDefaultFBO() {
+	debugOverlayShader.use();
+	debugOverlayShader.setImageUniform("debugOverlay", 0);
+	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 std::vector<GLuint> const& Renderer::getMainFrameBufferTextures() const {
@@ -279,9 +285,7 @@ void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 
 	++numOfDebugTriangles;
 }
 
-void Renderer::prepareRendering(RenderTarget target) {
-	(void) target;
-
+void Renderer::prepareRendering() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	// =================================================================
 	// Configure pre rendering settings
@@ -301,7 +305,7 @@ void Renderer::prepareRendering(RenderTarget target) {
 	// =================================================================
 	
 	// Clear default framebuffer.
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// glBindFramebuffer(GL_FRAMEBUFFER, 0); // we bind to default FBO at the end of our render.
 	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

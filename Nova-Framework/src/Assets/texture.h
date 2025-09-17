@@ -1,12 +1,13 @@
 #pragma once
 
 #include "asset.h"
+#include <gli/gli.hpp>
 
 using GLuint = unsigned int; 
 
 class Texture : public Asset {
 public:
-	FRAMEWORK_DLL_API Texture(ResourceID id);
+	FRAMEWORK_DLL_API Texture(ResourceID id, gli::texture const& texture, gli::gl::format const& format);
 	FRAMEWORK_DLL_API ~Texture();
 
 	FRAMEWORK_DLL_API Texture(Texture const& other) = delete;
@@ -22,14 +23,4 @@ private:
 	GLuint textureId;
 	int width;
 	int height;
-	int numChannels;
-
-	bool toFlip;
-};
-
-// Explicitly define an extension of the asset metadata
-// Try to provide default values if possible!
-template <>
-struct AssetInfo<Texture> : public BasicAssetInfo {
-	bool isFlipped = false;
 };

@@ -27,19 +27,6 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 	// Filestream is now pointing at the 4th line.
 	// Do any metadata specific to any type parsing here!!
 	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		std::string line;
-		std::getline(descriptorFile, line);
-
-		bool toFlip;
-
-		if (!(std::stringstream{ line } >> toFlip)) {
-			return std::nullopt;
-		}
-		else {
-			assetInfo.isFlipped = toFlip;
-		}
-	}
 
 	if constexpr (std::same_as<T, Audio>) {
 		std::string line;
@@ -71,9 +58,6 @@ AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	// Filestream is now pointing at the 4th line.
 	// Do any metadata specific to any type default creation here!!
 	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		metaDataFile << false << "\n";
-	}
 
 	if constexpr (std::same_as<T, Audio>) {
 		metaDataFile << false << "\n";

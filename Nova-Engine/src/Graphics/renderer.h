@@ -30,11 +30,6 @@ public:
 		Disabled
 	};
 
-	enum class RenderTarget {
-		ToDefaultFrameBuffer,
-		ToMainFrameBuffer
-	};
-
 public:
 	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
@@ -47,8 +42,8 @@ public:
 public:
 	void update(float dt);
 
-	// choose to either render to the default frame buffer or the main frame buffer.
-	void render(RenderTarget target, bool toRenderDebug);
+	void render(bool toRenderDebug);
+	void renderToDefaultFBO();
 
 public:
 	// =============================================
@@ -84,7 +79,7 @@ private:
 	// =============================================
 
 	// set up proper configurations and clear framebuffers..
-	void prepareRendering(RenderTarget target);
+	void prepareRendering();
 
 	// render skybox
 	void renderSkyBox();
