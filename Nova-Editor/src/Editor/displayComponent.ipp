@@ -1,5 +1,7 @@
 #include "reflection.h"
 #include "ResourceManager/resourceManager.h"
+#include "Audio/audioSystem.h"
+#include "Engine/engine.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
@@ -20,6 +22,7 @@ namespace {
 		(void) entity;
 
 		ResourceManager& resourceManager = componentInspector.resourceManager;
+		AudioSystem& audioSystem		 = componentInspector.audioSystem;
 		(void) resourceManager;
 
 		if constexpr (!reflection::isReflectable<Component>()) {
@@ -274,44 +277,70 @@ namespace {
 						ImGui::Text("%s: %u", dataMemberName, dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
-						std::vector<AudioData>& audioDatas{ dataMember };
 
-						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId) {
-							audioDatas.push_back(AudioData{ resourceId });
-						});
+					if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, ResourceID>>) 
+					{
+						auto& audioDatas = dataMember;
+
+						static std::unordered_map<ResourceID, AudioData> audioEditorState;
+
+						// Add Audio
+						componentInspector.displayAssetDropDownList<Audio>( std::nullopt, "Add Audio File", [&](ResourceID resourceId ) 
+						{
+								auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
+								assert(audioAsset);
+
+								audioDatas.emplace(audioAsset->getClassName().c_str(), resourceId);
+
+								// Also track editor state
+								audioEditorState.try_emplace(resourceId, AudioData{ resourceId });
+							}
+						);
 
 						// List of Audio Files
 						int i{};
-
 						ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
 
-						std::vector<AudioData>::iterator it = std::remove_if(std::begin(audioDatas), std::end(audioDatas), [&](AudioData& audioData) {
+						for (auto it = audioDatas.begin(); it != audioDatas.end();) {
 							ImGui::PushID(i++);
-							bool keepAudioFile = true;
 
-							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
+							bool keepAudioFile = true;
+							ResourceID resourceId = it->second;
+
+							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
 							assert(audioAsset);
+
+							AudioData& audioData = audioEditorState[resourceId];
 
 							if (ImGui::CollapsingHeader(audioAsset->getClassName().c_str(), &keepAudioFile)) {
 								// Able to see and adjust Volume in Editor
-								if (ImGui::DragFloat( "Volume", & audioData.Volume, 1.0f, 0.0f, 1.0f)) {
-									// Update Playback Volume
+								if (ImGui::Button("Play Audio")) {
+									// Play Audio 
+									if (audioSystem.isBGM(audioData.AudioId)) {
+										audioSystem.playBGM(audioData.AudioId);
+									} else {
+										audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f);
+									}
 								}
-								// Adjust Mute/Unmute in Editor
-								if (ImGui::Checkbox("MuteAudio", &audioData.MuteAudio)) {
-									// Update Playback Mute/UnMute
+								if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
+									// Update Playback Volume
+									audioSystem.AdjustVol( audioData.AudioId , audioData.Volume );
+								}
+								// Stop Audio from playing inside Editor
+								if (ImGui::Button("Stop Audio")) {
+									audioSystem.StopAudio(audioData.AudioId);
 								}
 							}
-
 							ImGui::PopID();
-							return !keepAudioFile;
-						});
-
+							if (!keepAudioFile) {
+								audioEditorState.erase(resourceId); // cleanup side table
+								it = audioDatas.erase(it);
+							}
+							else {
+								++it;
+							}
+						}
 						ImGui::EndChild();
-
-						if(it != std::end(audioDatas))
-							audioDatas.erase(it);
 					}
 
 

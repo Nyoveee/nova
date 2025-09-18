@@ -33,7 +33,7 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -216,26 +216,28 @@ struct Scripts
 struct AudioData
 {
 	TypedResourceID<Audio> AudioId;
-	
 	float Volume;
-	bool MuteAudio;
-
+	bool StopAudio;
 };
 
-struct AudioComponent {
-	// Original, for backup
-	// AssetID audio;
-	// 
-	// REFLECTABLE(
-	// 	audio
-	// )
-
-	// Error in Serialisation.ipp
-	 std::unordered_map<std::string, ResourceID> data;
-
-	std::vector<AudioData> AudioList;
+struct AudioComponent 
+{
+	std::unordered_map<std::string, ResourceID> data;
 
 	REFLECTABLE(
-		AudioList
+		data
+	)
+};
+
+struct AudioListener
+{
+	bool isListening = false;
+	float minDist = 0.0f;  // Min Dist needed to start hearing audio at full volume
+	float maxDist = 10.0f; // Max Dist needed to start hearing audio
+
+	REFLECTABLE(
+		isListening,
+		minDist,
+		maxDist
 	)
 };

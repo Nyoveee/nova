@@ -180,10 +180,10 @@ ResourceID AudioSystem::getResourceId(const std::string& string) {
 }
 
 // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
-void AudioSystem::playSFX(ResourceID id, float x, float y, float z)
+void AudioSystem::playSFX(ResourceID id, float x, float y, float z, float volume )
 {
     // Play the sound
-	AudioInstance* audioInstance = createSoundInstance(id);
+	AudioInstance* audioInstance = createSoundInstance(id , volume );
 
 	if (!audioInstance) {
 		return;
@@ -196,7 +196,7 @@ void AudioSystem::playSFX(ResourceID id, float x, float y, float z)
 	audioInstance->channel->setPaused(false);
 }
 
-void AudioSystem::playBGM(ResourceID id)
+void AudioSystem::playBGM(ResourceID id, float volume)
 {
     // Stop previous BGM.
 	if (currentBGM) {
@@ -204,12 +204,31 @@ void AudioSystem::playBGM(ResourceID id)
 		currentBGM = nullptr;
 	}
 
-	AudioInstance* audioInstance = createSoundInstance(id);
+	AudioInstance* audioInstance = createSoundInstance(id , volume);
 
     // Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
 	}
+}
+
+bool AudioSystem::isBGM(ResourceID audioId) const
+{
+	// Find the entry in fileData (filename > ResourceID map)
+	for (const auto& [filename, id] : fileData)
+	{
+		if (id == audioId)
+		{
+			// Check filename prefix
+			if (filename.rfind("BGM_", 0) == 0) // starts with "BGM_"
+				return true;
+			else
+				return false;
+		}
+	}
+
+	// Not found in fileData
+	return false;
 }
 
 void AudioSystem::pauseSound(ResourceID audioId, bool paused)

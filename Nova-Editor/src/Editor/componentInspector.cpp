@@ -55,7 +55,8 @@ namespace {
 ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
 	ecs				{ editor.engine.ecs },
-	resourceManager { editor.engine.resourceManager }
+	resourceManager { editor.engine.resourceManager },
+	audioSystem		{ editor.engine.audioSystem }
 {}
 
 void ComponentInspector::update() {

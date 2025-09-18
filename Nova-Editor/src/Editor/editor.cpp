@@ -1,4 +1,6 @@
 #include "Engine/ScriptingAPIManager.h"
+#include "Engine/window.h"
+#include "Engine/engine.h"
 
 #include <glad/glad.h>
 
@@ -10,12 +12,10 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "Audio/audioSystem.h"
-#include "Engine/window.h"
+#include "AssetManager/assetManager.h"
 #include "Component/ECS.h"
-#include "Engine/engine.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
-#include "AssetManager/assetManager.h"
 
 #include "editor.h"
 #include "themes.h"

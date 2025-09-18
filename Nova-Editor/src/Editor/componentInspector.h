@@ -9,6 +9,7 @@
 class ECS;
 class Editor;
 class ResourceManager;
+class AudioSystem;
 
 class ComponentInspector {
 public:
@@ -30,6 +31,7 @@ public:
 	ECS& ecs;
 	Editor& editor;
 	ResourceManager& resourceManager;
+	AudioSystem& audioSystem;
 
 	int imguiCounter = 0;
 };

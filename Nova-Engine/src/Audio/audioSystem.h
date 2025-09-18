@@ -58,11 +58,14 @@ public:
 	DLL_API ResourceID getResourceId(const std::string& string);
 
     // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
-	DLL_API void playSFX(ResourceID audioId, float x, float y, float z);
+	DLL_API void playSFX(ResourceID audioId, float x, float y, float z, float volume = 1.f);
 	//DLL_API	void playSFXNonInst(AssetID audioId, float x, float y, float z);
 
+	// Checks if a resource is a BGM
+	DLL_API bool isBGM(ResourceID audioId) const;
+
 	// PlayBGM based on ResourceID audioId
-	DLL_API void playBGM(ResourceID audioId);
+	DLL_API void playBGM(ResourceID audioId, float volume = 1.f);
 
 	// Pause the sound of the sfx based on AssetID
 	DLL_API void pauseSound(ResourceID audioId, bool paused);
