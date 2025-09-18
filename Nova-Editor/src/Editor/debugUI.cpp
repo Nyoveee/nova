@@ -20,8 +20,16 @@ DebugUI::DebugUI(Editor& editor) :
 void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
 
-	ImGui::SeparatorText("Performance");
+	renderPerformanceSection();
+	renderPhysicsSection();
+	renderHDRSection();
+	renderGammaCorrectionSection();
 
+	ImGui::End();
+}
+
+void DebugUI::renderPerformanceSection() {
+	ImGui::SeparatorText("Performance");
 	ImGui::Text("FPS: %.2f", window.fps());
 
 #if 0
@@ -34,11 +42,14 @@ void DebugUI::update() {
 
 	ImGui::Text(threadPoolStats.c_str());
 #endif
+}
 
+void DebugUI::renderPhysicsSection() {
 	ImGui::SeparatorText("Physics");
-
 	ImGui::Checkbox("Physics debug render", &engine.toDebugRenderPhysics);
+}
 
+void DebugUI::renderHDRSection() {
 	ImGui::SeparatorText("HDR");
 
 	float exposure = renderer.getHDRExposure();
@@ -46,5 +57,35 @@ void DebugUI::update() {
 		renderer.setHDRExposure(exposure);
 	}
 
-	ImGui::End();
+	// Tone mapping method selection
+	auto currentMethod = renderer.getToneMappingMethod();
+
+	bool isExposure = (currentMethod == decltype(currentMethod)::Exposure);
+	bool isReinhard = (currentMethod == decltype(currentMethod)::Reinhard);
+	bool isACES = (currentMethod == decltype(currentMethod)::ACES);
+
+	if (ImGui::Checkbox("Exposure Tone Mapping", &isExposure) && isExposure) {
+		renderer.setToneMappingMethod(decltype(currentMethod)::Exposure);
+	}
+
+	if (ImGui::Checkbox("Reinhard Tone Mapping", &isReinhard) && isReinhard) {
+		renderer.setToneMappingMethod(decltype(currentMethod)::Reinhard);
+	}
+
+	if (ImGui::Checkbox("ACES Tone Mapping", &isACES) && isACES) {
+		renderer.setToneMappingMethod(decltype(currentMethod)::ACES);
+	}
+}
+
+void DebugUI::renderGammaCorrectionSection() {
+	ImGui::SeparatorText("Gamma Correction");
+
+	bool srgbEnabled = renderer.isSRGBFramebufferEnabled();
+	if (ImGui::Checkbox("Use sRGB Framebuffer (Hardware Gamma)", &srgbEnabled)) {
+		renderer.enableSRGBFramebuffer(srgbEnabled);
+	}
+
+	if (ImGui::IsItemHovered()) {
+		ImGui::SetTooltip("Enable hardware sRGB framebuffer for automatic gamma correction.");
+	}
 }

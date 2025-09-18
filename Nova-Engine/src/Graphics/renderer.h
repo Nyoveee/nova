@@ -33,6 +33,12 @@ public:
 		ToMainFrameBuffer
 	};
 
+	enum class ToneMappingMethod {
+		Exposure,
+		Reinhard,
+		ACES
+	};
+
 public:
 	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
@@ -71,6 +77,14 @@ public:
 	// HDR controls
 	DLL_API void setHDRExposure(float exposure);
 	DLL_API float getHDRExposure() const;
+
+	// Gamma correction controls
+	DLL_API void enableSRGBFramebuffer(bool enable);
+	DLL_API bool isSRGBFramebufferEnabled() const;
+
+	// Tone mapping controls
+	DLL_API void setToneMappingMethod(ToneMappingMethod method);
+	DLL_API ToneMappingMethod getToneMappingMethod() const;
 
 public:
 	// =============================================
@@ -182,4 +196,8 @@ public:
 
 	// HDR parameters
 	float hdrExposure;
+	ToneMappingMethod toneMappingMethod;
+
+	// Gamma correction parameters
+	bool srgbFramebufferEnabled;
 };

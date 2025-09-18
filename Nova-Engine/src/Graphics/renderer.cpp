@@ -64,11 +64,13 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfDebugTriangles	{},
 	isOnWireframeMode	{},
 	hdrExposure			{ 0.25f },
+	toneMappingMethod	{ ToneMappingMethod::Exposure },
+	srgbFramebufferEnabled{ false },
 
 	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
 	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
-	postProcessFrameBuffer	{ gameWidth, gameHeight, { GL_RGBA8 } }
+	postProcessFrameBuffer	{ gameWidth, gameHeight, { GL_SRGB8_ALPHA8 } }
 {
 	printOpenGLDriverDetails();
 
@@ -728,6 +730,12 @@ void Renderer::renderHDRTonemapping() {
 	glBindFramebuffer(GL_FRAMEBUFFER, postProcessFrameBuffer.fboId());
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// Enable sRGB framebuffer conversion only if using hardware gamma correction
+	// This ensures it only affects the game rendering, not UI elements
+	if (srgbFramebufferEnabled) {
+		glEnable(GL_FRAMEBUFFER_SRGB);
+	}
+
 	// Disable depth testing for fullscreen quad
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -736,6 +744,8 @@ void Renderer::renderHDRTonemapping() {
 	toneMappingShader.use();
 	toneMappingShader.setFloat("exposure", hdrExposure);
 	toneMappingShader.setFloat("gamma", 2.2f);
+	toneMappingShader.setBool("useSRGBFramebuffer", srgbFramebufferEnabled);
+	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(toneMappingMethod));
 
 	// Bind the HDR texture from main framebuffer
 	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]);
@@ -744,6 +754,11 @@ void Renderer::renderHDRTonemapping() {
 	// Render fullscreen triangle (more efficient than quad)
 	// This technique uses a large triangle that covers the screen
 	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	// Disable sRGB framebuffer to prevent affecting subsequent UI rendering
+	if (srgbFramebufferEnabled) {
+		glDisable(GL_FRAMEBUFFER_SRGB);
+	}
 
 	// Re-enable depth testing
 	glEnable(GL_DEPTH_TEST);
@@ -755,4 +770,20 @@ void Renderer::setHDRExposure(float exposure) {
 
 float Renderer::getHDRExposure() const {
 	return hdrExposure;
+}
+
+void Renderer::enableSRGBFramebuffer(bool enable) {
+	srgbFramebufferEnabled = enable;
+}
+
+bool Renderer::isSRGBFramebufferEnabled() const {
+	return srgbFramebufferEnabled;
+}
+
+void Renderer::setToneMappingMethod(ToneMappingMethod method) {
+	toneMappingMethod = method;
+}
+
+Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
+	return toneMappingMethod;
 }
