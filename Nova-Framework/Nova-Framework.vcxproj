@@ -71,10 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
+    <IncludePath>$(ProjectDir)src;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
+    <IncludePath>$(ProjectDir)src;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,13 +108,14 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;NOVA_DLL_EXPORT;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;NOVA_FRAMEWORK_DLL_EXPORT;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>Default</CompileAs>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,13 +128,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;NOVA_DLL_EXPORT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;GLAD_GLAPI_EXPORT_BUILD;NOVA_FRAMEWORK_DLL_EXPORT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <CompileAs>Default</CompileAs>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,30 +143,39 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\backward.hpp" />
-    <ClInclude Include="src\BS_thread_pool.hpp" />
-    <ClInclude Include="src\export.h" />
-    <ClInclude Include="src\family.h" />
-    <ClInclude Include="src\Logger.h" />
-    <ClInclude Include="src\Logger.ipp" />
-    <ClInclude Include="src\magic_enum.hpp" />
-    <ClInclude Include="src\nova_math.h" />
-    <ClInclude Include="src\miniz.h" />
-    <ClInclude Include="src\Profiling.h" />
-    <ClInclude Include="src\reflection.h" />
-    <ClInclude Include="src\stb_image.hpp" />
-    <ClInclude Include="src\tinyexr.h" />
-    <ClInclude Include="src\type_alias.h" />
-    <ClInclude Include="src\type_alias.ipp" />
+    <ClInclude Include="src\Assets\asset.h" />
+    <ClInclude Include="src\Assets\audio.h" />
+    <ClInclude Include="src\Assets\cubemap.h" />
+    <ClInclude Include="src\Assets\descriptor.h" />
+    <ClInclude Include="src\Assets\descriptor.ipp" />
+    <ClInclude Include="src\Assets\model.h" />
+    <ClInclude Include="src\Assets\scriptAsset.h" />
+    <ClInclude Include="src\Assets\texture.h" />
+    <ClInclude Include="src\Imported\BS_thread_pool.hpp" />
+    <ClInclude Include="src\Imported\xresource_guid.h" />
+    <ClInclude Include="src\Internal\export.h" />
+    <ClInclude Include="src\Internal\family.h" />
+    <ClInclude Include="src\Internal\Logger.h" />
+    <ClInclude Include="src\Internal\Logger.ipp" />
+    <ClInclude Include="src\Imported\magic_enum.hpp" />
+    <ClInclude Include="src\Internal\nova_math.h" />
+    <ClInclude Include="src\Internal\Profiling.h" />
+    <ClInclude Include="src\Internal\reflection.h" />
+    <ClInclude Include="src\Internal\type_alias.h" />
+    <ClInclude Include="src\Internal\type_alias.ipp" />
+    <ClInclude Include="src\Internal\vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\backward.cpp" />
-    <ClCompile Include="src\glad.cpp" />
-    <ClCompile Include="src\Logger.cpp" />
-    <ClCompile Include="src\nova_math.cpp" />
-    <ClCompile Include="src\miniz.c" />
-    <ClCompile Include="src\stb_image.cpp" />
-    <ClCompile Include="src\tinyexr.cpp" />
+    <ClCompile Include="src\Assets\asset.cpp" />
+    <ClCompile Include="src\Assets\audio.cpp" />
+    <ClCompile Include="src\Assets\cubemap.cpp" />
+    <ClCompile Include="src\Assets\descriptor.cpp" />
+    <ClCompile Include="src\Assets\model.cpp" />
+    <ClCompile Include="src\Assets\scriptAsset.cpp" />
+    <ClCompile Include="src\Assets\texture.cpp" />
+    <ClCompile Include="src\Imported\glad.cpp" />
+    <ClCompile Include="src\Internal\Logger.cpp" />
+    <ClCompile Include="src\Internal\nova_math.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

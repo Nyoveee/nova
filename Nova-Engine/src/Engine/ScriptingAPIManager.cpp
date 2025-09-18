@@ -13,6 +13,7 @@
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
 #include "engine.h"
+#include "Component/ECS.h"
 
 namespace {
 	constexpr float DEBOUNCING_TIME = 3.0f;

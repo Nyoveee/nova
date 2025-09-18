@@ -1,8 +1,10 @@
 #include <sstream>
+#include <cstdlib>
 
 #include "assetManager.h"
 #include "Profiling.h"
 #include "ResourceManager/resourceManager.h"
+#include "descriptor.h"
 
 #if 0
 template <ValidAsset T>
@@ -174,114 +176,104 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 #endif
 
 template<ValidAsset T>
-std::string AssetManager::getMetaDataFilename(std::filesystem::path const& path) const {
-	auto iterator = subAssetDirectories.find(Family::id<T>());
-	assert(iterator != subAssetDirectories.end() && "Sub asset directory not recorded.");
+void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
+#if _DEBUG
+	const char* executableConfiguration = "Debug";
+#else
+	const char* executableConfiguration = "Release";
+#endif
+	constexpr const char* executableName = "Nova-ResourceCompiler.exe";
 
-	auto&& [_, subAssetDirectory] = *iterator;
-	return std::filesystem::path{ subAssetDirectory / path.stem() }.string() + ".desc";
+	std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
+	
+	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.id);
+
+	// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
+	std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
+
+	Logger::info("Running command: {}", command);
+
+	if (std::system(command.c_str())) {
+		Logger::error("Error compiling {}", descriptorFilePath.string);
+	}
+	else {
+		Logger::info("Successful compiling {}", descriptorFilePath.string);
+		Logger::info("Resource file created: {}", Descriptor::getResourceFilename<T>(descriptor.id).string);
+	}
 }
 
 template<ValidAsset T>
-void AssetManager::loadAllDescriptorFiles(std::filesystem::path const& directory) {
+void AssetManager::loadAllDescriptorFiles() {
+	auto iterator = Descriptor::subDescriptorDirectories.find(Family::id<T>());
+	assert(iterator != Descriptor::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
+	std::filesystem::path const& directory = iterator->second;
+
+	Logger::info("===========================");
+	Logger::info("Loading all {} descriptors.", directory.stem().string());
+	Logger::info("----");
+
 	// recursively iterate through a directory and parse all descriptor files.
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
-		std::filesystem::path currentPath = entry.path();
+		std::filesystem::path descriptorFilepath = entry.path();
 
 		if (!entry.is_regular_file()) {
 			continue;
 		}
 
-		if (currentPath.extension() == ".desc") {
-			// parse the descriptor file.
-			AssetInfo<T> descriptor = parseDescriptorFile<T>(currentPath);
-
-			// we record all encountered intermediary assets with corresponding descriptor.
-			loadedIntermediaryAssets.insert(descriptor.filepath);
-
-			// check if resource manager has this particular resources already loaded.
-			// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
-			// the resource manager.
-			if (!resourceManager.doesResourceExist(descriptor.id)) {
-				resourceManager.addResourceFile(descriptor);
-			}
+		if (descriptorFilepath.extension() != ".desc") {
+			continue;
 		}
-	}
-}
 
-template <ValidAsset T>
-AssetInfo<T> AssetManager::parseDescriptorFile(std::filesystem::path const& path) {
-	std::string metaDataFilename = getMetaDataFilename<T>(path);
-	std::ifstream metaDataFile{ metaDataFilename };
+		Logger::info("Parsing {}..", descriptorFilepath.string());
 
-	// parse the generic asset metadata info first.
-	std::optional<BasicAssetInfo> parsedAssetInfo = parseDescriptorFile(path, metaDataFile);
+		// parse the descriptor file.
+		std::optional<AssetInfo<T>> opt = Descriptor::parseDescriptorFile<T>(descriptorFilepath);
+		AssetInfo<T> descriptor;
 
-	// parsing failed, time to create a new metadata file.
-	if (!parsedAssetInfo) {
-		return createDescriptorFile<T>(path);
-	}
-
-	AssetInfo<T> assetInfo{ parsedAssetInfo.value() };
-
-	// ============================
-	// Filestream is now pointing at the 4th line.
-	// Do any metadata specific to any type parsing here!!
-	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		std::string line;
-		std::getline(metaDataFile, line);
-
-		bool toFlip;
-
-		if (!(std::stringstream{ line } >> toFlip)) {
-			Logger::error("Failure when trying to parse toFlip boolean for file: {}", path.string());
-			return createDescriptorFile<T>(path);
+		if (!opt) {
+			Logger::info("Failed parsing, recreating a new descriptor file..");
+			descriptor = Descriptor::createDescriptorFile<T>(descriptorFilepath);
 		}
 		else {
-			assetInfo.isFlipped = toFlip;
+			Logger::info("Sucessfully parsed descriptor file.");
+			descriptor = opt.value();
 		}
-	}
 
-	if constexpr (std::same_as<T, Audio>) {
-		std::string line;
-		std::getline(metaDataFile, line);
+		// check if resource manager has this particular resources already loaded.
+		// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
+		// the resource manager.
 
-		bool is3D;
-
-		if (!(std::stringstream{ line } >> is3D)) {
-			Logger::error("Failure when trying to parse is3D boolean for file: {}", path.string());
-			return createDescriptorFile<T>(path);
+		Asset* resource = resourceManager.getResourceInfo(descriptor.id);
+		if (!resource) {
+			Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}", descriptor.filepath.string);
+			createResourceFile<T>(descriptor);
 		}
 		else {
-			assetInfo.is3D = is3D;
+			Logger::info("Resource file exist.");
+			resource->name = descriptor.name;
 		}
+
+		Logger::info("");
+
+		// we record all encountered intermediary assets with corresponding filepaths.
+		intermediaryAssetsToFilepaths.insert({ descriptor.filepath, { descriptorFilepath, Descriptor::getResourceFilename<T>(descriptor.id) } });
 	}
 
-	// ============================
-	return assetInfo;
+	Logger::info("===========================\n");
 }
 
-template <ValidAsset T>
-AssetInfo<T> AssetManager::createDescriptorFile(std::filesystem::path const& path) {
-	std::string metaDataFilename = getMetaDataFilename<T>(path);
-	std::ofstream metaDataFile{ metaDataFilename };
+template<ValidAsset T>
+void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
+	// this compiles a resource file corresponding to the intermediary asset.
+	compileIntermediaryFile<T>(descriptor);
 
-	AssetInfo<T> assetInfo{ createDescriptorFile(path, metaDataFile) };
+	DescriptorFilePath descriptorFilePath = Descriptor::getDescriptorFilename<T>(descriptor.id);
+	ResourceFilePath resourceFilePath = Descriptor::getResourceFilename<T>(descriptor.id);
 
-	// ============================
-	// Filestream is now pointing at the 4th line.
-	// Do any metadata specific to any type default creation here!!
-	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		metaDataFile << false << "\n";
+	// we can now add this resource to the resource manager.
+	T* resource = resourceManager.addResourceFile<T>(resourceFilePath);
+
+	if (resource) {
+		resource->name = descriptor.name;
 	}
-
-	if constexpr (std::same_as<T, Audio>) {
-		metaDataFile << false << "\n";
-	}
-
-	// ============================
-	Logger::info("Successfully created metadata file for: {}", path.string());
-	return assetInfo;
 }

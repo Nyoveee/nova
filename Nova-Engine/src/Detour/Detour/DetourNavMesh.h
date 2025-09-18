@@ -424,19 +424,19 @@ public:
 	
 	/// The maximum number of tiles supported by the navigation mesh.
 	/// @return The maximum number of tiles supported by the navigation mesh.
-	DLL_API int getMaxTiles() const;
+	ENGINE_DLL_API int getMaxTiles() const;
 	
 	/// Gets the tile at the specified index.
 	///  @param[in]	i		The tile index. [Limit: 0 >= index < #getMaxTiles()]
 	/// @return The tile at the specified index.
-	DLL_API const dtMeshTile* getTile(int i) const;
+	ENGINE_DLL_API const dtMeshTile* getTile(int i) const;
 
 	/// Gets the tile and polygon for the specified polygon reference.
 	///  @param[in]		ref		The reference for the a polygon.
 	///  @param[out]	tile	The tile containing the polygon.
 	///  @param[out]	poly	The polygon.
 	/// @return The status flags for the operation.
-	DLL_API dtStatus getTileAndPolyByRef(const dtPolyRef ref, const dtMeshTile** tile, const dtPoly** poly) const;
+	ENGINE_DLL_API dtStatus getTileAndPolyByRef(const dtPolyRef ref, const dtMeshTile** tile, const dtPoly** poly) const;
 	
 	/// Returns the tile and polygon for the specified polygon reference.
 	///  @param[in]		ref		A known valid reference for a polygon.
@@ -452,7 +452,7 @@ public:
 	/// Gets the polygon reference for the tile's base polygon.
 	///  @param[in]	tile		The tile.
 	/// @return The polygon reference for the base polygon in the specified tile.
-	DLL_API dtPolyRef getPolyRefBase(const dtMeshTile* tile) const;
+	ENGINE_DLL_API dtPolyRef getPolyRefBase(const dtMeshTile* tile) const;
 	
 	/// Gets the endpoints for an off-mesh connection, ordered by "direction of travel".
 	///  @param[in]		prevRef		The reference of the polygon before the connection.

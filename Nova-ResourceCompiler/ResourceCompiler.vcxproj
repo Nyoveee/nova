@@ -41,13 +41,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -72,10 +72,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)\ExternalApplication\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)ExternalApplication\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,7 +111,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;NOVA_DLL_EXPORT;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -119,6 +123,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)DLL\$(Configuration)\assimp-vc143-mtd.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -126,7 +134,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;NOVA_DLL_EXPORT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -138,20 +146,31 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Resource.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nova-Framework\Nova-Framework.vcxproj">
       <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Nova-Resource\Resource.vcxproj">
-      <Project>{380aadcf-1df3-403d-8190-404b143deab0}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\compiler.cpp" />
+    <ClCompile Include="src\Library\miniz.c" />
+    <ClCompile Include="src\Library\stb_image.cpp" />
+    <ClCompile Include="src\Library\tinyexr.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\modelLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\compiler.h" />
+    <ClInclude Include="src\compiler.ipp" />
+    <ClInclude Include="src\Library\miniz.h" />
+    <ClInclude Include="src\Library\stb_image.hpp" />
+    <ClInclude Include="src\Library\tinyexr.h" />
+    <ClInclude Include="src\modelLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

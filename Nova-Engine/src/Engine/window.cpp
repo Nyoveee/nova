@@ -208,7 +208,7 @@ GLFWwindow* Window::getGLFWwindow() const {
 	return glfwWindow;
 }
 
-DLL_API void Window::toggleFullScreen()
+void Window::toggleFullScreen()
 {
 	int windowedXPos = 0, windowedYPos = 0;
 	if (!isFullScreen) glfwGetWindowPos(glfwWindow, &windowedXPos, &windowedYPos);

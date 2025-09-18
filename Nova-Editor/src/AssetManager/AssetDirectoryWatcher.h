@@ -9,7 +9,7 @@
 #include <mutex>
 
 // variable is defined in Window class.
-DLL_API extern std::atomic<bool> engineIsDestructing;
+ENGINE_DLL_API extern std::atomic<bool> engineIsDestructing;
 
 class AssetManager;
 class ResourceManager;

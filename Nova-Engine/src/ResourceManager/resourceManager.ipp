@@ -4,6 +4,7 @@
 
 #include "Logger.h"
 #include "resourceManager.h"
+#include "descriptor.h"
 
 template <ValidAsset T>
 ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
@@ -48,29 +49,34 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 }
 
 template<ValidAsset T>
-void ResourceManager::addResourceFile(std::filesystem::path const& filepath) {
-	if constexpr (std::same_as<T, Texture>) {
-		
-	}
-	else if constexpr (std::same_as<T, Model>) {
+T* ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
+	std::unique_ptr<T> newAsset = std::make_unique<T>(T{ filepath });
 
-	}
-	else {
-		[] <bool flag = true>() {
-			static_assert(flag, "Attempting to parse a unsupported resource file type.\n");
-		}();
+	ResourceID id = newAsset->id;
+	auto [iterator, success] = resources.insert({ id, std::move(newAsset) });
+
+	if (!success) {
+		// asset id collision occur! this shouldn't happen though.
+		Logger::error("Asset ID collision occured {} for: {}", static_cast<std::size_t>(id), filepath.string);
+		return nullptr;
 	}
 
 	// record this asset to the corresponding asset type.
-	// resourcesByType[Family::id<T>()].push_back(assetInfo.id);
+	resourcesByType[Family::id<T>()].push_back(id);
 
 	// associate this asset id with this asset type.
-	// assetIdToType[assetInfo.id] = Family::id<T>();
+	resourceIdToType[id] = Family::id<T>();
+
+	// associates this filepath with this asset id.
+	filepathToResourceId[filepath] = id;
+
+	return static_cast<T*>(iterator->second.get());
 }
 
+#if 0
 template<ValidAsset T>
 void ResourceManager::addResourceFile(AssetInfo<T> assetInfo) {
-	std::unique_ptr<T> newAsset = std::make_unique<T>(
+	std::unique_ptr<T> newAsset = std::make_unique<T>(	
 		createAsset<T>(assetInfo)
 	);
 
@@ -96,9 +102,14 @@ void ResourceManager::addResourceFile(AssetInfo<T> assetInfo) {
 	// associates this filepath with this asset id.
 	filepathToResourceId[assetInfo.filepath] = assetInfo.id;
 }
+#endif
 
 template<ValidAsset T>
-void ResourceManager::loadAllResources(std::filesystem::path const& directory) {
+void ResourceManager::loadAllResources() {
+	auto iterator = Descriptor::subResourceDirectories.find(Family::id<T>());
+	assert(iterator != Descriptor::subResourceDirectories.end() && "This descriptor sub directory is not recorded.");
+	std::filesystem::path const& directory = iterator->second;
+
 	// recursively iterate through a directory and parse all resource files.
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
 		std::filesystem::path currentPath = entry.path();

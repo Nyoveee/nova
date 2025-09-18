@@ -26,7 +26,7 @@ public:
 	void unuse() const;
 
 	// recompile shader based on vertexPath and fragmentPath
-	DLL_API void compile();
+	ENGINE_DLL_API void compile();
 
 	// retrieve filepaths
 	const char* getVertexPath() const;
