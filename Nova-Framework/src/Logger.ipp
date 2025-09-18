@@ -1,43 +1,45 @@
 #pragma once
 #include <iostream>
+#include "Logger.h"
 
-namespace Logger
+template<typename ...Args>
+void Logger::warn(std::string_view rt_fmt_str, Args&&... args)
 {
-	template<typename ...Args>
-	void warn(std::string_view rt_fmt_str, Args && ...args)
-	{
-		std::size_t argSize{ sizeof...(args) };
+    std::size_t argSize{ sizeof...(args) };
 
-		std::string text;
+    std::string text;
 
-		if (argSize == 0) {
-			std::cout << getCurrentTime() << " [Warning] " << rt_fmt_str << std::endl;
-			text = rt_fmt_str;
-		}
-		else {
-			std::cout << getCurrentTime() << " [Warning] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
-			text = std::vformat(rt_fmt_str, std::make_format_args(args...));
-		}
+    if (argSize == 0) {
+        std::cout << getCurrentTime() << " [Warning] " << rt_fmt_str << std::endl;
+        text = std::string(rt_fmt_str);
+    }
+    else {
+        std::string formatted = std::vformat(rt_fmt_str, std::make_format_args(args...));
+        std::cout << getCurrentTime() << " [Warning] " << formatted << std::endl;
+        text = formatted;
+    }
+}
 
+template<typename ...Args>
+void Logger::info(std::string_view rt_fmt_str, Args&&... args)
+{
+    std::size_t argSize{ sizeof...(args) };
+    if (argSize == 0) {
+        std::cout << getCurrentTime() << " [Info] " << rt_fmt_str << std::endl;
+    }
+    else {
+        std::cout << getCurrentTime() << " [Info] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+    }
+}
 
-	}
-	template<typename ...Args>
-	void Logger::info(std::string_view rt_fmt_str, Args && ...args)
-	{
-		std::size_t argSize{ sizeof...(args) };
-		if (argSize == 0)
-			std::cout << getCurrentTime() << " [Info] " << rt_fmt_str << std::endl;
-		else
-			std::cout << getCurrentTime() << " [Info] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
-		
-	}
-	template<typename ...Args>
-	void error(std::string_view rt_fmt_str, Args && ...args)
-	{
-		std::size_t argSize{ sizeof...(args) };
-		if (argSize == 0)
-			std::cout << getCurrentTime() << " [Error] " << rt_fmt_str << std::endl;
-		else
-			std::cout << getCurrentTime() << " [Error] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
-	}
+template<typename ...Args>
+void Logger::error(std::string_view rt_fmt_str, Args&&... args)
+{
+    std::size_t argSize{ sizeof...(args) };
+    if (argSize == 0) {
+        std::cout << getCurrentTime() << " [Error] " << rt_fmt_str << std::endl;
+    }
+    else {
+        std::cout << getCurrentTime() << " [Error] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+    }
 }

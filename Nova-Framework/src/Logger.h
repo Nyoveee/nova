@@ -2,16 +2,25 @@
 #include "export.h"
 #include <format>
 #include <string>
+#include <string_view>
+#include <vector>
 
-namespace Logger
+class DLL_API Logger
 {
-	DLL_API std::string getCurrentTime();
-	template<typename ...Args>
-	void warn(std::string_view rt_fmt_str, Args&&... args);
-	template<typename ...Args>
-	void info(std::string_view rt_fmt_str, Args&&... args);
-	template<typename ...Args>
-	void error(std::string_view rt_fmt_str, Args&&... args);
-}
+public:
+    static std::string getCurrentTime();
+  
+
+    template<typename ...Args>
+    static void warn(std::string_view rt_fmt_str, Args&&... args);
+
+    template<typename ...Args>
+    static void info(std::string_view rt_fmt_str, Args&&... args);
+
+    template<typename ...Args>
+    static void error(std::string_view rt_fmt_str, Args&&... args);
+
+};
+
 
 #include "Logger.ipp"

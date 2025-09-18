@@ -2,6 +2,7 @@
 #include <sstream>
 #include <chrono>
 
+
 std::string Logger::getCurrentTime()
 {
     constexpr char logFormatString[] = "[%d-%m-%Y] [%H:%I:%S]";
