@@ -7,7 +7,6 @@
 #include "ScriptingAPI.hxx"
 #include <type_traits>
 
-
 // This default function template returns the managed type as it is
 // This is used for primitives like ints, floats, etc, where you can return the managed type as native type directly.
 // Managed structs will definite an explicit specialisation of this function template
@@ -32,9 +31,12 @@ public value struct ManagedType : IManagedStruct {																					\
 	ManagedType(NativeType native) : Call_MacroComma_Double(ConstructorDefinition, __VA_ARGS__) {}									\
 	ManagedType(Call_MacroComma_Double(Parameter,__VA_ARGS__)) : Call_MacroComma_Double(ConstructorDefinition2, __VA_ARGS__) {}     \
 	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}										\
-	virtual void AppendNativeData(FieldData& fieldData) sealed{															            \
+	virtual void AppendValueToFieldData(FieldData& fieldData) sealed{															    \
 		fieldData.second = native();																								\
 	}																																\
+	virtual void SetValueFromFieldData(FieldData const& fieldData) sealed{                                                          \
+		*this = ManagedType(std::get<NativeType>(fieldData.second));																\
+	}                                                                                                                               \
 	virtual System::String^ ToString() override sealed{																				\
 		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();													\
 		System::String^ result = "{";																								\

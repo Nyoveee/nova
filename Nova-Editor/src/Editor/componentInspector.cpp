@@ -106,4 +106,24 @@ void ComponentInspector::update() {
 	ImGui::End();
 }
 
+void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback)
+{
+	ImGui::PushID(imguiCounter);
+	++imguiCounter;
+	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
+	if (ImGui::BeginCombo("Add new script", "##")) {
+		for (auto&& scriptID : allScripts) {
+			auto compareID = [&](ScriptData const& ownedScript) { return scriptID == ownedScript.scriptId; };
+			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
+				continue;
+			Asset* scriptResource = resourceManager.getResourceInfo(scriptID);
+			if (ImGui::Selectable(scriptResource->name.c_str())) 
+				onClickCallback(scriptResource->id);
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopID();
+}
+
+
 #include "displayComponent.ipp"

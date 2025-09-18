@@ -12,7 +12,7 @@ T* Interface::getNativeComponent(System::UInt32 entityID) {
 }
 
 template<typename Type, typename ...Types>
-bool Interface::AppendPrimitiveData(FieldData& fieldData, Object^ object)
+bool Interface::ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ object)
 {
 	try {
 		Type^ value = safe_cast<Type^>(object);
@@ -21,7 +21,22 @@ bool Interface::AppendPrimitiveData(FieldData& fieldData, Object^ object)
 	}
 	catch(...){}
 	if constexpr (sizeof...(Types) > 0)
-		return AppendPrimitiveData<Types...>(fieldData, object);
+		return ObtainPrimitiveDataFromScript<Types...>(fieldData, object);
+	else
+		return false;
+}
+
+template<typename Type, typename ...Types>
+bool Interface::SetScriptPrimitiveFromNativeData(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo)
+{
+	if (std::holds_alternative<Type>(fieldData.second)) {
+		Type value = std::get<Type>(fieldData.second);
+		Type^ managedValue = safe_cast<Type^>(value);
+		fieldInfo->SetValue(script, managedValue);
+		return true;
+	}
+	if constexpr (sizeof...(Types) > 0)
+		return SetScriptPrimitiveFromNativeData<Types...>(fieldData, script, fieldInfo);
 	else
 		return false;
 }

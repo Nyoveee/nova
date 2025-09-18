@@ -38,8 +38,8 @@ using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
 using LoadScriptsFunctionPtr		= void (*)(void);
 using UnloadScriptsFunctionPtr		= void (*)(void);
 using IntializeScriptsFunctionPtr	= void (*)(void);
-using ClearAllScriptsFunctionPtr    = void (*)(void);
-using GetScriptFieldFunctionPtr     = std::vector<FieldData>(*)(unsigned int, unsigned long long);
+using GetScriptFieldsFunctionPtr    = std::vector<FieldData>(*)(unsigned int, unsigned long long);
+using SetScriptFieldFunctionPtr		= void(*)(unsigned int, unsigned long long, FieldData const& fieldData);;
 
 class Engine;
 
@@ -63,15 +63,15 @@ public:
 
 public:
 	DLL_API bool compileScriptAssembly();
-	DLL_API void loadEntityScriptsFromScene();
+	DLL_API void loadSceneScriptsToAPI();
 
 	// Editor function
 	DLL_API void loadEntityScript(unsigned int entityID, unsigned long long scriptID);
 	DLL_API void removeEntityScript(unsigned int entityID, unsigned long long scriptID);
+	DLL_API bool isNotCompiled();
 
 	// Simulation
 	DLL_API bool startSimulation();
-	DLL_API void stopSimulation();
 
 	// Update
 	DLL_API void update();
@@ -79,7 +79,7 @@ public:
 
 	// Serializable Field Reference
 	DLL_API std::vector<FieldData> getScriptFieldDatas(unsigned int entityID, unsigned long long scriptID);
-
+	DLL_API void setScriptFieldData(unsigned int entityID, unsigned long long scriptID, FieldData const& fieldData);
 
 	// This is the callback when the assets files are Added
 	DLL_API void OnAssetContentAddedCallback(std::string abspath);
@@ -123,8 +123,8 @@ private:
 	LoadScriptsFunctionPtr loadAssembly;
 	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
-	GetScriptFieldFunctionPtr getScriptFieldDatas_;
-	ClearAllScriptsFunctionPtr clearAllScripts_;
+	GetScriptFieldsFunctionPtr getScriptFieldDatas_;
+	SetScriptFieldFunctionPtr setScriptFieldData_;
 private:
 	CompileState compileState;
 	float timeSinceSave;

@@ -81,6 +81,9 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
+		Serialiser::serialiseScene(ecs);
+		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+
 		if (!scriptingAPIManager.startSimulation())
 		{
 			stopSimulation();
@@ -89,7 +92,7 @@ void Engine::startSimulation() {
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();
 
-		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
@@ -104,12 +107,10 @@ void Engine::stopSimulation() {
 
 	setupSimulationFunction = [&]() {
 		physicsManager.clear();
-		scriptingAPIManager.stopSimulation();
 		audioSystem.unloadAllSounds();
 
-		Serialiser::serialiseScene(ecs);
-
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+
 		inSimulationMode = false;
 	};
 }

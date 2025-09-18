@@ -18,30 +18,35 @@ public:
 	using EntityID = System::UInt32;
 internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
-	static void load();
-	static void unload();
+	static void loadAssembly();
+	static void unloadAssembly();
 	static void update();
 
 	static void addGameObjectScript(EntityID entityID, ScriptID scriptId);
 	static void removeGameObjectScript(EntityID entityID, ScriptID scriptId);
-	static void clearAllScripts();
-	static void intializeAllScripts();
-	static std::vector<FieldData> getScriptFieldDatas(EntityID entityID, ScriptID scriptID);
-	//static void setScriptData(EntityID entityID, ScriptID scriptId, const char* name, void* value);
 
+	static void intializeAllScripts();
+internal:
+	// Script Fields
+	static std::vector<FieldData> getScriptFieldDatas(EntityID entityID, ScriptID scriptID);
+	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
 	generic<typename T> where T : Script
 	static T tryGetScriptReference(System::UInt32 entityID);
-	// Append Primitive data value to the fielddata
+	// Setting/Getting of primitive data for fields through fielddata
 	template<typename Type, typename ...Types>
-	static bool AppendPrimitiveData(FieldData& fieldData, Object^ object);
+	static bool ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ object);
+	template<typename Type, typename ...Types>
+	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+private:
+	static void clearAllScripts();
 internal:
 	static Engine* engine;
 
 private:
-	using Scripts = System::Collections::Generic::List<Script^>;
+	using Scripts = System::Collections::Generic::Dictionary<ScriptID, Script^>;
 	using Components = System::Collections::Generic::List<IManagedComponent^>;
 
 	// Stores all of the loaded scripts of a given game object.

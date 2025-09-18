@@ -3,5 +3,6 @@
 #include <vector>
 interface struct IManagedStruct {
 	// Shouldn't be callable in the c# scripts since native types is used
-	void AppendNativeData(FieldData& fieldData);
+	void AppendValueToFieldData(FieldData& fieldData);
+	void SetValueFromFieldData(FieldData const& fieldData);
 };

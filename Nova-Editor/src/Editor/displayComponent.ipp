@@ -7,7 +7,7 @@
 #include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
-void displayScriptFields(ScriptData& scriptData, ComponentInspector& componentInspector);
+void displayScriptFields(entt::entity entity, ScriptData& scriptData, ScriptingAPIManager& scriptingAPIManager, Engine& engine);
 
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
@@ -241,7 +241,7 @@ namespace {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
 						// Adding Scripts
-						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
+						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
 							ScriptData scriptData{ resourceId };
 							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
 							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(static_cast<unsigned int>(entity), static_cast<std::size_t>(scriptData.scriptId));
@@ -259,7 +259,7 @@ namespace {
 							assert(scriptAsset);
 
 							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
-								displayScriptFields(scriptData, componentInspector);
+								displayScriptFields(entity, scriptData, scriptingAPIManager,componentInspector.editor.engine);
 
 							ImGui::PopID();
 							return !keepScript;

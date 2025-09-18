@@ -22,7 +22,6 @@ internal:
 	void callInit();
 	void callUpdate();
 	void callExit();
-	void setEntityID(System::UInt32 p_entityID);
 protected:
 	virtual void init() {};
 	virtual void update() {};
