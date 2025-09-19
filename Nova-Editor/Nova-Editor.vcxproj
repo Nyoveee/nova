@@ -178,6 +178,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\ImGui\ImGuizmo.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_demo.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\Editor\navBar.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.cpp" />
@@ -225,6 +226,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="src\Editor\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\Editor\navBar.h" />
     <ClInclude Include="src\Editor\ImGui\imstb_rectpack.h" />
     <ClInclude Include="src\Editor\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\Editor\ImGui\imstb_truetype.h" />

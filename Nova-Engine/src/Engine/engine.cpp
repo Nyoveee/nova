@@ -29,12 +29,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
 {
-	//Serialiser::deserialiseScene(ecs);
-	//std::ifstream file("test.json");
 	SceneManager::SceneManager sm(ecs, "test.json");
-
-
-
 }
 
 Engine::~Engine() {
@@ -113,6 +108,8 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
 
+		Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
+		//Serialiser::serialiseEditorConfig("editorConfig.json");
 		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();

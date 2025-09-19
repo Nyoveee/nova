@@ -173,6 +173,9 @@ namespace Serialiser {
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
 
 				}
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
+
+				}
 
 				// it's an enum. let's display a dropdown box for this enum.
 				// how? using enum reflection provided by "magic_enum.hpp" :D
@@ -325,6 +328,9 @@ namespace Serialiser {
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+
+				}
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
 
 				}
 
