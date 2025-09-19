@@ -205,10 +205,11 @@ struct AudioComponent {
 	// REFLECTABLE(
 	// 	audio
 	// )
-
+	std::unordered_map<std::string, ResourceID> data;
 	std::vector<AudioData> AudioList;
 
 	REFLECTABLE(
-		AudioList
+		AudioList,
+		data
 	)
 };

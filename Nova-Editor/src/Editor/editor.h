@@ -14,6 +14,7 @@
 #include "hierarchy.h"
 #include "debugUI.h"
 #include "console.h"
+#include "navBar.h"
 
 using GLuint = unsigned int;
 
@@ -22,6 +23,7 @@ class Engine;
 class InputManager;
 class AssetManager;
 class ResourceManager;
+class NavBar;
 
 class Editor {
 public:
@@ -80,10 +82,12 @@ private:
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
-	Hierarchy hierarchyList;
+	//Hierarchy hierarchyList;
+	//DebugUI debugUi;
+	//Console console;
+	
 	NavMeshGeneration navMeshGenerator;
-	DebugUI debugUi;
-	Console console;
+	NavBar navBar;
 
 private:
 	std::vector<entt::entity> selectedEntities;

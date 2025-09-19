@@ -41,9 +41,10 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
 	assetManagerUi					{ *this },	
-	hierarchyList					{ *this },
+	//hierarchyList					{ *this },
 	navMeshGenerator				{ *this },
-	debugUi							{ *this },
+	//debugUi						{ *this },
+	navBar							{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false },
@@ -203,11 +204,12 @@ void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
 	gameViewPort.update();
-	componentInspector.update();
+	//componentInspector.update();
 	assetManagerUi.update();
-	hierarchyList.update();
-	debugUi.update();
-	console.update();
+	//hierarchyList.update();
+	//debugUi.update();
+	//console.update();
+	navBar.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();

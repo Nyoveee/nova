@@ -216,6 +216,8 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 			handleThumbnailDoubleClick(resourceId);
 		}
 	);
+
+
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {

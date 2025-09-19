@@ -1,6 +1,7 @@
 #include "serialisation.h"
 #include "ECS/component.h"
 #include "ECS/ECS.h"
+#include <string>
 
 #include <fstream>
 #include <iomanip>
@@ -55,5 +56,69 @@ namespace Serialiser {
 		catch (std::exception const& ex) {
 			Logger::error("Failed to deserialise scene. {}", ex.what());
 		}
+	}
+	
+	void serialiseGameConfig(const char* fileName, int gameWidth, int gameHeight) {
+		json j;
+
+		std::ofstream file(fileName);
+
+		if (!file.is_open())
+			return;
+
+		json tempJ;
+
+		tempJ["windowName"] = "Nova Game";
+		tempJ["gameWidth"] = gameWidth;
+		tempJ["gameHeight"] = gameHeight;
+
+		j["Window"] = tempJ;
+		tempJ.clear();
+
+		file << std::setw(4) << j << std::endl;
+
+	}
+
+	void deserialiseGameConfig(const char* fileName, int& gameWidth, int& gameHeight, std::string& windowName) {
+		std::ifstream file(fileName);
+
+		if (!file.is_open())
+			return;
+
+		json j;
+		file >> j;
+		//j["Windows"]["windowName"];
+		gameWidth = j["Window"]["gameWidth"];
+		gameHeight = j["Window"]["gameHeight"];
+		std::string str = j["Window"]["windowName"].dump();
+
+		windowName = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
+	}
+
+	template <typename ...Windows>
+	void serialiseEditorConfig(const char* fileName, bool console, bool debugUi, bool hierarchy, bool componentInspector) {
+		std::ofstream file(fileName);
+
+		if (!file.is_open())
+			return;
+
+		json j;
+		json tempj;
+		//([&]() {
+		//	tempj[magic_enum::enum_name(Windows)] = 0;
+		//	}(), ...);
+		//j["Windows"] = tempj;
+
+		file << std::setw(4) << j << std::endl;		
+
+	}
+	void deserialiseEditorConfig(const char* fileName) {
+		std::ifstream file(fileName);
+
+		if (!file.is_open())
+			return;
+
+		json j;
+		file >> j;
 	}
 };

@@ -115,6 +115,8 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
 
+		Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
+		//Serialiser::serialiseEditorConfig("editorConfig.json");
 		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
