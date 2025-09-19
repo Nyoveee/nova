@@ -8,7 +8,7 @@
 
 #include "export.h"
 #include "Graphics/renderer.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
 #include "Graphics/cameraSystem.h"
 #include "Engine/transformationSystem.h"
 #include "Physics/physicsManager.h"

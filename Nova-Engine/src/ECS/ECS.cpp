@@ -2,13 +2,14 @@
 #include <iostream>
 
 #include "Engine/engine.h"
-#include "Component/ECS.h"
-#include "Component/component.h"
+#include "ECS/ECS.h"
+#include "ECS/component.h"
 #include "Logger.h"
 
 ECS::ECS(Engine& engine) : 
-	registry	{}, 
-	engine		{ engine } 
+	registry		{}, 
+	engine			{ engine },
+	sceneManager	{ *this }
 {}
 
 ECS::~ECS() {}

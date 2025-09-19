@@ -5,7 +5,7 @@
 class ScriptAsset : public Resource
 {
 public:
-	FRAMEWORK_DLL_API ScriptAsset(ResourceID id);
+	FRAMEWORK_DLL_API ScriptAsset(ResourceID id, ResourceFilePath resourceFilePath);
 
 	FRAMEWORK_DLL_API ~ScriptAsset()									= default;
 	FRAMEWORK_DLL_API ScriptAsset(ScriptAsset const& other)				= delete;

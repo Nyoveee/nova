@@ -14,11 +14,9 @@ public:
 
 public:
 	FRAMEWORK_DLL_API bool isAudio3D() const;
-	FRAMEWORK_DLL_API ResourceFilePath const& getFilePath() const;
 
 private:
 	bool is3D;
-	ResourceFilePath resourceFilePath;
 };
 
 // Explicitly define an extension of the asset metadata

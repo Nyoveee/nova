@@ -11,7 +11,7 @@
 
 #include "Audio/audioSystem.h"
 #include "Engine/window.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
 #include "Engine/engine.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
@@ -21,7 +21,7 @@
 #include "themes.h"
 #include "model.h"
 
-#include "Component/component.h"
+#include "ECS/component.h"
 
 #include <GLFW/glfw3.h>
 #include <ranges>
@@ -114,6 +114,25 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		}
 	);
+
+	inputManager.subscribe<CopyEntity>(
+		[&](CopyEntity) {
+			if (selectedEntities.size()) {
+				for (entt::entity entity : selectedEntities) {
+					copiedEntityVec.push_back(entity);
+				}
+			}
+		}
+	);
+
+	inputManager.subscribe<PasteEntity>(
+		[&](PasteEntity) {
+			if (!copiedEntityVec.empty()) {
+				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
+				copiedEntityVec.clear();
+			}
+		}
+	);
 }
 
 void Editor::update(std::function<void(bool)> changeSimulationCallback) {
@@ -188,6 +207,7 @@ void Editor::main() {
 	assetManagerUi.update();
 	hierarchyList.update();
 	debugUi.update();
+	console.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();

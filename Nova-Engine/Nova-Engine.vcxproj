@@ -173,6 +173,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\ECS\SceneManager.h" />
     <ClInclude Include="src\Audio\audioSystem.h" />
     <ClInclude Include="src\Detour\DetourCrowd\DetourCrowd.h" />
     <ClInclude Include="src\Detour\DetourCrowd\DetourLocalBoundary.h" />
@@ -193,9 +194,9 @@
     <ClInclude Include="src\Detour\Detour\DetourStatus.h" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp" />
     <ClInclude Include="src\Engine\transformationSystem.h" />
-    <ClInclude Include="src\Component\component.h" />
+    <ClInclude Include="src\ECS\component.h" />
     <ClInclude Include="src\ECS &amp; Components\ECS.h" />
-    <ClInclude Include="src\Component\ECS.h" />
+    <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\Engine\engine.h" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.h" />
     <ClInclude Include="src\Graphics\camera.h" />
@@ -222,8 +223,9 @@
     <ClInclude Include="src\Serialisation\serialisation.ipp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ECS\SceneManager.cpp" />
     <ClCompile Include="src\Audio\audioSystem.cpp" />
-    <ClCompile Include="src\Component\ECS.cpp" />
+    <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Detour\DetourCrowd\DetourCrowd.cpp" />
     <ClCompile Include="src\Detour\DetourCrowd\DetourLocalBoundary.cpp" />
     <ClCompile Include="src\Detour\DetourCrowd\DetourObstacleAvoidance.cpp" />

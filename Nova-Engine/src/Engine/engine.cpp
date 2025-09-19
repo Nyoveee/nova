@@ -4,13 +4,14 @@
 #include "engine.h"
 #include "window.h"
 
-#include "Component/component.h"
+#include "ECS/component.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
 
 
 #include "Serialisation/serialisation.h"
+#include "ECS/SceneManager.h"
 
 
 Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight) :
@@ -29,9 +30,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
-{
-	Serialiser::deserialiseScene(ecs);
-}
+{}
 
 Engine::~Engine() {
 	stopSimulation();
@@ -116,7 +115,7 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
 
-		Serialiser::serialiseScene(ecs);
+		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		inSimulationMode = false;

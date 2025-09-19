@@ -4,7 +4,7 @@
 #include "editor.h"
 #include "hierarchy.h"
 #include "Recast/Recast.h"
-#include "Component/component.h"
+#include "ECS/component.h"
 
 NavMeshGeneration::NavMeshGeneration(Editor& editor): 
 	ecs{ editor.engine.ecs },

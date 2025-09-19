@@ -1,8 +1,8 @@
 #include "ResourceManager/resourceManager.h"
 #include "AssetManager/assetManager.h"
 #include "imgui.h"
-#include "Component/ECS.h"
-#include "Component/Component.h"
+#include "ECS/ECS.h"
+#include "ECS/Component.h"
 
 template<typename T>
 void ComponentInspector::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback) {

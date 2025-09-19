@@ -21,7 +21,7 @@ public:
 	};
 
 public:
-	FRAMEWORK_DLL_API Model(ResourceID id, std::vector<Mesh> meshes, std::unordered_set<MaterialName> materialNames);
+	FRAMEWORK_DLL_API Model(ResourceID id, ResourceFilePath resourceFilePath, std::vector<Mesh> meshes, std::unordered_set<MaterialName> materialNames);
 	
 	FRAMEWORK_DLL_API ~Model() = default;
 	FRAMEWORK_DLL_API Model(Model const& other) = delete;

@@ -1,10 +1,10 @@
 #include <string>
 
 #include "serialisation.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
 #include "reflection.h"
 
-#include "Component/component.h"
+#include "ECS/component.h"
 #include "magic_enum.hpp"
 
 #include "Logger.h"

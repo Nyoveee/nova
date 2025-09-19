@@ -10,8 +10,8 @@
 #include "camera.h"
 #include "bufferObject.h"
 #include "framebuffer.h"
-#include "Component/ECS.h"
-#include "Component/Component.h"
+#include "ECS/ECS.h"
+#include "ECS/Component.h"
 #include "vertex.h"
 
 #include "model.h"

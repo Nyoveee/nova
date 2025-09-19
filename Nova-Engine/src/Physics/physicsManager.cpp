@@ -1,7 +1,7 @@
 #include "Engine/engine.h"
 #include "physicsManager.h"
-#include "Component/component.h"
-#include "Component/ECS.h"
+#include "ECS/component.h"
+#include "ECS/ECS.h"
 
 #include <iostream>
 #include <cstdarg>

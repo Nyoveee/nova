@@ -137,8 +137,8 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 		Logger::info("Successfully load resource.\n");
 		
 		// returns a resource constructor
-		return { ResourceConstructor{[id, meshes = std::move(meshes), materialNames = std::move(materialNames)]() {
-			return std::make_unique<Model>(id, std::move(meshes), std::move(materialNames));
+		return { ResourceConstructor{[id, resourceFilePath, meshes = std::move(meshes), materialNames = std::move(materialNames)]() {
+			return std::make_unique<Model>(id, std::move(resourceFilePath), std::move(meshes), std::move(materialNames));
 		}} };
 	}
 	catch (std::exception const& ex) {

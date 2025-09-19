@@ -19,7 +19,7 @@ std::optional<ResourceConstructor> ResourceLoader<Texture>::load(ResourceID id, 
 
 	gli::gl::format format = GL.translate(texture.format(), texture.swizzles());
 
-	return { ResourceConstructor{[id, texture = std::move(texture), format = std::move(format)]() {
-		return std::make_unique<Texture>(id, std::move(texture), std::move(format));
+	return { ResourceConstructor{[id, resourceFilePath, texture = std::move(texture), format = std::move(format)]() {
+		return std::make_unique<Texture>(id, std::move(resourceFilePath), std::move(texture), std::move(format));
 	}} };
 }

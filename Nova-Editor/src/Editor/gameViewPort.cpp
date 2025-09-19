@@ -60,7 +60,7 @@ void GameViewPort::update() {
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getMainFrameBufferTextures()[0];
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
-
+	
 	// Calculate the mouse position relative to the game's viewport.
 	mouseRelativeToViewPort = ImGui::GetMousePos();
 	mouseRelativeToViewPort -= gameWindowTopLeft;

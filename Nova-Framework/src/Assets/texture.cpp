@@ -9,8 +9,8 @@ namespace {
 	GLuint TEXTURE_NOT_LOADED = std::numeric_limits<GLuint>::max();
 }
 
-Texture::Texture(ResourceID id, gli::texture const& texture, gli::gl::format const& format) :
-	Resource		 { id },
+Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture const& texture, gli::gl::format const& format) :
+	Resource		 { id, std::move(resourceFilePath) },
 	width			 { texture.extent().x },
 	height			 { texture.extent().y },
 	textureId		 { TEXTURE_NOT_LOADED }

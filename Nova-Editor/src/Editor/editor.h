@@ -5,7 +5,7 @@
 
 #include "export.h"
 
-#include "Component/ecs.h"
+#include "ECS/ecs.h"
 
 #include "gameViewPort.h"
 #include "componentInspector.h"
@@ -13,6 +13,7 @@
 #include "navMeshGeneration.h"
 #include "hierarchy.h"
 #include "debugUI.h"
+#include "console.h"
 
 using GLuint = unsigned int;
 
@@ -51,6 +52,7 @@ public:
 
 public:
 	entt::entity hoveringEntity;
+	std::vector<entt::entity> copiedEntityVec;
 
 private:
 	void main();
@@ -81,6 +83,7 @@ private:
 	Hierarchy hierarchyList;
 	NavMeshGeneration navMeshGenerator;
 	DebugUI debugUi;
+	Console console;
 
 private:
 	std::vector<entt::entity> selectedEntities;

@@ -1,6 +1,6 @@
 #include "serialisation.h"
-#include "Component/component.h"
-#include "Component/ECS.h"
+#include "ECS/component.h"
+#include "ECS/ECS.h"
 
 #include <fstream>
 #include <iomanip>
@@ -8,9 +8,9 @@
 constexpr const char* filepath = "test.json";
 
 namespace Serialiser {
-	void Serialiser::serialiseScene(ECS& ecs) {
+	void Serialiser::serialiseScene(ECS& ecs, const char* fileName) {
 		try {
-			std::ofstream file(filepath);
+			std::ofstream file(fileName);
 
 			if (!file) {
 				return;
@@ -35,9 +35,9 @@ namespace Serialiser {
 		}
 	}
 
-	void deserialiseScene(ECS& ecs) {
+	void deserialiseScene(ECS& ecs, const char* fileName) {
 		try {
-			std::ifstream file(filepath);
+			std::ifstream file(fileName);
 
 			if (!file.is_open())
 				return;

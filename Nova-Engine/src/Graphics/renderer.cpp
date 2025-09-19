@@ -9,11 +9,11 @@
 #include "renderer.h"
 #include "Engine/window.h"
 #include "vertex.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
 #include "ResourceManager/resourceManager.h"
 
 #include <fstream>
-#include "Component/component.h"
+#include "ECS/component.h"
 #include "Profiling.h"
 #include "Logger.h"
 

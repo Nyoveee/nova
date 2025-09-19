@@ -3,6 +3,9 @@
 #include "export.h"
 #include <entt/entt.hpp>
 
+#include "component.h"
+#include "SceneManager.h"
+
 class Engine;
 
 // A ECS wrapper around the entt framework for ease of access from other classes.
@@ -37,9 +40,14 @@ public:
 	template <typename ...Components>
 	void rollbackRegistry();
 
+	// this copies the entities in a given vector
+	template<typename ...Components>
+	void copyEntities(std::vector<entt::entity> const& entityVec);
+
 public:
 	// public!
 	entt::registry registry;
+	SceneManager sceneManager;
 
 private:
 	Engine& engine;
@@ -86,5 +94,26 @@ void ECS::rollbackRegistry() {
 				registry.emplace<Components>(entity, std::move(*component));
 			}
 		}(), ...);
+	}
+}
+
+template<typename ...Components>
+void ECS::copyEntities(std::vector<entt::entity> const& entityVec)
+{
+	for (auto en : entityVec) {
+		auto tempEntity = registry.create();
+		([&]() {
+			Components* component = registry.try_get<Components>(en);
+			if (component) {
+				registry.emplace<Components>(tempEntity, *component);
+			}
+			}(), ...);
+
+		EntityData* ed = registry.try_get<EntityData>(en);
+		if (ed->parent != entt::null) {
+			EntityData* parent = registry.try_get<EntityData>(ed->parent);
+			parent->children.push_back(tempEntity);
+
+		}
 	}
 }

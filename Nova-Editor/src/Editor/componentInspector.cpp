@@ -2,8 +2,8 @@
 #include "componentInspector.h"
 #include "imgui.h"
 #include "editor.h"
-#include "Component/component.h"
-#include "Component/ECS.h"
+#include "ECS/component.h"
+#include "ECS/ECS.h"
 #include "AssetManager/assetManager.h"
 #include "misc/cpp/imgui_stdlib.h"
 

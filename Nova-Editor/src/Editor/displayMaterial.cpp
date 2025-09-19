@@ -1,7 +1,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "imgui.h"
-#include "Component/component.h"
+#include "ECS/component.h"
 
 #include "componentInspector.h"
 

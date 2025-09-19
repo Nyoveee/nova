@@ -8,16 +8,20 @@
 
 class Resource {
 public:
-	FRAMEWORK_DLL_API Resource(ResourceID id) : id{ id } {};
+	FRAMEWORK_DLL_API Resource(ResourceID id, ResourceFilePath filePath) : _id{ id }, filePath{ filePath } {};
 
-	FRAMEWORK_DLL_API virtual ~Resource()						= 0 {};
+	FRAMEWORK_DLL_API virtual ~Resource()							= 0 {};
 	FRAMEWORK_DLL_API Resource(Resource const& other)				= delete;
 	FRAMEWORK_DLL_API Resource(Resource&& other)					= default;
 	FRAMEWORK_DLL_API Resource& operator=(Resource const& other)	= delete;
-	FRAMEWORK_DLL_API Resource& operator=(Resource&& other)		= default;
+	FRAMEWORK_DLL_API Resource& operator=(Resource&& other)			= default;
 
-public:
-	ResourceID id;
+	FRAMEWORK_DLL_API ResourceID id() const { return _id; };
+	FRAMEWORK_DLL_API ResourceFilePath const& getFilePath() const { return filePath; };
+
+private:
+	ResourceID _id;
+	ResourceFilePath filePath;
 };
 
 // this contains descriptor data that points back to the original asset.

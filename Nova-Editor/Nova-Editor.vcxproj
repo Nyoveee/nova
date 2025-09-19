@@ -165,6 +165,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\assetManagerUi.cpp" />
     <ClCompile Include="src\Editor\componentInspector.cpp" />
+    <ClCompile Include="src\Editor\console.cpp" />
     <ClCompile Include="src\Editor\controlOverlay.cpp" />
     <ClCompile Include="src\Editor\debugUI.cpp" />
     <ClCompile Include="src\Editor\displayMaterial.cpp" />
@@ -221,6 +222,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\AssetManager\folder.h" />
     <ClInclude Include="src\Editor\assetManagerUi.h" />
     <ClInclude Include="src\Editor\componentInspector.ipp" />
+    <ClInclude Include="src\Editor\console.h" />
     <ClInclude Include="src\Editor\controlOverlay.h" />
     <ClInclude Include="src\Editor\debugUI.h" />
     <ClInclude Include="src\Editor\displayComponent.ipp" />

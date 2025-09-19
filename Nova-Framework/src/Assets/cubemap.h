@@ -6,7 +6,7 @@ using GLuint = unsigned int;
 
 class CubeMap : public Resource {
 public:
-	FRAMEWORK_DLL_API CubeMap(ResourceID id);
+	FRAMEWORK_DLL_API CubeMap(ResourceID id, ResourceFilePath resourceFilePath);
 	FRAMEWORK_DLL_API ~CubeMap();
 
 	FRAMEWORK_DLL_API CubeMap(CubeMap const& other) = delete;

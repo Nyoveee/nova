@@ -8,8 +8,8 @@ namespace {
 	GLuint TEXTURE_NOT_LOADED = std::numeric_limits<GLuint>::max();
 }
 
-CubeMap::CubeMap(ResourceID id) :
-	Resource		 { id },
+CubeMap::CubeMap(ResourceID id, ResourceFilePath resourceFilePath) :
+	Resource		 { id, std::move(resourceFilePath) },
 	width			 {},
 	height			 {},
 	numChannels		 {},
