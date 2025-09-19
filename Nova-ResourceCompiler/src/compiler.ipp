@@ -1,8 +1,3 @@
-#include "texture.h"
-#include "audio.h"
-#include "cubemap.h"
-#include "model.h"
-#include "scriptAsset.h"
 #include "Logger.h"
 #include "assetIO.h"
 
@@ -14,7 +9,7 @@
 // 1st 8 bytes -> ResourceID
 // rest of the bytes -> custom file format.
 // ========================================================
-template <ValidAsset T>
+template <ValidResource T>
 int Compiler::compileAsset(DescriptorFilePath const& descriptorFilepath) {
 	// Retrieve descriptor info.
 	std::optional<AssetInfo<T>> optAssetInfo = AssetIO::parseDescriptorFile<T>(descriptorFilepath);

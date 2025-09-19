@@ -9,12 +9,8 @@
 #include <mutex>
 #include <atomic>
 
-#include "asset.h"
-#include "texture.h"
-#include "model.h"
-#include "audio.h"
+#include "resource.h"
 
-#include "scriptAsset.h"
 #include "AssetManager/folder.h"
 #include "AssetManager/AssetDirectoryWatcher.h"
 
@@ -36,7 +32,7 @@ public:
 		LoadingFailed	// there was an attempt to load the asset but it failed.
 	};
 
-	template <ValidAsset T>
+	template <ValidResource T>
 	struct AssetQuery {
 		// Raw pointer representing non-owning, potentially null resource.
 		T* asset;
@@ -61,13 +57,13 @@ public:
 #if 0
 	// =========================================================
 	// Serialising asset meta data..
-	template <ValidAsset T>
+	template <ValidResource T>
 	friend struct SerialiseMetaDataFunctor;
 
-	template <ValidAsset T>
+	template <ValidResource T>
 	friend struct SerialiseAssetFunctor;
 
-	template <ValidAsset T>
+	template <ValidResource T>
 	void serialiseAssetMetaData(T const& asset);
 	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
 #endif
@@ -93,7 +89,7 @@ private:
 		std::filesystem::path const& path
 	);
 
-	template <ValidAsset T>
+	template <ValidResource T>
 	void compileIntermediaryFile(AssetInfo<T> descriptor);
 
 	// =========================================================
@@ -102,10 +98,10 @@ private:
 	// Each specific type asset has additional metadata as well.
 	// =========================================================
 
-	template<ValidAsset ...T>
+	template<ValidResource ...T>
 	void loadAllDescriptorFiles();
 
-	template <ValidAsset T>
+	template <ValidResource T>
 	void createResourceFile(AssetInfo<T> descriptor);
 
 private:

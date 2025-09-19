@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_set>
 #include "vertex.h"
-#include "asset.h"
+#include "resource.h"
 
 // If data members do not require explicit memory management, move semantics can be defaulted.
 // ModelAsset is an asset specific to the asset manager wrapping a model and indicates whether it is loaded or not.
@@ -11,7 +11,7 @@
 
 using MaterialName = std::string;
 
-class Model : public Asset {
+class Model : public Resource {
 public:
 	struct Mesh {
 		std::vector<Vertex> vertices;

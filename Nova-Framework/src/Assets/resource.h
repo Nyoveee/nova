@@ -6,15 +6,15 @@
 #include "type_alias.h"
 #include "export.h"
 
-class Asset {
+class Resource {
 public:
-	FRAMEWORK_DLL_API Asset(ResourceID id) : id{ id } {};
+	FRAMEWORK_DLL_API Resource(ResourceID id) : id{ id } {};
 
-	FRAMEWORK_DLL_API virtual ~Asset()						= 0 {};
-	FRAMEWORK_DLL_API Asset(Asset const& other)				= delete;
-	FRAMEWORK_DLL_API Asset(Asset&& other)					= default;
-	FRAMEWORK_DLL_API Asset& operator=(Asset const& other)	= delete;
-	FRAMEWORK_DLL_API Asset& operator=(Asset&& other)		= default;
+	FRAMEWORK_DLL_API virtual ~Resource()						= 0 {};
+	FRAMEWORK_DLL_API Resource(Resource const& other)				= delete;
+	FRAMEWORK_DLL_API Resource(Resource&& other)					= default;
+	FRAMEWORK_DLL_API Resource& operator=(Resource const& other)	= delete;
+	FRAMEWORK_DLL_API Resource& operator=(Resource&& other)		= default;
 
 public:
 	ResourceID id;
@@ -29,7 +29,7 @@ struct BasicAssetInfo {
 
 // specific asset meta info.
 // 1. each asset type will need to explicitly specialise this asset type, if they require additional info!
-template <typename T> requires std::derived_from<T, Asset>
+template <typename T> requires std::derived_from<T, Resource>
 struct AssetInfo : public BasicAssetInfo {};
 
 // A valid asset must
@@ -38,7 +38,7 @@ struct AssetInfo : public BasicAssetInfo {};
 
 // dont remove this concept! it's meant to save you from shooting yourself in the foot.
 template <typename T>
-concept ValidAsset = std::derived_from<T, Asset>&& std::derived_from<AssetInfo<T>, BasicAssetInfo>;
+concept ValidResource = std::derived_from<T, Resource>&& std::derived_from<AssetInfo<T>, BasicAssetInfo>;
 
 #define ALL_RESOURCES \
 Texture, Model, CubeMap, ScriptAsset, Audio, Scene

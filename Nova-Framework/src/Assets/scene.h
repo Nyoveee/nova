@@ -1,10 +1,10 @@
 #pragma once
 
-#include "asset.h"
+#include "resource.h"
 
-class Scene : public Asset {
+class Scene : public Resource {
 public:
-	FRAMEWORK_DLL_API Scene(ResourceID id) : Asset{ id } {};
+	FRAMEWORK_DLL_API Scene(ResourceID id) : Resource{ id } {};
 
 	FRAMEWORK_DLL_API ~Scene()								= default;
 	FRAMEWORK_DLL_API Scene(Scene const& other)				= delete;

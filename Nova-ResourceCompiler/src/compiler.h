@@ -3,7 +3,7 @@
 #include <optional>
 #include <fstream>
 
-#include "asset.h"
+#include "resource.h"
 
 // using class instead of namespace because i want the ability to private certain functions.
 class Compiler {
@@ -11,7 +11,7 @@ public:
 	static int compile(DescriptorFilePath const& descriptorFilepath);
 
 private:
-	template <ValidAsset T>
+	template <ValidResource T>
 	static int compileAsset			(DescriptorFilePath const& descriptorFilepath);
 
 	static int compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);

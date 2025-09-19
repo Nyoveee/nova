@@ -1,8 +1,8 @@
 #pragma once
 
-#include "asset.h"
+#include "resource.h"
 
-class Audio : public Asset {
+class Audio : public Resource {
 public:
 	FRAMEWORK_DLL_API Audio(ResourceID id, ResourceFilePath resourceFilePath, bool is3D = false);
 	FRAMEWORK_DLL_API ~Audio();

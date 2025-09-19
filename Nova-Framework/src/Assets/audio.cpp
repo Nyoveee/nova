@@ -2,7 +2,7 @@
 #include <filesystem>
 
 Audio::Audio(ResourceID id, ResourceFilePath resourceFilePath, bool is3D) :
-	Asset	{ id },
+	Resource{ id },
 	is3D	{ is3D }
 {}
 

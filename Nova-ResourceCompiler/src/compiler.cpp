@@ -1,18 +1,11 @@
-#include "compiler.h"
-
-#include "texture.h"
-#include "model.h"
-#include "cubemap.h"
-#include "scriptAsset.h"
-#include "audio.h"
-
-#include "modelLoader.h"
-
 #include <vector>
 #include <iostream>
 
 #include <gli/gli.hpp>
 
+#include "compiler.h"
+
+#include "modelLoader.h"
 #include "Library/stb_image.hpp"
 
 namespace {
@@ -21,6 +14,7 @@ namespace {
 		resourceFile.write(reinterpret_cast<const char*>(&data), sizeof(data));
 	}
 }
+
 int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 	int width, height, numChannels;
 	stbi_uc* data = stbi_load(intermediaryAssetFilepath.string.c_str(), &width, &height, &numChannels, 0);

@@ -7,7 +7,7 @@
 #include "assetIO.h"
 
 #if 0
-template <ValidAsset T>
+template <ValidResource T>
 Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
 		createAsset<T>(assetInfo)
@@ -37,7 +37,7 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	return *asset.get();
 }
 
-template <ValidAsset T>
+template <ValidResource T>
 AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	// i love template programming
 	
@@ -77,7 +77,7 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	}
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 std::vector<AssetID> const& AssetManager::getAllAssets() const {
 	auto iterator = assetsByType.find(Family::id<T>());
 
@@ -91,26 +91,26 @@ std::vector<AssetID> const& AssetManager::getAllAssets() const {
 	return allAssets;
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 AssetID AssetManager::getSomeAssetID() const {
 	auto iterator = assetsByType.find(Family::id<T>());
 
 	if (iterator == assetsByType.end()) {
 		Logger::error("Attempt to get an asset id of an invalid type?");
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 
 	auto&& [_, allAssets] = *iterator;
 	
 	if (allAssets.empty()) {
 		Logger::error("This asset type has no asset?");
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 
 	return allAssets[0];
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 bool AssetManager::isAsset(AssetID id) const {
 	auto iterator = assetIdToType.find(id);
 
@@ -120,7 +120,7 @@ bool AssetManager::isAsset(AssetID id) const {
 	return assetTypeId == Family::id<T>();
 }
 
-template <ValidAsset T>
+template <ValidResource T>
 void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 	AssetInfo<T> assetInfo = parseMetaDataFile<T>(path);
 
@@ -145,7 +145,7 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 
 
 
-template<ValidAsset T>
+template<ValidResource T>
 void AssetManager::serialiseAssetMetaData(T const& asset) {
 	std::string metaDataFilename = asset.getFilePath() + ".nova_meta";
 	std::ofstream metaDataFile{ metaDataFilename };
@@ -175,7 +175,7 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 }
 #endif
 
-template<ValidAsset T>
+template<ValidResource T>
 void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
 #if _DEBUG
 		const char* executableConfiguration = "Debug";
@@ -202,7 +202,7 @@ void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
 		}
 }
 
-template<ValidAsset ...T>
+template<ValidResource ...T>
 void AssetManager::loadAllDescriptorFiles() {
 	([&] {
 		auto iterator = AssetIO::subDescriptorDirectories.find(Family::id<T>());
@@ -265,7 +265,7 @@ void AssetManager::loadAllDescriptorFiles() {
 	}(), ...);
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	// this compiles a resource file corresponding to the intermediary asset.
 	compileIntermediaryFile<T>(descriptor);
@@ -276,7 +276,7 @@ void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	// we can now add this resource to the resource manager.
 	ResourceID id = resourceManager.addResourceFile<T>(resourceFilePath);
 
-	if (id != INVALID_ASSET_ID) {
+	if (id != INVALID_RESOURCE_ID) {
 		// we associate resource id with a name.
 		assetToDescriptor.insert({ id, descriptor });
 	}

@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <fstream>
 
-#include "asset.h"
+#include "resource.h"
 
 #define DescriptorSubDirectory(AssetType) \
 	std::pair{ Family::id<AssetType>(), std::filesystem::current_path() / "Descriptors" / #AssetType }

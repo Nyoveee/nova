@@ -1,8 +1,8 @@
 #pragma once
 
-#include "asset.h"
+#include "resource.h"
 
-class ScriptAsset : public Asset
+class ScriptAsset : public Resource
 {
 public:
 	FRAMEWORK_DLL_API ScriptAsset(ResourceID id);

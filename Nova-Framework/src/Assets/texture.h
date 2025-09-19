@@ -1,11 +1,11 @@
 #pragma once
 
-#include "asset.h"
+#include "resource.h"
 #include <gli/gli.hpp>
 
 using GLuint = unsigned int; 
 
-class Texture : public Asset {
+class Texture : public Resource {
 public:
 	FRAMEWORK_DLL_API Texture(ResourceID id, gli::texture const& texture, gli::gl::format const& format);
 	FRAMEWORK_DLL_API ~Texture();

@@ -12,7 +12,7 @@ public:
 	virtual void operator()(Asset& asset, AssetManager& assetManager) const = 0;
 };
 
-template <ValidAsset T>
+template <ValidResource T>
 struct SerialiseMetaDataFunctor : public SerialiseMetaData {
 	void operator()(Asset& asset, AssetManager& assetManager) const final;
 };
@@ -23,7 +23,7 @@ public:
 	virtual void operator()(Asset& asset, AssetManager& assetManager) const = 0;
 };
 
-template <ValidAsset T>
+template <ValidResource T>
 struct SerialiseAssetFunctor : public SerialiseAsset {
 	void operator()(Asset& asset, AssetManager& assetManager) const final;
 };

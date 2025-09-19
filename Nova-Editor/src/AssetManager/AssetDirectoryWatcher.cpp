@@ -63,7 +63,7 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	// Attempts to finds the appropriate asset id.
 	ResourceID resourceId = assetManager.getResourceID(absPath);
 
-	if (resourceId == INVALID_ASSET_ID)
+	if (resourceId == INVALID_RESOURCE_ID)
 		return;
 
 	if (change_type != filewatch::Event::removed) {

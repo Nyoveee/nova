@@ -1,16 +1,10 @@
-#include "asset.h"
+#include "resource.h"
 
 #include "Logger.h"
 #include "resourceManager.h"
 #include "assetIO.h"
 
-#include "model.h"
-#include "texture.h"
-#include "audio.h"
-#include "cubemap.h"
-#include "scriptAsset.h"
-
-template <ValidAsset T>
+template <ValidResource T>
 ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 	// Let's find our loaded resource in the map
 	auto iterator = loadedResources.find(id);
@@ -48,7 +42,7 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 	return ResourceQuery<T>{ resource, resource ? QueryResult::Success : QueryResult::WrongType };
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
 	try {
 		// Retrieve the Resource ID from filepath.
@@ -59,7 +53,7 @@ ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
 		if (!success) {
 			// asset id collision occur! this shouldn't happen though.
 			Logger::error("Asset ID collision occured {} for: {}", static_cast<std::size_t>(id), filepath.string);
-			return INVALID_ASSET_ID;
+			return INVALID_RESOURCE_ID;
 		}
 
 		// record this asset to the corresponding asset type.
@@ -69,11 +63,11 @@ ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
 	}
 	catch (std::exception const& ex) {
 		Logger::error("Failed to add resource file. {}", ex.what());
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 }
 
-template<ValidAsset ...T>
+template<ValidResource ...T>
 void ResourceManager::recordAllResources() {
 	([&] {
 		auto iterator = AssetIO::subResourceDirectories.find(Family::id<T>());
@@ -91,7 +85,7 @@ void ResourceManager::recordAllResources() {
 	}(), ...);
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 std::vector<ResourceID> const& ResourceManager::getAllResources() const {
 	auto iterator = resourcesByType.find(Family::id<T>());
 
@@ -105,26 +99,26 @@ std::vector<ResourceID> const& ResourceManager::getAllResources() const {
 	return allAssets;
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 ResourceID ResourceManager::getSomeResourceID() const {
 	auto iterator = resourcesByType.find(Family::id<T>());
 
 	if (iterator == resourcesByType.end()) {
 		Logger::error("Attempt to get an asset id of an invalid type?");
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 
 	auto&& [_, allResources] = *iterator;
 
 	if (allResources.empty()) {
 		Logger::error("This asset type has no asset?");
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 
 	return allResources[0];
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 bool ResourceManager::isResource(ResourceID id) const {
 	auto iterator = resourcesByType.find(Family::id<T>());
 	assert(iterator != resourcesByType.end() && "Asset type not recorded.");

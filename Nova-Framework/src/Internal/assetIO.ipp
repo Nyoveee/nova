@@ -4,7 +4,7 @@
 #include "audio.h"
 #include "Logger.h"
 
-template <ValidAsset T>
+template <ValidResource T>
 std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
 	std::ifstream descriptorFile{ descriptorFilepath };
 
@@ -46,7 +46,7 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 	return assetInfo;
 }
 
-template <ValidAsset T>
+template <ValidResource T>
 AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	ResourceID id = generateResourceID();
 	DescriptorFilePath descriptorFileName = getDescriptorFilename<T>(id);
@@ -67,7 +67,7 @@ AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	return assetInfo;
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 DescriptorFilePath AssetIO::getDescriptorFilename(ResourceID id) {
 	auto iterator = subDescriptorDirectories.find(Family::id<T>());
 	assert(iterator != subDescriptorDirectories.end() && "Sub asset directory not recorded.");
@@ -76,7 +76,7 @@ DescriptorFilePath AssetIO::getDescriptorFilename(ResourceID id) {
 	return std::filesystem::path{ subDescriptorDirectory / std::filesystem::path{ std::to_string(static_cast<std::size_t>(id)) }.stem() }.string() + ".desc";
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 ResourceFilePath AssetIO::getResourceFilename(ResourceID id) {
 	auto iterator = subResourceDirectories.find(Family::id<T>());
 	assert(iterator != subResourceDirectories.end() && "Sub asset directory not recorded.");

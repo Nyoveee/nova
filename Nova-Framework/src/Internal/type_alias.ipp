@@ -99,7 +99,7 @@ constexpr ResourceID::operator std::size_t() const {
 }
 
 #undef max
-constexpr inline ResourceID INVALID_ASSET_ID{ std::numeric_limits<std::size_t>::max() };
+constexpr inline ResourceID INVALID_RESOURCE_ID{ std::numeric_limits<std::size_t>::max() };
 
 // ================ AssetTypeID ==================
 constexpr ResourceTypeID::ResourceTypeID() : id{} {}

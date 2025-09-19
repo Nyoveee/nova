@@ -1,10 +1,10 @@
 #pragma once
 
-#include "asset.h"
+#include "resource.h"
 
 using GLuint = unsigned int;
 
-class CubeMap : public Asset {
+class CubeMap : public Resource {
 public:
 	FRAMEWORK_DLL_API CubeMap(ResourceID id);
 	FRAMEWORK_DLL_API ~CubeMap();

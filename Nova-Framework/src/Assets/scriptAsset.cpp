@@ -2,7 +2,7 @@
 #include <filesystem>
 
 ScriptAsset::ScriptAsset(ResourceID id)
-	: Asset{ id }
+	: Resource{ id }
 {}
 
 std::string ScriptAsset::getClassName() const {

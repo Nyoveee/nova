@@ -1,7 +1,7 @@
 	#pragma once
 
 #include "export.h"
-#include "asset.h"
+#include "resource.h"
 
 #include "loader.h"
 
@@ -27,7 +27,7 @@ public:
 		LoadingFailed	// there was an attempt to load the asset but it failed.
 	};
 
-	template <ValidAsset T>
+	template <ValidResource T>
 	struct ResourceQuery {
 		// Raw pointer representing non-owning, potentially null resource.
 		T* asset;
@@ -44,19 +44,19 @@ public:
 	ENGINE_DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
 
 	// main way all systems query for a specific resource.
-	template <ValidAsset T>
+	template <ValidResource T>
 	ResourceQuery<T> getResource(ResourceID id);
 
 	// retrieve all resource ids of a given type.
-	template <ValidAsset T>
+	template <ValidResource T>
 	std::vector<ResourceID> const& getAllResources() const;
 
 	// retrieve 1 resource id of a given type. (should never be invalid resource id, but still should handle the chance of it being invalid).
-	template <ValidAsset T>
+	template <ValidResource T>
 	ResourceID getSomeResourceID() const;
 
 	// given an resource id, is the original resource type of T?
-	template <ValidAsset T>
+	template <ValidResource T>
 	bool isResource(ResourceID id) const;
 
 public:
@@ -69,12 +69,12 @@ private:
 	friend AssetManager;
 
 	// parses a given resource file. returns a valid resource id if its valid,
-	// INVALID_ASSET_ID otherwise.
-	template <ValidAsset T>
+	// INVALID_RESOURCE_ID otherwise.
+	template <ValidResource T>
 	ResourceID addResourceFile(ResourceFilePath const& filepath);
 
 	// records all the given resources in a given directory, taking note of their filepaths.
-	template<ValidAsset ...T>
+	template<ValidResource ...T>
 	void recordAllResources();
 
 private:
@@ -83,7 +83,7 @@ private:
 	std::unordered_map<ResourceID, ResourceFilePath> resourceFilePaths;
 
 	// main container containing all LOADED resources. when an resource is loaded, it goes here.
-	std::unordered_map<ResourceID, std::unique_ptr<Asset>> loadedResources;
+	std::unordered_map<ResourceID, std::unique_ptr<Resource>> loadedResources;
 
 	// groups all assets based on their type.
 	std::unordered_map<ResourceTypeID, std::vector<ResourceID>> resourcesByType;

@@ -4,13 +4,7 @@
 #include <memory>
 #include <optional>
 
-#include "asset.h"
-
-class Texture;
-class Model;
-class ScriptAsset;
-class Audio;
-class CubeMap;
+#include "resource.h"
 
 #define ResourceLoaderDefinition(AssetType) \
 template<> \
@@ -21,13 +15,13 @@ public: \
 
 // a functor that constructs the underlying resource when invoked.
 struct ResourceConstructor {
-	ResourceConstructor(std::function<std::unique_ptr<Asset>()> function) : function{ function } {};
+	ResourceConstructor(std::function<std::unique_ptr<Resource>()> function) : function{ function } {};
 
-	std::unique_ptr<Asset> operator()() {
+	std::unique_ptr<Resource> operator()() {
 		return function();
 	}
 
-	std::function<std::unique_ptr<Asset>()> function;
+	std::function<std::unique_ptr<Resource>()> function;
 };
 
 template <typename T>

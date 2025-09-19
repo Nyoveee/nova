@@ -9,7 +9,7 @@ namespace {
 }
 
 CubeMap::CubeMap(ResourceID id) :
-	Asset			 { id },
+	Resource		 { id },
 	width			 {},
 	height			 {},
 	numChannels		 {},
@@ -68,7 +68,7 @@ CubeMap::~CubeMap() {
 }
 
 CubeMap::CubeMap(CubeMap&& other) noexcept :
-	Asset			 { std::move(other) },
+	Resource		 { std::move(other) },
 	width			 { other.width },
 	height			 { other.height },
 	numChannels		 { other.numChannels },
@@ -78,7 +78,7 @@ CubeMap::CubeMap(CubeMap&& other) noexcept :
 }
 
 CubeMap& CubeMap::operator=(CubeMap&& other) noexcept {
-	Asset::operator=(std::move(other));
+	Resource::operator=(std::move(other));
 
 	if (textureId != TEXTURE_NOT_LOADED) {
 		glDeleteTextures(1, &textureId);

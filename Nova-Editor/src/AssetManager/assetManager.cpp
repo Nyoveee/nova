@@ -82,7 +82,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		// ------------------------------------------
 		// Attempt to retrieve resource id from asset file path.
 		// ------------------------------------------
-		ResourceID resourceId = INVALID_ASSET_ID;
+		ResourceID resourceId = INVALID_RESOURCE_ID;
 		auto iterator = intermediaryAssetsToDescriptor.find(assetPath);
 		
 		// intermediary asset not recorded (missing corresponding descriptor and resource file.)
@@ -99,7 +99,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		}
 
 		// found some intermediary asset file that is not supported.
-		if (resourceId == INVALID_ASSET_ID) {
+		if (resourceId == INVALID_RESOURCE_ID) {
 			continue;
 		}
 
@@ -226,7 +226,7 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 }
 

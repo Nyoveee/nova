@@ -5,7 +5,7 @@
 #include <fstream>
 #include <unordered_map>
 
-#include "asset.h"
+#include "resource.h"
 
 // Contains shared utility functions for AssetManager, ResourceManager, Asset Compilers and Resource Loaders.
 class AssetIO {
@@ -15,19 +15,19 @@ public:
 	// before performing additional parsing based on asset type.
 
 	// retrieve an appropriate descriptor filepath based on a given intermediary asset path.
-	template <ValidAsset T>
+	template <ValidResource T>
 	static DescriptorFilePath getDescriptorFilename(ResourceID id);
 
 	// retrieve an appropriate resource filepath based on a given descriptor path.
-	template <ValidAsset T>
+	template <ValidResource T>
 	static ResourceFilePath getResourceFilename(ResourceID id);
 
 	// reads a given descriptor file.
-	template <ValidAsset T>
+	template <ValidResource T>
 	static std::optional<AssetInfo<T>> parseDescriptorFile(DescriptorFilePath const& descriptorFilepath);
 
 	// creates an appropriate descriptor file based on intermediary asset.
-	template <ValidAsset T>
+	template <ValidResource T>
 	static AssetInfo<T> createDescriptorFile(AssetFilePath const& path);
 
 	FRAMEWORK_DLL_API static ResourceID generateResourceID();
