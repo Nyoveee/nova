@@ -224,7 +224,7 @@ struct ResourceFilePath {
 			  ResourceFilePath(std::filesystem::path path);
 	constexpr ResourceFilePath(std::string path);
 
-			  explicit operator std::filesystem::path() const;
+			  operator std::filesystem::path() const;
 	constexpr operator std::string() const;
 
 	constexpr friend bool operator==(ResourceFilePath const& lhs, ResourceFilePath const& rhs);

@@ -146,6 +146,7 @@
     <ClInclude Include="src\Assets\asset.h" />
     <ClInclude Include="src\Assets\audio.h" />
     <ClInclude Include="src\Assets\cubemap.h" />
+    <ClInclude Include="src\Assets\scene.h" />
     <ClInclude Include="src\Internal\assetIO.h" />
     <ClInclude Include="src\Internal\assetIO.ipp" />
     <ClInclude Include="src\Assets\model.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="src\Imported\magic_enum.hpp" />
     <ClInclude Include="src\Internal\nova_math.h" />
     <ClInclude Include="src\Internal\Profiling.h" />
+    <ClInclude Include="src\Internal\recursiveMacro.h" />
     <ClInclude Include="src\Internal\reflection.h" />
     <ClInclude Include="src\Internal\type_alias.h" />
     <ClInclude Include="src\Internal\type_alias.ipp" />
@@ -169,6 +171,7 @@
   <ItemGroup>
     <ClCompile Include="src\Assets\audio.cpp" />
     <ClCompile Include="src\Assets\cubemap.cpp" />
+    <ClCompile Include="src\Assets\scene.cpp" />
     <ClCompile Include="src\Internal\assetIO.cpp" />
     <ClCompile Include="src\Assets\model.cpp" />
     <ClCompile Include="src\Assets\scriptAsset.cpp" />

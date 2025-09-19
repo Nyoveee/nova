@@ -27,11 +27,7 @@ ResourceManager::ResourceManager() {
 		// ========================================
 		// 2. Record all resources..
 		// ========================================
-		recordAllResources<Texture>();
-		recordAllResources<Model>();
-		recordAllResources<CubeMap>();
-		recordAllResources<ScriptAsset>();
-		recordAllResources<Audio>();
+		recordAllResources<ALL_RESOURCES>();
 
 }
 	catch (const std::filesystem::filesystem_error& ex) {

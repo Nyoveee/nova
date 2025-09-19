@@ -5,13 +5,19 @@
 #include "compiler.h"
 #include "Logger.h"
 
+#define DEBUGGING false
+
 // This program expects an argc count of 2, <executable> <path to descriptor file>
 int main(int argc, const char* argv[]) {
+#if DEBUGGING
+	const char* test = R"(C:\Users\Nyove\Desktop\nova\Descriptors\Scene\17991379504312778753.desc)";
+	return Compiler::compile(std::string{ test });
+#else
 	if (argc != 2) {
 		std::cerr << "Invalid amount of arguments!\n";
 		return -1;
 	}
 
-	Compiler::compile(argv[1]);
-	return 0;
+	return Compiler::compile(std::string{ argv[1] });
+#endif
 }

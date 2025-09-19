@@ -15,35 +15,31 @@
 // rest of the bytes -> custom file format.
 // ========================================================
 template <ValidAsset T>
-void Compiler::compileAsset(std::filesystem::path const& descriptorFilepath) {
+int Compiler::compileAsset(DescriptorFilePath const& descriptorFilepath) {
 	// Retrieve descriptor info.
 	std::optional<AssetInfo<T>> optAssetInfo = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
 
 	if (!optAssetInfo) {
-		Logger::error("Failed to parse descriptor file: {}. Compilation failed.", descriptorFilepath.string());
-		return;
+		Logger::error("Failed to parse descriptor file: {}. Compilation failed.", descriptorFilepath.string);
+		return -1;
 	}
 
 	AssetInfo<T> assetInfo = optAssetInfo.value();
+	ResourceFilePath resourceFilePath = AssetIO::getResourceFilename<T>(assetInfo.id);
 
 	if constexpr (std::same_as<T, Texture>) {
-		compileTexture(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
+		return compileTexture(resourceFilePath, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, Model>) {
-		compileModel(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
+		return compileModel(resourceFilePath, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, CubeMap>) {
-		compileCubeMap(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
-	}
-	else if constexpr (std::same_as<T, Audio>) {
-		compileAudio(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
+		return compileCubeMap(resourceFilePath, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
-		compileScriptAsset(AssetIO::getResourceFilename<T>(assetInfo.id), assetInfo.filepath);
+		return compileScriptAsset(resourceFilePath, assetInfo.filepath);
 	}
 	else {
-		[] <bool flag = true>() {
-			static_assert(flag, "Compiling a not supported asset type.");
-		}();
+		return defaultCompile(resourceFilePath, assetInfo.filepath);
 	}
 }

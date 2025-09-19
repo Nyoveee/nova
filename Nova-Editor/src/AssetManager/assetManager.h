@@ -102,7 +102,7 @@ private:
 	// Each specific type asset has additional metadata as well.
 	// =========================================================
 
-	template <ValidAsset T>
+	template<ValidAsset ...T>
 	void loadAllDescriptorFiles();
 
 	template <ValidAsset T>

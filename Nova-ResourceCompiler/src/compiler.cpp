@@ -21,13 +21,13 @@ namespace {
 		resourceFile.write(reinterpret_cast<const char*>(&data), sizeof(data));
 	}
 }
-void Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 	int width, height, numChannels;
 	stbi_uc* data = stbi_load(intermediaryAssetFilepath.string.c_str(), &width, &height, &numChannels, 0);
 
 	if (!data) {
 		Logger::error("Failed to load texture! Filepath provided: {}", intermediaryAssetFilepath.string);
-		return;
+		return -1;
 	}
 
 	enum gli::format format = gli::format::FORMAT_RGBA8_SRGB_PACK8;
@@ -50,6 +50,8 @@ void Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFil
 	stbi_image_free(data);
 
 	gli::save_dds(tex, resourceFilePath.string);
+	
+	return 0;
 }
 
 // =================================
@@ -70,18 +72,18 @@ void Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFil
 // - Next 1 byte => null terminator. used for error checking and to end the mesh file format.
 // =================================
 
-void Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
 
 	if (!resourceFile) {
 		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
-		return;
+		return -1;
 	}
 
 	auto optModelData = ModelLoader::loadModel(intermediaryAssetFilepath);
 
 	if (!optModelData) {
-		return;
+		return -1;
 	}
 
 	ModelLoader::ModelData modelData = optModelData.value();
@@ -136,48 +138,72 @@ void Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFileP
 		// null terminator.
 		resourceFile.write("", 1);
 	}
+
+	return 0;
 }
 
-void Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	return -1;
 }
 
-void Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	return -1;
 }
 
-void Compiler::compileAudio(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::defaultCompile(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
+
+	if (!resourceFile) {
+		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
+		return -1;
+	}
+
+	std::ifstream assetFile{ intermediaryAssetFilepath.string, std::ios::binary };
+
+	if (!assetFile) {
+		Logger::error("Failed to load asset file: {}. Compilation failed.", resourceFilePath.string);
+		return -1;
+	}
+
+	std::uintmax_t fileSize = std::filesystem::file_size(std::filesystem::path{ intermediaryAssetFilepath });
+	std::array<char, 4096> buffer;
+
+	std::size_t iterationCount = fileSize / buffer.size() + 1;
+
+	for (std::size_t i = 0; i < iterationCount; ++i) {
+		auto count = i + 1 != iterationCount ? buffer.size() : fileSize % buffer.size();
+
+		assetFile.read(buffer.data(), count);
+		resourceFile.write(buffer.data(), count);
+	}
+
+	return 0;
 }
 
-void Compiler::compile(std::filesystem::path const& descriptorFilepath) {
+int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	// Verify asset type.
-	std::string resourceType = descriptorFilepath.parent_path().stem().string();
+	std::string resourceType = std::filesystem::path{ descriptorFilepath }.parent_path().stem().string();
 
 	if (resourceType == "Texture") {
-		Compiler::compileAsset<Texture>(descriptorFilepath);
+		return Compiler::compileAsset<Texture>(descriptorFilepath);
 	}
 	else if (resourceType == "Model") {
-		Compiler::compileAsset<Model>(descriptorFilepath);
+		return Compiler::compileAsset<Model>(descriptorFilepath);
 	}
 	else if (resourceType == "CubeMap") {
-		Compiler::compileAsset<CubeMap>(descriptorFilepath);
+		return Compiler::compileAsset<CubeMap>(descriptorFilepath);
 	}
 	else if (resourceType == "ScriptAsset") {
-		Compiler::compileAsset<ScriptAsset>(descriptorFilepath);
+		return Compiler::compileAsset<ScriptAsset>(descriptorFilepath);
 	}
 	else if (resourceType == "Audio") {
-		Compiler::compileAsset<Audio>(descriptorFilepath);
+		return Compiler::compileAsset<Audio>(descriptorFilepath);
+	}
+	else if (resourceType == "Scene") {
+		return Compiler::compileAsset<Scene>(descriptorFilepath);
 	}
 	else {
-		Logger::warn("Unable to determine asset type of descriptor {}", descriptorFilepath.string());
-		return;
-	}
-}
-
-void Compiler::test() {
-	std::vector descriptorPaths {
-		"C:\\Users\\Nyove\\Desktop\\nova\\Descriptors\\Texture\\Farm_Table_Low_Table_frame_mtl_BaseColor.desc",
-	};
-
-	for (auto&& filepath : descriptorPaths) {
-		compile(filepath);
+		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);
+		return -1;
 	}
 }

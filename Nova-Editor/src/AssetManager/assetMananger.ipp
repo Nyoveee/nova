@@ -178,89 +178,91 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 template<ValidAsset T>
 void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
 #if _DEBUG
-	const char* executableConfiguration = "Debug";
+		const char* executableConfiguration = "Debug";
 #else
-	const char* executableConfiguration = "Release";
+		const char* executableConfiguration = "Release";
 #endif
-	constexpr const char* executableName = "Nova-ResourceCompiler.exe";
+		constexpr const char* executableName = "Nova-ResourceCompiler.exe";
 
-	std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
-	
-	DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
+		std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
 
-	// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
-	std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
+		DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
 
-	Logger::info("Running command: {}", command);
+		// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
+		std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
 
-	if (std::system(command.c_str())) {
-		Logger::error("Error compiling {}", descriptorFilePath.string);
-	}
-	else {
-		Logger::info("Successful compiling {}", descriptorFilePath.string);
-		Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
-	}
+		Logger::info("Running command: {}", command);
+
+		if (std::system(command.c_str())) {
+			Logger::error("Error compiling {}", descriptorFilePath.string);
+		}
+		else {
+			Logger::info("Successful compiling {}", descriptorFilePath.string);
+			Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
+		}
 }
 
-template<ValidAsset T>
+template<ValidAsset ...T>
 void AssetManager::loadAllDescriptorFiles() {
-	auto iterator = AssetIO::subDescriptorDirectories.find(Family::id<T>());
-	assert(iterator != AssetIO::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
-	std::filesystem::path const& directory = iterator->second;
+	([&] {
+		auto iterator = AssetIO::subDescriptorDirectories.find(Family::id<T>());
+		assert(iterator != AssetIO::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
+		std::filesystem::path const& directory = iterator->second;
 
-	Logger::info("===========================");
-	Logger::info("Loading all {} descriptors.", directory.stem().string());
-	Logger::info("----");
+		Logger::info("===========================");
+		Logger::info("Loading all {} descriptors.", directory.stem().string());
+		Logger::info("----");
 
-	// recursively iterate through a directory and parse all descriptor files.
-	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
-		std::filesystem::path descriptorFilepath = entry.path();
+		// recursively iterate through a directory and parse all descriptor files.
+		for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
+			std::filesystem::path descriptorFilepath = entry.path();
 
-		if (!entry.is_regular_file()) {
-			continue;
+			if (!entry.is_regular_file()) {
+				continue;
+			}
+
+			if (descriptorFilepath.extension() != ".desc") {
+				continue;
+			}
+
+			Logger::info("Parsing {}..", descriptorFilepath.string());
+
+			// parse the descriptor file.
+			std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
+			AssetInfo<T> descriptor;
+
+			if (!opt) {
+				Logger::info("Failed parsing, recreating a new descriptor file..");
+				descriptor = AssetIO::createDescriptorFile<T>(descriptorFilepath);
+			}
+			else {
+				Logger::info("Sucessfully parsed descriptor file.");
+				descriptor = opt.value();
+			}
+
+			// check if resource manager has this particular resources already loaded.
+			// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
+			// the resource manager.
+
+			if (!resourceManager.doesResourceExist(descriptor.id)) {
+				Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}", descriptor.filepath.string);
+				createResourceFile<T>(descriptor);
+			}
+			else {
+				Logger::info("Resource file exist.");
+			}
+
+			Logger::info("");
+
+			// we record all encountered intermediary assets with corresponding filepaths.
+			intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
+
+			// we associate resource id with a name.
+			assetToDescriptor.insert({ descriptor.id, descriptor });
 		}
 
-		if (descriptorFilepath.extension() != ".desc") {
-			continue;
-		}
-
-		Logger::info("Parsing {}..", descriptorFilepath.string());
-
-		// parse the descriptor file.
-		std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
-		AssetInfo<T> descriptor;
-
-		if (!opt) {
-			Logger::info("Failed parsing, recreating a new descriptor file..");
-			descriptor = AssetIO::createDescriptorFile<T>(descriptorFilepath);
-		}
-		else {
-			Logger::info("Sucessfully parsed descriptor file.");
-			descriptor = opt.value();
-		}
-
-		// check if resource manager has this particular resources already loaded.
-		// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
-		// the resource manager.
-
-		if (!resourceManager.doesResourceExist(descriptor.id)) {
-			Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}", descriptor.filepath.string);
-			createResourceFile<T>(descriptor);
-		}
-		else {
-			Logger::info("Resource file exist.");
-		}
-
-		Logger::info("");
-
-		// we record all encountered intermediary assets with corresponding filepaths.
-		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
-
-		// we associate resource id with a name.
-		assetToDescriptor.insert({ descriptor.id, descriptor });
-	}
-
-	Logger::info("===========================\n");
+		Logger::info("===========================\n");
+	}(), ...);
 }
 
 template<ValidAsset T>

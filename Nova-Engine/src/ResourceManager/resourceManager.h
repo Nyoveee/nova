@@ -74,7 +74,7 @@ private:
 	ResourceID addResourceFile(ResourceFilePath const& filepath);
 
 	// records all the given resources in a given directory, taking note of their filepaths.
-	template <ValidAsset T>
+	template<ValidAsset ...T>
 	void recordAllResources();
 
 private:

@@ -47,11 +47,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	Logger::info("Loading all descriptor files..");
 	Logger::info("===========================\n");
 
-	loadAllDescriptorFiles<Texture>();
-	loadAllDescriptorFiles<Model>();
-	loadAllDescriptorFiles<CubeMap>();
-	loadAllDescriptorFiles<ScriptAsset>();
-	loadAllDescriptorFiles<Audio>();
+	loadAllDescriptorFiles<ALL_RESOURCES>();
 
 	// ========================================
 	// 3. We need to check if every intermediary assets has a corresponding descriptor pointing to it.
@@ -224,6 +220,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".wav") {
 		return initialiseResourceFile.template operator()<Audio>();
+	}
+	else if (fileExtension == ".scene") {
+		return initialiseResourceFile.template operator()<Scene>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);

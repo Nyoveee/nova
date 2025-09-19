@@ -8,20 +8,19 @@
 // using class instead of namespace because i want the ability to private certain functions.
 class Compiler {
 public:
-	static void compile(std::filesystem::path const& descriptorFilepath);
-
-	// debug function to test.
-	static void test();
+	static int compile(DescriptorFilePath const& descriptorFilepath);
 
 private:
 	template <ValidAsset T>
-	static void compileAsset		(std::filesystem::path const& descriptorFilepath);
+	static int compileAsset			(DescriptorFilePath const& descriptorFilepath);
 
-	static void compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
-	static void compileModel		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
-	static void compileCubeMap		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
-	static void compileScriptAsset	(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
-	static void compileAudio		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static int compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static int compileModel			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static int compileCubeMap		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+
+	// default compiling an asset just makes a copy of the original intermediary asset as resource.
+	static int defaultCompile		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
 };
 
 #include "compiler.ipp"

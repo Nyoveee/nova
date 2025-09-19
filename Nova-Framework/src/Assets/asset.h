@@ -39,3 +39,13 @@ struct AssetInfo : public BasicAssetInfo {};
 // dont remove this concept! it's meant to save you from shooting yourself in the foot.
 template <typename T>
 concept ValidAsset = std::derived_from<T, Asset>&& std::derived_from<AssetInfo<T>, BasicAssetInfo>;
+
+#define ALL_RESOURCES \
+Texture, Model, CubeMap, ScriptAsset, Audio, Scene
+
+#include "texture.h"
+#include "model.h"
+#include "cubemap.h"
+#include "scriptAsset.h"
+#include "audio.h"
+#include "scene.h"

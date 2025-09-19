@@ -5,11 +5,7 @@
 #include <filesystem>
 #include <fstream>
 
-#include "texture.h"
-#include "model.h"
-#include "cubemap.h"
-#include "scriptAsset.h"
-#include "audio.h"
+#include "asset.h"
 
 #define DescriptorSubDirectory(AssetType) \
 	std::pair{ Family::id<AssetType>(), std::filesystem::current_path() / "Descriptors" / #AssetType }
@@ -22,7 +18,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 	DescriptorSubDirectory(Model),
 	DescriptorSubDirectory(CubeMap),
 	DescriptorSubDirectory(ScriptAsset),
-	DescriptorSubDirectory(Audio)
+	DescriptorSubDirectory(Audio),
+	DescriptorSubDirectory(Scene)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subResourceDirectories{
@@ -30,7 +27,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(Model),
 	ResourceSubDirectory(CubeMap),
 	ResourceSubDirectory(ScriptAsset),
-	ResourceSubDirectory(Audio)
+	ResourceSubDirectory(Audio),
+	ResourceSubDirectory(Scene)
 };
 
 std::filesystem::path const AssetIO::assetDirectory = std::filesystem::current_path() / "Assets";

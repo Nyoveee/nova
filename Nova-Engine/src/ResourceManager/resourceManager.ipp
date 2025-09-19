@@ -73,20 +73,22 @@ ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
 	}
 }
 
-template<ValidAsset T>
+template<ValidAsset ...T>
 void ResourceManager::recordAllResources() {
-	auto iterator = AssetIO::subResourceDirectories.find(Family::id<T>());
-	assert(iterator != AssetIO::subResourceDirectories.end() && "This descriptor sub directory is not recorded.");
-	std::filesystem::path const& directory = iterator->second;
+	([&] {
+		auto iterator = AssetIO::subResourceDirectories.find(Family::id<T>());
+		assert(iterator != AssetIO::subResourceDirectories.end() && "This descriptor sub directory is not recorded.");
+		std::filesystem::path const& directory = iterator->second;
 
-	// recursively iterate through a directory and parse all resource files.
-	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
-		std::filesystem::path currentPath = entry.path();
+		// recursively iterate through a directory and parse all resource files.
+		for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
+			std::filesystem::path currentPath = entry.path();
 
-		if (entry.is_regular_file()) {
-			addResourceFile<T>(currentPath);
+			if (entry.is_regular_file()) {
+				addResourceFile<T>(currentPath);
+			}
 		}
-	}
+	}(), ...);
 }
 
 template<ValidAsset T>
