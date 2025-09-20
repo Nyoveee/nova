@@ -283,13 +283,15 @@ namespace {
 					{
 						auto& audioDatas = dataMember;
 
-						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId) {
-							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
-							assert(audioAsset);
+						// Add Audio
+						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
+							{
+								auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
+								assert(audioAsset);
 
-							// Store full AudioData directly in the component
-							audioDatas.emplace(assetManager.getName(resourceId).c_str(), AudioData{ resourceId, 1.0f, false });
-						});
+								// Store full AudioData directly in the component
+								audioDatas.emplace(audioAsset->getClassName().c_str(), AudioData{ resourceId, 1.0f, false });
+							});
 
 						// List of Audio Files
 						int i{};
@@ -299,23 +301,36 @@ namespace {
 							ImGui::PushID(i++);
 
 							bool keepAudioFile = true;
-							
+
 							AudioData& audioData = it->second;
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
-							assert(audioAsset);
+							if (!audioAsset) {
+								// Invalid ResourceID
+								Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.AudioId));
+								continue;
+							}
 
-							if (ImGui::CollapsingHeader(assetManager.getName(audioData.AudioId).c_str(), &keepAudioFile)) {
-								// Able to see and adjust Volume in Editor
-								if (ImGui::DragFloat( "Volume", & audioData.Volume, 1.0f, 0.0f, 1.0f)) {
-									// Update Playback Volume
+							if (ImGui::CollapsingHeader(audioAsset->getClassName().c_str(), &keepAudioFile)) {
+								if (ImGui::Button("Play Audio")) {
+									if (audioSystem.isBGM(audioData.AudioId)) {
+										audioSystem.playBGM(audioData.AudioId, audioData.Volume);
+									}
+									else {
+										audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f, audioData.Volume);
+									}
 								}
-								// Stop Audio from playing inside Editor
+
+								if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
+									audioSystem.AdjustVol(audioData.AudioId, audioData.Volume);
+								}
+
 								if (ImGui::Button("Stop Audio")) {
 									audioSystem.StopAudio(audioData.AudioId);
 								}
 							}
+
 							ImGui::PopID();
-							
+
 							if (!keepAudioFile) {
 								it = audioDatas.erase(it);
 							}
@@ -326,6 +341,7 @@ namespace {
 
 						ImGui::EndChild();
 					}
+
 
 
 					// it's an enum. let's display a dropdown box for this enum.
