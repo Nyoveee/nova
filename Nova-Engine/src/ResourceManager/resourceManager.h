@@ -77,6 +77,9 @@ private:
 	template<ValidResource ...T>
 	void recordAllResources();
 
+	// this is only called by the asset manager to remove outdated resources. (housekeeping)
+	ENGINE_DLL_API void removeResource(ResourceID id);
+
 private:
 	// records all resource filepath and it's associated resource id.
 	// we don't load assets at resource startup, only keeping track of resource filepath for us to load.

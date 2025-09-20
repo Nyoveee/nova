@@ -227,38 +227,52 @@ void AssetManager::loadAllDescriptorFiles() {
 
 			Logger::info("Parsing {}..", descriptorFilepath.string());
 
-			// parse the descriptor file.
+			// We attempt to parse the descriptor file, to find out the original asset it is referencing...
 			std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
 			AssetInfo<T> descriptor;
 
 			if (!opt) {
-				Logger::info("Failed parsing, recreating a new descriptor file..");
-				descriptor = AssetIO::createDescriptorFile<T>(descriptorFilepath);
+				Logger::info("Parsing failed, removing invalid descriptor file..\n");
+				std::filesystem::remove(descriptorFilepath);
+				continue;
+			}
+			// We check the validity of descriptor file, whether the asset path is pointing to a valid file.
+			else if (!std::filesystem::is_regular_file(std::filesystem::path{ opt.value().filepath })) {
+				Logger::info("Descriptor file is pointing to an invalid asset filepath, removing descriptor file..\n");
+				std::filesystem::remove(descriptorFilepath);
+				continue;
 			}
 			else {
 				Logger::info("Sucessfully parsed descriptor file.");
 				descriptor = opt.value();
 			}
 
-			// check if resource manager has this particular resources already loaded.
-			// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
-			// the resource manager.
+			// We first check if the last write time of the asset file matches the one recorded in descriptor.
+			// If it doesn't, we need to recompile this asset file into it's resource form, and load it to the resource manager.
+			auto assetLastWriteTime = std::filesystem::last_write_time(std::filesystem::path{ descriptor.filepath });
+			auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
 
-			if (!resourceManager.doesResourceExist(descriptor.id)) {
-				Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}", descriptor.filepath.string);
+			// doesnt match, asset has changed..
+			if (assetEpoch != descriptor.timeLastWrite) {
+				Logger::info("Asset has changed, recompiling it's corresponding resource file..\n");
+				resourceManager.removeResource(descriptor.id);
+				createResourceFile<T>(descriptor);
+			}
+			// If it does, we check if the resource manager already have this particular resource loaded.
+			// If it doesn't exist, it means that this resource file is missing / invalid.
+			// Let's compile the corresponding intermediary asset file and load it to the resource manager.
+			else if (!resourceManager.doesResourceExist(descriptor.id)) {
+				Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}\n", descriptor.filepath.string);
 				createResourceFile<T>(descriptor);
 			}
 			else {
-				Logger::info("Resource file exist.");
+				Logger::info("A valid resource file exist for this descriptor and asset.\n");
+				// we record all encountered intermediary assets with corresponding filepaths.
+				intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
+
+				// we associate resource id with a name.
+				assetToDescriptor.insert({ descriptor.id, descriptor });
 			}
-
-			Logger::info("");
-
-			// we record all encountered intermediary assets with corresponding filepaths.
-			intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
-
-			// we associate resource id with a name.
-			assetToDescriptor.insert({ descriptor.id, descriptor });
 		}
 
 		Logger::info("===========================\n");
@@ -266,7 +280,7 @@ void AssetManager::loadAllDescriptorFiles() {
 }
 
 template<ValidResource T>
-void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
+ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	// this compiles a resource file corresponding to the intermediary asset.
 	compileIntermediaryFile<T>(descriptor);
 
@@ -277,7 +291,12 @@ void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	ResourceID id = resourceManager.addResourceFile<T>(resourceFilePath);
 
 	if (id != INVALID_RESOURCE_ID) {
+		// we record all encountered intermediary assets with corresponding filepaths.
+		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilePath, descriptor.id } });
+
 		// we associate resource id with a name.
 		assetToDescriptor.insert({ id, descriptor });
 	}
+
+	return id;
 }

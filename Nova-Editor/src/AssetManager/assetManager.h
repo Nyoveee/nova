@@ -103,7 +103,7 @@ private:
 	void loadAllDescriptorFiles();
 
 	template <ValidResource T>
-	void createResourceFile(AssetInfo<T> descriptor);
+	ResourceID createResourceFile(AssetInfo<T> descriptor);
 
 private:
 	ResourceManager& resourceManager;
@@ -117,6 +117,7 @@ private:
 
 	// records metadata for each resource id. these metadata are only used in the editor, like interacting with the
 	// the intermediary asset & getting asset name.
+	// also acts as a record of all resource id with corresponding descriptor.
 	std::unordered_map<ResourceID, BasicAssetInfo> assetToDescriptor;
 
 	// Folder metadata (for tree traversal)

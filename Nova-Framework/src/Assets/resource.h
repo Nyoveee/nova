@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <fstream>
 
@@ -29,6 +30,7 @@ struct BasicAssetInfo {
 	ResourceID id;
 	std::string name;
 	AssetFilePath filepath;
+	std::chrono::milliseconds timeLastWrite;
 };
 
 // specific asset meta info.

@@ -76,7 +76,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 			continue;
 		}
 
-		if (entry.is_directory()) {
+		else if (entry.is_directory()) {
 			recordFolder(folderId, assetPath);
 			incrementFolderId(folderId);
 			continue;
@@ -127,15 +127,34 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		}
 		// ------------------------------------------
 	}
+
+	// ========================================
+	// 4. We do some housekeeping, and find any outdated resource files with no corresponding descriptors.
+	// ========================================
+	for (const auto& entry : std::filesystem::recursive_directory_iterator{ AssetIO::resourceDirectory }) {
+		std::filesystem::path resourcePath = entry.path();
+
+		if (!entry.is_regular_file()) {
+			continue;
+		}
+
+		try {
+			ResourceID id = std::stoull(std::filesystem::path{ resourcePath }.stem().string());
+			auto iterator = assetToDescriptor.find(id);
+			
+			if (iterator == assetToDescriptor.end()) {
+				Logger::info("Found dangling resource file {} with no corresponding descriptor file, removing it..", resourcePath.string());
+				std::filesystem::remove(resourcePath);
+				resourceManager.removeResource(id);
+			}
+		}
+		catch (std::exception const&) {
+			Logger::info("Failed to get resource id {} from file, removing it..", resourcePath.string());
+		}
+	}
+
 	// By now everything should be serialized, loadAll the entityscripts containing the serializablefield data
-	// Putting it here unless there is a better location
 	engine.scriptingAPIManager.compileScriptAssembly();
-#if 0
-	// Register callbacks for the watcher
-	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });
-	directoryWatcher.RegisterCallbackAssetContentModified([&](ResourceID resourceId) { OnAssetContentModifiedCallback(resourceId); });
-	directoryWatcher.RegisterCallbackAssetContentDeleted([&](ResourceID resourceId) { OnAssetContentDeletedCallback(resourceId); });
-#endif
 }
 
 AssetManager::~AssetManager() {
@@ -214,12 +233,7 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	// lambda creates descriptor file, creates the resource file, and loads it to the resource manager.
 	auto initialiseResourceFile = [&]<typename T>() {
 		auto assetInfo = AssetIO::createDescriptorFile<T>(assetFilePath);
-
-		DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(assetInfo.id);
-
-		intermediaryAssetsToDescriptor.insert({ assetFilePath, { descriptorFilePath, assetInfo } });
-		createResourceFile<T>(assetInfo);
-		return assetInfo.id;
+		return createResourceFile<T>(assetInfo);
 	};
 
 	if (fileExtension == ".fbx") {
