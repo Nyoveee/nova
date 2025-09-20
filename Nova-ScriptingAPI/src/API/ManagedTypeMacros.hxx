@@ -1,9 +1,11 @@
 #pragma once
 
+#include "IManagedStruct.h"
+#include "IManagedComponent.hxx"
+
 #include "RecursiveMacros.hxx"
 #include "ScriptingAPI.hxx"
 #include <type_traits>
-
 
 // This default function template returns the managed type as it is
 // This is used for primitives like ints, floats, etc, where you can return the managed type as native type directly.
@@ -20,28 +22,36 @@ NativeType native(ManagedType& managedType) {
 // =====================================================
 #define Declaration(Type, Name) Type Name;
 #define ConstructorDefinition(Type, Name) Name{native.Name}
+#define ConstructorDefinition2(Type, Name) Name { Name }
 #define ListInitialization(Type, Name) Name
-#define GetString(Type, Name) Name.ToString()
+#define Parameter(Type, Name) Type Name
 
-#define ManagedStruct(ManagedType,NativeType,...)														        \
-public value struct ManagedType {																		        \
-	ManagedType(NativeType native) : Call_MacroComma_Double(ConstructorDefinition, __VA_ARGS__) {}              \
-	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}                   \
-	virtual System::String^ ToString() override sealed{                                                         \
-		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();                             \
-		System::String^ result = "{";                                                                           \
-		for (int i = 0; i < fieldInfos->Length; ++i) {                                                          \
-			result += fieldInfos[i]->GetValue(*this)->ToString();                                               \
-			if (i != fieldInfos->Length - 1) result += ", ";                                                    \
-		}																									    \
-		result += "}";                                                                                          \
-		return result;                                                                                          \
-	}                                                                                                           \
-	Call_Macro_Double(Declaration,__VA_ARGS__)															        \
-};																										        \
-template <>																								        \
-inline NativeType native(ManagedType& managedType) {													        \
-	return managedType.native();																		        \
+#define ManagedStruct(ManagedType,NativeType,...)																					\
+public value struct ManagedType : IManagedStruct {																					\
+	ManagedType(NativeType native) : Call_MacroComma_Double(ConstructorDefinition, __VA_ARGS__) {}									\
+	ManagedType(Call_MacroComma_Double(Parameter,__VA_ARGS__)) : Call_MacroComma_Double(ConstructorDefinition2, __VA_ARGS__) {}     \
+	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}										\
+	virtual void AppendValueToFieldData(FieldData& fieldData) sealed{															    \
+		fieldData.second = native();																								\
+	}																																\
+	virtual void SetValueFromFieldData(FieldData const& fieldData) sealed{                                                          \
+		*this = ManagedType(std::get<NativeType>(fieldData.second));																\
+	}                                                                                                                               \
+	virtual System::String^ ToString() override sealed{																				\
+		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();													\
+		System::String^ result = "{";																								\
+		for (int i = 0; i < fieldInfos->Length; ++i) {																				\
+			result += fieldInfos[i]->GetValue(*this)->ToString();																	\
+			if (i != fieldInfos->Length - 1) result += ", ";																		\
+		}																															\
+		result += "}";																												\
+		return result;																												\
+	}																																\
+	Call_Macro_Double(Declaration,__VA_ARGS__)																						\
+};																																	\
+template <>																															\
+inline NativeType native(ManagedType& managedType) {																				\
+	return managedType.native();																									\
 }	
 
 // =====================================================

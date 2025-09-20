@@ -24,12 +24,16 @@ struct ResourceConstructor {
 	std::function<std::unique_ptr<Resource>()> function;
 };
 
+// default loader..
 template <typename T>
 class ResourceLoader {
-	static_assert(false, "No explicit template specialisation found for this asset type");
-
+public:
 	// all implementation of resource loader HAS to implement the function below.
-	// static std::optional<ResourceConstructor> load(ResourceID id, ResourceFilePath const& resourceFilePath);
+	static std::optional<ResourceConstructor> load(ResourceID id, ResourceFilePath const& resourceFilePath) {
+		return { {[id, resourceFilePath] {
+			return std::make_unique<T>(id, resourceFilePath);
+		}} };
+	}
 };
 
 // explicit template specialisation for respective loaders.
@@ -37,4 +41,3 @@ ResourceLoaderDefinition(Model)
 ResourceLoaderDefinition(Texture)
 ResourceLoaderDefinition(CubeMap)
 ResourceLoaderDefinition(ScriptAsset)
-ResourceLoaderDefinition(Audio)

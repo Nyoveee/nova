@@ -10,6 +10,7 @@
 #include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
+void displayScriptFields(entt::entity entity, ScriptData& scriptData, ScriptingAPIManager& scriptingAPIManager, Engine& engine);
 
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
@@ -242,17 +243,18 @@ namespace {
 					}
 					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
-
-						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
-							scriptDatas.push_back(ScriptData{ resourceId });
+						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
+						// Adding Scripts
+						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
+							ScriptData scriptData{ resourceId };
+							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
+							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(static_cast<unsigned int>(entity), static_cast<std::size_t>(scriptData.scriptId));
+							scriptDatas.push_back(scriptData);
 						});
 
-						// List of Scripts
 						int i{};
-
 						// Removal of Scripts
 						ImGui::BeginChild("", ImVec2(0, 400), ImGuiChildFlags_Border);
-
 						std::vector<ScriptData>::iterator it = std::remove_if(std::begin(scriptDatas), std::end(scriptDatas), [&](ScriptData& scriptData) {
 							ImGui::PushID(i++);
 							bool keepScript = true;
@@ -260,18 +262,18 @@ namespace {
 							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
 							assert(scriptAsset);
 
-							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript)) {
-								// To do display additional data
-							}
+							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
+								displayScriptFields(entity, scriptData, scriptingAPIManager,componentInspector.editor.engine);
 
 							ImGui::PopID();
 							return !keepScript;
 						});
-
 						ImGui::EndChild();
-
-						if(it != std::end(scriptDatas))
+						if (it != std::end(scriptDatas)) {
+							scriptingAPIManager.removeEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(it->scriptId));
 							scriptDatas.erase(it);
+						}
+				
 					}
 
 					else if constexpr (std::same_as<DataMemberType, entt::entity>) {
@@ -348,7 +350,6 @@ namespace {
 					ImGui::PopID();
 				},
 			component);
-
 			ImGui::PopID();
 			ImGui::PopID();
 

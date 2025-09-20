@@ -19,6 +19,7 @@
 #include "type_alias.h"
 #include "vertex.h"
 #include "reflection.h"
+#include "Engine/ScriptingAPIManager.h"
 
 // Forward declaring..
 class Model;
@@ -179,7 +180,7 @@ struct SkyBox {
 struct ScriptData
 {
 	TypedResourceID<ScriptAsset> scriptId;
-	// Additional data includes those properties in the scripts
+	std::vector<FieldData> fields;
 };
 
 struct Scripts
