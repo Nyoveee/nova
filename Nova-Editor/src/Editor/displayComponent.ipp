@@ -278,24 +278,19 @@ namespace {
 					}
 
 
-					if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, ResourceID>>) 
+					if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>)
 					{
 						auto& audioDatas = dataMember;
 
-						static std::unordered_map<ResourceID, AudioData> audioEditorState;
-
 						// Add Audio
-						componentInspector.displayAssetDropDownList<Audio>( std::nullopt, "Add Audio File", [&](ResourceID resourceId ) 
-						{
+						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
+							{
 								auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
 								assert(audioAsset);
 
-								audioDatas.emplace(audioAsset->getClassName().c_str(), resourceId);
-
-								// Also track editor state
-								audioEditorState.try_emplace(resourceId, AudioData{ resourceId });
-							}
-						);
+								// Store full AudioData directly in the component
+								audioDatas.emplace(audioAsset->getClassName().c_str(), AudioData{ resourceId, 1.0f, false });
+							});
 
 						// List of Audio Files
 						int i{};
@@ -305,41 +300,41 @@ namespace {
 							ImGui::PushID(i++);
 
 							bool keepAudioFile = true;
-							ResourceID resourceId = it->second;
 
-							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
+							AudioData& audioData = it->second;
+							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
 							assert(audioAsset);
 
-							AudioData& audioData = audioEditorState[resourceId];
-
 							if (ImGui::CollapsingHeader(audioAsset->getClassName().c_str(), &keepAudioFile)) {
-								// Able to see and adjust Volume in Editor
+								// Play Audio
 								if (ImGui::Button("Play Audio")) {
-									// Play Audio 
 									if (audioSystem.isBGM(audioData.AudioId)) {
-										audioSystem.playBGM(audioData.AudioId);
-									} else {
-										audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f);
+										audioSystem.playBGM(audioData.AudioId, audioData.Volume);
+									}
+									else {
+										audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f, audioData.Volume);
 									}
 								}
+								// Update Playback Volume
 								if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
-									// Update Playback Volume
-									audioSystem.AdjustVol( audioData.AudioId , audioData.Volume );
+									audioSystem.AdjustVol(audioData.AudioId, audioData.Volume);
 								}
 								// Stop Audio from playing inside Editor
 								if (ImGui::Button("Stop Audio")) {
 									audioSystem.StopAudio(audioData.AudioId);
 								}
 							}
+
 							ImGui::PopID();
+
 							if (!keepAudioFile) {
-								audioEditorState.erase(resourceId); // cleanup side table
 								it = audioDatas.erase(it);
 							}
 							else {
 								++it;
 							}
 						}
+
 						ImGui::EndChild();
 					}
 

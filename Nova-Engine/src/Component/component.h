@@ -222,7 +222,7 @@ struct AudioData
 
 struct AudioComponent 
 {
-	std::unordered_map<std::string, ResourceID> data;
+	std::unordered_map<std::string, AudioData> data;
 
 	REFLECTABLE(
 		data
