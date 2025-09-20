@@ -54,19 +54,13 @@ public:
 	AssetManager& operator=(AssetManager&& other)		= delete;
 
 public:
-#if 0
 	// =========================================================
 	// Serialising asset meta data..
 	template <ValidResource T>
-	friend struct SerialiseMetaDataFunctor;
+	friend struct SerialiseDescriptorFunctor;
 
 	template <ValidResource T>
-	friend struct SerialiseAssetFunctor;
-
-	template <ValidResource T>
-	void serialiseAssetMetaData(T const& asset);
-	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
-#endif
+	void serialiseDescriptor(ResourceID id);
 
 public:
 	std::unordered_map<FolderID, Folder> const& getDirectories() const;
@@ -74,7 +68,7 @@ public:
 
 	std::string const& getName(ResourceID id) const;
 	AssetFilePath const& getFilepath(ResourceID id) const;
-	Descriptor const& getDescriptor(AssetFilePath assetFilePath) const;
+	Descriptor const& getDescriptor(AssetFilePath const& assetFilePath) const;
 
 	void update();
 
@@ -92,12 +86,6 @@ private:
 
 	template <ValidResource T>
 	void compileIntermediaryFile(AssetInfo<T> descriptor);
-
-	// =========================================================
-	// Parsing meta data file associated with the asset.
-	// Each asset will contain a generic metadata (id and name)
-	// Each specific type asset has additional metadata as well.
-	// =========================================================
 
 	template<ValidResource ...T>
 	void loadAllDescriptorFiles();
@@ -118,7 +106,10 @@ private:
 	// records metadata for each resource id. these metadata are only used in the editor, like interacting with the
 	// the intermediary asset & getting asset name.
 	// also acts as a record of all resource id with corresponding descriptor.
-	std::unordered_map<ResourceID, BasicAssetInfo> assetToDescriptor;
+	std::unordered_map<ResourceID, std::unique_ptr<BasicAssetInfo>> assetToDescriptor;
+
+	// for each asset, contains a functor that helps serialise descriptor.
+	std::unordered_map<ResourceID, std::unique_ptr<SerialiseDescriptor>> serialiseDescriptorFunctors;
 
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;

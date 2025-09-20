@@ -13,7 +13,7 @@
     }
     protected override void update()
     {
-        Debug.Print("hi");
+        // Debug.Print("hi");
 
         if(transform != null)
         {

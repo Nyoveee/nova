@@ -158,48 +158,17 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 }
 
 AssetManager::~AssetManager() {
-#if 0
 	// let's serialise the asset meta data of all our stored info.
-	for (auto&& [id, assetPtr] : assets) {
-		Asset* asset = assetPtr.get();
+	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
+		assert(serialiseFunctorPtr && "Should never be nullptr");
 
-		if (!asset) {
-			Logger::error("Asset manager is storing an invalid asset!");
-			continue;
-		}
-
-		auto&& serialiseFunctorPtr = serialiseMetaDataFunctors[id];
-
-		if (!serialiseFunctorPtr) {
-			Logger::error("Asset manager failed to record the appropriate serialisation functor!");
-			continue;
-		}
-
-		// cool syntax? or abomination?
-		serialiseFunctorPtr->operator()(*asset, *this);
+		// serialise the descriptor file for this given asset id.
+		serialiseFunctorPtr->operator()(id, *this);
 	}
-#endif
 }
 
 #if 0
 
-
-void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile) {
-	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
-}
-
-void AssetManager::OnAssetContentAddedCallback(std::string abspath)
-{
-	Logger::info("Called Asset Directory Added, {}", abspath);
-}
-
-void AssetManager::OnAssetContentModifiedCallback(AssetID assetId){
-	Logger::info("Called Asset Directory Modified, {}", static_cast<std::size_t>(assetId));
-}
-
-void AssetManager::OnAssetContentDeletedCallback(AssetID assetId){
-	Logger::info("Called Asset Directory Content Deleted, {}", static_cast<std::size_t>(assetId));
-}
 
 std::string AssetManager::GetRunTimeDirectory() {
 	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
@@ -301,7 +270,8 @@ std::string const& AssetManager::getName(ResourceID id) const {
 	}
 
 	auto&& [_, descriptor] = *iterator;
-	return descriptor.name;
+	assert(descriptor && "This ptr should never be null.");
+	return descriptor->name;
 }
 
 AssetFilePath const& AssetManager::getFilepath(ResourceID id) const {
@@ -313,10 +283,11 @@ AssetFilePath const& AssetManager::getFilepath(ResourceID id) const {
 	}
 
 	auto&& [_, descriptor] = *iterator;
-	return descriptor.filepath;
+	assert(descriptor && "This ptr should never be null.");
+	return descriptor->filepath;
 }
 
-AssetManager::Descriptor const& AssetManager::getDescriptor(AssetFilePath assetFilePath) const {
+AssetManager::Descriptor const& AssetManager::getDescriptor(AssetFilePath const& assetFilePath) const {
 	auto iterator = intermediaryAssetsToDescriptor.find(assetFilePath);
 
 	if (iterator == intermediaryAssetsToDescriptor.end()) {

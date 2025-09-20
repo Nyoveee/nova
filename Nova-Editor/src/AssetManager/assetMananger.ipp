@@ -142,37 +142,6 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 	asset.name = assetInfo.name;
 	asset.id = assetInfo.id;
 }
-
-
-
-template<ValidResource T>
-void AssetManager::serialiseAssetMetaData(T const& asset) {
-	std::string metaDataFilename = asset.getFilePath() + ".nova_meta";
-	std::ofstream metaDataFile{ metaDataFilename };
-	
-	if (!metaDataFile) {
-		Logger::error("Failure to serialise asset metadata file of: {}", metaDataFilename);
-		return;
-	}
-
-	serialiseAssetMetaData(asset, metaDataFile);
-
-	// ============================
-	// Filestream is now pointing at the 3rd line.
-	// Do any serialisation for specifc metadata of asset type here!!
-	// ============================
-
-	if constexpr (std::same_as<T, Texture>) {
-		metaDataFile << asset.isFlipped() << "\n";
-	}
-
-	if constexpr (std::same_as<T, Audio>) {
-		metaDataFile << asset.isAudio3D() << "\n";
-	}
-
-	// ============================
-	Logger::info("Successfully serialised metadata file for {}", asset.getFilePath());
-}
 #endif
 
 template<ValidResource T>
@@ -271,7 +240,10 @@ void AssetManager::loadAllDescriptorFiles() {
 				intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
 
 				// we associate resource id with a name.
-				assetToDescriptor.insert({ descriptor.id, descriptor });
+				assetToDescriptor.insert({ descriptor.id, std::make_unique<AssetInfo<T>>(descriptor) });
+
+				// for each asset, we associate it with a descriptor functor.
+				serialiseDescriptorFunctors.insert({ descriptor.id, std::make_unique<SerialiseDescriptorFunctor<T>>() });
 			}
 		}
 
@@ -295,8 +267,49 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilePath, descriptor.id } });
 
 		// we associate resource id with a name.
-		assetToDescriptor.insert({ id, descriptor });
+		assetToDescriptor.insert({ id, std::make_unique<AssetInfo<T>>(descriptor) });
+
+		// for each asset, we associate it with a descriptor functor.
+		serialiseDescriptorFunctors.insert({ id, std::make_unique<SerialiseDescriptorFunctor<T>>() });
 	}
 
 	return id;
+}
+
+template<ValidResource T>
+void AssetManager::serialiseDescriptor(ResourceID id) {
+	std::ofstream descriptorFile{ AssetIO::getDescriptorFilename<T>(id) };
+
+	if (!descriptorFile) {
+		Logger::error("Failure to serialise descriptor file of: {}", AssetIO::getDescriptorFilename<T>(id).string);
+		return;
+	}
+
+	// retrieve asset info..
+	std::unique_ptr<BasicAssetInfo> const& basicAssetInfoPtr = assetToDescriptor[id];
+	assert(basicAssetInfoPtr && "Should never be nullptr");
+	
+	AssetInfo<T>* assetInfo = static_cast<AssetInfo<T>*>(basicAssetInfoPtr.get());
+	assert(assetInfo && "Should also never be nullptr");
+
+	// serialise basic asset info..
+	// 1st line -> asset id, 2nd line -> name, 3rd line -> asset filepath, 4th epoch time / last write time.
+
+	// calculate relative path to the Assets directory.
+	std::filesystem::path relativePath = std::filesystem::relative(std::filesystem::path{ assetInfo->filepath }, AssetIO::assetDirectory);
+
+	// get most recently write time..
+	auto lastWriteTime = std::filesystem::last_write_time(std::filesystem::path{ assetInfo->filepath });
+	auto epoch = lastWriteTime.time_since_epoch();
+	auto value = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+
+	descriptorFile << static_cast<std::size_t>(assetInfo->id) << '\n' << assetInfo->name << '\n' << relativePath.string() << '\n' << value.count() << '\n';
+
+	// ============================
+	// Filestream is now pointing at the 5th line.
+	// Do any serialisation for specifc metadata of asset type here!!
+	// ============================
+
+	// ============================
+	Logger::info("Successfully serialised descriptor file for {}", assetInfo->filepath.string);
 }
