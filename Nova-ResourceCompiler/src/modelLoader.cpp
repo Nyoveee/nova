@@ -13,6 +13,8 @@
 #include "modelLoader.h"
 #include "Logger.h"
 
+#undef max
+
 namespace {
 	glm::vec3 toGlmVec3(aiVector3D vec3) {
 		return { vec3.x, vec3.y, vec3.z };

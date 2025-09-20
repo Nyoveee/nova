@@ -7,6 +7,13 @@
 #include "Logger.h"
 
 #include "cubemap.h"
+#include "Engine/engine.h"
+
+#define RecordAssetSubdirectory(AssetType) \
+	subAssetDirectories.insert({ Family::id<AssetType>(), descriptorDirectory / #AssetType })
+
+#define LoadAllDescriptorFiles(AssetType) \
+	loadAllDescriptorFiles<AssetType>(subAssetDirectories[Family::id<AssetType>()])
 
 namespace {
 	// we usually don't want to increment ids
@@ -19,7 +26,7 @@ namespace {
 AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	resourceManager		{ resourceManager },
 	engine				{ engine },
-	directoryWatcher	{ *this, resourceManager, engine, AssetIO::assetDirectory }
+	directoryWatcher	{ *this, resourceManager, engine }
 {
 	// ========================================
 	// 1. Check if the descriptor directory exist, and the respective asset subdirectories.
@@ -120,6 +127,15 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		}
 		// ------------------------------------------
 	}
+	// By now everything should be serialized, loadAll the entityscripts containing the serializablefield data
+	// Putting it here unless there is a better location
+	engine.scriptingAPIManager.compileScriptAssembly();
+#if 0
+	// Register callbacks for the watcher
+	directoryWatcher.RegisterCallbackAssetContentAdded([&](std::string absPath) { OnAssetContentAddedCallback(absPath); });
+	directoryWatcher.RegisterCallbackAssetContentModified([&](ResourceID resourceId) { OnAssetContentModifiedCallback(resourceId); });
+	directoryWatcher.RegisterCallbackAssetContentDeleted([&](ResourceID resourceId) { OnAssetContentDeletedCallback(resourceId); });
+#endif
 }
 
 AssetManager::~AssetManager() {
@@ -284,6 +300,18 @@ AssetFilePath const& AssetManager::getFilepath(ResourceID id) const {
 
 	auto&& [_, descriptor] = *iterator;
 	return descriptor.filepath;
+}
+
+AssetManager::Descriptor const& AssetManager::getDescriptor(AssetFilePath assetFilePath) const {
+	auto iterator = intermediaryAssetsToDescriptor.find(assetFilePath);
+
+	if (iterator == intermediaryAssetsToDescriptor.end()) {
+		static Descriptor invalidDescriptor{ std::string{}, { INVALID_RESOURCE_ID, "", std::string{} } };
+		return invalidDescriptor;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+	return descriptor;
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

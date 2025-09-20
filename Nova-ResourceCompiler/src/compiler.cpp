@@ -141,7 +141,18 @@ int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFile
 }
 
 int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
-	return -1;
+	std::ofstream resourceFile{ resourceFilePath.string };
+
+	if (!resourceFile) {
+		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
+		return -1;
+	}
+
+	// script literally only stores the	class name. the intermediaryAssetFilepath must match the class name.	
+	std::string className = std::filesystem::path{ intermediaryAssetFilepath }.stem().string();
+	resourceFile << className;
+
+	return 0;
 }
 
 int Compiler::defaultCompile(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {

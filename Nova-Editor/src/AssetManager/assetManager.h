@@ -74,6 +74,7 @@ public:
 
 	std::string const& getName(ResourceID id) const;
 	AssetFilePath const& getFilepath(ResourceID id) const;
+	Descriptor const& getDescriptor(AssetFilePath assetFilePath) const;
 
 	void update();
 

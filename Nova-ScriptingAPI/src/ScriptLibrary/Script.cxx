@@ -38,8 +38,3 @@ void Script::callExit() {
 	}
 }
 
-void Script::setEntityID(System::UInt32 p_entityID)
-{
-	entityID = p_entityID;
-}
-
