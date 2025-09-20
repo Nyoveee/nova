@@ -17,6 +17,9 @@
 #include "../ext/scalar_common.hpp"
 #include "../common.hpp"
 
+#undef min
+#undef max
+
 #if GLM_MESSAGES == GLM_ENABLE && !defined(GLM_EXT_INCLUDED)
 #	pragma message("GLM: GLM_EXT_vector_common extension included")
 #endif

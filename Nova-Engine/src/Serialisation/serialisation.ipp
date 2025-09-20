@@ -1,10 +1,10 @@
 #include <string>
 
 #include "serialisation.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
 #include "reflection.h"
 
-#include "Component/component.h"
+#include "ECS/component.h"
 #include "magic_enum.hpp"
 
 #include "Logger.h"
@@ -122,45 +122,56 @@ namespace Serialiser {
 					std::vector<json> jVec;
 					
 					//for each material in the map
-					for (auto a : dataMember) {
+					for (auto&& [materialName, material] : dataMember) {
 
 						json tempJson;
 
-						auto pipeline = magic_enum::enum_name(a.second.renderingPipeline);
+						tempJson["materialName"] = materialName;
+						tempJson["renderingPipeline"] = magic_enum::enum_name(material.renderingPipeline);
+						tempJson["ambient"] = material.ambient;
 
-						tempJson["materialName"] = a.first;
-						tempJson["renderingPipeline"] = pipeline;
-						tempJson["ambient"] = a.second.ambient;
+						switch (material.renderingPipeline)
+						{
+						case Material::Pipeline::PBR: {
+							//json tempJ;
 
-						if (pipeline == "PBR") {
-							json tempJ;
-
-							tempJ["roughness"] = std::get<Material::Config>(a.second.config).roughness;
-							tempJ["metallic"] = std::get<Material::Config>(a.second.config).metallic;
-							tempJ["occulusion"] = std::get<Material::Config>(a.second.config).occulusion;
-							tempJson["config"] = tempJ;
-							tempJ.clear();
+							//tempJ["roughness"] = std::get<Material::Config>(material.config).roughness;
+							//tempJ["metallic"] = std::get<Material::Config>(material.config).metallic;
+							//tempJ["occulusion"] = std::get<Material::Config>(material.config).occulusion;
+							//tempJson["config"] = tempJ;
 						}
-
-						if (pipeline == "PBR" || pipeline == "BlinnPhong") {
-							if (!(a.second.normalMap).has_value()) {
+						[[fallthrough]];
+						case Material::Pipeline::BlinnPhong:
+							if (!material.normalMap) {
 								tempJson["normalMap"] = nullptr;
 							}
 							else {
-								tempJson["normalMap"] = static_cast<size_t>(a.second.normalMap.value());
+								tempJson["normalMap"] = static_cast<size_t>(material.normalMap.value());
 							}
+
+							break;
+						case Material::Pipeline::Color:
+							break;
 						}
 
-						if (std::holds_alternative<Color>(a.second.albedo)) {
-							glm::vec3 vec = std::get<Color>(a.second.albedo);
-							json tempJ;
-							tempJ["r"] = vec.x;
-							tempJ["g"] = vec.y;
-							tempJ["b"] = vec.z;
+						std::visit([&](auto&& albedo) {
+							using T = std::decay_t<decltype(albedo)>;
 
-							tempJson["albedo"] = tempJ;
-							tempJ.clear();
-						}
+							json albedoJson;
+							if constexpr (std::same_as<T, ResourceID>) {
+								albedoJson["texture"] = static_cast<size_t>(albedo);
+							}
+							else /* its color */ {
+								json tempJ;
+								tempJ["r"] = albedo.r();
+								tempJ["g"] = albedo.g();
+								tempJ["b"] = albedo.b();
+								albedoJson["color"] = tempJ;
+							}
+
+							tempJson["albedo"] = albedoJson;
+						}, material.albedo);
+						
 						jVec.push_back(tempJson);
 					}
 					componentJson[dataMemberName] = jVec;
@@ -171,6 +182,14 @@ namespace Serialiser {
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+
+				}
+
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
+
+				}
+				
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, AudioData>>) {
 
 				}
 
@@ -310,9 +329,13 @@ namespace Serialiser {
 							m.config = c;
 						}
 
-						if (a.find("albedo") != a.end()) {
-							glm::vec3 colorVec = { a["albedo"]["r"], a["albedo"]["g"] , a["albedo"]["b"] };
+						if (a["albedo"].find("color") != a["albedo"].end()) {
+							glm::vec3 colorVec = { a["albedo"]["color"]["r"], a["albedo"]["color"]["g"] , a["albedo"]["color"]["b"]};
 							m.albedo = colorVec;
+						}
+						else {
+							std::size_t id = a["albedo"]["texture"];
+							m.albedo = id;
 						}
 
 						map[a["materialName"]] = m;
@@ -325,6 +348,14 @@ namespace Serialiser {
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+
+				}
+				
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
+
+				}
+
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, AudioData>>) {
 
 				}
 

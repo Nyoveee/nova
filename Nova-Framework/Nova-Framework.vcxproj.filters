@@ -15,72 +15,117 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\export.h">
+    <ClInclude Include="src\Internal\export.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\miniz.h">
+    <ClInclude Include="src\Internal\type_alias.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\tinyexr.h">
+    <ClInclude Include="src\Imported\BS_thread_pool.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\type_alias.ipp">
+    <ClInclude Include="src\Internal\family.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\backward.hpp">
+    <ClInclude Include="src\Imported\magic_enum.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\BS_thread_pool.hpp">
+    <ClInclude Include="src\Internal\nova_math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\family.h">
+    <ClInclude Include="src\Internal\reflection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\magic_enum.hpp">
+    <ClInclude Include="src\Internal\type_alias.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\nova_math.h">
+    <ClInclude Include="src\Internal\Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\reflection.h">
+    <ClInclude Include="src\Internal\Logger.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\stb_image.hpp">
+    <ClInclude Include="src\Internal\Profiling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\type_alias.h">
+    <ClInclude Include="src\Internal\vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Logger.h">
+    <ClInclude Include="src\Assets\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Logger.ipp">
+    <ClInclude Include="src\Assets\audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Profiling.h">
+    <ClInclude Include="src\Assets\cubemap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\scriptAsset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Internal\assetIO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Internal\assetIO.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Imported\xresource_guid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Internal\recursiveMacro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\miniz.c">
+    <ClCompile Include="src\Imported\glad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\tinyexr.cpp">
+    <ClCompile Include="src\Internal\nova_math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\backward.cpp">
+    <ClCompile Include="src\Internal\Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\glad.cpp">
+    <ClCompile Include="src\Assets\audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\nova_math.cpp">
+    <ClCompile Include="src\Assets\cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\stb_image.cpp">
+    <ClCompile Include="src\Assets\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Logger.cpp">
+    <ClCompile Include="src\Assets\scriptAsset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Assets\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\assetIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\modelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\scriptLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\cubemapLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\textureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

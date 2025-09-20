@@ -1,11 +1,13 @@
 #include <sstream>
+#include <cstdlib>
 
 #include "assetManager.h"
 #include "Profiling.h"
 #include "ResourceManager/resourceManager.h"
+#include "assetIO.h"
 
 #if 0
-template <ValidAsset T>
+template <ValidResource T>
 Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	std::unique_ptr<T> newAsset = std::make_unique<T>(
 		createAsset<T>(assetInfo)
@@ -35,7 +37,7 @@ Asset& AssetManager::addAsset(AssetInfo<T> const& assetInfo) {
 	return *asset.get();
 }
 
-template <ValidAsset T>
+template <ValidResource T>
 AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	// i love template programming
 	
@@ -75,7 +77,7 @@ AssetManager::AssetQuery<T> AssetManager::getAsset(AssetID id) {
 	}
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 std::vector<AssetID> const& AssetManager::getAllAssets() const {
 	auto iterator = assetsByType.find(Family::id<T>());
 
@@ -89,26 +91,26 @@ std::vector<AssetID> const& AssetManager::getAllAssets() const {
 	return allAssets;
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 AssetID AssetManager::getSomeAssetID() const {
 	auto iterator = assetsByType.find(Family::id<T>());
 
 	if (iterator == assetsByType.end()) {
 		Logger::error("Attempt to get an asset id of an invalid type?");
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 
 	auto&& [_, allAssets] = *iterator;
 	
 	if (allAssets.empty()) {
 		Logger::error("This asset type has no asset?");
-		return INVALID_ASSET_ID;
+		return INVALID_RESOURCE_ID;
 	}
 
 	return allAssets[0];
 }
 
-template<ValidAsset T>
+template<ValidResource T>
 bool AssetManager::isAsset(AssetID id) const {
 	auto iterator = assetIdToType.find(id);
 
@@ -118,7 +120,7 @@ bool AssetManager::isAsset(AssetID id) const {
 	return assetTypeId == Family::id<T>();
 }
 
-template <ValidAsset T>
+template <ValidResource T>
 void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 	AssetInfo<T> assetInfo = parseMetaDataFile<T>(path);
 
@@ -143,7 +145,7 @@ void AssetManager::recordAssetFile(std::filesystem::path const& path) {
 
 
 
-template<ValidAsset T>
+template<ValidResource T>
 void AssetManager::serialiseAssetMetaData(T const& asset) {
 	std::string metaDataFilename = asset.getFilePath() + ".nova_meta";
 	std::ofstream metaDataFile{ metaDataFilename };
@@ -173,115 +175,109 @@ void AssetManager::serialiseAssetMetaData(T const& asset) {
 }
 #endif
 
-template<ValidAsset T>
-std::string AssetManager::getMetaDataFilename(std::filesystem::path const& path) const {
-	auto iterator = subAssetDirectories.find(Family::id<T>());
-	assert(iterator != subAssetDirectories.end() && "Sub asset directory not recorded.");
+template<ValidResource T>
+void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
+#if _DEBUG
+		const char* executableConfiguration = "Debug";
+#else
+		const char* executableConfiguration = "Release";
+#endif
+		constexpr const char* executableName = "Nova-ResourceCompiler.exe";
 
-	auto&& [_, subAssetDirectory] = *iterator;
-	return std::filesystem::path{ subAssetDirectory / path.stem() }.string() + ".desc";
+		std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
+
+		DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
+
+		// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
+		std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
+
+		Logger::info("Running command: {}", command);
+
+		if (std::system(command.c_str())) {
+			Logger::error("Error compiling {}", descriptorFilePath.string);
+		}
+		else {
+			Logger::info("Successful compiling {}", descriptorFilePath.string);
+			Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
+		}
 }
 
-template<ValidAsset T>
-void AssetManager::loadAllDescriptorFiles(std::filesystem::path const& directory) {
-	// recursively iterate through a directory and parse all descriptor files.
-	for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
-		std::filesystem::path currentPath = entry.path();
+template<ValidResource ...T>
+void AssetManager::loadAllDescriptorFiles() {
+	([&] {
+		auto iterator = AssetIO::subDescriptorDirectories.find(Family::id<T>());
+		assert(iterator != AssetIO::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
+		std::filesystem::path const& directory = iterator->second;
 
-		if (!entry.is_regular_file()) {
-			continue;
-		}
+		Logger::info("===========================");
+		Logger::info("Loading all {} descriptors.", directory.stem().string());
+		Logger::info("----");
 
-		if (currentPath.extension() == ".desc") {
+		// recursively iterate through a directory and parse all descriptor files.
+		for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
+			std::filesystem::path descriptorFilepath = entry.path();
+
+			if (!entry.is_regular_file()) {
+				continue;
+			}
+
+			if (descriptorFilepath.extension() != ".desc") {
+				continue;
+			}
+
+			Logger::info("Parsing {}..", descriptorFilepath.string());
+
 			// parse the descriptor file.
-			AssetInfo<T> descriptor = parseDescriptorFile<T>(currentPath);
+			std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
+			AssetInfo<T> descriptor;
 
-			// we record all encountered intermediary assets with corresponding descriptor.
-			loadedIntermediaryAssets.insert(descriptor.filepath);
+			if (!opt) {
+				Logger::info("Failed parsing, recreating a new descriptor file..");
+				descriptor = AssetIO::createDescriptorFile<T>(descriptorFilepath);
+			}
+			else {
+				Logger::info("Sucessfully parsed descriptor file.");
+				descriptor = opt.value();
+			}
 
 			// check if resource manager has this particular resources already loaded.
 			// if resource doesn't exist, let's compile the corresponding intermediary asset file and load it to		
 			// the resource manager.
+
 			if (!resourceManager.doesResourceExist(descriptor.id)) {
-				resourceManager.addResourceFile(descriptor);
+				Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}", descriptor.filepath.string);
+				createResourceFile<T>(descriptor);
 			}
+			else {
+				Logger::info("Resource file exist.");
+			}
+
+			Logger::info("");
+
+			// we record all encountered intermediary assets with corresponding filepaths.
+			intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
+
+			// we associate resource id with a name.
+			assetToDescriptor.insert({ descriptor.id, descriptor });
 		}
-	}
+
+		Logger::info("===========================\n");
+	}(), ...);
 }
 
-template <ValidAsset T>
-AssetInfo<T> AssetManager::parseDescriptorFile(std::filesystem::path const& path) {
-	std::string metaDataFilename = getMetaDataFilename<T>(path);
-	std::ifstream metaDataFile{ metaDataFilename };
+template<ValidResource T>
+void AssetManager::createResourceFile(AssetInfo<T> descriptor) {
+	// this compiles a resource file corresponding to the intermediary asset.
+	compileIntermediaryFile<T>(descriptor);
 
-	// parse the generic asset metadata info first.
-	std::optional<BasicAssetInfo> parsedAssetInfo = parseDescriptorFile(path, metaDataFile);
+	DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
+	ResourceFilePath resourceFilePath = AssetIO::getResourceFilename<T>(descriptor.id);
 
-	// parsing failed, time to create a new metadata file.
-	if (!parsedAssetInfo) {
-		return createDescriptorFile<T>(path);
+	// we can now add this resource to the resource manager.
+	ResourceID id = resourceManager.addResourceFile<T>(resourceFilePath);
+
+	if (id != INVALID_RESOURCE_ID) {
+		// we associate resource id with a name.
+		assetToDescriptor.insert({ id, descriptor });
 	}
-
-	AssetInfo<T> assetInfo{ parsedAssetInfo.value() };
-
-	// ============================
-	// Filestream is now pointing at the 4th line.
-	// Do any metadata specific to any type parsing here!!
-	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		std::string line;
-		std::getline(metaDataFile, line);
-
-		bool toFlip;
-
-		if (!(std::stringstream{ line } >> toFlip)) {
-			Logger::error("Failure when trying to parse toFlip boolean for file: {}", path.string());
-			return createDescriptorFile<T>(path);
-		}
-		else {
-			assetInfo.isFlipped = toFlip;
-		}
-	}
-
-	if constexpr (std::same_as<T, Audio>) {
-		std::string line;
-		std::getline(metaDataFile, line);
-
-		bool is3D;
-
-		if (!(std::stringstream{ line } >> is3D)) {
-			Logger::error("Failure when trying to parse is3D boolean for file: {}", path.string());
-			return createDescriptorFile<T>(path);
-		}
-		else {
-			assetInfo.is3D = is3D;
-		}
-	}
-
-	// ============================
-	return assetInfo;
-}
-
-template <ValidAsset T>
-AssetInfo<T> AssetManager::createDescriptorFile(std::filesystem::path const& path) {
-	std::string metaDataFilename = getMetaDataFilename<T>(path);
-	std::ofstream metaDataFile{ metaDataFilename };
-
-	AssetInfo<T> assetInfo{ createDescriptorFile(path, metaDataFile) };
-
-	// ============================
-	// Filestream is now pointing at the 4th line.
-	// Do any metadata specific to any type default creation here!!
-	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		metaDataFile << false << "\n";
-	}
-
-	if constexpr (std::same_as<T, Audio>) {
-		metaDataFile << false << "\n";
-	}
-
-	// ============================
-	Logger::info("Successfully created metadata file for: {}", path.string());
-	return assetInfo;
 }

@@ -30,7 +30,7 @@ public:
 	float cameraSpeedExponent;
 	
 public:
-	DLL_API float getCameraSpeed() const;
+	ENGINE_DLL_API float getCameraSpeed() const;
 
 private:
 	float cameraSpeed;

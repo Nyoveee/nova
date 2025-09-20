@@ -5,13 +5,16 @@
 
 #include "export.h"
 
-#include "Component/ecs.h"
+#include "ECS/ecs.h"
 
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
+#include "navMeshGeneration.h"
 #include "hierarchy.h"
 #include "debugUI.h"
+#include "console.h"
+#include "navBar.h"
 
 using GLuint = unsigned int;
 
@@ -20,6 +23,7 @@ class Engine;
 class InputManager;
 class AssetManager;
 class ResourceManager;
+class NavBar;
 
 class Editor {
 public:
@@ -50,6 +54,7 @@ public:
 
 public:
 	entt::entity hoveringEntity;
+	std::vector<entt::entity> copiedEntityVec;
 
 private:
 	void main();
@@ -59,6 +64,7 @@ private:
 	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
+	void navigationWindow();
 	void launchProfiler();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
@@ -76,8 +82,12 @@ private:
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
 	AssetManagerUI assetManagerUi;
-	Hierarchy hierarchyList;
-	DebugUI debugUi;
+	//Hierarchy hierarchyList;
+	//DebugUI debugUi;
+	//Console console;
+	
+	NavMeshGeneration navMeshGenerator;
+	NavBar navBar;
 
 private:
 	std::vector<entt::entity> selectedEntities;

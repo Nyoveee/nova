@@ -3,12 +3,17 @@
 #include <memory>
 #include <functional>
 #include <optional>
+#include <entt/entt.hpp>
 
 #include "type_alias.h"
 
 class ECS;
 class Editor;
 class ResourceManager;
+class AssetManager;
+class AudioSystem;
+
+struct ScriptData;
 
 class ComponentInspector {
 public:
@@ -16,7 +21,8 @@ public:
 
 public:
 	void update();
-
+public:
+	void displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback);
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
 	// first parameter is used to specific which asset id is selected.
@@ -30,6 +36,8 @@ public:
 	ECS& ecs;
 	Editor& editor;
 	ResourceManager& resourceManager;
+	AssetManager& assetManager;
+	AudioSystem& audioSystem;
 
 	int imguiCounter = 0;
 };

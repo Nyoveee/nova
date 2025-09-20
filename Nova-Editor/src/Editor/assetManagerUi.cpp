@@ -16,10 +16,10 @@
 AssetManagerUI::AssetManagerUI(Editor& editor) :
 	assetManager	 { editor.assetManager },
 	resourceManager	 { editor.resourceManager },
-	selectedFolderId { NONE },
-	folderIcon		 { "System/Image/folder.png", false }
+	selectedFolderId { NONE }
+	//folderIcon		 { "System/Image/folder.png", false }
 {
-	folderIcon.load();
+	//folderIcon.load();
 }
 
 void AssetManagerUI::update() {
@@ -201,29 +201,26 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 }
 
 void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
-	Asset* asset = resourceManager.getResourceInfo(resourceId);
-
-	if (!asset) {
-		return;
-	}
+	std::string const& assetName = assetManager.getName(resourceId);
 
 	displayThumbnail(
 		static_cast<int>(static_cast<std::size_t>(resourceId)),
 		NO_TEXTURE,
-		asset->name.empty() ? "<no name>" : asset->name.c_str(),
+		assetName.empty() ? "<no name>" : assetName.c_str(),
 
 		// callback when the thumbnail gets clicked.
 		[&]() {},
 
 		// callback when the thumbnail gets double clicked.
 		[&]() {
-			handleThumbnailDoubleClick(*asset);
+			handleThumbnailDoubleClick(resourceId);
 		}
 	);
+
+
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
-#if 0
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. attempting to display invalid folder id.");
 
@@ -231,7 +228,7 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 
 	displayThumbnail(
 		static_cast<int>(static_cast<std::size_t>(folderId)),
-		folderIcon.getTextureId(),
+		NO_TEXTURE,
 		folder.name.c_str(),
 		
 		// callback when the thumbnail gets clicked.
@@ -242,7 +239,6 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		// callback when the thumbnail gets double clicked.
 		[&]() {}
 	);
-#endif
 }
 
 void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
@@ -301,8 +297,8 @@ bool AssetManagerUI::isAMatchWithSearchQuery(std::string const& name) const {
 	return allUpperCaseName.find(allUpperCaseSearchQuery) != std::string::npos;
 }
 
-void AssetManagerUI::handleThumbnailDoubleClick(Asset& resource) {
-	if (resourceManager.isResource<ScriptAsset>(resource.id)) {
+void AssetManagerUI::handleThumbnailDoubleClick(ResourceID resourceId) {
+	if (resourceManager.isResource<ScriptAsset>(resourceId)) {
 		// Launch a process that opens visual studio with the scripts.
 		static STARTUPINFO si;
 		static PROCESS_INFORMATION pi;
@@ -310,7 +306,7 @@ void AssetManagerUI::handleThumbnailDoubleClick(Asset& resource) {
 		si.cb = sizeof(si);
 		ZeroMemory(&pi, sizeof(pi));
 		std::wostringstream wss;
-		wss << " /Edit \"" << resource.getFilePath().c_str() << "\"";
+		wss << " /Edit \"" << assetManager.getFilepath(resourceId).string.c_str() << "\"";
 		std::wstring path{ wss.str() };
 		// The path can be applied to createprocess
 		// https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt

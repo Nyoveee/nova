@@ -2,9 +2,9 @@
 #include "componentInspector.h"
 #include "imgui.h"
 #include "editor.h"
-#include "Component/component.h"
-#include "Component/ECS.h"
-
+#include "ECS/component.h"
+#include "ECS/ECS.h"
+#include "AssetManager/assetManager.h"
 #include "misc/cpp/imgui_stdlib.h"
 
 #include "IconsFontAwesome6.h"
@@ -55,7 +55,9 @@ namespace {
 ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
 	ecs				{ editor.engine.ecs },
-	resourceManager { editor.engine.resourceManager }
+	resourceManager { editor.engine.resourceManager },
+	assetManager	{ editor.assetManager },
+	audioSystem		{ editor.engine.audioSystem }
 {}
 
 void ComponentInspector::update() {
@@ -105,5 +107,25 @@ void ComponentInspector::update() {
 
 	ImGui::End();
 }
+
+void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback)
+{
+	ImGui::PushID(imguiCounter);
+	++imguiCounter;
+	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
+	if (ImGui::BeginCombo("Add new script", "##")) {
+		for (auto&& scriptID : allScripts) {
+			auto compareID = [&](ScriptData const& ownedScript) { return scriptID == ownedScript.scriptId; };
+			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
+				continue;
+
+			if (ImGui::Selectable(assetManager.getName(scriptID).c_str()))
+				onClickCallback(scriptID);
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopID();
+}
+
 
 #include "displayComponent.ipp"

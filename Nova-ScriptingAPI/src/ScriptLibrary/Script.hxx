@@ -5,6 +5,9 @@
 
 #pragma once
 #include "API/IManagedComponent.hxx"
+[System::AttributeUsage(System::AttributeTargets::Field)]
+public ref class SerializableField : System::Attribute {};
+
 public ref class Script abstract
 {
 public:
@@ -19,11 +22,10 @@ internal:
 	void callInit();
 	void callUpdate();
 	void callExit();
-	void setEntityID(System::UInt32 p_entityID);
 protected:
 	virtual void init() {};
 	virtual void update() {};
 	virtual void exit() {};
-private:
+internal:
 	System::UInt32 entityID;
 };

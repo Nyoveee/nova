@@ -4,12 +4,14 @@
 #include "engine.h"
 #include "window.h"
 
-#include "Component/component.h"
+#include "ECS/component.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
 
+
 #include "Serialisation/serialisation.h"
+#include "ECS/SceneManager.h"
 
 
 Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight) :
@@ -23,13 +25,12 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	transformationSystem	{ ecs },
 	physicsManager			{ *this },
 	audioSystem				{ *this },
+	navigationSystem		{ *this }, 
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
-{
-	Serialiser::deserialiseScene(ecs);
-}
+{}
 
 Engine::~Engine() {
 	stopSimulation();
@@ -54,6 +55,8 @@ void Engine::update(float dt) {
 	cameraSystem.update(dt);
 	transformationSystem.update();
 	renderer.update(dt);
+
+	resourceManager.update();
 }
 
 void Engine::setupSimulation() {
@@ -66,13 +69,18 @@ void Engine::setupSimulation() {
 	setupSimulationFunction = std::nullopt;
 }
 
-void Engine::render(Renderer::RenderTarget target) {
+void Engine::render(RenderTarget target) {
 	ZoneScoped;
+
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(target, toDebugRenderPhysics);
+	renderer.render(toDebugRenderPhysics);
+
+	if (target == RenderTarget::DefaultFrameBuffer) {
+		renderer.renderToDefaultFBO();
+	}
 }
 
 void Engine::startSimulation() {
@@ -81,15 +89,17 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		if (!scriptingAPIManager.loadAllScripts())
+		//Serialiser::serialiseScene(ecs);
+
+		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+
+		if (!scriptingAPIManager.startSimulation())
 		{
 			stopSimulation();
 			return;
 		}
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();
-
-		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
@@ -104,12 +114,14 @@ void Engine::stopSimulation() {
 
 	setupSimulationFunction = [&]() {
 		physicsManager.clear();
-		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
 
-		Serialiser::serialiseScene(ecs);
+		Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
+		//Serialiser::serialiseEditorConfig("editorConfig.json");
+		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+
 		inSimulationMode = false;
 	};
 }

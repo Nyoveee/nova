@@ -16,13 +16,13 @@ class Window;
 
 class InputManager {
 public:
-	DLL_API InputManager();
+	ENGINE_DLL_API InputManager();
 
-	DLL_API ~InputManager()										= default;
-	DLL_API InputManager(InputManager const& other)				= delete;
-	DLL_API InputManager(InputManager&& other)					= delete;
-	DLL_API InputManager& operator=(InputManager const& other)	= delete;
-	DLL_API InputManager& operator=(InputManager&& other)		= delete;
+	ENGINE_DLL_API ~InputManager()										= default;
+	ENGINE_DLL_API InputManager(InputManager const& other)				= delete;
+	ENGINE_DLL_API InputManager(InputManager&& other)					= delete;
+	ENGINE_DLL_API InputManager& operator=(InputManager const& other)	= delete;
+	ENGINE_DLL_API InputManager& operator=(InputManager&& other)		= delete;
 
 public:
 	// Systems can call this member function to observe to a certain InputEvent, providing the input manager with a callback.
