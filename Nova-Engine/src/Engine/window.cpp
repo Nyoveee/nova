@@ -177,8 +177,8 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 			if (numOfFixedSteps >= maxNumOfSteps) {
 				break;
 			}
-		}
-
+		}	
+		if(numOfFixedSteps != 0) inputManager.update();
 		// executes a normal update
 		updateFunc(static_cast<float>(deltaTime));
 
@@ -195,7 +195,9 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 		}
 		{
 			ZoneScopedNC("glfwPollEvents", tracy::Color::AliceBlue);
+		
 			glfwPollEvents();
+
 		}
 		FrameMark;
 	}

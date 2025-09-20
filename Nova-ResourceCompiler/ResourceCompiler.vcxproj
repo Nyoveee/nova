@@ -74,7 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
     <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)\ExternalApplication\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)ExternalApplication\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>

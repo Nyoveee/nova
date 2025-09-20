@@ -20,15 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\API\IManagedStruct.h" />
-    <ClInclude Include="src\ScriptLibrary\Debug.h" />
-    <ClInclude Include="src\API\ScriptLibraryHandler.hxx" />
-    <ClInclude Include="src\ScriptLibrary\Input.hxx" />
+    <ClInclude Include="src\API\ConversionUtils.h" />
+    <ClInclude Include="src\ScriptLibrary\ManagedEnums.hxx" />
     <ClInclude Include="src\API\ScriptingAPI.hxx" />
     <ClInclude Include="src\API\ManagedTypeMacros.hxx" />
-    <ClInclude Include="src\ScriptLibrary\Time.hxx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\ScriptLibrary.hxx" />
     <ClInclude Include="src\API\IManagedComponent.hxx" />
     <ClInclude Include="src\ScriptLibrary\ManagedTypes.hxx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
@@ -54,15 +50,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ScriptLibrary\Debug.cpp" />
-    <ClCompile Include="src\API\ScriptLibraryHandler.cxx" />
-    <ClCompile Include="src\ScriptLibrary\Input.cxx" />
     <ClCompile Include="src\API\ScriptingAPI.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\ScriptLibrary\Script.cxx" />
-    <ClCompile Include="src\ScriptLibrary\Time.cxx" />
+    <ClCompile Include="src\Export\LibraryExport.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

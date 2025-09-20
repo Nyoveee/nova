@@ -1,6 +1,5 @@
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
-#include "ScriptLibraryHandler.hxx"
 #include "IManagedComponent.hxx"
 #include "IManagedStruct.h"
 #include "ResourceManager/resourceManager.h"
@@ -28,7 +27,6 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	// Get the reference to the engine
 	engine = &p_engine;
 	runtimePath = p_runtimePath;
-	ScriptLibraryHandler::init();
 	// Instantiate the containers
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
 	scriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
@@ -130,7 +128,6 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 }
 
 void Interface::update() {
-	ScriptLibraryHandler::update();
 	for each (System::UInt32 entityID in gameObjectScripts->Keys)
 		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
 			gameObjectScripts[entityID][scriptID]->callUpdate();

@@ -10,7 +10,7 @@
         if (transform != null)
         {
             Vector3 position = transform.position;
-            position.z += Time.fixedDeltaTime;
+            position.z += Time.V_FixedDeltaTime();
             transform.position = position;
         }
     }

@@ -13,12 +13,10 @@
     }
     protected override void update()
     {
-        //Debug.Print("hi");
-
         if(transform != null)
         {
             Vector3 position = transform.position;
-            position.z += moveSpeed * Time.fixedDeltaTime;
+            position.z += moveSpeed * Time.V_FixedDeltaTime();
             transform.position = position;
         }
     }

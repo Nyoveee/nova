@@ -5,20 +5,22 @@
 
 #include "InputManager/inputEvent.h"
 
-InputManager::InputManager() {
+InputManager::InputManager()
+	:mousePosition{} {
 	mainKeyBindMapping();
 }
 
 void InputManager::handleMouseMovement(Window& window, double xPosIn, double yPosIn) {
 	(void) window;
 
+	mousePosition = { xPosIn,yPosIn };
 	broadcast(MousePosition{ xPosIn, yPosIn }, InputType::Press);
 }
 
 void InputManager::handleScroll(Window& window, double xOffset, double yOffset) {
 	(void) window;
 	(void) xOffset;
-
+	scrollOffsetY = static_cast<float>(yOffset);
 	broadcast(AdjustCameraSpeed{ yOffset });
 }
 
@@ -44,5 +46,9 @@ void InputManager::handleKeyInput(GLFWInput input, InputType inputType) {
 	for (std::unique_ptr<IKeyBind> const& keyBind : mappedKeyBinds[input]) {
 		keyBind->broadcast(inputType);
 	}
+}
+void InputManager::update()
+{
+	scrollOffsetY = 0;
 }
 

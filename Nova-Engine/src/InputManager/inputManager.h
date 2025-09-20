@@ -25,6 +25,8 @@ public:
 	ENGINE_DLL_API InputManager& operator=(InputManager&& other)		= delete;
 
 public:
+	void update();
+public:
 	// Systems can call this member function to observe to a certain InputEvent, providing the input manager with a callback.
 	// Whenever this InputEvent happens, the callback is involved with the InputEvent's data.
 	template <typename InputEvent>
@@ -50,6 +52,9 @@ private:
 	void mapKeyBindInput(int key, KeyType type, InputEvent data);
 
 	void mainKeyBindMapping();
+public:
+	glm::vec2 mousePosition;
+	float scrollOffsetY;
 private:
 	// observers maps Input Event to all interested observers.
 	// mappedKeyBinds maps GLFW KEY macros to a keybind containing Input Event and it's corresponding data
