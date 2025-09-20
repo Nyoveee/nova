@@ -56,7 +56,8 @@ ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
 	ecs				{ editor.engine.ecs },
 	resourceManager { editor.engine.resourceManager },
-	assetManager	{ editor.assetManager }
+	assetManager	{ editor.assetManager },
+	audioSystem		{ editor.engine.audioSystem }
 {}
 
 void ComponentInspector::update() {

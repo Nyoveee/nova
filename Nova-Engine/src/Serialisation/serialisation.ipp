@@ -184,7 +184,12 @@ namespace Serialiser {
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
 
 				}
+
 				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
+
+				}
+				
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, AudioData>>) {
 
 				}
 
@@ -345,7 +350,12 @@ namespace Serialiser {
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
 
 				}
+				
 				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
+
+				}
+
+				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, AudioData>>) {
 
 				}
 

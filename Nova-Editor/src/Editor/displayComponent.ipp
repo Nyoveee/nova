@@ -1,5 +1,8 @@
 #include "reflection.h"
 #include "ResourceManager/resourceManager.h"
+#include "AssetManager/assetManager.h"
+#include "Audio/audioSystem.h"
+#include "Engine/engine.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
@@ -20,6 +23,9 @@ namespace {
 		(void) entity;
 
 		ResourceManager& resourceManager = componentInspector.resourceManager;
+		AssetManager& assetManager		 = componentInspector.assetManager;
+		AudioSystem& audioSystem		 = componentInspector.audioSystem;
+		
 		(void) resourceManager;
 
 		if constexpr (!reflection::isReflectable<Component>()) {
@@ -272,44 +278,53 @@ namespace {
 						ImGui::Text("%s: %u", dataMemberName, dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
-						std::vector<AudioData>& audioDatas{ dataMember };
+
+					if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>)
+					{
+						auto& audioDatas = dataMember;
 
 						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId) {
-							audioDatas.push_back(AudioData{ resourceId });
+							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
+							assert(audioAsset);
+
+							// Store full AudioData directly in the component
+							audioDatas.emplace(assetManager.getName(resourceId).c_str(), AudioData{ resourceId, 1.0f, false });
 						});
 
 						// List of Audio Files
 						int i{};
-
 						ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
 
-						std::vector<AudioData>::iterator it = std::remove_if(std::begin(audioDatas), std::end(audioDatas), [&](AudioData& audioData) {
+						for (auto it = audioDatas.begin(); it != audioDatas.end();) {
 							ImGui::PushID(i++);
-							bool keepAudioFile = true;
 
+							bool keepAudioFile = true;
+							
+							AudioData& audioData = it->second;
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
 							assert(audioAsset);
 
-							if (ImGui::CollapsingHeader(audioAsset->getFilePath().string.c_str(), &keepAudioFile)) {
+							if (ImGui::CollapsingHeader(assetManager.getName(audioData.AudioId).c_str(), &keepAudioFile)) {
 								// Able to see and adjust Volume in Editor
 								if (ImGui::DragFloat( "Volume", & audioData.Volume, 1.0f, 0.0f, 1.0f)) {
 									// Update Playback Volume
 								}
-								// Adjust Mute/Unmute in Editor
-								if (ImGui::Checkbox("MuteAudio", &audioData.MuteAudio)) {
-									// Update Playback Mute/UnMute
+								// Stop Audio from playing inside Editor
+								if (ImGui::Button("Stop Audio")) {
+									audioSystem.StopAudio(audioData.AudioId);
 								}
 							}
-
 							ImGui::PopID();
-							return !keepAudioFile;
-						});
+							
+							if (!keepAudioFile) {
+								it = audioDatas.erase(it);
+							}
+							else {
+								++it;
+							}
+						}
 
 						ImGui::EndChild();
-
-						if(it != std::end(audioDatas))
-							audioDatas.erase(it);
 					}
 
 
