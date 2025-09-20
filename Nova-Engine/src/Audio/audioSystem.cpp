@@ -67,9 +67,11 @@ AudioSystem::AudioSystem(Engine& engine) :
 		Logger::error("Failed to initialise fmod system. {}", FMOD_ErrorString(result));
 		return;
 	}
+	loadAllSounds();
 }
 
 AudioSystem::~AudioSystem() {
+	unloadAllSounds();
 	if (fmodSystem) {
 		fmodSystem->close();
 		fmodSystem->release();

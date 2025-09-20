@@ -99,7 +99,9 @@ void Engine::startSimulation() {
 			return;
 		}
 		physicsManager.initialise();
-		audioSystem.loadAllSounds();
+
+		audioSystem.StopAllAudio();
+		//audioSystem.loadAllSounds();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
@@ -114,8 +116,10 @@ void Engine::stopSimulation() {
 
 	setupSimulationFunction = [&]() {
 		physicsManager.clear();
-		audioSystem.unloadAllSounds();
 
+		audioSystem.StopAllAudio();
+		//audioSystem.unloadAllSounds();
+		
 		Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
 		Serialiser::serialiseScene(ecs, "test.json");
