@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+#include <unordered_map>
 #include <entt/entt.hpp>
+
 #include <memory>
 
 #include "type_alias.h"
@@ -8,6 +11,15 @@
 //Foward Declare
 class Engine;
 class ResourceManager;
+
+
+//struct dtNavMeshDeleter {
+//	void operator()(dtNavMesh* ptr) const noexcept {
+//		if (ptr) dtFreeNavMesh(ptr);
+//	}
+//};
+
+
 
 class NavigationSystem
 {

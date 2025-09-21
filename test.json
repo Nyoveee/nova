@@ -1,40 +1,38 @@
 {
     "entities": [
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
-                "name": "Floor",
+                "name": "Light",
                 "parent": 4294967295
+            },
+            "Light": {
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 1.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "PointLight"
             },
             "MeshRenderer": {
                 "materials": [
                     {
                         "albedo": {
                             "color": {
-                                "b": 0.10000000149011612,
-                                "g": 0.10000000149011612,
-                                "r": 0.10000000149011612
+                                "b": 1.0,
+                                "g": 1.0,
+                                "r": 1.0
                             }
                         },
                         "ambient": 0.10000000149011612,
                         "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "BlinnPhong"
+                        "renderingPipeline": "Color"
                     }
                 ],
-                "modelId": 17548540204026789909
-            },
-            "Rigidbody": {
-                "layer": "NonMoving",
-                "motionType": "Static"
+                "modelId": 12932563721038612588
             },
             "Transform": {
                 "eulerAngles": {
@@ -64,9 +62,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 18.96267318725586,
-                    "y": -2.0,
-                    "z": 2.950972557067871
+                    "x": 0.0,
+                    "y": 2.0,
+                    "z": 5.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -75,118 +73,24 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 10.0,
-                    "y": 1.0,
-                    "z": 10.0
-                }
-            },
-            "id": 2
-        },
-        {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Floor",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.10000000149011612,
-                                "g": 0.10000000149011612,
-                                "r": 0.10000000149011612
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "BlinnPhong"
-                    }
-                ],
-                "modelId": 17548540204026789909
-            },
-            "Rigidbody": {
-                "layer": "NonMoving",
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 7.130948066711426,
-                    "y": -2.0,
-                    "z": -9.152985572814941
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 10.0,
-                    "y": 1.0,
-                    "z": 10.0
+                    "x": 0.20000000298023224,
+                    "y": 0.20000000298023224,
+                    "z": 0.20000000298023224
                 }
             },
             "id": 1
         },
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
-                "name": "Floor",
+                "name": "Entity 1",
                 "parent": 4294967295
             },
             "MeshRenderer": {
                 "materials": [
                     {
                         "albedo": {
-                            "color": {
-                                "b": 0.10000000149011612,
-                                "g": 0.10000000149011612,
-                                "r": 0.10000000149011612
-                            }
+                            "texture": 10054550424082317355
                         },
                         "ambient": 0.10000000149011612,
                         "materialName": "Material",
@@ -195,10 +99,6 @@
                     }
                 ],
                 "modelId": 17548540204026789909
-            },
-            "Rigidbody": {
-                "layer": "NonMoving",
-                "motionType": "Static"
             },
             "Transform": {
                 "eulerAngles": {
@@ -228,9 +128,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 18.73989486694336,
-                    "y": -3.2798664569854736,
-                    "z": 5.845970153808594
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -239,9 +139,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 10.0,
+                    "x": 5.333061695098877,
                     "y": 1.0,
-                    "z": 10.0
+                    "z": 11.075624465942383
                 }
             },
             "id": 0

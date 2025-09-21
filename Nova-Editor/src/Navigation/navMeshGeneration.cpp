@@ -8,6 +8,7 @@
 #include "Detour/Detour/DetourNavMesh.h"
 #include "Detour/Detour/DetourNavMeshBuilder.h"
 #include "Detour/Detour/DetourAlloc.h"
+#include "Navigation/Navigation.h"
 #include <vector>
 #include <array>
 #include <limits>

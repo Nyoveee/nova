@@ -9,6 +9,7 @@ class Editor;
 class ResourceManager;
 class dtNavMesh;
 class dtNavMeshQuery;
+class NavigationSystem;
 
 enum SamplePolyAreas
 {
