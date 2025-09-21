@@ -8,14 +8,13 @@
 #include "ResourceManager/resourceManager.h"
 #include "Engine/engine.h"
 
-AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine, std::filesystem::path rootDirectory) :
+AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine) :
 	assetManager	{ assetManager },
 	resourceManager	{ resourceManager },
 	engine			{ engine },
-	rootDirectory	{ rootDirectory },
 
 	watch			{
-						rootDirectory.wstring(),
+						AssetIO::assetDirectory.wstring(),
 						[&](const std::wstring& path, const filewatch::Event change_type) {
 							HandleFileChangeCallback(path, change_type);
 						}
@@ -44,7 +43,8 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	if (engineIsDestructing)
 		return;
 
-	std::filesystem::path absPath{ rootDirectory.string() + "\\" + std::filesystem::path(path).string()};
+#if 1
+	std::filesystem::path absPath{ AssetIO::assetDirectory / std::filesystem::path(path) };
 
 	if (IsPathHidden(absPath))
 		return;
@@ -60,9 +60,9 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	}
 
 	// Attempts to finds the appropriate asset id.
-	ResourceID resourceId = resourceManager.getResourceID(absPath);
+	ResourceID resourceId = assetManager.getDescriptor(absPath).descriptor.id;;
 
-	if (resourceId == INVALID_ASSET_ID)
+	if (resourceId == INVALID_RESOURCE_ID)
 		return;
 
 	if (change_type != filewatch::Event::removed) {
@@ -84,6 +84,7 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 			engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
 		});
 	}
+#endif
 }
 
 bool AssetDirectoryWatcher::IsPathHidden(std::filesystem::path const& path) const

@@ -1,4 +1,6 @@
 #include "Engine/ScriptingAPIManager.h"
+#include "Engine/window.h"
+#include "Engine/engine.h"
 
 #include <glad/glad.h>
 
@@ -10,18 +12,16 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "Audio/audioSystem.h"
-#include "Engine/window.h"
-#include "Component/ECS.h"
-#include "Engine/engine.h"
+#include "AssetManager/assetManager.h"
+#include "ECS/ECS.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
-#include "AssetManager/assetManager.h"
 
 #include "editor.h"
 #include "themes.h"
 #include "model.h"
 
-#include "Component/component.h"
+#include "ECS/component.h"
 
 #include <GLFW/glfw3.h>
 #include <ranges>
@@ -40,9 +40,11 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
-	assetManagerUi					{ *this },
-	hierarchyList					{ *this },
-	debugUi							{ *this },
+	assetManagerUi					{ *this },	
+	//hierarchyList					{ *this },
+	navMeshGenerator				{ *this },
+	//debugUi						{ *this },
+	navBar							{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false },
@@ -110,6 +112,25 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			// @TODO: Confirmation prompt LMAOO
 			for (entt::entity entity : selectedEntities) {
 				deleteEntity(entity);
+			}
+		}
+	);
+
+	inputManager.subscribe<CopyEntity>(
+		[&](CopyEntity) {
+			if (selectedEntities.size()) {
+				for (entt::entity entity : selectedEntities) {
+					copiedEntityVec.push_back(entity);
+				}
+			}
+		}
+	);
+
+	inputManager.subscribe<PasteEntity>(
+		[&](PasteEntity) {
+			if (!copiedEntityVec.empty()) {
+				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
+				copiedEntityVec.clear();
 			}
 		}
 	);
@@ -183,14 +204,17 @@ void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
 	gameViewPort.update();
-	componentInspector.update();
+	//componentInspector.update();
 	assetManagerUi.update();
-	hierarchyList.update();
-	debugUi.update();
+	//hierarchyList.update();
+	//debugUi.update();
+	//console.update();
+	navBar.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();
 	sandboxWindow();
+	navigationWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -351,17 +375,23 @@ void Editor::sandboxWindow() {
 
 	if (ImGui::Button("SFX Audio Test"))
 	{
-		engine.audioSystem.playSFX(ResourceID{ 16443787899298411226 }, 0.0f, 0.0f, 0.0f);
+		engine.audioSystem.playSFX( engine.audioSystem.getResourceId("SFX_AudioTest1"), 0.0f, 0.0f, 0.0f);
 	}
 
 	if (ImGui::Button("BGM Audio Test"))
 	{
-		engine.audioSystem.playBGM(ResourceID{ 11241155678047256416 });
+		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest") );
 	}
 
 	if (ImGui::Button("BGM Audio Test 2"))
 	{
-		engine.audioSystem.playBGM(ResourceID{ 11186877718248447534 });
+		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest2") );	
+	}
+
+	if (ImGui::Button("Stop Audio Test"))
+	{
+		// Stops all audio channels that has the same string ID as "SFX_AudioTest1"
+		engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
 	}
 
 	entt::registry& registry = engine.ecs.registry;
@@ -453,11 +483,25 @@ void Editor::sandboxWindow() {
 		registry.emplace<SkyBox>(entity, SkyBox{ ResourceID{ 12369249828857649982 } });
 	}
 
+
+
 	if (ImGui::Button("recompile shaders")) {
 		engine.renderer.recompileShaders();
 	}
 
 	ImGui::End();
+}
+
+//Ooga Booga window will cause me more trouble later
+void Editor::navigationWindow()
+{
+	ImGui::Begin("Navigation");
+
+
+
+
+	ImGui::End();
+
 }
 
 void Editor::launchProfiler()

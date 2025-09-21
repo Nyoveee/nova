@@ -10,6 +10,9 @@
 #include "_vectorize.hpp"
 #include <limits>
 
+#undef min
+#undef max
+
 namespace glm
 {
 	// min

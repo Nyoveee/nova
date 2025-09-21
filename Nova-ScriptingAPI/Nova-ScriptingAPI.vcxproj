@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\API\IManagedStruct.h" />
     <ClInclude Include="src\ScriptLibrary\Debug.h" />
     <ClInclude Include="src\API\ScriptLibraryHandler.hxx" />
     <ClInclude Include="src\ScriptLibrary\Input.hxx" />
@@ -50,9 +51,6 @@
     </ProjectReference>
     <ProjectReference Include="..\Nova-Framework\Nova-Framework.vcxproj">
       <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Nova-Resource\Resource.vcxproj">
-      <Project>{380aadcf-1df3-403d-8190-404b143deab0}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -125,12 +123,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Imported;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src</IncludePath>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Nova-Engine\src\Export;$(SolutionDir)Nova-Engine\src\Libraries</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Imported;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(SolutionDir)Nova-ScriptingAPI\src;$(SolutionDir)Nova-Engine\src</IncludePath>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

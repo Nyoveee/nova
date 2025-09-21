@@ -7,16 +7,29 @@
 #include "export.h"
 #include "type_alias.h"
 
+#include <entt/entt.hpp>
+#include <dotnet/coreclrhost.h>
+
 #include <Windows.h>
 #include <sstream>
 #include <iomanip>
 #include <vector>
 #include <string>
-#include <dotnet/coreclrhost.h>
 #include <unordered_map>
+#include <variant>
 
+// Field Information
+#ifndef ALL_FIELD_PRIMITIVES
+	#define ALL_FIELD_PRIMITIVES \
+		bool, int, float, double
+#endif
+#ifndef ALL_FIELD_TYPES
+	#define ALL_FIELD_TYPES \
+		glm::vec2, glm::vec3, entt::entity, \
+		ALL_FIELD_PRIMITIVES
+#endif
 
-class Engine; // Don't need to call any function or variables, just pass in
+using FieldData = std::pair<std::string, std::variant<ALL_FIELD_TYPES>>;
 
 // More readable function pointer syntax because C lmaoo
 using UpdateFunctionPtr				= void (*)(void);
@@ -25,6 +38,10 @@ using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
 using LoadScriptsFunctionPtr		= void (*)(void);
 using UnloadScriptsFunctionPtr		= void (*)(void);
 using IntializeScriptsFunctionPtr	= void (*)(void);
+using GetScriptFieldsFunctionPtr    = std::vector<FieldData>(*)(unsigned int, unsigned long long);
+using SetScriptFieldFunctionPtr		= void(*)(unsigned int, unsigned long long, FieldData const& fieldData);;
+
+class Engine;
 
 class ScriptingAPIManager {
 public:
@@ -36,29 +53,42 @@ public:
 
 public:
 	// Functions needed to run the ScriptingAPI
-	DLL_API ScriptingAPIManager(Engine& p_engine);
+	ENGINE_DLL_API ScriptingAPIManager(Engine& p_engine);
 
-	DLL_API ~ScriptingAPIManager();
-	DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
-	DLL_API ScriptingAPIManager(ScriptingAPIManager&& other)					= delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other)	= delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
+	ENGINE_DLL_API ~ScriptingAPIManager();
+	ENGINE_DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
+	ENGINE_DLL_API ScriptingAPIManager(ScriptingAPIManager&& other)					= delete;
+	ENGINE_DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other)	= delete;
+	ENGINE_DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
 
 public:
-	DLL_API void update();
-	DLL_API void checkModifiedScripts(float dt);
+	ENGINE_DLL_API bool compileScriptAssembly();
+	ENGINE_DLL_API void loadSceneScriptsToAPI();
 
-	DLL_API bool loadAllScripts();
-	DLL_API void unloadAllScripts();
+	// Editor function
+	ENGINE_DLL_API void loadEntityScript(unsigned int entityID, unsigned long long scriptID);
+	ENGINE_DLL_API void removeEntityScript(unsigned int entityID, unsigned long long scriptID);
+	ENGINE_DLL_API bool isNotCompiled();
+
+	// Simulation
+	ENGINE_DLL_API bool startSimulation();
+
+	// Update
+	ENGINE_DLL_API void update();
+	ENGINE_DLL_API void checkModifiedScripts(float dt);
+
+	// Serializable Field Reference
+	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(unsigned int entityID, unsigned long long scriptID);
+	ENGINE_DLL_API void setScriptFieldData(unsigned int entityID, unsigned long long scriptID, FieldData const& fieldData);
 
 	// This is the callback when the assets files are Added
-	DLL_API void OnAssetContentAddedCallback(std::string abspath);
+	ENGINE_DLL_API void OnAssetContentAddedCallback(std::string abspath);
 
 	// This is the callback when the assets files are Modified
-	DLL_API void OnAssetContentModifiedCallback(ResourceID assetTypeID);
+	ENGINE_DLL_API void OnAssetContentModifiedCallback(ResourceID assetTypeID);
 
 	// This is the callback when the assets files are deleted
-	DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
+	ENGINE_DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
 
 private:
 	template<typename Func>
@@ -70,7 +100,7 @@ private:
 
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
-	bool compileScriptAssembly();
+
 
 private:
 	Engine& engine;
@@ -93,6 +123,8 @@ private:
 	LoadScriptsFunctionPtr loadAssembly;
 	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;
+	GetScriptFieldsFunctionPtr getScriptFieldDatas_;
+	SetScriptFieldFunctionPtr setScriptFieldData_;
 private:
 	CompileState compileState;
 	float timeSinceSave;

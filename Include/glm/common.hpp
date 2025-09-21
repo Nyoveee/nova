@@ -17,6 +17,9 @@
 #include "detail/qualifier.hpp"
 #include "detail/_fixes.hpp"
 
+#undef min
+#undef max
+
 namespace glm
 {
 	/// @addtogroup core_func_common

@@ -4,6 +4,7 @@
 #include <entt/entt.hpp>
 #include <vector>
 #include <string>
+#include "Engine/engine.h"
 
 class Engine;
 class ECS;
@@ -15,28 +16,37 @@ public ref class Interface
 public:
 	using ScriptID = System::UInt64;
 	using EntityID = System::UInt32;
-
-// This is set to internal so c# scripts cannot access
 internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
-	static void load();
-	static void unload();
+	static void loadAssembly();
+	static void unloadAssembly();
 	static void update();
 
 	static void addGameObjectScript(EntityID entityID, ScriptID scriptId);
 	static void removeGameObjectScript(EntityID entityID, ScriptID scriptId);
-	static void intializeAllScripts();
 
+	static void intializeAllScripts();
+internal:
+	// Script Fields
+	static std::vector<FieldData> getScriptFieldDatas(EntityID entityID, ScriptID scriptID);
+	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
 	generic<typename T> where T : Script
 	static T tryGetScriptReference(System::UInt32 entityID);
+	// Setting/Getting of primitive data for fields through fielddata
+	template<typename Type, typename ...Types>
+	static bool ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ object);
+	template<typename Type, typename ...Types>
+	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+private:
+	static void clearAllScripts();
 internal:
 	static Engine* engine;
 
 private:
-	using Scripts = System::Collections::Generic::List<Script^>;
+	using Scripts = System::Collections::Generic::Dictionary<ScriptID, Script^>;
 	using Components = System::Collections::Generic::List<IManagedComponent^>;
 
 	// Stores all of the loaded scripts of a given game object.

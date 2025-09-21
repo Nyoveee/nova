@@ -41,7 +41,7 @@ private:
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;
 
-	void handleThumbnailDoubleClick(Asset& resource);
+	void handleThumbnailDoubleClick(ResourceID resourceId);
 
 private:
 	AssetManager& assetManager;
@@ -55,5 +55,5 @@ private:
 private:
 	float columnWidth = 100.f;
 
-	Texture folderIcon;
+	//Texture folderIcon;
 };

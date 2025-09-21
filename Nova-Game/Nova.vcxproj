@@ -72,13 +72,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Assets;$(ProjectDir)src;$(SolutionDir)Nova-Engine\src;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Logger\src;$(SolutionDir)Nova-Resource\src;$(ProjectDir)src;..\Nova-Engine\src;..\Nova-Engine\src\Export;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Assets;$(ProjectDir)src;$(SolutionDir)Nova-Engine\src;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
@@ -166,9 +166,6 @@
     </ProjectReference>
     <ProjectReference Include="..\Nova-Framework\Nova-Framework.vcxproj">
       <Project>{532e8b6e-ff92-43e1-acd6-31c0eab9cccb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Nova-Resource\Resource.vcxproj">
-      <Project>{380aadcf-1df3-403d-8190-404b143deab0}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

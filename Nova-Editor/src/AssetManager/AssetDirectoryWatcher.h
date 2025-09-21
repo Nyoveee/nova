@@ -9,7 +9,7 @@
 #include <mutex>
 
 // variable is defined in Window class.
-DLL_API extern std::atomic<bool> engineIsDestructing;
+ENGINE_DLL_API extern std::atomic<bool> engineIsDestructing;
 
 class AssetManager;
 class ResourceManager;
@@ -18,7 +18,7 @@ class Engine;
 class AssetDirectoryWatcher
 {
 public:
-	AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine, std::filesystem::path rootDirectory);
+	AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine);
 	
 	~AssetDirectoryWatcher() = default;
 	AssetDirectoryWatcher(AssetDirectoryWatcher const&)				= delete;
@@ -27,13 +27,8 @@ public:
 	AssetDirectoryWatcher& operator=(AssetDirectoryWatcher&&)		= delete;
 
 public:
-#if 0
-	void RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback);
-	void RegisterCallbackAssetContentModified(std::function<void(ResourceID)> callback);
-	void RegisterCallbackAssetContentDeleted(std::function<void(ResourceID)> callback);
-#endif
-
 	bool IsPathHidden(std::filesystem::path const& path) const;
+
 private:
 	void HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type);
 
@@ -42,7 +37,6 @@ private:
 	ResourceManager& resourceManager;
 	Engine& engine;
 
-	std::filesystem::path rootDirectory;
 	filewatch::FileWatch<std::wstring> watch;
 
 	//std::unordered_map<std::string, AssetTypeID> extensionToAssetType;

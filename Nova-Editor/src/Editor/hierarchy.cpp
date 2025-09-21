@@ -3,10 +3,10 @@
 
 #include "hierarchy.h"
 #include "imgui.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
 
 #include "IconsFontAwesome6.h"
-#include "Component/component.h"
+#include "ECS/component.h"
 
 #include <ranges>
 
