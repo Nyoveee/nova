@@ -1,3 +1,86 @@
 {
-    "entities": []
+    "entities": [
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Floor",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000000149011612,
+                                "g": 0.10000000149011612,
+                                "r": 0.10000000149011612
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "BlinnPhong"
+                    }
+                ],
+                "modelId": 17548540204026789909
+            },
+            "Rigidbody": {
+                "layer": "NonMoving",
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": -2.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                }
+            },
+            "id": 0
+        }
+    ]
 }

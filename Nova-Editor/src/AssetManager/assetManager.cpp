@@ -149,7 +149,7 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 		return createResourceFile<T>(assetInfo);
 	};
 
-	if (fileExtension == ".fbx") {
+	if (fileExtension == ".fbx" || fileExtension == ".obj") {
 		return initialiseResourceFile.template operator()<Model>();
 	}
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
@@ -166,6 +166,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".scene") {
 		return initialiseResourceFile.template operator()<Scene>();
+	}
+	else if (fileExtension == ".navmesh") {
+		return initialiseResourceFile.template operator()<NavMesh>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);

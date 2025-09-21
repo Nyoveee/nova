@@ -19,7 +19,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 	DescriptorSubDirectory(CubeMap),
 	DescriptorSubDirectory(ScriptAsset),
 	DescriptorSubDirectory(Audio),
-	DescriptorSubDirectory(Scene)
+	DescriptorSubDirectory(Scene),
+	DescriptorSubDirectory(NavMesh)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subResourceDirectories{
@@ -28,7 +29,9 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(CubeMap),
 	ResourceSubDirectory(ScriptAsset),
 	ResourceSubDirectory(Audio),
-	ResourceSubDirectory(Scene)
+	ResourceSubDirectory(Scene),
+	ResourceSubDirectory(NavMesh)
+
 };
 
 std::filesystem::path const AssetIO::assetDirectory = std::filesystem::current_path() / "Assets";

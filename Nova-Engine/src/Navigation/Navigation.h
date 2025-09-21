@@ -3,9 +3,6 @@
 #include <entt/entt.hpp>
 #include <memory>
 
-//Recast Includes
-#include "../../../Nova-Editor/src/Editor/Recast/Recast.h"
-
 //Foward Declare
 class Engine;
 class ResourceManager;
@@ -17,10 +14,10 @@ public:
 	NavigationSystem(Engine& engine);
 
 	~NavigationSystem();
-	NavigationSystem(NavigationSystem const& other) = delete;
-	NavigationSystem(NavigationSystem && other) = delete;
-	NavigationSystem& operator=(NavigationSystem const& other) = delete;
-	NavigationSystem& operator=(NavigationSystem&& other) = delete;
+	NavigationSystem(NavigationSystem const& other)				= delete;
+	NavigationSystem(NavigationSystem && other)					= delete;
+	NavigationSystem& operator=(NavigationSystem const& other)	= delete;
+	NavigationSystem& operator=(NavigationSystem&& other)		= delete;
 
 
 private:

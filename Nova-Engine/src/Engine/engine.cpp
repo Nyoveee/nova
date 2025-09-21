@@ -76,7 +76,7 @@ void Engine::render(RenderTarget target) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(toDebugRenderPhysics);
+	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh);
 
 	if (target == RenderTarget::DefaultFrameBuffer) {
 		renderer.renderToDefaultFBO();

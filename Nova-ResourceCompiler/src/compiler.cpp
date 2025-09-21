@@ -207,6 +207,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	else if (resourceType == "Scene") {
 		return Compiler::compileAsset<Scene>(descriptorFilepath);
 	}
+	else if (resourceType == "NavMesh") {
+		return Compiler::compileAsset<NavMesh>(descriptorFilepath);
+	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);
 		return -1;

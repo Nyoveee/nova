@@ -39,5 +39,7 @@ void DebugUI::update() {
 
 	ImGui::Checkbox("Physics debug render", &engine.toDebugRenderPhysics);
 
+	ImGui::Checkbox("NavMesh debug render", &engine.toDebugRenderNavMesh);
+
 	ImGui::End();
 }
