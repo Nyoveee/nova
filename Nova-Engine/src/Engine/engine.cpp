@@ -72,6 +72,7 @@ void Engine::setupSimulation() {
 void Engine::render(RenderTarget target) {
 	ZoneScoped;
 
+
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}

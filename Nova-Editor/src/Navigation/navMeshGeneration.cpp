@@ -18,8 +18,7 @@
 NavMeshGeneration::NavMeshGeneration(Editor& editor) :
 	ecs				{ editor.engine.ecs },
 	editor			{ editor },
-	resourceManager	{ editor.resourceManager },
-	m_navMesh		{ nullptr }
+	resourceManager	{ editor.resourceManager }
 {
 	buildSettings.agentName				= "Humanoid";
 	buildSettings.cellSize				= 0.3f;
@@ -39,17 +38,14 @@ NavMeshGeneration::NavMeshGeneration(Editor& editor) :
 }
 
 NavMeshGeneration::~NavMeshGeneration()
-{
-	CleanUp();
-}
+{}
 
 BuildSettings& NavMeshGeneration::GetBuildSettings()
 {
 	return buildSettings;
 }
 
-void NavMeshGeneration::BuildNavMesh() {
-	CleanUp();
+void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	// =====================================================
 	// Variable initialisation..
 	// =====================================================
@@ -389,7 +385,8 @@ void NavMeshGeneration::BuildNavMesh() {
 	rcFreePolyMesh(m_pmesh);
 	rcFreePolyMeshDetail(m_dmesh);
 
-	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / "hi.navmesh";
+	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / filename;
+	temporaryMeshFilePath.replace_extension(".navmesh");
 	std::ofstream navMeshFile{ temporaryMeshFilePath, std::ios::binary };
 
 	if (!navMeshFile) {
@@ -399,15 +396,6 @@ void NavMeshGeneration::BuildNavMesh() {
 
 	navMeshFile.write(reinterpret_cast<char *>(navData), navDataSize);
 	dtFree(navData);
-}
-
-dtNavMesh const* NavMeshGeneration::getNavMesh() const {
-	return m_navMesh;
-}
-
-void NavMeshGeneration::CleanUp() {
-	dtFreeNavMesh(m_navMesh);
-	m_navMesh = nullptr;
 }
 
 void NavMeshGeneration::ResetBuildSetting()

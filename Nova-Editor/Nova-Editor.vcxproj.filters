@@ -141,7 +141,7 @@
     <ClCompile Include="src\Editor\assetViewerUi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Navigation\navigationDebugDraw.cpp">
+    <ClCompile Include="src\Editor\navigationWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -278,7 +278,10 @@
     <ClInclude Include="src\Editor\assetViewerUi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Navigation\navigationDebugDraw.h">
+    <ClInclude Include="src\Editor\navigationWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\editor.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

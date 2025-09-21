@@ -221,7 +221,7 @@ namespace {
 						// dataMember is of type TypedAssetID<T>
 						using OriginalAssetType = DataMemberType::AssetType;
 
-						componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
+						componentInspector.editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 							dataMember = DataMemberType{ resourceId };
 						});
 					}
@@ -286,7 +286,7 @@ namespace {
 						auto& audioDatas = dataMember;
 
 						// Add Audio
-						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
+						componentInspector.editor.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
 						{
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
 							assert(audioAsset);

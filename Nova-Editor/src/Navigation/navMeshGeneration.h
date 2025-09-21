@@ -78,13 +78,7 @@ public:
 
 	BuildSettings& GetBuildSettings();
 	void ResetBuildSetting();
-	void BuildNavMesh();
-
-	dtNavMesh const* getNavMesh() const;
-
-private:
-	//helper functions to free objects
-	void CleanUp();
+	void BuildNavMesh(std::string const& filename);
 
 private:
 	ECS& ecs;
@@ -93,9 +87,6 @@ private:
 
 private:
 	BuildSettings buildSettings;
-
-	//NavMesh Objects
-	dtNavMesh* m_navMesh;
 };
 
 

@@ -45,9 +45,8 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	componentInspector				{ *this },
 	assetViewerUi					{ assetManager, resourceManager },
 	assetManagerUi					{ *this, assetViewerUi },
-	//hierarchyList					{ *this },
 	navMeshGenerator				{ *this },
-	//debugUi						{ *this },
+	navigationWindow				{ *this, engine.navigationSystem, navMeshGenerator },
 	navBar							{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
@@ -164,10 +163,11 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 	if (engine.toDebugRenderNavMesh) {
-		auto const* navMesh = navMeshGenerator.getNavMesh();
+		ResourceID navMeshId = engine.navigationSystem.getNavMeshId();
+		auto&& [navMesh, _] = resourceManager.getResource<NavMesh>(navMeshId);
 
-		if (navMesh) {
-			engine.renderer.renderNavMesh(*navMesh);
+		if (navMesh && navMesh->navMesh) {
+			engine.renderer.renderNavMesh(*navMesh->navMesh);
 		}
 	}
 }
@@ -220,11 +220,11 @@ void Editor::main() {
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
+	navigationWindow.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();
 	sandboxWindow();
-	navigationWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -500,73 +500,6 @@ void Editor::sandboxWindow() {
 	}
 
 	ImGui::End();
-}
-
-//Ooga Booga window will cause me more trouble later
-void Editor::navigationWindow()
-{
-
-	BuildSettings& buildSettings = navMeshGenerator.GetBuildSettings();
-
-	ImGui::Begin("Navigation");
-
-	//One block of nice GUI  = 6 lines GG
-	ImGui::Dummy(ImVec2(10.0f, 0.0f));  // 10px horizontal padding
-	ImGui::SameLine();
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Agent Name:");
-	ImGui::SameLine();
-	ImGui::InputText("##Agent Name:", &buildSettings.agentName);
-
-
-	//--
-	ImGui::Dummy(ImVec2(10.0f, 0.0f)); 
-	ImGui::SameLine();
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Agent Radius:");
-	ImGui::SameLine();
-	ImGui::InputFloat("##Agent Radius", &buildSettings.agentRadius, 0.0f, 0.0f, "%.2f");
-
-	//---
-	ImGui::Dummy(ImVec2(10.0f, 0.0f));  
-	ImGui::SameLine();
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Agent Height:");
-	ImGui::SameLine();
-	ImGui::InputFloat("##Agent Height", &buildSettings.agentHeight, 0.0f, 0.0f, "%.2f");
-
-	//--
-	ImGui::Dummy(ImVec2(10.0f, 0.0f));  
-	ImGui::SameLine();
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Agent Max Climb:");
-	ImGui::SameLine();
-	ImGui::InputFloat("##Agent Max Climb:", &buildSettings.agentMaxClimb, 0.0f, 0.0f, "%.2f");
-
-
-	//--
-	ImGui::Dummy(ImVec2(10.0f, 0.0f));  
-	ImGui::SameLine();
-	ImGui::AlignTextToFramePadding();
-	ImGui::Text("Agent Max Slope:");
-	ImGui::SameLine();
-	ImGui::SliderFloat("##Agent Max Slope:", &buildSettings.agentMaxSlope, 0.0f, 89.9f, "%.2f");
-
-
-	//-- imgui buttons Reset and Set for now
-	ImGui::Dummy(ImVec2(00.0f, 20.0f));
-
-	float windowWidth = ImGui::GetWindowContentRegionMax().x;
-	ImGui::SetCursorPosX(windowWidth - 220.0f);
-	if (ImGui::Button("Reset", ImVec2(100, 40))) { navMeshGenerator.ResetBuildSetting(); };
-	ImGui::SameLine();
-	if (ImGui::Button("Bake", ImVec2(100, 40))) { navMeshGenerator.BuildNavMesh(); };
-
-	//TO DO --- WORK ON DROP OFF AND JUMP HEIGHT IN M2
-
-
-	ImGui::End();
-
 }
 
 void Editor::launchProfiler()

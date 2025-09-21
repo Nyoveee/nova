@@ -61,8 +61,6 @@ ComponentInspector::ComponentInspector(Editor& editor) :
 {}
 
 void ComponentInspector::update() {
-	imguiCounter = 0;
-
 	ImGui::Begin(ICON_FA_WRENCH " Component Inspector");
 
 	// Begin displaying entity meta data..
@@ -110,8 +108,6 @@ void ComponentInspector::update() {
 
 void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback)
 {
-	ImGui::PushID(imguiCounter);
-	++imguiCounter;
 	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
 	if (ImGui::BeginCombo("Add new script", "##")) {
 		for (auto&& scriptID : allScripts) {

@@ -13,7 +13,7 @@ public:
 	FRAMEWORK_DLL_API NavMesh& operator=(NavMesh const& other) = delete;
 	FRAMEWORK_DLL_API NavMesh& operator=(NavMesh&& other) noexcept;
 
-private:
+public:
 	unsigned char* navData;
 	dtNavMesh* navMesh;
 };

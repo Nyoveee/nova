@@ -16,6 +16,7 @@
 #include "console.h"
 #include "navBar.h"
 #include "assetViewerUi.h"
+#include "navigationWindow.h"
 
 using GLuint = unsigned int;
 
@@ -53,6 +54,12 @@ public:
 	bool isInSimulationMode() const;
 
 public:
+	// displays a ImGui combo drop down box of all the assets related to type T.
+	// first parameter is used to specific which asset id is selected.
+	template <typename T>
+	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback);
+	
+public:
 	entt::entity hoveringEntity;
 	std::vector<entt::entity> copiedEntityVec;
 
@@ -64,7 +71,6 @@ private:
 	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
-	void navigationWindow();
 	void launchProfiler();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
@@ -83,7 +89,8 @@ private:
 	ComponentInspector componentInspector;
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
-	
+	NavigationWindow navigationWindow;
+
 	NavMeshGeneration navMeshGenerator;
 	NavBar navBar;
 
@@ -97,3 +104,5 @@ private:
 	bool inSimulationMode;
 	bool isThereChangeInSimulationMode;
 };
+
+#include "editor.ipp"
