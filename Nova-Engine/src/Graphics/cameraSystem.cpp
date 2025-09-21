@@ -74,7 +74,7 @@ void CameraSystem::update(float dt) {
 	if (!isInControl) {
 		return;
 	}
-
+	bool gameCam = false;
 	for (auto&& [entityID, CamComponent] : engine.ecs.registry.view<CamComponent>().each())
 	{
 		if (CamComponent.camStatus)
@@ -83,8 +83,13 @@ void CameraSystem::update(float dt) {
 			// Use Transform data to set camera variables.
 			camera.setPos(objTransform.position);
 			//camera.setFront();
-			
+			gameCam = true;
+			break;
 		}
+	}
+	if (!gameCam)
+	{
+		camera.reset();
 	}
 
 	cameraSpeed = std::exp(cameraSpeedExponent);

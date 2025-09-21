@@ -32,6 +32,7 @@ public:
 
 	glm::vec3	getRight() const;
 
+	void		reset();
 public:
 	// only calculate view and projection matrix at the end of game loop once, for optimisation.
 	void recalculateViewMatrix();

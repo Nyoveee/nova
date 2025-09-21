@@ -57,6 +57,18 @@ glm::vec3 Camera::getRight() const {
 	return cameraRight;
 }
 
+void Camera::reset() {
+	cameraPos = { 0.f, 1.f, 5.f };
+	cameraFront = defaultCameraFront;
+	cameraRight = glm::normalize(glm::cross(cameraFront, Up)) ;
+	recalculateViewMatrix();
+	recalculateProjectionMatrix();
+	fovAngle = defaultFovAngle;
+	nearPlaneDistance = defaultNearPlaneDistance;
+	farPlaneDistance = defaultFarPlaneDistance;
+	aspectRatio = defaultAspectRatio;
+}
+
 void Camera::recalculateViewMatrix() {
 	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, Up);
 }

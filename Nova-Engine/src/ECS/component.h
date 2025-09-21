@@ -34,7 +34,7 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, CamComponent
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -217,5 +217,13 @@ struct AudioListener
 		isListening,
 		minDist,
 		maxDist
+	)
+};
+
+struct CamComponent {
+	bool camStatus;
+
+	REFLECTABLE(
+		camStatus
 	)
 };
