@@ -247,8 +247,8 @@ namespace {
 						// Adding Scripts
 						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
 							ScriptData scriptData{ resourceId };
-							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
-							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(static_cast<unsigned int>(entity), static_cast<std::size_t>(scriptData.scriptId));
+							scriptingAPIManager.loadEntityScript(entity, resourceId);
+							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(entity, scriptData.scriptId);
 							scriptDatas.push_back(scriptData);
 						});
 
@@ -270,7 +270,7 @@ namespace {
 						});
 						ImGui::EndChild();
 						if (it != std::end(scriptDatas)) {
-							scriptingAPIManager.removeEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(it->scriptId));
+							scriptingAPIManager.removeEntityScript(entity, it->scriptId);
 							scriptDatas.erase(it);
 						}
 				

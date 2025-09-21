@@ -32,10 +32,10 @@ public value struct ManagedType : IManagedStruct {																					\
 	ManagedType(Call_MacroComma_Double(Parameter,__VA_ARGS__)) : Call_MacroComma_Double(ConstructorDefinition2, __VA_ARGS__) {}     \
 	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}										\
 	virtual void AppendValueToFieldData(FieldData& fieldData) sealed{															    \
-		fieldData.second = native();																								\
+		fieldData.data = native();																									\
 	}																																\
 	virtual void SetValueFromFieldData(FieldData const& fieldData) sealed{                                                          \
-		*this = ManagedType(std::get<NativeType>(fieldData.second));																\
+		*this = ManagedType(std::get<NativeType>(fieldData.data));																	\
 	}                                                                                                                               \
 	virtual System::String^ ToString() override sealed{																				\
 		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();													\

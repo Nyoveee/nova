@@ -29,7 +29,10 @@
 		ALL_FIELD_PRIMITIVES
 #endif
 
-using FieldData = std::pair<std::string, std::variant<ALL_FIELD_TYPES>>;
+struct FieldData{
+	std::string name;
+	std::variant<ALL_FIELD_TYPES> data;
+};
 
 // More readable function pointer syntax because C lmaoo
 using UpdateFunctionPtr				= void (*)(void);
@@ -66,8 +69,8 @@ public:
 	ENGINE_DLL_API void loadSceneScriptsToAPI();
 
 	// Editor function
-	ENGINE_DLL_API void loadEntityScript(unsigned int entityID, unsigned long long scriptID);
-	ENGINE_DLL_API void removeEntityScript(unsigned int entityID, unsigned long long scriptID);
+	ENGINE_DLL_API void loadEntityScript(entt::entity entityID, ResourceID scriptID);
+	ENGINE_DLL_API void removeEntityScript(entt::entity entityID, ResourceID scriptID);
 	ENGINE_DLL_API bool isNotCompiled();
 
 	// Simulation
@@ -78,8 +81,8 @@ public:
 	ENGINE_DLL_API void checkModifiedScripts(float dt);
 
 	// Serializable Field Reference
-	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(unsigned int entityID, unsigned long long scriptID);
-	ENGINE_DLL_API void setScriptFieldData(unsigned int entityID, unsigned long long scriptID, FieldData const& fieldData);
+	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(entt::entity entityID, ResourceID scriptID);
+	ENGINE_DLL_API void setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData);
 
 	// This is the callback when the assets files are Added
 	ENGINE_DLL_API void OnAssetContentAddedCallback(std::string abspath);

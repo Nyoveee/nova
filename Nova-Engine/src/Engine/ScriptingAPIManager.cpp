@@ -273,14 +273,14 @@ void ScriptingAPIManager::loadSceneScriptsToAPI()
 			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
 }
 
-void ScriptingAPIManager::loadEntityScript(unsigned int entityID, unsigned long long scriptID)
+void ScriptingAPIManager::loadEntityScript(entt::entity entityID, ResourceID scriptID)
 {
-	addGameObjectScript(entityID, scriptID);
+	addGameObjectScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
 }
 
-void ScriptingAPIManager::removeEntityScript(unsigned int entityID, unsigned long long scriptID)
+void ScriptingAPIManager::removeEntityScript(entt::entity entityID, ResourceID scriptID)
 {
-	removeGameObjectScript(entityID, scriptID);
+	removeGameObjectScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
 }
 
 bool ScriptingAPIManager::isNotCompiled()
@@ -304,14 +304,14 @@ void ScriptingAPIManager::checkModifiedScripts(float dt)
 	}
 }
 
-std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(unsigned int entityID, unsigned long long scriptID)
+std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(entt::entity entityID, ResourceID scriptID)
 {
-	return getScriptFieldDatas_(entityID, scriptID);
+	return getScriptFieldDatas_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
 }
 
-void ScriptingAPIManager::setScriptFieldData(unsigned int entityID, unsigned long long scriptID, FieldData const& fieldData)
+void ScriptingAPIManager::setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData)
 {
-	setScriptFieldData_(entityID, scriptID, fieldData);
+	setScriptFieldData_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID), fieldData);
 }
 
 bool ScriptingAPIManager::startSimulation() {

@@ -54,7 +54,7 @@ std::vector<FieldData> Interface::getScriptFieldDatas(EntityID entityID, ScriptI
 		// Private and Protected members will only be added if they have the serializablefield attribute
 		if (!fieldInfos[i]->IsPublic && fieldInfos[i]->GetCustomAttributes(SerializableField::typeid,true)->Length == 0)
 			continue;
-		field.first = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
+		field.name = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
 		// Struct
 		if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
 			managedStruct->AppendValueToFieldData(field);
@@ -64,14 +64,14 @@ std::vector<FieldData> Interface::getScriptFieldDatas(EntityID entityID, ScriptI
 		// Component
 		if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
 			IManagedComponent^ managedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
-			field.second = entt::entity(managedComponent ? managedComponent->entityID : entt::null);
+			field.data = entt::entity(managedComponent ? managedComponent->entityID : entt::null);
 			fieldDatas.push_back(field);
 			continue;
 		}
 		// Scripts
 		if (fieldType->IsSubclassOf(Script::typeid)) {
 			Script^ managedScripts = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
-			field.second = entt::entity(managedScripts ? managedScripts->entityID : entt::null);
+			field.data = entt::entity(managedScripts ? managedScripts->entityID : entt::null);
 			fieldDatas.push_back(field);
 			continue;
 		}
@@ -98,7 +98,7 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 		if (!fieldInfos[i]->IsPublic && fieldInfos[i]->GetCustomAttributes(SerializableField::typeid, true)->Length == 0)
 			continue;
 		// Field names are always unique
-		if (msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name) != fieldData.first)
+		if (msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name) != fieldData.name)
 			continue;
 		System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
 		// Struct
@@ -111,12 +111,12 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 		// Component
 		if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
 			IManagedComponent^ managedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
-			managedComponent->entityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.second));
+			managedComponent->entityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.data));
 			return;
 		}
 		// Script
 		if (fieldType->IsSubclassOf(Script::typeid)) {
-			script->entityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.second));
+			script->entityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.data));
 			return;
 		}
 		// Primitives

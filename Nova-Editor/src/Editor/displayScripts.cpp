@@ -15,12 +15,12 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 			using FieldType = std::decay_t<decltype(arg)>;
 			if constexpr (std::is_same_v<FieldType, float>) {
 				float& value{ arg };
-				if(ImGui::InputFloat(fieldData.first.c_str(), &value)) modified = true;
+				if(ImGui::InputFloat(fieldData.name.c_str(), &value)) modified = true;
 				return;
 			}
 			if constexpr (std::is_same_v<FieldType, entt::entity>) {
 				entt::entity entityReference{ arg };
-				ImGui::Text((fieldData.first + ":").c_str());
+				ImGui::Text((fieldData.name + ":").c_str());
 				ImGui::SameLine();
 				ImGui::Text((entityReference == entt::null) ? "Null" : std::to_string(static_cast<unsigned int>(entityReference)).c_str());
 				return;
@@ -33,7 +33,7 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 
 					ImGui::TableNextColumn();
 					ImGui::AlignTextToFramePadding();
-					ImGui::Text(fieldData.first.c_str());
+					ImGui::Text(fieldData.name.c_str());
 
 					ImGui::TableNextColumn();
 					if (ImGui::InputFloat("x", &value.x)) modified = true;
@@ -53,7 +53,7 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 
 					ImGui::TableNextColumn();
 					ImGui::AlignTextToFramePadding();
-					ImGui::Text(fieldData.first.c_str());
+					ImGui::Text(fieldData.name.c_str());
 					ImGui::TableNextColumn();
 					if (ImGui::InputFloat("x", &value.x)) modified = true;
 
@@ -68,10 +68,10 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 				}
 				return;
 			}
-		}, fieldData.second);
+		}, fieldData.data);
 		// Update the script instance if a field is modified
 		if (modified)
-			scriptingAPIManager.setScriptFieldData(static_cast<unsigned int>(entity), static_cast<unsigned long long>(scriptData.scriptId), fieldData);
+			scriptingAPIManager.setScriptFieldData(entity, scriptData.scriptId, fieldData);
 	}
 	ImGui::EndDisabled();
 }
