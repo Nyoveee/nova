@@ -8,6 +8,7 @@
 #include "Detour/Detour/DetourNavMesh.h"
 #include "Detour/Detour/DetourNavMeshBuilder.h"
 #include "Detour/Detour/DetourAlloc.h"
+#include "Navigation/Navigation.h"
 #include <vector>
 #include <array>
 #include <limits>
@@ -19,6 +20,7 @@ NavMeshGeneration::NavMeshGeneration(Editor& editor) :
 	ecs				{ editor.engine.ecs },
 	editor			{ editor },
 	resourceManager	{ editor.resourceManager },
+	navigationSys	{ editor.engine.navigationSystem },
 	//Recast Objects
 	m_triareas		{ nullptr },
 	navData			{ nullptr },
@@ -28,7 +30,8 @@ NavMeshGeneration::NavMeshGeneration(Editor& editor) :
 	m_pmesh			{ nullptr },
 	m_cfg			{},
 	m_ctx			{},
-	m_dmesh			{ nullptr }
+	m_dmesh			{ nullptr },
+	m_navMesh		{ nullptr }
 {
 	buildSettings.agentName				= "Humanoid";
 	buildSettings.cellSize				= 0.3f;
@@ -369,32 +372,32 @@ void NavMeshGeneration::BuildNavMesh()
 			//return false;
 		}
 
-		m_navMesh = dtAllocNavMesh();
-		if (!m_navMesh)
-		{
-			dtFree(navData);
-			//m_ctx->log(RC_LOG_ERROR, "Could not create Detour navmesh");
-			//return false;
-		}
-
-		dtStatus status;
-
-		status = m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA); //here navmesh is built -> the dtNavMesh can own the data and free it on dtfree btw. 
-																		   // need not free the navData if passed into DT_TileFreeData
-		
-		if (dtStatusFailed(status))
-		{
-			dtFree(navData);
-		//	m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh");
-		//	return false;
-		}
-
-		//status = m_navQuery->init(m_navMesh, 2048);
-		//if (dtStatusFailed(status))
+		//m_navMesh = dtAllocNavMesh();
+		//if (!m_navMesh)
 		//{
-		//	//m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh query");
+		//	dtFree(navData);
+		//	//m_ctx->log(RC_LOG_ERROR, "Could not create Detour navmesh");
 		//	//return false;
 		//}
+
+		//dtStatus status;
+
+		//status = m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA); //here navmesh is built -> the dtNavMesh own the navdata and free it on dtfree btw. 
+		//																   // need not free the navData if passed into DT_TileFreeData
+		//
+		//if (dtStatusFailed(status))
+		//{
+		//	dtFree(navData);
+		////	m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh");
+		////	return false;
+		//}
+
+		////status = m_navQuery->init(m_navMesh, 2048);
+		////if (dtStatusFailed(status))
+		////{
+		////	//m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh query");
+		////	//return false;
+		////}
 	}
 }
 
@@ -416,8 +419,8 @@ void NavMeshGeneration::CleanUp()
 	m_pmesh = nullptr;
 	rcFreePolyMeshDetail(m_dmesh);
 	m_dmesh = nullptr;
-	dtFreeNavMesh(m_navMesh);
-	m_navMesh = nullptr;
+	//dtFreeNavMesh(m_navMesh);
+	//m_navMesh = nullptr;
 }
 
 void NavMeshGeneration::ResetBuildSetting()

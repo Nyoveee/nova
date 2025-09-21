@@ -9,6 +9,7 @@ class Editor;
 class ResourceManager;
 class dtNavMesh;
 class dtNavMeshQuery;
+class NavigationSystem;
 
 enum SamplePolyAreas
 {
@@ -87,9 +88,12 @@ private:
 	void CleanUp();
 
 private:
+
+	//Nova stuff
 	ECS& ecs;
 	Editor& editor;
 	ResourceManager& resourceManager;
+	NavigationSystem& navigationSys;
 
 private:
 	BuildSettings buildSettings;
@@ -107,7 +111,9 @@ private:
 
 	//NavMesh Objects
 	dtNavMesh* m_navMesh;
-	dtNavMeshQuery* m_navQuery;
+	//dtNavMeshQuery* m_navQuery;
+
+
 };
 
 
