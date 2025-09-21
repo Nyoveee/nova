@@ -39,6 +39,6 @@ private:
 
 	filewatch::FileWatch<std::wstring> watch;
 
-	std::unordered_map<std::string, std::filesystem::file_time_type> lastWriteTimes;
+	std::unordered_map<ResourceID, std::filesystem::file_time_type> lastWriteTimes;
 };
 

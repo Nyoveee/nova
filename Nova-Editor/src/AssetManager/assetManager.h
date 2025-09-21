@@ -67,13 +67,16 @@ public:
 	template <ValidResource T>
 	void serialiseDescriptor(ResourceID id);
 
+	bool renameFile(ResourceID id, std::string const& newFileStem);
+
 public:
 	// Getters..
 	std::unordered_map<FolderID, Folder> const& getDirectories()									const;
 	std::vector<FolderID> const&				getRootDirectories()								const;
-	std::string const&							getName(ResourceID id)								const;
-	AssetFilePath const&						getFilepath(ResourceID id)							const;
-	Descriptor const&							getDescriptor(AssetFilePath const& assetFilePath)	const;
+	std::string const*							getName(ResourceID id)								const;
+	AssetFilePath const*						getFilepath(ResourceID id)							const;
+	BasicAssetInfo*								getDescriptor(ResourceID id);
+	ResourceID									getResourceID(AssetFilePath const& assetFilePath)	const;
 
 private:
 	friend class AssetDirectoryWatcher;

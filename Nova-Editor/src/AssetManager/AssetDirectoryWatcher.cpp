@@ -16,7 +16,9 @@ AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, Resourc
 	watch			{
 						AssetIO::assetDirectory.wstring(),
 						[&](const std::wstring& path, const filewatch::Event change_type) {
-							HandleFileChangeCallback(path, change_type);
+							assetManager.submitCallback([&, path, change_type]() { 
+								HandleFileChangeCallback(path, change_type);
+							});
 						}
 					}
 {}
@@ -32,23 +34,18 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 		return;
 	
 	// Attempts to finds the appropriate asset id.
-	ResourceID resourceId = assetManager.getDescriptor(absPath).descriptor.id;
+	ResourceID resourceId = assetManager.getResourceID(absPath);
 
 	switch (change_type)
 	{
 	case filewatch::Event::added:
-		// Thread safe callback submission
-		assetManager.submitCallback([&, absPath]() {
-			engine.scriptingAPIManager.OnAssetContentAddedCallback(absPath.string());
-			assetManager.onAssetAddition(absPath);
-		});
+		engine.scriptingAPIManager.OnAssetContentAddedCallback(absPath.string());
+		assetManager.onAssetAddition(absPath);
 
 		break;
 	case filewatch::Event::removed:
-		assetManager.submitCallback([&, resourceId]() {
-			engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
-			assetManager.onAssetDeletion(resourceId);
-		});
+		engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
+		assetManager.onAssetDeletion(resourceId);
 		
 		break;
 	case filewatch::Event::modified: {
@@ -57,24 +54,46 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 
 		// There is a known bug in filewatch(Since 2021...) where modified is called twice, including when it's added
 		// Therefore this will check the file with the existing time before updating it(Works except copy pasting from existing files)
-		std::filesystem::file_time_type time{ std::filesystem::last_write_time(absPath) };
 
-		if (lastWriteTimes[absPath.string()] != time) {
-			lastWriteTimes[absPath.string()] = time;
+		// + renaming events sometimes cause the modified event to be invoked.
+		// we combat this by comparing the previous last write modified.
 
-			// Thread safe callback submission
-			assetManager.submitCallback([&, resourceId]() {
-				engine.scriptingAPIManager.OnAssetContentModifiedCallback(resourceId);
-				assetManager.onAssetModification(resourceId, absPath);
-			});
+		std::filesystem::file_time_type lastWriteTime{ std::filesystem::last_write_time(absPath) };
+
+		// get the last write of this invocation..
+		auto iterator = lastWriteTimes.find(resourceId);
+
+		if (iterator != lastWriteTimes.end()) {
+			// check if this invocation is a repeated one.
+			if (iterator->second == lastWriteTime) {
+				// this is a repeated invocation.
+				break;
+			}
+
+			// update map..
+			iterator->second = lastWriteTime;
 		}
+		else {
+			// new invocation, let's record on our map..
+			lastWriteTimes.insert({ resourceId, lastWriteTime });
+		}
+
+
+		BasicAssetInfo* descriptor = assetManager.getDescriptor(resourceId);
+
+		if (!descriptor) {
+			return;
+		}
+
+		auto epoch = std::chrono::duration_cast<std::chrono::milliseconds>(lastWriteTime.time_since_epoch());
+		descriptor->timeLastWrite = epoch;
+
+		Logger::info("Handling file change..");
+		engine.scriptingAPIManager.OnAssetContentModifiedCallback(resourceId);
+		assetManager.onAssetModification(resourceId, absPath);
 
 		break;
 	}
-	case filewatch::Event::renamed_old:
-		break;
-	case filewatch::Event::renamed_new:
-		break;
 	default:
 		break;
 	}

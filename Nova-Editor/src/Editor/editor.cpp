@@ -40,7 +40,8 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
-	assetManagerUi					{ *this },	
+	assetViewerUi					{ assetManager, resourceManager },
+	assetManagerUi					{ *this, assetViewerUi },
 	//hierarchyList					{ *this },
 	navMeshGenerator				{ *this },
 	//debugUi						{ *this },
@@ -204,12 +205,9 @@ void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
 	gameViewPort.update();
-	//componentInspector.update();
 	assetManagerUi.update();
-	//hierarchyList.update();
-	//debugUi.update();
-	//console.update();
 	navBar.update();
+	assetViewerUi.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();

@@ -119,8 +119,13 @@ void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptDa
 			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
 				continue;
 
-			if (ImGui::Selectable(assetManager.getName(scriptID).c_str()))
-				onClickCallback(scriptID);
+			std::string const* namePtr = assetManager.getName(scriptID);
+
+			if (namePtr) {
+				if (ImGui::Selectable(namePtr->c_str()))
+					onClickCallback(scriptID);
+			}
+
 		}
 		ImGui::EndCombo();
 	}

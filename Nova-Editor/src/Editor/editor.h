@@ -15,6 +15,7 @@
 #include "debugUI.h"
 #include "console.h"
 #include "navBar.h"
+#include "assetViewerUi.h"
 
 using GLuint = unsigned int;
 
@@ -23,7 +24,6 @@ class Engine;
 class InputManager;
 class AssetManager;
 class ResourceManager;
-class NavBar;
 
 class Editor {
 public:
@@ -81,10 +81,8 @@ private:
 
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
+	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
-	//Hierarchy hierarchyList;
-	//DebugUI debugUi;
-	//Console console;
 	
 	NavMeshGeneration navMeshGenerator;
 	NavBar navBar;

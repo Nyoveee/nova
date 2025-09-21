@@ -9,15 +9,25 @@ void ComponentInspector::displayAssetDropDownList(std::optional<ResourceID> id, 
 	ImGui::PushID(imguiCounter);
 	++imguiCounter;
 
-	char const* selectedAssetName = id ? assetManager.getName(id.value()).c_str() : "";
+	char const* selectedAssetName = "";
+
+	if (id) {
+		auto namePtr = assetManager.getName(id.value());
+		selectedAssetName = namePtr ? namePtr->c_str() : "INVALID RESOURCE!";
+	}
 
 	auto allResources = resourceManager.getAllResources<T>();
 
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
 		for (auto&& resourceId : allResources) {
-			std::string const& assetName = assetManager.getName(resourceId);
+			std::string const* assetName = assetManager.getName(resourceId);
 
-			if (ImGui::Selectable(assetName.empty() ? "<no name>" : assetName.c_str(), id ? id.value() == resourceId : false)) {
+			if (!assetName) {
+				//Logger::warn("Invalid resource id detected.\n");
+				continue;
+			}
+
+			if (ImGui::Selectable(assetName->empty() ? "<no name>" : assetName->c_str(), id ? id.value() == resourceId : false)) {
 				onClickCallback(resourceId);
 			}
 		}

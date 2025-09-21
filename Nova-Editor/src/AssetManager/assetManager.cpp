@@ -201,46 +201,101 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 	folderPathToId[path.string()] = folderId;
 }
 
+bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::error("Attempt to rename file failed. Unable to find corresponding descriptor.");
+		return false;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+
+	// Determine the appropriate full new file path.
+	std::filesystem::path oldFullFilePath { descriptor->filepath };
+	std::filesystem::path parentPath = std::filesystem::path{ descriptor->filepath }.parent_path();
+	std::filesystem::path newFullFilePath = parentPath / newFileStem;
+
+	newFullFilePath.replace_extension(oldFullFilePath.extension());
+
+	if (std::filesystem::exists(newFullFilePath)) {
+		Logger::error("Attempt to rename file failed. New file path already exist.");
+		return false;
+	}
+
+	std::error_code errorCode;
+	std::filesystem::rename(oldFullFilePath, newFullFilePath, errorCode);
+
+	if (errorCode) {
+		Logger::error(
+			"Attempt to rename file failed w/ error code {}"
+			"\nAttempt to rename from: {} to {}.", errorCode.value(), oldFullFilePath.string(), newFullFilePath.string()
+		);
+
+		return false;
+	}
+
+	auto nodeHandle = intermediaryAssetsToDescriptor.extract(descriptor->filepath);
+
+	if (nodeHandle) {
+		nodeHandle.key() = newFullFilePath;
+		intermediaryAssetsToDescriptor.insert(std::move(nodeHandle));
+	}
+
+	descriptor->filepath = newFullFilePath;
+	Logger::info("Asset filepath rename successful.");
+
+	return true;
+}
+
 std::vector<FolderID> const& AssetManager::getRootDirectories() const {
 	return rootDirectories;
 }
 
-std::string const& AssetManager::getName(ResourceID id) const {
+std::string const* AssetManager::getName(ResourceID id) const {
 	auto iterator = assetToDescriptor.find(id);
 
 	if (iterator == assetToDescriptor.end()) {
-		static std::string invalidAssetName = "Invalid Asset.";
-		return invalidAssetName;
+		return nullptr;
 	}
 
 	auto&& [_, descriptor] = *iterator;
 	assert(descriptor && "This ptr should never be null.");
-	return descriptor->name;
+	return &descriptor->name;
 }
 
-AssetFilePath const& AssetManager::getFilepath(ResourceID id) const {
+AssetFilePath const* AssetManager::getFilepath(ResourceID id) const {
 	auto iterator = assetToDescriptor.find(id);
 
 	if (iterator == assetToDescriptor.end()) {
-		static AssetFilePath invalidFilePath{};
-		return invalidFilePath;
+		return nullptr;
 	}
 
 	auto&& [_, descriptor] = *iterator;
 	assert(descriptor && "This ptr should never be null.");
-	return descriptor->filepath;
+	return &descriptor->filepath;
 }
 
-AssetManager::Descriptor const& AssetManager::getDescriptor(AssetFilePath const& assetFilePath) const {
+BasicAssetInfo* AssetManager::getDescriptor(ResourceID id) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		return nullptr;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+	return descriptor.get();
+}
+
+ResourceID AssetManager::getResourceID(AssetFilePath const& assetFilePath) const {
 	auto iterator = intermediaryAssetsToDescriptor.find(assetFilePath);
 
 	if (iterator == intermediaryAssetsToDescriptor.end()) {
-		static Descriptor invalidDescriptor{ std::string{}, { INVALID_RESOURCE_ID, "", std::string{} } };
-		return invalidDescriptor;
+		return INVALID_RESOURCE_ID;
 	}
 
 	auto&& [_, descriptor] = *iterator;
-	return descriptor;
+	return descriptor.descriptor.id;
 }
 
 void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
@@ -249,7 +304,6 @@ void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
 
 void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& assetFilePath) {
 	Logger::info("Asset {} has changed, recompiling it's corresponding resource file..\n", assetFilePath.string);
-	resourceManager.removeResource(id);
 
 	auto recreateResourceFile = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
@@ -257,6 +311,7 @@ void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& asset
 				std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(AssetIO::getDescriptorFilename<T>(id));
 
 				if (opt) {
+					resourceManager.removeResource(id);
 					createResourceFile<T>(opt.value());
 				}
 				else {
