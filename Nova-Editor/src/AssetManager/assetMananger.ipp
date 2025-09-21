@@ -244,6 +244,9 @@ void AssetManager::loadAllDescriptorFiles() {
 
 				// for each asset, we associate it with a descriptor functor.
 				serialiseDescriptorFunctors.insert({ descriptor.id, std::make_unique<SerialiseDescriptorFunctor<T>>() });
+
+				// map each resource id to the original type.
+				resourceToType.insert({ descriptor.id, Family::id<T>() });
 			}
 		}
 
@@ -271,6 +274,9 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 
 		// for each asset, we associate it with a descriptor functor.
 		serialiseDescriptorFunctors.insert({ id, std::make_unique<SerialiseDescriptorFunctor<T>>() });
+
+		// map each resource id to the original type.
+		resourceToType.insert({ id, Family::id<T>() });
 	}
 
 	return id;

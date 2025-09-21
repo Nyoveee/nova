@@ -26,12 +26,11 @@ int main() {
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
-	ResourceManager resourceManager {};
 	Window			window			{ windowName.c_str(), {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
+	
+	ResourceManager resourceManager {};
 	Engine			engine			{ window, inputManager, resourceManager, gameWidth, gameHeight };
 
-
-	// Editor specific applications.
 	AssetManager	assetManager	{ resourceManager, engine };
 	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 

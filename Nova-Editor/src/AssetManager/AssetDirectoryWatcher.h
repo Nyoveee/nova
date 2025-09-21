@@ -39,18 +39,6 @@ private:
 
 	filewatch::FileWatch<std::wstring> watch;
 
-	//std::unordered_map<std::string, AssetTypeID> extensionToAssetType;
-	
 	std::unordered_map<std::string, std::filesystem::file_time_type> lastWriteTimes;
-
-#if 0
-	std::vector<std::function<void(std::string)>> assetContentAddCallbacks;
-	std::vector<std::function<void(ResourceID)>> assetContentModifiedCallbacks;
-	std::vector<std::function<void(ResourceID)>> assetContentDeletedCallbacks;
-
-	std::mutex contentAddCallbackMutex;
-	std::mutex contentModifiedCallbackMutex;
-	std::mutex contentDeleteCallbackMutex;
-#endif
 };
 

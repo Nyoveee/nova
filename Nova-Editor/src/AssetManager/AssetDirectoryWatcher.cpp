@@ -21,70 +21,63 @@ AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, Resourc
 					}
 {}
 
-#if 0
-void AssetDirectoryWatcher::RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback){
-	std::lock_guard<std::mutex> lock{ contentAddCallbackMutex };
-	assetContentAddCallbacks.push_back(callback);
-}
-
-void AssetDirectoryWatcher::RegisterCallbackAssetContentModified(std::function<void(ResourceID)> callback){
-	std::lock_guard<std::mutex> lock{ contentModifiedCallbackMutex };
-	assetContentModifiedCallbacks.push_back(callback);
-}
-
-void AssetDirectoryWatcher::RegisterCallbackAssetContentDeleted(std::function<void(ResourceID)> callback){
-	std::lock_guard<std::mutex> lock{ contentDeleteCallbackMutex };
-	assetContentDeletedCallbacks.push_back(callback);
-}
-#endif
-
 void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type) {
 	// the app is destructing, don't do anything.
 	if (engineIsDestructing)
 		return;
 
-#if 1
 	std::filesystem::path absPath{ AssetIO::assetDirectory / std::filesystem::path(path) };
 
 	if (IsPathHidden(absPath))
 		return;
 	
-	// New File added
-	if (change_type == filewatch::Event::added) {
+	// Attempts to finds the appropriate asset id.
+	ResourceID resourceId = assetManager.getDescriptor(absPath).descriptor.id;
+
+	switch (change_type)
+	{
+	case filewatch::Event::added:
 		// Thread safe callback submission
 		assetManager.submitCallback([&, absPath]() {
 			engine.scriptingAPIManager.OnAssetContentAddedCallback(absPath.string());
+			assetManager.onAssetAddition(absPath);
 		});
 
-		return;
-	}
+		break;
+	case filewatch::Event::removed:
+		assetManager.submitCallback([&, resourceId]() {
+			engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
+			assetManager.onAssetDeletion(resourceId);
+		});
+		
+		break;
+	case filewatch::Event::modified: {
+		if (resourceId == INVALID_RESOURCE_ID)
+			break;
 
-	// Attempts to finds the appropriate asset id.
-	ResourceID resourceId = assetManager.getDescriptor(absPath).descriptor.id;;
-
-	if (resourceId == INVALID_RESOURCE_ID)
-		return;
-
-	if (change_type != filewatch::Event::removed) {
 		// There is a known bug in filewatch(Since 2021...) where modified is called twice, including when it's added
 		// Therefore this will check the file with the existing time before updating it(Works except copy pasting from existing files)
 		std::filesystem::file_time_type time{ std::filesystem::last_write_time(absPath) };
-		
+
 		if (lastWriteTimes[absPath.string()] != time) {
 			lastWriteTimes[absPath.string()] = time;
 
 			// Thread safe callback submission
 			assetManager.submitCallback([&, resourceId]() {
 				engine.scriptingAPIManager.OnAssetContentModifiedCallback(resourceId);
+				assetManager.onAssetModification(resourceId, absPath);
 			});
 		}
+
+		break;
 	}
-	else{
-		assetManager.submitCallback([&, resourceId]() {
-			engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
-		});
+	case filewatch::Event::renamed_old:
+		break;
+	case filewatch::Event::renamed_new:
+		break;
+	default:
+		break;
 	}
-#endif
 }
 
 bool AssetDirectoryWatcher::IsPathHidden(std::filesystem::path const& path) const
