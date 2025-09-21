@@ -19,9 +19,9 @@
 #ifndef DETOURDEBUGDRAW_H
 #define DETOURDEBUGDRAW_H
 
-#include "../../../Nova-Engine/src/Detour/Detour/DetourNavMesh.h"
-#include "../../../Nova-Engine/src/Detour/Detour/DetourNavMeshQuery.h"
-#include "../../../Nova-Engine/src/Detour/DetourTileCache/DetourTileCacheBuilder.h"
+#include "Detour/Detour/DetourNavMesh.h"
+#include "Detour/Detour/DetourNavMeshQuery.h"
+#include "Detour/DetourTileCache/DetourTileCacheBuilder.h"
 
 enum DrawNavMeshFlags
 {

@@ -18,9 +18,9 @@
 
 #include "DebugDraw.h"
 #include "DetourDebugDraw.h"
-#include "../../../Nova-Engine/src/Detour/Detour/DetourNavMesh.h"
-#include "../../../Nova-Engine/src/Detour/Detour/DetourCommon.h"
-#include "../../../Nova-Engine/src/Detour/Detour/DetourNode.h"
+#include "../Nova-Framework/src/Detour/Detour/DetourNavMesh.h"
+#include "../Nova-Framework/src/Detour/Detour/DetourCommon.h"
+#include "../Nova-Framework/src/Detour/Detour/DetourNode.h"
 
 
 static float distancePtLine2d(const float* pt, const float* p, const float* q)
