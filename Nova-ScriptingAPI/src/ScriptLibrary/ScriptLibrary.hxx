@@ -8,8 +8,8 @@
  	For Variables Indicate with V_
 
 	Conversion to native types:
-		Component: To Do
-		Managed Struct: VariableName->Native()
+		Component: VariableName->nativeComponent()
+		Managed Struct: VariableName->native()
 		Primitives: Converted by default for these types https://learn.microsoft.com/en-us/cpp/dotnet/managed-types-cpp-cli?view=msvc-170
 		Additional Methods to convert to native types can be found in ConversionUtils.h
 

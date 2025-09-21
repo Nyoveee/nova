@@ -67,28 +67,29 @@ property Type Name														\
 	}																	\
 }
 
-#define ManagedComponentDeclaration(ComponentType, ...) \
-public ref class ComponentType##_ : IManagedComponent { \
-public: \
-	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__) \
-	virtual System::String^ ToString() override sealed{ \
-		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties(); \
-		System::String^ result = #ComponentType + "_{"; \
-		for (int i = 0; i < propertyInfos->Length; ++i) { \
-			result += propertyInfos[i]->Name; \
-			result += propertyInfos[i]->GetValue(this)->ToString(); \
-			if (i != propertyInfos->Length - 1) result += ", "; \
-		} \
-		result += "}"; \
-		return result; \
-	} \
-internal: \
-	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override { \
-		entityID = p_entityID; \
-		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID))) \
-			return true; \
-		return false; \
-	} \
-private: \
-	ComponentType* componentReference; \
+#define ManagedComponentDeclaration(ComponentType, ...)												\
+public ref class ComponentType##_ : IManagedComponent {												\
+public:																								\
+	ComponentType& nativeComponent() { return *componentReference; }								\
+	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__)											    \
+	virtual System::String^ ToString() override sealed{												\
+		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties();		\
+		System::String^ result = #ComponentType + "_{";												\
+		for (int i = 0; i < propertyInfos->Length; ++i) {											\
+			result += propertyInfos[i]->Name;														\
+			result += propertyInfos[i]->GetValue(this)->ToString();									\
+			if (i != propertyInfos->Length - 1) result += ", ";										\
+		}																							\
+		result += "}";																				\
+		return result;																				\
+	}																								\
+internal:																							\
+	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override {								\
+		entityID = p_entityID;																		\
+		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID)))			\
+			return true;																			\
+		return false;																				\
+	}																								\
+private:																							\
+	ComponentType* componentReference;																\
 };
