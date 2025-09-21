@@ -66,6 +66,8 @@ void NavMeshGeneration::BuildNavMesh()
 	//preprocessing parameters
 	std::vector<float> vertexSoup; // an collection of vertexes 1 2 3
 	std::vector<int>   triangleSoup; // a collection of indices that make sup the triangles of the scene
+	std::vector<int>   unwalkableTriangles; //store indices of triangle marked to be unwalkable
+	size_t triIndex = 0;
 	size_t vertexOffset = 0; //for appending indices of different meshes with new ids
 	size_t triangleCount = 0;
 	size_t vertexCount = 0;
@@ -77,14 +79,29 @@ void NavMeshGeneration::BuildNavMesh()
 	//gather all meshes <Exclude mesh using navmesh modifier component next time>
 	for (auto&& [entity, transform, meshRenderer] : ecs.registry.view<Transform, MeshRenderer>().each()) {
 			
+
+
 		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
 		
 		if (!model) {
 			continue;
 		}
 
+		NavMeshModifier* navMeshModifier{ nullptr };
+		//Extra settings base on NavmeshModifier
+		if (navMeshModifier = ecs.registry.try_get<NavMeshModifier>(entity))
+		{
+			if (navMeshModifier->Area_Type == NavMeshModifier::Area_Type::Exclude)
+			{
+				continue;
+			}
+		
+		}
+
 		for (const Model::Mesh& meshData : model->meshes)
 		{
+
+
 			for (const Vertex& vertex : meshData.vertices)
 			{
 				glm::vec4 worldPos = transform.modelMatrix * glm::vec4(vertex.pos, 1.0f);
@@ -108,8 +125,17 @@ void NavMeshGeneration::BuildNavMesh()
 				triangleSoup.push_back(meshData.indices[i + 0] + vertexOffset);
 				triangleSoup.push_back(meshData.indices[i + 1] + vertexOffset);
 				triangleSoup.push_back(meshData.indices[i + 2] + vertexOffset);
+
+
+				// Mark obstacles
+				if (navMeshModifier && navMeshModifier->Area_Type == NavMeshModifier::Area_Type::Obstacle) {
+					unwalkableTriangles.push_back(triIndex);
+				}
+				triIndex++;
 			}
 
+
+			
 			vertexOffset += meshData.vertices.size();
 		}
 	
@@ -172,6 +198,19 @@ void NavMeshGeneration::BuildNavMesh()
 	// the are type for each of the meshes and rasterize them.
 	memset(m_triareas, 0, triangleCount * sizeof(unsigned char));
 	rcMarkWalkableTriangles(&m_ctx, m_cfg.walkableSlopeAngle, vertexSoup.data(), vertexCount, triangleSoup.data(), triangleCount, m_triareas); //use walkable triangles first. maybe can check how to exclude
+
+	//Set unwalkable triangles now ----- My code
+
+	for (int& triIndex : unwalkableTriangles)
+	{
+		m_triareas[triIndex] = RC_NULL_AREA;
+	}
+
+
+	//---
+
+
+
 	if (!rcRasterizeTriangles(&m_ctx, vertexSoup.data(), vertexCount, triangleSoup.data(), m_triareas, triangleCount, *m_solid, m_cfg.walkableClimb))
 	{
 		m_ctx.log(RC_LOG_ERROR, "buildNavigation: Could not rasterize triangles.");
@@ -340,7 +379,8 @@ void NavMeshGeneration::BuildNavMesh()
 
 		dtStatus status;
 
-		status = m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA); //here navmesh is built
+		status = m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA); //here navmesh is built -> the dtNavMesh can own the data and free it on dtfree btw. 
+																		   // need not free the navData if passed into DT_TileFreeData
 		
 		if (dtStatusFailed(status))
 		{
@@ -365,19 +405,19 @@ dtNavMesh const* NavMeshGeneration::getNavMesh() const {
 void NavMeshGeneration::CleanUp()
 {
 	delete[] m_triareas;
-	m_triareas = 0;
+	m_triareas = nullptr;
 	rcFreeHeightField(m_solid);
-	m_solid = 0;
+	m_solid = nullptr;
 	rcFreeCompactHeightfield(m_chf);
-	m_chf = 0;
+	m_chf = nullptr;
 	rcFreeContourSet(m_cset);
-	m_cset = 0;
+	m_cset = nullptr;
 	rcFreePolyMesh(m_pmesh);
-	m_pmesh = 0;
+	m_pmesh = nullptr;
 	rcFreePolyMeshDetail(m_dmesh);
-	m_dmesh = 0;
+	m_dmesh = nullptr;
 	dtFreeNavMesh(m_navMesh);
-	m_navMesh = 0;
+	m_navMesh = nullptr;
 }
 
 void NavMeshGeneration::ResetBuildSetting()

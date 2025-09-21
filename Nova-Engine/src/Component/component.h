@@ -33,7 +33,7 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, Scripts, NavMeshModifier
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -234,4 +234,22 @@ struct AudioComponent {
 	REFLECTABLE(
 		AudioList
 	)
+};
+
+struct NavMeshModifier
+{
+	enum class Area_Type
+	{
+		Walkable,
+		Obstacle,
+		Exclude
+
+	}Area_Type;
+
+	REFLECTABLE
+	(
+		Area_Type
+	)
+
+
 };
