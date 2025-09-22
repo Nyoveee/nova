@@ -71,53 +71,57 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 void CameraSystem::update(float dt) {
 	ZoneScoped;
-	if (!isInControl) {
-		return;
-	}
-	bool gameCam = false;
-	for (auto&& [entityID, CamComponent] : engine.ecs.registry.view<CamComponent>().each())
+	
+	// for game camera
+	if(isSimulationActive)
 	{
-		if (CamComponent.camStatus)
+		for (auto&& [entityID, CamComponent] : engine.ecs.registry.view<CamComponent>().each())
 		{
-			Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
-			// Use Transform data to set camera variables.
-			camera.setPos(objTransform.position);
-			//camera.setFront();
-			gameCam = true;
-			break;
+			if (CamComponent.camStatus)
+			{
+				Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
+				// Use Transform data to set camera variables.
+				camera.setPos(objTransform.position);
+				camera.setFront(objTransform.front);
+				break;
+			}
 		}
 	}
-	if (!gameCam)
+	// for editor camera
+	else
 	{
-		camera.reset();
+		if (!isInControl) {
+			return;
+		}
+
+		cameraSpeed = std::exp(cameraSpeedExponent);
+
+		if (isMovingFront) {
+			camera.addPos(cameraSpeed * dt * camera.getFront());
+		}
+
+		if (isMovingLeft) {
+			camera.addPos(cameraSpeed * dt * -camera.getRight());
+		}
+
+		if (isMovingBack) {
+			camera.addPos(cameraSpeed * dt * -camera.getFront());
+		}
+
+		if (isMovingRight) {
+			camera.addPos(cameraSpeed * dt * camera.getRight());
+		}
+
+		if (isMovingUp) {
+			camera.addPos(cameraSpeed * dt * Camera::Up);
+		}
+
+		if (isMovingDown) {
+			camera.addPos(cameraSpeed * dt * -Camera::Up);
+		}
+
 	}
-
-	cameraSpeed = std::exp(cameraSpeedExponent);
-
-	if (isMovingFront) {
-		camera.addPos(cameraSpeed * dt * camera.getFront());
-	}
-
-	if (isMovingLeft) {
-		camera.addPos(cameraSpeed * dt * -camera.getRight());
-	}
-
-	if (isMovingBack) {
-		camera.addPos(cameraSpeed * dt * -camera.getFront());
-	}
-
-	if (isMovingRight) {
-		camera.addPos(cameraSpeed * dt * camera.getRight());
-	}
-
-	if (isMovingUp) {
-		camera.addPos(cameraSpeed * dt * Camera::Up);
-	}
-
-	if (isMovingDown) {
-		camera.addPos(cameraSpeed * dt * -Camera::Up);
-	}
-
+	
 	camera.recalculateViewMatrix();
 	camera.recalculateProjectionMatrix();
 }
@@ -183,4 +187,15 @@ void CameraSystem::calculateEulerAngle(float mouseX, float mouseY) {
 	front.z = sin(Radian{ yaw }) * cos(Radian{ pitch });
 	
 	camera.setFront(glm::normalize(front));
+}
+
+
+void CameraSystem::startSimulation() {
+	isSimulationActive = true;
+}
+
+void CameraSystem::endSimulation() {
+	isSimulationActive = false;
+	camera.reset();
+
 }

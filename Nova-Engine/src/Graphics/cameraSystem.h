@@ -25,6 +25,8 @@ public:
 	void setLastMouse(float mouseX, float mouseY);
 	void calculateEulerAngle(float mouseX, float mouseY);
 
+	void startSimulation();
+	void endSimulation();
 public:
 	// the formula of camera speed is e^x, to appropriately scale speed. 
 	float cameraSpeedExponent;
@@ -34,6 +36,7 @@ public:
 
 private:
 	float cameraSpeed;
+	bool isSimulationActive;
 
 	bool isInControl;
 	bool toResetMousePos;
