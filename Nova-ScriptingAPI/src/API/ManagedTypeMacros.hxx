@@ -70,7 +70,6 @@ property Type Name														\
 #define ManagedComponentDeclaration(ComponentType, ...)												\
 public ref class ComponentType##_ : IManagedComponent {												\
 public:																								\
-	ComponentType& nativeComponent() { return *componentReference; }								\
 	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__)											    \
 	virtual System::String^ ToString() override sealed{												\
 		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties();		\
@@ -84,6 +83,8 @@ public:																								\
 		return result;																				\
 	}																								\
 internal:																							\
+	ComponentType* nativeComponent() { return componentReference; }									\
+	bool NativeReferenceLost() override { return !componentReference; }                             \
 	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override {								\
 		entityID = p_entityID;																		\
 		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID)))			\

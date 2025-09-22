@@ -4,14 +4,19 @@
 #include <functional>
 #include "ScriptLibrary/ManagedEnums.hxx"
 // For additional conversions
-public delegate void EventCallback();
+// Managed Component
 
+template<typename ManagedType>
+auto Convert(ManagedType^ managedType) {
+	return !managedType ? nullptr : managedType->nativeComponent(); // Only components have this function call
+}
 // Strings
 std::string Convert(System::String^ str) {
 	return msclr::interop::marshal_as<std::string>(str);
 }
 
 // Event Callback
+public delegate void EventCallback();
 template<typename T> 
 std::function<void(T)> Convert(EventCallback^ callback, Key key) {
 	gcroot<EventCallback^> callbackWrapper; // For Wrapping the callback function in a native class gcroot since lambda can't use the callbacks directly

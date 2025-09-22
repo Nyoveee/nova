@@ -128,9 +128,3 @@ public enum class Key
 	MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
 	MouseRight = GLFW_MOUSE_BUTTON_RIGHT
 };
-
-//static property float scrollOffsetY {
-//	float get() {
-//		return scrollOffsetY_.Value;
-//	}
-//};

@@ -128,9 +128,24 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 }
 
 void Interface::update() {
-	for each (System::UInt32 entityID in gameObjectScripts->Keys)
-		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
-			gameObjectScripts[entityID][scriptID]->callUpdate();
+	for each (System::UInt32 entityID in gameObjectScripts->Keys) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+			Script^ script = gameObjectScripts[entityID][scriptID];
+			script->callUpdate();
+			using BindingFlags = System::Reflection::BindingFlags;
+			array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
+			for (int i = 0; i < fieldInfos->Length; ++i) {
+				System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
+				// If Native component doesn't exist, this shouldn't exist anymore
+				if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
+					IManagedComponent^ managedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
+					if (managedComponent && managedComponent->NativeReferenceLost())
+						fieldInfos[i]->SetValue(script, nullptr);
+				}
+			}
+		}
+	}
+		
 }
 
 void Interface::addGameObjectScript(EntityID entityID, ScriptID scriptId)

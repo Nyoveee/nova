@@ -5,15 +5,21 @@
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
 /*******************************************************************************************
+	For this library, you would need to understand the difference between
+	Managed Types(For C#) and Native Types(C++)
+
+	To Create Managed Type Versions based on Native Versions, go to ManagedTypes.hxx
+
  	For Variables Indicate with V_
 
-	Conversion to native types:
-		Component: VariableName->nativeComponent()
+	Conversion from Managed to native types is provided:
+		Component: Convert(Managed Component)
 		Managed Struct: VariableName->native()
 		Primitives: Converted by default for these types https://learn.microsoft.com/en-us/cpp/dotnet/managed-types-cpp-cli?view=msvc-170
-		Additional Methods to convert to native types can be found in ConversionUtils.h
+		Strings: Convert(Managed String)
+		Event Callbacks: Convert<Event>(Managed Callback,key)
 
-	Recommended to only have one line which is to call the engine function
+	Recommended to only have one line which is to simply call the engine function
 *******************************************************************************************/
 public ref class Time {
 public:
