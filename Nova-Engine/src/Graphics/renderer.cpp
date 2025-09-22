@@ -489,7 +489,7 @@ void Renderer::renderModels() {
 			switch (material->renderingPipeline)
 			{
 			case Material::Pipeline::PBR:	
-				setupBlinnPhongShader(*material);
+				setupPBRShader(*material);
 				break;
 			case Material::Pipeline::BlinnPhong:
 				setupBlinnPhongShader(*material);
@@ -640,9 +640,26 @@ void Renderer::setupPBRShader(Material const& material) {
 	std::visit([&](auto&& config) {
 		using T = std::decay_t<decltype(config)>;
 
-		if constexpr (std::same_as<T, Material::Config>) {
-			// Pass the packed map to the shader as a vec3
-			PBRShader.setVec3("material.config", { config.roughness, config.metallic, config.occulusion });
+		// Packed map
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(config);
+			if (!texture) {
+				PBRShader.setBool("isUsingPackedTextureMap", false);
+				PBRShader.setFloat("material.roughness", 0.2f);
+				PBRShader.setFloat("material.metallic", 0.2f);
+				PBRShader.setFloat("material.occulusion", 0.2f);
+			}
+			else {
+				PBRShader.setBool("isUsingPackedTextureMap", true);
+				glBindTextureUnit(2, texture->getTextureId());
+				PBRShader.setImageUniform("packedMap", 2);
+			}
+		}
+		// Constants
+		else {
+			PBRShader.setFloat("material.roughness", config.roughness);
+			PBRShader.setFloat("material.metallic", config.metallic);
+			PBRShader.setFloat("material.occulusion", config.occulusion);
 		}
 
 		}, material.config);

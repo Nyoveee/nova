@@ -7,9 +7,6 @@ in VS_OUT {
     vec3 normal;
     vec3 fragWorldPos;
     mat3 TBN;
-    vec3 pointLightViewPos[];
-    vec3 dirLightViewPos[];
-    vec3 spotLightViewPos[];
 } fsIn;
 
 // === MATERIAL FOR PBR ===
@@ -24,14 +21,17 @@ struct Config {
 };
 
 uniform Config material;
+uniform bool isUsingPackedTextureMap;
+uniform sampler2D packedMap;
+Config cfg;
 
 uniform float ambientFactor;
 
 const float PI = 3.14159265358979323846;
 float ggxDistribution(float nDotH);
 float geomSmith(float nDotL) ;
-vec3 schlickFresnel(float lDotH);
-vec3 microfacetModel(vec3 position, vec3 n, vec3 lightIntensity, vec3 lightViewPos);
+vec3 schlickFresnel(float lDotH, vec3 baseColor);
+vec3 microfacetModel(vec3 position, vec3 n, vec3 lightPos, vec3 lightIntensity, vec3 baseColor);
 
 // === LIGHT PROPERTIES ===
 struct PointLight {
@@ -75,34 +75,6 @@ uniform vec3 cameraPos;
 uniform bool isUsingNormalMap;
 uniform sampler2D normalMap;
 
-// calculate the resulting color caused by this one light.
-vec3 calculatePointLight(PointLight light, vec3 normal, vec3 baseColor) {
-    // this is really from fragment position to light position. 
-    // we do this to align with the normal.
-    vec3 lightDiff = light.position - fsIn.fragWorldPos;
-    vec3 lightDir = normalize(lightDiff);
-
-    // hehe we will be using this in the PBR rendering next time!!
-    float cosTheta = max(dot(lightDir, normal), 0);
-
-    // this is our diffuse.
-    vec3 diffuseColor = baseColor * cosTheta * light.color;
-
-    // let's calculate specular
-    vec3 viewDir = normalize(cameraPos - fsIn.fragWorldPos);
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    vec3 specularColor = pow(max(dot(normal, halfwayDir), 0.0), 32.0) * light.color;
-
-    // Attenuation vals
-    float dist = length(lightDiff);
-    float attenVal = 1.0 / (light.attenuation[0] + light.attenuation[1] * dist + 
-    		    light.attenuation[2] * (dist * dist));  
-    diffuseColor *= attenVal;
-    specularColor *= attenVal;
-
-    return diffuseColor + specularColor;
-}
-
 void main() {
     // Getting the normals..
     vec3 normal;
@@ -116,18 +88,31 @@ void main() {
         normal = normalize(fsIn.normal);
     }
 
-    // Getting base color
-    vec3 baseColor = isUsingAlbedoMap ? vec3(texture(albedoMap, fsIn.textureUnit)) : albedo;
+    // Getting base color, converts from sRGB
+    vec3 baseColor = isUsingAlbedoMap 
+                    ? pow(texture(albedoMap, fsIn.textureUnit).rgb, vec3(2.2)) 
+                    : albedo;
 
     // ambient is the easiest.
     vec3 finalColor = baseColor * ambientFactor;
 
+    // Getting material texture
+    if (isUsingPackedTextureMap) {
+        vec3 map = texture(packedMap, fsIn.textureUnit).rgb;
+        cfg.metallic   = map.r;
+        cfg.roughness  = map.g;
+        cfg.occulusion = map.b;
+    } else {
+        cfg = material;
+    }
+
     // Calculate diffuse and specular light for each light.
     for(int i = 0; i < pointLightCount; ++i) {
         // Calculate point light contribution using microfacet model
-        finalColor += microfacetModel(fsIn.fragWorldPos, normal, pointLights[i].color, fsIn.pointLightViewPos[i]);
+        finalColor += microfacetModel(fsIn.fragWorldPos, normal, pointLights[i].position, pointLights[i].color, baseColor);
     }
-
+    
+    finalColor = pow(finalColor, vec3(1.0/2.2)); 
     FragColor = vec4(finalColor, 1);
 }
 
@@ -141,7 +126,7 @@ void main() {
 //
 float ggxDistribution(float nDotH) 
 {
-    float alpha2 = material.roughness * material.roughness * material.roughness * material.roughness;
+    float alpha2 = cfg.roughness * cfg.roughness * cfg.roughness * cfg.roughness;
     float d = (nDotH * nDotH) * (alpha2 - 1.0f) + 1.0f;
     return alpha2 / (PI * d * d);
 }
@@ -153,7 +138,7 @@ float ggxDistribution(float nDotH)
 //
 float geomSmith(float nDotL) 
 {
-    float k = (material.roughness + 1.0f) * (material.roughness + 1.0f) / 8.0f;
+    float k = (cfg.roughness + 1.0f) * (cfg.roughness + 1.0f) / 8.0f;
     float denom = nDotL * (1.0f - k) + k;
     return 1.0f / denom;
 }
@@ -164,11 +149,11 @@ float geomSmith(float nDotL)
 // Parameter is cosine of the angle between the light direction vector and 
 // the halfway vector of both the light direction and the view direction
 //
-vec3 schlickFresnel(float lDotH) 
+vec3 schlickFresnel(float lDotH, vec3 baseColor) 
 {
     vec3 f0 = vec3(0.04f); // Dielectrics
-    if (material.metallic == 1.0f)
-        f0 = albedo;
+    if (cfg.metallic == 1.0f)
+        f0 = baseColor;
     return f0 + (1.0f - f0) * pow(1.0f - lDotH, 5);
 }
 
@@ -179,25 +164,26 @@ vec3 schlickFresnel(float lDotH)
 // are oriented in various directions. Only those that are oriented correctly to reflect toward 
 // the viewer can contribute.
 //
-// Parameters are the position of a fragment and the surface normal in the view space.
+// Parameters are the position of a fragment and the surface normal in the world space.
 //
-vec3 microfacetModel(vec3 position, vec3 n, vec3 lightIntensity, vec3 lightViewPos) 
+vec3 microfacetModel(vec3 position, vec3 n, vec3 lightPos, vec3 lightIntensity, vec3 baseColor) 
 {  
-    vec3 diffuseBrdf = albedo;
-
-    vec3 l = lightViewPos - position;
+    vec3 l = lightPos - position;
     float dist = length(l);
     l = normalize(l);
-    lightIntensity *= 100 / (dist * dist); // Intensity is normalized, so scale up by 100 first
+    lightIntensity *= 1.0 / (dist * dist); 
 
-    vec3 v = normalize(-position);
+    vec3 v = normalize(cameraPos - position);
     vec3 h = normalize(v + l);
     float nDotH = dot(n, h);
     float lDotH = dot(l, h);
     float nDotL = max(dot(n, l), 0.0f);
     float nDotV = dot(n, v);
-    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * schlickFresnel(lDotH) 
-                            * geomSmith(nDotL) * geomSmith(nDotV); 
 
-    return (diffuseBrdf + PI * specBrdf) * lightIntensity * nDotL;
+    vec3 fresnel = schlickFresnel(lDotH, baseColor);
+    vec3 diffuseBrdf = baseColor;
+    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * schlickFresnel(lDotH, baseColor) 
+                            * geomSmith(nDotL) * geomSmith(nDotV);
+
+    return (diffuseBrdf + specBrdf) * lightIntensity * nDotL;
 }

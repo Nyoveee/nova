@@ -15,25 +15,11 @@ uniform mat4 model;
 uniform mat3 normalMatrix;
 uniform bool isUsingNormalMap;
 
-// === LIGHT PROPERTIES ===
-struct PointLight {
-    vec3 position;
-    vec3 color;
-    vec3 attenuation;
-};
-
-
-layout(std430, binding = 0) buffer PointLights {
-    uint pointLightCount;
-    PointLight pointLights[];
-};
-
 out VS_OUT {
     vec2 textureUnit;
     vec3 normal;
     vec3 fragWorldPos;
     mat3 TBN;
-    vec3 pointLightViewPos[];
 } vsOut;
 
 void main()
@@ -60,9 +46,4 @@ void main()
 
     // we construct the TBN matrix, a change-of-basis matrix allowing us to transform any vectors from world space to tangent space. (specific for each primitive.)
     vsOut.TBN = mat3(T, B, N);
-
-    // Transform light positions and directions to view space
-    for (int i = 0; i < pointLightCount; ++i) {
-        vsOut.pointLightViewPos[i] = (view * vec4(pointLights[i].position, 1.0f)).xyz;
-    }
 }
