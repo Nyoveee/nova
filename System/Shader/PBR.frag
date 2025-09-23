@@ -28,9 +28,6 @@ Config cfg;
 uniform float ambientFactor;
 
 const float PI = 3.14159265358979323846;
-float ggxDistribution(float nDotH);
-float geomSmith(float nDotL) ;
-vec3 schlickFresnel(float lDotH, vec3 baseColor);
 
 // === LIGHT PROPERTIES ===
 struct PointLight {
@@ -69,9 +66,16 @@ layout(std430, binding = 2) buffer SpotLights {
 };
 
 uniform vec3 cameraPos;
+
+// LIGHT FUNCTIONS
+float ggxDistribution(float nDotH);
+float geomSmith(float nDotL) ;
+vec3 schlickFresnel(float lDotH, vec3 baseColor);
 vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, PointLight light);
 vec3 microfacetModelDir(vec3 position, vec3 n, vec3 baseColor, DirectionalLight light);
 vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, SpotLight light);
+// Helper function
+vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor);
 
 // === NORMAL MAPPING ===
 uniform bool isUsingNormalMap;
@@ -180,42 +184,18 @@ vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, PointLight ligh
     l = normalize(l);
     vec3 lightIntensity = light.color;
     lightIntensity *= 1.0 / (dist * dist); 
-
+    
     vec3 v = normalize(cameraPos - position);
-    vec3 h = normalize(v + l);
-    float nDotH = dot(n, h);
-    float lDotH = dot(l, h);
-    float nDotL = max(dot(n, l), 0.0f);
-    float nDotV = dot(n, v);
-
-    vec3 fresnel = schlickFresnel(lDotH, baseColor);
-    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * fresnel 
-                            * geomSmith(nDotL) * geomSmith(nDotV);
-    vec3 diffuseBrdf = vec3(1.0) - fresnel;
-    diffuseBrdf *= 1.0 - cfg.metallic;
-
-    return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
+    return BRDFCalculation(n, v, l, lightIntensity, baseColor);
 }
 
 vec3 microfacetModelDir(vec3 position, vec3 n, vec3 baseColor, DirectionalLight light) 
 {  
     vec3 l = normalize(-light.direction);
     vec3 lightIntensity = light.color;
-
+    
     vec3 v = normalize(cameraPos - position);
-    vec3 h = normalize(v + l);
-    float nDotH = dot(n, h);
-    float lDotH = dot(l, h);
-    float nDotL = max(dot(n, l), 0.0f);
-    float nDotV = dot(n, v);
-
-    vec3 fresnel = schlickFresnel(lDotH, baseColor);
-    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * fresnel 
-                            * geomSmith(nDotL) * geomSmith(nDotV);
-    vec3 diffuseBrdf = vec3(1.0) - fresnel;
-    diffuseBrdf *= 1.0 - cfg.metallic;
-
-    return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
+    return BRDFCalculation(n, v, l, lightIntensity, baseColor);
 }
 
 vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, SpotLight light) 
@@ -237,8 +217,13 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, SpotLight light)
     spotIntensity = clamp(spotIntensity, 0.0, 1.0);
     vec3 lightIntensity = light.color;
     lightIntensity *= 1.0 / (dist * dist); 
-
+    
     vec3 v = normalize(cameraPos - position);
+    return BRDFCalculation(n, v, l, lightIntensity * spotIntensity, baseColor);
+}
+
+vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor)
+{
     vec3 h = normalize(v + l);
     float nDotH = dot(n, h);
     float lDotH = dot(l, h);
@@ -252,4 +237,5 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, SpotLight light)
     diffuseBrdf *= 1.0 - cfg.metallic;
 
     return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
+    
 }
