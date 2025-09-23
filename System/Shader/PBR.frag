@@ -93,9 +93,6 @@ void main() {
                     ? pow(texture(albedoMap, fsIn.textureUnit).rgb, vec3(2.2)) 
                     : albedo;
 
-    // ambient is the easiest.
-    vec3 finalColor = baseColor * ambientFactor;
-
     // Getting material texture
     if (isUsingPackedTextureMap) {
         vec3 map = texture(packedMap, fsIn.textureUnit).rgb;
@@ -105,6 +102,9 @@ void main() {
     } else {
         cfg = material;
     }
+
+    // ambient is the easiest.
+    vec3 finalColor = baseColor * ambientFactor * cfg.occulusion;
 
     // Calculate diffuse and specular light for each light.
     for(int i = 0; i < pointLightCount; ++i) {
@@ -152,8 +152,7 @@ float geomSmith(float nDotL)
 vec3 schlickFresnel(float lDotH, vec3 baseColor) 
 {
     vec3 f0 = vec3(0.04f); // Dielectrics
-    if (cfg.metallic == 1.0f)
-        f0 = baseColor;
+    f0 = mix(f0, baseColor, cfg.metallic);
     return f0 + (1.0f - f0) * pow(1.0f - lDotH, 5);
 }
 
@@ -181,9 +180,10 @@ vec3 microfacetModel(vec3 position, vec3 n, vec3 lightPos, vec3 lightIntensity, 
     float nDotV = dot(n, v);
 
     vec3 fresnel = schlickFresnel(lDotH, baseColor);
-    vec3 diffuseBrdf = baseColor;
-    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * schlickFresnel(lDotH, baseColor) 
+    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * fresnel 
                             * geomSmith(nDotL) * geomSmith(nDotV);
+    vec3 diffuseBrdf = baseColor;
+    //diffuseBrdf *= 1.0 - cfg.metallic;
 
-    return (diffuseBrdf + specBrdf) * lightIntensity * nDotL;
+    return (diffuseBrdf + PI * specBrdf) * lightIntensity * nDotL;
 }

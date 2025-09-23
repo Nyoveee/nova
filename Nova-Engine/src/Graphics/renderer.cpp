@@ -657,6 +657,7 @@ void Renderer::setupPBRShader(Material const& material) {
 		}
 		// Constants
 		else {
+			PBRShader.setBool("isUsingPackedTextureMap", false);
 			PBRShader.setFloat("material.roughness", config.roughness);
 			PBRShader.setFloat("material.metallic", config.metallic);
 			PBRShader.setFloat("material.occulusion", config.occulusion);
