@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\navMesh.h" />
     <ClInclude Include="src\Assets\resource.h" />
     <ClInclude Include="src\Assets\audio.h" />
     <ClInclude Include="src\Assets\cubemap.h" />
@@ -153,6 +154,23 @@
     <ClInclude Include="src\Assets\scriptAsset.h" />
     <ClInclude Include="src\Assets\texture.h" />
     <ClInclude Include="src\Imported\BS_thread_pool.hpp" />
+    <ClInclude Include="src\Detour\DetourCrowd\DetourCrowd.h" />
+    <ClInclude Include="src\Detour\DetourCrowd\DetourLocalBoundary.h" />
+    <ClInclude Include="src\Detour\DetourCrowd\DetourObstacleAvoidance.h" />
+    <ClInclude Include="src\Detour\DetourCrowd\DetourPathCorridor.h" />
+    <ClInclude Include="src\Detour\DetourCrowd\DetourPathQueue.h" />
+    <ClInclude Include="src\Detour\DetourCrowd\DetourProximityGrid.h" />
+    <ClInclude Include="src\Detour\DetourTileCache\DetourTileCache.h" />
+    <ClInclude Include="src\Detour\DetourTileCache\DetourTileCacheBuilder.h" />
+    <ClInclude Include="src\Detour\Detour\DetourAlloc.h" />
+    <ClInclude Include="src\Detour\Detour\DetourAssert.h" />
+    <ClInclude Include="src\Detour\Detour\DetourCommon.h" />
+    <ClInclude Include="src\Detour\Detour\DetourMath.h" />
+    <ClInclude Include="src\Detour\Detour\DetourNavMesh.h" />
+    <ClInclude Include="src\Detour\Detour\DetourNavMeshBuilder.h" />
+    <ClInclude Include="src\Detour\Detour\DetourNavMeshQuery.h" />
+    <ClInclude Include="src\Detour\Detour\DetourNode.h" />
+    <ClInclude Include="src\Detour\Detour\DetourStatus.h" />
     <ClInclude Include="src\Imported\xresource_guid.h" />
     <ClInclude Include="src\Internal\export.h" />
     <ClInclude Include="src\Internal\family.h" />
@@ -171,16 +189,32 @@
   <ItemGroup>
     <ClCompile Include="src\Assets\audio.cpp" />
     <ClCompile Include="src\Assets\cubemap.cpp" />
+    <ClCompile Include="src\Assets\navMesh.cpp" />
     <ClCompile Include="src\Internal\assetIO.cpp" />
     <ClCompile Include="src\Assets\model.cpp" />
+    <ClCompile Include="src\Detour\DetourCrowd\DetourCrowd.cpp" />
+    <ClCompile Include="src\Detour\DetourCrowd\DetourLocalBoundary.cpp" />
+    <ClCompile Include="src\Detour\DetourCrowd\DetourObstacleAvoidance.cpp" />
+    <ClCompile Include="src\Detour\DetourCrowd\DetourPathCorridor.cpp" />
+    <ClCompile Include="src\Detour\DetourCrowd\DetourPathQueue.cpp" />
+    <ClCompile Include="src\Detour\DetourCrowd\DetourProximityGrid.cpp" />
+    <ClCompile Include="src\Detour\DetourTileCache\DetourTileCache.cpp" />
+    <ClCompile Include="src\Detour\DetourTileCache\DetourTileCacheBuilder.cpp" />
+    <ClCompile Include="src\Detour\Detour\DetourAlloc.cpp" />
+    <ClCompile Include="src\Detour\Detour\DetourAssert.cpp" />
+    <ClCompile Include="src\Detour\Detour\DetourCommon.cpp" />
+    <ClCompile Include="src\Detour\Detour\DetourNavMesh.cpp" />
+    <ClCompile Include="src\Detour\Detour\DetourNavMeshBuilder.cpp" />
+    <ClCompile Include="src\Detour\Detour\DetourNavMeshQuery.cpp" />
+    <ClCompile Include="src\Detour\Detour\DetourNode.cpp" />
     <ClCompile Include="src\Assets\scriptAsset.cpp" />
     <ClCompile Include="src\Assets\texture.cpp" />
     <ClCompile Include="src\Imported\glad.cpp" />
     <ClCompile Include="src\Internal\Logger.cpp" />
     <ClCompile Include="src\Internal\nova_math.cpp" />
-    <ClCompile Include="src\Loader\audioLoader.cpp" />
     <ClCompile Include="src\Loader\cubemapLoader.cpp" />
     <ClCompile Include="src\Loader\modelLoader.cpp" />
+    <ClCompile Include="src\Loader\navMeshLoader.cpp" />
     <ClCompile Include="src\Loader\scriptLoader.cpp" />
     <ClCompile Include="src\Loader\textureLoader.cpp" />
   </ItemGroup>

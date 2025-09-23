@@ -8,84 +8,95 @@
 #include "ResourceManager/resourceManager.h"
 #include "Engine/engine.h"
 
-AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine, std::filesystem::path rootDirectory) :
+AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine) :
 	assetManager	{ assetManager },
 	resourceManager	{ resourceManager },
 	engine			{ engine },
-	rootDirectory	{ rootDirectory },
 
 	watch			{
-						rootDirectory.wstring(),
+						AssetIO::assetDirectory.wstring(),
 						[&](const std::wstring& path, const filewatch::Event change_type) {
-							HandleFileChangeCallback(path, change_type);
+							assetManager.submitCallback([&, path, change_type]() { 
+								HandleFileChangeCallback(path, change_type);
+							});
 						}
 					}
 {}
-
-#if 0
-void AssetDirectoryWatcher::RegisterCallbackAssetContentAdded(std::function<void(std::string)> callback){
-	std::lock_guard<std::mutex> lock{ contentAddCallbackMutex };
-	assetContentAddCallbacks.push_back(callback);
-}
-
-void AssetDirectoryWatcher::RegisterCallbackAssetContentModified(std::function<void(ResourceID)> callback){
-	std::lock_guard<std::mutex> lock{ contentModifiedCallbackMutex };
-	assetContentModifiedCallbacks.push_back(callback);
-}
-
-void AssetDirectoryWatcher::RegisterCallbackAssetContentDeleted(std::function<void(ResourceID)> callback){
-	std::lock_guard<std::mutex> lock{ contentDeleteCallbackMutex };
-	assetContentDeletedCallbacks.push_back(callback);
-}
-#endif
 
 void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type) {
 	// the app is destructing, don't do anything.
 	if (engineIsDestructing)
 		return;
 
-#if 0
-	std::filesystem::path absPath{ rootDirectory.string() + "\\" + std::filesystem::path(path).string()};
+	std::filesystem::path absPath{ AssetIO::assetDirectory / std::filesystem::path(path) };
 
 	if (IsPathHidden(absPath))
 		return;
 	
-	// New File added
-	if (change_type == filewatch::Event::added) {
-		// Thread safe callback submission
-		assetManager.submitCallback([&, absPath]() {
-			engine.scriptingAPIManager.OnAssetContentAddedCallback(absPath.string());
-		});
-
-		return;
-	}
-
 	// Attempts to finds the appropriate asset id.
 	ResourceID resourceId = assetManager.getResourceID(absPath);
 
-	if (resourceId == INVALID_RESOURCE_ID)
-		return;
+	switch (change_type)
+	{
+	case filewatch::Event::added:
+		engine.scriptingAPIManager.OnAssetContentAddedCallback(absPath.string());
+		assetManager.onAssetAddition(absPath);
 
-	if (change_type != filewatch::Event::removed) {
+		break;
+	case filewatch::Event::removed:
+		engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
+		assetManager.onAssetDeletion(resourceId);
+		
+		break;
+	case filewatch::Event::modified: {
+		if (resourceId == INVALID_RESOURCE_ID)
+			break;
+
 		// There is a known bug in filewatch(Since 2021...) where modified is called twice, including when it's added
 		// Therefore this will check the file with the existing time before updating it(Works except copy pasting from existing files)
-		std::filesystem::file_time_type time{ std::filesystem::last_write_time(absPath) };
-		
-		if (lastWriteTimes[absPath.string()] != time) {
-			lastWriteTimes[absPath.string()] = time;
 
-			// Thread safe callback submission
-			assetManager.submitCallback([&, resourceId]() {
-				engine.scriptingAPIManager.OnAssetContentModifiedCallback(resourceId);
-			});
+		// + renaming events sometimes cause the modified event to be invoked.
+		// we combat this by comparing the previous last write modified.
+
+		std::filesystem::file_time_type lastWriteTime{ std::filesystem::last_write_time(absPath) };
+
+		// get the last write of this invocation..
+		auto iterator = lastWriteTimes.find(resourceId);
+
+		if (iterator != lastWriteTimes.end()) {
+			// check if this invocation is a repeated one.
+			if (iterator->second == lastWriteTime) {
+				// this is a repeated invocation.
+				break;
+			}
+
+			// update map..
+			iterator->second = lastWriteTime;
 		}
+		else {
+			// new invocation, let's record on our map..
+			lastWriteTimes.insert({ resourceId, lastWriteTime });
+		}
+
+
+		BasicAssetInfo* descriptor = assetManager.getDescriptor(resourceId);
+
+		if (!descriptor) {
+			return;
+		}
+
+		auto epoch = std::chrono::duration_cast<std::chrono::milliseconds>(lastWriteTime.time_since_epoch());
+		descriptor->timeLastWrite = epoch;
+
+		Logger::info("Handling file change..");
+		engine.scriptingAPIManager.OnAssetContentModifiedCallback(resourceId);
+		assetManager.onAssetModification(resourceId, absPath);
+
+		break;
 	}
-	else{
-		assetManager.submitCallback([&, resourceId]() {
-			engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
-		});
+	default:
+		break;
 	}
-#endif
 }
 
 bool AssetDirectoryWatcher::IsPathHidden(std::filesystem::path const& path) const

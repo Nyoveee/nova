@@ -6,11 +6,18 @@ NavigationSystem::NavigationSystem(Engine& engine) :
 	engine			{ engine },
 	resourceManager	{ engine.resourceManager },
 	registry		{ engine.ecs.registry },
-	navData			{ nullptr }
-{
-}
+	navMeshId		{ INVALID_RESOURCE_ID }
+{}
 
 NavigationSystem::~NavigationSystem()
 {
+}
+
+void NavigationSystem::setNewNavMesh(ResourceID p_navMeshId) {
+	navMeshId = p_navMeshId;
+}
+
+ResourceID NavigationSystem::getNavMeshId() const {
+	return navMeshId;
 }
 

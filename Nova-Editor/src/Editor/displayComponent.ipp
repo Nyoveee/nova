@@ -1,5 +1,8 @@
 #include "reflection.h"
 #include "ResourceManager/resourceManager.h"
+#include "AssetManager/assetManager.h"
+#include "Audio/audioSystem.h"
+#include "Engine/engine.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
@@ -7,6 +10,7 @@
 #include "magic_enum.hpp"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
+void displayScriptFields(entt::entity entity, ScriptData& scriptData, ScriptingAPIManager& scriptingAPIManager, Engine& engine);
 
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
@@ -20,6 +24,9 @@ namespace {
 		(void) entity;
 
 		ResourceManager& resourceManager = componentInspector.resourceManager;
+		AssetManager& assetManager		 = componentInspector.assetManager;
+		AudioSystem& audioSystem		 = componentInspector.audioSystem;
+		
 		(void) resourceManager;
 
 		if constexpr (!reflection::isReflectable<Component>()) {
@@ -214,7 +221,7 @@ namespace {
 						// dataMember is of type TypedAssetID<T>
 						using OriginalAssetType = DataMemberType::AssetType;
 
-						componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
+						componentInspector.editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 							dataMember = DataMemberType{ resourceId };
 						});
 					}
@@ -236,17 +243,18 @@ namespace {
 					}
 					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
-
-						componentInspector.displayAssetDropDownList<ScriptAsset>(std::nullopt, "Add new script", [&](ResourceID resourceId) {
-							scriptDatas.push_back(ScriptData{ resourceId });
+						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
+						// Adding Scripts
+						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
+							ScriptData scriptData{ resourceId };
+							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
+							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(static_cast<unsigned int>(entity), static_cast<std::size_t>(scriptData.scriptId));
+							scriptDatas.push_back(scriptData);
 						});
 
-						// List of Scripts
 						int i{};
-
 						// Removal of Scripts
 						ImGui::BeginChild("", ImVec2(0, 400), ImGuiChildFlags_Border);
-
 						std::vector<ScriptData>::iterator it = std::remove_if(std::begin(scriptDatas), std::end(scriptDatas), [&](ScriptData& scriptData) {
 							ImGui::PushID(i++);
 							bool keepScript = true;
@@ -254,63 +262,95 @@ namespace {
 							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
 							assert(scriptAsset);
 
-							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript)) {
-								// To do display additional data
-							}
+							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
+								displayScriptFields(entity, scriptData, scriptingAPIManager,componentInspector.editor.engine);
 
 							ImGui::PopID();
 							return !keepScript;
 						});
-
 						ImGui::EndChild();
-
-						if(it != std::end(scriptDatas))
+						if (it != std::end(scriptDatas)) {
+							scriptingAPIManager.removeEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(it->scriptId));
 							scriptDatas.erase(it);
+						}
+				
 					}
 
 					else if constexpr (std::same_as<DataMemberType, entt::entity>) {
 						ImGui::Text("%s: %u", dataMemberName, dataMember);
 					}
 
-					if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
-						std::vector<AudioData>& audioDatas{ dataMember };
 
-						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId) {
-							audioDatas.push_back(AudioData{ resourceId });
+					if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>)
+					{
+						auto& audioDatas = dataMember;
+
+						// Add Audio
+						componentInspector.editor.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
+						{
+							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
+							assert(audioAsset);
+
+							// Store full AudioData directly in the component
+							auto namePtr = assetManager.getName(resourceId);
+
+							if(namePtr) 
+								audioDatas.emplace(namePtr->c_str(), AudioData{ resourceId, 1.0f, false });
 						});
 
 						// List of Audio Files
 						int i{};
-
 						ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
 
-						std::vector<AudioData>::iterator it = std::remove_if(std::begin(audioDatas), std::end(audioDatas), [&](AudioData& audioData) {
+						for (auto it = audioDatas.begin(); it != audioDatas.end();) {
 							ImGui::PushID(i++);
+
 							bool keepAudioFile = true;
 
+							AudioData& audioData = it->second;
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
-							assert(audioAsset);
+							if (!audioAsset) {
+								// Invalid ResourceID
+								Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.AudioId));
+								continue;
+							}
 
-							if (ImGui::CollapsingHeader(audioAsset->getFilePath().string.c_str(), &keepAudioFile)) {
-								// Able to see and adjust Volume in Editor
-								if (ImGui::DragFloat( "Volume", & audioData.Volume, 1.0f, 0.0f, 1.0f)) {
-									// Update Playback Volume
-								}
-								// Adjust Mute/Unmute in Editor
-								if (ImGui::Checkbox("MuteAudio", &audioData.MuteAudio)) {
-									// Update Playback Mute/UnMute
+							auto audioNamePtr = assetManager.getName(audioData.AudioId);
+
+							if (audioNamePtr) {
+								if (ImGui::CollapsingHeader(audioNamePtr->c_str(), &keepAudioFile)) {
+									if (ImGui::Button("Play Audio")) {
+										if (audioSystem.isBGM(audioData.AudioId)) {
+											audioSystem.playBGM(audioData.AudioId, audioData.Volume);
+										}
+										else {
+											audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f, audioData.Volume);
+										}
+									}
+
+									if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
+										audioSystem.AdjustVol(audioData.AudioId, audioData.Volume);
+									}
+
+									if (ImGui::Button("Stop Audio")) {
+										audioSystem.StopAudio(audioData.AudioId);
+									}
 								}
 							}
 
 							ImGui::PopID();
-							return !keepAudioFile;
-						});
+
+							if (!keepAudioFile) {
+								it = audioDatas.erase(it);
+							}
+							else {
+								++it;
+							}
+						}
 
 						ImGui::EndChild();
-
-						if(it != std::end(audioDatas))
-							audioDatas.erase(it);
 					}
+
 
 
 					// it's an enum. let's display a dropdown box for this enum.
@@ -333,7 +373,6 @@ namespace {
 					ImGui::PopID();
 				},
 			component);
-
 			ImGui::PopID();
 			ImGui::PopID();
 

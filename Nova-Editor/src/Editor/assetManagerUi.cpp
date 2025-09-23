@@ -5,6 +5,7 @@
 #include "assetManagerUi.h"
 #include "imgui.h"
 #include "IconsFontAwesome6.h"
+#include "assetViewerUi.h"
 
 #include "ImGui/misc/cpp/imgui_stdlib.h"
 
@@ -13,14 +14,12 @@
 
 #undef max
 
-AssetManagerUI::AssetManagerUI(Editor& editor) :
+AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 	assetManager	 { editor.assetManager },
 	resourceManager	 { editor.resourceManager },
+	assetViewerUi	 { assetViewerUi },
 	selectedFolderId { NONE }
-	//folderIcon		 { "System/Image/folder.png", false }
-{
-	//folderIcon.load();
-}
+{}
 
 void AssetManagerUI::update() {
 	ImGui::Begin(ICON_FA_BOXES_PACKING " Content Browser");
@@ -78,6 +77,7 @@ void AssetManagerUI::displayRightContentPanel() {
 		ImGui::BeginChild("(Main) Content Browser", ImVec2(0, 0), true);
 		displayFolderContent(selectedFolderId);
 		ImGui::EndChild();
+		displayCreateAssetContextMenu();
 	}
 
 	ImGui::EndChild();
@@ -201,16 +201,22 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 }
 
 void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
-	std::string const& assetName = assetManager.getName(resourceId);
+	std::string const* assetName = assetManager.getName(resourceId);
+
+	if (!assetName) {
+		return;
+	}
 
 	displayThumbnail(
 		//static_cast<int>(static_cast<std::size_t>(resourceId)),
 		static_cast<std::size_t>(resourceId),
 		NO_TEXTURE,
-		assetName.empty() ? "<no name>" : assetName.c_str(),
+		assetName->empty() ? "<no name>" : assetName->c_str(),
 
 		// callback when the thumbnail gets clicked.
-		[&]() {},
+		[&]() {
+			assetViewerUi.selectNewResourceId(resourceId);
+		},
 
 		// callback when the thumbnail gets double clicked.
 		[&]() {
@@ -241,6 +247,34 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		// callback when the thumbnail gets double clicked.
 		[&]() {}
 	);
+}
+
+void AssetManagerUI::displayCreateAssetContextMenu() {
+	if (ImGui::BeginPopupContextItem("CreateAssetContextMenu")) {
+		if (ImGui::MenuItem("[+] Create New Scene")) {
+			
+		}
+		
+		if (ImGui::MenuItem("[+] Create New Script")) {
+		
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void AssetManagerUI::displayCreateAssetContextMenu() {
+	if (ImGui::BeginPopupContextItem("CreateAssetContextMenu")) {
+		if (ImGui::MenuItem("[+] Create New Scene")) {
+			
+		}
+		
+		if (ImGui::MenuItem("[+] Create New Script")) {
+		
+		}
+
+		ImGui::EndPopup();
+	}
 }
 
 //void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
@@ -311,6 +345,13 @@ bool AssetManagerUI::isAMatchWithSearchQuery(std::string const& name) const {
 
 void AssetManagerUI::handleThumbnailDoubleClick(ResourceID resourceId) {
 	if (resourceManager.isResource<ScriptAsset>(resourceId)) {
+		AssetFilePath const* filePath = assetManager.getFilepath(resourceId);
+
+		if (!filePath) {
+			Logger::error("Attempting to open script of invalid resource id {}", static_cast<std::size_t>(resourceId));
+			return;
+		}
+
 		// Launch a process that opens visual studio with the scripts.
 		static STARTUPINFO si;
 		static PROCESS_INFORMATION pi;
@@ -318,8 +359,10 @@ void AssetManagerUI::handleThumbnailDoubleClick(ResourceID resourceId) {
 		si.cb = sizeof(si);
 		ZeroMemory(&pi, sizeof(pi));
 		std::wostringstream wss;
-		wss << " /Edit \"" << assetManager.getFilepath(resourceId).string.c_str() << "\"";
+
+		wss << " /Edit \"" << filePath->string.c_str() << "\"";
 		std::wstring path{ wss.str() };
+
 		// The path can be applied to createprocess
 		// https://stackoverflow.com/questions/973561/starting-visual-studio-from-a-command-prompt
 		CreateProcess(L"C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\IDE\\devenv.exe",

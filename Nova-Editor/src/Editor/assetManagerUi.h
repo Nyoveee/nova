@@ -13,10 +13,11 @@ constexpr ImTextureID NO_TEXTURE = std::numeric_limits<ImTextureID>::max();
 class Editor;
 class AssetManager;
 class ResourceManager;
+class AssetViewerUI;
 
 class AssetManagerUI {
 public:
-	AssetManagerUI(Editor& assetManager);
+	AssetManagerUI(Editor& assetManager, AssetViewerUI& assetViewerUi);
 
 public:
 	void update();
@@ -35,6 +36,7 @@ private:
 	void displayFolderContent(FolderID folderId);
 	void displayAssetThumbnail(ResourceID resourceId);
 	void displayFolderThumbnail(FolderID folderId);
+	void displayCreateAssetContextMenu();
 
 	//void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
 	void displayThumbnail(std::size_t imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
@@ -49,6 +51,7 @@ private:
 private:
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
+	AssetViewerUI& assetViewerUi;
 
 	FolderID selectedFolderId;
 

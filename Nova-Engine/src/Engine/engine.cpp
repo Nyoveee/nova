@@ -73,11 +73,12 @@ void Engine::setupSimulation() {
 void Engine::render(RenderTarget target) {
 	ZoneScoped;
 
+
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(toDebugRenderPhysics);
+	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh);
 
 	if (target == RenderTarget::DefaultFrameBuffer) {
 		renderer.renderToDefaultFBO();
@@ -90,15 +91,17 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		if (!scriptingAPIManager.loadAllScripts())
+		//Serialiser::serialiseScene(ecs);
+
+		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+
+		if (!scriptingAPIManager.startSimulation())
 		{
 			stopSimulation();
 			return;
 		}
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();
-
-		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
@@ -113,13 +116,13 @@ void Engine::stopSimulation() {
 
 	setupSimulationFunction = [&]() {
 		physicsManager.clear();
-		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
 
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
 		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+
 		inSimulationMode = false;
 	};
 }

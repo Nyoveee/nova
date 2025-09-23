@@ -72,6 +72,9 @@ public:
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;
 
+	//allows render debug for game
+	bool					toDebugRenderNavMesh;
+
 private:
 	int				gameWidth;
 	int				gameHeight;

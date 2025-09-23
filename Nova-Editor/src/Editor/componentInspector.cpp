@@ -56,12 +56,11 @@ ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
 	ecs				{ editor.engine.ecs },
 	resourceManager { editor.engine.resourceManager },
-	assetManager	{ editor.assetManager }
+	assetManager	{ editor.assetManager },
+	audioSystem		{ editor.engine.audioSystem }
 {}
 
 void ComponentInspector::update() {
-	imguiCounter = 0;
-
 	ImGui::Begin(ICON_FA_WRENCH " Component Inspector");
 
 	// Begin displaying entity meta data..
@@ -106,5 +105,28 @@ void ComponentInspector::update() {
 
 	ImGui::End();
 }
+
+void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback)
+{
+	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
+	if (ImGui::BeginCombo("Add new script", "##")) {
+		for (auto&& scriptID : allScripts) {
+			auto compareID = [&](ScriptData const& ownedScript) { return scriptID == ownedScript.scriptId; };
+			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
+				continue;
+
+			std::string const* namePtr = assetManager.getName(scriptID);
+
+			if (namePtr) {
+				if (ImGui::Selectable(namePtr->c_str()))
+					onClickCallback(scriptID);
+			}
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopID();
+}
+
 
 #include "displayComponent.ipp"

@@ -31,7 +31,7 @@ void DebugRenderer::DrawLine(JPH::RVec3Arg from, JPH::RVec3Arg to, JPH::ColorArg
 void DebugRenderer::DrawTriangle(JPH::RVec3Arg vertice1, JPH::RVec3Arg vertice2, JPH::RVec3Arg vertice3, JPH::ColorArg color, ECastShadow castShadow) {
 	(void) castShadow;
 
-	renderer.submitTriangle(toGlmVec3(vertice1), toGlmVec3(vertice2), toGlmVec3(vertice3), toColorA(color));
+	renderer.submitTriangle(toGlmVec3(vertice1), toGlmVec3(vertice2), toGlmVec3(vertice3));
 }
 
 void DebugRenderer::DrawText3D(JPH::RVec3Arg position, JPH::string_view const& string, JPH::ColorArg color, float height) {

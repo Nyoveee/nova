@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Include</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Include</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
@@ -162,14 +162,16 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
   <ItemGroup>
     <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
-    <ClCompile Include="src\Editor\loadScene.cpp" />
-    <ClCompile Include="src\Editor\navMeshGeneration.cpp" />
+    <ClCompile Include="src\Editor\assetViewerUi.cpp" />
+    <ClCompile Include="src\Editor\navigationWindow.cpp" />
+    <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\assetManagerUi.cpp" />
     <ClCompile Include="src\Editor\componentInspector.cpp" />
     <ClCompile Include="src\Editor\console.cpp" />
     <ClCompile Include="src\Editor\controlOverlay.cpp" />
     <ClCompile Include="src\Editor\debugUI.cpp" />
     <ClCompile Include="src\Editor\displayMaterial.cpp" />
+    <ClCompile Include="src\Editor\displayScripts.cpp" />
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\gizmo.cpp" />
     <ClCompile Include="src\Editor\hierarchy.cpp" />
@@ -184,21 +186,21 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\ImGui\imgui_tables.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="src\Editor\Recast\Recast.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastAlloc.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastArea.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastAssert.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastContour.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastFilter.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastLayers.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastMesh.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastMeshDetail.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastRasterization.cpp" />
-    <ClCompile Include="src\Editor\Recast\RecastRegion.cpp" />
-    <ClCompile Include="src\Editor\Recast_DebugUtils\DebugDraw.cpp" />
-    <ClCompile Include="src\Editor\Recast_DebugUtils\DetourDebugDraw.cpp" />
-    <ClCompile Include="src\Editor\Recast_DebugUtils\RecastDebugDraw.cpp" />
-    <ClCompile Include="src\Editor\Recast_DebugUtils\RecastDump.cpp" />
+    <ClCompile Include="src\Navigation\Recast\Recast.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastAlloc.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastArea.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastAssert.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastContour.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastFilter.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastLayers.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastMesh.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastMeshDetail.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastRasterization.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastRegion.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\DebugDraw.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\DetourDebugDraw.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\RecastDebugDraw.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\RecastDump.cpp" />
     <ClCompile Include="src\Editor\themes.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -214,8 +216,10 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Editor\loadScene.h" />
-    <ClInclude Include="src\Editor\navMeshGeneration.h" />
+    <ClInclude Include="src\Editor\assetViewerUi.h" />
+    <ClInclude Include="src\Editor\editor.ipp" />
+    <ClInclude Include="src\Editor\navigationWindow.h" />
+    <ClInclude Include="src\Navigation\navMeshGeneration.h" />
     <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />
     <ClInclude Include="src\AssetManager\assetFunctor.h" />
     <ClInclude Include="src\AssetManager\assetFunctor.ipp" />
@@ -250,13 +254,13 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ImGui\imstb_textedit.h" />
     <ClInclude Include="src\Editor\ImGui\imstb_truetype.h" />
     <ClInclude Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.h" />
-    <ClInclude Include="src\Editor\Recast\Recast.h" />
-    <ClInclude Include="src\Editor\Recast\RecastAlloc.h" />
-    <ClInclude Include="src\Editor\Recast\RecastAssert.h" />
-    <ClInclude Include="src\Editor\Recast_DebugUtils\DebugDraw.h" />
-    <ClInclude Include="src\Editor\Recast_DebugUtils\DetourDebugDraw.h" />
-    <ClInclude Include="src\Editor\Recast_DebugUtils\RecastDebugDraw.h" />
-    <ClInclude Include="src\Editor\Recast_DebugUtils\RecastDump.h" />
+    <ClInclude Include="src\Navigation\Recast\Recast.h" />
+    <ClInclude Include="src\Navigation\Recast\RecastAlloc.h" />
+    <ClInclude Include="src\Navigation\Recast\RecastAssert.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\DebugDraw.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\DetourDebugDraw.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDebugDraw.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDump.h" />
     <ClInclude Include="src\Editor\themes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

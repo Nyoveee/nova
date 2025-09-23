@@ -7,6 +7,13 @@
 #include "Logger.h"
 
 #include "cubemap.h"
+#include "Engine/engine.h"
+
+#define RecordAssetSubdirectory(AssetType) \
+	subAssetDirectories.insert({ Family::id<AssetType>(), descriptorDirectory / #AssetType })
+
+#define LoadAllDescriptorFiles(AssetType) \
+	loadAllDescriptorFiles<AssetType>(subAssetDirectories[Family::id<AssetType>()])
 
 namespace {
 	// we usually don't want to increment ids
@@ -19,7 +26,8 @@ namespace {
 AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	resourceManager		{ resourceManager },
 	engine				{ engine },
-	directoryWatcher	{ *this, resourceManager, engine, AssetIO::assetDirectory }
+	directoryWatcher	{ *this, resourceManager, engine },
+	folderId			{}
 {
 	// ========================================
 	// 1. Check if the descriptor directory exist, and the respective asset subdirectories.
@@ -60,111 +68,51 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	Logger::info("Verifying every intermediary assets..");
 	Logger::info("===========================\n");
 
-	FolderID folderId{ 0 };
-
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ AssetIO::assetDirectory }) {
-		std::filesystem::path assetPath = entry.path();
-
-		if (directoryWatcher.IsPathHidden(assetPath)) {
-			continue;
-		}
-
-		if (entry.is_directory()) {
-			recordFolder(folderId, assetPath);
-			incrementFolderId(folderId);
-			continue;
-		}
-
-		else if (!entry.is_regular_file()) {
-			continue;
-		}
-
-		// ------------------------------------------
-		// Attempt to retrieve resource id from asset file path.
-		// ------------------------------------------
-		ResourceID resourceId = INVALID_RESOURCE_ID;
-		auto iterator = intermediaryAssetsToDescriptor.find(assetPath);
-		
-		// intermediary asset not recorded (missing corresponding descriptor and resource file.)
-		if (iterator == std::end(intermediaryAssetsToDescriptor)) {
-			Logger::info("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string());
-
-			// we need to generate the corresponding descriptor file for this intermediary file.
-			resourceId = parseIntermediaryAssetFile(assetPath);
-			Logger::info("");
-		}
-		// intermediary asset recorded, retrieve id..
-		else {
-			resourceId = iterator->second.descriptor.id;
-		}
-
-		// found some intermediary asset file that is not supported.
-		if (resourceId == INVALID_RESOURCE_ID) {
-			continue;
-		}
-
-		// ------------------------------------------
-		// Save resource entry in the parent folder.
-		// ------------------------------------------
-
-		std::filesystem::path parentPath = assetPath.parent_path();
-
-		auto folderIterator = folderNameToId.find(parentPath.string());
-
-		if (folderIterator == std::end(folderNameToId)) {
-			Logger::error("Attempting to add asset to a non existing parent folder?");
-		}
-		else {
-			auto&& [_, parentFolderId] = *folderIterator;
-			directories[parentFolderId].assets.push_back(resourceId);
-		}
-		// ------------------------------------------
+		processAssetFilePath(entry.path());
 	}
+
+	// ========================================
+	// 4. We do some housekeeping, and find any outdated resource files with no corresponding descriptors.
+	// ========================================
+	for (const auto& entry : std::filesystem::recursive_directory_iterator{ AssetIO::resourceDirectory }) {
+		std::filesystem::path resourcePath = entry.path();
+
+		if (!entry.is_regular_file()) {
+			continue;
+		}
+
+		try {
+			ResourceID id = std::stoull(std::filesystem::path{ resourcePath }.stem().string());
+			auto iterator = assetToDescriptor.find(id);
+			
+			if (iterator == assetToDescriptor.end()) {
+				Logger::info("Found dangling resource file {} with no corresponding descriptor file, removing it..", resourcePath.string());
+				std::filesystem::remove(resourcePath);
+				resourceManager.removeResource(id);
+			}
+		}
+		catch (std::exception const&) {
+			Logger::info("Failed to get resource id {} from file, removing it..", resourcePath.string());
+		}
+	}
+
+	// By now everything should be serialized, loadAll the entityscripts containing the serializablefield data
+	engine.scriptingAPIManager.compileScriptAssembly();
 }
 
 AssetManager::~AssetManager() {
-#if 0
 	// let's serialise the asset meta data of all our stored info.
-	for (auto&& [id, assetPtr] : assets) {
-		Asset* asset = assetPtr.get();
+	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
+		assert(serialiseFunctorPtr && "Should never be nullptr");
 
-		if (!asset) {
-			Logger::error("Asset manager is storing an invalid asset!");
-			continue;
-		}
-
-		auto&& serialiseFunctorPtr = serialiseMetaDataFunctors[id];
-
-		if (!serialiseFunctorPtr) {
-			Logger::error("Asset manager failed to record the appropriate serialisation functor!");
-			continue;
-		}
-
-		// cool syntax? or abomination?
-		serialiseFunctorPtr->operator()(*asset, *this);
+		// serialise the descriptor file for this given asset id.
+		serialiseFunctorPtr->operator()(id, *this);
 	}
-#endif
 }
 
 #if 0
 
-
-void AssetManager::serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile) {
-	metaDataFile << static_cast<std::size_t>(asset.id) << "\n" << asset.name << "\n";
-}
-
-void AssetManager::OnAssetContentAddedCallback(std::string abspath)
-{
-	Logger::info("Called Asset Directory Added, {}", abspath);
-}
-
-void AssetManager::OnAssetContentModifiedCallback(AssetID assetId){
-	Logger::info("Called Asset Directory Modified, {}", static_cast<std::size_t>(assetId));
-}
-
-void AssetManager::OnAssetContentDeletedCallback(AssetID assetId){
-	Logger::info("Called Asset Directory Content Deleted, {}", static_cast<std::size_t>(assetId));
-}
 
 std::string AssetManager::GetRunTimeDirectory() {
 	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
@@ -198,15 +146,10 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	// lambda creates descriptor file, creates the resource file, and loads it to the resource manager.
 	auto initialiseResourceFile = [&]<typename T>() {
 		auto assetInfo = AssetIO::createDescriptorFile<T>(assetFilePath);
-
-		DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(assetInfo.id);
-
-		intermediaryAssetsToDescriptor.insert({ assetFilePath, { descriptorFilePath, assetInfo } });
-		createResourceFile<T>(assetInfo);
-		return assetInfo.id;
+		return createResourceFile<T>(assetInfo);
 	};
 
-	if (fileExtension == ".fbx") {
+	if (fileExtension == ".fbx" || fileExtension == ".obj") {
 		return initialiseResourceFile.template operator()<Model>();
 	}
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
@@ -223,6 +166,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".scene") {
 		return initialiseResourceFile.template operator()<Scene>();
+	}
+	else if (fileExtension == ".navmesh") {
+		return initialiseResourceFile.template operator()<NavMesh>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
@@ -242,7 +188,7 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 		rootDirectories.push_back(folderId);
 	}
 	else {
-		parentFolderId = folderNameToId[parentPath.string()];
+		parentFolderId = folderPathToId[parentPath.string()];
 		directories[parentFolderId].childDirectories.push_back(folderId);
 	}
 
@@ -255,35 +201,214 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 		std::filesystem::relative(path, AssetIO::assetDirectory)
 	};
 
-	folderNameToId[path.string()] = folderId;
+	folderPathToId[path.string()] = folderId;
+}
+
+bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::error("Attempt to rename file failed. Unable to find corresponding descriptor.");
+		return false;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+
+	// Determine the appropriate full new file path.
+	std::filesystem::path oldFullFilePath { descriptor->filepath };
+	std::filesystem::path parentPath = std::filesystem::path{ descriptor->filepath }.parent_path();
+	std::filesystem::path newFullFilePath = parentPath / newFileStem;
+
+	newFullFilePath.replace_extension(oldFullFilePath.extension());
+
+	if (std::filesystem::exists(newFullFilePath)) {
+		Logger::error("Attempt to rename file failed. New file path already exist.");
+		return false;
+	}
+
+	std::error_code errorCode;
+	std::filesystem::rename(oldFullFilePath, newFullFilePath, errorCode);
+
+	if (errorCode) {
+		Logger::error(
+			"Attempt to rename file failed w/ error code {}"
+			"\nAttempt to rename from: {} to {}.", errorCode.value(), oldFullFilePath.string(), newFullFilePath.string()
+		);
+
+		return false;
+	}
+
+	auto nodeHandle = intermediaryAssetsToDescriptor.extract(descriptor->filepath);
+
+	if (nodeHandle) {
+		nodeHandle.key() = newFullFilePath;
+		intermediaryAssetsToDescriptor.insert(std::move(nodeHandle));
+	}
+
+	descriptor->filepath = newFullFilePath;
+	Logger::info("Asset filepath rename successful.");
+
+	return true;
 }
 
 std::vector<FolderID> const& AssetManager::getRootDirectories() const {
 	return rootDirectories;
 }
 
-std::string const& AssetManager::getName(ResourceID id) const {
+std::string const* AssetManager::getName(ResourceID id) const {
 	auto iterator = assetToDescriptor.find(id);
 
 	if (iterator == assetToDescriptor.end()) {
-		static std::string invalidAssetName = "Invalid Asset.";
-		return invalidAssetName;
+		return nullptr;
 	}
 
 	auto&& [_, descriptor] = *iterator;
-	return descriptor.name;
+	assert(descriptor && "This ptr should never be null.");
+	return &descriptor->name;
 }
 
-AssetFilePath const& AssetManager::getFilepath(ResourceID id) const {
+AssetFilePath const* AssetManager::getFilepath(ResourceID id) const {
 	auto iterator = assetToDescriptor.find(id);
 
 	if (iterator == assetToDescriptor.end()) {
-		static AssetFilePath invalidFilePath{};
-		return invalidFilePath;
+		return nullptr;
 	}
 
 	auto&& [_, descriptor] = *iterator;
-	return descriptor.filepath;
+	assert(descriptor && "This ptr should never be null.");
+	return &descriptor->filepath;
+}
+
+BasicAssetInfo* AssetManager::getDescriptor(ResourceID id) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		return nullptr;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+	return descriptor.get();
+}
+
+ResourceID AssetManager::getResourceID(AssetFilePath const& assetFilePath) const {
+	auto iterator = intermediaryAssetsToDescriptor.find(assetFilePath);
+
+	if (iterator == intermediaryAssetsToDescriptor.end()) {
+		return INVALID_RESOURCE_ID;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+	return descriptor.descriptor.id;
+}
+
+void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
+	processAssetFilePath(assetFilePath);
+}
+
+void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& assetFilePath) {
+	Logger::info("Asset {} has changed, recompiling it's corresponding resource file..\n", assetFilePath.string);
+
+	auto recreateResourceFile = [&]<ValidResource ...T>(ResourceID id) {
+		([&] {
+			if (Family::id<T>() == resourceToType[id]) {
+				std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(AssetIO::getDescriptorFilename<T>(id));
+
+				if (opt) {
+					resourceManager.removeResource(id);
+					createResourceFile<T>(opt.value());
+				}
+				else {
+					Logger::error("Failed to recompile resource file.");
+				}
+			}
+		}(), ...);
+	};
+
+	recreateResourceFile.template operator()<ALL_RESOURCES>(id);
+}
+
+void AssetManager::onFolderModification(std::filesystem::path const& folderPath) {
+#if 0
+	// Get original folder id corresponding to the folder path.
+	auto iterator = folderPathToId.find(folderPath.string());
+
+	if (iterator == folderPathToId.end()) {
+		Logger::error("Unknown folder has been modified?");
+		return;
+	}
+
+	auto&& [_, folderId] = *iterator;
+	
+	// Edit folder metadata..
+	Folder& folder = directories.at(folderId);
+	folder.name = folderPath.stem().string();
+	folder.relativePath = std::filesystem::relative(folderPath, AssetIO::assetDirectory);
+
+	// Edit folderPath 
+	auto nodeHandle = folderPathToId.extract(folderPath.string());
+	nodeHandle.key() = folderPath;
+#endif
+}
+
+void AssetManager::onAssetDeletion(ResourceID id) {
+	(void) id;
+}
+
+void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
+	if (directoryWatcher.IsPathHidden(std::filesystem::path{ assetPath })) {
+		return;
+	}
+
+	else if (std::filesystem::is_directory(std::filesystem::path{ assetPath })) {
+		recordFolder(folderId, std::filesystem::path{ assetPath });
+		incrementFolderId(folderId);
+		return;
+	}
+
+	else if (!std::filesystem::is_regular_file(std::filesystem::path{ assetPath })) {
+		return;
+	}
+
+	// ------------------------------------------
+	// Attempt to retrieve resource id from asset file path.
+	// ------------------------------------------
+	ResourceID resourceId = INVALID_RESOURCE_ID;
+	auto iterator = intermediaryAssetsToDescriptor.find(assetPath);
+
+	// intermediary asset not recorded (missing corresponding descriptor and resource file.)
+	if (iterator == std::end(intermediaryAssetsToDescriptor)) {
+		Logger::info("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string);
+		Logger::info("");
+
+		// we need to generate the corresponding descriptor file for this intermediary file.
+		resourceId = parseIntermediaryAssetFile(assetPath);
+	}
+	// intermediary asset recorded, retrieve id..
+	else {
+		resourceId = iterator->second.descriptor.id;
+	}
+
+	if (resourceId == INVALID_RESOURCE_ID) {
+		return;
+	}
+
+
+	// ------------------------------------------
+	// Save resource entry in the parent folder.
+	// ------------------------------------------
+
+	std::filesystem::path parentPath = std::filesystem::path{ assetPath }.parent_path();
+
+	auto folderIterator = folderPathToId.find(parentPath.string());
+
+	if (folderIterator == std::end(folderPathToId)) {
+		Logger::error("Attempting to add asset to a non existing parent folder?");
+	}
+	else {
+		auto&& [_, parentFolderId] = *folderIterator;
+		directories[parentFolderId].assets.insert(resourceId);
+	}
+	// ------------------------------------------
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

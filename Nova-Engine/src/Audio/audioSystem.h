@@ -54,12 +54,18 @@ public:
 	void stopAudioInstance(AudioInstance& audioInstance);
 	void stopAudioInstance(AudioInstanceID audioInstanceId);
 
+	// Retrieves resourceID from the unorderedmap using filename
+	ENGINE_DLL_API ResourceID getResourceId(const std::string& string);
+
     // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
-	ENGINE_DLL_API void playSFX(ResourceID audioId, float x, float y, float z);
+	ENGINE_DLL_API void playSFX(ResourceID audioId, float x, float y, float z, float volume = 1.f);
 	//ENGINE_DLL_API	void playSFXNonInst(AssetID audioId, float x, float y, float z);
 
+	// Checks if a resource is a BGM
+	ENGINE_DLL_API bool isBGM(ResourceID audioId) const;
+
 	// PlayBGM based on ResourceID audioId
-	ENGINE_DLL_API void playBGM(ResourceID audioId);
+	ENGINE_DLL_API void playBGM(ResourceID audioId, float volume = 1.f);
 
 	// Pause the sound of the sfx based on AssetID
 	ENGINE_DLL_API void pauseSound(ResourceID audioId, bool paused);
@@ -100,7 +106,7 @@ private:
 
 	AudioInstanceID nextAudioInstanceId = 0;
 
-	//std::unordered_map<std::string, std::string> soundFilePathMap;
+	std::unordered_map<std::string, ResourceID> fileData;
 	
 	// contains all playing sound instances..
 	std::unordered_map<AudioInstanceID, AudioInstance> audioInstances;

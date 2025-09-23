@@ -17,6 +17,8 @@
 #include "model.h"
 #include "cubemap.h"
 
+#include "Detour/Detour/DetourNavMesh.h"
+
 class Engine;
 class ResourceManager;
 
@@ -42,7 +44,7 @@ public:
 public:
 	void update(float dt);
 
-	void render(bool toRenderDebug);
+	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh);
 	void renderToDefaultFBO();
 
 public:
@@ -65,13 +67,17 @@ public:
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
 
+	ENGINE_DLL_API void setBlendMode(BlendingConfig configuration);
+	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
 	// =============================================
 
 	// submit triangles to be rendered at the end
-	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color);
+	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
+	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 
 private:
 	// =============================================
@@ -94,7 +100,10 @@ private:
 	void renderObjectId(GLsizei count);
 
 	// render a debug triangles in physics
-	void debugRender();
+	void debugRenderPhysicsCollider();
+
+	// render a debug triangles in navMesh
+	void debugRenderNavMesh();
 
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
@@ -108,7 +117,6 @@ private:
 	// attempts to get the appropriate material from meshrenderer.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
 
-	void setBlendMode(BlendingConfig configuration);
 	void printOpenGLDriverDetails() const;
 
 private:
@@ -130,6 +138,7 @@ private:
 	// Debug Physics VAO and it's corresponding VBO.	
 	GLuint debugPhysicsVAO;
 	BufferObject debugPhysicsVBO;
+	BufferObject debugNavMeshVBO;
 
 	Camera camera;
 
@@ -143,7 +152,9 @@ private:
 	FrameBuffer objectIdFrameBuffer;
 
 private:
-	int numOfDebugTriangles;
+	int numOfPhysicsDebugTriangles;
+	int numOfNavMeshDebugTriangles;
+
 	bool isOnWireframeMode;
 
 public:

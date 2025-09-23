@@ -1,21 +1,23 @@
 #include "Engine/ScriptingAPIManager.h"
+#include "Engine/window.h"
+#include "Engine/engine.h"
 
 #include <glad/glad.h>
 
 #include "IconsFontAwesome6.h"
 
 #include "imgui.h"
+#include "ImGui/misc/cpp/imgui_stdlib.h"
 #include "ImGuizmo.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
 #include "Audio/audioSystem.h"
-#include "Engine/window.h"
+#include "AssetManager/assetManager.h"
 #include "ECS/ECS.h"
-#include "Engine/engine.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
-#include "AssetManager/assetManager.h"
+#include "Navigation/navMeshGeneration.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -27,6 +29,7 @@
 #include <ranges>
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
+
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -40,10 +43,10 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
-	assetManagerUi					{ *this },	
-	//hierarchyList					{ *this },
+	assetViewerUi					{ assetManager, resourceManager },
+	assetManagerUi					{ *this, assetViewerUi },
 	navMeshGenerator				{ *this },
-	//debugUi						{ *this },
+	navigationWindow				{ *this, engine.navigationSystem, navMeshGenerator },
 	navBar							{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
@@ -138,6 +141,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ZoneScopedC(tracy::Color::Orange);
+
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
@@ -157,6 +161,15 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	if (engine.toDebugRenderNavMesh) {
+		ResourceID navMeshId = engine.navigationSystem.getNavMeshId();
+		auto&& [navMesh, _] = resourceManager.getResource<NavMesh>(navMeshId);
+
+		if (navMesh && navMesh->navMesh) {
+			engine.renderer.renderNavMesh(*navMesh->navMesh);
+		}
+	}
 }
 
 bool Editor::isEntitySelected(entt::entity entity) {
@@ -204,17 +217,14 @@ void Editor::main() {
 	ImGui::ShowDemoWindow();
 	
 	gameViewPort.update();
-	//componentInspector.update();
 	assetManagerUi.update();
-	//hierarchyList.update();
-	//debugUi.update();
-	//console.update();
 	navBar.update();
+	assetViewerUi.update();
+	navigationWindow.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();
 	sandboxWindow();
-	navigationWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -375,17 +385,23 @@ void Editor::sandboxWindow() {
 
 	if (ImGui::Button("SFX Audio Test"))
 	{
-		engine.audioSystem.playSFX(ResourceID{ 16443787899298411226 }, 0.0f, 0.0f, 0.0f);
+		engine.audioSystem.playSFX( engine.audioSystem.getResourceId("SFX_AudioTest1"), 0.0f, 0.0f, 0.0f);
 	}
 
 	if (ImGui::Button("BGM Audio Test"))
 	{
-		engine.audioSystem.playBGM(ResourceID{ 11241155678047256416 });
+		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest") );
 	}
 
 	if (ImGui::Button("BGM Audio Test 2"))
 	{
-		engine.audioSystem.playBGM(ResourceID{ 11186877718248447534 });
+		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest2") );	
+	}
+
+	if (ImGui::Button("Stop Audio Test"))
+	{
+		// Stops all audio channels that has the same string ID as "SFX_AudioTest1"
+		engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
 	}
 
 	entt::registry& registry = engine.ecs.registry;
@@ -484,18 +500,6 @@ void Editor::sandboxWindow() {
 	}
 
 	ImGui::End();
-}
-
-//Ooga Booga window will cause me more trouble later
-void Editor::navigationWindow()
-{
-	ImGui::Begin("Navigation");
-
-
-
-
-	ImGui::End();
-
 }
 
 void Editor::launchProfiler()

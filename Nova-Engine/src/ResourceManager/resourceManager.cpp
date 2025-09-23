@@ -53,3 +53,16 @@ void ResourceManager::submitInitialisationCallback(std::function<void()> callbac
 	std::lock_guard lock{ initialisationQueueMutex };
 	initialisationQueue.push(std::move(callback));
 }
+
+void ResourceManager::removeResource(ResourceID id) {
+	resourceFilePaths.erase(id);
+	loadedResources.erase(id);
+
+	for (auto&& [resourceTypeId, resourceIds] : resourcesByType) {
+		auto iterator = std::ranges::find(resourceIds, id);
+		
+		if (iterator != resourceIds.end()) {
+			resourceIds.erase(iterator);
+		}
+	}
+}

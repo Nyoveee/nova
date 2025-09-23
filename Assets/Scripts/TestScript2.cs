@@ -7,6 +7,7 @@
     }
     public void MoveTable()
     {
+        // Debug
         if (transform != null)
         {
             Vector3 position = transform.position;
