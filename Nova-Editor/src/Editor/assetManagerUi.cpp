@@ -27,8 +27,8 @@ void AssetManagerUI::update() {
 	displayLeftNavigationPanel();
 	ImGui::SameLine(); 
 	displayRightContentPanel();
-
 	ImGui::End();
+	
 }
 
 void AssetManagerUI::displayLeftNavigationPanel() {
@@ -208,7 +208,8 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 	}
 
 	displayThumbnail(
-		static_cast<int>(static_cast<std::size_t>(resourceId)),
+		//static_cast<int>(static_cast<std::size_t>(resourceId)),
+		static_cast<std::size_t>(resourceId),
 		NO_TEXTURE,
 		assetName->empty() ? "<no name>" : assetName->c_str(),
 
@@ -233,7 +234,8 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 	auto&& [_, folder] = *iterator;
 
 	displayThumbnail(
-		static_cast<int>(static_cast<std::size_t>(folderId)),
+		//static_cast<int>(static_cast<std::size_t>(folderId)),
+		static_cast<std::size_t>(folderId),
 		NO_TEXTURE,
 		folder.name.c_str(),
 		
@@ -261,7 +263,9 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 	}
 }
 
-void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
+
+//void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
+void AssetManagerUI::displayThumbnail(std::size_t imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
 	if (!isAMatchWithSearchQuery(name)) {
 		return;
 	}
@@ -271,18 +275,20 @@ void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char c
 	ImVec2 padding = ImGui::GetStyle().WindowPadding;
 	constexpr float textHeight = 20.f;
 
-	ImGui::PushID(imguiId);
+	//ImGui::PushID(imguiId);
+	ImGui::PushID(static_cast<int>(imguiId));
 	ImGui::BeginChild("Thumbnail", ImVec2{ columnWidth, columnWidth + textHeight + 2 * padding.y }, ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
 
 	ImVec2 buttonSize = ImVec2{ columnWidth - 2 * padding.x, columnWidth - 2 * padding.x };
 
 	if (thumbnail != NO_TEXTURE) {
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 0 ,0 });
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 10 ,0 });
 		
 		if (ImGui::ImageButton("##", thumbnail, buttonSize)) {
 			clickCallback();
 		}
-
+			//if(resourceManager.isResource<Scene>(static_cast<ResourceID>(imguiId)))
+				//dragAndDrop(name, imguiId);
 		ImGui::PopStyleVar();
 	}
 	else {
@@ -295,11 +301,18 @@ void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char c
 		}
 	}
 
+	if (resourceManager.isResource<Scene>(static_cast<ResourceID>(imguiId))) {
+		dragAndDrop(name, imguiId);
+	}
+	
+
+
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);
 	ImGui::PopTextWrapPos();
 
 	ImGui::EndChild();
+	
 	ImGui::PopID();
 }
 
@@ -344,4 +357,18 @@ void AssetManagerUI::handleThumbnailDoubleClick(ResourceID resourceId) {
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 	}
+}
+
+void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
+
+	if (ImGui::BeginDragDropSource()) {
+		std::pair<size_t, const char*> map{id, name};
+		ImGui::SetDragDropPayload("SCENE_ITEM", &map, sizeof(map));
+
+		ImGui::Text("Dragging: %s", name);
+
+		ImGui::EndDragDropSource();
+	}
+
+
 }

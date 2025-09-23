@@ -1,10 +1,12 @@
 #include "Engine/engine.h"
 #include "editor.h"
 #include "gameViewPort.h"
-
+#include "Serialisation/serialisation.h"
 #include "IconsFontAwesome6.h"
+#include "AssetManager/assetManager.h"
 
 GameViewPort::GameViewPort(Editor& editor) :
+	editor					{ editor },
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
 	controlOverlay			{ editor },
@@ -60,6 +62,7 @@ void GameViewPort::update() {
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getMainFrameBufferTextures()[0];
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
+
 	
 	// Calculate the mouse position relative to the game's viewport.
 	mouseRelativeToViewPort = ImGui::GetMousePos();
@@ -72,5 +75,27 @@ void GameViewPort::update() {
 	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 	controlOverlay.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 
+	ImGui::Dummy(ImGui::GetContentRegionAvail());
+
+	// Accept scene item payload..
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("SCENE_ITEM")) {
+			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
+
+			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+
+			AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
+
+			if (filePath) {
+				Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+			}
+
+			engine.ecs.sceneManager.loadScene(id);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
 	ImGui::End();
+	
 }

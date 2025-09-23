@@ -3,20 +3,23 @@
 #include <fstream>
 
 #include "scene.h"
+#include "export.h"
 
 class ECS;
+class ResourceManager;
 
 class SceneManager {
 public:
-	SceneManager(ECS& ecs);
-	
-public:
-	void switchScene(Scene const& from, Scene const& to);
+	ENGINE_DLL_API SceneManager(ECS& ecs, ResourceManager& resourceManager);
 
-	void loadScene(Scene const& scene);
-	void saveScene(Scene const& scene);
+public:
+
+	ENGINE_DLL_API void loadScene(ResourceID id);
+
+	ENGINE_DLL_API ResourceID getCurrentScene() const;
 
 private:
 	ECS& ecs;
+	ResourceManager& resourceManager;
 	ResourceID currentScene;
 };

@@ -8,6 +8,7 @@
 #include "controlOverlay.h"
 
 class Engine;
+class Editor;
 
 class GameViewPort {
 public:
@@ -22,6 +23,7 @@ public:
 	ImVec2 mouseRelativeToViewPort;	
 
 private:
+	Editor& editor;
 	Engine& engine;
 	Gizmo gizmo;
 	ControlOverlay controlOverlay;

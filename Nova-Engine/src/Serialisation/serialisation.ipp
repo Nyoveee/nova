@@ -133,12 +133,21 @@ namespace Serialiser {
 						switch (material.renderingPipeline)
 						{
 						case Material::Pipeline::PBR: {
-							//json tempJ;
+							std::visit([&](auto&& config) {
+								using Type = std::decay_t<decltype(config)>;
 
-							//tempJ["roughness"] = std::get<Material::Config>(material.config).roughness;
-							//tempJ["metallic"] = std::get<Material::Config>(material.config).metallic;
-							//tempJ["occulusion"] = std::get<Material::Config>(material.config).occulusion;
-							//tempJson["config"] = tempJ;
+								if constexpr (std::same_as<Type, ResourceID>) {
+									tempJson["config"] = static_cast<std::size_t>(config);
+								}
+								else /* it's config */ {
+									json tempJ;
+
+									tempJ["roughness"] = config.roughness;
+									tempJ["metallic"] = config.metallic;
+									tempJ["occulusion"] = config.occulusion;
+									tempJson["config"] = tempJ;
+								}
+							}, material.config);
 						}
 						[[fallthrough]];
 						case Material::Pipeline::BlinnPhong:
@@ -150,10 +159,9 @@ namespace Serialiser {
 							}
 
 							break;
-						case Material::Pipeline::Color:
-							break;
 						}
 
+						// Handling albedo..
 						std::visit([&](auto&& albedo) {
 							using T = std::decay_t<decltype(albedo)>;
 
@@ -300,45 +308,61 @@ namespace Serialiser {
 				else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
 					std::unordered_map<MaterialName, Material> map;
 					//material and model id
-					for (auto a : jsonComponent[componentName]["materials"]) {
-						Material m;
-						m.ambient = a["ambient"];
+					for (auto json : jsonComponent[componentName]["materials"]) {
+						Material material;
+						material.ambient = json["ambient"];
 
-						std::string str = a["renderingPipeline"].dump();
+						std::string str = json["renderingPipeline"].dump();
 						str = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
 
 						std::optional<Material::Pipeline> temp = magic_enum::enum_cast<Material::Pipeline>(str.c_str());
 						if (temp.has_value()) {
-							m.renderingPipeline = temp.value();
+							material.renderingPipeline = temp.value();
 						}
 
-						if (a["renderingPipeline"] == "BlinnPhong" || a["renderingPipeline"] == "PBR") {
-							if (a["normalMap"] != nullptr) {
-								m.normalMap = static_cast<ResourceID>(a["normalMap"]);
+						switch (material.renderingPipeline)
+						{
+						case Material::Pipeline::PBR: {
+							// its resource id..
+							if (json["config"].is_number_unsigned()) {
+								std::size_t resourceId = json["config"];
+								material.config = ResourceID{ resourceId };
+							}
+							// its config...
+							else {
+								Material::Config config;
+
+								config.roughness	= json["config"]["roughness"];
+								config.metallic		= json["config"]["metallic"];
+								config.occulusion	= json["config"]["occulusion"];
+
+								material.config = config;
+							}
+						}
+						[[fallthrough]];
+						case Material::Pipeline::BlinnPhong:
+							if (json["normalMap"].is_null()) {
+								material.normalMap = std::nullopt;
 							}
 							else {
-								m.normalMap = std::nullopt;
+								material.normalMap = static_cast<ResourceID>(json["normalMap"]);
 							}
+
+						[[fallthrough]];
+						case Material::Pipeline::Color:
+							if (json["albedo"].find("color") != json["albedo"].end()) {
+								glm::vec3 colorVec = { json["albedo"]["color"]["r"], json["albedo"]["color"]["g"] , json["albedo"]["color"]["b"] };
+								material.albedo = colorVec;
+							}
+							else {
+								std::size_t id = json["albedo"]["texture"];
+								material.albedo = id;
+							}
+
+							break;
 						}
 
-						if (a["renderingPipeline"] == "PBR") {
-							Material::Config c;
-							c.roughness = a["config"]["roughness"];
-							c.metallic = a["config"]["metallic"];
-							c.occulusion = a["config"]["occulusion"];
-							m.config = c;
-						}
-
-						if (a["albedo"].find("color") != a["albedo"].end()) {
-							glm::vec3 colorVec = { a["albedo"]["color"]["r"], a["albedo"]["color"]["g"] , a["albedo"]["color"]["b"]};
-							m.albedo = colorVec;
-						}
-						else {
-							std::size_t id = a["albedo"]["texture"];
-							m.albedo = id;
-						}
-
-						map[a["materialName"]] = m;
+						map[json["materialName"]] = material;
 					}
 					dataMember = map;
 				}
