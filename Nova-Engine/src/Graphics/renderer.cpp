@@ -141,6 +141,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
+
+	//allCameras.push_back(&camera);
 }
 
 Renderer::~Renderer() {

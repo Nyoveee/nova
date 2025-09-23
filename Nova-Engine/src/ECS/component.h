@@ -34,7 +34,7 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, NavMeshModifier
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, NavMeshModifier, CameraComponent
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -69,7 +69,11 @@ struct Transform {
 	glm::mat3x3 normalMatrix;					// normal matrix is used to transform normals.
 
 	EulerAngles eulerAngles		{ rotation };	// this will be derieved from quartenions
-	EulerAngles lastEulerAngles	{ rotation };			
+	EulerAngles lastEulerAngles	{ rotation };		
+
+	glm::vec3 up;							// for camera stuff
+	glm::vec3 right;
+	glm::vec3 front;
 
 	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
 
@@ -217,6 +221,14 @@ struct AudioListener
 		isListening,
 		minDist,
 		maxDist
+	)
+};
+
+struct CameraComponent {
+	bool camStatus;
+
+	REFLECTABLE(
+		camStatus
 	)
 };
 

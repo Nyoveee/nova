@@ -7,6 +7,10 @@
 #include "nova_math.h"
 #include "Profiling.h"
 
+constexpr glm::vec3 defaultFront = { 0.f, 0.f, -1.f };
+constexpr glm::vec3 defaultUp = { 0, 1.f, 0 };
+glm::vec3 defaultRight = { glm::normalize(glm::cross(defaultFront, defaultUp)) };
+
 TransformationSystem::TransformationSystem(ECS& ecs) :
 	registry {ecs.registry}
 {}
@@ -36,6 +40,9 @@ void TransformationSystem::update() {
 				transform.rotation = glm::normalize(transform.rotation);
 			}
 
+			transform.front				= transform.rotation * defaultFront;
+			transform.up				= transform.rotation * defaultUp;
+			transform.right				= transform.rotation * defaultRight;
 			transform.lastPosition		= transform.position;
 			transform.lastScale			= transform.scale;
 			transform.lastRotation		= transform.rotation;

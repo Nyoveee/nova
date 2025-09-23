@@ -79,6 +79,10 @@ public:
 	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 
+public:
+	//Vector to hold references
+	//std::vector<Camera*> allCameras;
+
 private:
 	// =============================================
 	// Private internal helper functions.

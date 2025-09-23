@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/vec3.hpp>
 #include "export.h"
 #include "type_alias.h"
 #include "InputManager/inputEvent.h"
@@ -9,6 +10,15 @@ class Engine;
 class InputManager;
 
 class CameraSystem {
+public:
+	struct LevelEditorCamera {
+		glm::vec3 position;
+		glm::vec3 front;
+
+		Degree yaw;
+		Degree pitch;
+	};
+
 public:
 	CameraSystem(Engine& engine);
 
@@ -25,15 +35,20 @@ public:
 	void setLastMouse(float mouseX, float mouseY);
 	void calculateEulerAngle(float mouseX, float mouseY);
 
+	void startSimulation();
+	void endSimulation();
+
+	ENGINE_DLL_API float getCameraSpeed() const;
+
 public:
 	// the formula of camera speed is e^x, to appropriately scale speed. 
 	float cameraSpeedExponent;
-	
-public:
-	ENGINE_DLL_API float getCameraSpeed() const;
 
 private:
+	LevelEditorCamera levelEditorCamera;
+
 	float cameraSpeed;
+	bool isSimulationActive;
 
 	bool isInControl;
 	bool toResetMousePos;
@@ -50,7 +65,4 @@ private:
 
 	float lastMouseX;
 	float lastMouseY;
-
-	Degree yaw;
-	Degree pitch;
 };

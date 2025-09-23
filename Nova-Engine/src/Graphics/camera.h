@@ -32,10 +32,18 @@ public:
 
 	glm::vec3	getRight() const;
 
+	//void		reset();
+
 public:
 	// only calculate view and projection matrix at the end of game loop once, for optimisation.
 	void recalculateViewMatrix();
 	void recalculateProjectionMatrix();
+
+public:
+	//Deciding which camera is the focus of viewport
+	/*bool isActive;
+	bool getStatus();
+	void setStatus(bool newStatus);*/
 
 private:
 	glm::vec3 cameraPos;

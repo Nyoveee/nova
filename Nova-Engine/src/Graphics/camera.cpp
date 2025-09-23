@@ -10,7 +10,7 @@ constexpr float defaultFarPlaneDistance		= 1000.f;
 constexpr float defaultAspectRatio			= 1920.f / 1080.f;
 
 Camera::Camera() : 
-	cameraPos			{ 0.f, 1.f, 5.f },
+	cameraPos			{},
 	cameraFront			{ defaultCameraFront },
 	cameraRight			{ glm::normalize(glm::cross(cameraFront, Up)) },
 	viewMatrix			{},
@@ -18,6 +18,7 @@ Camera::Camera() :
 	nearPlaneDistance	{ defaultNearPlaneDistance },
 	farPlaneDistance	{ defaultFarPlaneDistance },
 	aspectRatio			{ defaultAspectRatio }
+	//isActive			{ true }
 {
 	recalculateViewMatrix();
 	recalculateProjectionMatrix();
@@ -63,3 +64,11 @@ void Camera::recalculateViewMatrix() {
 void Camera::recalculateProjectionMatrix() {
 	projectionMatrix = glm::perspective<float>(fovAngle, aspectRatio, nearPlaneDistance, farPlaneDistance);
 }
+
+//bool Camera::getStatus() {
+//	return isActive;
+//}
+//
+//void Camera::setStatus(bool newStatus) {
+//	isActive = newStatus;
+//}
