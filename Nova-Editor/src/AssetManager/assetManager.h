@@ -109,6 +109,9 @@ private:
 	ResourceManager& resourceManager;
 	Engine& engine;
 
+	// indicator that says whether the asset manager has fully initialised.
+	std::atomic<bool> hasInitialised;
+
 	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
 	AssetDirectoryWatcher directoryWatcher;
 	

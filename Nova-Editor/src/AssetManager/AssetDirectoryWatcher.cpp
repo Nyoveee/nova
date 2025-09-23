@@ -24,8 +24,8 @@ AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, Resourc
 {}
 
 void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, filewatch::Event change_type) {
-	// the app is destructing, don't do anything.
-	if (engineIsDestructing)
+	// the app is destructing or the asset manager hasn't finish initialising.., don't do anything 
+	if (engineIsDestructing || !assetManager.hasInitialised)
 		return;
 
 	std::filesystem::path absPath{ AssetIO::assetDirectory / std::filesystem::path(path) };

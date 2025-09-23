@@ -27,6 +27,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	resourceManager		{ resourceManager },
 	engine				{ engine },
 	directoryWatcher	{ *this, resourceManager, engine },
+	hasInitialised		{},
 	folderId			{}
 {
 	// ========================================
@@ -99,6 +100,8 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 
 	// By now everything should be serialized, loadAll the entityscripts containing the serializablefield data
 	engine.scriptingAPIManager.compileScriptAssembly();
+
+	hasInitialised = true;
 }
 
 AssetManager::~AssetManager() {
