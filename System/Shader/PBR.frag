@@ -31,7 +31,6 @@ const float PI = 3.14159265358979323846;
 float ggxDistribution(float nDotH);
 float geomSmith(float nDotL) ;
 vec3 schlickFresnel(float lDotH, vec3 baseColor);
-vec3 microfacetModel(vec3 position, vec3 n, vec3 lightPos, vec3 lightIntensity, vec3 baseColor);
 
 // === LIGHT PROPERTIES ===
 struct PointLight {
@@ -70,6 +69,9 @@ layout(std430, binding = 2) buffer SpotLights {
 };
 
 uniform vec3 cameraPos;
+vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, PointLight light);
+vec3 microfacetModelDir(vec3 position, vec3 n, vec3 baseColor, DirectionalLight light);
+vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, SpotLight light);
 
 // === NORMAL MAPPING ===
 uniform bool isUsingNormalMap;
@@ -104,12 +106,18 @@ void main() {
     }
 
     // ambient is the easiest.
-    vec3 finalColor = baseColor * ambientFactor * cfg.occulusion;
+    vec3 finalColor = ambientFactor * baseColor * cfg.occulusion;
 
     // Calculate diffuse and specular light for each light.
     for(int i = 0; i < pointLightCount; ++i) {
         // Calculate point light contribution using microfacet model
-        finalColor += microfacetModel(fsIn.fragWorldPos, normal, pointLights[i].position, pointLights[i].color, baseColor);
+        finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, baseColor, pointLights[i]);
+    }
+    for(int i = 0; i < dirLightCount; ++i) {
+        finalColor += microfacetModelDir(fsIn.fragWorldPos, normal, baseColor, dirLights[i]);
+    }
+    for(int i = 0; i < spotLightCount; ++i) {
+        finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, baseColor, spotLights[i]);
     }
     
     finalColor = pow(finalColor, vec3(1.0/2.2)); 
@@ -165,11 +173,12 @@ vec3 schlickFresnel(float lDotH, vec3 baseColor)
 //
 // Parameters are the position of a fragment and the surface normal in the world space.
 //
-vec3 microfacetModel(vec3 position, vec3 n, vec3 lightPos, vec3 lightIntensity, vec3 baseColor) 
+vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, PointLight light) 
 {  
-    vec3 l = lightPos - position;
+    vec3 l = light.position - position;
     float dist = length(l);
     l = normalize(l);
+    vec3 lightIntensity = light.color;
     lightIntensity *= 1.0 / (dist * dist); 
 
     vec3 v = normalize(cameraPos - position);
@@ -182,8 +191,65 @@ vec3 microfacetModel(vec3 position, vec3 n, vec3 lightPos, vec3 lightIntensity, 
     vec3 fresnel = schlickFresnel(lDotH, baseColor);
     vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * fresnel 
                             * geomSmith(nDotL) * geomSmith(nDotV);
-    vec3 diffuseBrdf = baseColor;
-    //diffuseBrdf *= 1.0 - cfg.metallic;
+    vec3 diffuseBrdf = vec3(1.0) - fresnel;
+    diffuseBrdf *= 1.0 - cfg.metallic;
 
-    return (diffuseBrdf + PI * specBrdf) * lightIntensity * nDotL;
+    return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
+}
+
+vec3 microfacetModelDir(vec3 position, vec3 n, vec3 baseColor, DirectionalLight light) 
+{  
+    vec3 l = normalize(-light.direction);
+    vec3 lightIntensity = light.color;
+
+    vec3 v = normalize(cameraPos - position);
+    vec3 h = normalize(v + l);
+    float nDotH = dot(n, h);
+    float lDotH = dot(l, h);
+    float nDotL = max(dot(n, l), 0.0f);
+    float nDotV = dot(n, v);
+
+    vec3 fresnel = schlickFresnel(lDotH, baseColor);
+    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * fresnel 
+                            * geomSmith(nDotL) * geomSmith(nDotV);
+    vec3 diffuseBrdf = vec3(1.0) - fresnel;
+    diffuseBrdf *= 1.0 - cfg.metallic;
+
+    return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
+}
+
+vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, SpotLight light) 
+{  
+    vec3 l = light.position - position;
+    float dist = length(l);
+    l = normalize(l);
+    // Cutoff angles for spotlight
+    float cutOffAngle = cos(light.cutOffAngle);
+    float outerCutOffAngle = cos(light.outerCutOffAngle);
+    float theta     = dot(l, normalize(-light.direction));
+    float epsilon   = cutOffAngle - outerCutOffAngle;
+    float spotIntensity = (theta - outerCutOffAngle) / epsilon; 
+
+    // Early return if outside spotlight
+    if (spotIntensity <= 0.0) {
+        return vec3(0.0);
+    }
+    spotIntensity = clamp(spotIntensity, 0.0, 1.0);
+    vec3 lightIntensity = light.color;
+    lightIntensity *= 1.0 / (dist * dist); 
+
+    vec3 v = normalize(cameraPos - position);
+    vec3 h = normalize(v + l);
+    float nDotH = dot(n, h);
+    float lDotH = dot(l, h);
+    float nDotL = max(dot(n, l), 0.0f);
+    float nDotV = dot(n, v);
+
+    vec3 fresnel = schlickFresnel(lDotH, baseColor);
+    vec3 specBrdf = 0.25f * ggxDistribution(nDotH) * fresnel 
+                            * geomSmith(nDotL) * geomSmith(nDotV);
+    vec3 diffuseBrdf = vec3(1.0) - fresnel;
+    diffuseBrdf *= 1.0 - cfg.metallic;
+
+    return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
 }
