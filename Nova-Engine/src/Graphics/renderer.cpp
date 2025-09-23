@@ -40,6 +40,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
 	blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
+	PBRShader			{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
@@ -228,6 +229,7 @@ Camera const& Renderer::getCamera() const {
 
 void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
+	PBRShader.compile();
 	skyboxShader.compile();
 }
 
@@ -381,6 +383,7 @@ void Renderer::prepareRendering() {
 
 	// ==== Blinn Phong ====
 	blinnPhongShader.setVec3("cameraPos", camera.getPos());
+	PBRShader.setVec3("cameraPos", camera.getPos());
 
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
@@ -527,7 +530,7 @@ void Renderer::renderModels() {
 			switch (material->renderingPipeline)
 			{
 			case Material::Pipeline::PBR:	
-				setupBlinnPhongShader(*material);
+				setupPBRShader(*material);
 				break;
 			case Material::Pipeline::BlinnPhong:
 				setupBlinnPhongShader(*material);
@@ -636,7 +639,76 @@ void Renderer::setupBlinnPhongShader(Material const& material) {
 }
 
 void Renderer::setupPBRShader(Material const& material) {
-	(void) material;
+	// Handle albedo.
+	std::visit([&](auto&& albedo) {
+		using T = std::decay_t<decltype(albedo)>;
+
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
+
+			if (!texture) {
+				// fallback..
+				PBRShader.setBool("isUsingAlbedoMap", false);
+				PBRShader.setVec3("albedo", { 0.2f, 0.2f, 0.2f });
+			}
+			else {
+				PBRShader.setBool("isUsingAlbedoMap", true);
+				glBindTextureUnit(0, texture->getTextureId());
+				PBRShader.setImageUniform("albedoMap", 0);
+			}
+		}
+		else /* it's Color */ {
+			PBRShader.setBool("isUsingAlbedoMap", false);
+			PBRShader.setVec3("albedo", albedo);
+		}
+
+		}, material.albedo);
+
+	// Handle normal map
+	if (material.normalMap) {
+		auto&& [normalMap, result] = resourceManager.getResource<Texture>(material.normalMap.value());
+
+		if (normalMap) {
+			PBRShader.setBool("isUsingNormalMap", true);
+			glBindTextureUnit(1, normalMap->getTextureId());
+			PBRShader.setImageUniform("normalMap", 1);
+		}
+	}
+	else {
+		PBRShader.setBool("isUsingNormalMap", false);
+	}
+
+	std::visit([&](auto&& config) {
+		using T = std::decay_t<decltype(config)>;
+
+		// Packed map
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(config);
+			if (!texture) {
+				PBRShader.setBool("isUsingPackedTextureMap", false);
+				PBRShader.setFloat("material.roughness", 0.2f);
+				PBRShader.setFloat("material.metallic", 0.2f);
+				PBRShader.setFloat("material.occulusion", 0.2f);
+			}
+			else {
+				PBRShader.setBool("isUsingPackedTextureMap", true);
+				glBindTextureUnit(2, texture->getTextureId());
+				PBRShader.setImageUniform("packedMap", 2);
+			}
+		}
+		// Constants
+		else {
+			PBRShader.setBool("isUsingPackedTextureMap", false);
+			PBRShader.setFloat("material.roughness", config.roughness);
+			PBRShader.setFloat("material.metallic", config.metallic);
+			PBRShader.setFloat("material.occulusion", config.occulusion);
+		}
+
+		}, material.config);
+
+	PBRShader.setFloat("ambientFactor", material.ambient);
+
+	PBRShader.use();
 }
 
 void Renderer::setupColorShader(Material const& material) {
@@ -669,6 +741,8 @@ void Renderer::setupColorShader(Material const& material) {
 void Renderer::setModelUniforms(Transform const& transform, entt::entity entity) {
 	blinnPhongShader.setMatrix("model", transform.modelMatrix);
 	blinnPhongShader.setMatrix("normalMatrix", transform.normalMatrix);
+	PBRShader.setMatrix("model", transform.modelMatrix);
+	PBRShader.setMatrix("normalMatrix", transform.normalMatrix);
 
 	colorShader.setMatrix("model", transform.modelMatrix);
 

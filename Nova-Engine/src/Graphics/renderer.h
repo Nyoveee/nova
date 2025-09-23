@@ -169,6 +169,7 @@ public:
 	Shader gridShader;
 	Shader outlineShader;
 	Shader blinnPhongShader;
+	Shader PBRShader;
 	Shader debugShader;
 	Shader debugOverlayShader;
 	Shader objectIdShader;
