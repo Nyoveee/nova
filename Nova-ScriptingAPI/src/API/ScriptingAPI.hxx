@@ -20,16 +20,19 @@ internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
 	static void loadAssembly();
 	static void unloadAssembly();
-	static void update();
 
-	static void addGameObjectScript(EntityID entityID, ScriptID scriptId);
-	static void removeGameObjectScript(EntityID entityID, ScriptID scriptId);
+	static void gameModeUpdate();
+	static void editorModeUpdate();
+	
+	static void addEntityScript(EntityID entityID, ScriptID scriptId);
+	static void removeEntity(EntityID entityID);
+	static void removeEntityScript(EntityID entityID, ScriptID scriptId);
 
 	static void intializeAllScripts();
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(EntityID entityID, ScriptID scriptID);
-	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
+	static bool setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
@@ -41,7 +44,7 @@ internal:
 	template<typename Type, typename ...Types>
 	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
 private:
-	static void clearAllScripts();
+	static void updateReference(Script^ script);
 internal:
 	static Engine* engine;
 

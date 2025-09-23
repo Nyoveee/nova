@@ -27,9 +27,9 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, intializeCoreClr			{ nullptr }
 	, createManagedDelegate		{ nullptr }
 	, shutdownCorePtr			( nullptr )
-	, updateScripts				{ nullptr } 
-	, addGameObjectScript		{ nullptr }
-	, removeGameObjectScript	{ nullptr } 
+	, gameModeUpdate_				{ nullptr } 
+	, addEntityScript		{ nullptr }
+	, removeEntityScript_	{ nullptr } 
 	, timeSinceSave				{  }
 	, compileState				{ CompileState::NotCompiled }
 {
@@ -117,11 +117,13 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		using InitFunctionPtr = void(*)(Engine&, const char*);
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
-		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
+		gameModeUpdate_							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "gameModeUpdate");
+		editorModeUpdate_                       = GetFunctionPtr<UpdateFunctionPtr>("Interface", "editorModeUpdate");
 		loadAssembly                            = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "loadAssembly");
 		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unloadAssembly");
-		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
-		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
+		addEntityScript						    = GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addEntityScript");
+		removeEntityScript_					    = GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeEntityScript");
+		removeEntity_                           = GetFunctionPtr<RemoveEntityFunctionPtr>("Interface", "removeEntity");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		getScriptFieldDatas_                    = GetFunctionPtr<GetScriptFieldsFunctionPtr>("Interface", "getScriptFieldDatas");
 		setScriptFieldData_                     = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
@@ -268,19 +270,28 @@ bool ScriptingAPIManager::compileScriptAssembly()
 
 void ScriptingAPIManager::loadSceneScriptsToAPI()
 {
-	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
-		for (ScriptData& scriptData : scripts.scriptDatas)
-			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
+	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+		for (ScriptData& scriptData : scripts.scriptDatas) {
+			addEntityScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
+			scriptData.fields = getScriptFieldDatas(entityId, scriptData.scriptId);
+		}
+	}
+		
 }
 
 void ScriptingAPIManager::loadEntityScript(entt::entity entityID, ResourceID scriptID)
 {
-	addGameObjectScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
+	addEntityScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
 }
 
 void ScriptingAPIManager::removeEntityScript(entt::entity entityID, ResourceID scriptID)
 {
-	removeGameObjectScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
+	removeEntityScript_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
+}
+
+ENGINE_DLL_API void ScriptingAPIManager::removeEntity(entt::entity entityID)
+{
+	removeEntity_(static_cast<unsigned int>(entityID));
 }
 
 bool ScriptingAPIManager::isNotCompiled()
@@ -288,13 +299,12 @@ bool ScriptingAPIManager::isNotCompiled()
 	return compileState != CompileState::Compiled;
 }
 	
-void ScriptingAPIManager::update() { 	
+void ScriptingAPIManager::gameModeUpdate() { 	
 	ZoneScoped;
-	updateScripts();
+	gameModeUpdate_();
 }
 
-void ScriptingAPIManager::checkModifiedScripts(float dt)
-{
+void ScriptingAPIManager::editorModeUpdate(float dt) {
 	if (compileState == CompileState::ToBeCompiled) {
 		timeSinceSave += dt;
 		if (timeSinceSave >= DEBOUNCING_TIME) {
@@ -302,6 +312,7 @@ void ScriptingAPIManager::checkModifiedScripts(float dt)
 				loadSceneScriptsToAPI();
 		}
 	}
+	editorModeUpdate_();
 }
 
 std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(entt::entity entityID, ResourceID scriptID)
@@ -309,9 +320,9 @@ std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(entt::entity ent
 	return getScriptFieldDatas_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
 }
 
-void ScriptingAPIManager::setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData)
+bool ScriptingAPIManager::setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData)
 {
-	setScriptFieldData_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID), fieldData);
+	return setScriptFieldData_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID), fieldData);
 }
 
 bool ScriptingAPIManager::startSimulation() {
@@ -336,6 +347,7 @@ void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId)
 	}
 }
 void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
+	(void)resourceId;
 	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
 }
 

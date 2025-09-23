@@ -1,5 +1,6 @@
 #include "Script.hxx"
 #include "API/ScriptingAPI.hxx"
+#include <msclr/marshal_cppstd.h>
 // Generics behave just like a normal function, this definition is compiled through clr at compile time
 // Specializations are created at runtime
 // https://learn.microsoft.com/en-us/cpp/extensions/overview-of-generics-in-visual-cpp?view=msvc-170
@@ -19,22 +20,31 @@ T Script::getScript(){ return Interface::tryGetScriptReference<T>(entityID); }
 // These also includes exception handling for scripts
 void Script::callInit() {
 	try { init(); }
+	catch (const std::exception& e) {
+		Logger::error("Unable to call init(): {}", e.what());
+	}
 	catch (System::Exception^ e) {
-		System::Console::WriteLine("Unable to call init():" + e->Message);
+		Logger::error("Unable to call init(): {}", msclr::interop::marshal_as<std::string>(e->Message));
 	}
 }
 
 void Script::callUpdate() {
 	try { update(); }
+	catch (const std::exception& e) {
+		Logger::error("Unable to call update(): {}", e.what());
+	}
 	catch (System::Exception^ e) {
-		System::Console::WriteLine("Unable to call update():" + e->Message);
+		Logger::error("Unable to call update(): {}", msclr::interop::marshal_as<std::string>(e->Message));
 	}
 }
 
 void Script::callExit() {
 	try { exit(); }
+	catch (const std::exception& e) {
+		Logger::error("Unable to call exit(): {}", e.what());
+	}
 	catch (System::Exception^ e) {
-		System::Console::WriteLine("Unable to call exit():" + e->Message);
+		Logger::error("Unable to call exit(): {}", msclr::interop::marshal_as<std::string>(e->Message));
 	}
 }
 

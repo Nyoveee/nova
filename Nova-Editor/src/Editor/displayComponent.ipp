@@ -244,6 +244,7 @@ namespace {
 					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
+						ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || componentInspector.editor.engine.isInSimulationMode());
 						// Adding Scripts
 						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
 							ScriptData scriptData{ resourceId };
@@ -273,7 +274,7 @@ namespace {
 							scriptingAPIManager.removeEntityScript(entity, it->scriptId);
 							scriptDatas.erase(it);
 						}
-				
+						ImGui::EndDisabled();
 					}
 
 					else if constexpr (std::same_as<DataMemberType, entt::entity>) {

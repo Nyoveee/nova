@@ -6,7 +6,6 @@
 #include <type_traits>
 #include <unordered_map>
 void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAPIManager& scriptingAPIManager,Engine& engine) {
-	ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || engine.isInSimulationMode());
 	
 	for (FieldData& fieldData : scriptData.fields) {
 		bool modified{ false };
@@ -19,11 +18,23 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 				return;
 			}
 			if constexpr (std::is_same_v<FieldType, entt::entity>) {
-				entt::entity entityReference{ arg };
+				entt::entity& entityReference{ arg };
 				ImGui::Text((fieldData.name + ":").c_str());
 				ImGui::SameLine();
-				ImGui::Text((entityReference == entt::null) ? "Null" : std::to_string(static_cast<unsigned int>(entityReference)).c_str());
-				return;
+				if (entityReference != entt::null && !engine.ecs.registry.valid(entityReference))
+				{
+					entityReference = entt::null;
+					modified = true;
+				}
+				ImGui::Text((entityReference == entt::null) ? "Null" : engine.ecs.registry.get<EntityData>(entityReference).name.c_str());
+				if (ImGui::BeginDragDropTarget()) {
+					if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+						entityReference = *((entt::entity*)payload->Data);
+						modified = true;
+					}
+					ImGui::EndDragDropTarget();
+				}
+				
 			}
 			if constexpr (std::is_same_v<FieldType, glm::vec2>) {
 				if (ImGui::BeginTable("MyTable", 3, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
@@ -70,8 +81,7 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 			}
 		}, fieldData.data);
 		// Update the script instance if a field is modified
-		if (modified)
-			scriptingAPIManager.setScriptFieldData(entity, scriptData.scriptId, fieldData);
+		if (modified && !scriptingAPIManager.setScriptFieldData(entity, scriptData.scriptId, fieldData))
+			scriptData.fields = scriptingAPIManager.getScriptFieldDatas(entity, scriptData.scriptId); // If we failed to set, like invalid component, reset to previous setting
 	}
-	ImGui::EndDisabled();
 }
