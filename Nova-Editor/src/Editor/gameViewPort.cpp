@@ -61,6 +61,19 @@ void GameViewPort::update() {
 	ImTextureID textureId = engine.renderer.getMainFrameBufferTextures()[0];
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
 
+	
+	// Calculate the mouse position relative to the game's viewport.
+	mouseRelativeToViewPort = ImGui::GetMousePos();
+	mouseRelativeToViewPort -= gameWindowTopLeft;
+	mouseRelativeToViewPort /= ImVec2{ viewportWidth, viewportHeight };
+
+	// Flip y..
+	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+
+	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
+	controlOverlay.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
+
+	ImGui::Dummy(ImGui::GetContentRegionAvail());
 	if (ImGui::BeginDragDropTarget()) {
 		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("SCENE_ITEM")) {
 			//entt::entity childEntity = *((entt::entity*)payload->Data);
@@ -84,19 +97,7 @@ void GameViewPort::update() {
 
 		ImGui::EndDragDropTarget();
 	}
-	
-	// Calculate the mouse position relative to the game's viewport.
-	mouseRelativeToViewPort = ImGui::GetMousePos();
-	mouseRelativeToViewPort -= gameWindowTopLeft;
-	mouseRelativeToViewPort /= ImVec2{ viewportWidth, viewportHeight };
-
-	// Flip y..
-	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
-
-	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
-	controlOverlay.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
-
-
 
 	ImGui::End();
+	
 }

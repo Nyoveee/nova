@@ -18,6 +18,7 @@
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Navigation/navMeshGeneration.h"
+#include "Serialisation/serialisation.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -554,7 +555,14 @@ bool Editor::isInSimulationMode() const {
 }
 
 Editor::~Editor() {
+	
 	ImGui_ImplGlfw_Shutdown();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
+
+	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
+	AssetFilePath const* filePath = assetManager.getFilepath(id);
+	if (filePath) {
+		Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+	}
 }

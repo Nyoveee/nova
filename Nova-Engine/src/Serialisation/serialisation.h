@@ -11,7 +11,7 @@ class ECS;
 using json = nlohmann::json;
 
 namespace Serialiser {
-	void serialiseScene(ECS& ecs, const char* fileName);
+	ENGINE_DLL_API void serialiseScene(ECS& ecs, const char* fileName);
 	void deserialiseScene(ECS& ecs, const char* fileName);
 	void serialiseGameConfig(const char* fileName, int gamewidth, int gameHeight);
 

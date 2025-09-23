@@ -263,19 +263,6 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 	}
 }
 
-void AssetManagerUI::displayCreateAssetContextMenu() {
-	if (ImGui::BeginPopupContextItem("CreateAssetContextMenu")) {
-		if (ImGui::MenuItem("[+] Create New Scene")) {
-			
-		}
-		
-		if (ImGui::MenuItem("[+] Create New Script")) {
-		
-		}
-
-		ImGui::EndPopup();
-	}
-}
 
 //void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
 void AssetManagerUI::displayThumbnail(std::size_t imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {

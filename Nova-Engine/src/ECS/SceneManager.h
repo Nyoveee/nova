@@ -9,13 +9,15 @@ class ECS;
 
 class SceneManager {
 public:
-	FRAMEWORK_DLL_API SceneManager(ECS& ecs);
-	
-public:
-	FRAMEWORK_DLL_API void switchScene(Scene const& from, Scene const& to);
+	ENGINE_DLL_API SceneManager(ECS& ecs);
+	//ENGINE_DLL_API ~SceneManager();
 
-	FRAMEWORK_DLL_API void loadScene(Scene const& scene);
-	FRAMEWORK_DLL_API void saveScene(Scene const& scene);
+public:
+	ENGINE_DLL_API void switchScene(Scene const& from, Scene const& to);
+
+	ENGINE_DLL_API void loadScene(Scene const& scene);
+	ENGINE_DLL_API void saveScene(Scene const& scene);
+	ENGINE_DLL_API ResourceID getCurrentScene();
 
 private:
 	ECS& ecs;

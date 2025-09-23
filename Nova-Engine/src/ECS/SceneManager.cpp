@@ -16,14 +16,19 @@ void SceneManager::switchScene(Scene const& from, Scene const& to) {
 	loadScene(to);
 }
 
-void SceneManager::loadScene(Scene const& scene) {
+void SceneManager::loadScene(Scene const& scene) {//resource
 	ecs.registry.clear();
 	Serialiser::deserialiseScene(ecs, scene.getFilePath().string.c_str());
 	currentScene = scene.id();
 }
 
-void SceneManager::saveScene(Scene const& scene) {
+void SceneManager::saveScene(Scene const& scene) {//asset
+//void SceneManager::saveScene(const char* filePath) {//asset
 	Serialiser::serialiseScene(ecs, scene.getFilePath().string.c_str());
 	currentScene = NO_SCENE_LOADED;
+}
+
+ResourceID SceneManager::getCurrentScene(){
+	return currentScene;
 }
 
