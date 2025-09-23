@@ -6,40 +6,58 @@ template<typename ...Args>
 void Logger::warn(std::string_view rt_fmt_str, Args&&... args)
 {
     std::size_t argSize{ sizeof...(args) };
-
-    std::string text;
+    std::string message;
 
     if (argSize == 0) {
-        std::cout << getCurrentTime() << " [Warning] " << rt_fmt_str << std::endl;
-        text = std::string(rt_fmt_str);
+        message = std::string(rt_fmt_str);
     }
     else {
-        std::string formatted = std::vformat(rt_fmt_str, std::make_format_args(args...));
-        std::cout << getCurrentTime() << " [Warning] " << formatted << std::endl;
-        text = formatted;
+        message = std::vformat(rt_fmt_str, std::make_format_args(args...));
     }
+
+    // Print to console 
+    std::cout << getCurrentTime() << " [Warning] " << message << std::endl;
+
+    // Add to log entries for display
+    addLogEntry(LogLevel::Warning, message);
 }
 
 template<typename ...Args>
 void Logger::info(std::string_view rt_fmt_str, Args&&... args)
 {
     std::size_t argSize{ sizeof...(args) };
+    std::string message;
+
     if (argSize == 0) {
-        std::cout << getCurrentTime() << " [Info] " << rt_fmt_str << std::endl;
+        message = std::string(rt_fmt_str);
     }
     else {
-        std::cout << getCurrentTime() << " [Info] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+        message = std::vformat(rt_fmt_str, std::make_format_args(args...));
     }
+
+    // Print to console 
+    std::cout << getCurrentTime() << " [Info] " << message << std::endl;
+
+    // Add to log entries for display
+    addLogEntry(LogLevel::Info, message);
 }
 
 template<typename ...Args>
 void Logger::error(std::string_view rt_fmt_str, Args&&... args)
 {
     std::size_t argSize{ sizeof...(args) };
+    std::string message;
+
     if (argSize == 0) {
-        std::cout << getCurrentTime() << " [Error] " << rt_fmt_str << std::endl;
+        message = std::string(rt_fmt_str);
     }
     else {
-        std::cout << getCurrentTime() << " [Error] " << std::vformat(rt_fmt_str, std::make_format_args(args...)) << std::endl;
+        message = std::vformat(rt_fmt_str, std::make_format_args(args...));
     }
+
+    // Print to console 
+    std::cout << getCurrentTime() << " [Error] " << message << std::endl;
+
+    // Add to log entries for display
+    addLogEntry(LogLevel::Error, message);
 }
