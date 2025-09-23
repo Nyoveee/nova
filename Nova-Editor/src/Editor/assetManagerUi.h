@@ -36,12 +36,15 @@ private:
 	void displayAssetThumbnail(ResourceID resourceId);
 	void displayFolderThumbnail(FolderID folderId);
 
-	void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
+	//void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
+	void displayThumbnail(std::size_t imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
 
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;
 
 	void handleThumbnailDoubleClick(ResourceID resourceId);
+
+	void dragAndDrop(const char* name, std::size_t id);
 
 private:
 	AssetManager& assetManager;

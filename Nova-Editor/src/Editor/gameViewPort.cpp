@@ -60,6 +60,30 @@ void GameViewPort::update() {
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getMainFrameBufferTextures()[0];
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("SCENE_ITEM")) {
+			//entt::entity childEntity = *((entt::entity*)payload->Data);
+			//ecs.setEntityParent(childEntity, entity);
+			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
+
+			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+
+			auto a = engine.resourceManager.getAllResources<Scene>();
+
+			std::cout << (id) << std::endl;
+			std::cout << static_cast<std::size_t>(a[0]) << std::endl;
+			std::cout << static_cast<std::size_t>(a[1]) << std::endl;
+
+			auto&& [scene, _] = engine.resourceManager.getResource<Scene>(id);
+
+			if (scene) {
+				engine.ecs.sceneManager.loadScene(*scene);
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
 	
 	// Calculate the mouse position relative to the game's viewport.
 	mouseRelativeToViewPort = ImGui::GetMousePos();
@@ -71,6 +95,8 @@ void GameViewPort::update() {
 
 	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 	controlOverlay.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
+
+
 
 	ImGui::End();
 }
