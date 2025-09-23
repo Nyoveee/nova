@@ -67,7 +67,7 @@ public:
 
 public:
 	ENGINE_DLL_API bool compileScriptAssembly();
-	ENGINE_DLL_API void loadSceneScriptsToAPI();
+	ENGINE_DLL_API void loadSceneScriptDataToAPI();
 
 	// Editor function
 	ENGINE_DLL_API void loadEntityScript(entt::entity entityID, ResourceID scriptID);
@@ -77,6 +77,7 @@ public:
 
 	// Simulation
 	ENGINE_DLL_API bool startSimulation();
+	ENGINE_DLL_API void stopSimulation();
 
 	// Update
 	ENGINE_DLL_API void gameModeUpdate();

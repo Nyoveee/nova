@@ -121,6 +121,7 @@ void Engine::stopSimulation() {
 		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		scriptingAPIManager.stopSimulation();
 
 		inSimulationMode = false;
 	};

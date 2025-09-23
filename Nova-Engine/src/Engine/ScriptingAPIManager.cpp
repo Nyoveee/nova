@@ -268,15 +268,14 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	return true;
 }
 
-void ScriptingAPIManager::loadSceneScriptsToAPI()
+void ScriptingAPIManager::loadSceneScriptDataToAPI()
 {
 	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 		for (ScriptData& scriptData : scripts.scriptDatas) {
 			addEntityScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
 			scriptData.fields = getScriptFieldDatas(entityId, scriptData.scriptId);
 		}
-	}
-		
+	}	
 }
 
 void ScriptingAPIManager::loadEntityScript(entt::entity entityID, ResourceID scriptID)
@@ -309,7 +308,7 @@ void ScriptingAPIManager::editorModeUpdate(float dt) {
 		timeSinceSave += dt;
 		if (timeSinceSave >= DEBOUNCING_TIME) {
 			if (compileScriptAssembly())
-				loadSceneScriptsToAPI();
+				loadSceneScriptDataToAPI();
 		}
 	}
 	editorModeUpdate_();
@@ -329,10 +328,17 @@ bool ScriptingAPIManager::startSimulation() {
 	if (compileState != CompileState::Compiled) {
 		if (!compileScriptAssembly()) 
 			return false;
-		loadSceneScriptsToAPI();
+		loadSceneScriptDataToAPI();
 	}
 	initalizeScripts();
 	return true;
+}
+
+void ScriptingAPIManager::stopSimulation(){
+	// Clear existing gameobjects, which includes deleted ones, so that it doesn't reference null entities, then load from Rolled Backed Scene
+	unloadAssembly();
+	loadAssembly();
+	loadSceneScriptDataToAPI();
 }
 
 void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
