@@ -59,10 +59,6 @@ public:
 
     // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
 	ENGINE_DLL_API void playSFX(ResourceID audioId, float x, float y, float z, float volume = 1.f);
-	//ENGINE_DLL_API	void playSFXNonInst(AssetID audioId, float x, float y, float z);
-
-	// Checks if a resource is a BGM
-	ENGINE_DLL_API bool isBGM(ResourceID audioId) const;
 
 	// PlayBGM based on ResourceID audioId
 	ENGINE_DLL_API void playBGM(ResourceID audioId, float volume = 1.f);

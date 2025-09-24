@@ -34,7 +34,7 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, PositionalAudio, Scripts
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -193,9 +193,9 @@ struct Scripts
 
 struct AudioData
 {
-	TypedResourceID<Audio> AudioId;
-	float Volume;
-	bool StopAudio;
+	TypedResourceID<Audio> audioId;
+	float volume;
+	bool stopAudio;
 };
 
 struct AudioComponent 
@@ -207,15 +207,14 @@ struct AudioComponent
 	)
 };
 
-struct AudioListener
+struct PositionalAudio
 {
-	bool isListening = false;
-	float minDist = 0.0f;  // Min Dist needed to start hearing audio at full volume
-	float maxDist = 10.0f; // Max Dist needed to start hearing audio
+	// Vec3 centerPoint;
+	float innerRadius = 5.0f;	// If Player is within inner radius, vol at max.
+	float maxRadius = 10.0f;	// If Player is within this radius, vol will change based on dist to centerPoint.
 
 	REFLECTABLE(
-		isListening,
-		minDist,
-		maxDist
+		innerRadius,
+		maxRadius
 	)
 };

@@ -373,27 +373,6 @@ void Editor::sandboxWindow() {
 
 	ImGui::Begin("ooga booga sandbox area");
 
-	if (ImGui::Button("SFX Audio Test"))
-	{
-		engine.audioSystem.playSFX( engine.audioSystem.getResourceId("SFX_AudioTest1"), 0.0f, 0.0f, 0.0f);
-	}
-
-	if (ImGui::Button("BGM Audio Test"))
-	{
-		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest") );
-	}
-
-	if (ImGui::Button("BGM Audio Test 2"))
-	{
-		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest2") );	
-	}
-
-	if (ImGui::Button("Stop Audio Test"))
-	{
-		// Stops all audio channels that has the same string ID as "SFX_AudioTest1"
-		engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
-	}
-
 	entt::registry& registry = engine.ecs.registry;
 
 	static bool wireFrameMode = false;
