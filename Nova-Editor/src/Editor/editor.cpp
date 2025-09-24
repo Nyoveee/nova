@@ -207,7 +207,6 @@ void Editor::deleteEntity(entt::entity entity) {
 	ImGuizmo::Enable(false); 
 	ImGuizmo::Enable(true);   
 
-	engine.scriptingAPIManager.removeEntity(entity);
 	engine.ecs.deleteEntity(entity);
 }
 

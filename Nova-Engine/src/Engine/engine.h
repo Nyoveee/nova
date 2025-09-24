@@ -43,6 +43,7 @@ public:
 public:
 	ENGINE_DLL_API void fixedUpdate(float dt);
 	ENGINE_DLL_API void update(float dt);
+	
 	ENGINE_DLL_API void render(RenderTarget target);
 	
 	ENGINE_DLL_API void startSimulation();

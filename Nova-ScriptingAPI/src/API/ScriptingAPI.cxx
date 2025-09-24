@@ -30,31 +30,43 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	// Instantiate the containers
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
 	scriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
+
+	isAssemblyLoaded = false;
 }
 
 void Interface::intializeAllScripts()
 {
+	// Instantiate all scripts..
 	for each (System::UInt32 entityID in gameObjectScripts->Keys)
 		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
 			gameObjectScripts[entityID][scriptID]->callInit();
 }
 
-std::vector<FieldData> Interface::getScriptFieldDatas(EntityID entityID, ScriptID scriptID)
+std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 {
 	using BindingFlags = System::Reflection::BindingFlags;
 	std::vector<FieldData> fieldDatas{};
-	Script^ script = gameObjectScripts[entityID][scriptID];
-	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
+	
+	System::Type^ scriptType = scriptTypes[scriptID];
+
+	array<System::Reflection::FieldInfo^>^ fieldInfos = scriptType->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
+	
+	// i need to create a temporary instance of to access default value of a non static member.. there's no other way i think :(
+	Script^ script = safe_cast<Script^>(System::Activator::CreateInstance(scriptType));
+
 	for (int i = 0; i < fieldInfos->Length; ++i) {
 		// Ignore the base class
 		if (fieldInfos[i]->DeclaringType == Script::typeid)
 			continue;
 		System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
 		FieldData field{};
+
 		// Private and Protected members will only be added if they have the serializablefield attribute
 		if (!fieldInfos[i]->IsPublic && fieldInfos[i]->GetCustomAttributes(SerializableField::typeid,true)->Length == 0)
 			continue;
+
 		field.name = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
+
 		// Struct
 		if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
 			managedStruct->AppendValueToFieldData(field);
@@ -88,6 +100,22 @@ std::vector<FieldData> Interface::getScriptFieldDatas(EntityID entityID, ScriptI
 	return fieldDatas;
 }
 
+void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
+{
+	if (!scriptTypes->ContainsKey(scriptId)) {
+		Logger::error("Failed to add script {} for entity {}!", scriptId, entityID);
+		return;
+	}
+
+	System::Type^ scriptType = scriptTypes[scriptId];
+	if (!gameObjectScripts->ContainsKey(entityID))
+		gameObjectScripts[entityID] = gcnew Scripts();
+
+	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(scriptType));
+	newScript->entityID = entityID;
+	gameObjectScripts[entityID][scriptId] = newScript;
+}
+
 bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
 {
 	Script^ script = gameObjectScripts[entityID][scriptID];
@@ -112,7 +140,7 @@ bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 		// Component
 		if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
 			IManagedComponent^ referencedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
-			if(!referencedComponent)
+			if (!referencedComponent)
 				referencedComponent = safe_cast<IManagedComponent^>(System::Activator::CreateInstance(fieldType));
 			if (referencedComponent->LoadDetailsFromEntity(static_cast<unsigned int>(std::get<entt::entity>(fieldData.data))))
 				fieldInfos[i]->SetValue(script, referencedComponent);
@@ -133,8 +161,8 @@ bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 				}
 			}
 			fieldInfos[i]->SetValue(script, referencedScript);
-				
-			return referencedScript!= nullptr;
+
+			return referencedScript != nullptr;
 		}
 		// Primitives
 		if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, script, fieldInfos[i]))
@@ -142,16 +170,17 @@ bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 		if (fieldType->IsPrimitive)
 			Logger::warn("Unknown primitive type used in setting fields currently not supported for script serialization");
 		break;
-	
+
 	}
 	return false;
 }
 
+#if 0
 void Interface::updateReference(Script^ script)
 {
 	using BindingFlags = System::Reflection::BindingFlags;
 	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
-	
+
 	for (int i = 0; i < fieldInfos->Length; ++i) {
 		System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
 
@@ -161,23 +190,12 @@ void Interface::updateReference(Script^ script)
 			if (componentReference && componentReference->NativeReferenceLost())
 				fieldInfos[i]->SetValue(script, nullptr);
 		}
-		
+
 		// If Script doesn't exist, this reference shouldn't exist anymore
 		if (fieldType->IsSubclassOf(Script::typeid)) {
 			Script^ scriptReference = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
 			if (scriptReference && !engine->ecs.registry.valid(static_cast<entt::entity>(scriptReference->entityID)))
 				fieldInfos[i]->SetValue(script, nullptr);
-		}
-	}
-}
-
-
-void Interface::gameModeUpdate() {
-	for each (System::UInt32 entityID in gameObjectScripts->Keys) {
-		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
-			Script^ script = gameObjectScripts[entityID][scriptID];
-			script->callUpdate();
-			updateReference(script);
 		}
 	}
 }
@@ -188,23 +206,18 @@ void Interface::editorModeUpdate()
 		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
 			updateReference(gameObjectScripts[entityID][scriptID]);
 }
+#endif
 
-
-void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
-{
-	if (!scriptTypes->ContainsKey(scriptId)) {
-		Logger::error("Failed to add script {} for entity {}!", scriptId, entityID);
-		return;
+void Interface::gameModeUpdate() {
+	for each (System::UInt32 entityID in gameObjectScripts->Keys) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+			Script^ script = gameObjectScripts[entityID][scriptID];
+			script->callUpdate();
+			// updateReference(script);
+		}
 	}
-
-	System::Type^ scriptType = scriptTypes[scriptId];
-	if (!gameObjectScripts->ContainsKey(entityID))
-		gameObjectScripts[entityID] = gcnew Scripts();
-
-	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(scriptType));
-	newScript->entityID = entityID;
-	gameObjectScripts[entityID][scriptId] = newScript;
 }
+
 
 void Interface::removeEntity(EntityID entityID)
 {
@@ -222,6 +235,12 @@ void Interface::removeEntityScript(EntityID entityID, ScriptID scriptId)
 
 void Interface::loadAssembly()
 {
+	if (isAssemblyLoaded) {
+		Logger::error("Attempting to load the assembly again?!");
+		assert(false);
+		return;
+	}
+
 	// ========================================================
 	// 1. Load C# .dll to assembly context.
 	// ========================================================
@@ -286,10 +305,16 @@ void Interface::loadAssembly()
 		System::Type^ scriptType = classNameToScriptType[className];
 		scriptTypes->Add(static_cast<std::size_t>(scriptId), scriptType);
 	}
+
+	isAssemblyLoaded = true;
 }
 
 void Interface::unloadAssembly()
 {
+	if (!isAssemblyLoaded) {
+		return;
+	}
+
 	// Clear existing scripts
 	if (gameObjectScripts)	
 		gameObjectScripts->Clear();
@@ -305,4 +330,6 @@ void Interface::unloadAssembly()
 	System::GC::Collect();
 	// Wait from assembly to finish unloading
 	System::GC::WaitForPendingFinalizers();
+
+	isAssemblyLoaded = false;
 }

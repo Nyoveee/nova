@@ -245,13 +245,21 @@ namespace {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
 
+						if (scriptingAPIManager.isNotCompiled()) {
+							if (scriptingAPIManager.hasCompilationFailed()) {
+								ImGui::Text("Script compilation has failed!!");
+							}
+							else {
+								ImGui::Text("Changes to scripts have been made, recompiling..");
+							}
+						}
+
 						ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || componentInspector.editor.engine.isInSimulationMode());
 						
 						// Adding Scripts
 						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
 							ScriptData scriptData{ resourceId };
-							scriptingAPIManager.loadEntityScript(entity, resourceId);
-							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(entity, scriptData.scriptId);
+							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(scriptData.scriptId);
 							scriptDatas.push_back(scriptData);
 						});
 
@@ -273,7 +281,6 @@ namespace {
 						});
 						ImGui::EndChild();
 						if (it != std::end(scriptDatas)) {
-							scriptingAPIManager.removeEntityScript(entity, it->scriptId);
 							scriptDatas.erase(it);
 						}
 						ImGui::EndDisabled();

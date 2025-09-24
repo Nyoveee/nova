@@ -16,7 +16,7 @@
 #include "ECS/ECS.h"
 
 namespace {
-	constexpr float DEBOUNCING_TIME = 3.0f;
+	constexpr float DEBOUNCING_TIME = 1.0f;
 }
 ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	: engine{p_engine}
@@ -27,9 +27,9 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, intializeCoreClr			{ nullptr }
 	, createManagedDelegate		{ nullptr }
 	, shutdownCorePtr			( nullptr )
-	, gameModeUpdate_				{ nullptr } 
-	, addEntityScript		{ nullptr }
-	, removeEntityScript_	{ nullptr } 
+	, gameModeUpdate_			{ nullptr } 
+	, addEntityScript			{ nullptr }
+	, removeEntityScript_		{ nullptr } 
 	, timeSinceSave				{  }
 	, compileState				{ CompileState::NotCompiled }
 {
@@ -118,7 +118,6 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
 		gameModeUpdate_							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "gameModeUpdate");
-		editorModeUpdate_                       = GetFunctionPtr<UpdateFunctionPtr>("Interface", "editorModeUpdate");
 		loadAssembly                            = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "loadAssembly");
 		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unloadAssembly");
 		addEntityScript						    = GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addEntityScript");
@@ -126,7 +125,9 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		removeEntity_                           = GetFunctionPtr<RemoveEntityFunctionPtr>("Interface", "removeEntity");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
 		getScriptFieldDatas_                    = GetFunctionPtr<GetScriptFieldsFunctionPtr>("Interface", "getScriptFieldDatas");
-		setScriptFieldData_                     = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
+		
+		setScriptFieldData		                = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
+		
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -196,7 +197,8 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 
 bool ScriptingAPIManager::compileScriptAssembly()
 {
-	compileState = CompileState::NotCompiled;
+	compileState = CompileState::CompilationFailed;
+
 	unloadAssembly();
 	// Project path and build command
 	std::string proj_path{std::filesystem::current_path().string() + "\\Nova-Scripts\\Nova-Scripts.csproj"};
@@ -263,6 +265,7 @@ bool ScriptingAPIManager::compileScriptAssembly()
 		Logger::error("Failed to build Nova-Scripts");
 		return false;
 	}
+
 	compileState = CompileState::Compiled;
 	loadAssembly();
 	return true;
@@ -273,11 +276,11 @@ void ScriptingAPIManager::loadSceneScriptDataToAPI()
 	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 		for (ScriptData& scriptData : scripts.scriptDatas) {
 			addEntityScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
-			scriptData.fields = getScriptFieldDatas(entityId, scriptData.scriptId);
 		}
 	}	
 }
 
+#if 0
 void ScriptingAPIManager::loadEntityScript(entt::entity entityID, ResourceID scriptID)
 {
 	addEntityScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
@@ -292,54 +295,74 @@ ENGINE_DLL_API void ScriptingAPIManager::removeEntity(entt::entity entityID)
 {
 	removeEntity_(static_cast<unsigned int>(entityID));
 }
+#endif
 
-bool ScriptingAPIManager::isNotCompiled()
+bool ScriptingAPIManager::isNotCompiled() const
 {
 	return compileState != CompileState::Compiled;
 }
 	
-void ScriptingAPIManager::gameModeUpdate() { 	
+void ScriptingAPIManager::update() {
 	ZoneScoped;
+
 	gameModeUpdate_();
 }
 
-void ScriptingAPIManager::editorModeUpdate(float dt) {
+void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 	if (compileState == CompileState::ToBeCompiled) {
 		timeSinceSave += dt;
+
 		if (timeSinceSave >= DEBOUNCING_TIME) {
-			if (compileScriptAssembly())
-				loadSceneScriptDataToAPI();
+			if (compileScriptAssembly()) {
+
+				// update the field data of all entities..
+				for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+					for (auto&& script : scripts.scriptDatas) {
+						script.fields = getScriptFieldDatas(script.scriptId);
+					}
+				}
+			}
 		}
 	}
-	editorModeUpdate_();
 }
 
-std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(entt::entity entityID, ResourceID scriptID)
+std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(ResourceID scriptID)
 {
-	return getScriptFieldDatas_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
+	return getScriptFieldDatas_(static_cast<std::size_t>(scriptID));
 }
 
-bool ScriptingAPIManager::setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData)
-{
-	return setScriptFieldData_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID), fieldData);
+bool ScriptingAPIManager::hasCompilationFailed() const {
+	return compileState == CompileState::CompilationFailed;
 }
 
 bool ScriptingAPIManager::startSimulation() {
+	// Recompile if there is a change in script before starting simulation..
 	if (compileState != CompileState::Compiled) {
 		if (!compileScriptAssembly()) 
 			return false;
 		loadSceneScriptDataToAPI();
 	}
 
+	// Instantiate all entities' script..
+	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+		for (auto&& script : scripts.scriptDatas) {
+			addEntityScript(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId));
+
+			for (auto&& fieldData : script.fields) {
+				setScriptFieldData(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId), fieldData);
+			}
+		}
+	}
+
+	// Call their init functions..
 	initalizeScripts();
 	return true;
 }
 
 void ScriptingAPIManager::stopSimulation(){
-	// Clear existing gameobjects, which includes deleted ones, so that it doesn't reference null entities, then load from Rolled Backed Scene
-	// unloadAssembly();
-	// loadAssembly();
-	// loadSceneScriptDataToAPI();
+	// Reset assembly, clearing all instantiated scripts.
+	unloadAssembly();
+	loadAssembly();
 }
 
 void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {

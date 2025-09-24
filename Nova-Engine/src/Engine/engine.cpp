@@ -42,12 +42,8 @@ void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
 	if (inSimulationMode) {
-		scriptingAPIManager.gameModeUpdate();
+		scriptingAPIManager.update();
 		physicsManager.update(dt);
-	}
-	else
-	{
-		scriptingAPIManager.editorModeUpdate(dt);
 	}
 }
 
@@ -58,6 +54,10 @@ void Engine::update(float dt) {
 	renderer.update(dt);
 
 	resourceManager.update();
+
+	if (!inSimulationMode) {
+		scriptingAPIManager.checkIfRecompilationNeeded(dt);
+	}
 }
 
 void Engine::setupSimulation() {
@@ -95,11 +95,16 @@ void Engine::startSimulation() {
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 
-		if (!scriptingAPIManager.startSimulation())
-		{
+		if (scriptingAPIManager.hasCompilationFailed()) {
+			Logger::error("Script compilation failed. Please update them.");
 			stopSimulation();
 			return;
 		}
+		else if (!scriptingAPIManager.startSimulation()) {
+			stopSimulation();
+			return;
+		}
+
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();
 		cameraSystem.startSimulation();

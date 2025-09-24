@@ -22,29 +22,39 @@ internal:
 	static void unloadAssembly();
 
 	static void gameModeUpdate();
-	static void editorModeUpdate();
-	
+
+	// static void editorModeUpdate();
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
+
 	static void removeEntity(EntityID entityID);
 	static void removeEntityScript(EntityID entityID, ScriptID scriptId);
 
 	static void intializeAllScripts();
+
 internal:
 	// Script Fields
-	static std::vector<FieldData> getScriptFieldDatas(EntityID entityID, ScriptID scriptID);
+	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);
+
+	// Set script field data..
 	static bool setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
+
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
+	
 	generic<typename T> where T : Script
 	static T tryGetScriptReference(System::UInt32 entityID);
+
 	// Setting/Getting of primitive data for fields through fielddata
 	template<typename Type, typename ...Types>
 	static bool ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ object);
+
 	template<typename Type, typename ...Types>
 	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+
 private:
-	static void updateReference(Script^ script);
+	// static void updateReference(Script^ script);
+
 internal:
 	static Engine* engine;
 
@@ -62,5 +72,7 @@ private:
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;
 	static const char* runtimePath;
+
+	static bool isAssemblyLoaded;
 }; 
 #include "ScriptingAPI.ixx"

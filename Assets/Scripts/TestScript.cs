@@ -5,7 +5,10 @@
     [SerializableField]
     private Vector3 spawnPos = new Vector3(0, 0, 0);
     [SerializableField]
-    private float moveSpeed = 0f;
+    private float moveSpeed = 3f;
+
+    [SerializableField]
+    private Vector3 testPos = new Vector3(1.0f, 0.2f, 2f);
 
     protected override void init()
     {
@@ -18,6 +21,7 @@
     protected override void update()
     {
         // Debug.log;
+        // asds
 
         if(transform!= null)
         {
