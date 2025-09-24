@@ -18,8 +18,24 @@ AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 	assetManager	 { editor.assetManager },
 	resourceManager	 { editor.resourceManager },
 	assetViewerUi	 { assetViewerUi },
-	selectedFolderId { ASSET_FOLDER }
-{}
+	selectedFolderId { ASSET_FOLDER },
+	folderIcon		 { nullptr }
+{
+	auto folderPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/folder" }).value()();
+	folderIcon.reset(static_cast<Texture*>(folderPtr.release()));
+
+	auto texturePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/texture" }).value()();
+	textureIcon.reset(static_cast<Texture*>(texturePtr.release()));
+
+	auto audioPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/audio" }).value()();
+	audioIcon.reset(static_cast<Texture*>(audioPtr.release()));
+
+	auto scriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/script" }).value()();
+	scriptIcon.reset(static_cast<Texture*>(scriptPtr.release()));
+
+	auto scenePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/scene" }).value()();
+	sceneIcon.reset(static_cast<Texture*>(scenePtr.release()));
+}
 
 void AssetManagerUI::update() {
 	ImGui::Begin(ICON_FA_BOXES_PACKING " Content Browser");
@@ -201,10 +217,24 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 		return;
 	}
 
+	ImTextureID texture = NO_TEXTURE;
+
+	if (resourceManager.isResource<Texture>(resourceId)) {
+		texture = textureIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Audio>(resourceId)) {
+		texture = audioIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<ScriptAsset>(resourceId)) {
+		texture = scriptIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Scene>(resourceId)) {
+		texture = sceneIcon->getTextureId();
+	}
+
 	displayThumbnail(
-		//static_cast<int>(static_cast<std::size_t>(resourceId)),
 		static_cast<std::size_t>(resourceId),
-		NO_TEXTURE,
+		texture,
 		assetName->empty() ? "<no name>" : assetName->c_str(),
 
 		// callback when the thumbnail gets clicked.
@@ -228,9 +258,8 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 	auto&& [_, folder] = *iterator;
 
 	displayThumbnail(
-		//static_cast<int>(static_cast<std::size_t>(folderId)),
 		static_cast<std::size_t>(folderId),
-		NO_TEXTURE,
+		static_cast<ImTextureID>(folderIcon->getTextureId()),
 		folder.name.c_str(),
 		
 		// callback when the thumbnail gets clicked.
@@ -290,7 +319,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 
 
 //void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
-void AssetManagerUI::displayThumbnail(std::size_t imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
+void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
 	if (!isAMatchWithSearchQuery(name)) {
 		return;
 	}
@@ -301,36 +330,31 @@ void AssetManagerUI::displayThumbnail(std::size_t imguiId, ImTextureID thumbnail
 	constexpr float textHeight = 20.f;
 
 	//ImGui::PushID(imguiId);
-	ImGui::PushID(static_cast<int>(imguiId));
+	ImGui::PushID(static_cast<int>(resourceIdOrFolderId));
 	ImGui::BeginChild("Thumbnail", ImVec2{ columnWidth, columnWidth + textHeight + 2 * padding.y }, ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
 
 	ImVec2 buttonSize = ImVec2{ columnWidth - 2 * padding.x, columnWidth - 2 * padding.x };
 
 	if (thumbnail != NO_TEXTURE) {
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 10 ,0 });
-		
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
 		if (ImGui::ImageButton("##", thumbnail, buttonSize)) {
 			clickCallback();
 		}
-			//if(resourceManager.isResource<Scene>(static_cast<ResourceID>(imguiId)))
-				//dragAndDrop(name, imguiId);
 		ImGui::PopStyleVar();
 	}
 	else {
 		if (ImGui::Button("##", buttonSize)) {
 			clickCallback();
 		}
-
-		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-			doubleClickCallback();
-		}
 	}
 
-	if (resourceManager.isResource<Scene>(static_cast<ResourceID>(imguiId))) {
-		dragAndDrop(name, imguiId);
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+		doubleClickCallback();
 	}
-	
 
+	if (resourceManager.isResource<Scene>(ResourceID{ resourceIdOrFolderId })) {
+		dragAndDrop(name, resourceIdOrFolderId);
+	}
 
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);

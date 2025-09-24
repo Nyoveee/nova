@@ -7,6 +7,8 @@
 #include "texture.h"
 #include "type_alias.h"
 
+#include "loader.h"
+
 #undef max
 constexpr ImTextureID NO_TEXTURE = std::numeric_limits<ImTextureID>::max();
 
@@ -39,7 +41,7 @@ private:
 	void displayCreateAssetContextMenu();
 
 	//void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
-	void displayThumbnail(std::size_t imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
+	void displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
 
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;
@@ -59,6 +61,13 @@ private:
 
 	std::string searchQuery;
 	std::string allUpperCaseSearchQuery; // we keep all upper case version of the search query.
+
+private:
+	std::unique_ptr<Texture> folderIcon;
+	std::unique_ptr<Texture> textureIcon;
+	std::unique_ptr<Texture> audioIcon;
+	std::unique_ptr<Texture> scriptIcon;
+	std::unique_ptr<Texture> sceneIcon;
 
 private:
 	float columnWidth = 100.f;

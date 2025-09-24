@@ -6,16 +6,55 @@
 #include "editor.h"
 #include "Engine/engine.h"
 
-constexpr float overlayWidth = 70.f;
-constexpr float overlayHeight = 25.f;
-constexpr float topPadding = 10.f;
-constexpr float buttonSize = 25.f;
+namespace {
+	void centerTextInWindow(const char* text) {
+		float window_width = ImGui::GetWindowContentRegionMax().x; 
+		float text_width = ImGui::CalcTextSize(text).x;
+
+		// Calculate the X position to center the text
+		float text_indentation = (window_width - text_width) * 0.5f;
+
+		// Set the cursor position before drawing the text
+		ImGui::SetCursorPosX(text_indentation);
+		ImGui::Text(text);
+	}
+}
 
 ControlOverlay::ControlOverlay(Editor& editor) :
 	editor { editor }
 {}
 
-void ControlOverlay::update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
+void ControlOverlay::update(float dt, float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
+	displayTopControlBar(viewportPosX, viewportPosY, viewportWidth, viewportHeight);
+
+	if (notificationText.size()) {
+		displayNotification(viewportPosX, viewportPosY, viewportWidth, viewportHeight);
+
+		timeElapsed += dt;
+
+		if (timeElapsed > notificationDuration) {
+			clearNotification();
+		}
+	}
+}
+
+void ControlOverlay::setNotification(std::string text, float duration) {
+	notificationText = std::move(text);
+	timeElapsed = 0.f;
+	notificationDuration = duration;
+}
+
+void ControlOverlay::clearNotification() {
+	notificationText.clear();
+	timeElapsed = 0.f;
+}
+
+void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
+	constexpr float overlayWidth	= 70.f;
+	constexpr float overlayHeight	= 25.f;
+	constexpr float topPadding		= 10.f;
+	constexpr float buttonSize		= 25.f;
+
 	if (viewportHeight < overlayHeight || viewportWidth < overlayWidth) {
 		return;
 	}
@@ -24,8 +63,8 @@ void ControlOverlay::update(float viewportPosX, float viewportPosY, float viewpo
 
 	ImGui::SetNextWindowBgAlpha(0.5f);
 	ImGui::SetNextWindowSize({ overlayWidth, overlayHeight });
-	ImVec2 topRightPos = { viewportWidth / 2.f + viewportPosX - overlayWidth / 2.f, viewportPosY + topPadding };
-	ImGui::SetNextWindowPos(topRightPos);
+	ImVec2 topLeftPos = { viewportWidth / 2.f + viewportPosX - overlayWidth / 2.f, viewportPosY + topPadding };
+	ImGui::SetNextWindowPos(topLeftPos);
 
 	// lmao i dont know which padding affects what so i just disable all
 	ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, { 0.f, 0.f });
@@ -49,7 +88,7 @@ void ControlOverlay::update(float viewportPosX, float viewportPosY, float viewpo
 		float offset = (columnWidth - buttonSize) * 0.5f;
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
 
-		if (ImGui::Button(editor.isInSimulationMode() ? ICON_FA_STOP : ICON_FA_PLAY, ImVec2{buttonSize, buttonSize})) {
+		if (ImGui::Button(editor.isInSimulationMode() ? ICON_FA_STOP : ICON_FA_PLAY, ImVec2{ buttonSize, buttonSize })) {
 			editor.isInSimulationMode() ? editor.stopSimulation() : editor.startSimulation();
 		}
 
@@ -84,5 +123,21 @@ void ControlOverlay::update(float viewportPosX, float viewportPosY, float viewpo
 	ImGui::PopStyleVar();
 	ImGui::PopStyleVar();
 	ImGui::PopStyleVar();
+	ImGui::End();
+}
+
+void ControlOverlay::displayNotification(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
+	constexpr float overlayWidth = 500.f;
+	constexpr float overlayHeight = 42.f;
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
+
+	ImGui::SetNextWindowBgAlpha(0.7f);
+	ImGui::SetNextWindowSize({ overlayWidth, overlayHeight });
+	ImVec2 topLeftPos = { viewportWidth / 2.f + viewportPosX - overlayWidth / 2.f, viewportHeight / 2.f + viewportPosY - overlayHeight / 2.f };
+	ImGui::SetNextWindowPos(topLeftPos);
+
+	ImGui::Begin("Notification Overlay", nullptr, window_flags);
+	centerTextInWindow(notificationText.c_str());
 	ImGui::End();
 }

@@ -138,9 +138,13 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		}
 	);
+
+	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
+		gameViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
+	}
 }
 
-void Editor::update(std::function<void(bool)> changeSimulationCallback) {
+void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback) {
 	ZoneScopedC(tracy::Color::Orange);
 
 	ImGui_ImplGlfw_NewFrame();
@@ -151,7 +155,7 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ImGuizmo::BeginFrame();
 	ImGuizmo::Enable(true);
 
-	main();
+	main(dt);
 	assetManager.update();
 
 	// inform the engine if there is a change in simulation mode.
@@ -211,13 +215,13 @@ void Editor::deleteEntity(entt::entity entity) {
 }
 
 // Our main bulk of code should go here, in the main function.
-void Editor::main() {
+void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
 
 	ImGui::ShowDemoWindow();
 	
-	gameViewPort.update();
+	gameViewPort.update(dt);
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();

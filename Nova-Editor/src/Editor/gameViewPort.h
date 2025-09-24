@@ -13,10 +13,11 @@ class Editor;
 class GameViewPort {
 public:
 	GameViewPort(Editor& editor);
-	void update();
+	void update(float dt);
 
 public:
 	bool isHoveringOver;
+	ControlOverlay controlOverlay;
 
 	// value is normalized, but may range outside of [0, 1] (because mouse is outside the viewport).
 	// also, positive y points upwards.
@@ -26,5 +27,4 @@ private:
 	Editor& editor;
 	Engine& engine;
 	Gizmo gizmo;
-	ControlOverlay controlOverlay;
 };
