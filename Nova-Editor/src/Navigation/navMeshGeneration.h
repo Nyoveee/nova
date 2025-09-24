@@ -80,6 +80,7 @@ public:
 	BuildSettings& GetBuildSettings();
 	void ResetBuildSetting();
 	void BuildNavMesh(std::string const& filename);
+	void AddNavMeshSurface(std::string const& filename);
 
 private:
 	ECS& ecs;

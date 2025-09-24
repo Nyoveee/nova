@@ -35,6 +35,7 @@ public:
 public:
 	ENGINE_DLL_API void setNewNavMesh(ResourceID navMeshId);
 	ENGINE_DLL_API ResourceID getNavMeshId() const;
+	ENGINE_DLL_API void		  registerNavmeshData();
 
 private:
 	Engine& engine;

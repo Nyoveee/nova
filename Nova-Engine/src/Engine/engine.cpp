@@ -146,3 +146,10 @@ int Engine::getGameHeight() const {
 bool Engine::isInSimulationMode() const {
 	return inSimulationMode;
 }
+
+void Engine::SystemsOnLoad()
+{
+	this->navigationSystem.registerNavmeshData();
+
+	
+}

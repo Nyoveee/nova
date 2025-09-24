@@ -17,5 +17,7 @@ private:
 	NavigationSystem& navigationSystem;
 	NavMeshGeneration& navMeshGenerator;
 
+	bool onFileCreate;
+	int  step;
 	std::string filename;
 };

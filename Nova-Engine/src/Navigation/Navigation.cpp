@@ -21,3 +21,10 @@ ResourceID NavigationSystem::getNavMeshId() const {
 	return navMeshId;
 }
 
+void NavigationSystem::registerNavmeshData()
+{
+
+
+
+}
+

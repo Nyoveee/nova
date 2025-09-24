@@ -9,6 +9,7 @@
 #include "Detour/Detour/DetourNavMeshBuilder.h"
 #include "Detour/Detour/DetourAlloc.h"
 #include "Navigation/Navigation.h"
+//#include "AssetManager/assetManager.h"
 #include <vector>
 #include <array>
 #include <limits>
@@ -398,6 +399,59 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 
 	navMeshFile.write(reinterpret_cast<char *>(navData), navDataSize);
 	dtFree(navData);
+}
+
+void NavMeshGeneration::AddNavMeshSurface(std::string const& filename)
+{
+
+	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / filename;
+	temporaryMeshFilePath.replace_extension(".navmesh");
+
+	auto resourceName = editor.assetManager.getResourceID(temporaryMeshFilePath);
+
+
+	bool doesComponentExist = false;
+	bool wrongresourcePointer = false;
+	entt::entity entityID;
+
+	//Check if resource has been created
+	for (auto&& [entity, entityData ,navMeshSurface] : ecs.registry.view<EntityData,NavMeshSurface>().each())
+	{
+		if (navMeshSurface.label == buildSettings.agentName) //check via label cause ideally, the label in feautre cannot be edited....
+		{
+			doesComponentExist = true;
+
+			if (TypedResourceID<NavMesh>{resourceName} != navMeshSurface.navMeshId)
+			{
+				wrongresourcePointer = true;
+				entityID = entity;
+
+				
+			}
+
+
+		}
+
+
+
+	}
+
+	
+	if (!doesComponentExist)
+	{
+		//---
+		auto entity = ecs.registry.create();
+		ecs.registry.emplace<Transform>(entity, Transform{});
+		ecs.registry.emplace<EntityData>(entity, EntityData{ "NavMeshSurface_" + buildSettings.agentName });
+		ecs.registry.emplace<NavMeshSurface>(entity, NavMeshSurface{ buildSettings.agentName, TypedResourceID<NavMesh>{resourceName} });
+	}
+	else if(doesComponentExist && wrongresourcePointer)
+	{
+		ecs.registry.get<NavMeshSurface>(entityID).navMeshId = TypedResourceID<NavMesh>{ resourceName };
+	}
+
+
+
 }
 
 void NavMeshGeneration::ResetBuildSetting()
