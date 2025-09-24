@@ -32,10 +32,10 @@ public value struct ManagedType : IManagedStruct {																					\
 	ManagedType(Call_MacroComma_Double(Parameter,__VA_ARGS__)) : Call_MacroComma_Double(ConstructorDefinition2, __VA_ARGS__) {}     \
 	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}										\
 	virtual void AppendValueToFieldData(FieldData& fieldData) sealed{															    \
-		fieldData.second = native();																								\
+		fieldData.data = native();																									\
 	}																																\
 	virtual void SetValueFromFieldData(FieldData const& fieldData) sealed{                                                          \
-		*this = ManagedType(std::get<NativeType>(fieldData.second));																\
+		*this = ManagedType(std::get<NativeType>(fieldData.data));																	\
 	}                                                                                                                               \
 	virtual System::String^ ToString() override sealed{																				\
 		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();													\
@@ -67,28 +67,30 @@ property Type Name														\
 	}																	\
 }
 
-#define ManagedComponentDeclaration(ComponentType, ...) \
-public ref class ComponentType##_ : IManagedComponent { \
-public: \
-	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__) \
-	virtual System::String^ ToString() override sealed{ \
-		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties(); \
-		System::String^ result = #ComponentType + "_{"; \
-		for (int i = 0; i < propertyInfos->Length; ++i) { \
-			result += propertyInfos[i]->Name; \
-			result += propertyInfos[i]->GetValue(this)->ToString(); \
-			if (i != propertyInfos->Length - 1) result += ", "; \
-		} \
-		result += "}"; \
-		return result; \
-	} \
-internal: \
-	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override { \
-		entityID = p_entityID; \
-		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID))) \
-			return true; \
-		return false; \
-	} \
-private: \
-	ComponentType* componentReference; \
+#define ManagedComponentDeclaration(ComponentType, ...)												\
+public ref class ComponentType##_ : IManagedComponent {												\
+public:																								\
+	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__)											    \
+	virtual System::String^ ToString() override sealed{												\
+		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties();		\
+		System::String^ result = #ComponentType + "_{";												\
+		for (int i = 0; i < propertyInfos->Length; ++i) {											\
+			result += propertyInfos[i]->Name;														\
+			result += propertyInfos[i]->GetValue(this)->ToString();									\
+			if (i != propertyInfos->Length - 1) result += ", ";										\
+		}																							\
+		result += "}";																				\
+		return result;																				\
+	}																								\
+internal:																							\
+	ComponentType* nativeComponent() { return componentReference; }									\
+	bool NativeReferenceLost() override { return !componentReference; }                             \
+	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override {								\
+		entityID = p_entityID;																		\
+		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID)))			\
+			return true;																			\
+		return false;																				\
+	}																								\
+private:																							\
+	ComponentType* componentReference;																\
 };

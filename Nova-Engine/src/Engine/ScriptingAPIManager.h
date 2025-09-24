@@ -29,17 +29,21 @@
 		ALL_FIELD_PRIMITIVES
 #endif
 
-using FieldData = std::pair<std::string, std::variant<ALL_FIELD_TYPES>>;
+struct FieldData{
+	std::string name;
+	std::variant<ALL_FIELD_TYPES> data;
+};
 
 // More readable function pointer syntax because C lmaoo
 using UpdateFunctionPtr				= void (*)(void);
 using AddScriptFunctionPtr			= void (*)(unsigned int, std::size_t);
 using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
+using RemoveEntityFunctionPtr       = void (*)(unsigned int);
 using LoadScriptsFunctionPtr		= void (*)(void);
 using UnloadScriptsFunctionPtr		= void (*)(void);
 using IntializeScriptsFunctionPtr	= void (*)(void);
 using GetScriptFieldsFunctionPtr    = std::vector<FieldData>(*)(unsigned int, unsigned long long);
-using SetScriptFieldFunctionPtr		= void(*)(unsigned int, unsigned long long, FieldData const& fieldData);;
+using SetScriptFieldFunctionPtr		= bool(*)(unsigned int, unsigned long long, FieldData const& fieldData);;
 
 class Engine;
 
@@ -63,23 +67,25 @@ public:
 
 public:
 	ENGINE_DLL_API bool compileScriptAssembly();
-	ENGINE_DLL_API void loadSceneScriptsToAPI();
+	ENGINE_DLL_API void loadSceneScriptDataToAPI();
 
 	// Editor function
-	ENGINE_DLL_API void loadEntityScript(unsigned int entityID, unsigned long long scriptID);
-	ENGINE_DLL_API void removeEntityScript(unsigned int entityID, unsigned long long scriptID);
+	ENGINE_DLL_API void loadEntityScript(entt::entity entityID, ResourceID scriptID);
+	ENGINE_DLL_API void removeEntityScript(entt::entity entityID, ResourceID scriptID);
+	ENGINE_DLL_API void removeEntity(entt::entity entityID);
 	ENGINE_DLL_API bool isNotCompiled();
 
 	// Simulation
 	ENGINE_DLL_API bool startSimulation();
+	ENGINE_DLL_API void stopSimulation();
 
 	// Update
-	ENGINE_DLL_API void update();
-	ENGINE_DLL_API void checkModifiedScripts(float dt);
+	ENGINE_DLL_API void gameModeUpdate();
+	ENGINE_DLL_API void editorModeUpdate(float dt);
 
 	// Serializable Field Reference
-	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(unsigned int entityID, unsigned long long scriptID);
-	ENGINE_DLL_API void setScriptFieldData(unsigned int entityID, unsigned long long scriptID, FieldData const& fieldData);
+	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(entt::entity entityID, ResourceID scriptID);
+	ENGINE_DLL_API bool setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData);
 
 	// This is the callback when the assets files are Added
 	ENGINE_DLL_API void OnAssetContentAddedCallback(std::string abspath);
@@ -117,9 +123,11 @@ private:
 	coreclr_shutdown_ptr shutdownCorePtr;
 private:
 	// Function pointers to interact directly with ScriptingAPI
-	UpdateFunctionPtr updateScripts;
-	AddScriptFunctionPtr addGameObjectScript;
-	RemoveScriptFunctionPtr removeGameObjectScript;
+	UpdateFunctionPtr gameModeUpdate_;
+	UpdateFunctionPtr editorModeUpdate_;
+	AddScriptFunctionPtr addEntityScript;
+	RemoveScriptFunctionPtr removeEntityScript_;
+	RemoveEntityFunctionPtr removeEntity_;
 	LoadScriptsFunctionPtr loadAssembly;
 	UnloadScriptsFunctionPtr unloadAssembly;
 	IntializeScriptsFunctionPtr initalizeScripts;

@@ -4,7 +4,7 @@
 namespace Logger
 {
 	template<typename ...Args>
-	void warn(std::string_view rt_fmt_str, Args && ...args)
+	inline void warn(std::string_view rt_fmt_str, Args && ...args)
 	{
 		std::size_t argSize{ sizeof...(args) };
 
@@ -22,7 +22,7 @@ namespace Logger
 
 	}
 	template<typename ...Args>
-	void Logger::info(std::string_view rt_fmt_str, Args && ...args)
+	inline void info(std::string_view rt_fmt_str, Args && ...args)
 	{
 		std::size_t argSize{ sizeof...(args) };
 		if (argSize == 0)
@@ -32,7 +32,7 @@ namespace Logger
 		
 	}
 	template<typename ...Args>
-	void error(std::string_view rt_fmt_str, Args && ...args)
+	inline void error(std::string_view rt_fmt_str, Args && ...args)
 	{
 		std::size_t argSize{ sizeof...(args) };
 		if (argSize == 0)

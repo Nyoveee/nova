@@ -42,12 +42,12 @@ void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
 	if (inSimulationMode) {
-		scriptingAPIManager.update();
+		scriptingAPIManager.gameModeUpdate();
 		physicsManager.update(dt);
 	}
 	else
 	{
-		scriptingAPIManager.checkModifiedScripts(dt);
+		scriptingAPIManager.editorModeUpdate(dt);
 	}
 }
 
@@ -124,6 +124,7 @@ void Engine::stopSimulation() {
 		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		scriptingAPIManager.stopSimulation();
 
 		inSimulationMode = false;
 	};

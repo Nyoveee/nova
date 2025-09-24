@@ -7,11 +7,11 @@ namespace Logger
 {
 	FRAMEWORK_DLL_API std::string getCurrentTime();
 	template<typename ...Args>
-	void warn(std::string_view rt_fmt_str, Args&&... args);
+	inline void warn(std::string_view rt_fmt_str, Args&&... args);
 	template<typename ...Args>
-	void info(std::string_view rt_fmt_str, Args&&... args);
+	inline void info(std::string_view rt_fmt_str, Args&&... args);
 	template<typename ...Args>
-	void error(std::string_view rt_fmt_str, Args&&... args);
+	inline void error(std::string_view rt_fmt_str, Args&&... args);
 }
 
 #include "Logger.ipp"

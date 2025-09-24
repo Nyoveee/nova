@@ -186,18 +186,63 @@ namespace Serialiser {
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+					json scriptArray;
 
+					for (auto&& scriptData : dataMember) {
+						json scriptJson;
+						json fieldDataArray;
+
+						for (auto&& field : scriptData.fields) {
+							json fieldDataJson;
+							fieldDataJson["name"] = field.name;
+							
+							std::visit([&](auto&& data) {
+								using Type = std::decay_t<decltype(data)>;
+
+								if constexpr (std::same_as<Type, glm::vec2>) {
+									fieldDataJson["value"]["x"] = data.x;
+									fieldDataJson["value"]["y"] = data.y;
+								}
+								else if constexpr (std::same_as<Type, glm::vec3>) {
+									fieldDataJson["value"]["x"] = data.x;
+									fieldDataJson["value"]["y"] = data.y;
+									fieldDataJson["value"]["z"] = data.z;
+								}
+								else if constexpr (std::same_as<Type, entt::entity>) {
+									fieldDataJson["value"]["entityId"] = static_cast<std::size_t>(data);
+								}
+								else if constexpr (std::is_fundamental_v<Type>) {
+									fieldDataJson["value"] = data;
+								}
+								else {
+									[] <bool flag = true> {
+										static_assert(flag, "Attempting to serialise unsupported field type..");
+									}();
+								}
+
+								fieldDataJson["type"] = Family::id<Type>();
+							}, field.data);
+
+							fieldDataArray.push_back(std::move(fieldDataJson));
+						}
+
+						scriptJson["fields"] = std::move(fieldDataArray);
+						scriptJson["id"] = static_cast<std::size_t>(scriptData.scriptId);
+						scriptArray.push_back(std::move(scriptJson));
+					}
+
+					componentJson[dataMemberName] = std::move(scriptArray);
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
 
 				}
 
-				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, ResourceID>>) {
 
 				}
 				
-				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, AudioData>>) {
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>) {
 
 				}
 
@@ -229,7 +274,7 @@ namespace Serialiser {
 		if (jsonComponent.find(componentName) == jsonComponent.end())
 			return;
 
-		try {
+		//try {
 			reflection::visit([&](auto fieldData) {
 				auto& dataMember = fieldData.get();
 				constexpr const char* dataMemberName = fieldData.name();
@@ -368,18 +413,74 @@ namespace Serialiser {
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+					std::vector<ScriptData> allScripts;
 
+					// parsing every script...
+					for (auto&& scriptJson : jsonComponent[componentName]["scriptDatas"]) {
+						// for each script, they have an id and a field..
+						std::vector<FieldData> fields;
+
+						// let's parse all fields of a given script..
+						for (auto&& fieldJson : scriptJson["fields"]) {
+							FieldData fieldData;
+							fieldData.name = fieldJson["name"];
+
+							// we check and parse the different possible types of each field data..
+							auto parseVariantJson = [&]<typename ...Types>() {
+								([&]() {
+									if (Family::id<Types>() == fieldJson["type"]) {
+										if constexpr (std::same_as<Types, glm::vec2>) {
+											glm::vec2 vec2;
+											vec2.x = fieldJson["value"]["x"];
+											vec2.y = fieldJson["value"]["y"];
+											fieldData.data = vec2;
+										}
+										else if constexpr (std::same_as<Types, glm::vec3>) {
+											glm::vec3 vec3;
+											vec3.x = fieldJson["value"]["x"];
+											vec3.y = fieldJson["value"]["y"];
+											vec3.z = fieldJson["value"]["z"];
+											fieldData.data = vec3;
+										}
+										else if constexpr (std::same_as<Types, entt::entity>) {
+											unsigned id = fieldJson["value"]["entityId"];
+											fieldData.data = static_cast<entt::entity>(id);
+
+										}
+										else if constexpr (std::is_fundamental_v<Types>) {
+											Types data = fieldJson["value"];
+											fieldData.data = data;
+										}
+										else {
+											[] <bool flag = true> {
+												static_assert(flag, "Attempting to Deserialise unsupported field type..");
+											}();
+										}
+									}
+								}(), ...);
+							};
+
+							parseVariantJson.template operator()<ALL_FIELD_TYPES>();
+							fields.push_back(std::move(fieldData));
+						}
+
+						// retrieve script id..
+						std::size_t id = scriptJson["id"];
+						allScripts.push_back(ScriptData{ TypedResourceID<ScriptAsset>{ id }, std::move(fields) });
+					}
+
+					dataMember = std::move(allScripts);
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
 
 				}
 				
-				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, ResourceID>>) {
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, ResourceID>>) {
 
 				}
 
-				else if constexpr (std::same_as < DataMemberType, std::unordered_map<std::string, AudioData>>) {
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>) {
 
 				}
 
@@ -405,9 +506,9 @@ namespace Serialiser {
 
 				}, component);
 			registry.emplace<T>(entity, std::move(component));
-		}
-		catch (std::exception const& ex) {
-			Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
-		}
+		//}
+		//catch (std::exception const& ex) {
+		//	Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
+		//}
 	}
 }

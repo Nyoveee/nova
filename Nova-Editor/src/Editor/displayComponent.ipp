@@ -244,11 +244,14 @@ namespace {
 					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
+
+						ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || componentInspector.editor.engine.isInSimulationMode());
+						
 						// Adding Scripts
 						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
 							ScriptData scriptData{ resourceId };
-							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
-							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(static_cast<unsigned int>(entity), static_cast<std::size_t>(scriptData.scriptId));
+							scriptingAPIManager.loadEntityScript(entity, resourceId);
+							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(entity, scriptData.scriptId);
 							scriptDatas.push_back(scriptData);
 						});
 
@@ -270,10 +273,10 @@ namespace {
 						});
 						ImGui::EndChild();
 						if (it != std::end(scriptDatas)) {
-							scriptingAPIManager.removeEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(it->scriptId));
+							scriptingAPIManager.removeEntityScript(entity, it->scriptId);
 							scriptDatas.erase(it);
 						}
-				
+						ImGui::EndDisabled();
 					}
 
 					else if constexpr (std::same_as<DataMemberType, entt::entity>) {
@@ -281,7 +284,7 @@ namespace {
 					}
 
 
-					if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>)
+					else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>)
 					{
 						auto& audioDatas = dataMember;
 
@@ -350,8 +353,6 @@ namespace {
 
 						ImGui::EndChild();
 					}
-
-
 
 					// it's an enum. let's display a dropdown box for this enum.
 					// how? using enum reflection provided by "magic_enum.hpp" :D

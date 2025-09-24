@@ -37,7 +37,7 @@ namespace Serialiser {
 	}
 
 	void deserialiseScene(ECS& ecs, const char* fileName) {
-		try {
+		//try {
 			std::ifstream file(fileName);
 
 			if (!file.is_open())
@@ -52,10 +52,10 @@ namespace Serialiser {
 				auto entity = registry.create(en["id"]);
 				deserialiseComponents<ALL_COMPONENTS>(registry, entity, en);
 			}
-		}
-		catch (std::exception const& ex) {
-			Logger::error("Failed to deserialise scene. {}", ex.what());
-		}
+		//}
+		//catch (std::exception const& ex) {
+		//	Logger::error("Failed to deserialise scene. {}", ex.what());
+		//}
 	}
 	
 	void serialiseGameConfig(const char* fileName, int gameWidth, int gameHeight) {

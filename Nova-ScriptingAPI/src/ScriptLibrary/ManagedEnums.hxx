@@ -1,10 +1,8 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <Utility>
 
-#include "ManagedTypes.hxx"
-// Managed enum version for c# scripts
+// Managed enum versions for c# scripts
 public enum class Key
 {
 	Space = GLFW_KEY_SPACE,
@@ -130,25 +128,3 @@ public enum class Key
 	MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
 	MouseRight = GLFW_MOUSE_BUTTON_RIGHT
 };
-public delegate void InputCallback();
-public ref class Input
-{
-public:
-	static property Vector2 mousePosition{
-		Vector2 get() {
-			return mousePosition_;
-		}
-	};
-	static property float scrollOffsetY {
-		float get() {
-			return scrollOffsetY_.Value;
-		}
-	};
-internal:
-	static Vector2 mousePosition_;
-	static System::Collections::Generic::KeyValuePair<bool,float> scrollOffsetY_;
-public:
-	static void MapKey(Key key, InputCallback^ pressCallback, InputCallback^ releaseCallback);
-	
-};
-

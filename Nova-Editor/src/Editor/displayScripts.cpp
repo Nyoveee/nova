@@ -6,7 +6,6 @@
 #include <type_traits>
 #include <unordered_map>
 void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAPIManager& scriptingAPIManager,Engine& engine) {
-	ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || engine.isInSimulationMode());
 	
 	for (FieldData& fieldData : scriptData.fields) {
 		bool modified{ false };
@@ -15,15 +14,27 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 			using FieldType = std::decay_t<decltype(arg)>;
 			if constexpr (std::is_same_v<FieldType, float>) {
 				float& value{ arg };
-				if(ImGui::InputFloat(fieldData.first.c_str(), &value)) modified = true;
+				if(ImGui::InputFloat(fieldData.name.c_str(), &value)) modified = true;
 				return;
 			}
 			if constexpr (std::is_same_v<FieldType, entt::entity>) {
-				entt::entity entityReference{ arg };
-				ImGui::Text((fieldData.first + ":").c_str());
+				entt::entity& entityReference{ arg };
+				ImGui::Text((fieldData.name + ":").c_str());
 				ImGui::SameLine();
-				ImGui::Text((entityReference == entt::null) ? "Null" : std::to_string(static_cast<unsigned int>(entityReference)).c_str());
-				return;
+				if (entityReference != entt::null && !engine.ecs.registry.valid(entityReference))
+				{
+					entityReference = entt::null;
+					modified = true;
+				}
+				ImGui::Text((entityReference == entt::null) ? "Null" : engine.ecs.registry.get<EntityData>(entityReference).name.c_str());
+				if (ImGui::BeginDragDropTarget()) {
+					if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+						entityReference = *((entt::entity*)payload->Data);
+						modified = true;
+					}
+					ImGui::EndDragDropTarget();
+				}
+				
 			}
 			if constexpr (std::is_same_v<FieldType, glm::vec2>) {
 				if (ImGui::BeginTable("MyTable", 3, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
@@ -33,7 +44,7 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 
 					ImGui::TableNextColumn();
 					ImGui::AlignTextToFramePadding();
-					ImGui::Text(fieldData.first.c_str());
+					ImGui::Text(fieldData.name.c_str());
 
 					ImGui::TableNextColumn();
 					if (ImGui::InputFloat("x", &value.x)) modified = true;
@@ -53,7 +64,7 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 
 					ImGui::TableNextColumn();
 					ImGui::AlignTextToFramePadding();
-					ImGui::Text(fieldData.first.c_str());
+					ImGui::Text(fieldData.name.c_str());
 					ImGui::TableNextColumn();
 					if (ImGui::InputFloat("x", &value.x)) modified = true;
 
@@ -68,10 +79,13 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 				}
 				return;
 			}
-		}, fieldData.second);
+		}, fieldData.data);
+
+#if 0
 		// Update the script instance if a field is modified
-		if (modified)
-			scriptingAPIManager.setScriptFieldData(static_cast<unsigned int>(entity), static_cast<unsigned long long>(scriptData.scriptId), fieldData);
+		if (modified && !scriptingAPIManager.setScriptFieldData(entity, scriptData.scriptId, fieldData))
+			scriptData.fields = scriptingAPIManager.getScriptFieldDatas(entity, scriptData.scriptId); // If we failed to set, like invalid component, reset to previous setting
+	
+#endif
 	}
-	ImGui::EndDisabled();
 }

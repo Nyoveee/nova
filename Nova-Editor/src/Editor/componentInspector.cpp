@@ -111,21 +111,25 @@ void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptDa
 	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
 	if (ImGui::BeginCombo("Add new script", "##")) {
 		for (auto&& scriptID : allScripts) {
+
 			auto compareID = [&](ScriptData const& ownedScript) { return scriptID == ownedScript.scriptId; };
+
 			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
 				continue;
 
 			std::string const* namePtr = assetManager.getName(scriptID);
+
+			ImGui::PushID(static_cast<int>(static_cast<std::size_t>(scriptID)));
 
 			if (namePtr) {
 				if (ImGui::Selectable(namePtr->c_str()))
 					onClickCallback(scriptID);
 			}
 
+			ImGui::PopID();
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::PopID();
 }
 
 
