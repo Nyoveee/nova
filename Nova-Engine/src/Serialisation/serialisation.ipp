@@ -52,6 +52,8 @@ namespace Serialiser {
 		([&]() {
 			deserialiseComponent<Components>(en, registry, entity);
 		}(), ...);
+
+		std::cout << "Components pack size = " << sizeof...(Components) << "\n";
 	}
 
 	template<typename T>
@@ -262,7 +264,7 @@ namespace Serialiser {
 			return componentJson;
 		}
 	}
-
+	// this was the starting point
 	template<typename T>
 	//void deserialiseComponent(std::ifstream& outputFile, json jsonComponent) {
 	void deserialiseComponent(json jsonComponent, entt::registry& registry, entt::entity entity) {

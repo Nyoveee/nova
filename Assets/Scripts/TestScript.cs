@@ -8,7 +8,7 @@
     private float moveSpeed = 3f;
 
     [SerializableField]
-    private Vector3 testPos = new Vector3(1.0f, 0.2f, 2f);
+    private Vector3 testPos = new Vector3(1.0f, 0.2f, 1.0f);
 
     protected override void init()
     {
