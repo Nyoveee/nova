@@ -420,6 +420,10 @@ void Editor::sandboxWindow() {
 
 	static float zPos = 0;
 
+	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
+		ImGui::BeginDisabled();
+	}
+
 	if (ImGui::Button("(+) Add 3D model")) {
 		auto entity = registry.create();
 
@@ -494,7 +498,9 @@ void Editor::sandboxWindow() {
 		registry.emplace<SkyBox>(entity, SkyBox{ ResourceID{ 12369249828857649982 } });
 	}
 
-
+	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
+		ImGui::EndDisabled();
+	}
 
 	if (ImGui::Button("recompile shaders")) {
 		engine.renderer.recompileShaders();

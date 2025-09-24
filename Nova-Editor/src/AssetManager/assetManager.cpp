@@ -30,6 +30,18 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	hasInitialised		{},
 	folderId			{}
 {
+	// record the root asset directory.
+	directories[ASSET_FOLDER] = Folder{
+		ASSET_FOLDER,
+		ASSET_FOLDER,
+		{},
+		{},
+		"Assets",
+		std::filesystem::relative(AssetIO::assetDirectory, AssetIO::assetDirectory)
+	};
+
+	folderPathToId[AssetIO::assetDirectory.string()] = ASSET_FOLDER;
+
 	// ========================================
 	// 1. Check if the descriptor directory exist, and the respective asset subdirectories.
 	// ========================================
@@ -180,6 +192,10 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 }
 
 void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& path) {
+	if (folderId == ASSET_FOLDER) {
+		return;
+	}
+
 	// Get parent directory.
 	std::filesystem::path parentPath = path.parent_path();
 
@@ -187,13 +203,22 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 
 	// This directory is at the root asset folder -> no parent.
 	if (parentPath == AssetIO::assetDirectory) {
-		parentFolderId = NONE;
-		rootDirectories.push_back(folderId);
+		parentFolderId = ASSET_FOLDER;
 	}
 	else {
 		parentFolderId = folderPathToId[parentPath.string()];
-		directories[parentFolderId].childDirectories.push_back(folderId);
 	}
+
+	auto iterator = directories.find(parentFolderId);
+
+	if (iterator != directories.end()) {
+		iterator->second.childDirectories.push_back(folderId);
+	}
+	else {
+		assert(false && "Depth first search guarantees that the parent folder should have been recorded.");
+	}
+
+	folderPathToId[path.string()] = folderId;
 
 	directories[folderId] = Folder{
 		folderId,
@@ -203,8 +228,6 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 		path.filename().string(),
 		std::filesystem::relative(path, AssetIO::assetDirectory)
 	};
-
-	folderPathToId[path.string()] = folderId;
 }
 
 bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
@@ -252,10 +275,6 @@ bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
 	Logger::info("Asset filepath rename successful.");
 
 	return true;
-}
-
-std::vector<FolderID> const& AssetManager::getRootDirectories() const {
-	return rootDirectories;
 }
 
 std::string const* AssetManager::getName(ResourceID id) const {
@@ -309,19 +328,25 @@ void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
 }
 
 void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& assetFilePath) {
-	Logger::info("Asset {} has changed, recompiling it's corresponding resource file..\n", assetFilePath.string);
+	Logger::info("Asset watcher notices that asset {} has changed, recompiling it's corresponding resource file..\n", assetFilePath.string);
 
 	auto recreateResourceFile = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
 			if (Family::id<T>() == resourceToType[id]) {
-				std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(AssetIO::getDescriptorFilename<T>(id));
+				auto iterator = assetToDescriptor.find(id);
 
-				if (opt) {
+				if (iterator != assetToDescriptor.end()) {
+					AssetInfo<T>* descriptor = static_cast<AssetInfo<T>*>(iterator->second.get());
+					if (!descriptor) {
+						Logger::error("This should never be nullptr.");
+						return;
+					}
+
 					resourceManager.removeResource(id);
-					createResourceFile<T>(opt.value());
+					createResourceFile<T>(*descriptor);
 				}
 				else {
-					Logger::error("Failed to recompile resource file.");
+					Logger::error("Failed to retrieve descriptor when attempting to recompile asset.");
 				}
 			}
 		}(), ...);

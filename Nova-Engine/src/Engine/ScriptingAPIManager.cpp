@@ -18,6 +18,7 @@
 namespace {
 	constexpr float DEBOUNCING_TIME = 1.0f;
 }
+
 ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	: engine{p_engine}
 	, runtimeDirectory{}
@@ -309,21 +310,35 @@ void ScriptingAPIManager::update() {
 }
 
 void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
-	if (compileState == CompileState::ToBeCompiled) {
-		timeSinceSave += dt;
+	if (compileState != CompileState::ToBeCompiled) {
+		return;
+	}
 
-		if (timeSinceSave >= DEBOUNCING_TIME) {
-			if (compileScriptAssembly()) {
+	// start timer..
+	timeSinceSave += dt;
 
-				// update the field data of all entities..
-				for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
-					for (auto&& script : scripts.scriptDatas) {
-						script.fields = getScriptFieldDatas(script.scriptId);
-					}
+	if (timeSinceSave < DEBOUNCING_TIME) {
+		return;
+	}
+
+	// we attempt to recompile the script assembly
+	if (compileScriptAssembly()) {
+
+		// update the field data of all entities with affected scripts..
+		for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+			for (auto&& script : scripts.scriptDatas) {
+
+				// only get script field data if this script itself has been modified.
+				if (modifiedScripts.count(script.scriptId)) {
+					script.fields = getScriptFieldDatas(script.scriptId);
 				}
 			}
 		}
+
+		modifiedScripts.clear();
 	}
+
+	timeSinceSave = 0;
 }
 
 std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(ResourceID scriptID)
@@ -366,18 +381,23 @@ void ScriptingAPIManager::stopSimulation(){
 }
 
 void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
-	if (std::filesystem::path(absPath).extension() == ".cs")
-		compileScriptAssembly();
-}
-void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId)
-{
-	if (engine.resourceManager.isResource<ScriptAsset>(resourceId)) {
+	if (std::filesystem::path(absPath).extension() == ".cs") {
 		compileState = CompileState::ToBeCompiled;
 		timeSinceSave = 0.f;
 	}
 }
+
+void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId) {
+	if (engine.resourceManager.isResource<ScriptAsset>(resourceId)) {
+		compileState = CompileState::ToBeCompiled;
+		timeSinceSave = 0.f;
+
+		modifiedScripts.insert(resourceId);
+	}
+}
+
 void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
-	(void)resourceId;
+	(void) resourceId;
 	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
 }
 

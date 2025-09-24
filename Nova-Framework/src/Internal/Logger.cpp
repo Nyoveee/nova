@@ -42,6 +42,19 @@ std::string Logger::getCurrentTime() // for getting time
     return ss.str();
 }
 
+std::string Logger::getUniqueTimedId() {
+	static int counter = 0;
+	constexpr char fileNameString[] = "%d%m%Y-%H%I%S-";
+
+	std::stringstream ss;
+	auto start = std::chrono::system_clock::now();
+	auto time = std::chrono::system_clock::to_time_t(start);
+#pragma warning(disable:4996)
+	ss << std::put_time(std::localtime(&time), fileNameString);
+#pragma warning(default:4996)
+	return ss.str() + std::to_string(counter++);
+}
+
 void Logger::addLogEntry(LogLevel level, const std::string& message)
 {
     ensureInitialized();

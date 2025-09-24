@@ -47,6 +47,8 @@ private:
 	void handleThumbnailDoubleClick(ResourceID resourceId);
 
 	void dragAndDrop(const char* name, std::size_t id);
+	
+	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "");
 
 private:
 	AssetManager& assetManager;

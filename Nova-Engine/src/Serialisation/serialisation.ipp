@@ -52,8 +52,6 @@ namespace Serialiser {
 		([&]() {
 			deserialiseComponent<Components>(en, registry, entity);
 		}(), ...);
-
-		std::cout << "Components pack size = " << sizeof...(Components) << "\n";
 	}
 
 	template<typename T>

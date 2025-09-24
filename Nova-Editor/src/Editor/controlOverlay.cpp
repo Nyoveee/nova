@@ -4,6 +4,7 @@
 #include "IconsFontAwesome6.h"
 
 #include "editor.h"
+#include "Engine/engine.h"
 
 constexpr float overlayWidth = 70.f;
 constexpr float overlayHeight = 25.f;
@@ -32,6 +33,10 @@ void ControlOverlay::update(float viewportPosX, float viewportPosY, float viewpo
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0.f, 0.f });
 
 	ImGui::Begin("Overlay", nullptr, window_flags);
+
+	if (editor.engine.ecs.sceneManager.hasNoSceneSelected()) {
+		ImGui::BeginDisabled();
+	}
 
 	if (ImGui::BeginTable("##buttons", 2, ImGuiTableFlags_SizingStretchProp)) {
 		ImGui::TableNextRow();
@@ -70,6 +75,10 @@ void ControlOverlay::update(float viewportPosX, float viewportPosY, float viewpo
 		}
 
 		ImGui::EndTable();
+	}
+
+	if (editor.engine.ecs.sceneManager.hasNoSceneSelected()) {
+		ImGui::EndDisabled();
 	}
 
 	ImGui::PopStyleVar();
