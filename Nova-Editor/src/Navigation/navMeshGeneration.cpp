@@ -388,6 +388,7 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 
 	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / filename;
 	temporaryMeshFilePath.replace_extension(".navmesh");
+
 	std::ofstream navMeshFile{ temporaryMeshFilePath, std::ios::binary };
 
 	if (!navMeshFile) {
