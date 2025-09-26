@@ -246,107 +246,107 @@ public:
 	///  @param[in]		maxAgentRadius	The maximum radius of any agent that will be added to the crowd. [Limit: > 0]
 	///  @param[in]		nav				The navigation mesh to use for planning.
 	/// @return True if the initialization succeeded.
-	bool init(const int maxAgents, const float maxAgentRadius, dtNavMesh* nav);
+	FRAMEWORK_DLL_API bool init(const int maxAgents, const float maxAgentRadius, dtNavMesh* nav);
 	
 	/// Sets the shared avoidance configuration for the specified index.
 	///  @param[in]		idx		The index. [Limits: 0 <= value < #DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS]
 	///  @param[in]		params	The new configuration.
-	void setObstacleAvoidanceParams(const int idx, const dtObstacleAvoidanceParams* params);
+	FRAMEWORK_DLL_API void setObstacleAvoidanceParams(const int idx, const dtObstacleAvoidanceParams* params);
 
 	/// Gets the shared avoidance configuration for the specified index.
 	///  @param[in]		idx		The index of the configuration to retreive. 
 	///							[Limits:  0 <= value < #DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS]
 	/// @return The requested configuration.
-	const dtObstacleAvoidanceParams* getObstacleAvoidanceParams(const int idx) const;
+	FRAMEWORK_DLL_API const dtObstacleAvoidanceParams* getObstacleAvoidanceParams(const int idx) const;
 	
 	/// Gets the specified agent from the pool.
 	///	 @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	/// @return The requested agent.
-	const dtCrowdAgent* getAgent(const int idx);
+	FRAMEWORK_DLL_API const dtCrowdAgent* getAgent(const int idx);
 
 	/// Gets the specified agent from the pool.
 	///	 @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	/// @return The requested agent.
-	dtCrowdAgent* getEditableAgent(const int idx);
+	FRAMEWORK_DLL_API dtCrowdAgent* getEditableAgent(const int idx);
 
 	/// The maximum number of agents that can be managed by the object.
 	/// @return The maximum number of agents.
-	int getAgentCount() const;
+	FRAMEWORK_DLL_API int getAgentCount() const;
 	
 	/// Adds a new agent to the crowd.
 	///  @param[in]		pos		The requested position of the agent. [(x, y, z)]
 	///  @param[in]		params	The configuration of the agent.
 	/// @return The index of the agent in the agent pool. Or -1 if the agent could not be added.
-	int addAgent(const float* pos, const dtCrowdAgentParams* params);
+	FRAMEWORK_DLL_API int addAgent(const float* pos, const dtCrowdAgentParams* params);
 
 	/// Updates the specified agent's configuration.
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	///  @param[in]		params	The new agent configuration.
-	void updateAgentParameters(const int idx, const dtCrowdAgentParams* params);
+	FRAMEWORK_DLL_API void updateAgentParameters(const int idx, const dtCrowdAgentParams* params);
 
 	/// Removes the agent from the crowd.
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
-	void removeAgent(const int idx);
+	FRAMEWORK_DLL_API void removeAgent(const int idx);
 	
 	/// Submits a new move request for the specified agent.
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	///  @param[in]		ref		The position's polygon reference.
 	///  @param[in]		pos		The position within the polygon. [(x, y, z)]
 	/// @return True if the request was successfully submitted.
-	bool requestMoveTarget(const int idx, dtPolyRef ref, const float* pos);
+	FRAMEWORK_DLL_API bool requestMoveTarget(const int idx, dtPolyRef ref, const float* pos);
 
 	/// Submits a new move request for the specified agent.
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	///  @param[in]		vel		The movement velocity. [(x, y, z)]
 	/// @return True if the request was successfully submitted.
-	bool requestMoveVelocity(const int idx, const float* vel);
+	FRAMEWORK_DLL_API bool requestMoveVelocity(const int idx, const float* vel);
 
 	/// Resets any request for the specified agent.
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	/// @return True if the request was successfully reseted.
-	bool resetMoveTarget(const int idx);
+	FRAMEWORK_DLL_API bool resetMoveTarget(const int idx);
 
 	/// Gets the active agents int the agent pool.
 	///  @param[out]	agents		An array of agent pointers. [(#dtCrowdAgent *) * maxAgents]
 	///  @param[in]		maxAgents	The size of the crowd agent array.
 	/// @return The number of agents returned in @p agents.
-	int getActiveAgents(dtCrowdAgent** agents, const int maxAgents);
+	FRAMEWORK_DLL_API int getActiveAgents(dtCrowdAgent** agents, const int maxAgents);
 
 	/// Updates the steering and positions of all agents.
 	///  @param[in]		dt		The time, in seconds, to update the simulation. [Limit: > 0]
 	///  @param[out]	debug	A debug object to load with debug information. [Opt]
-	void update(const float dt, dtCrowdAgentDebugInfo* debug);
+	FRAMEWORK_DLL_API void update(const float dt, dtCrowdAgentDebugInfo* debug);
 	
 	/// Gets the filter used by the crowd.
 	/// @return The filter used by the crowd.
-	inline const dtQueryFilter* getFilter(const int i) const { return (i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE) ? &m_filters[i] : 0; }
+	FRAMEWORK_DLL_API inline const dtQueryFilter* getFilter(const int i) const { return (i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE) ? &m_filters[i] : 0; }
 	
 	/// Gets the filter used by the crowd.
 	/// @return The filter used by the crowd.
-	inline dtQueryFilter* getEditableFilter(const int i) { return (i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE) ? &m_filters[i] : 0; }
+	FRAMEWORK_DLL_API inline dtQueryFilter* getEditableFilter(const int i) { return (i >= 0 && i < DT_CROWD_MAX_QUERY_FILTER_TYPE) ? &m_filters[i] : 0; }
 
 	/// Gets the search halfExtents [(x, y, z)] used by the crowd for query operations. 
 	/// @return The search halfExtents used by the crowd. [(x, y, z)]
-	const float* getQueryHalfExtents() const { return m_agentPlacementHalfExtents; }
+	FRAMEWORK_DLL_API const float* getQueryHalfExtents() const { return m_agentPlacementHalfExtents; }
 
 	/// Same as getQueryHalfExtents. Left to maintain backwards compatibility.
 	/// @return The search halfExtents used by the crowd. [(x, y, z)]
-	const float* getQueryExtents() const { return m_agentPlacementHalfExtents; }
+	FRAMEWORK_DLL_API const float* getQueryExtents() const { return m_agentPlacementHalfExtents; }
 	
 	/// Gets the velocity sample count.
 	/// @return The velocity sample count.
-	inline int getVelocitySampleCount() const { return m_velocitySampleCount; }
+	FRAMEWORK_DLL_API inline int getVelocitySampleCount() const { return m_velocitySampleCount; }
 	
 	/// Gets the crowd's proximity grid.
 	/// @return The crowd's proximity grid.
-	const dtProximityGrid* getGrid() const { return m_grid; }
+	FRAMEWORK_DLL_API const dtProximityGrid* getGrid() const { return m_grid; }
 
 	/// Gets the crowd's path request queue.
 	/// @return The crowd's path request queue.
-	const dtPathQueue* getPathQueue() const { return &m_pathq; }
+	FRAMEWORK_DLL_API const dtPathQueue* getPathQueue() const { return &m_pathq; }
 
 	/// Gets the query object used by the crowd.
-	const dtNavMeshQuery* getNavMeshQuery() const { return m_navquery; }
+	FRAMEWORK_DLL_API const dtNavMeshQuery* getNavMeshQuery() const { return m_navquery; }
 
 private:
 	// Explicitly disabled copy constructor and copy assignment operator.
@@ -357,12 +357,12 @@ private:
 /// Allocates a crowd object using the Detour allocator.
 /// @return A crowd object that is ready for initialization, or null on failure.
 ///  @ingroup crowd
-dtCrowd* dtAllocCrowd();
+FRAMEWORK_DLL_API dtCrowd* dtAllocCrowd();
 
 /// Frees the specified crowd object using the Detour allocator.
 ///  @param[in]		ptr		A crowd object allocated using #dtAllocCrowd
 ///  @ingroup crowd
-void dtFreeCrowd(dtCrowd* ptr);
+FRAMEWORK_DLL_API void dtFreeCrowd(dtCrowd* ptr);
 
 
 #endif // DETOURCROWD_H

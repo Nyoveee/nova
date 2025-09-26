@@ -2,8 +2,11 @@
 #include "Detour/Detour/DetourNavMesh.h"
 #include "Logger.h"
 
-NavMesh::NavMesh(ResourceID id, ResourceFilePath resourceFilePath, unsigned char* navData, dtNavMesh* navMesh) :
+NavMesh::NavMesh(ResourceID id, ResourceFilePath resourceFilePath, std::string agentName, float buildRadius, float buildHeight, unsigned char* navData, dtNavMesh* navMesh) :
 	Resource	{ id, resourceFilePath },
+	agentName	{ agentName },
+	buildRadius	{ buildRadius },
+	buildHeight	{ buildHeight },
 	navData		{ navData },
 	navMesh		{ navMesh }
 {}

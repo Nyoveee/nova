@@ -81,6 +81,7 @@ public:
 	void ResetBuildSetting();
 	void BuildNavMesh(std::string const& filename);
 	void AddNavMeshSurface(std::string const& filename);
+	void PrependAdditionalData(unsigned char ** navData, int* dataSize); //inject additional data to the front of the memory block
 
 private:
 	ECS& ecs;

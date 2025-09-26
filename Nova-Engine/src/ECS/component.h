@@ -35,7 +35,7 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent,NavigationTestTarget
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -263,6 +263,63 @@ struct NavMeshSurface
 		label,
 		navMeshId
 	
+	
+	)
+
+
+
+};
+
+
+
+struct NavMeshAgent
+{
+	//User Variables
+	std::string agentName;
+	
+	float agentMaxSpeed; //Top speed
+	float agentMaxAcceleration; //max acceleration
+	float collisionDetectionRange; // higher the value the earlier it attempts to steers
+	float separationWeight;
+
+
+	enum class PathfindingType
+	{
+		Automated,
+		Manual
+
+	}PathfindingType;
+
+	REFLECTABLE
+	(
+		agentName,
+		agentMaxSpeed,
+		agentMaxAcceleration,
+		collisionDetectionRange,
+		separationWeight,
+		PathfindingType
+	)
+
+
+	//Runtime variables
+	int agentIndex;
+	float agentRadius;
+	float agentHeight;
+
+
+
+
+
+};
+
+
+struct NavigationTestTarget
+{
+	float position;
+
+	REFLECTABLE
+	(
+	position
 	
 	)
 

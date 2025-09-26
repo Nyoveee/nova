@@ -14,7 +14,7 @@ NavigationWindow::NavigationWindow(Editor& editor, NavigationSystem& navigationS
 	navMeshGenerator	{ navMeshGenerator },
 	onFileCreate		{ false },
 	step				{ 0 },
-	filename			{ "mySkinIsGleaming "}
+	filename			{ "BIG_CHUNGUS"}
 {}
 
 void NavigationWindow::update() {
@@ -85,7 +85,7 @@ void NavigationWindow::update() {
 	ImGui::SameLine();
 	if (ImGui::Button("Bake", ImVec2(100, 40))) { navMeshGenerator.BuildNavMesh(filename); onFileCreate = true; step = 0; };
 
-	//need wait a few frame ahhhh for the file descriptor to regenerate, if not cannot find resourceID
+	//need wait a few frame ahhhh for the file descriptor to regenerate and if not cannot find resourceID
 	if (onFileCreate)
 	{
 		if (step >= 60)

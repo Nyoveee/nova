@@ -44,6 +44,7 @@ void Engine::fixedUpdate(float dt) {
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
+		navigationSystem.update(dt);
 	}
 }
 
@@ -149,7 +150,7 @@ bool Engine::isInSimulationMode() const {
 
 void Engine::SystemsOnLoad()
 {
-	this->navigationSystem.registerNavmeshData();
+	this->navigationSystem.initNavMeshSystems();
 
 	
 }
