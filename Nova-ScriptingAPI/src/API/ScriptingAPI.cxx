@@ -42,6 +42,20 @@ void Interface::intializeAllScripts()
 			gameObjectScripts[entityID][scriptID]->callInit();
 }
 
+void Interface::handleOnCollision(EntityID entityOne, EntityID entityTwo) {
+	if (gameObjectScripts->ContainsKey(entityOne)) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityOne]->Keys) {
+			gameObjectScripts[entityOne][scriptID]->callOnCollisionEnter(entityTwo);
+		}
+	}
+
+	if (gameObjectScripts->ContainsKey(entityTwo)) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityTwo]->Keys) {
+			gameObjectScripts[entityTwo][scriptID]->callOnCollisionEnter(entityTwo);
+		}
+	}
+}
+
 std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 {
 	using BindingFlags = System::Reflection::BindingFlags;

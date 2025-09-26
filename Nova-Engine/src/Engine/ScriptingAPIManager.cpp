@@ -128,7 +128,8 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		getScriptFieldDatas_                    = GetFunctionPtr<GetScriptFieldsFunctionPtr>("Interface", "getScriptFieldDatas");
 		
 		setScriptFieldData		                = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
-		
+		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
+
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -399,5 +400,13 @@ void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId) 
 void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
 	(void) resourceId;
 	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
+}
+
+void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity entityTwo) {
+	handleOnCollision_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
+}
+
+void ScriptingAPIManager::onCollisionExit(entt::entity entityOne, entt::entity entityTwo) {
+
 }
 

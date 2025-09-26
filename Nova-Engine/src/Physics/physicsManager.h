@@ -2,6 +2,9 @@
 
 #include <entt/entt.hpp>
 #include <vector>
+#include <mutex>
+#include <utility>
+#include <queue>
 
 class Engine;
 
@@ -12,6 +15,7 @@ class Engine;
 
 #include "joltPhysicsInterface.h"
 #include "debugRenderer.h"
+#include "contactListener.h"
 
 class PhysicsManager {
 public:
@@ -28,6 +32,8 @@ public:
 	void clear();
 	void update(float dt);
 	void debugRender();
+
+	void submitCollision(entt::entity entityOne, entt::entity entityTwo);
 
 private:
 	void createPrimitiveShapes();
@@ -65,8 +71,10 @@ private:
 
 	// Our own debug renderer..
 	DebugRenderer debugRenderer;
+	NovaContactListener contactListener;
 
 	entt::registry& registry;
+	Engine& engine;
 
 private:
 	// We let this physics manager owns some basic primitive shapes.
@@ -74,4 +82,8 @@ private:
 	JPH::Ref<JPH::Shape> sphere;
 
 	std::vector<JPH::BodyID> createdBodies;
+
+	// we queue entities on collision for thread safety.
+	std::queue<std::pair<entt::entity, entt::entity>> onCollision;
+	std::mutex onCollisionMutex;
 };

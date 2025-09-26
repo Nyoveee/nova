@@ -48,3 +48,13 @@ void Script::callExit() {
 	}
 }
 
+void Script::callOnCollisionEnter(unsigned entityId) {
+	try { onCollisionEnter(entityId); }
+	catch (const std::exception& e) {
+		Logger::error("Unable to call on collision enter(): {}", e.what());
+	}
+	catch (System::Exception^ e) {
+		Logger::error("Unable to call on collision enter(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+	}
+}
+

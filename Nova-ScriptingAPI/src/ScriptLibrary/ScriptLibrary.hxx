@@ -29,6 +29,7 @@ public:
 public ref class Debug {
 public:
 	static void Print(IManagedComponent^ component) { Logger::info(Convert(component->ToString()));}
+	static void Print(System::String^ string)		{ Logger::info(Convert(string)); }
 	static void Print(Object^ object)               { Logger::info(Convert(object->GetType()->Name) + Convert(object->ToString())); }
 };
 

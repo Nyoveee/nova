@@ -43,8 +43,10 @@ using RemoveEntityFunctionPtr       = void (*)(unsigned int);
 using LoadScriptsFunctionPtr		= void (*)(void);
 using UnloadScriptsFunctionPtr		= void (*)(void);
 using IntializeScriptsFunctionPtr	= void (*)(void);
-using GetScriptFieldsFunctionPtr    = std::vector<FieldData>(*)(std::size_t);
-using SetScriptFieldFunctionPtr		= bool(*)(unsigned int, unsigned long long, FieldData const& fieldData);;
+using GetScriptFieldsFunctionPtr    = std::vector<FieldData> (*)(std::size_t);
+using SetScriptFieldFunctionPtr		= bool (*)(unsigned int, unsigned long long, FieldData const& fieldData);
+
+using handleOnCollisionFunctionPtr  = void (*)(unsigned int, unsigned int);
 
 class Engine;
 
@@ -105,6 +107,9 @@ public:
 	// This is the callback when the assets files are deleted
 	ENGINE_DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
 
+	ENGINE_DLL_API void onCollisionEnter(entt::entity entityOne, entt::entity entityTwo);
+	ENGINE_DLL_API void onCollisionExit(entt::entity entityOne, entt::entity entityTwo);
+
 private:
 	template<typename Func>
 	Func getCoreClrFuncPtr(const std::string& functionName);
@@ -134,15 +139,16 @@ private:
 
 private:
 	// Function pointers to interact directly with ScriptingAPI
-	UpdateFunctionPtr gameModeUpdate_;
-	AddScriptFunctionPtr addEntityScript;
-	RemoveScriptFunctionPtr removeEntityScript_;
-	RemoveEntityFunctionPtr removeEntity_;
-	LoadScriptsFunctionPtr loadAssembly;
-	UnloadScriptsFunctionPtr unloadAssembly;
-	IntializeScriptsFunctionPtr initalizeScripts;
-	GetScriptFieldsFunctionPtr getScriptFieldDatas_;
-	SetScriptFieldFunctionPtr setScriptFieldData;
+	UpdateFunctionPtr				gameModeUpdate_;
+	AddScriptFunctionPtr			addEntityScript;
+	RemoveScriptFunctionPtr			removeEntityScript_;
+	RemoveEntityFunctionPtr			removeEntity_;
+	LoadScriptsFunctionPtr			loadAssembly;
+	UnloadScriptsFunctionPtr		unloadAssembly;
+	IntializeScriptsFunctionPtr		initalizeScripts;
+	GetScriptFieldsFunctionPtr		getScriptFieldDatas_;
+	SetScriptFieldFunctionPtr		setScriptFieldData;
+	handleOnCollisionFunctionPtr	handleOnCollision_;
 
 private:
 	CompileState compileState;

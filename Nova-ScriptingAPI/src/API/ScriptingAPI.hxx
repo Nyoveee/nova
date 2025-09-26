@@ -31,6 +31,8 @@ internal:
 
 	static void intializeAllScripts();
 
+	static void handleOnCollision(EntityID entityOne, EntityID entityTwo);
+
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);

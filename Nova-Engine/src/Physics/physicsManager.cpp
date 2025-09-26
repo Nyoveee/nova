@@ -107,7 +107,9 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	// @ IF SOMETHING SEGFAULTS HERE ITS PROBABLY CAUSE I CALL .GETBODYINTERFACE BEFORE .INIT.
 	bodyInterface	{ physicsSystem.GetBodyInterface() },
 	debugRenderer	{ engine.renderer },
-	registry		{ engine.ecs.registry }
+	registry		{ engine.ecs.registry },
+	engine			{ engine },
+	contactListener	{ *this }
 {
 	// Install trace and assert callbacks
 	JPH::Trace = TraceImpl;
@@ -135,12 +137,12 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	MyBodyActivationListener body_activation_listener;
 	physics_system.SetBodyActivationListener(&body_activation_listener);
 
+
+#endif
 	// A contact listener gets notified when bodies (are about to) collide, and when they separate again.
 	// Note that this is called from a job so whatever you do here needs to be thread safe.
 	// Registering one is entirely optional.
-	MyContactListener contact_listener;
-	physics_system.SetContactListener(&contact_listener);
-#endif
+	physicsSystem.SetContactListener(&contactListener);
 
 }
 
@@ -167,10 +169,13 @@ void PhysicsManager::initialise() {
 			rigidbody.motionType == JPH::EMotionType::Dynamic ? JPH::EActivation::Activate : JPH::EActivation::DontActivate
 		);
 
+		bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityId));
 		createdBodies.push_back(bodyId);
 
 		rigidbody.bodyId = bodyId;
 	}
+
+	physicsSystem.OptimizeBroadPhase();
 }
 
 void PhysicsManager::clear() {
@@ -225,6 +230,19 @@ void PhysicsManager::update(float dt) {
 		transform.position = toGlmVec3(pos);
 		transform.rotation = toGlmQuat(rotation);
 	}
+
+	// =============================================================
+	// 3. Handle collision request..
+	// =============================================================
+
+	std::lock_guard lock{ onCollisionMutex };
+
+	while (onCollision.size()) {
+		auto [entityOne, entityTwo] = onCollision.front();
+		onCollision.pop();
+		
+		engine.scriptingAPIManager.onCollisionEnter(entityOne, entityTwo);
+	}
 }
 
 void PhysicsManager::debugRender() {
@@ -249,4 +267,9 @@ void PhysicsManager::createPrimitiveShapes() {
 	sphereSettings.SetEmbedded(); // whatever i just yapped at the top
 
 	sphere = sphereSettings.Create().Get();
+}
+
+void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {
+	std::lock_guard lock{ onCollisionMutex };
+	onCollision.push({ entityOne, entityTwo });
 }
