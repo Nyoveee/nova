@@ -1,11 +1,14 @@
 #pragma once
 
+#include <entt/entt.hpp>
 #include <FMOD/fmod.hpp>
 #include "export.h"
 #include <unordered_map>
 #include <string>
 
 #include "type_alias.h"
+
+struct AudioComponent;
 
 class Engine;
 class ResourceManager;
@@ -25,8 +28,8 @@ public:
 	ENGINE_DLL_API AudioSystem(Engine& engine);
 	ENGINE_DLL_API ~AudioSystem();
 	ENGINE_DLL_API AudioSystem(AudioSystem const& other)				= delete;
-	ENGINE_DLL_API AudioSystem(AudioSystem&& other)					= delete;
-	ENGINE_DLL_API AudioSystem& operator=(AudioSystem const& other)	= delete;
+	ENGINE_DLL_API AudioSystem(AudioSystem&& other)						= delete;
+	ENGINE_DLL_API AudioSystem& operator=(AudioSystem const& other)		= delete;
 	ENGINE_DLL_API AudioSystem& operator=(AudioSystem&& other)			= delete;
 
 public:
@@ -59,7 +62,6 @@ public:
 
     // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
 	ENGINE_DLL_API void playSFX(ResourceID audioId, float x, float y, float z, float volume = 1.f);
-	//ENGINE_DLL_API	void playSFXNonInst(AssetID audioId, float x, float y, float z);
 
 	// Checks if a resource is a BGM
 	ENGINE_DLL_API bool isBGM(ResourceID audioId) const;
@@ -87,6 +89,10 @@ public:
 	ENGINE_DLL_API void AdjustBGMVol(float volume);
 
 	void handleFinishedAudioInstance(FMOD::Channel* channel);
+
+public:
+	// this function is called from the scripting API.
+	ENGINE_DLL_API void playSFX(entt::entity entity, std::string soundName);
 
 private:
 	FMOD::Sound* getSound(ResourceID audioId) const;

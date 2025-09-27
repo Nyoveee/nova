@@ -317,7 +317,8 @@ namespace {
 
 							bool keepAudioFile = true;
 
-							AudioData& audioData = it->second;
+							auto&& [name, audioData] = *it;
+							
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
 							if (!audioAsset) {
 								// Invalid ResourceID
@@ -325,26 +326,22 @@ namespace {
 								continue;
 							}
 
-							auto audioNamePtr = assetManager.getName(audioData.AudioId);
-
-							if (audioNamePtr) {
-								if (ImGui::CollapsingHeader(audioNamePtr->c_str(), &keepAudioFile)) {
-									if (ImGui::Button("Play Audio")) {
-										if (audioSystem.isBGM(audioData.AudioId)) {
-											audioSystem.playBGM(audioData.AudioId, audioData.Volume);
-										}
-										else {
-											audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f, audioData.Volume);
-										}
+							if (ImGui::CollapsingHeader(name.c_str(), &keepAudioFile)) {
+								if (ImGui::Button("Play Audio")) {
+									if (audioSystem.isBGM(audioData.AudioId)) {
+										audioSystem.playBGM(audioData.AudioId, audioData.Volume);
 									}
-
-									if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
-										audioSystem.AdjustVol(audioData.AudioId, audioData.Volume);
+									else {
+										audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f, audioData.Volume);
 									}
+								}
 
-									if (ImGui::Button("Stop Audio")) {
-										audioSystem.StopAudio(audioData.AudioId);
-									}
+								if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
+									audioSystem.AdjustVol(audioData.AudioId, audioData.Volume);
+								}
+
+								if (ImGui::Button("Stop Audio")) {
+									audioSystem.StopAudio(audioData.AudioId);
 								}
 							}
 

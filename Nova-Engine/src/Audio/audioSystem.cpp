@@ -163,6 +163,27 @@ void AudioSystem::stopAudioInstance(AudioInstanceID audioInstanceId) {
 	stopAudioInstance(audioInstance);
 }
 
+void AudioSystem::playSFX(entt::entity entity, std::string soundName) {
+	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
+
+	if (!audio) {
+		Logger::warn("Attempting to play sound from entity with no audio component!");
+		return;
+	}
+
+	auto iterator = audio->data.find(soundName);
+
+	if (iterator == audio->data.end()) {
+		Logger::warn("Entity has no sound named {}", soundName);
+		return;
+	}
+
+	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
+
+	auto&& [_, audioData] = *iterator;
+	playSFX(audioData.AudioId, transform.position.x, transform.position.y, transform.position.z, audioData.Volume);
+}
+
 FMOD::Sound* AudioSystem::getSound(ResourceID audioId) const {
 	auto iterator = sounds.find(audioId);
 

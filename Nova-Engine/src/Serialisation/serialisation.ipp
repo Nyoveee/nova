@@ -233,17 +233,24 @@ namespace Serialiser {
 
 					componentJson[dataMemberName] = std::move(scriptArray);
 				}
-
-				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
-
-				}
-
-				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, ResourceID>>) {
-
-				}
 				
 				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>) {
+					json audioArray;
 
+					for (auto&& [name, audioData] : dataMember) {
+						json audioComponentJson;
+						audioComponentJson["name"] = name;
+
+						json audioDataJson;
+						audioDataJson["id"] = static_cast<std::size_t>(audioData.AudioId);
+						audioDataJson["volume"] = audioData.Volume;
+
+						audioComponentJson["audioData"] = audioDataJson;
+
+						audioArray.push_back(std::move(audioComponentJson));
+					}
+
+					componentJson[dataMemberName] = std::move(audioArray);
 				}
 
 				// it's an enum. let's display a dropdown box for this enum.
@@ -472,16 +479,15 @@ namespace Serialiser {
 					dataMember = std::move(allScripts);
 				}
 
-				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
-
-				}
-				
-				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, ResourceID>>) {
-
-				}
-
 				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>) {
+					for (auto&& audioComponent : jsonComponent[componentName][dataMemberName]) {
+						std::string name = audioComponent["name"];
+					
+						std::size_t id = audioComponent["audioData"]["id"];
+						float volume = audioComponent["audioData"]["volume"];
 
+						dataMember.insert({ std::move(name), AudioData{ id, volume } });
+					}
 				}
 
 				// it's an enum. let's display a dropdown box for this enum.

@@ -3,6 +3,8 @@
 // Editor will automatically rename and recompile this file.
 class Physics : Script
 {
+    public Transform_ transform;
+
     // This function is first invoked when game starts.
     protected override void init()
     {}
@@ -12,7 +14,7 @@ class Physics : Script
     {}
 
     protected override void onCollisionEnter(uint entityId) {
-        Debug.Print("This is what I dreamed of reality.\n");
-        Debug.Print("Collide with entity " + entityId + "\n");
+        AudioAPI.playSound(entityID, "METAL PIPE");
+        AudioAPI.playSound(entityID, "SCREAM");
     } 
 }

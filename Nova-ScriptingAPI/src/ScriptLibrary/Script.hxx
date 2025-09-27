@@ -26,6 +26,9 @@ internal:
 
 	void callOnCollisionEnter(unsigned entityId);
 
+	System::UInt32 getEntityID() { return entityID; };
+	void setEntityID(System::UInt32 id) { entityID = id; };
+
 protected:
 	virtual void init() {};
 	virtual void update() {};
@@ -33,6 +36,6 @@ protected:
 
 	virtual void onCollisionEnter([[maybe_unused]] unsigned entityId) {};
 
-internal:
+protected:
 	System::UInt32 entityID;
 };

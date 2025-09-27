@@ -97,7 +97,7 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 		// Scripts
 		if (fieldType->IsSubclassOf(Script::typeid)) {
 			Script^ managedScripts = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
-			field.data = entt::entity(managedScripts ? managedScripts->entityID : entt::null);
+			field.data = entt::entity(managedScripts ? managedScripts->getEntityID() : entt::null);
 			fieldDatas.push_back(field);
 			continue;
 		}
@@ -126,7 +126,7 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 		gameObjectScripts[entityID] = gcnew Scripts();
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(scriptType));
-	newScript->entityID = entityID;
+	newScript->setEntityID(entityID);
 	gameObjectScripts[entityID][scriptId] = newScript;
 }
 

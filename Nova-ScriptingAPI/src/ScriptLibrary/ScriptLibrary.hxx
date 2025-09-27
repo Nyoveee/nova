@@ -33,6 +33,10 @@ public:
 	static void Print(Object^ object)               { Logger::info(Convert(object->GetType()->Name) + Convert(object->ToString())); }
 };
 
+// ======================================
+// This class is responsible for providing input related APIs to the script.
+// ======================================
+
 public ref class Input {
 public:
 	static void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) { 
@@ -40,4 +44,14 @@ public:
 	}
 	static Vector2 V_MousePosition() { return Vector2(Interface::engine->inputManager.mousePosition); }
 	static float V_ScrollOffsetY() { return Interface::engine->inputManager.scrollOffsetY; }
+};
+
+// ======================================
+// This class is responsible for providing audio related APIs to the script.
+// ======================================
+public ref class AudioAPI {
+public:
+	static void playSound(unsigned int entityId, System::String^ string) {
+		Interface::engine->audioSystem.playSFX(static_cast<entt::entity>(entityId), Convert(string));
+	}
 };
