@@ -45,25 +45,24 @@ void NavigationSystem::update(float const& dt)
 	//allow dtPathfinding to update this frame
 	for (auto it = crowdManager.begin(); it != crowdManager.end(); it++)
 	{
-		(*it).second.get()->update(dt, &debugInfo);
-
-
+		dtCrowd* crowdAgent = it->second.get();
+		
+		if (crowdAgent) {
+			crowdAgent->update(dt, &debugInfo);
+		}
 	}
-
 
 	//then get all new data an feedback into the transform
 	for (auto&& [entity, transform, agent] : registry.view<Transform, NavMeshAgent>().each())
 	{
 		dtCrowdAgent* dtAgent = crowdManager[agent.agentName].get()->getEditableAgent(agent.agentIndex);
 
-		transform.position.x = dtAgent->npos[0];
-		transform.position.y = dtAgent->npos[1];
-		transform.position.z = dtAgent->npos[2];
-
-
+		if (dtAgent) {
+			transform.position.x = dtAgent->npos[0];
+			transform.position.y = dtAgent->npos[1];
+			transform.position.z = dtAgent->npos[2];
+		}
 	}
-
-
 }
 
 void NavigationSystem::setNewNavMesh(ResourceID p_navMeshId) {
@@ -77,15 +76,16 @@ ResourceID NavigationSystem::getNavMeshId() const {
 void NavigationSystem::NavigationDebug()
 {
 
-	Transform targetTrans;
-	float targetposition[3];
+	glm::vec3 targetPosition;
+	float targetposition_arr[3];
 
 	//Get transform info of target
 	for (auto&& [entity, transform, navTest] : registry.view<Transform, NavigationTestTarget>().each())
 	{
-		targetposition[0] = transform.position[0];
+		/*targetposition[0] = transform.position[0];
 		targetposition[1] = transform.position[1];
-		targetposition[2] = transform.position[2];
+		targetposition[2] = transform.position[2];*/
+		targetPosition = transform.position;
 
 	}
 
@@ -93,19 +93,22 @@ void NavigationSystem::NavigationDebug()
 	for (auto&& [entity, transform, agent] : registry.view<Transform, NavMeshAgent>().each())
 	{
 		
-		dtQueryFilter const* filter = crowdManager[agent.agentName]->getFilter(0); // configure include/exclude flags or costs if needed
-		float const* halfExtents = crowdManager[agent.agentName]->getQueryHalfExtents();
-		dtPolyRef nearestRef = 0;
-		float nearestPt[3];
-		if (dtStatusSucceed(queryManager[agent.agentName]->findNearestPoly(targetposition, halfExtents, filter, &nearestRef, nearestPt)) && nearestRef)
-		{
-			float clamped[3];
-			queryManager[agent.agentName]->closestPointOnPoly(nearestRef, targetposition, clamped, nullptr);
-			// clamped[] is the navmesh-constrained closest point
+		//dtQueryFilter const* filter = crowdManager[agent.agentName]->getFilter(0); // configure include/exclude flags or costs if needed
+		//float const* halfExtents = crowdManager[agent.agentName]->getQueryHalfExtents();
+		//dtPolyRef nearestRef = 0;
+		//float nearestPt[3];
+		//if (dtStatusSucceed(queryManager[agent.agentName]->findNearestPoly(targetposition, halfExtents, filter, &nearestRef, nearestPt)) && nearestRef)
+		//{
+		//	float clamped[3];
+		//	queryManager[agent.agentName]->closestPointOnPoly(nearestRef, targetposition, clamped, nullptr);
+		//	// clamped[] is the navmesh-constrained closest point
 
-			crowdManager[agent.agentName]->requestMoveTarget(agent.agentIndex, nearestRef, targetposition);
+		//	crowdManager[agent.agentName]->requestMoveTarget(agent.agentIndex, nearestRef, targetposition);
 
-		}
+		//}
+
+
+		setDestination(entity, targetPosition );
 
 	}
 
@@ -183,10 +186,67 @@ ENGINE_DLL_API void NavigationSystem::initNavMeshSystems()
 
 	}
 
+}
+
+
+bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPosition)
+{
+	NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);
+
+	//--------------------Error Checking-----------------//
+	if(!agent)
+	{
+		Logger::error("Entity {} does not have a NavMeshAgent", engine.ecs.registry.get<EntityData>(entityID).name );
+		return false;
+	}
+
+	// Find crowd & query for this agent's navmesh label
+	auto cIt = crowdManager.find(agent->agentName);
+	auto qIt = queryManager.find(agent->agentName);
+	if (cIt == crowdManager.end() || qIt == queryManager.end())
+	{
+		Logger::warn("NavMesh for {} not found. Did you forget to create one for the scene?", agent->agentName);
+		return false;
+	}
+
+	float position[3] = { targetPosition.x,targetPosition.y,targetPosition.z };
+//--------------------Path finding-----------------------------------------------------//
+
+	//Finds the cloest point y from target position, but considers it too far if it strays from x and z position.
+	dtQueryFilter const* filter = crowdManager[agent->agentName]->getFilter(0); // configure include/exclude flags or costs if needed
+	float const* halfExtents = crowdManager[agent->agentName]->getQueryHalfExtents();
+	dtPolyRef nearestRef = 0;
+	float nearestPt[3];
+	if (dtStatusSucceed(queryManager[agent->agentName]->findNearestPoly(position, halfExtents, filter, &nearestRef, nearestPt)) && nearestRef)
+	{
+		float clamped[3]; //true closest point
+		queryManager[agent->agentName]->closestPointOnPoly(nearestRef, position, clamped, nullptr);
+
+		//have some tolerance
+		float horizontalTolerance = 0.01f; // fallback tolerance
+
+		//distance check
+		const float distanceX = clamped[0] - targetPosition.x;
+		const float distanceZ = clamped[2] - targetPosition.z;
+
+		//Too far in the X and Z direction!
+		if ( (distanceX*distanceX + distanceZ * distanceZ )> (horizontalTolerance * horizontalTolerance))
+		{
+
+			return false;
+		}
+
+
+		if (crowdManager[agent->agentName]->requestMoveTarget(agent->agentIndex, nearestRef, clamped))
+		{
+			return false;
+		}
+
+		return true;
+	}
 
 
 
-
-
+	return false;
 }
 

@@ -65,8 +65,12 @@ public:
 // ======================================
 public ref class PhysicsAPI {
 public:
-	static System::Nullable<RayCastResult> Raycast(Vector3^ origin, Vector3^ directionVector, float maxDistance) {
-		PhysicsManager::Ray ray{ origin->native(), directionVector->native() };
+	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance) {
+		return Raycast(Ray{ origin, directionVector }, maxDistance);
+	}
+
+	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance) {
+		PhysicsManager::Ray ray{ p_ray->native() };
 		auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance);
 
 		if (!opt) {
@@ -85,5 +89,16 @@ public:
 	static Ray getRayFromMouse() {
 		auto ray = Interface::engine->physicsManager.getRayFromMouse();
 		return Ray{ ray };
+	}
+};
+
+
+// ======================================
+// This class is responsible for providing Navigation related APIs to the script.
+// ======================================
+public ref class NavigationAPI {
+public:
+	static bool setDestination(unsigned int entityId, Vector3^ targetPosition) {
+		return Interface::engine->navigationSystem.setDestination(static_cast<entt::entity>(entityId), targetPosition->native());
 	}
 };
