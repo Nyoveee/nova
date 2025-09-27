@@ -55,3 +55,14 @@ public:
 		Interface::engine->audioSystem.playSFX(static_cast<entt::entity>(entityId), Convert(string));
 	}
 };
+
+
+// ======================================
+// This class is responsible for providing Navigation related APIs to the script.
+// ======================================
+public ref class NavigationAPI {
+public:
+	static bool setDestination(unsigned int entityId, Vector3^ targetPosition) {
+		return Interface::engine->navigationSystem.setDestination(static_cast<entt::entity>(entityId), targetPosition->native());
+	}
+};

@@ -50,6 +50,14 @@ public:
 	ENGINE_DLL_API void		  initNavMeshSystems();
 	ENGINE_DLL_API void		  NavigationDebug();
 
+
+//--------------------For C# scripting API-------------------------------------------------------------//
+public:
+	//Start navigation for a particular agent. Returns bool when unable to set destination to targetPosition.
+	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
+
+
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
