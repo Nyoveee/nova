@@ -92,6 +92,14 @@ void Hierarchy::update() {
 	// Show all game objects..
 	ImGui::Begin(ICON_FA_LIST " Hierarchy");
 
+	if (ecs.sceneManager.hasNoSceneSelected()) {
+		ImGui::Text("No scene loaded.");
+		ImGui::TextWrapped("Create a new scene by dragging a scene from the content browser to the viewport!");
+
+		ImGui::End();
+		return;
+	}
+
 	ImGui::Text("Scene loaded: Sample Scene");
 	ImGui::Text("Entities: %zu", registry.view<EntityData>().size());
 	ImGui::Text("Selected entity: ");

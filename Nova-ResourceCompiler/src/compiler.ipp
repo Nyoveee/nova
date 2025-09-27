@@ -32,7 +32,7 @@ int Compiler::compileAsset(DescriptorFilePath const& descriptorFilepath) {
 		return compileCubeMap(resourceFilePath, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
-		return compileScriptAsset(resourceFilePath, assetInfo.filepath);
+		return compileScriptAsset(resourceFilePath, assetInfo.name);
 	}
 	else {
 		return defaultCompile(resourceFilePath, assetInfo.filepath);

@@ -52,8 +52,6 @@ namespace Serialiser {
 		([&]() {
 			deserialiseComponent<Components>(en, registry, entity);
 		}(), ...);
-
-		std::cout << "Components pack size = " << sizeof...(Components) << "\n";
 	}
 
 	template<typename T>
@@ -276,7 +274,7 @@ namespace Serialiser {
 		if (jsonComponent.find(componentName) == jsonComponent.end())
 			return;
 
-		//try {
+		try {
 			reflection::visit([&](auto fieldData) {
 				auto& dataMember = fieldData.get();
 				constexpr const char* dataMemberName = fieldData.name();
@@ -508,9 +506,9 @@ namespace Serialiser {
 
 				}, component);
 			registry.emplace<T>(entity, std::move(component));
-		//}
-		//catch (std::exception const& ex) {
-		//	Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
-		//}
+		}
+		catch (std::exception const& ex) {
+			Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
+		}
 	}
 }

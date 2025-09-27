@@ -37,7 +37,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
-	void update(std::function<void(bool)> changeSimulationCallback);
+	void update(float dt, std::function<void(bool)> changeSimulationCallback);
 	
 	bool isEntitySelected(entt::entity entity);
 	bool hasAnyEntitySelected() const;
@@ -64,7 +64,7 @@ public:
 	std::vector<entt::entity> copiedEntityVec;
 
 private:
-	void main();
+	void main(float dt);
 	void toggleViewPortControl(bool toControl);
 	void updateMaterialMapping();
 	void handleEntityValidity();

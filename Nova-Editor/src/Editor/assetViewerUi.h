@@ -8,6 +8,7 @@ public:
 	
 	void update();
 
+	void updateScriptFileName(AssetFilePath const& filepath, std::string const& newName);
 public:
 	void selectNewResourceId(ResourceID id);
 
@@ -16,6 +17,7 @@ private:
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
 
+	std::string selectedResourceName;
 	std::string selectedResourceStemCopy;
 	std::string selectedResourceExtension;
 };

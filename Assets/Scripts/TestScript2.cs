@@ -1,4 +1,4 @@
-﻿class TestScript2: Script
+﻿class okay  : Script
 {
     Transform_? transform;
     protected override void init()

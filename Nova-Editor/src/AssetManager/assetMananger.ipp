@@ -7,7 +7,7 @@
 #include "assetIO.h"
 
 template<ValidResource T>
-void AssetManager::compileIntermediaryFile(AssetInfo<T> descriptor) {
+void AssetManager::compileIntermediaryFile(AssetInfo<T> const& descriptor) {
 #if _DEBUG
 		const char* executableConfiguration = "Debug";
 #else
@@ -78,8 +78,6 @@ void AssetManager::loadAllDescriptorFiles() {
 				descriptor = opt.value();
 			}
 
-			// We first check if the last write time of the asset file matches the one recorded in descriptor.
-			// If it doesn't, we need to recompile this asset file into it's resource form, and load it to the resource manager.
 			auto assetLastWriteTime = std::filesystem::last_write_time(std::filesystem::path{ descriptor.filepath });
 			auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
 
@@ -128,6 +126,11 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	ResourceID id = resourceManager.addResourceFile<T>(resourceFilePath);
 
 	if (id != INVALID_RESOURCE_ID) {
+		// we update descriptor with the new time..
+		auto assetLastWriteTime = std::filesystem::last_write_time(std::filesystem::path{ descriptor.filepath });
+		auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
+		descriptor.timeLastWrite = assetEpoch;
+
 		// we record all encountered intermediary assets with corresponding filepaths.
 		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilePath, descriptor.id } });
 

@@ -27,6 +27,7 @@ private:
 
 public:
 	FRAMEWORK_DLL_API static std::string getCurrentTime();
+	FRAMEWORK_DLL_API static std::string getUniqueTimedId();
 	FRAMEWORK_DLL_API static std::vector<LogEntry> getLogEntries();
 	FRAMEWORK_DLL_API static void clearLogs();
 	FRAMEWORK_DLL_API static void cleanup();

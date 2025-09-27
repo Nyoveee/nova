@@ -14,7 +14,7 @@ GameViewPort::GameViewPort(Editor& editor) :
 	mouseRelativeToViewPort {}
 {}
 
-void GameViewPort::update() {
+void GameViewPort::update(float dt) {
 	ImGui::Begin(ICON_FA_GAMEPAD " Game");
 	isHoveringOver = ImGui::IsWindowHovered();
 
@@ -73,7 +73,7 @@ void GameViewPort::update() {
 	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
 
 	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
-	controlOverlay.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
+	controlOverlay.update(dt, gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 
 	ImGui::Dummy(ImGui::GetContentRegionAvail());
 
@@ -91,6 +91,7 @@ void GameViewPort::update() {
 			}
 
 			engine.ecs.sceneManager.loadScene(id);
+			controlOverlay.clearNotification();
 		}
 
 		ImGui::EndDragDropTarget();

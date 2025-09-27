@@ -9,7 +9,7 @@ namespace {
 	constexpr ResourceID NO_SCENE_LOADED = INVALID_RESOURCE_ID;
 }
 
-SceneManager::SceneManager(ECS& ecs, Engine& engine, ResourceManager& resourceManager) :
+SceneManager::SceneManager(ECS& ecs, ResourceManager& resourceManager) :
 	ecs				{ ecs },
 	engine			{ engine },
 	resourceManager	{ resourceManager },
@@ -42,3 +42,6 @@ ResourceID SceneManager::getCurrentScene() const {
 	return currentScene;
 }
 
+bool SceneManager::hasNoSceneSelected() const {
+	return currentScene == NO_SCENE_LOADED;
+}

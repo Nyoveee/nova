@@ -17,6 +17,7 @@
 #include <string>
 #include <unordered_map>
 #include <variant>
+#include <unordered_set>
 
 // Field Information
 #ifndef ALL_FIELD_PRIMITIVES
@@ -119,6 +120,7 @@ private:
 private:
 	Engine& engine;
 	std::string runtimeDirectory;
+
 private:
 	// coreCLR key components 
 	HMODULE coreClr;
@@ -129,6 +131,7 @@ private:
 	coreclr_initialize_ptr intializeCoreClr;
 	coreclr_create_delegate_ptr createManagedDelegate;
 	coreclr_shutdown_ptr shutdownCorePtr;
+
 private:
 	// Function pointers to interact directly with ScriptingAPI
 	UpdateFunctionPtr gameModeUpdate_;
@@ -145,6 +148,9 @@ private:
 	CompileState compileState;
 	float timeSinceSave;
 
+	// we keep track of only the scripts that has been modified when recompiling, and reload the 
+	// default values of the serialized fields for those affected scripts.
+	std::unordered_set<ResourceID> modifiedScripts;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

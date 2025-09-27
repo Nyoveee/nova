@@ -140,7 +140,7 @@ int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFile
 	return -1;
 }
 
-int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::string className) {
 	std::ofstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {
@@ -148,8 +148,7 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, Asset
 		return -1;
 	}
 
-	// script literally only stores the	class name. the intermediaryAssetFilepath must match the class name.	
-	std::string className = std::filesystem::path{ intermediaryAssetFilepath }.stem().string();
+	// script literally only stores the	class name. class name is part of the descriptor.
 	resourceFile << className;
 
 	return 0;

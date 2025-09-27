@@ -72,7 +72,6 @@ public:
 public:
 	// Getters..
 	std::unordered_map<FolderID, Folder> const& getDirectories()									const;
-	std::vector<FolderID> const&				getRootDirectories()								const;
 	std::string const*							getName(ResourceID id)								const;
 	AssetFilePath const*						getFilepath(ResourceID id)							const;
 	BasicAssetInfo*								getDescriptor(ResourceID id);
@@ -94,7 +93,7 @@ private:
 	ResourceID parseIntermediaryAssetFile(AssetFilePath const& path);
 
 	template <ValidResource T>
-	void compileIntermediaryFile(AssetInfo<T> descriptor);
+	void compileIntermediaryFile(AssetInfo<T> const& descriptor);
 
 	template<ValidResource ...T>
 	void loadAllDescriptorFiles();
@@ -131,7 +130,6 @@ private:
 
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
-	std::vector<FolderID> rootDirectories;
 	std::unordered_map<std::string, FolderID> folderPathToId;
 	FolderID folderId;
 

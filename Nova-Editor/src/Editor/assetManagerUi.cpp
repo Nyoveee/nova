@@ -18,8 +18,24 @@ AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 	assetManager	 { editor.assetManager },
 	resourceManager	 { editor.resourceManager },
 	assetViewerUi	 { assetViewerUi },
-	selectedFolderId { NONE }
-{}
+	selectedFolderId { ASSET_FOLDER },
+	folderIcon		 { nullptr }
+{
+	auto folderPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/folder" }).value()();
+	folderIcon.reset(static_cast<Texture*>(folderPtr.release()));
+
+	auto texturePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/texture" }).value()();
+	textureIcon.reset(static_cast<Texture*>(texturePtr.release()));
+
+	auto audioPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/audio" }).value()();
+	audioIcon.reset(static_cast<Texture*>(audioPtr.release()));
+
+	auto scriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/script" }).value()();
+	scriptIcon.reset(static_cast<Texture*>(scriptPtr.release()));
+
+	auto scenePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/scene" }).value()();
+	sceneIcon.reset(static_cast<Texture*>(scenePtr.release()));
+}
 
 void AssetManagerUI::update() {
 	ImGui::Begin(ICON_FA_BOXES_PACKING " Content Browser");
@@ -44,9 +60,7 @@ void AssetManagerUI::displayLeftNavigationPanel() {
 		// Remove indentation temporarily
 		ImGui::Unindent(20.f);
 
-		for (FolderID folderId : assetManager.getRootDirectories()) {
-			displayFolderTreeNode(folderId);
-		}
+		displayFolderTreeNode(ASSET_FOLDER);
 
 		ImGui::Indent(20.f);
 		ImGui::TreePop();
@@ -68,17 +82,13 @@ void AssetManagerUI::displayRightContentPanel() {
 	}
 	// ====================================================
 	
-	if (selectedFolderId == NONE) {
-		ImGui::Text("No folder selected.");
-	}
-	else {
-		displaySelectedFolderRelativePath();
+	displaySelectedFolderRelativePath();
 
-		ImGui::BeginChild("(Main) Content Browser", ImVec2(0, 0), true);
-		displayFolderContent(selectedFolderId);
-		ImGui::EndChild();
-		displayCreateAssetContextMenu();
-	}
+	ImGui::BeginChild("(Main) Content Browser", ImVec2(0, 0), true);
+	displayFolderContent(selectedFolderId);
+	ImGui::EndChild();
+	
+	displayCreateAssetContextMenu();
 
 	ImGui::EndChild();
 }
@@ -97,7 +107,7 @@ void AssetManagerUI::displayClickableFolderPath(FolderID folderId, bool toDispla
 
 	std::string folderName = folder.name;
 
-	if (folder.parent != NONE) {
+	if (folderId != ASSET_FOLDER) {
 		displayClickableFolderPath(folder.parent, true);
 	}
 	else {
@@ -207,10 +217,24 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 		return;
 	}
 
+	ImTextureID texture = NO_TEXTURE;
+
+	if (resourceManager.isResource<Texture>(resourceId)) {
+		texture = textureIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Audio>(resourceId)) {
+		texture = audioIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<ScriptAsset>(resourceId)) {
+		texture = scriptIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Scene>(resourceId)) {
+		texture = sceneIcon->getTextureId();
+	}
+
 	displayThumbnail(
-		//static_cast<int>(static_cast<std::size_t>(resourceId)),
 		static_cast<std::size_t>(resourceId),
-		NO_TEXTURE,
+		texture,
 		assetName->empty() ? "<no name>" : assetName->c_str(),
 
 		// callback when the thumbnail gets clicked.
@@ -234,9 +258,8 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 	auto&& [_, folder] = *iterator;
 
 	displayThumbnail(
-		//static_cast<int>(static_cast<std::size_t>(folderId)),
 		static_cast<std::size_t>(folderId),
-		NO_TEXTURE,
+		static_cast<ImTextureID>(folderIcon->getTextureId()),
 		folder.name.c_str(),
 		
 		// callback when the thumbnail gets clicked.
@@ -252,11 +275,42 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 void AssetManagerUI::displayCreateAssetContextMenu() {
 	if (ImGui::BeginPopupContextItem("CreateAssetContextMenu")) {
 		if (ImGui::MenuItem("[+] Create New Scene")) {
-			
+			std::optional<std::ofstream> opt = createAssetFile(".scene");
+		
+			if (!opt) {
+				Logger::error("Failed to create scene file.");
+			}
+			else {
+				std::ofstream& sceneFile = opt.value();
+				sceneFile << "{}";
+			}
 		}
 		
 		if (ImGui::MenuItem("[+] Create New Script")) {
-		
+			static int counter = 0;
+			std::string className = "NewScript" + std::to_string(counter++);
+
+			std::optional<std::ofstream> opt = createAssetFile(".cs");
+
+			if (!opt) {
+				Logger::error("Failed to create script file.");
+			}
+			else {
+				std::ofstream& sceneFile = opt.value();
+
+				std::string sampleScript =
+					"// Make sure the class name matches the asset name.\n"
+					"// If you want to change class name, change the asset name in the editor!\n"
+					"// Editor will automatically rename and recompile this file.\n"
+					"class " + className + " : Script\n{\n"
+					"    // This function is first invoked when game starts.\n"
+					"    protected override void init()\n    {}\n\n"
+					"    // This function is invoked every fixed update.\n"
+					"    protected override void update()\n    {}\n\n"
+					"}";
+
+				sceneFile << sampleScript;
+			}
 		}
 
 		ImGui::EndPopup();
@@ -265,7 +319,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 
 
 //void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
-void AssetManagerUI::displayThumbnail(std::size_t imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
+void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
 	if (!isAMatchWithSearchQuery(name)) {
 		return;
 	}
@@ -276,36 +330,31 @@ void AssetManagerUI::displayThumbnail(std::size_t imguiId, ImTextureID thumbnail
 	constexpr float textHeight = 20.f;
 
 	//ImGui::PushID(imguiId);
-	ImGui::PushID(static_cast<int>(imguiId));
+	ImGui::PushID(static_cast<int>(resourceIdOrFolderId));
 	ImGui::BeginChild("Thumbnail", ImVec2{ columnWidth, columnWidth + textHeight + 2 * padding.y }, ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
 
 	ImVec2 buttonSize = ImVec2{ columnWidth - 2 * padding.x, columnWidth - 2 * padding.x };
 
 	if (thumbnail != NO_TEXTURE) {
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 10 ,0 });
-		
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
 		if (ImGui::ImageButton("##", thumbnail, buttonSize)) {
 			clickCallback();
 		}
-			//if(resourceManager.isResource<Scene>(static_cast<ResourceID>(imguiId)))
-				//dragAndDrop(name, imguiId);
 		ImGui::PopStyleVar();
 	}
 	else {
 		if (ImGui::Button("##", buttonSize)) {
 			clickCallback();
 		}
-
-		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-			doubleClickCallback();
-		}
 	}
 
-	if (resourceManager.isResource<Scene>(static_cast<ResourceID>(imguiId))) {
-		dragAndDrop(name, imguiId);
+	if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+		doubleClickCallback();
 	}
-	
 
+	if (resourceManager.isResource<Scene>(ResourceID{ resourceIdOrFolderId })) {
+		dragAndDrop(name, resourceIdOrFolderId);
+	}
 
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);
@@ -360,7 +409,6 @@ void AssetManagerUI::handleThumbnailDoubleClick(ResourceID resourceId) {
 }
 
 void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
-
 	if (ImGui::BeginDragDropSource()) {
 		std::pair<size_t, const char*> map{id, name};
 		ImGui::SetDragDropPayload("SCENE_ITEM", &map, sizeof(map));
@@ -369,6 +417,21 @@ void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
 
 		ImGui::EndDragDropSource();
 	}
+}
 
+std::optional<std::ofstream> AssetManagerUI::createAssetFile(std::string const& extension, std::string filename) {
+	auto iterator = assetManager.getDirectories().find(selectedFolderId);
 
+	if (iterator != assetManager.getDirectories().end()) {
+		if(filename.empty()) filename = Logger::getUniqueTimedId();
+
+		std::filesystem::path filepath = AssetIO::assetDirectory / iterator->second.relativePath / filename;
+		filepath.replace_extension(extension);
+
+		std::ofstream assetFile{ filepath };	
+		return assetFile;
+	}
+	else {
+		return std::nullopt;
+	}
 }

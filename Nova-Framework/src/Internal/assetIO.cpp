@@ -72,7 +72,7 @@ std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descri
 }
 
 BasicAssetInfo AssetIO::createDescriptorFile(ResourceID id, AssetFilePath const& path, std::ofstream& metaDataFile) {
-	BasicAssetInfo assetInfo = { id, std::filesystem::path{ path }.filename().string(), path };
+	BasicAssetInfo assetInfo = { id, std::filesystem::path{ path }.stem().string(), path };
 
 	try {
 		// calculate relative path to the Assets directory.

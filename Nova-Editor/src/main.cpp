@@ -46,7 +46,7 @@ int main() {
 			engine.render(Engine::RenderTarget::MainFrameBuffer);
 			
 			// this callback is invoked when the editor wants to change simulation mode.
-			editor.update([&](bool toStartSimulation) {
+			editor.update(dt, [&](bool toStartSimulation) {
 				toStartSimulation ? engine.startSimulation() : engine.stopSimulation();
 		
 			});
