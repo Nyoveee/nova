@@ -5,11 +5,7 @@
 
 #include "ResourceManager/resourceManager.h"
 
-namespace {
-	constexpr ResourceID NO_SCENE_LOADED = INVALID_RESOURCE_ID;
-}
-
-SceneManager::SceneManager(ECS& ecs, ResourceManager& resourceManager) :
+SceneManager::SceneManager(ECS& ecs, Engine& engine, ResourceManager& resourceManager) :
 	ecs				{ ecs },
 	engine			{ engine },
 	resourceManager	{ resourceManager },
