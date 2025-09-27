@@ -44,7 +44,7 @@ using LoadScriptsFunctionPtr		= void (*)(void);
 using UnloadScriptsFunctionPtr		= void (*)(void);
 using IntializeScriptsFunctionPtr	= void (*)(void);
 using GetScriptFieldsFunctionPtr    = std::vector<FieldData>(*)(std::size_t);
-using SetScriptFieldFunctionPtr		= bool(*)(unsigned int, unsigned long long, FieldData const& fieldData);;
+using SetScriptFieldFunctionPtr		= void(*)(unsigned int, unsigned long long, FieldData const& fieldData);;
 
 class Engine;
 
@@ -69,14 +69,6 @@ public:
 
 public:
 	ENGINE_DLL_API bool compileScriptAssembly();
-	ENGINE_DLL_API void loadSceneScriptDataToAPI();
-
-	// Editor function
-#if 0
-	ENGINE_DLL_API void loadEntityScript(entt::entity entityID, ResourceID scriptID);
-	ENGINE_DLL_API void removeEntityScript(entt::entity entityID, ResourceID scriptID);
-	ENGINE_DLL_API void removeEntity(entt::entity entityID);
-#endif
 
 	ENGINE_DLL_API bool isNotCompiled() const;
 	ENGINE_DLL_API bool hasCompilationFailed() const;
@@ -134,7 +126,7 @@ private:
 
 private:
 	// Function pointers to interact directly with ScriptingAPI
-	UpdateFunctionPtr gameModeUpdate_;
+	UpdateFunctionPtr update_;
 	AddScriptFunctionPtr addEntityScript;
 	RemoveScriptFunctionPtr removeEntityScript_;
 	RemoveEntityFunctionPtr removeEntity_;

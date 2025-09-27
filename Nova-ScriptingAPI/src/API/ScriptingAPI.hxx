@@ -21,7 +21,7 @@ internal:
 	static void loadAssembly();
 	static void unloadAssembly();
 
-	static void gameModeUpdate();
+	static void update();
 
 	// static void editorModeUpdate();
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
@@ -36,7 +36,7 @@ internal:
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);
 
 	// Set script field data..
-	static bool setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
+	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
 
 internal:
 	template<typename T>
@@ -67,12 +67,10 @@ private:
 	
 	// Store all unique script type. To be used for instantiation.
 	// We map an Asset ID to the corresponding script type.
-	static System::Collections::Generic::Dictionary<ScriptID, System::Type^>^ scriptTypes;
+	static System::Collections::Generic::Dictionary<ScriptID, Script^>^ availableScripts;
 
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;
 	static const char* runtimePath;
-
-	static bool isAssemblyLoaded;
 }; 
 #include "ScriptingAPI.ixx"

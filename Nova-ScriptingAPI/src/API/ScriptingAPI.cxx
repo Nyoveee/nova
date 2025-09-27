@@ -29,9 +29,9 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	runtimePath = p_runtimePath;
 	// Instantiate the containers
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
-	scriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
+	availableScripts = gcnew System::Collections::Generic::Dictionary<ScriptID, Script^>();
+	assemblyLoadContext = nullptr;
 
-	isAssemblyLoaded = false;
 }
 
 void Interface::intializeAllScripts()
@@ -47,12 +47,10 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 	using BindingFlags = System::Reflection::BindingFlags;
 	std::vector<FieldData> fieldDatas{};
 	
-	System::Type^ scriptType = scriptTypes[scriptID];
+	Script^ script = availableScripts[scriptID];
 
-	array<System::Reflection::FieldInfo^>^ fieldInfos = scriptType->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
+	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
 	
-	// i need to create a temporary instance of to access default value of a non static member.. there's no other way i think :(
-	Script^ script = safe_cast<Script^>(System::Activator::CreateInstance(scriptType));
 
 	for (int i = 0; i < fieldInfos->Length; ++i) {
 		// Ignore the base class
@@ -102,21 +100,20 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 
 void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 {
-	if (!scriptTypes->ContainsKey(scriptId)) {
+	if (!availableScripts->ContainsKey(scriptId)) {
 		Logger::error("Failed to add script {} for entity {}!", scriptId, entityID);
 		return;
 	}
 
-	System::Type^ scriptType = scriptTypes[scriptId];
 	if (!gameObjectScripts->ContainsKey(entityID))
 		gameObjectScripts[entityID] = gcnew Scripts();
 
-	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(scriptType));
+	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
 	newScript->entityID = entityID;
 	gameObjectScripts[entityID][scriptId] = newScript;
 }
 
-bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
+void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
 {
 	Script^ script = gameObjectScripts[entityID][scriptID];
 
@@ -135,7 +132,7 @@ bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 			// Set the value of the copy
 			managedStruct->SetValueFromFieldData(fieldData);
 			fieldInfos[i]->SetValue(script, managedStruct);
-			return true;
+			return;
 		}
 		// Component
 		if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
@@ -144,7 +141,7 @@ bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 				referencedComponent = safe_cast<IManagedComponent^>(System::Activator::CreateInstance(fieldType));
 			if (referencedComponent->LoadDetailsFromEntity(static_cast<unsigned int>(std::get<entt::entity>(fieldData.data))))
 				fieldInfos[i]->SetValue(script, referencedComponent);
-			return referencedComponent != nullptr;
+			return;
 		}
 		// Script
 		if (fieldType->IsSubclassOf(Script::typeid)) {
@@ -161,18 +158,15 @@ bool Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 				}
 			}
 			fieldInfos[i]->SetValue(script, referencedScript);
-
-			return referencedScript != nullptr;
+			return;
 		}
 		// Primitives
 		if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, script, fieldInfos[i]))
-			return true;
+			return;
 		if (fieldType->IsPrimitive)
 			Logger::warn("Unknown primitive type used in setting fields currently not supported for script serialization");
 		break;
-
 	}
-	return false;
 }
 
 #if 0
@@ -199,21 +193,13 @@ void Interface::updateReference(Script^ script)
 		}
 	}
 }
-
-void Interface::editorModeUpdate()
-{
-	for each (System::UInt32 entityID in gameObjectScripts->Keys)
-		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
-			updateReference(gameObjectScripts[entityID][scriptID]);
-}
 #endif
 
-void Interface::gameModeUpdate() {
+void Interface::update() {
 	for each (System::UInt32 entityID in gameObjectScripts->Keys) {
 		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
 			Script^ script = gameObjectScripts[entityID][scriptID];
 			script->callUpdate();
-			// updateReference(script);
 		}
 	}
 }
@@ -226,7 +212,7 @@ void Interface::removeEntity(EntityID entityID)
 
 void Interface::removeEntityScript(EntityID entityID, ScriptID scriptId)
 {
-	if (!scriptTypes->ContainsKey(scriptId)) {
+	if (!availableScripts->ContainsKey(scriptId)) {
 		Logger::error("Failed to remove script {} for entity {}!", scriptId, entityID);
 		return;
 	}
@@ -235,7 +221,7 @@ void Interface::removeEntityScript(EntityID entityID, ScriptID scriptId)
 
 void Interface::loadAssembly()
 {
-	if (isAssemblyLoaded) {
+	if (assemblyLoadContext) {
 		Logger::error("Attempting to load the assembly again?!");
 		assert(false);
 		return;
@@ -303,33 +289,26 @@ void Interface::loadAssembly()
 		}
 
 		System::Type^ scriptType = classNameToScriptType[className];
-		scriptTypes->Add(static_cast<std::size_t>(scriptId), scriptType);
+		availableScripts->Add(static_cast<std::size_t>(scriptId), safe_cast<Script^>(System::Activator::CreateInstance(scriptType)));
 	}
-
-	isAssemblyLoaded = true;
 }
 
 void Interface::unloadAssembly()
 {
-	if (!isAssemblyLoaded) {
+	if (!assemblyLoadContext)
 		return;
-	}
 
 	// Clear existing scripts
 	if (gameObjectScripts)	
 		gameObjectScripts->Clear();
-	if (scriptTypes)
-		scriptTypes->Clear();
-	if (assemblyLoadContext) {
-		// Unload the assembly
-		assemblyLoadContext->Unload();
-		assemblyLoadContext = nullptr;
-	}
+	if (availableScripts)
+		availableScripts->Clear();
+	// Unload the assembly
+	assemblyLoadContext->Unload();
+	assemblyLoadContext = nullptr;
 
 	// Garbage Collect existing memory
 	System::GC::Collect();
 	// Wait from assembly to finish unloading
 	System::GC::WaitForPendingFinalizers();
-
-	isAssemblyLoaded = false;
 }
