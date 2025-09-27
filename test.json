@@ -1,3 +1,495 @@
 {
-    "entities": []
+    "entities": [
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Ground",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.2372991144657135,
+                                "g": 0.9206896424293518,
+                                "r": 0.0031747661996632814
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 10.0,
+                    "y": 0.25,
+                    "z": 10.0
+                }
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Testing Ent",
+                "parent": 4294967295
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7844064235687256
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Target",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.0,
+                                "g": 0.8068965077400208,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "NavigationTestTarget": {
+                "position": 0.0
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 6.801737308502197,
+                    "y": -0.008707023225724697,
+                    "z": -7.782987594604492
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.2750706374645233,
+                    "y": 1.3076759576797485,
+                    "z": 0.3097076714038849
+                }
+            },
+            "id": 1048579
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.649899959564209,
+                    "z": -6.219346046447754
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279028415679932,
+                    "y": 0.5070692300796509,
+                    "z": 3.5069332122802734
+                }
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Light",
+                "parent": 4294967295
+            },
+            "Light": {
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 10.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "PointLight"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -1.3046092987060547,
+                    "y": 8.220460891723633,
+                    "z": 1.1634265184402466
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.20000000298023224,
+                    "y": 0.20000000298023224,
+                    "z": 0.20000000298023224
+                }
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Agent",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 1.0,
+                                "g": 0.7931034564971924,
+                                "r": 0.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshAgent": {
+                "PathfindingType": "Automated",
+                "agentMaxAcceleration": 3.0,
+                "agentMaxSpeed": 3.0,
+                "agentName": "Humanoid",
+                "collisionDetectionRange": 1.0,
+                "separationWeight": 1.0
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -5.508227348327637,
+                    "y": 0.34997016191482544,
+                    "z": -7.046097278594971
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.4411213994026184,
+                    "y": 1.4076007604599,
+                    "z": 0.4951249063014984
+                }
+            },
+            "id": 1048582
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "NavMeshSurface_Humanoid",
+                "parent": 4294967295
+            },
+            "NavMeshSurface": {
+                "label": "Humanoid",
+                "navMeshId": 634154705579671553
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 7340037
+        }
+    ]
 }
