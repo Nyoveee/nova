@@ -6,8 +6,6 @@
 #include <fstream>
 #include <iomanip>
 
-constexpr const char* filepath = "test.json";
-
 namespace Serialiser {
 	void Serialiser::serialiseScene(ECS& ecs, const char* fileName) {
 		try {
