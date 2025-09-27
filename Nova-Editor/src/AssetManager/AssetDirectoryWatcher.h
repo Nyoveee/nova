@@ -14,6 +14,7 @@ ENGINE_DLL_API extern std::atomic<bool> engineIsDestructing;
 class AssetManager;
 class ResourceManager;
 class Engine;
+class Editor;
 
 class AssetDirectoryWatcher
 {

@@ -510,6 +510,10 @@ void Editor::sandboxWindow() {
 		engine.renderer.recompileShaders();
 	}
 
+	if (ImGui::Button("Navigation Debug")) {
+		engine.navigationSystem.NavigationDebug();
+	}
+
 	ImGui::End();
 }
 

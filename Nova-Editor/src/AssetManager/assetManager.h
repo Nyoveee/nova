@@ -20,6 +20,7 @@
 
 class ResourceManager;
 class Engine;
+class Editor;
 
 class AssetManager {
 public:

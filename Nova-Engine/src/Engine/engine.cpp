@@ -44,6 +44,7 @@ void Engine::fixedUpdate(float dt) {
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
+		navigationSystem.update(dt);
 	}
 }
 
@@ -108,6 +109,7 @@ void Engine::startSimulation() {
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();
 		cameraSystem.startSimulation();
+		navigationSystem.initNavMeshSystems();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
@@ -145,4 +147,11 @@ int Engine::getGameHeight() const {
 
 bool Engine::isInSimulationMode() const {
 	return inSimulationMode;
+}
+
+void Engine::SystemsOnLoad()
+{
+	this->navigationSystem.initNavMeshSystems();
+
+	
 }

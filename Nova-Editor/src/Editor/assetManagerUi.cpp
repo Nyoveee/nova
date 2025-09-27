@@ -15,6 +15,7 @@
 #undef max
 
 AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
+	editor			 { editor },
 	assetManager	 { editor.assetManager },
 	resourceManager	 { editor.resourceManager },
 	assetViewerUi	 { assetViewerUi },
@@ -409,6 +410,10 @@ void AssetManagerUI::handleThumbnailDoubleClick(ResourceID resourceId) {
 }
 
 void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
+	if (editor.isInSimulationMode()) {
+		return;
+	}
+
 	if (ImGui::BeginDragDropSource()) {
 		std::pair<size_t, const char*> map{id, name};
 		ImGui::SetDragDropPayload("SCENE_ITEM", &map, sizeof(map));

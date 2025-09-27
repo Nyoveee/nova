@@ -7,12 +7,12 @@
 
 #include "ResourceManager/resourceManager.h"
 #include "Engine/engine.h"
+#include "Editor/editor.h"
 
 AssetDirectoryWatcher::AssetDirectoryWatcher(AssetManager& assetManager, ResourceManager& resourceManager, Engine& engine) :
 	assetManager	{ assetManager },
 	resourceManager	{ resourceManager },
 	engine			{ engine },
-
 	watch			{
 						AssetIO::assetDirectory.wstring(),
 						[&](const std::wstring& path, const filewatch::Event change_type) {
@@ -41,7 +41,6 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 	case filewatch::Event::added:
 		engine.scriptingAPIManager.OnAssetContentAddedCallback(absPath.string());
 		assetManager.onAssetAddition(absPath);
-
 		break;
 	case filewatch::Event::removed:
 		engine.scriptingAPIManager.OnAssetContentDeletedCallback(resourceId);
@@ -57,6 +56,8 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 
 		// + renaming events sometimes cause the modified event to be invoked.
 		// we combat this by comparing the previous last write modified.
+
+		//editor.navMeshGenerator.AddNavMeshSurface(resourceId);
 
 		std::filesystem::file_time_type lastWriteTime{ std::filesystem::last_write_time(absPath) };
 

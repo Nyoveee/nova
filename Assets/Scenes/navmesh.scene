@@ -1,59 +1,14 @@
 {
     "entities": [
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 300.0,
-                    "y": 200.0,
-                    "z": 300.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
-                "name": "My 3D Model 0.000000",
+                "name": "NavMeshSurface_Ogre",
                 "parent": 4294967295
             },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "texture": 11363069911457047527
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Table_frame_mtl",
-                        "normalMap": 16882922978321767798,
-                        "renderingPipeline": "PBR"
-                    },
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 1.0,
-                                "g": 0.4876099228858948,
-                                "r": 0.3482758402824402
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 1.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Table_top_mtl",
-                        "normalMap": 11291724444234068892,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 5856694196991639569
-            },
-            "Rigidbody": {
-                "layer": "Moving",
-                "motionType": "Dynamic"
+            "NavMeshSurface": {
+                "label": "Ogre",
+                "navMeshId": 15476462171143995393
             },
             "Transform": {
                 "eulerAngles": {
@@ -83,9 +38,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -3.1420819759368896,
-                    "y": -0.0999569296836853,
-                    "z": 2.7442855834960938
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -94,17 +49,17 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.0033333334140479565,
-                    "z": 0.0033333334140479565
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 5
+            "id": 16
         },
         {
             "EntityData": {
                 "children": [],
-                "name": "Entity 1",
+                "name": "Obstacle",
                 "parent": 4294967295
             },
             "MeshRenderer": {
@@ -112,9 +67,711 @@
                     {
                         "albedo": {
                             "color": {
-                                "b": 0.10000000149011612,
-                                "g": 0.10000000149011612,
-                                "r": 0.10000000149011612
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.649899959564209,
+                    "z": -6.219346046447754
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279028415679932,
+                    "y": 0.5070692300796509,
+                    "z": 3.5069332122802734
+                }
+            },
+            "id": 1048591
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.8424047231674194,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 4.76540470123291,
+                    "y": 0.6499004364013672,
+                    "z": 2.2006540298461914
+                },
+                "rotation": {
+                    "w": 0.9125980734825134,
+                    "x": 0.0,
+                    "y": 0.40885812044143677,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279039144515991,
+                    "y": 0.5070692300796509,
+                    "z": 3.5069475173950195
+                }
+            },
+            "id": 14
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.5462425351142883,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 6.190402984619141,
+                    "y": 0.6499006748199463,
+                    "z": 5.444735527038574
+                },
+                "rotation": {
+                    "w": 0.9629337787628174,
+                    "x": 0.0,
+                    "y": -0.2697383463382721,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279042720794678,
+                    "y": 0.5070692300796509,
+                    "z": 1.8050122261047363
+                }
+            },
+            "id": 13
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.5381203293800354,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -2.916098117828369,
+                    "y": 0.6499003767967224,
+                    "z": 4.287680149078369
+                },
+                "rotation": {
+                    "w": 0.9640211462974548,
+                    "x": 0.0,
+                    "y": -0.2658255398273468,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279037356376648,
+                    "y": 0.5070692300796509,
+                    "z": 3.506941556930542
+                }
+            },
+            "id": 12
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.13604378700256348,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -0.9568983316421509,
+                    "y": 0.6499001979827881,
+                    "z": 0.976332426071167
+                },
+                "rotation": {
+                    "w": 0.9976873993873596,
+                    "x": 0.0,
+                    "y": 0.06796944886445999,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.52790367603302,
+                    "y": 0.5070692300796509,
+                    "z": 3.50693941116333
+                }
+            },
+            "id": 11
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2563347816467285,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -8.51645565032959,
+                    "y": 0.6499612331390381,
+                    "z": 0.37156397104263306
+                },
+                "rotation": {
+                    "w": 0.8091058731079102,
+                    "x": 0.0,
+                    "y": 0.587662935256958,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.52790367603302,
+                    "y": 0.5070692300796509,
+                    "z": 3.5069382190704346
+                }
+            },
+            "id": 10
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.5381203293800354,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 1.2723565101623535,
+                    "y": 0.6498396992683411,
+                    "z": 8.655540466308594
+                },
+                "rotation": {
+                    "w": 0.9640211462974548,
+                    "x": 0.0,
+                    "y": -0.2658255398273468,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279037356376648,
+                    "y": 0.5070692300796509,
+                    "z": 3.506941556930542
+                }
+            },
+            "id": 9
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 2.489297389984131,
+                    "y": 0.649899959564209,
+                    "z": -2.7852373123168945
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279028415679932,
+                    "y": 0.5070692300796509,
+                    "z": 3.5069332122802734
+                }
+            },
+            "id": 8
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.6450216174125671,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.649899959564209,
+                    "z": -6.219346046447754
+                },
+                "rotation": {
+                    "w": 0.9484426379203796,
+                    "x": 0.0,
+                    "y": 0.31694892048835754,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5279031991958618,
+                    "y": 0.5070692300796509,
+                    "z": 3.5069336891174316
+                }
+            },
+            "id": 7
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Ground",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.2372991144657135,
+                                "g": 0.9206896424293518,
+                                "r": 0.0031747661996632814
                             }
                         },
                         "ambient": 0.10000000149011612,
@@ -159,7 +816,7 @@
                 },
                 "position": {
                     "x": 0.0,
-                    "y": -3.220093250274658,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "rotation": {
@@ -177,55 +834,10 @@
             "id": 0
         },
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 300.0,
-                    "y": 200.0,
-                    "z": 300.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
-                "name": "My 3D Model 0.000000",
+                "name": "Testing Ent",
                 "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "texture": 11363069911457047527
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Table_frame_mtl",
-                        "normalMap": 16882922978321767798,
-                        "renderingPipeline": "PBR"
-                    },
-                    {
-                        "albedo": {
-                            "texture": 12197762472329347109
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 1.0,
-                            "roughness": 0.36899998784065247
-                        },
-                        "materialName": "Table_top_mtl",
-                        "normalMap": 11291724444234068892,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 5856694196991639569
-            },
-            "Rigidbody": {
-                "layer": "Moving",
-                "motionType": "Dynamic"
             },
             "Transform": {
                 "eulerAngles": {
@@ -255,9 +867,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -3.8002638816833496,
-                    "y": -1.0140953063964844,
-                    "z": -2.2762198448181152
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7844064235687256
                 },
                 "rotation": {
                     "w": 1.0,
@@ -266,17 +878,17 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.0033333334140479565,
-                    "z": 0.0033333334140479565
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 3
+            "id": 2
         },
         {
             "EntityData": {
                 "children": [],
-                "name": "Entity 1",
+                "name": "Target",
                 "parent": 4294967295
             },
             "MeshRenderer": {
@@ -284,8 +896,8 @@
                     {
                         "albedo": {
                             "color": {
-                                "b": 0.46206897497177124,
-                                "g": 0.46206897497177124,
+                                "b": 0.0,
+                                "g": 0.8068965077400208,
                                 "r": 1.0
                             }
                         },
@@ -302,6 +914,12 @@
                 ],
                 "modelId": 1245008178564268053
             },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "NavigationTestTarget": {
+                "position": 0.0
+            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
@@ -330,9 +948,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 9.319835662841797,
-                    "y": -2.6608264446258545,
-                    "z": 9.052947044372559
+                    "x": 7.3942742347717285,
+                    "y": -0.008707201108336449,
+                    "z": -6.412454605102539
                 },
                 "rotation": {
                     "w": 1.0,
@@ -341,12 +959,90 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 10.0,
-                    "y": 0.25,
-                    "z": 10.0
+                    "x": 0.2750706374645233,
+                    "y": 1.3076759576797485,
+                    "z": 0.3097076714038849
                 }
             },
-            "id": 2
+            "id": 1048579
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Obstacle",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.10000002384185791,
+                                "g": 0.10000002384185791,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Obstacle"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2563347816467285,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -4.321436405181885,
+                    "y": 0.6499000191688538,
+                    "z": -3.8874051570892334
+                },
+                "rotation": {
+                    "w": 0.8091058731079102,
+                    "x": 0.0,
+                    "y": 0.587662935256958,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.52790367603302,
+                    "y": 0.5070692300796509,
+                    "z": 3.5069382190704346
+                }
+            },
+            "id": 4
         },
         {
             "EntityData": {
@@ -393,9 +1089,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 1.9826548099517822,
-                    "y": 3.052415132522583,
-                    "z": 5.0
+                    "x": -1.3046092987060547,
+                    "y": 8.220460891723633,
+                    "z": 1.1634265184402466
                 },
                 "rotation": {
                     "w": 1.0,
@@ -410,6 +1106,148 @@
                 }
             },
             "id": 1
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Agent",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 1.0,
+                                "g": 0.7931034564971924,
+                                "r": 0.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshAgent": {
+                "PathfindingType": "Automated",
+                "agentMaxAcceleration": 3.0,
+                "agentMaxSpeed": 3.0,
+                "agentName": "Humanoid",
+                "collisionDetectionRange": 1.0,
+                "separationWeight": 1.0
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -5.508227348327637,
+                    "y": 0.3500000238418579,
+                    "z": -7.046097278594971
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.4411213994026184,
+                    "y": 1.4076007604599,
+                    "z": 0.4951249063014984
+                }
+            },
+            "id": 1048582
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "NavMeshSurface_Humanoid",
+                "parent": 4294967295
+            },
+            "NavMeshSurface": {
+                "label": "Humanoid",
+                "navMeshId": 634154705579671553
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 7340037
         }
     ]
 }

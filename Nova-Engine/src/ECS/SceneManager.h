@@ -7,12 +7,13 @@
 
 class ECS;
 class ResourceManager;
+class Engine;
 
 constexpr ResourceID NO_SCENE_LOADED = INVALID_RESOURCE_ID;
 
 class SceneManager {
 public:
-	ENGINE_DLL_API SceneManager(ECS& ecs, ResourceManager& resourceManager);
+	ENGINE_DLL_API SceneManager(ECS& ecs, Engine& engine ,ResourceManager& resourceManager);
 
 public:
 
@@ -23,6 +24,7 @@ public:
 
 private:
 	ECS& ecs;
+	Engine& engine;
 	ResourceManager& resourceManager;
 	ResourceID currentScene;
 };

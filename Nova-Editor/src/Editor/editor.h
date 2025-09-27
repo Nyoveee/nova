@@ -82,6 +82,7 @@ public:
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
 
+	NavMeshGeneration navMeshGenerator;
 private:
 	Window& window;
 
@@ -91,7 +92,6 @@ private:
 	AssetManagerUI assetManagerUi;
 	NavigationWindow navigationWindow;
 
-	NavMeshGeneration navMeshGenerator;
 	NavBar navBar;
 
 private:

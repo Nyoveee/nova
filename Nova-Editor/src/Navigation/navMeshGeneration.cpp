@@ -9,6 +9,7 @@
 #include "Detour/Detour/DetourNavMeshBuilder.h"
 #include "Detour/Detour/DetourAlloc.h"
 #include "Navigation/Navigation.h"
+//#include "AssetManager/assetManager.h"
 #include <vector>
 #include <array>
 #include <limits>
@@ -386,6 +387,9 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	rcFreePolyMesh(m_pmesh);
 	rcFreePolyMeshDetail(m_dmesh);
 
+
+	PrependAdditionalData(&navData, &navDataSize);
+
 	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / filename;
 	temporaryMeshFilePath.replace_extension(".navmesh");
 
@@ -398,6 +402,143 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 
 	navMeshFile.write(reinterpret_cast<char *>(navData), navDataSize);
 	dtFree(navData);
+}
+
+void NavMeshGeneration::AddNavMeshSurface(std::string const& filename)
+{
+
+	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / filename;
+	temporaryMeshFilePath.replace_extension(".navmesh");
+
+	auto resourceName = editor.assetManager.getResourceID(temporaryMeshFilePath);
+
+
+	bool doesComponentExist = false;
+	bool wrongresourcePointer = false;
+	entt::entity entityID;
+
+	//Check if resource has been created
+	for (auto&& [entity, entityData ,navMeshSurface] : ecs.registry.view<EntityData,NavMeshSurface>().each())
+	{
+		if (navMeshSurface.label == buildSettings.agentName) //check via label cause ideally, the label in feautre cannot be edited....
+		{
+			doesComponentExist = true;
+
+			if (TypedResourceID<NavMesh>{resourceName} != navMeshSurface.navMeshId)
+			{
+				wrongresourcePointer = true;
+				entityID = entity;
+
+				
+			}
+
+
+		}
+
+
+
+	}
+
+	
+	if (!doesComponentExist)
+	{
+		//---
+		auto entity = ecs.registry.create();
+		ecs.registry.emplace<Transform>(entity, Transform{});
+		ecs.registry.emplace<EntityData>(entity, EntityData{ "NavMeshSurface_" + buildSettings.agentName });
+		ecs.registry.emplace<NavMeshSurface>(entity, NavMeshSurface{ buildSettings.agentName, TypedResourceID<NavMesh>{resourceName} });
+	}
+	else if(doesComponentExist && wrongresourcePointer)
+	{
+		ecs.registry.get<NavMeshSurface>(entityID).navMeshId = TypedResourceID<NavMesh>{ resourceName };
+	}
+
+
+
+}
+
+void NavMeshGeneration::PrependAdditionalData(unsigned char** navData, int* dataSize)
+{
+	// Guard
+	if (!navData || !(*navData) || !dataSize || *dataSize <= 0) return;
+
+
+	//MEMORY CALCULATION---------- 
+	// Prepare extras from buildSettings
+	const std::string extraString = buildSettings.agentName;
+	const float extraFloat0 = buildSettings.agentRadius;
+	const float extraFloat1 = buildSettings.agentHeight;
+
+	// Use fixed-width length for portability
+	uint32_t strLen = 0;
+	if (extraString.size() > static_cast<size_t>(std::numeric_limits<uint32_t>::max())) {
+		// Truncate if ridiculously large (should not happen for names).
+		strLen = static_cast<uint32_t>(std::numeric_limits<uint32_t>::max());
+		Logger::warn("PrependAdditionalData: string too large, truncating.");
+	}
+	else {
+		strLen = static_cast<uint32_t>(extraString.size());
+	}
+
+	constexpr size_t u32sz = sizeof(uint32_t);
+	constexpr size_t floatsz = sizeof(float) * 2;
+
+	// Extra layout: [uint32_t strLen][string bytes (strLen)][float f0][float f1][padding to 4]
+	size_t extraSize = u32sz + static_cast<size_t>(strLen) + floatsz;
+
+	// Align to 4 bytes for safety (Detour expects aligned mesh data)
+	constexpr size_t align = 4;
+	size_t paddedExtraSize = (extraSize + (align - 1)) & ~(align - 1);
+
+	// Total new buffer size
+	size_t totalSize = paddedExtraSize + static_cast<size_t>(*dataSize);
+
+	// Allocate combined buffer with Detour allocator so dtFree can be used later.
+	unsigned char* newBuf = (unsigned char*)dtAlloc(sizeof(unsigned char) * totalSize, DT_ALLOC_PERM);
+	if (!newBuf) {
+		Logger::error("PrependAdditionalData: dtAlloc failed.");
+		return;
+	}
+
+
+	//WRITE TO MEMORY
+	// Zero to be deterministic
+	memset(newBuf, 0, totalSize);
+
+	// Fill header
+	size_t offset = 0;
+
+	// write string length (uint32_t, native endianness), length of string block write
+	memcpy(newBuf + offset, &strLen, u32sz);
+	offset += u32sz;
+
+	// write string bytes (no null terminator)
+	if (strLen > 0) {
+		memcpy(newBuf + offset, extraString.data(), strLen);
+		offset += strLen;
+	}
+
+	// write floats
+	memcpy(newBuf + offset, &extraFloat0, sizeof(float));
+	offset += sizeof(float);
+	memcpy(newBuf + offset, &extraFloat1, sizeof(float));
+	offset += sizeof(float);
+
+	// pad to paddedExtraSize (already zeroed, but advance offset)
+	offset = paddedExtraSize;
+
+	// copy old nav data after extras
+	memcpy(newBuf + offset, *navData, static_cast<size_t>(*dataSize));
+
+	// free old detour-allocated navData
+	dtFree(*navData);
+
+	// replace pointers and size
+	*navData = newBuf;
+	*dataSize = static_cast<int>(totalSize);
+
+
+
 }
 
 void NavMeshGeneration::ResetBuildSetting()

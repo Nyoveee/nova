@@ -53,6 +53,7 @@ private:
 	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "");
 
 private:
+	Editor& editor;
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
 	AssetViewerUI& assetViewerUi;

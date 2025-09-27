@@ -12,7 +12,9 @@ NavigationWindow::NavigationWindow(Editor& editor, NavigationSystem& navigationS
 	editor				{ editor },
 	navigationSystem	{ navigationSystem },
 	navMeshGenerator	{ navMeshGenerator },
-	filename			{ "mySkinIsGleaming "}
+	onFileCreate		{ false },
+	step				{ 0 },
+	filename			{ "BIG_CHUNGUS"}
 {}
 
 void NavigationWindow::update() {
@@ -81,9 +83,25 @@ void NavigationWindow::update() {
 	ImGui::SetCursorPosX(windowWidth - 220.0f);
 	if (ImGui::Button("Reset", ImVec2(100, 40))) { navMeshGenerator.ResetBuildSetting(); };
 	ImGui::SameLine();
-	if (ImGui::Button("Bake", ImVec2(100, 40))) { navMeshGenerator.BuildNavMesh(filename); };
+	if (ImGui::Button("Bake", ImVec2(100, 40))) { navMeshGenerator.BuildNavMesh(filename); onFileCreate = true; step = 0; };
+
+	//need wait a few frame ahhhh for the file descriptor to regenerate and if not cannot find resourceID
+	if (onFileCreate)
+	{
+		if (step >= 60)
+		{
+			navMeshGenerator.AddNavMeshSurface(filename);
+			step = 0;
+			onFileCreate = false;
+		}
+		else
+		{
+			step++;
+		}
+	}
 
 	//TO DO --- WORK ON DROP OFF AND JUMP HEIGHT IN M2
 
 	ImGui::End();
 }
+
