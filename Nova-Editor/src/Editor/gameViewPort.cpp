@@ -92,6 +92,7 @@ void GameViewPort::update(float dt) {
 
 			engine.ecs.sceneManager.loadScene(id);
 			controlOverlay.clearNotification();
+			editor.selectEntities({});
 		}
 
 		ImGui::EndDragDropTarget();
