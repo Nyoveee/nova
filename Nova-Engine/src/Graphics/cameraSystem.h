@@ -39,6 +39,7 @@ public:
 	void endSimulation();
 
 	ENGINE_DLL_API float getCameraSpeed() const;
+	ENGINE_DLL_API LevelEditorCamera const& getLevelEditorCamera() const;
 
 public:
 	// the formula of camera speed is e^x, to appropriately scale speed. 

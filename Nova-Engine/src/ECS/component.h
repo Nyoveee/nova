@@ -148,11 +148,16 @@ struct Rigidbody {
 		Moving
 	} layer;
 
+	glm::vec3 initialVelocity;
+	float mass;
+
 	JPH::BodyID bodyId {}; // default constructed body ID is invalid.
 
 	REFLECTABLE(
 		motionType,
-		layer
+		layer,
+		initialVelocity,
+		mass
 	)
 };
 

@@ -40,6 +40,9 @@ void InputManager::handleMouseInput(Window& window, int key, int action, int mod
 	(void) mods;
 
 	handleKeyInput({ key, KeyType::MouseClick }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
+
+	// broadcast all ScriptingInputEvent regardless of registered key mapping.
+	broadcast(ScriptingInputEvents{ key }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
 }
 
 void InputManager::handleKeyInput(GLFWInput input, InputType inputType) {

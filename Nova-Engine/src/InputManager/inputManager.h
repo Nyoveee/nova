@@ -52,13 +52,16 @@ private:
 	void mapKeyBindInput(int key, KeyType type, InputEvent data);
 
 	void mainKeyBindMapping();
+
 public:
 	glm::vec2 mousePosition;
 	float scrollOffsetY;
+
 private:
-	// observers maps Input Event to all interested observers.
-	// mappedKeyBinds maps GLFW KEY macros to a keybind containing Input Event and it's corresponding data
+	// maps Input Event to all interested observers.
 	std::unordered_map<EventID, std::vector<std::unique_ptr<IObserver>>>  observers;
+
+	// mappedKeyBinds maps GLFW KEY macros to a keybind containing Input Event and it's corresponding data
 	std::unordered_map<GLFWInput, std::vector<std::unique_ptr<IKeyBind>>> mappedKeyBinds;
 };
 

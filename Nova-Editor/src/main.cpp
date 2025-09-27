@@ -48,7 +48,6 @@ int main() {
 			// this callback is invoked when the editor wants to change simulation mode.
 			editor.update(dt, [&](bool toStartSimulation) {
 				toStartSimulation ? engine.startSimulation() : engine.stopSimulation();
-		
 			});
 
 			// every frame, check if there is a need to change simulation and initialise / clear systems.

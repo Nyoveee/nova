@@ -417,6 +417,14 @@
             "id": 2
         },
         {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
             "EntityData": {
                 "children": [],
                 "name": "Ground",
@@ -444,6 +452,16 @@
                     }
                 ],
                 "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
             },
             "Transform": {
                 "eulerAngles": {
@@ -1202,6 +1220,14 @@
             "NavMeshSurface": {
                 "label": "Ogre",
                 "navMeshId": 15476462171143995393
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "id": 6226393992465055745
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {

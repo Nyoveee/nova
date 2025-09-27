@@ -19,6 +19,8 @@
 #include <variant>
 #include <unordered_set>
 
+#include "Physics/physicsManager.h"
+
 // Field Information
 #ifndef ALL_FIELD_PRIMITIVES
 	#define ALL_FIELD_PRIMITIVES \
@@ -26,7 +28,7 @@
 #endif
 #ifndef ALL_FIELD_TYPES
 	#define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, entt::entity, \
+		glm::vec2, glm::vec3, entt::entity, PhysicsManager::Ray, PhysicsManager::RayCastResult, \
 		ALL_FIELD_PRIMITIVES
 #endif
 

@@ -4,6 +4,9 @@
 #include "API/ConversionUtils.h"
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
+
+#undef PlaySound
+
 /*******************************************************************************************
 	For this library, you would need to understand the difference between
 	Managed Types(For C#) and Native Types(C++)
@@ -42,8 +45,9 @@ public:
 	static void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) { 
 		Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key));
 	}
-	static Vector2 V_MousePosition() { return Vector2(Interface::engine->inputManager.mousePosition); }
-	static float V_ScrollOffsetY() { return Interface::engine->inputManager.scrollOffsetY; }
+
+	static Vector2 V_MousePosition()	{ return Vector2(Interface::engine->inputManager.mousePosition); }
+	static float V_ScrollOffsetY()		{ return Interface::engine->inputManager.scrollOffsetY; }
 };
 
 // ======================================
@@ -51,7 +55,35 @@ public:
 // ======================================
 public ref class AudioAPI {
 public:
-	static void playSound(unsigned int entityId, System::String^ string) {
+	static void PlaySound(unsigned int entityId, System::String^ string) {
 		Interface::engine->audioSystem.playSFX(static_cast<entt::entity>(entityId), Convert(string));
+	}
+};
+
+// ======================================
+// This class is responsible for providing Physics related APIs
+// ======================================
+public ref class PhysicsAPI {
+public:
+	static System::Nullable<RayCastResult> Raycast(Vector3^ origin, Vector3^ directionVector, float maxDistance) {
+		PhysicsManager::Ray ray{ origin->native(), directionVector->native() };
+		auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance);
+
+		if (!opt) {
+			return {}; // returns null, no ray cast..
+		}
+
+		return System::Nullable<RayCastResult>(RayCastResult{ opt.value() });
+	}
+};
+
+// ======================================
+// This class is responsible for providing Camera related APIs
+// ======================================
+public ref class CameraAPI {
+public:
+	static Ray getRayFromMouse() {
+		auto ray = Interface::engine->physicsManager.getRayFromMouse();
+		return Ray{ ray };
 	}
 };

@@ -19,10 +19,6 @@ public:
 	bool isHoveringOver;
 	ControlOverlay controlOverlay;
 
-	// value is normalized, but may range outside of [0, 1] (because mouse is outside the viewport).
-	// also, positive y points upwards.
-	ImVec2 mouseRelativeToViewPort;	
-
 private:
 	Editor& editor;
 	Engine& engine;

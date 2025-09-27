@@ -240,6 +240,25 @@ float Window::fps() const {
 	return static_cast<float>(currentFps);
 }
 
+void Window::setGameViewPort(GameViewPort p_gameViewPort) {
+	gameViewPort = p_gameViewPort;
+}
+
+glm::vec2 Window::getClipSpacePos() const {
+	double xPos, yPos;
+	glfwGetCursorPos(glfwWindow, &xPos, &yPos);
+
+	// Calculate the mouse position relative to the game's viewport.
+	glm::vec2 mouseRelativeToViewPort = { xPos, yPos };
+	mouseRelativeToViewPort -= glm::vec2{ gameViewPort.topLeftX, gameViewPort.topLeftY };
+	mouseRelativeToViewPort /= glm::vec2{ gameViewPort.gameWidth, gameViewPort.gameHeight };
+
+	// Flip y..
+	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+
+	return mouseRelativeToViewPort * 2.f - 1.f;
+}
+
 namespace {
 	void APIENTRY glDebugOutput(
 		GLenum source,

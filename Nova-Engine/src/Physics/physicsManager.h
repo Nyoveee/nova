@@ -1,10 +1,12 @@
 #pragma once
 
+#include <glm/vec3.hpp>
 #include <entt/entt.hpp>
 #include <vector>
 #include <mutex>
 #include <utility>
 #include <queue>
+#include <optional>
 
 class Engine;
 
@@ -12,12 +14,26 @@ class Engine;
 // You can use Jolt.h in your precompiled header to speed up compilation. (nah)
 #include <Jolt/Jolt.h>
 #include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Collision/CastResult.h>
 
 #include "joltPhysicsInterface.h"
 #include "debugRenderer.h"
 #include "contactListener.h"
 
+#include "export.h"
+
 class PhysicsManager {
+public:
+	struct Ray {
+		glm::vec3 origin;
+		glm::vec3 direction;
+	};
+
+	struct RayCastResult {
+		entt::entity entity;
+		glm::vec3 point;
+	};
+
 public:
 	PhysicsManager(Engine& engine);
 
@@ -33,7 +49,11 @@ public:
 	void update(float dt);
 	void debugRender();
 
+	// Nova Collision Listener submits all collision event here..
 	void submitCollision(entt::entity entityOne, entt::entity entityTwo);
+	
+	ENGINE_DLL_API Ray getRayFromMouse() const;
+	ENGINE_DLL_API std::optional<::PhysicsManager::RayCastResult> rayCast(Ray ray, float maxDistance);
 
 private:
 	void createPrimitiveShapes();

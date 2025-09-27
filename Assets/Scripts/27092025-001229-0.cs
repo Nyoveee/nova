@@ -14,7 +14,7 @@ class Physics : Script
     {}
 
     protected override void onCollisionEnter(uint entityId) {
-        AudioAPI.playSound(entityID, "METAL PIPE");
-        AudioAPI.playSound(entityID, "SCREAM");
+        AudioAPI.PlaySound(entityID, "METAL PIPE");
+        AudioAPI.PlaySound(entityID, "SCREAM");
     } 
 }

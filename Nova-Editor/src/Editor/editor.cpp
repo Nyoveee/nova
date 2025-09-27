@@ -319,17 +319,19 @@ void Editor::handleEntityHovering() {
 		return;
 	}
 
+	glm::vec2 normalisedPos = (engine.window.getClipSpacePos() + 1.f) / 2.f;
+
 	if (	
-			gameViewPort.mouseRelativeToViewPort.x < 0.f 
-		||	gameViewPort.mouseRelativeToViewPort.x >= 1.f
-		||	gameViewPort.mouseRelativeToViewPort.y < 0.f
-		||	gameViewPort.mouseRelativeToViewPort.y >= 1.f
+			normalisedPos.x < 0.f
+		||	normalisedPos.x >= 1.f
+		||	normalisedPos.y < 0.f
+		||	normalisedPos.y >= 1.f
 	) {
 		return;
 	}
 
 	entt::entity newHoveringEntity =
-		static_cast<entt::entity>(engine.renderer.getObjectId({ gameViewPort.mouseRelativeToViewPort.x, gameViewPort.mouseRelativeToViewPort.y }));
+		static_cast<entt::entity>(engine.renderer.getObjectId(normalisedPos));
 
 	if (newHoveringEntity == hoveringEntity) {
 		return;
@@ -418,92 +420,6 @@ void Editor::sandboxWindow() {
 	if (ImGui::Button("Wireframe mode.")) {
 		wireFrameMode = !wireFrameMode;
 		engine.renderer.enableWireframeMode(wireFrameMode);
-	}
-
-	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
-
-	static float zPos = 0;
-
-	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
-		ImGui::BeginDisabled();
-	}
-
-	if (ImGui::Button("(+) Add 3D model")) {
-		auto entity = registry.create();
-
-		Transform transform = {
-			{0.f, 0.f, zPos},
-			{1.f / 300.f, 1.f / 300.f, 1.f / 300.f}
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model " + std::to_string(zPos) });
-		registry.emplace<Rigidbody>(entity, Rigidbody{ JPH::EMotionType::Dynamic, Rigidbody::Layer::Moving });
-		registry.emplace<BoxCollider>(entity, BoxCollider{ { 300.f, 200.f, 300.f } });
-
-		zPos -= 2.f;
-
-		std::unordered_map<MaterialName, Material> materials;
-
-		ResourceID modelAsset{ 1857211565665677573 };
-
-		materials["Table_frame_mtl"] = { Material::Pipeline::BlinnPhong, ResourceID{ 11363069911457047527 }, Material::Config{ 0.5f, 0.f, 0.f }, ResourceID{ 16882922978321767798 } };
-		materials["Table_top_mtl"] = { Material::Pipeline::BlinnPhong, ResourceID{ 1363583670394709573 }, Material::Config{ 0.5f, 0.f, 0.f }, ResourceID{ 11291724444234068892 } };
-
-		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-
-	if (ImGui::Button("(+) Add Light")) {
-		auto entity = registry.create();
-
-		Transform transform = {
-			{0.f, 2.f, 5.f},
-			{0.2f, 0.2f, 0.2f}
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<EntityData>(entity, EntityData{ "Light" });
-		registry.emplace<Light>(entity, Light{ Color{1.f, 1.f, 1.f}, 1.f, Light::Type::PointLight });
-
-		std::unordered_map<MaterialName, Material> materials;
-
-		ResourceID modelAsset{ 12932563721038612588 };
-		materials["Material"] = { Material::Pipeline::Color, Color{1.f, 1.f, 1.f}};
-
-		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-
-	if (ImGui::Button("(+) Add Floor")) {
-		auto entity = registry.create();
-
-		Transform transform = {
-			{0.f, -2.f, 0.f},
-			{10.f, 1.f, 10.f}
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<EntityData>(entity, EntityData{ "Floor" });
-		registry.emplace<Rigidbody>(entity, Rigidbody{ JPH::EMotionType::Static, Rigidbody::Layer::NonMoving });
-		registry.emplace<BoxCollider>(entity, BoxCollider{});
-
-		std::unordered_map<MaterialName, Material> materials;
-
-		ResourceID modelAsset{ 12932563721038612588 };
-		materials["Material"] = { Material::Pipeline::BlinnPhong, Color{0.1f, 0.1f, 0.1f}};
-
-		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-
-	if (ImGui::Button("(+) Add Skybox")) {
-		auto entity = registry.create();
-
-		registry.emplace<Transform>(entity, Transform{});
-		registry.emplace<EntityData>(entity, EntityData{ "Skybox" });
-		registry.emplace<SkyBox>(entity, SkyBox{ ResourceID{ 12369249828857649982 } });
-	}
-
-	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
-		ImGui::EndDisabled();
 	}
 
 	if (ImGui::Button("recompile shaders")) {

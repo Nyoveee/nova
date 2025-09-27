@@ -11,9 +11,14 @@
 // This is used for primitives like ints, floats, etc, where you can return the managed type as native type directly.
 // Managed structs will definite an explicit specialisation of this function template
 
+template <typename Managed>
+struct ManagedToNative {
+	using Native = Managed;
+};
+
 // If you received error in regards to narrowing conversion, there's a high chance you provided the wrong types!
-template <typename ManagedType, typename NativeType>
-NativeType native(ManagedType& managedType) {
+template <typename NativeType, typename ManagedType>
+NativeType native(ManagedType managedType) {
 	return NativeType{ managedType };
 }
 
@@ -23,7 +28,7 @@ NativeType native(ManagedType& managedType) {
 #define Declaration(Type, Name) Type Name;
 #define ConstructorDefinition(Type, Name) Name{native.Name}
 #define ConstructorDefinition2(Type, Name) Name { Name }
-#define ListInitialization(Type, Name) Name
+#define ListInitialization(Type, Name) ::native<ManagedToNative<Type>::Native>(Name)
 #define Parameter(Type, Name) Type Name
 
 #define ManagedStruct(ManagedType,NativeType,...)																					\
@@ -49,10 +54,16 @@ public value struct ManagedType : IManagedStruct {																					\
 	}																																\
 	Call_Macro_Double(Declaration,__VA_ARGS__)																						\
 };																																	\
-template <>																															\
-inline NativeType native(ManagedType& managedType) {																				\
+																																	\
+template <typename T>																												\
+inline T native(ManagedType managedType) {																							\
 	return managedType.native();																									\
-}	
+}																																	\
+																																	\
+template <>																															\
+struct ManagedToNative<ManagedType> {																								\
+	using Native = NativeType;																										\
+};																																	\
 
 // =====================================================
 // Managed component macro generator.
@@ -63,7 +74,7 @@ property Type Name														\
 	Type get()				{ return Type(componentReference->Name); }	\
 	void set(Type value)	{											\
 		using NativeType = decltype(componentReference->Name);			\
-		componentReference->Name = native<Type, NativeType>(value);	    \
+		componentReference->Name = native<NativeType>(value);			\
 	}																	\
 }
 

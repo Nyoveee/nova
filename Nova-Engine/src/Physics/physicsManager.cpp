@@ -2,6 +2,7 @@
 #include "physicsManager.h"
 #include "ECS/component.h"
 #include "ECS/ECS.h"
+#include "Engine/window.h"
 
 #include <iostream>
 #include <cstdarg>
@@ -18,6 +19,7 @@
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/ScaledShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Collision/RayCast.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
 
@@ -170,6 +172,7 @@ void PhysicsManager::initialise() {
 		);
 
 		bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityId));
+		bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidbody.initialVelocity));
 		createdBodies.push_back(bodyId);
 
 		rigidbody.bodyId = bodyId;
@@ -272,4 +275,34 @@ void PhysicsManager::createPrimitiveShapes() {
 void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {
 	std::lock_guard lock{ onCollisionMutex };
 	onCollision.push({ entityOne, entityTwo });
+}
+
+PhysicsManager::Ray PhysicsManager::getRayFromMouse() const {
+	glm::vec3 farClipPos = { engine.window.getClipSpacePos(), 1.f };
+	glm::vec3 nearClipPos = { farClipPos.x, farClipPos.y, -1.f };
+
+	glm::vec3 farWorldPos = engine.renderer.getCamera().clipToWorldSpace(farClipPos);
+	glm::vec3 nearWorldPos = engine.renderer.getCamera().clipToWorldSpace(nearClipPos);
+
+	glm::vec3 raycastDirection = glm::normalize(farWorldPos - nearWorldPos);
+
+	return { nearWorldPos, raycastDirection };
+}
+
+std::optional<PhysicsManager::RayCastResult> PhysicsManager::rayCast(Ray ray, float maxDistance) {
+	auto&& narrowPhaseQuery = physicsSystem.GetNarrowPhaseQuery();
+	
+	JPH::RayCastResult rayCastResult;
+	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
+
+	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult)) {
+		JPH::BodyID bodyId = rayCastResult.mBodyID;
+
+		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
+		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
+	
+		return PhysicsManager::RayCastResult{ entity, collisionPoint };
+	}
+
+	return std::nullopt;
 }

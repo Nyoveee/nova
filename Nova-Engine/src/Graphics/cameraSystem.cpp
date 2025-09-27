@@ -167,6 +167,10 @@ float CameraSystem::getCameraSpeed() const {
 	return cameraSpeed;
 }
 
+CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() const {
+    return levelEditorCamera;
+}
+
 void CameraSystem::calculateEulerAngle(float mouseX, float mouseY) {
 	constexpr float sensitivity = 0.1f;		// change this value to your liking
 	

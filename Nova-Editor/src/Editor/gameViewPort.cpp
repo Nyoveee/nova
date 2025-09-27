@@ -1,4 +1,6 @@
 #include "Engine/engine.h"
+#include "Engine/window.h"
+
 #include "editor.h"
 #include "gameViewPort.h"
 #include "Serialisation/serialisation.h"
@@ -10,8 +12,7 @@ GameViewPort::GameViewPort(Editor& editor) :
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
 	controlOverlay			{ editor },
-	isHoveringOver			{ false },
-	mouseRelativeToViewPort {}
+	isHoveringOver			{ false }
 {}
 
 void GameViewPort::update(float dt) {
@@ -62,8 +63,15 @@ void GameViewPort::update(float dt) {
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getMainFrameBufferTextures()[0];
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
-
 	
+	engine.window.setGameViewPort({ 
+		static_cast<int>(gameWindowTopLeft.x), 
+		static_cast<int>(gameWindowTopLeft.y),
+		static_cast<int>(viewportWidth), 
+		static_cast<int>(viewportHeight) 
+	});
+
+#if 0
 	// Calculate the mouse position relative to the game's viewport.
 	mouseRelativeToViewPort = ImGui::GetMousePos();
 	mouseRelativeToViewPort -= gameWindowTopLeft;
@@ -71,6 +79,7 @@ void GameViewPort::update(float dt) {
 
 	// Flip y..
 	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+#endif
 
 	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 	controlOverlay.update(dt, gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
