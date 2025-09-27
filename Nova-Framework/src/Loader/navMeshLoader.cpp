@@ -88,6 +88,6 @@ std::optional<ResourceConstructor> ResourceLoader<NavMesh>::load(ResourceID id, 
 	}
 
 	return { {[id, resourceFilePath, agentName, agentRadius, agentHeight , navData, navMesh] {
-		return std::make_unique<NavMesh>(id, std::move(resourceFilePath), agentName, agentRadius, agentHeight , navData, navMesh);
+		return std::make_unique<NavMesh>(id, std::move(resourceFilePath), std::move(agentName), agentRadius, agentHeight , navData, navMesh);
 	}} };
 }

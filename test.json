@@ -3,34 +3,12 @@
         {
             "EntityData": {
                 "children": [],
-                "name": "Target",
+                "name": "NavMeshSurface_Humanoid",
                 "parent": 4294967295
             },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.0,
-                                "g": 0.8068965077400208,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "NavigationTestTarget": {
-                "position": 0.0
+            "NavMeshSurface": {
+                "label": "Humanoid",
+                "navMeshId": 634154705579671553
             },
             "Transform": {
                 "eulerAngles": {
@@ -60,9 +38,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 6.206819534301758,
-                    "y": -3.0517578125e-05,
-                    "z": -7.654433250427246
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -71,12 +49,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.2750706374645233,
-                    "y": 1.3076759576797485,
-                    "z": 0.3097076714038849
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 1048579
+            "id": 7340037
         },
         {
             "EntityData": {
@@ -115,6 +93,9 @@
                 "collisionDetectionRange": 1.0,
                 "separationWeight": 1.0
             },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
@@ -143,9 +124,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -2.0164954662323,
-                    "y": 0.3500000238418579,
-                    "z": 2.364579916000366
+                    "x": -5.508227348327637,
+                    "y": 0.34997016191482544,
+                    "z": -7.046097278594971
                 },
                 "rotation": {
                     "w": 1.0,
@@ -305,12 +286,37 @@
         {
             "EntityData": {
                 "children": [],
-                "name": "NavMeshSurface_Humanoid",
+                "name": "Target",
                 "parent": 4294967295
             },
-            "NavMeshSurface": {
-                "label": "Humanoid",
-                "navMeshId": 634154705579671553
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.0,
+                                "g": 0.8068965077400208,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
+            "NavigationTestTarget": {
+                "position": 0.0
             },
             "Transform": {
                 "eulerAngles": {
@@ -340,9 +346,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 6.801737308502197,
+                    "y": -0.008707023225724697,
+                    "z": -7.782987594604492
                 },
                 "rotation": {
                     "w": 1.0,
@@ -351,12 +357,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.2750706374645233,
+                    "y": 1.3076759576797485,
+                    "z": 0.3097076714038849
                 }
             },
-            "id": 6291461
+            "id": 1048579
         },
         {
             "EntityData": {

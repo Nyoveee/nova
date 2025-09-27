@@ -109,6 +109,7 @@ void Engine::startSimulation() {
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();
 		cameraSystem.startSimulation();
+		navigationSystem.initNavMeshSystems();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
