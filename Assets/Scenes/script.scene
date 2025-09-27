@@ -6,11 +6,15 @@
                     "x": 300.0,
                     "y": 200.0,
                     "z": 300.0
+                    "x": 300.0,
+                    "y": 200.0,
+                    "z": 300.0
                 },
                 "scaleWithTransform": true
             },
             "EntityData": {
                 "children": [],
+                "name": "My 3D Model 0.000000",
                 "name": "My 3D Model 0.000000",
                 "parent": 4294967295
             },
@@ -18,6 +22,7 @@
                 "materials": [
                     {
                         "albedo": {
+                            "texture": 11363069911457047527
                             "texture": 11363069911457047527
                         },
                         "ambient": 0.10000000149011612,
@@ -90,106 +95,6 @@
         {
             "BoxCollider": {
                 "scaleMultiplier": {
-                    "x": 300.0,
-                    "y": 200.0,
-                    "z": 300.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "My 3D Model 0.000000",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "texture": 11363069911457047527
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Table_frame_mtl",
-                        "normalMap": 16882922978321767798,
-                        "renderingPipeline": "BlinnPhong"
-                    },
-                    {
-                        "albedo": {
-                            "texture": 1363583670394709573
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Table_top_mtl",
-                        "normalMap": 11291724444234068892,
-                        "renderingPipeline": "BlinnPhong"
-                    }
-                ],
-                "modelId": 5856694196991639569
-            },
-            "Rigidbody": {
-                "layer": "Moving",
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "name": "transform",
-                                "type": 15770287848633199278,
-                                "value": {
-                                    "entityId": 4294967295
-                                }
-                            },
-                            {
-                                "name": "spawnPos",
-                                "type": 9637191525283713622,
-                                "value": {
-                                    "x": 0.0,
-                                    "y": 0.0,
-                                    "z": 0.0
-                                }
-                            },
-                            {
-                                "name": "moveSpeed",
-                                "type": 12638226781420530164,
-                                "value": 3.0
-                            },
-                            {
-                                "name": "testPos",
-                                "type": 9637191525283713622,
-                                "value": {
-                                    "x": 1.0,
-                                    "y": 0.20000000298023224,
-                                    "z": 1.0
-                                }
-                            }
-                        ],
-                        "id": 5280233444688248861
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
@@ -305,6 +210,7 @@
             "EntityData": {
                 "children": [],
                 "name": "Entity 1",
+                "name": "Entity 1",
                 "parent": 4294967295
             },
             "MeshRenderer": {
@@ -316,8 +222,17 @@
                                 "g": 0.934482753276825,
                                 "r": 0.934482753276825
                             }
+                            "color": {
+                                "b": 0.934482753276825,
+                                "g": 0.934482753276825,
+                                "r": 0.934482753276825
+                            }
                         },
                         "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
                         "config": {
                             "metallic": 0.0,
                             "occulusion": 0.0,
@@ -326,11 +241,17 @@
                         "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
                     }
                 ],
                 "modelId": 1245008178564268053
+                "modelId": 1245008178564268053
             },
             "Rigidbody": {
+                "layer": "NonMoving",
+                "motionType": "Static"
                 "layer": "NonMoving",
                 "motionType": "Static"
             },
@@ -365,6 +286,8 @@
                     "x": 0.0,
                     "y": -3.6493349075317383,
                     "z": -0.8458044528961182
+                    "y": -3.6493349075317383,
+                    "z": -0.8458044528961182
                 },
                 "rotation": {
                     "w": 1.0,
@@ -376,8 +299,12 @@
                     "x": 5.760928630828857,
                     "y": 0.48643165826797485,
                     "z": 7.556446552276611
+                    "x": 5.760928630828857,
+                    "y": 0.48643165826797485,
+                    "z": 7.556446552276611
                 }
             },
+            "id": 0
             "id": 0
         }
     ]

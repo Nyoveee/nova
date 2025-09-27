@@ -28,7 +28,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, intializeCoreClr			{ nullptr }
 	, createManagedDelegate		{ nullptr }
 	, shutdownCorePtr			( nullptr )
-	, gameModeUpdate_			{ nullptr } 
+	, update_			{ nullptr } 
 	, addEntityScript			{ nullptr }
 	, removeEntityScript_		{ nullptr } 
 	, timeSinceSave				{  }
@@ -118,7 +118,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		using InitFunctionPtr = void(*)(Engine&, const char*);
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
-		gameModeUpdate_							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "gameModeUpdate");
+		update_							        = GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
 		loadAssembly                            = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "loadAssembly");
 		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unloadAssembly");
 		addEntityScript						    = GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addEntityScript");
@@ -273,15 +273,6 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	return true;
 }
 
-void ScriptingAPIManager::loadSceneScriptDataToAPI()
-{
-	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each()) {
-		for (ScriptData& scriptData : scripts.scriptDatas) {
-			addEntityScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
-		}
-	}	
-}
-
 #if 0
 void ScriptingAPIManager::loadEntityScript(entt::entity entityID, ResourceID scriptID)
 {
@@ -307,7 +298,7 @@ bool ScriptingAPIManager::isNotCompiled() const
 void ScriptingAPIManager::update() {
 	ZoneScoped;
 
-	gameModeUpdate_();
+	update_();
 }
 
 void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
@@ -328,10 +319,22 @@ void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 		// update the field data of all entities with affected scripts..
 		for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 			for (auto&& script : scripts.scriptDatas) {
-
 				// only get script field data if this script itself has been modified.
-				if (modifiedScripts.count(script.scriptId)) {
-					script.fields = getScriptFieldDatas(script.scriptId);
+				if (!modifiedScripts.count(script.scriptId))
+					continue;
+				std::vector<FieldData> temp{ script.fields };
+				script.fields.clear();
+				for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
+					bool b_IsExistingField{ false };
+					for (FieldData const& oldFields : temp) {
+						if (oldFields.name != newFields.name)
+							continue;
+						script.fields.push_back(oldFields);
+						b_IsExistingField = true;
+						break;
+					}
+					if (!b_IsExistingField)
+						script.fields.push_back(newFields);
 				}
 			}
 		}
@@ -356,17 +359,14 @@ bool ScriptingAPIManager::startSimulation() {
 	if (compileState != CompileState::Compiled) {
 		if (!compileScriptAssembly()) 
 			return false;
-		loadSceneScriptDataToAPI();
 	}
 
 	// Instantiate all entities' script..
 	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 		for (auto&& script : scripts.scriptDatas) {
 			addEntityScript(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId));
-
-			for (auto&& fieldData : script.fields) {
+			for (auto&& fieldData : script.fields)
 				setScriptFieldData(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId), fieldData);
-			}
 		}
 	}
 
