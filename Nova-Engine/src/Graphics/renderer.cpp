@@ -360,7 +360,7 @@ void Renderer::prepareRendering() {
 	
 	// Clear default framebuffer.
 	// glBindFramebuffer(GL_FRAMEBUFFER, 0); // we bind to default FBO at the end of our render.
-	glClearColor(0.1f, 0.1f, 0.1f, 1.f);
+	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Clear both main framebuffers.

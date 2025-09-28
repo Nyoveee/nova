@@ -3,8 +3,6 @@
 // Editor will automatically rename and recompile this file.
 class PlaySound : Script
 {
-    public Transform_ transform;
-
     // This function is first invoked when game starts.
     protected override void init()
     {}
@@ -14,7 +12,7 @@ class PlaySound : Script
     {}
 
     protected override void onCollisionEnter(uint entityId) {
-        AudioAPI.PlaySound(entityID, "metal_pipe");
+        AudioAPI.PlaySound(entityID, "METAL PIPE");
         AudioAPI.PlaySound(entityID, "SCREAM");
     } 
 }

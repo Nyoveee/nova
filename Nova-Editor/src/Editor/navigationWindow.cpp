@@ -22,6 +22,10 @@ void NavigationWindow::update() {
 
 	ImGui::Begin("Navigation");
 
+	if (editor.isInSimulationMode()) {
+		ImGui::BeginDisabled();
+	}
+
 	//One block of nice GUI  = 6 lines GG
 	ImGui::Dummy(ImVec2(10.0f, 0.0f));  // 10px horizontal padding
 	ImGui::SameLine();
@@ -101,6 +105,10 @@ void NavigationWindow::update() {
 	}
 
 	//TO DO --- WORK ON DROP OFF AND JUMP HEIGHT IN M2
+
+	if (editor.isInSimulationMode()) {
+		ImGui::EndDisabled();
+	}
 
 	ImGui::End();
 }

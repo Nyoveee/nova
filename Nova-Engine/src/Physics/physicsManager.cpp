@@ -161,7 +161,7 @@ void PhysicsManager::initialise() {
 		JPH::BodyCreationSettings bodySettings{
 			new JPH::ScaledShape(box, toJPHVec3(transform.scale * boxCollider.scaleMultiplier)),	// scaled shape
 			toJPHVec3(transform.position),															// position
-			JPH::Quat::sIdentity(),																	// rotation (in quartenions)
+			toJPHQuat(transform.rotation),															// rotation (in quartenions)
 			rigidbody.motionType,																	// motion type
 			layer																					// in which layer?
 		};
