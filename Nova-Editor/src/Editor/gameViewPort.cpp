@@ -61,7 +61,7 @@ void GameViewPort::update(float dt) {
 	gameWindowBottomRight = { gameWindowTopLeft.x + viewportWidth, gameWindowTopLeft.y + viewportHeight };
 
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
-	ImTextureID textureId = engine.renderer.getMainFrameBufferTextures()[0];
+	ImTextureID textureId = engine.renderer.getMainFrameBufferTexture();
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
 	
 	engine.window.setGameViewPort({ 

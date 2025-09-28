@@ -40,13 +40,14 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
 	blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	PBRShader			{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
+	PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
-	debugOverlayShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
+	overlayShader				{ "System/Shader/squareOverlay.vert",		"System/Shader/overlay.frag" },
 	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
+	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	mainVAO						{},
 	debugPhysicsVAO				{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -65,10 +66,13 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
+	hdrExposure					{ 0.25f },
+	toneMappingMethod			{ ToneMappingMethod::ACES },
 
-	mainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16 } },
+	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
-	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } }
+	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
+	toGammaCorrect				{ true }
 {
 	printOpenGLDriverDetails();
 
@@ -143,7 +147,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
 
-	//allCameras.push_back(&camera);
 }
 
 Renderer::~Renderer() {
@@ -192,20 +195,28 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
 		debugRenderNavMesh();
 	}
 
-	// Bind back to default FBO for ImGui to work on.
+	// ======= Post Processing =======
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	// Apply HDR tone mapping + gamma correction post-processing
+	renderHDRTonemapping();
+
+	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::renderToDefaultFBO() {
-	debugOverlayShader.use();
-	debugOverlayShader.setImageUniform("debugOverlay", 0);
-	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]);
+	overlayShader.use();
+	overlayShader.setImageUniform("overlay", 0);
+	glBindTextureUnit(0, getMainFrameBufferTexture());
 
+	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-std::vector<GLuint> const& Renderer::getMainFrameBufferTextures() const {
-	return mainFrameBuffer.textureIds();
+GLuint Renderer::getMainFrameBufferTexture() const {
+	return getActiveMainFrameBuffer().textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -231,6 +242,7 @@ void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 	PBRShader.compile();
 	skyboxShader.compile();
+	toneMappingShader.compile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -262,7 +274,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	glDisable(GL_DEPTH_TEST);
-	debugOverlayShader.use();
+	overlayShader.use();
 	numOfPhysicsDebugTriangles = 0;
 
 	// ================================================
@@ -276,11 +288,11 @@ void Renderer::debugRenderPhysicsCollider() {
 	}
 
 	setBlendMode(BlendingConfig::AlphaBlending);
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	
 	// set image uniform accordingly..
 	glBindTextureUnit(0, physicsDebugFrameBuffer.textureIds()[0]);
-	debugOverlayShader.setImageUniform("debugOverlay", 0);
+	overlayShader.setImageUniform("overlay", 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisable(GL_BLEND);
@@ -293,7 +305,7 @@ void Renderer::debugRenderNavMesh() {
 	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
 
 	glBindVertexArray(debugPhysicsVAO);
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
 	setBlendMode(BlendingConfig::AlphaBlending);
@@ -349,13 +361,21 @@ void Renderer::prepareRendering() {
 	
 	// Clear default framebuffer.
 	// glBindFramebuffer(GL_FRAMEBUFFER, 0); // we bind to default FBO at the end of our render.
-	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Clear main framebuffer.
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	// Clear both main framebuffers.
+	for (auto&& framebuffer : mainFrameBuffers) {
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.fboId());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+
+	// We choose 1 as the active index because we last bind to the last element of the array above^
 	
+	// Reset main frame buffer indices..
+	mainFrameBufferActiveIndex = 1;
+	mainFrameBufferReadIndex = 0;
+
 	// Clear object id framebuffer.
 
 	// For some reason, for framebuffers with integer color attachments
@@ -393,6 +413,7 @@ void Renderer::prepareRendering() {
 	unsigned int numOfPtLights = 0;
 	unsigned int numOfDirLights = 0;
 	unsigned int numOfSpotLights = 0;
+
 	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
 		switch (light.type)
 		{
@@ -586,7 +607,10 @@ void Renderer::renderObjectId(GLsizei count) {
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
 	objectIdShader.use();
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+
+	// after rendering object id, swap back to main frame buffer..	
+	// this function is invoked when rendering models..
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glEnable(GL_DITHER);
 }
@@ -810,6 +834,28 @@ void Renderer::printOpenGLDriverDetails() const {
 	}
 }
 
+FrameBuffer const& Renderer::getActiveMainFrameBuffer() const {
+	return mainFrameBuffers[mainFrameBufferActiveIndex];
+}
+
+FrameBuffer const& Renderer::getReadMainFrameBuffer() const {
+	return mainFrameBuffers[mainFrameBufferReadIndex];
+}
+
+void Renderer::swapMainFrameBuffers() {
+	if (mainFrameBufferActiveIndex == 0) {
+		mainFrameBufferActiveIndex = 1;
+		mainFrameBufferReadIndex = 0;
+	}
+	else if (mainFrameBufferActiveIndex == 1){
+		mainFrameBufferActiveIndex = 0;
+		mainFrameBufferReadIndex = 1;
+	}
+	else {
+		assert(false && "Invalid index.");
+	}
+}
+
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
 		const dtMeshTile* tile = mesh.getTile(tileNum);
@@ -849,4 +895,43 @@ void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 			}
 		}
 	}
+}
+
+void Renderer::renderHDRTonemapping() {
+	ZoneScoped;
+
+	swapMainFrameBuffers();
+
+	// Bind the post-processing framebuffer for LDR output
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+
+	// Set up tone mapping shader
+	toneMappingShader.use();
+	toneMappingShader.setFloat("exposure", hdrExposure);
+	toneMappingShader.setFloat("gamma", 2.2f);
+	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(toneMappingMethod));
+	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
+
+	// Bind the HDR texture from main framebuffer
+	glBindTextureUnit(0, getReadMainFrameBuffer().textureIds()[0]);
+	toneMappingShader.setImageUniform("hdrBuffer", 0);
+
+	// Render fullscreen triangle (more efficient than quad)
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Renderer::setHDRExposure(float exposure) {
+	hdrExposure = exposure;
+}
+
+float Renderer::getHDRExposure() const {
+	return hdrExposure;
+}
+
+void Renderer::setToneMappingMethod(ToneMappingMethod method) {
+	toneMappingMethod = method;
+}
+
+Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
+	return toneMappingMethod;
 }
