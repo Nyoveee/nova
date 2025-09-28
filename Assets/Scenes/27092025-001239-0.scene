@@ -3,17 +3,72 @@
         {
             "EntityData": {
                 "children": [],
+                "name": "Skybox",
+                "parent": 4294967295
+            },
+            "SkyBox": {
+                "cubeMapId": 7586076453901877257
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 18.586156845092773,
+                    "y": 7.576395034790039,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": [],
                 "name": "Light",
                 "parent": 4294967295
             },
             "Light": {
                 "color": {
-                    "b": 0.3758620619773865,
+                    "b": 1.0,
                     "g": 1.0,
-                    "r": 0.8622592091560364
+                    "r": 1.0
                 },
                 "cutOffAngle": 0.21816615760326385,
-                "intensity": 100.0,
+                "intensity": 1.0,
                 "outerCutOffAngle": 0.30543261766433716,
                 "type": "PointLight"
             },
@@ -62,9 +117,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 35.46835708618164,
-                    "y": 11.082744598388672,
-                    "z": -23.84098243713379
+                    "x": 24.4052791595459,
+                    "y": 8.62328815460205,
+                    "z": 3.974472999572754
                 },
                 "rotation": {
                     "w": 1.0,
@@ -78,7 +133,7 @@
                     "z": 0.20000000298023224
                 }
             },
-            "id": 1048578
+            "id": 6
         },
         {
             "BoxCollider": {
@@ -155,7 +210,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
+                    "x": 21.179977416992188,
                     "y": 1.76432466506958,
                     "z": 0.0
                 },
@@ -195,21 +250,29 @@
             "id": 0
         },
         {
+            "AudioComponent": {
+                "data": [
+                    {
+                        "audioData": {
+                            "id": 10000507237258100737,
+                            "volume": 1.0
+                        },
+                        "name": "METAL PIPE"
+                    }
+                ]
+            },
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
             "EntityData": {
                 "children": [],
-                "name": "Light",
+                "name": "box",
                 "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 0.0,
-                    "g": 1.0,
-                    "r": 0.6551724672317505
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 100.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
             },
             "MeshRenderer": {
                 "materials": [
@@ -222,11 +285,43 @@
                             }
                         },
                         "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 1.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.17499999701976776
+                        },
                         "materialName": "Material",
-                        "renderingPipeline": "Color"
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
                     }
                 ],
                 "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "name": "transform",
+                                "type": 15770287848633199278,
+                                "value": {
+                                    "entityId": 4294967295
+                                }
+                            }
+                        ],
+                        "id": 200674448099901461
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
@@ -256,23 +351,23 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -34.7762336730957,
-                    "y": 8.62328815460205,
-                    "z": 7.073866844177246
+                    "x": 18.892099380493164,
+                    "y": 7.818861484527588,
+                    "z": -0.35548657178878784
                 },
                 "rotation": {
                     "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -1.1248721953904806e-08,
+                    "y": -9.675770706962794e-05,
+                    "z": -2.767279738691286e-09
                 },
                 "scale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 2097160
+            "id": 10
         },
         {
             "EntityData": {
@@ -337,7 +432,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
+                    "x": 14.681143760681152,
                     "y": 3.4242074489593506,
                     "z": -2.3547282218933105
                 },
@@ -368,7 +463,7 @@
                     "r": 1.0
                 },
                 "cutOffAngle": 0.21816615760326385,
-                "intensity": 100.0,
+                "intensity": 1.0,
                 "outerCutOffAngle": 0.30543261766433716,
                 "type": "PointLight"
             },
@@ -417,7 +512,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -6.596454620361328,
+                    "x": 17.27492332458496,
                     "y": 8.62328815460205,
                     "z": -4.841817855834961
                 },
@@ -526,7 +621,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
+                    "x": 13.974021911621094,
                     "y": 3.4217684268951416,
                     "z": 3.491041660308838
                 },
@@ -537,212 +632,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.0030000547412782907,
+                    "x": 0.003000054508447647,
                     "y": 0.003000000026077032,
-                    "z": 0.0030000547412782907
+                    "z": 0.003000054508447647
                 }
             },
             "id": 1
-        },
-        {
-            "AudioComponent": {
-                "data": [
-                    {
-                        "audioData": {
-                            "id": 10000507237258100737,
-                            "volume": 1.0
-                        },
-                        "name": "METAL PIPE"
-                    }
-                ]
-            },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "box",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 1.0,
-                                "g": 1.0,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 1.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.17499999701976776
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "name": "transform",
-                                "type": 15770287848633199278,
-                                "value": {
-                                    "entityId": 4294967295
-                                }
-                            }
-                        ],
-                        "id": 200674448099901461
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -11.762956619262695,
-                    "y": 7.818861484527588,
-                    "z": -2.799577236175537
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": -1.1248721953904806e-08,
-                    "y": -9.675770706962794e-05,
-                    "z": -2.767279738691286e-09
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 10
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light",
-                "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 0.3758620619773865,
-                    "g": 1.0,
-                    "r": 0.8622592091560364
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 100.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 1.0,
-                                "g": 1.0,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Material",
-                        "renderingPipeline": "Color"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -1.8263963460922241,
-                    "y": 8.62328815460205,
-                    "z": 3.974472999572754
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
-                }
-            },
-            "id": 6
         }
     ]
 }

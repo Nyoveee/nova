@@ -67,7 +67,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
 	hdrExposure					{ 0.25f },
-	toneMappingMethod			{ ToneMappingMethod::ACES },
+	toneMappingMethod			{ ToneMappingMethod::None },
 
 	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
@@ -146,7 +146,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
-
 }
 
 Renderer::~Renderer() {
