@@ -45,7 +45,7 @@ void AssetViewerUI::update() {
 
 			// we recompile scripts when there is a name change..
 			if (resourceManager.isResource<ScriptAsset>(selectedResourceId)) {
-				updateScriptFileName(descriptorPtr->filepath, selectedResourceName);
+				updateScriptFileName(descriptorPtr->filepath, selectedResourceName, selectedResourceId);
 			}
 		}
 	}
@@ -66,7 +66,7 @@ void AssetViewerUI::update() {
 	ImGui::End();
 }
 
-void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::string const& newName) {
+void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::string const& newName, ResourceID id) {
 	std::ifstream inputScriptFile{ filepath };
 
 	if (!inputScriptFile) {
@@ -78,7 +78,7 @@ void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::str
 	std::string scriptContents{ std::istreambuf_iterator<char>(inputScriptFile), std::istreambuf_iterator<char>() };
 
 	// i love regex. ask me if u need regex explaination.
-	std::regex classRegex(R"(class (\w+)\s?:)");
+	std::regex classRegex(R"(class [\w\s]+\s?:)");
 	scriptContents = std::regex_replace(scriptContents, classRegex, "class " + newName + " :");
 	
 	std::ofstream outputScriptFile{ filepath };
@@ -91,6 +91,9 @@ void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::str
 	outputScriptFile << scriptContents;
 
 	Logger::info("Succesfully updated script name.");
+
+	// we need to serialise the descriptor for recompilation later, script resource will hold the updated name.
+	assetManager.serialiseDescriptor<ScriptAsset>(id);
 }
 
 void AssetViewerUI::selectNewResourceId(ResourceID id) {

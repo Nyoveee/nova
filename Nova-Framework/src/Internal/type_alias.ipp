@@ -75,6 +75,29 @@ struct std::hash<EventID> {
 	}
 };
 
+// ================ ObserverID ==================
+constexpr ObserverID::ObserverID(std::size_t id) : id{ id } {}
+
+// For hashing, we need to implement these member functions..
+constexpr bool operator==(ObserverID const& lhs, ObserverID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(ObserverID const& lhs, ObserverID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+constexpr ObserverID::operator std::size_t() const {
+	return id;
+}
+
+template<>
+struct std::hash<ObserverID> {
+	std::size_t operator()(ObserverID const& eventId) const noexcept {
+		return std::hash<std::size_t>{}(eventId.id);
+	}
+};
+
 // ================ AssetID ==================
 constexpr ResourceID::ResourceID() : id{} {}
 constexpr ResourceID::ResourceID(std::size_t id) : id{ id } {}

@@ -98,6 +98,19 @@ private:
 	std::size_t id;
 };
 
+struct ObserverID {
+	constexpr explicit ObserverID(std::size_t id);
+	constexpr explicit operator std::size_t() const;
+
+public:
+	constexpr friend bool operator==(ObserverID const& lhs, ObserverID const& rhs);
+	constexpr friend bool operator<(ObserverID const& lhs, ObserverID const& rhs);
+	friend struct std::hash<ObserverID>;
+
+private:
+	std::size_t id;
+};
+
 // Game objects hold reference to assets by using an ID.
 struct ResourceID {
 	constexpr ResourceID();

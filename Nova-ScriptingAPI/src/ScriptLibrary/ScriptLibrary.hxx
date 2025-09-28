@@ -1,9 +1,12 @@
+#pragma once
+
 #include "Logger.h"
 #include "ManagedTypes.hxx"
 #include "API/IManagedComponent.hxx"
 #include "API/ConversionUtils.h"
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
+
 
 #undef PlaySound
 
@@ -43,11 +46,24 @@ public:
 public ref class Input {
 public:
 	static void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) { 
-		Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key));
+		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key)) };
+		observerIds.Add(observerId);
 	}
 
 	static Vector2 V_MousePosition()	{ return Vector2(Interface::engine->inputManager.mousePosition); }
 	static float V_ScrollOffsetY()		{ return Interface::engine->inputManager.scrollOffsetY; }
+
+internal:
+	static void ClearAllKeyMapping() {
+		for each (std::size_t observerId in observerIds) {
+			Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
+		}
+
+		observerIds.Clear();
+	}
+
+private:
+	static System::Collections::Generic::List<std::size_t> observerIds;
 };
 
 // ======================================

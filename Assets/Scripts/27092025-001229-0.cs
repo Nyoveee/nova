@@ -1,7 +1,7 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-class Physics : Script
+class PlaySound : Script
 {
     public Transform_ transform;
 
@@ -14,7 +14,7 @@ class Physics : Script
     {}
 
     protected override void onCollisionEnter(uint entityId) {
-        AudioAPI.PlaySound(entityID, "METAL PIPE");
+        AudioAPI.PlaySound(entityID, "metal_pipe");
         AudioAPI.PlaySound(entityID, "SCREAM");
     } 
 }

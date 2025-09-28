@@ -1,5 +1,6 @@
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Script.hxx"
+#include "ScriptLibrary/ScriptLibrary.hxx"
 #include "IManagedComponent.hxx"
 #include "IManagedStruct.h"
 #include "ResourceManager/resourceManager.h"
@@ -61,6 +62,11 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 	using BindingFlags = System::Reflection::BindingFlags;
 	std::vector<FieldData> fieldDatas{};
 	
+	if (!availableScripts->ContainsKey(scriptID)) {
+		Logger::error("Failed to obtain script field data from script {}!", scriptID);
+		return {};
+	}
+
 	Script^ script = availableScripts[scriptID];
 
 	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
@@ -115,7 +121,7 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 {
 	if (!availableScripts->ContainsKey(scriptId)) {
-		Logger::error("Failed to add script {} for entity {}!", scriptId, entityID);
+		Logger::error("Failed to add invalid script {} for entity {}!", scriptId, entityID);
 		return;
 	}
 
@@ -129,6 +135,11 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 
 void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
 {
+	if (!gameObjectScripts->ContainsKey(entityID) || !gameObjectScripts[entityID]->ContainsKey(scriptID)) {
+		Logger::error("Failed to set field data for entityID {}", entityID);
+		return;
+	}
+
 	Script^ script = gameObjectScripts[entityID][scriptID];
 
 	using BindingFlags = System::Reflection::BindingFlags;
@@ -317,6 +328,10 @@ void Interface::unloadAssembly()
 		gameObjectScripts->Clear();
 	if (availableScripts)
 		availableScripts->Clear();
+
+	// Clear all input mapping..
+	Input::ClearAllKeyMapping();
+
 	// Unload the assembly
 	assemblyLoadContext->Unload();
 	assemblyLoadContext = nullptr;

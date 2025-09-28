@@ -271,10 +271,15 @@ namespace {
 							bool keepScript = true;
 
 							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
-							assert(scriptAsset);
-
-							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
-								displayScriptFields(entity, scriptData, scriptingAPIManager,componentInspector.editor.engine);
+							
+							if (!scriptAsset) {
+								Logger::warn("Invalid script found, removing it..");
+								keepScript = false;
+							}
+							else {
+								if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
+									displayScriptFields(entity, scriptData, scriptingAPIManager, componentInspector.editor.engine);
+							}
 
 							ImGui::PopID();
 							return !keepScript;
@@ -298,9 +303,6 @@ namespace {
 						// Add Audio
 						componentInspector.editor.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
 						{
-							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
-							assert(audioAsset);
-
 							// Store full AudioData directly in the component
 							auto namePtr = assetManager.getName(resourceId);
 
@@ -320,9 +322,12 @@ namespace {
 							auto&& [name, audioData] = *it;
 							
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
+
 							if (!audioAsset) {
 								// Invalid ResourceID
 								Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.AudioId));
+								ImGui::PopID();
+								it = audioDatas.erase(it);
 								continue;
 							}
 

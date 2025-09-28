@@ -128,7 +128,6 @@ void Engine::stopSimulation() {
 		cameraSystem.endSimulation();
 
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
-		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		scriptingAPIManager.stopSimulation();

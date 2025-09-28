@@ -8,7 +8,7 @@ public:
 	
 	void update();
 
-	void updateScriptFileName(AssetFilePath const& filepath, std::string const& newName);
+	void updateScriptFileName(AssetFilePath const& filepath, std::string const& newName, ResourceID id);
 public:
 	void selectNewResourceId(ResourceID id);
 

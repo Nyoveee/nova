@@ -10,8 +10,9 @@ template<typename ManagedType>
 auto Convert(ManagedType^ managedType) {
 	return !managedType ? nullptr : managedType->nativeComponent(); // Only components have this function call
 }
+
 // Strings
-std::string Convert(System::String^ str) {
+inline std::string Convert(System::String^ str) {
 	return msclr::interop::marshal_as<std::string>(str);
 }
 

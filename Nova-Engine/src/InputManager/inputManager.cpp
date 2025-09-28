@@ -5,8 +5,10 @@
 
 #include "InputManager/inputEvent.h"
 
-InputManager::InputManager()
-	:mousePosition{} {
+InputManager::InputManager() :
+	mousePosition		{},
+	currentObserverId	{ 0 }
+{
 	mainKeyBindMapping();
 }
 
