@@ -281,28 +281,28 @@ struct NavMeshAgent
 {
 	//User Variables
 	std::string agentName;
-	
 	float agentMaxSpeed; //Top speed
-	float agentMaxAcceleration; //max acceleration
+	float agentMaxAcceleration; //max acceleration should be abt twicse as fast as max speed
+	float agentRotationSpeed;
 	float collisionDetectionRange; // higher the value the earlier it attempts to steers
 	float separationWeight;
 
 
-	enum class PathfindingType
-	{
-		Automated,
-		Manual
+	//enum class PathfindingType
+	//{
+	//	Automated,
+	//	Manual
 
-	}PathfindingType;
+	//}PathfindingType;
 
 	REFLECTABLE
 	(
 		agentName,
 		agentMaxSpeed,
 		agentMaxAcceleration,
-		collisionDetectionRange,
-		separationWeight,
-		PathfindingType
+		agentRotationSpeed,
+		separationWeight
+
 	)
 
 

@@ -45,20 +45,26 @@ void Engine::fixedUpdate(float dt) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
 		navigationSystem.update(dt);
+		
 	}
 }
 
 void Engine::update(float dt) {
+	//Note the order should be correct
 	audioSystem.update();
 	cameraSystem.update(dt);
+
+	if (!inSimulationMode) {
+		scriptingAPIManager.checkIfRecompilationNeeded(dt);
+
+	}
+
 	transformationSystem.update();
 	renderer.update(dt);
 
 	resourceManager.update();
+	
 
-	if (!inSimulationMode) {
-		scriptingAPIManager.checkIfRecompilationNeeded(dt);
-	}
 }
 
 void Engine::setupSimulation() {
