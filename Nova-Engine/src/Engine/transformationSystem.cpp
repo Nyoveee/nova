@@ -3,7 +3,7 @@
 #include "transformationSystem.h"
 #include "ECS/ECS.h"
 
-#include "ECS/component.h"
+#include "component.h"
 #include "nova_math.h"
 #include "Profiling.h"
 

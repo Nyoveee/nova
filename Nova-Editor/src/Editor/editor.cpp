@@ -24,7 +24,7 @@
 #include "themes.h"
 #include "model.h"
 
-#include "ECS/component.h"
+#include "component.h"
 
 #include <GLFW/glfw3.h>
 #include <ranges>

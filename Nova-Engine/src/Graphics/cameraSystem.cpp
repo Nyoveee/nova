@@ -20,6 +20,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 	camera					{ engine.renderer.getCamera() },
 	levelEditorCamera		{ { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, -90.f, 0.f },
 	isInControl				{ false },
+	isThereActiveGameCamera	{ false },
 	toResetMousePos			{ true },
 	cameraSpeedExponent		{ 2.f },
 	cameraSpeed				{ std::exp(cameraSpeedExponent) }
@@ -37,7 +38,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 	engine.inputManager.subscribe<ToCameraControl>(
 		[&](ToCameraControl control) {
-			if (isSimulationActive) {
+			if (isSimulationActive && isThereActiveGameCamera) {
 				return;
 			}
 
@@ -55,7 +56,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 				toResetMousePos = false;
 			}
-			else if (isInControl && !isSimulationActive) {
+			else if (isInControl) {
 				calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 			}
 		}
@@ -63,7 +64,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 	engine.inputManager.subscribe<AdjustCameraSpeed>(
 		[&](AdjustCameraSpeed value) {
-			if (!isInControl || isSimulationActive) {
+			if (!isInControl) {
 				return;
 			}
 
@@ -75,10 +76,12 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 void CameraSystem::update(float dt) {
 	ZoneScoped;
-	
+
 	// for game camera
 	if(isSimulationActive)
 	{
+		isThereActiveGameCamera = false;
+
 		for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
 		{
 			if (cameraComponent.camStatus)
@@ -87,12 +90,14 @@ void CameraSystem::update(float dt) {
 				// Use Transform data to set camera variables.
 				camera.setPos(objTransform.position);
 				camera.setFront(objTransform.front);
+				isThereActiveGameCamera = true;
 				break;
 			}
 		}
 	}
+
 	// for editor camera
-	else
+	if(!isSimulationActive || !isThereActiveGameCamera)
 	{
 		if (!isInControl) {
 			return;

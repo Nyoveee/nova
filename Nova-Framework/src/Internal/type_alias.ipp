@@ -6,13 +6,11 @@
 // ========================================
 // DEGREE AND ANGLES.
 // ========================================
-namespace {
-	constexpr Radian toRadian(Degree angle) {
-		return angle * (std::numbers::pi_v<float> / 180.f);
-	}
-	constexpr Degree toDegree(Radian angle) {
-		return angle * (180.f / std::numbers::pi_v<float>);
-	}
+constexpr Radian toRadian(Degree angle) {
+	return angle * (std::numbers::pi_v<float> / 180.f);
+}
+constexpr Degree toDegree(Radian angle) {
+	return angle * (180.f / std::numbers::pi_v<float>);
 }
 
 constexpr Degree::Degree()					: angle	{}							{}

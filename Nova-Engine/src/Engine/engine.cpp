@@ -4,7 +4,7 @@
 #include "engine.h"
 #include "window.h"
 
-#include "ECS/component.h"
+#include "component.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
@@ -101,6 +101,10 @@ void Engine::startSimulation() {
 		//Serialiser::serialiseScene(ecs);
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+		physicsManager.initialise();
+		audioSystem.loadAllSounds();
+		cameraSystem.startSimulation();
+		navigationSystem.initNavMeshSystems();
 
 		if (scriptingAPIManager.hasCompilationFailed()) {
 			Logger::error("Script compilation failed. Please update them.");
@@ -111,11 +115,6 @@ void Engine::startSimulation() {
 			stopSimulation();
 			return;
 		}
-
-		physicsManager.initialise();
-		audioSystem.loadAllSounds();
-		cameraSystem.startSimulation();
-		navigationSystem.initNavMeshSystems();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
