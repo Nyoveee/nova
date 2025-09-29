@@ -19,22 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ScriptLibrary\Core\ComponentAccessor.hxx" />
+    <ClInclude Include="src\ScriptLibrary\Core\GameObject.hxx" />
     <ClInclude Include="src\API\IManagedStruct.h" />
-    <ClInclude Include="src\API\ConversionUtils.h" />
-    <ClInclude Include="src\ScriptLibrary\ManagedEnums.hxx" />
+    <ClInclude Include="src\API\ConversionUtils.hxx" />
+    <ClInclude Include="src\ScriptLibrary\Core\Script.hxx" />
+    <ClInclude Include="src\ScriptLibrary\Core\ScriptAttributes.hxx" />
+    <ClInclude Include="src\ScriptLibrary\Extensions\ManagedEnums.hxx" />
     <ClInclude Include="src\API\ScriptingAPI.hxx" />
     <ClInclude Include="src\API\ManagedTypeMacros.hxx" />
-    <ClInclude Include="src\ScriptLibrary\ScriptLibrary.hxx" />
+    <ClInclude Include="src\ScriptLibrary\Extensions\ScriptLibrary.hxx" />
     <ClInclude Include="src\API\IManagedComponent.hxx" />
-    <ClInclude Include="src\ScriptLibrary\ManagedTypes.hxx">
+    <ClInclude Include="src\ScriptLibrary\Extensions\ManagedTypes.hxx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClInclude>
     <ClInclude Include="src\API\RecursiveMacros.hxx" />
-    <ClInclude Include="src\ScriptLibrary\Script.hxx">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\API\ScriptingAPI.ixx">
@@ -50,12 +50,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ScriptLibrary\Core\ComponentAccessor.cxx" />
     <ClCompile Include="src\API\ScriptingAPI.cxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Script.cxx" />
     <ClCompile Include="src\Export\LibraryExport.cpp" />
+    <ClCompile Include="src\ScriptLibrary\Core\Script.cxx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

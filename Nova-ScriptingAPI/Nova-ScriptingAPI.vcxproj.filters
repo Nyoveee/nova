@@ -21,13 +21,10 @@
     <ClInclude Include="src\API\ManagedTypeMacros.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\ManagedTypes.hxx">
+    <ClInclude Include="src\ScriptLibrary\Extensions\ManagedTypes.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\API\RecursiveMacros.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Script.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\API\IManagedComponent.hxx">
@@ -36,16 +33,28 @@
     <ClInclude Include="src\API\ScriptingAPI.ixx">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\ManagedEnums.hxx">
+    <ClInclude Include="src\ScriptLibrary\Extensions\ManagedEnums.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\API\IManagedStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\ScriptLibrary.hxx">
+    <ClInclude Include="src\ScriptLibrary\Extensions\ScriptLibrary.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\API\ConversionUtils.h">
+    <ClInclude Include="src\API\ConversionUtils.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\GameObject.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\ComponentAccessor.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\Script.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\ScriptAttributes.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,10 +62,13 @@
     <ClCompile Include="src\API\ScriptingAPI.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Script.cxx">
+    <ClCompile Include="src\Export\LibraryExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Export\LibraryExport.cpp">
+    <ClCompile Include="src\ScriptLibrary\Core\ComponentAccessor.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScriptLibrary\Core\Script.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
