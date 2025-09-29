@@ -102,18 +102,27 @@ void ECS::copyEntities(std::vector<entt::entity> const& entityVec)
 {
 	for (auto en : entityVec) {
 		auto tempEntity = registry.create();
-		([&]() {
-			Components* component = registry.try_get<Components>(en);
-			if (component) {
-				registry.emplace<Components>(tempEntity, *component);
-			}
-			}(), ...);
 
+		([&]() {
+			if constexpr (std::same_as<Components, EntityData>) {
+				registry.emplace<Components>(tempEntity, Components{ registry.get<Components>(en).name + " Copy" });
+			}
+			else {
+				Components* component = registry.try_get<Components>(en);
+				if (component) {
+					registry.emplace<Components>(tempEntity, *component);
+				}
+			}
+
+		}(), ...);
+
+#if 0
 		EntityData* ed = registry.try_get<EntityData>(en);
 		if (ed->parent != entt::null) {
 			EntityData* parent = registry.try_get<EntityData>(ed->parent);
 			parent->children.push_back(tempEntity);
 
 		}
+#endif
 	}
 }

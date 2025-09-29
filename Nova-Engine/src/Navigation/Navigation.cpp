@@ -2,7 +2,7 @@
 #include "Engine/engine.h"
 #include "Logger.h"
 #include "ResourceManager/resourceManager.h"
-#include "ECS/component.h"
+#include "component.h"
 
 /*TO DO-----
   Handle entity on destroy

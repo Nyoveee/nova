@@ -50,6 +50,7 @@ private:
 
 	float cameraSpeed;
 	bool isSimulationActive;
+	bool isThereActiveGameCamera;
 
 	bool isInControl;
 	bool toResetMousePos;

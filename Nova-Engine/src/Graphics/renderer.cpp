@@ -13,7 +13,7 @@
 #include "ResourceManager/resourceManager.h"
 
 #include <fstream>
-#include "ECS/component.h"
+#include "component.h"
 #include "Profiling.h"
 #include "Logger.h"
 

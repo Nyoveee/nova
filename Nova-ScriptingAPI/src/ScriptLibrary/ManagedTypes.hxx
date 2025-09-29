@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ECS/component.h"
+#include "component.h"
 #include "API/ManagedTypeMacros.hxx"
 
 // ===========================================================================================
@@ -31,13 +31,13 @@ ManagedStruct(
 // New managed type Vector3 now has data member of x, y, z corresponding to the data members of glm::vec3.
 
 ManagedStruct(
-	Ray,		PhysicsManager::Ray,
+	Ray,		PhysicsRay,
 	Vector3,	origin,
 	Vector3,	direction
 )
 
 ManagedStruct(
-	RayCastResult,	PhysicsManager::RayCastResult,
+	RayCastResult,	PhysicsRayCastResult,
 	entt::entity,	entity,
 	Vector3,		point
 )
@@ -65,5 +65,11 @@ ManagedComponentDeclaration(
 	Vector3, right,
 	Vector3, up
 )
+
+// member functions..
+void rotate(Vector3 axis, float angle);
+
+ManagedComponentEnd()
+
 
 // We created a Managed Component named Transform_, with data members position, scale, rotation, test1 and test2.

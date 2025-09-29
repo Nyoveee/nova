@@ -1,5 +1,5 @@
 #include "serialisation.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "ECS/ECS.h"
 #include <string>
 

@@ -10,7 +10,7 @@
 #include "ECS/ecs.h"
 #include "InputManager/inputManager.h"
 #include "InputManager/inputEvent.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "nova_math.h"
 
 Gizmo::Gizmo(Editor& editor, ECS& ecs) : 

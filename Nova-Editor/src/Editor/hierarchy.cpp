@@ -6,7 +6,7 @@
 #include "ECS/ECS.h"
 
 #include "IconsFontAwesome6.h"
-#include "ECS/component.h"
+#include "component.h"
 
 #include <ranges>
 
