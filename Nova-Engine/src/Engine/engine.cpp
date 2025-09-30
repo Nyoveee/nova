@@ -144,6 +144,14 @@ int Engine::getGameHeight() const {
 	return gameHeight;
 }
 
+void Engine::setGameWidth(int value) {
+	gameWidth = value;
+}
+
+void Engine::setGameHeight(int value) {
+	gameHeight = value;
+}
+
 bool Engine::isInSimulationMode() const {
 	return inSimulationMode;
 }

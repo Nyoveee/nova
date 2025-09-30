@@ -3,6 +3,7 @@
 #include "debugUI.h"
 #include "hierarchy.h"
 #include "componentInspector.h"
+#include "gameConfig.h"
 
 class Editor;
 class Engine;
@@ -26,11 +27,13 @@ private:
 	DebugUI debugUi;
 	Hierarchy hierarchyList;
 	ComponentInspector componentInspector;
+	GameConfig gameConfig;
 
 	bool consoleBool;
 	bool debugUiBool;
 	bool hierarchyBool;
 	bool componentInspectorBool;
+	bool gameConfigBool;
 
 
 };

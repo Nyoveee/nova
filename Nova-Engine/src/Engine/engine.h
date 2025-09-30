@@ -59,6 +59,9 @@ public:
 	ENGINE_DLL_API int getGameWidth() const;
 	ENGINE_DLL_API int getGameHeight() const;
 
+	ENGINE_DLL_API void setGameWidth(int value);
+	ENGINE_DLL_API void setGameHeight(int value);
+
 public:
 	// allow all systems to have references of each other via the engine.
 	Window&					window;

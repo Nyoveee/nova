@@ -14,10 +14,12 @@ NavBar::NavBar(Editor& editor) :
 	debugUi{ editor },
 	hierarchyList{editor},
 	componentInspector{editor},
+	gameConfig{editor},
 	consoleBool{true},
 	debugUiBool{true},
 	hierarchyBool{true},
-	componentInspectorBool{true}
+	componentInspectorBool{true},
+	gameConfigBool{true}
 {}
 
 void NavBar::update() {
@@ -28,6 +30,7 @@ void NavBar::update() {
 			if (ImGui::Checkbox("debugUi", &debugUiBool))	{	}
 			if (ImGui::Checkbox("hierarchy", &hierarchyBool)) {		}
 			if (ImGui::Checkbox("componentInspector", &componentInspectorBool)) {	}
+			if (ImGui::Checkbox("GameConfig", &gameConfigBool)) {	}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -44,4 +47,8 @@ void NavBar::update() {
 	if (componentInspectorBool) {
 		componentInspector.update();
 	}
+	if (gameConfigBool) {
+		gameConfig.update();
+	}
+	
 }
