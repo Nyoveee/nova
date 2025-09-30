@@ -10,6 +10,7 @@
 #include <entt/entt.hpp>
 #include <dotnet/coreclrhost.h>
 
+#define NOMINMAX
 #include <Windows.h>
 #include <sstream>
 #include <iomanip>
