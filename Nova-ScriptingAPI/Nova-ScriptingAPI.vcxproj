@@ -30,9 +30,6 @@
     <ClInclude Include="src\API\ScriptingAPI.hxx" />
     <ClInclude Include="src\API\ManagedTypeMacros.hxx" />
     <ClInclude Include="src\API\IManagedComponent.hxx" />
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
-    </ClInclude>
     <ClInclude Include="src\API\RecursiveMacros.hxx" />
     <ClInclude Include="src\ScriptLibrary\Core\Script.hxx">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
