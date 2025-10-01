@@ -2,7 +2,11 @@
 #include "Engine/engine.h"
 #include "Logger.h"
 #include "ResourceManager/resourceManager.h"
-#include "ECS/component.h"
+#include "component.h"
+#include <numbers>
+#include <glm/gtx/fast_trigonometry.hpp>
+#undef min;
+#undef max;
 
 /*TO DO-----
   Handle entity on destroy
@@ -61,6 +65,80 @@ void NavigationSystem::update(float const& dt)
 			transform.position.x = dtAgent->npos[0];
 			transform.position.y = dtAgent->npos[1];
 			transform.position.z = dtAgent->npos[2];
+
+
+			constexpr float EPS_SQ = 1e-6f;
+			if ((dtAgent->vel[0] * dtAgent->vel[0] + dtAgent->vel[2] * dtAgent->vel[2]) < 1e-6f)
+			{
+				continue;
+			}
+
+			////get current facing direction of the agent
+			//float currentYaw = transform.eulerAngles.angles.y;
+
+			////glm::vec3 agentFacingDir = glm::normalize(glm::vec3(dtAgent->nvel[0], 0.0f, dtAgent->nvel[2]));
+			//auto wrapPi = [](float a) {
+			//	while (a > glm::pi<float>()) a -= 2.0f * glm::two_pi<float>();
+			//	while (a <= -glm::pi<float>()) a += 2.0f * glm::two_pi<float>();
+			//	return a;
+			//};
+
+
+			//float desiredYaw = std::atan2(dtAgent->vel[0], dtAgent->vel[2]);
+
+			////glm::quat targetRotation = glm::angleAxis(desiredYaw, glm::vec3(0.f,1.f,0.f) );
+
+			////shortest angular difference
+			//float diff = wrapPi(desiredYaw - currentYaw);
+			//
+			//float frameRotation = glm::radians(agent.agentRotationSpeed) * dt; //get the rotation possible this frame
+
+
+			////if the difference it too large this frame, use framerotation, else use difference to cover
+			//if (std::fabs(diff) > frameRotation)
+			//{
+			//	diff = (diff > 0.0f) ? frameRotation : -frameRotation;
+			//}
+
+			//currentYaw += diff;
+
+			//glm::quat yawQuat = glm::angleAxis(currentYaw, glm::vec3(0.0f, 1.0f, 0.0f));
+			//transform.rotation = yawQuat;
+
+			//glm::vec3 desiredFront{ dtAgent->vel[0],dtAgent->vel[1],dtAgent->vel[2] };
+			//glm::vec3 currentFront{ transform.front };
+
+			//glm::quat rotationQuat = glm::rotation(currentFront, desiredFront);
+
+			//transform.rotation = transform.rotation * rotationQuat;
+
+
+			//----Working code
+			float desiredYaw = std::atan2(dtAgent->vel[0], dtAgent->vel[2]);
+
+			glm::quat yawQuat = glm::angleAxis(desiredYaw, glm::vec3(0.0f, 1.0f, 0.0f));
+			transform.rotation = yawQuat;
+
+
+			//----Testing Code
+				// convert to radians/sec
+			//const float angRad = glm::radians(agent.agentRotationSpeed) * dt;
+			//if (!std::isfinite(angRad) || std::abs(angRad) < 1e-8f) return;
+
+			//// create delta quaternion (rotate around world up)
+			//glm::quat delta = glm::angleAxis(angRad, glm::vec3(0.0f, 1.0f, 0.0f));
+
+			//// apply delta in world space (pre-multiply). Use post-multiply if you want local-space yaw.
+			//glm::quat newRot = glm::normalize(delta * transform.rotation);
+
+			//// sanity check
+			//if (!(std::isfinite(newRot.x) && std::isfinite(newRot.y) &&
+			//	std::isfinite(newRot.z) && std::isfinite(newRot.w)))
+			//	return;
+
+			//transform.rotation = newRot;
+
+
 		}
 	}
 }
@@ -76,7 +154,7 @@ ResourceID NavigationSystem::getNavMeshId() const {
 void NavigationSystem::NavigationDebug()
 {
 
-	glm::vec3 targetPosition;
+	glm::vec3 targetPosition{};
 	float targetposition_arr[3];
 
 	//Get transform info of target
@@ -151,7 +229,7 @@ ENGINE_DLL_API void NavigationSystem::initNavMeshSystems()
 
 	}
 
-	//for each active agent... register to its respective dt crowd, if automated is requested
+	//for each active agent... register to its respective dt crowd, if automated is requested, initialises agent parameters
 	for (auto&& [entity, transform ,agent] : registry.view<Transform,NavMeshAgent>().each())
 	{
 
@@ -161,6 +239,7 @@ ENGINE_DLL_API void NavigationSystem::initNavMeshSystems()
 			Logger::warn("Agent found in scene without a valid Navmesh");
 			continue;
 		}
+		agent.agentIndex = -1;
 
 		auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(sceneNavMeshes[agent.agentName]);
 
@@ -169,11 +248,13 @@ ENGINE_DLL_API void NavigationSystem::initNavMeshSystems()
 		dtCrowdAgentParams params{};
 		params.radius = navMeshAsset->buildRadius;
 		params.height = navMeshAsset->buildHeight;
-		params.maxAcceleration = agent.agentMaxAcceleration;
 		params.maxSpeed = agent.agentMaxSpeed;
-		params.collisionQueryRange = agent.collisionDetectionRange;
+		params.maxAcceleration = agent.agentMaxAcceleration;
+		params.collisionQueryRange = navMeshAsset->buildRadius * 12.f;
 		// pathOptimizationRange - choose a sensible default scaled from radius as in original code
 		params.pathOptimizationRange = navMeshAsset->buildRadius * 30.f;
+		params.obstacleAvoidanceType = 0; //default settings see dtCrowd init, its already set there currently we have on type only see how it goes first
+		params.updateFlags = UpdateFlags::DT_CROWD_ANTICIPATE_TURNS | UpdateFlags::DT_CROWD_SEPARATION | UpdateFlags::DT_CROWD_OPTIMIZE_VIS; //use for now
 		params.separationWeight = agent.separationWeight;
 
 

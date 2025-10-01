@@ -4,7 +4,7 @@
 #include "engine.h"
 #include "window.h"
 
-#include "ECS/component.h"
+#include "component.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
@@ -45,20 +45,26 @@ void Engine::fixedUpdate(float dt) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
 		navigationSystem.update(dt);
+		
 	}
 }
 
 void Engine::update(float dt) {
+	//Note the order should be correct
 	audioSystem.update();
 	cameraSystem.update(dt);
+
+	if (!inSimulationMode) {
+		scriptingAPIManager.checkIfRecompilationNeeded(dt);
+
+	}
+
 	transformationSystem.update();
 	renderer.update(dt);
 
 	resourceManager.update();
+	
 
-	if (!inSimulationMode) {
-		scriptingAPIManager.checkIfRecompilationNeeded(dt);
-	}
 }
 
 void Engine::setupSimulation() {
@@ -95,6 +101,10 @@ void Engine::startSimulation() {
 		//Serialiser::serialiseScene(ecs);
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+		physicsManager.initialise();
+		audioSystem.loadAllSounds();
+		cameraSystem.startSimulation();
+		navigationSystem.initNavMeshSystems();
 
 		if (scriptingAPIManager.hasCompilationFailed()) {
 			Logger::error("Script compilation failed. Please update them.");
@@ -105,11 +115,6 @@ void Engine::startSimulation() {
 			stopSimulation();
 			return;
 		}
-
-		physicsManager.initialise();
-		audioSystem.loadAllSounds();
-		cameraSystem.startSimulation();
-		navigationSystem.initNavMeshSystems();
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.

@@ -28,7 +28,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, intializeCoreClr			{ nullptr }
 	, createManagedDelegate		{ nullptr }
 	, shutdownCorePtr			( nullptr )
-	, update_			{ nullptr } 
+	, update_					{ nullptr } 
 	, addEntityScript			{ nullptr }
 	, removeEntityScript_		{ nullptr } 
 	, timeSinceSave				{  }

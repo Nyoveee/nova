@@ -11,7 +11,7 @@
 #include "bufferObject.h"
 #include "framebuffer.h"
 #include "ECS/ECS.h"
-#include "ECS/Component.h"
+#include "component.h"
 #include "vertex.h"
 
 #include "model.h"

@@ -19,7 +19,6 @@
 #include "type_alias.h"
 #include "vertex.h"
 #include "reflection.h"
-#include "Engine/ScriptingAPIManager.h"
 #include "navMesh.h"
 
 // Forward declaring..
@@ -39,6 +38,25 @@ class Audio;
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
+
+#include "physics.h"
+
+// ======= C# Field Information =======
+#ifndef ALL_FIELD_PRIMITIVES
+#define ALL_FIELD_PRIMITIVES \
+		bool, int, float, double
+#endif
+#ifndef ALL_FIELD_TYPES
+#define ALL_FIELD_TYPES \
+		glm::vec2, glm::vec3, entt::entity, PhysicsRay, PhysicsRayCastResult, \
+		ALL_FIELD_PRIMITIVES
+#endif
+
+struct FieldData {
+	std::string name;
+	std::variant<ALL_FIELD_TYPES> data;
+};
+// ===================================
 
 struct EntityData {
 	std::string name;
@@ -281,28 +299,28 @@ struct NavMeshAgent
 {
 	//User Variables
 	std::string agentName;
-	
 	float agentMaxSpeed; //Top speed
-	float agentMaxAcceleration; //max acceleration
+	float agentMaxAcceleration; //max acceleration should be abt twicse as fast as max speed
+	float agentRotationSpeed;
 	float collisionDetectionRange; // higher the value the earlier it attempts to steers
 	float separationWeight;
 
 
-	enum class PathfindingType
-	{
-		Automated,
-		Manual
+	//enum class PathfindingType
+	//{
+	//	Automated,
+	//	Manual
 
-	}PathfindingType;
+	//}PathfindingType;
 
 	REFLECTABLE
 	(
 		agentName,
 		agentMaxSpeed,
 		agentMaxAcceleration,
-		collisionDetectionRange,
-		separationWeight,
-		PathfindingType
+		agentRotationSpeed,
+		separationWeight
+
 	)
 
 

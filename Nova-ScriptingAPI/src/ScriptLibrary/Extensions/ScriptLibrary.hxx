@@ -87,7 +87,7 @@ public:
 	}
 
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance) {
-		PhysicsManager::Ray ray{ p_ray->native() };
+		PhysicsRay ray{ p_ray->native() };
 		auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance);
 
 		if (!opt) {
