@@ -5,8 +5,9 @@
 #include "component.h"
 #include <numbers>
 #include <glm/gtx/fast_trigonometry.hpp>
-#undef min;
-#undef max;
+
+#undef min
+#undef max
 
 /*TO DO-----
   Handle entity on destroy
@@ -68,7 +69,8 @@ void NavigationSystem::update(float const& dt)
 
 
 			constexpr float EPS_SQ = 1e-6f;
-			if ((dtAgent->vel[0] * dtAgent->vel[0] + dtAgent->vel[2] * dtAgent->vel[2]) < 1e-6f)
+
+			if ((dtAgent->vel[0] * dtAgent->vel[0] + dtAgent->vel[2] * dtAgent->vel[2]) < EPS_SQ)
 			{
 				continue;
 			}
@@ -155,7 +157,7 @@ void NavigationSystem::NavigationDebug()
 {
 
 	glm::vec3 targetPosition{};
-	float targetposition_arr[3];
+	//float targetposition_arr[3];
 
 	//Get transform info of target
 	for (auto&& [entity, transform, navTest] : registry.view<Transform, NavigationTestTarget>().each())
@@ -186,8 +188,7 @@ void NavigationSystem::NavigationDebug()
 		//}
 
 
-		setDestination(entity, targetPosition );
-
+		setDestination(entity, targetPosition);
 	}
 
 

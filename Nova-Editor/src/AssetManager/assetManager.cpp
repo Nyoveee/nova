@@ -191,8 +191,8 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 }
 
-void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& path) {
-	if (folderId == ASSET_FOLDER) {
+void AssetManager::recordFolder(FolderID id, std::filesystem::path const& path) {
+	if (id == ASSET_FOLDER) {
 		return;
 	}
 
@@ -212,16 +212,16 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 	auto iterator = directories.find(parentFolderId);
 
 	if (iterator != directories.end()) {
-		iterator->second.childDirectories.push_back(folderId);
+		iterator->second.childDirectories.push_back(id);
 	}
 	else {
 		assert(false && "Depth first search guarantees that the parent folder should have been recorded.");
 	}
 
-	folderPathToId[path.string()] = folderId;
+	folderPathToId[path.string()] = id;
 
 	directories[folderId] = Folder{
-		folderId,
+		id,
 		parentFolderId,
 		{},
 		{},
@@ -356,6 +356,7 @@ void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& asset
 }
 
 void AssetManager::onFolderModification(std::filesystem::path const& folderPath) {
+	(void) folderPath;
 #if 0
 	// Get original folder id corresponding to the folder path.
 	auto iterator = folderPathToId.find(folderPath.string());

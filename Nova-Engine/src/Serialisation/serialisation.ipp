@@ -431,8 +431,8 @@ namespace Serialiser {
 
 						// let's parse all fields of a given script..
 						for (auto&& fieldJson : scriptJson["fields"]) {
-							FieldData fieldData;
-							fieldData.name = fieldJson["name"];
+							FieldData scriptFieldData;
+							scriptFieldData.name = fieldJson["name"];
 
 							// we check and parse the different possible types of each field data..
 							auto parseVariantJson = [&]<typename ...Types>() {
@@ -442,23 +442,23 @@ namespace Serialiser {
 											glm::vec2 vec2;
 											vec2.x = fieldJson["value"]["x"];
 											vec2.y = fieldJson["value"]["y"];
-											fieldData.data = vec2;
+											scriptFieldData.data = vec2;
 										}
 										else if constexpr (std::same_as<Types, glm::vec3>) {
 											glm::vec3 vec3;
 											vec3.x = fieldJson["value"]["x"];
 											vec3.y = fieldJson["value"]["y"];
 											vec3.z = fieldJson["value"]["z"];
-											fieldData.data = vec3;
+											scriptFieldData.data = vec3;
 										}
 										else if constexpr (std::same_as<Types, entt::entity>) {
 											unsigned id = fieldJson["value"]["entityId"];
-											fieldData.data = static_cast<entt::entity>(id);
+											scriptFieldData.data = static_cast<entt::entity>(id);
 
 										}
 										else if constexpr (std::is_fundamental_v<Types>) {
 											Types data = fieldJson["value"];
-											fieldData.data = data;
+											scriptFieldData.data = data;
 										}
 										else {
 											[] <bool flag = true> {
@@ -470,7 +470,7 @@ namespace Serialiser {
 							};
 
 							parseVariantJson.template operator()<ALL_FIELD_TYPES>();
-							fields.push_back(std::move(fieldData));
+							fields.push_back(std::move(scriptFieldData));
 						}
 
 						// retrieve script id..

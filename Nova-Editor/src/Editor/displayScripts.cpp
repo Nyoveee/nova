@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <unordered_map>
 
-void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAPIManager& scriptingAPIManager,Engine& engine) {
+void displayScriptFields([[maybe_unused]] entt::entity entity, ScriptData& scriptData, [[maybe_unused]] ScriptingAPIManager& scriptingAPIManager, Engine& engine) {
 	
 	for (FieldData& fieldData : scriptData.fields) {
 		// Set the field data
@@ -13,7 +13,7 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 			using FieldType = std::decay_t<decltype(arg)>;
 			if constexpr (std::is_same_v<FieldType, float>) {
 				float& value{ arg };
-				if (ImGui::InputFloat(fieldData.name.c_str(), &value));
+				ImGui::InputFloat(fieldData.name.c_str(), &value);
 				return;
 			}
 			if constexpr (std::is_same_v<FieldType, entt::entity>) {
@@ -45,10 +45,10 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 					ImGui::Text(fieldData.name.c_str());
 
 					ImGui::TableNextColumn();
-					if (ImGui::InputFloat("x", &value.x));
+					ImGui::InputFloat("x", &value.x);
 		
 					ImGui::TableNextColumn();
-					if (ImGui::InputFloat("y", &value.y));
+					ImGui::InputFloat("y", &value.y);
 
 					ImGui::EndTable();
 				}
@@ -64,14 +64,14 @@ void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAP
 					ImGui::AlignTextToFramePadding();
 					ImGui::Text(fieldData.name.c_str());
 					ImGui::TableNextColumn();
-					if (ImGui::InputFloat("x", &value.x));
+					ImGui::InputFloat("x", &value.x);
 
 					ImGui::TableNextColumn();
 
-					if (ImGui::InputFloat("y", &value.y));
+					ImGui::InputFloat("y", &value.y);
 
 					ImGui::TableNextColumn();
-					if (ImGui::InputFloat("z", &value.z));
+					ImGui::InputFloat("z", &value.z);
 
 					ImGui::EndTable();
 				}

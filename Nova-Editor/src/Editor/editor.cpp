@@ -415,8 +415,6 @@ void Editor::sandboxWindow() {
 		engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
 	}
 
-	entt::registry& registry = engine.ecs.registry;
-
 	static bool wireFrameMode = false;
 	if (ImGui::Button("Profiler")) {
 		launchProfiler();

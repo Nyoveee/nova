@@ -36,11 +36,11 @@ void InputManager::unsubscribe(ObserverID id) {
 	// find an id that uniquely represents an Input Event
 	EventID eventId{ Family::id<InputEvent>() };
 
-	auto&& observerIds = observers[eventId];
-	auto iterator = std::ranges::find(observerIds, id);
+	auto&& ids = observers[eventId];
+	auto iterator = std::ranges::find(ids, id);
 	
-	if (iterator != observerIds.end()) {
-		observerIds.erase(iterator);
+	if (iterator != ids.end()) {
+		ids.erase(iterator);
 	}
 }
 

@@ -59,7 +59,6 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	rcContourSet* m_cset		= nullptr;
 	rcPolyMesh* m_pmesh			= nullptr;
 	rcPolyMeshDetail* m_dmesh	= nullptr;
-	dtNavMeshQuery* m_navQuery	= nullptr;
 
 	rcConfig m_cfg;
 	rcContext m_ctx;
@@ -91,7 +90,7 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 		NavMeshModifier* navMeshModifier = nullptr;
 
 		//Extra settings base on NavmeshModifier
-		if (navMeshModifier = ecs.registry.try_get<NavMeshModifier>(entity))
+		if ((navMeshModifier = ecs.registry.try_get<NavMeshModifier>(entity)))
 		{
 			if (navMeshModifier->Area_Type == NavMeshModifier::Area_Type::Exclude)
 			{
@@ -123,13 +122,13 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 			// map triangle soup with corresponding indices in each mesh
 			for (size_t i = 0; i < meshData.indices.size(); i += 3)
 			{
-				triangleSoup.push_back(meshData.indices[i + 0] + vertexOffset);
-				triangleSoup.push_back(meshData.indices[i + 1] + vertexOffset);
-				triangleSoup.push_back(meshData.indices[i + 2] + vertexOffset);
+				triangleSoup.push_back(static_cast<int>(meshData.indices[i + 0] + static_cast<unsigned int>(vertexOffset)));
+				triangleSoup.push_back(static_cast<int>(meshData.indices[i + 1] + static_cast<unsigned int>(vertexOffset)));
+				triangleSoup.push_back(static_cast<int>(meshData.indices[i + 2] + static_cast<unsigned int>(vertexOffset)));
 
 				// Mark obstacles
 				if (navMeshModifier && navMeshModifier->Area_Type == NavMeshModifier::Area_Type::Obstacle) {
-					unwalkableTriangles.push_back(triIndex);
+					unwalkableTriangles.push_back(static_cast<int>(triIndex));
 				}
 				triIndex++;
 			}
@@ -194,14 +193,14 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	// If your input data is multiple meshes, you can transform them here, calculate
 	// the are type for each of the meshes and rasterize them.
 	memset(m_triareas, 0, triangleCount * sizeof(unsigned char));
-	rcMarkWalkableTriangles(&m_ctx, m_cfg.walkableSlopeAngle, vertexSoup.data(), vertexCount, triangleSoup.data(), triangleCount, m_triareas); //use walkable triangles first. maybe can check how to exclude
+	rcMarkWalkableTriangles(&m_ctx, m_cfg.walkableSlopeAngle, vertexSoup.data(), static_cast<int>(vertexCount), triangleSoup.data(), static_cast<int>(triangleCount), m_triareas); //use walkable triangles first. maybe can check how to exclude
 
 	// ======================================
 	// 4. We specific which indices are unwalkable..
 	// ======================================
 
-	for (int& triIndex : unwalkableTriangles) {
-		m_triareas[triIndex] = RC_NULL_AREA;
+	for (int& index : unwalkableTriangles) {
+		m_triareas[index] = RC_NULL_AREA;
 	}
 
 	//---
@@ -210,7 +209,7 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	// 5. We rasterize these vertices and indices to workable triangle areas..
 	// ======================================
 
-	if (!rcRasterizeTriangles(&m_ctx, vertexSoup.data(), vertexCount, triangleSoup.data(), m_triareas, triangleCount, *m_solid, m_cfg.walkableClimb))
+	if (!rcRasterizeTriangles(&m_ctx, vertexSoup.data(), static_cast<int>(vertexCount), triangleSoup.data(), m_triareas, static_cast<int>(triangleCount), *m_solid, m_cfg.walkableClimb))
 	{
 		Logger::error("Building navigation: Could not rasterize triangles.");
 		return;
@@ -406,19 +405,15 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 
 void NavMeshGeneration::AddNavMeshSurface(std::string const& filename)
 {
-
 	std::filesystem::path temporaryMeshFilePath = AssetIO::assetDirectory / "NavMesh" / filename;
 	temporaryMeshFilePath.replace_extension(".navmesh");
 
 	auto resourceName = editor.assetManager.getResourceID(temporaryMeshFilePath);
 
-
 	bool doesComponentExist = false;
-	bool wrongresourcePointer = false;
-	entt::entity entityID;
 
 	//Check if resource has been created
-	for (auto&& [entity, entityData ,navMeshSurface] : ecs.registry.view<EntityData,NavMeshSurface>().each())
+	for (auto&& [entity, entityData, navMeshSurface] : ecs.registry.view<EntityData, NavMeshSurface>().each())
 	{
 		if (navMeshSurface.label == buildSettings.agentName) //check via label cause ideally, the label in feautre cannot be edited....
 		{
@@ -426,19 +421,11 @@ void NavMeshGeneration::AddNavMeshSurface(std::string const& filename)
 
 			if (TypedResourceID<NavMesh>{resourceName} != navMeshSurface.navMeshId)
 			{
-				wrongresourcePointer = true;
-				entityID = entity;
-
-				
+				// update resource handler
+				ecs.registry.get<NavMeshSurface>(entity).navMeshId = TypedResourceID<NavMesh>{ resourceName };
 			}
-
-
 		}
-
-
-
 	}
-
 	
 	if (!doesComponentExist)
 	{
@@ -448,13 +435,6 @@ void NavMeshGeneration::AddNavMeshSurface(std::string const& filename)
 		ecs.registry.emplace<EntityData>(entity, EntityData{ "NavMeshSurface_" + buildSettings.agentName });
 		ecs.registry.emplace<NavMeshSurface>(entity, NavMeshSurface{ buildSettings.agentName, TypedResourceID<NavMesh>{resourceName} });
 	}
-	else if(doesComponentExist && wrongresourcePointer)
-	{
-		ecs.registry.get<NavMeshSurface>(entityID).navMeshId = TypedResourceID<NavMesh>{ resourceName };
-	}
-
-
-
 }
 
 void NavMeshGeneration::PrependAdditionalData(unsigned char** navData, int* dataSize)

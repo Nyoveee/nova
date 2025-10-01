@@ -7,6 +7,7 @@
 
 #include "ECS/ecs.h"
 
+#include "assetViewerUi.h"
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
@@ -15,7 +16,6 @@
 #include "debugUI.h"
 #include "console.h"
 #include "navBar.h"
-#include "assetViewerUi.h"
 #include "navigationWindow.h"
 
 using GLuint = unsigned int;

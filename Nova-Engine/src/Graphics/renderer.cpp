@@ -860,7 +860,7 @@ void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 		const dtMeshTile* tile = mesh.getTile(tileNum);
 		if (!tile->header) continue;
 
-		dtPolyRef base = mesh.getPolyRefBase(tile);
+		// dtPolyRef base = mesh.getPolyRefBase(tile);
 
 		for (int i = 0; i < tile->header->polyCount; ++i) {
 			const dtPoly* p = &tile->polys[i];
@@ -868,8 +868,6 @@ void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 				continue;
 
 			const dtPolyDetail* polyDetail = &tile->detailMeshes[i];
-
-			unsigned int col;
 
 			for (int j = 0; j < polyDetail->triCount; ++j) {
 				const unsigned char* t = &tile->detailTris[(polyDetail->triBase + j) * 4];

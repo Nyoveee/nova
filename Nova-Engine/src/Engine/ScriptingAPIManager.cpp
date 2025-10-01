@@ -406,7 +406,5 @@ void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity 
 	handleOnCollision_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
 }
 
-void ScriptingAPIManager::onCollisionExit(entt::entity entityOne, entt::entity entityTwo) {
-
-}
+void ScriptingAPIManager::onCollisionExit([[maybe_unused]] entt::entity entityOne, [[maybe_unused]] entt::entity entityTwo) {}
 
