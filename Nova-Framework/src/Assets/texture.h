@@ -24,3 +24,15 @@ private:
 	int width;
 	int height;
 };
+
+template <>
+struct AssetInfo<Texture> : public BasicAssetInfo {
+	enum class Compression {
+		Uncompressed_Linear,
+		Uncompressed_SRGB,
+		BC1_SRGB,				// for most textures, with no alpha.
+		BC5,					// for normal maps.. (only store x and y)..			
+		BC6H,					// for HDR maps, linear only.
+		BC7_SRGB				// for high quality texture.
+	} compression;
+};

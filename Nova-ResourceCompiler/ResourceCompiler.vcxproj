@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -73,12 +73,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src;$(ProjectDir)src\Library\cmp_core\source;$(ProjectDir)src\Library\cmp_core\shaders;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)ExternalApplication\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src;$(ProjectDir)src\Library\cmp_core\source;$(ProjectDir)src\Library\cmp_core\shaders;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)ExternalApplication\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -111,7 +111,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;NO_LEGACY;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -134,7 +134,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(S
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;NO_LEGACY;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -158,6 +158,19 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(S
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\compiler.cpp" />
+    <ClCompile Include="src\Library\cmp_core\bc1_encode_kernel.cpp" />
+    <ClCompile Include="src\Library\cmp_core\bc2_encode_kernel.cpp" />
+    <ClCompile Include="src\Library\cmp_core\bc3_encode_kernel.cpp" />
+    <ClCompile Include="src\Library\cmp_core\bc4_encode_kernel.cpp" />
+    <ClCompile Include="src\Library\cmp_core\bc5_encode_kernel.cpp" />
+    <ClCompile Include="src\Library\cmp_core\bc6_encode_kernel.cpp" />
+    <ClCompile Include="src\Library\cmp_core\bc7_encode_kernel.cpp" />
+    <ClCompile Include="src\Library\cmp_core\cmp_core.cpp" />
+    <ClCompile Include="src\Library\cmp_core\cmp_math_common.cpp" />
+    <ClCompile Include="src\Library\cmp_core\core_simd_avx.cpp" />
+    <ClCompile Include="src\Library\cmp_core\core_simd_avx512.cpp" />
+    <ClCompile Include="src\Library\cmp_core\core_simd_sse.cpp" />
+    <ClCompile Include="src\Library\cmp_core\cpu_extensions.cpp" />
     <ClCompile Include="src\Library\miniz.c" />
     <ClCompile Include="src\Library\stb_image.cpp" />
     <ClCompile Include="src\Library\tinyexr.cpp" />
@@ -167,6 +180,26 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(S
   <ItemGroup>
     <ClInclude Include="src\compiler.h" />
     <ClInclude Include="src\compiler.ipp" />
+    <ClInclude Include="src\Library\cmp_core\bc1_cmp.h" />
+    <ClInclude Include="src\Library\cmp_core\bc1_common_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bc1_encode_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bc2_encode_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bc3_encode_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bc4_encode_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bc5_encode_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bc6_common_encoder.h" />
+    <ClInclude Include="src\Library\cmp_core\bc6_encode_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bc7_common_encoder.h" />
+    <ClInclude Include="src\Library\cmp_core\bc7_encode_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\bcn_common_api.h" />
+    <ClInclude Include="src\Library\cmp_core\bcn_common_kernel.h" />
+    <ClInclude Include="src\Library\cmp_core\cmp_core.h" />
+    <ClInclude Include="src\Library\cmp_core\cmp_math_common.h" />
+    <ClInclude Include="src\Library\cmp_core\cmp_math_func.h" />
+    <ClInclude Include="src\Library\cmp_core\cmp_math_vec4.h" />
+    <ClInclude Include="src\Library\cmp_core\common_def.h" />
+    <ClInclude Include="src\Library\cmp_core\core_simd.h" />
+    <ClInclude Include="src\Library\cmp_core\cpu_extensions.h" />
     <ClInclude Include="src\Library\miniz.h" />
     <ClInclude Include="src\Library\stb_image.hpp" />
     <ClInclude Include="src\Library\tinyexr.h" />

@@ -11,6 +11,8 @@
 #include "Library/tinyexr.h"
 #include "Library/stb_image.hpp"
 
+#include "Library/cmp_core/cmp_core.h"
+
 namespace {
 	template <typename T>
 	void writeBytesToFile(std::ofstream& resourceFile, T const& data) {
@@ -18,7 +20,58 @@ namespace {
 	}
 }
 
-int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat) {
+	std::string format;
+
+	// https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
+	switch (compressionFormat)
+	{
+	case AssetInfo<Texture>::Compression::Uncompressed_Linear:
+		format = "R8G8B8A8_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::Uncompressed_SRGB:
+		format = "R8G8B8A8_UNORM_SRGB";
+		break;
+	case AssetInfo<Texture>::Compression::BC1_SRGB:
+		format = "BC1_UNORM_SRGB";
+		break;
+	case AssetInfo<Texture>::Compression::BC5:
+		format = "BC5_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::BC6H:
+		format = "BC6H_UF16";
+		break;
+	case AssetInfo<Texture>::Compression::BC7_SRGB:
+		format = "BC7_UNORM_SRGB";
+		break;
+	default:
+		Logger::error("Unknown compression format specified.");
+		return -1;
+	}
+	
+	std::filesystem::path executableName = std::filesystem::current_path() / "ExternalApplication" / "texconv.exe";
+	std::filesystem::path outputDirectory = AssetIO::resourceDirectory / "Texture";
+
+	std::string commandLine = std::format(
+		R"(""{}" -y -f {} -o "{}" "{}"")", executableName.string(), format, outputDirectory.string(), intermediaryAssetFilepath.string
+	);
+
+	if (std::system(commandLine.c_str())) {
+		// command failed.
+		return -1;
+	}
+
+	// remove old resource file if it exist..
+	std::filesystem::remove(resourceFilePath);
+
+	std::filesystem::path oldFilePath = 
+		outputDirectory / 
+		std::filesystem::path{ intermediaryAssetFilepath }.stem().replace_extension(".dds");
+
+	// let's rename the resource.
+	std::filesystem::rename(oldFilePath, resourceFilePath);
+
+#if 0
 	int width, height, numChannels;
 	stbi_uc* data = stbi_load(intermediaryAssetFilepath.string.c_str(), &width, &height, &numChannels, 0);
 
@@ -47,7 +100,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 	stbi_image_free(data);
 
 	gli::save_dds(tex, resourceFilePath.string);
-	
+#endif
 	return 0;
 }
 

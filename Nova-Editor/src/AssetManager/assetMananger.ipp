@@ -7,30 +7,32 @@
 #include "assetIO.h"
 
 template<ValidResource T>
-void AssetManager::compileIntermediaryFile(AssetInfo<T> const& descriptor) {
+bool AssetManager::compileIntermediaryFile(AssetInfo<T> const& descriptor) {
 #if _DEBUG
-		const char* executableConfiguration = "Debug";
+	const char* executableConfiguration = "Debug";
 #else
-		const char* executableConfiguration = "Release";
+	const char* executableConfiguration = "Release";
 #endif
-		constexpr const char* executableName = "Nova-ResourceCompiler.exe";
+	constexpr const char* executableName = "Nova-ResourceCompiler.exe";
 
-		std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
+	std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
 
-		DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
+	DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
 
-		// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
-		std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
+	// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
+	std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
 
-		Logger::info("Running command: {}", command);
+	Logger::info("Running command: {}", command);
 
-		if (std::system(command.c_str())) {
-			Logger::error("Error compiling {}", descriptorFilePath.string);
-		}
-		else {
-			Logger::info("Successful compiling {}", descriptorFilePath.string);
-			Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
-		}
+	if (std::system(command.c_str())) {
+		Logger::error("Error compiling {}", descriptorFilePath.string);
+		return false;
+	}
+	else {
+		Logger::info("Successful compiling {}", descriptorFilePath.string);
+		Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
+		return true;
+	}
 }
 
 template<ValidResource ...T>
@@ -174,6 +176,9 @@ void AssetManager::serialiseDescriptor(ResourceID id) {
 	// Filestream is now pointing at the 5th line.
 	// Do any serialisation for specifc metadata of asset type here!!
 	// ============================
+	if constexpr (std::same_as<T, Texture>) {
+		descriptorFile << magic_enum::enum_name(assetInfo->compression) << '\n';
+	}
 
 	// ============================
 	Logger::info("Successfully serialised descriptor file for {}", assetInfo->filepath.string);

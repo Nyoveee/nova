@@ -70,6 +70,12 @@ public:
 
 	bool renameFile(ResourceID id, std::string const& newFileStem);
 
+	void removeResource(ResourceID id);
+
+	// creates the resource file given a descriptor via the compiler.
+	template <ValidResource T>
+	ResourceID createResourceFile(AssetInfo<T> descriptor);
+
 public:
 	// Getters..
 	std::unordered_map<FolderID, Folder> const& getDirectories()									const;
@@ -93,15 +99,11 @@ private:
 	// creates a new descriptor file and new resource file given the asset file path.
 	ResourceID parseIntermediaryAssetFile(AssetFilePath const& path);
 
-	template <ValidResource T>
-	void compileIntermediaryFile(AssetInfo<T> const& descriptor);
-
 	template<ValidResource ...T>
 	void loadAllDescriptorFiles();
 
-	// creates the resource file given a descriptor via the compiler.
 	template <ValidResource T>
-	ResourceID createResourceFile(AssetInfo<T> descriptor);
+	bool compileIntermediaryFile(AssetInfo<T> const& descriptor);
 
 	void recordFolder(FolderID folderId, std::filesystem::path const& path);
 

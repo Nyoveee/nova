@@ -24,6 +24,7 @@ Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture 
 			for (std::size_t level = 0; level < texture.levels(); ++level) {
 				auto extent = texture.extent(level);
 
+				auto varFormat = texture.format();
 				if (gli::is_compressed(texture.format())) {
 					glCompressedTextureSubImage2D(
 						textureId,

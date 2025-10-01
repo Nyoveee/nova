@@ -4,6 +4,8 @@
 #include "audio.h"
 #include "Logger.h"
 
+#include "magic_enum.hpp"
+
 template <ValidResource T>
 std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
 	std::ifstream descriptorFile{ descriptorFilepath };
@@ -28,7 +30,20 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 	// Filestream is now pointing at the 5th line.
 	// Do any metadata specific to any type parsing here!!
 	// ============================
+	if constexpr (std::same_as<T, Texture>) {
+		std::string compressionFormat;
+		std::getline(descriptorFile, compressionFormat);
 
+		auto compressionValueOpt = magic_enum::enum_cast<AssetInfo<Texture>::Compression>(compressionFormat);
+
+		if (!compressionValueOpt) {
+			// parsing this failed, let's give some default compression value.
+			assetInfo.compression = AssetInfo<Texture>::Compression::BC1_SRGB;
+		}
+		else {
+			assetInfo.compression = compressionValueOpt.value();
+		}
+	}
 	// ============================
 	return assetInfo;
 }
@@ -46,6 +61,9 @@ AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	// Filestream is now pointing at the 5th line.
 	// Do any metadata specific to any type default creation here!!
 	// ============================
+	if constexpr (std::same_as<T, Texture>) {
+		descriptorFile << magic_enum::enum_name(AssetInfo<Texture>::Compression::BC1_SRGB) << '\n';
+	}
 
 	// ============================
 	return assetInfo;

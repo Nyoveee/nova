@@ -443,3 +443,19 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
 	return directories;
 }
+
+void AssetManager::removeResource(ResourceID id) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::warn("Removing an invalid resource?");
+		return;
+	}
+
+	auto&& [_, assetInfoPtr] = *iterator;
+
+	intermediaryAssetsToDescriptor.erase(assetInfoPtr->filepath);
+	serialiseDescriptorFunctors.erase(id);
+	resourceToType.erase(id);
+	assetToDescriptor.erase(iterator);
+}

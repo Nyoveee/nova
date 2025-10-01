@@ -8,6 +8,8 @@
 
 #include "misc/cpp/imgui_stdlib.h"
 
+#include "magic_enum.hpp"
+
 AssetViewerUI::AssetViewerUI(AssetManager& assetManager, ResourceManager& resourceManager) :
 	assetManager		{ assetManager },
 	resourceManager		{ resourceManager },
@@ -62,6 +64,37 @@ void AssetViewerUI::update() {
 		}
 	}
 #endif
+
+	if (resourceManager.isResource<Texture>(selectedResourceId)) {
+		AssetInfo<Texture>* textureInfoPtr = static_cast<AssetInfo<Texture>*>(descriptorPtr);
+
+		constexpr auto listOfEnumValues = magic_enum::enum_entries<AssetInfo<Texture>::Compression>();
+
+		if (ImGui::BeginCombo("Compression", std::string{ magic_enum::enum_name<AssetInfo<Texture>::Compression>(textureInfoPtr->compression) }.c_str())) {
+			for (auto&& [enumValue, enumInString] : listOfEnumValues) {
+				if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == textureInfoPtr->compression)) {
+					if (enumValue != textureInfoPtr->compression) {
+						textureInfoPtr->compression = enumValue;
+
+						// serialise immediately..
+						assetManager.serialiseDescriptor<Texture>(selectedResourceId);
+
+						// we make a copy of asset info, because the pointer is getting invalidated..
+						AssetInfo<Texture> textureInfo = *textureInfoPtr;
+
+						// we remove this old resource..
+						resourceManager.removeResource(selectedResourceId);
+						assetManager.removeResource(selectedResourceId);
+
+						// recompile.., will add to resource manager if compilation is successful.
+						assetManager.createResourceFile<Texture>(textureInfo);
+					}
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+	}
 
 	ImGui::End();
 }
