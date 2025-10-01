@@ -5,8 +5,6 @@ using System.Net.Http.Headers;
 
 class PathFinding : Script
 {
-    public UInt32 agent;
-    
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -25,7 +23,7 @@ class PathFinding : Script
         if(result != null)
         {
             Debug.Print("ray hit at " + result.Value.point + ", hitting entity " + result.Value.entity);
-            NavigationAPI.setDestination(entityID, result.Value.point);
+            NavigationAPI.setDestination(gameObject, result.Value.point);
         }
         else
         {

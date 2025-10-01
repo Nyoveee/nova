@@ -1,16 +1,19 @@
 #pragma once
+#include "ScriptLibrary/Extensions/ManagedEnums.hxx"
+
 #include <string>
 #include <msclr/marshal_cppstd.h>
 #include <functional>
-#include "ScriptLibrary/ManagedEnums.hxx"
-// For additional conversions
-// Managed Component
 
+// Managed Component
 template<typename ManagedType>
-auto Convert(ManagedType^ managedType) {
+inline auto Convert(ManagedType^ managedType) {
 	return !managedType ? nullptr : managedType->nativeComponent(); // Only components have this function call
 }
-
+// GameObject
+inline entt::entity Convert(GameObject^ gameObject) {
+	return !gameObject ? entt::null : static_cast<entt::entity>(gameObject->entityID);
+}
 // Strings
 inline std::string Convert(System::String^ str) {
 	return msclr::interop::marshal_as<std::string>(str);
@@ -19,7 +22,7 @@ inline std::string Convert(System::String^ str) {
 // Event Callback
 public delegate void EventCallback();
 template<typename T> 
-std::function<void(T)> Convert(EventCallback^ callback, Key key) {
+inline std::function<void(T)> Convert(EventCallback^ callback, Key key) {
 	gcroot<EventCallback^> callbackWrapper; // For Wrapping the callback function in a native class gcroot since lambda can't use the callbacks directly
 	int keyValue = safe_cast<int>(key);
 	// Press

@@ -285,7 +285,9 @@ void Editor::updateMaterialMapping() {
 
 void Editor::handleEntityValidity() {
 	if (!isEntityValid(hoveringEntity) && hoveringEntity != entt::null) {
-		deleteEntity(hoveringEntity);
+		if (engine.ecs.registry.valid(hoveringEntity)) {
+			deleteEntity(hoveringEntity);
+		}
 		hoveringEntity = entt::null;
 	}
 
@@ -298,7 +300,9 @@ void Editor::handleEntityValidity() {
 
 		// we found some invalid entity.
 		if (entity != entt::null) {
-			deleteEntity(entity);
+			if (engine.ecs.registry.valid(entity)) {
+				deleteEntity(entity);
+			}
 			foundInvalidSelectedEntity = true;
 		}
 	}

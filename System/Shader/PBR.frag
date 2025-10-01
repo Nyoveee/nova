@@ -124,7 +124,6 @@ void main() {
         finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, baseColor, spotLights[i]);
     }
     
-    finalColor = pow(finalColor, vec3(1.0/2.2)); 
     FragColor = vec4(finalColor, 1);
 }
 

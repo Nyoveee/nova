@@ -3,7 +3,7 @@
 #include "Logger.h"
 #include "ManagedTypes.hxx"
 #include "API/IManagedComponent.hxx"
-#include "API/ConversionUtils.h"
+#include "API/ConversionUtils.hxx"
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
 
@@ -20,6 +20,7 @@
 
 	Conversion from Managed to native types is provided:
 		Component: Convert(Managed Component)
+		GameObject: Convert(GameObject)
 		Managed Struct: VariableName->native()
 		Primitives: Converted by default for these types https://learn.microsoft.com/en-us/cpp/dotnet/managed-types-cpp-cli?view=msvc-170
 		Strings: Convert(Managed String)
@@ -71,8 +72,8 @@ private:
 // ======================================
 public ref class AudioAPI {
 public:
-	static void PlaySound(unsigned int entityId, System::String^ string) {
-		Interface::engine->audioSystem.playSFX(static_cast<entt::entity>(entityId), Convert(string));
+	static void PlaySound(GameObject^ gameObject, System::String^ string) {
+		Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
 	}
 };
 
@@ -114,7 +115,7 @@ public:
 // ======================================
 public ref class NavigationAPI {
 public:
-	static bool setDestination(unsigned int entityId, Vector3^ targetPosition) {
-		return Interface::engine->navigationSystem.setDestination(static_cast<entt::entity>(entityId), targetPosition->native());
+	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition) {
+		return Interface::engine->navigationSystem.setDestination(Convert(gameObject), targetPosition->native());
 	}
 };
