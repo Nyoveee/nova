@@ -1,6 +1,6 @@
 #include "Engine/engine.h"
 #include "physicsManager.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "ECS/ECS.h"
 #include "Engine/window.h"
 
@@ -277,7 +277,7 @@ void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entity
 	onCollision.push({ entityOne, entityTwo });
 }
 
-PhysicsManager::Ray PhysicsManager::getRayFromMouse() const {
+PhysicsRay PhysicsManager::getRayFromMouse() const {
 	glm::vec3 farClipPos = { engine.window.getClipSpacePos(), 1.f };
 	glm::vec3 nearClipPos = { farClipPos.x, farClipPos.y, -1.f };
 
@@ -289,7 +289,7 @@ PhysicsManager::Ray PhysicsManager::getRayFromMouse() const {
 	return { nearWorldPos, raycastDirection };
 }
 
-std::optional<PhysicsManager::RayCastResult> PhysicsManager::rayCast(Ray ray, float maxDistance) {
+std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, float maxDistance) {
 	auto&& narrowPhaseQuery = physicsSystem.GetNarrowPhaseQuery();
 	
 	JPH::RayCastResult rayCastResult;
@@ -301,7 +301,7 @@ std::optional<PhysicsManager::RayCastResult> PhysicsManager::rayCast(Ray ray, fl
 		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
 		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
 	
-		return PhysicsManager::RayCastResult{ entity, collisionPoint };
+		return PhysicsRayCastResult{ entity, collisionPoint };
 	}
 
 	return std::nullopt;

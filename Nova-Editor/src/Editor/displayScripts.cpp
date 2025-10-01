@@ -2,9 +2,9 @@
 #include "componentInspector.h"
 #include "Editor/editor.h"
 #include "Engine/engine.h"
-#include "Engine/ScriptingAPIManager.h"
 #include <type_traits>
 #include <unordered_map>
+
 void displayScriptFields(entt::entity entity,ScriptData& scriptData, ScriptingAPIManager& scriptingAPIManager,Engine& engine) {
 	
 	for (FieldData& fieldData : scriptData.fields) {

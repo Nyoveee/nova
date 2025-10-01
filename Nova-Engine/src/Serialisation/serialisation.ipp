@@ -4,10 +4,12 @@
 #include "ECS/ECS.h"
 #include "reflection.h"
 
-#include "ECS/component.h"
+#include "component.h"
 #include "magic_enum.hpp"
 
 #include "Logger.h"
+
+#include "Engine/ScriptingAPIManager.h"
 
 #undef max
 #undef min

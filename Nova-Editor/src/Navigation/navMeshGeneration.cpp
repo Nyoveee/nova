@@ -4,7 +4,7 @@
 #include "Editor/editor.h"
 #include "Editor/hierarchy.h"
 #include "ResourceManager/resourceManager.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "Detour/Detour/DetourNavMesh.h"
 #include "Detour/Detour/DetourNavMeshBuilder.h"
 #include "Detour/Detour/DetourAlloc.h"

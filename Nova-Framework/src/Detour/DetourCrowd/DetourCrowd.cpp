@@ -405,7 +405,7 @@ bool dtCrowd::init(const int maxAgents, const float maxAgentRadius, dtNavMesh* n
 	for (int i = 0; i < DT_CROWD_MAX_OBSTAVOIDANCE_PARAMS; ++i)
 	{
 		dtObstacleAvoidanceParams* params = &m_obstacleQueryParams[i];
-		params->velBias = 0.4f;
+		params->velBias = 0.5f;
 		params->weightDesVel = 2.0f;
 		params->weightCurVel = 0.75f;
 		params->weightSide = 0.75f;
@@ -413,8 +413,8 @@ bool dtCrowd::init(const int maxAgents, const float maxAgentRadius, dtNavMesh* n
 		params->horizTime = 2.5f;
 		params->gridSize = 33;
 		params->adaptiveDivs = 7;
-		params->adaptiveRings = 2;
-		params->adaptiveDepth = 5;
+		params->adaptiveRings = 3;
+		params->adaptiveDepth = 3;
 	}
 	
 	// Allocate temp buffer for merging paths.

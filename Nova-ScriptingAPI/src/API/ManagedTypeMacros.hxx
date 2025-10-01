@@ -104,4 +104,6 @@ internal:																							\
 	}																								\
 private:																							\
 	ComponentType* componentReference;																\
-};
+public:																								\
+
+#define ManagedComponentEnd()																		};

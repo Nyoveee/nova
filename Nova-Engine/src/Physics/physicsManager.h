@@ -21,19 +21,9 @@ class Engine;
 #include "contactListener.h"
 
 #include "export.h"
+#include "physics.h"
 
 class PhysicsManager {
-public:
-	struct Ray {
-		glm::vec3 origin;
-		glm::vec3 direction;
-	};
-
-	struct RayCastResult {
-		entt::entity entity;
-		glm::vec3 point;
-	};
-
 public:
 	PhysicsManager(Engine& engine);
 
@@ -52,8 +42,8 @@ public:
 	// Nova Collision Listener submits all collision event here..
 	void submitCollision(entt::entity entityOne, entt::entity entityTwo);
 	
-	ENGINE_DLL_API Ray getRayFromMouse() const;
-	ENGINE_DLL_API std::optional<::PhysicsManager::RayCastResult> rayCast(Ray ray, float maxDistance);
+	ENGINE_DLL_API PhysicsRay getRayFromMouse() const;
+	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance);
 
 private:
 	void createPrimitiveShapes();
