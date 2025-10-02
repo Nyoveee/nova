@@ -4,6 +4,8 @@
 #include "ECS/ECS.h"
 #include "Engine/window.h"
 
+#include "Profiling.h"
+
 #include <iostream>
 #include <cstdarg>
 
@@ -192,6 +194,8 @@ void PhysicsManager::clear() {
 }
 
 void PhysicsManager::update(float dt) {
+	ZoneScoped;
+
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
 	// @TODO: Don't update every frame! Only update when there is a change in transform.

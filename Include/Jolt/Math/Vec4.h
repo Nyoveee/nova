@@ -4,6 +4,9 @@
 
 #pragma once
 
+#pragma warning( push )
+#pragma warning( disable: 6385 )
+
 #include <Jolt/Math/Float4.h>
 #include <Jolt/Math/Swizzle.h>
 #include <Jolt/Math/MathTypes.h>
@@ -318,3 +321,5 @@ static_assert(std::is_trivial<Vec4>(), "Is supposed to be a trivial type!");
 JPH_NAMESPACE_END
 
 #include "Vec4.inl"
+
+#pragma warning( pop )

@@ -5,6 +5,7 @@
 #include "component.h"
 #include <numbers>
 #include <glm/gtx/fast_trigonometry.hpp>
+#include "Profiling.h"
 
 #undef min
 #undef max
@@ -45,6 +46,8 @@ NavigationSystem::~NavigationSystem()
 
 void NavigationSystem::update(float const& dt)
 {
+	ZoneScoped;
+
 	dtCrowdAgentDebugInfo debugInfo;
 
 	//allow dtPathfinding to update this frame
@@ -60,7 +63,14 @@ void NavigationSystem::update(float const& dt)
 	//then get all new data an feedback into the transform
 	for (auto&& [entity, transform, agent] : registry.view<Transform, NavMeshAgent>().each())
 	{
-		dtCrowdAgent* dtAgent = crowdManager[agent.agentName].get()->getEditableAgent(agent.agentIndex);
+		auto iterator = crowdManager.find(agent.agentName);
+
+		if (iterator == crowdManager.end()) {
+			Logger::error("Name changed? Doesn't exist.");
+			return;
+		}
+
+		dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(agent.agentIndex);
 
 		if (dtAgent) {
 			transform.position.x = dtAgent->npos[0];
@@ -155,7 +165,7 @@ ResourceID NavigationSystem::getNavMeshId() const {
 
 void NavigationSystem::NavigationDebug()
 {
-
+#if 0
 	glm::vec3 targetPosition{};
 	//float targetposition_arr[3];
 
@@ -192,10 +202,10 @@ void NavigationSystem::NavigationDebug()
 	}
 
 
-
+#endif
 }
 
-ENGINE_DLL_API void NavigationSystem::initNavMeshSystems()
+void NavigationSystem::initNavMeshSystems()
 {
 	sceneNavMeshes.clear();
 	crowdManager.clear();

@@ -26,7 +26,7 @@ class SpinningCat : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        if (isSpinning) 
+        if (isSpinning && transform != null) 
         { 
             transform.rotate(transform.up, angle * Time.V_FixedDeltaTime());
 

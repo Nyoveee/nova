@@ -4,6 +4,9 @@
 
 #pragma once
 
+#pragma warning( push )
+#pragma warning( disable: 6385 )
+
 #include <Jolt/Math/MathTypes.h>
 
 JPH_NAMESPACE_BEGIN
@@ -241,3 +244,5 @@ static_assert(std::is_trivial<Mat44>(), "Is supposed to be a trivial type!");
 JPH_NAMESPACE_END
 
 #include "Mat44.inl"
+
+#pragma warning( pop )

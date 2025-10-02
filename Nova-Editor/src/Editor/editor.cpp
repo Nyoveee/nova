@@ -216,7 +216,7 @@ void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
 
-	ImGui::ShowDemoWindow();
+	// ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	assetManagerUi.update();
@@ -226,7 +226,8 @@ void Editor::main(float dt) {
 
 	handleEntityHovering();
 	updateMaterialMapping();
-	sandboxWindow();
+
+	// sandboxWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -268,7 +269,7 @@ void Editor::updateMaterialMapping() {
 		}
 
 		if (!materialHasChanged) {
-			return;
+			continue;
 		}
 
 		// lets reupdate our map.
@@ -413,9 +414,7 @@ void Editor::sandboxWindow() {
 	}
 
 	static bool wireFrameMode = false;
-	if (ImGui::Button("Profiler")) {
-		launchProfiler();
-	}
+
 	if (ImGui::Button("Wireframe mode.")) {
 		wireFrameMode = !wireFrameMode;
 		engine.renderer.enableWireframeMode(wireFrameMode);

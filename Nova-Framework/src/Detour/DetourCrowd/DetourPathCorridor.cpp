@@ -23,6 +23,8 @@
 #include "../Detour/DetourAssert.h"
 #include "../Detour/DetourAlloc.h"
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
 
 int dtMergeCorridorStartMoved(dtPolyRef* path, const int npath, const int maxPath,
 							  const dtPolyRef* visited, const int nvisited)
@@ -595,3 +597,5 @@ bool dtPathCorridor::isValid(const int maxLookAhead, dtNavMeshQuery* navquery, c
 
 	return true;
 }
+
+#pragma warning( pop )

@@ -17,6 +17,7 @@ TransformationSystem::TransformationSystem(ECS& ecs) :
 
 void TransformationSystem::update() {
 	ZoneScoped;
+
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
 		// Figure out if the entity requires updating it's world matrix due to world transform change.
 		if (

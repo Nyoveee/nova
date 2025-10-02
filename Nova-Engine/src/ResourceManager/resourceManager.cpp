@@ -6,6 +6,8 @@
 
 #include "family.h"
 
+#include "Profiling.h"
+
 ResourceManager::ResourceManager() {
 	try {
 		// ========================================
@@ -36,6 +38,8 @@ ResourceManager::ResourceManager() {
 }
 
 void ResourceManager::update() {
+	ZoneScoped;
+
 	std::lock_guard lock{ initialisationQueueMutex };
 	
 	while (initialisationQueue.size()) {

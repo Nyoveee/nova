@@ -8,7 +8,6 @@
 #include "modelLoader.h"
 
 // Y* only libraries.
-#include "Library/tinyexr.h"
 #include "Library/stb_image.hpp"
 
 namespace {
@@ -122,6 +121,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 	return 0;
 }
 
+#if 0
 int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 	float* data; // width * height * RGBA
 
@@ -181,6 +181,7 @@ int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFile
 
 	return 0;
 }
+#endif
 
 // =================================
 // Model file format

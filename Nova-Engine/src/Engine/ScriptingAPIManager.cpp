@@ -302,6 +302,8 @@ void ScriptingAPIManager::update() {
 }
 
 void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
+	ZoneScoped;
+
 	if (compileState != CompileState::ToBeCompiled) {
 		return;
 	}

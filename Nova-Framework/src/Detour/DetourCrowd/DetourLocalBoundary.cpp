@@ -23,6 +23,8 @@
 #include "../Detour/DetourCommon.h"
 #include "../Detour/DetourAssert.h"
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
 
 dtLocalBoundary::dtLocalBoundary() :
 	m_nsegs(0),
@@ -135,3 +137,4 @@ bool dtLocalBoundary::isValid(dtNavMeshQuery* navquery, const dtQueryFilter* fil
 	return true;
 }
 
+#pragma warning( pop )

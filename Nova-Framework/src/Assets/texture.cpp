@@ -16,10 +16,6 @@ Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture 
 	textureId		 { TEXTURE_NOT_LOADED }
 {
 	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
-	GL_SRGB8;
-
-	//GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT;
-
 	glTextureStorage2D(textureId, static_cast<GLint>(texture.levels()), format.Internal, width, height);
 
 	for (std::size_t layer = 0; layer < texture.layers(); ++layer) {
@@ -27,7 +23,6 @@ Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture 
 			for (std::size_t level = 0; level < texture.levels(); ++level) {
 				auto extent = texture.extent(level);
 
-				auto varFormat = texture.format();
 				if (gli::is_compressed(texture.format())) {
 					glCompressedTextureSubImage2D(
 						textureId,

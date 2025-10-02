@@ -486,6 +486,7 @@ void Renderer::prepareRendering() {
 }
 
 void Renderer::renderSkyBox() {
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	glDisable(GL_DEPTH_TEST);
 
 	for (auto&& [entityId, skyBox] : registry.view<SkyBox>().each()) {
