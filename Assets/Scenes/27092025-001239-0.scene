@@ -1,6 +1,931 @@
 {
     "entities": [
         {
+            "EntityData": {
+                "children": [],
+                "name": "Light",
+                "parent": 4294967295
+            },
+            "Light": {
+                "color": {
+                    "b": 0.2551724314689636,
+                    "g": 0.948632538318634,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 5.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "PointLight"
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "texture": 12197762472329347109
+                        },
+                        "ambient": 0.10000000149011612,
+                        "materialName": "Material",
+                        "renderingPipeline": "Color"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 20.452146530151367,
+                    "y": 5.797974109649658,
+                    "z": -9.614099502563477
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.3100000023841858,
+                    "y": 0.3100000023841858,
+                    "z": 0.3100000023841858
+                }
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Skybox",
+                "parent": 4294967295
+            },
+            "Light": {
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 1.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "Directional"
+            },
+            "SkyBox": {
+                "cubeMapId": 10967197866904813569
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.13411021232605,
+                    "y": -0.022854574024677277,
+                    "z": 1.8872249126434326
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 20.683713912963867,
+                    "y": 19.34804916381836,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": -0.007056795060634613,
+                    "x": 0.5868591070175171,
+                    "y": 0.8095998167991638,
+                    "z": 0.009735065512359142
+                },
+                "scale": {
+                    "x": 1.000096082687378,
+                    "y": 1.000045657157898,
+                    "z": 1.0001429319381714
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "Cube",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [],
+                "modelId": 0
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 14.887657165527344,
+                    "y": 2.7477004528045654,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Floor",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.15143468976020813,
+                                "g": 0.748275876045227,
+                                "r": 0.0774078443646431
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -0.06240531802177429,
+                    "y": 0.20382621884346008,
+                    "z": -0.2883240282535553
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 27.86524772644043,
+                    "y": -6.459937572479248,
+                    "z": -12.585453987121582
+                },
+                "rotation": {
+                    "w": 0.9844685792922974,
+                    "x": -0.016105059534311295,
+                    "y": 0.10509111732244492,
+                    "z": -0.13970717787742615
+                },
+                "scale": {
+                    "x": 8.759597778320313,
+                    "y": 0.6200012564659119,
+                    "z": 14.95455551147461
+                }
+            },
+            "id": 7
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Floor",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.11379307508468628,
+                                "g": 0.9755529165267944,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -0.4981921911239624,
+                    "y": -0.2598183751106262,
+                    "z": -0.07768524438142776
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 27.05585289001465,
+                    "y": 1.76432466506958,
+                    "z": 3.7754077911376953
+                },
+                "rotation": {
+                    "w": 0.9590043425559998,
+                    "x": -0.2491416484117508,
+                    "y": -0.11595839262008667,
+                    "z": -0.069229356944561
+                },
+                "scale": {
+                    "x": 8.759612083435059,
+                    "y": 0.6199996471405029,
+                    "z": 14.95456314086914
+                }
+            },
+            "id": 1048579
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Floor",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 1.0,
+                                "g": 1.0,
+                                "r": 1.0
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.015141526237130165,
+                    "y": 0.208106130361557,
+                    "z": -0.1210615262389183
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 20.0867977142334,
+                    "y": 0.45720744132995605,
+                    "z": -12.585453987121582
+                },
+                "rotation": {
+                    "w": 0.9926937818527222,
+                    "x": 0.013798988424241543,
+                    "y": 0.10321671515703201,
+                    "z": -0.060949791222810745
+                },
+                "scale": {
+                    "x": 8.759603500366211,
+                    "y": 0.6200006604194641,
+                    "z": 14.954548835754395
+                }
+            },
+            "id": 1048586
+        },
+        {
+            "AudioComponent": {
+                "data": [
+                    {
+                        "audioData": {
+                            "id": 10000507237258100737,
+                            "volume": 1.0
+                        },
+                        "name": "METAL PIPE"
+                    }
+                ]
+            },
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Cube",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.8242092132568359,
+                                "g": 1.0,
+                                "r": 0.22758620977401733
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "id": 200674448099901461
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.5518912076950073,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 24.55335807800293,
+                    "y": 11.640183448791504,
+                    "z": 7.340217590332031
+                },
+                "rotation": {
+                    "w": 0.9621679782867432,
+                    "x": 0.0,
+                    "y": 0.2724568843841553,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999987483024597,
+                    "y": 1.0,
+                    "z": 0.9999987483024597
+                }
+            },
+            "id": 1048594
+        },
+        {
+            "AudioComponent": {
+                "data": [
+                    {
+                        "audioData": {
+                            "id": 10000507237258100737,
+                            "volume": 1.0
+                        },
+                        "name": "METAL PIPE"
+                    }
+                ]
+            },
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Cube Copy",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.8242092132568359,
+                                "g": 1.0,
+                                "r": 0.22758620977401733
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "id": 200674448099901461
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.27957990765571594,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 28.264850616455078,
+                    "y": 6.752171039581299,
+                    "z": -18.257909774780273
+                },
+                "rotation": {
+                    "w": 0.9902452826499939,
+                    "x": 0.0,
+                    "y": 0.13933512568473816,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.5899995565414429,
+                    "y": 0.5900000333786011,
+                    "z": 0.5899995565414429
+                }
+            },
+            "id": 4194315
+        },
+        {
+            "AudioComponent": {
+                "data": [
+                    {
+                        "audioData": {
+                            "id": 10000507237258100737,
+                            "volume": 1.0
+                        },
+                        "name": "METAL PIPE"
+                    }
+                ]
+            },
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Cube Copy",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.8242092132568359,
+                                "g": 1.0,
+                                "r": 0.22758620977401733
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "id": 200674448099901461
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.05237971246242523,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 30.975265502929688,
+                    "y": 8.03446102142334,
+                    "z": -7.545170783996582
+                },
+                "rotation": {
+                    "w": 0.9996570944786072,
+                    "x": 0.0,
+                    "y": 0.026186861097812653,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999999403953552,
+                    "y": 1.0,
+                    "z": 0.9999999403953552
+                }
+            },
+            "id": 4194310
+        },
+        {
+            "AudioComponent": {
+                "data": [
+                    {
+                        "audioData": {
+                            "id": 10000507237258100737,
+                            "volume": 1.0
+                        },
+                        "name": "METAL PIPE"
+                    }
+                ]
+            },
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Cube Copy",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "color": {
+                                "b": 0.8242092132568359,
+                                "g": 1.0,
+                                "r": 0.22758620977401733
+                            }
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Material",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 1245008178564268053
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "id": 200674448099901461
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.05237971246242523,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 30.92691421508789,
+                    "y": 11.799924850463867,
+                    "z": -10.425605773925781
+                },
+                "rotation": {
+                    "w": 0.9996570944786072,
+                    "x": 0.0,
+                    "y": 0.026186861097812653,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999999403953552,
+                    "y": 1.0,
+                    "z": 0.9999999403953552
+                }
+            },
+            "id": 1048580
+        },
+        {
             "AudioComponent": {
                 "data": [
                     {
@@ -94,9 +1019,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 29.72334861755371,
-                    "y": 8.03446102142334,
-                    "z": -17.611230850219727
+                    "x": 29.664485931396484,
+                    "y": 8.94069766998291,
+                    "z": -14.735681533813477
                 },
                 "rotation": {
                     "w": 0.9996570944786072,
@@ -110,7 +1035,7 @@
                     "z": 0.9999999403953552
                 }
             },
-            "id": 9
+            "id": 1048591
         },
         {
             "AudioComponent": {
@@ -318,233 +1243,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 29.664485931396484,
-                    "y": 8.94069766998291,
-                    "z": -14.735681533813477
-                },
-                "rotation": {
-                    "w": 0.9996570944786072,
-                    "x": 0.0,
-                    "y": 0.026186861097812653,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999999403953552,
-                    "y": 1.0,
-                    "z": 0.9999999403953552
-                }
-            },
-            "id": 1048591
-        },
-        {
-            "AudioComponent": {
-                "data": [
-                    {
-                        "audioData": {
-                            "id": 10000507237258100737,
-                            "volume": 1.0
-                        },
-                        "name": "METAL PIPE"
-                    }
-                ]
-            },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Cube Copy",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.8242092132568359,
-                                "g": 1.0,
-                                "r": 0.22758620977401733
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": null,
-                        "id": 200674448099901461
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": 0.05237971246242523,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 30.92691421508789,
-                    "y": 11.799924850463867,
-                    "z": -10.425605773925781
-                },
-                "rotation": {
-                    "w": 0.9996570944786072,
-                    "x": 0.0,
-                    "y": 0.026186861097812653,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999999403953552,
-                    "y": 1.0,
-                    "z": 0.9999999403953552
-                }
-            },
-            "id": 1048580
-        },
-        {
-            "AudioComponent": {
-                "data": [
-                    {
-                        "audioData": {
-                            "id": 10000507237258100737,
-                            "volume": 1.0
-                        },
-                        "name": "METAL PIPE"
-                    }
-                ]
-            },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Cube Copy",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.8242092132568359,
-                                "g": 1.0,
-                                "r": 0.22758620977401733
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": null,
-                        "id": 200674448099901461
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": 0.05237971246242523,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 30.975265502929688,
+                    "x": 29.72334861755371,
                     "y": 8.03446102142334,
-                    "z": -7.545170783996582
+                    "z": -17.611230850219727
                 },
                 "rotation": {
                     "w": 0.9996570944786072,
@@ -558,729 +1259,7 @@
                     "z": 0.9999999403953552
                 }
             },
-            "id": 4194310
-        },
-        {
-            "AudioComponent": {
-                "data": [
-                    {
-                        "audioData": {
-                            "id": 10000507237258100737,
-                            "volume": 1.0
-                        },
-                        "name": "METAL PIPE"
-                    }
-                ]
-            },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Cube Copy",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.8242092132568359,
-                                "g": 1.0,
-                                "r": 0.22758620977401733
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": null,
-                        "id": 200674448099901461
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": 0.27957990765571594,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 28.264850616455078,
-                    "y": 6.752171039581299,
-                    "z": -18.257909774780273
-                },
-                "rotation": {
-                    "w": 0.9902452826499939,
-                    "x": 0.0,
-                    "y": 0.13933512568473816,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.5899995565414429,
-                    "y": 0.5900000333786011,
-                    "z": 0.5899995565414429
-                }
-            },
-            "id": 4194315
-        },
-        {
-            "AudioComponent": {
-                "data": [
-                    {
-                        "audioData": {
-                            "id": 10000507237258100737,
-                            "volume": 1.0
-                        },
-                        "name": "METAL PIPE"
-                    }
-                ]
-            },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Cube",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.8242092132568359,
-                                "g": 1.0,
-                                "r": 0.22758620977401733
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": null,
-                        "id": 200674448099901461
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": 0.5518912076950073,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 24.55335807800293,
-                    "y": 11.640183448791504,
-                    "z": 7.340217590332031
-                },
-                "rotation": {
-                    "w": 0.9621679782867432,
-                    "x": 0.0,
-                    "y": 0.2724568843841553,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999987483024597,
-                    "y": 1.0,
-                    "z": 0.9999987483024597
-                }
-            },
-            "id": 1048594
-        },
-        {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Floor",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 1.0,
-                                "g": 1.0,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.015141526237130165,
-                    "y": 0.208106130361557,
-                    "z": -0.1210615262389183
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 20.0867977142334,
-                    "y": 0.45720744132995605,
-                    "z": -12.585453987121582
-                },
-                "rotation": {
-                    "w": 0.9926937818527222,
-                    "x": 0.013798988424241543,
-                    "y": 0.10321671515703201,
-                    "z": -0.060949791222810745
-                },
-                "scale": {
-                    "x": 8.759603500366211,
-                    "y": 0.6200006604194641,
-                    "z": 14.954548835754395
-                }
-            },
-            "id": 1048586
-        },
-        {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Floor",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.11379307508468628,
-                                "g": 0.9755529165267944,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": -0.4981921911239624,
-                    "y": -0.2598183751106262,
-                    "z": -0.07768524438142776
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 27.05585289001465,
-                    "y": 1.76432466506958,
-                    "z": 3.7754077911376953
-                },
-                "rotation": {
-                    "w": 0.9590043425559998,
-                    "x": -0.2491416484117508,
-                    "y": -0.11595839262008667,
-                    "z": -0.069229356944561
-                },
-                "scale": {
-                    "x": 8.759612083435059,
-                    "y": 0.6199996471405029,
-                    "z": 14.95456314086914
-                }
-            },
-            "id": 1048579
-        },
-        {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Floor",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.15143468976020813,
-                                "g": 0.748275876045227,
-                                "r": 0.0774078443646431
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Material",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": -0.06240531802177429,
-                    "y": 0.20382621884346008,
-                    "z": -0.2883240282535553
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 27.86524772644043,
-                    "y": -6.459937572479248,
-                    "z": -12.585453987121582
-                },
-                "rotation": {
-                    "w": 0.9844685792922974,
-                    "x": -0.016105059534311295,
-                    "y": 0.10509111732244492,
-                    "z": -0.13970717787742615
-                },
-                "scale": {
-                    "x": 8.759597778320313,
-                    "y": 0.6200012564659119,
-                    "z": 14.95455551147461
-                }
-            },
-            "id": 7
-        },
-        {
-            "AudioComponent": {
-                "data": [
-                    {
-                        "audioData": {
-                            "id": 2338397730805088257,
-                            "volume": 0.4000000059604645
-                        },
-                        "name": "SCREAM"
-                    },
-                    {
-                        "audioData": {
-                            "id": 10000507237258100737,
-                            "volume": 1.0
-                        },
-                        "name": "metal_pipe"
-                    }
-                ]
-            },
-            "id": 0
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Skybox",
-                "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 1.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "Directional"
-            },
-            "SkyBox": {
-                "cubeMapId": 10967197866904813569
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 3.13411021232605,
-                    "y": -0.022854574024677277,
-                    "z": 1.8872249126434326
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 20.683713912963867,
-                    "y": 19.34804916381836,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": -0.007056795060634613,
-                    "x": 0.5868591070175171,
-                    "y": 0.8095998167991638,
-                    "z": 0.009735065512359142
-                },
-                "scale": {
-                    "x": 1.000096082687378,
-                    "y": 1.000045657157898,
-                    "z": 1.0001429319381714
-                }
-            },
-            "id": 2
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light",
-                "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 0.2551724314689636,
-                    "g": 0.948632538318634,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 5.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "texture": 12197762472329347109
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Material",
-                        "renderingPipeline": "Color"
-                    }
-                ],
-                "modelId": 1245008178564268053
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 20.452146530151367,
-                    "y": 5.797974109649658,
-                    "z": -9.614099502563477
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.3100000023841858,
-                    "y": 0.3100000023841858,
-                    "z": 0.3100000023841858
-                }
-            },
-            "id": 5
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Cube",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": [],
-                "modelId": 0
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 14.887657165527344,
-                    "y": 2.7477004528045654,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1
+            "id": 9
         }
     ]
 }

@@ -122,7 +122,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<CopyEntity>(
 		[&](CopyEntity) {
-			if (selectedEntities.size()) {
+			if (selectedEntities.size() && !ImGui::IsAnyItemActive()) {
 				copiedEntityVec = selectedEntities;
 			}
 		}
@@ -130,7 +130,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<PasteEntity>(
 		[&](PasteEntity) {
-			if (!copiedEntityVec.empty()) {
+			if (!copiedEntityVec.empty() && !ImGui::IsAnyItemActive()) {
 				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
 			}
 		}

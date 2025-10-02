@@ -20,7 +20,7 @@ Gizmo::Gizmo(Editor& editor, ECS& ecs) :
 {
 	editor.inputManager.subscribe<GizmoMode>(
 		[&](GizmoMode gizmoMode) {
-			if (!editor.isActive()) {
+			if (!editor.isActive() || ImGui::IsAnyItemActive()) {
 				return;
 			}
 
