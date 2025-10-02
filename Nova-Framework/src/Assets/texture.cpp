@@ -16,6 +16,9 @@ Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture 
 	textureId		 { TEXTURE_NOT_LOADED }
 {
 	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
+	GL_SRGB8;
+
+	//GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT;
 
 	glTextureStorage2D(textureId, static_cast<GLint>(texture.levels()), format.Internal, width, height);
 

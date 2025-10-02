@@ -29,7 +29,7 @@ int Compiler::compileAsset(DescriptorFilePath const& descriptorFilepath) {
 		return compileModel(resourceFilePath, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, CubeMap>) {
-		return compileCubeMap(resourceFilePath, assetInfo.filepath);
+		return compileTexture(resourceFilePath, assetInfo.filepath, AssetInfo<Texture>::Compression::BC6H);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
 		return compileScriptAsset(resourceFilePath, assetInfo.name);

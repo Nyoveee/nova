@@ -123,9 +123,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager.subscribe<CopyEntity>(
 		[&](CopyEntity) {
 			if (selectedEntities.size()) {
-				for (entt::entity entity : selectedEntities) {
-					copiedEntityVec.push_back(entity);
-				}
+				copiedEntityVec = selectedEntities;
 			}
 		}
 	);
@@ -134,7 +132,6 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		[&](PasteEntity) {
 			if (!copiedEntityVec.empty()) {
 				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
-				copiedEntityVec.clear();
 			}
 		}
 	);
@@ -468,6 +465,11 @@ void Editor::startSimulation() {
 	}
 
 	engine.startSimulation();
+
+	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
+	AssetFilePath const* filePath = assetManager.getFilepath(id);
+	Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
 }
@@ -494,7 +496,8 @@ Editor::~Editor() {
 
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
-	if (filePath) {
+
+	if (filePath && !isInSimulationMode()) {
 		Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
 	}
 }

@@ -74,10 +74,10 @@ void InputManager::broadcast(InputEvent data, InputType inputType) {
 }
 
 template<typename InputEvent>
-void InputManager::mapKeyBindInput(int key, KeyType type, InputEvent data) {
+void InputManager::mapKeyBindInput(int key, KeyType type, InputEvent data, InputMod mod) {
 	std::unique_ptr<IKeyBind> keyBind = std::make_unique<KeyBind<InputEvent>>(
 		KeyBind<InputEvent>{
-			data, [&](InputEvent data, InputType inputType) { broadcast<InputEvent>(data, inputType); }
+			data, mod, [&](InputEvent data, InputType inputType) { broadcast<InputEvent>(data, inputType); }
 		}
 	);
 

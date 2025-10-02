@@ -170,7 +170,7 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
 		return initialiseResourceFile.template operator()<Texture>();
 	}
-	else if (fileExtension == ".exr") {
+	else if (fileExtension == ".hdr") {
 		return initialiseResourceFile.template operator()<CubeMap>();
 	}
 	else if (fileExtension == ".cs") {

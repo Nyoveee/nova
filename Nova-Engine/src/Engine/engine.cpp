@@ -98,8 +98,6 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		//Serialiser::serialiseScene(ecs);
-
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();

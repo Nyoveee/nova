@@ -11,8 +11,6 @@
 #include "Library/tinyexr.h"
 #include "Library/stb_image.hpp"
 
-#include "Library/cmp_core/cmp_core.h"
-
 namespace {
 	template <typename T>
 	void writeBytesToFile(std::ofstream& resourceFile, T const& data) {
@@ -22,6 +20,7 @@ namespace {
 
 int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat) {
 	std::string format;
+	std::string option;
 
 	// https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
 	switch (compressionFormat)
@@ -31,9 +30,24 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 		break;
 	case AssetInfo<Texture>::Compression::Uncompressed_SRGB:
 		format = "R8G8B8A8_UNORM_SRGB";
+		option = "-srgb";
 		break;
 	case AssetInfo<Texture>::Compression::BC1_SRGB:
 		format = "BC1_UNORM_SRGB";
+		option = "-srgb";
+		break;
+	case AssetInfo<Texture>::Compression::BC1_Linear:
+		format = "BC1_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::BC3_SRGB:
+		format = "BC3_UNORM_SRGB";
+		option = "-srgb";
+		break;
+	case AssetInfo<Texture>::Compression::BC3_Linear:
+		format = "BC3_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::BC4:
+		format = "BC4_UNORM";
 		break;
 	case AssetInfo<Texture>::Compression::BC5:
 		format = "BC5_UNORM";
@@ -43,6 +57,10 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 		break;
 	case AssetInfo<Texture>::Compression::BC7_SRGB:
 		format = "BC7_UNORM_SRGB";
+		option = "-srgb";
+		break;
+	case AssetInfo<Texture>::Compression::BC7_Linear:
+		format = "BC7_UNORM";
 		break;
 	default:
 		Logger::error("Unknown compression format specified.");
@@ -53,7 +71,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 	std::filesystem::path outputDirectory = AssetIO::resourceDirectory / "Texture";
 
 	std::string commandLine = std::format(
-		R"(""{}" -y -f {} -o "{}" "{}"")", executableName.string(), format, outputDirectory.string(), intermediaryAssetFilepath.string
+		R"(""{}" {} -y -f {} -o "{}" "{}"")", executableName.string(), option, format, outputDirectory.string(), intermediaryAssetFilepath.string
 	);
 
 	if (std::system(commandLine.c_str())) {
