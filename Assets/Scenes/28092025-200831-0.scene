@@ -1126,7 +1126,7 @@
                 "localPosition": {
                     "x": 8.421266555786133,
                     "y": 18.750938415527344,
-                    "z": 81.78549194335938
+                    "z": 81.78553771972656
                 },
                 "localRotation": {
                     "w": 0.9937423467636108,
@@ -1140,9 +1140,9 @@
                     "z": 2.0715346336364746
                 },
                 "position": {
-                    "x": -2.631669044494629,
+                    "x": -2.6316699981689453,
                     "y": -7.864530086517334,
-                    "z": 5.615880012512207
+                    "z": 5.615884780883789
                 },
                 "rotation": {
                     "w": 1.0,
@@ -1351,6 +1351,17 @@
                     }
                 ],
                 "modelId": 1245008178564268053
+            },
+            "ParticleEmitter": {
+                "emissionShape": "Sphere",
+                "emissionType": "Continuous",
+                "lifeTime": 1.0,
+                "particleRate": 1000.0,
+                "sizeOverLifeTime": false,
+                "speedOverLifeTime": false,
+                "startSize": 0.10000000149011612,
+                "startSpeed": 10.0,
+                "texture": 14086063755960254465
             },
             "Transform": {
                 "eulerAngles": {

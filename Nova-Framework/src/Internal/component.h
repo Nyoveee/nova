@@ -34,7 +34,8 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent,NavigationTestTarget
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent,NavigationTestTarget, ParticleEmitter
+
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -285,12 +286,7 @@ struct NavMeshSurface
 	(
 		label,
 		navMeshId
-	
-	
 	)
-
-
-
 };
 
 
@@ -322,17 +318,10 @@ struct NavMeshAgent
 		separationWeight
 
 	)
-
-
 	//Runtime variables
 	int agentIndex;
 	float agentRadius;
 	float agentHeight;
-
-
-
-
-
 };
 
 
@@ -342,10 +331,53 @@ struct NavigationTestTarget
 
 	REFLECTABLE
 	(
-	position
-	
+		position
 	)
+};
+struct Particle {
+	glm::vec3 position;
+	glm::vec3 direction;
+	float size;
+	float currentLifeTime;
+};
+struct ParticleEmitter
+{
+	// Update
+	float currentTime;
 
+	// Rendering
+	std::vector<Particle> particles;
 
-
+	// Editor stuff
+	TypedResourceID<Texture> texture;
+	enum class EmissionShape {
+		Sphere,
+		// Cylinder
+		// Circle
+		// Hemisphere
+		// Cone
+	} emissionShape;
+	enum class EmissionType {
+		Continuous,
+		// RepeatedBurst
+		// SingleBurst
+	} emissionType;
+	float startSize;
+	float startSpeed;
+	float lifeTime;
+	float particleRate;
+	bool sizeOverLifeTime;
+	bool speedOverLifeTime;
+	REFLECTABLE
+	(
+		texture,
+		emissionShape,
+		emissionType,
+		startSize,
+		startSpeed,
+		lifeTime,
+		particleRate,
+		sizeOverLifeTime,
+		speedOverLifeTime
+	)
 };

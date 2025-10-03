@@ -2,7 +2,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
-
+#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Engine/engine.h"
@@ -12,10 +12,10 @@
 #include "ECS/ECS.h"
 #include "ResourceManager/resourceManager.h"
 
-#include <fstream>
 #include "component.h"
 #include "Profiling.h"
 #include "Logger.h"
+#include "RandomRange.h"
 
 #undef max
 
@@ -48,6 +48,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
+	particleShader              { "System/Shader/particle.vert",            "System/Shader/image.frag"},
 	mainVAO						{},
 	debugPhysicsVAO				{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -176,7 +177,26 @@ GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 
 void Renderer::update(float dt) {
 	ZoneScoped;
-	(void) dt;
+	// Update the particles 
+	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
+		if (emitter.currentTime <= 0) {
+			emitter.currentTime = 1.f / emitter.particleRate;
+			glm::vec3 randomDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
+			randomDirection = glm::normalize(randomDirection);
+			Particle newParticle = { transform.position, randomDirection,emitter.startSize,emitter.lifeTime };
+			emitter.particles.push_back(newParticle);
+		}
+		emitter.currentTime -= dt;
+		std::vector<Particle>::iterator it = std::remove_if(std::begin(emitter.particles), std::end(emitter.particles), [&emitter, dt](Particle& particle) {
+			particle.currentLifeTime -= dt;
+			if (particle.currentLifeTime <= 0)
+				return true;
+			particle.position += particle.direction * emitter.startSpeed * dt;
+			return false;
+		});
+		if (it != std::end(emitter.particles))
+			emitter.particles.erase(it);
+	}
 }
 
 void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
@@ -184,8 +204,9 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
 	prepareRendering();
 
 	renderSkyBox();
-
 	renderModels();
+	renderParticles();
+
 	if (toRenderDebugPhysics) {
 		debugRenderPhysicsCollider();
 	}
@@ -242,6 +263,7 @@ void Renderer::recompileShaders() {
 	PBRShader.compile();
 	skyboxShader.compile();
 	toneMappingShader.compile();
+	particleShader.compile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -596,6 +618,27 @@ void Renderer::renderOutline() {
 			mainVBO.uploadData(mesh.vertices);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+		}
+	}
+}
+
+void Renderer::renderParticles()
+{
+	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
+	glDisable(GL_DEPTH_TEST);
+	particleShader.use();
+	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
+		auto&& [texture, result] = resourceManager.getResource<Texture>(emitter.texture);
+		if (!texture)
+			continue;
+		glBindTextureUnit(0, texture->getTextureId());
+		for (Particle const& particle : emitter.particles) {
+			// CameraFacing modelmatrix
+			glm::mat4 model{ glm::identity<glm::mat4>() };
+			model = glm::translate(model, particle.position);
+			particleShader.setMatrix("model", model);
+			particleShader.setFloat("particleSize", particle.size);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
 	}
 }

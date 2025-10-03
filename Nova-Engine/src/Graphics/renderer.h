@@ -114,6 +114,9 @@ private:
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
+	// Render all particles
+	void renderParticles();
+
 	// renders the object id to the object id framebuffer.
 	void renderObjectId(GLsizei count);
 
@@ -204,6 +207,7 @@ public:
 	Shader overlayShader;
 	Shader objectIdShader;
 	Shader skyboxShader;
+	Shader particleShader;
 	
 	// HDR tone mapping shader
 	Shader toneMappingShader;

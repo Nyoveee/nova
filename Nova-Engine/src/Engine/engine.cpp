@@ -30,7 +30,9 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
-{}
+{
+	std::srand(time(NULL));
+}
 
 Engine::~Engine() {
 	stopSimulation();
