@@ -6,6 +6,8 @@
 #include "compiler.h"
 
 #include "modelLoader.h"
+
+// Y* only libraries.
 #include "Library/stb_image.hpp"
 
 namespace {
@@ -15,7 +17,78 @@ namespace {
 	}
 }
 
-int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat) {
+	std::string format;
+	std::string option;
+
+	// https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
+	switch (compressionFormat)
+	{
+	case AssetInfo<Texture>::Compression::Uncompressed_Linear:
+		format = "R8G8B8A8_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::Uncompressed_SRGB:
+		format = "R8G8B8A8_UNORM_SRGB";
+		option = "-srgb";
+		break;
+	case AssetInfo<Texture>::Compression::BC1_SRGB:
+		format = "BC1_UNORM_SRGB";
+		option = "-srgb";
+		break;
+	case AssetInfo<Texture>::Compression::BC1_Linear:
+		format = "BC1_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::BC3_SRGB:
+		format = "BC3_UNORM_SRGB";
+		option = "-srgb";
+		break;
+	case AssetInfo<Texture>::Compression::BC3_Linear:
+		format = "BC3_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::BC4:
+		format = "BC4_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::BC5:
+		format = "BC5_UNORM";
+		break;
+	case AssetInfo<Texture>::Compression::BC6H:
+		format = "BC6H_UF16";
+		break;
+	case AssetInfo<Texture>::Compression::BC7_SRGB:
+		format = "BC7_UNORM_SRGB";
+		option = "-srgb";
+		break;
+	case AssetInfo<Texture>::Compression::BC7_Linear:
+		format = "BC7_UNORM";
+		break;
+	default:
+		Logger::error("Unknown compression format specified.");
+		return -1;
+	}
+	
+	std::filesystem::path executableName = std::filesystem::current_path() / "ExternalApplication" / "texconv.exe";
+	std::filesystem::path outputDirectory = AssetIO::resourceDirectory / "Texture";
+
+	std::string commandLine = std::format(
+		R"(""{}" {} -y -f {} -o "{}" "{}"")", executableName.string(), option, format, outputDirectory.string(), intermediaryAssetFilepath.string
+	);
+
+	if (std::system(commandLine.c_str())) {
+		// command failed.
+		return -1;
+	}
+
+	// remove old resource file if it exist..
+	std::filesystem::remove(resourceFilePath);
+
+	std::filesystem::path oldFilePath = 
+		outputDirectory / 
+		std::filesystem::path{ intermediaryAssetFilepath }.stem().replace_extension(".dds");
+
+	// let's rename the resource.
+	std::filesystem::rename(oldFilePath, resourceFilePath);
+
+#if 0
 	int width, height, numChannels;
 	stbi_uc* data = stbi_load(intermediaryAssetFilepath.string.c_str(), &width, &height, &numChannels, 0);
 
@@ -44,9 +117,71 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 	stbi_image_free(data);
 
 	gli::save_dds(tex, resourceFilePath.string);
-	
+#endif
 	return 0;
 }
+
+#if 0
+int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	float* data; // width * height * RGBA
+
+	int width;
+	int height;
+	const char* err = nullptr; // or nullptr in C++11
+
+	int status = LoadEXR(&data, &width, &height, intermediaryAssetFilepath.string.c_str(), &err);
+
+	if (status != TINYEXR_SUCCESS) {
+		if (err) {
+			Logger::error("ERR : {}", err);
+			FreeEXRErrorMessage(err); // release memory of error message.
+		}
+
+		return -1;
+	}
+
+	std::size_t size = 4 * sizeof(float) * static_cast<size_t>(width) * static_cast<size_t>(height);
+
+	enum gli::format format = gli::format::FORMAT_RGBA32_SFLOAT_PACK32;
+
+	// Create a GLI 2D texture with the same dimensions
+	gli::texture2d tex{
+		format,
+		gli::extent2d(width, height)
+	};
+
+	// Copy pixel data into the GLI texture
+	std::memcpy(tex.data(), data, size);
+	stbi_image_free(data);
+
+	gli::save_dds(tex, resourceFilePath.string);
+
+#if 0
+	// im assuming GL_RGBA16F format.
+	// @TODO: actually check the header file of OpenEXR.
+	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
+
+	glTextureStorage2D(textureId, 1, GL_RGBA16F, width, height);
+	glTextureSubImage2D(textureId, 0, 0, 0, width, height, GL_RGBA, GL_FLOAT, data);
+
+	glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTextureParameteri(textureId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenerateTextureMipmap(textureId);
+	free(data); // release memory of image data
+
+	this->width = width;
+	this->height = height;
+
+	loadStatus = Asset::LoadStatus::Loaded;
+	//TracyAlloc(this, sizeof(*this));
+#endif
+
+	return 0;
+}
+#endif
 
 // =================================
 // Model file format
@@ -136,11 +271,8 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 	return 0;
 }
 
-int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
-	return -1;
-}
 
-int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::string className) {
 	std::ofstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {
@@ -148,8 +280,7 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, Asset
 		return -1;
 	}
 
-	// script literally only stores the	class name. the intermediaryAssetFilepath must match the class name.	
-	std::string className = std::filesystem::path{ intermediaryAssetFilepath }.stem().string();
+	// script literally only stores the	class name. class name is part of the descriptor.
 	resourceFile << className;
 
 	return 0;
@@ -206,6 +337,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "Scene") {
 		return Compiler::compileAsset<Scene>(descriptorFilepath);
+	}
+	else if (resourceType == "NavMesh") {
+		return Compiler::compileAsset<NavMesh>(descriptorFilepath);
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);

@@ -6,7 +6,7 @@
 #include "ECS/ECS.h"
 
 #include "IconsFontAwesome6.h"
-#include "ECS/component.h"
+#include "component.h"
 
 #include <ranges>
 
@@ -27,6 +27,7 @@ void Hierarchy::createGameObject() {
 void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 	entt::registry& registry = ecs.registry;
 	EntityData const& entityData = registry.get<EntityData>(entity);
+
 	bool toDisplayTreeNode = false;
 
 	ImGui::PushID(static_cast<unsigned>(entity));
@@ -91,6 +92,14 @@ void Hierarchy::update() {
 
 	// Show all game objects..
 	ImGui::Begin(ICON_FA_LIST " Hierarchy");
+
+	if (ecs.sceneManager.hasNoSceneSelected()) {
+		ImGui::Text("No scene loaded.");
+		ImGui::TextWrapped("Create a new scene by dragging a scene from the content browser to the viewport!");
+
+		ImGui::End();
+		return;
+	}
 
 	ImGui::Text("Scene loaded: Sample Scene");
 	ImGui::Text("Entities: %zu", registry.view<EntityData>().size());

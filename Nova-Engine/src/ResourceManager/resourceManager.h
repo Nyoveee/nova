@@ -15,6 +15,7 @@
 #include <functional>
 
 class AssetManager;
+class AssetViewerUI;
 
 class ResourceManager {
 public:
@@ -67,6 +68,7 @@ public:
 
 private:
 	friend AssetManager;
+	friend AssetViewerUI;
 
 	// parses a given resource file. returns a valid resource id if its valid,
 	// INVALID_RESOURCE_ID otherwise.
@@ -76,6 +78,9 @@ private:
 	// records all the given resources in a given directory, taking note of their filepaths.
 	template<ValidResource ...T>
 	void recordAllResources();
+
+	// this is only called by the asset manager to remove outdated resources. (housekeeping)
+	ENGINE_DLL_API void removeResource(ResourceID id);
 
 private:
 	// records all resource filepath and it's associated resource id.

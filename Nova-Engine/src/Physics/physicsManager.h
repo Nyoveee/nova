@@ -1,7 +1,12 @@
 #pragma once
 
+#include <glm/vec3.hpp>
 #include <entt/entt.hpp>
 #include <vector>
+#include <mutex>
+#include <utility>
+#include <queue>
+#include <optional>
 
 class Engine;
 
@@ -9,9 +14,14 @@ class Engine;
 // You can use Jolt.h in your precompiled header to speed up compilation. (nah)
 #include <Jolt/Jolt.h>
 #include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Collision/CastResult.h>
 
 #include "joltPhysicsInterface.h"
 #include "debugRenderer.h"
+#include "contactListener.h"
+
+#include "export.h"
+#include "physics.h"
 
 class PhysicsManager {
 public:
@@ -28,6 +38,12 @@ public:
 	void clear();
 	void update(float dt);
 	void debugRender();
+
+	// Nova Collision Listener submits all collision event here..
+	void submitCollision(entt::entity entityOne, entt::entity entityTwo);
+	
+	ENGINE_DLL_API PhysicsRay getRayFromMouse() const;
+	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance);
 
 private:
 	void createPrimitiveShapes();
@@ -65,8 +81,10 @@ private:
 
 	// Our own debug renderer..
 	DebugRenderer debugRenderer;
+	NovaContactListener contactListener;
 
 	entt::registry& registry;
+	Engine& engine;
 
 private:
 	// We let this physics manager owns some basic primitive shapes.
@@ -74,4 +92,8 @@ private:
 	JPH::Ref<JPH::Shape> sphere;
 
 	std::vector<JPH::BodyID> createdBodies;
+
+	// we queue entities on collision for thread safety.
+	std::queue<std::pair<entt::entity, entt::entity>> onCollision;
+	std::mutex onCollisionMutex;
 };

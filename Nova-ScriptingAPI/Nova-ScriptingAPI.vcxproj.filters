@@ -21,34 +21,40 @@
     <ClInclude Include="src\API\ManagedTypeMacros.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\ManagedTypes.hxx">
+    <ClInclude Include="src\ScriptLibrary\Extensions\ManagedTypes.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\API\RecursiveMacros.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Script.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\API\IManagedComponent.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Time.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\API\ScriptingAPI.ixx">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Input.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\API\ScriptLibraryHandler.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Debug.h">
+    <ClInclude Include="src\ScriptLibrary\Extensions\ManagedEnums.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\API\IManagedStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Extensions\ScriptLibrary.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\API\ConversionUtils.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\GameObject.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\ComponentAccessor.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\Script.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ScriptLibrary\Core\ScriptAttributes.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,19 +62,13 @@
     <ClCompile Include="src\API\ScriptingAPI.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Script.cxx">
+    <ClCompile Include="src\Export\LibraryExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Input.cxx">
+    <ClCompile Include="src\ScriptLibrary\Core\ComponentAccessor.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\API\ScriptLibraryHandler.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Debug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Time.cxx">
+    <ClCompile Include="src\ScriptLibrary\Core\Script.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

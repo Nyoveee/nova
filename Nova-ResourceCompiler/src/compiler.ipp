@@ -23,16 +23,16 @@ int Compiler::compileAsset(DescriptorFilePath const& descriptorFilepath) {
 	ResourceFilePath resourceFilePath = AssetIO::getResourceFilename<T>(assetInfo.id);
 
 	if constexpr (std::same_as<T, Texture>) {
-		return compileTexture(resourceFilePath, assetInfo.filepath);
+		return compileTexture(resourceFilePath, assetInfo.filepath, assetInfo.compression);
 	}
 	else if constexpr (std::same_as<T, Model>) {
 		return compileModel(resourceFilePath, assetInfo.filepath);
 	}
 	else if constexpr (std::same_as<T, CubeMap>) {
-		return compileCubeMap(resourceFilePath, assetInfo.filepath);
+		return compileTexture(resourceFilePath, assetInfo.filepath, AssetInfo<Texture>::Compression::BC6H);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
-		return compileScriptAsset(resourceFilePath, assetInfo.filepath);
+		return compileScriptAsset(resourceFilePath, assetInfo.name);
 	}
 	else {
 		return defaultCompile(resourceFilePath, assetInfo.filepath);

@@ -91,7 +91,9 @@ FrameBuffer::~FrameBuffer() {
 FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
 	FBO_id		{ other.FBO_id },
 	texture_ids	{ std::move(other.texture_ids) },
-	RBO_id		{ other.RBO_id }
+	RBO_id		{ other.RBO_id },
+	width		{ other.width },
+	height		{ other.height }
 {
 	other.FBO_id		= INVALID_ID;
 	other.RBO_id		= INVALID_ID;
@@ -109,6 +111,8 @@ void FrameBuffer::swap(FrameBuffer& rhs) {
 	std::swap(FBO_id,		rhs.FBO_id);
 	std::swap(texture_ids,	rhs.texture_ids);
 	std::swap(RBO_id,		rhs.RBO_id);
+	std::swap(width,		rhs.width);
+	std::swap(height,		rhs.height);
 }
 
 GLuint FrameBuffer::fboId() const {

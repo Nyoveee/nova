@@ -3,9 +3,13 @@
 #include "transformationSystem.h"
 #include "ECS/ECS.h"
 
-#include "ECS/component.h"
+#include "component.h"
 #include "nova_math.h"
 #include "Profiling.h"
+
+constexpr glm::vec3 defaultFront = { 0.f, 0.f, 1.f };
+constexpr glm::vec3 defaultUp = { 0, 1.f, 0 };
+glm::vec3 defaultRight = { glm::normalize(glm::cross(defaultFront, defaultUp)) };
 
 TransformationSystem::TransformationSystem(ECS& ecs) :
 	registry {ecs.registry}
@@ -13,6 +17,7 @@ TransformationSystem::TransformationSystem(ECS& ecs) :
 
 void TransformationSystem::update() {
 	ZoneScoped;
+
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
 		// Figure out if the entity requires updating it's world matrix due to world transform change.
 		if (
@@ -36,6 +41,9 @@ void TransformationSystem::update() {
 				transform.rotation = glm::normalize(transform.rotation);
 			}
 
+			transform.front				= transform.rotation * defaultFront;
+			transform.up				= transform.rotation * defaultUp;
+			transform.right				= transform.rotation * defaultRight;
 			transform.lastPosition		= transform.position;
 			transform.lastScale			= transform.scale;
 			transform.lastRotation		= transform.rotation;
@@ -192,6 +200,10 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 
 		transform.eulerAngles = transform.rotation;
 		transform.lastEulerAngles = transform.eulerAngles;
+
+		transform.front = transform.rotation * defaultFront;
+		transform.up = transform.rotation * defaultUp;
+		transform.right = transform.rotation * defaultRight;
 
 		transform.normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform.modelMatrix)));
 	}

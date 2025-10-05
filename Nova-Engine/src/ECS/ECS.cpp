@@ -3,13 +3,13 @@
 
 #include "Engine/engine.h"
 #include "ECS/ECS.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "Logger.h"
 
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this }
+	sceneManager	{ *this, engine ,engine.resourceManager }
 {}
 
 ECS::~ECS() {}
@@ -102,32 +102,35 @@ bool ECS::isDescendantOf(entt::entity entity, entt::entity parent) {
 }
 
 void ECS::deleteEntity(entt::entity entity) {
-	// =======================
-	// 1. Update it's children' parent.
-	// Set the children's new parent to the current's entity parent, if any.
-	// =======================
-	EntityData& entityData = registry.get<EntityData>(entity);
-	entt::entity parent = entityData.parent;
+	EntityData* entityData = registry.try_get<EntityData>(entity);
+	
+	if (entityData) {
+		// =======================
+		// 1. Update it's children' parent.
+		// Set the children's new parent to the current's entity parent, if any.
+		// =======================
+		entt::entity parent = entityData->parent;
 
-	for (entt::entity child : entityData.children) {
-		EntityData& childEntityData = registry.get<EntityData>(child);
-		childEntityData.parent = parent;
-	}
+		for (entt::entity child : entityData->children) {
+			EntityData& childEntityData = registry.get<EntityData>(child);
+			childEntityData.parent = parent;
+		}
 
-	// =======================
-	// 2. Update parent's children array.
-	// =======================
-	if (parent != entt::null) {
-		// Remove this entity from list of children
-		EntityData& parentEntityData = registry.get<EntityData>(entityData.parent);
+		// =======================
+		// 2. Update parent's children array.
+		// =======================
+		if (parent != entt::null) {
+			// Remove this entity from list of children
+			EntityData& parentEntityData = registry.get<EntityData>(parent);
 
-		auto iterator = std::ranges::find(parentEntityData.children, entity);
-		assert(iterator != parentEntityData.children.end() && "Invariant broken.");
-		parentEntityData.children.erase(iterator);
+			auto iterator = std::ranges::find(parentEntityData.children, entity);
+			assert(iterator != parentEntityData.children.end() && "Invariant broken.");
+			parentEntityData.children.erase(iterator);
 
-		// Inherit grandchildren as the new children.
-		for (entt::entity child : entityData.children) {
-			parentEntityData.children.push_back(child);
+			// Inherit grandchildren as the new children.
+			for (entt::entity child : entityData->children) {
+				parentEntityData.children.push_back(child);
+			}
 		}
 	}
 

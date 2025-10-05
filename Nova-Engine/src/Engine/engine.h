@@ -43,12 +43,17 @@ public:
 public:
 	ENGINE_DLL_API void fixedUpdate(float dt);
 	ENGINE_DLL_API void update(float dt);
+	
 	ENGINE_DLL_API void render(RenderTarget target);
 	
 	ENGINE_DLL_API void startSimulation();
 	ENGINE_DLL_API void stopSimulation();
 	ENGINE_DLL_API void setupSimulation();
 	ENGINE_DLL_API bool isInSimulationMode() const;
+
+	
+	ENGINE_DLL_API void SystemsOnLoad(); //on scene load, some system might want to reload/unload/init stuff
+
 
 public:
 	ENGINE_DLL_API int getGameWidth() const;
@@ -71,6 +76,9 @@ public:
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;
+
+	//allows render debug for game
+	bool					toDebugRenderNavMesh;
 
 private:
 	int				gameWidth;

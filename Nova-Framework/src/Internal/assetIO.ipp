@@ -4,9 +4,12 @@
 #include "audio.h"
 #include "Logger.h"
 
+#include "magic_enum.hpp"
+
 template <ValidResource T>
 std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
 	std::ifstream descriptorFile{ descriptorFilepath };
+	descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 	// Attempt to read corresponding metafile.
 	if (!descriptorFile) {
@@ -24,24 +27,23 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 	AssetInfo<T> assetInfo{ parsedAssetInfo.value() };
 
 	// ============================
-	// Filestream is now pointing at the 4th line.
+	// Filestream is now pointing at the 5th line.
 	// Do any metadata specific to any type parsing here!!
 	// ============================
+	if constexpr (std::same_as<T, Texture>) {
+		std::string compressionFormat;
+		std::getline(descriptorFile, compressionFormat);
 
-	if constexpr (std::same_as<T, Audio>) {
-		std::string line;
-		std::getline(descriptorFile, line);
+		auto compressionValueOpt = magic_enum::enum_cast<AssetInfo<Texture>::Compression>(compressionFormat);
 
-		bool is3D;
-
-		if (!(std::stringstream{ line } >> is3D)) {
-			return std::nullopt;
+		if (!compressionValueOpt) {
+			// parsing this failed, let's give some default compression value.
+			assetInfo.compression = AssetInfo<Texture>::Compression::BC1_SRGB;
 		}
 		else {
-			assetInfo.is3D = is3D;
+			assetInfo.compression = compressionValueOpt.value();
 		}
 	}
-
 	// ============================
 	return assetInfo;
 }
@@ -50,17 +52,17 @@ template <ValidResource T>
 AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	ResourceID id = generateResourceID();
 	DescriptorFilePath descriptorFileName = getDescriptorFilename<T>(id);
-	std::ofstream metaDataFile{ descriptorFileName };
+	std::ofstream descriptorFile{ descriptorFileName };
+	descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-	AssetInfo<T> assetInfo{ createDescriptorFile(id, path, metaDataFile) };
+	AssetInfo<T> assetInfo{ createDescriptorFile(id, path, descriptorFile) };
 
 	// ============================
-	// Filestream is now pointing at the 4th line.
+	// Filestream is now pointing at the 5th line.
 	// Do any metadata specific to any type default creation here!!
 	// ============================
-
-	if constexpr (std::same_as<T, Audio>) {
-		metaDataFile << false << "\n";
+	if constexpr (std::same_as<T, Texture>) {
+		descriptorFile << magic_enum::enum_name(AssetInfo<Texture>::Compression::BC1_SRGB) << '\n';
 	}
 
 	// ============================

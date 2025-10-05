@@ -8,57 +8,61 @@ namespace {
 	GLuint TEXTURE_NOT_LOADED = std::numeric_limits<GLuint>::max();
 }
 
-CubeMap::CubeMap(ResourceID id, ResourceFilePath resourceFilePath) :
+CubeMap::CubeMap(ResourceID id, ResourceFilePath resourceFilePath, gli::texture const& texture, gli::gl::format const& format) :
 	Resource		 { id, std::move(resourceFilePath) },
-	width			 {},
-	height			 {},
-	numChannels		 {},
+	width			 { texture.extent().x },
+	height			 { texture.extent().y },
 	textureId		 { TEXTURE_NOT_LOADED }
 {
-#if 0
-	if (isLoaded()) {
-		Logger::error("Attempting to load texture when there's already something loaded!");
-		return;
-	}
-
-	float* data; // width * height * RGBA
-	//int width;
-	//int height;
-	const char* err = nullptr; // or nullptr in C++11
-
-	int status = LoadEXR(&data, &width, &height, getFilePath().c_str(), &err);
-
-	if (status != TINYEXR_SUCCESS) {
-		if (err) {
-			Logger::error("ERR : {}", err);
-			FreeEXRErrorMessage(err); // release memory of error message.
-		}
-
-		Asset::loadStatus = Asset::LoadStatus::LoadingFailed;
-		return;
-	}
-
-	// im assuming GL_RGBA16F format.
-	// @TODO: actually check the header file of OpenEXR.
 	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
 
-	glTextureStorage2D(textureId, 1, GL_RGBA16F, width, height);
-	glTextureSubImage2D(textureId, 0, 0, 0, width, height, GL_RGBA, GL_FLOAT, data);
+	glTextureStorage2D(textureId, static_cast<GLint>(texture.levels()), format.Internal, width, height);
+
+	for (std::size_t layer = 0; layer < texture.layers(); ++layer) {
+		for (std::size_t face = 0; face < texture.faces(); ++face) {
+			for (std::size_t level = 0; level < texture.levels(); ++level) {
+				auto extent = texture.extent(level);
+
+				if (gli::is_compressed(texture.format())) {
+					glCompressedTextureSubImage2D(
+						textureId,
+						static_cast<GLint>(level),
+						0, 0,	// offsets
+						extent.x,
+						extent.y,
+						format.Internal, 
+						static_cast<GLsizei>(texture.size(level)),
+						texture.data(layer, face, level)
+					);
+				}
+				else {
+					glTextureSubImage2D(
+						textureId, 
+						static_cast<GLint>(level),
+						0, 0,	// offsets
+						extent.x,
+						extent.y,
+						format.External, 
+						format.Type, 
+						texture.data(layer, face, level)
+					);
+				}
+			}
+		}
+	}
+
+	glTextureParameteri(textureId, GL_TEXTURE_BASE_LEVEL, 0);
+	glTextureParameteri(textureId, GL_TEXTURE_MAX_LEVEL, static_cast<GLint>(texture.levels() - 1));
 
 	glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTextureParameteri(textureId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glGenerateTextureMipmap(textureId);
-	free(data); // release memory of image data
-
-	this->width = width;
-	this->height = height;
-
-	loadStatus = Asset::LoadStatus::Loaded;
-	//TracyAlloc(this, sizeof(*this));
-#endif
+	glTextureParameteri(textureId, GL_TEXTURE_SWIZZLE_R, format.Swizzles[0]);
+	glTextureParameteri(textureId, GL_TEXTURE_SWIZZLE_G, format.Swizzles[1]);
+	glTextureParameteri(textureId, GL_TEXTURE_SWIZZLE_B, format.Swizzles[2]);
+	glTextureParameteri(textureId, GL_TEXTURE_SWIZZLE_A, format.Swizzles[3]);
 }
 
 CubeMap::~CubeMap() {
@@ -71,7 +75,6 @@ CubeMap::CubeMap(CubeMap&& other) noexcept :
 	Resource		 { std::move(other) },
 	width			 { other.width },
 	height			 { other.height },
-	numChannels		 { other.numChannels },
 	textureId		 { other.textureId }
 {
 	other.textureId = TEXTURE_NOT_LOADED;
@@ -86,7 +89,6 @@ CubeMap& CubeMap::operator=(CubeMap&& other) noexcept {
 
 	width			 = other.width;
 	height			 = other.height;
-	numChannels		 = other.numChannels;
 	textureId		 = other.textureId;
 
 	other.textureId = TEXTURE_NOT_LOADED;

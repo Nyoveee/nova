@@ -26,12 +26,11 @@ int main() {
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
-	ResourceManager resourceManager {};
 	Window			window			{ windowName.c_str(), {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
+	
+	ResourceManager resourceManager {};
 	Engine			engine			{ window, inputManager, resourceManager, gameWidth, gameHeight };
 
-
-	// Editor specific applications.
 	AssetManager	assetManager	{ resourceManager, engine };
 	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 
@@ -47,7 +46,7 @@ int main() {
 			engine.render(Engine::RenderTarget::MainFrameBuffer);
 			
 			// this callback is invoked when the editor wants to change simulation mode.
-			editor.update([&](bool toStartSimulation) {
+			editor.update(dt, [&](bool toStartSimulation) {
 				toStartSimulation ? engine.startSimulation() : engine.stopSimulation();
 			});
 

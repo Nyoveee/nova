@@ -1,12 +1,10 @@
 #include "serialisation.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "ECS/ECS.h"
 #include <string>
 
 #include <fstream>
 #include <iomanip>
-
-constexpr const char* filepath = "test.json";
 
 namespace Serialiser {
 	void Serialiser::serialiseScene(ECS& ecs, const char* fileName) {

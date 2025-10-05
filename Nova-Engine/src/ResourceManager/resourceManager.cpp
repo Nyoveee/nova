@@ -6,6 +6,8 @@
 
 #include "family.h"
 
+#include "Profiling.h"
+
 ResourceManager::ResourceManager() {
 	try {
 		// ========================================
@@ -36,6 +38,8 @@ ResourceManager::ResourceManager() {
 }
 
 void ResourceManager::update() {
+	ZoneScoped;
+
 	std::lock_guard lock{ initialisationQueueMutex };
 	
 	while (initialisationQueue.size()) {
@@ -52,4 +56,17 @@ bool ResourceManager::doesResourceExist(ResourceID id) const {
 void ResourceManager::submitInitialisationCallback(std::function<void()> callback) {
 	std::lock_guard lock{ initialisationQueueMutex };
 	initialisationQueue.push(std::move(callback));
+}
+
+void ResourceManager::removeResource(ResourceID id) {
+	resourceFilePaths.erase(id);
+	loadedResources.erase(id);
+
+	for (auto&& [resourceTypeId, resourceIds] : resourcesByType) {
+		auto iterator = std::ranges::find(resourceIds, id);
+		
+		if (iterator != resourceIds.end()) {
+			resourceIds.erase(iterator);
+		}
+	}
 }

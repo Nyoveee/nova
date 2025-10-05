@@ -10,7 +10,7 @@
 #include "ECS/ecs.h"
 #include "InputManager/inputManager.h"
 #include "InputManager/inputEvent.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "nova_math.h"
 
 Gizmo::Gizmo(Editor& editor, ECS& ecs) : 
@@ -20,7 +20,7 @@ Gizmo::Gizmo(Editor& editor, ECS& ecs) :
 {
 	editor.inputManager.subscribe<GizmoMode>(
 		[&](GizmoMode gizmoMode) {
-			if (!editor.isActive()) {
+			if (!editor.isActive() || ImGui::IsAnyItemActive()) {
 				return;
 			}
 

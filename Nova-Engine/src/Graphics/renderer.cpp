@@ -13,7 +13,7 @@
 #include "ResourceManager/resourceManager.h"
 
 #include <fstream>
-#include "ECS/component.h"
+#include "component.h"
 #include "Profiling.h"
 #include "Logger.h"
 
@@ -32,40 +32,47 @@ constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(Simp
 constexpr int MAX_NUMBER_OF_LIGHT = 100;
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
-	engine				{ engine },
-	resourceManager		{ engine.resourceManager },
-	registry			{ engine.ecs.registry },
-	basicShader			{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
-	standardShader		{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
-	textureShader		{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
-	colorShader			{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	blinnPhongShader	{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	gridShader			{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
-	outlineShader		{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
-	debugShader			{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
-	debugOverlayShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
-	objectIdShader		{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
-	skyboxShader		{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
-	mainVAO				{},
-	debugPhysicsVAO		{},
-	mainVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
-	debugPhysicsVBO		{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	EBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
+	engine						{ engine },
+	resourceManager				{ engine.resourceManager },
+	registry					{ engine.ecs.registry },
+	basicShader					{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
+	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
+	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
+	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
+	blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
+	PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
+	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
+	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
+	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
+	overlayShader				{ "System/Shader/squareOverlay.vert",		"System/Shader/overlay.frag" },
+	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
+	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
+	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
+	mainVAO						{},
+	debugPhysicsVAO				{},
+	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
+	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	EBO							{ AMOUNT_OF_MEMORY_ALLOCATED },
 
-						// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
-	pointLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(PointLightData) + alignof(PointLightData)},
-	directionalLightSSBO{ MAX_NUMBER_OF_LIGHT * sizeof(DirectionalLightData) + alignof(DirectionalLightData)},
-	spotLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(SpotLightData) + alignof(SpotLightData)},
+								// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
+	pointLightSSBO				{ MAX_NUMBER_OF_LIGHT * sizeof(PointLightData) + alignof(PointLightData)},
+	directionalLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(DirectionalLightData) + alignof(DirectionalLightData)},
+	spotLightSSBO				{ MAX_NUMBER_OF_LIGHT * sizeof(SpotLightData) + alignof(SpotLightData)},
 
-						// we allocate memory for view and projection matrix.
-	sharedUBO			{ 2 * sizeof(glm::mat4) },
-	camera				{},
-	numOfDebugTriangles	{},
-	isOnWireframeMode	{},
+								// we allocate memory for view and projection matrix.
+	sharedUBO					{ 2 * sizeof(glm::mat4) },
+	camera						{},
+	numOfPhysicsDebugTriangles	{},
+	numOfNavMeshDebugTriangles	{},
+	isOnWireframeMode			{},
+	hdrExposure					{ 0.25f },
+	toneMappingMethod			{ ToneMappingMethod::None },
 
-	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16 } },
-	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } },
-	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } }
+	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
+	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
+	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
+	toGammaCorrect				{ true }
 {
 	printOpenGLDriverDetails();
 
@@ -126,8 +133,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	glCreateVertexArrays(1, &debugPhysicsVAO);
 	
-	// for this VAO, associate bindingIndex 1 with this VBO. 
-	constexpr GLuint debugBindingIndex = 1;
+	// for this VAO, associate bindingIndex 0 with this VBO. 
+	constexpr GLuint debugBindingIndex = 0;
 
 	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
 
@@ -172,32 +179,43 @@ void Renderer::update(float dt) {
 	(void) dt;
 }
 
-void Renderer::render(bool toRenderDebug) {
+void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
 	ZoneScoped;
 	prepareRendering();
 
 	renderSkyBox();
 
 	renderModels();
-
-	if (toRenderDebug) {
-		debugRender();
+	if (toRenderDebugPhysics) {
+		debugRenderPhysicsCollider();
+	}
+	
+	else if (toRenderDebugNavMesh) {
+		debugRenderNavMesh();
 	}
 
-	// Bind back to default FBO for ImGui to work on.
+	// ======= Post Processing =======
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	// Apply HDR tone mapping + gamma correction post-processing
+	renderHDRTonemapping();
+
+	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::renderToDefaultFBO() {
-	debugOverlayShader.use();
-	debugOverlayShader.setImageUniform("debugOverlay", 0);
-	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]);
+	overlayShader.use();
+	overlayShader.setImageUniform("overlay", 0);
+	glBindTextureUnit(0, getMainFrameBufferTexture());
 
+	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-std::vector<GLuint> const& Renderer::getMainFrameBufferTextures() const {
-	return mainFrameBuffer.textureIds();
+GLuint Renderer::getMainFrameBufferTexture() const {
+	return getActiveMainFrameBuffer().textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -221,10 +239,16 @@ Camera const& Renderer::getCamera() const {
 
 void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
+	PBRShader.compile();
 	skyboxShader.compile();
+	toneMappingShader.compile();
 }
 
-void Renderer::debugRender() {
+void Renderer::debugRenderPhysicsCollider() {
+	// Bind Debug Physics VBO to VAO.
+	constexpr GLuint debugBindingIndex = 0;
+	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+
 	// ================================================
 	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
 	// ================================================
@@ -246,11 +270,11 @@ void Renderer::debugRender() {
 
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 1.f });
-	glDrawArrays(GL_TRIANGLES, 0, numOfDebugTriangles * 3);
+	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	glDisable(GL_DEPTH_TEST);
-	debugOverlayShader.use();
-	numOfDebugTriangles = 0;
+	overlayShader.use();
+	numOfPhysicsDebugTriangles = 0;
 
 	// ================================================
 	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
@@ -263,26 +287,56 @@ void Renderer::debugRender() {
 	}
 
 	setBlendMode(BlendingConfig::AlphaBlending);
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	
 	// set image uniform accordingly..
 	glBindTextureUnit(0, physicsDebugFrameBuffer.textureIds()[0]);
-	debugOverlayShader.setImageUniform("debugOverlay", 0);
+	overlayShader.setImageUniform("overlay", 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisable(GL_BLEND);
 }
 
-void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color) {
-	(void) color;
 
-	if (numOfDebugTriangles > MAX_DEBUG_TRIANGLES) {
+void Renderer::debugRenderNavMesh() {
+	// Bind Debug Navmesh VBO to VAO.
+	constexpr GLuint debugBindingIndex = 0;
+	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
+
+	glBindVertexArray(debugPhysicsVAO);
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+
+	glDisable(GL_STENCIL_TEST);
+	setBlendMode(BlendingConfig::AlphaBlending);
+	glEnable(GL_DEPTH_TEST);
+
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f, 0.8f, 0.8f, 0.5f });
+	glDrawArrays(GL_TRIANGLES, 0, numOfNavMeshDebugTriangles * 3);
+
+	glDisable(GL_DEPTH_TEST);
+	setBlendMode(BlendingConfig::Disabled);
+	numOfNavMeshDebugTriangles = 0;
+}
+
+void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
+	if (numOfPhysicsDebugTriangles > MAX_DEBUG_TRIANGLES) {
 		std::cerr << "too much triangles!\n";
 		return;
 	}
 
-	debugPhysicsVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfDebugTriangles * sizeof(SimpleVertex));
-	++numOfDebugTriangles;
+	debugPhysicsVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfPhysicsDebugTriangles * sizeof(SimpleVertex));
+	++numOfPhysicsDebugTriangles;
+}
+
+void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3){
+	if (numOfNavMeshDebugTriangles > MAX_DEBUG_TRIANGLES) {
+		std::cerr << "too much triangles!\n";
+		return;
+	}
+
+	debugNavMeshVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfNavMeshDebugTriangles * sizeof(SimpleVertex));
+	++numOfNavMeshDebugTriangles;
 }
 
 void Renderer::prepareRendering() {
@@ -306,13 +360,21 @@ void Renderer::prepareRendering() {
 	
 	// Clear default framebuffer.
 	// glBindFramebuffer(GL_FRAMEBUFFER, 0); // we bind to default FBO at the end of our render.
-	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Clear main framebuffer.
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	// Clear both main framebuffers.
+	for (auto&& framebuffer : mainFrameBuffers) {
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.fboId());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+
+	// We choose 1 as the active index because we last bind to the last element of the array above^
 	
+	// Reset main frame buffer indices..
+	mainFrameBufferActiveIndex = 1;
+	mainFrameBufferReadIndex = 0;
+
 	// Clear object id framebuffer.
 
 	// For some reason, for framebuffers with integer color attachments
@@ -340,6 +402,7 @@ void Renderer::prepareRendering() {
 
 	// ==== Blinn Phong ====
 	blinnPhongShader.setVec3("cameraPos", camera.getPos());
+	PBRShader.setVec3("cameraPos", camera.getPos());
 
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
@@ -349,6 +412,7 @@ void Renderer::prepareRendering() {
 	unsigned int numOfPtLights = 0;
 	unsigned int numOfDirLights = 0;
 	unsigned int numOfSpotLights = 0;
+
 	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
 		switch (light.type)
 		{
@@ -422,6 +486,7 @@ void Renderer::prepareRendering() {
 }
 
 void Renderer::renderSkyBox() {
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	glDisable(GL_DEPTH_TEST);
 
 	for (auto&& [entityId, skyBox] : registry.view<SkyBox>().each()) {
@@ -486,7 +551,7 @@ void Renderer::renderModels() {
 			switch (material->renderingPipeline)
 			{
 			case Material::Pipeline::PBR:	
-				setupBlinnPhongShader(*material);
+				setupPBRShader(*material);
 				break;
 			case Material::Pipeline::BlinnPhong:
 				setupBlinnPhongShader(*material);
@@ -542,7 +607,10 @@ void Renderer::renderObjectId(GLsizei count) {
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
 	objectIdShader.use();
 	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+
+	// after rendering object id, swap back to main frame buffer..	
+	// this function is invoked when rendering models..
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glEnable(GL_DITHER);
 }
@@ -595,7 +663,76 @@ void Renderer::setupBlinnPhongShader(Material const& material) {
 }
 
 void Renderer::setupPBRShader(Material const& material) {
-	(void) material;
+	// Handle albedo.
+	std::visit([&](auto&& albedo) {
+		using T = std::decay_t<decltype(albedo)>;
+
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
+
+			if (!texture) {
+				// fallback..
+				PBRShader.setBool("isUsingAlbedoMap", false);
+				PBRShader.setVec3("albedo", { 0.2f, 0.2f, 0.2f });
+			}
+			else {
+				PBRShader.setBool("isUsingAlbedoMap", true);
+				glBindTextureUnit(0, texture->getTextureId());
+				PBRShader.setImageUniform("albedoMap", 0);
+			}
+		}
+		else /* it's Color */ {
+			PBRShader.setBool("isUsingAlbedoMap", false);
+			PBRShader.setVec3("albedo", albedo);
+		}
+
+		}, material.albedo);
+
+	// Handle normal map
+	if (material.normalMap) {
+		auto&& [normalMap, result] = resourceManager.getResource<Texture>(material.normalMap.value());
+
+		if (normalMap) {
+			PBRShader.setBool("isUsingNormalMap", true);
+			glBindTextureUnit(1, normalMap->getTextureId());
+			PBRShader.setImageUniform("normalMap", 1);
+		}
+	}
+	else {
+		PBRShader.setBool("isUsingNormalMap", false);
+	}
+
+	std::visit([&](auto&& config) {
+		using T = std::decay_t<decltype(config)>;
+
+		// Packed map
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(config);
+			if (!texture) {
+				PBRShader.setBool("isUsingPackedTextureMap", false);
+				PBRShader.setFloat("material.roughness", 0.2f);
+				PBRShader.setFloat("material.metallic", 0.2f);
+				PBRShader.setFloat("material.occulusion", 0.2f);
+			}
+			else {
+				PBRShader.setBool("isUsingPackedTextureMap", true);
+				glBindTextureUnit(2, texture->getTextureId());
+				PBRShader.setImageUniform("packedMap", 2);
+			}
+		}
+		// Constants
+		else {
+			PBRShader.setBool("isUsingPackedTextureMap", false);
+			PBRShader.setFloat("material.roughness", config.roughness);
+			PBRShader.setFloat("material.metallic", config.metallic);
+			PBRShader.setFloat("material.occulusion", config.occulusion);
+		}
+
+		}, material.config);
+
+	PBRShader.setFloat("ambientFactor", material.ambient);
+
+	PBRShader.use();
 }
 
 void Renderer::setupColorShader(Material const& material) {
@@ -628,6 +765,8 @@ void Renderer::setupColorShader(Material const& material) {
 void Renderer::setModelUniforms(Transform const& transform, entt::entity entity) {
 	blinnPhongShader.setMatrix("model", transform.modelMatrix);
 	blinnPhongShader.setMatrix("normalMatrix", transform.normalMatrix);
+	PBRShader.setMatrix("model", transform.modelMatrix);
+	PBRShader.setMatrix("normalMatrix", transform.normalMatrix);
 
 	colorShader.setMatrix("model", transform.modelMatrix);
 
@@ -693,4 +832,104 @@ void Renderer::printOpenGLDriverDetails() const {
 	if (glslVersion) {
 		Logger::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
 	}
+}
+
+FrameBuffer const& Renderer::getActiveMainFrameBuffer() const {
+	return mainFrameBuffers[mainFrameBufferActiveIndex];
+}
+
+FrameBuffer const& Renderer::getReadMainFrameBuffer() const {
+	return mainFrameBuffers[mainFrameBufferReadIndex];
+}
+
+void Renderer::swapMainFrameBuffers() {
+	if (mainFrameBufferActiveIndex == 0) {
+		mainFrameBufferActiveIndex = 1;
+		mainFrameBufferReadIndex = 0;
+	}
+	else if (mainFrameBufferActiveIndex == 1){
+		mainFrameBufferActiveIndex = 0;
+		mainFrameBufferReadIndex = 1;
+	}
+	else {
+		assert(false && "Invalid index.");
+	}
+}
+
+void Renderer::renderNavMesh(dtNavMesh const& mesh) {
+	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
+		const dtMeshTile* tile = mesh.getTile(tileNum);
+		if (!tile->header) continue;
+
+		// dtPolyRef base = mesh.getPolyRefBase(tile);
+
+		for (int i = 0; i < tile->header->polyCount; ++i) {
+			const dtPoly* p = &tile->polys[i];
+			if (p->getType() == DT_POLYTYPE_OFFMESH_CONNECTION)	// Skip off-mesh links.
+				continue;
+
+			const dtPolyDetail* polyDetail = &tile->detailMeshes[i];
+
+			for (int j = 0; j < polyDetail->triCount; ++j) {
+				const unsigned char* t = &tile->detailTris[(polyDetail->triBase + j) * 4];
+
+				std::array<glm::vec3, 3> triangleVertices;
+
+				// triangle
+				for (int k = 0; k < 3; ++k) {
+					float* vertex;
+
+					if (t[k] < p->vertCount) {
+						vertex = &tile->verts[p->verts[t[k]] * 3];
+					}
+					else {
+						vertex = &tile->detailVerts[(polyDetail->vertBase + t[k] - p->vertCount) * 3];
+					}
+
+					triangleVertices[k] = { vertex[0], vertex[1], vertex[2] };
+				}
+
+				submitNavMeshTriangle(triangleVertices[0], triangleVertices[1], triangleVertices[2]);
+			}
+		}
+	}
+}
+
+void Renderer::renderHDRTonemapping() {
+	ZoneScoped;
+
+	swapMainFrameBuffers();
+
+	// Bind the post-processing framebuffer for LDR output
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+
+	// Set up tone mapping shader
+	toneMappingShader.use();
+	toneMappingShader.setFloat("exposure", hdrExposure);
+	toneMappingShader.setFloat("gamma", 2.2f);
+	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(toneMappingMethod));
+	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
+
+	// Bind the HDR texture from main framebuffer
+	glBindTextureUnit(0, getReadMainFrameBuffer().textureIds()[0]);
+	toneMappingShader.setImageUniform("hdrBuffer", 0);
+
+	// Render fullscreen triangle (more efficient than quad)
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Renderer::setHDRExposure(float exposure) {
+	hdrExposure = exposure;
+}
+
+float Renderer::getHDRExposure() const {
+	return hdrExposure;
+}
+
+void Renderer::setToneMappingMethod(ToneMappingMethod method) {
+	toneMappingMethod = method;
+}
+
+Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
+	return toneMappingMethod;
 }

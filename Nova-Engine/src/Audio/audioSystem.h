@@ -1,11 +1,14 @@
 #pragma once
 
+#include <entt/entt.hpp>
 #include <FMOD/fmod.hpp>
 #include "export.h"
 #include <unordered_map>
 #include <string>
 
 #include "type_alias.h"
+
+struct AudioComponent;
 
 class Engine;
 class ResourceManager;
@@ -25,8 +28,8 @@ public:
 	ENGINE_DLL_API AudioSystem(Engine& engine);
 	ENGINE_DLL_API ~AudioSystem();
 	ENGINE_DLL_API AudioSystem(AudioSystem const& other)				= delete;
-	ENGINE_DLL_API AudioSystem(AudioSystem&& other)					= delete;
-	ENGINE_DLL_API AudioSystem& operator=(AudioSystem const& other)	= delete;
+	ENGINE_DLL_API AudioSystem(AudioSystem&& other)						= delete;
+	ENGINE_DLL_API AudioSystem& operator=(AudioSystem const& other)		= delete;
 	ENGINE_DLL_API AudioSystem& operator=(AudioSystem&& other)			= delete;
 
 public:
@@ -83,6 +86,10 @@ public:
 	ENGINE_DLL_API void AdjustBGMVol(float volume);
 
 	void handleFinishedAudioInstance(FMOD::Channel* channel);
+
+public:
+	// this function is called from the scripting API.
+	ENGINE_DLL_API void playSFX(entt::entity entity, std::string soundName);
 
 private:
 	FMOD::Sound* getSound(ResourceID audioId) const;

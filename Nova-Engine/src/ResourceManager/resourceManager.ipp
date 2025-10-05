@@ -90,7 +90,6 @@ std::vector<ResourceID> const& ResourceManager::getAllResources() const {
 	auto iterator = resourcesByType.find(Family::id<T>());
 
 	if (iterator == resourcesByType.end()) {
-		Logger::error("Attempt to retrieve all assets of an invalid type?");
 		static std::vector<ResourceID> empty;
 		return empty;
 	}
