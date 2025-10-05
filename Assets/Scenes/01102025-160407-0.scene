@@ -7,15 +7,25 @@
                 "parent": 3145740
             },
             "ParticleEmitter": {
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
                 "emissionShape": "Sphere",
-                "emissionType": "Continuous",
-                "lifeTime": 1.0,
-                "particleRate": 100.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 5.0,
+                "maxParticles": 500,
+                "particleRate": 1.0,
                 "sizeOverLifeTime": false,
                 "speedOverLifeTime": false,
                 "startSize": 1.0,
-                "startSpeed": 1.0,
-                "texture": 10995477310402707607
+                "startSpeed": 5.0,
+                "texture": 11571938062706114685
             },
             "Transform": {
                 "eulerAngles": {
@@ -30,8 +40,8 @@
                 },
                 "localPosition": {
                     "x": 1.1515589952468872,
-                    "y": 22.932804107666016,
-                    "z": 53.81703186035156
+                    "y": 22.9327392578125,
+                    "z": 236.8333740234375
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -46,8 +56,8 @@
                 },
                 "position": {
                     "x": 0.12782305479049683,
-                    "y": 3.658832550048828,
-                    "z": 5.973690986633301
+                    "y": 3.658824920654297,
+                    "z": 26.28850555419922
                 },
                 "rotation": {
                     "w": 1.0,
@@ -56,9 +66,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999998211860657,
-                    "y": 0.9999998211860657,
-                    "z": 0.9999998211860657
+                    "x": 0.9999997615814209,
+                    "y": 0.9999997615814209,
+                    "z": 0.9999997615814209
                 }
             },
             "id": 2097157
@@ -171,17 +181,6 @@
                 "name": "ParticleEmitter",
                 "parent": 4294967295
             },
-            "ParticleEmitter": {
-                "emissionShape": "Sphere",
-                "emissionType": "Continuous",
-                "lifeTime": 1.0,
-                "particleRate": 1000.0,
-                "sizeOverLifeTime": false,
-                "speedOverLifeTime": false,
-                "startSize": 0.10000000149011612,
-                "startSpeed": 5.0,
-                "texture": 10995477310402707607
-            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
@@ -210,9 +209,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 31.68404769897461,
-                    "y": 8.280244827270508,
-                    "z": -7.060489177703857
+                    "x": -1.3814386129379272,
+                    "y": 7.570606708526611,
+                    "z": -20.451738357543945
                 },
                 "rotation": {
                     "w": 1.0,

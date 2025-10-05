@@ -336,20 +336,20 @@ struct NavigationTestTarget
 };
 struct Particle {
 	glm::vec3 position;
-	glm::vec3 direction;
+	glm::vec3 velocity;
 	float size;
 	float currentLifeTime;
 };
 struct ParticleEmitter
 {
 	// Update
-	float currentTime;
-
+	float currentTime = 0.f;
 	// Rendering
 	std::vector<Particle> particles;
 
 	// Editor stuff
 	TypedResourceID<Texture> texture;
+	Color color = Color{ 1.f, 1.f, 1.f };
 	enum class EmissionShape {
 		Sphere,
 		// Cylinder
@@ -357,25 +357,24 @@ struct ParticleEmitter
 		// Hemisphere
 		// Cone
 	} emissionShape;
-	enum class EmissionType {
-		Continuous,
-		// RepeatedBurst
-		// SingleBurst
-	} emissionType;
-	float startSize;
-	float startSpeed;
-	float lifeTime;
-	float particleRate;
+	float startSize = 1;
+	float startSpeed = 1;
+	glm::vec3 force;
+	float lifeTime = 1;
+	int maxParticles = 1000;
+	float particleRate = 100;
 	bool sizeOverLifeTime;
 	bool speedOverLifeTime;
 	REFLECTABLE
 	(
 		texture,
+		color,
 		emissionShape,
-		emissionType,
 		startSize,
 		startSpeed,
+		force,
 		lifeTime,
+		maxParticles,
 		particleRate,
 		sizeOverLifeTime,
 		speedOverLifeTime

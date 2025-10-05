@@ -51,7 +51,7 @@ public:
 public:
 	void update(float dt);
 
-	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh);
+	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape);
 	void renderToDefaultFBO();
 
 public:
@@ -125,6 +125,9 @@ private:
 
 	// render a debug triangles in navMesh
 	void debugRenderNavMesh();
+
+	// render debug shapes in particle emitter
+	void debugRenderParticleEmissionShape();
 
 	// HDR post-processing functions
 	void renderHDRTonemapping();
