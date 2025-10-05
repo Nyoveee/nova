@@ -244,8 +244,8 @@ namespace Serialiser {
 						audioComponentJson["name"] = name;
 
 						json audioDataJson;
-						audioDataJson["id"] = static_cast<std::size_t>(audioData.AudioId);
-						audioDataJson["volume"] = audioData.Volume;
+						audioDataJson["id"] = static_cast<std::size_t>(audioData.audioId);
+						audioDataJson["volume"] = audioData.volume;
 
 						audioComponentJson["audioData"] = audioDataJson;
 

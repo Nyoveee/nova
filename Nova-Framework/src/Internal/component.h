@@ -34,7 +34,7 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, \
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, PositionalAudio, Scripts, \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent
 
 using MaterialName = std::string;
@@ -222,9 +222,9 @@ struct Scripts
 
 struct AudioData
 {
-	TypedResourceID<Audio> AudioId			{ INVALID_RESOURCE_ID };
-	float Volume							{ 1.f };
-	bool StopAudio							{ false };
+	TypedResourceID<Audio> audioId			{ INVALID_RESOURCE_ID };
+	float volume							{ 1.f };
+	bool stopAudio							{ false };
 };
 
 struct AudioComponent 

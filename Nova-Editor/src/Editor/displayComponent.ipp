@@ -21,13 +21,13 @@ namespace {
 
 	template<typename Component>
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
-		(void) entity;
+		(void)entity;
 
 		ResourceManager& resourceManager = componentInspector.resourceManager;
-		AssetManager& assetManager		 = componentInspector.assetManager;
-		AudioSystem& audioSystem		 = componentInspector.audioSystem;
-		
-		(void) resourceManager;
+		AssetManager& assetManager = componentInspector.assetManager;
+		AudioSystem& audioSystem = componentInspector.audioSystem;
+
+		(void)resourceManager;
 
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
@@ -57,7 +57,7 @@ namespace {
 				toDisplay = ImGui::CollapsingHeader(name, &toShowHeader);
 			}
 			else {
-				(void) toShowHeader;
+				(void)toShowHeader;
 				toDisplay = ImGui::CollapsingHeader(name);
 			}
 
@@ -223,7 +223,7 @@ namespace {
 
 						componentInspector.editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 							dataMember = DataMemberType{ resourceId };
-						});
+							});
 					}
 
 					else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
@@ -255,13 +255,13 @@ namespace {
 						}
 
 						ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || componentInspector.editor.engine.isInSimulationMode());
-						
+
 						// Adding Scripts
 						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
 							ScriptData scriptData{ resourceId };
 							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(scriptData.scriptId);
 							scriptDatas.push_back(scriptData);
-						});
+							});
 
 						int i{};
 						// Removal of Scripts
@@ -271,7 +271,7 @@ namespace {
 							bool keepScript = true;
 
 							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
-							
+
 							if (!scriptAsset) {
 								Logger::warn("Invalid script found, removing it..");
 								keepScript = false;
@@ -283,7 +283,7 @@ namespace {
 
 							ImGui::PopID();
 							return !keepScript;
-						});
+							});
 						ImGui::EndChild();
 						if (it != std::end(scriptDatas)) {
 							scriptDatas.erase(it);
@@ -300,17 +300,17 @@ namespace {
 					{
 						auto& audioDatas = dataMember;
 						std::string s{};
-						std::string searchQuery{};					  
+						std::string searchQuery{};
 						std::vector<std::string> filteredAudioAssets;
 
 						// Add Audio
 						componentInspector.editor.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
 						{
-							// Store full AudioData directly in the component
-							auto namePtr = assetManager.getName(resourceId);
+								// Store full AudioData directly in the component
+								auto namePtr = assetManager.getName(resourceId);
 
-							if(namePtr) 
-								audioDatas.emplace(namePtr->c_str(), AudioData{ resourceId, 1.0f, false });
+								if (namePtr)
+									audioDatas.emplace(namePtr->c_str(), AudioData{ resourceId, 1.0f, false });
 						});
 
 						// List of Audio Files
@@ -323,45 +323,37 @@ namespace {
 							bool keepAudioFile = true;
 
 							auto&& [name, audioData] = *it;
-							
-							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
+
+							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.audioId);
 
 							if (!audioAsset) {
 								// Invalid ResourceID
-								Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.AudioId));
+								Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.audioId));
 								ImGui::PopID();
 								it = audioDatas.erase(it);
 								continue;
 							}
 
 							if (ImGui::CollapsingHeader(name.c_str(), &keepAudioFile)) {
+
 								if (ImGui::Button("Play Audio")) {
-									if (audioSystem.isBGM(audioData.AudioId)) {
-										audioSystem.playBGM(audioData.AudioId, audioData.Volume);
+									if (s.substr(0, 4) == "BGM_") {
+										audioSystem.playBGM(audioData.audioId, audioData.volume);
 									}
 									else {
-										audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f, audioData.Volume);
+										audioSystem.playSFX(audioData.audioId, 0.f, 0.f, 0.f, audioData.volume);
 									}
 								}
-
-									if (ImGui::Button("Play Audio")) {
-										if (s.substr(0, 4) == "BGM_") {
-											audioSystem.playBGM(audioData.audioId, audioData.volume);
-										}
-										else {
-											audioSystem.playSFX(audioData.audioId, 0.f, 0.f, 0.f, audioData.volume);
-										}
-									}
-									ImGui::SameLine();
-									if (ImGui::Button("Stop Audio")) {
-										audioSystem.StopAudio(audioData.audioId);
-									}
-
-									// Adjust Volume slider
-									if (ImGui::DragFloat("Adjust Volume", &audioData.volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
-										audioSystem.AdjustVol(audioData.audioId, audioData.volume);
-									}
+								ImGui::SameLine();
+								if (ImGui::Button("Stop Audio")) {
+									audioSystem.StopAudio(audioData.audioId);
 								}
+
+								// Adjust Volume slider
+								if (ImGui::DragFloat("Adjust Volume", &audioData.volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
+									audioSystem.AdjustVol(audioData.audioId, audioData.volume);
+								}
+
 							}
 
 							ImGui::PopID();
@@ -395,7 +387,7 @@ namespace {
 
 					ImGui::PopID();
 				},
-			component);
+				component);
 			ImGui::PopID();
 			ImGui::PopID();
 

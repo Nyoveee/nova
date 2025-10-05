@@ -186,7 +186,7 @@ void AudioSystem::playSFX(entt::entity entity, std::string soundName) {
 	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
 
 	auto&& [_, audioData] = *iterator;
-	playSFX(audioData.AudioId, transform.position.x, transform.position.y, transform.position.z, audioData.Volume);
+	playSFX(audioData.audioId, transform.position.x, transform.position.y, transform.position.z, audioData.volume);
 }
 
 FMOD::Sound* AudioSystem::getSound(ResourceID audioId) const {
