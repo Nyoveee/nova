@@ -470,7 +470,24 @@ void Renderer::prepareRendering() {
 
 		}
 	}
-
+	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each())
+	{
+		if (emitter.lightIntensity <= 0)
+			continue;
+		for (Particle const& particle : emitter.particles) {
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Unable to add more particle lights, max number of point lights reached!");
+				break;
+			}
+			pointLightData[numOfPtLights++] = {
+				particle.position,
+				glm::vec3{ emitter.color } *emitter.lightIntensity,
+				emitter.lightattenuation
+			};
+		}
+		if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
+			break;
+	}
 	// Send it over to SSBO.
 	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
 	glNamedBufferSubData(directionalLightSSBO.id(), 0, sizeof(unsigned int), &numOfDirLights);

@@ -340,8 +340,17 @@ struct Particle {
 	float size;
 	float currentLifeTime;
 };
+struct CubeEmitter {
+	glm::vec3 min;
+	glm::vec3 max;
+};
+struct SphereEmitter {
+	float radius;
+};
 struct ParticleEmitter
 {
+	// Emission Shape
+	SphereEmitter sphereEmitter;
 	// Update
 	float currentTime = 0.f;
 	// Rendering
@@ -352,31 +361,39 @@ struct ParticleEmitter
 	Color color = Color{ 1.f, 1.f, 1.f };
 	enum class EmissionShape {
 		Sphere,
+		Cube
+		// Edge
 		// Cylinder
 		// Circle
 		// Hemisphere
 		// Cone
 	} emissionShape;
+	bool looping = true;
 	float startSize = 1;
 	float startSpeed = 1;
 	glm::vec3 force;
 	float lifeTime = 1;
 	int maxParticles = 1000;
 	float particleRate = 100;
-	bool sizeOverLifeTime;
-	bool speedOverLifeTime;
+	float burstRate = 30;
+	float burstTime = 0;
+	float lightIntensity = 0.f;
+	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 	REFLECTABLE
 	(
 		texture,
 		color,
 		emissionShape,
+		looping,
 		startSize,
 		startSpeed,
 		force,
 		lifeTime,
 		maxParticles,
 		particleRate,
-		sizeOverLifeTime,
-		speedOverLifeTime
+		burstRate,
+		burstTime,
+		lightIntensity,
+		lightattenuation
 	)
 };

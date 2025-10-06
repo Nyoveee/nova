@@ -1,79 +1,6 @@
 {
     "entities": [
         {
-            "EntityData": {
-                "children": [],
-                "name": "ParticleEmitter",
-                "parent": 3145740
-            },
-            "ParticleEmitter": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "emissionShape": "Sphere",
-                "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "lifeTime": 5.0,
-                "maxParticles": 500,
-                "particleRate": 1.0,
-                "sizeOverLifeTime": false,
-                "speedOverLifeTime": false,
-                "startSize": 1.0,
-                "startSpeed": 5.0,
-                "texture": 11571938062706114685
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 1.1515589952468872,
-                    "y": 22.9327392578125,
-                    "z": 236.8333740234375
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 9.00900650024414,
-                    "y": 9.00900650024414,
-                    "z": 9.00900650024414
-                },
-                "position": {
-                    "x": 0.12782305479049683,
-                    "y": 3.658824920654297,
-                    "z": 26.28850555419922
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999997615814209,
-                    "y": 0.9999997615814209,
-                    "z": 0.9999997615814209
-                }
-            },
-            "id": 2097157
-        },
-        {
             "AudioComponent": {
                 "data": [
                     {
@@ -181,6 +108,34 @@
                 "name": "ParticleEmitter",
                 "parent": 4294967295
             },
+            "ParticleEmitter": {
+                "burstRate": 30.0,
+                "burstTime": 0.0,
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 0.0
+                },
+                "emissionShape": "Sphere",
+                "force": {
+                    "x": 0.0,
+                    "y": -9.800000190734863,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 100,
+                "particleRate": 100.0,
+                "startSize": 1.0,
+                "startSpeed": 1.0,
+                "texture": 10995477310402707607
+            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
@@ -230,36 +185,36 @@
         {
             "EntityData": {
                 "children": [],
-                "name": "Light",
-                "parent": 4294967295
+                "name": "ParticleEmitter",
+                "parent": 3145740
             },
-            "Light": {
+            "ParticleEmitter": {
+                "burstRate": 30.0,
+                "burstTime": 0.0,
                 "color": {
-                    "b": 1.0,
-                    "g": 1.0,
+                    "b": 0.0,
+                    "g": 0.0,
                     "r": 1.0
                 },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 1.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "MeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 1.0,
-                                "g": 1.0,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "materialName": "Material",
-                        "renderingPipeline": "Color"
-                    }
-                ],
-                "modelId": 1245008178564268053
+                "emissionShape": "Sphere",
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 1000,
+                "particleRate": 100.0,
+                "startSize": 1.0,
+                "startSpeed": 1.0,
+                "texture": 10995477310402707607
             },
             "Transform": {
                 "eulerAngles": {
@@ -273,9 +228,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -20.89436149597168,
+                    "y": 22.932727813720703,
+                    "z": 78.82994079589844
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -284,14 +239,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 9.00900650024414,
+                    "y": 9.00900650024414,
+                    "z": 9.00900650024414
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 6.195217132568359,
-                    "z": 10.095973014831543
+                    "x": -2.3192741870880127,
+                    "y": 3.6588239669799805,
+                    "z": 8.750123977661133
                 },
                 "rotation": {
                     "w": 1.0,
@@ -300,12 +255,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 0.9999997615814209,
+                    "y": 0.9999997615814209,
+                    "z": 0.9999997615814209
                 }
             },
-            "id": 1
+            "id": 2097157
         },
         {
             "EntityData": {
@@ -381,6 +336,86 @@
                 }
             },
             "id": 0
+        },
+        {
+            "EntityData": {
+                "children": [],
+                "name": "ParticleEmitter",
+                "parent": 4294967295
+            },
+            "ParticleEmitter": {
+                "burstRate": 30.0,
+                "burstTime": 0.0,
+                "color": {
+                    "b": 0.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "emissionShape": "Sphere",
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 10.0,
+                "lightIntensity": 0.10000000149011612,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 20,
+                "particleRate": 1.0,
+                "startSize": 1.0,
+                "startSpeed": 1.0,
+                "texture": 10995477310402707607
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -2.05999755859375,
+                    "y": 3.911820411682129,
+                    "z": 30.990585327148438
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 3
         }
     ]
 }

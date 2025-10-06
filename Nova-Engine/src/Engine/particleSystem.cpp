@@ -7,6 +7,8 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 void ParticleSystem::update(float dt)
 {
 	for (auto&& [entity, transform, emitter] : engine.ecs.registry.view<Transform, ParticleEmitter>().each()) {
+		if (!emitter.looping)
+			continue;
 		// Updating of particles
 		std::vector<Particle>::iterator it = std::remove_if(std::begin(emitter.particles), std::end(emitter.particles), [&emitter, dt](Particle& particle) {
 			particle.currentLifeTime -= dt;
@@ -31,8 +33,5 @@ void ParticleSystem::update(float dt)
 			Particle newParticle = { transform.position, randomDirection * emitter.startSpeed ,emitter.startSize,emitter.lifeTime };
 			emitter.particles.push_back(newParticle);
 		}
-
-
-
 	}
 }
