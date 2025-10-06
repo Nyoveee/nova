@@ -271,8 +271,6 @@ struct NavMeshModifier
 	(
 		Area_Type
 	)
-
-
 };
 
 
@@ -280,7 +278,6 @@ struct NavMeshSurface
 {
 	std::string label;
 	TypedResourceID<NavMesh> navMeshId;
-
 
 	REFLECTABLE
 	(
@@ -352,7 +349,8 @@ struct ParticleEmitter
 	// Emission Shape
 	SphereEmitter sphereEmitter;
 	// Update
-	float currentTime = 0.f;
+	float currentContinuousTime = 0.f;
+	float currentBurstTime = 0.f;
 	// Rendering
 	std::vector<Particle> particles;
 
@@ -375,8 +373,8 @@ struct ParticleEmitter
 	float lifeTime = 1;
 	int maxParticles = 1000;
 	float particleRate = 100;
-	float burstRate = 30;
-	float burstTime = 0;
+	float burstRate = 0;
+	int burstAmount = 30;
 	float lightIntensity = 0.f;
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 	REFLECTABLE
@@ -392,7 +390,7 @@ struct ParticleEmitter
 		maxParticles,
 		particleRate,
 		burstRate,
-		burstTime,
+		burstAmount,
 		lightIntensity,
 		lightattenuation
 	)
