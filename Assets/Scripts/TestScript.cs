@@ -1,32 +1,34 @@
 ﻿class TestScript : Script
 {
-    Transform_? transform;
-    TestScript2? testScript2;
+    [SerializableField]
+    private Transform_? transform = null;
+    [SerializableField]
+    private Vector3 spawnPos = new Vector3(0, 0, 0);
+    [SerializableField]
+    private float moveSpeed = 3f;
+
+    [SerializableField]
+    private Vector3 testPos = new Vector3(1.0f, 0.2f, 1.0f);
+
     protected override void init()
     {
         transform = getComponent<Transform_>();
-        testScript2 = getScript<TestScript2>();
-        Input.MapKey(Key.A, OnKeyPressA, OnKeyReleaseA);
-        Input.MapKey(Key._0, OnKeyPressA, OnKeyReleaseA);
-     
-    }
-    private void OnKeyPressA()
-    {
-        //Console.WriteLine("Pressed A");
-        Console.WriteLine(Input.mousePosition);
-    }
-    private void OnKeyReleaseA()
-    {
-        Vector2 test;
-        test.x = 0;
-        test.y = 0;
-        if(transform != null)
-            Debug.Print(test);
-
+        if (transform != null)
+        {
+            transform.position = spawnPos;
+        }
     }
     protected override void update()
     {
-        if (testScript2 != null)
-            testScript2.MoveTable();
-    }  
+        // Debug.log;
+        // asds
+
+        if(transform!= null)
+        {
+            Vector3 position = transform.position;
+            position.z += moveSpeed * Time.V_FixedDeltaTime();
+            transform.position = position;
+        }
+       
+    }
 }

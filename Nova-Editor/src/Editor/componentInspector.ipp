@@ -1,41 +1,6 @@
-#include "ResourceManager/resourceManager.h"
 #include "imgui.h"
-#include "Component/ECS.h"
-
-template<typename T>
-void ComponentInspector::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback) {
-	ImGui::PushID(imguiCounter);
-	++imguiCounter;
-
-	char const* selectedAssetName = "";
-
-	if (id) {
-		Asset* selectedAsset = resourceManager.getResourceInfo(id.value());
-
-		if (!selectedAsset) {
-			selectedAssetName = "Invalid asset.";
-		}
-		else {
-			selectedAssetName = selectedAsset->name.c_str();
-		}
-	}
-
-	auto allResources = resourceManager.getAllResources<T>();
-
-	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
-		for (auto&& resourceId : allResources) {
-			Asset* asset = resourceManager.getResourceInfo(resourceId);
-
-			if (ImGui::Selectable(asset->name.c_str(), id ? id.value() == asset->id : false)) {
-				onClickCallback(asset->id);
-			}
-		}
-
-		ImGui::EndCombo();
-	}
-
-	ImGui::PopID();
-}
+#include "ECS/ECS.h"
+#include "component.h"
 
 template<typename ...Components>
 void ComponentInspector::displayComponentDropDownList(entt::entity entity) {

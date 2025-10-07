@@ -5,6 +5,9 @@
 
 #pragma once
 #include "API/IManagedComponent.hxx"
+[System::AttributeUsage(System::AttributeTargets::Field)]
+public ref class SerializableField : System::Attribute {};
+
 public ref class Script abstract
 {
 public:
@@ -13,17 +16,26 @@ public:
 	T getComponent();
 	generic<typename T> where T : Script
 	T getScript();
+
 internal:
 	// C++/cli doesn't support friend class so this is a way to make sure scripts cannot access the init update exit functions of other scripts
 	// These also includes exception handling for scripts
 	void callInit();
 	void callUpdate();
 	void callExit();
-	void setEntityID(System::UInt32 p_entityID);
+
+	void callOnCollisionEnter(unsigned entityId);
+
+	System::UInt32 getEntityID() { return entityID; };
+	void setEntityID(System::UInt32 id) { entityID = id; };
+
 protected:
 	virtual void init() {};
 	virtual void update() {};
 	virtual void exit() {};
-private:
+
+	virtual void onCollisionEnter([[maybe_unused]] unsigned entityId) {};
+
+protected:
 	System::UInt32 entityID;
 };

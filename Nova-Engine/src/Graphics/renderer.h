@@ -10,10 +10,14 @@
 #include "camera.h"
 #include "bufferObject.h"
 #include "framebuffer.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
+#include "component.h"
+#include "vertex.h"
 
 #include "model.h"
 #include "cubemap.h"
+
+#include "Detour/Detour/DetourNavMesh.h"
 
 class Engine;
 class ResourceManager;
@@ -28,9 +32,11 @@ public:
 		Disabled
 	};
 
-	enum class RenderTarget {
-		ToDefaultFrameBuffer,
-		ToMainFrameBuffer
+	enum class ToneMappingMethod {
+		Exposure,
+		Reinhard,
+		ACES,
+		None
 	};
 
 public:
@@ -45,28 +51,39 @@ public:
 public:
 	void update(float dt);
 
-	// choose to either render to the default frame buffer or the main frame buffer.
-	void render(RenderTarget target, bool toRenderDebug);
+	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh);
+	void renderToDefaultFBO();
 
 public:
 	// =============================================
 	// Public facing API.
 	// =============================================
 
-	// used directly in the editor. i need to export this.
-	DLL_API std::vector<GLuint> const& getMainFrameBufferTextures() const;
-	DLL_API void enableWireframeMode(bool toEnable);
+	// get the main texture of the main frame buffer.
+	ENGINE_DLL_API GLuint getMainFrameBufferTexture() const;
+	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// gets object id from color attachment 1 of the main framebuffer.
 	// parameter normalisedPosition expects value of range [0, 1], representing the spot in the color attachment from bottom left.
 	// retrieves the value in that position of the framebuffer.
-	DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
+	ENGINE_DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
 
-	DLL_API Camera& getCamera();
-	DLL_API Camera const& getCamera() const;
+	ENGINE_DLL_API Camera& getCamera();
+	ENGINE_DLL_API Camera const& getCamera() const;
 
 	// most probably for ease of development.
-	DLL_API void recompileShaders();
+	ENGINE_DLL_API void recompileShaders();
+
+	ENGINE_DLL_API void setBlendMode(BlendingConfig configuration);
+	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
+
+	// HDR controls
+	ENGINE_DLL_API void setHDRExposure(float exposure);
+	ENGINE_DLL_API float getHDRExposure() const;
+
+	// Tone mapping controls
+	ENGINE_DLL_API void setToneMappingMethod(ToneMappingMethod method);
+	ENGINE_DLL_API ToneMappingMethod getToneMappingMethod() const;
 
 public:
 	// =============================================
@@ -74,7 +91,11 @@ public:
 	// =============================================
 
 	// submit triangles to be rendered at the end
-	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color);
+	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
+	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
+
+public:
+	bool toGammaCorrect;
 
 private:
 	// =============================================
@@ -82,7 +103,7 @@ private:
 	// =============================================
 
 	// set up proper configurations and clear framebuffers..
-	void prepareRendering(RenderTarget target);
+	void prepareRendering();
 
 	// render skybox
 	void renderSkyBox();
@@ -100,7 +121,13 @@ private:
 	void renderObjectId(GLsizei count);
 
 	// render a debug triangles in physics
-	void debugRender();
+	void debugRenderPhysicsCollider();
+
+	// render a debug triangles in navMesh
+	void debugRenderNavMesh();
+
+	// HDR post-processing functions
+	void renderHDRTonemapping();
 
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
@@ -114,8 +141,15 @@ private:
 	// attempts to get the appropriate material from meshrenderer.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
 
-	void setBlendMode(BlendingConfig configuration);
 	void printOpenGLDriverDetails() const;
+
+	// =============================================
+	// Main Frame Buffer operations..
+	// =============================================
+	FrameBuffer const& getActiveMainFrameBuffer() const;
+	FrameBuffer const& getReadMainFrameBuffer() const;
+
+	void swapMainFrameBuffers();
 
 private:
 	Engine& engine;
@@ -133,14 +167,19 @@ private:
 	BufferObject spotLightSSBO;
 	BufferObject sharedUBO;
 
-	// Debug Physics VAO and it's corresponding VBO.	
+	// Debug Physics VAO and it's corresponding VBO.
 	GLuint debugPhysicsVAO;
 	BufferObject debugPhysicsVBO;
+	BufferObject debugNavMeshVBO;
 
 	Camera camera;
 
 	// contains all the final rendering.
-	FrameBuffer mainFrameBuffer;
+	// we use 2 frame buffers to alternate between the two between post processing..
+	std::array<FrameBuffer, 2> mainFrameBuffers;
+
+	int mainFrameBufferActiveIndex = 0;	// which framebuffer we are current writing to, and contains the latest image.
+	int mainFrameBufferReadIndex  = 1;	// which framebuffer we are current reading from, to do additional post processing..
 
 	// 
 	FrameBuffer bloomFrameBuffer;
@@ -154,7 +193,9 @@ private:
 	FrameBuffer objectIdFrameBuffer;
 
 private:
-	int numOfDebugTriangles;
+	int numOfPhysicsDebugTriangles;
+	int numOfNavMeshDebugTriangles;
+
 	bool isOnWireframeMode;
 	unsigned int drawcallCounter;
 
@@ -172,8 +213,16 @@ public:
 	Shader gridShader;
 	Shader outlineShader;
 	Shader blinnPhongShader;
+	Shader PBRShader;
 	Shader debugShader;
-	Shader debugOverlayShader;
+	Shader overlayShader;
 	Shader objectIdShader;
 	Shader skyboxShader;
+	
+	// HDR tone mapping shader
+	Shader toneMappingShader;
+
+	// HDR parameters
+	float hdrExposure;
+	ToneMappingMethod toneMappingMethod;
 };

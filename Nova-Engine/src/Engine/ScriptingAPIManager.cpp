@@ -13,10 +13,12 @@
 #pragma comment(lib, "shlwapi.lib") // PathRemoveFileSpecA
 
 #include "engine.h"
+#include "ECS/ECS.h"
 
 namespace {
-	constexpr float DEBOUNCING_TIME = 3.0f;
+	constexpr float DEBOUNCING_TIME = 1.0f;
 }
+
 ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	: engine{p_engine}
 	, runtimeDirectory{}
@@ -26,14 +28,12 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 	, intializeCoreClr			{ nullptr }
 	, createManagedDelegate		{ nullptr }
 	, shutdownCorePtr			( nullptr )
-	, updateScripts				{ nullptr } 
-	, addGameObjectScript		{ nullptr }
-	, removeGameObjectScript	{ nullptr } 
-	, timeSinceSave				{}
+	, update_					{ nullptr } 
+	, addEntityScript			{ nullptr }
+	, removeEntityScript_		{ nullptr } 
+	, timeSinceSave				{  }
 	, compileState				{ CompileState::NotCompiled }
 {
-	//assetManager.directoryWatcher.RegisterCallbackAssetContentModified([&](ResourceID resourceId) { OnAssetContentModifiedCallback(resourceId); });
-
 	// ==========================================================
 	// 1. Load the .NET Core CoreCLR library (explicit linking)
 	// (this project assumes that the dll is located right next to the executable.
@@ -118,12 +118,18 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		using InitFunctionPtr = void(*)(Engine&, const char*);
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
-		updateScripts							= GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
-		addGameObjectScript						= GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addGameObjectScript");
-		removeGameObjectScript					= GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeGameObjectScript");
-		loadAssembly							= GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "load");
-		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unload");
+		update_							        = GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
+		loadAssembly                            = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "loadAssembly");
+		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unloadAssembly");
+		addEntityScript						    = GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addEntityScript");
+		removeEntityScript_					    = GetFunctionPtr<RemoveScriptFunctionPtr>("Interface", "removeEntityScript");
+		removeEntity_                           = GetFunctionPtr<RemoveEntityFunctionPtr>("Interface", "removeEntity");
 		initalizeScripts                        = GetFunctionPtr<IntializeScriptsFunctionPtr>("Interface", "intializeAllScripts");
+		getScriptFieldDatas_                    = GetFunctionPtr<GetScriptFieldsFunctionPtr>("Interface", "getScriptFieldDatas");
+		
+		setScriptFieldData		                = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
+		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
+
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -193,6 +199,9 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 
 bool ScriptingAPIManager::compileScriptAssembly()
 {
+	compileState = CompileState::CompilationFailed;
+
+	unloadAssembly();
 	// Project path and build command
 	std::string proj_path{std::filesystem::current_path().string() + "\\Nova-Scripts\\Nova-Scripts.csproj"};
 
@@ -258,64 +267,146 @@ bool ScriptingAPIManager::compileScriptAssembly()
 		Logger::error("Failed to build Nova-Scripts");
 		return false;
 	}
+
+	compileState = CompileState::Compiled;
+	loadAssembly();
 	return true;
 }
 
-
-void ScriptingAPIManager::update() { 	
-	ZoneScoped;
-	updateScripts();
+#if 0
+void ScriptingAPIManager::loadEntityScript(entt::entity entityID, ResourceID scriptID)
+{
+	addEntityScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
 }
 
-void ScriptingAPIManager::checkModifiedScripts(float dt)
+void ScriptingAPIManager::removeEntityScript(entt::entity entityID, ResourceID scriptID)
 {
-	if (compileState == CompileState::ToBeCompiled) {
-		timeSinceSave += dt;
+	removeEntityScript_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
+}
 
-		if (timeSinceSave >= DEBOUNCING_TIME) {
-			if (compileScriptAssembly()) {
-				compileState = CompileState::Compiled;
-			}
-			else {
-				compileState = CompileState::NotCompiled;
+ENGINE_DLL_API void ScriptingAPIManager::removeEntity(entt::entity entityID)
+{
+	removeEntity_(static_cast<unsigned int>(entityID));
+}
+#endif
+
+bool ScriptingAPIManager::isNotCompiled() const
+{
+	return compileState != CompileState::Compiled;
+}
+	
+void ScriptingAPIManager::update() {
+	ZoneScoped;
+
+	update_();
+}
+
+void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
+	if (compileState != CompileState::ToBeCompiled) {
+		return;
+	}
+
+	// start timer..
+	timeSinceSave += dt;
+
+	if (timeSinceSave < DEBOUNCING_TIME) {
+		return;
+	}
+
+	// we attempt to recompile the script assembly
+	if (compileScriptAssembly()) {
+
+		// update the field data of all entities with affected scripts..
+		for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+			for (auto&& script : scripts.scriptDatas) {
+				// only get script field data if this script itself has been modified.
+				if (!modifiedScripts.count(script.scriptId))
+					continue;
+				std::vector<FieldData> temp{ script.fields };
+				script.fields.clear();
+				for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
+					bool b_IsExistingField{ false };
+					for (FieldData const& oldFields : temp) {
+						if (oldFields.name != newFields.name)
+							continue;
+						script.fields.push_back(oldFields);
+						b_IsExistingField = true;
+						break;
+					}
+					if (!b_IsExistingField)
+						script.fields.push_back(newFields);
+				}
 			}
 		}
+
+		modifiedScripts.clear();
 	}
+
+	timeSinceSave = 0;
 }
 
-bool ScriptingAPIManager::loadAllScripts() {
+std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(ResourceID scriptID)
+{
+	return getScriptFieldDatas_(static_cast<std::size_t>(scriptID));
+}
+
+bool ScriptingAPIManager::hasCompilationFailed() const {
+	return compileState == CompileState::CompilationFailed;
+}
+
+bool ScriptingAPIManager::startSimulation() {
+	// Recompile if there is a change in script before starting simulation..
 	if (compileState != CompileState::Compiled) {
-		if (!compileScriptAssembly()) return false;
-		compileState = CompileState::Compiled;
+		if (!compileScriptAssembly()) 
+			return false;
 	}
-	
-	loadAssembly();
-	
-	for (auto&& [entityId, scripts] : engine.ecs.registry.view<Scripts>().each())
-	{
-		for (ScriptData& scriptData : scripts.scriptDatas)
-			addGameObjectScript(static_cast<unsigned int>(entityId), static_cast<std::size_t>(scriptData.scriptId));
+
+	// Instantiate all entities' script..
+	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+		for (auto&& script : scripts.scriptDatas) {
+			addEntityScript(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId));
+			for (auto&& fieldData : script.fields)
+				setScriptFieldData(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId), fieldData);
+		}
 	}
+
+	// Call their init functions..
 	initalizeScripts();
 	return true;
 }
 
-void ScriptingAPIManager::unloadAllScripts() {
+void ScriptingAPIManager::stopSimulation(){
+	// Reset assembly, clearing all instantiated scripts.
 	unloadAssembly();
+	loadAssembly();
 }
 
 void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
-	if (std::filesystem::path(absPath).extension() == ".cs")
-		compileScriptAssembly();
-}
-void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId)
-{
-	if (engine.resourceManager.isResource<ScriptAsset>(resourceId)) {
+	if (std::filesystem::path(absPath).extension() == ".cs") {
 		compileState = CompileState::ToBeCompiled;
 		timeSinceSave = 0.f;
 	}
 }
+
+void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId) {
+	if (engine.resourceManager.isResource<ScriptAsset>(resourceId)) {
+		compileState = CompileState::ToBeCompiled;
+		timeSinceSave = 0.f;
+
+		modifiedScripts.insert(resourceId);
+	}
+}
+
 void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
+	(void) resourceId;
 	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
+}
+
+void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity entityTwo) {
+	handleOnCollision_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
+}
+
+void ScriptingAPIManager::onCollisionExit(entt::entity entityOne, entt::entity entityTwo) {
+
 }
 

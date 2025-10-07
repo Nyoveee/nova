@@ -67,9 +67,11 @@ AudioSystem::AudioSystem(Engine& engine) :
 		Logger::error("Failed to initialise fmod system. {}", FMOD_ErrorString(result));
 		return;
 	}
+	loadAllSounds();
 }
 
 AudioSystem::~AudioSystem() {
+	unloadAllSounds();
 	if (fmodSystem) {
 		fmodSystem->close();
 		fmodSystem->release();
@@ -108,6 +110,16 @@ void AudioSystem::loadAllSounds() {
 
 	for (ResourceID audioId : audios) {
 		loadSound(audioId);
+	
+		// Get the file name from the resource’s file path
+		auto&& [audio, _] = resourceManager.getResource<Audio>(audioId);
+		if (audio) {
+			std::filesystem::path p(audio->getFilePath());
+			std::string filename = p.stem().string(); // "BGM_AudioTest" from "BGM_AudioTest.wav"
+
+			// Store into the map
+			fileData[filename] = audioId;
+		}
 	}
 }
 
@@ -121,6 +133,7 @@ void AudioSystem::unloadAllSounds() {
 		audioInstance.channel->stop();
 	}
 
+	fileData.clear();
 	audioInstances.clear();
 
 	// Unload all sounds.
@@ -150,6 +163,27 @@ void AudioSystem::stopAudioInstance(AudioInstanceID audioInstanceId) {
 	stopAudioInstance(audioInstance);
 }
 
+void AudioSystem::playSFX(entt::entity entity, std::string soundName) {
+	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
+
+	if (!audio) {
+		Logger::warn("Attempting to play sound from entity with no audio component!");
+		return;
+	}
+
+	auto iterator = audio->data.find(soundName);
+
+	if (iterator == audio->data.end()) {
+		Logger::warn("Entity has no sound named {}", soundName);
+		return;
+	}
+
+	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
+
+	auto&& [_, audioData] = *iterator;
+	playSFX(audioData.AudioId, transform.position.x, transform.position.y, transform.position.z, audioData.Volume);
+}
+
 FMOD::Sound* AudioSystem::getSound(ResourceID audioId) const {
 	auto iterator = sounds.find(audioId);
 
@@ -161,20 +195,20 @@ FMOD::Sound* AudioSystem::getSound(ResourceID audioId) const {
 	return sound;
 }
 
-//void AudioSystem::stopAudio(const std::string& stringID)
-//{
-//    for (auto& [soundID, channel] : channels) {
-//        if (channel && soundID == stringID) {          // Ensure the channel pointer is valid
-//            channel->stop();                           // Stops the channel
-//        }
-//    }
-//}
+ResourceID AudioSystem::getResourceId(const std::string& string) {
+	auto it = fileData.find(string);
+	if (it != fileData.end()) {
+		return it->second;
+	}
+
+	return INVALID_RESOURCE_ID;
+}
 
 // PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
-void AudioSystem::playSFX(ResourceID id, float x, float y, float z)
+void AudioSystem::playSFX(ResourceID id, float x, float y, float z, float volume )
 {
     // Play the sound
-	AudioInstance* audioInstance = createSoundInstance(id);
+	AudioInstance* audioInstance = createSoundInstance(id , volume );
 
 	if (!audioInstance) {
 		return;
@@ -187,49 +221,7 @@ void AudioSystem::playSFX(ResourceID id, float x, float y, float z)
 	audioInstance->channel->setPaused(false);
 }
 
-#if 0
-void AudioSystem::playSFXNonInst(ResourceID id, float x, float y, float z)
-{
-    FMOD::Sound* audio = getSound(soundID);
-    if (!audio) {
-        Logger::info("Sound not found: " + soundID);
-        return;
-    }
-
-    // Check if the sound already has a channel
-    auto it = channels.find(soundID);
-    if (it != channels.end() && it->second) {
-        bool isPlaying = false;
-        it->second->isPlaying(&isPlaying);
-
-        if (isPlaying) {
-            return;
-        }
-    }
-
-    FMOD::Channel* channel = nullptr;
-    fmodSystem->playSound(audio, nullptr, false, &channel);
-
-    if (channel) {
-        FMOD_VECTOR position = { x, y, z };
-        FMOD_VECTOR velocity = { 0.0f, 0.0f, 0.0f };
-
-        channel->set3DAttributes(&position, &velocity);
-
-        float volume = 1.0f;
-        if (channelVolumes.contains(soundID)) {
-            volume = channelVolumes[soundID];
-        }
-        channel->setVolume(volume);
-        channel->setPaused(false);
-
-        // Store channel for reuse
-        channels[soundID] = channel;
-    }
-}
-#endif
-
-void AudioSystem::playBGM(ResourceID id)
+void AudioSystem::playBGM(ResourceID id, float volume)
 {
     // Stop previous BGM.
 	if (currentBGM) {
@@ -237,12 +229,31 @@ void AudioSystem::playBGM(ResourceID id)
 		currentBGM = nullptr;
 	}
 
-	AudioInstance* audioInstance = createSoundInstance(id);
+	AudioInstance* audioInstance = createSoundInstance(id , volume);
 
     // Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
 	}
+}
+
+bool AudioSystem::isBGM(ResourceID audioId) const
+{
+	// Find the entry in fileData (filename > ResourceID map)
+	for (const auto& [filename, id] : fileData)
+	{
+		if (id == audioId)
+		{
+			// Check filename prefix
+			if (filename.rfind("BGM_", 0) == 0) // starts with "BGM_"
+				return true;
+			else
+				return false;
+		}
+	}
+
+	// Not found in fileData
+	return false;
 }
 
 void AudioSystem::pauseSound(ResourceID audioId, bool paused)
@@ -372,10 +383,10 @@ void AudioSystem::loadSound(ResourceID audioId) {
 	FMOD::Sound* sound = nullptr;
 	FMOD_MODE mode = audio->isAudio3D() ? FMOD_3D : FMOD_2D;
 
-	FMOD_RESULT result = fmodSystem->createSound(audio->getFilePath().c_str(), mode, nullptr, &sound);
+	FMOD_RESULT result = fmodSystem->createSound(audio->getFilePath().string.c_str(), mode, nullptr, &sound);
 
 	if (result != FMOD_OK) {
-	    Logger::warn("Failed to load audio file with asset id of: {}, filepath of {}.", static_cast<std::size_t>(audioId), audio->getFilePath());
+	    Logger::warn("Failed to load audio file with asset id of: {}, filepath of {}.", static_cast<std::size_t>(audioId), audio->getFilePath().string);
 	    return; 
 	}
 

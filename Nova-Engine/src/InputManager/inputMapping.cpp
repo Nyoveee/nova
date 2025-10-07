@@ -35,4 +35,9 @@ void InputManager::mainKeyBindMapping() {
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_LEFT,		KeyType::MouseClick,	ToSelectGameObject::Sentinel		);
 
 	//mapKeyBindInput(GLFW_KEY_A, KeyType::Keyboard, ScriptingInputEvents::KeyA);
+	//
+	// 	Mapping copy and paste keys
+	//
+	mapKeyBindInput(	GLFW_KEY_C,					KeyType::Keyboard,		CopyEntity::Copy					);
+	mapKeyBindInput(	GLFW_KEY_V,					KeyType::Keyboard,		PasteEntity::Paste					);
 }

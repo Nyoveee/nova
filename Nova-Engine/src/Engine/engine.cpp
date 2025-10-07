@@ -4,13 +4,14 @@
 #include "engine.h"
 #include "window.h"
 
-#include "Component/component.h"
+#include "component.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
 
 
 #include "Serialisation/serialisation.h"
+#include "ECS/SceneManager.h"
 
 
 Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight) :
@@ -29,13 +30,12 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
-{
-	Serialiser::deserialiseScene(ecs);
-}
+{}
 
 Engine::~Engine() {
 	stopSimulation();
 	setupSimulationFunction.value()();
+	Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
 }
 
 void Engine::fixedUpdate(float dt) {
@@ -44,18 +44,27 @@ void Engine::fixedUpdate(float dt) {
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
-	}
-	else
-	{
-		scriptingAPIManager.checkModifiedScripts(dt);
+		navigationSystem.update(dt);
+		
 	}
 }
 
 void Engine::update(float dt) {
+	//Note the order should be correct
 	audioSystem.update();
 	cameraSystem.update(dt);
+
+	if (!inSimulationMode) {
+		scriptingAPIManager.checkIfRecompilationNeeded(dt);
+
+	}
+
 	transformationSystem.update();
 	renderer.update(dt);
+
+	resourceManager.update();
+	
+
 }
 
 void Engine::setupSimulation() {
@@ -68,13 +77,19 @@ void Engine::setupSimulation() {
 	setupSimulationFunction = std::nullopt;
 }
 
-void Engine::render(Renderer::RenderTarget target) {
+void Engine::render(RenderTarget target) {
 	ZoneScoped;
+
+
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(target, toDebugRenderPhysics);
+	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh);
+
+	if (target == RenderTarget::DefaultFrameBuffer) {
+		renderer.renderToDefaultFBO();
+	}
 }
 
 void Engine::startSimulation() {
@@ -83,15 +98,23 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		if (!scriptingAPIManager.loadAllScripts())
-		{
+		//Serialiser::serialiseScene(ecs);
+
+		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+		physicsManager.initialise();
+		audioSystem.loadAllSounds();
+		cameraSystem.startSimulation();
+		navigationSystem.initNavMeshSystems();
+
+		if (scriptingAPIManager.hasCompilationFailed()) {
+			Logger::error("Script compilation failed. Please update them.");
 			stopSimulation();
 			return;
 		}
-		physicsManager.initialise();
-		audioSystem.loadAllSounds();
-
-		ecs.makeRegistryCopy<ALL_COMPONENTS>();
+		else if (!scriptingAPIManager.startSimulation()) {
+			stopSimulation();
+			return;
+		}
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
@@ -106,12 +129,14 @@ void Engine::stopSimulation() {
 
 	setupSimulationFunction = [&]() {
 		physicsManager.clear();
-		scriptingAPIManager.unloadAllScripts();
 		audioSystem.unloadAllSounds();
+		cameraSystem.endSimulation();
 
-		Serialiser::serialiseScene(ecs);
+		//Serialiser::serialiseEditorConfig("editorConfig.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		scriptingAPIManager.stopSimulation();
+
 		inSimulationMode = false;
 	};
 }
@@ -126,4 +151,11 @@ int Engine::getGameHeight() const {
 
 bool Engine::isInSimulationMode() const {
 	return inSimulationMode;
+}
+
+void Engine::SystemsOnLoad()
+{
+	this->navigationSystem.initNavMeshSystems();
+
+	
 }

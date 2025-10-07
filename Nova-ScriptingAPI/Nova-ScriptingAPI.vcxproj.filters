@@ -33,19 +33,19 @@
     <ClInclude Include="src\API\IManagedComponent.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Time.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\API\ScriptingAPI.ixx">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Input.hxx">
+    <ClInclude Include="src\ScriptLibrary\ManagedEnums.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\API\ScriptLibraryHandler.hxx">
+    <ClInclude Include="src\API\IManagedStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ScriptLibrary\Debug.h">
+    <ClInclude Include="src\ScriptLibrary\ScriptLibrary.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\API\ConversionUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,16 +56,10 @@
     <ClCompile Include="src\ScriptLibrary\Script.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Input.cxx">
+    <ClCompile Include="src\Export\LibraryExport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\API\ScriptLibraryHandler.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Debug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ScriptLibrary\Time.cxx">
+    <ClCompile Include="src\ScriptLibrary\ManagedTypes.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

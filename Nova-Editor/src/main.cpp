@@ -6,25 +6,31 @@
 #include "ResourceManager/resourceManager.h"
 #include "AssetManager/assetManager.h"
 #include "Editor/editor.h"
+#include "Serialisation/serialisation.h"
 
 #include <crtdbg.h>
 
-constexpr const char*	windowName		= "Nova Engine";
+//constexpr const char*	windowName		= "Nova Engine";
 constexpr int			windowWidth		= 1200;
 constexpr int			windowHeight	= 900;
-constexpr int			gameWidth		= 1920;
-constexpr int			gameHeight		= 1080;
+//constexpr int			gameWidth		= 1920;
+//constexpr int			gameHeight		= 1080;
 
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	int gameWidth, gameHeight;
+	std::string windowName;
+	Serialiser::deserialiseGameConfig("gameConfig.json", gameWidth, gameHeight, windowName);
+	//Serialiser::serialiseEditorConfig("editorConfig.json");
+
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
+	Window			window			{ windowName.c_str(), {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
+	
 	ResourceManager resourceManager {};
-	Window			window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant };
 	Engine			engine			{ window, inputManager, resourceManager, gameWidth, gameHeight };
 
-	// Editor specific applications.
 	AssetManager	assetManager	{ resourceManager, engine };
 	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 
@@ -37,10 +43,10 @@ int main() {
 		// Update loop.
 		[&](float dt) {
 			engine.update(dt);
-			engine.render(Renderer::RenderTarget::ToMainFrameBuffer);
+			engine.render(Engine::RenderTarget::MainFrameBuffer);
 			
 			// this callback is invoked when the editor wants to change simulation mode.
-			editor.update([&](bool toStartSimulation) {
+			editor.update(dt, [&](bool toStartSimulation) {
 				toStartSimulation ? engine.startSimulation() : engine.stopSimulation();
 			});
 

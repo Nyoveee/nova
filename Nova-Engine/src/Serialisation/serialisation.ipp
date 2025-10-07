@@ -1,13 +1,15 @@
 #include <string>
 
 #include "serialisation.h"
-#include "Component/ECS.h"
+#include "ECS/ECS.h"
 #include "reflection.h"
 
-#include "Component/component.h"
+#include "component.h"
 #include "magic_enum.hpp"
 
 #include "Logger.h"
+
+#include "Engine/ScriptingAPIManager.h"
 
 #undef max
 #undef min
@@ -122,56 +124,135 @@ namespace Serialiser {
 					std::vector<json> jVec;
 					
 					//for each material in the map
-					for (auto a : dataMember) {
+					for (auto&& [materialName, material] : dataMember) {
 
 						json tempJson;
 
-						auto pipeline = magic_enum::enum_name(a.second.renderingPipeline);
+						tempJson["materialName"] = materialName;
+						tempJson["renderingPipeline"] = magic_enum::enum_name(material.renderingPipeline);
+						tempJson["ambient"] = material.ambient;
 
-						tempJson["materialName"] = a.first;
-						tempJson["renderingPipeline"] = pipeline;
-						tempJson["ambient"] = a.second.ambient;
+						switch (material.renderingPipeline)
+						{
+						case Material::Pipeline::PBR: {
+							std::visit([&](auto&& config) {
+								using Type = std::decay_t<decltype(config)>;
 
-						if (pipeline == "PBR") {
-							json tempJ;
+								if constexpr (std::same_as<Type, ResourceID>) {
+									tempJson["config"] = static_cast<std::size_t>(config);
+								}
+								else /* it's config */ {
+									json tempJ;
 
-							tempJ["roughness"] = std::get<Material::Config>(a.second.config).roughness;
-							tempJ["metallic"] = std::get<Material::Config>(a.second.config).metallic;
-							tempJ["occulusion"] = std::get<Material::Config>(a.second.config).occulusion;
-							tempJson["config"] = tempJ;
-							tempJ.clear();
+									tempJ["roughness"] = config.roughness;
+									tempJ["metallic"] = config.metallic;
+									tempJ["occulusion"] = config.occulusion;
+									tempJson["config"] = tempJ;
+								}
+							}, material.config);
 						}
-
-						if (pipeline == "PBR" || pipeline == "BlinnPhong") {
-							if (!(a.second.normalMap).has_value()) {
+						[[fallthrough]];
+						case Material::Pipeline::BlinnPhong:
+							if (!material.normalMap) {
 								tempJson["normalMap"] = nullptr;
 							}
 							else {
-								tempJson["normalMap"] = static_cast<size_t>(a.second.normalMap.value());
+								tempJson["normalMap"] = static_cast<size_t>(material.normalMap.value());
 							}
+
+							break;
 						}
 
-						if (std::holds_alternative<Color>(a.second.albedo)) {
-							glm::vec3 vec = std::get<Color>(a.second.albedo);
-							json tempJ;
-							tempJ["r"] = vec.x;
-							tempJ["g"] = vec.y;
-							tempJ["b"] = vec.z;
+						// Handling albedo..
+						std::visit([&](auto&& albedo) {
+							using T = std::decay_t<decltype(albedo)>;
 
-							tempJson["albedo"] = tempJ;
-							tempJ.clear();
-						}
+							json albedoJson;
+							if constexpr (std::same_as<T, ResourceID>) {
+								albedoJson["texture"] = static_cast<size_t>(albedo);
+							}
+							else /* its color */ {
+								json tempJ;
+								tempJ["r"] = albedo.r();
+								tempJ["g"] = albedo.g();
+								tempJ["b"] = albedo.b();
+								albedoJson["color"] = tempJ;
+							}
+
+							tempJson["albedo"] = albedoJson;
+						}, material.albedo);
+						
 						jVec.push_back(tempJson);
 					}
 					componentJson[dataMemberName] = jVec;
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+					json scriptArray;
 
+					for (auto&& scriptData : dataMember) {
+						json scriptJson;
+						json fieldDataArray;
+
+						for (auto&& field : scriptData.fields) {
+							json fieldDataJson;
+							fieldDataJson["name"] = field.name;
+							
+							std::visit([&](auto&& data) {
+								using Type = std::decay_t<decltype(data)>;
+
+								if constexpr (std::same_as<Type, glm::vec2>) {
+									fieldDataJson["value"]["x"] = data.x;
+									fieldDataJson["value"]["y"] = data.y;
+								}
+								else if constexpr (std::same_as<Type, glm::vec3>) {
+									fieldDataJson["value"]["x"] = data.x;
+									fieldDataJson["value"]["y"] = data.y;
+									fieldDataJson["value"]["z"] = data.z;
+								}
+								else if constexpr (std::same_as<Type, entt::entity>) {
+									fieldDataJson["value"]["entityId"] = static_cast<std::size_t>(data);
+								}
+								else if constexpr (std::is_fundamental_v<Type>) {
+									fieldDataJson["value"] = data;
+								}
+								else {
+									[] <bool flag = true> {
+										static_assert(flag, "Attempting to serialise unsupported field type..");
+									}();
+								}
+
+								fieldDataJson["type"] = Family::id<Type>();
+							}, field.data);
+
+							fieldDataArray.push_back(std::move(fieldDataJson));
+						}
+
+						scriptJson["fields"] = std::move(fieldDataArray);
+						scriptJson["id"] = static_cast<std::size_t>(scriptData.scriptId);
+						scriptArray.push_back(std::move(scriptJson));
+					}
+
+					componentJson[dataMemberName] = std::move(scriptArray);
 				}
+				
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>) {
+					json audioArray;
 
-				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+					for (auto&& [name, audioData] : dataMember) {
+						json audioComponentJson;
+						audioComponentJson["name"] = name;
 
+						json audioDataJson;
+						audioDataJson["id"] = static_cast<std::size_t>(audioData.AudioId);
+						audioDataJson["volume"] = audioData.Volume;
+
+						audioComponentJson["audioData"] = audioDataJson;
+
+						audioArray.push_back(std::move(audioComponentJson));
+					}
+
+					componentJson[dataMemberName] = std::move(audioArray);
 				}
 
 				// it's an enum. let's display a dropdown box for this enum.
@@ -190,7 +271,7 @@ namespace Serialiser {
 			return componentJson;
 		}
 	}
-
+	// this was the starting point
 	template<typename T>
 	//void deserialiseComponent(std::ifstream& outputFile, json jsonComponent) {
 	void deserialiseComponent(json jsonComponent, entt::registry& registry, entt::entity entity) {
@@ -281,51 +362,134 @@ namespace Serialiser {
 				else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
 					std::unordered_map<MaterialName, Material> map;
 					//material and model id
-					for (auto a : jsonComponent[componentName]["materials"]) {
-						Material m;
-						m.ambient = a["ambient"];
+					for (auto json : jsonComponent[componentName]["materials"]) {
+						Material material;
+						material.ambient = json["ambient"];
 
-						std::string str = a["renderingPipeline"].dump();
+						std::string str = json["renderingPipeline"].dump();
 						str = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
 
 						std::optional<Material::Pipeline> temp = magic_enum::enum_cast<Material::Pipeline>(str.c_str());
 						if (temp.has_value()) {
-							m.renderingPipeline = temp.value();
+							material.renderingPipeline = temp.value();
 						}
 
-						if (a["renderingPipeline"] == "BlinnPhong" || a["renderingPipeline"] == "PBR") {
-							if (a["normalMap"] != nullptr) {
-								m.normalMap = static_cast<ResourceID>(a["normalMap"]);
+						switch (material.renderingPipeline)
+						{
+						case Material::Pipeline::PBR: {
+							// its resource id..
+							if (json["config"].is_number_unsigned()) {
+								std::size_t resourceId = json["config"];
+								material.config = ResourceID{ resourceId };
+							}
+							// its config...
+							else {
+								Material::Config config;
+
+								config.roughness	= json["config"]["roughness"];
+								config.metallic		= json["config"]["metallic"];
+								config.occulusion	= json["config"]["occulusion"];
+
+								material.config = config;
+							}
+						}
+						[[fallthrough]];
+						case Material::Pipeline::BlinnPhong:
+							if (json["normalMap"].is_null()) {
+								material.normalMap = std::nullopt;
 							}
 							else {
-								m.normalMap = std::nullopt;
+								material.normalMap = static_cast<ResourceID>(json["normalMap"]);
 							}
+
+						[[fallthrough]];
+						case Material::Pipeline::Color:
+							if (json["albedo"].find("color") != json["albedo"].end()) {
+								glm::vec3 colorVec = { json["albedo"]["color"]["r"], json["albedo"]["color"]["g"] , json["albedo"]["color"]["b"] };
+								material.albedo = colorVec;
+							}
+							else {
+								std::size_t id = json["albedo"]["texture"];
+								material.albedo = id;
+							}
+
+							break;
 						}
 
-						if (a["renderingPipeline"] == "PBR") {
-							Material::Config c;
-							c.roughness = a["config"]["roughness"];
-							c.metallic = a["config"]["metallic"];
-							c.occulusion = a["config"]["occulusion"];
-							m.config = c;
-						}
-
-						if (a.find("albedo") != a.end()) {
-							glm::vec3 colorVec = { a["albedo"]["r"], a["albedo"]["g"] , a["albedo"]["b"] };
-							m.albedo = colorVec;
-						}
-
-						map[a["materialName"]] = m;
+						map[json["materialName"]] = material;
 					}
 					dataMember = map;
 				}
 
 				else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
+					std::vector<ScriptData> allScripts;
 
+					// parsing every script...
+					for (auto&& scriptJson : jsonComponent[componentName]["scriptDatas"]) {
+						// for each script, they have an id and a field..
+						std::vector<FieldData> fields;
+
+						// let's parse all fields of a given script..
+						for (auto&& fieldJson : scriptJson["fields"]) {
+							FieldData fieldData;
+							fieldData.name = fieldJson["name"];
+
+							// we check and parse the different possible types of each field data..
+							auto parseVariantJson = [&]<typename ...Types>() {
+								([&]() {
+									if (Family::id<Types>() == fieldJson["type"]) {
+										if constexpr (std::same_as<Types, glm::vec2>) {
+											glm::vec2 vec2;
+											vec2.x = fieldJson["value"]["x"];
+											vec2.y = fieldJson["value"]["y"];
+											fieldData.data = vec2;
+										}
+										else if constexpr (std::same_as<Types, glm::vec3>) {
+											glm::vec3 vec3;
+											vec3.x = fieldJson["value"]["x"];
+											vec3.y = fieldJson["value"]["y"];
+											vec3.z = fieldJson["value"]["z"];
+											fieldData.data = vec3;
+										}
+										else if constexpr (std::same_as<Types, entt::entity>) {
+											unsigned id = fieldJson["value"]["entityId"];
+											fieldData.data = static_cast<entt::entity>(id);
+
+										}
+										else if constexpr (std::is_fundamental_v<Types>) {
+											Types data = fieldJson["value"];
+											fieldData.data = data;
+										}
+										else {
+											[] <bool flag = true> {
+												static_assert(flag, "Attempting to Deserialise unsupported field type..");
+											}();
+										}
+									}
+								}(), ...);
+							};
+
+							parseVariantJson.template operator()<ALL_FIELD_TYPES>();
+							fields.push_back(std::move(fieldData));
+						}
+
+						// retrieve script id..
+						std::size_t id = scriptJson["id"];
+						allScripts.push_back(ScriptData{ TypedResourceID<ScriptAsset>{ id }, std::move(fields) });
+					}
+
+					dataMember = std::move(allScripts);
 				}
 
-				else if constexpr (std::same_as<DataMemberType, std::vector<AudioData>>) {
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>) {
+					for (auto&& audioComponent : jsonComponent[componentName][dataMemberName]) {
+						std::string name = audioComponent["name"];
+					
+						std::size_t id = audioComponent["audioData"]["id"];
+						float volume = audioComponent["audioData"]["volume"];
 
+						dataMember.insert({ std::move(name), AudioData{ id, volume } });
+					}
 				}
 
 				// it's an enum. let's display a dropdown box for this enum.

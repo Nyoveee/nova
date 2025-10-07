@@ -1,32 +1,36 @@
 #include "Engine/ScriptingAPIManager.h"
+#include "Engine/window.h"
+#include "Engine/engine.h"
 
 #include <glad/glad.h>
 
 #include "IconsFontAwesome6.h"
 
 #include "imgui.h"
+#include "ImGui/misc/cpp/imgui_stdlib.h"
 #include "ImGuizmo.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
 #include "Audio/audioSystem.h"
-#include "Engine/window.h"
-#include "Component/ECS.h"
-#include "Engine/engine.h"
+#include "AssetManager/assetManager.h"
+#include "ECS/ECS.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
-#include "AssetManager/assetManager.h"
+#include "Navigation/navMeshGeneration.h"
+#include "Serialisation/serialisation.h"
 
 #include "editor.h"
 #include "themes.h"
 #include "model.h"
 
-#include "Component/component.h"
+#include "component.h"
 
 #include <GLFW/glfw3.h>
 #include <ranges>
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
+
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -40,10 +44,11 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
-	assetManagerUi					{ *this },	
-	hierarchyList					{ *this },
+	assetViewerUi					{ assetManager, resourceManager },
+	assetManagerUi					{ *this, assetViewerUi },
 	navMeshGenerator				{ *this },
-	debugUi							{ *this },
+	navigationWindow				{ *this, engine.navigationSystem, navMeshGenerator },
+	navBar							{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false },
@@ -114,10 +119,34 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		}
 	);
+
+	inputManager.subscribe<CopyEntity>(
+		[&](CopyEntity) {
+			if (selectedEntities.size()) {
+				for (entt::entity entity : selectedEntities) {
+					copiedEntityVec.push_back(entity);
+				}
+			}
+		}
+	);
+
+	inputManager.subscribe<PasteEntity>(
+		[&](PasteEntity) {
+			if (!copiedEntityVec.empty()) {
+				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
+				copiedEntityVec.clear();
+			}
+		}
+	);
+
+	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
+		gameViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
+	}
 }
 
-void Editor::update(std::function<void(bool)> changeSimulationCallback) {
+void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback) {
 	ZoneScopedC(tracy::Color::Orange);
+
 	ImGui_ImplGlfw_NewFrame();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
@@ -126,7 +155,7 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 	ImGuizmo::BeginFrame();
 	ImGuizmo::Enable(true);
 
-	main();
+	main(dt);
 	assetManager.update();
 
 	// inform the engine if there is a change in simulation mode.
@@ -137,6 +166,15 @@ void Editor::update(std::function<void(bool)> changeSimulationCallback) {
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	if (engine.toDebugRenderNavMesh) {
+		ResourceID navMeshId = engine.navigationSystem.getNavMeshId();
+		auto&& [navMesh, _] = resourceManager.getResource<NavMesh>(navMeshId);
+
+		if (navMesh && navMesh->navMesh) {
+			engine.renderer.renderNavMesh(*navMesh->navMesh);
+		}
+	}
 }
 
 bool Editor::isEntitySelected(entt::entity entity) {
@@ -177,22 +215,21 @@ void Editor::deleteEntity(entt::entity entity) {
 }
 
 // Our main bulk of code should go here, in the main function.
-void Editor::main() {
+void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
 
 	ImGui::ShowDemoWindow();
 	
-	gameViewPort.update();
-	componentInspector.update();
+	gameViewPort.update(dt);
 	assetManagerUi.update();
-	hierarchyList.update();
-	debugUi.update();
+	navBar.update();
+	assetViewerUi.update();
+	navigationWindow.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();
 	sandboxWindow();
-	navigationWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -282,17 +319,19 @@ void Editor::handleEntityHovering() {
 		return;
 	}
 
+	glm::vec2 normalisedPos = (engine.window.getClipSpacePos() + 1.f) / 2.f;
+
 	if (	
-			gameViewPort.mouseRelativeToViewPort.x < 0.f 
-		||	gameViewPort.mouseRelativeToViewPort.x >= 1.f
-		||	gameViewPort.mouseRelativeToViewPort.y < 0.f
-		||	gameViewPort.mouseRelativeToViewPort.y >= 1.f
+			normalisedPos.x < 0.f
+		||	normalisedPos.x >= 1.f
+		||	normalisedPos.y < 0.f
+		||	normalisedPos.y >= 1.f
 	) {
 		return;
 	}
 
 	entt::entity newHoveringEntity =
-		static_cast<entt::entity>(engine.renderer.getObjectId({ gameViewPort.mouseRelativeToViewPort.x, gameViewPort.mouseRelativeToViewPort.y }));
+		static_cast<entt::entity>(engine.renderer.getObjectId(normalisedPos));
 
 	if (newHoveringEntity == hoveringEntity) {
 		return;
@@ -353,17 +392,23 @@ void Editor::sandboxWindow() {
 
 	if (ImGui::Button("SFX Audio Test"))
 	{
-		engine.audioSystem.playSFX(ResourceID{ 16443787899298411226 }, 0.0f, 0.0f, 0.0f);
+		engine.audioSystem.playSFX( engine.audioSystem.getResourceId("SFX_AudioTest1"), 0.0f, 0.0f, 0.0f);
 	}
 
 	if (ImGui::Button("BGM Audio Test"))
 	{
-		engine.audioSystem.playBGM(ResourceID{ 11241155678047256416 });
+		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest") );
 	}
 
 	if (ImGui::Button("BGM Audio Test 2"))
 	{
-		engine.audioSystem.playBGM(ResourceID{ 11186877718248447534 });
+		engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest2") );	
+	}
+
+	if (ImGui::Button("Stop Audio Test"))
+	{
+		// Stops all audio channels that has the same string ID as "SFX_AudioTest1"
+		engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
 	}
 
 	entt::registry& registry = engine.ecs.registry;
@@ -377,103 +422,15 @@ void Editor::sandboxWindow() {
 		engine.renderer.enableWireframeMode(wireFrameMode);
 	}
 
-	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
-
-	static float zPos = 0;
-
-	if (ImGui::Button("(+) Add 3D model")) {
-		auto entity = registry.create();
-
-		Transform transform = {
-			{0.f, 0.f, zPos},
-			{1.f / 300.f, 1.f / 300.f, 1.f / 300.f}
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<EntityData>(entity, EntityData{ "My 3D Model " + std::to_string(zPos) });
-		registry.emplace<Rigidbody>(entity, Rigidbody{ JPH::EMotionType::Dynamic, Rigidbody::Layer::Moving });
-		registry.emplace<BoxCollider>(entity, BoxCollider{ { 300.f, 200.f, 300.f } });
-
-		zPos -= 2.f;
-
-		std::unordered_map<MaterialName, Material> materials;
-
-		ResourceID modelAsset{ 1857211565665677573 };
-
-		materials["Table_frame_mtl"] = { Material::Pipeline::BlinnPhong, ResourceID{ 11363069911457047527 }, Material::Config{ 0.5f, 0.f, 0.f }, ResourceID{ 16882922978321767798 } };
-		materials["Table_top_mtl"] = { Material::Pipeline::BlinnPhong, ResourceID{ 1363583670394709573 }, Material::Config{ 0.5f, 0.f, 0.f }, ResourceID{ 11291724444234068892 } };
-
-		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-
-	if (ImGui::Button("(+) Add Light")) {
-		auto entity = registry.create();
-
-		Transform transform = {
-			{0.f, 2.f, 5.f},
-			{0.2f, 0.2f, 0.2f}
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<EntityData>(entity, EntityData{ "Light" });
-		registry.emplace<Light>(entity, Light{ Color{1.f, 1.f, 1.f}, 1.f, Light::Type::PointLight });
-
-		std::unordered_map<MaterialName, Material> materials;
-
-		ResourceID modelAsset{ 12932563721038612588 };
-		materials["Material"] = { Material::Pipeline::Color, Color{1.f, 1.f, 1.f}};
-
-		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-
-	if (ImGui::Button("(+) Add Floor")) {
-		auto entity = registry.create();
-
-		Transform transform = {
-			{0.f, -2.f, 0.f},
-			{10.f, 1.f, 10.f}
-		};
-
-		registry.emplace<Transform>(entity, std::move(transform));
-		registry.emplace<EntityData>(entity, EntityData{ "Floor" });
-		registry.emplace<Rigidbody>(entity, Rigidbody{ JPH::EMotionType::Static, Rigidbody::Layer::NonMoving });
-		registry.emplace<BoxCollider>(entity, BoxCollider{});
-
-		std::unordered_map<MaterialName, Material> materials;
-
-		ResourceID modelAsset{ 12932563721038612588 };
-		materials["Material"] = { Material::Pipeline::BlinnPhong, Color{0.1f, 0.1f, 0.1f}};
-
-		registry.emplace<MeshRenderer>(entity, MeshRenderer{ modelAsset, materials });
-	}
-
-	if (ImGui::Button("(+) Add Skybox")) {
-		auto entity = registry.create();
-
-		registry.emplace<Transform>(entity, Transform{});
-		registry.emplace<EntityData>(entity, EntityData{ "Skybox" });
-		registry.emplace<SkyBox>(entity, SkyBox{ ResourceID{ 12369249828857649982 } });
-	}
-
-
-
 	if (ImGui::Button("recompile shaders")) {
 		engine.renderer.recompileShaders();
 	}
 
-	ImGui::End();
-}
-
-//Ooga Booga window will cause me more trouble later
-void Editor::navigationWindow()
-{
-	ImGui::Begin("Navigation");
-
-
-
+	if (ImGui::Button("Navigation Debug")) {
+		engine.navigationSystem.NavigationDebug();
+	}
 
 	ImGui::End();
-
 }
 
 void Editor::launchProfiler()
@@ -528,7 +485,14 @@ bool Editor::isInSimulationMode() const {
 }
 
 Editor::~Editor() {
+	
 	ImGui_ImplGlfw_Shutdown();
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui::DestroyContext();
+
+	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
+	AssetFilePath const* filePath = assetManager.getFilepath(id);
+	if (filePath) {
+		Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+	}
 }

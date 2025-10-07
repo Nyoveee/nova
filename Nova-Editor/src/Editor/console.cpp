@@ -1,0 +1,73 @@
+#include "console.h"
+#include "Internal/Logger.h"
+#include "imgui.h"
+
+void Console::update() {
+    ImGui::Begin("Console");
+
+    // Filter checkboxes
+    ImGui::Checkbox("Info", &showInfo);
+    ImGui::SameLine();
+    ImGui::Checkbox("Warnings", &showWarnings);
+    ImGui::SameLine();
+    ImGui::Checkbox("Errors", &showErrors);
+    ImGui::SameLine();
+    ImGui::Checkbox("Auto-scroll", &autoScroll);
+
+    // Clear button
+    ImGui::SameLine();
+    if (ImGui::Button("Clear")) {
+        Logger::clearLogs();
+    }
+
+    ImGui::Separator();
+
+    // Log display area
+    ImGui::BeginChild("LogArea", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+
+    const auto logEntries = Logger::getLogEntries(); // Now returns by value
+
+    for (const auto& entry : logEntries) {
+        // Filter based on log level
+        bool shouldShow = false;
+        ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // white
+
+        switch (entry.level) {
+        case LogLevel::Info:
+            shouldShow = showInfo;
+            color = ImVec4(0.8f, 0.8f, 0.8f, 1.0f); // Light gray
+            break;
+        case LogLevel::Warning:
+            shouldShow = showWarnings;
+            color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
+            break;
+        case LogLevel::Error:
+            shouldShow = showErrors;
+            color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); // Red
+            break;
+        }
+
+        if (shouldShow) {
+            ImGui::PushStyleColor(ImGuiCol_Text, color);
+
+            // format: [timestamp] [level] message
+            std::string levelStr;
+            switch (entry.level) {
+            case LogLevel::Info: levelStr = "[Info]"; break;
+            case LogLevel::Warning: levelStr = "[Warning]"; break;
+            case LogLevel::Error: levelStr = "[Error]"; break;
+            }
+
+            ImGui::TextUnformatted((entry.timestamp + " " + levelStr + " " + entry.message).c_str());
+            ImGui::PopStyleColor();
+        }
+    }
+
+    // for auto scroll button
+    if (autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+        ImGui::SetScrollHereY(1.0f);
+    }
+
+    ImGui::EndChild();
+    ImGui::End();
+}

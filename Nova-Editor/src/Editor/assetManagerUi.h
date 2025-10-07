@@ -7,16 +7,19 @@
 #include "texture.h"
 #include "type_alias.h"
 
+#include "loader.h"
+
 #undef max
 constexpr ImTextureID NO_TEXTURE = std::numeric_limits<ImTextureID>::max();
 
 class Editor;
 class AssetManager;
 class ResourceManager;
+class AssetViewerUI;
 
 class AssetManagerUI {
 public:
-	AssetManagerUI(Editor& assetManager);
+	AssetManagerUI(Editor& assetManager, AssetViewerUI& assetViewerUi);
 
 public:
 	void update();
@@ -35,17 +38,25 @@ private:
 	void displayFolderContent(FolderID folderId);
 	void displayAssetThumbnail(ResourceID resourceId);
 	void displayFolderThumbnail(FolderID folderId);
+	void displayCreateAssetContextMenu();
 
-	void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
+	//void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
+	void displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
 
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;
 
-	void handleThumbnailDoubleClick(Asset& resource);
+	void handleThumbnailDoubleClick(ResourceID resourceId);
+
+	void dragAndDrop(const char* name, std::size_t id);
+	
+	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "");
 
 private:
+	Editor& editor;
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
+	AssetViewerUI& assetViewerUi;
 
 	FolderID selectedFolderId;
 
@@ -53,7 +64,14 @@ private:
 	std::string allUpperCaseSearchQuery; // we keep all upper case version of the search query.
 
 private:
+	std::unique_ptr<Texture> folderIcon;
+	std::unique_ptr<Texture> textureIcon;
+	std::unique_ptr<Texture> audioIcon;
+	std::unique_ptr<Texture> scriptIcon;
+	std::unique_ptr<Texture> sceneIcon;
+
+private:
 	float columnWidth = 100.f;
 
-	Texture folderIcon;
+	//Texture folderIcon;
 };

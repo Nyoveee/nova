@@ -1,5 +1,8 @@
 #include "Engine/engine.h"
 #include "physicsManager.h"
+#include "component.h"
+#include "ECS/ECS.h"
+#include "Engine/window.h"
 
 #include <iostream>
 #include <cstdarg>
@@ -16,6 +19,7 @@
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/ScaledShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Collision/RayCast.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
 
@@ -105,7 +109,9 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	// @ IF SOMETHING SEGFAULTS HERE ITS PROBABLY CAUSE I CALL .GETBODYINTERFACE BEFORE .INIT.
 	bodyInterface	{ physicsSystem.GetBodyInterface() },
 	debugRenderer	{ engine.renderer },
-	registry		{ engine.ecs.registry }
+	registry		{ engine.ecs.registry },
+	engine			{ engine },
+	contactListener	{ *this }
 {
 	// Install trace and assert callbacks
 	JPH::Trace = TraceImpl;
@@ -133,12 +139,12 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	MyBodyActivationListener body_activation_listener;
 	physics_system.SetBodyActivationListener(&body_activation_listener);
 
+
+#endif
 	// A contact listener gets notified when bodies (are about to) collide, and when they separate again.
 	// Note that this is called from a job so whatever you do here needs to be thread safe.
 	// Registering one is entirely optional.
-	MyContactListener contact_listener;
-	physics_system.SetContactListener(&contact_listener);
-#endif
+	physicsSystem.SetContactListener(&contactListener);
 
 }
 
@@ -155,7 +161,7 @@ void PhysicsManager::initialise() {
 		JPH::BodyCreationSettings bodySettings{
 			new JPH::ScaledShape(box, toJPHVec3(transform.scale * boxCollider.scaleMultiplier)),	// scaled shape
 			toJPHVec3(transform.position),															// position
-			JPH::Quat::sIdentity(),																	// rotation (in quartenions)
+			toJPHQuat(transform.rotation),															// rotation (in quartenions)
 			rigidbody.motionType,																	// motion type
 			layer																					// in which layer?
 		};
@@ -165,10 +171,14 @@ void PhysicsManager::initialise() {
 			rigidbody.motionType == JPH::EMotionType::Dynamic ? JPH::EActivation::Activate : JPH::EActivation::DontActivate
 		);
 
+		bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityId));
+		bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidbody.initialVelocity));
 		createdBodies.push_back(bodyId);
 
 		rigidbody.bodyId = bodyId;
 	}
+
+	physicsSystem.OptimizeBroadPhase();
 }
 
 void PhysicsManager::clear() {
@@ -223,6 +233,19 @@ void PhysicsManager::update(float dt) {
 		transform.position = toGlmVec3(pos);
 		transform.rotation = toGlmQuat(rotation);
 	}
+
+	// =============================================================
+	// 3. Handle collision request..
+	// =============================================================
+
+	std::lock_guard lock{ onCollisionMutex };
+
+	while (onCollision.size()) {
+		auto [entityOne, entityTwo] = onCollision.front();
+		onCollision.pop();
+		
+		engine.scriptingAPIManager.onCollisionEnter(entityOne, entityTwo);
+	}
 }
 
 void PhysicsManager::debugRender() {
@@ -247,4 +270,39 @@ void PhysicsManager::createPrimitiveShapes() {
 	sphereSettings.SetEmbedded(); // whatever i just yapped at the top
 
 	sphere = sphereSettings.Create().Get();
+}
+
+void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {
+	std::lock_guard lock{ onCollisionMutex };
+	onCollision.push({ entityOne, entityTwo });
+}
+
+PhysicsRay PhysicsManager::getRayFromMouse() const {
+	glm::vec3 farClipPos = { engine.window.getClipSpacePos(), 1.f };
+	glm::vec3 nearClipPos = { farClipPos.x, farClipPos.y, -1.f };
+
+	glm::vec3 farWorldPos = engine.renderer.getCamera().clipToWorldSpace(farClipPos);
+	glm::vec3 nearWorldPos = engine.renderer.getCamera().clipToWorldSpace(nearClipPos);
+
+	glm::vec3 raycastDirection = glm::normalize(farWorldPos - nearWorldPos);
+
+	return { nearWorldPos, raycastDirection };
+}
+
+std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, float maxDistance) {
+	auto&& narrowPhaseQuery = physicsSystem.GetNarrowPhaseQuery();
+	
+	JPH::RayCastResult rayCastResult;
+	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
+
+	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult)) {
+		JPH::BodyID bodyId = rayCastResult.mBodyID;
+
+		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
+		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
+	
+		return PhysicsRayCastResult{ entity, collisionPoint };
+	}
+
+	return std::nullopt;
 }

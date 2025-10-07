@@ -16,20 +16,26 @@ class Window;
 
 class InputManager {
 public:
-	DLL_API InputManager();
+	ENGINE_DLL_API InputManager();
 
-	DLL_API ~InputManager()										= default;
-	DLL_API InputManager(InputManager const& other)				= delete;
-	DLL_API InputManager(InputManager&& other)					= delete;
-	DLL_API InputManager& operator=(InputManager const& other)	= delete;
-	DLL_API InputManager& operator=(InputManager&& other)		= delete;
+	ENGINE_DLL_API ~InputManager()										= default;
+	ENGINE_DLL_API InputManager(InputManager const& other)				= delete;
+	ENGINE_DLL_API InputManager(InputManager&& other)					= delete;
+	ENGINE_DLL_API InputManager& operator=(InputManager const& other)	= delete;
+	ENGINE_DLL_API InputManager& operator=(InputManager&& other)		= delete;
 
+public:
+	void update();
 public:
 	// Systems can call this member function to observe to a certain InputEvent, providing the input manager with a callback.
 	// Whenever this InputEvent happens, the callback is involved with the InputEvent's data.
 	template <typename InputEvent>
-	void subscribe(std::function<void(InputEvent)> pressCallback, std::function<void(InputEvent)> releaseCallback = {});
+	ObserverID subscribe(std::function<void(InputEvent)> pressCallback, std::function<void(InputEvent)> releaseCallback = {});
 	
+	// bro fell off.
+	template <typename InputEvent>
+	void unsubscribe(ObserverID id);
+
 	// Input Manager calls broadcast which notifies all observers that are observing this specific InputEvent.
 	// Client can alternatively call this function directly to manually broadcast an event to all observers as well.
 	template <typename InputEvent>
@@ -50,11 +56,21 @@ private:
 	void mapKeyBindInput(int key, KeyType type, InputEvent data);
 
 	void mainKeyBindMapping();
+
+public:
+	glm::vec2 mousePosition;
+	float scrollOffsetY;
+
 private:
-	// observers maps Input Event to all interested observers.
+	// maps Input Event to all interested observers.
+	std::unordered_map<EventID, std::vector<ObserverID>>		observers;
+	std::unordered_map<ObserverID, std::unique_ptr<IObserver>>	observerIds;
+
 	// mappedKeyBinds maps GLFW KEY macros to a keybind containing Input Event and it's corresponding data
-	std::unordered_map<EventID, std::vector<std::unique_ptr<IObserver>>>  observers;
 	std::unordered_map<GLFWInput, std::vector<std::unique_ptr<IKeyBind>>> mappedKeyBinds;
+
+	// a counter to give every observer a unique id.
+	ObserverID currentObserverId;
 };
 
 #include "InputManager/inputManager.ipp"

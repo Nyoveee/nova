@@ -1,17 +1,18 @@
 	#pragma once
 
 #include "export.h"
-#include "asset.h"
+#include "resource.h"
 
-#include "texture.h"
-#include "model.h"
-#include "audio.h"
-#include "scriptAsset.h"
+#include "loader.h"
 
 #include <concepts>
 #include <unordered_map>
 #include <memory>
 #include <filesystem>
+
+#include <queue>
+#include <mutex>
+#include <functional>
 
 class AssetManager;
 
@@ -26,7 +27,7 @@ public:
 		LoadingFailed	// there was an attempt to load the asset but it failed.
 	};
 
-	template <ValidAsset T>
+	template <ValidResource T>
 	struct ResourceQuery {
 		// Raw pointer representing non-owning, potentially null resource.
 		T* asset;
@@ -34,74 +35,66 @@ public:
 	};
 
 public:
-	DLL_API ResourceManager();
+	ENGINE_DLL_API ResourceManager();
 
-	DLL_API ~ResourceManager()											= default;
-	DLL_API ResourceManager(ResourceManager const& other)				= delete;
-	DLL_API ResourceManager(ResourceManager&& other)					= delete;
-	DLL_API ResourceManager& operator=(ResourceManager const& other)	= delete;
-	DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
+	ENGINE_DLL_API ~ResourceManager()											= default;
+	ENGINE_DLL_API ResourceManager(ResourceManager const& other)				= delete;
+	ENGINE_DLL_API ResourceManager(ResourceManager&& other)						= delete;
+	ENGINE_DLL_API ResourceManager& operator=(ResourceManager const& other)		= delete;
+	ENGINE_DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
 
-public:
-	template <ValidAsset T>
+	// main way all systems query for a specific resource.
+	template <ValidResource T>
 	ResourceQuery<T> getResource(ResourceID id);
 
 	// retrieve all resource ids of a given type.
-	template <ValidAsset T>
+	template <ValidResource T>
 	std::vector<ResourceID> const& getAllResources() const;
 
 	// retrieve 1 resource id of a given type. (should never be invalid resource id, but still should handle the chance of it being invalid).
-	template <ValidAsset T>
+	template <ValidResource T>
 	ResourceID getSomeResourceID() const;
 
 	// given an resource id, is the original resource type of T?
-	template <ValidAsset T>
+	template <ValidResource T>
 	bool isResource(ResourceID id) const;
 
 public:
-	// this is only used to get metadata / info about the resources (like name, is asset loaded..)
-	// this doesnt not load the resource!!
-	// since there is no loading of resource, you retrieve the data instantly.
-	DLL_API Asset* getResourceInfo(ResourceID id);
+	ENGINE_DLL_API void update();
+	ENGINE_DLL_API bool doesResourceExist(ResourceID id) const;
 
-	// get the resource id for a given filepath. may be INVALID_ASSET_ID.
-	DLL_API ResourceID getResourceID(std::filesystem::path const& path) const;
-
-	DLL_API bool doesResourceExist(ResourceID id) const;
+	ENGINE_DLL_API void submitInitialisationCallback(std::function<void()> callback);
 
 private:
 	friend AssetManager;
 
-	// parses a given resource file.
-	template <ValidAsset T>
-	void addResourceFile(std::filesystem::path const& filepath);
+	// parses a given resource file. returns a valid resource id if its valid,
+	// INVALID_RESOURCE_ID otherwise.
+	template <ValidResource T>
+	ResourceID addResourceFile(ResourceFilePath const& filepath);
 
-	template <ValidAsset T>
-	void addResourceFile(AssetInfo<T> assetInfo);
+	// records all the given resources in a given directory, taking note of their filepaths.
+	template<ValidResource ...T>
+	void recordAllResources();
 
-	// loads all the given resources in a given directory,
-	template <ValidAsset T>
-	void loadAllResources(std::filesystem::path const& directory);
+	// this is only called by the asset manager to remove outdated resources. (housekeeping)
+	ENGINE_DLL_API void removeResource(ResourceID id);
 
 private:
-	std::filesystem::path resourceDirectory;
-	std::filesystem::path textureDirectory;
-	std::filesystem::path modelDirectory;
+	// records all resource filepath and it's associated resource id.
+	// we don't load assets at resource startup, only keeping track of resource filepath for us to load.
+	std::unordered_map<ResourceID, ResourceFilePath> resourceFilePaths;
 
-	// main container containing all assets.
-	std::unordered_map<ResourceID, std::unique_ptr<Asset>> resources;
+	// main container containing all LOADED resources. when an resource is loaded, it goes here.
+	std::unordered_map<ResourceID, std::unique_ptr<Resource>> loadedResources;
 
 	// groups all assets based on their type.
 	std::unordered_map<ResourceTypeID, std::vector<ResourceID>> resourcesByType;
 
-	// associates an resource id with the corresponding resource type.
-	std::unordered_map<ResourceID, ResourceTypeID> resourceIdToType;
-
-	// holds the directory of each sub asset.
-	std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetDirectories;
-
-	// maps filepath to resource ID.
-	std::unordered_map<std::string, ResourceID> filepathToResourceId;
+	// initialisationQueue represents the resources after the loading operation has been completed.
+	// this function will construct the aset type, and store it in resources, the main container containing all LOADED resources.
+	std::mutex initialisationQueueMutex;
+	std::queue<std::function<void()>> initialisationQueue;
 };
 
 #include "resourceManager.ipp"

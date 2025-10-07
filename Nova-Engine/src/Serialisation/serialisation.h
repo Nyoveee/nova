@@ -3,14 +3,21 @@
 #include <fstream>
 #include <entt/entt.hpp>
 #include <json/json.hpp>
+#include "export.h"
+
 
 class ECS;
 
 using json = nlohmann::json;
 
 namespace Serialiser {
-	void serialiseScene(ECS& ecs);
-	void deserialiseScene(ECS& ecs);
+	ENGINE_DLL_API void serialiseScene(ECS& ecs, const char* fileName);
+	void deserialiseScene(ECS& ecs, const char* fileName);
+	void serialiseGameConfig(const char* fileName, int gamewidth, int gameHeight);
+
+	ENGINE_DLL_API void deserialiseGameConfig(const char* fileName, int& gameWidth, int& gameHeight, std::string& windowName);
+	ENGINE_DLL_API void serialiseEditorConfig(const char* fileName, bool consol, bool debugUi, bool hierarchy, bool componentInspector);
+	ENGINE_DLL_API void deserialiseEditorConfig(const char* fileName);
 
 	template <typename ...Components>
 	json serialiseComponents(entt::registry& registry, entt::entity entity);

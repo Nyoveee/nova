@@ -7,58 +7,88 @@
 #include "export.h"
 #include "type_alias.h"
 
+#include <entt/entt.hpp>
+#include <dotnet/coreclrhost.h>
+
 #include <Windows.h>
 #include <sstream>
 #include <iomanip>
 #include <vector>
 #include <string>
-#include <dotnet/coreclrhost.h>
 #include <unordered_map>
+#include <variant>
+#include <unordered_set>
 
+#include "Physics/physicsManager.h"
 
-class Engine; // Don't need to call any function or variables, just pass in
+struct FieldData;
 
 // More readable function pointer syntax because C lmaoo
 using UpdateFunctionPtr				= void (*)(void);
 using AddScriptFunctionPtr			= void (*)(unsigned int, std::size_t);
 using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
+using RemoveEntityFunctionPtr       = void (*)(unsigned int);
 using LoadScriptsFunctionPtr		= void (*)(void);
 using UnloadScriptsFunctionPtr		= void (*)(void);
 using IntializeScriptsFunctionPtr	= void (*)(void);
+using GetScriptFieldsFunctionPtr    = std::vector<FieldData> (*)(std::size_t);
+using SetScriptFieldFunctionPtr		= void (*)(unsigned int, unsigned long long, FieldData const& fieldData);
+
+using handleOnCollisionFunctionPtr  = void (*)(unsigned int, unsigned int);
+
+class Engine;
 
 class ScriptingAPIManager {
 public:
 	enum class CompileState {
 		NotCompiled,
 		ToBeCompiled,
-		Compiled
+		Compiled,
+		CompilationFailed
 	};
 
 public:
 	// Functions needed to run the ScriptingAPI
-	DLL_API ScriptingAPIManager(Engine& p_engine);
+	ENGINE_DLL_API ScriptingAPIManager(Engine& p_engine);
 
-	DLL_API ~ScriptingAPIManager();
-	DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
-	DLL_API ScriptingAPIManager(ScriptingAPIManager&& other)					= delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other)	= delete;
-	DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
+	ENGINE_DLL_API ~ScriptingAPIManager();
+	ENGINE_DLL_API ScriptingAPIManager(ScriptingAPIManager const& other)				= delete;
+	ENGINE_DLL_API ScriptingAPIManager(ScriptingAPIManager&& other)						= delete;
+	ENGINE_DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager const& other)		= delete;
+	ENGINE_DLL_API ScriptingAPIManager& operator=(ScriptingAPIManager&& other)			= delete;
 
 public:
-	DLL_API void update();
-	DLL_API void checkModifiedScripts(float dt);
+	ENGINE_DLL_API bool compileScriptAssembly();
 
-	DLL_API bool loadAllScripts();
-	DLL_API void unloadAllScripts();
+	ENGINE_DLL_API bool isNotCompiled() const;
+	ENGINE_DLL_API bool hasCompilationFailed() const;
+
+	// Simulation
+	ENGINE_DLL_API bool startSimulation();
+	ENGINE_DLL_API void stopSimulation();
+
+	// Update
+	ENGINE_DLL_API void update();
+	ENGINE_DLL_API void checkIfRecompilationNeeded(float dt);
+
+	// ENGINE_DLL_API void editorModeUpdate(float dt);
+
+	// Serializable Field Reference
+	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(ResourceID scriptID);
+
+	//ENGINE_DLL_API bool setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData);
 
 	// This is the callback when the assets files are Added
-	DLL_API void OnAssetContentAddedCallback(std::string abspath);
+	ENGINE_DLL_API void OnAssetContentAddedCallback(std::string abspath);
 
 	// This is the callback when the assets files are Modified
-	DLL_API void OnAssetContentModifiedCallback(ResourceID assetTypeID);
+	ENGINE_DLL_API void OnAssetContentModifiedCallback(ResourceID assetTypeID);
 
 	// This is the callback when the assets files are deleted
-	DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
+	ENGINE_DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
+
+	ENGINE_DLL_API void onCollisionEnter(entt::entity entityOne, entt::entity entityTwo);
+	ENGINE_DLL_API void onCollisionExit(entt::entity entityOne, entt::entity entityTwo);
 
 private:
 	template<typename Func>
@@ -70,11 +100,12 @@ private:
 
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
-	bool compileScriptAssembly();
+
 
 private:
 	Engine& engine;
 	std::string runtimeDirectory;
+
 private:
 	// coreCLR key components 
 	HMODULE coreClr;
@@ -85,18 +116,27 @@ private:
 	coreclr_initialize_ptr intializeCoreClr;
 	coreclr_create_delegate_ptr createManagedDelegate;
 	coreclr_shutdown_ptr shutdownCorePtr;
+
 private:
 	// Function pointers to interact directly with ScriptingAPI
-	UpdateFunctionPtr updateScripts;
-	AddScriptFunctionPtr addGameObjectScript;
-	RemoveScriptFunctionPtr removeGameObjectScript;
-	LoadScriptsFunctionPtr loadAssembly;
-	UnloadScriptsFunctionPtr unloadAssembly;
-	IntializeScriptsFunctionPtr initalizeScripts;
+	UpdateFunctionPtr				update_;
+	AddScriptFunctionPtr			addEntityScript;
+	RemoveScriptFunctionPtr			removeEntityScript_;
+	RemoveEntityFunctionPtr			removeEntity_;
+	LoadScriptsFunctionPtr			loadAssembly;
+	UnloadScriptsFunctionPtr		unloadAssembly;
+	IntializeScriptsFunctionPtr		initalizeScripts;
+	GetScriptFieldsFunctionPtr		getScriptFieldDatas_;
+	SetScriptFieldFunctionPtr		setScriptFieldData;
+	handleOnCollisionFunctionPtr	handleOnCollision_;
+
 private:
 	CompileState compileState;
 	float timeSinceSave;
 
+	// we keep track of only the scripts that has been modified when recompiling, and reload the 
+	// default values of the serialized fields for those affected scripts.
+	std::unordered_set<ResourceID> modifiedScripts;
 };
 
 #include "Engine/ScriptingAPIManager.ipp"

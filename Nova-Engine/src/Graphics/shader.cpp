@@ -106,7 +106,7 @@ void Shader::compile() {
 	glGetProgramiv(m_id, GL_LINK_STATUS, &success);
 	if (!success) {
 		char infoLog[512];
-		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
+		glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
 		Logger::error("Error! Linking of shaders failed! {}", infoLog);
 	}
 
