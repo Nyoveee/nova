@@ -342,7 +342,7 @@ struct CubeEmitter {
 	glm::vec3 max;
 };
 struct SphereEmitter {
-	float radius;
+	float radius = 1.f;
 };
 struct ParticleEmitter
 {
@@ -357,7 +357,8 @@ struct ParticleEmitter
 	// Editor stuff
 	TypedResourceID<Texture> texture;
 	Color color = Color{ 1.f, 1.f, 1.f };
-	enum class EmissionShape {
+	enum class EmissionShape{
+		Point,
 		Sphere,
 		Cube
 		// Edge

@@ -1,0 +1,13 @@
+#pragma once
+#include "vertex.h"
+#include "component.h"
+
+#include <vector>
+namespace DebugShapes
+{
+	std::vector<SimpleVertex> SphereAxisXY(Transform const& transform, float radius);
+	std::vector<SimpleVertex> SphereAxisXZ(Transform const& transform, float radius);
+	std::vector<SimpleVertex> SphereAxisYZ(Transform const& transform, float radius);
+	constexpr int NUM_DEBUG_CIRCLE_POINTS = 36;
+};
+

@@ -171,9 +171,10 @@ private:
 	BufferObject sharedUBO;
 
 	// Debug Physics VAO and it's corresponding VBO.
-	GLuint debugPhysicsVAO;
+	GLuint debugVAO;
 	BufferObject debugPhysicsVBO;
 	BufferObject debugNavMeshVBO;
+	BufferObject debugParticleShapeVBO;
 
 	Camera camera;
 

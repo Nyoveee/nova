@@ -17,6 +17,7 @@ private:
 	void continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void burstGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void particleMovement(ParticleEmitter& emitter, float dt);
+	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
 private:
 	Engine& engine;
 };

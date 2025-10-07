@@ -11,7 +11,7 @@
 #include "vertex.h"
 #include "ECS/ECS.h"
 #include "ResourceManager/resourceManager.h"
-
+#include "DebugShapes.h"
 #include "component.h"
 #include "Profiling.h"
 #include "Logger.h"
@@ -49,10 +49,11 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
 	mainVAO						{},
-	debugPhysicsVAO				{},
+	debugVAO				{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
 	EBO							{ AMOUNT_OF_MEMORY_ALLOCATED },
 
 								// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
@@ -128,24 +129,24 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayAttribBinding(mainVAO, 4, bindingIndex);
 
 	// ======================================================
-	// Debug Physics VAO configuration
+	// Debug VAO configuration
 	// - No EBO. A much simpler VAO containing only position.
 	// ======================================================
-	glCreateVertexArrays(1, &debugPhysicsVAO);
+	glCreateVertexArrays(1, &debugVAO);
 	
 	// for this VAO, associate bindingIndex 0 with this VBO. 
 	constexpr GLuint debugBindingIndex = 0;
 
-	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
 
 	// associate attribute index 0 with the respective attribute properties.
-	glVertexArrayAttribFormat(debugPhysicsVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(SimpleVertex, pos));
+	glVertexArrayAttribFormat(debugVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(SimpleVertex, pos));
 
 	// enable attribute
-	glEnableVertexArrayAttrib(debugPhysicsVAO, 0);
+	glEnableVertexArrayAttrib(debugVAO, 0);
 
 	// associate vertex attribute 0 with binding index 1.
-	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
+	glVertexArrayAttribBinding(debugVAO, 0, debugBindingIndex);
 }
 
 Renderer::~Renderer() {
@@ -251,12 +252,12 @@ void Renderer::recompileShaders() {
 void Renderer::debugRenderPhysicsCollider() {
 	// Bind Debug Physics VBO to VAO.
 	constexpr GLuint debugBindingIndex = 0;
-	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
 
 	// ================================================
 	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
 	// ================================================
-	glBindVertexArray(debugPhysicsVAO);
+	glBindVertexArray(debugVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, physicsDebugFrameBuffer.fboId());
 
 	// Clear physics debug framebuffer.
@@ -305,9 +306,9 @@ void Renderer::debugRenderPhysicsCollider() {
 void Renderer::debugRenderNavMesh() {
 	// Bind Debug Navmesh VBO to VAO.
 	constexpr GLuint debugBindingIndex = 0;
-	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
+	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
 
-	glBindVertexArray(debugPhysicsVAO);
+	glBindVertexArray(debugVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
@@ -325,6 +326,27 @@ void Renderer::debugRenderNavMesh() {
 
 void Renderer::debugRenderParticleEmissionShape()
 {
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
+	glVertexArrayVertexBuffer(debugVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(SimpleVertex));
+
+	glBindVertexArray(debugVAO);
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+	glEnable(GL_DEPTH_TEST);
+	setBlendMode(BlendingConfig::AlphaBlending);
+
+	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
+		switch (emitter.emissionShape) {
+		case ParticleEmitter::EmissionShape::Sphere:
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(transform, emitter.sphereEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.sphereEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(transform, emitter.sphereEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			break;
+		}
+	}
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {

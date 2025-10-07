@@ -23,10 +23,7 @@ void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEm
 		emitter.currentContinuousTime -= dt;
 	while (emitter.currentContinuousTime <= 0 && emitter.particles.size() < emitter.maxParticles) {
 		emitter.currentContinuousTime += 1.f / emitter.particleRate;
-		glm::vec3 randomDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
-		randomDirection = glm::normalize(randomDirection);
-		Particle newParticle = { transform.position, randomDirection * emitter.startSpeed ,emitter.startSize,emitter.lifeTime };
-		emitter.particles.push_back(newParticle);
+		spawnParticle(transform,emitter);
 	}
 }
 
@@ -60,16 +57,26 @@ void ParticleSystem::particleMovement(ParticleEmitter& emitter, float dt)
 	}
 }
 
+void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
+{
+	switch (emitter.emissionShape) {
+	case ParticleEmitter::EmissionShape::Sphere:
+	case ParticleEmitter::EmissionShape::Point:
+		glm::vec3 randomDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
+		randomDirection = glm::normalize(randomDirection);
+		Particle newParticle = { transform.position, randomDirection * emitter.startSpeed ,emitter.startSize,emitter.lifeTime };
+		emitter.particles.push_back(newParticle);
+		break;
+	}
+
+}
+
 /******************************************************************************
 	For Scripts
 ******************************************************************************/
 void ParticleSystem::emit(Transform const& transform, ParticleEmitter& emitter)
 {
 	int count{ emitter.burstAmount };
-	while (count-- && emitter.particles.size() < emitter.maxParticles) {
-		glm::vec3 randomDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
-		randomDirection = glm::normalize(randomDirection);
-		Particle newParticle = { transform.position, randomDirection * emitter.startSpeed ,emitter.startSize,emitter.lifeTime };
-		emitter.particles.push_back(newParticle);
-	}
+	while (count-- && emitter.particles.size() < emitter.maxParticles)
+		spawnParticle(transform,emitter);
 }
