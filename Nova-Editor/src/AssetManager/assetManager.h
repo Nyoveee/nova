@@ -20,6 +20,7 @@
 
 class ResourceManager;
 class Engine;
+class Editor;
 
 class AssetManager {
 public:
@@ -54,60 +55,62 @@ public:
 	AssetManager& operator=(AssetManager&& other)		= delete;
 
 public:
-#if 0
-	// =========================================================
-	// Serialising asset meta data..
-	template <ValidResource T>
-	friend struct SerialiseMetaDataFunctor;
-
-	template <ValidResource T>
-	friend struct SerialiseAssetFunctor;
-
-	template <ValidResource T>
-	void serialiseAssetMetaData(T const& asset);
-	void serialiseAssetMetaData(Asset const& asset, std::ofstream& metaDataFile);
-#endif
-
-public:
-	std::unordered_map<FolderID, Folder> const& getDirectories() const;
-	std::vector<FolderID> const& getRootDirectories() const;
-
-	std::string const& getName(ResourceID id) const;
-	AssetFilePath const& getFilepath(ResourceID id) const;
-	Descriptor const& getDescriptor(AssetFilePath assetFilePath) const;
-
 	void update();
 
 	// as this function may be invoked from different threads, we need to control access to
 	// the callback queue.
 	void submitCallback(std::function<void()> callback);
 
-private:
-	ResourceID parseIntermediaryAssetFile(AssetFilePath const& path);
-
-	void recordFolder(
-		FolderID folderId,
-		std::filesystem::path const& path
-	);
+	// Serialising asset meta data..
+	template <ValidResource T>
+	friend struct SerialiseDescriptorFunctor;
 
 	template <ValidResource T>
-	void compileIntermediaryFile(AssetInfo<T> descriptor);
+	void serialiseDescriptor(ResourceID id);
 
-	// =========================================================
-	// Parsing meta data file associated with the asset.
-	// Each asset will contain a generic metadata (id and name)
-	// Each specific type asset has additional metadata as well.
-	// =========================================================
+	bool renameFile(ResourceID id, std::string const& newFileStem);
+
+public:
+	// Getters..
+	std::unordered_map<FolderID, Folder> const& getDirectories()									const;
+	std::string const*							getName(ResourceID id)								const;
+	AssetFilePath const*						getFilepath(ResourceID id)							const;
+	BasicAssetInfo*								getDescriptor(ResourceID id);
+	ResourceID									getResourceID(AssetFilePath const& assetFilePath)	const;
+
+private:
+	friend class AssetDirectoryWatcher;
+	
+	void onAssetAddition(AssetFilePath const& assetFilePath);
+	void onAssetModification(ResourceID id, AssetFilePath const& assetFilePath);
+	void onFolderModification(std::filesystem::path const& folderPath);
+
+	void onAssetDeletion(ResourceID id);
+
+private:
+	void processAssetFilePath(AssetFilePath const& path);
+
+	// creates a new descriptor file and new resource file given the asset file path.
+	ResourceID parseIntermediaryAssetFile(AssetFilePath const& path);
+
+	template <ValidResource T>
+	void compileIntermediaryFile(AssetInfo<T> const& descriptor);
 
 	template<ValidResource ...T>
 	void loadAllDescriptorFiles();
 
+	// creates the resource file given a descriptor via the compiler.
 	template <ValidResource T>
-	void createResourceFile(AssetInfo<T> descriptor);
+	ResourceID createResourceFile(AssetInfo<T> descriptor);
+
+	void recordFolder(FolderID folderId, std::filesystem::path const& path);
 
 private:
 	ResourceManager& resourceManager;
 	Engine& engine;
+
+	// indicator that says whether the asset manager has fully initialised.
+	std::atomic<bool> hasInitialised;
 
 	// The AssetDirectoryWatcher will keep track of the assets directory in a seperate thread
 	AssetDirectoryWatcher directoryWatcher;
@@ -117,12 +120,19 @@ private:
 
 	// records metadata for each resource id. these metadata are only used in the editor, like interacting with the
 	// the intermediary asset & getting asset name.
-	std::unordered_map<ResourceID, BasicAssetInfo> assetToDescriptor;
+	// also acts as a record of all resource id with corresponding descriptor.
+	std::unordered_map<ResourceID, std::unique_ptr<BasicAssetInfo>> assetToDescriptor;
+
+	// for each asset, contains a functor that helps serialise descriptor.
+	std::unordered_map<ResourceID, std::unique_ptr<SerialiseDescriptor>> serialiseDescriptorFunctors;
+
+	// map each resource to the original resource type.
+	std::unordered_map<ResourceID, ResourceTypeID> resourceToType;
 
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
-	std::vector<FolderID> rootDirectories;
-	std::unordered_map<std::string, FolderID> folderNameToId;
+	std::unordered_map<std::string, FolderID> folderPathToId;
+	FolderID folderId;
 
 	// the asset manager stores a queue of callbacks that other threads could submit to
 	// this ensures thread safety.

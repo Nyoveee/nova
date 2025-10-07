@@ -1,4 +1,4 @@
-﻿class TestScript2: Script
+﻿class okay  : Script
 {
     Transform_? transform;
     protected override void init()
@@ -7,10 +7,11 @@
     }
     public void MoveTable()
     {
+        // Debug
         if (transform != null)
         {
             Vector3 position = transform.position;
-            position.z += Time.fixedDeltaTime;
+            position.z += Time.V_FixedDeltaTime();
             transform.position = position;
         }
     }

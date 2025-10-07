@@ -4,7 +4,7 @@
 #include "engine.h"
 #include "window.h"
 
-#include "ECS/component.h"
+#include "component.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
@@ -35,6 +35,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 Engine::~Engine() {
 	stopSimulation();
 	setupSimulationFunction.value()();
+	Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
 }
 
 void Engine::fixedUpdate(float dt) {
@@ -43,20 +44,27 @@ void Engine::fixedUpdate(float dt) {
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
-	}
-	else
-	{
-		scriptingAPIManager.checkModifiedScripts(dt);
+		navigationSystem.update(dt);
+		
 	}
 }
 
 void Engine::update(float dt) {
+	//Note the order should be correct
 	audioSystem.update();
 	cameraSystem.update(dt);
+
+	if (!inSimulationMode) {
+		scriptingAPIManager.checkIfRecompilationNeeded(dt);
+
+	}
+
 	transformationSystem.update();
 	renderer.update(dt);
 
 	resourceManager.update();
+	
+
 }
 
 void Engine::setupSimulation() {
@@ -72,11 +80,12 @@ void Engine::setupSimulation() {
 void Engine::render(RenderTarget target) {
 	ZoneScoped;
 
+
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(toDebugRenderPhysics);
+	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh);
 
 	if (target == RenderTarget::DefaultFrameBuffer) {
 		renderer.renderToDefaultFBO();
@@ -92,15 +101,20 @@ void Engine::startSimulation() {
 		//Serialiser::serialiseScene(ecs);
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
-
-		if (!scriptingAPIManager.startSimulation())
-		{
-			stopSimulation();
-			return;
-		}
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();
 		cameraSystem.startSimulation();
+		navigationSystem.initNavMeshSystems();
+
+		if (scriptingAPIManager.hasCompilationFailed()) {
+			Logger::error("Script compilation failed. Please update them.");
+			stopSimulation();
+			return;
+		}
+		else if (!scriptingAPIManager.startSimulation()) {
+			stopSimulation();
+			return;
+		}
 
 		// We set simulation mode to true to indicate that the change of simulation is successful.
 		// Don't set simulation mode to true if set up falied.
@@ -118,11 +132,10 @@ void Engine::stopSimulation() {
 		audioSystem.unloadAllSounds();
 		cameraSystem.endSimulation();
 
-		Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
-		Serialiser::serialiseScene(ecs, "test.json");
 
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		scriptingAPIManager.stopSimulation();
 
 		inSimulationMode = false;
 	};
@@ -138,4 +151,11 @@ int Engine::getGameHeight() const {
 
 bool Engine::isInSimulationMode() const {
 	return inSimulationMode;
+}
+
+void Engine::SystemsOnLoad()
+{
+	this->navigationSystem.initNavMeshSystems();
+
+	
 }

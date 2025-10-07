@@ -36,12 +36,6 @@
     <ClInclude Include="src\Export\Header\ScriptingAPIManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS &amp; Components\ECS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Graphics\bufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -108,55 +102,7 @@
     <ClInclude Include="src\Navigation\Navigation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourAlloc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourAssert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourCommon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourMath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourNavMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourNavMeshBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourNavMeshQuery.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\Detour\DetourStatus.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourCrowd\DetourCrowd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourCrowd\DetourLocalBoundary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourCrowd\DetourObstacleAvoidance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourCrowd\DetourPathCorridor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourCrowd\DetourPathQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourCrowd\DetourProximityGrid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourTileCache\DetourTileCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Detour\DetourTileCache\DetourTileCacheBuilder.h">
+    <ClInclude Include="src\Physics\contactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -221,49 +167,7 @@
     <ClCompile Include="src\Navigation\Navigation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Detour\Detour\DetourAlloc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\Detour\DetourAssert.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\Detour\DetourCommon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\Detour\DetourNavMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\Detour\DetourNavMeshBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\Detour\DetourNavMeshQuery.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\Detour\DetourNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourCrowd\DetourCrowd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourCrowd\DetourLocalBoundary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourCrowd\DetourObstacleAvoidance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourCrowd\DetourPathCorridor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourCrowd\DetourPathQueue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourCrowd\DetourProximityGrid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourTileCache\DetourTileCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Detour\DetourTileCache\DetourTileCacheBuilder.cpp">
+    <ClCompile Include="src\Physics\contactListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

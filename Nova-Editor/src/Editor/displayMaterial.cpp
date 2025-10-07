@@ -1,11 +1,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "imgui.h"
-#include "ECS/component.h"
+#include "component.h"
 
 #include "componentInspector.h"
 
 #include "magic_enum.hpp"
+
+#include "ResourceManager/resourceManager.h"
+#include "editor.h"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector) {
 	ImGui::BeginChild("Material UI", ImVec2{0, 400.f}, ImGuiChildFlags_Borders);
@@ -59,7 +62,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		using T = std::decay_t<decltype(albedo)>;
 
 		if constexpr (std::same_as<T, ResourceID>) {
-			componentInspector.displayAssetDropDownList<Texture>(albedo, "Albedo Map", [&](ResourceID selectedAssetId) {
+			componentInspector.editor.displayAssetDropDownList<Texture>(albedo, "Albedo Map", [&](ResourceID selectedAssetId) {
 				material.albedo = selectedAssetId;
 			});
 			
@@ -96,7 +99,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		using T = std::decay_t<decltype(configuration)>;
 
 		if constexpr (std::same_as<T, ResourceID>) {
-			componentInspector.displayAssetDropDownList<Texture>(configuration, "Packed Texture Map", [&](ResourceID selectedAssetId) {
+			componentInspector.editor.displayAssetDropDownList<Texture>(configuration, "Packed Texture Map", [&](ResourceID selectedAssetId) {
 				material.config = selectedAssetId;
 			});
 
@@ -138,7 +141,7 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		}
 	}
 	else {
-		componentInspector.displayAssetDropDownList<Texture>(material.normalMap.value(), "Normal Map", [&](ResourceID selectedResourceId) {
+		componentInspector.editor.displayAssetDropDownList<Texture>(material.normalMap.value(), "Normal Map", [&](ResourceID selectedResourceId) {
 			material.normalMap = selectedResourceId;
 		});
 

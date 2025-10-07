@@ -10,7 +10,7 @@ constexpr float defaultFarPlaneDistance		= 1000.f;
 constexpr float defaultAspectRatio			= 1920.f / 1080.f;
 
 Camera::Camera() : 
-	cameraPos			{ 0.f, 1.f, 5.f },
+	cameraPos			{},
 	cameraFront			{ defaultCameraFront },
 	cameraRight			{ glm::normalize(glm::cross(cameraFront, Up)) },
 	viewMatrix			{},
@@ -30,6 +30,13 @@ glm::mat4x4 Camera::view() const {
 
 glm::mat4x4 Camera::projection() const {
 	return projectionMatrix;
+}
+
+glm::vec3 Camera::clipToWorldSpace(glm::vec3 const& clipPos) {
+	glm::vec4 clipPosVec4 = { clipPos, 1.f };
+	glm::vec4 worldPos = glm::inverse(projectionMatrix * viewMatrix) * clipPosVec4;
+
+	return glm::vec3(worldPos) / worldPos.w;
 }
 
 glm::vec3 Camera::getPos() const {
@@ -55,18 +62,6 @@ void Camera::setFront(glm::vec3 front) {
 
 glm::vec3 Camera::getRight() const {
 	return cameraRight;
-}
-
-void Camera::reset() {
-	cameraPos = { 0.f, 1.f, 5.f };
-	cameraFront = defaultCameraFront;
-	cameraRight = glm::normalize(glm::cross(cameraFront, Up)) ;
-	recalculateViewMatrix();
-	recalculateProjectionMatrix();
-	fovAngle = defaultFovAngle;
-	nearPlaneDistance = defaultNearPlaneDistance;
-	farPlaneDistance = defaultFarPlaneDistance;
-	aspectRatio = defaultAspectRatio;
 }
 
 void Camera::recalculateViewMatrix() {

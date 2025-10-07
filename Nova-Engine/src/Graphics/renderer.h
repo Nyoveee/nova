@@ -11,11 +11,13 @@
 #include "bufferObject.h"
 #include "framebuffer.h"
 #include "ECS/ECS.h"
-#include "ECS/Component.h"
+#include "component.h"
 #include "vertex.h"
 
 #include "model.h"
 #include "cubemap.h"
+
+#include "Detour/Detour/DetourNavMesh.h"
 
 class Engine;
 class ResourceManager;
@@ -30,6 +32,13 @@ public:
 		Disabled
 	};
 
+	enum class ToneMappingMethod {
+		Exposure,
+		Reinhard,
+		ACES,
+		None
+	};
+
 public:
 	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
@@ -42,7 +51,7 @@ public:
 public:
 	void update(float dt);
 
-	void render(bool toRenderDebug);
+	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh);
 	void renderToDefaultFBO();
 
 public:
@@ -50,8 +59,8 @@ public:
 	// Public facing API.
 	// =============================================
 
-	// used directly in the editor. i need to export this.
-	ENGINE_DLL_API std::vector<GLuint> const& getMainFrameBufferTextures() const;
+	// get the main texture of the main frame buffer.
+	ENGINE_DLL_API GLuint getMainFrameBufferTexture() const;
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// gets object id from color attachment 1 of the main framebuffer.
@@ -65,17 +74,28 @@ public:
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
 
+	ENGINE_DLL_API void setBlendMode(BlendingConfig configuration);
+	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
+
+	// HDR controls
+	ENGINE_DLL_API void setHDRExposure(float exposure);
+	ENGINE_DLL_API float getHDRExposure() const;
+
+	// Tone mapping controls
+	ENGINE_DLL_API void setToneMappingMethod(ToneMappingMethod method);
+	ENGINE_DLL_API ToneMappingMethod getToneMappingMethod() const;
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
 	// =============================================
 
 	// submit triangles to be rendered at the end
-	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3, ColorA color);
+	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
+	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 
 public:
-	//Vector to hold references
-	//std::vector<Camera*> allCameras;
+	bool toGammaCorrect;
 
 private:
 	// =============================================
@@ -98,7 +118,13 @@ private:
 	void renderObjectId(GLsizei count);
 
 	// render a debug triangles in physics
-	void debugRender();
+	void debugRenderPhysicsCollider();
+
+	// render a debug triangles in navMesh
+	void debugRenderNavMesh();
+
+	// HDR post-processing functions
+	void renderHDRTonemapping();
 
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
@@ -112,11 +138,15 @@ private:
 	// attempts to get the appropriate material from meshrenderer.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
 
-	void setBlendMode(BlendingConfig configuration);
 	void printOpenGLDriverDetails() const;
 
-	// render seperate window for game camera when simulation starts
-	void renderGameCam();
+	// =============================================
+	// Main Frame Buffer operations..
+	// =============================================
+	FrameBuffer const& getActiveMainFrameBuffer() const;
+	FrameBuffer const& getReadMainFrameBuffer() const;
+
+	void swapMainFrameBuffers();
 
 private:
 	Engine& engine;
@@ -134,14 +164,19 @@ private:
 	BufferObject spotLightSSBO;
 	BufferObject sharedUBO;
 
-	// Debug Physics VAO and it's corresponding VBO.	
+	// Debug Physics VAO and it's corresponding VBO.
 	GLuint debugPhysicsVAO;
 	BufferObject debugPhysicsVBO;
+	BufferObject debugNavMeshVBO;
 
 	Camera camera;
 
 	// contains all the final rendering.
-	FrameBuffer mainFrameBuffer;
+	// we use 2 frame buffers to alternate between the two between post processing..
+	std::array<FrameBuffer, 2> mainFrameBuffers;
+
+	int mainFrameBufferActiveIndex = 0;	// which framebuffer we are current writing to, and contains the latest image.
+	int mainFrameBufferReadIndex  = 1;	// which framebuffer we are current reading from, to do additional post processing..
 
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
@@ -150,8 +185,11 @@ private:
 	FrameBuffer objectIdFrameBuffer;
 
 private:
-	int numOfDebugTriangles;
+	int numOfPhysicsDebugTriangles;
+	int numOfNavMeshDebugTriangles;
+
 	bool isOnWireframeMode;
+	
 
 public:
 	Shader basicShader;
@@ -161,8 +199,16 @@ public:
 	Shader gridShader;
 	Shader outlineShader;
 	Shader blinnPhongShader;
+	Shader PBRShader;
 	Shader debugShader;
-	Shader debugOverlayShader;
+	Shader overlayShader;
 	Shader objectIdShader;
 	Shader skyboxShader;
+	
+	// HDR tone mapping shader
+	Shader toneMappingShader;
+
+	// HDR parameters
+	float hdrExposure;
+	ToneMappingMethod toneMappingMethod;
 };

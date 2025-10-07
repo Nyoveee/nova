@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/fwd.hpp>
 #include <functional>
 #include <memory>
 
@@ -32,6 +33,13 @@ public:
 		int height;
 	};
 
+	struct GameViewPort {
+		int topLeftX;
+		int topLeftY;
+		int gameWidth;
+		int gameHeight;
+	};
+
 public:
 	ENGINE_DLL_API Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager, Viewport viewportConfig);
 
@@ -47,12 +55,19 @@ public:
 	ENGINE_DLL_API void toggleFullScreen();
 	ENGINE_DLL_API float fps() const;
 
+	ENGINE_DLL_API void setGameViewPort(GameViewPort gameViewPort);
+	ENGINE_DLL_API glm::vec2 getClipSpacePos() const;
+
 private:
 	void toEnableMouse(bool toEnable);
 
 public:
 	// GLFW function callbacks are in the global scope and therefore do not have private access to Input Manager.
 	InputManager&	inputManager;
+
+	// Dimension of the actual window.
+	int				windowWidth;
+	int				windowHeight;
 
 private:
 	GLFWwindow*		glfwWindow;
@@ -61,8 +76,8 @@ private:
 	double			deltaTime;
 	double			currentFps;
 
-	int				windowWidth;
-	int				windowHeight;
+	// Starting position & dimension of the game view port.
+	GameViewPort 	gameViewPort;
 
 	bool			isFullScreen;
 };

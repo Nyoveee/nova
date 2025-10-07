@@ -7,22 +7,23 @@
 #include "Profiling.h"
 
 CameraSystem::CameraSystem(Engine& engine) :
-	engine				{ engine },
-	isMovingDown		{},
-	isMovingUp			{},
-	isMovingFront		{},
-	isMovingBack		{},
-	isMovingLeft		{},
-	isMovingRight		{},
-	lastMouseX			{},
-	lastMouseY			{},
-	camera				{ engine.renderer.getCamera() },
-	yaw					{ -90.f },
-	pitch				{},
-	isInControl			{ false },
-	toResetMousePos		{ true },
-	cameraSpeedExponent { 2.f },
-	cameraSpeed			{ std::exp(cameraSpeedExponent) }
+	engine					{ engine },
+	isMovingDown			{},
+	isMovingUp				{},
+	isMovingFront			{},
+	isMovingBack			{},
+	isMovingLeft			{},
+	isMovingRight			{},
+	isSimulationActive		{},
+	lastMouseX				{},
+	lastMouseY				{},
+	camera					{ engine.renderer.getCamera() },
+	levelEditorCamera		{ { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, -90.f, 0.f },
+	isInControl				{ false },
+	isThereActiveGameCamera	{ false },
+	toResetMousePos			{ true },
+	cameraSpeedExponent		{ 2.f },
+	cameraSpeed				{ std::exp(cameraSpeedExponent) }
 {
 	// Subscribe to the input manager that the camera system is interested in 
 	// any input related to CameraMovement
@@ -37,6 +38,10 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 	engine.inputManager.subscribe<ToCameraControl>(
 		[&](ToCameraControl control) {
+			if (isSimulationActive && isThereActiveGameCamera) {
+				return;
+			}
+
 			isInControl = control == ToCameraControl::Control;
 
 			if (isInControl) {
@@ -51,8 +56,8 @@ CameraSystem::CameraSystem(Engine& engine) :
 				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 				toResetMousePos = false;
 			}
-			else {
-				if(isInControl) calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+			else if (isInControl) {
+				calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 			}
 		}
 	);
@@ -71,24 +76,28 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 void CameraSystem::update(float dt) {
 	ZoneScoped;
-	
+
 	// for game camera
 	if(isSimulationActive)
 	{
-		for (auto&& [entityID, CamComponent] : engine.ecs.registry.view<CamComponent>().each())
+		isThereActiveGameCamera = false;
+
+		for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
 		{
-			if (CamComponent.camStatus)
+			if (cameraComponent.camStatus)
 			{
 				Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
 				// Use Transform data to set camera variables.
 				camera.setPos(objTransform.position);
 				camera.setFront(objTransform.front);
+				isThereActiveGameCamera = true;
 				break;
 			}
 		}
 	}
+
 	// for editor camera
-	else
+	if(!isSimulationActive || !isThereActiveGameCamera)
 	{
 		if (!isInControl) {
 			return;
@@ -97,29 +106,31 @@ void CameraSystem::update(float dt) {
 		cameraSpeed = std::exp(cameraSpeedExponent);
 
 		if (isMovingFront) {
-			camera.addPos(cameraSpeed * dt * camera.getFront());
+			levelEditorCamera.position += cameraSpeed * dt * camera.getFront();
 		}
 
 		if (isMovingLeft) {
-			camera.addPos(cameraSpeed * dt * -camera.getRight());
+			levelEditorCamera.position -= cameraSpeed * dt * camera.getRight();
 		}
 
 		if (isMovingBack) {
-			camera.addPos(cameraSpeed * dt * -camera.getFront());
+			levelEditorCamera.position -= cameraSpeed * dt * camera.getFront();
 		}
 
 		if (isMovingRight) {
-			camera.addPos(cameraSpeed * dt * camera.getRight());
+			levelEditorCamera.position += cameraSpeed * dt * camera.getRight();
 		}
 
 		if (isMovingUp) {
-			camera.addPos(cameraSpeed * dt * Camera::Up);
+			levelEditorCamera.position += cameraSpeed * dt * Camera::Up;
 		}
 
 		if (isMovingDown) {
-			camera.addPos(cameraSpeed * dt * -Camera::Up);
+			levelEditorCamera.position -= cameraSpeed * dt * Camera::Up;
 		}
-
+	
+		camera.setPos(levelEditorCamera.position);
+		camera.setFront(glm::normalize(levelEditorCamera.front));
 	}
 	
 	camera.recalculateViewMatrix();
@@ -161,6 +172,10 @@ float CameraSystem::getCameraSpeed() const {
 	return cameraSpeed;
 }
 
+CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() const {
+    return levelEditorCamera;
+}
+
 void CameraSystem::calculateEulerAngle(float mouseX, float mouseY) {
 	constexpr float sensitivity = 0.1f;		// change this value to your liking
 	
@@ -172,21 +187,15 @@ void CameraSystem::calculateEulerAngle(float mouseX, float mouseY) {
 	xOffset *= sensitivity;
 	yOffset *= sensitivity;
 
-	yaw += xOffset;
-	pitch += yOffset;
+	levelEditorCamera.yaw += xOffset;
+	levelEditorCamera.pitch += yOffset;
 
 	// make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (pitch > 89.0f)
-		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
+	levelEditorCamera.pitch = std::clamp(static_cast<float>(levelEditorCamera.pitch), -89.0f, 89.0f);
 
-	glm::vec3 front;
-	front.x = cos(Radian{ yaw }) * cos(Radian{ pitch });
-	front.y = sin(Radian{ pitch });
-	front.z = sin(Radian{ yaw }) * cos(Radian{ pitch });
-	
-	camera.setFront(glm::normalize(front));
+	levelEditorCamera.front.x = cos(Radian{ levelEditorCamera.yaw }) * cos(Radian{ levelEditorCamera.pitch });
+	levelEditorCamera.front.y = sin(Radian{ levelEditorCamera.pitch });
+	levelEditorCamera.front.z = sin(Radian{ levelEditorCamera.yaw }) * cos(Radian{ levelEditorCamera.pitch });
 }
 
 
@@ -196,6 +205,9 @@ void CameraSystem::startSimulation() {
 
 void CameraSystem::endSimulation() {
 	isSimulationActive = false;
-	camera.reset();
 
+	camera.setPos(levelEditorCamera.position);
+	camera.setFront(glm::normalize(levelEditorCamera.front));
+	camera.recalculateViewMatrix();
+	camera.recalculateProjectionMatrix();
 }

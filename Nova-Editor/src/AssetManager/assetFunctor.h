@@ -4,28 +4,13 @@
 
 class AssetManager;
 
-#if 0
-
-struct SerialiseMetaData {
+struct SerialiseDescriptor {
 public:
-	virtual ~SerialiseMetaData() = 0 {};
-	virtual void operator()(Asset& asset, AssetManager& assetManager) const = 0;
+	virtual ~SerialiseDescriptor() = 0 {};
+	virtual void operator()(ResourceID id, AssetManager& assetManager) const = 0;
 };
 
 template <ValidResource T>
-struct SerialiseMetaDataFunctor : public SerialiseMetaData {
-	void operator()(Asset& asset, AssetManager& assetManager) const final;
+struct SerialiseDescriptorFunctor : public SerialiseDescriptor {
+	void operator()(ResourceID id, AssetManager& assetManager) const final;
 };
-
-struct SerialiseAsset {
-public:
-	virtual ~SerialiseAsset() = 0 {};
-	virtual void operator()(Asset& asset, AssetManager& assetManager) const = 0;
-};
-
-template <ValidResource T>
-struct SerialiseAssetFunctor : public SerialiseAsset {
-	void operator()(Asset& asset, AssetManager& assetManager) const final;
-};
-
-#endif

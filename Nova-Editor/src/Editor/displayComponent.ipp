@@ -201,7 +201,7 @@ namespace {
 						// convert from radian to degrees for display..
 						float angle = static_cast<float>(dataMember);
 						angle = toDegree(angle);
-						if (ImGui::SliderFloat(fieldData.name(), &angle, 0.f, 180.f)) {
+						if (ImGui::SliderFloat(fieldData.name(), &angle, 0.f, 360.f)) {
 							dataMember = toRadian(angle);
 						}
 					}
@@ -221,7 +221,7 @@ namespace {
 						// dataMember is of type TypedAssetID<T>
 						using OriginalAssetType = DataMemberType::AssetType;
 
-						componentInspector.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
+						componentInspector.editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 							dataMember = DataMemberType{ resourceId };
 						});
 					}
@@ -244,11 +244,22 @@ namespace {
 					else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
 						std::vector<ScriptData>& scriptDatas{ dataMember };
 						ScriptingAPIManager& scriptingAPIManager{ componentInspector.editor.engine.scriptingAPIManager };
+
+						if (scriptingAPIManager.isNotCompiled()) {
+							if (scriptingAPIManager.hasCompilationFailed()) {
+								ImGui::Text("Script compilation has failed!!");
+							}
+							else {
+								ImGui::Text("Changes to scripts have been made, recompiling..");
+							}
+						}
+
+						ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || componentInspector.editor.engine.isInSimulationMode());
+						
 						// Adding Scripts
 						componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
 							ScriptData scriptData{ resourceId };
-							scriptingAPIManager.loadEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(resourceId));
-							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(static_cast<unsigned int>(entity), static_cast<std::size_t>(scriptData.scriptId));
+							scriptData.fields = scriptingAPIManager.getScriptFieldDatas(scriptData.scriptId);
 							scriptDatas.push_back(scriptData);
 						});
 
@@ -260,20 +271,24 @@ namespace {
 							bool keepScript = true;
 
 							auto&& [scriptAsset, _] = resourceManager.getResource<ScriptAsset>(scriptData.scriptId);
-							assert(scriptAsset);
-
-							if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
-								displayScriptFields(entity, scriptData, scriptingAPIManager,componentInspector.editor.engine);
+							
+							if (!scriptAsset) {
+								Logger::warn("Invalid script found, removing it..");
+								keepScript = false;
+							}
+							else {
+								if (ImGui::CollapsingHeader(scriptAsset->getClassName().c_str(), &keepScript))
+									displayScriptFields(entity, scriptData, scriptingAPIManager, componentInspector.editor.engine);
+							}
 
 							ImGui::PopID();
 							return !keepScript;
 						});
 						ImGui::EndChild();
 						if (it != std::end(scriptDatas)) {
-							scriptingAPIManager.removeEntityScript(static_cast<unsigned int>(entity), static_cast<unsigned long long>(it->scriptId));
 							scriptDatas.erase(it);
 						}
-				
+						ImGui::EndDisabled();
 					}
 
 					else if constexpr (std::same_as<DataMemberType, entt::entity>) {
@@ -281,18 +296,18 @@ namespace {
 					}
 
 
-					if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>)
+					else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>)
 					{
 						auto& audioDatas = dataMember;
 
 						// Add Audio
-						componentInspector.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
+						componentInspector.editor.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
 						{
-							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(resourceId);
-							assert(audioAsset);
-
 							// Store full AudioData directly in the component
-							audioDatas.emplace(assetManager.getName(resourceId).c_str(), AudioData{ resourceId, 1.0f, false });
+							auto namePtr = assetManager.getName(resourceId);
+
+							if(namePtr) 
+								audioDatas.emplace(namePtr->c_str(), AudioData{ resourceId, 1.0f, false });
 						});
 
 						// List of Audio Files
@@ -304,15 +319,19 @@ namespace {
 
 							bool keepAudioFile = true;
 
-							AudioData& audioData = it->second;
+							auto&& [name, audioData] = *it;
+							
 							auto&& [audioAsset, _] = resourceManager.getResource<Audio>(audioData.AudioId);
+
 							if (!audioAsset) {
 								// Invalid ResourceID
 								Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.AudioId));
+								ImGui::PopID();
+								it = audioDatas.erase(it);
 								continue;
 							}
 
-							if (ImGui::CollapsingHeader(assetManager.getName(audioData.AudioId).c_str(), &keepAudioFile)) {
+							if (ImGui::CollapsingHeader(name.c_str(), &keepAudioFile)) {
 								if (ImGui::Button("Play Audio")) {
 									if (audioSystem.isBGM(audioData.AudioId)) {
 										audioSystem.playBGM(audioData.AudioId, audioData.Volume);
@@ -343,8 +362,6 @@ namespace {
 
 						ImGui::EndChild();
 					}
-
-
 
 					// it's an enum. let's display a dropdown box for this enum.
 					// how? using enum reflection provided by "magic_enum.hpp" :D

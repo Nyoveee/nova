@@ -1,5 +1,7 @@
 #include "nova_math.h"
 
+#include "component.h"
+
 // Reference: https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
 namespace Math {
 	DecomposedMatrix decomposeMatrix(glm::mat4 const& m) {

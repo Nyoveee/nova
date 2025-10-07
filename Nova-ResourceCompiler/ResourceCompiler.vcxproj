@@ -73,12 +73,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)\ExternalApplication\$(Configuration)\</OutDir>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)ExternalApplication\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Assets;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)ExternalApplication\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -147,7 +147,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(S
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Resource.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
+      <Command>xcopy "$(SolutionDir)DLL\$(Configuration)\assimp-vc143-mt.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
 xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

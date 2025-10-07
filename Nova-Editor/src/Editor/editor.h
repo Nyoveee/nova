@@ -10,11 +10,13 @@
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
-#include "navMeshGeneration.h"
+#include "Navigation/navMeshGeneration.h"
 #include "hierarchy.h"
 #include "debugUI.h"
 #include "console.h"
 #include "navBar.h"
+#include "assetViewerUi.h"
+#include "navigationWindow.h"
 
 using GLuint = unsigned int;
 
@@ -23,7 +25,6 @@ class Engine;
 class InputManager;
 class AssetManager;
 class ResourceManager;
-class NavBar;
 
 class Editor {
 public:
@@ -36,7 +37,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
-	void update(std::function<void(bool)> changeSimulationCallback);
+	void update(float dt, std::function<void(bool)> changeSimulationCallback);
 	
 	bool isEntitySelected(entt::entity entity);
 	bool hasAnyEntitySelected() const;
@@ -53,18 +54,23 @@ public:
 	bool isInSimulationMode() const;
 
 public:
+	// displays a ImGui combo drop down box of all the assets related to type T.
+	// first parameter is used to specific which asset id is selected.
+	template <typename T>
+	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback);
+	
+public:
 	entt::entity hoveringEntity;
 	std::vector<entt::entity> copiedEntityVec;
 
 private:
-	void main();
+	void main(float dt);
 	void toggleViewPortControl(bool toControl);
 	void updateMaterialMapping();
 	void handleEntityValidity();
 	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
-	void navigationWindow();
 	void launchProfiler();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
@@ -76,17 +82,16 @@ public:
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
 
+	NavMeshGeneration navMeshGenerator;
 private:
 	Window& window;
 
 	GameViewPort gameViewPort;
 	ComponentInspector componentInspector;
+	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
-	//Hierarchy hierarchyList;
-	//DebugUI debugUi;
-	//Console console;
-	
-	NavMeshGeneration navMeshGenerator;
+	NavigationWindow navigationWindow;
+
 	NavBar navBar;
 
 private:
@@ -99,3 +104,5 @@ private:
 	bool inSimulationMode;
 	bool isThereChangeInSimulationMode;
 };
+
+#include "editor.ipp"

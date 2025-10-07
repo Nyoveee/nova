@@ -63,7 +63,7 @@ struct Material {
 		float occulusion;
 	};
 
-	Pipeline renderingPipeline = Pipeline::BlinnPhong;
+	Pipeline renderingPipeline = Pipeline::PBR;
 
 	// either texture map or constant.
 	std::variant<ResourceID, Color>		albedo = Color{ 0.1f, 0.1f, 0.1f };

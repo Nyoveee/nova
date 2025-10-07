@@ -6,6 +6,9 @@
 #include "compiler.h"
 
 #include "modelLoader.h"
+
+// Y* only libraries.
+#include "Library/tinyexr.h"
 #include "Library/stb_image.hpp"
 
 namespace {
@@ -45,6 +48,66 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 
 	gli::save_dds(tex, resourceFilePath.string);
 	
+	return 0;
+}
+
+int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	float* data; // width * height * RGBA
+
+	int width;
+	int height;
+	const char* err = nullptr; // or nullptr in C++11
+
+	int status = LoadEXR(&data, &width, &height, intermediaryAssetFilepath.string.c_str(), &err);
+
+	if (status != TINYEXR_SUCCESS) {
+		if (err) {
+			Logger::error("ERR : {}", err);
+			FreeEXRErrorMessage(err); // release memory of error message.
+		}
+
+		return -1;
+	}
+
+	std::size_t size = 4 * sizeof(float) * static_cast<size_t>(width) * static_cast<size_t>(height);
+
+	enum gli::format format = gli::format::FORMAT_RGBA32_SFLOAT_PACK32;
+
+	// Create a GLI 2D texture with the same dimensions
+	gli::texture2d tex{
+		format,
+		gli::extent2d(width, height)
+	};
+
+	// Copy pixel data into the GLI texture
+	std::memcpy(tex.data(), data, size);
+	stbi_image_free(data);
+
+	gli::save_dds(tex, resourceFilePath.string);
+
+#if 0
+	// im assuming GL_RGBA16F format.
+	// @TODO: actually check the header file of OpenEXR.
+	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
+
+	glTextureStorage2D(textureId, 1, GL_RGBA16F, width, height);
+	glTextureSubImage2D(textureId, 0, 0, 0, width, height, GL_RGBA, GL_FLOAT, data);
+
+	glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTextureParameteri(textureId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glGenerateTextureMipmap(textureId);
+	free(data); // release memory of image data
+
+	this->width = width;
+	this->height = height;
+
+	loadStatus = Asset::LoadStatus::Loaded;
+	//TracyAlloc(this, sizeof(*this));
+#endif
+
 	return 0;
 }
 
@@ -136,11 +199,8 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 	return 0;
 }
 
-int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
-	return -1;
-}
 
-int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::string className) {
 	std::ofstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {
@@ -148,8 +208,7 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, Asset
 		return -1;
 	}
 
-	// script literally only stores the	class name. the intermediaryAssetFilepath must match the class name.	
-	std::string className = std::filesystem::path{ intermediaryAssetFilepath }.stem().string();
+	// script literally only stores the	class name. class name is part of the descriptor.
 	resourceFile << className;
 
 	return 0;
@@ -206,6 +265,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "Scene") {
 		return Compiler::compileAsset<Scene>(descriptorFilepath);
+	}
+	else if (resourceType == "NavMesh") {
+		return Compiler::compileAsset<NavMesh>(descriptorFilepath);
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);

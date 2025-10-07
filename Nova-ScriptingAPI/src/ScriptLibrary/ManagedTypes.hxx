@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ECS/component.h"
+#include "component.h"
 #include "API/ManagedTypeMacros.hxx"
 
 // ===========================================================================================
@@ -14,11 +14,14 @@
 // Providing association here also allows you to declare data members of Managed Components
 // later in 2. with the managed type.
 // ===========================================================================================
+
+
 ManagedStruct(
 	Vector2, glm::vec2,
 	float, x,
 	float, y
 )
+
 ManagedStruct(
 	Vector3, glm::vec3,		// Creates a new managed type Vector3 that is associated with glm::vec3
 	float, x,
@@ -26,6 +29,18 @@ ManagedStruct(
 	float, z
 )
 // New managed type Vector3 now has data member of x, y, z corresponding to the data members of glm::vec3.
+
+ManagedStruct(
+	Ray,		PhysicsRay,
+	Vector3,	origin,
+	Vector3,	direction
+)
+
+ManagedStruct(
+	RayCastResult,	PhysicsRayCastResult,
+	entt::entity,	entity,
+	Vector3,		point
+)
 
 // ===========================================================================================
 // 2. Defining managed component types..
@@ -45,6 +60,16 @@ ManagedStruct(
 ManagedComponentDeclaration(
 	Transform,					// Creates a new managed component Transform_ that is associated with the Transform component
 	Vector3, position,			// Transform_ now has data member position, of type Vector3 which is associated with glm::vec3 (type of original data member).
-	Vector3, scale
+	Vector3, scale,
+	Vector3, front,
+	Vector3, right,
+	Vector3, up
 )
+
+// member functions..
+void rotate(Vector3 axis, float angle);
+
+ManagedComponentEnd()
+
+
 // We created a Managed Component named Transform_, with data members position, scale, rotation, test1 and test2.

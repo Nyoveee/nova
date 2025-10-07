@@ -16,7 +16,7 @@ bool Interface::ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ obje
 {
 	try {
 		Type^ value = safe_cast<Type^>(object);
-		fieldData.second = safe_cast<Type>(*value);
+		fieldData.data = safe_cast<Type>(*value);
 		return true;
 	}
 	catch(...){}
@@ -29,8 +29,8 @@ bool Interface::ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ obje
 template<typename Type, typename ...Types>
 bool Interface::SetScriptPrimitiveFromNativeData(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo)
 {
-	if (std::holds_alternative<Type>(fieldData.second)) {
-		Type value = std::get<Type>(fieldData.second);
+	if (std::holds_alternative<Type>(fieldData.data)) {
+		Type value = std::get<Type>(fieldData.data);
 		Type^ managedValue = safe_cast<Type^>(value);
 		fieldInfo->SetValue(script, managedValue);
 		return true;

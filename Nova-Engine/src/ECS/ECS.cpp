@@ -3,13 +3,13 @@
 
 #include "Engine/engine.h"
 #include "ECS/ECS.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "Logger.h"
 
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this }
+	sceneManager	{ *this, engine ,engine.resourceManager }
 {}
 
 ECS::~ECS() {}

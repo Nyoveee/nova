@@ -8,6 +8,8 @@
 
 #include "export.h"
 
+struct Transform;
+
 namespace Math {
 	struct DecomposedMatrix {
 		glm::vec3 position;

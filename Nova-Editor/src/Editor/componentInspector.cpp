@@ -2,7 +2,7 @@
 #include "componentInspector.h"
 #include "imgui.h"
 #include "editor.h"
-#include "ECS/component.h"
+#include "component.h"
 #include "ECS/ECS.h"
 #include "AssetManager/assetManager.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -61,8 +61,6 @@ ComponentInspector::ComponentInspector(Editor& editor) :
 {}
 
 void ComponentInspector::update() {
-	imguiCounter = 0;
-
 	ImGui::Begin(ICON_FA_WRENCH " Component Inspector");
 
 	// Begin displaying entity meta data..
@@ -110,21 +108,28 @@ void ComponentInspector::update() {
 
 void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback)
 {
-	ImGui::PushID(imguiCounter);
-	++imguiCounter;
 	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
 	if (ImGui::BeginCombo("Add new script", "##")) {
 		for (auto&& scriptID : allScripts) {
+
 			auto compareID = [&](ScriptData const& ownedScript) { return scriptID == ownedScript.scriptId; };
+
 			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
 				continue;
 
-			if (ImGui::Selectable(assetManager.getName(scriptID).c_str()))
-				onClickCallback(scriptID);
+			std::string const* namePtr = assetManager.getName(scriptID);
+
+			ImGui::PushID(static_cast<int>(static_cast<std::size_t>(scriptID)));
+
+			if (namePtr) {
+				if (ImGui::Selectable(namePtr->c_str()))
+					onClickCallback(scriptID);
+			}
+
+			ImGui::PopID();
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::PopID();
 }
 
 

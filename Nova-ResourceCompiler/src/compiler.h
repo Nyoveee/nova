@@ -17,7 +17,7 @@ private:
 	static int compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
 	static int compileModel			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
 	static int compileCubeMap		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
-	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, std::string className);
 
 	// default compiling an asset just makes a copy of the original intermediary asset as resource.
 	static int defaultCompile		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
