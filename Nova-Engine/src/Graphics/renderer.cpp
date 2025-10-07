@@ -45,6 +45,9 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	outlineShader		{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader			{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
 	debugOverlayShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/debugOverlay.frag" },
+	bloomBrightShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomBright.frag" },
+	bloomBlurShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomBlur.frag" },
+	bloomFinalShader	{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
 	objectIdShader		{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
 	skyboxShader		{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	mainVAO				{},
@@ -64,7 +67,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfDebugTriangles	{},
 	isOnWireframeMode	{},
 
-	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16 } },
+	mainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	bloomFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
+	bloomBrightBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
+	bloomBlurBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
 	physicsDebugFrameBuffer { gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } }
 {
@@ -181,7 +187,9 @@ void Renderer::render(RenderTarget target, bool toRenderDebug) {
 
 	renderModels();
 
-	renderOutline();
+	renderBloom();
+
+	//renderOutline(); 
 
 	if (toRenderDebug) {
 		debugRender();
@@ -214,9 +222,12 @@ Camera const& Renderer::getCamera() const {
 	return camera;
 }
 
-DLL_API void Renderer::recompileShaders() {
+void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 	skyboxShader.compile();
+	bloomBrightShader.compile();
+	bloomBlurShader.compile();
+	bloomFinalShader.compile();
 }
 
 void Renderer::debugRender() {
@@ -441,6 +452,8 @@ void Renderer::renderSkyBox() {
 }
 
 void Renderer::renderModels() {
+	setBlendMode(BlendingConfig::Disabled);
+
 	frustum cameraFrustum;
 	cameraFrustum.createFrustumFromCamera(
 		camera,
@@ -503,7 +516,7 @@ void Renderer::renderModels() {
 				setupBlinnPhongShader(*material);
 				break;
 			case Material::Pipeline::Color:
-				setupColorShader(*material);
+				setupColorShader(*material, registry.try_get<Light>(entity));
 			}
 
 			// time to draw!
@@ -516,6 +529,48 @@ void Renderer::renderModels() {
 		}
 	}
 	glDisable(GL_CULL_FACE);
+}
+
+void Renderer::renderBloom()
+{
+	glDisable(GL_DEPTH_TEST);
+
+	// 1. Extract bright areas from main framebuffer into bloomBrightBuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomBrightBuffer.fboId());
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	bloomBrightShader.use();
+	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]); // color attachment of main
+	bloomBrightShader.setImageUniform("scene", 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6); // fullscreen quad
+
+	// 2. Blur the bright image into bloomBlurBuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomBlurBuffer.fboId());
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	bloomBlurShader.use();
+	glBindTextureUnit(0, bloomBrightBuffer.textureIds()[0]);
+	bloomBlurShader.setImageUniform("image", 0);
+	bloomBlurShader.setInt("horizontal", 1);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// 3. Final combine pass: add blurred bright image with the main scene
+	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	glEnable(GL_BLEND);
+	setBlendMode(BlendingConfig::AdditiveBlending);
+
+	bloomFinalShader.use();
+	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]);   // original scene
+	glBindTextureUnit(1, bloomBlurBuffer.textureIds()[0]);   // blurred bright
+	bloomFinalShader.setImageUniform("scene", 0);
+	bloomFinalShader.setImageUniform("bloomBlur", 1);
+	bloomFinalShader.setFloat("exposure", 1.0f); // tweak
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
 }
 
 void Renderer::renderOutline() {
@@ -609,7 +664,7 @@ void Renderer::setupPBRShader(Material const& material) {
 	(void) material;
 }
 
-void Renderer::setupColorShader(Material const& material) {
+void Renderer::setupColorShader(Material const& material, Light const* light) {
 	// Handle albedo.
 	std::visit([&](auto&& albedo) {
 		using T = std::decay_t<decltype(albedo)>;
@@ -620,7 +675,13 @@ void Renderer::setupColorShader(Material const& material) {
 			if (!texture) {
 				// fallback..
 				colorShader.use();
-				colorShader.setVec3("color", { 0.2f, 0.2f, 0.2f });
+
+				if (light) {
+					colorShader.setVec3("color", static_cast<glm::vec3>(light->color) * light->intensity);
+				}
+				else {
+					colorShader.setVec3("color", { 0.2f, 0.2f, 0.2f });
+				}
 			}
 			else {
 				textureShader.use();
@@ -630,7 +691,13 @@ void Renderer::setupColorShader(Material const& material) {
 		}
 		else /* it's Color */ {
 			colorShader.use();
-			colorShader.setVec3("color", albedo);
+
+			if (light) {
+				colorShader.setVec3("color", static_cast<glm::vec3>(albedo) + static_cast<glm::vec3>(light->color) * light->intensity);
+			}
+			else {
+				colorShader.setVec3("color", albedo);
+			}
 		}
 
 	}, material.albedo);

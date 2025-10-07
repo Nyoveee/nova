@@ -90,6 +90,9 @@ private:
 	// render all MeshRenderers.
 	void renderModels();
 
+	// render bloom
+	void renderBloom();
+
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
@@ -103,7 +106,7 @@ private:
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
 	void setupBlinnPhongShader(Material const& material);
 	void setupPBRShader(Material const& material);
-	void setupColorShader(Material const& material);
+	void setupColorShader(Material const& material, Light const* light);
 
 	// sets model specific uniforms for all rendering pipeline. (like model matrix)
 	void setModelUniforms(Transform const& transform, entt::entity entity);
@@ -139,6 +142,11 @@ private:
 	// contains all the final rendering.
 	FrameBuffer mainFrameBuffer;
 
+	// 
+	FrameBuffer bloomFrameBuffer;
+	FrameBuffer bloomBrightBuffer;
+	FrameBuffer bloomBlurBuffer;
+
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
@@ -154,6 +162,9 @@ public:
 	// get the drawcall
 	DLL_API unsigned int drawCalls();
 public:
+	Shader bloomBrightShader;
+	Shader bloomBlurShader;
+	Shader bloomFinalShader;
 	Shader basicShader;
 	Shader standardShader;
 	Shader textureShader;
