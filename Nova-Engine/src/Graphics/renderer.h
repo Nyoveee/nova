@@ -115,6 +115,9 @@ private:
 	void setBlendMode(BlendingConfig configuration);
 	void printOpenGLDriverDetails() const;
 
+	// render seperate window for game camera when simulation starts
+	void renderGameCam();
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;

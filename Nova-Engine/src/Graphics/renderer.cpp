@@ -696,3 +696,8 @@ void Renderer::printOpenGLDriverDetails() const {
 		Logger::info("GLSL Version: {}", reinterpret_cast<const char*>(glslVersion));
 	}
 }
+
+void Renderer::renderGameCam()
+{
+
+}
