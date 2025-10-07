@@ -24,6 +24,8 @@
 #include "../Detour/DetourAlloc.h"
 #include "../Detour/DetourAssert.h"
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
 
 dtProximityGrid* dtAllocProximityGrid()
 {
@@ -192,3 +194,5 @@ int dtProximityGrid::getItemCountAt(const int x, const int y) const
 	
 	return n;
 }
+
+#pragma warning( pop )

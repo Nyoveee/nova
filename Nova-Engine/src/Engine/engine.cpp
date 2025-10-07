@@ -9,7 +9,6 @@
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
 
-
 #include "Serialisation/serialisation.h"
 #include "ECS/SceneManager.h"
 
@@ -50,13 +49,14 @@ void Engine::fixedUpdate(float dt) {
 }
 
 void Engine::update(float dt) {
+	ZoneScoped;
+
 	//Note the order should be correct
 	audioSystem.update();
 	cameraSystem.update(dt);
 
 	if (!inSimulationMode) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt);
-
 	}
 
 	transformationSystem.update();
@@ -98,8 +98,6 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		//Serialiser::serialiseScene(ecs);
-
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();

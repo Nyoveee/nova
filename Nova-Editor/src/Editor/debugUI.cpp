@@ -14,6 +14,7 @@
 
 
 DebugUI::DebugUI(Editor& editor) :
+	editor			{ editor },
 	engine			{ editor.engine },
 	renderer		{ editor.engine.renderer },
 	resourceManager	{ editor.engine.resourceManager },
@@ -27,6 +28,10 @@ void DebugUI::update() {
 	renderPhysicsSection();
 	renderHDRSection();
 	renderGammaCorrectionSection();
+
+	if (ImGui::Button("Profiler")) {
+		editor.launchProfiler();
+	}
 
 	ImGui::End();
 }

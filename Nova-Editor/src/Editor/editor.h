@@ -7,6 +7,7 @@
 
 #include "ECS/ecs.h"
 
+#include "assetViewerUi.h"
 #include "gameViewPort.h"
 #include "componentInspector.h"
 #include "assetManagerUi.h"
@@ -15,7 +16,6 @@
 #include "debugUI.h"
 #include "console.h"
 #include "navBar.h"
-#include "assetViewerUi.h"
 #include "navigationWindow.h"
 
 using GLuint = unsigned int;
@@ -59,6 +59,8 @@ public:
 	template <typename T>
 	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback);
 	
+	void launchProfiler();
+
 public:
 	entt::entity hoveringEntity;
 	std::vector<entt::entity> copiedEntityVec;
@@ -71,7 +73,6 @@ private:
 	void handleEntityHovering();
 	void handleEntitySelection();
 	void sandboxWindow();
-	void launchProfiler();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 

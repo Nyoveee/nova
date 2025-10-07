@@ -57,8 +57,9 @@ std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descri
 		std::string fullFilepath = std::filesystem::path{ assetDirectory / relativeFilepath }.string();
 
 		// reads the 4th line, last write time..
-		long long duration;
-		descriptorFile >> duration;
+		std::string durationInString;
+		std::getline(descriptorFile, durationInString);
+		long long duration = std::stoull(durationInString);
 		
 		// convert to filesystem last write..
 		std::chrono::milliseconds value{ duration };

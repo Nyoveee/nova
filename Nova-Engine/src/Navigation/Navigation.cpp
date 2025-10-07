@@ -5,8 +5,10 @@
 #include "component.h"
 #include <numbers>
 #include <glm/gtx/fast_trigonometry.hpp>
-#undef min;
-#undef max;
+#include "Profiling.h"
+
+#undef min
+#undef max
 
 /*TO DO-----
   Handle entity on destroy
@@ -44,6 +46,8 @@ NavigationSystem::~NavigationSystem()
 
 void NavigationSystem::update(float const& dt)
 {
+	ZoneScoped;
+
 	dtCrowdAgentDebugInfo debugInfo;
 
 	//allow dtPathfinding to update this frame
@@ -59,7 +63,14 @@ void NavigationSystem::update(float const& dt)
 	//then get all new data an feedback into the transform
 	for (auto&& [entity, transform, agent] : registry.view<Transform, NavMeshAgent>().each())
 	{
-		dtCrowdAgent* dtAgent = crowdManager[agent.agentName].get()->getEditableAgent(agent.agentIndex);
+		auto iterator = crowdManager.find(agent.agentName);
+
+		if (iterator == crowdManager.end()) {
+			Logger::error("Name changed? Doesn't exist.");
+			return;
+		}
+
+		dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(agent.agentIndex);
 
 		if (dtAgent) {
 			transform.position.x = dtAgent->npos[0];
@@ -68,7 +79,8 @@ void NavigationSystem::update(float const& dt)
 
 
 			constexpr float EPS_SQ = 1e-6f;
-			if ((dtAgent->vel[0] * dtAgent->vel[0] + dtAgent->vel[2] * dtAgent->vel[2]) < 1e-6f)
+
+			if ((dtAgent->vel[0] * dtAgent->vel[0] + dtAgent->vel[2] * dtAgent->vel[2]) < EPS_SQ)
 			{
 				continue;
 			}
@@ -153,9 +165,9 @@ ResourceID NavigationSystem::getNavMeshId() const {
 
 void NavigationSystem::NavigationDebug()
 {
-
+#if 0
 	glm::vec3 targetPosition{};
-	float targetposition_arr[3];
+	//float targetposition_arr[3];
 
 	//Get transform info of target
 	for (auto&& [entity, transform, navTest] : registry.view<Transform, NavigationTestTarget>().each())
@@ -186,15 +198,14 @@ void NavigationSystem::NavigationDebug()
 		//}
 
 
-		setDestination(entity, targetPosition );
-
+		setDestination(entity, targetPosition);
 	}
 
 
-
+#endif
 }
 
-ENGINE_DLL_API void NavigationSystem::initNavMeshSystems()
+void NavigationSystem::initNavMeshSystems()
 {
 	sceneNavMeshes.clear();
 	crowdManager.clear();

@@ -16,7 +16,6 @@ Texture::Texture(ResourceID id, ResourceFilePath resourceFilePath, gli::texture 
 	textureId		 { TEXTURE_NOT_LOADED }
 {
 	glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
-
 	glTextureStorage2D(textureId, static_cast<GLint>(texture.levels()), format.Internal, width, height);
 
 	for (std::size_t layer = 0; layer < texture.layers(); ++layer) {

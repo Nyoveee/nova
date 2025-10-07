@@ -170,7 +170,7 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".png" || fileExtension == ".jpg") {
 		return initialiseResourceFile.template operator()<Texture>();
 	}
-	else if (fileExtension == ".exr") {
+	else if (fileExtension == ".hdr") {
 		return initialiseResourceFile.template operator()<CubeMap>();
 	}
 	else if (fileExtension == ".cs") {
@@ -191,8 +191,8 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 }
 
-void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& path) {
-	if (folderId == ASSET_FOLDER) {
+void AssetManager::recordFolder(FolderID id, std::filesystem::path const& path) {
+	if (id == ASSET_FOLDER) {
 		return;
 	}
 
@@ -212,16 +212,16 @@ void AssetManager::recordFolder(FolderID folderId, std::filesystem::path const& 
 	auto iterator = directories.find(parentFolderId);
 
 	if (iterator != directories.end()) {
-		iterator->second.childDirectories.push_back(folderId);
+		iterator->second.childDirectories.push_back(id);
 	}
 	else {
 		assert(false && "Depth first search guarantees that the parent folder should have been recorded.");
 	}
 
-	folderPathToId[path.string()] = folderId;
+	folderPathToId[path.string()] = id;
 
 	directories[folderId] = Folder{
-		folderId,
+		id,
 		parentFolderId,
 		{},
 		{},
@@ -356,6 +356,7 @@ void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& asset
 }
 
 void AssetManager::onFolderModification(std::filesystem::path const& folderPath) {
+	(void) folderPath;
 #if 0
 	// Get original folder id corresponding to the folder path.
 	auto iterator = folderPathToId.find(folderPath.string());
@@ -441,4 +442,20 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
 	return directories;
+}
+
+void AssetManager::removeResource(ResourceID id) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::warn("Removing an invalid resource?");
+		return;
+	}
+
+	auto&& [_, assetInfoPtr] = *iterator;
+
+	intermediaryAssetsToDescriptor.erase(assetInfoPtr->filepath);
+	serialiseDescriptorFunctors.erase(id);
+	resourceToType.erase(id);
+	assetToDescriptor.erase(iterator);
 }

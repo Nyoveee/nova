@@ -4,6 +4,8 @@
 #include "Logger.h"
 #include "audio.h"
 
+#include "Profiling.h"
+
 #include <fstream>
 #include <iostream>
 #include <filesystem>
@@ -72,6 +74,7 @@ AudioSystem::AudioSystem(Engine& engine) :
 
 AudioSystem::~AudioSystem() {
 	unloadAllSounds();
+	
 	if (fmodSystem) {
 		fmodSystem->close();
 		fmodSystem->release();
@@ -80,6 +83,8 @@ AudioSystem::~AudioSystem() {
 }
 
 void AudioSystem::update() {
+	ZoneScoped;
+
 	fmodSystem->update();
 
 	for (auto it = audioInstances.begin(); it != audioInstances.end();) {

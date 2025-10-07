@@ -27,6 +27,7 @@ void Hierarchy::createGameObject() {
 void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 	entt::registry& registry = ecs.registry;
 	EntityData const& entityData = registry.get<EntityData>(entity);
+
 	bool toDisplayTreeNode = false;
 
 	ImGui::PushID(static_cast<unsigned>(entity));

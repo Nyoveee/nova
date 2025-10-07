@@ -5,9 +5,9 @@ using Windows.System.Threading;
 
 class SpinningCat : Script
 {
-    public float angle;
+    public float angle = 0;
 
-    private Transform_ transform;
+    private Transform_? transform;
 
     public float spinningDuration = 2;
     public float spinningCooldown = 1;
@@ -26,7 +26,7 @@ class SpinningCat : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        if (isSpinning) 
+        if (isSpinning && transform != null) 
         { 
             transform.rotate(transform.up, angle * Time.V_FixedDeltaTime());
 
@@ -55,7 +55,7 @@ class SpinningCat : Script
     private void startSpinning()
     {
         isSpinning = true;
-        AudioAPI.PlaySound(entityID, "oiia-oiia-sound");
+        AudioAPI.PlaySound(gameObject, "oiia-oiia-sound");
     }
 
     private void stopSpinning()
