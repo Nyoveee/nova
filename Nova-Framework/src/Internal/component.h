@@ -338,16 +338,17 @@ struct Particle {
 	float currentLifeTime;
 };
 struct CubeEmitter {
-	glm::vec3 min;
-	glm::vec3 max;
+	glm::vec3 min = { -5.f,-5.f,-5.f };
+	glm::vec3 max = { 5.f,5.f,5.f };
 };
 struct SphereEmitter {
-	float radius = 1.f;
+	float radius = 5.f;
 };
 struct ParticleEmitter
 {
 	// Emission Shape
 	SphereEmitter sphereEmitter;
+	CubeEmitter cubeEmitter;
 	// Update
 	float currentContinuousTime = 0.f;
 	float currentBurstTime = 0.f;

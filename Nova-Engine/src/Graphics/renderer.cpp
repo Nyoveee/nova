@@ -345,6 +345,10 @@ void Renderer::debugRenderParticleEmissionShape()
 			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(transform, emitter.sphereEmitter.radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 			break;
+		case ParticleEmitter::EmissionShape::Cube:
+			debugParticleShapeVBO.uploadData(DebugShapes::Cube(transform, emitter.cubeEmitter.min, emitter.cubeEmitter.max));
+			glDrawArrays(GL_LINES, 0, 24);
+			break;
 		}
 	}
 }

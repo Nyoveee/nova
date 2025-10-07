@@ -1,7 +1,7 @@
 #include "Engine/engine.h"
 #include "componentInspector.h"
 #include "imgui.h"
-#include "editor.h"
+#include "Editor/editor.h"
 #include "component.h"
 #include "ECS/ECS.h"
 #include "AssetManager/assetManager.h"

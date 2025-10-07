@@ -8,7 +8,7 @@
 #include "ECS/ecs.h"
 
 #include "gameViewPort.h"
-#include "componentInspector.h"
+#include "ComponentInspection/componentInspector.h"
 #include "assetManagerUi.h"
 #include "Navigation/navMeshGeneration.h"
 #include "hierarchy.h"

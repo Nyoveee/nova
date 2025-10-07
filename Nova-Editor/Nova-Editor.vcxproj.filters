@@ -51,9 +51,6 @@
     <ClCompile Include="src\Editor\assetManagerUi.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Editor\componentInspector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Editor\gameViewPort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -64,9 +61,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Editor\gizmo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\displayMaterial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Editor\debugUI.cpp">
@@ -132,9 +126,6 @@
     <ClCompile Include="src\Editor\console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Editor\displayScripts.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Editor\navBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -148,6 +139,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Navigation\navigationDebugDraw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\ComponentInspection\componentInspector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -203,9 +203,6 @@
     <ClInclude Include="src\Editor\assetManagerUi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Editor\componentInspector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Editor\gameViewPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -215,9 +212,6 @@
     <ClInclude Include="src\Editor\ImGui\IconsFontAwesome6.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Editor\displayComponent.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Editor\gizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -225,9 +219,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\controlOverlay.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\componentInspector.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Navigation\Recast\Recast.h">
@@ -294,6 +285,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Navigation\navigationDebugDraw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\ComponentInspection\componentInspector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\ComponentInspection\componentInspector.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
