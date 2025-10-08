@@ -6,11 +6,13 @@
 #include "imgui.h"
 #include "IconsFontAwesome6.h"
 #include "assetViewerUi.h"
+#include "Serialisation/serialisation.h"
 
 #include "ImGui/misc/cpp/imgui_stdlib.h"
 
 #include <sstream>
 #include <Windows.h>
+#include "Engine/engine.h"
 
 #undef max
 
@@ -44,6 +46,16 @@ void AssetManagerUI::update() {
 	displayLeftNavigationPanel();
 	ImGui::SameLine(); 
 	displayRightContentPanel();
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			entt::entity entity = *((entt::entity*)payload->Data);
+			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity);
+		}
+
+		ImGui::EndDragDropTarget();
+
+	}
 	ImGui::End();
 	
 }

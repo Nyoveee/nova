@@ -7,6 +7,7 @@
 
 #include "IconsFontAwesome6.h"
 #include "ECS/component.h"
+#include "Serialisation/serialisation.h"
 
 #include <ranges>
 
@@ -123,6 +124,12 @@ void Hierarchy::update() {
 
 	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Create new entity")) {
 		createGameObject();
+	}
+
+	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Save Entity")) {
+		if (editor.getSelectedEntities().size()) {	
+			Serialiser::serialisePrefab(registry, editor.getSelectedEntities()[0]);
+		}
 	}
 
 	ImGui::BeginChild("Entities", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders);

@@ -119,4 +119,30 @@ namespace Serialiser {
 		json j;
 		file >> j;
 	}
+	void deserialisePrefab(const char* fileName) {
+		std::ifstream file(fileName);
+
+		if (!file.is_open())
+			return;
+
+
+	}
+	void serialisePrefab(entt::registry& registry, entt::entity entity) {
+	//void serialisePrefab(entt::entity entity) {
+		std::string fileName = "Assets/";
+		
+		EntityData* entityData = registry.try_get<EntityData>(entity);
+		fileName += entityData->name + "Prefab.json";
+		
+		std::ofstream file(fileName);
+
+		if (!file.is_open())
+			return;
+
+		json j;
+		j = serialiseComponents<ALL_COMPONENTS>(registry, entity);
+
+		file << std::setw(4) << j << std::endl;
+
+	}
 };

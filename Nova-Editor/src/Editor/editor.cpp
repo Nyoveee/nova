@@ -133,7 +133,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager.subscribe<PasteEntity>(
 		[&](PasteEntity) {
 			if (!copiedEntityVec.empty()) {
-				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
+				engine.ecs.copyVectorEntities<ALL_COMPONENTS>(copiedEntityVec);
 				copiedEntityVec.clear();
 			}
 		}

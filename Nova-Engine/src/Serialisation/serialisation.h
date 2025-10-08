@@ -19,6 +19,9 @@ namespace Serialiser {
 	ENGINE_DLL_API void serialiseEditorConfig(const char* fileName, bool consol, bool debugUi, bool hierarchy, bool componentInspector);
 	ENGINE_DLL_API void deserialiseEditorConfig(const char* fileName);
 
+	ENGINE_DLL_API void deserialisePrefab(const char* fileName);
+	ENGINE_DLL_API void serialisePrefab(entt::registry& registry, entt::entity entity);
+
 	template <typename ...Components>
 	json serialiseComponents(entt::registry& registry, entt::entity entity);
 
