@@ -1,7 +1,7 @@
 #include <string>
 
 #include "serialisation.h"
-#include "ECS/ECS.h"
+
 #include "reflection.h"
 
 #include "component.h"
@@ -10,6 +10,7 @@
 #include "Logger.h"
 
 #include "Engine/ScriptingAPIManager.h"
+#include "serializeProperty.h"
 
 #undef max
 #undef min
@@ -21,8 +22,8 @@ namespace Serialiser {
 	};
 
 	template<typename ...Components>
-	json serialiseComponents(entt::registry& registry, entt::entity entity) {
-		json componentsJson;
+	Json serialiseComponents(entt::registry& registry, entt::entity entity) {
+		Json componentsJson;
 
 		([&]() {
 			Components* component = registry.try_get<Components>(entity);
@@ -39,7 +40,7 @@ namespace Serialiser {
 #endif
 
 			if (component) {
-				json componentJson = serialiseComponent(*component);
+				Json componentJson = serialiseComponent(*component);
 				componentsJson[typeName] = componentJson;
 			}
 		}(), ...);
@@ -49,7 +50,7 @@ namespace Serialiser {
 	}
 
 	template<typename ...Components>
-	void deserialiseComponents(entt::registry& registry, entt::entity entity, json en) {
+	void deserialiseComponents(entt::registry& registry, entt::entity entity, Json en) {
 		// for each component (EntityData, Transform, etc.)
 		([&]() {
 			deserialiseComponent<Components>(en, registry, entity);
@@ -57,224 +58,27 @@ namespace Serialiser {
 	}
 
 	template<typename T>
-	json serialiseComponent(T& component) {
-		json componentJson;
+	Json serialiseComponent(T& component) {
+		Json componentJson;
 
 		// implement serialisation logic for each component.
 		if constexpr (!reflection::isReflectable<T>()) {
 			return componentJson;
 		}
-		else {
-			reflection::visit([&](auto fieldData) {
-				auto& dataMember = fieldData.get();
-				constexpr const char* dataMemberName = fieldData.name();
-				using DataMemberType = std::decay_t<decltype(dataMember)>;
 
-				if constexpr (std::same_as<DataMemberType, glm::vec3>) {
-					componentJson[dataMemberName]["x"] = dataMember.x;
-					componentJson[dataMemberName]["y"] = dataMember.y;
-					componentJson[dataMemberName]["z"] = dataMember.z;
-				}
+		reflection::visit([&](auto fieldData) {
+			auto& dataMember = fieldData.get();
+			constexpr const char* dataMemberName = fieldData.name();
+			using DataMemberType = std::decay_t<decltype(dataMember)>;
+			SerializeProperty<DataMemberType>(componentJson, dataMemberName, dataMember);
+		}, component);
 
-				else if constexpr (std::same_as<DataMemberType, entt::entity>) {
-					componentJson[dataMemberName] = static_cast<unsigned int>(dataMember);
-				}
-
-				else if constexpr (std::same_as<DataMemberType, entt::entity>) {
-					componentJson[dataMemberName] = magic_enum::enum_name(dataMember);
-				}
-
-				else if constexpr (std::same_as<DataMemberType, Color>) {
-					glm::vec3 vec = dataMember;
-					componentJson[dataMemberName]["r"] = vec.x;
-					componentJson[dataMemberName]["g"] = vec.y;
-					componentJson[dataMemberName]["b"] = vec.z;
-				}
-
-				else if constexpr (std::same_as<DataMemberType, glm::quat>) {
-					componentJson[dataMemberName]["w"] = dataMember.w;
-					componentJson[dataMemberName]["x"] = dataMember.x;
-					componentJson[dataMemberName]["y"] = dataMember.y;
-					componentJson[dataMemberName]["z"] = dataMember.z;
-				}
-
-				else if constexpr (std::same_as<DataMemberType, EulerAngles>) {
-					componentJson[dataMemberName]["x"] = dataMember.angles.x;
-					componentJson[dataMemberName]["y"] = dataMember.angles.y;
-					componentJson[dataMemberName]["z"] = dataMember.angles.z;
-				}
-
-				else if constexpr (std::same_as<DataMemberType, Radian>) {
-					componentJson[dataMemberName] = static_cast<float>(dataMember);
-				}
-
-				else if constexpr (std::same_as<DataMemberType, Degree>) {
-					componentJson[dataMemberName] = static_cast<float>(dataMember);
-				}
-
-				else if constexpr (std::same_as<DataMemberType, ResourceID>) {
-					componentJson[dataMemberName] = static_cast<size_t>(dataMember);
-				}
-
-				else if constexpr (IsTypedResourceID<DataMemberType>) {
-					componentJson[dataMemberName] = static_cast<size_t>(dataMember);
-				}
-
-				else if constexpr (std::same_as<DataMemberType, std::unordered_map<MaterialName, Material>>) {
-					std::vector<json> jVec;
-					
-					//for each material in the map
-					for (auto&& [materialName, material] : dataMember) {
-
-						json tempJson;
-
-						tempJson["materialName"] = materialName;
-						tempJson["renderingPipeline"] = magic_enum::enum_name(material.renderingPipeline);
-						tempJson["ambient"] = material.ambient;
-
-						switch (material.renderingPipeline)
-						{
-						case Material::Pipeline::PBR: {
-							std::visit([&](auto&& config) {
-								using Type = std::decay_t<decltype(config)>;
-
-								if constexpr (std::same_as<Type, ResourceID>) {
-									tempJson["config"] = static_cast<std::size_t>(config);
-								}
-								else /* it's config */ {
-									json tempJ;
-
-									tempJ["roughness"] = config.roughness;
-									tempJ["metallic"] = config.metallic;
-									tempJ["occulusion"] = config.occulusion;
-									tempJson["config"] = tempJ;
-								}
-							}, material.config);
-						}
-						[[fallthrough]];
-						case Material::Pipeline::BlinnPhong:
-							if (!material.normalMap) {
-								tempJson["normalMap"] = nullptr;
-							}
-							else {
-								tempJson["normalMap"] = static_cast<size_t>(material.normalMap.value());
-							}
-
-							break;
-						}
-
-						// Handling albedo..
-						std::visit([&](auto&& albedo) {
-							using T = std::decay_t<decltype(albedo)>;
-
-							json albedoJson;
-							if constexpr (std::same_as<T, ResourceID>) {
-								albedoJson["texture"] = static_cast<size_t>(albedo);
-							}
-							else /* its color */ {
-								json tempJ;
-								tempJ["r"] = albedo.r();
-								tempJ["g"] = albedo.g();
-								tempJ["b"] = albedo.b();
-								albedoJson["color"] = tempJ;
-							}
-
-							tempJson["albedo"] = albedoJson;
-						}, material.albedo);
-						
-						jVec.push_back(tempJson);
-					}
-					componentJson[dataMemberName] = jVec;
-				}
-
-				else if constexpr (std::same_as<DataMemberType, std::vector<ScriptData>>) {
-					json scriptArray;
-
-					for (auto&& scriptData : dataMember) {
-						json scriptJson;
-						json fieldDataArray;
-
-						for (auto&& field : scriptData.fields) {
-							json fieldDataJson;
-							fieldDataJson["name"] = field.name;
-							
-							std::visit([&](auto&& data) {
-								using Type = std::decay_t<decltype(data)>;
-
-								if constexpr (std::same_as<Type, glm::vec2>) {
-									fieldDataJson["value"]["x"] = data.x;
-									fieldDataJson["value"]["y"] = data.y;
-								}
-								else if constexpr (std::same_as<Type, glm::vec3>) {
-									fieldDataJson["value"]["x"] = data.x;
-									fieldDataJson["value"]["y"] = data.y;
-									fieldDataJson["value"]["z"] = data.z;
-								}
-								else if constexpr (std::same_as<Type, entt::entity>) {
-									fieldDataJson["value"]["entityId"] = static_cast<std::size_t>(data);
-								}
-								else if constexpr (std::is_fundamental_v<Type>) {
-									fieldDataJson["value"] = data;
-								}
-								else {
-									[] <bool flag = true> {
-										static_assert(flag, "Attempting to serialise unsupported field type..");
-									}();
-								}
-
-								fieldDataJson["type"] = Family::id<Type>();
-							}, field.data);
-
-							fieldDataArray.push_back(std::move(fieldDataJson));
-						}
-
-						scriptJson["fields"] = std::move(fieldDataArray);
-						scriptJson["id"] = static_cast<std::size_t>(scriptData.scriptId);
-						scriptArray.push_back(std::move(scriptJson));
-					}
-
-					componentJson[dataMemberName] = std::move(scriptArray);
-				}
-				
-				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::string, AudioData>>) {
-					json audioArray;
-
-					for (auto&& [name, audioData] : dataMember) {
-						json audioComponentJson;
-						audioComponentJson["name"] = name;
-
-						json audioDataJson;
-						audioDataJson["id"] = static_cast<std::size_t>(audioData.AudioId);
-						audioDataJson["volume"] = audioData.Volume;
-
-						audioComponentJson["audioData"] = audioDataJson;
-
-						audioArray.push_back(std::move(audioComponentJson));
-					}
-
-					componentJson[dataMemberName] = std::move(audioArray);
-				}
-
-				// it's an enum. let's display a dropdown box for this enum.
-				// how? using enum reflection provided by "magic_enum.hpp" :D
-				else if constexpr (std::is_enum_v<DataMemberType>) {
-					componentJson[dataMemberName] = magic_enum::enum_name(dataMember);
-				}
-
-				else {
-					// int, float, std::string,
-					componentJson[dataMemberName] = dataMember;
-				}
-
-			}, component);
-
-			return componentJson;
-		}
+		return componentJson;
 	}
 	// this was the starting point
 	template<typename T>
 	//void deserialiseComponent(std::ifstream& outputFile, json jsonComponent) {
-	void deserialiseComponent(json jsonComponent, entt::registry& registry, entt::entity entity) {
+	void deserialiseComponent(Json jsonComponent, entt::registry& registry, entt::entity entity) {
 		T component;
 
 		std::string originalComponentName = typeid(component).name();
@@ -452,7 +256,7 @@ namespace Serialiser {
 											scriptFieldData.data = vec3;
 										}
 										else if constexpr (std::same_as<Types, entt::entity>) {
-											unsigned id = fieldJson["value"]["entityId"];
+											unsigned id = fieldJson["value"];
 											scriptFieldData.data = static_cast<entt::entity>(id);
 
 										}

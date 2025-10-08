@@ -1,16 +1,8 @@
 #include "reflection.h"
 
-#include "magic_enum.hpp"
 #include "PropertyDisplay/displayProperties.h"
-
-#include <concepts>
-
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
-	template<class T>
-	concept IsTypedResourceID = requires(T x) {
-		{ TypedResourceID{ x } } -> std::same_as<T>;
-	};
 
 	template<typename Component>
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
@@ -79,37 +71,8 @@ namespace {
 					constexpr const char* dataMemberName = fieldData.name();
 					using DataMemberType = std::decay_t<decltype(dataMember)>;
 					ImGui::PushID(static_cast<int>(std::hash<std::string>{}(dataMemberName)));
-					
-					// Specializations
-					if constexpr (IsTypedResourceID<DataMemberType>) {
-						// dataMember is of type TypedAssetID<T>
-						using OriginalAssetType = DataMemberType::AssetType;
-
-						componentInspector.editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
-							dataMember = DataMemberType{ resourceId };
-						});
-					}
-					else if constexpr (std::is_enum_v<DataMemberType>) {
-						// it's an enum. let's display a dropdown box for this enum.
-						// how? using enum reflection provided by "magic_enum.hpp" :D
-						// get the list of all possible enum values
-						constexpr auto listOfEnumValues = magic_enum::enum_entries<DataMemberType>();
-
-						if (ImGui::BeginCombo(dataMemberName, std::string{ magic_enum::enum_name<DataMemberType>(dataMember) }.c_str())) {
-							for (auto&& [enumValue, enumInString] : listOfEnumValues) {
-								if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == dataMember)) {
-									dataMember = enumValue;
-								}
-							}
-							ImGui::EndCombo();
-						}
-					}
-					else
-					{
-						// Generalization
-						DisplayProperty<DataMemberType>(propertyReferences, dataMemberName, dataMember);
-					}
-					
+					// Generalization
+					DisplayProperty<DataMemberType>(propertyReferences, dataMemberName, dataMember);
 					ImGui::PopID();
 				},
 			component);

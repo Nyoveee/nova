@@ -8,7 +8,7 @@
 
 class ECS;
 
-using json = nlohmann::json;
+using Json = nlohmann::json;
 
 namespace Serialiser {
 	ENGINE_DLL_API void serialiseScene(ECS& ecs, const char* fileName);
@@ -20,18 +20,18 @@ namespace Serialiser {
 	ENGINE_DLL_API void deserialiseEditorConfig(const char* fileName);
 
 	template <typename ...Components>
-	json serialiseComponents(entt::registry& registry, entt::entity entity);
+	Json serialiseComponents(entt::registry& registry, entt::entity entity);
 
 	template <typename ...Components>
-	void deserialiseComponents(entt::registry& registry, entt::entity entity, json en);
+	void deserialiseComponents(entt::registry& registry, entt::entity entity, Json en);
 	//void deserialiseComponents(entt::registry& registry, entt::entity entity, std::ifstream& inputFile);
 
 	template <typename T>
-	json serialiseComponent(T& component);
+	Json serialiseComponent(T& component);
 
 	template <typename T>
 	//void deserialiseComponent(std::ifstream& inputFile, json jsonComponent);
-	void deserialiseComponent(json jsonComponent, entt::registry& registry, entt::entity entity);
+	void deserialiseComponent(Json jsonComponent, entt::registry& registry, entt::entity entity);
 };
 
 #include "serialisation.ipp"

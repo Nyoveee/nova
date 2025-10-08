@@ -6,11 +6,14 @@
 #include "imgui.h"
 #include "IconsFontAwesome6.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include "reflection.h"
+#include "magic_enum.hpp"
+#include "type_concepts.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 /***************************************************************************************
-	References for DisplayProperties
+	Reference for display properties
 ****************************************************************************************/
 struct PropertyReferences {
 	entt::entity entity;
@@ -30,14 +33,40 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 void displayScriptFields(ScriptData& scriptData, PropertyReferences& propertyReferences);
 
 /***************************************************************************************
-	Default template
+	Base template(Does Nothing)
 ****************************************************************************************/
-template<typename T>
+template<typename DataMemberType>
 inline void DisplayProperty(PropertyReferences& propertyReferences, const char* dataMemberName, auto& dataMember) { (void)propertyReferences, dataMemberName, dataMember; }
 
 /***************************************************************************************
 	here we gooooooooooooooooooooooooooooooo! time to list down all the primitives!
 ****************************************************************************************/
+template<IsTypedResourceID DataMemberType>
+inline void DisplayProperty(PropertyReferences& propertyReferences, const char* dataMemberName, auto& dataMember) {
+	// dataMember is of type TypedAssetID<T>
+	using OriginalAssetType = DataMemberType::AssetType;
+
+	propertyReferences.editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
+		dataMember = DataMemberType{ resourceId };
+	});
+}
+template<IsEnum DataMemberType>
+inline void DisplayProperty(PropertyReferences& propertyReferences, const char* dataMemberName, auto& dataMember) {
+	(void)propertyReferences;
+	// it's an enum. let's display a dropdown box for this enum.
+	// how? using enum reflection provided by "magic_enum.hpp" :D
+	// get the list of all possible enum values
+	constexpr auto listOfEnumValues = magic_enum::enum_entries<DataMemberType>();
+
+	if (ImGui::BeginCombo(dataMemberName, std::string{ magic_enum::enum_name<DataMemberType>(dataMember) }.c_str())) {
+		for (auto&& [enumValue, enumInString] : listOfEnumValues) {
+			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == dataMember)) {
+				dataMember = enumValue;
+			}
+		}
+		ImGui::EndCombo();
+	}
+}
 template<>
 inline void DisplayProperty<int>(PropertyReferences& propertyReferences, const char* dataMemberName, int& dataMember) {
 	(void)propertyReferences;

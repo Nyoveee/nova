@@ -17,11 +17,11 @@ namespace Serialiser {
 
 			entt::registry& registry = ecs.registry;
 
-			json js;
-			std::vector<json> jsonVec;
+			Json js;
+			std::vector<Json> jsonVec;
 
 			for (auto&& [entity] : registry.view<entt::entity>().each()) {
-				json componentsJson = serialiseComponents<ALL_COMPONENTS>(registry, entity);
+				Json componentsJson = serialiseComponents<ALL_COMPONENTS>(registry, entity);
 				jsonVec.push_back(componentsJson);
 			}
 
@@ -41,7 +41,7 @@ namespace Serialiser {
 			if (!file.is_open())
 				return;
 
-			json j;
+			Json j;
 
 			file >> j;
 			entt::registry& registry = ecs.registry;
@@ -57,14 +57,14 @@ namespace Serialiser {
 	}
 	
 	void serialiseGameConfig(const char* fileName, int gameWidth, int gameHeight) {
-		json j;
+		Json j;
 
 		std::ofstream file(fileName);
 
 		if (!file.is_open())
 			return;
 
-		json tempJ;
+		Json tempJ;
 
 		tempJ["windowName"] = "Nova Game";
 		tempJ["gameWidth"] = gameWidth;
@@ -83,7 +83,7 @@ namespace Serialiser {
 		if (!file.is_open())
 			return;
 
-		json j;
+		Json j;
 		file >> j;
 		//j["Windows"]["windowName"];
 		gameWidth = j["Window"]["gameWidth"];
@@ -100,8 +100,8 @@ namespace Serialiser {
 		if (!file.is_open())
 			return;
 
-		json j;
-		json tempj;
+		Json j;
+		Json tempj;
 		//([&]() {
 		//	tempj[magic_enum::enum_name(Windows)] = 0;
 		//	}(), ...);
@@ -116,7 +116,7 @@ namespace Serialiser {
 		if (!file.is_open())
 			return;
 
-		json j;
+		Json j;
 		file >> j;
 	}
 };

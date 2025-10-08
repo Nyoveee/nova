@@ -203,8 +203,10 @@
     <ClInclude Include="src\Physics\physicsManager.h" />
     <ClInclude Include="src\ResourceManager\resourceManager.h" />
     <ClInclude Include="src\ResourceManager\resourceManager.ipp" />
+    <ClInclude Include="src\Serialisation\deserializeProperty.h" />
     <ClInclude Include="src\Serialisation\serialisation.h" />
     <ClInclude Include="src\Serialisation\serialisation.ipp" />
+    <ClInclude Include="src\Serialisation\serializeProperty.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Graphics\DebugShapes.cpp" />
