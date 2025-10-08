@@ -43,10 +43,11 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	folderPathToId[AssetIO::assetDirectory.string()] = ASSET_FOLDER;
 
 	// ========================================
-	// 1. Check if the descriptor directory exist, and the respective asset subdirectories.
+	// 1.1 Check if the descriptor directory exist, and the respective descriptor subdirectories.
+	// 1.2 Check if the asset cache directory exist, and the respective asset cache subdirectories.
 	// ========================================
 
-	// Checking if the main descriptor directory exist.
+	// 1. Checking if the main descriptor directory exist.
 	if (!std::filesystem::exists(AssetIO::descriptorDirectory)) {
 		std::filesystem::create_directory(AssetIO::descriptorDirectory);
 	}
@@ -55,6 +56,18 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	for (auto&& [_, subDescriptorDirectory] : AssetIO::subDescriptorDirectories) {
 		if (!std::filesystem::exists(subDescriptorDirectory)) {
 			std::filesystem::create_directory(subDescriptorDirectory);
+		}
+	}
+
+	// 2. Checking if the asset cache directory exist..
+	if (!std::filesystem::exists(AssetIO::assetCacheDirectory)) {
+		std::filesystem::create_directory(AssetIO::assetCacheDirectory);
+	}
+
+	// Checking if the sub asset cache directory exist..
+	for (auto&& [_, subAssetCacheDirectory] : AssetIO::subAssetCacheDirectories) {
+		if (!std::filesystem::exists(subAssetCacheDirectory)) {
+			std::filesystem::create_directory(subAssetCacheDirectory);
 		}
 	}
 
@@ -346,10 +359,7 @@ void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& asset
 					}
 
 					resourceManager.removeResource(id);
-
-					if (createResourceFile<T>(*descriptor) != INVALID_RESOURCE_ID) {
-						serialiseDescriptor<T>(id);
-					}
+					createResourceFile<T>(*descriptor);
 				}
 				else {
 					Logger::error("Failed to retrieve descriptor when attempting to recompile asset.");
