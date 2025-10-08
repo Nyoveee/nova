@@ -2,7 +2,7 @@
 #include "console.h"
 #include "debugUI.h"
 #include "hierarchy.h"
-#include "componentInspector.h"
+#include "ComponentInspection/componentInspector.h"
 
 class Editor;
 class Engine;

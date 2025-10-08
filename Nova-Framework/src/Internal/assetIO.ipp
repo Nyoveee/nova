@@ -8,44 +8,50 @@
 
 template <ValidResource T>
 std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
-	std::ifstream descriptorFile{ descriptorFilepath };
-	descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try {
+		std::ifstream descriptorFile{ descriptorFilepath };
+		descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-	// Attempt to read corresponding metafile.
-	if (!descriptorFile) {
+		// Attempt to read corresponding metafile.
+		if (!descriptorFile) {
+			return std::nullopt;
+		}
+
+		// parse the generic asset metadata info first.
+		std::optional<BasicAssetInfo> parsedAssetInfo = parseDescriptorFile(descriptorFile);
+
+		// parsing failed, time to create a new metadata file.
+		if (!parsedAssetInfo) {
+			return std::nullopt;
+		}
+
+		AssetInfo<T> assetInfo{ parsedAssetInfo.value() };
+
+		// ============================
+		// Filestream is now pointing at the 5th line.
+		// Do any metadata specific to any type parsing here!!
+		// ============================
+		if constexpr (std::same_as<T, Texture>) {
+			std::string compressionFormat;
+			std::getline(descriptorFile, compressionFormat);
+
+			auto compressionValueOpt = magic_enum::enum_cast<AssetInfo<Texture>::Compression>(compressionFormat);
+
+			if (!compressionValueOpt) {
+				// parsing this failed, let's give some default compression value.
+				assetInfo.compression = AssetInfo<Texture>::Compression::BC1_SRGB;
+			}
+			else {
+				assetInfo.compression = compressionValueOpt.value();
+			}
+		}
+		// ============================
+		return assetInfo;
+	}
+	catch (std::exception const& ex) {
+		Logger::error("Error parsing.. {}", ex.what());
 		return std::nullopt;
 	}
-
-	// parse the generic asset metadata info first.
-	std::optional<BasicAssetInfo> parsedAssetInfo = parseDescriptorFile(descriptorFile);
-
-	// parsing failed, time to create a new metadata file.
-	if (!parsedAssetInfo) {
-		return std::nullopt;
-	}
-
-	AssetInfo<T> assetInfo{ parsedAssetInfo.value() };
-
-	// ============================
-	// Filestream is now pointing at the 5th line.
-	// Do any metadata specific to any type parsing here!!
-	// ============================
-	if constexpr (std::same_as<T, Texture>) {
-		std::string compressionFormat;
-		std::getline(descriptorFile, compressionFormat);
-
-		auto compressionValueOpt = magic_enum::enum_cast<AssetInfo<Texture>::Compression>(compressionFormat);
-
-		if (!compressionValueOpt) {
-			// parsing this failed, let's give some default compression value.
-			assetInfo.compression = AssetInfo<Texture>::Compression::BC1_SRGB;
-		}
-		else {
-			assetInfo.compression = compressionValueOpt.value();
-		}
-	}
-	// ============================
-	return assetInfo;
 }
 
 template <ValidResource T>
