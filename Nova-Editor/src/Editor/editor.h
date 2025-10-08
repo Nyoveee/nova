@@ -7,6 +7,8 @@
 
 #include "ECS/ecs.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "assetViewerUi.h"
 #include "gameViewPort.h"
 #include "ComponentInspection/componentInspector.h"

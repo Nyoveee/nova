@@ -117,6 +117,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 }
 
 AssetManager::~AssetManager() {
+#if 0
 	// let's serialise the asset meta data of all our stored info.
 	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
 		assert(serialiseFunctorPtr && "Should never be nullptr");
@@ -124,6 +125,7 @@ AssetManager::~AssetManager() {
 		// serialise the descriptor file for this given asset id.
 		serialiseFunctorPtr->operator()(id, *this);
 	}
+#endif
 }
 
 #if 0
@@ -161,7 +163,8 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	// lambda creates descriptor file, creates the resource file, and loads it to the resource manager.
 	auto initialiseResourceFile = [&]<typename T>() {
 		auto assetInfo = AssetIO::createDescriptorFile<T>(assetFilePath);
-		return createResourceFile<T>(assetInfo);
+		ResourceID id = createResourceFile<T>(assetInfo);
+		return id;
 	};
 
 	if (fileExtension == ".fbx" || fileExtension == ".obj") {
@@ -343,7 +346,10 @@ void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& asset
 					}
 
 					resourceManager.removeResource(id);
-					createResourceFile<T>(*descriptor);
+
+					if (createResourceFile<T>(*descriptor) != INVALID_RESOURCE_ID) {
+						serialiseDescriptor<T>(id);
+					}
 				}
 				else {
 					Logger::error("Failed to retrieve descriptor when attempting to recompile asset.");
@@ -404,7 +410,7 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 	ResourceID resourceId = INVALID_RESOURCE_ID;
 	auto iterator = intermediaryAssetsToDescriptor.find(assetPath);
 
-	// intermediary asset not recorded (missing corresponding descriptor and resource file.)
+	// !! intermediary asset not recorded (missing corresponding descriptor and resource file.)
 	if (iterator == std::end(intermediaryAssetsToDescriptor)) {
 		Logger::info("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string);
 		Logger::info("");
@@ -421,7 +427,6 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 		return;
 	}
 
-
 	// ------------------------------------------
 	// Save resource entry in the parent folder.
 	// ------------------------------------------
@@ -437,7 +442,6 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 		auto&& [_, parentFolderId] = *folderIterator;
 		directories[parentFolderId].assets.insert(resourceId);
 	}
-	// ------------------------------------------
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

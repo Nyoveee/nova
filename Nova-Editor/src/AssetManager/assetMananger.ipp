@@ -88,6 +88,7 @@ void AssetManager::loadAllDescriptorFiles() {
 				Logger::info("Asset has changed, recompiling it's corresponding resource file..\n");
 				resourceManager.removeResource(descriptor.id);
 				createResourceFile<T>(descriptor);
+				serialiseDescriptor<T>(descriptor.id);
 			}
 			// If it does, we check if the resource manager already have this particular resource loaded.
 			// If it doesn't exist, it means that this resource file is missing / invalid.
@@ -95,6 +96,7 @@ void AssetManager::loadAllDescriptorFiles() {
 			else if (!resourceManager.doesResourceExist(descriptor.id)) {
 				Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}\n", descriptor.filepath.string);
 				createResourceFile<T>(descriptor);
+				serialiseDescriptor<T>(descriptor.id);
 			}
 			else {
 				Logger::info("A valid resource file exist for this descriptor and asset.\n");

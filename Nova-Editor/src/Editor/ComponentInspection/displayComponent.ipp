@@ -16,18 +16,22 @@ namespace {
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
 		(void) entity;
 
-		ResourceManager& resourceManager = componentInspector.resourceManager;
-		AssetManager& assetManager		 = componentInspector.assetManager;
-		AudioSystem& audioSystem		 = componentInspector.audioSystem;
-		PropertyReferences propertyReferences{ entity,
-											 componentInspector,
-											 componentInspector.resourceManager,
-											 componentInspector.assetManager,
-											 componentInspector.audioSystem,
-											 componentInspector.editor.engine.scriptingAPIManager,
-											 componentInspector.editor.engine,
-											 componentInspector.editor, 
-											 componentInspector.editor.engine.ecs};
+		[[maybe_unused]] ResourceManager& resourceManager = componentInspector.resourceManager;
+		[[maybe_unused]] AssetManager& assetManager		  = componentInspector.assetManager;
+		[[maybe_unused]] AudioSystem& audioSystem		  = componentInspector.audioSystem;
+		
+		PropertyReferences propertyReferences { 
+			entity,
+			componentInspector,
+			componentInspector.resourceManager,
+			componentInspector.assetManager,
+			componentInspector.audioSystem,
+			componentInspector.editor.engine.scriptingAPIManager,
+			componentInspector.editor.engine,
+			componentInspector.editor, 
+			componentInspector.editor.engine.ecs
+		};
+
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
 		}

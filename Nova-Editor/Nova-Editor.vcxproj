@@ -216,6 +216,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Editor\assetViewerUi.ipp" />
     <ClInclude Include="src\Editor\assetViewerUi.h" />
     <ClInclude Include="src\Editor\ComponentInspection\componentInspector.h" />
     <ClInclude Include="src\Editor\ComponentInspection\componentInspector.ipp" />

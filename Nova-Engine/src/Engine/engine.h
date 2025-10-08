@@ -16,6 +16,8 @@
 #include "Navigation/Navigation.h"
 #include "Engine/particleSystem.h"
 
+#define _CRTDBG_MAP_ALLOC
+
 class Window;
 class Renderer;
 class NavigationSystem;

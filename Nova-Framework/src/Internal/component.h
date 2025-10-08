@@ -338,16 +338,19 @@ struct ParticleEmitter
 	// Emission Shape
 	SphereEmitter sphereEmitter;
 	CubeEmitter cubeEmitter;
+
 	// Update
 	float currentContinuousTime = 0.f;
 	float currentBurstTime = 0.f;
+	
 	// Rendering
 	std::vector<Particle> particles;
 
 	// Editor stuff
 	TypedResourceID<Texture> texture;
 	Color color = Color{ 1.f, 1.f, 1.f };
-	enum class EmissionShape{
+	
+	enum class EmissionShape {
 		Point,
 		Sphere,
 		Cube
@@ -357,6 +360,7 @@ struct ParticleEmitter
 		// Hemisphere
 		// Cone
 	} emissionShape;
+	
 	bool looping = true;
 	float startSize = 1;
 	float startSpeed = 1;
@@ -368,6 +372,7 @@ struct ParticleEmitter
 	int burstAmount = 30;
 	float lightIntensity = 0.f;
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
+
 	REFLECTABLE
 	(
 		texture,
