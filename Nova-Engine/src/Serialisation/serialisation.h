@@ -21,6 +21,7 @@ namespace Serialiser {
 
 	ENGINE_DLL_API void deserialisePrefab(const char* fileName);
 	ENGINE_DLL_API void serialisePrefab(entt::registry& registry, entt::entity entity);
+	ENGINE_DLL_API json serialisePrefabRecursive(entt::registry& registry, entt::entity entity);
 
 	template <typename ...Components>
 	json serialiseComponents(entt::registry& registry, entt::entity entity);

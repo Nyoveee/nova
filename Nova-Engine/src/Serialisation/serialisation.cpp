@@ -128,7 +128,6 @@ namespace Serialiser {
 
 	}
 	void serialisePrefab(entt::registry& registry, entt::entity entity) {
-	//void serialisePrefab(entt::entity entity) {
 		std::string fileName = "Assets/";
 		
 		EntityData* entityData = registry.try_get<EntityData>(entity);
@@ -139,10 +138,24 @@ namespace Serialiser {
 		if (!file.is_open())
 			return;
 
-		json j;
-		j = serialiseComponents<ALL_COMPONENTS>(registry, entity);
-
+		json j = serialisePrefabRecursive(registry, entity);
 		file << std::setw(4) << j << std::endl;
 
+	}
+
+	json serialisePrefabRecursive(entt::registry& registry, entt::entity entity) {
+		json j;
+		std::vector<json> jsonVec;
+		j = serialiseComponents<ALL_COMPONENTS>(registry, entity);
+
+		EntityData* entityData = registry.try_get<EntityData>(entity);
+		for (entt::entity child : entityData->children) {
+			jsonVec.push_back(serialisePrefabRecursive(registry, child));
+		}
+		if (entityData->children.size()) {
+			j["Child"] = jsonVec;
+		}
+		
+		return j;
 	}
 };
