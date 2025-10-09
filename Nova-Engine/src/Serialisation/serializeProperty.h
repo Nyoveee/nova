@@ -11,73 +11,86 @@ using Json = nlohmann::json;
 	Base
 ****************************************************************************************/
 template<typename DataMemberType>
-inline void SerializeProperty(Json& json,const char* dataMemberName, auto const& dataMember) { 
-	json[dataMemberName] = dataMember;
+inline void SerializeProperty(Json& jsonComponent,const char* dataMemberName, DataMemberType const& dataMember) {
+	(void)jsonComponent, dataMemberName, dataMember;
 }
 /***************************************************************************************
-	Not serialized but here to keep compiler happy
+	Excluded List, See type_concepts.h
 ****************************************************************************************/
-template<> inline void SerializeProperty<PhysicsRayCastResult>(Json& json, const char* dataMemberName, PhysicsRayCastResult const& dataMember) { (void)json, dataMemberName, dataMember;}
-template<> inline void SerializeProperty<PhysicsRay>(Json& json, const char* dataMemberName, PhysicsRay const& dataMember) { (void)json, dataMemberName, dataMember; }
+template<NonSerializableTypes DataMemberType>
+inline void SerializeProperty(Json& jsonComponent, const char* dataMemberName, DataMemberType const& dataMember) {
+	(void)jsonComponent, dataMemberName, dataMember;
+}
+/***************************************************************************************
+	Special Constraints
+****************************************************************************************/
+template<IsTypedResourceID DataMemberType>
+inline void SerializeProperty(Json& jsonComponent, const char* dataMemberName, DataMemberType const& dataMember) {
+	jsonComponent[dataMemberName] = static_cast<size_t>(dataMember);
+}
+template<IsFundamental DataMemberType>
+inline void SerializeProperty(Json& jsonComponent, const char* dataMemberName, DataMemberType const& dataMember) {
+	jsonComponent[dataMemberName] = dataMember;
+}
+template<IsEnum DataMemberType>
+inline void SerializeProperty(Json& jsonComponent, const char* dataMemberName, DataMemberType const& dataMember) {
+	jsonComponent[dataMemberName] = magic_enum::enum_name(dataMember);
+}
 /***************************************************************************************
 	Listings
 ****************************************************************************************/
-template<IsTypedResourceID DataMemberType>
-inline void SerializeProperty(Json& json, const char* dataMemberName, auto const& dataMember) {
-	json[dataMemberName] = static_cast<size_t>(dataMember);
-}
-template<IsEnum DataMemberType>
-inline void SerializeProperty(Json& json, const char* dataMemberName, auto const& dataMember) {
-	json[dataMemberName] = magic_enum::enum_name(dataMember);
+template<>
+inline void SerializeProperty<glm::vec2>(Json& jsonComponent, const char* dataMemberName, glm::vec2 const& dataMember) {
+	jsonComponent[dataMemberName]["x"] = dataMember.x;
+	jsonComponent[dataMemberName]["y"] = dataMember.y;
 }
 template<>
-inline void SerializeProperty<glm::vec2>(Json& json, const char* dataMemberName, glm::vec2 const& dataMember) {
-	json[dataMemberName]["x"] = dataMember.x;
-	json[dataMemberName]["y"] = dataMember.y;
+inline void SerializeProperty<glm::vec3>(Json& jsonComponent, const char* dataMemberName, glm::vec3 const& dataMember) {
+	jsonComponent[dataMemberName]["x"] = dataMember.x;
+	jsonComponent[dataMemberName]["y"] = dataMember.y;
+	jsonComponent[dataMemberName]["z"] = dataMember.z;
 }
 template<>
-inline void SerializeProperty<glm::vec3>(Json& json, const char* dataMemberName, glm::vec3 const& dataMember) {
-	json[dataMemberName]["x"] = dataMember.x;
-	json[dataMemberName]["y"] = dataMember.y;
-	json[dataMemberName]["z"] = dataMember.z;
+inline void SerializeProperty<entt::entity>(Json& jsonComponent, const char* dataMemberName, entt::entity const& dataMember) {
+	jsonComponent[dataMemberName] = static_cast<unsigned int>(dataMember);
 }
 template<>
-inline void SerializeProperty<entt::entity>(Json& json, const char* dataMemberName, entt::entity const& dataMember) {
-	json[dataMemberName] = static_cast<unsigned int>(dataMember);
+inline void SerializeProperty<std::vector<entt::entity>>(Json& jsonComponent, const char* dataMemberName, std::vector<entt::entity> const& dataMember) {
+	jsonComponent[dataMemberName] = dataMember;
 }
 template<>
-inline void SerializeProperty<Color>(Json& json, const char* dataMemberName, Color const& dataMember) {
-	json[dataMemberName]["r"] = dataMember.r();
-	json[dataMemberName]["g"] = dataMember.g();
-	json[dataMemberName]["b"] = dataMember.b();
+inline void SerializeProperty<Color>(Json& jsonComponent, const char* dataMemberName, Color const& dataMember) {
+	jsonComponent[dataMemberName]["r"] = dataMember.r();
+	jsonComponent[dataMemberName]["g"] = dataMember.g();
+	jsonComponent[dataMemberName]["b"] = dataMember.b();
 }
 template<>
-inline void SerializeProperty<glm::quat>(Json& json, const char* dataMemberName, glm::quat const& dataMember) {
-	json[dataMemberName]["w"] = dataMember.w;
-	json[dataMemberName]["x"] = dataMember.x;
-	json[dataMemberName]["y"] = dataMember.y;
-	json[dataMemberName]["z"] = dataMember.z;
+inline void SerializeProperty<glm::quat>(Json& jsonComponent, const char* dataMemberName, glm::quat const& dataMember) {
+	jsonComponent[dataMemberName]["w"] = dataMember.w;
+	jsonComponent[dataMemberName]["x"] = dataMember.x;
+	jsonComponent[dataMemberName]["y"] = dataMember.y;
+	jsonComponent[dataMemberName]["z"] = dataMember.z;
 }
 template<>
-inline void SerializeProperty<EulerAngles>(Json& json, const char* dataMemberName, EulerAngles const& dataMember) {
-	json[dataMemberName]["x"] = dataMember.angles.x;
-	json[dataMemberName]["y"] = dataMember.angles.y;
-	json[dataMemberName]["z"] = dataMember.angles.z;
+inline void SerializeProperty<EulerAngles>(Json& jsonComponent, const char* dataMemberName, EulerAngles const& dataMember) {
+	jsonComponent[dataMemberName]["x"] = dataMember.angles.x;
+	jsonComponent[dataMemberName]["y"] = dataMember.angles.y;
+	jsonComponent[dataMemberName]["z"] = dataMember.angles.z;
 }
 template<>
-inline void SerializeProperty<Radian>(Json& json, const char* dataMemberName, Radian const& dataMember) {
-	json[dataMemberName] = static_cast<float>(dataMember);
+inline void SerializeProperty<Radian>(Json& jsonComponent, const char* dataMemberName, Radian const& dataMember) {
+	jsonComponent[dataMemberName] = static_cast<float>(dataMember);
 }
 template<>
-inline void SerializeProperty<Degree>(Json& json, const char* dataMemberName, Degree const& dataMember) {
-	json[dataMemberName] = static_cast<float>(dataMember);
+inline void SerializeProperty<Degree>(Json& jsonComponent, const char* dataMemberName, Degree const& dataMember) {
+	jsonComponent[dataMemberName] = static_cast<float>(dataMember);
 }
 template<>
-inline void SerializeProperty<ResourceID>(Json& json, const char* dataMemberName, ResourceID const& dataMember) {
-	json[dataMemberName] = static_cast<size_t>(dataMember);
+inline void SerializeProperty<ResourceID>(Json& jsonComponent, const char* dataMemberName, ResourceID const& dataMember) {
+	jsonComponent[dataMemberName] = static_cast<size_t>(dataMember);
 }
 template<>
-inline void SerializeProperty<std::unordered_map<MaterialName, Material>>(Json& json, const char* dataMemberName, std::unordered_map<MaterialName, Material> const& dataMember) {
+inline void SerializeProperty<std::unordered_map<MaterialName, Material>>(Json& jsonComponent, const char* dataMemberName, std::unordered_map<MaterialName, Material> const& dataMember) {
 	std::vector<Json> jVec;
 
 	//for each material in the map
@@ -134,10 +147,10 @@ inline void SerializeProperty<std::unordered_map<MaterialName, Material>>(Json& 
 
 		jVec.push_back(tempJson);
 	}
-	json[dataMemberName] = jVec;
+	jsonComponent[dataMemberName] = jVec;
 }
 template<>
-inline void SerializeProperty<std::vector<ScriptData>> (Json& json, const char* dataMemberName, std::vector<ScriptData> const& dataMember) {
+inline void SerializeProperty<std::vector<ScriptData>> (Json& jsonComponent, const char* dataMemberName, std::vector<ScriptData> const& dataMember) {
 	Json scriptArray;
 	for (auto&& scriptData : dataMember) {
 		Json scriptJson;
@@ -161,10 +174,10 @@ inline void SerializeProperty<std::vector<ScriptData>> (Json& json, const char* 
 		scriptArray.push_back(std::move(scriptJson));
 	}
 
-	json[dataMemberName] = std::move(scriptArray);
+	jsonComponent[dataMemberName] = std::move(scriptArray);
 }
 template<>
-inline void SerializeProperty<std::unordered_map<std::string, AudioData>>(Json& json, const char* dataMemberName, std::unordered_map<std::string, AudioData> const& dataMember) {
+inline void SerializeProperty<std::unordered_map<std::string, AudioData>>(Json& jsonComponent, const char* dataMemberName, std::unordered_map<std::string, AudioData> const& dataMember) {
 	Json audioArray;
 
 	for (auto&& [name, audioData] : dataMember) {
@@ -180,5 +193,5 @@ inline void SerializeProperty<std::unordered_map<std::string, AudioData>>(Json& 
 		audioArray.push_back(std::move(audioComponentJson));
 	}
 
-	json[dataMemberName] = std::move(audioArray);
+	jsonComponent[dataMemberName] = std::move(audioArray);
 }
