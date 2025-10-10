@@ -59,22 +59,33 @@ void ParticleSystem::particleMovement(ParticleEmitter& emitter, float dt)
 
 void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
 {
-	glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
-	randomVelocity = glm::normalize(randomVelocity);
-	randomVelocity *= emitter.startSpeed;
+
 	// To Do, Make this affected by rotation
 	switch (emitter.particleEmissionTypeSelection.emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
+		{
+			glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
+			randomVelocity = glm::normalize(randomVelocity);
+			randomVelocity *= emitter.startSpeed;
 			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
 			emitter.particles.push_back(Particle{ transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.sphereEmitter.radius),
 				randomVelocity, emitter.startSize,emitter.lifeTime });
 			break;
+		}
 		case ParticleEmissionTypeSelection::EmissionShape::Point:
+		{
+			glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
+			randomVelocity = glm::normalize(randomVelocity);
+			randomVelocity *= emitter.startSpeed;
 			emitter.particles.push_back(Particle{ transform.position, randomVelocity ,emitter.startSize,emitter.lifeTime });
 			break;
+		}
 		case ParticleEmissionTypeSelection::EmissionShape::Cube:
 		{
+			glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
+			randomVelocity = glm::normalize(randomVelocity);
+			randomVelocity *= emitter.startSpeed;
 			glm::vec3 min{ emitter.particleEmissionTypeSelection.cubeEmitter.min }, max{ emitter.particleEmissionTypeSelection.cubeEmitter.max };
 			glm::vec3 randomSpawnPoint = transform.position + glm::vec3{ RandomRange::Float(min.x,max.x),RandomRange::Float(min.y,max.y),RandomRange::Float(min.z,max.z) };
 			emitter.particles.push_back(Particle{ randomSpawnPoint, randomVelocity ,emitter.startSize,emitter.lifeTime });
@@ -86,6 +97,14 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 			randomSpawnPoint -= glm::vec3{ 1,0,0 } *emitter.particleEmissionTypeSelection.edgeEmitter.distance / 2.f;
 			randomSpawnPoint += glm::vec3{ 1,0,0 } *RandomRange::Float(0, emitter.particleEmissionTypeSelection.edgeEmitter.distance);
 			emitter.particles.push_back(Particle{ randomSpawnPoint, glm::vec3{0,1,0} *emitter.startSpeed ,emitter.startSize,emitter.lifeTime });
+			break;
+		}
+		case ParticleEmissionTypeSelection::EmissionShape::Circle:
+		{
+			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), 0, RandomRange::Float(-1, 1));
+			randomSpawnDirection = glm::normalize(randomSpawnDirection);
+			emitter.particles.push_back(Particle{ transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.circleEmitter.radius),
+				randomSpawnDirection * emitter.startSpeed, emitter.startSize,emitter.lifeTime });
 			break;
 		}
 	}

@@ -353,6 +353,10 @@ void Renderer::debugRenderParticleEmissionShape()
 			debugParticleShapeVBO.uploadData(DebugShapes::Edge(transform, emitter.particleEmissionTypeSelection.edgeEmitter.distance));
 			glDrawArrays(GL_LINES, 0, 2);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Circle:
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.particleEmissionTypeSelection.circleEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			break;
 		}
 	}
 }
