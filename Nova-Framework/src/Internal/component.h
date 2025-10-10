@@ -320,6 +320,9 @@ struct NavigationTestTarget
 		position
 	)
 };
+/******************************************************************************
+	Particles System
+******************************************************************************/
 struct Particle {
 	glm::vec3 position;
 	glm::vec3 velocity;
@@ -333,23 +336,7 @@ struct CubeEmitter {
 struct SphereEmitter {
 	float radius = 5.f;
 };
-struct ParticleEmitter
-{
-	// Emission Shape
-	SphereEmitter sphereEmitter;
-	CubeEmitter cubeEmitter;
-
-	// Update
-	float currentContinuousTime = 0.f;
-	float currentBurstTime = 0.f;
-	
-	// Rendering
-	std::vector<Particle> particles;
-
-	// Editor stuff
-	TypedResourceID<Texture> texture;
-	Color color = Color{ 1.f, 1.f, 1.f };
-	
+struct ParticleEmissionTypeSelection {
 	enum class EmissionShape {
 		Point,
 		Sphere,
@@ -359,7 +346,23 @@ struct ParticleEmitter
 		// Circle
 		// Hemisphere
 		// Cone
-	} emissionShape;
+	} emissionShape = EmissionShape::Point;
+	SphereEmitter sphereEmitter;
+	CubeEmitter cubeEmitter;
+};
+struct ParticleEmitter
+{
+	// Update
+	float currentContinuousTime = 0.f;
+	float currentBurstTime = 0.f;
+	
+	// Rendering
+	std::vector<Particle> particles;
+
+	// Editor stuff
+	TypedResourceID<Texture> texture;
+	ParticleEmissionTypeSelection particleEmissionTypeSelection;
+	Color color = Color{ 1.f, 1.f, 1.f };
 	
 	bool looping = true;
 	float startSize = 1;
@@ -376,8 +379,8 @@ struct ParticleEmitter
 	REFLECTABLE
 	(
 		texture,
+		particleEmissionTypeSelection,
 		color,
-		emissionShape,
 		looping,
 		startSize,
 		startSpeed,

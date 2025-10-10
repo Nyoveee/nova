@@ -195,3 +195,18 @@ inline void SerializeProperty<std::unordered_map<std::string, AudioData>>(Json& 
 
 	jsonComponent[dataMemberName] = std::move(audioArray);
 }
+template<>
+inline void SerializeProperty<ParticleEmissionTypeSelection>(Json& jsonComponent, const char* dataMemberName, ParticleEmissionTypeSelection const& dataMember) {
+	SerializeProperty<ParticleEmissionTypeSelection::EmissionShape>(jsonComponent[dataMemberName], "Emission Shape", dataMember.emissionShape);
+	if (dataMember.emissionShape != ParticleEmissionTypeSelection::EmissionShape::Point) {
+		switch (dataMember.emissionShape) {
+		case ParticleEmissionTypeSelection::EmissionShape::Cube:
+			SerializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Min", dataMember.cubeEmitter.min);
+			SerializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Max", dataMember.cubeEmitter.max);
+			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.sphereEmitter.radius);
+			break;
+		}
+	}
+}

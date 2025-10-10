@@ -339,3 +339,22 @@ inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Property
 	}
 	ImGui::EndChild();
 }
+template<>
+inline void DisplayProperty<ParticleEmissionTypeSelection>(PropertyReferences& propertyReferences, const char* dataMemberName, ParticleEmissionTypeSelection& dataMember) {
+	(void)dataMemberName;
+	DisplayProperty<ParticleEmissionTypeSelection::EmissionShape>(propertyReferences, "Emission Shape", dataMember.emissionShape);
+	if (dataMember.emissionShape != ParticleEmissionTypeSelection::EmissionShape::Point) {
+		ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
+		switch (dataMember.emissionShape) {
+		case ParticleEmissionTypeSelection::EmissionShape::Cube:
+			DisplayProperty<glm::vec3>(propertyReferences, "Min", dataMember.cubeEmitter.min);
+			DisplayProperty<glm::vec3>(propertyReferences, "Max", dataMember.cubeEmitter.max);
+			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
+			DisplayProperty<float>(propertyReferences, "Radius", dataMember.sphereEmitter.radius);
+			break;
+		}
+		ImGui::EndChild();
+	}
+	
+}

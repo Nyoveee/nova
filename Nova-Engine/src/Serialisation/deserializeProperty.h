@@ -225,3 +225,18 @@ inline void DeserializeProperty<std::unordered_map<std::string, AudioData>>(Json
 		dataMember.insert({ std::move(name), AudioData{ id, volume } });
 	}
 }
+template<>
+inline void DeserializeProperty<ParticleEmissionTypeSelection>(Json const& jsonComponent, const char* dataMemberName, ParticleEmissionTypeSelection& dataMember) {
+	DeserializeProperty<ParticleEmissionTypeSelection::EmissionShape>(jsonComponent[dataMemberName], "Emission Shape", dataMember.emissionShape);
+	if (dataMember.emissionShape != ParticleEmissionTypeSelection::EmissionShape::Point) {
+		switch (dataMember.emissionShape) {
+		case ParticleEmissionTypeSelection::EmissionShape::Cube:
+			DeserializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Min", dataMember.cubeEmitter.min);
+			DeserializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Max", dataMember.cubeEmitter.max);
+			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
+			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.sphereEmitter.radius);
+			break;
+		}
+	}
+}

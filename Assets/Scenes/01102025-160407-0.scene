@@ -14,7 +14,6 @@
                     "g": 1.0,
                     "r": 0.0
                 },
-                "emissionShape": "Point",
                 "force": {
                     "x": 0.0,
                     "y": -9.800000190734863,
@@ -29,6 +28,9 @@
                 },
                 "looping": true,
                 "maxParticles": 1000,
+                "particleEmissionTypeSelection": {
+                    "Emission Shape": "Point"
+                },
                 "particleRate": 100.0,
                 "startSize": 0.10000000149011612,
                 "startSpeed": 1.0,
@@ -94,7 +96,6 @@
                     "g": 0.0,
                     "r": 1.0
                 },
-                "emissionShape": "Point",
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -109,6 +110,9 @@
                 },
                 "looping": true,
                 "maxParticles": 1000,
+                "particleEmissionTypeSelection": {
+                    "Emission Shape": "Point"
+                },
                 "particleRate": 100.0,
                 "startSize": 1.0,
                 "startSpeed": 1.0,
@@ -249,7 +253,6 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "emissionShape": "Sphere",
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -264,6 +267,10 @@
                 },
                 "looping": true,
                 "maxParticles": 10,
+                "particleEmissionTypeSelection": {
+                    "Emission Shape": "Sphere",
+                    "Radius": 5.0
+                },
                 "particleRate": 1.0,
                 "startSize": 0.30000001192092896,
                 "startSpeed": 0.5,
@@ -329,7 +336,6 @@
                     "g": 0.0,
                     "r": 1.0
                 },
-                "emissionShape": "Point",
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -344,6 +350,9 @@
                 },
                 "looping": true,
                 "maxParticles": 1000,
+                "particleEmissionTypeSelection": {
+                    "Emission Shape": "Point"
+                },
                 "particleRate": 100.0,
                 "startSize": 0.30000001192092896,
                 "startSpeed": 5.0,
@@ -511,7 +520,6 @@
                     "g": 0.0,
                     "r": 1.0
                 },
-                "emissionShape": "Point",
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -526,6 +534,9 @@
                 },
                 "looping": true,
                 "maxParticles": 1000,
+                "particleEmissionTypeSelection": {
+                    "Emission Shape": "Point"
+                },
                 "particleRate": 0.0,
                 "startSize": 0.30000001192092896,
                 "startSpeed": 5.0,
