@@ -207,6 +207,9 @@ inline void SerializeProperty<ParticleEmissionTypeSelection>(Json& jsonComponent
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 			SerializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.sphereEmitter.radius);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Edge:
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Distance", dataMember.edgeEmitter.distance);
+			break;
 		}
 	}
 }

@@ -349,6 +349,10 @@ void Renderer::debugRenderParticleEmissionShape()
 			debugParticleShapeVBO.uploadData(DebugShapes::Cube(transform, emitter.particleEmissionTypeSelection.cubeEmitter.min, emitter.particleEmissionTypeSelection.cubeEmitter.max));
 			glDrawArrays(GL_LINES, 0, 24);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Edge:
+			debugParticleShapeVBO.uploadData(DebugShapes::Edge(transform, emitter.particleEmissionTypeSelection.edgeEmitter.distance));
+			glDrawArrays(GL_LINES, 0, 2);
+			break;
 		}
 	}
 }

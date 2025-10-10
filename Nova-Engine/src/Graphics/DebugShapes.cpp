@@ -59,3 +59,11 @@ std::vector<SimpleVertex> DebugShapes::Cube(Transform const& transform, glm::vec
 	result.push_back(SimpleVertex{ transform.position + max });
 	return result;
 }
+
+std::vector<SimpleVertex> DebugShapes::Edge(Transform const& transform, float distance)
+{
+	std::vector<SimpleVertex> result;
+	result.push_back(SimpleVertex{ transform.position - glm::vec3{ 1,0,0 } * distance / 2.f });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{ 1,0,0 } * distance / 2.f });
+	return result;
+}

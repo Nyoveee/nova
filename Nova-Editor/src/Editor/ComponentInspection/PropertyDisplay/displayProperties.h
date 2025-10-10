@@ -353,6 +353,9 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(PropertyReferences& p
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 			DisplayProperty<float>(propertyReferences, "Radius", dataMember.sphereEmitter.radius);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Edge:
+			DisplayProperty<float>(propertyReferences, "Distance", dataMember.edgeEmitter.distance);
+			break;
 		}
 		ImGui::EndChild();
 	}

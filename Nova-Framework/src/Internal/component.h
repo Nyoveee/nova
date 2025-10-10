@@ -336,12 +336,15 @@ struct CubeEmitter {
 struct SphereEmitter {
 	float radius = 5.f;
 };
+struct EdgeEmitter {
+	float distance = 5.f;
+};
 struct ParticleEmissionTypeSelection {
 	enum class EmissionShape {
 		Point,
 		Sphere,
-		Cube
-		// Edge
+		Cube,
+		Edge
 		// Cylinder
 		// Circle
 		// Hemisphere
@@ -349,6 +352,7 @@ struct ParticleEmissionTypeSelection {
 	} emissionShape = EmissionShape::Point;
 	SphereEmitter sphereEmitter;
 	CubeEmitter cubeEmitter;
+	EdgeEmitter edgeEmitter;
 };
 struct ParticleEmitter
 {

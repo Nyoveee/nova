@@ -237,6 +237,9 @@ inline void DeserializeProperty<ParticleEmissionTypeSelection>(Json const& jsonC
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.sphereEmitter.radius);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Edge:
+			DeserializeProperty<float>(jsonComponent[dataMemberName], "Distance", dataMember.sphereEmitter.radius);
+			break;
 		}
 	}
 }
