@@ -3,6 +3,89 @@
         {
             "EntityData": {
                 "children": [],
+                "name": "Hemisphere Emitter",
+                "parent": 4294967295
+            },
+            "ParticleEmitter": {
+                "burstAmount": 1000,
+                "burstRate": 1.0,
+                "color": {
+                    "b": 0.35686275362968445,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 10000,
+                "particleEmissionTypeSelection": {
+                    "Emission Shape": "Hemisphere",
+                    "Radius": 1.0
+                },
+                "particleRate": 0.0,
+                "startSize": 0.10000000149011612,
+                "startSpeed": 5.0,
+                "texture": 10264539576361746591
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -18.86819076538086,
+                    "y": 1.0739209651947021,
+                    "z": 29.339519500732422
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "children": [],
                 "name": "Circle Emitter",
                 "parent": 4294967295
             },
@@ -195,8 +278,8 @@
                 "looping": true,
                 "maxParticles": 1000,
                 "particleEmissionTypeSelection": {
-                    "Distance": 5.0,
-                    "Emission Shape": "Edge"
+                    "Emission Shape": "Edge",
+                    "Radius": 5.0
                 },
                 "particleRate": 100.0,
                 "startSize": 0.10000000149011612,

@@ -235,13 +235,10 @@ inline void DeserializeProperty<ParticleEmissionTypeSelection>(Json const& jsonC
 			DeserializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Max", dataMember.cubeEmitter.max);
 			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
-			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.sphereEmitter.radius);
-			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
-			DeserializeProperty<float>(jsonComponent[dataMemberName], "Distance", dataMember.edgeEmitter.distance);
-			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Circle:
-			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.circleEmitter.radius);
+		case ParticleEmissionTypeSelection::EmissionShape::Hemisphere:
+			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.radiusEmitter.radius);
 			break;
 		}
 	}

@@ -1,12 +1,13 @@
 #include "DebugShapes.h"
 #include <numbers>
 namespace{
-	constexpr float _2PI = 2 * std::numbers::pi_v<float>;
+	constexpr float PI = 2 * std::numbers::pi_v<float>;
+	constexpr float PI2 = 2 * std::numbers::pi_v<float>;
 }
 std::vector<SimpleVertex> DebugShapes::SphereAxisXY(Transform const& transform, float radius)
 {
 	std::vector<SimpleVertex> result;
-	for (float i{}; i < _2PI; i += _2PI / NUM_DEBUG_CIRCLE_POINTS)
+	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
 		result.push_back(SimpleVertex{ transform.position + glm::vec3{ std::cos(i),std::sin(i),0.f } *radius });
 	return result;
 }
@@ -14,7 +15,7 @@ std::vector<SimpleVertex> DebugShapes::SphereAxisXY(Transform const& transform, 
 std::vector<SimpleVertex> DebugShapes::SphereAxisXZ(Transform const& transform, float radius)
 {
 	std::vector<SimpleVertex> result;
-	for (float i{}; i < _2PI; i += _2PI / NUM_DEBUG_CIRCLE_POINTS)
+	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
 		result.push_back(SimpleVertex{ transform.position + glm::vec3{ std::cos(i),0.f,std::sin(i) } *radius });
 	return result;
 }
@@ -22,8 +23,24 @@ std::vector<SimpleVertex> DebugShapes::SphereAxisXZ(Transform const& transform, 
 std::vector<SimpleVertex> DebugShapes::SphereAxisYZ(Transform const& transform, float radius)
 {
 	std::vector<SimpleVertex> result;
-	for (float i{}; i < _2PI; i += _2PI / NUM_DEBUG_CIRCLE_POINTS)
+	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
 		result.push_back(SimpleVertex{ transform.position + glm::vec3{ 0.f,std::cos(i),std::sin(i) } *radius });
+	return result;
+}
+
+std::vector<SimpleVertex> DebugShapes::HemisphereAxisXY(Transform const& transform, float radius)
+{
+	std::vector<SimpleVertex> result;
+	for (float i{}; i <= PI; i += PI / NUM_DEBUG_CIRCLE_POINTS)
+		result.push_back(SimpleVertex{ transform.position + glm::vec3{ std::cos(i),std::sin(i),0.f } *radius });
+	return result;
+}
+
+std::vector<SimpleVertex> DebugShapes::HemisphereAxisYZ(Transform const& transform, float radius)
+{
+	std::vector<SimpleVertex> result;
+	for (float i{}; i <= PI; i += PI / NUM_DEBUG_CIRCLE_POINTS)
+		result.push_back(SimpleVertex{ transform.position + glm::vec3{ 0.f,std::abs(std::sin(i)),std::cos(i)} *radius });
 	return result;
 }
 

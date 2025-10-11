@@ -338,11 +338,11 @@ void Renderer::debugRenderParticleEmissionShape()
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
 		switch (emitter.particleEmissionTypeSelection.emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
-			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(transform, emitter.particleEmissionTypeSelection.sphereEmitter.radius));
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
-			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.particleEmissionTypeSelection.sphereEmitter.radius));
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
-			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(transform, emitter.particleEmissionTypeSelection.sphereEmitter.radius));
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Cube:
@@ -350,12 +350,20 @@ void Renderer::debugRenderParticleEmissionShape()
 			glDrawArrays(GL_LINES, 0, 24);
 			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
-			debugParticleShapeVBO.uploadData(DebugShapes::Edge(transform, emitter.particleEmissionTypeSelection.edgeEmitter.distance));
+			debugParticleShapeVBO.uploadData(DebugShapes::Edge(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
 			glDrawArrays(GL_LINES, 0, 2);
 			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Circle:
-			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.particleEmissionTypeSelection.circleEmitter.radius));
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Hemisphere:
+			debugParticleShapeVBO.uploadData(DebugShapes::HemisphereAxisXY(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS / 2 + 1);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::HemisphereAxisYZ(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS / 2 + 1);
 			break;
 		}
 	}
