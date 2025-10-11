@@ -132,6 +132,10 @@ void Hierarchy::update() {
 		}
 	}
 
+	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Create Entity with prefab")) {
+		Serialiser::deserialisePrefab("Assets/CubeParentPrefab.json", registry);
+	}
+
 	ImGui::BeginChild("Entities", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders);
 	
 	for (auto&& [entity, entityData] : registry.view<EntityData>().each()) {

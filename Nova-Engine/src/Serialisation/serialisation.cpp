@@ -119,12 +119,17 @@ namespace Serialiser {
 		json j;
 		file >> j;
 	}
-	void deserialisePrefab(const char* fileName) {
+
+	void deserialisePrefab(const char* fileName, entt::registry& registry) {
 		std::ifstream file(fileName);
 
 		if (!file.is_open())
 			return;
 
+		json j;
+		file >> j;
+
+		deserialisePrefabRecursive(j["Entities"], j["Entities"].size()-1, registry);
 
 	}
 	void serialisePrefab(entt::registry& registry, entt::entity entity) {
@@ -137,25 +142,40 @@ namespace Serialiser {
 
 		if (!file.is_open())
 			return;
+		std::vector<json> jsonVec;
 
-		json j = serialisePrefabRecursive(registry, entity);
+		json j;
+		serialisePrefabRecursive(registry, entity, jsonVec, true);
+		j["Entities"] = jsonVec;
 		file << std::setw(4) << j << std::endl;
 
 	}
 
-	json serialisePrefabRecursive(entt::registry& registry, entt::entity entity) {
-		json j;
-		std::vector<json> jsonVec;
-		j = serialiseComponents<ALL_COMPONENTS>(registry, entity);
+	void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<json>& jsonVec, bool checkParent) {
+		json j = serialiseComponents<ALL_COMPONENTS>(registry, entity);
 
 		EntityData* entityData = registry.try_get<EntityData>(entity);
+		entt::entity temp = entt::null;
+
+		if (checkParent) {
+			j["EntityData"]["parent"] = temp;
+			checkParent = false;
+		}
+			
+		jsonVec.push_back(j);
+
 		for (entt::entity child : entityData->children) {
-			jsonVec.push_back(serialisePrefabRecursive(registry, child));
+			serialisePrefabRecursive(registry, child, jsonVec, checkParent);
 		}
-		if (entityData->children.size()) {
-			j["Child"] = jsonVec;
+
+	}
+	void deserialisePrefabRecursive(std::vector<json> jsonVec, int end, entt::registry& registry) {
+		if (end < 0) {
+			return;
 		}
-		
-		return j;
+
+		auto entity = registry.create(jsonVec[end]["id"]);
+		deserialiseComponents<ALL_COMPONENTS>(registry, entity, jsonVec[end]);
+		deserialisePrefabRecursive(jsonVec, end-1, registry);
 	}
 };
