@@ -365,6 +365,16 @@ void Renderer::debugRenderParticleEmissionShape()
 			debugParticleShapeVBO.uploadData(DebugShapes::HemisphereAxisYZ(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS / 2 + 1);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Cone:
+			ConeEmitter& coneEmitter{ emitter.particleEmissionTypeSelection.coneEmitter };
+			RadiusEmitter& radiusEmitter{ emitter.particleEmissionTypeSelection.radiusEmitter };
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, radiusEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::ConeEdges(transform, radiusEmitter.radius, coneEmitter.arc, coneEmitter.distance));
+			glDrawArrays(GL_LINES, 0, 8);
+			debugParticleShapeVBO.uploadData(DebugShapes::ConeOuterAxisXZ(transform, radiusEmitter.radius,coneEmitter.arc,coneEmitter.distance));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			break;
 		}
 	}
 }

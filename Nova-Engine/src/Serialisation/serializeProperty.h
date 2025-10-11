@@ -204,6 +204,11 @@ inline void SerializeProperty<ParticleEmissionTypeSelection>(Json& jsonComponent
 			SerializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Min", dataMember.cubeEmitter.min);
 			SerializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Max", dataMember.cubeEmitter.max);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Cone:
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Arc", dataMember.coneEmitter.arc);
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Distance", dataMember.coneEmitter.distance);
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.radiusEmitter.radius);
+			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
 		case ParticleEmissionTypeSelection::EmissionShape::Circle:

@@ -1,4 +1,5 @@
 #include "DebugShapes.h"
+#include "type_alias.h"
 #include <numbers>
 namespace{
 	constexpr float PI = 2 * std::numbers::pi_v<float>;
@@ -74,6 +75,32 @@ std::vector<SimpleVertex> DebugShapes::Cube(Transform const& transform, glm::vec
 	result.push_back(SimpleVertex{ transform.position + glm::vec3{max.x,min.y,max.z} });
 	result.push_back(SimpleVertex{ transform.position + glm::vec3{max.x,max.y,min.z} });
 	result.push_back(SimpleVertex{ transform.position + max });
+	return result;
+}
+
+std::vector<SimpleVertex> DebugShapes::ConeOuterAxisXZ(Transform const& transform, float radius, float arc, float distance)
+{
+	std::vector<SimpleVertex> result;
+	arc = Radian{ Degree{std::clamp(arc, 0.f, 75.f)} };
+	radius += distance * std::sin(arc);
+	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
+		result.push_back(SimpleVertex{ transform.position + glm::vec3{ std::cos(i), 0, std::sin(i) } * radius + glm::vec3{0,distance,0} });
+	return result;
+}
+
+std::vector<SimpleVertex> DebugShapes::ConeEdges(Transform const& transform, float radius, float arc, float distance)
+{
+	std::vector<SimpleVertex> result;
+	arc = Radian{ Degree{std::clamp(arc, 0.f, 75.f)} };
+	float outerRadius = radius + distance * std::sin(arc);
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{radius,0,0} });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{outerRadius,distance,0} });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{-radius,0,0} });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{-outerRadius,distance,0} });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{0,0,radius} });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{0,distance, outerRadius} });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{0,0,-radius} });
+	result.push_back(SimpleVertex{ transform.position + glm::vec3{0,distance, -outerRadius} });
 	return result;
 }
 

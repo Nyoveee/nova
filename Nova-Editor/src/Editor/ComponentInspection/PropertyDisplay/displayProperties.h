@@ -350,6 +350,11 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(PropertyReferences& p
 			DisplayProperty<glm::vec3>(propertyReferences, "Min", dataMember.cubeEmitter.min);
 			DisplayProperty<glm::vec3>(propertyReferences, "Max", dataMember.cubeEmitter.max);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Cone:
+			DisplayProperty<float>(propertyReferences, "Arc", dataMember.coneEmitter.arc);
+			DisplayProperty<float>(propertyReferences, "Distance", dataMember.coneEmitter.distance);
+			DisplayProperty<float>(propertyReferences, "Radius", dataMember.radiusEmitter.radius);
+			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
 		case ParticleEmissionTypeSelection::EmissionShape::Circle:

@@ -59,7 +59,6 @@ void ParticleSystem::particleMovement(ParticleEmitter& emitter, float dt)
 
 void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
 {
-
 	// To Do, Make this affected by rotation
 	switch (emitter.particleEmissionTypeSelection.emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
@@ -80,12 +79,10 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Cube:
 		{
-			glm::vec3 randomVelocity = glm::vec3(RandomRange::Float(-1, 1), RandomRange::Float(-1, 1), RandomRange::Float(-1, 1));
-			randomVelocity = glm::normalize(randomVelocity);
-			randomVelocity *= emitter.startSpeed;
 			glm::vec3 min{ emitter.particleEmissionTypeSelection.cubeEmitter.min }, max{ emitter.particleEmissionTypeSelection.cubeEmitter.max };
 			glm::vec3 randomSpawnPoint = transform.position + glm::vec3{ RandomRange::Float(min.x,max.x),RandomRange::Float(min.y,max.y),RandomRange::Float(min.z,max.z) };
-			emitter.particles.push_back(Particle{ randomSpawnPoint, randomVelocity ,emitter.startSize,emitter.lifeTime });
+			emitter.particles.push_back(Particle{ randomSpawnPoint, glm::normalize(randomSpawnPoint-transform.position)* emitter.startSpeed,
+				emitter.startSize,emitter.lifeTime});
 			break;
 		}
 		case ParticleEmissionTypeSelection::EmissionShape::Edge:
@@ -110,6 +107,26 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 			randomSpawnDirection = glm::normalize(randomSpawnDirection);
 			emitter.particles.push_back(Particle{ transform.position + randomSpawnDirection * RandomRange::Float(0, emitter.particleEmissionTypeSelection.radiusEmitter.radius),
 				randomSpawnDirection * emitter.startSpeed, emitter.startSize,emitter.lifeTime });
+			break;
+		}
+		case ParticleEmissionTypeSelection::EmissionShape::Cone:
+		{
+			// Emission Details
+			RadiusEmitter& radiusEmitter{ emitter.particleEmissionTypeSelection.radiusEmitter };
+			ConeEmitter& coneEmitter{ emitter.particleEmissionTypeSelection.coneEmitter };
+			float radius = radiusEmitter.radius,distance = coneEmitter.distance;
+			float arc = Radian{ Degree{std::clamp(coneEmitter.arc, 0.f, 75.f)}};
+			float outerRadius = radius + coneEmitter.distance * std::sin(arc);
+			// Other Details
+			float spawnRadius = RandomRange::Float(0, radius);
+			// Calculate the spawn to target Position
+			glm::vec3 randomSpawnDirection = glm::vec3(RandomRange::Float(-1, 1), 0, RandomRange::Float(-1, 1));
+			randomSpawnDirection = glm::normalize(randomSpawnDirection);
+			glm::vec3 spawnPosition = transform.position + randomSpawnDirection * spawnRadius;
+			glm::vec3 targetPosition = transform.position + glm::vec3{ 0,distance,0 } + randomSpawnDirection * spawnRadius / radius * outerRadius;
+			glm::vec3 velocity = glm::normalize(targetPosition - spawnPosition) * emitter.startSpeed;
+			// Spawn Particle
+			emitter.particles.push_back(Particle{ spawnPosition, velocity, emitter.startSize,emitter.lifeTime });
 			break;
 		}
 	}

@@ -333,6 +333,10 @@ struct CubeEmitter {
 	glm::vec3 min = { -5.f,-5.f,-5.f };
 	glm::vec3 max = { 5.f,5.f,5.f };
 };
+struct ConeEmitter {
+	float arc = 30.f;
+	float distance = 5.f;
+};
 struct RadiusEmitter {
 	float radius = 5.f;
 };
@@ -343,12 +347,12 @@ struct ParticleEmissionTypeSelection {
 		Cube,
 		Edge,
 		Circle,
-		Hemisphere
-		// Cone
+		Hemisphere,
+		Cone
 	} emissionShape = EmissionShape::Point;
 	RadiusEmitter radiusEmitter;
 	CubeEmitter cubeEmitter;
-	
+	ConeEmitter coneEmitter;
 };
 struct ParticleEmitter
 {
