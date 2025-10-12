@@ -30,6 +30,8 @@ constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(Simp
 // ok right?
 constexpr int MAX_NUMBER_OF_LIGHT = 100;
 
+constexpr int MAX_NUMBER_OF_BONES = 255;
+
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine						{ engine },
 	resourceManager				{ engine.resourceManager },
@@ -48,9 +50,11 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
+	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/image.frag"},
 	mainVAO						{},
-	debugVAO				{},
+	debugVAO					{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
+	skeletalVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
@@ -63,6 +67,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 								// we allocate memory for view and projection matrix.
 	sharedUBO					{ 2 * sizeof(glm::mat4) },
+	
+	bonesSSBO					{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::mat4x4) },
 	camera						{},
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
@@ -84,10 +90,13 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
 
-	// prepare the light SSBOs. we bind light SSBO to binding point of 0.
+	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, pointLightSSBO.id());
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, directionalLightSSBO.id());
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, spotLightSSBO.id());
+
+	// we bind bones SSBO to 3.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
 
 	// Set the correct viewport
 	glViewport(0, 0, gameWidth, gameHeight);
@@ -103,11 +112,11 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// Bind this EBO to this VAO.
 	glVertexArrayElementBuffer(mainVAO, EBO.id());
 
-	// for this VAO, associate bindingIndex 0 with this VBO. 
-	constexpr GLuint bindingIndex = 0;
-	glVertexArrayVertexBuffer(mainVAO, bindingIndex, mainVBO.id(), 0, sizeof(Vertex));
+	// for this VAO, associate bindingIndex 0 with the main VBO. 
+	constexpr GLuint mainBindingIndex = 0;
+	glVertexArrayVertexBuffer(mainVAO, mainBindingIndex, mainVBO.id(), 0, sizeof(Vertex));
 
-	// associate attribute index 0 and 1 with the respective attribute properties.
+	// associate attribute indices 0 to 4 with the respective attribute properties.
 	glVertexArrayAttribFormat(mainVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, pos));
 	glVertexArrayAttribFormat(mainVAO, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
 	glVertexArrayAttribFormat(mainVAO, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
@@ -121,13 +130,27 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glEnableVertexArrayAttrib(mainVAO, 3);
 	glEnableVertexArrayAttrib(mainVAO, 4);
 
-	// associate vertex attributes to binding index 0. 
-	glVertexArrayAttribBinding(mainVAO, 0, bindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 1, bindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 2, bindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 3, bindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 4, bindingIndex);
+	// associate vertex attributes to main binding index. 
+	glVertexArrayAttribBinding(mainVAO, 0, mainBindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 1, mainBindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 2, mainBindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 3, mainBindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 4, mainBindingIndex);
 
+	// for this VAO, associate bindingIndex 1 with the skeletal VBO. 
+	constexpr GLuint skeletalBindingIndex = 1;
+	glVertexArrayVertexBuffer (mainVAO, skeletalBindingIndex, skeletalVBO.id(), 0, sizeof(VertexWeight));
+
+	// associate attribute indices 5 to 6 with the respective attribute properties.
+	glVertexArrayAttribIFormat(mainVAO, 5, 4, GL_INT, offsetof(VertexWeight, boneIndices));
+	glVertexArrayAttribFormat (mainVAO, 6, 4, GL_FLOAT, GL_FALSE, offsetof(VertexWeight, weights));
+	
+	// associate vertex attributes to skeletal binding index. 
+	glVertexArrayAttribBinding(mainVAO, 5, skeletalBindingIndex);
+	glVertexArrayAttribBinding(mainVAO, 6, skeletalBindingIndex);
+
+	// don't have to enable attributes yet. ;)
+	
 	// ======================================================
 	// Debug VAO configuration
 	// - No EBO. A much simpler VAO containing only position.
@@ -185,6 +208,7 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool
 
 	renderSkyBox();
 	renderModels();
+	renderSkinnedModels();
 	renderParticles();
 
 	if (toRenderDebugPhysics) {
@@ -247,6 +271,7 @@ void Renderer::recompileShaders() {
 	skyboxShader.compile();
 	toneMappingShader.compile();
 	particleShader.compile();
+	skeletalAnimationShader.compile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -624,6 +649,70 @@ void Renderer::renderModels() {
 	glDisable(GL_CULL_FACE);
 }
 
+void Renderer::renderSkinnedModels() {
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
+
+	// enable back face culling for our 3d models..
+	glEnable(GL_CULL_FACE);
+
+	// enable skeletal animation vertex attribute..
+	glEnableVertexArrayAttrib(mainVAO, 5);
+	glEnableVertexArrayAttrib(mainVAO, 6);
+
+	for (auto&& [entity, transform, skinnedMeshRenderer] : registry.view<Transform, SkinnedMeshRenderer>().each()) {
+		// Retrieves model asset from asset manager.
+		auto [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
+
+		if (!model) {
+			// missing model.
+			continue;
+		}
+
+		// Setting model specific uniform..
+		skeletalAnimationShader.setMatrix("model", transform.modelMatrix);
+		skeletalAnimationShader.setMatrix("normalMatrix", transform.normalMatrix);
+
+		objectIdShader.setMatrix("model", transform.modelMatrix);
+		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
+
+		// Setting up bones SSBO..
+		unsigned int numberOfBones = static_cast<unsigned int>(skinnedMeshRenderer.bonesFinalMatrices.size());
+		
+		// copy the unsigned int representing number of bones into SSBO.
+		glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(unsigned int), &numberOfBones);											
+		
+		// offset by alignment requirement, then upload all bone matrices..
+		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::mat4x4), numberOfBones * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());	
+
+		// Draw every mesh of a given model.
+		for (auto const& mesh : model->meshes) {
+			Material const* material = obtainMaterial(skinnedMeshRenderer, mesh);
+
+			if (!material) {
+				continue;
+			}
+
+			// TEMP!! WE FORCE EVERY SKINNED MESH RENDERER TO USE A PBR FOR NOW.
+			setupSkeletalShader(*material);
+
+			// time to draw!
+			mainVBO.uploadData(mesh.vertices);
+			skeletalVBO.uploadData(mesh.vertexWeights);
+
+			EBO.uploadData(mesh.indices);
+			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+
+			// render object id into object id FBO.
+			renderObjectId(mesh.numOfTriangles * 3);
+		}
+	}
+
+	glDisable(GL_CULL_FACE);
+
+	glDisableVertexArrayAttrib(mainVAO, 5);
+	glDisableVertexArrayAttrib(mainVAO, 6);
+}
+
 void Renderer::renderOutline() {
 	// time to render the outlines..
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	// we don't need to write to the stencil buffer anymore, we focus on testing..
@@ -808,6 +897,33 @@ void Renderer::setupPBRShader(Material const& material) {
 	PBRShader.use();
 }
 
+void Renderer::setupSkeletalShader(Material const& material) {
+	skeletalAnimationShader.use();
+
+	// Handle albedo.
+	std::visit([&](auto&& albedo) {
+		using T = std::decay_t<decltype(albedo)>;
+
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
+
+			if (!texture) {
+				// fallback..
+				texture = resourceManager.getResource<Texture>(resourceManager.getSomeResourceID<Texture>()).asset;
+			}
+
+			glBindTextureUnit(0, texture->getTextureId());
+			skeletalAnimationShader.setImageUniform("image", 0);
+		}
+		else /* it's Color */ {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(resourceManager.getSomeResourceID<Texture>());
+			glBindTextureUnit(0, texture->getTextureId());
+			skeletalAnimationShader.setImageUniform("image", 0);
+		}
+
+	}, material.albedo);
+}
+
 void Renderer::setupColorShader(Material const& material) {
 	// Handle albedo.
 	std::visit([&](auto&& albedo) {
@@ -849,10 +965,23 @@ void Renderer::setModelUniforms(Transform const& transform, entt::entity entity)
 	objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 }
 
-Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh) {
+Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {
 	auto iterator = meshRenderer.materials.find(mesh.materialName);
 
 	if (iterator == meshRenderer.materials.end()) {
+		Logger::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
+		return nullptr;
+	}
+
+	// We have successfully retrieved the materials. Let's retrieve the individual components.
+	auto&& [__, material] = *iterator;
+	return &material;
+}
+
+Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh) {
+	auto iterator = skinnedMeshRenderer.materials.find(mesh.materialName);
+
+	if (iterator == skinnedMeshRenderer.materials.end()) {
 		Logger::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
 		return nullptr;
 	}

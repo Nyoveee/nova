@@ -9,6 +9,7 @@
 #include <glm/mat3x3.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <unordered_map>
+#include <unordered_set>
 #include <variant>
 #include <optional>
 
@@ -34,9 +35,8 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
-
+	EntityData, Transform, Light, MeshRenderer, SkinnedMeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, \
+	Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -158,6 +158,24 @@ struct MeshRenderer {
 		modelId,
 		materials
 	)
+};
+
+struct SkinnedMeshRenderer {
+	TypedResourceID<Model> modelId{ INVALID_RESOURCE_ID };
+
+	// maps a material name from the model to a specific material texture
+	std::unordered_map<MaterialName, Material> materials{};
+
+	REFLECTABLE(
+		modelId,
+		materials
+	)
+
+	// owns all the bone's final matrices.
+	std::vector<glm::mat4x4> bonesFinalMatrices;
+
+	// We cache those bone's whose final transformation has already been calculated.
+	std::unordered_set<BoneIndex> cachedBones;
 };
 
 struct Rigidbody {

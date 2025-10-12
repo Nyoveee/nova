@@ -99,7 +99,7 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 		
 		}
 
-		for (const Model::Mesh& meshData : model->meshes)
+		for (const Mesh& meshData : model->meshes)
 		{
 
 			for (const Vertex& vertex : meshData.vertices)

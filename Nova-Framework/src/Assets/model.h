@@ -9,19 +9,9 @@
 // ModelAsset is an asset specific to the asset manager wrapping a model and indicates whether it is loaded or not.
 // Model is the a struct containing actual data for rendering.
 
-using MaterialName = std::string;
-
 class Model : public Resource {
 public:
-	struct Mesh {
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::string materialName;
-		int numOfTriangles;
-	};
-
-public:
-	FRAMEWORK_DLL_API Model(ResourceID id, ResourceFilePath resourceFilePath, std::vector<Mesh> meshes, std::unordered_set<MaterialName> materialNames);
+	FRAMEWORK_DLL_API Model(ResourceID id, ResourceFilePath resourceFilePath, ModelData modelData);
 	
 	FRAMEWORK_DLL_API ~Model() = default;
 	FRAMEWORK_DLL_API Model(Model const& other) = delete;
@@ -32,6 +22,9 @@ public:
 public:
 	std::vector<Mesh> meshes;
 	std::unordered_set<MaterialName> materialNames;
+
+	std::vector<Bone> bones;
+	BoneIndex rootBone;
 
 	float maxDimension;
 };

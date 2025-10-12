@@ -6,7 +6,27 @@
 
 #include <optional>
 #include <variant>
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <array>
+
 #include "type_alias.h"
+
+#include "reflection.h"
+
+#undef max
+
+// We use index to represent vertices and bones..
+using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
+using BoneIndex = unsigned short;
+using MaterialName = std::string;
+
+constexpr BoneIndex NO_BONE = std::numeric_limits<BoneIndex>::max();
+constexpr int NO_BONE_INDEX = -1;
+
+constexpr int MAX_BONE_INFLUENCE = 4;
 
 struct Vertex {
 	glm::vec3 pos;
@@ -14,10 +34,101 @@ struct Vertex {
 	glm::vec3 normal;
 	glm::vec3 tangent;
 	glm::vec3 bitangent;
+
+	REFLECTABLE(
+		pos,
+		textureUnit,
+		normal,
+		tangent,
+		bitangent
+	)
 };
 
 struct SimpleVertex {
 	glm::vec3 pos;
+};
+
+struct Bone {
+	std::string name;
+	glm::mat4x4 offsetMatrix;
+	glm::mat4x4 parentTransformationMatrix;
+
+	// these will be filled by the node hierarchy.
+	BoneIndex parentBone = NO_BONE;
+	std::vector<BoneIndex> boneChildrens {};
+
+	REFLECTABLE(
+		name,
+		offsetMatrix,
+		parentTransformationMatrix,
+		parentBone,
+		boneChildrens
+	)
+};
+
+struct VertexWeight {
+	std::array<int,		MAX_BONE_INFLUENCE>	boneIndices	{ NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX };
+	std::array<float,	MAX_BONE_INFLUENCE>	weights		{ 0.f, 0.f, 0.f, 0.f };
+
+	unsigned int numOfBones = 0;
+	
+	REFLECTABLE(
+		boneIndices,
+		weights
+	)
+
+	bool addBone(BoneIndex boneIndex, float weight) {
+		if (numOfBones >= MAX_BONE_INFLUENCE) {
+			return false;
+		}
+
+		boneIndices[numOfBones] = boneIndex;
+		weights[numOfBones] = weight;
+	
+		++numOfBones;
+		return true;
+	}
+};
+
+struct Mesh {
+	std::string name;
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+	std::string materialName;
+
+	int numOfTriangles;
+	
+	// contains bone information for skeletal animation..
+	std::vector<VertexWeight> vertexWeights;
+
+	REFLECTABLE(
+		name,
+		vertices,
+		indices,
+		materialName,
+		numOfTriangles,
+		vertexWeights
+	)
+};
+
+// this is the model data that will be de/serialised.
+struct ModelData {
+	std::vector<Mesh> meshes;
+	std::unordered_set<MaterialName> materialNames;
+
+	// not all models have bones.., these may be empty.
+	std::vector<Bone> bones;
+	BoneIndex rootBone;
+
+	float maxDimension;
+
+	REFLECTABLE(
+		meshes,
+		materialNames,
+		bones,
+		rootBone,
+		maxDimension
+	)
 };
 
 // this struct will be used to send to SSBO.

@@ -173,6 +173,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Engine\animationSystem.h" />
     <ClInclude Include="src\Graphics\DebugShapes.h" />
     <ClInclude Include="src\Engine\particleSystem.h" />
     <ClInclude Include="src\ECS\SceneManager.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="src\Serialisation\serializeProperty.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine\animationSystem.cpp" />
     <ClCompile Include="src\Graphics\DebugShapes.cpp" />
     <ClCompile Include="src\Engine\particleSystem.cpp" />
     <ClCompile Include="src\ECS\SceneManager.cpp" />

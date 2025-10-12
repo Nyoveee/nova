@@ -16,6 +16,12 @@ public:
 	void selectNewResourceId(ResourceID id);
 
 private:
+	void displayTextureInfo(ResourceID id, AssetInfo<Texture>& descriptor);
+	void displayModelInfo(ResourceID id, AssetInfo<Model>& descriptor);
+
+	void displayBoneHierarchy(BoneIndex boneIndex, Model const& model);
+
+private:
 	ResourceID selectedResourceId;
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;

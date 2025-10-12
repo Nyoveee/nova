@@ -26,6 +26,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	audioSystem				{ *this },
 	navigationSystem		{ *this }, 
 	particleSystem          { *this },
+	animationSystem			{ *this },
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
@@ -61,6 +62,7 @@ void Engine::update(float dt) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt);
 	}
 
+	animationSystem.update(dt);
 	transformationSystem.update();
 	particleSystem.update(dt);
 	renderer.update(dt);

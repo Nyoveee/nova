@@ -14,11 +14,6 @@
 #include "deserializeProperty.h"
 
 namespace Serialiser {
-	template<class T>
-	concept IsTypedResourceID = requires(T x) {
-		{ TypedResourceID{ x } } -> std::same_as<T>;
-	};
-
 	template<typename ...Components>
 	Json serialiseComponents(entt::registry& registry, entt::entity entity) {
 		Json componentsJson;

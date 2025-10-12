@@ -15,18 +15,14 @@
 #include "Audio/audioSystem.h"
 #include "Navigation/Navigation.h"
 #include "Engine/particleSystem.h"
+#include "Engine/animationSystem.h"
 
 #define _CRTDBG_MAP_ALLOC
 
 class Window;
-class Renderer;
-class NavigationSystem;
-class CameraSystem;
-class ECS;
 class InputManager;
 class ScriptingAPIManager;
 class ResourceManager;
-class ParticleSystem;
 
 class Engine {
 public:
@@ -78,6 +74,7 @@ public:
 	AudioSystem				audioSystem;
 	NavigationSystem		navigationSystem;
 	ParticleSystem          particleSystem;
+	AnimationSystem			animationSystem;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;

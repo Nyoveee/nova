@@ -3,12 +3,11 @@
 
 #include <gli/gli.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
 #include "compiler.h"
 
 #include "modelLoader.h"
-
-// Y* only libraries.
-#include "Library/stb_image.hpp"
+#include "serializeModel.h"
 
 namespace {
 	template <typename T>
@@ -183,24 +182,6 @@ int Compiler::compileCubeMap(ResourceFilePath const& resourceFilePath, AssetFile
 }
 #endif
 
-// =================================
-// Model file format
-// - First 8 bytes => indicate number of meshes, M
-// - Next series of bytes => M * mesh file format.
-// 
-// Mesh file format
-// - First 8 bytes => indicate number of vertices, V
-// - Next 8 bytes => indicate number of indices, I
-// - Next 8 bytes => indicate the number of characters that make up the material name, C
-// - Next 4 bytes => indicate the number of triangles.
-// - Next V * (12 pos + 8 TU + 12 normal + 12 tangent + 12 bitangent) bytes => series of vertices data
-// - Next 1 byte => null terminator. used for error checking to make sure it matches V.
-// - Next I * 4 bytes => series of indices data.
-// - Next 1 byte => null terminator. used for error checking to make sure it matches I.
-// - Next C bytes => series of characters representing material name.
-// - Next 1 byte => null terminator. used for error checking and to end the mesh file format.
-// =================================
-
 int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
 
@@ -215,8 +196,19 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 		return -1;
 	}
 
-	ModelLoader::ModelData modelData = optModelData.value();
+	ModelData modelData = optModelData.value();
 
+	// we utilise reflection to serialise our model..
+	reflection::visit(
+		[&](auto fieldData) {
+			[[maybe_unused]] auto dataMember = fieldData.get();
+			using DataMemberType = std::decay_t<decltype(dataMember)>;
+
+			serializeModel<DataMemberType>(resourceFile, dataMember);
+		}, 
+	modelData);
+
+#if 0
 	// serialise number of meshes
 	writeBytesToFile(resourceFile, modelData.meshes.size());
 
@@ -226,6 +218,7 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 		writeBytesToFile(resourceFile, mesh.vertices.size());
 		writeBytesToFile(resourceFile, mesh.indices.size());
 		writeBytesToFile(resourceFile, mesh.materialName.size());
+		writeBytesToFile(resourceFile, mesh.name.size());
 		writeBytesToFile(resourceFile, mesh.numOfTriangles);
 		
 		// serialise the vertices.
@@ -266,7 +259,14 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 
 		// null terminator.
 		resourceFile.write("", 1);
+
+		// serialise the mesh name.
+		resourceFile.write(mesh.name.data(), mesh.name.size());
+
+		// null terminator.
+		resourceFile.write("", 1);
 	}
+#endif
 
 	return 0;
 }

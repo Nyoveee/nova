@@ -111,6 +111,9 @@ private:
 	// render all MeshRenderers.
 	void renderModels();
 
+	// render all SkinnedMeshRenderers.
+	void renderSkinnedModels();
+
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
@@ -136,13 +139,15 @@ private:
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
 	void setupBlinnPhongShader(Material const& material);
 	void setupPBRShader(Material const& material);
+	void setupSkeletalShader(Material const& material);
 	void setupColorShader(Material const& material);
 
 	// sets model specific uniforms for all rendering pipeline. (like model matrix)
 	void setModelUniforms(Transform const& transform, entt::entity entity);
 
 	// attempts to get the appropriate material from meshrenderer.
-	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Model::Mesh const& mesh);
+	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
+	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
 	void printOpenGLDriverDetails() const;
 
@@ -162,6 +167,7 @@ private:
 	// Main VAO and their related buffers
 	GLuint mainVAO;
 	BufferObject mainVBO;
+	BufferObject skeletalVBO;
 	BufferObject EBO;
 
 	// SSBO and UBO.
@@ -169,6 +175,9 @@ private:
 	BufferObject directionalLightSSBO;
 	BufferObject spotLightSSBO;
 	BufferObject sharedUBO;
+
+	// Skeletal animation, bones SSBO
+	BufferObject bonesSSBO;
 
 	// Debug Physics VAO and it's corresponding VBO.
 	GLuint debugVAO;
@@ -212,7 +221,8 @@ public:
 	Shader objectIdShader;
 	Shader skyboxShader;
 	Shader particleShader;
-	
+	Shader skeletalAnimationShader;
+
 	// HDR tone mapping shader
 	Shader toneMappingShader;
 

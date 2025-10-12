@@ -66,10 +66,10 @@
     <ClInclude Include="src\Assets\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Internal\assetIO.h">
+    <ClInclude Include="src\Assets\assetIO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Internal\assetIO.ipp">
+    <ClInclude Include="src\Assets\assetIO.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Imported\xresource_guid.h">
@@ -204,6 +204,12 @@
     <ClInclude Include="src\Internal\type_concepts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Loader\deserializeModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Loader\serializeModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Imported\glad.cpp">
@@ -230,7 +236,7 @@
     <ClCompile Include="src\Assets\texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Internal\assetIO.cpp">
+    <ClCompile Include="src\Assets\assetIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Loader\modelLoader.cpp">

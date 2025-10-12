@@ -290,8 +290,11 @@ namespace reflection {
 
 		if constexpr (option == Option::IterateThroughContainers && isForEachIterable<std::remove_cvref_t<decltype(fieldData.get())>>) {
 			for (auto&& element : fieldData.get()) {
-				// is element itself reflectable?
-				if constexpr (isReflectable<typename std::remove_cvref_t<decltype(element)>>()) {
+				// is element itself reflectable or a container?
+				if constexpr (
+					isReflectable<typename std::remove_cvref_t<decltype(element)>>()
+					|| (option == Option::IterateThroughContainers && isForEachIterable<typename std::remove_cvref_t<decltype(element)>>)
+					) {
 					_internal_visit<option>(
 						std::forward<Functor>(func),
 						std::forward<Functor2>(enterFunc),

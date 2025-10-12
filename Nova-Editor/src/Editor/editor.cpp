@@ -279,6 +279,39 @@ void Editor::updateMaterialMapping() {
 			modelRenderer.materials[materialName];
 		}
 	}
+
+	// Find all material names with the associated asset.
+	for (auto&& [entity, skinnedModelRenderer] : registry.view<SkinnedMeshRenderer>().each()) {
+		auto [model, _] = resourceManager.getResource<Model>(skinnedModelRenderer.modelId);
+
+		if (!model) {
+			continue;
+		}
+
+		bool materialHasChanged = false;
+
+		// check if there is a match. if there is a mismatch, the material requirement
+		// of the mesh probably changed / changed mesh.
+		for (auto const& materialName : model->materialNames) {
+			auto iterator = skinnedModelRenderer.materials.find(materialName);
+
+			if (iterator == skinnedModelRenderer.materials.end()) {
+				materialHasChanged = true;
+				break;
+			}
+		}
+
+		if (!materialHasChanged) {
+			continue;
+		}
+
+		// lets reupdate our map.
+		skinnedModelRenderer.materials.clear();
+
+		for (auto const& materialName : model->materialNames) {
+			skinnedModelRenderer.materials[materialName];
+		}
+	}
 }
 
 void Editor::handleEntityValidity() {
@@ -418,10 +451,6 @@ void Editor::sandboxWindow() {
 	if (ImGui::Button("Wireframe mode.")) {
 		wireFrameMode = !wireFrameMode;
 		engine.renderer.enableWireframeMode(wireFrameMode);
-	}
-
-	if (ImGui::Button("recompile shaders")) {
-		engine.renderer.recompileShaders();
 	}
 
 	if (ImGui::Button("Navigation Debug")) {

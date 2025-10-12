@@ -33,6 +33,10 @@ void DebugUI::update() {
 		editor.launchProfiler();
 	}
 
+	if (ImGui::Button("recompile shaders")) {
+		engine.renderer.recompileShaders();
+	}
+
 	ImGui::End();
 }
 

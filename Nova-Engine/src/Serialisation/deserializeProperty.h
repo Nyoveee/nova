@@ -155,7 +155,7 @@ inline void DeserializeProperty<std::unordered_map<MaterialName, Material>>(Json
 				material.config = config;
 			}
 		}
-									[[fallthrough]];
+		[[fallthrough]];
 		case Material::Pipeline::BlinnPhong:
 			if (json["normalMap"].is_null()) {
 				material.normalMap = std::nullopt;

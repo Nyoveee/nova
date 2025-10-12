@@ -54,7 +54,7 @@ bool AssetManager::hasAssetChanged(AssetInfo<T> const& descriptor) const {
 		std::getline(cacheFile, durationInString);
 		cachedDuration = std::stoull(durationInString);
 	}
-	catch (std::exception const& ex) {
+	catch (std::exception const&) {
 		// Failed to read cache file.. invalid..
 		return true;
 	}

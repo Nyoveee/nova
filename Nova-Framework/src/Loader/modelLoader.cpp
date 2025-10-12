@@ -6,19 +6,7 @@
 
 #include "model.h"
 
-namespace {
-	template <typename T>
-	void readFromFile(std::ifstream& inputFile, T& data) {
-		inputFile.read(reinterpret_cast<char*>(&data), sizeof(data));
-	}
-
-	bool readNextByteIfNull(std::ifstream& inputFile) {
-		char c;
-		inputFile.read(&c, 1);
-
-		return c == 0;
-	}
-}
+#include "deserializeModel.h"
 
 std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
 	Logger::info("Loading model resource file {}", resourceFilePath.string);
@@ -32,7 +20,18 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 
 	resourceFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	
-	try {
+	//try {
+		ModelData modelData;
+		
+		reflection::visit(
+			[&](auto&& fieldData) {
+				auto&& dataMember = fieldData.get();
+				using DataMemberType = std::decay_t<decltype(dataMember)>;
+
+				deserializeModel<DataMemberType>(resourceFile, dataMember);
+			},
+		modelData);
+#if 0
 		// =================================
 		// Model file format
 		// - First 8 bytes => indicate number of meshes, M
@@ -41,13 +40,16 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 		// Mesh file format
 		// - First 8 bytes => indicate number of vertices, V
 		// - Next 8 bytes => indicate number of indices, I
-		// - Next 8 bytes => indicate the number of characters that make up the material name, C
+		// - Next 8 bytes => indicate the number of characters that make up the material name, C1
+		// - Next 8 bytes => indicate the number of characters that make up the mesh name, C2
 		// - Next 4 bytes => indicate the number of triangles.
 		// - Next V * (12 pos + 8 TU + 12 normal + 12 tangent + 12 bitangent) bytes => series of vertices data
 		// - Next 1 byte => null terminator. used for error checking to make sure it matches V.
 		// - Next I * 4 bytes => series of indices data.
 		// - Next 1 byte => null terminator. used for error checking to make sure it matches I.
-		// - Next C bytes => series of characters representing material name.
+		// - Next C1 bytes => series of characters representing material name.
+		// - Next 1 byte => null terminator. used for error checking and to make sure it matches C1
+		// - Next C2 bytes => series of characters representing mesh name.
 		// - Next 1 byte => null terminator. used for error checking and to end the mesh file format.
 		// =================================
 		
@@ -55,7 +57,7 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 		std::size_t numOfMeshes;
 		readFromFile(resourceFile, numOfMeshes);
 
-		std::vector<Model::Mesh> meshes;
+		std::vector<Mesh> meshes;
 		meshes.reserve(numOfMeshes);
 
 		std::unordered_set<std::string> materialNames;
@@ -68,12 +70,14 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 			// read V, I, C & num of triangles.
 			std::size_t numOfVertices;
 			std::size_t numOfIndices;
-			std::size_t numOfCharacters;
+			std::size_t numOfCharactersMaterialName;
+			std::size_t numOfCharactersMeshName;
 			int numOfTriangles;
 
 			readFromFile(resourceFile, numOfVertices);
 			readFromFile(resourceFile, numOfIndices);
-			readFromFile(resourceFile, numOfCharacters);
+			readFromFile(resourceFile, numOfCharactersMaterialName);
+			readFromFile(resourceFile, numOfCharactersMeshName);
 			readFromFile(resourceFile, numOfTriangles);
 
 			vertices.reserve(numOfVertices);
@@ -121,9 +125,20 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 
 			// read material name.
 			std::string materialName;
-			materialName.resize(numOfCharacters);
+			materialName.resize(numOfCharactersMaterialName);
 
-			resourceFile.read(materialName.data(), numOfCharacters);
+			resourceFile.read(materialName.data(), numOfCharactersMaterialName);
+
+			// read null byte delimiter.
+			if (!readNextByteIfNull(resourceFile)) {
+				return std::nullopt;
+			}
+
+			// read mesh name.
+			std::string meshName;
+			meshName.resize(numOfCharactersMeshName);
+
+			resourceFile.read(meshName.data(), numOfCharactersMeshName);
 
 			// read null byte delimiter.
 			if (!readNextByteIfNull(resourceFile)) {
@@ -131,7 +146,7 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 			}
 
 			materialNames.insert(materialName);
-			meshes.push_back({ std::move(vertices), std::move(indices), std::move(materialName), numOfTriangles });
+			meshes.push_back({ std::move(meshName), std::move(vertices), std::move(indices), std::move(materialName), numOfTriangles});
 		}
 
 		Logger::info("Successfully load resource.\n");
@@ -140,9 +155,14 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 		return { ResourceConstructor{[id, resourceFilePath, meshes = std::move(meshes), materialNames = std::move(materialNames)]() {
 			return std::make_unique<Model>(id, std::move(resourceFilePath), std::move(meshes), std::move(materialNames));
 		}} };
-	}
-	catch (std::exception const& ex) {
-		Logger::error("Failed to load resource, {}", ex.what());
-		return std::nullopt;
-	}
+#endif
+		// returns a resource constructor
+		return { ResourceConstructor{[id, resourceFilePath, modelData = std::move(modelData)]() {
+			return std::make_unique<Model>(id, std::move(resourceFilePath), std::move(modelData));
+		}} };
+	//}
+	//catch (std::exception const& ex) {
+	//	Logger::error("Failed to load resource, {}", ex.what());
+	//	return std::nullopt;
+	//}
 }

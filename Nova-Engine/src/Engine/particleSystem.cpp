@@ -1,6 +1,7 @@
 #include "particleSystem.h"
 #include "engine.h"
 #include "RandomRange.h"
+
 ParticleSystem::ParticleSystem(Engine& p_engine)
 	:engine{p_engine}{}
 

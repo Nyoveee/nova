@@ -9,10 +9,11 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 
-#include "assetViewerUi.h"
+#include "Assets/assetViewerUi.h"
+#include "Assets/assetManagerUi.h"
+
 #include "gameViewPort.h"
 #include "ComponentInspection/componentInspector.h"
-#include "assetManagerUi.h"
 #include "Navigation/navMeshGeneration.h"
 #include "hierarchy.h"
 #include "debugUI.h"

@@ -1,13 +1,13 @@
 #include "AssetManager/assetManager.h"
 #include "ResourceManager/resourceManager.h"
-#include "editor.h"
+#include "Editor/editor.h"
 
 #include "assetManagerUi.h"
 #include "imgui.h"
 #include "IconsFontAwesome6.h"
 #include "assetViewerUi.h"
 
-#include "ImGui/misc/cpp/imgui_stdlib.h"
+#include "../ImGui/misc/cpp/imgui_stdlib.h"
 
 #include <sstream>
 #include <Windows.h>
