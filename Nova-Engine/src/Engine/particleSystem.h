@@ -19,8 +19,8 @@ private:
 	void burstGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void particleMovement(ParticleEmitter& emitter, float dt);
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
-	glm::vec3 getRotatedParticleSpawnPoint(Transform const& transform, glm::vec3 position);
-	glm::vec3 getRotatedParticleVelocity(Transform const& transform, glm::vec3 velocity);
+	glm::vec3 rotateParticleSpawnPoint(Transform const& transform, glm::vec3 position);
+	glm::vec3 rotateParticleVelocity(Transform const& transform, glm::vec3 velocity);
 private:
 	Engine& engine;
 };

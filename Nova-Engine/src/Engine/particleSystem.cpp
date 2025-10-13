@@ -132,12 +132,12 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 	}
 	// Change Particles position and velocity based on tranform rotation
 	glm::vec3& rotatedPosition{ emitter.particles[emitter.particles.size() - 1].position };
-	rotatedPosition = getRotatedParticleSpawnPoint(transform, rotatedPosition);
+	rotatedPosition = rotateParticleSpawnPoint(transform, rotatedPosition);
 	glm::vec3& rotatedVelocity{ emitter.particles[emitter.particles.size() - 1].velocity };
-	rotatedVelocity = getRotatedParticleVelocity(transform, rotatedVelocity);
+	rotatedVelocity = rotateParticleVelocity(transform, rotatedVelocity);
 }
 
-glm::vec3 ParticleSystem::getRotatedParticleSpawnPoint(Transform const& transform, glm::vec3 position)
+glm::vec3 ParticleSystem::rotateParticleSpawnPoint(Transform const& transform, glm::vec3 position)
 {
 	glm::mat4 model = glm::identity<glm::mat4>();
 	model = glm::translate(model, -transform.position);
@@ -148,7 +148,7 @@ glm::vec3 ParticleSystem::getRotatedParticleSpawnPoint(Transform const& transfor
 	return glm::vec3{ rotatedPosFromOrigin.x,rotatedPosFromOrigin.y,rotatedPosFromOrigin.z } + transform.position;
 }
 
-glm::vec3 ParticleSystem::getRotatedParticleVelocity(Transform const& transform, glm::vec3 velocity)
+glm::vec3 ParticleSystem::rotateParticleVelocity(Transform const& transform, glm::vec3 velocity)
 {
 	glm::vec4 rotatedVelocity = glm::vec4(velocity, 1.0);
 	rotatedVelocity = glm::mat4_cast(transform.rotation) * rotatedVelocity;
