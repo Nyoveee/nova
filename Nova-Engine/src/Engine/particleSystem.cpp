@@ -130,6 +130,29 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 			break;
 		}
 	}
+	// Change Particles position and velocity based on tranform rotation
+	glm::vec3& rotatedPosition{ emitter.particles[emitter.particles.size() - 1].position };
+	rotatedPosition = getRotatedParticleSpawnPoint(transform, rotatedPosition);
+	glm::vec3& rotatedVelocity{ emitter.particles[emitter.particles.size() - 1].velocity };
+	rotatedVelocity = getRotatedParticleVelocity(transform, rotatedVelocity);
+}
+
+glm::vec3 ParticleSystem::getRotatedParticleSpawnPoint(Transform const& transform, glm::vec3 position)
+{
+	glm::mat4 model = glm::identity<glm::mat4>();
+	model = glm::translate(model, -transform.position);
+	model = glm::mat4_cast(transform.rotation) * model;
+	glm::vec4 rotatedPosFromOrigin = glm::vec4(position, 1.0);
+	rotatedPosFromOrigin = model * rotatedPosFromOrigin;
+	// Not same coordinate system using glm::translate(Affectted by rotation)
+	return glm::vec3{ rotatedPosFromOrigin.x,rotatedPosFromOrigin.y,rotatedPosFromOrigin.z } + transform.position;
+}
+
+glm::vec3 ParticleSystem::getRotatedParticleVelocity(Transform const& transform, glm::vec3 velocity)
+{
+	glm::vec4 rotatedVelocity = glm::vec4(velocity, 1.0);
+	rotatedVelocity = glm::mat4_cast(transform.rotation) * rotatedVelocity;
+	return glm::vec3{ rotatedVelocity.x,rotatedVelocity.y,rotatedVelocity.z };
 }
 
 /******************************************************************************

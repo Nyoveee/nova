@@ -336,6 +336,10 @@ void Renderer::debugRenderParticleEmissionShape()
 	setBlendMode(BlendingConfig::AlphaBlending);
 
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
+		glm::mat4 model = glm::identity<glm::mat4>();
+		model = glm::translate(model, transform.position);
+		model = model * glm::mat4_cast(transform.rotation);
+		debugShader.setMatrix("model", model);
 		switch (emitter.particleEmissionTypeSelection.emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(transform, emitter.particleEmissionTypeSelection.radiusEmitter.radius));
