@@ -29,6 +29,8 @@ private:
 	std::string selectedResourceName;
 	std::string selectedResourceStemCopy;
 	std::string selectedResourceExtension;
+
+	bool toSerialiseSelectedDescriptor;
 };
 
 #include "assetViewerUi.ipp"

@@ -173,9 +173,6 @@ struct SkinnedMeshRenderer {
 
 	// owns all the bone's final matrices.
 	std::vector<glm::mat4x4> bonesFinalMatrices;
-
-	// We cache those bone's whose final transformation has already been calculated.
-	std::unordered_set<BoneIndex> cachedBones;
 };
 
 struct Rigidbody {

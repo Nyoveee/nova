@@ -68,7 +68,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 								// we allocate memory for view and projection matrix.
 	sharedUBO					{ 2 * sizeof(glm::mat4) },
 	
-	bonesSSBO					{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::mat4x4) },
+	bonesSSBO					{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) },
 	camera						{},
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
@@ -675,14 +675,8 @@ void Renderer::renderSkinnedModels() {
 		objectIdShader.setMatrix("model", transform.modelMatrix);
 		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 
-		// Setting up bones SSBO..
-		unsigned int numberOfBones = static_cast<unsigned int>(skinnedMeshRenderer.bonesFinalMatrices.size());
-		
-		// copy the unsigned int representing number of bones into SSBO.
-		glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(unsigned int), &numberOfBones);											
-		
-		// offset by alignment requirement, then upload all bone matrices..
-		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::mat4x4), numberOfBones * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());	
+		// upload all bone matrices..
+		glNamedBufferSubData(bonesSSBO.id(), 0, skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
 
 		// Draw every mesh of a given model.
 		for (auto const& mesh : model->meshes) {

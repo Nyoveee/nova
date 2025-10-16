@@ -158,7 +158,6 @@ bool Engine::isInSimulationMode() const {
 
 void Engine::SystemsOnLoad()
 {
-	this->navigationSystem.initNavMeshSystems();
-
+	// this->navigationSystem.initNavMeshSystems();
 	
 }

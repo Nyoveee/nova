@@ -142,7 +142,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -224,7 +224,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -302,7 +302,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -380,7 +380,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -458,7 +458,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -521,11 +521,21 @@
                 "materials": [
                     {
                         "albedo": {
-                            "texture": 3031740963129786369
+                            "color": {
+                                "b": 0.10000000149011612,
+                                "g": 0.10000000149011612,
+                                "r": 0.10000000149011612
+                            }
                         },
                         "ambient": 0.10000000149011612,
-                        "materialName": "Muchkin1.002",
-                        "renderingPipeline": "Color"
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Muchkin2",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
                     }
                 ],
                 "modelId": 3554510369322696707
@@ -609,7 +619,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -694,7 +704,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -772,7 +782,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -850,7 +860,7 @@
                             "occulusion": 0.0,
                             "roughness": 0.5
                         },
-                        "materialName": "Cube",
+                        "materialName": "Material",
                         "normalMap": null,
                         "renderingPipeline": "PBR"
                     }
@@ -928,7 +938,7 @@
                 },
                 "localPosition": {
                     "x": -61.63034439086914,
-                    "y": 42.49445724487305,
+                    "y": 42.494449615478516,
                     "z": 255.36216735839844
                 },
                 "localRotation": {
@@ -944,7 +954,7 @@
                 },
                 "position": {
                     "x": 6.229467391967773,
-                    "y": 1.724733829498291,
+                    "y": 1.724733591079712,
                     "z": -1.215271234512329
                 },
                 "rotation": {

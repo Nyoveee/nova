@@ -83,7 +83,8 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 
 	// Process node hirerchy..
 	rootBone = NO_BONE;
-	processNodeHierarchy(scene->mRootNode);
+	hasFoundRootBone = false;
+	processNodeHierarchy(scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
 
 #if 0
 	for (auto& mesh : meshes) {
@@ -101,7 +102,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	}
 #endif
 
-#if 1
+#if 0
 	printBone(rootBone, 0);
 #endif
 
@@ -218,6 +219,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 			aiBone const* bone = mesh->mBones[i];
 
 			std::string boneName = bone->mName.C_Str();
+
 			glm::mat4x4 offsetMatrix = toGlmMat4(bone->mOffsetMatrix);
 
 			// We first see if this bone exist..
@@ -252,44 +254,82 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 	};
 }
 
-void ModelLoader::processNodeHierarchy(aiNode const* node) {
-	// process bone hierarchy...
+// different transformation names
+// -> mTransformation		: maps from local space to parent space.
+// -> globalTransformation	: maps from local space to model space. for root node, mTransformation is globalTransformation.
+void ModelLoader::processNodeHierarchy(aiNode const* node, glm::mat4x4 globalTransformation) {
+	// process node hierarchy..
+
+	// we verify if the current node is a bone...
 	auto boneIterator = boneNameToIndex.find(node->mName.C_Str());
 
 	if (boneIterator != boneNameToIndex.end()) {
 		auto&& [_, boneIndex] = *boneIterator;
-		BoneIndex parentBoneIndex = findParentBone(node->mParent);
-		 
-		if (parentBoneIndex != NO_BONE && boneIndex != rootBone) {
-			bones[boneIndex].parentBone = parentBoneIndex;
-			bones[parentBoneIndex].boneChildrens.push_back(boneIndex);
-		}
-		else {
-			// we found our root bone.
+
+		if (!hasFoundRootBone) {
+			// We found our root bone.
+			hasFoundRootBone = true;
 			bones[boneIndex].parentBone = NO_BONE;
 			rootBone = boneIndex;
 		}
+		else {
+			// store bone hirerachy information..
+			BoneIndex parentBoneIndex = findParentBone(node->mParent);
+
+			if (parentBoneIndex != NO_BONE && boneIndex != rootBone) {
+				bones[boneIndex].parentBone = parentBoneIndex;
+				bones[parentBoneIndex].boneChildrens.push_back(boneIndex);
+			}
+		}
+
+		// we save bone's global transformation matrix.
+		bones[boneIndex].globalTransformationMatrix = globalTransformation;
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; ++i) {
-		processNodeHierarchy(node->mChildren[i]);
+		aiNode const* childNode = node->mChildren[i];
+
+		// calculate child's global transformation -> which is parent's global transformation * children's parentTransformation.
+		glm::mat4x4 childGlobalTransformation = globalTransformation * toGlmMat4(childNode->mTransformation);
+		processNodeHierarchy(childNode, childGlobalTransformation);
 	}
 }
 
 void ModelLoader::printBone(BoneIndex boneIndex, unsigned int padding) {
+	auto printPadding = [](unsigned int padding) {
+		for (unsigned int i = 0; i < padding; ++i) {
+			std::cout << ' ';
+		}
+	};
+
+	auto printMatrix = [&](glm::mat4x4 const& matrix) {
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				printPadding(padding);
+				std::cout << std::left << std::setw(6) << std::fixed << std::setprecision(2) << matrix[j][i] << " "; // Column-major access
+			}
+			printPadding(padding);
+			std::cout << std::endl;
+		}
+	};
+
 	if (boneIndex == NO_BONE) {
 		return;
 	}
 
 	std::cout << '|';
 
-	for (unsigned int i = 0; i < padding; ++i) {
-		std::cout << ' ';
-	}
+	printPadding(padding);
+	std::cout << "Bones: " << bones[boneIndex].name << "\n\n";
 
-	std::cout << "Bones: " << bones[boneIndex].name << '\n';
+	printMatrix(bones[boneIndex].offsetMatrix);
+	std::cout << std::endl;
+	printMatrix(bones[boneIndex].globalTransformationMatrix);
+	std::cout << std::endl;
+	printMatrix(bones[boneIndex].offsetMatrix * bones[boneIndex].globalTransformationMatrix);
 
-	++padding;
+
+	padding += 4;
 
 	for (auto& boneChildrenIndex : bones[boneIndex].boneChildrens) {
 		printBone(boneChildrenIndex, padding);
@@ -301,11 +341,6 @@ BoneIndex ModelLoader::findParentBone(aiNode const* parentNode) {
 		auto parentBoneIterator = boneNameToIndex.find(parentNode->mName.C_Str());
 
 		if (parentBoneIterator != boneNameToIndex.end()) {
-			// we traversed to the root bone.
-			//if (parentBoneIterator->second == rootBone) {
-			//	return NO_BONE;
-			//}
-
 			return parentBoneIterator->second;
 		}
 		else {

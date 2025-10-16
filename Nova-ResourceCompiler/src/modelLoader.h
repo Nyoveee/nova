@@ -16,13 +16,14 @@ public:
 
 private:
 	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, unsigned int vertexOffset);
-	static void processNodeHierarchy(aiNode const* node);
+	static void processNodeHierarchy(aiNode const* node, glm::mat4x4 globalTransformation);
 	static void printBone(BoneIndex boneIndex, unsigned int padding);
 	
-	static BoneIndex findParentBone(aiNode const* parentNode);
+	static BoneIndex findParentBone(aiNode const* parentNode);		
 
 private:
 	inline static std::vector<Bone> bones {};
 	inline static BoneIndex rootBone {};
 	inline static std::unordered_map<std::string, BoneIndex> boneNameToIndex {};
+	inline static bool hasFoundRootBone = false;
 };

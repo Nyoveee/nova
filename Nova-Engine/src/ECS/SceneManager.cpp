@@ -31,7 +31,6 @@ void SceneManager::loadScene(ResourceID id) {
 	currentScene = scene->id();
 	
 	engine.SystemsOnLoad();
-
 }
 
 ResourceID SceneManager::getCurrentScene() const {

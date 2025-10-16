@@ -94,7 +94,7 @@ void GameViewPort::update(float dt) {
 			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
 
 			AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
-
+			
 			if (filePath) {
 				Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
 			}

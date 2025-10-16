@@ -11,12 +11,14 @@
 #include "magic_enum.hpp"
 
 AssetViewerUI::AssetViewerUI(AssetManager& assetManager, ResourceManager& resourceManager) :
-	assetManager		{ assetManager },
-	resourceManager		{ resourceManager },
-	selectedResourceId	{ INVALID_RESOURCE_ID }
+	assetManager					{ assetManager },
+	resourceManager					{ resourceManager },
+	selectedResourceId				{ INVALID_RESOURCE_ID },
+	toSerialiseSelectedDescriptor	{ false }
 {}
 
 void AssetViewerUI::update() {
+#if 1
 	ImGui::Begin(ICON_FA_AUDIO_DESCRIPTION " Asset Viewer");
 
 	if (selectedResourceId == INVALID_RESOURCE_ID) {
@@ -33,6 +35,8 @@ void AssetViewerUI::update() {
 		return;
 	}
 
+	toSerialiseSelectedDescriptor = false;
+
 	// Display common shared asset info across all assets..
 	ImGui::Text("Resource ID: %zu", static_cast<std::size_t>(descriptorPtr->id));
 
@@ -45,16 +49,10 @@ void AssetViewerUI::update() {
 			selectedResourceName = descriptorPtr->name;
 		}
 		else {
+			toSerialiseSelectedDescriptor = true;
 			descriptorPtr->name = selectedResourceName;
-
-			// we recompile scripts when there is a name change..
-			if (resourceManager.isResource<ScriptAsset>(selectedResourceId)) {
-				updateScriptFileName(descriptorPtr->filepath, selectedResourceName, selectedResourceId);
-			}
-
-			assetManager.serialiseDescriptor<ScriptAsset>(selectedResourceId);
 		}
-	}	
+	}
 
 	ImGui::Text("Filepath: %s", selectedResourceStemCopy.c_str());
 
@@ -73,13 +71,21 @@ void AssetViewerUI::update() {
 		([&] {
 			if (resourceManager.isResource<T>(id)) {
 				displayAssetUI<T>(selectedResourceId, *descriptorPtr);
+
+				if (toSerialiseSelectedDescriptor) {
+					if constexpr (std::same_as<T, ScriptAsset>) {
+						updateScriptFileName(descriptorPtr->filepath, selectedResourceName, selectedResourceId);
+					}
+
+					assetManager.serialiseDescriptor<T>(selectedResourceId);
+				}
 			}
 		}(), ...);
 	};
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
-
 	ImGui::End();
+#endif
 }
 
 void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::string const& newName, [[maybe_unused]] ResourceID id) {

@@ -51,7 +51,7 @@ struct SimpleVertex {
 struct Bone {
 	std::string name;
 	glm::mat4x4 offsetMatrix;
-	glm::mat4x4 parentTransformationMatrix;
+	glm::mat4x4 globalTransformationMatrix;
 
 	// these will be filled by the node hierarchy.
 	BoneIndex parentBone = NO_BONE;
@@ -60,7 +60,7 @@ struct Bone {
 	REFLECTABLE(
 		name,
 		offsetMatrix,
-		parentTransformationMatrix,
+		globalTransformationMatrix,
 		parentBone,
 		boneChildrens
 	)
