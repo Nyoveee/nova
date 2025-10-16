@@ -61,3 +61,25 @@ inline void Logger::error(std::string_view rt_fmt_str, Args&&... args)
     // Add to log entries for display
     addLogEntry(LogLevel::Error, message);
 }
+
+
+
+template<typename ...Args>
+inline void Logger::debug(std::string_view rt_fmt_str, Args&&... args)
+{
+    std::size_t argSize{ sizeof...(args) };
+    std::string message;
+
+    if (argSize == 0) {
+        message = std::string(rt_fmt_str);
+    }
+    else {
+        message = std::vformat(rt_fmt_str, std::make_format_args(args...));
+    }
+
+    // Print to console 
+    std::cout << getCurrentTime() << " [Debug] " << message << std::endl;
+
+    // Add to log entries for display
+    addLogEntry(LogLevel::Debug, message);
+}
