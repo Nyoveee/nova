@@ -17,6 +17,8 @@
 #include "navBar.h"
 #include "assetViewerUi.h"
 #include "navigationWindow.h"
+#include "Configuration/editorConfigUI.h"
+#include "Configuration/gameConfigUI.h"
 
 using GLuint = unsigned int;
 
@@ -91,6 +93,8 @@ private:
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
 	NavigationWindow navigationWindow;
+	GameConfigUI gameConfigUI;
+	EditorConfigUI editorConfigUI;
 
 	NavBar navBar;
 
