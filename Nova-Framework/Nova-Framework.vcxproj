@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\animation.h" />
     <ClInclude Include="src\Internal\RandomRange.h" />
     <ClInclude Include="src\Assets\navMesh.h" />
     <ClInclude Include="src\Assets\resource.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="src\Loader\serializeModel.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Assets\animation.cpp" />
     <ClCompile Include="src\Internal\RandomRange.cpp" />
     <ClCompile Include="src\Assets\audio.cpp" />
     <ClCompile Include="src\Assets\cubemap.cpp" />

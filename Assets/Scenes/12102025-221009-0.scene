@@ -3,27 +3,11 @@
         {
             "EntityData": {
                 "children": [],
-                "name": "Entity 1",
+                "name": "Skybox",
                 "parent": 4294967295
             },
-            "SkinnedMeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "texture": 15656526986149888039
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.5
-                        },
-                        "materialName": "Paladin_MAT",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 9752316694208315393
+            "SkyBox": {
+                "cubeMapId": 10390737114601406469
             },
             "Transform": {
                 "eulerAngles": {
@@ -55,7 +39,95 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -1.8432844877243042
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1
+        },
+        {
+            "Animator": {
+                "modelId": 11334566711878598657
+            },
+            "EntityData": {
+                "children": [],
+                "name": "Entity 1",
+                "parent": 4294967295
+            },
+            "SkinnedMeshRenderer": {
+                "materials": [
+                    {
+                        "albedo": {
+                            "texture": 14503605481543073841
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Vampire_MAT1",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    },
+                    {
+                        "albedo": {
+                            "texture": 14503605481543024673
+                        },
+                        "ambient": 0.10000000149011612,
+                        "config": {
+                            "metallic": 0.0,
+                            "occulusion": 0.0,
+                            "roughness": 0.5
+                        },
+                        "materialName": "Vampire_MAT_Transparent",
+                        "normalMap": null,
+                        "renderingPipeline": "PBR"
+                    }
+                ],
+                "modelId": 11334566711878598657
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -1.882190227508545
                 },
                 "rotation": {
                     "w": 1.0,

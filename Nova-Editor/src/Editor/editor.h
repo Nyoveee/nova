@@ -11,6 +11,7 @@
 
 #include "Assets/assetViewerUi.h"
 #include "Assets/assetManagerUi.h"
+#include "Assets/animationTimeline.h"
 
 #include "gameViewPort.h"
 #include "ComponentInspection/componentInspector.h"
@@ -95,8 +96,8 @@ private:
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
 	NavigationWindow navigationWindow;
-
 	NavBar navBar;
+	AnimationTimeLine animationTimeLine;
 
 private:
 	std::vector<entt::entity> selectedEntities;

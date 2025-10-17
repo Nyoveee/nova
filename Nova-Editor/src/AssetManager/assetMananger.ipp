@@ -166,7 +166,9 @@ void AssetManager::loadAllDescriptorFiles() {
 template<ValidResource T>
 ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	// this compiles a resource file corresponding to the intermediary asset.
-	compileIntermediaryFile<T>(descriptor);
+	if (!compileIntermediaryFile<T>(descriptor)) {
+		return INVALID_RESOURCE_ID;
+	}
 
 	DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
 	ResourceFilePath resourceFilePath = AssetIO::getResourceFilename<T>(descriptor.id);

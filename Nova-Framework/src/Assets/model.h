@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include "vertex.h"
 #include "resource.h"
+#include "animation.h"
 
 // If data members do not require explicit memory management, move semantics can be defaulted.
 // ModelAsset is an asset specific to the asset manager wrapping a model and indicates whether it is loaded or not.
@@ -20,11 +21,16 @@ public:
 	FRAMEWORK_DLL_API Model& operator=(Model&& other) = default;
 
 public:
+	// Model data.
 	std::vector<Mesh> meshes;
 	std::unordered_set<MaterialName> materialNames;
 
+	// Skeleton.
 	std::vector<Bone> bones;
 	BoneIndex rootBone;
+
+	// Animation.
+	std::vector<Animation> animations;
 
 	float maxDimension;
 };

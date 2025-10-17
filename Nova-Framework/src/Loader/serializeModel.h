@@ -16,8 +16,8 @@ void writeBytesToFile(std::ofstream& outputFile, T const& data) {
 // default implementation, if not explicitly implemented we flag an compile time error.
 template <typename T>
 inline void serializeModel(std::ofstream& outputFile, T const& dataMember) {
-	[] <bool flag = false>() {
-		static_assert(false, "Did not account for all data members. " __FUNCSIG__);
+	[] <bool flag = false, typename Ty = T, bool test = reflection::conceptReflectable<T>>() {
+		static_assert(flag, "Did not account for all data members. " __FUNCSIG__);
 	}();
 }
 
@@ -34,7 +34,6 @@ inline void serializeModel<glm::vec3>(std::ofstream& outputFile, glm::vec3 const
 	writeBytesToFile(outputFile, dataMember.x);
 	writeBytesToFile(outputFile, dataMember.y);
 	writeBytesToFile(outputFile, dataMember.z);
-
 }
 
 // vector 2
@@ -58,6 +57,15 @@ inline void serializeModel<std::string>(std::ofstream& outputFile, std::string c
 	outputFile.write(string.data(), string.size());
 }
 
+// quat.
+template <>
+inline void serializeModel<glm::quat>(std::ofstream& outputFile, glm::quat const& dataMember) {
+	writeBytesToFile(outputFile, dataMember.w);
+	writeBytesToFile(outputFile, dataMember.x);
+	writeBytesToFile(outputFile, dataMember.y);
+	writeBytesToFile(outputFile, dataMember.z);
+}
+
 // ----------------------------------------------------
 // unordered_map entry.. handling pair with function overloading..
 template <isPair T>
@@ -73,16 +81,7 @@ inline void serializeModel(std::ofstream& outputFile, T const& container) {
 	writeBytesToFile(outputFile, container.size());
 	
 	for (auto&& element : container) {
-		if constexpr (reflection::isReflectable<std::decay_t<decltype(element)>>()) {
-			reflection::visit([&](auto&& fieldData) {
-				auto&& dataMember = fieldData.get();
-				using DataMemberType = std::decay_t<decltype(dataMember)>;
-				serializeModel<DataMemberType>(outputFile, dataMember);
-			}, element);
-		}
-		else {
-			serializeModel(outputFile, element);
-		}
+		serializeModel(outputFile, element);
 	}
 }
 
@@ -93,4 +92,16 @@ inline void serializeModel(std::ofstream& outputFile, T const& unordered_map) {
 	for (auto&& pair : unordered_map) {
 		serializeModel(outputFile, pair);
 	}
+}
+
+// ----------------------------------------------------
+// serialising anything that is reflectable.
+template <typename T> requires reflection::conceptReflectable<T>
+inline void serializeModel(std::ofstream& outputFile, T const& dataMember) {
+	reflection::visit([&](auto&& fieldData) {
+		auto&& innerDataMember = fieldData.get();
+		using DataMemberType = std::decay_t<decltype(innerDataMember)>;
+
+		serializeModel<DataMemberType>(outputFile, innerDataMember);
+		}, dataMember);
 }

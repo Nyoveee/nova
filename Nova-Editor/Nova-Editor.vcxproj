@@ -164,10 +164,14 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
   <ItemGroup>
     <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
+    <ClCompile Include="src\Editor\Assets\animationTimeline.cpp" />
     <ClCompile Include="src\Editor\Assets\assetViewerUi.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\componentInspector.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_neo_internal.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_neo_sequencer.cpp" />
+    <ClCompile Include="src\Editor\ImGui\ImSequencer.cpp" />
     <ClCompile Include="src\Editor\navigationWindow.cpp" />
     <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\Assets\assetManagerUi.cpp" />
@@ -218,6 +222,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Editor\Assets\animationTimeline.h" />
     <ClInclude Include="src\Editor\Assets\assetViewerUi.ipp" />
     <ClInclude Include="src\Editor\Assets\assetViewerUi.h" />
     <ClInclude Include="src\Editor\ComponentInspection\componentInspector.h" />
@@ -225,6 +230,9 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
     <ClInclude Include="src\Editor\editor.ipp" />
+    <ClInclude Include="src\Editor\ImGui\imgui_neo_internal.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_neo_sequencer.h" />
+    <ClInclude Include="src\Editor\ImGui\ImSequencer.h" />
     <ClInclude Include="src\Editor\navigationWindow.h" />
     <ClInclude Include="src\Navigation\navMeshGeneration.h" />
     <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />

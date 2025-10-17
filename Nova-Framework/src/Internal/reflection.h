@@ -128,6 +128,9 @@ namespace reflection {
 	**************************************************************************/
 	template<Option option = Option::IgnoreContainers, typename Functor, typename Functor2, typename Functor3, typename T>
 	void visit(Functor&& func, Functor2&& enterFunc, Functor3&& exitFunc, T&& x);
+
+	template <typename T>
+	concept conceptReflectable = isReflectable<T>();
 }
 
 /*!========================================================================

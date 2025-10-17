@@ -81,6 +81,13 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 		materialNames.insert(meshes[i].materialName);
 	}
 
+	// Process animation data..
+	std::vector<Animation> animations;
+
+	for (unsigned i = 0; i < scene->mNumAnimations; ++i) {
+		animations.push_back(processAnimation(scene->mAnimations[i]));
+	}
+
 	// Process node hirerchy..
 	rootBone = NO_BONE;
 	hasFoundRootBone = false;
@@ -106,7 +113,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	printBone(rootBone, 0);
 #endif
 
-	return {{ std::move(meshes), std::move(materialNames), std::move(bones), rootBone, maxDimension }};
+	return {{ std::move(meshes), std::move(materialNames), std::move(bones), rootBone, std::move(animations), maxDimension }};
 }
 
 Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, [[maybe_unused]] unsigned int vertexOffset) {
@@ -257,7 +264,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 // different transformation names
 // -> mTransformation		: maps from local space to parent space.
 // -> globalTransformation	: maps from local space to model space. for root node, mTransformation is globalTransformation.
-void ModelLoader::processNodeHierarchy(aiNode const* node, glm::mat4x4 globalTransformation) {
+void ModelLoader::processNodeHierarchy(aiNode const* node, glm::mat4x4 parentTransformation) {
 	// process node hierarchy..
 
 	// we verify if the current node is a bone...
@@ -282,16 +289,20 @@ void ModelLoader::processNodeHierarchy(aiNode const* node, glm::mat4x4 globalTra
 			}
 		}
 
-		// we save bone's global transformation matrix.
-		bones[boneIndex].globalTransformationMatrix = globalTransformation;
+		// we save bone's transformation matrix.
+		bones[boneIndex].transformationMatrix = parentTransformation;
+
+		// we reset the parent transformation matrix..
+		parentTransformation = glm::mat4{ 1.f };
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; ++i) {
 		aiNode const* childNode = node->mChildren[i];
 
 		// calculate child's global transformation -> which is parent's global transformation * children's parentTransformation.
-		glm::mat4x4 childGlobalTransformation = globalTransformation * toGlmMat4(childNode->mTransformation);
-		processNodeHierarchy(childNode, childGlobalTransformation);
+		// we keep chaining parent transformation matrix until we reach a bone.
+		glm::mat4x4 childParentTransformation = parentTransformation * toGlmMat4(childNode->mTransformation);
+		processNodeHierarchy(childNode, childParentTransformation);
 	}
 }
 
@@ -324,16 +335,66 @@ void ModelLoader::printBone(BoneIndex boneIndex, unsigned int padding) {
 
 	printMatrix(bones[boneIndex].offsetMatrix);
 	std::cout << std::endl;
-	printMatrix(bones[boneIndex].globalTransformationMatrix);
-	std::cout << std::endl;
-	printMatrix(bones[boneIndex].offsetMatrix * bones[boneIndex].globalTransformationMatrix);
-
+	printMatrix(bones[boneIndex].transformationMatrix);
 
 	padding += 4;
 
 	for (auto& boneChildrenIndex : bones[boneIndex].boneChildrens) {
 		printBone(boneChildrenIndex, padding);
 	}
+}
+
+Animation ModelLoader::processAnimation(aiAnimation const* animation) {
+	// an animation channel correspond to a bone name.
+	std::unordered_map<std::string, AnimationChannel> animationChannel;
+
+	// let's iterate through all the channels..
+	for (unsigned int i = 0; i < animation->mNumChannels; ++i) {
+		aiNodeAnim const* aiChannel = animation->mChannels[i];
+
+		// ---- extract the 3 respective property.. ---- 
+		// 1. position
+		std::vector<VectorKey> positionKeys;
+		positionKeys.reserve(aiChannel->mNumPositionKeys);
+
+		for (unsigned j = 0; j < aiChannel->mNumPositionKeys; j++) {
+			aiVectorKey const& positionKey = aiChannel->mPositionKeys[j];
+			positionKeys.push_back(VectorKey{ static_cast<float>(positionKey.mTime), toGlmVec3(positionKey.mValue) });
+		}
+
+		// 2. rotation
+		std::vector<QuatKey> rotationKeys;
+		rotationKeys.reserve(aiChannel->mNumRotationKeys);
+
+		for (unsigned j = 0; j < aiChannel->mNumRotationKeys; j++) {
+			aiQuatKey const& rotationKey = aiChannel->mRotationKeys[j];
+			rotationKeys.push_back(QuatKey{ static_cast<float>(rotationKey.mTime), toGlmQuat(rotationKey.mValue) });
+		}
+
+		// 3. scaling
+		std::vector<VectorKey> scalingKeys;
+		scalingKeys.reserve(aiChannel->mNumScalingKeys);
+
+		for (unsigned j = 0; j < aiChannel->mNumScalingKeys; j++) {
+			aiVectorKey const& scalingKey = aiChannel->mScalingKeys[j];
+			scalingKeys.push_back(VectorKey{ static_cast<float>(scalingKey.mTime), toGlmVec3(scalingKey.mValue) });
+		}
+
+		AnimationChannel channel {
+			std::move(positionKeys),
+			std::move(rotationKeys),
+			std::move(scalingKeys)
+		};
+
+		animationChannel.insert({ aiChannel->mNodeName.C_Str(), std::move(channel) });
+	}
+	
+	return {
+		animation->mName.C_Str(),
+		static_cast<float>(animation->mDuration),
+		static_cast<float>(animation->mTicksPerSecond),
+		std::move(animationChannel)
+	};
 }
 
 BoneIndex ModelLoader::findParentBone(aiNode const* parentNode) {

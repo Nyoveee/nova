@@ -16,6 +16,8 @@
 
 #include "reflection.h"
 
+#include "animation.h"
+	
 #undef max
 
 // We use index to represent vertices and bones..
@@ -51,7 +53,7 @@ struct SimpleVertex {
 struct Bone {
 	std::string name;
 	glm::mat4x4 offsetMatrix;
-	glm::mat4x4 globalTransformationMatrix;
+	glm::mat4x4 transformationMatrix;
 
 	// these will be filled by the node hierarchy.
 	BoneIndex parentBone = NO_BONE;
@@ -60,7 +62,7 @@ struct Bone {
 	REFLECTABLE(
 		name,
 		offsetMatrix,
-		globalTransformationMatrix,
+		transformationMatrix,
 		parentBone,
 		boneChildrens
 	)
@@ -120,6 +122,9 @@ struct ModelData {
 	std::vector<Bone> bones;
 	BoneIndex rootBone;
 
+	// animations :)
+	std::vector<Animation> animations;
+
 	float maxDimension;
 
 	REFLECTABLE(
@@ -127,6 +132,7 @@ struct ModelData {
 		materialNames,
 		bones,
 		rootBone,
+		animations,
 		maxDimension
 	)
 };

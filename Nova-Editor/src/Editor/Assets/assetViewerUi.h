@@ -10,14 +10,14 @@ public:
 	void updateScriptFileName(AssetFilePath const& filepath, std::string const& newName, ResourceID id);
 	
 	template <ValidResource T>
-	void displayAssetUI(ResourceID id, BasicAssetInfo& descriptor);
+	void displayAssetUI(BasicAssetInfo& descriptor);
 
 public:
 	void selectNewResourceId(ResourceID id);
 
 private:
-	void displayTextureInfo(ResourceID id, AssetInfo<Texture>& descriptor);
-	void displayModelInfo(ResourceID id, AssetInfo<Model>& descriptor);
+	void displayTextureInfo(AssetInfo<Texture>& descriptor);
+	void displayModelInfo(AssetInfo<Model>& descriptor);
 
 	void displayBoneHierarchy(BoneIndex boneIndex, Model const& model);
 

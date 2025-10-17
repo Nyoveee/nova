@@ -70,7 +70,7 @@ void AssetViewerUI::update() {
 	auto displayResourceUIFunctor = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
 			if (resourceManager.isResource<T>(id)) {
-				displayAssetUI<T>(selectedResourceId, *descriptorPtr);
+				displayAssetUI<T>(*descriptorPtr);
 
 				if (toSerialiseSelectedDescriptor) {
 					if constexpr (std::same_as<T, ScriptAsset>) {
@@ -129,7 +129,7 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	selectedResourceExtension = std::filesystem::path{ descriptorPtr->filepath }.extension().string();
 }
 
-void AssetViewerUI::displayTextureInfo(ResourceID id, AssetInfo<Texture>& textureInfo) {
+void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 	ImGui::SeparatorText("Texture");
 
 	constexpr auto listOfEnumValues = magic_enum::enum_entries<AssetInfo<Texture>::Compression>();
@@ -141,14 +141,14 @@ void AssetViewerUI::displayTextureInfo(ResourceID id, AssetInfo<Texture>& textur
 					textureInfo.compression = enumValue;
 
 					// serialise immediately..
-					assetManager.serialiseDescriptor<Texture>(id);
+					assetManager.serialiseDescriptor<Texture>(selectedResourceId);
 
 					// we make a copy of asset info, because the reference is getting invalidated..
 					AssetInfo<Texture> textureInfoCopy = textureInfo;
 
 					// we remove this old resource..
-					resourceManager.removeResource(id);
-					assetManager.removeResource(id);
+					resourceManager.removeResource(selectedResourceId);
+					assetManager.removeResource(selectedResourceId);
 
 					// recompile.., will add to resource manager if compilation is successful.
 					assetManager.createResourceFile<Texture>(textureInfoCopy);
@@ -160,8 +160,8 @@ void AssetViewerUI::displayTextureInfo(ResourceID id, AssetInfo<Texture>& textur
 	}
 }
 
-void AssetViewerUI::displayModelInfo(ResourceID id, [[maybe_unused]] AssetInfo<Model>& descriptor) {
-	auto&& [model, loadStatus] = resourceManager.getResource<Model>(id);
+void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descriptor) {
+	auto&& [model, loadStatus] = resourceManager.getResource<Model>(selectedResourceId);
 
 	if (!model) {
 		switch (loadStatus)

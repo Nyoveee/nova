@@ -35,8 +35,8 @@ class Audio;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, SkinnedMeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, \
-	Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
+	EntityData, Transform, Light, MeshRenderer, SkinnedMeshRenderer, Animator, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, \
+	AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -173,6 +173,17 @@ struct SkinnedMeshRenderer {
 
 	// owns all the bone's final matrices.
 	std::vector<glm::mat4x4> bonesFinalMatrices;
+};
+
+struct Animator {
+	// @TODO: Change to animation asset.
+	TypedResourceID<Model> modelId{ INVALID_RESOURCE_ID };
+
+	REFLECTABLE(
+		modelId
+	)
+
+	float timeElapsed = 0;
 };
 
 struct Rigidbody {

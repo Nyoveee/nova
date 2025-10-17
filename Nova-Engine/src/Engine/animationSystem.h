@@ -26,7 +26,7 @@ public:
 	ENGINE_DLL_API void update(float dt);
 
 private:
-	ENGINE_DLL_API void calculateFinalMatrix(BoneIndex boneIndex, std::vector<Bone> const& bones, SkinnedMeshRenderer& skinnedMeshRenderer);
+	ENGINE_DLL_API void calculateFinalMatrix(BoneIndex boneIndex, glm::mat4x4 const& globalTransformationMatrix, std::vector<Bone> const& bones, SkinnedMeshRenderer& skinnedMeshRenderer);
 
 private:
 	Engine& engine;

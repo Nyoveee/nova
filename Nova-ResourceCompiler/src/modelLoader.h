@@ -9,6 +9,7 @@ struct aiMesh;
 struct aiScene;
 struct aiMaterial;
 struct aiNode;
+struct aiAnimation;
 
 class ModelLoader {
 public:
@@ -16,9 +17,11 @@ public:
 
 private:
 	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, unsigned int vertexOffset);
-	static void processNodeHierarchy(aiNode const* node, glm::mat4x4 globalTransformation);
+	static void processNodeHierarchy(aiNode const* node, glm::mat4x4 parentTransformation);
 	static void printBone(BoneIndex boneIndex, unsigned int padding);
 	
+	static Animation processAnimation(aiAnimation const* assimpAnimation);
+
 	static BoneIndex findParentBone(aiNode const* parentNode);		
 
 private:

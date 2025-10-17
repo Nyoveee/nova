@@ -49,6 +49,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	navMeshGenerator				{ *this },
 	navigationWindow				{ *this, engine.navigationSystem, navMeshGenerator },
 	navBar							{ *this },
+	animationTimeLine				{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false },
@@ -223,6 +224,7 @@ void Editor::main(float dt) {
 	navBar.update();
 	assetViewerUi.update();
 	navigationWindow.update();
+	animationTimeLine.update();
 
 	handleEntityHovering();
 	updateMaterialMapping();

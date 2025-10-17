@@ -16,8 +16,8 @@ void readFromFile(std::ifstream& inputFile, T& data) {
 // default implementation, if not explicitly implemented we flag an compile time error.
 template <typename T>
 inline void deserializeModel(std::ifstream& inputFile, T& dataMember) {
-	[] <bool flag = false>() {
-		static_assert(false, "Did not account for all data members. " __FUNCSIG__);
+	[] <bool flag = false, typename Ty = T, bool test = reflection::conceptReflectable<T>>() {
+		static_assert(flag, "Did not account for all data members. " __FUNCSIG__);
 	}();
 }
 
@@ -61,6 +61,15 @@ inline void deserializeModel<std::string>(std::ifstream& inputFile, std::string&
 	inputFile.read(string.data(), length);
 }
 
+// quat.
+template <>
+inline void deserializeModel<glm::quat>(std::ifstream& inputFile, glm::quat& dataMember) {
+	readFromFile(inputFile, dataMember.w);
+	readFromFile(inputFile, dataMember.x);
+	readFromFile(inputFile, dataMember.y);
+	readFromFile(inputFile, dataMember.z);
+}
+
 // ----------------------------------------------------
 // unordered_map entry.. handling pair with function overloading..
 template <isPair T>
@@ -96,17 +105,7 @@ inline void deserializeModel(std::ifstream& inputFile, T& container) {
 	for (int i = 0; i < length; ++i) {
 		typename Element<T>::Type element;
 
-		// if element itself is reflectable, we recursively deserialize each data member..
-		if constexpr (reflection::isReflectable<typename T::value_type>()) {
-			reflection::visit([&](auto&& fieldData) {
-				auto&& dataMember = fieldData.get();
-				using DataMemberType = std::decay_t<decltype(dataMember)>;
-				deserializeModel<DataMemberType>(inputFile, dataMember);
-			}, element);
-		}
-		else {
-			deserializeModel<typename T::value_type>(inputFile, element);
-		}
+		deserializeModel<typename Element<T>::Type>(inputFile, element);
 
 		// we deserialised each element, time to add them to the respective containers..
 		if constexpr (isVector<T>) {
@@ -125,4 +124,16 @@ inline void deserializeModel(std::ifstream& inputFile, T& container) {
 			}();
 		}
 	}
+}
+
+// ----------------------------------------------------
+// deserialising anything that is reflectable.
+template <typename T> requires reflection::conceptReflectable<T>
+inline void deserializeModel(std::ifstream& inputFile, T& dataMember) {
+	reflection::visit([&](auto&& fieldData) {
+		auto&& innerDataMember = fieldData.get();
+		using DataMemberType = std::decay_t<decltype(innerDataMember)>;
+
+		deserializeModel<DataMemberType>(inputFile, innerDataMember);
+	}, dataMember);
 }
