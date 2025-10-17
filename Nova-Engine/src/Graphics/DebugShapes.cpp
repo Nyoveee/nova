@@ -5,7 +5,7 @@ namespace{
 	constexpr float PI = 2 * std::numbers::pi_v<float>;
 	constexpr float PI2 = 2 * std::numbers::pi_v<float>;
 }
-std::vector<SimpleVertex> DebugShapes::SphereAxisXY(Transform const& transform, float radius)
+std::vector<SimpleVertex> DebugShapes::SphereAxisXY(float radius)
 {
 	std::vector<SimpleVertex> result;
 	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS) {
@@ -15,7 +15,7 @@ std::vector<SimpleVertex> DebugShapes::SphereAxisXY(Transform const& transform, 
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::SphereAxisXZ(Transform const& transform, float radius)
+std::vector<SimpleVertex> DebugShapes::SphereAxisXZ(float radius)
 {
 	std::vector<SimpleVertex> result;
 	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
@@ -23,7 +23,7 @@ std::vector<SimpleVertex> DebugShapes::SphereAxisXZ(Transform const& transform, 
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::SphereAxisYZ(Transform const& transform, float radius)
+std::vector<SimpleVertex> DebugShapes::SphereAxisYZ(float radius)
 {
 	std::vector<SimpleVertex> result;
 	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
@@ -31,7 +31,7 @@ std::vector<SimpleVertex> DebugShapes::SphereAxisYZ(Transform const& transform, 
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::HemisphereAxisXY(Transform const& transform, float radius)
+std::vector<SimpleVertex> DebugShapes::HemisphereAxisXY(float radius)
 {
 	std::vector<SimpleVertex> result;
 	for (float i{}; i <= PI; i += PI / NUM_DEBUG_CIRCLE_POINTS)
@@ -39,7 +39,7 @@ std::vector<SimpleVertex> DebugShapes::HemisphereAxisXY(Transform const& transfo
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::HemisphereAxisYZ(Transform const& transform, float radius)
+std::vector<SimpleVertex> DebugShapes::HemisphereAxisYZ(float radius)
 {
 	std::vector<SimpleVertex> result;
 	for (float i{}; i <= PI; i += PI / NUM_DEBUG_CIRCLE_POINTS)
@@ -47,7 +47,7 @@ std::vector<SimpleVertex> DebugShapes::HemisphereAxisYZ(Transform const& transfo
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::Cube(Transform const& transform, glm::vec3 min, glm::vec3 max)
+std::vector<SimpleVertex> DebugShapes::Cube(glm::vec3 min, glm::vec3 max)
 {
 	std::vector<SimpleVertex> result;
 	// Front
@@ -80,7 +80,7 @@ std::vector<SimpleVertex> DebugShapes::Cube(Transform const& transform, glm::vec
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::ConeOuterAxisXZ(Transform const& transform, float radius, float arc, float distance)
+std::vector<SimpleVertex> DebugShapes::ConeOuterAxisXZ(float radius, float arc, float distance)
 {
 	std::vector<SimpleVertex> result;
 	arc = Radian{ Degree{std::clamp(arc, 0.f, 75.f)} };
@@ -90,7 +90,7 @@ std::vector<SimpleVertex> DebugShapes::ConeOuterAxisXZ(Transform const& transfor
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::ConeEdges(Transform const& transform, float radius, float arc, float distance)
+std::vector<SimpleVertex> DebugShapes::ConeEdges(float radius, float arc, float distance)
 {
 	std::vector<SimpleVertex> result;
 	arc = Radian{ Degree{std::clamp(arc, 0.f, 75.f)} };
@@ -106,7 +106,7 @@ std::vector<SimpleVertex> DebugShapes::ConeEdges(Transform const& transform, flo
 	return result;
 }
 
-std::vector<SimpleVertex> DebugShapes::Edge(Transform const& transform, float distance)
+std::vector<SimpleVertex> DebugShapes::Edge(float distance)
 {
 	std::vector<SimpleVertex> result;
 	result.push_back(SimpleVertex{ glm::vec3{ 1,0,0 } * distance / 2.f });

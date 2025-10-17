@@ -248,3 +248,9 @@ inline void DeserializeProperty<ParticleEmissionTypeSelection>(Json const& jsonC
 		}
 	}
 }
+template<>
+inline void DeserializeProperty<ParticleColorSelection>(Json const& jsonComponent, const char* dataMemberName, ParticleColorSelection& dataMember) {
+	DeserializeProperty<bool>(jsonComponent[dataMemberName], "Randomized Color", dataMember.randomizedColor);
+	if (!dataMember.randomizedColor)
+		DeserializeProperty<Color>(jsonComponent[dataMemberName], "Color", dataMember.color);
+}

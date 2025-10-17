@@ -218,3 +218,9 @@ inline void SerializeProperty<ParticleEmissionTypeSelection>(Json& jsonComponent
 		}
 	}
 }
+template<>
+inline void SerializeProperty<ParticleColorSelection>(Json& jsonComponent, const char* dataMemberName, ParticleColorSelection const& dataMember) {
+	SerializeProperty<bool>(jsonComponent[dataMemberName], "Randomized Color", dataMember.randomizedColor);
+	if (!dataMember.randomizedColor)
+		SerializeProperty<Color>(jsonComponent[dataMemberName], "Color", dataMember.color);
+}

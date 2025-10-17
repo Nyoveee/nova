@@ -326,6 +326,7 @@ struct NavigationTestTarget
 struct Particle {
 	glm::vec3 position;
 	glm::vec3 velocity;
+	glm::vec3 color;
 	float size;
 	float currentLifeTime;
 };
@@ -354,6 +355,10 @@ struct ParticleEmissionTypeSelection {
 	CubeEmitter cubeEmitter;
 	ConeEmitter coneEmitter;
 };
+struct ParticleColorSelection {
+	bool randomizedColor = false;
+	Color color = Color{ 1.f, 1.f, 1.f };
+};
 struct ParticleEmitter
 {
 	// Update
@@ -366,9 +371,9 @@ struct ParticleEmitter
 	// Editor stuff
 	TypedResourceID<Texture> texture;
 	ParticleEmissionTypeSelection particleEmissionTypeSelection;
-	Color color = Color{ 1.f, 1.f, 1.f };
-	
+	ParticleColorSelection particleColorSelection;
 	bool looping = true;
+	bool randomizedDirection = false;
 	float startSize = 1;
 	float startSpeed = 1;
 	glm::vec3 force;
@@ -384,8 +389,9 @@ struct ParticleEmitter
 	(
 		texture,
 		particleEmissionTypeSelection,
-		color,
+		particleColorSelection,
 		looping,
+		randomizedDirection,
 		startSize,
 		startSpeed,
 		force,

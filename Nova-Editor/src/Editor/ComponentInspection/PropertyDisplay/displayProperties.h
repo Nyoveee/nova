@@ -364,5 +364,14 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(PropertyReferences& p
 		}
 		ImGui::EndChild();
 	}
-	
+}
+template<>
+inline void DisplayProperty<ParticleColorSelection>(PropertyReferences& propertyReferences, const char* dataMemberName, ParticleColorSelection& dataMember) {
+	(void)dataMemberName;
+	DisplayProperty<bool>(propertyReferences, "Randomized Color", dataMember.randomizedColor);
+	if (!dataMember.randomizedColor) {
+		ImGui::BeginChild("", ImVec2(0, 75), ImGuiChildFlags_Border);
+		DisplayProperty<Color>(propertyReferences, dataMemberName, dataMember.color);
+		ImGui::EndChild();
+	}
 }

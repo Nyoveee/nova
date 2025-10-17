@@ -15,10 +15,15 @@ public:
 	void update(float dt);
 	void emit(Transform const& transform, ParticleEmitter& emitter);
 private:
+	// Spawning
 	void continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void burstGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
-	void particleMovement(ParticleEmitter& emitter, float dt);
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
+	// Update
+	void particleMovement(ParticleEmitter& emitter, float dt);
+	// Particle Info
+	glm::vec3 determineParticleVelocity(ParticleEmitter& emitter, glm::vec3 nonRandomizedDirection);
+	// Rotation
 	glm::vec3 rotateParticleSpawnPoint(Transform const& transform, glm::vec3 position);
 	glm::vec3 rotateParticleVelocity(Transform const& transform, glm::vec3 velocity);
 private:
