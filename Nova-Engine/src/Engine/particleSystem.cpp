@@ -67,7 +67,7 @@ glm::vec3 ParticleSystem::determineParticleVelocity(ParticleEmitter& emitter, gl
 void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
 {
 	// To Do, Make this affected by rotation
-	Particle newParticle;
+	Particle newParticle{};
 	newParticle.size = emitter.startSize;
 	newParticle.currentLifeTime = emitter.lifeTime;
 	newParticle.color = emitter.particleColorSelection.color;
