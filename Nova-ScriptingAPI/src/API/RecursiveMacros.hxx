@@ -1,6 +1,7 @@
 #pragma once
 
 // Calling Macro for double parameters / Idea from reflection.h :) 
+#define Macro_Double_Empty(Macro)
 #define Macro_Double_1(Macro, a, b) Macro(a,b)
 #define Macro_Double_2(Macro, a, b, c, d) Macro(a,b) Macro_Double_1(Macro,c,d)
 #define Macro_Double_3(Macro, a, b, c, d, e, f) Macro(a,b) Macro_Double_2(Macro,c,d,e,f)
@@ -19,7 +20,7 @@
 #define Macro_Double_16(Macro, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee,ff) Macro(a,b) Macro_Double_15(Macro,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee,ff)
 
 #define Get_Macro_Double(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,_17,_18,_19,_20,_21,_22,_23,_24,_25,_26,_27,_28,_29,_30,_31,_32,Name,...) Name
-#define Call_Macro_Double(Macro,...) Get_Macro_Double(__VA_ARGS__,Macro_Double_16,,Macro_Double_15,,Macro_Double_14,,Macro_Double_13,,Macro_Double_12,,Macro_Double_11,,Macro_Double_10,,Macro_Double_9,,Macro_Double_8,,Macro_Double_7,,Macro_Double_6,,Macro_Double_5,,Macro_Double_4,,Macro_Double_3,,Macro_Double_2,,Macro_Double_1)(Macro,__VA_ARGS__)
+#define Call_Macro_Double(Macro,...) Get_Macro_Double(__VA_OPT__(__VA_ARGS__,)Macro_Double_16,,Macro_Double_15,,Macro_Double_14,,Macro_Double_13,,Macro_Double_12,,Macro_Double_11,,Macro_Double_10,,Macro_Double_9,,Macro_Double_8,,Macro_Double_7,,Macro_Double_6,,Macro_Double_5,,Macro_Double_4,,Macro_Double_3,,Macro_Double_2,,Macro_Double_1,,Macro_Double_Empty)(Macro __VA_OPT__(,__VA_ARGS__))
 
 // Calling Macro for double parameters comma seperated
 #define MacroComma_Double_2(Macro, a, b, c, d) Macro(a,b), Macro_Double_1(Macro,c,d)
@@ -39,25 +40,3 @@
 #define MacroComma_Double_16(Macro, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee,ff) Macro(a,b), MacroComma_Double_15(Macro,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee,ff)
 
 #define Call_MacroComma_Double(Macro,...) Get_Macro_Double(__VA_ARGS__,MacroComma_Double_16,,MacroComma_Double_15,,MacroComma_Double_14,,MacroComma_Double_13,,MacroComma_Double_12,,MacroComma_Double_11,,MacroComma_Double_10,,MacroComma_Double_9,,MacroComma_Double_8,,MacroComma_Double_7,,MacroComma_Double_6,,MacroComma_Double_5,,MacroComma_Double_4,,MacroComma_Double_3,,MacroComma_Double_2,,Macro_Double_1)(Macro,__VA_ARGS__)
-
-#if 0
-// Calling Macro for double parameters + one constant (wtf C++ please give a better way to do macro)
-#define Macro_Double_1_C(Macro, Param, a, b) Macro(Param, a, b)
-#define Macro_Double_2_C(Macro, Param, a, b, c, d) Macro(Param, a, b) Macro_Double_1_C(Macro, Param, c,d)
-#define Macro_Double_3_C(Macro, Param, a, b, c, d, e, f) Macro(Param, a,b) Macro_Double_2_C(Macro, Param, c,d,e,f)
-#define Macro_Double_4_C(Macro, Param, a, b, c, d, e, f, g, h) Macro(Param, a, b) Macro_Double_3_C(Macro, Param, c,d,e,f,g,h)
-#define Macro_Double_5_C(Macro, Param, a, b, c, d, e, f, g, h,i,j) Macro(Param, a, b) Macro_Double_4_C(Macro, Param, c,d,e,f,g,h,i,j)
-#define Macro_Double_6_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l) Macro(Param, a, b) Macro_Double_5_C(Macro, Param, c,d,e,f,g,h,i,j,k,l)
-#define Macro_Double_7_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n) Macro(Param, a, b) Macro_Double_6_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n)
-#define Macro_Double_8_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p) Macro(Param, a, b) Macro_Double_7_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p)
-#define Macro_Double_9_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r) Macro(Param, a, b) Macro_Double_8_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)
-#define Macro_Double_10_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t) Macro(Param, a, b) Macro_Double_9_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t)
-#define Macro_Double_11_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v) Macro(Param, a, b) Macro_Double_10_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v)
-#define Macro_Double_12_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x) Macro(Param, a, b) Macro_Double_11_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x)
-#define Macro_Double_13_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z) Macro(Param, a, b) Macro_Double_12_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z)
-#define Macro_Double_14_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb) Macro(Param, a, b) Macro_Double_13_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb)
-#define Macro_Double_15_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd) Macro(Param, a, b) Macro_Double_14_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd)
-#define Macro_Double_16_C(Macro, Param, a, b, c, d, e, f, g, h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee,ff) Macro(Param, a, b) Macro_Double_15_C(Macro, Param, c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,aa,bb,cc,dd,ee,ff)
-
-#define Call_Macro_Double_C(Macro, Param, ...) Get_Macro_Double(__VA_ARGS__,Macro_Double_16_C,,Macro_Double_15_C,,Macro_Double_14_C,,Macro_Double_13_C,,Macro_Double_12_C,,Macro_Double_11_C,,Macro_Double_10_C,,Macro_Double_9_C,,Macro_Double_8_C,,Macro_Double_7_C,,Macro_Double_6_C,,Macro_Double_5_C,,Macro_Double_4_C,,Macro_Double_3_C,,Macro_Double_2_C,,Macro_Double_1_C)(Macro, Param, __VA_ARGS__)
-#endif

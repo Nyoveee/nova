@@ -7,8 +7,6 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 void ParticleSystem::update(float dt)
 {
 	for (auto&& [entity, transform, emitter] : engine.ecs.registry.view<Transform, ParticleEmitter>().each()) {
-		if (!emitter.looping)
-			continue;
 		continuousGeneration(transform,emitter,dt);
 		burstGeneration(transform, emitter, dt);
 		particleMovement(emitter,dt);
@@ -17,7 +15,7 @@ void ParticleSystem::update(float dt)
 
 void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt)
 {
-	if (emitter.particleRate <= 0)
+	if (emitter.particleRate <= 0 || !emitter.looping)
 		return;
 	if (emitter.particles.size() < emitter.maxParticles)
 		emitter.currentContinuousTime -= dt;
@@ -29,13 +27,13 @@ void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEm
 
 void ParticleSystem::burstGeneration(Transform const& transform, ParticleEmitter& emitter, float dt)
 {
-	if (emitter.burstRate <= 0)
+	if (emitter.burstRate <= 0 || !emitter.looping)
 		return;
 	if (emitter.particles.size() < emitter.maxParticles)
 		emitter.currentBurstTime -= dt;
 	while (emitter.currentBurstTime <= 0 && emitter.particles.size() < emitter.maxParticles) {
 		emitter.currentBurstTime += 1.f / emitter.burstRate;
-		emit(transform, emitter);
+		emit(transform, emitter, emitter.burstAmount);
 	}
 		
 }
@@ -174,9 +172,8 @@ glm::vec3 ParticleSystem::rotateParticleVelocity(Transform const& transform, glm
 /******************************************************************************
 	For Scripts
 ******************************************************************************/
-void ParticleSystem::emit(Transform const& transform, ParticleEmitter& emitter)
+void ParticleSystem::emit(Transform const& transform, ParticleEmitter& emitter, int count)
 {
-	int count{ emitter.burstAmount };
 	while (count-- && emitter.particles.size() < emitter.maxParticles)
 		spawnParticle(transform,emitter);
 }

@@ -65,11 +65,13 @@ ManagedComponentDeclaration(
 	Vector3, right,
 	Vector3, up
 )
-
-// member functions..
 void rotate(Vector3 axis, float angle);
 
 ManagedComponentEnd()
 
+ManagedComponentDeclaration(
+	ParticleEmitter
+)
+void emit(int count);
 
-// We created a Managed Component named Transform_, with data members position, scale, rotation, test1 and test2.
+ManagedComponentEnd()

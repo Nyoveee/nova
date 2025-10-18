@@ -10,10 +10,11 @@ public:
 	ENGINE_DLL_API ParticleSystem(ParticleSystem&& other) = delete;
 	ENGINE_DLL_API ParticleSystem& operator=(ParticleSystem const& other) = delete;
 	ENGINE_DLL_API ParticleSystem& operator=(ParticleSystem&& other) = delete;
-
+public:
+	ENGINE_DLL_API void emit(Transform const& transform, ParticleEmitter& emitter, int count);
 public:
 	void update(float dt);
-	void emit(Transform const& transform, ParticleEmitter& emitter);
+
 private:
 	// Spawning
 	void continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
