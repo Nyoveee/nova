@@ -262,3 +262,19 @@ inline void DeserializeProperty<ParticleColorSelection>(Json const& jsonComponen
 	if (!dataMember.randomizedColor)
 		DeserializeProperty<ColorA>(jsonComponent[dataMemberName], "Color", dataMember.color);
 }
+template<>
+inline void DeserializeProperty<SizeOverLifetime>(Json const& jsonComponent, const char* dataMemberName, SizeOverLifetime& dataMember) {
+	DeserializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		DeserializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		DeserializeProperty<float>(jsonComponent[dataMemberName], "EndSize", dataMember.endSize);
+	}
+}
+template<>
+inline void DeserializeProperty<ColorOverLifetime>(Json const& jsonComponent, const char* dataMemberName, ColorOverLifetime& dataMember) {
+	DeserializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		DeserializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		DeserializeProperty<ColorA>(jsonComponent[dataMemberName], "EndColor", dataMember.endColor);
+	}
+}

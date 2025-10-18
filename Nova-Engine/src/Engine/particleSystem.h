@@ -1,6 +1,7 @@
 #pragma once
 #include "export.h"
 #include "component.h"
+#include <unordered_map>
 class Engine;
 class ParticleSystem
 {
@@ -22,12 +23,14 @@ private:
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
 	// Update
 	void particleMovement(ParticleEmitter& emitter, float dt);
+	void particleOverLifeTime(ParticleEmitter& emitter);
 	// Particle Info
 	glm::vec3 determineParticleVelocity(ParticleEmitter& emitter, glm::vec3 nonRandomizedDirection);
 	// Rotation
 	glm::vec3 rotateParticleSpawnPoint(Transform const& transform, glm::vec3 position);
 	glm::vec3 rotateParticleVelocity(Transform const& transform, glm::vec3 velocity);
 private:
+	std::unordered_map<InterpolationType, float> interpolationType;
 	Engine& engine;
 };
 

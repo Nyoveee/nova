@@ -53,6 +53,12 @@ using ScriptName   = std::string;
 		glm::vec2, glm::vec3, entt::entity, PhysicsRay, PhysicsRayCastResult, \
 		ALL_FIELD_PRIMITIVES
 #endif
+enum class InterpolationType : unsigned int {
+	Root,
+	Linear,
+	Quadractic,
+	Cubic
+};
 
 struct FieldData {
 	std::string name;
@@ -326,8 +332,17 @@ struct NavigationTestTarget
 struct Particle {
 	glm::vec3 position;
 	glm::vec3 velocity;
-	glm::vec4 color;
-	float size;
+	// Color
+	glm::vec4 startColor;
+	glm::vec4 currentColor;
+	// Movement
+	glm::vec3 direction;
+	float speed;
+	float rotation;
+	// Size
+	float startSize;
+	float currentSize;
+	// Lifetime
 	float currentLifeTime;
 };
 struct CubeEmitter {
@@ -357,14 +372,24 @@ struct ParticleEmissionTypeSelection {
 };
 struct ParticleColorSelection {
 	bool randomizedColor = false;
-	ColorA color = ColorA{ 1.f, 1.f, 1.f,1.f };
+	ColorA color{ 1.f, 1.f, 1.f,1.f };
+};
+struct SizeOverLifetime {
+	bool selected{};
+	InterpolationType interpolationType{ InterpolationType::Linear };
+	float endSize{};
+};
+struct ColorOverLifetime {
+	bool selected{};
+	InterpolationType interpolationType{ InterpolationType::Linear };
+	ColorA endColor{};
 };
 struct ParticleEmitter
 {
 	// Update
-	float currentContinuousTime = 0.f;
-	float currentBurstTime = 0.f;
-	
+	float currentContinuousTime{};
+	float currentBurstTime{};
+
 	// Rendering
 	std::vector<Particle> particles;
 
@@ -372,28 +397,28 @@ struct ParticleEmitter
 	TypedResourceID<Texture> texture;
 	ParticleEmissionTypeSelection particleEmissionTypeSelection;
 	ParticleColorSelection particleColorSelection;
+	SizeOverLifetime sizeOverLifetime;
+	ColorOverLifetime colorOverLifetime;
 	bool looping = true;
 	bool randomizedDirection = false;
 	float startSize = 1;
 	float startSpeed = 1;
+	float angularVelocity{};
 	glm::vec3 force;
 	float lifeTime = 1;
 	int maxParticles = 1000;
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
-	float lightIntensity = 0.f;
+	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 
 	REFLECTABLE
 	(
 		texture,
-		particleEmissionTypeSelection,
-		particleColorSelection,
-		looping,
-		randomizedDirection,
 		startSize,
 		startSpeed,
+		angularVelocity,
 		force,
 		lifeTime,
 		maxParticles,
@@ -401,6 +426,12 @@ struct ParticleEmitter
 		burstRate,
 		burstAmount,
 		lightIntensity,
-		lightattenuation
+		lightattenuation,
+		looping,
+		randomizedDirection,
+		particleEmissionTypeSelection,
+		particleColorSelection,
+		sizeOverLifetime,
+		colorOverLifetime
 	)
 };

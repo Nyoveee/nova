@@ -383,3 +383,23 @@ inline void DisplayProperty<ParticleColorSelection>(PropertyReferences& property
 		ImGui::EndChild();
 	}
 }
+template<>
+inline void DisplayProperty<SizeOverLifetime>(PropertyReferences& propertyReferences, const char* dataMemberName, SizeOverLifetime& dataMember) {
+	DisplayProperty<bool>(propertyReferences, dataMemberName, dataMember.selected);
+	if (dataMember.selected) {
+		ImGui::BeginChild("", ImVec2(0, 100), ImGuiChildFlags_Border);
+		DisplayProperty<InterpolationType>(propertyReferences, "InterpolationType", dataMember.interpolationType);
+		DisplayProperty<float>(propertyReferences, "EndSize", dataMember.endSize);
+		ImGui::EndChild();
+	}
+}
+template<>
+inline void DisplayProperty<ColorOverLifetime>(PropertyReferences& propertyReferences, const char* dataMemberName, ColorOverLifetime& dataMember) {
+	DisplayProperty<bool>(propertyReferences, dataMemberName, dataMember.selected);
+	if (dataMember.selected) {
+		ImGui::BeginChild("", ImVec2(0, 100), ImGuiChildFlags_Border);
+		DisplayProperty<InterpolationType>(propertyReferences, "InterpolationType", dataMember.interpolationType);
+		DisplayProperty<ColorA>(propertyReferences, "EndColor", dataMember.endColor);
+		ImGui::EndChild();
+	}
+}

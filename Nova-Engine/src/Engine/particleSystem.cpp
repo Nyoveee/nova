@@ -1,8 +1,16 @@
 #include "particleSystem.h"
 #include "engine.h"
 #include "RandomRange.h"
+#include "Interpolation.h"
+
 ParticleSystem::ParticleSystem(Engine& p_engine)
-	:engine{p_engine}{}
+	:engine{p_engine}
+{
+	interpolationType[InterpolationType::Root] = 0.5f;
+	interpolationType[InterpolationType::Linear] = 1.0f;
+	interpolationType[InterpolationType::Quadractic] = 2.0f;
+	interpolationType[InterpolationType::Cubic] = 3.0f;
+}
 
 void ParticleSystem::update(float dt)
 {
@@ -10,6 +18,7 @@ void ParticleSystem::update(float dt)
 		continuousGeneration(transform,emitter,dt);
 		burstGeneration(transform, emitter, dt);
 		particleMovement(emitter,dt);
+		particleOverLifeTime(emitter);
 	}
 }
 
@@ -47,11 +56,34 @@ void ParticleSystem::particleMovement(ParticleEmitter& emitter, float dt)
 			return true;
 		particle.position += particle.velocity * dt;
 		particle.velocity += emitter.force * dt;
+		particle.rotation += emitter.angularVelocity * dt;
 		return false;
 	});
 	// Remove once end of lifetime
 	if (it != std::end(emitter.particles)) {
 		emitter.particles.erase(it, std::end(emitter.particles));
+	}
+}
+
+void ParticleSystem::particleOverLifeTime(ParticleEmitter& emitter)
+{
+	if (emitter.lifeTime <= 0)
+		return;
+	if (emitter.sizeOverLifetime.selected) {
+		for (Particle& particle : emitter.particles) {
+			float endSize{ emitter.sizeOverLifetime.endSize };
+			float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
+			float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
+			particle.currentSize = Interpolation::Interpolation(particle.startSize, endSize, interpolationValue, degree);
+		}
+	}
+	if (emitter.colorOverLifetime.selected) {
+		for (Particle& particle : emitter.particles) {
+			glm::vec4 endColor{ emitter.colorOverLifetime.endColor };
+			float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
+			float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
+			particle.currentColor = Interpolation::Interpolation(particle.startColor, endColor, interpolationValue, degree);
+		}
 	}
 }
 
@@ -66,11 +98,11 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 {
 	// To Do, Make this affected by rotation
 	Particle newParticle{};
-	newParticle.size = emitter.startSize;
+	newParticle.startSize = newParticle.currentSize = emitter.startSize;
 	newParticle.currentLifeTime = emitter.lifeTime;
-	newParticle.color = emitter.particleColorSelection.color;
+	newParticle.startColor = newParticle.currentColor = emitter.particleColorSelection.color;
 	if (emitter.particleColorSelection.randomizedColor)
-		newParticle.color = ColorA(RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1));
+		newParticle.startColor = newParticle.currentColor = ColorA(RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1));
 	switch (emitter.particleEmissionTypeSelection.emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 		{

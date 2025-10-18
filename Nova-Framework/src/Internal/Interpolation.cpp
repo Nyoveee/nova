@@ -5,7 +5,13 @@ float Interpolation::Interpolation(float start, float end, float t, float degree
     assert(degree > 0 && "Interpolation degree must be more than zero");
     return start + (end - start) * static_cast<float>(std::pow(t, 1.f / degree));
 }
-
+glm::vec4 Interpolation::Interpolation(glm::vec4 start, glm::vec4 end, float t, float degree) {
+    float x = Interpolation(start.x, end.x, t, degree);
+    float y = Interpolation(start.y, end.y, t, degree);
+    float z = Interpolation(start.z, end.z, t, degree);
+    float w = Interpolation(start.w, end.w, t, degree);
+    return glm::vec4{ x,y,z,w };
+}
 glm::vec3 Interpolation::Interpolation(glm::vec3 start, glm::vec3 end, float t, float degree)
 {
     float x = Interpolation(start.x, end.x, t, degree);

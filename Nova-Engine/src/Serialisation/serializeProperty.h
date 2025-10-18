@@ -231,3 +231,19 @@ inline void SerializeProperty<ParticleColorSelection>(Json& jsonComponent, const
 	if (!dataMember.randomizedColor)
 		SerializeProperty<ColorA>(jsonComponent[dataMemberName], "Color", dataMember.color);
 }
+template<>
+inline void SerializeProperty<SizeOverLifetime>(Json& jsonComponent, const char* dataMemberName, SizeOverLifetime const& dataMember) {
+	SerializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		SerializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		SerializeProperty<float>(jsonComponent[dataMemberName], "EndSize", dataMember.endSize);
+	}
+}
+template<>
+inline void SerializeProperty<ColorOverLifetime>(Json& jsonComponent, const char* dataMemberName, ColorOverLifetime const& dataMember) {
+	SerializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		SerializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		SerializeProperty<ColorA>(jsonComponent[dataMemberName], "EndColor", dataMember.endColor);
+	}
+}

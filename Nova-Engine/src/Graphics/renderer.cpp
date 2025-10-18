@@ -537,7 +537,7 @@ void Renderer::prepareRendering() {
 			}
 			pointLightData[numOfPtLights++] = {
 				particle.position,
-				glm::vec3{ particle.color } *emitter.lightIntensity,
+				glm::vec3{ particle.currentColor } *emitter.lightIntensity,
 				emitter.lightattenuation
 			};
 		}
@@ -694,12 +694,14 @@ void Renderer::renderParticles()
 		glBindTextureUnit(0, texture->getTextureId());
 
 		for (Particle const& particle : emitter.particles) {
-			particleShader.setVec4("color", particle.color);
+			particleShader.setVec4("color", particle.currentColor);
 			// CameraFacing modelmatrix
 			glm::mat4 model{ glm::identity<glm::mat4>() };
 			model = glm::translate(model, particle.position);
 			particleShader.setMatrix("model", model);
-			particleShader.setFloat("particleSize", particle.size);
+			glm::mat4 localRotation{ glm::rotate(glm::identity<glm::mat4>(),particle.rotation,glm::vec3(0,0,1)) };
+			particleShader.setMatrix("localRotation", localRotation);
+			particleShader.setFloat("particleSize", particle.currentSize);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
 	}

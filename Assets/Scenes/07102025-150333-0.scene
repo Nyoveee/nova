@@ -7,8 +7,12 @@
                 "parent": 4294967295
             },
             "ParticleEmitter": {
+                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "Selected": false
+                },
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -40,6 +44,9 @@
                 },
                 "particleRate": 100.0,
                 "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "Selected": false
+                },
                 "startSize": 0.10000000149011612,
                 "startSpeed": 10.0,
                 "texture": 10264539576361746591
@@ -97,8 +104,12 @@
                 "parent": 4294967295
             },
             "ParticleEmitter": {
+                "angularVelocity": 0.0,
                 "burstAmount": 1000,
                 "burstRate": 1.0,
+                "colorOverLifetime": {
+                    "Selected": false
+                },
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -128,6 +139,9 @@
                 },
                 "particleRate": 0.0,
                 "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "Selected": false
+                },
                 "startSize": 0.10000000149011612,
                 "startSpeed": 5.0,
                 "texture": 10264539576361746591
@@ -185,8 +199,12 @@
                 "parent": 4294967295
             },
             "ParticleEmitter": {
+                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "Selected": false
+                },
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -216,6 +234,9 @@
                 },
                 "particleRate": 5.0,
                 "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "Selected": false
+                },
                 "startSize": 0.30000001192092896,
                 "startSpeed": 1.0,
                 "texture": 4499932053327380489
@@ -273,14 +294,25 @@
                 "parent": 4294967295
             },
             "ParticleEmitter": {
+                "angularVelocity": 3.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "EndColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "InterpolationType": "Linear",
+                    "Selected": true
+                },
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "lifeTime": 1.0,
+                "lifeTime": 5.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -302,11 +334,16 @@
                     "Emission Shape": "Sphere",
                     "Radius": 5.0
                 },
-                "particleRate": 1000.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
-                "startSize": 0.10000000149011612,
-                "startSpeed": 1.0,
-                "texture": 14876225594789068879
+                "sizeOverLifetime": {
+                    "EndSize": 0.0,
+                    "InterpolationType": "Cubic",
+                    "Selected": true
+                },
+                "startSize": 1.0,
+                "startSpeed": 0.0,
+                "texture": 11993921833272017049
             },
             "Transform": {
                 "eulerAngles": {
@@ -361,8 +398,12 @@
                 "parent": 4294967295
             },
             "ParticleEmitter": {
+                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "Selected": false
+                },
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -392,6 +433,9 @@
                 },
                 "particleRate": 100.0,
                 "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "Selected": false
+                },
                 "startSize": 0.10000000149011612,
                 "startSpeed": 5.0,
                 "texture": 4499932053327380489
@@ -524,8 +568,12 @@
                 "parent": 4294967295
             },
             "ParticleEmitter": {
+                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "Selected": false
+                },
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -558,6 +606,9 @@
                 },
                 "particleRate": 1000.0,
                 "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "Selected": false
+                },
                 "startSize": 0.10000000149011612,
                 "startSpeed": 0.0,
                 "texture": 4499932053327380489
@@ -615,8 +666,12 @@
                 "parent": 4294967295
             },
             "ParticleEmitter": {
+                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "Selected": false
+                },
                 "force": {
                     "x": 0.0,
                     "y": 0.0,
@@ -648,6 +703,9 @@
                 },
                 "particleRate": 100.0,
                 "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "Selected": false
+                },
                 "startSize": 0.10000000149011612,
                 "startSpeed": 10.0,
                 "texture": 10264539576361746591
