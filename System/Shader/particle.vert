@@ -1,35 +1,34 @@
 #version 450 core
 
-const vec3 vertexPos[4] = vec3[4](
-	vec3(-1, -1,  0),	// bottom left
-	vec3( 1, -1,  0),	// bottom right
-	vec3( 1,  1,  0),	// top right
-	vec3(-1,  1,  0) 	// top left
-);
-
-const vec2 textureCoordinates[4] = vec2[4](
-    vec2(0, 0),
-    vec2(1, 0),
-    vec2(1, 1),
-    vec2(0, 1)
-);
-
-const int indices[6] = int[6](0, 2, 1, 2, 0, 3);
-
 layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
 };
 
-uniform mat4 model;
-uniform mat4 localRotation;
-uniform float particleSize;
+layout (location = 0) in vec3 localpos;
+layout (location = 1) in vec3 worldPos;
+layout (location = 2) in vec2 textureCoordinates;
+layout (location = 3) in vec4 vertColor;
+layout (location = 4) in float rotation;
 
+out vec4 color;
 out vec2 textureUnit;
 
+mat4 RotationMatrix(float rotationValue){
+    mat4 rotation = mat4(1.0);
+    rotation[0][0] = cos(rotationValue);
+    rotation[0][1] = -sin(rotationValue);
+    rotation[1][0] = sin(rotationValue);
+    rotation[1][1] = cos(rotationValue);
+    return rotation; 
+}
+
 void main() {
-    int index = indices[gl_VertexID];
-    mat4 modelView = view * model;
+    mat4 translate = mat4(1.0);
+    translate[3][0] = worldPos.x;
+    translate[3][1] = worldPos.y;
+    translate[3][2] = worldPos.z;
+    mat4 modelView = view * translate;
     
     // Eliminate world Rotation(Bill Boarding)
     modelView[0][0] = 1;
@@ -44,6 +43,7 @@ void main() {
     modelView[2][1] = 0;
     modelView[2][2] = 1;
 
-    gl_Position =  projection * modelView * localRotation * vec4(vertexPos[index] * particleSize, 1);
-    textureUnit = textureCoordinates[index];
+    gl_Position = projection * modelView * RotationMatrix(rotation) * vec4(localpos,1);
+    textureUnit = textureCoordinates;
+    color = vertColor;
 }

@@ -170,6 +170,8 @@ private:
 	BufferObject spotLightSSBO;
 	BufferObject sharedUBO;
 
+	// Particle VAO
+	GLuint particleVAO;
 	// Debug Physics VAO and it's corresponding VBO.
 	GLuint debugVAO;
 	BufferObject debugPhysicsVBO;

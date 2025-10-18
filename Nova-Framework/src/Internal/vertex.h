@@ -19,6 +19,13 @@ struct Vertex {
 struct SimpleVertex {
 	glm::vec3 pos;
 };
+struct ParticleVertex {
+	glm::vec3 localPos;
+	glm::vec3 worldPos;
+	glm::vec2 texCoord;
+	glm::vec4 color;
+	float rotation;
+};
 
 // this struct will be used to send to SSBO.
 // our SSBO follows the std430 alignment rule,

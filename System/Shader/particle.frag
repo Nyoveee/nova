@@ -1,8 +1,8 @@
 #version 450 core
 
 uniform sampler2D image;
-uniform vec4 color;
 
+in vec4 color;
 in vec2 textureUnit;
 
 out vec4 FragColor;

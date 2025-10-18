@@ -147,6 +147,39 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugVAO, 0, debugBindingIndex);
+
+	// ======================================================
+	// Particle VAO configuration
+	// ======================================================
+	glCreateVertexArrays(1, &particleVAO);
+	constexpr GLuint particleBindingIndex = 0;
+
+	// Bind this EBO to this VAO.
+	glVertexArrayElementBuffer(particleVAO, EBO.id());
+
+	// Associate binding index 0 with this vbo for particleVAO
+	glVertexArrayVertexBuffer(particleVAO, particleBindingIndex, mainVBO.id(), 0, sizeof(ParticleVertex));
+
+	// Associate Attribute Indexes with their properties
+	glVertexArrayAttribFormat(particleVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, localPos));
+	glVertexArrayAttribFormat(particleVAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, worldPos));
+	glVertexArrayAttribFormat(particleVAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, texCoord));
+	glVertexArrayAttribFormat(particleVAO, 3, 4, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, color));
+	glVertexArrayAttribFormat(particleVAO, 4, 1, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, rotation));
+
+	// Enable attributes
+	glEnableVertexArrayAttrib(particleVAO, 0);
+	glEnableVertexArrayAttrib(particleVAO, 1);
+	glEnableVertexArrayAttrib(particleVAO, 2);
+	glEnableVertexArrayAttrib(particleVAO, 3);
+	glEnableVertexArrayAttrib(particleVAO, 4);
+
+	// Associate vertex attributes with binding index 0
+	glVertexArrayAttribBinding(particleVAO, 0, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 1, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 2, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 3, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 4, particleBindingIndex);
 }
 
 Renderer::~Renderer() {
@@ -684,27 +717,57 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
+	glBindVertexArray(particleVAO);
+
 	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
-	glDisable(GL_DEPTH_TEST);
 	particleShader.use();
+
+	// Disable writing to depth buffer for particles
+	glDepthMask(GL_FALSE);
+
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
 		auto&& [texture, result] = resourceManager.getResource<Texture>(emitter.texture);
 		if (!texture)
 			continue;
 		glBindTextureUnit(0, texture->getTextureId());
-
+		const glm::vec3 vertexPos[4]{
+			glm::vec3(-1, -1, 0),	// bottom left
+			glm::vec3(1, -1, 0),	// bottom right
+			glm::vec3(1, 1, 0),	// top right
+			glm::vec3(-1, 1, 0) 	// top left
+		};
+		const glm::vec2 textureCoordinates[4]{
+			glm::vec2(0, 0),
+			glm::vec2(1, 0),
+			glm::vec2(1, 1),
+			glm::vec2(0, 1)
+		};
+		const int squareIndices[6]{ 0, 2, 1, 2, 0, 3 };
+		std::vector<ParticleVertex> particleVertexes;
+		std::vector<unsigned int> indices;
+		int i{};
 		for (Particle const& particle : emitter.particles) {
-			particleShader.setVec4("color", particle.currentColor);
-			// CameraFacing modelmatrix
-			glm::mat4 model{ glm::identity<glm::mat4>() };
-			model = glm::translate(model, particle.position);
-			particleShader.setMatrix("model", model);
-			glm::mat4 localRotation{ glm::rotate(glm::identity<glm::mat4>(),particle.rotation,glm::vec3(0,0,1)) };
-			particleShader.setMatrix("localRotation", localRotation);
-			particleShader.setFloat("particleSize", particle.currentSize);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
+			ParticleVertex particleVertex;
+			// Add to batch
+			for (int j{}; j < 4; ++j) {
+				particleVertex.localPos = vertexPos[j] * particle.currentSize;
+				particleVertex.worldPos = particle.position;
+				particleVertex.texCoord = textureCoordinates[j];
+				particleVertex.color = particle.currentColor;
+				particleVertex.rotation = particle.rotation;
+				particleVertexes.push_back(particleVertex);
+			}
+			for (int j{}; j < 6; ++j)
+				indices.push_back(squareIndices[j] + i * 4);
+			++i;
+			
 		}
+		mainVBO.uploadData(particleVertexes);
+		EBO.uploadData(indices);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 	}
+	// Renable Depth Writing for other rendering
+	glDepthMask(GL_TRUE);
 }
 
 void Renderer::renderObjectId(GLsizei count) {
