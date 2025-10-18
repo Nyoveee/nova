@@ -228,27 +228,45 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 			++counter;
 		}
 
-		ImGui::SeparatorText(std::string{ "Bones: " + std::to_string(model->bones.size()) }.c_str());
 
-		if (!model->bones.size()) {
-			ImGui::Text("This mesh has no bones.");
+		if (!model->skeleton) {
+			ImGui::Text("This mesh has no skeleton.");
 			return;
 		}
 
-		displayBoneHierarchy(model->rootBone, *model);
+		Skeleton const& skeleton = model->skeleton.value();
+		
+		ImGui::SeparatorText(std::string{ "Bones: " + std::to_string(skeleton.bones.size()) }.c_str());
+		displayBoneHierarchy(skeleton.rootBone, skeleton);
+
+		ImGui::SeparatorText(std::string{ "[Debug] Nodes: " + std::to_string(skeleton.nodes.size()) }.c_str());
+		displayNodeHierarchy(skeleton.rootNode, skeleton);
 	}
 
 }
 
-void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Model const& model)
-{
-	Bone const& bone = model.bones[boneIndex];
+void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {
+	Bone const& bone = skeleton.bones[boneIndex];
 
 	bool isOpen = ImGui::TreeNodeEx(bone.name.c_str());
 
 	if (isOpen) {
 		for (auto& boneChildrenIndex : bone.boneChildrens) {
-			displayBoneHierarchy(boneChildrenIndex, model);
+			displayBoneHierarchy(boneChildrenIndex, skeleton);
+		}
+
+		ImGui::TreePop();
+	}
+}
+
+void AssetViewerUI::displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton) {
+	ModelNode const& node = skeleton.nodes[nodeIndex];
+
+	bool isOpen = ImGui::TreeNodeEx(std::string{ (node.isBone ? ICON_FA_BONE : "") + node.name }.c_str());
+
+	if (isOpen) {
+		for (auto& nodeChildrenIndex : node.nodeChildrens) {
+			displayNodeHierarchy(nodeChildrenIndex, skeleton);
 		}
 
 		ImGui::TreePop();

@@ -8,6 +8,8 @@
 
 class Engine;
 class ResourceManager;
+class Animation;
+struct AnimationChannel;
 
 using BoneIndex = unsigned short;
 
@@ -26,9 +28,12 @@ public:
 	ENGINE_DLL_API void update(float dt);
 
 private:
-	ENGINE_DLL_API void calculateFinalMatrix(BoneIndex boneIndex, glm::mat4x4 const& globalTransformationMatrix, std::vector<Bone> const& bones, SkinnedMeshRenderer& skinnedMeshRenderer);
+	ENGINE_DLL_API void calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4 const& globalTransformationMatrix, Skeleton const& skeleton, SkinnedMeshRenderer& skinnedMeshRenderer, Animation const* animation, float timeInSeconds);
+	ENGINE_DLL_API AnimationChannel const* findAnimationChannel(std::string const& nodeName, Animation const& animation);
 
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
+
+	bool toAdvanceAnimation;
 };

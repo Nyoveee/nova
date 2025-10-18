@@ -26,8 +26,7 @@ public:
 	std::unordered_set<MaterialName> materialNames;
 
 	// Skeleton.
-	std::vector<Bone> bones;
-	BoneIndex rootBone;
+	std::optional<Skeleton> skeleton;
 
 	// Animation.
 	std::vector<Animation> animations;

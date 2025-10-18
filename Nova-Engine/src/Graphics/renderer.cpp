@@ -50,7 +50,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
-	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/image.frag"},
+	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
 	mainVAO						{},
 	debugVAO					{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -892,8 +892,6 @@ void Renderer::setupPBRShader(Material const& material) {
 }
 
 void Renderer::setupSkeletalShader(Material const& material) {
-	skeletalAnimationShader.use();
-
 	// Handle albedo.
 	std::visit([&](auto&& albedo) {
 		using T = std::decay_t<decltype(albedo)>;
@@ -903,19 +901,67 @@ void Renderer::setupSkeletalShader(Material const& material) {
 
 			if (!texture) {
 				// fallback..
-				texture = resourceManager.getResource<Texture>(resourceManager.getSomeResourceID<Texture>()).asset;
+				skeletalAnimationShader.setBool("isUsingAlbedoMap", false);
+				skeletalAnimationShader.setVec3("albedo", { 0.2f, 0.2f, 0.2f });
 			}
-
-			glBindTextureUnit(0, texture->getTextureId());
-			skeletalAnimationShader.setImageUniform("image", 0);
+			else {
+				skeletalAnimationShader.setBool("isUsingAlbedoMap", true);
+				glBindTextureUnit(0, texture->getTextureId());
+				skeletalAnimationShader.setImageUniform("albedoMap", 0);
+			}
 		}
 		else /* it's Color */ {
-			auto&& [texture, result] = resourceManager.getResource<Texture>(resourceManager.getSomeResourceID<Texture>());
-			glBindTextureUnit(0, texture->getTextureId());
-			skeletalAnimationShader.setImageUniform("image", 0);
+			skeletalAnimationShader.setBool("isUsingAlbedoMap", false);
+			skeletalAnimationShader.setVec3("albedo", albedo);
 		}
 
-	}, material.albedo);
+		}, material.albedo);
+
+	// Handle normal map
+	if (material.normalMap) {
+		auto&& [normalMap, result] = resourceManager.getResource<Texture>(material.normalMap.value());
+
+		if (normalMap) {
+			skeletalAnimationShader.setBool("isUsingNormalMap", true);
+			glBindTextureUnit(1, normalMap->getTextureId());
+			skeletalAnimationShader.setImageUniform("normalMap", 1);
+		}
+	}
+	else {
+		skeletalAnimationShader.setBool("isUsingNormalMap", false);
+	}
+
+	std::visit([&](auto&& config) {
+		using T = std::decay_t<decltype(config)>;
+
+		// Packed map
+		if constexpr (std::same_as<T, ResourceID>) {
+			auto&& [texture, result] = resourceManager.getResource<Texture>(config);
+			if (!texture) {
+				skeletalAnimationShader.setBool("isUsingPackedTextureMap", false);
+				skeletalAnimationShader.setFloat("material.roughness", 0.2f);
+				skeletalAnimationShader.setFloat("material.metallic", 0.2f);
+				skeletalAnimationShader.setFloat("material.occulusion", 0.2f);
+			}
+			else {
+				skeletalAnimationShader.setBool("isUsingPackedTextureMap", true);
+				glBindTextureUnit(2, texture->getTextureId());
+				skeletalAnimationShader.setImageUniform("packedMap", 2);
+			}
+		}
+		// Constants
+		else {
+			skeletalAnimationShader.setBool("isUsingPackedTextureMap", false);
+			skeletalAnimationShader.setFloat("material.roughness", config.roughness);
+			skeletalAnimationShader.setFloat("material.metallic", config.metallic);
+			skeletalAnimationShader.setFloat("material.occulusion", config.occulusion);
+		}
+
+	}, material.config);
+
+	skeletalAnimationShader.setFloat("ambientFactor", material.ambient);
+
+	skeletalAnimationShader.use();
 }
 
 void Renderer::setupColorShader(Material const& material) {

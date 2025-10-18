@@ -88,10 +88,17 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 		animations.push_back(processAnimation(scene->mAnimations[i]));
 	}
 
-	// Process node hirerchy..
-	rootBone = NO_BONE;
-	hasFoundRootBone = false;
-	processNodeHierarchy(scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
+	std::optional<Skeleton> skeletonOpt;
+
+	// Process node hirerchy.. (if this model has bones..)
+	if (bones.size()) {
+		Skeleton skeleton {};
+		skeleton.bones = std::move(bones);
+
+		// start recursingly processing..
+		processNodeHierarchy(skeleton, scene->mRootNode, NO_NODE);
+		skeletonOpt = std::move(skeleton);
+	}
 
 #if 0
 	for (auto& mesh : meshes) {
@@ -113,7 +120,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	printBone(rootBone, 0);
 #endif
 
-	return {{ std::move(meshes), std::move(materialNames), std::move(bones), rootBone, std::move(animations), maxDimension }};
+	return {{ std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension }};
 }
 
 Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, [[maybe_unused]] unsigned int vertexOffset) {
@@ -261,52 +268,70 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 	};
 }
 
-// different transformation names
-// -> mTransformation		: maps from local space to parent space.
-// -> globalTransformation	: maps from local space to model space. for root node, mTransformation is globalTransformation.
-void ModelLoader::processNodeHierarchy(aiNode const* node, glm::mat4x4 parentTransformation) {
+void ModelLoader::processNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex) {
 	// process node hierarchy..
 
 	// we verify if the current node is a bone...
 	auto boneIterator = boneNameToIndex.find(node->mName.C_Str());
 
+	bool isBone = false;
+	BoneIndex nodeBoneIndex = NO_BONE;
+
+	// we perform bone specific data handling..
 	if (boneIterator != boneNameToIndex.end()) {
 		auto&& [_, boneIndex] = *boneIterator;
+		isBone = true;
+		nodeBoneIndex = boneIndex;
 
-		if (!hasFoundRootBone) {
+		if (skeleton.rootBone == NO_BONE) {
 			// We found our root bone.
-			hasFoundRootBone = true;
-			bones[boneIndex].parentBone = NO_BONE;
-			rootBone = boneIndex;
+			skeleton.bones[boneIndex].parentBone = NO_BONE;
+			skeleton.rootBone = boneIndex;
 		}
 		else {
 			// store bone hirerachy information..
 			BoneIndex parentBoneIndex = findParentBone(node->mParent);
 
-			if (parentBoneIndex != NO_BONE && boneIndex != rootBone) {
-				bones[boneIndex].parentBone = parentBoneIndex;
-				bones[parentBoneIndex].boneChildrens.push_back(boneIndex);
+			if (parentBoneIndex != NO_BONE && boneIndex != skeleton.rootBone) {
+				skeleton.bones[boneIndex].parentBone = parentBoneIndex;
+				skeleton.bones[parentBoneIndex].boneChildrens.push_back(boneIndex);
 			}
 		}
+	}
+	
+	// we handle node hierarchy here..
+	ModelNodeIndex modelNodeIndex = static_cast<ModelNodeIndex>(skeleton.nodes.size());	// get an appropriate index for node.
+	
+	ModelNode modelNode {
+		node->mName.C_Str(),
+		toGlmMat4(node->mTransformation),
+		isBone,
+		nodeBoneIndex
+	};
 
-		// we save bone's transformation matrix.
-		bones[boneIndex].transformationMatrix = parentTransformation;
-
-		// we reset the parent transformation matrix..
-		parentTransformation = glm::mat4{ 1.f };
+	// no root node yet..
+	[[unlikely]] if (skeleton.rootNode == NO_NODE) {
+		skeleton.rootNode = modelNodeIndex;
 	}
 
+	skeleton.nodes.push_back(std::move(modelNode));
+	
+	// set up relationship..
+	skeleton.nodes[modelNodeIndex].parentNode = parentNodeIndex;
+
+	[[likely]] if (parentNodeIndex != NO_NODE) {
+		skeleton.nodes[parentNodeIndex].nodeChildrens.push_back(modelNodeIndex);
+	}
+	
+	// recurse downwards.
 	for (unsigned int i = 0; i < node->mNumChildren; ++i) {
 		aiNode const* childNode = node->mChildren[i];
-
-		// calculate child's global transformation -> which is parent's global transformation * children's parentTransformation.
-		// we keep chaining parent transformation matrix until we reach a bone.
-		glm::mat4x4 childParentTransformation = parentTransformation * toGlmMat4(childNode->mTransformation);
-		processNodeHierarchy(childNode, childParentTransformation);
+		processNodeHierarchy(skeleton, childNode, modelNodeIndex);
 	}
 }
 
-void ModelLoader::printBone(BoneIndex boneIndex, unsigned int padding) {
+void ModelLoader::printBone([[maybe_unused]] BoneIndex boneIndex, [[maybe_unused]] unsigned int padding) {
+#if 0
 	auto printPadding = [](unsigned int padding) {
 		for (unsigned int i = 0; i < padding; ++i) {
 			std::cout << ' ';
@@ -335,13 +360,14 @@ void ModelLoader::printBone(BoneIndex boneIndex, unsigned int padding) {
 
 	printMatrix(bones[boneIndex].offsetMatrix);
 	std::cout << std::endl;
-	printMatrix(bones[boneIndex].transformationMatrix);
+	printMatrix(skeleton.bones[boneIndex].transformationMatrix);
 
 	padding += 4;
 
 	for (auto& boneChildrenIndex : bones[boneIndex].boneChildrens) {
 		printBone(boneChildrenIndex, padding);
 	}
+#endif
 }
 
 Animation ModelLoader::processAnimation(aiAnimation const* animation) {

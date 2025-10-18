@@ -17,18 +17,14 @@
 #include "reflection.h"
 
 #include "animation.h"
-	
+#include "skeleton.h"
+
 #undef max
 
 // We use index to represent vertices and bones..
 using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
-using BoneIndex = unsigned short;
-using MaterialName = std::string;
 
-constexpr BoneIndex NO_BONE = std::numeric_limits<BoneIndex>::max();
-constexpr int NO_BONE_INDEX = -1;
-
-constexpr int MAX_BONE_INFLUENCE = 4;
+using MaterialName		= std::string;
 
 struct Vertex {
 	glm::vec3 pos;
@@ -48,48 +44,6 @@ struct Vertex {
 
 struct SimpleVertex {
 	glm::vec3 pos;
-};
-
-struct Bone {
-	std::string name;
-	glm::mat4x4 offsetMatrix;
-	glm::mat4x4 transformationMatrix;
-
-	// these will be filled by the node hierarchy.
-	BoneIndex parentBone = NO_BONE;
-	std::vector<BoneIndex> boneChildrens {};
-
-	REFLECTABLE(
-		name,
-		offsetMatrix,
-		transformationMatrix,
-		parentBone,
-		boneChildrens
-	)
-};
-
-struct VertexWeight {
-	std::array<int,		MAX_BONE_INFLUENCE>	boneIndices	{ NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX, NO_BONE_INDEX };
-	std::array<float,	MAX_BONE_INFLUENCE>	weights		{ 0.f, 0.f, 0.f, 0.f };
-
-	unsigned int numOfBones = 0;
-	
-	REFLECTABLE(
-		boneIndices,
-		weights
-	)
-
-	bool addBone(BoneIndex boneIndex, float weight) {
-		if (numOfBones >= MAX_BONE_INFLUENCE) {
-			return false;
-		}
-
-		boneIndices[numOfBones] = boneIndex;
-		weights[numOfBones] = weight;
-	
-		++numOfBones;
-		return true;
-	}
 };
 
 struct Mesh {
@@ -118,9 +72,8 @@ struct ModelData {
 	std::vector<Mesh> meshes;
 	std::unordered_set<MaterialName> materialNames;
 
-	// not all models have bones.., these may be empty.
-	std::vector<Bone> bones;
-	BoneIndex rootBone;
+	// skeleton.
+	std::optional<Skeleton> skeleton;
 
 	// animations :)
 	std::vector<Animation> animations;
@@ -130,8 +83,7 @@ struct ModelData {
 	REFLECTABLE(
 		meshes,
 		materialNames,
-		bones,
-		rootBone,
+		skeleton,
 		animations,
 		maxDimension
 	)

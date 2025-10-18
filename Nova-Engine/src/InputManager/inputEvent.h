@@ -64,6 +64,11 @@ enum class ScriptingInputEvents
 	KeyA = GLFW_KEY_A
 };
 
+// This input event tells the Animation System to toggle animation state.
+enum class ToggleAnimate {
+	Sentinel
+};
+
 // ======= Mouse movement and scroll specific ==========
 // Moving mouse position
 struct MousePosition {

@@ -5,8 +5,7 @@ Model::Model(ResourceID id, ResourceFilePath resourceFilePath, ModelData modelDa
 	Resource				{ id, std::move(resourceFilePath) },
 	meshes					{ std::move(modelData.meshes) },
 	materialNames			{ std::move(modelData.materialNames) },
-	bones					{ std::move(modelData.bones) },
-	rootBone				{ modelData.rootBone },
+	skeleton				{ std::move(modelData.skeleton) },
 	animations				{ std::move(modelData.animations) },
 	maxDimension			{ modelData.maxDimension }
 {}

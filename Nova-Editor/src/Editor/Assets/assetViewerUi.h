@@ -19,7 +19,8 @@ private:
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 
-	void displayBoneHierarchy(BoneIndex boneIndex, Model const& model);
+	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
+	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
 
 private:
 	ResourceID selectedResourceId;

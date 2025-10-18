@@ -1,6 +1,8 @@
 #pragma once
 #include <type_traits>
 #include <concepts>
+#include <optional>
+
 #include "type_alias.h"
 #include "physics.h"
 
@@ -34,7 +36,7 @@ concept isUnorderedMap = requires {
 	typename T::key_type;
 	typename T::mapped_type;
 
-		requires std::is_same_v<T, std::unordered_map<typename T::key_type, typename T::mapped_type>>;
+	requires std::is_same_v<T, std::unordered_map<typename T::key_type, typename T::mapped_type>>;
 };
 
 template<typename T>
@@ -50,6 +52,13 @@ concept isPair = requires {
 	typename T::second_type;
 
 	requires std::is_same_v<T, std::pair<typename T::first_type, typename T::second_type>>;
+};
+
+template<typename T>
+concept isOptional = requires {
+	typename T::value_type;
+
+	requires std::is_same_v<T, std::optional<typename T::value_type>>;
 };
 
 // Old school type traits.

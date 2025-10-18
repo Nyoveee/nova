@@ -34,7 +34,6 @@ inline void deserializeModel<glm::vec3>(std::ifstream& inputFile, glm::vec3& dat
 	readFromFile(inputFile, dataMember.x);
 	readFromFile(inputFile, dataMember.y);
 	readFromFile(inputFile, dataMember.z);
-
 }
 
 // vector 2
@@ -76,6 +75,26 @@ template <isPair T>
 inline void deserializeModel(std::ifstream& inputFile, T& pair) {
 	deserializeModel(inputFile, pair.first);
 	deserializeModel(inputFile, pair.second);
+}
+
+// ----------------------------------------------------
+// optional..
+template <isOptional T>
+inline void deserializeModel(std::ifstream& inputFile, T& optional) {
+	char firstByte;
+	inputFile.read(&firstByte, 1);
+
+	if (firstByte == 0) {
+		// optional was null, nothing is serialised.
+		return;
+	}
+	else if (firstByte == 1) {
+		optional = typename T::value_type{}; // default construct the underlying type.
+		deserializeModel<typename T::value_type>(inputFile, optional.value());
+	}
+	else {
+		assert(false && "Faulty first byte");
+	}
 }
 
 // we use partial template specialisation to redefine our element type..

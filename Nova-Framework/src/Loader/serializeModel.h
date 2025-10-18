@@ -16,7 +16,7 @@ void writeBytesToFile(std::ofstream& outputFile, T const& data) {
 // default implementation, if not explicitly implemented we flag an compile time error.
 template <typename T>
 inline void serializeModel(std::ofstream& outputFile, T const& dataMember) {
-	[] <bool flag = false, typename Ty = T, bool test = reflection::conceptReflectable<T>>() {
+	[] <bool flag = false, typename Ty = T, bool test = isOptional<T>>() {
 		static_assert(flag, "Did not account for all data members. " __FUNCSIG__);
 	}();
 }
@@ -72,6 +72,18 @@ template <isPair T>
 inline void serializeModel(std::ofstream& outputFile, T const& pair) {
 	serializeModel(outputFile, pair.first);
 	serializeModel(outputFile, pair.second);
+}
+
+// ----------------------------------------------------
+// optional..
+template <isOptional T>
+inline void serializeModel(std::ofstream& outputFile, T const& optional) {
+	char firstByte = optional ? 1 : 0;
+	outputFile.write(&firstByte, 1);
+
+	if (optional) {
+		serializeModel<typename T::value_type>(outputFile, optional.value());
+	}
 }
 
 // ----------------------------------------------------

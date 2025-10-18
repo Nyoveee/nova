@@ -7,7 +7,3 @@ Animation::Animation(std::string name, float durationInTicks, float ticksPerSeco
 	durationInSeconds	{ durationInTicks / ticksPerSecond },
 	animationChannels	{ std::move(animationChannels) }
 {}
-
-glm::mat4x4 Animation::getAnimatedTransformation([[maybe_unused]] float time) {
-	return glm::mat4x4();
-}
