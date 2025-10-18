@@ -70,7 +70,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 	newParticle.currentLifeTime = emitter.lifeTime;
 	newParticle.color = emitter.particleColorSelection.color;
 	if (emitter.particleColorSelection.randomizedColor)
-		newParticle.color = Color(RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1));
+		newParticle.color = ColorA(RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1));
 	switch (emitter.particleEmissionTypeSelection.emissionShape) {
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 		{

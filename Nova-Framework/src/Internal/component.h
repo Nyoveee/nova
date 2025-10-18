@@ -326,7 +326,7 @@ struct NavigationTestTarget
 struct Particle {
 	glm::vec3 position;
 	glm::vec3 velocity;
-	glm::vec3 color;
+	glm::vec4 color;
 	float size;
 	float currentLifeTime;
 };
@@ -357,7 +357,7 @@ struct ParticleEmissionTypeSelection {
 };
 struct ParticleColorSelection {
 	bool randomizedColor = false;
-	Color color = Color{ 1.f, 1.f, 1.f };
+	ColorA color = ColorA{ 1.f, 1.f, 1.f,1.f };
 };
 struct ParticleEmitter
 {

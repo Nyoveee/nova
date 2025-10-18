@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Internal\Interpolation.h" />
     <ClInclude Include="src\Internal\RandomRange.h" />
     <ClInclude Include="src\Assets\navMesh.h" />
     <ClInclude Include="src\Assets\resource.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="src\Internal\Logger.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Internal\Interpolation.cpp" />
     <ClCompile Include="src\Internal\RandomRange.cpp" />
     <ClCompile Include="src\Assets\audio.cpp" />
     <ClCompile Include="src\Assets\cubemap.cpp" />

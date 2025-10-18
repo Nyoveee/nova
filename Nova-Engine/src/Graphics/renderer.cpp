@@ -694,7 +694,7 @@ void Renderer::renderParticles()
 		glBindTextureUnit(0, texture->getTextureId());
 
 		for (Particle const& particle : emitter.particles) {
-			particleShader.setVec3("color", particle.color);
+			particleShader.setVec4("color", particle.color);
 			// CameraFacing modelmatrix
 			glm::mat4 model{ glm::identity<glm::mat4>() };
 			model = glm::translate(model, particle.position);

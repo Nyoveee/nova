@@ -91,6 +91,14 @@ inline void DeserializeProperty<Color>(Json const& jsonComponent, const char* da
 	dataMember = vec;
 }
 template<>
+inline void DeserializeProperty<ColorA>(Json const& jsonComponent, const char* dataMemberName, ColorA& dataMember) {
+	glm::vec4 vec{ jsonComponent[dataMemberName]["r"],
+				   jsonComponent[dataMemberName]["g"],
+				   jsonComponent[dataMemberName]["b"],
+				   jsonComponent[dataMemberName]["a"] };
+	dataMember = vec;
+}
+template<>
 inline void DeserializeProperty<glm::quat>(Json const& jsonComponent, const char* dataMemberName, glm::quat& dataMember) {
 	glm::quat vec{ jsonComponent[dataMemberName]["w"],
 				   jsonComponent[dataMemberName]["x"],
@@ -252,5 +260,5 @@ template<>
 inline void DeserializeProperty<ParticleColorSelection>(Json const& jsonComponent, const char* dataMemberName, ParticleColorSelection& dataMember) {
 	DeserializeProperty<bool>(jsonComponent[dataMemberName], "Randomized Color", dataMember.randomizedColor);
 	if (!dataMember.randomizedColor)
-		DeserializeProperty<Color>(jsonComponent[dataMemberName], "Color", dataMember.color);
+		DeserializeProperty<ColorA>(jsonComponent[dataMemberName], "Color", dataMember.color);
 }

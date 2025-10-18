@@ -65,6 +65,13 @@ inline void SerializeProperty<Color>(Json& jsonComponent, const char* dataMember
 	jsonComponent[dataMemberName]["b"] = dataMember.b();
 }
 template<>
+inline void SerializeProperty<ColorA>(Json& jsonComponent, const char* dataMemberName, ColorA const& dataMember) {
+	jsonComponent[dataMemberName]["r"] = dataMember.r();
+	jsonComponent[dataMemberName]["g"] = dataMember.g();
+	jsonComponent[dataMemberName]["b"] = dataMember.b();
+	jsonComponent[dataMemberName]["a"] = dataMember.a();
+}
+template<>
 inline void SerializeProperty<glm::quat>(Json& jsonComponent, const char* dataMemberName, glm::quat const& dataMember) {
 	jsonComponent[dataMemberName]["w"] = dataMember.w;
 	jsonComponent[dataMemberName]["x"] = dataMember.x;
@@ -222,5 +229,5 @@ template<>
 inline void SerializeProperty<ParticleColorSelection>(Json& jsonComponent, const char* dataMemberName, ParticleColorSelection const& dataMember) {
 	SerializeProperty<bool>(jsonComponent[dataMemberName], "Randomized Color", dataMember.randomizedColor);
 	if (!dataMember.randomizedColor)
-		SerializeProperty<Color>(jsonComponent[dataMemberName], "Color", dataMember.color);
+		SerializeProperty<ColorA>(jsonComponent[dataMemberName], "Color", dataMember.color);
 }
