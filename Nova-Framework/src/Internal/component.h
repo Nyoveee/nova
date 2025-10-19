@@ -35,7 +35,7 @@ class Audio;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text
 
 
 using MaterialName = std::string;
@@ -389,5 +389,18 @@ struct ParticleEmitter
 		burstAmount,
 		lightIntensity,
 		lightattenuation
+	)
+};
+
+struct Text {
+	TypedResourceID<Font> font;
+	std::string text;
+	int fontSize;
+
+	REFLECTABLE
+	(
+		font,
+		text,
+		fontSize
 	)
 };

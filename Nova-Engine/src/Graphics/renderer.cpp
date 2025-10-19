@@ -48,12 +48,15 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
+	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
 	mainVAO						{},
-	debugVAO				{},
+	debugVAO					{},
+	textVAO						{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
+	textVBO						{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	EBO							{ AMOUNT_OF_MEMORY_ALLOCATED },
 
 								// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
@@ -147,6 +150,20 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugVAO, 0, debugBindingIndex);
+
+	// ======================================================
+	// Text VAO configuration
+	// - No EBO. A much simpler VAO containing only position and texture.
+	// ======================================================
+	glGenVertexArrays(1, &textVAO);
+	glGenBuffers(1, &textVBO);
+	glBindVertexArray(textVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 Renderer::~Renderer() {
@@ -622,6 +639,63 @@ void Renderer::renderModels() {
 	}
 
 	glDisable(GL_CULL_FACE);
+}
+
+void Renderer::renderTexts()
+{
+	// activate corresponding render state	
+	textShader.use();
+	//glUniform3f(glGetUniformLocation(s.Program, "textColor"), color.x, color.y, color.z);
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(textVAO);
+	int x = 250;
+	int y = 100;
+
+	// iterate through all characters
+	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
+		std::string::const_iterator c;
+		// Retrieves font asset from asset manager.
+		auto [font, _] = resourceManager.getResource<Font>(text.font);
+
+		if (!font) {
+			// missing model.
+			std::cout << "Missing font\n";
+			continue;
+		}
+
+		for (c = text.text.begin(); c != text.text.end(); c++)
+		{
+			Font::Character ch = font->Characters[*c];
+
+			float xpos = x + ch.bearing.x * transform.scale.x;
+			float ypos = y - (ch.size.y - ch.bearing.y) * transform.scale.y;
+
+			float w = ch.size.x * transform.scale.x;
+			float h = ch.size.y * transform.scale.y;
+			// update VBO for each character
+			float vertices[6][4] = {
+				{ xpos,     ypos + h,   0.0f, 0.0f },
+				{ xpos,     ypos,       0.0f, 1.0f },
+				{ xpos + w, ypos,       1.0f, 1.0f },
+
+				{ xpos,     ypos + h,   0.0f, 0.0f },
+				{ xpos + w, ypos,       1.0f, 1.0f },
+				{ xpos + w, ypos + h,   1.0f, 0.0f }
+			};
+			// render glyph texture over quad
+			glBindTexture(GL_TEXTURE_2D, ch.textureID);
+			// update content of VBO memory
+			glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			// render quad
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+			x += (ch.advance >> 6) * transform.scale.x; // bitshift by 6 to get value in pixels (2^6 = 64)
+		}
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 void Renderer::renderOutline() {

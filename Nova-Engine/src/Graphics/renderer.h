@@ -111,6 +111,9 @@ private:
 	// render all MeshRenderers.
 	void renderModels();
 
+	// render all Texts.
+	void renderTexts();
+
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
@@ -176,6 +179,10 @@ private:
 	BufferObject debugNavMeshVBO;
 	BufferObject debugParticleShapeVBO;
 
+	// Text VAO and VBO
+	GLuint textVAO;
+	GLuint textVBO;
+
 	Camera camera;
 
 	// contains all the final rendering.
@@ -212,6 +219,7 @@ public:
 	Shader objectIdShader;
 	Shader skyboxShader;
 	Shader particleShader;
+	Shader textShader;
 	
 	// HDR tone mapping shader
 	Shader toneMappingShader;
