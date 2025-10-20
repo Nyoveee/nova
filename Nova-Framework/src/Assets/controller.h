@@ -10,14 +10,14 @@ class Controller : public Resource {
 public:
 	struct Data;
 	struct Node {
-		ControllerNodeID index		  = NO_CONTROLLER_NODE;
+		ControllerNodeID id			  = NO_CONTROLLER_NODE;
 		ControllerNodeID previousNode = NO_CONTROLLER_NODE;
 		ControllerNodeID nextNode	  = NO_CONTROLLER_NODE;
 
 		TypedResourceID<Model> animation = INVALID_RESOURCE_ID;
 
 		REFLECTABLE(
-			index,
+			id,
 			previousNode,
 			nextNode,
 			animation

@@ -113,7 +113,7 @@ void AnimatorController::displayLeftPanel(Controller& controller) {
 	ImGui::EndChild();
 }
 
-void AnimatorController::displayRightPanel([[maybe_unused]] Animator const& animator, Controller const& controller) {
+void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, Controller& controller) {
 	ImGui::BeginChild("Right Panel");
 
 	ed::SetCurrentEditor(context);
@@ -121,58 +121,24 @@ void AnimatorController::displayRightPanel([[maybe_unused]] Animator const& anim
 	// Start of the node editor..
 	ed::Begin("Node Editor", ImVec2(0.0f, 0.0f));
 
-	int counter = 1;
-
-	// Render all nodes..
-	for (auto&& [id, node] : controller.data.nodes) {
-		ImGui::PushID(static_cast<int>(static_cast<std::size_t>(id)));
-		ed::NodeId nodeId = static_cast<std::size_t>(id);
-
-		// Get animation name..
-		auto* descriptor = assetManager.getDescriptor(node.animation);
-		
-		if (!descriptor) {
-			continue;
-		}
-
-		// Render a node..
-		ed::BeginNode(nodeId);
-			ImGui::Text("%s", descriptor->name.c_str());
-
-			ed::BeginPin(counter++, ed::PinKind::Input);
-				ImGui::Text("-> In");
-			ed::EndPin();
-
-			ImGui::SameLine();
-
-			ed::BeginPin(counter++, ed::PinKind::Output);
-				ImGui::Text("Out ->");
-			ed::EndPin();
-		ed::EndNode();
-
-		ImGui::PopID();
-	}
+	//
+	// 1) Render all the nodes..
+	//
+	renderNodes(controller);
 
 	//
-	// 2) Handle interactions
+	// 2) Render all the links..
+	// 
+	renderNodeLinks(controller);
+
+	//
+	// 3) Handle interactions
 	//
 
-	// Handle creation action, returns true if editor want to create new object (node or link)
 	if (ed::BeginCreate()) {
-		ed::PinId inputPinId, outputPinId;
-
-		// QueryNewLink returns true if editor want to create new link between pins.
-		if (ed::QueryNewLink(&inputPinId, &outputPinId)) {
-			if (inputPinId && outputPinId) {
-				// We first verify
-				
-				// ed::AcceptNewItem() return true when user release mouse button.
-				if (ed::AcceptNewItem()) {
-				
-				}
-			}
-		}
+		handleNodeLinking(controller);
 	}
+
 	ed::EndCreate(); // Wraps up object creation action handling.
 
 	ed::End();
@@ -385,4 +351,135 @@ void AnimatorController::handleDragAndDrop(Controller& controller) {
 		NO_CONTROLLER_NODE,
 		animationId
 	}});
+}
+
+void AnimatorController::renderNodes(Controller& controller) {
+	pinMetaData.clear();
+	nodeToPins.clear();
+
+	int counter = 1;
+
+	// Render the start node..
+	ed::BeginNode(startNodeId);
+	ImGui::Text("Start");
+
+	ImGui::SameLine();
+
+	ed::BeginPin(startPinId, ed::PinKind::Output);
+	ImGui::Text("Out ->");
+	ed::EndPin();
+	ed::EndNode();
+
+	// Render all nodes..
+	for (auto&& [id, node] : controller.data.nodes) {
+		ImGui::PushID(static_cast<int>(static_cast<std::size_t>(id)));
+		ed::NodeId nodeId = static_cast<std::size_t>(id);
+		ed::PinId inPinId = counter++;
+		ed::PinId outPinId = counter++;
+
+		// Get animation name..
+		auto* descriptor = assetManager.getDescriptor(node.animation);
+
+		if (!descriptor) {
+			continue;
+		}
+
+		// Render a node..
+		ed::BeginNode(nodeId);
+		ImGui::Text("%s", descriptor->name.c_str());
+
+		ed::BeginPin(inPinId, ed::PinKind::Input);
+		ImGui::Text("-> In");
+		ed::EndPin();
+
+		ImGui::SameLine();
+
+		ed::BeginPin(outPinId, ed::PinKind::Output);
+		ImGui::Text("Out ->");
+		ed::EndPin();
+		ed::EndNode();
+
+		ImGui::PopID();
+
+		// save mapping from pin to nodes..
+		std::pair<std::size_t, PinData> pairIn { static_cast<std::size_t>(inPinId),  PinData{ id, PinData::Type::In } };
+		std::pair<std::size_t, PinData> pairOut{ static_cast<std::size_t>(outPinId), PinData{ id, PinData::Type::Out } };
+
+		pinMetaData.insert(pairIn);
+		pinMetaData.insert(pairOut);
+
+		// save mapping from nodes to pins..
+		nodeToPins.insert({ id, Pins{ inPinId, outPinId } });
+	}
+}
+
+void AnimatorController::renderNodeLinks(Controller& controller) {
+	auto&& nodes = controller.data.nodes;
+	int linkCounter = 1;
+
+	// Link the start node if it points to something valid..
+	auto entryIterator = nodes.find(controller.data.entryNode);
+
+	if (entryIterator != nodes.end()) {
+		ed::LinkId linkId = linkCounter++;
+
+		// get the in pin of this new node..
+		auto&& [inPin, outPin] = nodeToPins.at(entryIterator->second.id);
+
+		// create link..
+		ed::Link(linkId, startPinId, inPin);
+	}
+}
+
+void AnimatorController::handleNodeLinking(Controller& controller) {
+	auto&& nodes = controller.data.nodes;
+
+	// Handle creation action, returns true if editor want to create new object (node or link)
+	ed::PinId inPinId, outPinId;
+
+	// QueryNewLink returns true if editor want to create new link between pins.
+	if (!ed::QueryNewLink(&outPinId, &inPinId)) {
+		return;
+	}
+
+	// no valid connect made yet..
+	if (!inPinId || !outPinId) {
+		return;
+	}
+
+	// ed::AcceptNewItem() return true when user release mouse button.
+	if (!ed::AcceptNewItem()) {
+		return;
+	}
+
+	auto&& inPinIterator  = pinMetaData.find(static_cast<std::size_t>(inPinId));
+	auto&& outPinIterator = pinMetaData.find(static_cast<std::size_t>(outPinId));
+
+	// re assigning our start node..
+	if (outPinId == startPinId && inPinIterator != pinMetaData.end()) {
+		controller.data.entryNode = inPinIterator->second.node;
+	}
+	// these iterators are valid..
+	else if (inPinIterator != pinMetaData.end() && outPinIterator != pinMetaData.end()) {
+		auto&& [_,		   pinInData]	= *inPinIterator;
+		auto&& [__,		   pinOutData]	= *outPinIterator;
+		auto&& [nodeInId,  pinInType]	= pinInData;
+		auto&& [nodeOutId, pinOutType]	= pinOutData;
+
+		// pins are not in and out respectively.. reject!
+		if (pinInType != PinData::Type::In || pinOutType != PinData::Type::Out) {
+			ed::RejectNewItem();
+		}
+		else {
+			// we link them..
+			Controller::Node& nodeIn = nodes.at(nodeInId);
+			Controller::Node& nodeOut = nodes.at(nodeOutId);
+
+			nodeIn.nextNode = nodeOutId;
+			nodeOut.previousNode = nodeInId;
+		}
+	}
+	else {
+		ed::RejectNewItem();
+	}
 }

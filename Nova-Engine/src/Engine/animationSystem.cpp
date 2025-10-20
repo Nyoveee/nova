@@ -56,19 +56,18 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 		// retrieve the current animation based on current node..
 		auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
 
-		if (!animation || animation->animations.size()) {
+		if (!animation || animation->animations.empty()) {
 			continue;
 		}
 
+		// advance time..
+		animator.timeElapsed += dt;
+
 		// check if enough time has elapsed, if so we go to the next node.
-		if (animator.timeElapsed > animation->animations[0].durationInSeconds) {
+		if (animator.timeElapsed >= animation->animations[0].durationInSeconds) {
 			animator.timeElapsed = 0;
 			animator.currentNode = currentNode.nextNode;
 			animator.currentAnimation = currentNode.animation;
-		}
-		else {
-			// advance time..
-			animator.timeElapsed += dt;
 		}
 	}
 
