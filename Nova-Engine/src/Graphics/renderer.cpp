@@ -485,6 +485,10 @@ void Renderer::prepareRendering() {
 	// ..
 }
 
+void Renderer::prepareGameViewport() {
+	//make a new frame buffer to hold info on game camera for game viewport
+}
+
 void Renderer::renderSkyBox() {
 	glDisable(GL_DEPTH_TEST);
 

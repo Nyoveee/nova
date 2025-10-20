@@ -105,6 +105,9 @@ private:
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
 
+	// set up game object camera framebuffers
+	void prepareGameViewport();
+
 	// render skybox
 	void renderSkyBox();
 
@@ -170,6 +173,7 @@ private:
 	BufferObject debugNavMeshVBO;
 
 	Camera camera;
+	Camera gameCamera;
 
 	// contains all the final rendering.
 	// we use 2 frame buffers to alternate between the two between post processing..
