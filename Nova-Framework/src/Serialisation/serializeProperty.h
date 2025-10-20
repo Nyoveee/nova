@@ -1,6 +1,6 @@
 #pragma once
 #include "type_concepts.h"
-#include "ECS/ECS.h"
+#include "Component.h"
 #include "magic_enum.hpp"
 
 #include <json/json.hpp>

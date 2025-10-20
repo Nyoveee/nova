@@ -7,14 +7,7 @@
 #include "compiler.h"
 
 #include "modelLoader.h"
-#include "serializeModel.h"
-
-namespace {
-	template <typename T>
-	void writeBytesToFile(std::ofstream& resourceFile, T const& data) {
-		resourceFile.write(reinterpret_cast<const char*>(&data), sizeof(data));
-	}
-}
+#include "Serialisation/serializeToBinary.h"
 
 int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat) {
 	std::string format;
@@ -204,7 +197,7 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 			[[maybe_unused]] auto dataMember = fieldData.get();
 			using DataMemberType = std::decay_t<decltype(dataMember)>;
 
-			serializeModel<DataMemberType>(resourceFile, dataMember);
+			serializeToBinary<DataMemberType>(resourceFile, dataMember);
 		}, 
 	modelData);
 
@@ -340,6 +333,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "NavMesh") {
 		return Compiler::compileAsset<NavMesh>(descriptorFilepath);
+	}
+	else if (resourceType == "Controller") {
+		return Compiler::compileAsset<Controller>(descriptorFilepath);
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);

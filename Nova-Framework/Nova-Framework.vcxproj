@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Assets\animation.h" />
+    <ClInclude Include="src\Assets\controller.h" />
     <ClInclude Include="src\Internal\RandomRange.h" />
     <ClInclude Include="src\Assets\navMesh.h" />
     <ClInclude Include="src\Assets\resource.h" />
@@ -189,13 +190,18 @@
     <ClInclude Include="src\Internal\type_alias.ipp" />
     <ClInclude Include="src\Internal\type_concepts.h" />
     <ClInclude Include="src\Internal\vertex.h" />
-    <ClInclude Include="src\Loader\deserializeModel.h" />
+    <ClInclude Include="src\Serialisation\deserializeFromBinary.h" />
     <ClInclude Include="src\Loader\loader.h" />
     <ClInclude Include="src\Internal\Logger.h" />
-    <ClInclude Include="src\Loader\serializeModel.h" />
+    <ClInclude Include="src\Serialisation\serializeToBinary.h" />
+    <ClInclude Include="src\Serialisation\deserializeProperty.h" />
+    <ClInclude Include="src\Serialisation\serialisation.h" />
+    <ClInclude Include="src\Serialisation\serialisation.ipp" />
+    <ClInclude Include="src\Serialisation\serializeProperty.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Assets\animation.cpp" />
+    <ClCompile Include="src\Assets\controller.cpp" />
     <ClCompile Include="src\Internal\RandomRange.cpp" />
     <ClCompile Include="src\Assets\audio.cpp" />
     <ClCompile Include="src\Assets\cubemap.cpp" />
@@ -222,11 +228,13 @@
     <ClCompile Include="src\Imported\glad.cpp" />
     <ClCompile Include="src\Internal\Logger.cpp" />
     <ClCompile Include="src\Internal\nova_math.cpp" />
+    <ClCompile Include="src\Loader\controllerLoader.cpp" />
     <ClCompile Include="src\Loader\cubemapLoader.cpp" />
     <ClCompile Include="src\Loader\modelLoader.cpp" />
     <ClCompile Include="src\Loader\navMeshLoader.cpp" />
     <ClCompile Include="src\Loader\scriptLoader.cpp" />
     <ClCompile Include="src\Loader\textureLoader.cpp" />
+    <ClCompile Include="src\Serialisation\serialisation.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

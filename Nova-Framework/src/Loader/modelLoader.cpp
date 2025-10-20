@@ -6,7 +6,7 @@
 
 #include "model.h"
 
-#include "deserializeModel.h"
+#include "Serialisation/deserializeFromBinary.h"
 
 std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
 	Logger::info("Loading model resource file {}", resourceFilePath.string);
@@ -28,7 +28,7 @@ std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, Re
 				auto&& dataMember = fieldData.get();
 				using DataMemberType = std::decay_t<decltype(dataMember)>;
 
-				deserializeModel<DataMemberType>(resourceFile, dataMember);
+				deserializeFromBinary<DataMemberType>(resourceFile, dataMember);
 			},
 		modelData);
 #if 0

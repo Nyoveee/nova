@@ -50,7 +50,7 @@ private:
 
 	void dragAndDrop(const char* name, std::size_t id);
 	
-	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "");
+	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
 private:
 	Editor& editor;

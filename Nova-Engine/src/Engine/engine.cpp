@@ -36,8 +36,11 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 }
 
 Engine::~Engine() {
-	stopSimulation();
-	setupSimulationFunction.value()();
+	if (inSimulationMode) {
+		stopSimulation();
+		setupSimulationFunction.value()();
+	}
+
 	Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
 }
 

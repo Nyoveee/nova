@@ -73,8 +73,6 @@ AudioSystem::AudioSystem(Engine& engine) :
 }
 
 AudioSystem::~AudioSystem() {
-	unloadAllSounds();
-	
 	if (fmodSystem) {
 		fmodSystem->close();
 		fmodSystem->release();

@@ -12,6 +12,7 @@
 #include "Assets/assetViewerUi.h"
 #include "Assets/assetManagerUi.h"
 #include "Assets/animationTimeline.h"
+#include "Assets/animatorController.h"
 
 #include "gameViewPort.h"
 #include "ComponentInspection/componentInspector.h"
@@ -88,6 +89,7 @@ public:
 	ResourceManager& resourceManager;
 
 	NavMeshGeneration navMeshGenerator;
+
 private:
 	Window& window;
 
@@ -98,6 +100,7 @@ private:
 	NavigationWindow navigationWindow;
 	NavBar navBar;
 	AnimationTimeLine animationTimeLine;
+	AnimatorController animatorController;
 
 private:
 	std::vector<entt::entity> selectedEntities;

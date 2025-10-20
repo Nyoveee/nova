@@ -2,6 +2,7 @@
 #include <type_traits>
 #include <concepts>
 #include <optional>
+#include <variant>
 
 #include "type_alias.h"
 #include "physics.h"
@@ -61,9 +62,22 @@ concept isOptional = requires {
 	requires std::is_same_v<T, std::optional<typename T::value_type>>;
 };
 
+template<typename T>
+concept isTypedID = requires {
+	typename T::Underlying_ID;
+	static_cast<typename T::Underlying_ID>(std::declval<T>());
+};
+
 // Old school type traits.
+// Check if its std::array
 template <typename T>
 struct is_std_array : std::false_type {};
 
 template <typename T, std::size_t N>
 struct is_std_array<std::array<T, N>> : std::true_type {};
+
+// Check if its std::variant
+template<typename T> struct is_variant : std::false_type {};
+
+template<typename ...Args>
+struct is_variant<std::variant<Args...>> : std::true_type {};

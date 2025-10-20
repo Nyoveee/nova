@@ -9,6 +9,8 @@
 #include "cubemap.h"
 #include "Engine/engine.h"
 
+#include "Serialisation/serializeToBinary.h"
+
 #define RecordAssetSubdirectory(AssetType) \
 	subAssetDirectories.insert({ Family::id<AssetType>(), descriptorDirectory / #AssetType })
 
@@ -139,20 +141,37 @@ AssetManager::~AssetManager() {
 		serialiseFunctorPtr->operator()(id, *this);
 	}
 #endif
+
+	// For controller, asset manager serialises all of them in the end.
+	auto const& controllerIds = resourceManager.getAllResources<Controller>();
+
+	for (auto const& controllerId : controllerIds) {
+		auto const& [controller, _] = resourceManager.getResource<Controller>(controllerId);
+		
+		if (!controller) {
+			Logger::error("Failed to serialise {}", static_cast<std::size_t>(controllerId));
+			continue;
+		}
+
+		// get asset file path.
+		auto iterator = assetToDescriptor.find(controllerId);
+
+		if (iterator == assetToDescriptor.end()) {
+			Logger::error("Failed to serialise {}", static_cast<std::size_t>(controllerId));
+			continue;
+		}
+
+		auto&& [__, descriptor] = *iterator;
+		
+		AssetFilePath const& assetFilePath = descriptor->filepath;
+		
+		// overwrite the original asset file.
+		std::ofstream outputFile{ assetFilePath, std::ios::binary };
+		serializeToBinary(outputFile, *controller);
+
+		Logger::info("Serialised controller: {}", assetFilePath.string);
+	}
 }
-
-#if 0
-
-
-std::string AssetManager::GetRunTimeDirectory() {
-	std::string runtimeDirectory = std::string(MAX_PATH, '\0');
-	GetModuleFileNameA(nullptr, runtimeDirectory.data(), MAX_PATH);
-	PathRemoveFileSpecA(runtimeDirectory.data());
-	runtimeDirectory.resize(std::strlen(runtimeDirectory.data()));
-	return runtimeDirectory;
-}
-
-#endif
 
 void AssetManager::submitCallback(std::function<void()> callback) {
 	std::lock_guard lock{ queueCallbackMutex };
@@ -200,6 +219,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".navmesh") {
 		return initialiseResourceFile.template operator()<NavMesh>();
+	}
+	else if (fileExtension == ".controller") {
+		return initialiseResourceFile.template operator()<Controller>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);

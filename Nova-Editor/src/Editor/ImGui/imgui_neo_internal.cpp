@@ -8,6 +8,10 @@
 #include "imgui_internal.h"
 #include <cstdint>
 
+#pragma warning( push )
+#pragma warning( disable: 4244 )
+#pragma warning( disable: 4267 )
+
 namespace ImGui {
     void RenderNeoSequencerBackground(const ImVec4 &color, const ImVec2 & cursor, const ImVec2 &size, ImDrawList * drawList, float sequencerRounding) {
         if(!drawList) drawList = ImGui::GetWindowDrawList();
@@ -165,3 +169,5 @@ namespace ImGui {
         }
     }
 }
+
+#pragma warning( pop )

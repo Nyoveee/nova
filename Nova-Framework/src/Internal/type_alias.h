@@ -87,6 +87,8 @@ private:
 // Every InputEvent (a type) in Input Manager will be associated with a unique number.
 
 struct EventID {
+	using Underlying_ID = std::size_t;
+
 	constexpr explicit EventID(std::size_t id);
 
 public:
@@ -95,10 +97,12 @@ public:
 	friend struct std::hash<EventID>;
 
 private:
-	std::size_t id;
+	Underlying_ID id;
 };
 
 struct ObserverID {
+	using Underlying_ID = std::size_t;
+	
 	constexpr explicit ObserverID(std::size_t id);
 	constexpr explicit operator std::size_t() const;
 
@@ -108,11 +112,13 @@ public:
 	friend struct std::hash<ObserverID>;
 
 private:
-	std::size_t id;
+	Underlying_ID id;
 };
 
 // Game objects hold reference to assets by using an ID.
 struct ResourceID {
+	// using Underlying_ID = std::size_t;
+
 	constexpr ResourceID();
 	constexpr ResourceID(std::size_t id);
 	constexpr explicit operator std::size_t() const;
@@ -137,6 +143,8 @@ struct TypedResourceID : public ResourceID {
 // an id given to the template type parameter of assets.
 // for an example, type Texture could have id of 5, and Model could have id of 7.
 struct ResourceTypeID {
+	using Underlying_ID = std::size_t;
+
 	constexpr ResourceTypeID();
 	constexpr ResourceTypeID(std::size_t id);
 	constexpr explicit operator std::size_t() const;
@@ -147,10 +155,12 @@ public:
 	friend struct std::hash<ResourceTypeID>;
 
 private:
-	std::size_t id;
+	Underlying_ID id;
 };
 
 struct FolderID {
+	using Underlying_ID = std::size_t;
+
 	constexpr FolderID();
 	constexpr FolderID(std::size_t id);
 	constexpr explicit operator std::size_t() const;
@@ -161,10 +171,12 @@ public:
 	friend struct std::hash<FolderID>;
 
 private:
-	std::size_t id;
+	Underlying_ID id;
 };
 
 struct AudioInstanceID {
+	using Underlying_ID = std::size_t;
+
 	constexpr AudioInstanceID();
 	constexpr AudioInstanceID(std::size_t id);
 	constexpr explicit operator std::size_t() const;
@@ -175,7 +187,23 @@ public:
 	friend struct std::hash<AudioInstanceID>;
 
 private:
-	std::size_t id;
+	Underlying_ID id;
+};
+
+struct ControllerNodeID {
+	using Underlying_ID = std::size_t;
+
+	constexpr ControllerNodeID();
+	constexpr ControllerNodeID(std::size_t id);
+	constexpr explicit operator std::size_t() const;
+
+public:
+	constexpr friend bool operator==(ControllerNodeID const& lhs, ControllerNodeID const& rhs);
+	constexpr friend bool operator<(ControllerNodeID const& lhs, ControllerNodeID const& rhs);
+	friend struct std::hash<ControllerNodeID>;
+
+private:
+	Underlying_ID id;
 };
 
 // ========================================

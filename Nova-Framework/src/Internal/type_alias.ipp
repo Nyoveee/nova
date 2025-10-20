@@ -193,6 +193,32 @@ constexpr AudioInstanceID::operator std::size_t() const {
 	return id;
 }
 
+// ================ ControllerNodeID ==================
+constexpr ControllerNodeID::ControllerNodeID()				 : id{}		{}
+constexpr ControllerNodeID::ControllerNodeID(std::size_t id) : id{ id } {}
+
+constexpr bool operator==(ControllerNodeID const& lhs, ControllerNodeID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(ControllerNodeID const& lhs, ControllerNodeID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+template<>
+struct std::hash<ControllerNodeID> {
+	std::size_t operator()(ControllerNodeID const& folderId) const noexcept {
+		return std::hash<std::size_t>{}(folderId.id);
+	}
+};
+
+constexpr ControllerNodeID::operator std::size_t() const {
+	return id;
+}
+
+constexpr ControllerNodeID NO_CONTROLLER_NODE	= std::numeric_limits<std::size_t>::max();
+constexpr ControllerNodeID ENTRY_NODE			= std::numeric_limits<std::size_t>::max();
+
 // ========================================
 // Euler angles
 // ========================================

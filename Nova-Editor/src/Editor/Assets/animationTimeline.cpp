@@ -37,7 +37,7 @@ AnimationTimeLine::AnimationTimeLine(Editor& editor) :
 
 void AnimationTimeLine::update() {
 	ImGui::Begin(ICON_FA_TIMELINE " Animation");
-
+#if 0
 	// ===================================================================================
 	// We attempt to retrieve animation clip from the animator component of the currently selected entity.
 	// ===================================================================================
@@ -129,6 +129,7 @@ void AnimationTimeLine::update() {
 
 		ImGui::EndNeoSequencer();
 	}
+#endif
 
 	ImGui::End();
 }

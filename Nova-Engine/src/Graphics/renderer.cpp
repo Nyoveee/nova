@@ -462,6 +462,7 @@ void Renderer::prepareRendering() {
 	// ==== Blinn Phong ====
 	blinnPhongShader.setVec3("cameraPos", camera.getPos());
 	PBRShader.setVec3("cameraPos", camera.getPos());
+	skeletalAnimationShader.setVec3("cameraPos", camera.getPos());
 
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;

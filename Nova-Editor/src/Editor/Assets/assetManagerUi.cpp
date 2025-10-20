@@ -9,6 +9,8 @@
 
 #include "../ImGui/misc/cpp/imgui_stdlib.h"
 
+#include "Serialisation/serializeToBinary.h"
+
 #include <sstream>
 #include <Windows.h>
 
@@ -55,7 +57,7 @@ void AssetManagerUI::update() {
 }
 
 void AssetManagerUI::displayLeftNavigationPanel() {
-	ImGui::BeginChild("(Left) Navigation Panel", ImVec2(200, 0), true);
+	ImGui::BeginChild("(Left) Navigation Panel", ImVec2(200, 0), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
 	bool toShow = ImGui::TreeNodeEx("Content", ImGuiTreeNodeFlags_DefaultOpen);
 
 	// Seperator has some inbuilt indentable so let's unindent it for a border effect.
@@ -260,8 +262,6 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 			handleThumbnailDoubleClick(resourceId);
 		}
 	);
-
-
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
@@ -299,6 +299,17 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 			}
 		}
 		
+		if (ImGui::MenuItem("[+] Create New Controller")) {
+			std::optional<std::ofstream> opt = createAssetFile(".controller", "", true);
+
+			if (!opt) {
+				Logger::error("Failed to create animation controller file.");
+			}
+
+			Controller::Data data {};
+			serializeToBinary(opt.value(), data);
+		}
+
 		if (ImGui::MenuItem("[+] Create New Script")) {
 			static int counter = 0;
 			std::string className = "NewScript" + std::to_string(counter++);
@@ -365,9 +376,7 @@ void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextur
 		doubleClickCallback();
 	}
 
-	if (resourceManager.isResource<Scene>(ResourceID{ resourceIdOrFolderId })) {
-		dragAndDrop(name, resourceIdOrFolderId);
-	}
+	dragAndDrop(name, resourceIdOrFolderId);
 
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);
@@ -426,17 +435,26 @@ void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
 		return;
 	}
 
-	if (ImGui::BeginDragDropSource()) {
-		std::pair<size_t, const char*> map{id, name};
-		ImGui::SetDragDropPayload("SCENE_ITEM", &map, sizeof(map));
+	auto beginDragging = [&](const char* dragSourceName) {
+		if (ImGui::BeginDragDropSource()) {
+			std::pair<size_t, const char*> map{ id, name };
+			ImGui::SetDragDropPayload(dragSourceName, &map, sizeof(map));
 
-		ImGui::Text("Dragging: %s", name);
+			ImGui::Text("Dragging: %s", name);
 
-		ImGui::EndDragDropSource();
+			ImGui::EndDragDropSource();
+		}
+	};
+
+	if (resourceManager.isResource<Scene>(id)) {
+		beginDragging("DRAGGING_SCENE_ITEM");
+	}
+	else if (resourceManager.isResource<Model>(id)) {
+		beginDragging("DRAGGING_ANIMATION_ITEM");
 	}
 }
 
-std::optional<std::ofstream> AssetManagerUI::createAssetFile(std::string const& extension, std::string filename) {
+std::optional<std::ofstream> AssetManagerUI::createAssetFile(std::string const& extension, std::string filename, bool binary) {
 	auto iterator = assetManager.getDirectories().find(selectedFolderId);
 
 	if (iterator != assetManager.getDirectories().end()) {
@@ -445,7 +463,7 @@ std::optional<std::ofstream> AssetManagerUI::createAssetFile(std::string const& 
 		std::filesystem::path filepath = AssetIO::assetDirectory / iterator->second.relativePath / filename;
 		filepath.replace_extension(extension);
 
-		std::ofstream assetFile{ filepath };	
+		std::ofstream assetFile{ filepath, binary ? std::ios::binary : std::ios::out };
 		return assetFile;
 	}
 	else {

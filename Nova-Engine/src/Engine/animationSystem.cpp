@@ -18,7 +18,65 @@ AnimationSystem::AnimationSystem(Engine& p_engine) :
 void AnimationSystem::update([[maybe_unused]] float dt) {
 	entt::registry& registry = engine.ecs.registry;
 
-	for (auto&& [entityId, transform, skinnedMeshRenderer] : registry.view<Transform, SkinnedMeshRenderer>().each()) {
+	// =======================================================
+	// We first update all our animator components, handling it's state
+	// in the animation controller node graphs
+	// =======================================================
+	for (auto&& [entityId, animator] : registry.view<Animator>().each()) {
+		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
+
+		if (!controllerPtr) {
+			continue;
+		}
+
+		Controller const& controller = *controllerPtr;
+
+		// don't advance..
+		if (!toAdvanceAnimation) {
+			continue;
+		}
+
+		// if current node is invalid, we go back to entry node immediately..
+		if (animator.currentNode == NO_CONTROLLER_NODE) {
+			animator.timeElapsed = 0.f;
+			animator.currentNode = controller.data.entryNode;
+		}
+
+		auto&& nodes = controller.getNodes();
+
+		// if it's still invalid, we skip this animator.. (maybe controller's entryNode is invalid.)
+		auto iterator = nodes.find(animator.currentNode);
+		if (animator.currentNode == NO_CONTROLLER_NODE || iterator == nodes.end()) {
+			continue;
+		}
+
+		auto&& [id, currentNode] = *iterator;
+		animator.currentAnimation = currentNode.animation;
+
+		// retrieve the current animation based on current node..
+		auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
+
+		if (!animation || animation->animations.size()) {
+			continue;
+		}
+
+		// check if enough time has elapsed, if so we go to the next node.
+		if (animator.timeElapsed > animation->animations[0].durationInSeconds) {
+			animator.timeElapsed = 0;
+			animator.currentNode = currentNode.nextNode;
+			animator.currentAnimation = currentNode.animation;
+		}
+		else {
+			// advance time..
+			animator.timeElapsed += dt;
+		}
+	}
+
+	// =======================================================
+	// We calculate the bone's final matrices here. This will be used
+	// by the vertex shader for skinning.
+	// =======================================================
+	for (auto&& [entityId, skinnedMeshRenderer] : registry.view<SkinnedMeshRenderer>().each()) {
 		// retrieve skinned mesh..
 		auto&& [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
 		
@@ -36,20 +94,10 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 		float timeInTicks = 0.f;
 
 		if (animator) {
-			auto&& [animation, __] = resourceManager.getResource<Model>(animator->modelId);
-			
+			auto&& [animation, __] = resourceManager.getResource<Model>(animator->currentAnimation);
+
 			if (animation && animation->animations.size()) {
-				// advance time..
-				if (toAdvanceAnimation) {
-					animator->timeElapsed += dt;
-				}
-
 				currentAnimation = &animation->animations[0];
-				
-				if (animator->timeElapsed >= currentAnimation->durationInSeconds) {
-					animator->timeElapsed = 0.f;
-				}
-
 				timeInTicks = animator->timeElapsed * currentAnimation->ticksPerSecond;
 			}
 		}

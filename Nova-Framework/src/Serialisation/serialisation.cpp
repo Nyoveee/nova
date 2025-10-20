@@ -1,21 +1,18 @@
 #include "serialisation.h"
 #include "component.h"
-#include "ECS/ECS.h"
 #include <string>
 
 #include <fstream>
 #include <iomanip>
 
 namespace Serialiser {
-	void Serialiser::serialiseScene(ECS& ecs, const char* fileName) {
+	void Serialiser::serialiseScene(entt::registry& registry, const char* fileName) {
 		try {
 			std::ofstream file(fileName);
 
 			if (!file) {
 				return;
 			}
-
-			entt::registry& registry = ecs.registry;
 
 			Json js;
 			std::vector<Json> jsonVec;
@@ -34,7 +31,7 @@ namespace Serialiser {
 		}
 	}
 
-	void deserialiseScene(ECS& ecs, const char* fileName) {
+	void deserialiseScene(entt::registry& registry, const char* fileName) {
 		try {
 			std::ifstream file(fileName);
 
@@ -44,7 +41,6 @@ namespace Serialiser {
 			Json j;
 
 			file >> j;
-			entt::registry& registry = ecs.registry;
 
 			for (const auto& en : j["entities"]) {
 				auto entity = registry.create(en["id"]);

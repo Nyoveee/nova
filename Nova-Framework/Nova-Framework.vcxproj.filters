@@ -204,16 +204,31 @@
     <ClInclude Include="src\Internal\type_concepts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Loader\deserializeModel.h">
+    <ClInclude Include="src\Serialisation\deserializeFromBinary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Loader\serializeModel.h">
+    <ClInclude Include="src\Serialisation\serializeToBinary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Assets\animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Internal\skeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets\controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Serialisation\deserializeProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Serialisation\serialisation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Serialisation\serialisation.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Serialisation\serializeProperty.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -357,6 +372,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Assets\animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Serialisation\serialisation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Assets\controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\controllerLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

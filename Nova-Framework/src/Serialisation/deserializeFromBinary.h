@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "type_concepts.h"
 
 // === Helper function to read a specific type from file === ..
@@ -15,7 +17,7 @@ void readFromFile(std::ifstream& inputFile, T& data) {
 // ----------------------------------------------------
 // default implementation, if not explicitly implemented we flag an compile time error.
 template <typename T>
-inline void deserializeModel(std::ifstream& inputFile, T& dataMember) {
+inline void deserializeFromBinary(std::ifstream& inputFile, T& dataMember) {
 	[] <bool flag = false, typename Ty = T, bool test = reflection::conceptReflectable<T>>() {
 		static_assert(flag, "Did not account for all data members. " __FUNCSIG__);
 	}();
@@ -24,13 +26,45 @@ inline void deserializeModel(std::ifstream& inputFile, T& dataMember) {
 // ----------------------------------------------------
 // fundemental types are easy to handle..
 template <typename T> requires std::is_fundamental_v<T>
-inline void deserializeModel(std::ifstream& inputFile, T& dataMember) {
+inline void deserializeFromBinary(std::ifstream& inputFile, T& dataMember) {
 	readFromFile(inputFile, dataMember);
 }
 
+// ----------------------------------------------------
+// std::variant..
+
+template <typename... Ts>
+void initialiseVariant(std::ifstream& inputFile, std::size_t i, std::variant<Ts...>& variant) {
+	assert(i < sizeof...(Ts));
+	static std::variant<Ts...> table[] = { Ts{ }... };
+
+	// we now retrieve the variant with the type belonging to this specific index.
+	variant = table[i];
+
+	// we then initialise the underlying variant value..
+	std::visit([&](auto&& value) {
+		deserializeFromBinary(inputFile, value);
+	}, variant);
+}
+
+template <typename T> requires is_variant<T>::value
+inline void deserializeFromBinary(std::ifstream& inputFile, T& variant) {
+	// retrieve the index in runtime..
+	std::size_t index;
+	readFromFile(inputFile, index);
+
+	// now comes the hardest part.
+	// we need to assign the correct type to our variant based on our index.
+	// but our index is a runtime value, so how can we construct a type (compile time constant) based on a runtime value?
+	// we "promote" our runtime integer to compile time integral constants.
+	// here, reddit saves the day. https://www.reddit.com/r/cpp/comments/f8cbzs/creating_stdvariant_based_on_index_at_runtime/
+	initialiseVariant(inputFile, index, variant);
+}
+
+// ----------------------------------------------------
 // vector 3
 template <>
-inline void deserializeModel<glm::vec3>(std::ifstream& inputFile, glm::vec3& dataMember) {
+inline void deserializeFromBinary<glm::vec3>(std::ifstream& inputFile, glm::vec3& dataMember) {
 	readFromFile(inputFile, dataMember.x);
 	readFromFile(inputFile, dataMember.y);
 	readFromFile(inputFile, dataMember.z);
@@ -38,21 +72,21 @@ inline void deserializeModel<glm::vec3>(std::ifstream& inputFile, glm::vec3& dat
 
 // vector 2
 template <>
-inline void deserializeModel<glm::vec2>(std::ifstream& inputFile, glm::vec2& dataMember) {
+inline void deserializeFromBinary<glm::vec2>(std::ifstream& inputFile, glm::vec2& dataMember) {
 	readFromFile(inputFile, dataMember.x);
 	readFromFile(inputFile, dataMember.y);
 }
 
 // mat 4
 template <>
-inline void deserializeModel<glm::mat4x4>(std::ifstream& inputFile, glm::mat4x4& dataMember) {
+inline void deserializeFromBinary<glm::mat4x4>(std::ifstream& inputFile, glm::mat4x4& dataMember) {
 	static_assert(sizeof(glm::mat4x4) == 64);
 	inputFile.read(reinterpret_cast<char*>(glm::value_ptr(dataMember)), sizeof(glm::mat4x4));
 }
 
 // string
 template <>
-inline void deserializeModel<std::string>(std::ifstream& inputFile, std::string& string) {
+inline void deserializeFromBinary<std::string>(std::ifstream& inputFile, std::string& string) {
 	std::size_t length;
 	readFromFile(inputFile, length);
 	string.resize(length);
@@ -62,39 +96,27 @@ inline void deserializeModel<std::string>(std::ifstream& inputFile, std::string&
 
 // quat.
 template <>
-inline void deserializeModel<glm::quat>(std::ifstream& inputFile, glm::quat& dataMember) {
+inline void deserializeFromBinary<glm::quat>(std::ifstream& inputFile, glm::quat& dataMember) {
 	readFromFile(inputFile, dataMember.w);
 	readFromFile(inputFile, dataMember.x);
 	readFromFile(inputFile, dataMember.y);
 	readFromFile(inputFile, dataMember.z);
 }
 
-// ----------------------------------------------------
-// unordered_map entry.. handling pair with function overloading..
-template <isPair T>
-inline void deserializeModel(std::ifstream& inputFile, T& pair) {
-	deserializeModel(inputFile, pair.first);
-	deserializeModel(inputFile, pair.second);
+// resource id
+template <>
+inline void deserializeFromBinary<ResourceID>(std::ifstream& inputFile, ResourceID& dataMember) {
+	std::size_t id;
+	readFromFile(inputFile, id);
+	dataMember = ResourceID{ id };
 }
 
 // ----------------------------------------------------
-// optional..
-template <isOptional T>
-inline void deserializeModel(std::ifstream& inputFile, T& optional) {
-	char firstByte;
-	inputFile.read(&firstByte, 1);
-
-	if (firstByte == 0) {
-		// optional was null, nothing is serialised.
-		return;
-	}
-	else if (firstByte == 1) {
-		optional = typename T::value_type{}; // default construct the underlying type.
-		deserializeModel<typename T::value_type>(inputFile, optional.value());
-	}
-	else {
-		assert(false && "Faulty first byte");
-	}
+// unordered_map entry.. handling pair with function overloading..
+template <isPair T>
+inline void deserializeFromBinary(std::ifstream& inputFile, T& pair) {
+	deserializeFromBinary(inputFile, pair.first);
+	deserializeFromBinary(inputFile, pair.second);
 }
 
 // we use partial template specialisation to redefine our element type..
@@ -109,9 +131,44 @@ struct Element<T> {
 };
 
 // ----------------------------------------------------
+// optional..
+template <isOptional T>
+inline void deserializeFromBinary(std::ifstream& inputFile, T& optional) {
+	char firstByte;
+	inputFile.read(&firstByte, 1);
+
+	if (firstByte == 0) {
+		// optional was null, nothing is serialised.
+		return;
+	}
+	else if (firstByte == 1) {
+		optional = typename T::value_type{}; // default construct the underlying type.
+		deserializeFromBinary<typename T::value_type>(inputFile, optional.value());
+	}
+	else {
+		assert(false && "Faulty first byte");
+	}
+}
+
+// ----------------------------------------------------
+template<IsTypedResourceID T>
+inline void deserializeFromBinary(std::ifstream& inputFile, T& typedResourceID) {
+	deserializeFromBinary<ResourceID>(inputFile, typedResourceID);
+}
+
+// ----------------------------------------------------
+// our strongly typed ids..
+template<isTypedID T>
+inline void deserializeFromBinary(std::ifstream& inputFile, T& id) {
+	typename T::Underlying_ID underlyingId;
+	deserializeFromBinary(inputFile, underlyingId);
+	id = underlyingId;
+}
+
+// ----------------------------------------------------
 // handling containers with function overloading..
 template <typename T> requires isVector<T> || isUnorderedSet<T> || isUnorderedMap<T> || is_std_array<T>::value
-inline void deserializeModel(std::ifstream& inputFile, T& container) {
+inline void deserializeFromBinary(std::ifstream& inputFile, T& container) {
 	std::size_t length;
 	readFromFile(inputFile, length);
 	
@@ -124,7 +181,7 @@ inline void deserializeModel(std::ifstream& inputFile, T& container) {
 	for (int i = 0; i < length; ++i) {
 		typename Element<T>::Type element;
 
-		deserializeModel<typename Element<T>::Type>(inputFile, element);
+		deserializeFromBinary<typename Element<T>::Type>(inputFile, element);
 
 		// we deserialised each element, time to add them to the respective containers..
 		if constexpr (isVector<T>) {
@@ -148,11 +205,11 @@ inline void deserializeModel(std::ifstream& inputFile, T& container) {
 // ----------------------------------------------------
 // deserialising anything that is reflectable.
 template <typename T> requires reflection::conceptReflectable<T>
-inline void deserializeModel(std::ifstream& inputFile, T& dataMember) {
+inline void deserializeFromBinary(std::ifstream& inputFile, T& dataMember) {
 	reflection::visit([&](auto&& fieldData) {
 		auto&& innerDataMember = fieldData.get();
 		using DataMemberType = std::decay_t<decltype(innerDataMember)>;
 
-		deserializeModel<DataMemberType>(inputFile, innerDataMember);
+		deserializeFromBinary<DataMemberType>(inputFile, innerDataMember);
 	}, dataMember);
 }

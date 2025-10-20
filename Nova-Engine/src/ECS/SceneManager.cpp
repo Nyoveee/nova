@@ -27,7 +27,7 @@ void SceneManager::loadScene(ResourceID id) {
 	ecs.registry.clear();
 	currentScene = NO_SCENE_LOADED;
 	
-	Serialiser::deserialiseScene(ecs, scene->getFilePath().string.c_str());
+	Serialiser::deserialiseScene(ecs.registry, scene->getFilePath().string.c_str());
 	currentScene = scene->id();
 	
 	engine.SystemsOnLoad();

@@ -1,225 +1,29 @@
 {
     "entities": [
         {
-            "EntityData": {
-                "children": [],
-                "name": "Light Copy Copy",
-                "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 5.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 14.340057373046875,
-                    "y": 144.17652893066406,
-                    "z": -42.149017333984375
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -49.13728332519531,
-                    "y": 14.41765308380127,
-                    "z": -4.214901924133301
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
-                }
-            },
-            "id": 9
-        },
-        {
             "Animator": {
-                "modelId": 15676520539766964225
+                "controllerId": 9515112468196311041
             },
             "EntityData": {
                 "children": [],
-                "name": "Entity 1 Copy",
+                "name": "HUMAN",
                 "parent": 4294967295
             },
             "SkinnedMeshRenderer": {
                 "materials": [
                     {
                         "albedo": {
-                            "texture": 14299764842485678205
+                            "color": {
+                                "b": 0.10000000149011612,
+                                "g": 0.10000000149011612,
+                                "r": 0.10000000149011612
+                            }
                         },
                         "ambient": 0.10000000149011612,
                         "config": {
                             "metallic": 0.0,
                             "occulusion": 0.0,
-                            "roughness": 1.0
-                        },
-                        "materialName": "Ch36_Body",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 15676520539766964225
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -46.22812271118164,
-                    "y": 0.0,
-                    "z": 8.6927490234375
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
-                }
-            },
-            "id": 8
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light Copy Copy",
-                "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 100.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 32.84846496582031,
-                    "y": 176.45042419433594,
-                    "z": -31.372146606445313
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -47.07331085205078,
-                    "y": 13.2830810546875,
-                    "z": 17.25749397277832
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
-                }
-            },
-            "id": 7
-        },
-        {
-            "Animator": {
-                "modelId": 13153229315663511553
-            },
-            "EntityData": {
-                "children": [],
-                "name": "Entity 1",
-                "parent": 4294967295
-            },
-            "SkinnedMeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "texture": 10264539576361746591
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 1.0
+                            "roughness": 0.5
                         },
                         "materialName": "Ch03_Body",
                         "normalMap": null,
@@ -230,9 +34,9 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": -1.547590970993042,
-                    "z": 3.1415927410125732
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
@@ -256,135 +60,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -14.30625057220459,
-                    "y": 0.0,
-                    "z": 34.1403694152832
-                },
-                "rotation": {
-                    "w": -0.6988539099693298,
                     "x": 0.0,
-                    "y": 0.7152644991874695,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000236332416534,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000236332416534
-                }
-            },
-            "id": 1048579
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light Copy Copy",
-                "parent": 0
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 100.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.9157431721687317,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 30.755538940429688,
-                    "y": 182.14425659179688,
-                    "z": 90.76905822753906
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -14.298648834228516,
-                    "y": 18.214426040649414,
-                    "z": 8.697551727294922
-                },
-                "rotation": {
-                    "w": 0.8969953656196594,
-                    "x": 0.0,
-                    "y": -0.44203993678092957,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000009834766388,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000009834766388
-                }
-            },
-            "id": 5
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light Copy",
-                "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 5.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 14.340057373046875,
-                    "y": 144.17652893066406,
-                    "z": -42.149017333984375
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -22.966842651367188,
-                    "y": 16.694852828979492,
-                    "z": 41.49644470214844
+                    "y": -7.0260910987854,
+                    "z": -5.845313549041748
                 },
                 "rotation": {
                     "w": 1.0,
@@ -398,7 +76,7 @@
                     "z": 0.10000000149011612
                 }
             },
-            "id": 6
+            "id": 0
         },
         {
             "EntityData": {
@@ -413,7 +91,7 @@
                     "r": 1.0
                 },
                 "cutOffAngle": 0.21816615760326385,
-                "intensity": 5.0,
+                "intensity": 500.0,
                 "outerCutOffAngle": 0.30543261766433716,
                 "type": "PointLight"
             },
@@ -429,105 +107,6 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 14.340057373046875,
-                    "y": 144.17652893066406,
-                    "z": 24.86239242553711
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -49.13728332519531,
-                    "y": 14.41765308380127,
-                    "z": 2.486239194869995
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
-                }
-            },
-            "id": 2
-        },
-        {
-            "Animator": {
-                "modelId": 16724627797929508867
-            },
-            "EntityData": {
-                "children": [
-                    4,
-                    5
-                ],
-                "name": "Skinned Mesh",
-                "parent": 4294967295
-            },
-            "SkinnedMeshRenderer": {
-                "materials": [
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.0,
-                                "g": 0.0,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 0.0
-                        },
-                        "materialName": "Beta_HighLimbsGeoSG3",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    },
-                    {
-                        "albedo": {
-                            "color": {
-                                "b": 0.0,
-                                "g": 0.0,
-                                "r": 0.21724140644073486
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "metallic": 0.0,
-                            "occulusion": 0.0,
-                            "roughness": 1.0
-                        },
-                        "materialName": "Beta_Joints_MAT1",
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                ],
-                "modelId": 16724627797929508867
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.9157431721687317,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -544,64 +123,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -8.97414779663086,
-                    "y": 0.0,
-                    "z": 0.7289183139801025
-                },
-                "rotation": {
-                    "w": 0.8969953656196594,
-                    "x": 0.0,
-                    "y": -0.44203993678092957,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000009834766388,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000009834766388
-                }
-            },
-            "id": 0
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Skybox",
-                "parent": 4294967295
-            },
-            "SkyBox": {
-                "cubeMapId": 10390737114601406469
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 2.4880878925323486,
+                    "y": 11.041861534118652,
+                    "z": 7.115416526794434
                 },
                 "rotation": {
                     "w": 1.0,
@@ -616,69 +140,6 @@
                 }
             },
             "id": 1
-        },
-        {
-            "EntityData": {
-                "children": [],
-                "name": "Light Copy",
-                "parent": 0
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 5.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.9157431721687317,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 32.84846496582031,
-                    "y": 176.45042419433594,
-                    "z": -31.372146606445313
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -4.485150337219238,
-                    "y": 17.645042419433594,
-                    "z": 1.4226576089859009
-                },
-                "rotation": {
-                    "w": 0.8969953656196594,
-                    "x": 0.0,
-                    "y": -0.44203993678092957,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000009834766388,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000009834766388
-                }
-            },
-            "id": 4
         }
     ]
 }

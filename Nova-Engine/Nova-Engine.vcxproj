@@ -204,10 +204,6 @@
     <ClInclude Include="src\Physics\physicsManager.h" />
     <ClInclude Include="src\ResourceManager\resourceManager.h" />
     <ClInclude Include="src\ResourceManager\resourceManager.ipp" />
-    <ClInclude Include="src\Serialisation\deserializeProperty.h" />
-    <ClInclude Include="src\Serialisation\serialisation.h" />
-    <ClInclude Include="src\Serialisation\serialisation.ipp" />
-    <ClInclude Include="src\Serialisation\serializeProperty.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\animationSystem.cpp" />
@@ -232,7 +228,6 @@
     <ClCompile Include="src\Physics\debugRenderer.cpp" />
     <ClCompile Include="src\Physics\physicsManager.cpp" />
     <ClCompile Include="src\ResourceManager\resourceManager.cpp" />
-    <ClCompile Include="src\Serialisation\serialisation.cpp" />
     <ClCompile Include="src\Engine\window.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -177,13 +177,15 @@ struct SkinnedMeshRenderer {
 
 struct Animator {
 	// @TODO: Change to animation asset.
-	TypedResourceID<Model> modelId{ INVALID_RESOURCE_ID };
+	TypedResourceID<Controller> controllerId{ INVALID_RESOURCE_ID };
 
 	REFLECTABLE(
-		modelId
+		controllerId
 	)
 
 	float timeElapsed = 0;
+	ControllerNodeID currentNode = NO_CONTROLLER_NODE;
+	TypedResourceID<Model> currentAnimation;
 };
 
 struct Rigidbody {

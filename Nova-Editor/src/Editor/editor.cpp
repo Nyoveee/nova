@@ -7,6 +7,7 @@
 #include "IconsFontAwesome6.h"
 
 #include "imgui.h"
+#include "imgui_node_editor.h"
 #include "ImGui/misc/cpp/imgui_stdlib.h"
 #include "ImGuizmo.h"
 #include "backends/imgui_impl_glfw.h"
@@ -50,6 +51,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	navigationWindow				{ *this, engine.navigationSystem, navMeshGenerator },
 	navBar							{ *this },
 	animationTimeLine				{ *this },
+	animatorController				{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false },
@@ -66,6 +68,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+
 
 	// ======================================= 
 	// Prepare Font Awesome and custom font.
@@ -217,7 +220,8 @@ void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
 
-	// ImGui::ShowDemoWindow();
+	//
+	ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	assetManagerUi.update();
@@ -225,7 +229,8 @@ void Editor::main(float dt) {
 	assetViewerUi.update();
 	navigationWindow.update();
 	animationTimeLine.update();
-
+	animatorController.update();
+	
 	handleEntityHovering();
 	updateMaterialMapping();
 
@@ -498,7 +503,7 @@ void Editor::startSimulation() {
 
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
-	Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
 
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
@@ -528,6 +533,6 @@ Editor::~Editor() {
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 
 	if (filePath && !isInSimulationMode()) {
-		Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+		Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
 	}
 }

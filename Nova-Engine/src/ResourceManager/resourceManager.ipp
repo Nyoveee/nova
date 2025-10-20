@@ -120,7 +120,11 @@ ResourceID ResourceManager::getSomeResourceID() const {
 template<ValidResource T>
 bool ResourceManager::isResource(ResourceID id) const {
 	auto iterator = resourcesByType.find(Family::id<T>());
-	assert(iterator != resourcesByType.end() && "Asset type not recorded.");
+	
+	// this type of resource is never recorded.
+	if (iterator == resourcesByType.end()) {
+		return false;
+	}
 
 	auto&& [_, resourceIds] = *iterator;
 

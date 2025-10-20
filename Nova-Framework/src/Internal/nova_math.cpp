@@ -1,6 +1,7 @@
 #include "nova_math.h"
 
 #include "component.h"
+#include "xresource_guid.h"
 
 // Reference: https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
 namespace Math {
@@ -26,5 +27,10 @@ namespace Math {
 			scale
 		};
 	}
+
+    std::size_t getGUID() {
+		xresource::instance_guid guid = xresource::instance_guid::GenerateGUIDCopy();
+		return guid.m_Value;
+    }
 }
 

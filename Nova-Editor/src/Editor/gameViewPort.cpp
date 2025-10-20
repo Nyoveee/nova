@@ -88,22 +88,25 @@ void GameViewPort::update(float dt) {
 
 	// Accept scene item payload..
 	if (ImGui::BeginDragDropTarget()) {
-		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("SCENE_ITEM")) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_SCENE_ITEM")) {
 			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
 
 			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
 
-			AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
-			
-			if (filePath) {
-				Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+			// only handle it if it's a scene.
+			if (editor.resourceManager.isResource<Scene>(id)) {
+				AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
+
+				if (filePath) {
+					Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+				}
+
+				engine.ecs.sceneManager.loadScene(id);
+				controlOverlay.clearNotification();
+
+				// deselect entity.
+				editor.selectEntities({});
 			}
-
-			engine.ecs.sceneManager.loadScene(id);
-			controlOverlay.clearNotification();
-
-			// deselect entity.
-			editor.selectEntities({});
 		}
 
 		ImGui::EndDragDropTarget();

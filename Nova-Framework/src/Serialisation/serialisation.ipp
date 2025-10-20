@@ -9,7 +9,6 @@
 
 #include "Logger.h"
 
-#include "Engine/ScriptingAPIManager.h"
 #include "serializeProperty.h"
 #include "deserializeProperty.h"
 
