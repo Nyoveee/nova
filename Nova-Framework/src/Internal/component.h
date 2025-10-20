@@ -238,12 +238,12 @@ struct AudioComponent
 
 struct PositionalAudio
 {
-	// Vec3 centerPoint;
-	bool isListening	= false;
-	float innerRadius = 5.0f;	// If Player is within inner radius, vol at max.
-	float maxRadius = 10.0f;	// If Player is within this radius, vol will change based on dist to centerPoint.
+	bool toggleSphere	{ false };	// toggle to see the sphere that has the radius of maxRadius ( Not Working )
+	float innerRadius	= 50.0f;	// If cameraPosition is within this inner radius, vol at max.
+	float maxRadius		= 10000.0f;	// If cameraPosition is within this radius, vol will change based on dist to centerPoint.
 
 	REFLECTABLE(
+		toggleSphere,
 		innerRadius,
 		maxRadius
 	)

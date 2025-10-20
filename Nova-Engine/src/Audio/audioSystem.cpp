@@ -3,6 +3,9 @@
 #include "Engine/engine.h"
 #include "Logger.h"
 #include "audio.h"
+#include "Graphics/camera.h"
+#include "Graphics/renderer.h"
+#include "component.h"
 
 #include "Profiling.h"
 
@@ -48,10 +51,10 @@ namespace {
 }
 
 AudioSystem::AudioSystem(Engine& engine) :
-	engine			{ engine },
-	resourceManager	{ engine.resourceManager },
-	fmodSystem		{ nullptr },
-	currentBGM		{ nullptr }
+	engine{ engine },
+	resourceManager{ engine.resourceManager },
+	fmodSystem{ nullptr },
+	currentBGM{ nullptr }
 {
 	g_audioSystem = this;
 
@@ -61,11 +64,11 @@ AudioSystem::AudioSystem(Engine& engine) :
 		Logger::error("Failed to create fmod system. {}", FMOD_ErrorString(result));
 		return;
 	}
-    
-    result = fmodSystem->init(4095, FMOD_INIT_NORMAL, nullptr);
-    result = fmodSystem->set3DSettings(1.0f, 1.0f, 1.0f);
 
-    if (result != FMOD_OK) {
+	result = fmodSystem->init(4095, FMOD_INIT_NORMAL, nullptr);
+	result = fmodSystem->set3DSettings(1.0f, 1.0f, 1.0f);
+
+	if (result != FMOD_OK) {
 		Logger::error("Failed to initialise fmod system. {}", FMOD_ErrorString(result));
 		return;
 	}
@@ -74,7 +77,7 @@ AudioSystem::AudioSystem(Engine& engine) :
 
 AudioSystem::~AudioSystem() {
 	unloadAllSounds();
-	
+
 	if (fmodSystem) {
 		fmodSystem->close();
 		fmodSystem->release();
@@ -84,6 +87,12 @@ AudioSystem::~AudioSystem() {
 
 void AudioSystem::update() {
 	ZoneScoped;
+
+	// Update listener position based on camera
+	updateListener();
+
+	// Update positional audio sources
+	updatePositionalAudio();
 
 	fmodSystem->update();
 
@@ -101,26 +110,97 @@ void AudioSystem::update() {
 	}
 }
 
-void AudioSystem::loadAllSounds() {
-    Logger::info("Attempting to load all sounds");
+void AudioSystem::updateListener() {
+	// Get camera position and orientation
+	Camera const& camera	= engine.renderer.getCamera();
+	glm::vec3 listenerPos	= camera.getPos();
+	glm::vec3 listenerFront = camera.getFront();
+	glm::vec3 listenerRight = camera.getRight();
+	
+	listenerFront = glm::normalize(listenerFront);
+	listenerRight = glm::normalize(listenerRight);
 
-    if (!fmodSystem)
-    {
-        Logger::info("Audio system is not initialized.");
-        return;
-    }
+	// Calculate up vector (perpendicular to front and right)
+	glm::vec3 listenerUp = glm::normalize(glm::cross(listenerFront, listenerRight));
+
+	// Set FMOD listener position and orientation
+	FMOD_VECTOR pos = { listenerPos.x, listenerPos.y, listenerPos.z };
+	FMOD_VECTOR forward = { listenerFront.x, listenerFront.y, listenerFront.z };
+	FMOD_VECTOR up = { listenerUp.x, listenerUp.y, listenerUp.z };
+	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f }; 
+
+	fmodSystem->set3DListenerAttributes(0, &pos, &vel, &forward, &up);
+}
+
+void AudioSystem::updatePositionalAudio() {
+	// Get camera position for distance calculations
+	Camera const& camera = engine.renderer.getCamera();
+	glm::vec3 listenerPos = camera.getPos();
+
+	for (auto&& [entity, positionalAudio] : engine.ecs.registry.view<PositionalAudio>().each()) {
+
+		Transform* transform = engine.ecs.registry.try_get<Transform>(entity);
+		if (!transform)
+			continue;
+
+		AudioComponent* audioComponent = engine.ecs.registry.try_get<AudioComponent>(entity);
+		if (!audioComponent)
+			continue;
+
+		glm::vec3 sourcePos = transform->position;
+		glm::vec3 listenerPos = engine.renderer.getCamera().getPos();
+		float distance = glm::length(sourcePos - listenerPos);
+
+		float volumeMultiplier = 1.0f;
+		if (distance <= positionalAudio.innerRadius)
+			volumeMultiplier = 1.0f;
+		else if (distance >= positionalAudio.maxRadius)
+			volumeMultiplier = 0.0f;
+		else
+			volumeMultiplier = 1.0f - ((distance - positionalAudio.innerRadius) / (positionalAudio.maxRadius - positionalAudio.innerRadius));
+
+		for (auto& [instanceId, audioInstance] : audioInstances) {
+			bool belongsToEntity = false;
+			for (auto const& [soundName, audioData] : audioComponent->data) {
+				if (audioData.audioId == audioInstance.audioId) {
+					belongsToEntity = true;
+					break;
+				}
+			}
+
+			if (belongsToEntity && audioInstance.channel) {
+				FMOD_VECTOR pos = { sourcePos.x, sourcePos.y, sourcePos.z };
+				FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
+
+				audioInstance.channel->set3DAttributes(&pos, &vel);
+				// Set the MinMax Distance based on the values inputted inside the PositionalAudio Component inside the Editor 
+				audioInstance.channel->set3DMinMaxDistance(positionalAudio.innerRadius, positionalAudio.maxRadius);
+				audioInstance.channel->setVolume(audioInstance.volume * volumeMultiplier);
+			}
+		}
+	}
+}
+
+void AudioSystem::loadAllSounds() {
+	Logger::info("Attempting to load all sounds");
+
+	if (!fmodSystem)
+	{
+		Logger::info("Audio system is not initialized.");
+		return;
+	}
 
 	// Get all audio assets.
 	auto&& audios = resourceManager.getAllResources<Audio>();
 
 	for (ResourceID audioId : audios) {
 		loadSound(audioId);
-	
-		// Get the file name from the resource’s file path
+
+		// Get the file name from the resources file path
 		auto&& [audio, _] = resourceManager.getResource<Audio>(audioId);
 		if (audio) {
 			std::filesystem::path p(audio->getFilePath());
-			std::string filename = p.stem().string(); // "BGM_AudioTest" from "BGM_AudioTest.wav"
+			std::string filename = p.stem().string();
 
 			// Store into the map
 			fileData[filename] = audioId;
@@ -148,7 +228,7 @@ void AudioSystem::unloadAllSounds() {
 
 	sounds.clear();
 
-    Logger::info("All Sounds Unloaded");
+	Logger::info("All Sounds Unloaded");
 }
 
 void AudioSystem::stopAudioInstance(AudioInstance& audioInstance) {
@@ -168,25 +248,37 @@ void AudioSystem::stopAudioInstance(AudioInstanceID audioInstanceId) {
 	stopAudioInstance(audioInstance);
 }
 
-void AudioSystem::playSFX(entt::entity entity, std::string soundName) {
+void AudioSystem::playSFX(entt::entity entity, std::string soundName)
+{
 	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
-
 	if (!audio) {
 		Logger::warn("Attempting to play sound from entity with no audio component!");
 		return;
 	}
 
 	auto iterator = audio->data.find(soundName);
-
 	if (iterator == audio->data.end()) {
 		Logger::warn("Entity has no sound named {}", soundName);
 		return;
 	}
 
 	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
-
 	auto&& [_, audioData] = *iterator;
-	playSFX(audioData.audioId, transform.position.x, transform.position.y, transform.position.z, audioData.volume);
+
+	AudioInstance* audioInstance = createSoundInstance(audioData.audioId, audioData.volume);
+	if (!audioInstance) return;
+
+	FMOD_VECTOR pos = { transform.position.x, transform.position.y, transform.position.z };
+	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
+	audioInstance->channel->set3DAttributes(&pos, &vel);
+
+	// Apply per-entity attenuation
+	if (auto* positional = engine.ecs.registry.try_get<PositionalAudio>(entity)) 
+	{
+		audioInstance->channel->set3DMinMaxDistance(positional->innerRadius, positional->maxRadius);
+	}
+
+	audioInstance->channel->setPaused(false);
 }
 
 FMOD::Sound* AudioSystem::getSound(ResourceID audioId) const {
@@ -209,11 +301,10 @@ ResourceID AudioSystem::getResourceId(const std::string& string) {
 	return INVALID_RESOURCE_ID;
 }
 
-// PlaySFX based on string and assign a channelID and set the volume to global variable sfxVolume 
-void AudioSystem::playSFX(ResourceID id, float x, float y, float z, float volume )
+void AudioSystem::playSFX(ResourceID id, float x, float y, float z, float volume)
 {
-    // Play the sound
-	AudioInstance* audioInstance = createSoundInstance(id , volume );
+	// Play the sound
+	AudioInstance* audioInstance = createSoundInstance(id, volume);
 
 	if (!audioInstance) {
 		return;
@@ -228,15 +319,15 @@ void AudioSystem::playSFX(ResourceID id, float x, float y, float z, float volume
 
 void AudioSystem::playBGM(ResourceID id, float volume)
 {
-    // Stop previous BGM.
+	// Stop previous BGM.
 	if (currentBGM) {
 		stopAudioInstance(*currentBGM);
 		currentBGM = nullptr;
 	}
 
-	AudioInstance* audioInstance = createSoundInstance(id , volume);
+	AudioInstance* audioInstance = createSoundInstance(id, volume);
 
-    // Update current BGM
+	// Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
 	}
@@ -322,11 +413,12 @@ void AudioSystem::AdjustSFXVol(float volume)
 {
 	sfxVolume = volume;
 
-	if (globalVolume <= 0) 
+	if (globalVolume <= 0)
 	{
 		sfxGlobal = 0.0f;
 		buttonVol = sfxGlobal;
-	} else {
+	}
+	else {
 		sfxGlobal = std::min(sfxVolume * globalVolume, volCap);
 		buttonVol = sfxGlobal;
 	}
@@ -348,7 +440,7 @@ void AudioSystem::AdjustBGMVol(float volume)
 void AudioSystem::handleFinishedAudioInstance(FMOD::Channel* channel) {
 	auto iterator = std::find_if(audioInstances.begin(), audioInstances.end(), [&](auto const& keyPairValue) {
 		return channel == keyPairValue.second.channel;
-	});
+		});
 
 	if (iterator == audioInstances.end()) {
 		return;
@@ -367,21 +459,23 @@ void AudioSystem::loadSound(ResourceID audioId) {
 	}
 
 	FMOD::Sound* sound = nullptr;
-	FMOD_MODE mode = audio->isAudio3D() ? FMOD_3D : FMOD_2D;
+
+	// Load all audio as 3D for spatial capability
+	// Positional Audio Component determines if spatial audio is applied
+	FMOD_MODE mode = FMOD_3D;
 
 	FMOD_RESULT result = fmodSystem->createSound(audio->getFilePath().string.c_str(), mode, nullptr, &sound);
 
 	if (result != FMOD_OK) {
-	    Logger::warn("Failed to load audio file with asset id of: {}, filepath of {}.", static_cast<std::size_t>(audioId), audio->getFilePath().string);
-	    return; 
+		Logger::warn("Failed to load audio file with asset id of: {}, filepath of {}.", static_cast<std::size_t>(audioId), audio->getFilePath().string);
+		return;
 	}
 
 	sounds[audioId] = sound;
 
-	// Configure 3D properties
-	if (audio->isAudio3D()) {
-	    sound->set3DMinMaxDistance(100.0f, 200.0f);
-	}
+	// If Object does not have PositionalAudio Component, this will be the default MinMax Distance
+	// If Object has PositionalAudio Component, the MinMax distance will be based on the values inputted inside the innerRadius and maxRadius
+	sound->set3DMinMaxDistance(100.0f, 10000.0f);
 }
 
 AudioInstanceID AudioSystem::getNewAudioInstanceId() {
@@ -392,7 +486,7 @@ AudioInstanceID AudioSystem::getNewAudioInstanceId() {
 
 AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId, float volume) {
 	FMOD::Sound* audio = AudioSystem::getSound(audioId);
-	
+
 	if (!audio) {
 		Logger::info("Sound not found: {}", static_cast<std::size_t>(audioId));
 		return nullptr;

@@ -243,17 +243,17 @@
                     },
                     {
                         "audioData": {
-                            "id": 5135203471168339969,
-                            "volume": 1.0
-                        },
-                        "name": "oiia-oiia-sound"
-                    },
-                    {
-                        "audioData": {
                             "id": 9891919463115571205,
                             "volume": 1.0
                         },
                         "name": "Boom"
+                    },
+                    {
+                        "audioData": {
+                            "id": 5135203471168339969,
+                            "volume": 1.0
+                        },
+                        "name": "oiia-oiia-sound"
                     },
                     {
                         "audioData": {
@@ -551,6 +551,10 @@
                     }
                 ],
                 "modelId": 1245008178564268053
+            },
+            "PositionalAudio": {
+                "innerRadius": 100.0,
+                "maxRadius": 200.0
             },
             "Rigidbody": {
                 "initialVelocity": {
