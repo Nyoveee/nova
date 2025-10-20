@@ -70,6 +70,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	toneMappingMethod			{ ToneMappingMethod::None },
 
 	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
+	gameVPFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true }
@@ -182,6 +183,9 @@ void Renderer::update(float dt) {
 void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
 	ZoneScoped;
 	prepareRendering();
+	
+	if (&gameCamera != nullptr)
+		prepareGameViewport();
 
 	renderSkyBox();
 
@@ -487,6 +491,141 @@ void Renderer::prepareRendering() {
 
 void Renderer::prepareGameViewport() {
 	//make a new frame buffer to hold info on game camera for game viewport
+
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
+	// =================================================================
+	// Configure pre rendering settings
+	// =================================================================
+
+	// of course.
+	glEnable(GL_DEPTH_TEST);
+	glStencilMask(0xFF);
+	glDisable(GL_BLEND);
+
+	// set VBO to VAO's [0] binding index and bind to main VAO.
+	glVertexArrayVertexBuffer(mainVAO, 0, mainVBO.id(), 0, sizeof(Vertex)); // check tmr if still need this
+	glBindVertexArray(mainVAO);
+
+	// =================================================================
+	// Clear frame buffers.
+	// =================================================================
+
+	// Clear default framebuffer.
+	// glBindFramebuffer(GL_FRAMEBUFFER, 0); // we bind to default FBO at the end of our render.
+	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Clear both main framebuffers.
+	for (auto&& framebuffer : gameVPFrameBuffers) {
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.fboId());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+
+	// We choose 1 as the active index because we last bind to the last element of the array above^
+
+	// Reset main frame buffer indices..
+	gameVPFrameBuffersActiveIndex = 1;
+	gameVPFrameBuffersReadIndex = 0;
+
+	// Clear object id framebuffer.
+
+	// For some reason, for framebuffers with integer color attachments
+	// we need to bind to a shader that writes to integer output
+	// even though clear operation does not use our shader at all
+	// seems to be a differing / conflicting implementation for NVIDIA GPUs..
+	objectIdShader.use();
+
+	constexpr GLuint	nullEntity = entt::null;
+	constexpr GLfloat	initialDepth = 1.f;
+	constexpr GLint		initialStencilValue = 0;
+
+	glDisable(GL_DITHER);
+	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
+	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
+	glEnable(GL_DITHER);
+
+	// =================================================================
+	// Set up the uniforms for my respective shaders
+	// Note: calling shader.use() before setting uniforms is redundant because we are using DSA.
+	// =================================================================
+	// Shared across all shaders. We use a shared UBO for this.
+	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(gameCamera.view()));
+	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(gameCamera.projection())); // offset bcuz 2nd data member.
+
+	// ==== Blinn Phong ====
+	blinnPhongShader.setVec3("cameraPos", gameCamera.getPos());
+	PBRShader.setVec3("cameraPos", gameCamera.getPos());
+
+	// we need to set up light data..
+	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
+	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
+	std::array<SpotLightData, MAX_NUMBER_OF_LIGHT>			spotLightData;
+
+	unsigned int numOfPtLights = 0;
+	unsigned int numOfDirLights = 0;
+	unsigned int numOfSpotLights = 0;
+
+	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
+		switch (light.type)
+		{
+		case Light::Type::PointLight:
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of point lights reached!");
+				continue;
+			}
+			pointLightData[numOfPtLights++] = {
+				transform.position,
+				glm::vec3{ light.color } *light.intensity,
+				light.attenuation
+			};
+			break;
+
+		case Light::Type::Directional:
+		{
+			if (numOfDirLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of directional lights reached!");
+				continue;
+			}
+			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+			directionalLightData[numOfDirLights++] = {
+				glm::normalize(forward),
+				glm::vec3{ light.color } *light.intensity
+			};
+			break;
+		}
+
+		case Light::Type::Spotlight:
+		{
+			if (numOfSpotLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of spot lights reached!");
+				continue;
+			}
+			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+			spotLightData[numOfSpotLights++] = {
+				transform.position,
+				glm::normalize(forward),
+				glm::vec3{ light.color } *light.intensity,
+				light.attenuation,
+				light.cutOffAngle,
+				light.outerCutOffAngle
+			};
+			break;
+		}
+
+		}
+	}
+
+	// Send it over to SSBO.
+	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
+	glNamedBufferSubData(directionalLightSSBO.id(), 0, sizeof(unsigned int), &numOfDirLights);
+	glNamedBufferSubData(spotLightSSBO.id(), 0, sizeof(unsigned int), &numOfSpotLights);
+
+	// copy all the light data to the SSBO.
+	// offset is an alignment of LightData!! because of alignment requirements of this struct!
+	// omdayz..
+	glNamedBufferSubData(pointLightSSBO.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
+	glNamedBufferSubData(directionalLightSSBO.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
+	glNamedBufferSubData(spotLightSSBO.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
 }
 
 void Renderer::renderSkyBox() {

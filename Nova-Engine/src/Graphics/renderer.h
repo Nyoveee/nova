@@ -182,6 +182,11 @@ private:
 	int mainFrameBufferActiveIndex = 0;	// which framebuffer we are current writing to, and contains the latest image.
 	int mainFrameBufferReadIndex  = 1;	// which framebuffer we are current reading from, to do additional post processing..
 
+	// same thing but for game viewport camera
+	std::array<FrameBuffer, 2> gameVPFrameBuffers;
+	int gameVPFrameBuffersActiveIndex = 0;
+	int gameVPFrameBuffersReadIndex = 1;
+
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
