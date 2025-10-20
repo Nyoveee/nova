@@ -69,7 +69,13 @@ public:
 	ENGINE_DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
 
 	ENGINE_DLL_API Camera& getCamera();
+	ENGINE_DLL_API Camera& getGameViewport();
+
 	ENGINE_DLL_API Camera const& getCamera() const;
+	ENGINE_DLL_API Camera const& getGameViewport() const;
+
+	ENGINE_DLL_API void setGameViewport(Camera& cam);
+
 
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();

@@ -237,8 +237,20 @@ Camera& Renderer::getCamera() {
 	return camera;
 }
 
+Camera& Renderer::getGameViewport() {
+	return gameCamera;
+}
+
 Camera const& Renderer::getCamera() const {
 	return camera;
+}
+
+Camera const& Renderer::getGameViewport() const {
+	return gameCamera;
+}
+
+void Renderer::setGameViewport(Camera& cam) {
+	gameCamera = cam;
 }
 
 void Renderer::recompileShaders() {
