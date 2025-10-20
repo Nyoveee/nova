@@ -72,11 +72,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	isOnWireframeMode			{},
 	hdrExposure					{ 0.25f },
 	toneMappingMethod			{ ToneMappingMethod::None },
-
-	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } },
-	bloomFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
-	bloomBrightBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
-	bloomBlurBuffer			{ gameWidth, gameHeight, { GL_RGBA16FF } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
+	mainFrameBuffers			{ FrameBuffer{ gameWidth, gameHeight, { GL_RGBA16F }}, { gameWidth, gameHeight, { GL_RGBA16F }} },
+	bloomFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	bloomBrightBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	bloomBlurBuffer				{ gameWidth, gameHeight, { GL_RGBA16F } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true }
@@ -205,10 +204,6 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
 	}
 
 	//renderOutline(); 
-
-	if (toRenderDebug) {
-		debugRender();
-	}
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -558,11 +553,15 @@ void Renderer::renderModels() {
 			// missing model.
 			continue;
 		}
+		
+#if 0
 		sphere modelSphere = sphere::makeBoundingSphere(transform, model->maxDimension);
 
 		if (cameraFrustum.checkFrustumCulling(modelSphere) == cullResult::isOutside) {
 			continue; // Skip rendering this model
 		}
+#endif
+
 		setModelUniforms(transform, entity);
 
 		// Set up stencil operation
@@ -616,7 +615,7 @@ void Renderer::renderBloom()
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	bloomBrightShader.use();
-	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]); // color attachment of main
+	glBindTextureUnit(0, getMainFrameBufferTexture()); // color attachment of main
 	bloomBrightShader.setImageUniform("scene", 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6); // fullscreen quad
@@ -628,17 +627,16 @@ void Renderer::renderBloom()
 	bloomBlurShader.use();
 	glBindTextureUnit(0, bloomBrightBuffer.textureIds()[0]);
 	bloomBlurShader.setImageUniform("image", 0);
-	bloomBlurShader.setInt("horizontal", 1);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	// 3. Final combine pass: add blurred bright image with the main scene
-	glBindFramebuffer(GL_FRAMEBUFFER, mainFrameBuffer.fboId());
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	glEnable(GL_BLEND);
 	setBlendMode(BlendingConfig::AdditiveBlending);
 
 	bloomFinalShader.use();
-	glBindTextureUnit(0, mainFrameBuffer.textureIds()[0]);   // original scene
+	glBindTextureUnit(0, getMainFrameBufferTexture());   // original scene
 	glBindTextureUnit(1, bloomBlurBuffer.textureIds()[0]);   // blurred bright
 	bloomFinalShader.setImageUniform("scene", 0);
 	bloomFinalShader.setImageUniform("bloomBlur", 1);

@@ -3,7 +3,7 @@
 #undef max
 #include "export.h"
 #include "camera.h"
-#include "Component/component.h"
+#include "component.h"
 #include "type_alias.h"
 
 #include <glm/mat4x4.hpp>

@@ -201,7 +201,8 @@ private:
 
 public:
 	// get the drawcall
-	DLL_API unsigned int drawCalls();
+	ENGINE_DLL_API unsigned int drawCalls();
+
 public:
 	Shader bloomBrightShader;
 	Shader bloomBlurShader;
