@@ -137,6 +137,9 @@ private:
 	// HDR post-processing functions
 	void renderHDRTonemapping();
 
+	// Renderer In Game Camera
+	void renderGameVP();
+
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
 	void setupBlinnPhongShader(Material const& material);
@@ -158,6 +161,11 @@ private:
 	FrameBuffer const& getReadMainFrameBuffer() const;
 
 	void swapMainFrameBuffers();
+
+	FrameBuffer const& getActiveGameVPFrameBuffer() const;
+	FrameBuffer const& getReadGameVPFrameBuffer() const;
+
+	void swapGameVPFrameBuffers();
 
 private:
 	Engine& engine;
@@ -193,8 +201,8 @@ private:
 
 	std::array<FrameBuffer, 2> gameVPFrameBuffers;
 
-	int gameVPActiveFrameBufferIndex = 0;
-	int gameVPReadFrameBufferIndex = 1;
+	int gameVPFrameBufferActiveIndex = 0;
+	int gameVPFrameBufferReadIndex = 1;
 
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;

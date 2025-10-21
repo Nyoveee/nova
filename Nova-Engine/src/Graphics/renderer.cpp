@@ -550,6 +550,8 @@ void Renderer::prepareRendering() {
 	// ..
 }
 
+
+
 void Renderer::renderSkyBox() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	glDisable(GL_DEPTH_TEST);
@@ -943,6 +945,28 @@ void Renderer::swapMainFrameBuffers() {
 	}
 }
 
+FrameBuffer const& Renderer::getActiveGameVPFrameBuffer() const {
+	return gameVPFrameBuffers[gameVPFrameBufferActiveIndex];
+}
+
+FrameBuffer const& Renderer::getReadGameVPFrameBuffer() const {
+	return gameVPFrameBuffers[gameVPFrameBufferReadIndex];
+}
+
+void Renderer::swapGameVPFrameBuffers() {
+	if (gameVPFrameBufferActiveIndex == 0) {
+		gameVPFrameBufferActiveIndex = 1;
+		gameVPFrameBufferReadIndex = 0;
+	}
+	else if (gameVPFrameBufferActiveIndex == 1) {
+		gameVPFrameBufferActiveIndex = 0;
+		gameVPFrameBufferReadIndex = 1;
+	}
+	else {
+		assert(false && "Invalid index.");
+	}
+}
+
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
 		const dtMeshTile* tile = mesh.getTile(tileNum);
@@ -1003,6 +1027,10 @@ void Renderer::renderHDRTonemapping() {
 
 	// Render fullscreen triangle (more efficient than quad)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Renderer::renderGameVP() {
+
 }
 
 void Renderer::setHDRExposure(float exposure) {
