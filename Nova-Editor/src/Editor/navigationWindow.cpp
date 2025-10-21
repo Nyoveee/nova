@@ -14,7 +14,7 @@ NavigationWindow::NavigationWindow(Editor& editor, NavigationSystem& navigationS
 	navMeshGenerator	{ navMeshGenerator },
 	onFileCreate		{ false },
 	step				{ 0 },
-	filename			{ "BIG_CHUNGUS"}
+	filename			{ "Navmesh" }
 {}
 
 void NavigationWindow::update() {
@@ -69,7 +69,9 @@ void NavigationWindow::update() {
 	ImGui::SliderFloat("##Agent Max Slope:", &buildSettings.agentMaxSlope, 0.0f, 89.9f, "%.2f");
 
 	// Specify filename when baking (TEMP)
+	ImGui::BeginDisabled();
 	ImGui::InputText("Filename:", &filename);
+	ImGui::EndDisabled();
 
 	// TEMPORARY..
 	editor.displayAssetDropDownList<NavMesh>(navigationSystem.getNavMeshId(), "Select nav mesh..", [&](ResourceID newNavMeshId) {

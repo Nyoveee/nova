@@ -244,6 +244,29 @@ struct std::hash<AssetFilePath> {
 	}
 };
 
+// ================ AssetCacheFilePath ==================
+inline AssetCacheFilePath::AssetCacheFilePath(std::filesystem::path path) : string{ std::move(path).string() } {}
+constexpr AssetCacheFilePath::AssetCacheFilePath(std::string path) : string{ std::move(path) } {}
+
+inline AssetCacheFilePath::operator std::filesystem::path() const {
+	return { string };
+}
+
+constexpr AssetCacheFilePath::operator std::string() const {
+	return string;
+}
+
+constexpr bool operator==(AssetCacheFilePath const& lhs, AssetCacheFilePath const& rhs) {
+	return lhs.string == rhs.string;
+}
+
+template<>
+struct std::hash<AssetCacheFilePath> {
+	std::size_t operator()(AssetCacheFilePath const& assetCacheFilePath) const noexcept {
+		return std::hash<std::string>{}(assetCacheFilePath.string);
+	}
+};
+
 // ================ DescriptorFilePath ==================
 inline DescriptorFilePath::DescriptorFilePath(std::filesystem::path path) : string{ std::move(path).string() } {}
 constexpr DescriptorFilePath::DescriptorFilePath(std::string path) : string{ std::move(path) } {}

@@ -7,7 +7,7 @@
 
 void InputManager::mainKeyBindMapping() {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//					GLFW KEY					KEY TYPE				INPUT EVENT
+	//					GLFW KEY					KEY TYPE				INPUT EVENT							MODIFIERS (optional)
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//
 	// 	Mapping camera movement in the level editor..
@@ -33,11 +33,10 @@ void InputManager::mainKeyBindMapping() {
 	//
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_RIGHT,	KeyType::MouseClick,	ToggleEditorControl::Sentinel		);
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_LEFT,		KeyType::MouseClick,	ToSelectGameObject::Sentinel		);
-
-	//mapKeyBindInput(GLFW_KEY_A, KeyType::Keyboard, ScriptingInputEvents::KeyA);
+	//
 	//
 	// 	Mapping copy and paste keys
 	//
-	mapKeyBindInput(	GLFW_KEY_C,					KeyType::Keyboard,		CopyEntity::Copy					);
-	mapKeyBindInput(	GLFW_KEY_V,					KeyType::Keyboard,		PasteEntity::Paste					);
+	mapKeyBindInput(	GLFW_KEY_C,					KeyType::Keyboard,		CopyEntity::Copy,					InputMod::Ctrl );
+	mapKeyBindInput(	GLFW_KEY_V,					KeyType::Keyboard,		PasteEntity::Paste,					InputMod::Ctrl );
 }

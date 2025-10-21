@@ -146,8 +146,15 @@ void main() {
     vec3 normal;
 
     if(isUsingNormalMap) {
-        vec3 sampledNormal = vec3(texture(normalMap, fsIn.textureUnit));
-        sampledNormal = sampledNormal * 2.0 - 1.0; 
+        // We assume that our normal map is compressed into BC5.
+        // Since BC5 only stores 2 channels, we need to calculate z in runtime.
+        vec2 bc5Channels = vec2(texture(normalMap, fsIn.textureUnit));
+        
+        // We shift the range from [0, 1] to  [-1, 1]
+        bc5Channels = bc5Channels * 2.0 - 1.0; 
+
+        // We calculate the z portion of the normal..
+        vec3 sampledNormal = vec3(bc5Channels, 1 - bc5Channels.x * bc5Channels.x - bc5Channels.y * bc5Channels.y);
         normal = normalize(fsIn.TBN * sampledNormal);
     }
     else {

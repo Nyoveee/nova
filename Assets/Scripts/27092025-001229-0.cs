@@ -11,8 +11,10 @@ class PlaySound : Script
     protected override void update()
     {}
 
-    protected override void onCollisionEnter(uint entityId) {
-        AudioAPI.PlaySound(entityID, "METAL PIPE");
-        AudioAPI.PlaySound(entityID, "SCREAM");
+    protected override void onCollisionEnter(GameObject other) {
+        // Hi
+        // bye! :D
+        // Hi Again
+        AudioAPI.PlaySound(gameObject, "METAL PIPE");
     } 
 }

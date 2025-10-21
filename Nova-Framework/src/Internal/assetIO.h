@@ -14,13 +14,17 @@ public:
 	// These functions will invoke the general functions below first which parses generic metadata info first
 	// before performing additional parsing based on asset type.
 
-	// retrieve an appropriate descriptor filepath based on a given intermediary asset path.
+	// retrieve an appropriate descriptor filepath based on resource id.
 	template <ValidResource T>
 	static DescriptorFilePath getDescriptorFilename(ResourceID id);
 
-	// retrieve an appropriate resource filepath based on a given descriptor path.
+	// retrieve an appropriate resource filepath based on resource id.
 	template <ValidResource T>
 	static ResourceFilePath getResourceFilename(ResourceID id);
+
+	// retrieve an appropriate asset cache filepath based on resource id.
+	template <ValidResource T>
+	static AssetCacheFilePath getAssetCacheFilename(ResourceID id);
 
 	// reads a given descriptor file.
 	template <ValidResource T>
@@ -36,9 +40,11 @@ public:
 	FRAMEWORK_DLL_API static const std::filesystem::path assetDirectory;
 	FRAMEWORK_DLL_API static const std::filesystem::path resourceDirectory;
 	FRAMEWORK_DLL_API static const std::filesystem::path descriptorDirectory;
+	FRAMEWORK_DLL_API static const std::filesystem::path assetCacheDirectory;
 
 	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subDescriptorDirectories;
 	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subResourceDirectories;
+	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetCacheDirectories;
 
 private:
 	// === Parse generic metadata info. These functions are invoked by the functions above first. ====

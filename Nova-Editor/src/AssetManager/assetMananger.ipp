@@ -7,30 +7,83 @@
 #include "assetIO.h"
 
 template<ValidResource T>
-void AssetManager::compileIntermediaryFile(AssetInfo<T> const& descriptor) {
+bool AssetManager::compileIntermediaryFile(AssetInfo<T> const& descriptor) {
 #if _DEBUG
-		const char* executableConfiguration = "Debug";
+	const char* executableConfiguration = "Debug";
 #else
-		const char* executableConfiguration = "Release";
+	const char* executableConfiguration = "Release";
 #endif
-		constexpr const char* executableName = "Nova-ResourceCompiler.exe";
+	constexpr const char* executableName = "Nova-ResourceCompiler.exe";
 
-		std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
+	std::filesystem::path compilerPath = std::filesystem::current_path() / "ExternalApplication" / executableConfiguration / executableName;
 
-		DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
+	DescriptorFilePath descriptorFilePath = AssetIO::getDescriptorFilename<T>(descriptor.id);
 
-		// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
-		std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
+	// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
+	std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
 
-		Logger::info("Running command: {}", command);
+	Logger::info("Running command: {}", command);
 
-		if (std::system(command.c_str())) {
-			Logger::error("Error compiling {}", descriptorFilePath.string);
-		}
-		else {
-			Logger::info("Successful compiling {}", descriptorFilePath.string);
-			Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
-		}
+	if (std::system(command.c_str())) {
+		Logger::error("Error compiling {}", descriptorFilePath.string);
+		return false;
+	}
+	else {
+		Logger::info("Successful compiling {}", descriptorFilePath.string);
+		Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
+		return true;
+	}
+}
+
+template<ValidResource T>
+bool AssetManager::hasAssetChanged(AssetInfo<T> const& descriptor) const {
+	auto cacheFilePath = AssetIO::getAssetCacheFilename<T>(descriptor.id);
+
+	std::ifstream cacheFile{ cacheFilePath };
+
+	// Cache file doesn't exist.., we assume asset has changed.
+	if (!cacheFile) {
+		return true;
+	}
+
+	long long cachedDuration;
+
+	// Attempt to read the time..
+	try {
+		std::string durationInString;
+		std::getline(cacheFile, durationInString);
+		cachedDuration = std::stoull(durationInString);
+	}
+	catch (std::exception const& ex) {
+		// Failed to read cache file.. invalid..
+		return true;
+	}
+
+	// We compare our cached duration and see if it matches with the filepath...
+	auto assetLastWriteTime = std::filesystem::last_write_time(descriptor.filepath);
+	auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
+	long long duration = assetEpoch.count();
+
+	return cachedDuration != duration;
+}
+
+template<ValidResource T>
+void AssetManager::updateAssetCache(AssetInfo<T> const& descriptor) const {
+	auto cacheFilePath = AssetIO::getAssetCacheFilename<T>(descriptor.id);
+
+	std::ofstream cacheFile{ cacheFilePath };
+
+	if (!cacheFile) {
+		Logger::error("Unable to update asset cache file.");
+		return;
+	}
+
+	auto assetLastWriteTime = std::filesystem::last_write_time(descriptor.filepath);
+	auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
+	long long duration = assetEpoch.count();
+
+	cacheFile << duration << '\n';
+	Logger::info("Successfully updated {} cache.", descriptor.filepath.string);
 }
 
 template<ValidResource ...T>
@@ -77,12 +130,8 @@ void AssetManager::loadAllDescriptorFiles() {
 				Logger::info("Sucessfully parsed descriptor file.");
 				descriptor = opt.value();
 			}
-
-			auto assetLastWriteTime = std::filesystem::last_write_time(std::filesystem::path{ descriptor.filepath });
-			auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
-
-			// doesnt match, asset has changed..
-			if (assetEpoch != descriptor.timeLastWrite) {
+			
+			if (hasAssetChanged<T>(descriptor)) {
 				Logger::info("Asset has changed, recompiling it's corresponding resource file..\n");
 				resourceManager.removeResource(descriptor.id);
 				createResourceFile<T>(descriptor);
@@ -126,10 +175,8 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	ResourceID id = resourceManager.addResourceFile<T>(resourceFilePath);
 
 	if (id != INVALID_RESOURCE_ID) {
-		// we update descriptor with the new time..
-		auto assetLastWriteTime = std::filesystem::last_write_time(std::filesystem::path{ descriptor.filepath });
-		auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
-		descriptor.timeLastWrite = assetEpoch;
+		// we update cache with the new time..
+		updateAssetCache<T>(descriptor);
 
 		// we record all encountered intermediary assets with corresponding filepaths.
 		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilePath, descriptor.id } });
@@ -164,16 +211,19 @@ void AssetManager::serialiseDescriptor(ResourceID id) {
 	assert(assetInfo && "Should also never be nullptr");
 
 	// serialise basic asset info..
-	// 1st line -> asset id, 2nd line -> name, 3rd line -> asset filepath, 4th epoch time / last write time.
+	// 1st line -> asset id, 2nd line -> name, 3rd line -> asset filepath.
 
 	// calculate relative path to the Assets directory.
 	std::filesystem::path relativePath = std::filesystem::relative(std::filesystem::path{ assetInfo->filepath }, AssetIO::assetDirectory);
-	descriptorFile << static_cast<std::size_t>(assetInfo->id) << '\n' << assetInfo->name << '\n' << relativePath.string() << '\n' << assetInfo->timeLastWrite.count() << '\n';
+	descriptorFile << static_cast<std::size_t>(assetInfo->id) << '\n' << assetInfo->name << '\n' << relativePath.string() << '\n';
 
 	// ============================
-	// Filestream is now pointing at the 5th line.
+	// Filestream is now pointing at the 4th line.
 	// Do any serialisation for specifc metadata of asset type here!!
 	// ============================
+	if constexpr (std::same_as<T, Texture>) {
+		descriptorFile << magic_enum::enum_name(assetInfo->compression) << '\n';
+	}
 
 	// ============================
 	Logger::info("Successfully serialised descriptor file for {}", assetInfo->filepath.string);

@@ -15,6 +15,7 @@
 #include <functional>
 
 class AssetManager;
+class AssetViewerUI;
 
 class ResourceManager {
 public:
@@ -67,6 +68,7 @@ public:
 
 private:
 	friend AssetManager;
+	friend AssetViewerUI;
 
 	// parses a given resource file. returns a valid resource id if its valid,
 	// INVALID_RESOURCE_ID otherwise.
