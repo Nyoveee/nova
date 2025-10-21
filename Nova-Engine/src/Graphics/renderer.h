@@ -61,6 +61,7 @@ public:
 
 	// get the main texture of the main frame buffer.
 	ENGINE_DLL_API GLuint getMainFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getGameVPFrameBufferTexture() const;
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// gets object id from color attachment 1 of the main framebuffer.

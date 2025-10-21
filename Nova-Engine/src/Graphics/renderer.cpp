@@ -207,6 +207,8 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping();
 
+	renderGameVP();
+
 	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -222,6 +224,10 @@ void Renderer::renderToDefaultFBO() {
 
 GLuint Renderer::getMainFrameBufferTexture() const {
 	return getActiveMainFrameBuffer().textureIds()[0];
+}
+
+GLuint Renderer::getGameVPFrameBufferTexture() const{
+	return getActiveGameVPFrameBuffer().textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -1030,7 +1036,23 @@ void Renderer::renderHDRTonemapping() {
 }
 
 void Renderer::renderGameVP() {
+	ZoneScoped;
 
+	swapGameVPFrameBuffers();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveGameVPFrameBuffer().fboId());
+
+	// Set up tone mapping shader
+	toneMappingShader.use();
+	toneMappingShader.setFloat("exposure", hdrExposure);
+	toneMappingShader.setFloat("gamma", 2.2f);
+	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(toneMappingMethod));
+	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
+
+	glBindTextureUnit(0, getReadGameVPFrameBuffer().textureIds()[0]);
+	toneMappingShader.setImageUniform("hdrBuffer", 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void Renderer::setHDRExposure(float exposure) {

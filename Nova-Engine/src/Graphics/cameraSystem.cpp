@@ -18,6 +18,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 	lastMouseX				{},
 	lastMouseY				{},
 	camera					{ engine.renderer.getCamera() },
+	gameCamera				{ engine.renderer.getGameVP() },
 	levelEditorCamera		{ { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, -90.f, 0.f },
 	isInControl				{ false },
 	isThereActiveGameCamera	{ false },
@@ -77,23 +78,38 @@ CameraSystem::CameraSystem(Engine& engine) :
 void CameraSystem::update(float dt) {
 	ZoneScoped;
 
+	for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
+	{
+		if (cameraComponent.camStatus)
+		{
+			Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
+			// Use Transform data to set camera variables.
+			gameCamera.setPos(objTransform.position);
+			gameCamera.setFront(objTransform.front);
+			engine.renderer.setGameVP(gameCamera);
+			break;
+		}
+	}
+
+
 	// for game camera
 	if(isSimulationActive)
 	{
-		isThereActiveGameCamera = false;
+		//isThereActiveGameCamera = false;
 
-		for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
-		{
-			if (cameraComponent.camStatus)
-			{
-				Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
-				// Use Transform data to set camera variables.
-				camera.setPos(objTransform.position);
-				camera.setFront(objTransform.front);
-				isThereActiveGameCamera = true;
-				break;
-			}
-		}
+		//for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
+		//{
+		//	if (cameraComponent.camStatus)
+		//	{
+		//		Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
+		//		// Use Transform data to set camera variables.
+		//		camera.setPos(objTransform.position);
+		//		camera.setFront(objTransform.front);
+		//		isThereActiveGameCamera = true;
+		//		break;
+		//	}
+		//}
+		camera = gameCamera;
 	}
 
 	// for editor camera

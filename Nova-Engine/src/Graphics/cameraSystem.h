@@ -57,6 +57,7 @@ private:
 
 	Engine& engine;
 	Camera& camera;
+	Camera& gameCamera;
 
 	bool isMovingUp;
 	bool isMovingDown;
