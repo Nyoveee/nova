@@ -30,7 +30,7 @@ void main() {
     translate[3][2] = worldPos.z;
     mat4 modelView = view * translate;
     
-    // Eliminate world Rotation(Bill Boarding)
+    // Rotate to face camera(Bill Boarding)
     modelView[0][0] = 1;
     modelView[0][1] = 0;
     modelView[0][2] = 0;

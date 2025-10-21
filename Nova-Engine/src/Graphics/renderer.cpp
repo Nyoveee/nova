@@ -746,20 +746,19 @@ void Renderer::renderParticles()
 		std::vector<ParticleVertex> particleVertexes;
 		std::vector<unsigned int> indices;
 		int i{};
-		for (Particle const& particle : emitter.particles) {
+		for (size_t i{};i<std::size(emitter.particles);++i) {
 			ParticleVertex particleVertex;
 			// Add to batch
 			for (int j{}; j < 4; ++j) {
-				particleVertex.localPos = vertexPos[j] * particle.currentSize;
-				particleVertex.worldPos = particle.position;
+				particleVertex.localPos = vertexPos[j] * emitter.particles[i].currentSize;
+				particleVertex.worldPos = emitter.particles[i].position;
 				particleVertex.texCoord = textureCoordinates[j];
-				particleVertex.color = particle.currentColor;
-				particleVertex.rotation = particle.rotation;
+				particleVertex.color = emitter.particles[i].currentColor;
+				particleVertex.rotation = emitter.particles[i].rotation;
 				particleVertexes.push_back(particleVertex);
 			}
 			for (int j{}; j < 6; ++j)
 				indices.push_back(squareIndices[j] + i * 4);
-			++i;
 			
 		}
 		mainVBO.uploadData(particleVertexes);

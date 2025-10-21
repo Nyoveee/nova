@@ -36,9 +36,22 @@ public:
 	}
 };
 
+template <typename T>
+inline void readFromFile(std::ifstream& inputFile, T& data) {
+	inputFile.read(reinterpret_cast<char*>(&data), sizeof(data));
+}
+
+inline bool readNextByteIfNull(std::ifstream& inputFile) {
+	char c;
+	inputFile.read(&c, 1);
+
+	return c == 0;
+}
+
 // explicit template specialisation for respective loaders.
 ResourceLoaderDefinition(Model)
 ResourceLoaderDefinition(Texture)
 ResourceLoaderDefinition(CubeMap)
 ResourceLoaderDefinition(ScriptAsset)
 ResourceLoaderDefinition(NavMesh)
+ResourceLoaderDefinition(CustomShader)

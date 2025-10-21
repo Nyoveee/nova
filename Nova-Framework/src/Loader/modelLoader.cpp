@@ -6,20 +6,6 @@
 
 #include "model.h"
 
-namespace {
-	template <typename T>
-	void readFromFile(std::ifstream& inputFile, T& data) {
-		inputFile.read(reinterpret_cast<char*>(&data), sizeof(data));
-	}
-
-	bool readNextByteIfNull(std::ifstream& inputFile) {
-		char c;
-		inputFile.read(&c, 1);
-
-		return c == 0;
-	}
-}
-
 std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
 	Logger::info("Loading model resource file {}", resourceFilePath.string);
 
