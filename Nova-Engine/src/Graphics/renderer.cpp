@@ -76,7 +76,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
-	toGammaCorrect				{ true }
+	toGammaCorrect				{ true },
+	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
 	printOpenGLDriverDetails();
 
@@ -156,14 +157,17 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// - No EBO. A much simpler VAO containing only position and texture.
 	// ======================================================
 	glGenVertexArrays(1, &textVAO);
-	glGenBuffers(1, &textVBO);
 	glBindVertexArray(textVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, textVBO.id());
+
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	fonts.push_back(Font::LoadFont("System/Font/calibri.ttf").value());
 }
 
 Renderer::~Renderer() {
@@ -202,6 +206,7 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool
 
 	renderSkyBox();
 	renderModels();
+	renderTexts();
 	renderParticles();
 
 	if (toRenderDebugPhysics) {
@@ -262,6 +267,7 @@ void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 	PBRShader.compile();
 	skyboxShader.compile();
+	textShader.compile();
 	toneMappingShader.compile();
 	particleShader.compile();
 }
@@ -645,9 +651,11 @@ void Renderer::renderTexts()
 {
 	// activate corresponding render state	
 	textShader.use();
-	//glUniform3f(glGetUniformLocation(s.Program, "textColor"), color.x, color.y, color.z);
+	glUniformMatrix4fv(glGetUniformLocation(textShader.id(), "projection"), 1, GL_FALSE, glm::value_ptr(UIProjection));
+	glUniform3f(glGetUniformLocation(textShader.id(), "textColor"), 1.0f, 0.0f, 0.0f);
+	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
 	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(textVAO);
+
 	int x = 250;
 	int y = 100;
 
@@ -655,47 +663,52 @@ void Renderer::renderTexts()
 	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
 		std::string::const_iterator c;
 		// Retrieves font asset from asset manager.
-		auto [font, _] = resourceManager.getResource<Font>(text.font);
+		//auto [font, _] = resourceManager.getResource<Font>(text.font);
 
-		if (!font) {
-			// missing model.
-			std::cout << "Missing font\n";
+		//if (!font) {
+		//	// missing model.
+		//	std::cout << "Missing font\n";
+		//	continue;
+		//}
+		if (text.text.empty()) {
 			continue;
 		}
 
+		glBindVertexArray(textVAO);
+		Font& font = fonts[0];
+
 		for (c = text.text.begin(); c != text.text.end(); c++)
 		{
-			Font::Character ch = font->Characters[*c];
+			Font::Character ch = font.Characters[*c];
 
 			float xpos = x + ch.bearing.x * transform.scale.x;
 			float ypos = y - (ch.size.y - ch.bearing.y) * transform.scale.y;
 
 			float w = ch.size.x * transform.scale.x;
 			float h = ch.size.y * transform.scale.y;
-			// update VBO for each character
-			float vertices[6][4] = {
-				{ xpos,     ypos + h,   0.0f, 0.0f },
-				{ xpos,     ypos,       0.0f, 1.0f },
-				{ xpos + w, ypos,       1.0f, 1.0f },
 
-				{ xpos,     ypos + h,   0.0f, 0.0f },
-				{ xpos + w, ypos,       1.0f, 1.0f },
-				{ xpos + w, ypos + h,   1.0f, 0.0f }
-			};
+			// update VBO for each character
 			// render glyph texture over quad
 			glBindTexture(GL_TEXTURE_2D, ch.textureID);
 			// update content of VBO memory
-			glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			textVBO.uploadData(std::vector<float>{
+				xpos, ypos + h, 0.0f, 0.0f,
+					xpos, ypos, 0.0f, 1.0f,
+					xpos + w, ypos, 1.0f, 1.0f,
+					xpos, ypos + h, 0.0f, 0.0f,
+					xpos + w, ypos, 1.0f, 1.0f,
+					xpos + w, ypos + h, 1.0f, 0.0f
+			});
 			// render quad
 			glDrawArrays(GL_TRIANGLES, 0, 6);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
 			x += (ch.advance >> 6) * transform.scale.x; // bitshift by 6 to get value in pixels (2^6 = 64)
 		}
-		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindVertexArray(mainVAO);
 	}
+	glDisable(GL_BLEND);
 }
 
 void Renderer::renderOutline() {

@@ -125,7 +125,8 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)DLL\$(Configuration)\assimp-vc143-mtd.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"</Command>
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
+xcopy "$(SolutionDir)DLL\$(Configuration)\freetype.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,7 +149,8 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(S
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)DLL\$(Configuration)\assimp-vc143-mt.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"</Command>
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"
+xcopy "$(SolutionDir)DLL\$(Configuration)\freetype.dll" /Y /Q "$(SolutionDir)ExternalApplication\$(Configuration)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Assets;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Assets;$(SolutionDir)Include;$(SolutionDir)Include\FREETYPE;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Assets;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Assets;$(SolutionDir)Include;$(SolutionDir)Include\FREETYPE;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,7 +120,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(SolutionDir)Include\FREETYPE\*.lib</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -143,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Assets\font.h" />
     <ClInclude Include="src\Internal\RandomRange.h" />
     <ClInclude Include="src\Assets\navMesh.h" />
     <ClInclude Include="src\Assets\resource.h" />
@@ -190,6 +196,7 @@
     <ClInclude Include="src\Internal\Logger.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Assets\font.cpp" />
     <ClCompile Include="src\Internal\RandomRange.cpp" />
     <ClCompile Include="src\Assets\audio.cpp" />
     <ClCompile Include="src\Assets\cubemap.cpp" />

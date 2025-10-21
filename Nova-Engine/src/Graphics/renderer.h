@@ -13,11 +13,13 @@
 #include "ECS/ECS.h"
 #include "component.h"
 #include "vertex.h"
+#include "Assets/font.h"
 
 #include "model.h"
 #include "cubemap.h"
 
 #include "Detour/Detour/DetourNavMesh.h"
+
 
 class Engine;
 class ResourceManager;
@@ -181,7 +183,7 @@ private:
 
 	// Text VAO and VBO
 	GLuint textVAO;
-	GLuint textVBO;
+	BufferObject textVBO;
 
 	Camera camera;
 
@@ -197,6 +199,12 @@ private:
 
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
+
+	// TEMP Hack method for font storage
+	Font testFont;
+	std::vector<Font> fonts;
+
+	glm::mat4 UIProjection;
 
 private:
 	int numOfPhysicsDebugTriangles;

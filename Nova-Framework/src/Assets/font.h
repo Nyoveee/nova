@@ -16,7 +16,7 @@ public:
 	//FRAMEWORK_DLL_API Font& operator=(Font const& other) = delete;
 	//FRAMEWORK_DLL_API Font& operator=(Font&& other) noexcept;
 	//FRAMEWORK_DLL_API GLuint getFontId() const;
-
+	FRAMEWORK_DLL_API static std::optional<Font> LoadFont(const std::string& resourceFilePath);
 public:
 	struct Character {
 		GLuint textureID;  // ID handle of the glyph texture
