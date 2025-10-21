@@ -1,6 +1,8 @@
 #pragma once
 
 #include <variant>
+#include <string>
+
 #include "resource.h"
 #include "type_alias.h"
 
@@ -14,13 +16,16 @@ public:
 		ControllerNodeID previousNode = NO_CONTROLLER_NODE;
 		ControllerNodeID nextNode	  = NO_CONTROLLER_NODE;
 
-		TypedResourceID<Model> animation = INVALID_RESOURCE_ID;
+		TypedResourceID<Model> animation{ INVALID_RESOURCE_ID };
+
+		std::string name;
 
 		REFLECTABLE(
 			id,
 			previousNode,
 			nextNode,
-			animation
+			animation,
+			name
 		)
 	};
 

@@ -1,4 +1,4 @@
-#include "animationSystem.h"
+ #include "animationSystem.h"
 #include "Engine/engine.h"
 #include "ResourceManager/resourceManager.h"
 #include "InputManager/inputManager.h"
@@ -36,10 +36,9 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 			continue;
 		}
 
-		// if current node is invalid, we go back to entry node immediately..
+		// if current node is invalid, we do nothing..
 		if (animator.currentNode == NO_CONTROLLER_NODE) {
-			animator.timeElapsed = 0.f;
-			animator.currentNode = controller.data.entryNode;
+			continue;
 		}
 
 		auto&& nodes = controller.getNodes();

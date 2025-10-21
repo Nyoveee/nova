@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <vector>
 
 #include "type_alias.h"
 #include "imgui_node_editor.h"
@@ -72,6 +73,9 @@ private:
 	// map nodes back to their pins..
 	std::unordered_map<ControllerNodeID, Pins> nodeToPins;
 
-	static inline const ed::NodeId startNodeId = 1000;
-	static inline const ed::PinId  startPinId  = 1001;
+	bool toCenterToStartNode;
+
+	std::vector<ed::NodeId> selectedNodes;
+	static inline const ed::NodeId startNodeId  = 1000;
+	static inline const ed::PinId  startPinId   = 1001;
 };

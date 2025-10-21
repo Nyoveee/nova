@@ -42,4 +42,8 @@ void InputManager::mainKeyBindMapping() {
 	//	Mapping animation controls..
 	//
 	mapKeyBindInput(	GLFW_KEY_SPACE,				KeyType::Keyboard,		ToggleAnimate::Sentinel				);
+	//
+	//	Mapping controller controls..
+	//
+	mapKeyBindInput(	GLFW_KEY_SPACE,				KeyType::Keyboard,		ToCenterControllerView::Sentinel	);
 }

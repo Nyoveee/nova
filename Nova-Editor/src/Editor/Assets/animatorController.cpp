@@ -11,6 +11,7 @@
 #include "Engine/engine.h"
 #include "ResourceManager/resourceManager.h"
 #include "AssetManager/assetManager.h"
+#include "InputManager/inputManager.h"
 
 #include "component.h"
 #include "controller.h"
@@ -22,12 +23,19 @@
 namespace ed = ax::NodeEditor;
 
 AnimatorController::AnimatorController(Editor& editor) :
-	editor			{ editor },
-	resourceManager	{ editor.resourceManager },
-	assetManager	{ editor.assetManager },
-	context			{ nullptr }
+	editor				{ editor },
+	resourceManager		{ editor.resourceManager },
+	assetManager		{ editor.assetManager },
+	context				{ nullptr },
+	toCenterToStartNode	{ false }
 {
 	context = ed::CreateEditor(nullptr);
+
+	InputManager& inputManager = editor.engine.inputManager;
+	
+	inputManager.subscribe<ToCenterControllerView>([&](auto) {
+		toCenterToStartNode = true;
+	});
 }
 
 AnimatorController::~AnimatorController() {
@@ -53,6 +61,7 @@ void AnimatorController::update() {
 	if (!animator) {
 		ImGui::Text("Selected entity has no animator component.");
 		ImGui::End();
+		toCenterToStartNode = false;
 		return;
 	}
 
@@ -63,39 +72,92 @@ void AnimatorController::update() {
 		{
 		case ResourceManager::QueryResult::Invalid:
 			ImGui::Text("Animator is pointing to an invalid animation controller asset.");
+			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		case ResourceManager::QueryResult::WrongType:
 			ImGui::Text("This should never happened. Resource ID is not a controller?");
 			assert(false && "Resource ID is not a controller.");
+			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		case ResourceManager::QueryResult::Loading:
 			ImGui::Text("Loading..");
+			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		case ResourceManager::QueryResult::LoadingFailed:
 			ImGui::Text("Loading of model failed.");
+			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		default:
 			assert(false);
+			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		}
 	}
 
 	displayLeftPanel(*controller);
+	handleDragAndDrop(*controller);
+
 	ImGui::SameLine();
 	displayRightPanel(*animator, *controller);
 
-	handleDragAndDrop(*controller);
 	ImGui::End();
 }
 
 void AnimatorController::displayLeftPanel(Controller& controller) {
-	ImGui::BeginChild("Left Panel", ImVec2(200, 0), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+	ImGui::BeginChild("Left Panel", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
 	
+	ed::SetCurrentEditor(context);
+
+	// Start of the node editor..
+	ed::Begin("Node Editor", ImVec2(0.0f, 0.0f));
+
+	// 1) Render all the nodes..
+	renderNodes(controller);
+
+	// 2) Render all the links..
+	renderNodeLinks(controller);
+
+	// 3) Handle interactions
+	if (ed::BeginCreate()) {
+		handleNodeLinking(controller);
+	}
+
+	ed::EndCreate(); // Wraps up object creation action handling.
+
+	if (toCenterToStartNode) {
+		toCenterToStartNode = false;
+		ed::CenterNodeOnScreen(startNodeId);
+	}
+
+	ed::End();
+
+	// Update selected nodes.. such a bad api not gonna lie..
+	selectedNodes.resize(ed::GetSelectedObjectCount());
+	int nodeCount = ed::GetSelectedNodes(selectedNodes.data(), static_cast<int>(selectedNodes.size()));
+	selectedNodes.resize(nodeCount);
+
+	ImGui::EndChild();
+}
+
+void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, Controller& controller) {
+	ImGui::BeginChild("Right Panel");
+
+	if (ImGui::Button("Reset all node position")) {
+		for (auto&& [nodeId, _] : controller.data.nodes) {
+			ed::NodeId edNodeId = static_cast<std::size_t>(nodeId);
+			ed::SetNodePosition(edNodeId, { 0.f, 0.f });
+		}
+
+		// reset start pos too.
+		ed::SetNodePosition(startNodeId, { 0.f, 0.f });
+		ed::CenterNodeOnScreen(startNodeId);
+	}
+
 	if (ImGui::BeginTabBar("TabBar")) {
 		if (ImGui::BeginTabItem("Parameter")) {
 			displayParameterWindow(controller);
@@ -110,39 +172,6 @@ void AnimatorController::displayLeftPanel(Controller& controller) {
 		ImGui::EndTabBar();
 	}
 
-	ImGui::EndChild();
-}
-
-void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, Controller& controller) {
-	ImGui::BeginChild("Right Panel");
-
-	ed::SetCurrentEditor(context);
-
-	// Start of the node editor..
-	ed::Begin("Node Editor", ImVec2(0.0f, 0.0f));
-
-	//
-	// 1) Render all the nodes..
-	//
-	renderNodes(controller);
-
-	//
-	// 2) Render all the links..
-	// 
-	renderNodeLinks(controller);
-
-	//
-	// 3) Handle interactions
-	//
-
-	if (ed::BeginCreate()) {
-		handleNodeLinking(controller);
-	}
-
-	ed::EndCreate(); // Wraps up object creation action handling.
-
-	ed::End();
-	
 	ImGui::EndChild();
 }
 
@@ -319,10 +348,40 @@ void AnimatorController::displayParameterWindow(Controller& controller) {
 }
 
 void AnimatorController::displaySelectedNodeProperties(Controller& controller) {
+	auto&& nodes = controller.data.nodes;
+
 	ImVec2 child_size = ImGui::GetContentRegionAvail();
 	child_size.y = 0.f;
 
 	ImGui::BeginChild("Selected Node Properties", child_size);
+
+	if (selectedNodes.empty()) {
+		ImGui::Text("No node selected.");
+		ImGui::EndChild();
+		return;
+	}
+
+	for (auto&& edNodeId : selectedNodes) {
+		ControllerNodeID nodeId = static_cast<ControllerNodeID>(static_cast<std::size_t>(edNodeId));
+	
+		auto&& node = nodes.at(nodeId);
+		ImGui::SeparatorText(std::string{ "Name: " + node.name }.c_str());
+		ImGui::Text("ID: %zu", node.id);
+
+		ImGui::NewLine();
+
+		// get details of next node..
+		auto nextIterator = nodes.find(node.nextNode);
+
+		// no next node..
+		if (nextIterator == nodes.end()) {
+			ImGui::Text("No next node.");
+		}
+		else {
+			ImGui::Text("Next Node: %s", nextIterator->second.name.c_str());
+		}
+	}
+
 	ImGui::EndChild();
 }
 
@@ -349,7 +408,8 @@ void AnimatorController::handleDragAndDrop(Controller& controller) {
 		nodeId,
 		NO_CONTROLLER_NODE,
 		NO_CONTROLLER_NODE,
-		animationId
+		animationId,
+		name
 	}});
 }
 
@@ -428,6 +488,34 @@ void AnimatorController::renderNodeLinks(Controller& controller) {
 
 		// create link..
 		ed::Link(linkId, startPinId, inPin);
+	}
+
+	// for every node..
+	for (auto&& [nodeId, node] : nodes) {
+		// we check if it's connected to something else..
+		if (node.nextNode == NO_CONTROLLER_NODE) {
+			continue;
+		}
+
+		// we verify the validity of this next node..
+		auto iterator = nodes.find(node.nextNode);
+
+		if (iterator == nodes.end()) {
+			// next node pointing to something invalid?
+			node.nextNode = NO_CONTROLLER_NODE;
+			continue;
+		}
+
+		auto&& [nextNodeId, nextNode] = *iterator;
+
+		// get the respective out and in pins..
+		auto&& [inPin, _] = nodeToPins.at(nodeId);
+		auto&& [__, outPin] = nodeToPins.at(nextNodeId);
+
+		ed::LinkId linkId = linkCounter++;
+
+		// create link..
+		ed::Link(linkId, outPin, inPin);
 	}
 }
 

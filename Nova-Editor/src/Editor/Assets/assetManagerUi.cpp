@@ -287,7 +287,7 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 
 void AssetManagerUI::displayCreateAssetContextMenu() {
 	if (ImGui::BeginPopupContextItem("CreateAssetContextMenu")) {
-		if (ImGui::MenuItem("[+] Create New Scene")) {
+		if (ImGui::MenuItem("[+] Scene")) {
 			std::optional<std::ofstream> opt = createAssetFile(".scene");
 		
 			if (!opt) {
@@ -299,18 +299,19 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 			}
 		}
 		
-		if (ImGui::MenuItem("[+] Create New Controller")) {
+		if (ImGui::MenuItem("[+] Controller")) {
 			std::optional<std::ofstream> opt = createAssetFile(".controller", "", true);
 
 			if (!opt) {
 				Logger::error("Failed to create animation controller file.");
 			}
-
-			Controller::Data data {};
-			serializeToBinary(opt.value(), data);
+			else {
+				Controller::Data data{};
+				serializeToBinary(opt.value(), data);
+			}
 		}
 
-		if (ImGui::MenuItem("[+] Create New Script")) {
+		if (ImGui::MenuItem("[+] Script")) {
 			static int counter = 0;
 			std::string className = "NewScript" + std::to_string(counter++);
 
