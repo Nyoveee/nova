@@ -11,6 +11,7 @@
 
 #include "assetViewerUi.h"
 #include "gameViewPort.h"
+#include "gameCameraVP.h"
 #include "ComponentInspection/componentInspector.h"
 #include "assetManagerUi.h"
 #include "Navigation/navMeshGeneration.h"
@@ -90,6 +91,7 @@ private:
 	Window& window;
 
 	GameViewPort gameViewPort;
+	GameCamViewPort gameCameraVP;
 	ComponentInspector componentInspector;
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;

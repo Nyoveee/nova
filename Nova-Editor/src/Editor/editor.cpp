@@ -43,6 +43,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	resourceManager					{ resourceManager },
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
+	gameCameraVP					{ *this },
 	componentInspector				{ *this },
 	assetViewerUi					{ assetManager, resourceManager },
 	assetManagerUi					{ *this, assetViewerUi },
@@ -219,6 +220,7 @@ void Editor::main(float dt) {
 	// ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
+	gameCameraVP.update(dt);
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
