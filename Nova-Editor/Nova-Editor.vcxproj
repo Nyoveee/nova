@@ -166,6 +166,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\ComponentInspection\componentInspector.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp" />
+    <ClCompile Include="src\Editor\gameCamViewport.cpp" />
     <ClCompile Include="src\Editor\navigationWindow.cpp" />
     <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\assetManagerUi.cpp" />
@@ -223,6 +224,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
     <ClInclude Include="src\Editor\editor.ipp" />
+    <ClInclude Include="src\Editor\gameCamViewport.h" />
     <ClInclude Include="src\Editor\navigationWindow.h" />
     <ClInclude Include="src\Navigation\navMeshGeneration.h" />
     <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />

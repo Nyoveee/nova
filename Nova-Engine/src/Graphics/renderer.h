@@ -61,6 +61,7 @@ public:
 
 	// get the main texture of the main frame buffer.
 	ENGINE_DLL_API GLuint getMainFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// gets object id from color attachment 1 of the main framebuffer.
@@ -161,7 +162,12 @@ private:
 	FrameBuffer const& getActiveMainFrameBuffer() const;
 	FrameBuffer const& getReadMainFrameBuffer() const;
 
+	FrameBuffer const& getActiveGameFrameBuffer() const;
+	FrameBuffer const& getReadGameFrameBuffer() const;
+
+
 	void swapMainFrameBuffers();
+	void swapGameVPFrameBuffers();
 
 private:
 	Engine& engine;
@@ -197,8 +203,8 @@ private:
 
 	// same thing but for game viewport camera
 	std::array<FrameBuffer, 2> gameVPFrameBuffers;
-	int gameVPFrameBuffersActiveIndex = 0;
-	int gameVPFrameBuffersReadIndex = 1;
+	int gameVPFrameBufferActiveIndex = 0;
+	int gameVPFrameBufferReadIndex = 1;
 
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;

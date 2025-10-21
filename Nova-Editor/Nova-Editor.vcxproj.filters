@@ -147,6 +147,9 @@
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\gameCamViewport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\ImGUI\imgui_impl_glfw.h">
@@ -294,6 +297,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\assetViewerUi.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\gameCamViewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

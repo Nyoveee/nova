@@ -183,9 +183,7 @@ void Renderer::update([[maybe_unused]] float dt) {
 void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape) {
 	ZoneScoped;
 	prepareRendering();
-	
-	if (&gameCamera != nullptr)
-		prepareGameViewport();
+	prepareGameViewport();
 
 	renderSkyBox();
 	renderModels();
@@ -224,6 +222,10 @@ void Renderer::renderToDefaultFBO() {
 
 GLuint Renderer::getMainFrameBufferTexture() const {
 	return getActiveMainFrameBuffer().textureIds()[0];
+}
+
+GLuint Renderer::getGameFrameBufferTexture() const {
+	return getActiveGameFrameBuffer().textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -587,8 +589,8 @@ void Renderer::prepareGameViewport() {
 	// We choose 1 as the active index because we last bind to the last element of the array above^
 
 	// Reset main frame buffer indices..
-	gameVPFrameBuffersActiveIndex = 1;
-	gameVPFrameBuffersReadIndex = 0;
+	gameVPFrameBufferActiveIndex = 1;
+	gameVPFrameBufferReadIndex = 0;
 
 	// Clear object id framebuffer.
 
@@ -1070,6 +1072,14 @@ FrameBuffer const& Renderer::getReadMainFrameBuffer() const {
 	return mainFrameBuffers[mainFrameBufferReadIndex];
 }
 
+FrameBuffer const& Renderer::getActiveGameFrameBuffer() const {
+	return gameVPFrameBuffers[gameVPFrameBufferActiveIndex];
+}
+
+FrameBuffer const& Renderer::getReadGameFrameBuffer() const {
+	return gameVPFrameBuffers[gameVPFrameBufferReadIndex];
+}
+
 void Renderer::swapMainFrameBuffers() {
 	if (mainFrameBufferActiveIndex == 0) {
 		mainFrameBufferActiveIndex = 1;
@@ -1078,6 +1088,20 @@ void Renderer::swapMainFrameBuffers() {
 	else if (mainFrameBufferActiveIndex == 1){
 		mainFrameBufferActiveIndex = 0;
 		mainFrameBufferReadIndex = 1;
+	}
+	else {
+		assert(false && "Invalid index.");
+	}
+}
+
+void Renderer::swapGameVPFrameBuffers() {
+	if (gameVPFrameBufferActiveIndex == 0) {
+		gameVPFrameBufferActiveIndex = 1;
+		gameVPFrameBufferReadIndex = 0;
+	}
+	else if (gameVPFrameBufferActiveIndex == 1) {
+		gameVPFrameBufferActiveIndex = 0;
+		gameVPFrameBufferReadIndex = 1;
 	}
 	else {
 		assert(false && "Invalid index.");
