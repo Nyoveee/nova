@@ -64,6 +64,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 								// we allocate memory for view and projection matrix.
 	sharedUBO					{ 2 * sizeof(glm::mat4) },
 	camera						{},
+	gameCam						{},
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
@@ -71,6 +72,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	toneMappingMethod			{ ToneMappingMethod::None },
 
 	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
+	gameVPFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true }
@@ -239,6 +241,18 @@ Camera& Renderer::getCamera() {
 
 Camera const& Renderer::getCamera() const {
 	return camera;
+}
+
+Camera& Renderer::getGameVP() {
+	return gameCam;
+}
+
+Camera const& Renderer::getGameVP() const {
+	return gameCam;
+}
+
+void Renderer::setGameVP(Camera& cam) {
+	gameCam = cam;
 }
 
 void Renderer::recompileShaders() {

@@ -71,6 +71,11 @@ public:
 	ENGINE_DLL_API Camera& getCamera();
 	ENGINE_DLL_API Camera const& getCamera() const;
 
+	ENGINE_DLL_API Camera& getGameVP();
+	ENGINE_DLL_API Camera const& getGameVP() const;
+
+	ENGINE_DLL_API void setGameVP(Camera& cam);
+
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
 
@@ -177,6 +182,7 @@ private:
 	BufferObject debugParticleShapeVBO;
 
 	Camera camera;
+	Camera gameCam;
 
 	// contains all the final rendering.
 	// we use 2 frame buffers to alternate between the two between post processing..
@@ -184,6 +190,11 @@ private:
 
 	int mainFrameBufferActiveIndex = 0;	// which framebuffer we are current writing to, and contains the latest image.
 	int mainFrameBufferReadIndex  = 1;	// which framebuffer we are current reading from, to do additional post processing..
+
+	std::array<FrameBuffer, 2> gameVPFrameBuffers;
+
+	int gameVPActiveFrameBufferIndex = 0;
+	int gameVPReadFrameBufferIndex = 1;
 
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
