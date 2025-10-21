@@ -23,7 +23,7 @@ std::optional<Font> Font::LoadFont(const std::string& resourceFilePath)
     }
     Font loadedFont;
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
-    FT_Set_Pixel_Sizes(face, 0, 48);
+    FT_Set_Pixel_Sizes(face, 0, loadedFont.FONT_SIZE);
 
     for (unsigned char c = 0; c < 128; c++)
     {
@@ -66,6 +66,11 @@ std::optional<Font> Font::LoadFont(const std::string& resourceFilePath)
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
     return loadedFont;
+}
+
+FRAMEWORK_DLL_API int Font::GetDefaultFontSize()
+{
+    return FONT_SIZE;
 }
 
 

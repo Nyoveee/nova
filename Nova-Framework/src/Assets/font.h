@@ -17,6 +17,7 @@ public:
 	//FRAMEWORK_DLL_API Font& operator=(Font&& other) noexcept;
 	//FRAMEWORK_DLL_API GLuint getFontId() const;
 	FRAMEWORK_DLL_API static std::optional<Font> LoadFont(const std::string& resourceFilePath);
+	FRAMEWORK_DLL_API int GetDefaultFontSize();
 public:
 	struct Character {
 		GLuint textureID;  // ID handle of the glyph texture
@@ -25,5 +26,6 @@ public:
 		unsigned int advance;    // Offset to advance to next glyph
 	};
 	std::map<char, Character> Characters;
-
+	// Default font size that is loaded into the program
+	const int FONT_SIZE = 48;
 };

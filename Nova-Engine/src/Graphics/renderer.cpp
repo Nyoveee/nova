@@ -655,9 +655,7 @@ void Renderer::renderTexts()
 	glUniform3f(glGetUniformLocation(textShader.id(), "textColor"), 1.0f, 0.0f, 0.0f);
 	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
 	glActiveTexture(GL_TEXTURE0);
-
-	int x = 250;
-	int y = 100;
+	const int DESIRED_FONT_SIZE = 12;	// Desired font size of the text TODO: prob move
 
 	// iterate through all characters
 	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
@@ -673,19 +671,22 @@ void Renderer::renderTexts()
 		if (text.text.empty()) {
 			continue;
 		}
+		int x = static_cast<int>(transform.position.x);
+		int y = static_cast<int>(transform.position.y);
 
 		glBindVertexArray(textVAO);
 		Font& font = fonts[0];
+		float fontScale = static_cast<float>(text.fontSize) / DESIRED_FONT_SIZE;
 
 		for (c = text.text.begin(); c != text.text.end(); c++)
 		{
 			Font::Character ch = font.Characters[*c];
 
-			float xpos = x + ch.bearing.x * transform.scale.x;
-			float ypos = y - (ch.size.y - ch.bearing.y) * transform.scale.y;
+			float xpos = x + ch.bearing.x * transform.scale.x * fontScale;
+			float ypos = y - (ch.size.y - ch.bearing.y) * transform.scale.y * fontScale;
 
-			float w = ch.size.x * transform.scale.x;
-			float h = ch.size.y * transform.scale.y;
+			float w = ch.size.x * transform.scale.x * fontScale;
+			float h = ch.size.y * transform.scale.y * fontScale;
 
 			// update VBO for each character
 			// render glyph texture over quad
@@ -703,7 +704,7 @@ void Renderer::renderTexts()
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-			x += (ch.advance >> 6) * transform.scale.x; // bitshift by 6 to get value in pixels (2^6 = 64)
+			x += (ch.advance >> 6) * transform.scale.x * fontScale; // bitshift by 6 to get value in pixels (2^6 = 64)
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(mainVAO);
