@@ -25,11 +25,14 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	physicsManager			{ *this },
 	audioSystem				{ *this },
 	navigationSystem		{ *this }, 
+	particleSystem          { *this },
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
-{}
+{
+	std::srand(static_cast<unsigned int>(time(NULL)));
+}
 
 Engine::~Engine() {
 	stopSimulation();
@@ -44,7 +47,6 @@ void Engine::fixedUpdate(float dt) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
 		navigationSystem.update(dt);
-		
 	}
 }
 
@@ -60,6 +62,7 @@ void Engine::update(float dt) {
 	}
 
 	transformationSystem.update();
+	particleSystem.update(dt);
 	renderer.update(dt);
 
 	resourceManager.update();
@@ -85,7 +88,7 @@ void Engine::render(RenderTarget target) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh);
+	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh, toDebugRenderParticleEmissionShape);
 
 	if (target == RenderTarget::DefaultFrameBuffer) {
 		renderer.renderToDefaultFBO();

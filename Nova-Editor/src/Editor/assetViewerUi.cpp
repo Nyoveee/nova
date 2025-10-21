@@ -33,8 +33,10 @@ void AssetViewerUI::update() {
 		return;
 	}
 
+	// Display common shared asset info across all assets..
 	ImGui::Text("Resource ID: %zu", static_cast<std::size_t>(descriptorPtr->id));
 
+	// ===== Display asset name ======
 	ImGui::InputText("Name: ", &selectedResourceName);
 
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
@@ -49,8 +51,10 @@ void AssetViewerUI::update() {
 			if (resourceManager.isResource<ScriptAsset>(selectedResourceId)) {
 				updateScriptFileName(descriptorPtr->filepath, selectedResourceName, selectedResourceId);
 			}
+
+			assetManager.serialiseDescriptor<ScriptAsset>(selectedResourceId);
 		}
-	}
+	}	
 
 	ImGui::Text("Filepath: %s", selectedResourceStemCopy.c_str());
 
@@ -65,36 +69,15 @@ void AssetViewerUI::update() {
 	}
 #endif
 
-	if (resourceManager.isResource<Texture>(selectedResourceId)) {
-		AssetInfo<Texture>* textureInfoPtr = static_cast<AssetInfo<Texture>*>(descriptorPtr);
-
-		constexpr auto listOfEnumValues = magic_enum::enum_entries<AssetInfo<Texture>::Compression>();
-
-		if (ImGui::BeginCombo("Compression", std::string{ magic_enum::enum_name<AssetInfo<Texture>::Compression>(textureInfoPtr->compression) }.c_str())) {
-			for (auto&& [enumValue, enumInString] : listOfEnumValues) {
-				if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == textureInfoPtr->compression)) {
-					if (enumValue != textureInfoPtr->compression) {
-						textureInfoPtr->compression = enumValue;
-
-						// serialise immediately..
-						assetManager.serialiseDescriptor<Texture>(selectedResourceId);
-
-						// we make a copy of asset info, because the pointer is getting invalidated..
-						AssetInfo<Texture> textureInfo = *textureInfoPtr;
-
-						// we remove this old resource..
-						resourceManager.removeResource(selectedResourceId);
-						assetManager.removeResource(selectedResourceId);
-
-						// recompile.., will add to resource manager if compilation is successful.
-						assetManager.createResourceFile<Texture>(textureInfo);
-					}
-				}
+	auto displayResourceUIFunctor = [&]<ValidResource ...T>(ResourceID id) {
+		([&] {
+			if (resourceManager.isResource<T>(id)) {
+				displayAssetUI<T>(selectedResourceId, *descriptorPtr);
 			}
+		}(), ...);
+	};
 
-			ImGui::EndCombo();
-		}
-	}
+	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
 
 	ImGui::End();
 }
@@ -124,9 +107,6 @@ void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::str
 	outputScriptFile << scriptContents;
 
 	Logger::info("Succesfully updated script name.");
-
-	// we need to serialise the descriptor for recompilation later, script resource will hold the updated name.
-	assetManager.serialiseDescriptor<ScriptAsset>(id);
 }
 
 void AssetViewerUI::selectNewResourceId(ResourceID id) {

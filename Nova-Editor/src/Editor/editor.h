@@ -7,9 +7,11 @@
 
 #include "ECS/ecs.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "assetViewerUi.h"
 #include "gameViewPort.h"
-#include "componentInspector.h"
+#include "ComponentInspection/componentInspector.h"
 #include "assetManagerUi.h"
 #include "Navigation/navMeshGeneration.h"
 #include "hierarchy.h"

@@ -43,10 +43,11 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	folderPathToId[AssetIO::assetDirectory.string()] = ASSET_FOLDER;
 
 	// ========================================
-	// 1. Check if the descriptor directory exist, and the respective asset subdirectories.
+	// 1.1 Check if the descriptor directory exist, and the respective descriptor subdirectories.
+	// 1.2 Check if the asset cache directory exist, and the respective asset cache subdirectories.
 	// ========================================
 
-	// Checking if the main descriptor directory exist.
+	// 1. Checking if the main descriptor directory exist.
 	if (!std::filesystem::exists(AssetIO::descriptorDirectory)) {
 		std::filesystem::create_directory(AssetIO::descriptorDirectory);
 	}
@@ -55,6 +56,18 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	for (auto&& [_, subDescriptorDirectory] : AssetIO::subDescriptorDirectories) {
 		if (!std::filesystem::exists(subDescriptorDirectory)) {
 			std::filesystem::create_directory(subDescriptorDirectory);
+		}
+	}
+
+	// 2. Checking if the asset cache directory exist..
+	if (!std::filesystem::exists(AssetIO::assetCacheDirectory)) {
+		std::filesystem::create_directory(AssetIO::assetCacheDirectory);
+	}
+
+	// Checking if the sub asset cache directory exist..
+	for (auto&& [_, subAssetCacheDirectory] : AssetIO::subAssetCacheDirectories) {
+		if (!std::filesystem::exists(subAssetCacheDirectory)) {
+			std::filesystem::create_directory(subAssetCacheDirectory);
 		}
 	}
 
@@ -117,6 +130,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 }
 
 AssetManager::~AssetManager() {
+#if 0
 	// let's serialise the asset meta data of all our stored info.
 	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
 		assert(serialiseFunctorPtr && "Should never be nullptr");
@@ -124,6 +138,7 @@ AssetManager::~AssetManager() {
 		// serialise the descriptor file for this given asset id.
 		serialiseFunctorPtr->operator()(id, *this);
 	}
+#endif
 }
 
 #if 0
@@ -161,7 +176,8 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	// lambda creates descriptor file, creates the resource file, and loads it to the resource manager.
 	auto initialiseResourceFile = [&]<typename T>() {
 		auto assetInfo = AssetIO::createDescriptorFile<T>(assetFilePath);
-		return createResourceFile<T>(assetInfo);
+		ResourceID id = createResourceFile<T>(assetInfo);
+		return id;
 	};
 
 	if (fileExtension == ".fbx" || fileExtension == ".obj") {
@@ -404,7 +420,7 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 	ResourceID resourceId = INVALID_RESOURCE_ID;
 	auto iterator = intermediaryAssetsToDescriptor.find(assetPath);
 
-	// intermediary asset not recorded (missing corresponding descriptor and resource file.)
+	// !! intermediary asset not recorded (missing corresponding descriptor and resource file.)
 	if (iterator == std::end(intermediaryAssetsToDescriptor)) {
 		Logger::info("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string);
 		Logger::info("");
@@ -421,7 +437,6 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 		return;
 	}
 
-
 	// ------------------------------------------
 	// Save resource entry in the parent folder.
 	// ------------------------------------------
@@ -437,7 +452,6 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 		auto&& [_, parentFolderId] = *folderIterator;
 		directories[parentFolderId].assets.insert(resourceId);
 	}
-	// ------------------------------------------
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

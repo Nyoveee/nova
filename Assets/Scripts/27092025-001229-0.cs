@@ -12,6 +12,9 @@ class PlaySound : Script
     {}
 
     protected override void onCollisionEnter(GameObject other) {
+        // Hi
+        // bye! :D
+        // Hi Again
         AudioAPI.PlaySound(gameObject, "METAL PIPE");
     } 
 }

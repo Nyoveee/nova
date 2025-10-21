@@ -207,11 +207,26 @@ struct AssetFilePath {
 			  AssetFilePath(std::filesystem::path path);
 	constexpr AssetFilePath(std::string path);
 
-			  explicit operator std::filesystem::path() const;
+			  operator std::filesystem::path() const;
 	constexpr operator std::string() const;
 
 	constexpr friend bool operator==(AssetFilePath const& lhs, AssetFilePath const& rhs);
 	friend struct std::hash<AssetFilePath>;
+
+public:
+	std::string string;
+};
+
+struct AssetCacheFilePath {
+	constexpr AssetCacheFilePath() = default;
+	AssetCacheFilePath(std::filesystem::path path);
+	constexpr AssetCacheFilePath(std::string path);
+
+	operator std::filesystem::path() const;
+	constexpr operator std::string() const;
+
+	constexpr friend bool operator==(AssetCacheFilePath const& lhs, AssetCacheFilePath const& rhs);
+	friend struct std::hash<AssetCacheFilePath>;
 
 public:
 	std::string string;
@@ -222,7 +237,7 @@ struct DescriptorFilePath {
 			  DescriptorFilePath(std::filesystem::path path);
 	constexpr DescriptorFilePath(std::string path);
 
-			  explicit operator std::filesystem::path() const;
+			  operator std::filesystem::path() const;
 	constexpr operator std::string() const;
 
 	constexpr friend bool operator==(DescriptorFilePath const& lhs, DescriptorFilePath const& rhs);

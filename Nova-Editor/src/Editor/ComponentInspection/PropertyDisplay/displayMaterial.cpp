@@ -3,12 +3,12 @@
 #include "imgui.h"
 #include "component.h"
 
-#include "componentInspector.h"
+#include "Editor/ComponentInspection/PropertyDisplay/displayProperties.h"
 
 #include "magic_enum.hpp"
 
 #include "ResourceManager/resourceManager.h"
-#include "editor.h"
+#include "Editor/editor.h"
 
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector) {
 	ImGui::BeginChild("Material UI", ImVec2{0, 400.f}, ImGuiChildFlags_Borders);

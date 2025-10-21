@@ -17,6 +17,7 @@ class PathFinding : Script
 
     private void onMouseClick() 
     {
+        // asd
         Ray ray = CameraAPI.getRayFromMouse();
         RayCastResult? result = PhysicsAPI.Raycast(ray, 1000f);
 

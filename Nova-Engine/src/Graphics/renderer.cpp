@@ -2,7 +2,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <array>
-
+#include <fstream>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Engine/engine.h"
@@ -12,8 +12,7 @@
 #include "ECS/ECS.h"
 #include "ResourceManager/resourceManager.h"
 #include "frustumCulling.h"
-
-#include <fstream>
+#include "DebugShapes.h"
 #include "component.h"
 #include "Profiling.h"
 #include "Logger.h"
@@ -52,11 +51,13 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
+	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
 	mainVAO						{},
-	debugPhysicsVAO				{},
+	debugVAO				{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
 	EBO							{ AMOUNT_OF_MEMORY_ALLOCATED },
 
 								// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
@@ -134,24 +135,24 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayAttribBinding(mainVAO, 4, bindingIndex);
 
 	// ======================================================
-	// Debug Physics VAO configuration
+	// Debug VAO configuration
 	// - No EBO. A much simpler VAO containing only position.
 	// ======================================================
-	glCreateVertexArrays(1, &debugPhysicsVAO);
+	glCreateVertexArrays(1, &debugVAO);
 	
 	// for this VAO, associate bindingIndex 0 with this VBO. 
 	constexpr GLuint debugBindingIndex = 0;
 
-	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
 
 	// associate attribute index 0 with the respective attribute properties.
-	glVertexArrayAttribFormat(debugPhysicsVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(SimpleVertex, pos));
+	glVertexArrayAttribFormat(debugVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(SimpleVertex, pos));
 
 	// enable attribute
-	glEnableVertexArrayAttrib(debugPhysicsVAO, 0);
+	glEnableVertexArrayAttrib(debugVAO, 0);
 
 	// associate vertex attribute 0 with binding index 1.
-	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
+	glVertexArrayAttribBinding(debugVAO, 0, debugBindingIndex);
 }
 
 Renderer::~Renderer() {
@@ -180,28 +181,30 @@ GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 	return objectId;
 }
 
-void Renderer::update(float dt) {
+void Renderer::update([[maybe_unused]] float dt) {
 	ZoneScoped;
-	(void) dt;
 }
 
-void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
+void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape) {
 	ZoneScoped;
 	prepareRendering();
 
 	renderSkyBox();
-
 	renderModels();
 
 	renderBloom();
+	renderParticles();
 
 	if (toRenderDebugPhysics) {
 		debugRenderPhysicsCollider();
 	}
-	
-	else if (toRenderDebugNavMesh) {
+	if (toRenderDebugNavMesh) {
 		debugRenderNavMesh();
 	}
+	if (toRenderDebugParticleEmissionShape) {
+		debugRenderParticleEmissionShape();
+	}
+
 
 	//renderOutline(); 
 
@@ -256,17 +259,18 @@ void Renderer::recompileShaders() {
 	bloomBlurShader.compile();
 	bloomFinalShader.compile();
 	toneMappingShader.compile();
+	particleShader.compile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
 	// Bind Debug Physics VBO to VAO.
 	constexpr GLuint debugBindingIndex = 0;
-	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
 
 	// ================================================
 	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
 	// ================================================
-	glBindVertexArray(debugPhysicsVAO);
+	glBindVertexArray(debugVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, physicsDebugFrameBuffer.fboId());
 
 	// Clear physics debug framebuffer.
@@ -315,9 +319,9 @@ void Renderer::debugRenderPhysicsCollider() {
 void Renderer::debugRenderNavMesh() {
 	// Bind Debug Navmesh VBO to VAO.
 	constexpr GLuint debugBindingIndex = 0;
-	glVertexArrayVertexBuffer(debugPhysicsVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
+	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
 
-	glBindVertexArray(debugPhysicsVAO);
+	glBindVertexArray(debugVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
@@ -331,6 +335,35 @@ void Renderer::debugRenderNavMesh() {
 	glDisable(GL_DEPTH_TEST);
 	setBlendMode(BlendingConfig::Disabled);
 	numOfNavMeshDebugTriangles = 0;
+}
+
+void Renderer::debugRenderParticleEmissionShape()
+{
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
+	glVertexArrayVertexBuffer(debugVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(SimpleVertex));
+
+	glBindVertexArray(debugVAO);
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+	glEnable(GL_DEPTH_TEST);
+	setBlendMode(BlendingConfig::AlphaBlending);
+
+	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
+		switch (emitter.emissionShape) {
+		case ParticleEmitter::EmissionShape::Sphere:
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(transform, emitter.sphereEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(transform, emitter.sphereEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(transform, emitter.sphereEmitter.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			break;
+		case ParticleEmitter::EmissionShape::Cube:
+			debugParticleShapeVBO.uploadData(DebugShapes::Cube(transform, emitter.cubeEmitter.min, emitter.cubeEmitter.max));
+			glDrawArrays(GL_LINES, 0, 24);
+			break;
+		}
+	}
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
@@ -477,7 +510,24 @@ void Renderer::prepareRendering() {
 
 		}
 	}
-
+	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each())
+	{
+		if (emitter.lightIntensity <= 0)
+			continue;
+		for (Particle const& particle : emitter.particles) {
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Unable to add more particle lights, max number of point lights reached!");
+				break;
+			}
+			pointLightData[numOfPtLights++] = {
+				particle.position,
+				glm::vec3{ emitter.color } *emitter.lightIntensity,
+				emitter.lightattenuation
+			};
+		}
+		if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
+			break;
+	}
 	// Send it over to SSBO.
 	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
 	glNamedBufferSubData(directionalLightSSBO.id(), 0, sizeof(unsigned int), &numOfDirLights);
@@ -674,6 +724,28 @@ void Renderer::renderOutline() {
 		}
 	}
 
+}
+
+void Renderer::renderParticles()
+{
+	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
+	glDisable(GL_DEPTH_TEST);
+	particleShader.use();
+	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
+		auto&& [texture, result] = resourceManager.getResource<Texture>(emitter.texture);
+		if (!texture)
+			continue;
+		glBindTextureUnit(0, texture->getTextureId());
+		particleShader.setVec3("color", emitter.color);
+		for (Particle const& particle : emitter.particles) {
+			// CameraFacing modelmatrix
+			glm::mat4 model{ glm::identity<glm::mat4>() };
+			model = glm::translate(model, particle.position);
+			particleShader.setMatrix("model", model);
+			particleShader.setFloat("particleSize", particle.size);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
+	}
 }
 
 void Renderer::renderObjectId(GLsizei count) {

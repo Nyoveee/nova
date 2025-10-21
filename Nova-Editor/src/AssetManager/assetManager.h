@@ -107,6 +107,14 @@ private:
 
 	void recordFolder(FolderID folderId, std::filesystem::path const& path);
 
+	// we use our cache to check if an asset has changed..
+	template <ValidResource T>
+	bool hasAssetChanged(AssetInfo<T> const& descriptor) const;
+
+	// update our cache file to store the latest write time..
+	template <ValidResource T>
+	void updateAssetCache(AssetInfo<T> const& descriptor) const;
+
 private:
 	ResourceManager& resourceManager;
 	Engine& engine;

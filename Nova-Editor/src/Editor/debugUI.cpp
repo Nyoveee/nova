@@ -58,6 +58,8 @@ void DebugUI::renderPhysicsSection() {
 
 	ImGui::Checkbox("NavMesh debug render", &engine.toDebugRenderNavMesh);
 
+	ImGui::Checkbox("Particle Emission Shape debug render", &engine.toDebugRenderParticleEmissionShape);
+
 	ImGui::SeparatorText("Mouse positions");
 
 	glm::vec3 farClipPos = { window.getClipSpacePos(), 1.f };

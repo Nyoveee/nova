@@ -173,6 +173,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Graphics\DebugShapes.h" />
+    <ClInclude Include="src\Engine\particleSystem.h" />
     <ClInclude Include="src\ECS\SceneManager.h" />
     <ClInclude Include="src\Audio\audioSystem.h" />
     <ClInclude Include="src\Engine\ScriptingAPIManager.ipp" />
@@ -206,6 +208,8 @@
     <ClInclude Include="src\Serialisation\serialisation.ipp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Graphics\DebugShapes.cpp" />
+    <ClCompile Include="src\Engine\particleSystem.cpp" />
     <ClCompile Include="src\ECS\SceneManager.cpp" />
     <ClCompile Include="src\Audio\audioSystem.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />

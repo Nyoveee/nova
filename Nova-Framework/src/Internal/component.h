@@ -35,7 +35,8 @@ class Audio;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, AudioListener, Scripts, \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
+
 
 using MaterialName = std::string;
 using ScriptName   = std::string;
@@ -303,9 +304,90 @@ struct NavMeshAgent
 		agentRotationSpeed,
 		separationWeight
 	)
-
 	//Runtime variables
 	int agentIndex		= 0;
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
+};
+
+
+struct NavigationTestTarget
+{
+	float position;
+
+	REFLECTABLE
+	(
+		position
+	)
+};
+struct Particle {
+	glm::vec3 position;
+	glm::vec3 velocity;
+	float size;
+	float currentLifeTime;
+};
+struct CubeEmitter {
+	glm::vec3 min = { -5.f,-5.f,-5.f };
+	glm::vec3 max = { 5.f,5.f,5.f };
+};
+struct SphereEmitter {
+	float radius = 5.f;
+};
+struct ParticleEmitter
+{
+	// Emission Shape
+	SphereEmitter sphereEmitter;
+	CubeEmitter cubeEmitter;
+
+	// Update
+	float currentContinuousTime = 0.f;
+	float currentBurstTime = 0.f;
+	
+	// Rendering
+	std::vector<Particle> particles;
+
+	// Editor stuff
+	TypedResourceID<Texture> texture;
+	Color color = Color{ 1.f, 1.f, 1.f };
+	
+	enum class EmissionShape {
+		Point,
+		Sphere,
+		Cube
+		// Edge
+		// Cylinder
+		// Circle
+		// Hemisphere
+		// Cone
+	} emissionShape;
+	
+	bool looping = true;
+	float startSize = 1;
+	float startSpeed = 1;
+	glm::vec3 force;
+	float lifeTime = 1;
+	int maxParticles = 1000;
+	float particleRate = 100;
+	float burstRate = 0;
+	int burstAmount = 30;
+	float lightIntensity = 0.f;
+	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
+
+	REFLECTABLE
+	(
+		texture,
+		color,
+		emissionShape,
+		looping,
+		startSize,
+		startSpeed,
+		force,
+		lifeTime,
+		maxParticles,
+		particleRate,
+		burstRate,
+		burstAmount,
+		lightIntensity,
+		lightattenuation
+	)
 };

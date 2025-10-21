@@ -28,7 +28,11 @@ class SpinningCat : Script
     {
         if (isSpinning && transform != null) 
         { 
-            transform.rotate(transform.up, angle * Time.V_FixedDeltaTime());
+            if(transform!= null)
+            {
+                transform.rotate(transform.up, angle * Time.V_FixedDeltaTime());
+            }
+           
 
             if(timeElapsed > spinningDuration)
             {

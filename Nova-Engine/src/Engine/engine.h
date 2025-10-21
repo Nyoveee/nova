@@ -14,6 +14,9 @@
 #include "Physics/physicsManager.h"
 #include "Audio/audioSystem.h"
 #include "Navigation/Navigation.h"
+#include "Engine/particleSystem.h"
+
+#define _CRTDBG_MAP_ALLOC
 
 class Window;
 class Renderer;
@@ -23,6 +26,7 @@ class ECS;
 class InputManager;
 class ScriptingAPIManager;
 class ResourceManager;
+class ParticleSystem;
 
 class Engine {
 public:
@@ -73,12 +77,16 @@ public:
 	PhysicsManager			physicsManager;
 	AudioSystem				audioSystem;
 	NavigationSystem		navigationSystem;
+	ParticleSystem          particleSystem;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;
 
 	//allows render debug for game
 	bool					toDebugRenderNavMesh;
+
+	// allows render debug for particle emission shapes
+	bool                    toDebugRenderParticleEmissionShape;
 
 private:
 	int				gameWidth;
