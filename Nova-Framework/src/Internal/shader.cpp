@@ -75,6 +75,7 @@ Shader::Shader(CustomShader customShader,Material::Pipeline const& selectedPipel
 	fShaderLibraryFile.open(fShaderLibraryPath);
 	// Attach Custom Shader Code with library
 	fShaderLibraryStream << fShaderLibraryFile.rdbuf() << "void main(){" << customShader.customShaderData.fShaderCode << '}';
+	fragmentCode = fShaderLibraryStream.str();
 	const char* fShaderCode = fragmentCode.c_str();
 	// Compile
 	compile(vShaderCode, fShaderCode);

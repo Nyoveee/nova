@@ -160,7 +160,7 @@ struct MeshRenderer {
 
 	REFLECTABLE(
 		modelId,
-		materials
+		materialId
 	)
 };
 
@@ -170,7 +170,7 @@ struct SkinnedMeshRenderer {
 
 	REFLECTABLE(
 		modelId,
-		material
+		materialId
 	)
 
 	// owns all the bone's final matrices.
