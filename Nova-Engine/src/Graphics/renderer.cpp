@@ -842,13 +842,13 @@ void Renderer::renderParticles()
 				particleVertexes.push_back(particleVertex);
 			}
 			for (int j{}; j < 6; ++j)
-				indices.push_back(squareIndices[j] + i * 4);
+				indices.push_back(squareIndices[j] + static_cast<int>(i) * 4);
 			
 		
 		}
 		mainVBO.uploadData(particleVertexes);
 		EBO.uploadData(indices);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);

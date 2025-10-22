@@ -1,22 +1,22 @@
-ShaderName{
-    Tags{
+ShaderName {
+    Tags {
         Blending:AlphaBlending
     }
-    Properties{
-        glm::mat4 model;
+    Properties {
+        Texture image;
     }
-    Input{
+    Input {
         Position
         TextureUnit
     }
-    Interface{
-      textureUnit
+    Interface {
+        textureUnit
     }
-    Vert{    
+    Vert {    
         gl_Position = model * Position;
         textureUnit = TextureUnit;
     }
-    Frag{
-        FragColor = Color;
+    Frag {
+        FragColor = texture(image, textureUnit);
     }
 }

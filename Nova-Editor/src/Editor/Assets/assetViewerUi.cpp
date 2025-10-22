@@ -246,10 +246,10 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 	displayAnimationInfo(descriptor);
 }
 
-void AssetViewerUI::displayAnimationInfo(AssetInfo<Model>& descriptor) {
-	auto&& [animation, loadStatus] = resourceManager.getResource<Model>(selectedResourceId);
+void AssetViewerUI::displayAnimationInfo([[maybe_unused]] AssetInfo<Model>& descriptor) {
+	auto&& [animationResource, loadStatus] = resourceManager.getResource<Model>(selectedResourceId);
 
-	if (!animation) {
+	if (!animationResource) {
 		switch (loadStatus)
 		{
 		case ResourceManager::QueryResult::Invalid:
@@ -272,7 +272,7 @@ void AssetViewerUI::displayAnimationInfo(AssetInfo<Model>& descriptor) {
 	}
 
 	if (ImGui::CollapsingHeader("Animation")) {
-		for (auto&& animation : animation->animations) {
+		for (auto&& animation : animationResource->animations) {
 			ImGui::SeparatorText(animation.name.c_str());
 			ImGui::Text("Duration (in seconds): %.2f", animation.durationInSeconds);
 			ImGui::Text("Duration (in ticks): %.2f", animation.durationInTicks);

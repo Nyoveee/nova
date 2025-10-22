@@ -1,7 +1,8 @@
 #pragma once
+
 #include "resource.h"
 #include "export.h"
-#include <glad/glad.h>
+
 #include <glm/glm.hpp>
 #include <unordered_map>
 

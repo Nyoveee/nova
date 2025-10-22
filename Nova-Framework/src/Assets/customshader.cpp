@@ -1,4 +1,5 @@
 #include "customshader.h"
+#include <glad/glad.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -63,7 +64,7 @@ CustomShader::CustomShader(ResourceID id, ResourceFilePath resourceFilePath, Sha
 CustomShader::~CustomShader(){
 	/*glDeleteProgram(m_id);*/
 }
-void CustomShader::use(Pipeline pipeline) const {
+void CustomShader::use([[maybe_unused]] Pipeline pipeline) const {
 	glUseProgram(m_id);
 	switch (blendingConfig) {
 	case BlendingConfig::AlphaBlending:
