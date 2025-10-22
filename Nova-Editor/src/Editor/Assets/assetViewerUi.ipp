@@ -10,4 +10,7 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 	else if constexpr (std::same_as<T, Model>) {
 		displayModelInfo(typedDescriptor);
 	}
+	else if constexpr (std::same_as < T, material) {
+		displayMaterialInfo(typedDescriptor);
+	}
 }
