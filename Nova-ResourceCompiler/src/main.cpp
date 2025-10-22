@@ -12,8 +12,9 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] const char* argv[]) {
 
 	if (argc != 2) {
 #if DEBUGGING
-		//std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Model" / "9752316694208315393.desc";
-		std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Model" / "16153963675574681603.desc";
+		//std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Model" / "16153963675574681603.desc";
+		//return Compiler::compile(std::string{ testingPath.string().c_str() });
+		std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "CustomShader" / "3036816346890944513.desc";
 		return Compiler::compile(std::string{ testingPath.string().c_str() });
 #else
 		std::cerr << "Invalid amount of arguments!\n";

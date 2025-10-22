@@ -34,6 +34,9 @@ int Compiler::compileAsset(DescriptorFilePath const& descriptorFilepath) {
 	else if constexpr (std::same_as<T, ScriptAsset>) {
 		return compileScriptAsset(resourceFilePath, assetInfo.name);
 	}
+	else if constexpr (std::same_as<T, CustomShader>) {
+		return compileShaderAsset(resourceFilePath, assetInfo.filepath);
+	}
 	else {
 		return defaultCompile(resourceFilePath, assetInfo.filepath);
 	}

@@ -99,6 +99,14 @@ inline void DisplayProperty<Color>(PropertyReferences& propertyReferences, const
 	dataMember = vec;
 }
 template<>
+inline void DisplayProperty<ColorA>(PropertyReferences& propertyReferences, const char* dataMemberName, ColorA& dataMember) {
+	(void)propertyReferences;
+	ImGui::Text(dataMemberName);
+	glm::vec4 vec = dataMember;
+	ImGui::ColorEdit4("##", glm::value_ptr(vec));
+	dataMember = vec;
+}
+template<>
 inline void DisplayProperty<glm::quat>(PropertyReferences& propertyReferences, const char* dataMemberName, glm::quat& dataMember) {
 	(void)propertyReferences;
 	if (ImGui::BeginTable("MyTable", 5, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
@@ -350,11 +358,48 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(PropertyReferences& p
 			DisplayProperty<glm::vec3>(propertyReferences, "Min", dataMember.cubeEmitter.min);
 			DisplayProperty<glm::vec3>(propertyReferences, "Max", dataMember.cubeEmitter.max);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Cone:
+			DisplayProperty<float>(propertyReferences, "Arc", dataMember.coneEmitter.arc);
+			DisplayProperty<float>(propertyReferences, "Distance", dataMember.coneEmitter.distance);
+			DisplayProperty<float>(propertyReferences, "Radius", dataMember.radiusEmitter.radius);
+			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
-			DisplayProperty<float>(propertyReferences, "Radius", dataMember.sphereEmitter.radius);
+		case ParticleEmissionTypeSelection::EmissionShape::Edge:
+		case ParticleEmissionTypeSelection::EmissionShape::Circle:
+		case ParticleEmissionTypeSelection::EmissionShape::Hemisphere:
+			DisplayProperty<float>(propertyReferences, "Radius", dataMember.radiusEmitter.radius);
 			break;
 		}
 		ImGui::EndChild();
 	}
-	
+}
+template<>
+inline void DisplayProperty<ParticleColorSelection>(PropertyReferences& propertyReferences, const char* dataMemberName, ParticleColorSelection& dataMember) {
+	(void)dataMemberName;
+	DisplayProperty<bool>(propertyReferences, "Randomized Color", dataMember.randomizedColor);
+	if (!dataMember.randomizedColor) {
+		ImGui::BeginChild("", ImVec2(0, 75), ImGuiChildFlags_Border);
+		DisplayProperty<ColorA>(propertyReferences, dataMemberName, dataMember.color);
+		ImGui::EndChild();
+	}
+}
+template<>
+inline void DisplayProperty<SizeOverLifetime>(PropertyReferences& propertyReferences, const char* dataMemberName, SizeOverLifetime& dataMember) {
+	DisplayProperty<bool>(propertyReferences, dataMemberName, dataMember.selected);
+	if (dataMember.selected) {
+		ImGui::BeginChild("", ImVec2(0, 100), ImGuiChildFlags_Border);
+		DisplayProperty<InterpolationType>(propertyReferences, "InterpolationType", dataMember.interpolationType);
+		DisplayProperty<float>(propertyReferences, "EndSize", dataMember.endSize);
+		ImGui::EndChild();
+	}
+}
+template<>
+inline void DisplayProperty<ColorOverLifetime>(PropertyReferences& propertyReferences, const char* dataMemberName, ColorOverLifetime& dataMember) {
+	DisplayProperty<bool>(propertyReferences, dataMemberName, dataMember.selected);
+	if (dataMember.selected) {
+		ImGui::BeginChild("", ImVec2(0, 100), ImGuiChildFlags_Border);
+		DisplayProperty<InterpolationType>(propertyReferences, "InterpolationType", dataMember.interpolationType);
+		DisplayProperty<ColorA>(propertyReferences, "EndColor", dataMember.endColor);
+		ImGui::EndChild();
+	}
 }

@@ -5,6 +5,8 @@
 
 #include "RecursiveMacros.hxx"
 #include "ScriptingAPI.hxx"
+#include "ScriptLibrary/Core/GameObject.hxx"
+
 #include <type_traits>
 
 // This default function template returns the managed type as it is
@@ -101,6 +103,10 @@ internal:																							\
 		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID)))			\
 			return true;																			\
 		return false;																				\
+	}																								\
+public:																								\
+	property GameObject^ gameObject {																\
+		GameObject^ get() { return GameObject::GetReference(entityID); };							\
 	}																								\
 private:																							\
 	ComponentType* componentReference;																\

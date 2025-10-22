@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/gtc/type_ptr.hpp>
+#include <magic_enum.hpp>
 
 #include "type_concepts.h"
 
@@ -163,6 +164,24 @@ inline void deserializeFromBinary(std::ifstream& inputFile, T& id) {
 	typename T::Underlying_ID underlyingId;
 	deserializeFromBinary(inputFile, underlyingId);
 	id = underlyingId;
+}
+
+// ----------------------------------------------------
+// enum..
+template <IsEnum T>
+inline void deserializeFromBinary(std::ifstream& inputFile, T& enumDataMember) {
+	std::string parsedEnumString;
+	deserializeFromBinary<std::string>(inputFile, parsedEnumString);
+
+	// lets convert string to enum..
+	std::optional<T> enumValueOpt = magic_enum::enum_cast<T>(parsedEnumString);
+
+	if (enumValueOpt) {
+		enumDataMember = enumValueOpt.value();
+	}
+	else {
+		Logger::error("Failed to deserialise enum..");
+	}
 }
 
 // ----------------------------------------------------

@@ -9,6 +9,9 @@
 #include "modelLoader.h"
 #include "Serialisation/serializeToBinary.h"
 
+// Internal Libraries
+#include "Internal/ShaderParser.h"
+
 int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat) {
 	std::string format;
 	std::string option;
@@ -279,6 +282,49 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::
 	return 0;
 }
 
+int Compiler::compileShaderAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath)
+{
+	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
+
+	if (!resourceFile) {
+		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
+		return -1;
+	}
+
+	CustomShader::ShaderParserData shaderParserData;
+
+	if (!ShaderParser::Parse(intermediaryAssetFilepath, shaderParserData)) {
+		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
+		return -1;
+	}
+
+#if 0
+	// Blending Config
+	writeBytesToFile(resourceFile, shaderParserData.blendingConfig);
+	resourceFile.write("", 1);
+	// Depth Testing Method
+	writeBytesToFile(resourceFile, shaderParserData.depthTestingMethod);
+	resourceFile.write("", 1);
+	// Uniforms
+	writeBytesToFile(resourceFile, shaderParserData.uniforms.size());
+	resourceFile.write("", 1);
+	for (std::pair<std::string, std::string> uniform : shaderParserData.uniforms) {
+		writeBytesToFile(resourceFile, uniform.first.size());
+		writeBytesToFile(resourceFile, uniform.second.size());
+		resourceFile.write(uniform.first.data(), uniform.first.size());
+		resourceFile.write(uniform.second.data(), uniform.second.size());
+		resourceFile.write("", 1);
+	}
+	// Fragment Shader Code
+	writeBytesToFile(resourceFile, shaderParserData.fShaderCode.size());
+	writeBytesToFile(resourceFile, shaderParserData.fShaderCode);
+	resourceFile.write("", 1);
+#endif
+
+	serializeToBinary(resourceFile, shaderParserData);
+	return 0;
+}
+
 int Compiler::defaultCompile(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
 	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
 
@@ -312,7 +358,6 @@ int Compiler::defaultCompile(ResourceFilePath const& resourceFilePath, AssetFile
 int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	// Verify asset type.
 	std::string resourceType = std::filesystem::path{ descriptorFilepath }.parent_path().stem().string();
-
 	if (resourceType == "Texture") {
 		return Compiler::compileAsset<Texture>(descriptorFilepath);
 	}
@@ -336,6 +381,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "Controller") {
 		return Compiler::compileAsset<Controller>(descriptorFilepath);
+	}
+	else if (resourceType == "CustomShader") {
+		return Compiler::compileAsset<CustomShader>(descriptorFilepath);
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);

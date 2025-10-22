@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/gtc/type_ptr.hpp>
+#include <magic_enum.hpp>
 
 #include "type_concepts.h"
 
@@ -105,6 +106,14 @@ inline void serializeToBinary(std::ofstream& outputFile, T const& optional) {
 	if (optional) {
 		serializeToBinary<typename T::value_type>(outputFile, optional.value());
 	}
+}
+
+// ----------------------------------------------------
+// enum..
+template <IsEnum T>
+inline void serializeToBinary(std::ofstream& outputFile, T const& enumValue) {
+	std::string enumName{ magic_enum::enum_name(enumValue) };
+	serializeToBinary(outputFile, enumName);
 }
 
 // ----------------------------------------------------

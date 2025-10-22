@@ -65,6 +65,13 @@ inline void SerializeProperty<Color>(Json& jsonComponent, const char* dataMember
 	jsonComponent[dataMemberName]["b"] = dataMember.b();
 }
 template<>
+inline void SerializeProperty<ColorA>(Json& jsonComponent, const char* dataMemberName, ColorA const& dataMember) {
+	jsonComponent[dataMemberName]["r"] = dataMember.r();
+	jsonComponent[dataMemberName]["g"] = dataMember.g();
+	jsonComponent[dataMemberName]["b"] = dataMember.b();
+	jsonComponent[dataMemberName]["a"] = dataMember.a();
+}
+template<>
 inline void SerializeProperty<glm::quat>(Json& jsonComponent, const char* dataMemberName, glm::quat const& dataMember) {
 	jsonComponent[dataMemberName]["w"] = dataMember.w;
 	jsonComponent[dataMemberName]["x"] = dataMember.x;
@@ -204,9 +211,39 @@ inline void SerializeProperty<ParticleEmissionTypeSelection>(Json& jsonComponent
 			SerializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Min", dataMember.cubeEmitter.min);
 			SerializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Max", dataMember.cubeEmitter.max);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Cone:
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Arc", dataMember.coneEmitter.arc);
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Distance", dataMember.coneEmitter.distance);
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.radiusEmitter.radius);
+			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
-			SerializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.sphereEmitter.radius);
+		case ParticleEmissionTypeSelection::EmissionShape::Edge:
+		case ParticleEmissionTypeSelection::EmissionShape::Circle:
+		case ParticleEmissionTypeSelection::EmissionShape::Hemisphere:
+			SerializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.radiusEmitter.radius);
 			break;
 		}
+	}
+}
+template<>
+inline void SerializeProperty<ParticleColorSelection>(Json& jsonComponent, const char* dataMemberName, ParticleColorSelection const& dataMember) {
+	SerializeProperty<bool>(jsonComponent[dataMemberName], "Randomized Color", dataMember.randomizedColor);
+	if (!dataMember.randomizedColor)
+		SerializeProperty<ColorA>(jsonComponent[dataMemberName], "Color", dataMember.color);
+}
+template<>
+inline void SerializeProperty<SizeOverLifetime>(Json& jsonComponent, const char* dataMemberName, SizeOverLifetime const& dataMember) {
+	SerializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		SerializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		SerializeProperty<float>(jsonComponent[dataMemberName], "EndSize", dataMember.endSize);
+	}
+}
+template<>
+inline void SerializeProperty<ColorOverLifetime>(Json& jsonComponent, const char* dataMemberName, ColorOverLifetime const& dataMember) {
+	SerializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		SerializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		SerializeProperty<ColorA>(jsonComponent[dataMemberName], "EndColor", dataMember.endColor);
 	}
 }

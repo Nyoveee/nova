@@ -157,6 +157,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(S
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Internal\ShaderParser.cpp" />
     <ClCompile Include="src\compiler.cpp" />
     <ClCompile Include="src\Library\miniz.c" />
     <ClCompile Include="src\Library\stb_image.cpp" />
@@ -164,6 +165,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\Nova-Framework.dll" /Y /Q "$(S
     <ClCompile Include="src\modelLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Internal\ShaderParser.h" />
     <ClInclude Include="src\compiler.h" />
     <ClInclude Include="src\compiler.ipp" />
     <ClInclude Include="src\Library\miniz.h" />

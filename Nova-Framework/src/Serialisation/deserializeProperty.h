@@ -91,6 +91,14 @@ inline void DeserializeProperty<Color>(Json const& jsonComponent, const char* da
 	dataMember = vec;
 }
 template<>
+inline void DeserializeProperty<ColorA>(Json const& jsonComponent, const char* dataMemberName, ColorA& dataMember) {
+	glm::vec4 vec{ jsonComponent[dataMemberName]["r"],
+				   jsonComponent[dataMemberName]["g"],
+				   jsonComponent[dataMemberName]["b"],
+				   jsonComponent[dataMemberName]["a"] };
+	dataMember = vec;
+}
+template<>
 inline void DeserializeProperty<glm::quat>(Json const& jsonComponent, const char* dataMemberName, glm::quat& dataMember) {
 	glm::quat vec{ jsonComponent[dataMemberName]["w"],
 				   jsonComponent[dataMemberName]["x"],
@@ -234,9 +242,39 @@ inline void DeserializeProperty<ParticleEmissionTypeSelection>(Json const& jsonC
 			DeserializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Min", dataMember.cubeEmitter.min);
 			DeserializeProperty<glm::vec3>(jsonComponent[dataMemberName], "Max", dataMember.cubeEmitter.max);
 			break;
+		case ParticleEmissionTypeSelection::EmissionShape::Cone:
+			DeserializeProperty<float>(jsonComponent[dataMemberName], "Arc", dataMember.coneEmitter.arc);
+			DeserializeProperty<float>(jsonComponent[dataMemberName], "Distance", dataMember.coneEmitter.distance);
+			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.radiusEmitter.radius);
+			break;
 		case ParticleEmissionTypeSelection::EmissionShape::Sphere:
-			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.sphereEmitter.radius);
+		case ParticleEmissionTypeSelection::EmissionShape::Edge:
+		case ParticleEmissionTypeSelection::EmissionShape::Circle:
+		case ParticleEmissionTypeSelection::EmissionShape::Hemisphere:
+			DeserializeProperty<float>(jsonComponent[dataMemberName], "Radius", dataMember.radiusEmitter.radius);
 			break;
 		}
+	}
+}
+template<>
+inline void DeserializeProperty<ParticleColorSelection>(Json const& jsonComponent, const char* dataMemberName, ParticleColorSelection& dataMember) {
+	DeserializeProperty<bool>(jsonComponent[dataMemberName], "Randomized Color", dataMember.randomizedColor);
+	if (!dataMember.randomizedColor)
+		DeserializeProperty<ColorA>(jsonComponent[dataMemberName], "Color", dataMember.color);
+}
+template<>
+inline void DeserializeProperty<SizeOverLifetime>(Json const& jsonComponent, const char* dataMemberName, SizeOverLifetime& dataMember) {
+	DeserializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		DeserializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		DeserializeProperty<float>(jsonComponent[dataMemberName], "EndSize", dataMember.endSize);
+	}
+}
+template<>
+inline void DeserializeProperty<ColorOverLifetime>(Json const& jsonComponent, const char* dataMemberName, ColorOverLifetime& dataMember) {
+	DeserializeProperty<bool>(jsonComponent[dataMemberName], "Selected", dataMember.selected);
+	if (dataMember.selected) {
+		DeserializeProperty<InterpolationType>(jsonComponent[dataMemberName], "InterpolationType", dataMember.interpolationType);
+		DeserializeProperty<ColorA>(jsonComponent[dataMemberName], "EndColor", dataMember.endColor);
 	}
 }

@@ -125,7 +125,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		}
 	}
 
-	// By now everything should be serialized, loadAll the entityscripts containing the serializablefield data
+	// By now everything should be serialized, compile the entity scripts
 	engine.scriptingAPIManager.compileScriptAssembly();
 
 	hasInitialised = true;
@@ -222,6 +222,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".controller") {
 		return initialiseResourceFile.template operator()<Controller>();
+	}
+	else if (fileExtension == ".shader") {
+		return initialiseResourceFile.template operator()<CustomShader>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);

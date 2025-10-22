@@ -22,7 +22,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 	DescriptorSubDirectory(Audio),
 	DescriptorSubDirectory(Scene),
 	DescriptorSubDirectory(NavMesh),
-	DescriptorSubDirectory(Controller)
+	DescriptorSubDirectory(Controller),
+	DescriptorSubDirectory(CustomShader)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subResourceDirectories{
@@ -33,7 +34,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(Audio),
 	ResourceSubDirectory(Scene),
 	ResourceSubDirectory(NavMesh),
-	ResourceSubDirectory(Controller)
+	ResourceSubDirectory(Controller),
+	ResourceSubDirectory(CustomShader)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAssetCacheDirectories{
@@ -44,7 +46,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAsse
 	AssetCacheSubDirectory(Audio),
 	AssetCacheSubDirectory(Scene),
 	AssetCacheSubDirectory(NavMesh),
-	AssetCacheSubDirectory(Controller)
+	AssetCacheSubDirectory(Controller),
+	AssetCacheSubDirectory(CustomShader)
 };
 
 std::filesystem::path const AssetIO::assetDirectory		 = std::filesystem::current_path() / "Assets";

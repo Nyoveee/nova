@@ -1,15 +1,14 @@
 #include "Script.hxx"
 #include "API/ScriptingAPI.hxx"
-#include <msclr/marshal_cppstd.h>
+#include "ScriptLibrary/Extensions/ManagedTypes.hxx"
 
+#include <msclr/marshal_cppstd.h>
 // C++/cli doesn't support friend class so this is a way to make sure scripts cannot access the init update exit functions of other scripts
 // These also includes exception handling for scripts
 void Script::callInit() {
 	try { 
 		// Set GameObject Details
-		gameObject = gcnew GameObject();
-		gameObject->entityID = entityID;
-		gameObject->transformReference = gameObject->getComponent<Transform_^>();
+		gameObject = GameObject::GetReference(entityID);
 		// Call Init Function
 		init(); 
 	}
