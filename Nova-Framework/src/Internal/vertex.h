@@ -137,6 +137,12 @@ struct Material {
 		float roughness;
 		float metallic;
 		float occulusion;
+
+		REFLECTABLE(
+			roughness,
+			metallic,
+			occulusion
+		)
 	};
 
 	Pipeline renderingPipeline = Pipeline::PBR;
@@ -147,4 +153,12 @@ struct Material {
 	std::optional<ResourceID>			normalMap = std::nullopt;
 
 	float ambient = 0.1f;
+
+	REFLECTABLE(
+		renderingPipeline,
+		albedo,
+		config,
+		normalMap,
+		ambient
+	)
 };

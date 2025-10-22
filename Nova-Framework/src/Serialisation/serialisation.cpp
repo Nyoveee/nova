@@ -7,13 +7,7 @@
 
 namespace Serialiser {
 	void Serialiser::serialiseScene(entt::registry& registry, const char* fileName) {
-		try {
-			std::ofstream file(fileName);
-
-			if (!file) {
-				return;
-			}
-
+		//try {
 			Json js;
 			std::vector<Json> jsonVec;
 
@@ -24,11 +18,18 @@ namespace Serialiser {
 
 			// save to output file
 			js["entities"] = jsonVec;
+
+			std::ofstream file(fileName);
+
+			if (!file) {
+				return;
+			}
+
 			file << std::setw(4) << js << std::endl;
-		}
-		catch (std::exception const& ex) {
-			Logger::error("Failed to serialise scene. {}", ex.what());
-		}
+		//}
+		//catch (std::exception const& ex) {
+		//	Logger::error("Failed to serialise scene. {}", ex.what());
+		//}
 	}
 
 	void deserialiseScene(entt::registry& registry, const char* fileName) {

@@ -22,14 +22,18 @@ namespace Serialiser {
 
 	template <typename ...Components>
 	void deserialiseComponents(entt::registry& registry, entt::entity entity, Json en);
-	//void deserialiseComponents(entt::registry& registry, entt::entity entity, std::ifstream& inputFile);
 
 	template <typename T>
 	Json serialiseComponent(T& component);
 
 	template <typename T>
-	//void deserialiseComponent(std::ifstream& inputFile, json jsonComponent);
 	void deserialiseComponent(Json jsonComponent, entt::registry& registry, entt::entity entity);
+
+	template <typename T>
+	void serializeToJsonFile(T const& data, std::ofstream& file);
+
+	template <typename T>
+	void deserializeFromJsonFile(T const& data, std::ifstream& file);
 };
 
 #include "serialisation.ipp"

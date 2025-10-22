@@ -191,19 +191,19 @@ static int constexpr _reflection_fields_n = COUNT_ARGS(__VA_ARGS__); \
 friend reflection::query; \
 static_assert(_reflection_fields_n < 32, "Reflection does not support more than 32 data members."); \
 template<int N, typename Object> \
-struct FieldData {}; \
+struct _FieldData {}; \
 APPLY_MACRO_TO_EACH(REFLECT_EACH, __VA_ARGS__) \
 
 #define REFLECT_EACH(dataMember, index) \
 \
 template<typename Object> \
-struct FieldData<index, Object> \
+struct _FieldData<index, Object> \
 { \
 	using type = std::remove_cvref_t<decltype(std::decay_t<Object>::dataMember)>; \
 \
     Object&& self; \
 \
-    constexpr FieldData(Object&& self) : self(self) {} \
+    constexpr _FieldData(Object&& self) : self(self) {} \
     \
     constexpr decltype(std::remove_cvref_t<Object>::dataMember)& get() const requires(!std::is_const_v<std::remove_reference_t<Object>>) \
     {\
@@ -225,8 +225,8 @@ struct FieldData<index, Object> \
 namespace reflection {
 	// element field data defer from field data in that
 	template <typename T>
-	struct ElementFieldData {
-		ElementFieldData(T&& element) : element{ element } {};
+	struct _ElementFieldData {
+		_ElementFieldData(T&& element) : element{ element } {};
 
 		constexpr std::remove_reference_t<T>& get() const requires(!std::is_const_v<std::remove_reference_t<T>>) {
 			return element;
@@ -261,7 +261,7 @@ namespace reflection {
 		// Get a specific FieldData of object type T, index N.
 		template<int N, typename T>
 		static auto getFieldData(T&& object) {
-			return typename std::remove_cvref_t<T>::template FieldData<N, T&&>{std::forward<T>(object)};
+			return typename std::remove_cvref_t<T>::template _FieldData<N, T&&>{std::forward<T>(object)};
 		}
 
 
@@ -302,11 +302,11 @@ namespace reflection {
 						std::forward<Functor>(func),
 						std::forward<Functor2>(enterFunc),
 						std::forward<Functor3>(exitFunc),
-						ElementFieldData<decltype(element)>{ element }
+						_ElementFieldData<decltype(element)>{ element }
 					);
 				}
 				else {
-					func(ElementFieldData<decltype(element)>{ element });
+					func(_ElementFieldData<decltype(element)>{ element });
 				}
 			}
 		}
@@ -342,7 +342,7 @@ namespace reflection {
 		static_assert(isReflectable<T>() || isForEachIterable<T>, "Class provided is not reflectable! Did you forget to provide the REFLECTABLE macro?");
 
 		if constexpr (option == Option::IterateThroughContainers && isForEachIterable<std::remove_cvref_t<T>>) {
-			enterFunc(ElementFieldData<decltype(x)>{x});
+			enterFunc(_ElementFieldData<decltype(x)>{x});
 
 			for (auto&& element : x) {
 				// is element itself reflectable?
@@ -355,11 +355,11 @@ namespace reflection {
 					);
 				}
 				else {
-					func(ElementFieldData<decltype(element)>{ element });
+					func(_ElementFieldData<decltype(element)>{ element });
 				}
 			}
 
-			exitFunc(ElementFieldData<decltype(x)>{x});
+			exitFunc(_ElementFieldData<decltype(x)>{x});
 		}
 		else {
 			// iterate through all data members..
@@ -402,7 +402,7 @@ namespace reflection {
 			}
 
 			std::cout << '\n';
-			}, std::forward<T>(x));
+		}, std::forward<T>(x));
 	}
 
 	template <typename T>

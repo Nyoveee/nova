@@ -195,7 +195,10 @@ struct ControllerNodeID {
 
 	constexpr ControllerNodeID();
 	constexpr ControllerNodeID(std::size_t id);
+	ControllerNodeID(std::string string);
+
 	constexpr explicit operator std::size_t() const;
+	inline explicit operator std::string() const;
 
 public:
 	constexpr friend bool operator==(ControllerNodeID const& lhs, ControllerNodeID const& rhs);

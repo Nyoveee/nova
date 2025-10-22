@@ -1,6 +1,7 @@
 #include "loader.h"
 #include "Logger.h"
-#include "Serialisation/deserializeFromBinary.h"
+
+#include "Serialisation/serialisation.h"
 
 std::optional<ResourceConstructor> ResourceLoader<Controller>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
 	Logger::info("Loading controller resource file {}", resourceFilePath.string);
@@ -21,7 +22,7 @@ std::optional<ResourceConstructor> ResourceLoader<Controller>::load(ResourceID i
 			auto&& dataMember = fieldData.get();
 			using DataMemberType = std::decay_t<decltype(dataMember)>;
 
-			deserializeFromBinary<DataMemberType>(resourceFile, dataMember);
+			Serialiser::deserializeFromJsonFile<DataMemberType>(dataMember, resourceFile);
 		},
 	data);
 	

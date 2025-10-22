@@ -197,6 +197,8 @@ constexpr AudioInstanceID::operator std::size_t() const {
 constexpr ControllerNodeID::ControllerNodeID()				 : id{}		{}
 constexpr ControllerNodeID::ControllerNodeID(std::size_t id) : id{ id } {}
 
+inline ControllerNodeID::ControllerNodeID(std::string string) : id{ std::stoull(string) } {}
+
 constexpr bool operator==(ControllerNodeID const& lhs, ControllerNodeID const& rhs) {
 	return lhs.id == rhs.id;
 }
@@ -214,6 +216,10 @@ struct std::hash<ControllerNodeID> {
 
 constexpr ControllerNodeID::operator std::size_t() const {
 	return id;
+}
+
+inline ControllerNodeID::operator std::string() const {
+	return std::to_string(id);
 }
 
 constexpr ControllerNodeID NO_CONTROLLER_NODE	= std::numeric_limits<std::size_t>::max();

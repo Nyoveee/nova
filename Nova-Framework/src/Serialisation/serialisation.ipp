@@ -9,8 +9,8 @@
 
 #include "Logger.h"
 
-#include "serializeProperty.h"
-#include "deserializeProperty.h"
+#include "serializeToJson.h"
+#include "deserializeFromJson.h"
 
 namespace Serialiser {
 	template<typename ...Components>
@@ -58,13 +58,7 @@ namespace Serialiser {
 			return componentJson;
 		}
 
-		reflection::visit([&](auto fieldData) {
-			auto& dataMember = fieldData.get();
-			constexpr const char* dataMemberName = fieldData.name();
-			using DataMemberType = std::decay_t<decltype(dataMember)>;
-			SerializeProperty<DataMemberType>(componentJson, dataMemberName, dataMember);
-		}, component);
-
+		componentJson = serializeToJson(component);
 		return componentJson;
 	}
 	// this was the starting point
@@ -84,7 +78,7 @@ namespace Serialiser {
 				auto& dataMember = fieldData.get();
 				constexpr const char* dataMemberName = fieldData.name();
 				using DataMemberType = std::decay_t<decltype(dataMember)>;
-				DeserializeProperty<DataMemberType>(jsonComponent[componentName], dataMemberName, dataMember);
+				deserializeFromJson<DataMemberType>(dataMember, jsonComponent[componentName][dataMemberName]);
 
 			}, component);
 
@@ -93,5 +87,17 @@ namespace Serialiser {
 		catch (std::exception const& ex) {
 			Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
 		}
+	}
+
+	template<typename T>
+	void serializeToJsonFile(T const& data, std::ofstream& file) {
+		file << std::setw(4) << serializeToJson(data) << std::endl;
+	}
+	
+	template<typename T>
+	void deserializeFromJsonFile(T& data, std::ifstream& file) {
+		Json json;
+		file >> json;
+		deserializeFromJson(data, json);
 	}
 }

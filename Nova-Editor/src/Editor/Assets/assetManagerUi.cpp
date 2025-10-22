@@ -9,7 +9,7 @@
 
 #include "../ImGui/misc/cpp/imgui_stdlib.h"
 
-#include "Serialisation/serializeToBinary.h"
+#include "Serialisation/serialisation.h"
 
 #include <sstream>
 #include <Windows.h>
@@ -300,14 +300,14 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 		}
 		
 		if (ImGui::MenuItem("[+] Controller")) {
-			std::optional<std::ofstream> opt = createAssetFile(".controller", "", true);
+			std::optional<std::ofstream> opt = createAssetFile(".controller");
 
 			if (!opt) {
 				Logger::error("Failed to create animation controller file.");
 			}
 			else {
 				Controller::Data data{};
-				serializeToBinary(opt.value(), data);
+				Serialiser::serializeToJsonFile(data, opt.value());
 			}
 		}
 

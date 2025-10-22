@@ -196,10 +196,10 @@
     <ClInclude Include="src\Loader\loader.h" />
     <ClInclude Include="src\Internal\Logger.h" />
     <ClInclude Include="src\Serialisation\serializeToBinary.h" />
-    <ClInclude Include="src\Serialisation\deserializeProperty.h" />
+    <ClInclude Include="src\Serialisation\deserializeFromJson.h" />
     <ClInclude Include="src\Serialisation\serialisation.h" />
     <ClInclude Include="src\Serialisation\serialisation.ipp" />
-    <ClInclude Include="src\Serialisation\serializeProperty.h" />
+    <ClInclude Include="src\Serialisation\serializeToJson.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Assets\animation.cpp" />

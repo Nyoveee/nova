@@ -63,6 +63,11 @@ enum class InterpolationType : unsigned int {
 struct FieldData {
 	std::string name;
 	std::variant<ALL_FIELD_TYPES> data;
+
+	REFLECTABLE(
+		name,
+		data
+	)
 };
 // ===================================
 
@@ -245,6 +250,11 @@ struct ScriptData
 {
 	TypedResourceID<ScriptAsset> scriptId	{ INVALID_RESOURCE_ID };
 	std::vector<FieldData> fields			{};
+
+	REFLECTABLE(
+		scriptId,
+		fields
+	)
 };
 
 struct Scripts
@@ -260,6 +270,12 @@ struct AudioData
 	TypedResourceID<Audio> AudioId			{ INVALID_RESOURCE_ID };
 	float Volume							{ 1.f };
 	bool StopAudio							{ false };
+
+	REFLECTABLE(
+		AudioId,
+		Volume,
+		StopAudio
+	)
 };
 
 struct AudioComponent 
@@ -354,6 +370,7 @@ struct NavigationTestTarget
 		position
 	)
 };
+
 /******************************************************************************
 	Particles System
 ******************************************************************************/
@@ -373,17 +390,35 @@ struct Particle {
 	// Lifetime
 	float currentLifeTime;
 };
+
 struct CubeEmitter {
 	glm::vec3 min = { -5.f,-5.f,-5.f };
 	glm::vec3 max = { 5.f,5.f,5.f };
+
+	REFLECTABLE(
+		min,
+		max
+	)
 };
+
 struct ConeEmitter {
 	float arc = 30.f;
 	float distance = 5.f;
+
+	REFLECTABLE(
+		arc,
+		distance
+	)
 };
+
 struct RadiusEmitter {
 	float radius = 5.f;
+
+	REFLECTABLE(
+		radius
+	)
 };
+
 struct ParticleEmissionTypeSelection {
 	enum class EmissionShape {
 		Point,
@@ -397,21 +432,49 @@ struct ParticleEmissionTypeSelection {
 	RadiusEmitter radiusEmitter;
 	CubeEmitter cubeEmitter;
 	ConeEmitter coneEmitter;
+
+	REFLECTABLE(
+		emissionShape,
+		radiusEmitter,
+		cubeEmitter,
+		coneEmitter
+	)
 };
+
 struct ParticleColorSelection {
 	bool randomizedColor = false;
 	ColorA color{ 1.f, 1.f, 1.f,1.f };
+
+	REFLECTABLE(
+		randomizedColor,
+		color
+	)
 };
+
 struct SizeOverLifetime {
 	bool selected{};
 	InterpolationType interpolationType{ InterpolationType::Linear };
 	float endSize{};
+
+	REFLECTABLE(
+		selected,
+		interpolationType,
+		endSize
+	)
 };
+
 struct ColorOverLifetime {
 	bool selected{};
 	InterpolationType interpolationType{ InterpolationType::Linear };
 	ColorA endColor{};
+
+	REFLECTABLE(
+		selected,
+		interpolationType,
+		endColor
+	)
 };
+
 struct ParticleEmitter
 {
 	// Update
