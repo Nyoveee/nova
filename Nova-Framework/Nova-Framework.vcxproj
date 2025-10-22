@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Assets;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Resource;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
-    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Assets;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src;$(ProjectDir)src\Resource;$(SolutionDir)Include;$(ProjectDir)src\Internal;$(ProjectDir)src\Imported;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -227,6 +227,7 @@
     <ClCompile Include="src\Internal\shader.cpp" />
     <ClCompile Include="src\Loader\controllerLoader.cpp" />
     <ClCompile Include="src\Loader\cubemapLoader.cpp" />
+    <ClCompile Include="src\Loader\materialLoader.cpp" />
     <ClCompile Include="src\Loader\modelLoader.cpp" />
     <ClCompile Include="src\Loader\navMeshLoader.cpp" />
     <ClCompile Include="src\Loader\scriptLoader.cpp" />

@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Assets;$(ProjectDir)src;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Resource;$(ProjectDir)src;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Assets;$(ProjectDir)src;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Resource;$(ProjectDir)src;$(SolutionDir)Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
