@@ -298,6 +298,7 @@ Camera const& Renderer::getCamera() const {
 	return camera;
 }
 
+#if 0
 void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 	PBRShader.compile();
@@ -306,6 +307,7 @@ void Renderer::recompileShaders() {
 	particleShader.compile();
 	skeletalAnimationShader.compile();
 }
+#endif
 
 void Renderer::debugRenderPhysicsCollider() {
 	// Bind Debug Physics VBO to VAO.

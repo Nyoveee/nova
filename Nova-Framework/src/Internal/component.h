@@ -28,6 +28,7 @@ class Texture;
 class CubeMap;
 class ScriptAsset;
 class Audio;
+class Material;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -38,7 +39,6 @@ class Audio;
 	EntityData, Transform, Light, MeshRenderer, SkinnedMeshRenderer, Animator, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, \
 	AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
 
-using MaterialName = std::string;
 using ScriptName   = std::string;
 
 #include "physics.h"
@@ -154,9 +154,7 @@ struct Light {
 
 struct MeshRenderer {
 	TypedResourceID<Model> modelId{ INVALID_RESOURCE_ID };
-
-	// maps a material name from the model to a specific material texture
-	std::unordered_map<MaterialName, Material> materials {};
+	TypedResourceID<Material> materialId{ INVALID_RESOURCE_ID };
 
 	bool toRenderOutline = false;
 
@@ -168,13 +166,11 @@ struct MeshRenderer {
 
 struct SkinnedMeshRenderer {
 	TypedResourceID<Model> modelId{ INVALID_RESOURCE_ID };
-
-	// maps a material name from the model to a specific material texture
-	std::unordered_map<MaterialName, Material> materials{};
+	TypedResourceID<Material> materialId{ INVALID_RESOURCE_ID };
 
 	REFLECTABLE(
 		modelId,
-		materials
+		material
 	)
 
 	// owns all the bone's final matrices.

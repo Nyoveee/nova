@@ -226,6 +226,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".shader") {
 		return initialiseResourceFile.template operator()<CustomShader>();
 	}
+	else if (fileExtension == ".material") {
+		return initialiseResourceFile.template operator()<Material>();
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return INVALID_RESOURCE_ID;

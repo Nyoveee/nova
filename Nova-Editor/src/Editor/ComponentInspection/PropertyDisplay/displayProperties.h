@@ -29,7 +29,9 @@ struct PropertyReferences {
 /***************************************************************************************
 	Property Sub Infos
 ****************************************************************************************/
+#if 0
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
+#endif
 void displayScriptFields(ScriptData& scriptData, PropertyReferences& propertyReferences);
 
 /***************************************************************************************
@@ -221,6 +223,7 @@ inline void DisplayProperty<glm::vec3>(PropertyReferences& propertyReferences, c
 		ImGui::EndTable();
 	}
 }
+#if 0
 template<>
 inline void DisplayProperty<std::unordered_map<MaterialName, Material>>(PropertyReferences& propertyReferences, const char* dataMemberName, std::unordered_map<MaterialName, Material>& dataMember) {
 	(void)dataMemberName;
@@ -236,6 +239,7 @@ inline void DisplayProperty<std::unordered_map<MaterialName, Material>>(Property
 		ImGui::PopID();
 	}
 }
+#endif
 template<>
 inline void DisplayProperty<std::vector<ScriptData>>(PropertyReferences& propertyReferences, const char* dataMemberName, std::vector<ScriptData>& dataMember) {
 	(void)dataMemberName;

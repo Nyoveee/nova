@@ -126,6 +126,7 @@ struct alignas(16) SpotLightData {
 
 #pragma warning( pop )
 
+#if 0
 struct Material {
 	enum class Pipeline {
 		PBR,			// uses everything.
@@ -148,3 +149,4 @@ struct Material {
 
 	float ambient = 0.1f;
 };
+#endif

@@ -10,37 +10,10 @@
 #include "shader.h"
 #include "Logger.h"
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath) :
-	initialised		{ },
-	vertexPath		{ vertexPath },
-	fragmentPath	{ fragmentPath }
+Shader::Shader(const char* vertexPath, const char* fragmentPath) 
+	:shaderCompileStatus{} 
 {
-	compile();
-	initialised = true;
-}
-
-Shader::~Shader() {
-	glDeleteProgram(m_id);
-}
-
-void Shader::use() const {
-	glUseProgram(m_id);
-}
-
-void Shader::unuse() const {
-	glUseProgram(0);
-}
-
-//void Shader::unuse() const {
-//	glUseProgram(0);
-//}
-
-void Shader::compile() {
-	if (initialised) {
-		glDeleteProgram(m_id);
-	}
-
-	// 1. retrieve the vertex/fragment source code from filePath
+	// retrieve the vertex/fragment source code from filePath
 	std::string vertexCode;
 	std::string fragmentCode;
 	std::ifstream vShaderFile;
@@ -66,8 +39,64 @@ void Shader::compile() {
 
 	const char* vShaderCode = vertexCode.c_str();
 	const char* fShaderCode = fragmentCode.c_str();
+	compile(vShaderCode, fShaderCode);
+}
 
-	// 2. compile shaders
+Shader::Shader(CustomShader customShader,Material::Pipeline const& selectedPipeline)
+	:shaderCompileStatus{}
+{
+	// Setup Shader Paths based on material
+	std::string fShaderLibraryPath{};
+	std::string vShaderPath{};
+	switch (selectedPipeline) {
+	case Material::Pipeline::PBR:
+		vShaderPath = "System/Shader/PBR.vert";
+		fShaderLibraryPath = "System/Shader/Library/pbrlibrary.frag";
+		break;
+	}
+	if (fShaderLibraryPath.empty()) {
+		Logger::error("Unable to compile Pipeline does not have a library");
+		return;
+	}
+	// Vertex Shader, 
+	std::string vertexCode;
+	std::ifstream vShaderFile{};
+	std::stringstream vShaderStream;
+	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	vShaderFile.open(vShaderPath);
+	vShaderStream << vShaderFile.rdbuf();
+	vertexCode = vShaderStream.str();
+	const char* vShaderCode = vertexCode.c_str();
+	// Fragment Shader
+	std::string fragmentCode;
+	std::ifstream fShaderLibraryFile{};
+	std::stringstream fShaderLibraryStream;
+	fShaderLibraryFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fShaderLibraryFile.open(fShaderLibraryPath);
+	// Attach Custom Shader Code with library
+	fShaderLibraryStream << fShaderLibraryFile.rdbuf() << "void main(){" << customShader.customShaderData.fShaderCode << '}';
+	const char* fShaderCode = fragmentCode.c_str();
+	// Compile
+	compile(vShaderCode, fShaderCode);
+}
+
+Shader::~Shader() {
+	glDeleteProgram(m_id);
+}
+
+void Shader::use() const {
+	glUseProgram(m_id);
+}
+
+void Shader::unuse() const {
+	glUseProgram(0);
+}
+
+void Shader::compile(const char* vShaderCode, const char* fShaderCode) {
+	if (shaderCompileStatus == ShaderCompileStatus::Success) {
+		glDeleteProgram(m_id);
+	}
+
 	int success;
 
 	// vertex Shader
@@ -82,6 +111,8 @@ void Shader::compile() {
 		char infoLog[512];
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
 		Logger::error("Error! Compilation of vertex shader failed! {}", infoLog);
+		shaderCompileStatus = ShaderCompileStatus::Failed;
+		return;
 	}
 
 	GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -95,6 +126,8 @@ void Shader::compile() {
 		char infoLog[512];
 		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
 		Logger::error("Error! Compilation of fragment shader failed! {}", infoLog);
+		shaderCompileStatus = ShaderCompileStatus::Failed;
+		return;
 	}
 
 	m_id = glCreateProgram();
@@ -108,11 +141,14 @@ void Shader::compile() {
 		char infoLog[512];
 		glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
 		Logger::error("Error! Linking of shaders failed! {}", infoLog);
+		shaderCompileStatus = ShaderCompileStatus::Failed;
+		return;
 	}
 
 	// delete shaders; they're linked into our program and no longer necessary
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
+	shaderCompileStatus = ShaderCompileStatus::Success;
 }
 
 void Shader::setBool(const std::string& name, bool const value) const {
@@ -147,6 +183,7 @@ void Shader::setImageUniform(const std::string& name, int uniform) const {
 	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), uniform);
 }
 
+
 void Shader::setVec3(const std::string& name, glm::vec3 const& list) const {
 	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
 }
@@ -165,12 +202,4 @@ void Shader::setVec4(const std::string& name, glm::vec4 const& list) const {
 
 GLuint Shader::id() const {
 	return m_id;
-}
-
-const char* Shader::getVertexPath() const {
-	return vertexPath;
-}
-
-const char* Shader::getFragmentPath() const {
-	return fragmentPath;
 }

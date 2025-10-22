@@ -129,6 +129,44 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	selectedResourceExtension = std::filesystem::path{ descriptorPtr->filepath }.extension().string();
 }
 
+
+void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& descriptor)
+{
+	auto&& [material, loadStatus] = resourceManager.getResource<Material>(selectedResourceId);
+	// Chosen Shader
+	auto namePtr = assetManager.getName(material->materialData.selectedShader);
+	char const* selectedShaderName{ namePtr ? namePtr->c_str() : "No shader selected." };
+	ImGui::PushID(static_cast<int>(static_cast<size_t>(selectedResourceId)));
+	auto customShaders = resourceManager.getAllResources<CustomShader>();
+	if (ImGui::BeginCombo("Shader", selectedShaderName)) {
+		for (auto&& customShaderID : customShaders) {
+			std::string const* assetName = assetManager.getName(customShaderID);
+			if (!assetName)
+				continue;
+			ImGui::PushID(static_cast<int>(static_cast<std::size_t>(customShaderID)));
+			if (ImGui::Selectable(assetName->empty() ? "<no name>" : assetName->c_str()))
+				material->materialData.selectedShader = TypedResourceID<CustomShader>(customShaderID);
+			ImGui::PopID();
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopID();
+	// Shader Data
+	if (material->materialData.selectedShader != INVALID_RESOURCE_ID) {
+		auto&& [customShader, loadStatus] = resourceManager.getResource<CustomShader>(selectedResourceId);
+		for (auto const &[name, type]  : customShader->customShaderData.uniforms) {
+			// Use the overriden value instead
+			if (material->materialData.overridenUniforms.contains(name)) {
+				/*if(type == "vec3")*/
+			}
+			else {
+				
+			}
+		}
+	}
+
+}
+
 void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 	ImGui::SeparatorText("Texture");
 
