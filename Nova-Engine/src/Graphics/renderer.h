@@ -123,6 +123,9 @@ private:
 	// render a debug triangles in navMesh
 	void debugRenderNavMesh();
 
+	// Shadow mapping functions
+	void renderShadowMap();
+
 	// HDR post-processing functions
 	void renderHDRTonemapping();
 
@@ -184,6 +187,10 @@ private:
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
 
+	// Shadow mapping
+	FrameBuffer shadowMapFrameBuffer;
+	GLuint shadowMapDepthTexture;
+
 private:
 	int numOfPhysicsDebugTriangles;
 	int numOfNavMeshDebugTriangles;
@@ -204,9 +211,12 @@ public:
 	Shader overlayShader;
 	Shader objectIdShader;
 	Shader skyboxShader;
-	
+
 	// HDR tone mapping shader
 	Shader toneMappingShader;
+
+	// Shadow mapping shader
+	Shader shadowDepthShader;
 
 	// HDR parameters
 	float hdrExposure;

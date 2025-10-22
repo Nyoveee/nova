@@ -48,6 +48,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
+	shadowDepthShader			{ "System/Shader/shadowDepth.vert",			"System/Shader/shadowDepth.frag" },
 	mainVAO						{},
 	debugPhysicsVAO				{},
 	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -72,6 +73,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
+	shadowMapFrameBuffer		{ 2048, 2048, {} },  // No color attachment, depth only
+	shadowMapDepthTexture		{},
 	toGammaCorrect				{ true }
 {
 	printOpenGLDriverDetails();
@@ -146,10 +149,28 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugPhysicsVAO, 0, debugBindingIndex);
+
+	// ======================================================
+	// Shadow Map Depth Texture Setup
+	// ======================================================
+	glCreateTextures(GL_TEXTURE_2D, 1, &shadowMapDepthTexture);
+	glTextureStorage2D(shadowMapDepthTexture, 1, GL_DEPTH_COMPONENT32F, 2048, 2048);
+	glTextureParameteri(shadowMapDepthTexture, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTextureParameteri(shadowMapDepthTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTextureParameteri(shadowMapDepthTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTextureParameteri(shadowMapDepthTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTextureParameterfv(shadowMapDepthTexture, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	// Attach depth texture to shadow framebuffer
+	glNamedFramebufferTexture(shadowMapFrameBuffer.fboId(), GL_DEPTH_ATTACHMENT, shadowMapDepthTexture, 0);
+	glNamedFramebufferDrawBuffer(shadowMapFrameBuffer.fboId(), GL_NONE);
+	glNamedFramebufferReadBuffer(shadowMapFrameBuffer.fboId(), GL_NONE);
 }
 
 Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &mainVAO);
+	glDeleteTextures(1, &shadowMapDepthTexture);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -181,6 +202,10 @@ void Renderer::update(float dt) {
 
 void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh) {
 	ZoneScoped;
+
+	// Render shadow map first
+	renderShadowMap();
+
 	prepareRendering();
 
 	renderSkyBox();
@@ -731,6 +756,23 @@ void Renderer::setupPBRShader(Material const& material) {
 
 	PBRShader.setFloat("ambientFactor", material.ambient);
 
+	// Check if any directional light casts shadows
+	bool shadowsEnabled = false;
+	auto lightsView = registry.view<Transform, Light>();
+	for (auto&& [entity, transform, light] : lightsView.each()) {
+		if (light.type == Light::Type::Directional && light.castsShadows) {
+			shadowsEnabled = true;
+			break;
+		}
+	}
+
+	// Bind shadow map texture
+	PBRShader.setBool("enableShadows", shadowsEnabled);
+	if (shadowsEnabled) {
+		glBindTextureUnit(3, shadowMapDepthTexture);
+		PBRShader.setImageUniform("shadowMap", 3);
+	}
+
 	PBRShader.use();
 }
 
@@ -894,6 +936,72 @@ void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 			}
 		}
 	}
+}
+
+void Renderer::renderShadowMap() {
+	ZoneScoped;
+
+	// Find the first directional light that casts shadows
+	glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+	bool hasShadowCaster = false;
+
+	auto lightsView = registry.view<Transform, Light>();
+	for (auto&& [entity, transform, light] : lightsView.each()) {
+		if (light.type == Light::Type::Directional && light.castsShadows) {
+			// Calculate light space matrix for directional light
+			glm::vec3 lightDir = glm::normalize(transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f));
+
+			// Center shadow map around camera position instead of world origin
+			glm::vec3 sceneCenter = camera.getPos();
+			glm::vec3 lightPos = sceneCenter - lightDir * 50.0f;
+
+			glm::mat4 lightProjection = glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.1f, 100.0f);
+			glm::mat4 lightViewMatrix = glm::lookAt(lightPos, sceneCenter, glm::vec3(0.0f, 1.0f, 0.0f));
+			lightSpaceMatrix = lightProjection * lightViewMatrix;
+
+			hasShadowCaster = true;
+			break;
+		}
+	}
+
+	if (!hasShadowCaster) {
+		return;
+	}
+
+	// Render to shadow map framebuffer
+	glViewport(0, 0, 2048, 2048);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFrameBuffer.fboId());
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	shadowDepthShader.use();
+	shadowDepthShader.setMatrix("lightSpaceMatrix", lightSpaceMatrix);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT); // Reduce peter panning
+
+	// Render all mesh renderers to the shadow map
+	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
+		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
+		if (!model) continue;
+
+		shadowDepthShader.setMatrix("model", transform.modelMatrix);
+
+		for (auto const& mesh : model->meshes) {
+			mainVBO.uploadData(mesh.vertices);
+			EBO.uploadData(mesh.indices);
+			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+		}
+	}
+
+	glCullFace(GL_BACK);
+
+	// Reset viewport for main rendering
+	glViewport(0, 0, engine.window.windowWidth, engine.window.windowHeight);
+
+	// Store light space matrix for use in main rendering
+	PBRShader.use();
+	PBRShader.setMatrix("lightSpaceMatrix", lightSpaceMatrix);
 }
 
 void Renderer::renderHDRTonemapping() {

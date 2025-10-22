@@ -134,13 +134,15 @@ struct Light {
 	glm::vec3 attenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 	Radian cutOffAngle = glm::radians(12.5f);
 	Radian outerCutOffAngle = glm::radians(17.5f);
-	
+	bool castsShadows = false;
+
 	REFLECTABLE(
 		type,
 		color,
 		intensity,
 		cutOffAngle,
-		outerCutOffAngle
+		outerCutOffAngle,
+		castsShadows
 	)
 };
 

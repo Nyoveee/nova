@@ -6,6 +6,7 @@ in VS_OUT {
     vec2 textureUnit;
     vec3 normal;
     vec3 fragWorldPos;
+    vec4 fragPosLightSpace;
     mat3 TBN;
 } fsIn;
 
@@ -81,6 +82,47 @@ vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor
 uniform bool isUsingNormalMap;
 uniform sampler2D normalMap;
 
+// === SHADOW MAPPING ===
+uniform sampler2D shadowMap;
+uniform bool enableShadows;
+
+float calculateShadow(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
+{
+    // Perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+    // Transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // Outside the light's frustum
+    if(projCoords.z > 1.0)
+        return 0.0;
+
+    // Get closest depth value from light's perspective
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+
+    // Get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+
+    // Add bias to reduce shadow acne
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.001);
+
+    // PCF (Percentage Closer Filtering) for softer shadows
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
+
+    return shadow;
+}
+
 void main() {
     // Getting the normals..
     vec3 normal;
@@ -118,13 +160,22 @@ void main() {
         finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, baseColor, pointLights[i]);
     }
     for(int i = 0; i < dirLightCount; ++i) {
-        finalColor += microfacetModelDir(fsIn.fragWorldPos, normal, baseColor, dirLights[i]);
+        vec3 lightContribution = microfacetModelDir(fsIn.fragWorldPos, normal, baseColor, dirLights[i]);
+
+        // Apply shadows only to the first directional light (for now)
+        if(i == 0 && enableShadows) {
+            vec3 lightDir = normalize(-dirLights[i].direction);
+            float shadow = calculateShadow(fsIn.fragPosLightSpace, normal, lightDir);
+            lightContribution *= (1.0 - shadow);
+        }
+
+        finalColor += lightContribution;
     }
     for(int i = 0; i < spotLightCount; ++i) {
         finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, baseColor, spotLights[i]);
     }
-    
-    finalColor = pow(finalColor, vec3(1.0/2.2)); 
+
+    // Output in linear space (HDR) - gamma correction happens in tone mapping pass
     FragColor = vec4(finalColor, 1);
 }
 

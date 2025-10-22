@@ -19,15 +19,19 @@ out VS_OUT {
     vec2 textureUnit;
     vec3 normal;
     vec3 fragWorldPos;
+    vec4 fragPosLightSpace;
     mat3 TBN;
 } vsOut;
 
+uniform mat4 lightSpaceMatrix;
+
 void main()
-{  
+{
     gl_Position = projection * view * model * vec4(pos, 1.0);
-    
+
     // we interpolate the world position of the vertices to obtain fragment positions
     vsOut.fragWorldPos = vec3(model * vec4(pos, 1.0));
+    vsOut.fragPosLightSpace = lightSpaceMatrix * vec4(vsOut.fragWorldPos, 1.0);
     vsOut.textureUnit = textureUnit;
     vsOut.normal = normalMatrix * normal;
 
