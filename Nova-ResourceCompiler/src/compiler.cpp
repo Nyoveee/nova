@@ -9,6 +9,8 @@
 #include "modelLoader.h"
 #include "Serialisation/serializeToBinary.h"
 
+#include "Material.h"
+
 // Internal Libraries
 #include "Internal/ShaderParser.h"
 
@@ -297,30 +299,6 @@ int Compiler::compileShaderAsset(ResourceFilePath const& resourceFilePath, Asset
 		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
 		return -1;
 	}
-
-#if 0
-	// Blending Config
-	writeBytesToFile(resourceFile, shaderParserData.blendingConfig);
-	resourceFile.write("", 1);
-	// Depth Testing Method
-	writeBytesToFile(resourceFile, shaderParserData.depthTestingMethod);
-	resourceFile.write("", 1);
-	// Uniforms
-	writeBytesToFile(resourceFile, shaderParserData.uniforms.size());
-	resourceFile.write("", 1);
-	for (std::pair<std::string, std::string> uniform : shaderParserData.uniforms) {
-		writeBytesToFile(resourceFile, uniform.first.size());
-		writeBytesToFile(resourceFile, uniform.second.size());
-		resourceFile.write(uniform.first.data(), uniform.first.size());
-		resourceFile.write(uniform.second.data(), uniform.second.size());
-		resourceFile.write("", 1);
-	}
-	// Fragment Shader Code
-	writeBytesToFile(resourceFile, shaderParserData.fShaderCode.size());
-	writeBytesToFile(resourceFile, shaderParserData.fShaderCode);
-	resourceFile.write("", 1);
-#endif
-
 	serializeToBinary(resourceFile, shaderParserData);
 	return 0;
 }
@@ -384,6 +362,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "CustomShader") {
 		return Compiler::compileAsset<CustomShader>(descriptorFilepath);
+	}
+	else if (resourceType == "Material") {
+		return Compiler::compileAsset<Material>(descriptorFilepath);
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);

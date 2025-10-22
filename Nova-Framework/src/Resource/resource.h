@@ -46,7 +46,7 @@ template <typename T>
 concept ValidResource = std::derived_from<T, Resource>&& std::derived_from<AssetInfo<T>, BasicAssetInfo>;
 
 #define ALL_RESOURCES \
-Texture, Model, CubeMap, ScriptAsset, Audio, Scene, NavMesh, Controller, CustomShader
+Texture, Model, CubeMap, ScriptAsset, Audio, Scene, NavMesh, Controller, CustomShader, Material
 
 #include "texture.h"
 #include "model.h"

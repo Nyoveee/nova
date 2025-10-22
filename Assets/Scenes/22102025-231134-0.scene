@@ -14,32 +14,6 @@
                 "name": "Floor",
                 "parent": 4294967295
             },
-            "MeshRenderer": {
-                "materials": {
-                    "Material": {
-                        "albedo": {
-                            "__variant_type": 1,
-                            "__variant_value": {
-                                "b": 0.2551724314689636,
-                                "g": 0.2551724314689636,
-                                "r": 1.0
-                            }
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "__variant_type": 1,
-                            "__variant_value": {
-                                "metallic": 0.0,
-                                "occulusion": 0.0,
-                                "roughness": 0.5
-                            }
-                        },
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                },
-                "modelId": 1245008178564268053
-            },
             "Rigidbody": {
                 "initialVelocity": {
                     "x": 0.0,
@@ -127,7 +101,7 @@
                 "localPosition": {
                     "x": 0.45815926790237427,
                     "y": 5.878350257873535,
-                    "z": 1.4178303480148315
+                    "z": 1.4178298711776733
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -136,14 +110,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999999403953552,
+                    "x": 0.9999997019767761,
                     "y": 1.0,
-                    "z": 0.9999998807907104
+                    "z": 0.9999996423721313
                 },
                 "position": {
                     "x": 1.232932448387146,
                     "y": 2.5658302307128906,
-                    "z": 2.3567888736724854
+                    "z": 2.356788158416748
                 },
                 "rotation": {
                     "w": 1.0,
@@ -152,9 +126,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 2.339160442352295,
+                    "x": 2.3391599655151367,
                     "y": 0.5804992914199829,
-                    "z": 0.899802029132843
+                    "z": 0.8998018503189087
                 }
             },
             "id": 1
@@ -188,28 +162,6 @@
                 ],
                 "name": "Box",
                 "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materials": {
-                    "Material": {
-                        "albedo": {
-                            "__variant_type": 0,
-                            "__variant_value": 10264539576361746591
-                        },
-                        "ambient": 0.10000000149011612,
-                        "config": {
-                            "__variant_type": 1,
-                            "__variant_value": {
-                                "metallic": 0.0,
-                                "occulusion": 0.0,
-                                "roughness": 0.5
-                            }
-                        },
-                        "normalMap": null,
-                        "renderingPipeline": "PBR"
-                    }
-                },
-                "modelId": 1245008178564268053
             },
             "ParticleEmitter": {
                 "angularVelocity": 0.0,

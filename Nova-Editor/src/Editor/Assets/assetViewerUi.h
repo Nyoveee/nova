@@ -16,6 +16,7 @@ public:
 	void selectNewResourceId(ResourceID id);
 
 private:
+	void displayMaterialInfo();
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 	void displayAnimationInfo(AssetInfo<Model>& descriptor);

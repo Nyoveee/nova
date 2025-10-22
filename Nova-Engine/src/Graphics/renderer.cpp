@@ -670,6 +670,7 @@ void Renderer::renderModels() {
 
 		setModelUniforms(transform, entity);
 
+#if 0
 		// Set up stencil operation
 		if (meshRenderer.toRenderOutline) {
 			glStencilMask(0xFF);	// allows writing the full byte of the stencil's buffer.
@@ -708,6 +709,7 @@ void Renderer::renderModels() {
 			// render object id into object id FBO.
 			renderObjectId(mesh.numOfTriangles * 3);
 		}
+#endif
 	}
 
 	glDisable(GL_CULL_FACE);
@@ -732,6 +734,7 @@ void Renderer::renderSkinnedModels() {
 			continue;
 		}
 
+#if 0
 		// Setting model specific uniform..
 		skeletalAnimationShader.setMatrix("model", transform.modelMatrix);
 		skeletalAnimationShader.setMatrix("normalMatrix", transform.normalMatrix);
@@ -763,6 +766,7 @@ void Renderer::renderSkinnedModels() {
 			// render object id into object id FBO.
 			renderObjectId(mesh.numOfTriangles * 3);
 		}
+#endif 
 	}
 
 	glDisable(GL_CULL_FACE);
@@ -772,6 +776,7 @@ void Renderer::renderSkinnedModels() {
 }
 
 void Renderer::renderOutline() {
+#if 0
 	// time to render the outlines..
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);	// we don't need to write to the stencil buffer anymore, we focus on testing..
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);	// test if the fragment of the outline is within the stencil buffer, discard if it is.
@@ -797,10 +802,12 @@ void Renderer::renderOutline() {
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
+#endif
 }
 
 void Renderer::renderParticles()
 {
+#if 0
 	glBindVertexArray(particleVAO);
 
 	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
@@ -852,8 +859,10 @@ void Renderer::renderParticles()
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
+#endif
 }
 
+#if 0
 void Renderer::renderObjectId(GLsizei count) {
 	glDisable(GL_DITHER);
 
@@ -1088,6 +1097,8 @@ void Renderer::setupColorShader(Material const& material) {
 	}, material.albedo);
 }
 
+#endif
+
 void Renderer::setModelUniforms(Transform const& transform, entt::entity entity) {
 	blinnPhongShader.setMatrix("model", transform.modelMatrix);
 	blinnPhongShader.setMatrix("normalMatrix", transform.normalMatrix);
@@ -1102,6 +1113,7 @@ void Renderer::setModelUniforms(Transform const& transform, entt::entity entity)
 	objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 }
 
+#if 0
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {
 	auto iterator = meshRenderer.materials.find(mesh.materialName);
 
@@ -1127,6 +1139,7 @@ Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshR
 	auto&& [__, material] = *iterator;
 	return &material;
 }
+#endif
 
 void Renderer::setBlendMode(BlendingConfig configuration) {
 	switch (configuration) {

@@ -5,6 +5,9 @@
 #include "resource.h"
 #include "nova_math.h"
 
+#include "Material.h"
+#include "customShader.h"
+
 #define DescriptorSubDirectory(AssetType) \
 	std::pair{ Family::id<AssetType>(), std::filesystem::current_path() / "Descriptors" / #AssetType }
 
@@ -23,7 +26,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 	DescriptorSubDirectory(Scene),
 	DescriptorSubDirectory(NavMesh),
 	DescriptorSubDirectory(Controller),
-	DescriptorSubDirectory(CustomShader)
+	DescriptorSubDirectory(CustomShader),
+	DescriptorSubDirectory(Material)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subResourceDirectories{
@@ -35,7 +39,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(Scene),
 	ResourceSubDirectory(NavMesh),
 	ResourceSubDirectory(Controller),
-	ResourceSubDirectory(CustomShader)
+	ResourceSubDirectory(CustomShader),
+	ResourceSubDirectory(Material)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAssetCacheDirectories{
@@ -47,7 +52,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAsse
 	AssetCacheSubDirectory(Scene),
 	AssetCacheSubDirectory(NavMesh),
 	AssetCacheSubDirectory(Controller),
-	AssetCacheSubDirectory(CustomShader)
+	AssetCacheSubDirectory(CustomShader),
+	AssetCacheSubDirectory(Material)
 };
 
 std::filesystem::path const AssetIO::assetDirectory		 = std::filesystem::current_path() / "Assets";

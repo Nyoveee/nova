@@ -10,6 +10,7 @@
 #include "ResourceManager/resourceManager.h"
 #include "Editor/editor.h"
 
+#if 0
 void displayMaterialUI(Material& material, ComponentInspector& componentInspector) {
 	ImGui::BeginChild("Material UI", ImVec2{0, 400.f}, ImGuiChildFlags_Borders);
 
@@ -156,3 +157,4 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 
 	ImGui::EndChild();
 }
+#endif

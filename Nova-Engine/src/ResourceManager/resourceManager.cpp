@@ -8,6 +8,9 @@
 
 #include "Profiling.h"
 
+#include "Material.h"
+#include "customShader.h"
+
 ResourceManager::ResourceManager() {
 	try {
 		// ========================================

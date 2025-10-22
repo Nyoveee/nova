@@ -252,6 +252,7 @@ void Editor::toggleViewPortControl(bool toControl) {
 }
 
 void Editor::updateMaterialMapping() {
+#if 0
 	entt::registry& registry = engine.ecs.registry;
 
 	// Find all material names with the associated asset.
@@ -319,6 +320,7 @@ void Editor::updateMaterialMapping() {
 			skinnedModelRenderer.materials[materialName];
 		}
 	}
+#endif
 }
 
 void Editor::handleEntityValidity() {

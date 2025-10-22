@@ -135,6 +135,7 @@ private:
 	// HDR post-processing functions
 	void renderHDRTonemapping();
 
+#if 0
 	// the different rendering pipelines..
 	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
 	void setupBlinnPhongShader(Material const& material);
@@ -142,12 +143,13 @@ private:
 	void setupSkeletalShader(Material const& material);
 	void setupColorShader(Material const& material);
 
-	// sets model specific uniforms for all rendering pipeline. (like model matrix)
-	void setModelUniforms(Transform const& transform, entt::entity entity);
-
 	// attempts to get the appropriate material from meshrenderer.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
+#endif
+
+	// sets model specific uniforms for all rendering pipeline. (like model matrix)
+	void setModelUniforms(Transform const& transform, entt::entity entity);
 
 	void printOpenGLDriverDetails() const;
 

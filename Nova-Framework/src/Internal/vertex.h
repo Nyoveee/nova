@@ -126,6 +126,7 @@ struct alignas(16) SpotLightData {
 
 #pragma warning( pop )
 
+#if 0
 struct Material {
 	enum class Pipeline {
 		PBR,			// uses everything.
@@ -153,12 +154,5 @@ struct Material {
 	std::optional<ResourceID>			normalMap = std::nullopt;
 
 	float ambient = 0.1f;
-
-	REFLECTABLE(
-		renderingPipeline,
-		albedo,
-		config,
-		normalMap,
-		ambient
-	)
 };
+#endif

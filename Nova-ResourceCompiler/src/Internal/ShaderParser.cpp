@@ -67,7 +67,7 @@ bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderPars
 		return true;
 	// Parse into shaderparserdata
 	std::string result{ propertiesRegexBegin->str() };
-	// Properties, not using type since sampler2D conflicts with int
+	// Uniforms, not using type since sampler2D conflicts with int
 	std::vector<std::string> validTypes{ "bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D"};
 	for (std::string const& propertyType : validTypes) {
 

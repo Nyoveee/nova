@@ -14,6 +14,8 @@
 #include <mutex>
 #include <functional>
 
+#include "Material.h"
+
 class AssetManager;
 class AssetViewerUI;
 

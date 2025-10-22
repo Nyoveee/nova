@@ -44,6 +44,15 @@ inline void serializeToBinary(std::ofstream& outputFile, T const& variant) {
 	}, variant);
 }
 
+// vector 4
+template <>
+inline void serializeToBinary<glm::vec4>(std::ofstream& outputFile, glm::vec4 const& dataMember) {
+	writeBytesToFile(outputFile, dataMember.x);
+	writeBytesToFile(outputFile, dataMember.y);
+	writeBytesToFile(outputFile, dataMember.z);
+	writeBytesToFile(outputFile, dataMember.w);
+}
+
 // vector 3
 template <>
 inline void serializeToBinary<glm::vec3>(std::ofstream& outputFile, glm::vec3 const& dataMember) {
@@ -57,6 +66,13 @@ template <>
 inline void serializeToBinary<glm::vec2>(std::ofstream& outputFile, glm::vec2 const& dataMember) {
 	writeBytesToFile(outputFile, dataMember.x);
 	writeBytesToFile(outputFile, dataMember.y);
+}
+
+// mat 3
+template <>
+inline void serializeToBinary<glm::mat3x3>(std::ofstream& outputFile, glm::mat3x3 const& dataMember) {
+	static_assert(sizeof(glm::mat3x3) == 36);
+	outputFile.write(reinterpret_cast<char const*>(glm::value_ptr(dataMember)), sizeof(glm::mat3x3));
 }
 
 // mat 4

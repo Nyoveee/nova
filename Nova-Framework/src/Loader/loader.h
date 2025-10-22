@@ -6,6 +6,7 @@
 
 #include "resource.h"
 
+
 #define ResourceLoaderDefinition(AssetType) \
 template<> \
 class ResourceLoader<AssetType> { \
@@ -43,6 +44,9 @@ inline bool readNextByteIfNull(std::ifstream& inputFile) {
 	return c == 0;
 }
 
+class CustomShader;
+class Material;
+
 // explicit template specialisation for respective loaders.
 ResourceLoaderDefinition(Model)
 ResourceLoaderDefinition(Texture)
@@ -51,3 +55,4 @@ ResourceLoaderDefinition(ScriptAsset)
 ResourceLoaderDefinition(NavMesh)
 ResourceLoaderDefinition(Controller)
 ResourceLoaderDefinition(CustomShader)
+ResourceLoaderDefinition(Material)

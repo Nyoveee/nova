@@ -1,4 +1,4 @@
- #include "animationSystem.h"
+#include "animationSystem.h"
 #include "Engine/engine.h"
 #include "ResourceManager/resourceManager.h"
 #include "InputManager/inputManager.h"

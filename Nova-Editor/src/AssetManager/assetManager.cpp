@@ -10,6 +10,7 @@
 #include "Engine/engine.h"
 
 #include "Serialisation/serializeToBinary.h"
+#include "Material.h"
 
 #define RecordAssetSubdirectory(AssetType) \
 	subAssetDirectories.insert({ Family::id<AssetType>(), descriptorDirectory / #AssetType })
@@ -225,6 +226,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".shader") {
 		return initialiseResourceFile.template operator()<CustomShader>();
+	}
+	else if (fileExtension == ".material") {
+		return initialiseResourceFile.template operator()<Material>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
