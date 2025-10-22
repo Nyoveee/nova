@@ -155,7 +155,6 @@ void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, 
 
 		// reset start pos too.
 		ed::SetNodePosition(startNodeId, { 0.f, 0.f });
-		ed::CenterNodeOnScreen(startNodeId);
 	}
 
 	if (ImGui::BeginTabBar("TabBar")) {
@@ -166,6 +165,37 @@ void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, 
 
 		if (ImGui::BeginTabItem("Selected Node")) {
 			displaySelectedNodeProperties(controller);
+			ImGui::EndTabItem();
+		}
+
+		int imguiCounter = 0;
+
+		if (ImGui::BeginTabItem("Debug")) {
+			for (auto&& [nodeId, node] : controller.data.nodes) {
+				ed::NodeId edNodeId = static_cast<std::size_t>(nodeId);
+				auto pos = ed::GetNodePosition(edNodeId);
+				ImGui::PushID(imguiCounter);
+
+				ImGui::Text("Node: %s, x: %f, y: %f", node.name.c_str(), pos.x, pos.y);
+
+				if (ImGui::Button("Center button to screen")) {
+					ed::CenterNodeOnScreen(edNodeId);
+				}
+
+				ImGui::PopID();
+				++imguiCounter;
+			}
+
+			auto pos = ed::GetNodePosition(startNodeId);
+			ImGui::PushID(imguiCounter);
+
+			ImGui::Text("Node: Start, x: %f, y: %f", pos.x, pos.y);
+
+			if (ImGui::Button("Center button to screen")) {
+				ed::CenterNodeOnScreen(startNodeId);
+			}
+
+			ImGui::PopID();
 			ImGui::EndTabItem();
 		}
 
@@ -362,16 +392,27 @@ void AnimatorController::displaySelectedNodeProperties(Controller& controller) {
 	}
 
 	for (auto&& edNodeId : selectedNodes) {
-		ControllerNodeID nodeId = static_cast<ControllerNodeID>(static_cast<std::size_t>(edNodeId));
-	
-		auto&& node = nodes.at(nodeId);
-		ImGui::SeparatorText(std::string{ "Name: " + node.name }.c_str());
-		ImGui::Text("ID: %zu", node.id);
+		std::string nodeName;
+		ControllerNodeID nextNode;
+
+		if (edNodeId == startNodeId) {
+			nodeName = "Start";
+			nextNode = controller.data.entryNode;
+		}
+		else {
+			ControllerNodeID nodeId = static_cast<ControllerNodeID>(static_cast<std::size_t>(edNodeId));
+			auto&& node = nodes.at(nodeId);
+			nodeName = node.name;
+			nextNode = node.nextNode;
+		}
+
+		ImGui::SeparatorText(std::string{ "Name: " + nodeName }.c_str());
+		ImGui::Text("ID: %zu", static_cast<std::size_t>(edNodeId));
 
 		ImGui::NewLine();
 
 		// get details of next node..
-		auto nextIterator = nodes.find(node.nextNode);
+		auto nextIterator = nodes.find(nextNode);
 
 		// no next node..
 		if (nextIterator == nodes.end()) {
@@ -509,8 +550,8 @@ void AnimatorController::renderNodeLinks(Controller& controller) {
 		auto&& [nextNodeId, nextNode] = *iterator;
 
 		// get the respective out and in pins..
-		auto&& [inPin, _] = nodeToPins.at(nodeId);
-		auto&& [__, outPin] = nodeToPins.at(nextNodeId);
+		auto&& [_, outPin] = nodeToPins.at(nodeId);
+		auto&& [inPin, __] = nodeToPins.at(nextNodeId);
 
 		ed::LinkId linkId = linkCounter++;
 
@@ -563,8 +604,8 @@ void AnimatorController::handleNodeLinking(Controller& controller) {
 			Controller::Node& nodeIn = nodes.at(nodeInId);
 			Controller::Node& nodeOut = nodes.at(nodeOutId);
 
-			nodeIn.nextNode = nodeOutId;
-			nodeOut.previousNode = nodeInId;
+			nodeOut.nextNode = nodeInId;
+			nodeIn.previousNode = nodeOutId;
 		}
 	}
 	else {

@@ -1,5 +1,5 @@
 /**
- * @file    PBR.frag
+ * @file    pbrlibrary.frag
  * @brief   File provides library functions, appropriate constants and uniforms required for PBR pipeline.
  *
  * This file provides exposes the necessary variables and functions for our custom shaders to utilises.
@@ -224,66 +224,4 @@ vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor
     diffuseBrdf *= 1.0 - metallic;
 
     return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
-}
-
-// =========== Input ============
-// Albedo..
-uniform vec3 albedo;
-uniform bool isUsingAlbedoMap;
-uniform sampler2D albedoMap;
-
-// Configuration..
-struct Config {
-	float roughness;
-	float metallic;
-	float occulusion;
-};
-
-uniform Config material;
-uniform bool isUsingPackedTextureMap;
-uniform sampler2D packedMap;
-Config cfg;
-
-// === NORMAL MAPPING ===
-uniform bool isUsingNormalMap;
-uniform sampler2D normalMap;
-
-// ====================================
-
-void main() {
-    // Getting the normals..
-    vec3 normal;
-
-    if(isUsingNormalMap) {
-        // We assume that our normal map is compressed into BC5.
-        // Since BC5 only stores 2 channels, we need to calculate z in runtime.
-        vec2 bc5Channels = vec2(texture(normalMap, fsIn.textureUnit));
-        
-        // We shift the range from [0, 1] to  [-1, 1]
-        bc5Channels = bc5Channels * 2.0 - 1.0; 
-
-        // We calculate the z portion of the normal..
-        vec3 sampledNormal = vec3(bc5Channels, 1 - bc5Channels.x * bc5Channels.x - bc5Channels.y * bc5Channels.y);
-        normal = normalize(fsIn.TBN * sampledNormal);
-    }
-    else {
-        normal = normalize(fsIn.normal);
-    }
-
-    // Getting base color, converts from sRGB
-    vec3 baseColor = isUsingAlbedoMap 
-                    ? texture(albedoMap, fsIn.textureUnit).rgb
-                    : albedo;
-
-    // Getting material texture
-    if (isUsingPackedTextureMap) {
-        vec3 map = texture(packedMap, fsIn.textureUnit).rgb;
-        cfg.metallic   = map.r;
-        cfg.roughness  = map.g;
-        cfg.occulusion = map.b;
-    } else {
-        cfg = material;
-    }
-    
-    FragColor = vec4(PBRCaculation(baseColor, normal, cfg.roughness, cfg.metallic, cfg.occulusion), 1);
 }

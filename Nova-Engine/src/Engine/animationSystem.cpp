@@ -38,7 +38,8 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 
 		// if current node is invalid, we do nothing..
 		if (animator.currentNode == NO_CONTROLLER_NODE) {
-			continue;
+			animator.timeElapsed = 0.f;
+			animator.currentNode = controller.data.entryNode;
 		}
 
 		auto&& nodes = controller.getNodes();

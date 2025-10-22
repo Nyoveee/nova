@@ -18,6 +18,7 @@ public:
 private:
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
+	void displayAnimationInfo(AssetInfo<Model>& descriptor);
 
 	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);

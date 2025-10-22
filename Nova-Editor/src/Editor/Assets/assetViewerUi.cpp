@@ -243,6 +243,50 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 		displayNodeHierarchy(skeleton.rootNode, skeleton);
 	}
 
+	displayAnimationInfo(descriptor);
+}
+
+void AssetViewerUI::displayAnimationInfo(AssetInfo<Model>& descriptor) {
+	auto&& [animation, loadStatus] = resourceManager.getResource<Model>(selectedResourceId);
+
+	if (!animation) {
+		switch (loadStatus)
+		{
+		case ResourceManager::QueryResult::Invalid:
+			ImGui::Text("Resource ID is invalid.");
+			return;
+		case ResourceManager::QueryResult::WrongType:
+			ImGui::Text("This should never happened. Resource ID is not a animation?");
+			assert(false && "Resource ID is not a animation.");
+			return;
+		case ResourceManager::QueryResult::Loading:
+			ImGui::Text("Loading..");
+			return;
+		case ResourceManager::QueryResult::LoadingFailed:
+			ImGui::Text("Loading of animation failed.");
+			return;
+		default:
+			assert(false);
+			return;
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Animation")) {
+		for (auto&& animation : animation->animations) {
+			ImGui::SeparatorText(animation.name.c_str());
+			ImGui::Text("Duration (in seconds): %.2f", animation.durationInSeconds);
+			ImGui::Text("Duration (in ticks): %.2f", animation.durationInTicks);
+			ImGui::Text("Ticks Per Second: %.2f", animation.ticksPerSecond);
+
+			for (auto&& [channelName, channel] : animation.animationChannels) {
+				float highestPositionKey = channel.positions.size() ? channel.positions[channel.positions.size() - 1].key : 0.f;
+				float highestRotationKey = channel.rotations.size() ? channel.rotations[channel.rotations.size() - 1].key : 0.f;
+				float highestScaleKey	 = channel.scalings.size()  ? channel.scalings [channel.scalings.size()  - 1].key : 0.f;
+
+				ImGui::Text("Channel name: %s | Highest pos key: %2.f, rot key: %2.f, scale key: %2.f", channelName.c_str(), highestPositionKey, highestRotationKey, highestScaleKey);
+			}
+		}
+	}
 }
 
 void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {
