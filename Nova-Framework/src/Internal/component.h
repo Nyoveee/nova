@@ -371,6 +371,7 @@ struct NavigationTestTarget
 	Particles System
 ******************************************************************************/
 struct Particle {
+	TypedResourceID<Texture> texture;
 	glm::vec3 position;
 	glm::vec3 velocity;
 	// Color
@@ -378,7 +379,6 @@ struct Particle {
 	glm::vec4 currentColor;
 	// Movement
 	glm::vec3 direction;
-	float speed;
 	float rotation;
 	// Size
 	float startSize;
@@ -470,22 +470,39 @@ struct ColorOverLifetime {
 		endColor
 	)
 };
+struct Trails {
+	bool selected{false};
+	TypedResourceID<Texture> trailTexture;
+	float distancePerEmission{0.1f};
+	float trailSize{ 0.1f };
+	ColorA trailColor{ ColorA{1.f,1.f,1.f,1.f} };
+	REFLECTABLE(
+		selected,
+		trailTexture,
+		distancePerEmission,
+		trailSize,
+		trailColor
+	)
+};
 
 struct ParticleEmitter
 {
 	// Update
 	float currentContinuousTime{};
 	float currentBurstTime{};
+	glm::vec3 prevPosition;
+	bool b_firstPositionUpdate{ true };
 
 	// Rendering
 	std::vector<Particle> particles;
-
+	std::vector<Particle> trailParticles;
 	// Editor stuff
 	TypedResourceID<Texture> texture;
 	ParticleEmissionTypeSelection particleEmissionTypeSelection;
 	ParticleColorSelection particleColorSelection;
 	SizeOverLifetime sizeOverLifetime;
 	ColorOverLifetime colorOverLifetime;
+	Trails trails;
 	bool looping = true;
 	bool randomizedDirection = false;
 	float startSize = 1;
@@ -519,6 +536,7 @@ struct ParticleEmitter
 		particleEmissionTypeSelection,
 		particleColorSelection,
 		sizeOverLifetime,
-		colorOverLifetime
+		colorOverLifetime,
+		trails
 	)
 };

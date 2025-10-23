@@ -807,7 +807,6 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
-#if 0
 	glBindVertexArray(particleVAO);
 
 	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
@@ -817,10 +816,6 @@ void Renderer::renderParticles()
 	glDepthMask(GL_FALSE);
 
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
-		auto&& [texture, result] = resourceManager.getResource<Texture>(emitter.texture);
-		if (!texture)
-			continue;
-		glBindTextureUnit(0, texture->getTextureId());
 		const glm::vec3 vertexPos[4]{
 			glm::vec3(-1, -1, 0),	// bottom left
 			glm::vec3(1, -1, 0),	// bottom right
@@ -836,30 +831,36 @@ void Renderer::renderParticles()
 		const int squareIndices[6]{ 0, 2, 1, 2, 0, 3 };
 		std::vector<ParticleVertex> particleVertexes;
 		std::vector<unsigned int> indices;
-
-		for (size_t i{}; i < std::size(emitter.particles); ++i) {
-			ParticleVertex particleVertex;
-			// Add to batch
-			for (int j{}; j < 4; ++j) {
-				particleVertex.localPos = vertexPos[j] * emitter.particles[i].currentSize;
-				particleVertex.worldPos = emitter.particles[i].position;
-				particleVertex.texCoord = textureCoordinates[j];
-				particleVertex.color = emitter.particles[i].currentColor;
-				particleVertex.rotation = emitter.particles[i].rotation;
-				particleVertexes.push_back(particleVertex);
+		int i{};
+		auto addParticleBatch = [&](std::vector<Particle> const &particles) {
+			for (Particle const &particle: particles) {
+				auto&& [texture, result] = resourceManager.getResource<Texture>(particle.texture);
+				if (!texture)
+					continue;
+				glBindTextureUnit(0, texture->getTextureId());
+				ParticleVertex particleVertex;
+				// Add to batch
+				for (int j{}; j < 4; ++j) {
+					particleVertex.localPos = vertexPos[j] * particle.currentSize;
+					particleVertex.worldPos = particle.position;
+					particleVertex.texCoord = textureCoordinates[j];
+					particleVertex.color = particle.currentColor;
+					particleVertex.rotation = particle.rotation;
+					particleVertexes.push_back(particleVertex);
+				}
+				for (int j{}; j < 6; ++j)
+					indices.push_back(squareIndices[j] + i * 4);
+				++i;
 			}
-			for (int j{}; j < 6; ++j)
-				indices.push_back(squareIndices[j] + static_cast<int>(i) * 4);
-			
-		
-		}
+		};
+		addParticleBatch(emitter.trailParticles);
+		addParticleBatch(emitter.particles);
 		mainVBO.uploadData(particleVertexes);
 		EBO.uploadData(indices);
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
-#endif
 }
 
 #if 0

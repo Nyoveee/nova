@@ -450,3 +450,15 @@ inline void DisplayProperty<ColorOverLifetime>(PropertyReferences& propertyRefer
 		ImGui::EndChild();
 	}
 }
+template<>
+inline void DisplayProperty<Trails>(PropertyReferences& propertyReferences, const char* dataMemberName, Trails& dataMember) {
+	DisplayProperty<bool>(propertyReferences, dataMemberName, dataMember.selected);
+	if (dataMember.selected) {
+		ImGui::BeginChild("", ImVec2(0, 175), ImGuiChildFlags_Border);
+		DisplayProperty<TypedResourceID<Texture>>(propertyReferences, "Trail Texture", dataMember.trailTexture);
+		DisplayProperty<float>(propertyReferences, "Distance Per Emission", dataMember.distancePerEmission);
+		DisplayProperty<float>(propertyReferences, "Trail Size", dataMember.trailSize);
+		DisplayProperty<ColorA>(propertyReferences, "Trail Color", dataMember.trailColor);
+		ImGui::EndChild();
+	}
+}
