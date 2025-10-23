@@ -657,7 +657,6 @@ void Renderer::renderTexts()
 	// activate corresponding render state	
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
-	textShader.setVec3("textColor", { 1.0f, 0.0f, 0.0f });
 
 	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
 	glActiveTexture(GL_TEXTURE0);
@@ -678,6 +677,7 @@ void Renderer::renderTexts()
 		if (text.text.empty()) {
 			continue;
 		}
+		textShader.setVec3("textColor", text.fontColor);
 
 		Font& font = fonts[0];	// TODO: change
 		float fontScale = static_cast<float>(text.fontSize) / DESIRED_FONT_SIZE;
