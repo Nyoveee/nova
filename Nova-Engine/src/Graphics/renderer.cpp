@@ -649,17 +649,24 @@ void Renderer::renderModels() {
 
 void Renderer::renderTexts()
 {
+	struct Vertex {
+		GLfloat x, y;   // screen position
+		GLfloat s, t;   // texture coordinates
+	};
+
 	// activate corresponding render state	
 	textShader.use();
-	glUniformMatrix4fv(glGetUniformLocation(textShader.id(), "projection"), 1, GL_FALSE, glm::value_ptr(UIProjection));
-	glUniform3f(glGetUniformLocation(textShader.id(), "textColor"), 1.0f, 0.0f, 0.0f);
+	textShader.setMatrix("projection", UIProjection);
+	textShader.setVec3("textColor", { 1.0f, 0.0f, 0.0f });
+
 	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
 	glActiveTexture(GL_TEXTURE0);
-	const int DESIRED_FONT_SIZE = 12;	// Desired font size of the text TODO: prob move
+	glBindVertexArray(textVAO);
+
+	const int DESIRED_FONT_SIZE = 12;	// Desired font size of the text, unsure of exact measurements for comps TODO: prob move
 
 	// iterate through all characters
 	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
-		std::string::const_iterator c;
 		// Retrieves font asset from asset manager.
 		//auto [font, _] = resourceManager.getResource<Font>(text.font);
 
@@ -671,13 +678,17 @@ void Renderer::renderTexts()
 		if (text.text.empty()) {
 			continue;
 		}
-		int x = static_cast<int>(transform.position.x);
-		int y = static_cast<int>(transform.position.y);
 
-		glBindVertexArray(textVAO);
-		Font& font = fonts[0];
+		Font& font = fonts[0];	// TODO: change
 		float fontScale = static_cast<float>(text.fontSize) / DESIRED_FONT_SIZE;
 
+		float x = transform.position.x;
+		float y = transform.position.y;
+
+		std::vector<Vertex> vertices;
+		vertices.reserve(text.text.size() * 6); // 6 vertices per char, 4 floats per vertex
+
+		std::string::const_iterator c;
 		for (c = text.text.begin(); c != text.text.end(); c++)
 		{
 			Font::Character ch = font.Characters[*c];
@@ -688,27 +699,42 @@ void Renderer::renderTexts()
 			float w = ch.size.x * transform.scale.x * fontScale;
 			float h = ch.size.y * transform.scale.y * fontScale;
 
-			// update VBO for each character
-			// render glyph texture over quad
-			glBindTexture(GL_TEXTURE_2D, ch.textureID);
-			// update content of VBO memory
-			textVBO.uploadData(std::vector<float>{
-				xpos, ypos + h, 0.0f, 0.0f,
-					xpos, ypos, 0.0f, 1.0f,
-					xpos + w, ypos, 1.0f, 1.0f,
-					xpos, ypos + h, 0.0f, 0.0f,
-					xpos + w, ypos, 1.0f, 1.0f,
-					xpos + w, ypos + h, 1.0f, 0.0f
-			});
-			// render quad
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-			x += (ch.advance >> 6) * transform.scale.x * fontScale; // bitshift by 6 to get value in pixels (2^6 = 64)
+			// advance cursors for next glyph 
+			x += ch.advance.x * transform.scale.x * fontScale;
+			y += ch.advance.y * transform.scale.y * fontScale;
+
+			// Skip invisible glyphs
+			if (w == 0 || h == 0)
+				continue;
+
+			float tx = ch.tx;                   // texture X offset in atlas
+			float ty = 0.f;                     // texture Y offset in atlas
+			float tw = static_cast<float>(ch.size.x) / font.atlasWidth;
+			float th = static_cast<float>(ch.size.y) / font.atlasHeight;
+
+			// 6 vertices per quad (2 triangles)
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos,     ypos,     tx,       ty + th });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+			vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
 		}
+		// Bind font atlas texture once per string
+		glBindTexture(GL_TEXTURE_2D, font.atlasTextureID);
+
+		// Upload vertex data for all glyphs in this string
+		textVBO.uploadData(vertices, 0);
+
+		// Draw all characters in one batched call
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+
+		// Reset bindings
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glBindVertexArray(mainVAO);
 	}
+	glBindVertexArray(mainVAO);
 	glDisable(GL_BLEND);
 }
 

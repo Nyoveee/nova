@@ -20,11 +20,15 @@ public:
 	FRAMEWORK_DLL_API int GetDefaultFontSize();
 public:
 	struct Character {
-		GLuint textureID;  // ID handle of the glyph texture
+		float tx;				 // X offset of glyph in texture coords
 		glm::ivec2   size;       // Size of glyph
 		glm::ivec2   bearing;    // Offset from baseline to left/top of glyph
-		unsigned int advance;    // Offset to advance to next glyph
+		glm::uvec2	 advance;    // Offset to advance to next glyph
 	};
+
+	unsigned int atlasTextureID;  // the OpenGL texture handle
+	unsigned int atlasWidth;
+	unsigned int atlasHeight;
 	std::map<char, Character> Characters;
 	// Default font size that is loaded into the program
 	const int FONT_SIZE = 48;

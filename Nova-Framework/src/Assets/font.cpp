@@ -24,8 +24,12 @@ std::optional<Font> Font::LoadFont(const std::string& resourceFilePath)
     Font loadedFont;
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
     FT_Set_Pixel_Sizes(face, 0, loadedFont.FONT_SIZE);
+    FT_GlyphSlot g = face->glyph;
 
-    for (unsigned char c = 0; c < 128; c++)
+    unsigned int w = 0;
+    unsigned int h = 0;
+    // First 32 chars for ascii are control characters
+    for (unsigned char c = 32; c < 128; c++)
     {
         // load character glyph 
         if (FT_Load_Char(face, c, FT_LOAD_RENDER))
@@ -33,38 +37,50 @@ std::optional<Font> Font::LoadFont(const std::string& resourceFilePath)
             std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
             continue;
         }
-        // generate texture
-        unsigned int texture;
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(
-            GL_TEXTURE_2D,
-            0,
-            GL_RED,
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
-            0,
-            GL_RED,
-            GL_UNSIGNED_BYTE,
-            face->glyph->bitmap.buffer
-        );
-        // set texture options
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        // now store character for later use
+        // Atlas has every character in one line
+        w += g->bitmap.width;
+        h = std::max(h, g->bitmap.rows);
+    }
+
+    loadedFont.atlasWidth = w;
+    loadedFont.atlasHeight = h;
+
+    // generate texture
+    GLuint atlasTex = 0;
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1, &atlasTex);
+    glBindTexture(GL_TEXTURE_2D, atlasTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+    
+    // set texture options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    int x = 0;
+    for (unsigned char c = 32; c < 128; c++) {
+        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+            continue;
+
+        glTexSubImage2D(GL_TEXTURE_2D, 0, x, 0, g->bitmap.width, g->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+
         Character character = {
-            texture,
+            (float)x / w,
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-            face->glyph->advance.x
+            glm::ivec2(face->glyph->advance.x >> 6, face->glyph->advance.y >> 6)
         };
         loadedFont.Characters.insert(std::pair<char, Character>(c, character));
+        x += g->bitmap.width;
     }
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    loadedFont.atlasTextureID = atlasTex;
 
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
+
     return loadedFont;
 }
 
