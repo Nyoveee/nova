@@ -18,8 +18,10 @@ enum class Pipeline {
 	Color,			// only uses albedo.
 };
 
+class Texture;
+
 #define AllUniformTypes \
-	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4
+	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>
 
 struct OverriddenUniformData {
 	std::string type;
@@ -35,15 +37,12 @@ class CustomShader;
 
 struct MaterialData {
 	TypedResourceID<CustomShader> selectedShader;
-	Pipeline selectedPipeline = Pipeline::PBR;
 	std::unordered_map<std::string, OverriddenUniformData> overridenUniforms;
 
 	REFLECTABLE(
 		selectedShader,
-		selectedPipeline,
 		overridenUniforms
 	)
-
 };
 // ================================================================================================================================
 
@@ -61,9 +60,9 @@ public:
 	FRAMEWORK_DLL_API ~Shader();
 
 	Shader(Shader const& other) = delete;
-	Shader(Shader&& other);
+	Shader(Shader&& other) noexcept;
 	Shader& operator=(Shader const& other) = delete;
-	Shader& operator=(Shader&& other);
+	Shader& operator=(Shader&& other) noexcept;
 
 public:
 	// accessor
@@ -76,6 +75,8 @@ public:
 	// getters
 	FRAMEWORK_DLL_API std::string const& getVertexShader() const;
 	FRAMEWORK_DLL_API std::string const& getFragmentShader() const;
+	FRAMEWORK_DLL_API std::string const& getErrorMessage() const;
+	FRAMEWORK_DLL_API bool				 hasCompiled() const;
 
 public:
 	// setting uniform functions
@@ -99,4 +100,6 @@ private:
 	GLuint m_id;
 	std::string vShaderCode;
 	std::string fShaderCode;
+
+	std::string errorMessage;
 };

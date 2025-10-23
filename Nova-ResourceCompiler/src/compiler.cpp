@@ -7,6 +7,7 @@
 #include "compiler.h"
 
 #include "modelLoader.h"
+#include "Serialisation/serialisation.h"
 #include "Serialisation/serializeToBinary.h"
 
 #include "Material.h"
@@ -286,7 +287,7 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::
 
 int Compiler::compileShaderAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath)
 {
-	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
+	std::ofstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {
 		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
@@ -299,7 +300,8 @@ int Compiler::compileShaderAsset(ResourceFilePath const& resourceFilePath, Asset
 		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
 		return -1;
 	}
-	serializeToBinary(resourceFile, shaderParserData);
+
+	Serialiser::serializeToJsonFile(shaderParserData, resourceFile);
 	return 0;
 }
 

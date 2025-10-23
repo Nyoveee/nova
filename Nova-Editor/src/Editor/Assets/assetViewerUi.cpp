@@ -13,7 +13,12 @@
 #include "customShader.h"
 #include "Material.h"
 
-AssetViewerUI::AssetViewerUI(AssetManager& assetManager, ResourceManager& resourceManager) :
+#include "Editor/editor.h"
+
+#include "Editor/ComponentInspection/PropertyDisplay/displayProperties.h"
+
+AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager) :
+	editor							{ editor },
 	assetManager					{ assetManager },
 	resourceManager					{ resourceManager },
 	selectedResourceId				{ INVALID_RESOURCE_ID },
@@ -135,48 +140,144 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 
 void AssetViewerUI::displayMaterialInfo()
 {
+	if (!ImGui::CollapsingHeader("Material")) {
+		return;
+	}
+
 	auto&& [material, loadStatus] = resourceManager.getResource<Material>(selectedResourceId);
 
 	if (!material) {
+		ImGui::Text("Invalid material.");
 		return;
 	}
 
 	// Chosen Shader
-	auto namePtr = assetManager.getName(material->materialData.selectedShader);
-	char const* selectedShaderName{ namePtr ? namePtr->c_str() : "No shader selected." };
+	TypedResourceID<CustomShader> const& shaderId = material->materialData.selectedShader;
+	auto&& [customShader, __] = resourceManager.getResource<CustomShader>(shaderId);
 
-	ImGui::PushID(static_cast<int>(static_cast<size_t>(selectedResourceId)));
-	auto customShaders = resourceManager.getAllResources<CustomShader>();
-	if (ImGui::BeginCombo("Shader", selectedShaderName)) {
-		for (auto&& customShaderID : customShaders) {
-			std::string const* assetName = assetManager.getName(customShaderID);
-			if (!assetName)
-				continue;
-			ImGui::PushID(static_cast<int>(static_cast<std::size_t>(customShaderID)));
-			if (ImGui::Selectable(assetName->empty() ? "<no name>" : assetName->c_str()))
-				material->materialData.selectedShader = TypedResourceID<CustomShader>(customShaderID);
-			ImGui::PopID();
-		}
-		ImGui::EndCombo();
+	if (!customShader) {
+		ImGui::Text("No shader selected.");
 	}
-	ImGui::PopID();
 
+	// ImGui::PushID(static_cast<int>(static_cast<size_t>(selectedResourceId)));
+
+	editor.displayAssetDropDownList<CustomShader>(shaderId, "Shader", [&](ResourceID id) {
+		material->materialData.selectedShader = TypedResourceID<CustomShader>{ id };
+
+		// Since we change shader, we need to reupdate the overridenUniforms..
+		auto&& [customShader, __] = resourceManager.getResource<CustomShader>(id);
+
+		if (!customShader) {
+			assert(false && "The display asset drop down list should never provide an invalid resource id.");
+			Logger::error("Selected an invalid shader!");
+			return;
+		}
+
+		material->materialData.overridenUniforms.clear();
+
+		for (auto&& [identifer, type] : customShader->customShaderData.uniforms) {
+			// thank you zhi wei for writing all of the if cases. :)
+			if (type == "bool")
+				material->materialData.overridenUniforms.insert({ identifer, { type, bool{} } });
+			if (type == "int")
+				material->materialData.overridenUniforms.insert({ identifer, { type, int{} } });
+			if (type == "uint")
+				material->materialData.overridenUniforms.insert({ identifer, { type, unsigned{} } });
+			if (type == "float")
+				material->materialData.overridenUniforms.insert({ identifer, { type, float{} } });
+			if (type == "vec2")
+				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec2{} } });
+			if (type == "vec3")
+				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec3{} } });
+			if (type == "vec4")
+				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec4{} } });
+			if (type == "mat3")
+				material->materialData.overridenUniforms.insert({ identifer, { type, glm::mat3{} } });
+			if (type == "mat4")
+				material->materialData.overridenUniforms.insert({ identifer, { type, glm::mat4{} } });
+			if (type == "sampler2D")
+				material->materialData.overridenUniforms.insert({ identifer, { type, TypedResourceID<Texture>{ INVALID_RESOURCE_ID } } });
+		}
+	});
+	
+	if (!customShader) {
+		return;
+	}
+
+#if 0
 	// Shader Data
-	if (material->materialData.selectedShader != INVALID_RESOURCE_ID) {
+	auto&& [customShader, __] = resourceManager.getResource<CustomShader>(shaderId);
 
-		auto&& [customShader, __] = resourceManager.getResource<CustomShader>(selectedResourceId);
-		for (auto const& [name, type] : customShader->customShaderData.uniforms) {
+	if (!customShader) {
+		assert(false && "Valid descriptor but invalid shader? Something went wrong.");
+		ImGui::Text("Invalid shader.");
+		return;
+	}
+#endif
 
-			// Use the overriden value instead
-			if (material->materialData.overridenUniforms.contains(name)) {
-				/*if(type == "vec3")*/
+	// Display the current material values..
+	for (auto&& [name, uniformData] : material->materialData.overridenUniforms) {
+		auto&& [type, uniformValue] = uniformData;
+
+		std::visit([&](auto&& value) {
+			using Type = std::decay_t<decltype(value)>;
+
+			if constexpr (std::same_as<Type, glm::mat3> || std::same_as<Type, glm::mat4>) {
+				assert(type == "mat3" || type == "mat4");
+				// display matrix lmfao..
 			}
 			else {
-				
+				DisplayProperty<Type>(editor, name.c_str(), value);
+			}
+		}, uniformValue);
+	}
+}
+
+void AssetViewerUI::displayShaderInfo() {
+	auto&& [shader, loadStatus] = resourceManager.getResource<CustomShader>(selectedResourceId);
+
+	if (!shader) {
+		ImGui::Text("Invalid shader.");
+		return;
+	}
+	
+	auto const& openglShaderOpt = shader->getShader();
+
+	if (ImGui::CollapsingHeader("Shader")) {
+		std::string pipelineName{ magic_enum::enum_name(shader->getPipeline()) };
+		ImGui::SeparatorText(pipelineName.c_str());
+
+		if (!openglShaderOpt) {
+			ImGui::Text("This shader is not compatible with the current pipeline.");
+		}
+		else {
+			auto const& openglShader = openglShaderOpt.value();
+
+			if (!openglShader.hasCompiled()) {
+				ImGui::BeginChild("Error window", ImVec2{0.f, 200.f}, ImGuiChildFlags_Border);
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.4f, 0.4f, 1.0f));
+				ImGui::TextWrapped("%s", openglShader.getErrorMessage().c_str());
+				ImGui::PopStyleColor();
+				ImGui::EndChild();
+			}
+
+			if (ImGui::TreeNode("Vertex Shader")) {
+				ImGui::BeginChild("Vertex Shader", ImVec2{}, ImGuiChildFlags_Border);
+				ImGui::TextWrapped("%s", openglShader.getVertexShader().c_str());
+				ImGui::EndChild();
+
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNode("Fragment Shader")) {
+				ImGui::BeginChild("Fragment Shader", ImVec2{}, ImGuiChildFlags_Border);
+				ImGui::TextWrapped("%s", openglShader.getFragmentShader().c_str());
+				ImGui::EndChild();
+
+				ImGui::TreePop();
 			}
 		}
 	}
-
 }
 
 void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {

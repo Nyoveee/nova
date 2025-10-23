@@ -59,16 +59,17 @@ Shader::~Shader() {
 	}
 }
 
-Shader::Shader(Shader&& other)
+Shader::Shader(Shader&& other) noexcept
 	:	shaderCompileStatus	{ other.shaderCompileStatus }
 	,	vShaderCode			{ std::move(other.vShaderCode) }
 	,	fShaderCode			{ std::move(other.fShaderCode) }
+	,	errorMessage		{ std::move(other.errorMessage) }
 	,	m_id				{ other.m_id }
 {
 	other.shaderCompileStatus = ShaderCompileStatus::Failed;
 }
 
-Shader& Shader::operator=(Shader&& other) {
+Shader& Shader::operator=(Shader&& other) noexcept {
 	if (shaderCompileStatus == ShaderCompileStatus::Success) {
 		glDeleteProgram(m_id);
 	}
@@ -76,6 +77,7 @@ Shader& Shader::operator=(Shader&& other) {
 	shaderCompileStatus = other.shaderCompileStatus;
 	vShaderCode			= std::move(other.vShaderCode);
 	fShaderCode			= std::move(other.fShaderCode);
+	errorMessage		= std::move(other.errorMessage);
 	m_id				= other.m_id;
 
 	other.shaderCompileStatus = ShaderCompileStatus::Failed;
@@ -99,6 +101,14 @@ std::string const& Shader::getFragmentShader() const {
 	return fShaderCode;
 }
 
+std::string const& Shader::getErrorMessage() const {
+	return errorMessage;
+}
+
+bool Shader::hasCompiled() const {
+	return shaderCompileStatus == Shader::ShaderCompileStatus::Success;
+}
+
 void Shader::compile() {
 	if (shaderCompileStatus == ShaderCompileStatus::Success) {
 		glDeleteProgram(m_id);
@@ -119,6 +129,7 @@ void Shader::compile() {
 		char infoLog[512];
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
 		Logger::error("Error! Compilation of vertex shader failed! {}", infoLog);
+		errorMessage = std::string{ "ERROR!! Compilation of vertex shader failed! " } + infoLog;
 		shaderCompileStatus = ShaderCompileStatus::Failed;
 		return;
 	}
@@ -135,6 +146,7 @@ void Shader::compile() {
 		char infoLog[512];
 		glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
 		Logger::error("Error! Compilation of fragment shader failed! {}", infoLog);
+		errorMessage = std::string{ "ERROR!! Compilation of fragment shader failed! " } + infoLog;
 		shaderCompileStatus = ShaderCompileStatus::Failed;
 		return;
 	}
@@ -150,7 +162,9 @@ void Shader::compile() {
 		char infoLog[512];
 		glGetProgramInfoLog(m_id, 512, nullptr, infoLog);
 		Logger::error("Error! Linking of shaders failed! {}", infoLog);
+		errorMessage = std::string{ "ERROR!! Linking of shaders failed! " } + infoLog;
 		shaderCompileStatus = ShaderCompileStatus::Failed;
+		errorMessage = infoLog;
 		return;
 	}
 
@@ -158,6 +172,7 @@ void Shader::compile() {
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
 	shaderCompileStatus = ShaderCompileStatus::Success;
+	errorMessage.clear();
 }
 
 void Shader::setBool(const std::string& name, bool const value) const {

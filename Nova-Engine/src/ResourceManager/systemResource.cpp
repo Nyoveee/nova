@@ -11,6 +11,6 @@ constexpr ResourceID SPHERE_MODEL_ID	= 2;
 
 const std::unordered_map<ResourceID, ResourceFilePath> ResourceManager::systemModelResources {
 	// =============================== Models =============================== 
-	{	CUBE_MODEL_ID,		SystemFilePath(Model, "Cube")		},
-	{	SPHERE_MODEL_ID,	SystemFilePath(Model, "Sphere")		}
+	//{	CUBE_MODEL_ID,		SystemFilePath(Model, "Cube")		},
+	//{	SPHERE_MODEL_ID,	SystemFilePath(Model, "Sphere")		}
 };

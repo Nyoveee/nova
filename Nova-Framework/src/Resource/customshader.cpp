@@ -12,94 +12,27 @@
 
 CustomShader::CustomShader(ResourceID id, ResourceFilePath resourceFilePath, ShaderParserData shaderData)
 	: Resource{ id, resourceFilePath }
-	, customShaderData{ shaderData } {}
+	, customShaderData{ shaderData } 
+{
+	compile();
+}
 
 CustomShader::~CustomShader(){}
 
-void CustomShader::use(MaterialData const& data)
+void CustomShader::compile()
 {
-	if (!shaders[data.selectedPipeline]) {
-		Logger::error("Unable to use custom shader, shader associated with the pipeline does not exist");
-		return;
+	// free the current shader if available..
+	if (shader) {
+		shader.reset();
 	}
 
-	Shader& shader{ shaders[data.selectedPipeline].value() };
-	if (shader.shaderCompileStatus == Shader::ShaderCompileStatus::Failed) {
-		Logger::error("Unable to use custom shader, the shader associated with the pipeline failed to compile");
-		return;
-	}
-
-	switch (customShaderData.blendingConfig) {
-	case BlendingConfig::AlphaBlending:
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
-		break;
-	case BlendingConfig::AdditiveBlending:
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		break;
-	case BlendingConfig::PureAdditiveBlending:
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE);
-		break;
-	case BlendingConfig::PremultipliedAlpha:
-		glEnable(GL_BLEND);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		break;
-	case BlendingConfig::Disabled:
-		glDisable(GL_BLEND);
-		break;
-	}
-
-	switch (customShaderData.depthTestingMethod) {
-	case DepthTestingMethod::DepthTest:
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_TRUE);
-		break;
-	case DepthTestingMethod::NoDepthWrite:
-		glEnable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-		break;
-	case DepthTestingMethod::NoDepthWriteTest:
-		glDisable(GL_DEPTH_TEST);
-		glDepthMask(GL_FALSE);
-		break;
-	}
-
-	// Set up Uniforms
-	for (auto const& [name, overriddenUniformData] : data.overridenUniforms) {
-		if (overriddenUniformData.type == "bool")
-			shader.setBool(name, std::get<bool>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "int")
-			shader.setInt(name, std::get<int>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "uint")
-			shader.setUInt(name, std::get<unsigned int>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "float")
-			shader.setFloat(name, std::get<float>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "vec2")
-			shader.setVec2(name, std::get<glm::vec2>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "vec3")
-			shader.setVec3(name, std::get<glm::vec3>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "vec4")
-			shader.setVec4(name, std::get<glm::vec4>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "mat3")
-			shader.setMatrix(name, std::get<glm::mat3>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "mat4")
-			shader.setMatrix(name, std::get<glm::mat4>(overriddenUniformData.value));
-		if (overriddenUniformData.type == "sampler2D")
-			shader.setImageUniform(name, std::get<int>(overriddenUniformData.value));
-	}
-	// Use the shader
-	shader.use();
-}
-
-void CustomShader::compileWithPipeline(Material const& material)
-{
-	// Setup Shader Paths based on material
+	// ========================================================
+	// We set up the appropriate vertex and fragment shader library files based on the current pipeline..
+	// ========================================================
 	std::string fShaderLibraryPath{};
 	std::string vShaderPath{};
 
-	switch (material.materialData.selectedPipeline) {
+	switch (customShaderData.pipeline) {
 	case Pipeline::PBR:
 		vShaderPath = "System/Shader/PBR.vert";
 		fShaderLibraryPath = "System/Shader/Library/pbrlibrary.frag";
@@ -111,7 +44,9 @@ void CustomShader::compileWithPipeline(Material const& material)
 		return;
 	}
 
-	// Vertex Shader
+	// ========================================================
+	// We retrieve the string contents from our vertex shader file..
+	// ========================================================
 	std::ifstream vShaderFile{};
 	std::stringstream vShaderStream;
 	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -120,16 +55,42 @@ void CustomShader::compileWithPipeline(Material const& material)
 	vShaderStream << vShaderFile.rdbuf();
 	std::string vertexCode = vShaderStream.str();
 
-	// Fragment Shader
+	// ========================================================
+	// We retrieve the string contents from our fragment shader file..
+	// ========================================================
 	std::ifstream fShaderLibraryFile{};
 	std::stringstream fShaderLibraryStream;
 	fShaderLibraryFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	fShaderLibraryFile.open(fShaderLibraryPath);
+	fShaderLibraryStream << fShaderLibraryFile.rdbuf();
+	
+	// ========================================================
+	// We attach the custom shader's uniforms as input..
+	// ========================================================
+	fShaderLibraryStream << "\n\n// !! ==========================================";
+	fShaderLibraryStream << "\n// Custom Shader Properties";
+	fShaderLibraryStream << "\n// !! ==========================================\n\n";
 
-	// Attach Custom Shader Code with library
-	fShaderLibraryStream << fShaderLibraryFile.rdbuf() << "void main(){" << customShaderData.fShaderCode << '}';
+	for (auto&& [identifier, type] : customShaderData.uniforms) {
+		fShaderLibraryStream << "uniform " << type << " " << identifier << ";\n";
+	}
+
+	// ========================================================
+	// We attach the custom shader's fragment code and wrap it in main..
+	// ========================================================
+	fShaderLibraryStream << "\n\n// !! ==========================================";
+	fShaderLibraryStream << "\n// Custom Shader Fragment Code";
+	fShaderLibraryStream << "\n// !! ==========================================\n\n";
+	fShaderLibraryStream << "void main(){\n" << customShaderData.fShaderCode << "\n}";
 	std::string fragmentCode = fShaderLibraryStream.str();
 
-	std::optional<Shader> shader{ Shader{ std::move(vertexCode), std::move(fragmentCode) } };
-	shaders.insert({ material.materialData.selectedPipeline, std::move(shader) });
+	shader = Shader{ std::move(vertexCode), std::move(fragmentCode) };
+}
+
+std::optional<Shader> const& CustomShader::getShader() const {
+	return shader;
+}
+
+Pipeline CustomShader::getPipeline() const {
+	return customShaderData.pipeline;
 }

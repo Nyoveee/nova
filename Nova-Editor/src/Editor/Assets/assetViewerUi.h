@@ -2,9 +2,11 @@
 
 #include "AssetManager/assetManager.h"
 
+class Editor;
+
 class AssetViewerUI {
 public:
-	AssetViewerUI(AssetManager& assetManager, ResourceManager& resourceManager);
+	AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager);
 	
 	void update();
 	void updateScriptFileName(AssetFilePath const& filepath, std::string const& newName, ResourceID id);
@@ -17,6 +19,7 @@ public:
 
 private:
 	void displayMaterialInfo();
+	void displayShaderInfo();
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 	void displayAnimationInfo(AssetInfo<Model>& descriptor);
@@ -26,6 +29,7 @@ private:
 
 private:
 	ResourceID selectedResourceId;
+	Editor& editor;
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
 

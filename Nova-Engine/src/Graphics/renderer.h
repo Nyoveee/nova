@@ -18,20 +18,13 @@
 #include "cubemap.h"
 
 #include "Detour/Detour/DetourNavMesh.h"
+#include "customShader.h"
 
 class Engine;
 class ResourceManager;
 
 class Renderer {
 public:
-	enum class BlendingConfig {
-		AlphaBlending,
-		AdditiveBlending,
-		PureAdditiveBlending,
-		PremultipliedAlpha,
-		Disabled
-	};
-
 	enum class ToneMappingMethod {
 		Exposure,
 		Reinhard,
@@ -74,7 +67,9 @@ public:
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
 
-	ENGINE_DLL_API void setBlendMode(BlendingConfig configuration);
+	ENGINE_DLL_API void setBlendMode(CustomShader::BlendingConfig configuration);
+	ENGINE_DLL_API void setDepthMode(CustomShader::DepthTestingMethod configuration);
+
 	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
 
 	// HDR controls
@@ -134,6 +129,9 @@ private:
 
 	// HDR post-processing functions
 	void renderHDRTonemapping();
+
+	// set up the material's chosen shader and supply the proper uniforms.. returns false if set up failed.
+	bool setupMaterial(Material const& material);
 
 #if 0
 	// the different rendering pipelines..

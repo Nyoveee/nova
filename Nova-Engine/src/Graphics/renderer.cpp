@@ -359,7 +359,7 @@ void Renderer::debugRenderPhysicsCollider() {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	setBlendMode(BlendingConfig::AlphaBlending);
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	
 	// set image uniform accordingly..
@@ -380,7 +380,7 @@ void Renderer::debugRenderNavMesh() {
 	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
-	setBlendMode(BlendingConfig::AlphaBlending);
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 	glEnable(GL_DEPTH_TEST);
 
 	debugShader.use();
@@ -388,7 +388,7 @@ void Renderer::debugRenderNavMesh() {
 	glDrawArrays(GL_TRIANGLES, 0, numOfNavMeshDebugTriangles * 3);
 
 	glDisable(GL_DEPTH_TEST);
-	setBlendMode(BlendingConfig::Disabled);
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
 	numOfNavMeshDebugTriangles = 0;
 }
 
@@ -401,7 +401,7 @@ void Renderer::debugRenderParticleEmissionShape()
 	glBindVertexArray(mainVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	glEnable(GL_DEPTH_TEST);
-	setBlendMode(BlendingConfig::AlphaBlending);
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
 		glm::mat4 model = glm::identity<glm::mat4>();
@@ -1154,9 +1154,9 @@ Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshR
 }
 #endif
 
-void Renderer::setBlendMode(BlendingConfig configuration) {
+void Renderer::setBlendMode(CustomShader::BlendingConfig configuration) {
 	switch (configuration) {
-		using enum BlendingConfig;
+		using enum CustomShader::BlendingConfig;
 	case AlphaBlending:
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
@@ -1175,6 +1175,30 @@ void Renderer::setBlendMode(BlendingConfig configuration) {
 		break;
 	case Disabled:
 		glDisable(GL_BLEND);
+		break;
+	default:
+		assert(false && "Forget to handle other case.");
+		break;
+	}
+}
+
+void Renderer::setDepthMode(CustomShader::DepthTestingMethod configuration) {
+	switch (configuration) {
+		using enum CustomShader::DepthTestingMethod;
+	case DepthTest:
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		break;
+	case NoDepthWrite:
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		break;
+	case NoDepthWriteTest:
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_FALSE);
+		break;
+	default:
+		assert(false && "Forget to handle other case.");
 		break;
 	}
 }
@@ -1281,6 +1305,112 @@ void Renderer::renderHDRTonemapping() {
 
 	// Render fullscreen triangle (more efficient than quad)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+bool Renderer::setupMaterial(Material const& material) {
+	// ===========================================================================
+	// Retrieve the underlying shader for this material, and verify it's state.
+	// ===========================================================================
+	TypedResourceID<CustomShader> customShaderId = material.materialData.selectedShader;
+
+	auto&& [customShader, _] = resourceManager.getResource<CustomShader>(customShaderId);
+
+	if (!customShader) {
+		return false;
+	}
+
+	auto const& shaderOpt = customShader->getShader();
+	if (!shaderOpt || !shaderOpt.value().hasCompiled()) {
+		return false;
+	}
+
+	auto const& shaderData = customShader->customShaderData;
+
+	// ===========================================================================
+	// Set rendering fixed pipeline configuration.
+	// ===========================================================================
+
+	setBlendMode(shaderData.blendingConfig);
+	setDepthMode(shaderData.depthTestingMethod);
+
+	Shader const& shader = shaderOpt.value();
+
+	// ===========================================================================
+	// Set uniform data..
+	// ===========================================================================
+	
+	// We keep track of the number of texture units bound and make sure it doesn't exceed the driver's cap.
+	GLint maxTextureUnits;
+	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+
+	int numOfTextureUnitBound = 0;
+	
+	for (auto const& [name, overriddenUniformData] : material.materialData.overridenUniforms) {
+		std::visit([&](auto&& value) {
+			using Type = std::decay_t<decltype(value)>;
+
+			if constexpr (std::same_as<Type, bool>) {
+				assert(overriddenUniformData.type == "bool");
+				shader.setBool(name, value);
+			}
+			else if constexpr (std::same_as<Type, int>) {
+				assert(overriddenUniformData.type == "int");
+				shader.setInt(name, value);
+			}
+			else if constexpr (std::same_as<Type, unsigned int>) {
+				assert(overriddenUniformData.type == "uint");
+				shader.setUInt(name, value);
+			}
+			else if constexpr (std::same_as<Type, float>) {
+				assert(overriddenUniformData.type == "float");
+				shader.setFloat(name, value);
+			}
+			else if constexpr (std::same_as<Type, glm::vec2>) {
+				assert(overriddenUniformData.type == "vec2");
+				shader.setVec2(name, value);
+			}
+			else if constexpr (std::same_as<Type, glm::vec3>) {
+				assert(overriddenUniformData.type == "vec3");
+				shader.setVec3(name, value);
+			}
+			else if constexpr (std::same_as<Type, glm::vec4>) {
+				assert(overriddenUniformData.type == "vec4");
+				shader.setVec4(name, value);
+			}
+			else if constexpr (std::same_as<Type, glm::mat3> || std::same_as<Type, glm::mat4>) {
+				assert(overriddenUniformData.type == "mat3" || overriddenUniformData.type == "mat4");
+				shader.setMatrix(name, value);
+			}
+			else if constexpr (std::same_as<Type, TypedResourceID<Texture>>) {
+				assert(overriddenUniformData.type == "sampler2D");
+
+				// Setting texture is a way more complicated step.
+				// We first retrieve the texture from resource manager..
+				auto&& [texture, _] = resourceManager.getResource<Texture>(value);
+				
+				if (!texture) {
+					// @TODO: Add error texture..
+					return;
+				}
+
+				if (numOfTextureUnitBound >= maxTextureUnits) {
+					Logger::error("Too many texture units bound. Textures bound: {}, Capacity: {}", numOfTextureUnitBound, maxTextureUnits);
+					return;
+				}
+
+				// we bind to a unused texture unit..
+				glBindTextureUnit(numOfTextureUnitBound, texture->getTextureId());
+				shader.setImageUniform(name, numOfTextureUnitBound);
+
+				++numOfTextureUnitBound;
+			}
+		}, overriddenUniformData.value);
+	}
+
+	// Use the shader
+	shader.use();
+
+	return true;
 }
 
 void Renderer::setHDRExposure(float exposure) {

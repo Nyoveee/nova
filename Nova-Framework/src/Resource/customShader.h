@@ -11,7 +11,7 @@
 using ShaderVariableName = std::string;
 using ShaderVariableType = std::string;
 
-class Material;
+class ResourceManager;
 
 class CustomShader: public Resource
 {
@@ -23,6 +23,7 @@ public:
 		PremultipliedAlpha,
 		Disabled
 	};
+
 	enum class DepthTestingMethod {
 		DepthTest,
 		NoDepthWrite,
@@ -41,11 +42,15 @@ public:
 		// Code
 		std::string fShaderCode;
 
+		// Pipeline (dont need to include this in parser..)
+		Pipeline pipeline = Pipeline::PBR;
+
 		REFLECTABLE(
 			blendingConfig,
 			depthTestingMethod,
 			uniforms,
-			fShaderCode
+			fShaderCode,
+			pipeline
 		)
 
 	} customShaderData;
@@ -60,10 +65,11 @@ public:
 	FRAMEWORK_DLL_API CustomShader& operator=(CustomShader&& other) = delete;
 
 public:
-	FRAMEWORK_DLL_API void use(MaterialData const& data);
-	FRAMEWORK_DLL_API void compileWithPipeline(Material const& material);
+	FRAMEWORK_DLL_API void compile();
+	FRAMEWORK_DLL_API std::optional<Shader> const& getShader() const;
+	FRAMEWORK_DLL_API Pipeline getPipeline() const;
 
 private:
-	std::unordered_map<Pipeline, std::optional<Shader>> shaders;
+	std::optional<Shader> shader;
 };
 
