@@ -201,7 +201,6 @@ private:
 	FrameBuffer objectIdFrameBuffer;
 
 	// TEMP Hack method for font storage
-	Font testFont;
 	std::vector<Font> fonts;
 
 	glm::mat4 UIProjection;

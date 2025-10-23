@@ -201,6 +201,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".navmesh") {
 		return initialiseResourceFile.template operator()<NavMesh>();
 	}
+	else if (fileExtension == ".ttf") {
+		return initialiseResourceFile.template operator() <Font> ();
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return INVALID_RESOURCE_ID;

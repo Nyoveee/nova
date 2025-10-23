@@ -167,7 +167,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	fonts.push_back(Font::LoadFont("System/Font/calibri.ttf").value());
+	//fonts.push_back(Font::LoadFont("System/Font/calibri.ttf").value());
 }
 
 Renderer::~Renderer() {
@@ -665,18 +665,20 @@ void Renderer::renderTexts()
 	// iterate through all characters
 	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
 		// Retrieves font asset from asset manager.
-		//auto [font, _] = resourceManager.getResource<Font>(text.font);
+		auto [font, _] = resourceManager.getResource<Font>(text.font);
 
-		//if (!font) {
-		//	// missing model.
-		//	std::cout << "Missing font\n";
-		//	continue;
-		//}
+		if (!font) {
+			// missing font.
+			std::cout << "Missing font\n";
+			continue;
+		}
 		if (text.text.empty()) {
 			continue;
 		}
 		textShader.setVec3("textColor", text.fontColor);
 
+		//const Font& font = fonts[0];	// TODO: change
+		const Font::Atlas& atlas = font->getAtlasDetails();
 		Font& font = fonts[0];	// TODO: change
 		// Very small due to it being in pixel size
 		float fontScale = static_cast<float>(text.fontSize) / font.getDefaultFontSize();
@@ -690,7 +692,7 @@ void Renderer::renderTexts()
 		std::string::const_iterator c;
 		for (c = text.text.begin(); c != text.text.end(); c++)
 		{
-			Font::Character ch = font.Characters[*c];
+			const Font::Character& ch = font->getCharacters().at(*c);
 
 			float xpos = x + ch.bearing.x * transform.scale.x * fontScale;
 			float ypos = y - (ch.size.y - ch.bearing.y) * transform.scale.y * fontScale;
@@ -708,8 +710,8 @@ void Renderer::renderTexts()
 
 			float tx = ch.tx;                   // texture X offset in atlas
 			float ty = 0.f;                     // texture Y offset in atlas
-			float tw = static_cast<float>(ch.size.x) / font.atlasWidth;
-			float th = static_cast<float>(ch.size.y) / font.atlasHeight;
+			float tw = static_cast<float>(ch.size.x) / atlas.atlasWidth;
+			float th = static_cast<float>(ch.size.y) / atlas.atlasHeight;
 
 			// 6 vertices per quad (2 triangles)
 			vertices.push_back({ xpos,     ypos + h, tx,       ty });
@@ -721,7 +723,7 @@ void Renderer::renderTexts()
 			vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
 		}
 		// Bind font atlas texture once per string
-		glBindTexture(GL_TEXTURE_2D, font.atlasTextureID);
+		glBindTexture(GL_TEXTURE_2D, atlas.atlasTextureID);
 
 		// Upload vertex data for all glyphs in this string
 		textVBO.uploadData(vertices, 0);

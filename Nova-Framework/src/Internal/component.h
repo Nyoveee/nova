@@ -393,15 +393,14 @@ struct ParticleEmitter
 };
 
 struct Text {
-	//TypedResourceID<Font> font;
-	//Font font;
+	TypedResourceID<Font> font;
 	int fontSize = 13;
 	std::string text;
 	Color fontColor = Color{ 0.f, 0.f, 0.f };
 
 	REFLECTABLE
 	(
-		//font,
+		font,
 		text,
 		fontSize,
 		fontColor

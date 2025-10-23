@@ -6,19 +6,13 @@
 
 using GLuint = unsigned int; 
 
-class Font/* : public Resource */{
+class Font : public Resource {
 public:
-	//FRAMEWORK_DLL_API Font(ResourceID id, ResourceFilePath resourceFilePath);
-	//FRAMEWORK_DLL_API ~Font();
-
-	//FRAMEWORK_DLL_API Font(Font const& other) = delete;
-	//FRAMEWORK_DLL_API Font(Font&& other) noexcept;
-	//FRAMEWORK_DLL_API Font& operator=(Font const& other) = delete;
-	//FRAMEWORK_DLL_API Font& operator=(Font&& other) noexcept;
-	//FRAMEWORK_DLL_API GLuint getFontId() const;
-	FRAMEWORK_DLL_API static std::optional<Font> LoadFont(const std::string& resourceFilePath);
-	FRAMEWORK_DLL_API int getDefaultFontSize();
-public:
+	struct Atlas {
+		GLuint atlasTextureID;  // the OpenGL texture handle
+		GLuint atlasWidth;
+		GLuint atlasHeight;
+	};
 	struct Character {
 		float tx;				 // X offset of glyph in texture coords
 		glm::ivec2   size;       // Size of glyph
@@ -26,10 +20,21 @@ public:
 		glm::uvec2	 advance;    // Offset to advance to next glyph
 	};
 
-	unsigned int atlasTextureID;  // the OpenGL texture handle
-	unsigned int atlasWidth;
-	unsigned int atlasHeight;
+	FRAMEWORK_DLL_API Font(ResourceID id, ResourceFilePath resourceFilePath);
+	FRAMEWORK_DLL_API ~Font();
+
+	FRAMEWORK_DLL_API Font(Font const& other) = delete;
+	FRAMEWORK_DLL_API Font(Font&& other) noexcept;
+	FRAMEWORK_DLL_API Font& operator=(Font const& other) = delete;
+	FRAMEWORK_DLL_API Font& operator=(Font&& other) noexcept;
+	FRAMEWORK_DLL_API int getDefaultFontSize();
+	FRAMEWORK_DLL_API Atlas getAtlasDetails() const;
+	FRAMEWORK_DLL_API const std::map<char, Character>& getCharacters() const;
+
+	//FRAMEWORK_DLL_API static std::optional<Font> LoadFont(const std::string& resourceFilePath);
+public:
+
+private:
+	Atlas atlas;
 	std::map<char, Character> Characters;
-	// Default font size that is loaded into the program
-	const int FONT_SIZE = 48;
 };
