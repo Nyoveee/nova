@@ -55,7 +55,7 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 	if (!emitter.trails.selected || emitter.trails.distancePerEmission <= 0)
 		return;
 	float distancePerEmission{ std::max(emitter.trails.distancePerEmission,0.00001f) }; // Hard limit to distance
-	if (glm::distance(emitter.prevPosition, transform.position) > emitter.trails.distancePerEmission) {
+	if (glm::distance(emitter.prevPosition, transform.position) > distancePerEmission) {
 		if (emitter.b_firstPositionUpdate) {
 			emitter.prevPosition = transform.position;
 			emitter.b_firstPositionUpdate = false;
@@ -70,14 +70,14 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 			// Spawn the particle trail
 			Particle newParticle{};
 			newParticle.texture = emitter.trails.trailTexture;
-			newParticle.position = startPosition + direction * (emitter.trails.distancePerEmission * index);
+			newParticle.position = startPosition + direction * (distancePerEmission * index);
 			newParticle.startSize = newParticle.currentSize = emitter.trails.trailSize;
 			newParticle.startColor = newParticle.currentColor = emitter.trails.trailColor;
 			newParticle.currentLifeTime = emitter.lifeTime;
 			emitter.trailParticles.push_back(newParticle);
 			// Update the loop
 			++index;
-			maxDistance -= emitter.trails.distancePerEmission;
+			maxDistance -= distancePerEmission;
 		}
 		emitter.prevPosition = transform.position;
 	}
