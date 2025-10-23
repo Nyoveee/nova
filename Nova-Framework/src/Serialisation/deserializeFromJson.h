@@ -156,6 +156,12 @@ inline void deserializeFromJson<glm::vec3>(glm::vec3& dataMember, Json const& js
 }
 
 template<>
+inline void deserializeFromJson<glm::vec4>(glm::vec4& dataMember, Json const& json) {
+	glm::vec4 vec{ json["x"], json["y"], json["z"], json["w"] };
+	dataMember = vec;
+}
+
+template<>
 inline void deserializeFromJson<Color>(Color& dataMember, Json const& json) {
 	glm::vec3 vec{ json["r"], json["g"], json["b"] };
 	dataMember = vec;
@@ -171,6 +177,24 @@ template<>
 inline void deserializeFromJson<glm::quat>(glm::quat& dataMember, Json const& json) {
 	glm::quat vec{ json["w"], json["x"], json["y"], json["z"] };
 	dataMember = vec;
+}
+
+template<>
+inline void deserializeFromJson<glm::mat4x4>(glm::mat4x4& dataMember, Json const& json) {
+	float* floatArray = glm::value_ptr(dataMember);
+
+	for (int i = 0; i < 4 * 4; ++i) {
+		floatArray[i] = json[i];
+	}
+}
+
+template<>
+inline void deserializeFromJson<glm::mat3x3>(glm::mat3x3& dataMember, Json const& json) {
+	float* floatArray = glm::value_ptr(dataMember);
+
+	for (int i = 0; i < 3 * 3; ++i) {
+		floatArray[i] = json[i];
+	}
 }
 
 template<>

@@ -9,7 +9,7 @@
 #include "cubemap.h"
 #include "Engine/engine.h"
 
-#include "Serialisation/serializeToBinary.h"
+#include "Serialisation/serialisation.h"
 #include "Material.h"
 
 #define RecordAssetSubdirectory(AssetType) \
@@ -167,8 +167,8 @@ AssetManager::~AssetManager() {
 		AssetFilePath const& assetFilePath = descriptor->filepath;
 		
 		// overwrite the original asset file.
-		std::ofstream outputFile{ assetFilePath, std::ios::binary };
-		serializeToBinary(outputFile, *controller);
+		std::ofstream outputFile{ assetFilePath };
+		Serialiser::serializeToJsonFile(*controller, outputFile);
 
 		Logger::info("Serialised controller: {}", assetFilePath.string);
 	}

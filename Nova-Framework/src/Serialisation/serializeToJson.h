@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "magic_enum.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
 #include <json/json.hpp>
 
 using Json = nlohmann::json;
@@ -137,6 +138,18 @@ inline Json serializeToJson<glm::vec3>(glm::vec3 const& dataMember) {
 }
 
 template<>
+inline Json serializeToJson<glm::vec4>(glm::vec4 const& dataMember) {
+	Json json;
+
+	json["x"] = dataMember.x;
+	json["y"] = dataMember.y;
+	json["z"] = dataMember.z;
+	json["w"] = dataMember.w;
+
+	return json;
+}
+
+template<>
 inline Json serializeToJson<entt::entity>(entt::entity const& dataMember) {
 	return static_cast<unsigned int>(dataMember);
 }
@@ -179,6 +192,32 @@ inline Json serializeToJson<glm::quat>(glm::quat const& dataMember) {
 	json["x"] = dataMember.x;
 	json["y"] = dataMember.y;
 	json["z"] = dataMember.z;
+
+	return json;
+}
+
+template<>
+inline Json serializeToJson<glm::mat4x4>(glm::mat4x4 const& dataMember) {
+	Json json;
+
+	float const* floatArray = glm::value_ptr(dataMember);
+
+	for (int i = 0; i < 4 * 4; ++i) {
+		json[i] = floatArray[i];
+	}
+
+	return json;
+}
+
+template<>
+inline Json serializeToJson<glm::mat3x3>(glm::mat3x3 const& dataMember) {
+	Json json;
+
+	float const* floatArray = glm::value_ptr(dataMember);
+
+	for (int i = 0; i < 3 * 3; ++i) {
+		json[i] = floatArray[i];
+	}
 
 	return json;
 }

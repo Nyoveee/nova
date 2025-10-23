@@ -299,6 +299,30 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 			}
 		}
 		
+		if (ImGui::MenuItem("[+] Shader")) {
+			std::optional<std::ofstream> opt = createAssetFile(".shader");
+
+			if (!opt) {
+				Logger::error("Failed to create shader file.");
+			}
+			else {
+				CustomShader::ShaderParserData shader{};
+				Serialiser::serializeToJsonFile(shader, opt.value());
+			}
+		}
+
+		if (ImGui::MenuItem("[+] Material")) {
+			std::optional<std::ofstream> opt = createAssetFile(".material");
+
+			if (!opt) {
+				Logger::error("Failed to create material file.");
+			}
+			else {
+				MaterialData materialData{};
+				Serialiser::serializeToJsonFile(materialData, opt.value());
+			}
+		}
+
 		if (ImGui::MenuItem("[+] Controller")) {
 			std::optional<std::ofstream> opt = createAssetFile(".controller");
 
