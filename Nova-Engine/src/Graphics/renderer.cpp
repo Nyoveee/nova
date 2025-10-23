@@ -662,8 +662,6 @@ void Renderer::renderTexts()
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 
-	const int DESIRED_FONT_SIZE = 12;	// Desired font size of the text, unsure of exact measurements for comps TODO: prob move
-
 	// iterate through all characters
 	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
 		// Retrieves font asset from asset manager.
@@ -680,7 +678,8 @@ void Renderer::renderTexts()
 		textShader.setVec3("textColor", text.fontColor);
 
 		Font& font = fonts[0];	// TODO: change
-		float fontScale = static_cast<float>(text.fontSize) / DESIRED_FONT_SIZE;
+		// Very small due to it being in pixel size
+		float fontScale = static_cast<float>(text.fontSize) / font.getDefaultFontSize();
 
 		float x = transform.position.x;
 		float y = transform.position.y;

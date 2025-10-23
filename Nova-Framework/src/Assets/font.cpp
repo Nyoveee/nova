@@ -84,7 +84,7 @@ std::optional<Font> Font::LoadFont(const std::string& resourceFilePath)
     return loadedFont;
 }
 
-FRAMEWORK_DLL_API int Font::GetDefaultFontSize()
+FRAMEWORK_DLL_API int Font::getDefaultFontSize()
 {
     return FONT_SIZE;
 }

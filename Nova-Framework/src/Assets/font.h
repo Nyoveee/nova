@@ -17,7 +17,7 @@ public:
 	//FRAMEWORK_DLL_API Font& operator=(Font&& other) noexcept;
 	//FRAMEWORK_DLL_API GLuint getFontId() const;
 	FRAMEWORK_DLL_API static std::optional<Font> LoadFont(const std::string& resourceFilePath);
-	FRAMEWORK_DLL_API int GetDefaultFontSize();
+	FRAMEWORK_DLL_API int getDefaultFontSize();
 public:
 	struct Character {
 		float tx;				 // X offset of glyph in texture coords
