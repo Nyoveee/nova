@@ -72,12 +72,8 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	float maxDimension = 0;
 
 	// Iterate through all the meshes in a scene..
-	unsigned int vertexOffset = 0;
-
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i) {
-		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension, vertexOffset));
-		vertexOffset += static_cast<unsigned int>(meshes[i].vertices.size());
-
+		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension));
 		materialNames.insert(meshes[i].materialName);
 	}
 
@@ -123,17 +119,26 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	return {{ std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension }};
 }
 
-Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, [[maybe_unused]] unsigned int vertexOffset) {
+Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) {
 	// ==================================== 
 	// Getting vertex attributes..
 	// 1. position
 	// 2. texture coordinates
 	// 3. normal
 	// 4. tangent
-	// 5. bitangent
 	// ==================================== 
-	std::vector<Vertex> vertices;
-	vertices.reserve(mesh->mNumVertices);
+	
+	std::vector<glm::vec3> positions;
+	positions.reserve(mesh->mNumVertices);
+	
+	std::vector<glm::vec2> textureCoordinates;
+	textureCoordinates.reserve(mesh->mNumVertices);
+
+	std::vector<glm::vec3> normals;
+	normals.reserve(mesh->mNumVertices);
+
+	std::vector<glm::vec3> tangents;
+	tangents.reserve(mesh->mNumVertices);
 
 	// Getting vertex attributes..
 	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
@@ -144,8 +149,11 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 			maxDimension = std::max(std::max(position.x, position.y), position.z);
 		}
 
+		positions.push_back(position);
+
 		// 2. Texture Coordinates
 		glm::vec2 textureCoords;
+
 		if (mesh->mTextureCoords[0]) {
 			textureCoords = toGlmVec2(mesh->mTextureCoords[0][i]);
 		}
@@ -153,8 +161,11 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 			textureCoords = glm::vec2(0.0f, 0.0f);
 		}
 
+		textureCoordinates.push_back(textureCoords);
+
 		// 3. Normal
 		glm::vec3 normal;
+
 		if (mesh->mNormals) {
 			normal = toGlmVec3(mesh->mNormals[i]);
 		}
@@ -162,8 +173,11 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 			normal = glm::vec3{ 0.0f, 0.0f, 0.f };
 		}
 
+		normals.push_back(normal);
+
 		// 4. Tangents
 		glm::vec3 tangent;
+
 		if (mesh->mTangents) {
 			tangent = toGlmVec3(mesh->mTangents[i]);
 		}
@@ -171,16 +185,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 			tangent = glm::vec3{ 0.0f, 0.0f, 0.f };
 		}
 
-		// 5. Bitangents
-		glm::vec3 bitangent;
-		if (mesh->mBitangents) {
-			bitangent = toGlmVec3(mesh->mBitangents[i]);
-		}
-		else {
-			bitangent = glm::vec3{ 0.0f, 0.0f, 0.f };
-		}
-		
-		vertices.push_back({ position, textureCoords, normal, tangent, bitangent });
+		tangents.push_back(tangent);
 	}
 
 	// ==================================== 
@@ -260,7 +265,10 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 
 	return { 
 		mesh->mName.C_Str(),
-		std::move(vertices), 
+		std::move(positions),
+		std::move(textureCoordinates),
+		std::move(normals),
+		std::move(tangents),
 		std::move(indices), 
 		std::move(materialName), 
 		static_cast<int>(mesh->mNumFaces), 

@@ -177,7 +177,7 @@ AssetManager::~AssetManager() {
 		
 		// overwrite the original asset file.
 		std::ofstream outputFile{ assetFilePath };
-		Serialiser::serializeToJsonFile(*controller, outputFile);
+		Serialiser::serializeToJsonFile(controller->data, outputFile);
 
 		Logger::info("Serialised controller: {}", assetFilePath.string);
 	}

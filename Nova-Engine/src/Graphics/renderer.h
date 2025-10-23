@@ -168,9 +168,14 @@ private:
 
 	// Main VAO and their related buffers
 	GLuint mainVAO;
-	BufferObject mainVBO;
-	BufferObject skeletalVBO;
-	BufferObject EBO;
+	BufferObject positionsVBO;				// VA 0
+	BufferObject textureCoordinatesVBO;		// VA 1
+	BufferObject normalsVBO;				// VA 2
+	BufferObject tangentsVBO;				// VA 3
+
+	// Skeletal animation VBO..
+	BufferObject skeletalVBO;				// VA 4
+	BufferObject EBO;						// VA 5
 
 	// SSBO and UBO.
 	BufferObject pointLightSSBO;
@@ -185,7 +190,6 @@ private:
 	GLuint particleVAO;
 
 	// Debug Physics VAO and it's corresponding VBO.
-	GLuint debugVAO;
 	BufferObject debugPhysicsVBO;
 	BufferObject debugNavMeshVBO;
 	BufferObject debugParticleShapeVBO;

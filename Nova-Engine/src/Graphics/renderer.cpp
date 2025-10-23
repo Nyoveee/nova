@@ -25,7 +25,7 @@ constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
 
 // we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
 constexpr int MAX_DEBUG_TRIANGLES = 10000;
-constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(SimpleVertex);
+constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
 
 // ok right?
 constexpr int MAX_NUMBER_OF_LIGHT = 100;
@@ -52,8 +52,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
 	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
 	mainVAO						{},
-	debugVAO					{},
-	mainVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
+	positionsVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
+	textureCoordinatesVBO		{ AMOUNT_OF_MEMORY_ALLOCATED },
+	normalsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
+	tangentsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	skeletalVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
@@ -106,48 +108,55 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// - Bind the proper EBO
 	// - Define and configure the proper vertex attributes
 	// - Bind the proper VBO to	these vertex attributes
+	// 
+	// - vertex attribute 0 -> positions			-> binding index 0 -> positionsVBO
+	// - vertex attribute 1 -> textureCoordinates	-> binding index 1 -> textureCoordinatesVBO
+	// - vertex attribute 2 -> normals				-> binding index 2 -> normalsVBO
+	// - vertex attribute 3 -> tangents				-> binding index 3 -> tangentsVBO
+	// - vertex attribute 4 -> boneIndices[4]		-> binding index 4 -> skeletalVBO
+	// - vertex attribute 5 -> weights[4]			-> binding index 4 -> skeletalVBO
 	// ======================================================
 	glCreateVertexArrays(1, &mainVAO);
 
 	// Bind this EBO to this VAO.
 	glVertexArrayElementBuffer(mainVAO, EBO.id());
 
-	// for this VAO, associate bindingIndex 0 with the main VBO. 
-	constexpr GLuint mainBindingIndex = 0;
-	glVertexArrayVertexBuffer(mainVAO, mainBindingIndex, mainVBO.id(), 0, sizeof(Vertex));
+	// specify vertex attribute and VBO bindings..
+	glVertexArrayAttribFormat(mainVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
 
-	// associate attribute indices 0 to 4 with the respective attribute properties.
-	glVertexArrayAttribFormat(mainVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, pos));
-	glVertexArrayAttribFormat(mainVAO, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, textureUnit));
-	glVertexArrayAttribFormat(mainVAO, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-	glVertexArrayAttribFormat(mainVAO, 3, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, tangent));
-	glVertexArrayAttribFormat(mainVAO, 4, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, bitangent));
+	glVertexArrayAttribFormat(mainVAO, 1, 2, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayVertexBuffer(mainVAO, 1, textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
+	
+	glVertexArrayAttribFormat(mainVAO, 2, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayVertexBuffer(mainVAO, 2, normalsVBO.id(), 0, sizeof(glm::vec3));
+
+	glVertexArrayAttribFormat(mainVAO, 3, 3, GL_FLOAT, GL_FALSE, 0);
+	glVertexArrayVertexBuffer(mainVAO, 3, tangentsVBO.id(), 0, sizeof(glm::vec3));
 
 	// enable attributes
 	glEnableVertexArrayAttrib(mainVAO, 0);
 	glEnableVertexArrayAttrib(mainVAO, 1);
 	glEnableVertexArrayAttrib(mainVAO, 2);
 	glEnableVertexArrayAttrib(mainVAO, 3);
-	glEnableVertexArrayAttrib(mainVAO, 4);
 
-	// associate vertex attributes to main binding index. 
-	glVertexArrayAttribBinding(mainVAO, 0, mainBindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 1, mainBindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 2, mainBindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 3, mainBindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 4, mainBindingIndex);
+	// associate vertex attributes to binding indices.
+	//										vertex attribute	binding index
+	glVertexArrayAttribBinding(mainVAO,		0,					0					);
+	glVertexArrayAttribBinding(mainVAO,		1,					1					);
+	glVertexArrayAttribBinding(mainVAO,		2,					2					);
+	glVertexArrayAttribBinding(mainVAO,		3,					3					);
 
-	// for this VAO, associate bindingIndex 1 with the skeletal VBO. 
-	constexpr GLuint skeletalBindingIndex = 1;
-	glVertexArrayVertexBuffer (mainVAO, skeletalBindingIndex, skeletalVBO.id(), 0, sizeof(VertexWeight));
+	// bind skeletal VBO to binding index 4
+	glVertexArrayVertexBuffer (mainVAO, 4, skeletalVBO.id(), 0, sizeof(VertexWeight));
 
-	// associate attribute indices 5 to 6 with the respective attribute properties.
-	glVertexArrayAttribIFormat(mainVAO, 5, 4, GL_INT, offsetof(VertexWeight, boneIndices));
-	glVertexArrayAttribFormat (mainVAO, 6, 4, GL_FLOAT, GL_FALSE, offsetof(VertexWeight, weights));
-	
-	// associate vertex attributes to skeletal binding index. 
-	glVertexArrayAttribBinding(mainVAO, 5, skeletalBindingIndex);
-	glVertexArrayAttribBinding(mainVAO, 6, skeletalBindingIndex);
+	// specify skeletal vertex attribute
+	glVertexArrayAttribIFormat(mainVAO, 4, 4, GL_INT, 0);
+	glVertexArrayAttribFormat (mainVAO, 5, 4, GL_FLOAT, GL_FALSE, offsetof(VertexWeight, weights));
+
+	// associate vertex attributes 5 & 6 to skeletal binding index 4. 
+	glVertexArrayAttribBinding(mainVAO, 5, 4);
+	glVertexArrayAttribBinding(mainVAO, 6, 4);
 
 	// don't have to enable attributes yet. ;)
 	
@@ -155,6 +164,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// Debug VAO configuration
 	// - No EBO. A much simpler VAO containing only position.
 	// ======================================================
+#if 0
 	glCreateVertexArrays(1, &debugVAO);
 	
 	// for this VAO, associate bindingIndex 0 with this VBO. 
@@ -170,7 +180,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attribute 0 with binding index 1.
 	glVertexArrayAttribBinding(debugVAO, 0, debugBindingIndex);
-
 	// ======================================================
 	// Particle VAO configuration
 	// ======================================================
@@ -203,6 +212,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayAttribBinding(particleVAO, 2, particleBindingIndex);
 	glVertexArrayAttribBinding(particleVAO, 3, particleBindingIndex);
 	glVertexArrayAttribBinding(particleVAO, 4, particleBindingIndex);
+#endif
 }
 
 Renderer::~Renderer() {
@@ -309,13 +319,13 @@ void Renderer::recompileShaders() {
 
 void Renderer::debugRenderPhysicsCollider() {
 	// Bind Debug Physics VBO to VAO.
-	constexpr GLuint debugBindingIndex = 0;
-	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
+	constexpr GLuint positionBindingIndex = 0;
+	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsVBO.id(), 0, sizeof(glm::vec3));
 
 	// ================================================
 	// 1. We first render all debug shapes (triangles and lines) into a separate FBO
 	// ================================================
-	glBindVertexArray(debugVAO);
+	glBindVertexArray(mainVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, physicsDebugFrameBuffer.fboId());
 
 	// Clear physics debug framebuffer.
@@ -338,7 +348,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDisable(GL_DEPTH_TEST);
 	overlayShader.use();
 	numOfPhysicsDebugTriangles = 0;
-
+	
 	// ================================================
 	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
 	// (so post processing)
@@ -363,10 +373,10 @@ void Renderer::debugRenderPhysicsCollider() {
 
 void Renderer::debugRenderNavMesh() {
 	// Bind Debug Navmesh VBO to VAO.
-	constexpr GLuint debugBindingIndex = 0;
-	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugNavMeshVBO.id(), 0, sizeof(SimpleVertex));
+	constexpr GLuint positionBindingIndex = 0;
+	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugNavMeshVBO.id(), 0, sizeof(glm::vec3));
 
-	glBindVertexArray(debugVAO);
+	glBindVertexArray(mainVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
@@ -386,9 +396,9 @@ void Renderer::debugRenderParticleEmissionShape()
 {
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
-	glVertexArrayVertexBuffer(debugVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(SimpleVertex));
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 
-	glBindVertexArray(debugVAO);
+	glBindVertexArray(mainVAO);
 	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	glEnable(GL_DEPTH_TEST);
 	setBlendMode(BlendingConfig::AlphaBlending);
@@ -447,7 +457,7 @@ void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 
 		return;
 	}
 
-	debugPhysicsVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfPhysicsDebugTriangles * sizeof(SimpleVertex));
+	debugPhysicsVBO.uploadData(std::vector<glm::vec3>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfPhysicsDebugTriangles * sizeof(glm::vec3));
 	++numOfPhysicsDebugTriangles;
 }
 
@@ -457,7 +467,7 @@ void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm
 		return;
 	}
 
-	debugNavMeshVBO.uploadData(std::vector<SimpleVertex>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfNavMeshDebugTriangles * sizeof(SimpleVertex));
+	debugNavMeshVBO.uploadData(std::vector<glm::vec3>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfNavMeshDebugTriangles * sizeof(glm::vec3));
 	++numOfNavMeshDebugTriangles;
 }
 
@@ -472,8 +482,11 @@ void Renderer::prepareRendering() {
 	glStencilMask(0xFF);
 	glDisable(GL_BLEND);
 
-	// set VBO to VAO's [0] binding index and bind to main VAO.
-	glVertexArrayVertexBuffer(mainVAO, 0, mainVBO.id(), 0, sizeof(Vertex));
+	// bind the VBOs to their respective binding index
+	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(),			0, sizeof(glm::vec3));
+	glVertexArrayVertexBuffer(mainVAO, 1, textureCoordinatesVBO.id(),	0, sizeof(glm::vec2));
+	glVertexArrayVertexBuffer(mainVAO, 2, normalsVBO.id(),				0, sizeof(glm::vec3));
+	glVertexArrayVertexBuffer(mainVAO, 3, tangentsVBO.id(),				0, sizeof(glm::vec3));
 	glBindVertexArray(mainVAO);
 
 	// =================================================================
@@ -522,7 +535,7 @@ void Renderer::prepareRendering() {
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection())); // offset bcuz 2nd data member.
 
-	// ==== Blinn Phong ====
+	// ==== Set up camera position uniform ====
 	blinnPhongShader.setVec3("cameraPos", camera.getPos());
 	PBRShader.setVec3("cameraPos", camera.getPos());
 	skeletalAnimationShader.setVec3("cameraPos", camera.getPos());

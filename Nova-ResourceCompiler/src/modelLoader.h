@@ -16,7 +16,7 @@ public:
 	static std::optional<ModelData> loadModel(std::string const& filepath);
 
 private:
-	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, unsigned int vertexOffset);
+	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension);
 	static void processNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex);
 	static void printBone(BoneIndex boneIndex, unsigned int padding);
 	

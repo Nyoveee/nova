@@ -246,7 +246,7 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 			ImGui::Text(mesh.name.c_str());
 			ImGui::BeginChild("##", ImVec2(0, 0), ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 
-			ImGui::Text("Vertices: %zu", mesh.vertices.size());
+			ImGui::Text("Vertices: %zu", mesh.positions.size());
 			ImGui::Text("Indices: %zu", mesh.indices.size());
 			ImGui::Text("Material name: %s", mesh.materialName.c_str());
 
