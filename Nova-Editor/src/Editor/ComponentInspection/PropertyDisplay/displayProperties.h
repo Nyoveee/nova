@@ -12,6 +12,10 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+template <class...>
+struct False : std::bool_constant<false> {};
+
 /***************************************************************************************
 	Reference for display properties
 ****************************************************************************************/
@@ -35,10 +39,18 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 void displayScriptFields(ScriptData& scriptData, PropertyReferences& propertyReferences);
 
 /***************************************************************************************
-	Base template(Does Nothing)
+	Base template, throws an error.
 ****************************************************************************************/
 template<typename DataMemberType>
-inline void DisplayProperty(PropertyReferences& propertyReferences, const char* dataMemberName, auto& dataMember) { (void)propertyReferences, dataMemberName, dataMember; }
+inline void DisplayProperty(PropertyReferences& propertyReferences, const char* dataMemberName, auto& dataMember) {
+	static_assert(False<DataMemberType>{}, "Not all types accorded for." __FUNCSIG__);
+}
+
+/***************************************************************************************
+	Excluded List, See type_concepts.h
+****************************************************************************************/
+template<NonSerializableTypes DataMemberType>
+inline void DisplayProperty(PropertyReferences&, const char*, auto&) {};
 
 /***************************************************************************************
 	here we gooooooooooooooooooooooooooooooo! time to list down all the primitives!
@@ -52,6 +64,7 @@ inline void DisplayProperty(PropertyReferences& propertyReferences, const char* 
 		dataMember = DataMemberType{ resourceId };
 	});
 }
+
 template<IsEnum DataMemberType>
 inline void DisplayProperty(PropertyReferences& propertyReferences, const char* dataMemberName, auto& dataMember) {
 	(void)propertyReferences;
@@ -74,6 +87,13 @@ inline void DisplayProperty<int>(PropertyReferences& propertyReferences, const c
 	(void)propertyReferences;
 	ImGui::InputInt(dataMemberName, &dataMember);
 }
+
+template<>
+inline void DisplayProperty<double>(PropertyReferences& propertyReferences, const char* dataMemberName, double& dataMember) {
+	(void)propertyReferences;
+	ImGui::InputDouble(dataMemberName, &dataMember);
+}
+
 template<>
 inline void DisplayProperty<float>(PropertyReferences& propertyReferences, const char* dataMemberName, float& dataMember) {
 	(void)propertyReferences;
@@ -219,6 +239,29 @@ inline void DisplayProperty<glm::vec3>(PropertyReferences& propertyReferences, c
 
 		ImGui::TableNextColumn();
 		ImGui::InputFloat("z", &dataMember.z);
+
+		ImGui::EndTable();
+	}
+}
+
+template<>
+inline void DisplayProperty<glm::vec2>(PropertyReferences& propertyReferences, const char* dataMemberName, glm::vec2& dataMember) {
+	(void)propertyReferences;
+	if (ImGui::BeginTable("MyTable", 3, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+		ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+		ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+
+		ImGui::TableNextRow();
+
+		ImGui::TableNextColumn();
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text(dataMemberName);
+
+		ImGui::TableNextColumn();
+		ImGui::InputFloat("x", &dataMember.x);
+
+		ImGui::TableNextColumn();
+		ImGui::InputFloat("y", &dataMember.y);
 
 		ImGui::EndTable();
 	}

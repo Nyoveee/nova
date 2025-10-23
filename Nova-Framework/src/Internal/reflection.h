@@ -65,6 +65,7 @@ namespace reflection {
 	};
 
 	enum class Option {
+		DontRecursivelyIterate,
 		IgnoreContainers,
 		IterateThroughContainers
 	};
@@ -99,7 +100,7 @@ namespace reflection {
 	* @param [in] x					: The object you want to reflect.
 	*
 	**************************************************************************/
-	template<Option option = Option::IgnoreContainers, typename Functor, typename T>
+	template<Option option = Option::DontRecursivelyIterate, typename Functor, typename T>
 	void visit(Functor&& func, T&& x);
 
 	/*!***********************************************************************
@@ -295,7 +296,7 @@ namespace reflection {
 			for (auto&& element : fieldData.get()) {
 				// is element itself reflectable or a container?
 				if constexpr (
-					isReflectable<typename std::remove_cvref_t<decltype(element)>>()
+					(isReflectable<typename std::remove_cvref_t<decltype(element)>>() && option != Option::DontRecursivelyIterate)
 					|| (option == Option::IterateThroughContainers && isForEachIterable<typename std::remove_cvref_t<decltype(element)>>)
 					) {
 					_internal_visit<option>(
@@ -313,7 +314,7 @@ namespace reflection {
 		else {
 			iterateThroughMember(std::forward<T>(fieldData).get(), [&]<typename U>(U && internalFieldData) {
 				if constexpr (
-					isReflectable<typename std::remove_cvref_t<U>::type>()
+					(isReflectable<typename std::remove_cvref_t<U>::type>() && option != Option::DontRecursivelyIterate)
 					|| (option == Option::IterateThroughContainers && isForEachIterable<typename std::remove_cvref_t<U>::type>)
 					) {
 					_internal_visit<option>(
@@ -346,7 +347,7 @@ namespace reflection {
 
 			for (auto&& element : x) {
 				// is element itself reflectable?
-				if constexpr (isReflectable<typename std::remove_cvref_t<decltype(element)>>()) {
+				if constexpr ((isReflectable<typename std::remove_cvref_t<decltype(element)>>() && option != Option::DontRecursivelyIterate)) {
 					visit<option>(
 						std::forward<Functor>(func),
 						std::forward<Functor2>(enterFunc),
@@ -367,8 +368,8 @@ namespace reflection {
 
 				// if data member is reflectable or is a container, iterate through its data members..
 				if constexpr (
-					isReflectable<typename std::remove_cvref_t<U>::type>()
-					|| (option == Option::IterateThroughContainers && isForEachIterable<typename std::remove_cvref_t<U>::type>)
+					(isReflectable<typename std::remove_cvref_t<U>::type>() && option != Option::DontRecursivelyIterate)
+				|| (option == Option::IterateThroughContainers && isForEachIterable<typename std::remove_cvref_t<U>::type>)
 					) {
 					_internal_visit<option>(
 						std::forward<Functor>(func),
