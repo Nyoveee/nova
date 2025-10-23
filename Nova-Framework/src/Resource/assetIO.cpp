@@ -17,6 +17,11 @@
 #define AssetCacheSubDirectory(AssetType) \
 	std::pair{ Family::id<AssetType>(), std::filesystem::current_path() / ".asset_cache" / #AssetType }
 
+#if 0
+#define SystemResourceSubDirectory(AssetType) \
+	std::pair{ Family::id<AssetType>(), std::filesystem::current_path() / "System" / #AssetType }
+#endif
+
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDescriptorDirectories {
 	DescriptorSubDirectory(Texture),
 	DescriptorSubDirectory(Model),
@@ -56,10 +61,29 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAsse
 	AssetCacheSubDirectory(Material)
 };
 
-std::filesystem::path const AssetIO::assetDirectory		 = std::filesystem::current_path() / "Assets";
-std::filesystem::path const AssetIO::resourceDirectory	 = std::filesystem::current_path() / "Resources";
-std::filesystem::path const AssetIO::descriptorDirectory = std::filesystem::current_path() / "Descriptors";
-std::filesystem::path const AssetIO::assetCacheDirectory = std::filesystem::current_path() / ".asset_cache";
+#if 0
+std::unordered_map<ResourceTypeID, std::filesystem::path> const subSystemResourceDirectories{
+	SystemResourceSubDirectory(Texture),
+	SystemResourceSubDirectory(Model),
+	SystemResourceSubDirectory(CubeMap),
+	SystemResourceSubDirectory(ScriptAsset),
+	SystemResourceSubDirectory(Audio),
+	SystemResourceSubDirectory(Scene),
+	SystemResourceSubDirectory(NavMesh),
+	SystemResourceSubDirectory(Controller),
+	SystemResourceSubDirectory(CustomShader),
+	SystemResourceSubDirectory(Material)
+};
+#endif
+
+std::filesystem::path const AssetIO::assetDirectory				= std::filesystem::current_path() / "Assets";
+std::filesystem::path const AssetIO::resourceDirectory			= std::filesystem::current_path() / "Resources";
+std::filesystem::path const AssetIO::descriptorDirectory		= std::filesystem::current_path() / "Descriptors";
+std::filesystem::path const AssetIO::assetCacheDirectory		= std::filesystem::current_path() / ".asset_cache";
+
+#if 0
+std::filesystem::path const AssetIO::systemResourceDirectory	= std::filesystem::current_path() / "System";
+#endif
 
 std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descriptorFile) {
 	try {

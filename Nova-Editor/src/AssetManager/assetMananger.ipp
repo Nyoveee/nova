@@ -86,6 +86,15 @@ void AssetManager::updateAssetCache(AssetInfo<T> const& descriptor) const {
 	Logger::info("Successfully updated {} cache.", descriptor.filepath.string);
 }
 
+template<ValidResource T>
+void AssetManager::loadSystemResourceDescriptor(std::unordered_map<ResourceID, ResourceFilePath> const& systemResources) {
+	for (auto&& [id, filepath] : systemResources) {
+		std::string name = "[SYSTEM] " + static_cast<std::filesystem::path>(filepath).filename().string();
+		BasicAssetInfo assetInfo{ id, std::move(name) };
+		assetToDescriptor.insert({ id, std::make_unique<AssetInfo<T>>(assetInfo) });
+	}
+}
+
 template<ValidResource ...T>
 void AssetManager::loadAllDescriptorFiles() {
 	([&] {

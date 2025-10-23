@@ -41,10 +41,12 @@ public:
 	FRAMEWORK_DLL_API static const std::filesystem::path resourceDirectory;
 	FRAMEWORK_DLL_API static const std::filesystem::path descriptorDirectory;
 	FRAMEWORK_DLL_API static const std::filesystem::path assetCacheDirectory;
+	FRAMEWORK_DLL_API static const std::filesystem::path systemResourceDirectory;
 
 	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subDescriptorDirectories;
 	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subResourceDirectories;
 	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetCacheDirectories;
+	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subSystemResourceDirectories;
 
 private:
 	// === Parse generic metadata info. These functions are invoked by the functions above first. ====

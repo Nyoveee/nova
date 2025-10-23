@@ -43,11 +43,14 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 }
 
 template<ValidResource T>
-ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
+ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath, ResourceID id) {
 	try {
-		// Retrieve the Resource ID from filepath.
-		// May throw an exception.
-		ResourceID id = std::stoull(std::filesystem::path{ filepath }.stem().string());
+		if (id == INVALID_RESOURCE_ID) {
+			// Retrieve the Resource ID from filepath.
+			// May throw an exception.
+			id = std::stoull(std::filesystem::path{ filepath }.stem().string());
+		}
+
 		auto [iterator, success] = resourceFilePaths.insert({ id, filepath });
 
 		if (!success) {

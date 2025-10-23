@@ -126,6 +126,15 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		}
 	}
 
+	// ========================================
+	// 5. We load descriptors for system resources, most importantly name.
+	// ========================================
+	Logger::info("===========================");
+	Logger::info("Loading system resources name..");
+	Logger::info("===========================\n");
+
+	loadSystemResourceDescriptor<Model>(ResourceManager::systemModelResources);
+
 	// By now everything should be serialized, compile the entity scripts
 	engine.scriptingAPIManager.compileScriptAssembly();
 
