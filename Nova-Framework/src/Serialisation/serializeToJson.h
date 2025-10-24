@@ -25,6 +25,7 @@ inline Json serializeToJson([[maybe_unused]] DataMemberType const& dataMember) {
 /***************************************************************************************
 	Special Constraints
 ****************************************************************************************/
+
 // Typed IDs..
 template<IsTypedResourceID DataMemberType>
 inline Json serializeToJson(DataMemberType const& dataMember) {
@@ -116,6 +117,11 @@ inline Json serializeToJson(T const& dataMember) {
 /***************************************************************************************
 	Explicit specialization - Listings
 ****************************************************************************************/
+template<>
+inline Json serializeToJson<NormalizedFloat>(NormalizedFloat const& dataMember) {
+	return static_cast<float>(dataMember);
+}
+
 template<>
 inline Json serializeToJson<glm::vec2>(glm::vec2 const& dataMember) {
 	Json json;

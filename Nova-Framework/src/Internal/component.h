@@ -158,24 +158,24 @@ struct Light {
 };
 
 struct MeshRenderer {
-	TypedResourceID<Model> modelId{ INVALID_RESOURCE_ID };
-	TypedResourceID<Material> materialId{ INVALID_RESOURCE_ID };
+	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
+	std::vector<TypedResourceID<Material>>	materialIds	{};
 
 	bool toRenderOutline = false;
 
 	REFLECTABLE(
 		modelId,
-		materialId
+		materialIds
 	)
 };
 
 struct SkinnedMeshRenderer {
-	TypedResourceID<Model> modelId{ INVALID_RESOURCE_ID };
-	TypedResourceID<Material> materialId{ INVALID_RESOURCE_ID };
+	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
+	std::vector<TypedResourceID<Material>>	materialIds {};
 
 	REFLECTABLE(
 		modelId,
-		materialId
+		materialIds
 	)
 
 	// owns all the bone's final matrices.

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AssetManager/assetManager.h"
+#include "Material.h"
 
 class Editor;
 
@@ -18,8 +19,8 @@ public:
 	void selectNewResourceId(ResourceID id);
 
 private:
-	void displayMaterialInfo();
-	void displayShaderInfo();
+	void displayMaterialInfo(AssetInfo<Material>& descriptor);
+	void displayShaderInfo(AssetInfo<CustomShader>& descriptor);
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 	void displayAnimationInfo(AssetInfo<Model>& descriptor);

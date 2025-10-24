@@ -63,6 +63,14 @@ inline void deserializeFromBinary(std::ifstream& inputFile, T& variant) {
 }
 
 // ----------------------------------------------------
+// normalised float
+template <>
+inline void deserializeFromBinary<NormalizedFloat>(std::ifstream& inputFile, NormalizedFloat& dataMember) {
+	float value;
+	readFromFile(inputFile, value);
+	dataMember = value;
+}
+
 // vector 4
 template <>
 inline void deserializeFromBinary<glm::vec4>(std::ifstream& inputFile, glm::vec4& dataMember) {

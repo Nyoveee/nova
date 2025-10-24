@@ -64,7 +64,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	boneNameToIndex.clear();
 
 	std::vector<Mesh> meshes;
-	std::unordered_set<MaterialName> materialNames;
+	std::vector<MaterialName> materialNames;
 
 	meshes.reserve(scene->mNumMeshes);
 
@@ -73,8 +73,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 
 	// Iterate through all the meshes in a scene..
 	for (unsigned i = 0; i < scene->mNumMeshes; ++i) {
-		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension));
-		materialNames.insert(meshes[i].materialName);
+		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension, materialNames));
 	}
 
 	// Process animation data..
@@ -119,7 +118,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	return {{ std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension }};
 }
 
-Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension) {
+Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, std::vector<MaterialName>& materialNames) {
 	// ==================================== 
 	// Getting vertex attributes..
 	// 1. position
@@ -203,15 +202,24 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 		}
 	}
 
-	std::string materialName;
-
 	// ==================================== 
 	// Getting material information..
 	// ==================================== 
+	unsigned int materialIndex = 0;
 
 	if (mesh->mMaterialIndex >= 0 && scene->mMaterials) {
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		materialName = material->GetName().C_Str();
+		std::string materialName = material->GetName().C_Str();
+
+		auto iterator = std::ranges::find(materialNames, materialName);
+
+		if (iterator != materialNames.end()) {
+			materialIndex = static_cast<unsigned int>(std::distance(materialNames.begin(), iterator));
+		}
+		else {
+			materialIndex = static_cast<unsigned int>(materialNames.size());
+			materialNames.push_back(std::move(materialName));
+		}
 	}
 
 	// ==================================== 
@@ -270,7 +278,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 		std::move(normals),
 		std::move(tangents),
 		std::move(indices), 
-		std::move(materialName), 
+		materialIndex,
 		static_cast<int>(mesh->mNumFaces), 
 		std::move(vertexWeights),
 	};

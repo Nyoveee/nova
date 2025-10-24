@@ -6,6 +6,11 @@
 #include "ResourceManager/resourceManager.h"
 #include "assetIO.h"
 
+#include "Serialisation/serialisation.h"
+
+template<typename T>
+constexpr bool dependent_false = false;
+
 template<ValidResource T>
 bool AssetManager::compileIntermediaryFile(AssetInfo<T> const& descriptor) {
 #if _DEBUG
@@ -92,6 +97,48 @@ void AssetManager::loadSystemResourceDescriptor(std::unordered_map<ResourceID, R
 		std::string name = "[SYSTEM] " + static_cast<std::filesystem::path>(filepath).filename().string();
 		BasicAssetInfo assetInfo{ id, std::move(name) };
 		assetToDescriptor.insert({ id, std::make_unique<AssetInfo<T>>(assetInfo) });
+	}
+}
+
+template<ValidResource T>
+void AssetManager::serializeAllResources() {
+	for (auto const& resourceId : resourceManager.getAllResources<T>()) {
+		T* resource = resourceManager.getResourceOnlyIfLoaded<T>(resourceId);
+
+		if (!resource) {
+			continue;
+		}
+
+		// get asset file path.
+		auto iterator = assetToDescriptor.find(resourceId);
+
+		if (iterator == assetToDescriptor.end()) {
+			Logger::error("Failed to serialise {}", static_cast<std::size_t>(resourceId));
+			continue;
+		}
+
+		auto&& [__, descriptor] = *iterator;
+
+		AssetFilePath const& assetFilePath = descriptor->filepath;
+
+		// overwrite the original asset file.
+		std::ofstream outputFile{ assetFilePath };
+
+		if constexpr (std::same_as<T, Controller>) {
+			Serialiser::serializeToJsonFile(resource->data, outputFile);
+		}
+		else if constexpr (std::same_as<T, Material>) {
+			Serialiser::serializeToJsonFile(resource->materialData, outputFile);
+		}
+		else if constexpr (std::same_as<T, CustomShader>) {
+			Serialiser::serializeToJsonFile(resource->customShaderData, outputFile);
+		}
+		else {
+			static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
+			return;
+		}
+
+		Logger::info("Serialised asset: {}", assetFilePath.string);
 	}
 }
 
@@ -234,6 +281,9 @@ void AssetManager::serialiseDescriptor(ResourceID id) {
 	// ============================
 	if constexpr (std::same_as<T, Texture>) {
 		descriptorFile << magic_enum::enum_name(assetInfo->compression) << '\n';
+	}
+	else if constexpr (std::same_as<T, CustomShader>) {
+		descriptorFile << magic_enum::enum_name(assetInfo->pipeline) << '\n';
 	}
 
 	// ============================

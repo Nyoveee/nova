@@ -42,8 +42,7 @@ public:
 		// Code
 		std::string fShaderCode;
 
-		// Pipeline (dont need to include this in parser..)
-		Pipeline pipeline = Pipeline::PBR;
+		Pipeline pipeline;
 
 		REFLECTABLE(
 			blendingConfig,
@@ -67,9 +66,32 @@ public:
 public:
 	FRAMEWORK_DLL_API void compile();
 	FRAMEWORK_DLL_API std::optional<Shader> const& getShader() const;
-	FRAMEWORK_DLL_API Pipeline getPipeline() const;
 
 private:
 	std::optional<Shader> shader;
+
+public:
+	static inline const std::unordered_set<std::string> validGlslPrimitive {
+		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D"
+	};
+
+	static inline const std::unordered_set<std::string> validCustomTypes{
+		"Color", "ColorA", "NormalizedFloat"
+	};
+
+	static inline const std::unordered_map<std::string, std::string> customTypeToGlslPrimitive{
+		{ "Color",			"vec3"		},
+		{ "ColorA",			"vec4"		},
+		{ "NormalizedFloat", "float"	},
+	};
+
+	static inline const std::unordered_set<std::string> allValidShaderTypes = {
+		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D",
+		"Color", "ColorA", "NormalizedFloat"
+	};
 };
 
+template <>
+struct AssetInfo<CustomShader> : public BasicAssetInfo {
+	Pipeline pipeline;
+};

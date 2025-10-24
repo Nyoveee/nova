@@ -285,7 +285,7 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::
 	return 0;
 }
 
-int Compiler::compileShaderAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath)
+int Compiler::compileShaderAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, Pipeline pipeline)
 {
 	std::ofstream resourceFile{ resourceFilePath.string };
 
@@ -301,6 +301,7 @@ int Compiler::compileShaderAsset(ResourceFilePath const& resourceFilePath, Asset
 		return -1;
 	}
 
+	shaderParserData.pipeline = pipeline;
 	Serialiser::serializeToJsonFile(shaderParserData, resourceFile);
 	return 0;
 }

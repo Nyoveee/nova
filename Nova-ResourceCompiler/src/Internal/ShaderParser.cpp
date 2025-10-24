@@ -1,10 +1,14 @@
 #include "ShaderParser.h"
+
 #include <fstream>
 #include <sstream>
 #include <regex>
+#include <unordered_set>
+
 #include "Logger.h"
 #include "type_concepts.h"
 #include "magic_enum.hpp"
+
 /******************************************************************************
 	Helpers
 ******************************************************************************/
@@ -68,9 +72,8 @@ bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderPars
 	// Parse into shaderparserdata
 	std::string result{ propertiesRegexBegin->str() };
 	// Uniforms, not using type since sampler2D conflicts with int
-	std::vector<std::string> validTypes{ "bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D"};
-	for (std::string const& propertyType : validTypes) {
 
+	for (std::string const& propertyType : CustomShader::allValidShaderTypes) {
 		std::string regexInput{ propertyType + R"(\s+([\w]+)\s*;)" };
 		std::regex propertyRegex{ regexInput };
 		std::string properties{ result };
@@ -83,7 +86,7 @@ bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderPars
 }
 bool ParseFragmentShader(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
 	// Get full definition
-	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\w\s=(.,);\[\]]+\})" };
+	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\*\-\+/\w\s=(.,);\[\]]+\})" };
 	auto fragmentShaderRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data),fragmentShaderRegex) };
 	ptrdiff_t count{ std::distance(fragmentShaderRegexBegin,std::sregex_iterator()) };
 	// Check Count
@@ -96,6 +99,11 @@ bool ParseFragmentShader(std::string& data, CustomShader::ShaderParserData& shad
 	// Parse into shaderparserdata
 	std::string result{ fragmentShaderRegexBegin->str() };
 	shaderParserData.fShaderCode = result.substr(result.find_first_of('{')+1, result.find_last_of('}') - result.find_first_of('{')-1);
+
+	if (shaderParserData.fShaderCode.empty()) {
+		return false;
+	}
+
 	return true;
 
 }
@@ -124,12 +132,14 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 		return false;
 	if (!ParseFragmentShader(data, shaderParserData))
 		return false;
-	// Parsing successful
+	
 	Logger::info("BlendingConfig = {}", magic_enum::enum_name(shaderParserData.blendingConfig));
 	Logger::info("DepthTestingMethod = {}", magic_enum::enum_name(shaderParserData.depthTestingMethod));
-	for (std::pair<std::string, std::string> uniform : shaderParserData.uniforms) {
-		Logger::info("Uniform = {}, Type = {}", uniform.first, uniform.second);
+	
+	for (auto&& [identifier, type] : shaderParserData.uniforms) {
+		Logger::info("Uniform = {}, Type = {}", identifier, type);
 	}
+
 	Logger::info("Fragment Shader Code\n{}", shaderParserData.fShaderCode);
 	return true;
 }

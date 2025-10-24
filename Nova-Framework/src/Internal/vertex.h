@@ -68,7 +68,7 @@ struct Mesh {
 	std::vector<glm::vec3> tangents;
 
 	std::vector<unsigned int> indices;
-	std::string materialName;
+	unsigned int materialIndex;			// holds an index to the std::vector of material names in the model class.
 
 	int numOfTriangles;
 	
@@ -82,7 +82,7 @@ struct Mesh {
 		normals,
 		tangents,
 		indices,
-		materialName,
+		materialIndex,
 		numOfTriangles,
 		vertexWeights
 	)
@@ -91,7 +91,7 @@ struct Mesh {
 // this is the model data that will be de/serialised.
 struct ModelData {
 	std::vector<Mesh> meshes;
-	std::unordered_set<MaterialName> materialNames;
+	std::vector<MaterialName> materialNames;
 
 	// skeleton.
 	std::optional<Skeleton> skeleton;

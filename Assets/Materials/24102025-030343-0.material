@@ -1,4 +1,44 @@
 {
-    "overridenUniforms": null,
-    "selectedShader": 0
+    "overridenUniforms": {
+        "albedoColor": {
+            "type": "vec3",
+            "value": {
+                "__variant_type": 5,
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            }
+        },
+        "albedoMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 10841000328665120867
+            }
+        },
+        "metallic": {
+            "type": "float",
+            "value": {
+                "__variant_type": 3,
+                "__variant_value": 0.0
+            }
+        },
+        "occulusion": {
+            "type": "float",
+            "value": {
+                "__variant_type": 3,
+                "__variant_value": 0.0
+            }
+        },
+        "roughness": {
+            "type": "float",
+            "value": {
+                "__variant_type": 3,
+                "__variant_value": 1.0
+            }
+        }
+    },
+    "selectedShader": 16074763658358816769
 }

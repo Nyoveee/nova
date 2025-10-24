@@ -46,6 +46,21 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 				assetInfo.compression = compressionValueOpt.value();
 			}
 		}
+		else if constexpr (std::same_as<T, Pipeline>) {
+			std::string pipelineString;
+			std::getline(descriptorFile, pipelineString);
+
+			auto pipelineOpt = magic_enum::enum_cast<Pipeline>(pipelineString);
+
+			if (!pipelineOpt) {
+				// parsing this failed, let's give some default compression value.
+				assetInfo.pipeline = Pipeline::PBR;
+			}
+			else {
+				assetInfo.pipeline = pipelineOpt.value();
+			}
+		}
+
 		// ============================
 		return assetInfo;
 	}
@@ -70,6 +85,9 @@ AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	// ============================
 	if constexpr (std::same_as<T, Texture>) {
 		descriptorFile << magic_enum::enum_name(AssetInfo<Texture>::Compression::BC1_SRGB) << '\n';
+	}
+	else if constexpr (std::same_as<T, Pipeline>) {
+		descriptorFile << magic_enum::enum_name(Pipeline::PBR) << '\n';
 	}
 
 	// ============================

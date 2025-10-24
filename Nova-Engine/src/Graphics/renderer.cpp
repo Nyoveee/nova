@@ -134,12 +134,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayAttribFormat(mainVAO, 3, 3, GL_FLOAT, GL_FALSE, 0);
 	glVertexArrayVertexBuffer(mainVAO, 3, tangentsVBO.id(), 0, sizeof(glm::vec3));
 
-	// enable attributes
-	glEnableVertexArrayAttrib(mainVAO, 0);
-	glEnableVertexArrayAttrib(mainVAO, 1);
-	glEnableVertexArrayAttrib(mainVAO, 2);
-	glEnableVertexArrayAttrib(mainVAO, 3);
-
 	// associate vertex attributes to binding indices.
 	//										vertex attribute	binding index
 	glVertexArrayAttribBinding(mainVAO,		0,					0					);
@@ -155,11 +149,17 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayAttribFormat (mainVAO, 5, 4, GL_FLOAT, GL_FALSE, offsetof(VertexWeight, weights));
 
 	// associate vertex attributes 5 & 6 to skeletal binding index 4. 
+	glVertexArrayAttribBinding(mainVAO, 4, 4);
 	glVertexArrayAttribBinding(mainVAO, 5, 4);
-	glVertexArrayAttribBinding(mainVAO, 6, 4);
 
-	// don't have to enable attributes yet. ;)
-	
+	// Enable attributes
+	glEnableVertexArrayAttrib(particleVAO, 0);
+	glEnableVertexArrayAttrib(particleVAO, 1);
+	glEnableVertexArrayAttrib(particleVAO, 2);
+	glEnableVertexArrayAttrib(particleVAO, 3);
+	glEnableVertexArrayAttrib(particleVAO, 4);
+	glEnableVertexArrayAttrib(particleVAO, 5);
+
 	// ======================================================
 	// Debug VAO configuration
 	// - No EBO. A much simpler VAO containing only position.
@@ -199,12 +199,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayAttribFormat(particleVAO, 3, 4, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, color));
 	glVertexArrayAttribFormat(particleVAO, 4, 1, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, rotation));
 
-	// Enable attributes
-	glEnableVertexArrayAttrib(particleVAO, 0);
-	glEnableVertexArrayAttrib(particleVAO, 1);
-	glEnableVertexArrayAttrib(particleVAO, 2);
-	glEnableVertexArrayAttrib(particleVAO, 3);
-	glEnableVertexArrayAttrib(particleVAO, 4);
+
 
 	// Associate vertex attributes with binding index 0
 	glVertexArrayAttribBinding(particleVAO, 0, particleBindingIndex);
@@ -681,7 +676,7 @@ void Renderer::renderModels() {
 			continue;
 		}
 
-		setModelUniforms(transform, entity);
+		// setModelUniforms(transform, entity);
 
 #if 0
 		// Set up stencil operation
@@ -691,7 +686,7 @@ void Renderer::renderModels() {
 		else {
 			glStencilMask(0x00);	// don't write to the stencil buffer. this object is not going to be outlined.
 		}
-
+		
 		// Draw every mesh of a given model.
 		for (auto const& mesh : model->meshes) {
 			Material const* material = obtainMaterial(meshRenderer, mesh);
@@ -1361,20 +1356,20 @@ bool Renderer::setupMaterial(Material const& material) {
 				assert(overriddenUniformData.type == "uint");
 				shader.setUInt(name, value);
 			}
-			else if constexpr (std::same_as<Type, float>) {
-				assert(overriddenUniformData.type == "float");
+			else if constexpr (std::same_as<Type, float> || std::same_as<Type, NormalizedFloat>) {
+				assert(overriddenUniformData.type == "float" || overriddenUniformData.type == "NormalizedFloat");
 				shader.setFloat(name, value);
 			}
 			else if constexpr (std::same_as<Type, glm::vec2>) {
 				assert(overriddenUniformData.type == "vec2");
 				shader.setVec2(name, value);
 			}
-			else if constexpr (std::same_as<Type, glm::vec3>) {
-				assert(overriddenUniformData.type == "vec3");
+			else if constexpr (std::same_as<Type, glm::vec3> || std::same_as<Type, Color>) {
+				assert(overriddenUniformData.type == "vec3" || overriddenUniformData.type == "Color");
 				shader.setVec3(name, value);
 			}
-			else if constexpr (std::same_as<Type, glm::vec4>) {
-				assert(overriddenUniformData.type == "vec4");
+			else if constexpr (std::same_as<Type, glm::vec4> || std::same_as<Type, ColorA>) {
+				assert(overriddenUniformData.type == "vec4" || overriddenUniformData.type == "ColorA");
 				shader.setVec4(name, value);
 			}
 			else if constexpr (std::same_as<Type, glm::mat3> || std::same_as<Type, glm::mat4>) {

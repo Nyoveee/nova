@@ -81,6 +81,19 @@ private:
 };
 
 // ========================================
+// Normalized float
+// ========================================
+struct NormalizedFloat {
+	constexpr NormalizedFloat();
+	constexpr NormalizedFloat(float value);
+
+	constexpr operator float() const;
+
+private:
+	float value;
+};
+
+// ========================================
 // IDs
 // ========================================
 
@@ -138,6 +151,9 @@ private:
 template <typename T>
 struct TypedResourceID : public ResourceID {
 	using AssetType = T;
+
+public:
+	// constexpr friend bool operator==(TypedResourceID<T> const& lhs, TypedResourceID<T> const& rhs);
 };
 
 // an id given to the template type parameter of assets.

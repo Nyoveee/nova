@@ -49,6 +49,9 @@ public:
 	// main way all systems query for a specific resource.
 	template <ValidResource T>
 	ResourceQuery<T> getResource(ResourceID id);
+	
+	template <ValidResource T>
+	T* getResourceOnlyIfLoaded(ResourceID id);
 
 	// retrieve all resource ids of a given type.
 	template <ValidResource T>

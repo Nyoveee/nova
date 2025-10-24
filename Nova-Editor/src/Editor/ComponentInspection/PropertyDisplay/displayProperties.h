@@ -65,6 +65,32 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 
 	editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 		dataMember = DataMemberType{ resourceId };
+
+		// changing model requires updating the mesh renderer component's material vector.
+		if constexpr (std::same_as<OriginalAssetType, Model>) {
+			auto& registry = editor.engine.ecs.registry;
+
+			for (auto entity : editor.getSelectedEntities()) {
+				// get their component..
+				MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
+
+				if (!meshRenderer) {
+					continue;
+				}
+
+				auto&& [model, _] = editor.resourceManager.getResource<Model>(resourceId);
+
+				// invalid model..
+				if (!model) {
+					continue;
+				}
+
+				// update material name mapping.. (@TODO: implement default texture)
+				std::vector<TypedResourceID<Material>> materialIds{};
+				materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ INVALID_RESOURCE_ID });
+				meshRenderer->materialIds = materialIds;
+			}
+		}
 	});
 }
 
@@ -102,6 +128,13 @@ inline void DisplayProperty<double>(Editor&, const char* dataMemberName, double&
 template<>
 inline void DisplayProperty<float>(Editor&, const char* dataMemberName, float& dataMember) {
 	ImGui::InputFloat(dataMemberName, &dataMember);
+}
+
+template<>
+inline void DisplayProperty<NormalizedFloat>(Editor&, const char* dataMemberName, NormalizedFloat& dataMember) {
+	float value = dataMember;
+	ImGui::SliderFloat(dataMemberName, &value, 0.f, 1.f);
+	dataMember = value;
 }
 
 template<>
@@ -416,6 +449,7 @@ inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& 
 	}
 	ImGui::EndChild();
 }
+
 template<>
 inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const char*, ParticleEmissionTypeSelection& dataMember) {
 	DisplayProperty<ParticleEmissionTypeSelection::EmissionShape>(editor, "Emission Shape", dataMember.emissionShape);
@@ -475,5 +509,19 @@ inline void DisplayProperty<ColorOverLifetime>(Editor& editor, const char* dataM
 		DisplayProperty<InterpolationType>(editor, "InterpolationType", dataMember.interpolationType);
 		DisplayProperty<ColorA>(editor, "EndColor", dataMember.endColor);
 		ImGui::EndChild();
+	}
+}
+
+template<>
+inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& editor, const char*, std::vector<TypedResourceID<Material>>& dataMember) {
+	ImGui::SeparatorText("Material");
+
+	for (unsigned int i = 0; i < dataMember.size(); ++i) {
+		TypedResourceID<Material>& id = dataMember[i];
+
+		std::string label = "[" + std::to_string(i) + "]";
+		editor.displayAssetDropDownList<Material>(id, label.c_str(), [&](ResourceID resourceId) {
+			id = TypedResourceID<Material>{ resourceId };
+		});
 	}
 }

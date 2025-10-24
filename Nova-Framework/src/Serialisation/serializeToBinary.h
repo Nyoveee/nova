@@ -44,6 +44,16 @@ inline void serializeToBinary(std::ofstream& outputFile, T const& variant) {
 	}, variant);
 }
 
+// normalized float
+template <>
+inline void serializeToBinary<NormalizedFloat>(std::ofstream& outputFile, NormalizedFloat const& dataMember) {
+	float value = dataMember;
+	writeBytesToFile(outputFile, value);
+	writeBytesToFile(outputFile, value);
+	writeBytesToFile(outputFile, value);
+	writeBytesToFile(outputFile, value);
+}
+
 // vector 4
 template <>
 inline void serializeToBinary<glm::vec4>(std::ofstream& outputFile, glm::vec4 const& dataMember) {

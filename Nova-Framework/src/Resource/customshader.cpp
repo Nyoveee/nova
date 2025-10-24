@@ -37,11 +37,9 @@ void CustomShader::compile()
 		vShaderPath = "System/Shader/PBR.vert";
 		fShaderLibraryPath = "System/Shader/Library/pbrlibrary.frag";
 		break;
-	}
-
-	if (fShaderLibraryPath.empty()) {
-		Logger::error("Unable to compile Pipeline does not have a library");
-		return;
+	case Pipeline::Color:
+		vShaderPath = "System/Shader/standard.vert";
+		fShaderLibraryPath = "System/Shader/Library/color.frag";
 	}
 
 	// ========================================================
@@ -72,7 +70,16 @@ void CustomShader::compile()
 	fShaderLibraryStream << "\n// !! ==========================================\n\n";
 
 	for (auto&& [identifier, type] : customShaderData.uniforms) {
-		fShaderLibraryStream << "uniform " << type << " " << identifier << ";\n";
+		std::string comment;
+		std::string glslType = type;
+
+		// map our custom data types back to glsl primitive..
+		if (CustomShader::validCustomTypes.contains(type)) {
+			glslType = customTypeToGlslPrimitive.at(type);
+			comment = "// was " + type;
+		}
+
+		fShaderLibraryStream << "uniform " << glslType << " " << identifier << "; " << comment << '\n';
 	}
 
 	// ========================================================
@@ -89,8 +96,4 @@ void CustomShader::compile()
 
 std::optional<Shader> const& CustomShader::getShader() const {
 	return shader;
-}
-
-Pipeline CustomShader::getPipeline() const {
-	return customShaderData.pipeline;
 }

@@ -21,7 +21,7 @@ enum class Pipeline {
 class Texture;
 
 #define AllUniformTypes \
-	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>
+	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>, Color, ColorA, NormalizedFloat
 
 struct OverriddenUniformData {
 	std::string type;

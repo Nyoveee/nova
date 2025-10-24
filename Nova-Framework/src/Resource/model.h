@@ -23,7 +23,7 @@ public:
 public:
 	// Model data.
 	std::vector<Mesh> meshes;
-	std::unordered_set<MaterialName> materialNames;
+	std::vector<MaterialName> materialNames;
 
 	// Skeleton.
 	std::optional<Skeleton> skeleton;

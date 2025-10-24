@@ -51,6 +51,13 @@ constexpr ColorA::operator glm::vec3() const							{ return Color{ color.r, colo
 constexpr ColorA::operator Color() const								{ return Color{ color.r, color.g, color.g }; }
 
 // ========================================
+// Normalized float
+// ========================================
+constexpr NormalizedFloat::NormalizedFloat() : value{} {}
+constexpr NormalizedFloat::NormalizedFloat(float data) : value{ std::clamp(data, 0.f, 1.f) } {}
+constexpr NormalizedFloat::operator float() const { return value; }
+
+// ========================================
 // ID!
 // ========================================
 
@@ -96,7 +103,7 @@ struct std::hash<ObserverID> {
 	}
 };
 
-// ================ AssetID ==================
+// ================ ResourceID ==================
 constexpr ResourceID::ResourceID() : id{} {}
 constexpr ResourceID::ResourceID(std::size_t id) : id{ id } {}
 
@@ -122,7 +129,7 @@ constexpr ResourceID::operator std::size_t() const {
 #undef max
 constexpr inline ResourceID INVALID_RESOURCE_ID{ std::numeric_limits<std::size_t>::max() };
 
-// ================ AssetTypeID ==================
+// ================ ResourceTypeID ==================
 constexpr ResourceTypeID::ResourceTypeID() : id{} {}
 constexpr ResourceTypeID::ResourceTypeID(std::size_t id) : id{ id } {}
 
@@ -144,6 +151,11 @@ struct std::hash<ResourceTypeID> {
 constexpr ResourceTypeID::operator std::size_t() const {
 	return id;
 }
+
+//template <typename T>
+//constexpr bool operator==(TypedResourceID<T> const& lhs, TypedResourceID<T> const& rhs) {
+//	return lhs.id == rhs.id;
+//}
 
 // ================ FolderID ==================
 constexpr FolderID::FolderID() : id{} {}
