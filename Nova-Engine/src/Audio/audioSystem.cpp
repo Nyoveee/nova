@@ -475,7 +475,7 @@ void AudioSystem::loadSound(ResourceID audioId) {
 
 	// If Object does not have PositionalAudio Component, this will be the default MinMax Distance
 	// If Object has PositionalAudio Component, the MinMax distance will be based on the values inputted inside the innerRadius and maxRadius
-	sound->set3DMinMaxDistance(100.0f, 10000.0f);
+	sound->set3DMinMaxDistance(40.0f, 100.0f); // Default Distance
 }
 
 AudioInstanceID AudioSystem::getNewAudioInstanceId() {
