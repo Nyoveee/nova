@@ -13,18 +13,22 @@ GameConfigUI::GameConfigUI(Editor& editor) :
 }
 
 void GameConfigUI::update() {
+  
     ImGui::Begin("Game Configuration");
 
     if (ImGui::CollapsingHeader("Window Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
-        // Window name input
+        // using the member variable directly
         ImGui::Text("Window Name");
-        static char nameBuffer[256];
-        strcpy_s(nameBuffer, windowName.c_str()); 
+        static char nameBuffer[256] = ""; 
+        if (nameBuffer[0] == '\0') {
+            // Initialize only once
+            strcpy_s(nameBuffer, windowName.c_str());
+        }
         if (ImGui::InputText("##WindowName", nameBuffer, sizeof(nameBuffer))) {
             windowName = std::string(nameBuffer);
         }
 
-        // Window size inputs
+        
         ImGui::Text("Game Width");
         ImGui::InputInt("##GameWidth", &gameWidth);
         if (gameWidth < 1) gameWidth = 1;
@@ -41,11 +45,11 @@ void GameConfigUI::update() {
         saveConfig();
     }
 
-    ImGui::SameLine();
+    //ImGui::SameLine();
 
-    if (ImGui::Button("Apply")) {
-        applyConfig();
-    }
+    //if (ImGui::Button("Apply")) {
+    //    applyConfig();
+    //}
 
     ImGui::SameLine();
 
@@ -95,7 +99,7 @@ void GameConfigUI::loadConfig() {
         }
     }
     catch (const std::exception& e) {
-        std::cout << "Error loading game config: " << e.what() << std::endl;
+      //  std::cout << "Error loading game config: " << e.what() << std::endl;
         // Reset to defaults on error
         windowName = "Nova Game";
         gameWidth = 1920;
@@ -112,14 +116,14 @@ void GameConfigUI::saveConfig() {
         if (inputFile.good()) {
             try {
                 config = json::parse(inputFile);
-                std::cout << "Loaded existing game config file" << std::endl;
+               // std::cout << "Loaded existing game config file" << std::endl;
             }
             catch (const std::exception& e) {
-                std::cout << "Error parsing existing game config, creating new one: " << e.what() << std::endl;
+              //  std::cout << "Error parsing existing game config, creating new one: " << e.what() << std::endl;
             }
         }
         else {
-           std::cout << "No existing game config file found, creating new one" << std::endl;
+        //   std::cout << "No existing game config file found, creating new one" << std::endl;
         }
 
         // Update window settings in config
@@ -136,21 +140,21 @@ void GameConfigUI::saveConfig() {
         if (outputFile.is_open()) {
             outputFile << config.dump(4); // keep 4 spaces indent
             outputFile.close();
-           std::cout << "Successfully saved game config to: " << configPath << std::endl;
+         //  std::cout << "Successfully saved game config to: " << configPath << std::endl;
         }
         else {
-           std::cout << "Failed to open file for writing: " << configPath << std::endl;
+         //  std::cout << "Failed to open file for writing: " << configPath << std::endl;
         }
     }
     catch (const std::exception& e) {
-        std::cout << "Exception in saveConfig: " << e.what() << std::endl;
+       // std::cout << "Exception in saveConfig: " << e.what() << std::endl;
     }
 }
 
-void GameConfigUI::applyConfig() {
-    // Need to apply the configuration to your game
-    /*
-    std::cout << "Applying game configuration - Window: " << windowName
-        << " (" << gameWidth << "x" << gameHeight << ")" << std::endl;*/
-
-}
+//void GameConfigUI::applyConfig() {
+//    // Need to apply the configuration to your game
+//    /*
+//    std::cout << "Applying game configuration - Window: " << windowName
+//        << " (" << gameWidth << "x" << gameHeight << ")" << std::endl;*/
+//
+//}

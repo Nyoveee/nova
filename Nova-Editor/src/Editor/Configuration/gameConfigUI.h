@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+
 class Editor;
 
 class GameConfigUI {
@@ -13,7 +14,7 @@ public:
 private:
     void loadConfig();
     void saveConfig();
-    void applyConfig();
+    //void applyConfig();
 
 private:
     Editor& editor;

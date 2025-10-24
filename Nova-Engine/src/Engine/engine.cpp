@@ -35,7 +35,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 Engine::~Engine() {
 	stopSimulation();
 	setupSimulationFunction.value()();
-	Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
+	// Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
 }
 
 void Engine::fixedUpdate(float dt) {
