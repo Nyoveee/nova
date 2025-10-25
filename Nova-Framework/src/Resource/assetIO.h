@@ -56,6 +56,12 @@ public:
 	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subAssetCacheDirectories;
 	FRAMEWORK_DLL_API static const std::unordered_map<ResourceTypeID, std::filesystem::path> subSystemResourceDirectories;
 
+	// the resource manager owns some default system resources.
+	FRAMEWORK_DLL_API static const std::unordered_map<ResourceID, ResourceFilePath> systemModelResources;
+	FRAMEWORK_DLL_API static const std::unordered_map<ResourceID, ResourceFilePath> systemMaterialResources;
+	FRAMEWORK_DLL_API static const std::unordered_map<ResourceID, ResourceFilePath> systemShaderResources;
+	FRAMEWORK_DLL_API static const std::unordered_map<ResourceID, ResourceFilePath> systemTextureResources;
+
 private:
 	// === Parse generic metadata info. These functions are invoked by the functions above first. ====
 	FRAMEWORK_DLL_API static std::optional<BasicAssetInfo> parseDescriptorFile(std::ifstream& descriptorFile, std::filesystem::path const& rootDirectory);

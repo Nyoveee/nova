@@ -138,6 +138,9 @@ private:
 	// the intermediary asset & getting asset name.
 	// also acts as a record of all resource id with corresponding descriptor.
 	std::unordered_map<ResourceID, std::unique_ptr<BasicAssetInfo>> assetToDescriptor;
+	
+	// we keep track of system resources because we dont want to serialise them in the end..
+	std::unordered_set<ResourceID> systemResourcesId;
 
 	// for each asset, contains a functor that helps serialise descriptor.
 	std::unordered_map<ResourceID, std::unique_ptr<SerialiseDescriptor>> serialiseDescriptorFunctors;

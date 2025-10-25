@@ -299,7 +299,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 			}
 		}
 		
-#if 0
+#if 1
 		if (ImGui::MenuItem("[+] Shader")) {
 			std::optional<std::ofstream> opt = createAssetFile(".shader");
 
@@ -307,8 +307,30 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 				Logger::error("Failed to create shader file.");
 			}
 			else {
-				CustomShader::ShaderParserData shader{};
-				Serialiser::serializeToJsonFile(shader, opt.value());
+				std::string sampleShaderCode = R"(
+// Specify tags for rendering..
+Tags{
+    Blending : AlphaBlending;
+    DepthTestingMethod : DepthTest;
+}
+
+// Properties for material instances to configure..
+Properties{
+    sampler2D albedoMap;
+    Color colorTint;
+    NormalizedFloat roughness;
+    NormalizedFloat metallic; 
+    NormalizedFloat occulusion;
+}
+
+// Fragment shader..
+Frag{
+    vec4 albedo = texture(albedoMap, fsIn.textureUnit);
+    vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, fsIn.normal, roughness, metallic, occulusion);    
+    FragColor = vec4(pbrColor, 1.0); // asd 5 * 2 - 9
+})";
+				std::ofstream& shaderFile = opt.value();
+				shaderFile << sampleShaderCode;
 			}
 		}
 #endif
@@ -347,7 +369,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 				Logger::error("Failed to create script file.");
 			}
 			else {
-				std::ofstream& sceneFile = opt.value();
+				std::ofstream& scriptFile = opt.value();
 
 				std::string sampleScript =
 					"// Make sure the class name matches the asset name.\n"
@@ -360,7 +382,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 					"    protected override void update()\n    {}\n\n"
 					"}";
 
-				sceneFile << sampleScript;
+				scriptFile << sampleScript;
 			}
 		}
 

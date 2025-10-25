@@ -13,6 +13,11 @@ using ShaderVariableType = std::string;
 
 class ResourceManager;
 
+enum class Pipeline {
+	PBR,			// uses everything.
+	Color,			// only uses albedo.
+};
+
 class CustomShader: public Resource
 {
 public:

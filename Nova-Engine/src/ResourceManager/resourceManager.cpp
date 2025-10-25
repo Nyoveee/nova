@@ -14,7 +14,12 @@
 ResourceManager::ResourceManager() {
 	try {
 		// ========================================
-		// 1. Check if the resource directory exist, and the respective sub assets folder exist.
+		// 1. Load all system resources..
+		// ========================================
+		loadAllSystemResources();
+
+		// ========================================
+		// 2. Check if the resource directory exist, and the respective sub assets folder exist.
 		// ========================================
 		
 		// Checking if the main resource directory exist.
@@ -30,14 +35,9 @@ ResourceManager::ResourceManager() {
 		}
 
 		// ========================================
-		// 2. Record all resources..
+		// 3. Load all resources..
 		// ========================================
-		recordAllResources<ALL_RESOURCES>();
-
-		// ========================================
-		// 3. Record all system resources..
-		// ========================================
-		recordAllSystemResources();
+		loadAllResources<ALL_RESOURCES>();
 	}
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
@@ -78,8 +78,20 @@ void ResourceManager::removeResource(ResourceID id) {
 	}
 }
 
-void ResourceManager::recordAllSystemResources() {
-	for (auto&& [id, resourceFilePath] : systemModelResources) {
+void ResourceManager::loadAllSystemResources() {
+	for (auto&& [id, resourceFilePath] : AssetIO::systemModelResources) {
 		addResourceFile<Model>(resourceFilePath, id);
+	}
+
+	for (auto&& [id, resourceFilePath] : AssetIO::systemMaterialResources) {
+		addResourceFile<Material>(resourceFilePath, id);
+	}
+
+	for (auto&& [id, resourceFilePath] : AssetIO::systemShaderResources) {
+		addResourceFile<CustomShader>(resourceFilePath, id);
+	}
+
+	for (auto&& [id, resourceFilePath] : AssetIO::systemTextureResources) {
+		addResourceFile<Texture>(resourceFilePath, id);
 	}
 }

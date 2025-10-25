@@ -86,7 +86,7 @@ bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderPars
 }
 bool ParseFragmentShader(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
 	// Get full definition
-	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\*\-\+/\w\s=(.,);\[\]]+\})" };
+	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\{\}\<\>\_\*\-\+/\w\s=(.,);\[\]]+\})" };
 	auto fragmentShaderRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data),fragmentShaderRegex) };
 	ptrdiff_t count{ std::distance(fragmentShaderRegexBegin,std::sregex_iterator()) };
 	// Check Count
@@ -133,7 +133,7 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 	if (!ParseFragmentShader(data, shaderParserData))
 		return false;
 	
-#if 1
+#if 0
 	Logger::info("BlendingConfig = {}", magic_enum::enum_name(shaderParserData.blendingConfig));
 	Logger::info("DepthTestingMethod = {}", magic_enum::enum_name(shaderParserData.depthTestingMethod));
 	

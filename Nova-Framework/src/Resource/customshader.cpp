@@ -26,6 +26,10 @@ void CustomShader::compile()
 		shader.reset();
 	}
 
+	if (customShaderData.fShaderCode.empty()) {
+		return;
+	}
+
 	// ========================================================
 	// We set up the appropriate vertex and fragment shader library files based on the current pipeline..
 	// ========================================================

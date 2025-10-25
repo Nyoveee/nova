@@ -1,21 +1,32 @@
 {
     "overridenUniforms": {
-        "albedoColor": {
-            "type": "Color",
-            "value": {
-                "__variant_type": 10,
-                "__variant_value": {
-                    "b": 0.0,
-                    "g": 0.0,
-                    "r": 0.0
-                }
-            }
-        },
         "albedoMap": {
             "type": "sampler2D",
             "value": {
                 "__variant_type": 9,
-                "__variant_value": 14503605481543073841
+                "__variant_value": 7
+            }
+        },
+        "color": {
+            "type": "Color",
+            "value": {
+                "__variant_type": 10,
+                "__variant_value": {
+                    "b": 0.7215686440467834,
+                    "g": 0.7215686440467834,
+                    "r": 0.7215686440467834
+                }
+            }
+        },
+        "colorTint": {
+            "type": "Color",
+            "value": {
+                "__variant_type": 10,
+                "__variant_value": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                }
             }
         },
         "metallic": {
@@ -36,9 +47,9 @@
             "type": "NormalizedFloat",
             "value": {
                 "__variant_type": 12,
-                "__variant_value": 0.0
+                "__variant_value": 0.2800000011920929
             }
         }
     },
-    "selectedShader": 16074763658358816769
+    "selectedShader": 2
 }

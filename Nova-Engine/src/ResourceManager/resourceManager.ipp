@@ -17,6 +17,12 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 
 	// resource is not loaded, let's load it via our loaders.
 	// we first get the filepath of this resource id.
+	
+	// verify if it's the correct type..
+	if (!isResource<T>(id)) {
+		return ResourceQuery<T>{ nullptr, QueryResult::WrongType };
+	}
+
 	auto filepathIterator = resourceFilePaths.find(id);
 
 	// this resource file was never recorded. invalid resource id?
@@ -38,8 +44,8 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 	auto&& [resourceIterator, __]  = loadedResources.insert({id, std::move(resourcePtr)});
 	assert(resourceIterator != loadedResources.end());
 
-	T* resource = dynamic_cast<T*>(resourceIterator->second.get());
-	return ResourceQuery<T>{ resource, resource ? QueryResult::Success : QueryResult::WrongType };
+	T* resource = static_cast<T*>(resourceIterator->second.get());
+	return ResourceQuery<T>{ resource, QueryResult::Success };
 }
 
 template<ValidResource T>
@@ -85,7 +91,7 @@ ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath, Re
 }
 
 template<ValidResource ...T>
-void ResourceManager::recordAllResources() {
+void ResourceManager::loadAllResources() {
 	([&] {
 		auto iterator = AssetIO::subResourceDirectories.find(Family::id<T>());
 		assert(iterator != AssetIO::subResourceDirectories.end() && "This descriptor sub directory is not recorded.");

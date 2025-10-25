@@ -95,6 +95,8 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 // vectors
 template <isVector DataMemberType>
 inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
+	dataMember.clear();
+
 	for (Json const& elementJson : json) {
 		typename DataMemberType::value_type elementType;
 		deserializeFromJson(elementType, elementJson);
@@ -105,6 +107,8 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 // unordered_map
 template <isUnorderedMap DataMemberType>
 inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
+	dataMember.clear();
+
 	for (auto&& [name, elementJson] : json.items()) {
 		typename DataMemberType::key_type key = static_cast<typename DataMemberType::key_type>(name);
 		typename DataMemberType::mapped_type value;

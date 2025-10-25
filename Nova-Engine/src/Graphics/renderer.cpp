@@ -16,6 +16,8 @@
 #include "Profiling.h"
 #include "Logger.h"
 
+#include "systemResource.h"
+
 #undef max
 
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
@@ -638,6 +640,8 @@ void Renderer::renderSkyBox() {
 void Renderer::renderModels() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);	
 
+	glEnable(GL_CULL_FACE);
+
 	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		// Retrieves model asset from asset manager.
 		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
@@ -663,46 +667,6 @@ void Renderer::renderModels() {
 				renderMesh(mesh, shader->customShaderData.pipeline);
 			}
 		}
-#if 0
-		// Set up stencil operation
-		if (meshRenderer.toRenderOutline) {
-			glStencilMask(0xFF);	// allows writing the full byte of the stencil's buffer.
-		}
-		else {
-			glStencilMask(0x00);	// don't write to the stencil buffer. this object is not going to be outlined.
-		}
-		
-		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			Material const* material = obtainMaterial(meshRenderer, mesh);
-
-			if (!material) {
-				continue;
-			}
-
-			// uses the appropriate shader and sets the appropriate uniform based on
-			// configured rendering pipeline.
-			switch (material->renderingPipeline)
-			{
-			case Material::Pipeline::PBR:	
-				setupPBRShader(*material);
-				break;
-			case Material::Pipeline::BlinnPhong:
-				setupBlinnPhongShader(*material);
-				break;
-			case Material::Pipeline::Color:
-				setupColorShader(*material);
-			}
-
-			// time to draw!
-			mainVBO.uploadData(mesh.vertices);
-			EBO.uploadData(mesh.indices);
-			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
-
-			// render object id into object id FBO.
-			renderObjectId(mesh.numOfTriangles * 3);
-		}
-#endif
 	}
 
 	glDisable(GL_CULL_FACE);
@@ -1408,8 +1372,10 @@ CustomShader* Renderer::setupMaterial(Material const& material, Transform const&
 				auto&& [texture, _] = resourceManager.getResource<Texture>(value);
 				
 				if (!texture) {
-					// @TODO: Add error texture..
-					return;
+					// We bind an invalid texture..
+					auto&& [invalidTexture, __] = resourceManager.getResource<Texture>(INVALID_TEXTURE_ID);
+					assert(invalidTexture && "System resource should always be valid.");
+					texture = invalidTexture;
 				}
 
 				if (numOfTextureUnitBound >= maxTextureUnits) {
