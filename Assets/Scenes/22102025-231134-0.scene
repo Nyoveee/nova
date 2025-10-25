@@ -1,360 +1,6 @@
 {
     "entities": [
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": null,
-                "name": "Floor Copy Copy",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    8136773492355088385
-                ],
-                "modelId": 7313186508846628865
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": -8.083630561828613,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 20.20724868774414,
-                    "y": 1.0,
-                    "z": 27.972782135009766
-                }
-            },
-            "id": 6
-        },
-        {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": null,
-                "name": "Floor Copy",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    8136773492355088385
-                ],
-                "modelId": 7313186508846628865
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -15.875726699829102,
-                    "y": 3.0387399196624756,
-                    "z": -12.938953399658203
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 5
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "name": "LIGHT",
-                "parent": 4294967295
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 1000.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -3.7032604217529297,
-                    "y": 71.46173095703125,
-                    "z": 31.880578994750977
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 3
-        },
-        {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
-            "EntityData": {
-                "children": null,
-                "name": "Floor",
-                "parent": 4294967295
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    8136773492355088385
-                ],
-                "modelId": 5007343499632934915
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -16.671703338623047,
-                    "y": 3.214122772216797,
-                    "z": -10.190760612487793
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 2
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "name": "Light",
-                "parent": 0
-            },
-            "Light": {
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 10.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.458160400390625,
-                    "y": 142.33277893066406,
-                    "z": 75.41450500488281
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.9999993443489075,
-                    "y": 1.0,
-                    "z": 0.9999980330467224
-                },
-                "position": {
-                    "x": -6.597865581512451,
-                    "y": 15.459548950195313,
-                    "z": 14.14008617401123
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.09999993443489075,
-                    "y": 0.10000000149011612,
-                    "z": 0.0999998077750206
-                }
-            },
-            "id": 1
-        },
-        {
             "AudioComponent": {
                 "data": {
                     "BGM_AudioTest2.wav": {
@@ -378,9 +24,7 @@
                 "scaleWithTransform": true
             },
             "EntityData": {
-                "children": [
-                    1
-                ],
+                "children": null,
                 "name": "Box",
                 "parent": 4294967295
             },
@@ -507,9 +151,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -6.643681526184082,
-                    "y": 1.2262706756591797,
-                    "z": 6.598635673522949
+                    "x": -9.299290657043457,
+                    "y": 1.937207579612732,
+                    "z": 5.538027763366699
                 },
                 "rotation": {
                     "w": 1.0,
@@ -678,7 +322,7 @@
                 "position": {
                     "x": 0.16122424602508545,
                     "y": -0.846548318862915,
-                    "z": 5.809637069702148
+                    "z": 11.08290958404541
                 },
                 "rotation": {
                     "w": 1.0,
@@ -693,6 +337,297 @@
                 }
             },
             "id": 4
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Floor",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385
+                ],
+                "modelId": 5007343499632934915
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -16.671703338623047,
+                    "y": 3.214122772216797,
+                    "z": -2.9389967918395996
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "LIGHT",
+                "parent": 4294967295
+            },
+            "Light": {
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 1000.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "PointLight"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 6.13526725769043,
+                    "y": 22.421302795410156,
+                    "z": 30.057331085205078
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 3
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Floor Copy",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385
+                ],
+                "modelId": 7313186508846628865
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -15.875726699829102,
+                    "y": 3.0387399196624756,
+                    "z": -12.938953399658203
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 5
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Floor Copy Copy",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385
+                ],
+                "modelId": 7313186508846628865
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": -3.781580924987793,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 20.20724868774414,
+                    "y": 1.0,
+                    "z": 27.972782135009766
+                }
+            },
+            "id": 6
         }
     ]
 }

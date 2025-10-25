@@ -133,6 +133,7 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 	if (!ParseFragmentShader(data, shaderParserData))
 		return false;
 	
+#if 1
 	Logger::info("BlendingConfig = {}", magic_enum::enum_name(shaderParserData.blendingConfig));
 	Logger::info("DepthTestingMethod = {}", magic_enum::enum_name(shaderParserData.depthTestingMethod));
 	
@@ -141,5 +142,7 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 	}
 
 	Logger::info("Fragment Shader Code\n{}", shaderParserData.fShaderCode);
+#endif
+
 	return true;
 }

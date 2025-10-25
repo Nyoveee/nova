@@ -80,12 +80,9 @@ std::filesystem::path const AssetIO::assetDirectory				= std::filesystem::curren
 std::filesystem::path const AssetIO::resourceDirectory			= std::filesystem::current_path() / "Resources";
 std::filesystem::path const AssetIO::descriptorDirectory		= std::filesystem::current_path() / "Descriptors";
 std::filesystem::path const AssetIO::assetCacheDirectory		= std::filesystem::current_path() / ".asset_cache";
-
-#if 0
 std::filesystem::path const AssetIO::systemResourceDirectory	= std::filesystem::current_path() / "System";
-#endif
 
-std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descriptorFile) {
+std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descriptorFile, std::filesystem::path const& rootDirectory) {
 	try {
 		std::string line;
 		ResourceID resourceId;
@@ -101,7 +98,7 @@ std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descri
 		// reads the 3rd line, relative filepath.
 		std::string relativeFilepath;
 		std::getline(descriptorFile, relativeFilepath);
-		std::string fullFilepath = std::filesystem::path{ assetDirectory / relativeFilepath }.string();
+		std::string fullFilepath = std::filesystem::path{ rootDirectory / relativeFilepath }.string();
 
 		return { { resourceId, std::move(name), std::move(fullFilepath) }};
 	}
@@ -111,20 +108,20 @@ std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descri
 	}
 }
 
-BasicAssetInfo AssetIO::createDescriptorFile(ResourceID id, AssetFilePath const& path, std::ofstream& metaDataFile) {
+BasicAssetInfo AssetIO::createDescriptorFile(ResourceID id, std::filesystem::path const& path, std::ostream& descriptorFile, std::filesystem::path const& rootDirectory) {
 	BasicAssetInfo assetInfo = { id, std::filesystem::path{ path }.stem().string(), path };
 
 	try {
 		// calculate relative path to the Assets directory.
-		std::filesystem::path relativePath = std::filesystem::relative(std::filesystem::path{ path }, assetDirectory);
+		std::filesystem::path relativePath = std::filesystem::relative(std::filesystem::path{ path }, rootDirectory);
 
-		if (!metaDataFile) {
-			Logger::error("Error creating metadata file for {}", path.string);
+		if (!descriptorFile) {
+			Logger::error("Error creating descriptor file for {}", path.string());
 			return assetInfo;
 		}
 
 		// write to file
-		metaDataFile << static_cast<std::size_t>(assetInfo.id) << '\n' << assetInfo.name << '\n' << relativePath.string() << '\n';
+		descriptorFile << static_cast<std::size_t>(assetInfo.id) << '\n' << assetInfo.name << '\n' << relativePath.string() << '\n';
 		return assetInfo;
 	}
 	catch (std::exception const& ex) {

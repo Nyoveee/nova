@@ -8,7 +8,7 @@
 #include "assetIO.h"
 
 template <ValidResource T>
-std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath) {
+std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath, std::filesystem::path const& rootDirectory) {
 	try {
 		std::ifstream descriptorFile{ descriptorFilepath };
 		descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -19,7 +19,7 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 		}
 
 		// parse the generic asset metadata info first.
-		std::optional<BasicAssetInfo> parsedAssetInfo = parseDescriptorFile(descriptorFile);
+		std::optional<BasicAssetInfo> parsedAssetInfo = parseDescriptorFile(descriptorFile, rootDirectory);
 
 		// parsing failed, time to create a new metadata file.
 		if (!parsedAssetInfo) {
@@ -71,13 +71,26 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 }
 
 template <ValidResource T>
+AssetInfo<T> AssetIO::createSystemDescriptorFile(std::filesystem::path const& systemPath, DescriptorFilePath const& descriptorFilePath) {
+	std::ofstream descriptorFile{ descriptorFilePath };
+	descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	return createDescriptorFile<T>(INVALID_RESOURCE_ID, systemPath, descriptorFile, AssetIO::systemResourceDirectory);
+}
+
+template <ValidResource T>
 AssetInfo<T> AssetIO::createDescriptorFile(AssetFilePath const& path) {
 	ResourceID id = generateResourceID();
 	DescriptorFilePath descriptorFileName = getDescriptorFilename<T>(id);
 	std::ofstream descriptorFile{ descriptorFileName };
 	descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
-	AssetInfo<T> assetInfo{ createDescriptorFile(id, path, descriptorFile) };
+	return createDescriptorFile<T>(id, path, descriptorFile, AssetIO::assetDirectory);
+}
+
+template <ValidResource T>
+static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem::path const& path, std::ostream& descriptorFile, std::filesystem::path const& rootDirectory) {
+	AssetInfo<T> assetInfo{ createDescriptorFile(id, path, descriptorFile, rootDirectory) };
 
 	// ============================
 	// Filestream is now pointing at the 4th line.

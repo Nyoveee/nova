@@ -9,10 +9,11 @@
 class Compiler {
 public:
 	static int compile(DescriptorFilePath const& descriptorFilepath);
+	static void recompileAllSystemAssets();
 
 private:
 	template <ValidResource T>
-	static int compileAsset			(DescriptorFilePath const& descriptorFilepath);
+	static int compileAsset			(AssetInfo<T> const& assetInfo, ResourceFilePath const& resourceFilePath);
 
 	static int compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat);
 	static int compileModel			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);

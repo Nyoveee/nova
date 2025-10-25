@@ -337,37 +337,51 @@ int Compiler::defaultCompile(ResourceFilePath const& resourceFilePath, AssetFile
 }
 
 int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
+	auto compileAsset = [&]<typename T>() {
+		// Retrieve descriptor info.
+		std::optional<AssetInfo<T>> optAssetInfo = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
+
+		if (!optAssetInfo) {
+			Logger::error("Failed to parse descriptor file: {}. Compilation failed.", descriptorFilepath.string);
+			return -1;
+		}
+
+		AssetInfo<T> const& assetInfo = optAssetInfo.value();
+
+		return Compiler::compileAsset<T>(assetInfo, AssetIO::getResourceFilename<T>(assetInfo.id));
+	};
+
 	// Verify asset type.
 	std::string resourceType = std::filesystem::path{ descriptorFilepath }.parent_path().stem().string();
 	if (resourceType == "Texture") {
-		return Compiler::compileAsset<Texture>(descriptorFilepath);
+		return compileAsset.template operator()<Texture>();
 	}
 	else if (resourceType == "Model") {
-		return Compiler::compileAsset<Model>(descriptorFilepath);
+		return compileAsset.template operator()<Model>();
 	}
 	else if (resourceType == "CubeMap") {
-		return Compiler::compileAsset<CubeMap>(descriptorFilepath);
+		return compileAsset.template operator()<CubeMap>();
 	}
 	else if (resourceType == "ScriptAsset") {
-		return Compiler::compileAsset<ScriptAsset>(descriptorFilepath);
+		return compileAsset.template operator()<ScriptAsset>();
 	}
 	else if (resourceType == "Audio") {
-		return Compiler::compileAsset<Audio>(descriptorFilepath);
+		return compileAsset.template operator()<Audio>();
 	}
 	else if (resourceType == "Scene") {
-		return Compiler::compileAsset<Scene>(descriptorFilepath);
+		return compileAsset.template operator()<Scene>();
 	}
 	else if (resourceType == "NavMesh") {
-		return Compiler::compileAsset<NavMesh>(descriptorFilepath);
+		return compileAsset.template operator()<NavMesh>();
 	}
 	else if (resourceType == "Controller") {
-		return Compiler::compileAsset<Controller>(descriptorFilepath);
+		return compileAsset.template operator()<Controller>();
 	}
 	else if (resourceType == "CustomShader") {
-		return Compiler::compileAsset<CustomShader>(descriptorFilepath);
+		return compileAsset.template operator()<CustomShader>();
 	}
 	else if (resourceType == "Material") {
-		return Compiler::compileAsset<Material>(descriptorFilepath);
+		return compileAsset.template operator()<Material>();
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);
