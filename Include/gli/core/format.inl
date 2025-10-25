@@ -1,3 +1,6 @@
+#pragma warning( push )
+#pragma warning( disable: 33010 )
+
 namespace gli{
 namespace detail
 {
@@ -396,3 +399,5 @@ namespace detail
 	}
 
 }//namespace gli
+
+#pragma warning( pop )

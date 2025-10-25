@@ -27,6 +27,10 @@
 #include "DetourAssert.h"
 #include <new>
 
+#pragma warning( push )
+#pragma warning( disable: 6011 )
+#pragma warning( disable: 6385 )
+
 /// @class dtQueryFilter
 ///
 /// <b>The Default Implementation</b>
@@ -3694,3 +3698,5 @@ bool dtNavMeshQuery::isInClosedList(dtPolyRef ref) const
 
 	return false;
 }
+
+#pragma warning( pop )

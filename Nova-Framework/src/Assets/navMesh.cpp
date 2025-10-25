@@ -19,7 +19,9 @@ NavMesh::~NavMesh() {
 NavMesh::NavMesh(NavMesh&& other) noexcept :
 	Resource	{ std::move(other) },
 	navData		{ other.navData },
-	navMesh		{ other.navMesh }
+	navMesh		{ other.navMesh },
+	buildRadius { other.buildRadius },
+	buildHeight { other.buildHeight }
 {
 	other.navData = nullptr;
 	other.navMesh = nullptr; 
@@ -31,8 +33,10 @@ NavMesh& NavMesh::operator=(NavMesh&& other) noexcept {
 	if (navMesh) dtFreeNavMesh(navMesh);
 	if (navData) dtFree(navData);
 
-	navData = other.navData;
-	navMesh = other.navMesh;
+	navData		= other.navData;
+	navMesh		= other.navMesh;
+	buildRadius = other.buildRadius;
+	buildHeight = other.buildHeight;
 
 	other.navData = nullptr;
 	other.navMesh = nullptr;

@@ -7,6 +7,9 @@
 #include "target.hpp"
 #include <array>
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
+
 namespace gli
 {
 	/// Translation class to convert GLI enums into DirectX enums
@@ -488,3 +491,5 @@ namespace gli
 }//namespace gli
 
 #include "./core/dx.inl"
+
+#pragma warning( pop )

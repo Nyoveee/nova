@@ -4,6 +4,9 @@
 #include <limits>
 #include <cmath>
 
+#pragma warning( push )
+#pragma warning( disable: 26498 )
+
 namespace glm{
 namespace detail
 {
@@ -145,3 +148,5 @@ namespace detail
 		return Result;
 	}
 }//namespace glm
+
+#pragma warning( pop )

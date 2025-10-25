@@ -14,6 +14,7 @@
 
 
 DebugUI::DebugUI(Editor& editor) :
+	editor			{ editor },
 	engine			{ editor.engine },
 	renderer		{ editor.engine.renderer },
 	resourceManager	{ editor.engine.resourceManager },
@@ -27,6 +28,10 @@ void DebugUI::update() {
 	renderPhysicsSection();
 	renderHDRSection();
 	renderGammaCorrectionSection();
+
+	if (ImGui::Button("Profiler")) {
+		editor.launchProfiler();
+	}
 
 	ImGui::End();
 }
@@ -52,6 +57,8 @@ void DebugUI::renderPhysicsSection() {
 	ImGui::Checkbox("Physics debug render", &engine.toDebugRenderPhysics);
 
 	ImGui::Checkbox("NavMesh debug render", &engine.toDebugRenderNavMesh);
+
+	ImGui::Checkbox("Particle Emission Shape debug render", &engine.toDebugRenderParticleEmissionShape);
 
 	ImGui::SeparatorText("Mouse positions");
 

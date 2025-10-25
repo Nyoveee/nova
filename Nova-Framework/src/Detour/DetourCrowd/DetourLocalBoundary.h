@@ -21,6 +21,8 @@
 
 #include "../Detour/DetourNavMeshQuery.h"
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
 
 class dtLocalBoundary
 {
@@ -62,5 +64,7 @@ private:
 	dtLocalBoundary(const dtLocalBoundary&);
 	dtLocalBoundary& operator=(const dtLocalBoundary&);
 };
+
+#pragma warning( pop )
 
 #endif // DETOURLOCALBOUNDARY_H

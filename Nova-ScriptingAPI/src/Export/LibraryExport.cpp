@@ -1,5 +1,6 @@
-// For Compilation of all relevant libraries
-#include "ScriptLibrary/Script.hxx"
-#include "ScriptLibrary/ScriptLibrary.hxx"
-#include "ScriptLibrary/ManagedTypes.hxx"
-#include "ScriptLibrary/ManagedEnums.hxx"
+// For Compilation of all relevant libraries without cxx files
+#include "ScriptLibrary/Core/ScriptAttributes.hxx"
+#include "ScriptLibrary/Core/GameObject.hxx"
+#include "ScriptLibrary/Extensions/ScriptLibrary.hxx"
+#include "ScriptLibrary/Extensions/ManagedTypes.hxx"
+#include "ScriptLibrary/Extensions/ManagedEnums.hxx"

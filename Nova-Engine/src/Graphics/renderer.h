@@ -51,7 +51,7 @@ public:
 public:
 	void update(float dt);
 
-	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh);
+	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape);
 	void renderToDefaultFBO();
 
 public:
@@ -114,6 +114,9 @@ private:
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
+	// Render all particles
+	void renderParticles();
+
 	// renders the object id to the object id framebuffer.
 	void renderObjectId(GLsizei count);
 
@@ -122,6 +125,9 @@ private:
 
 	// render a debug triangles in navMesh
 	void debugRenderNavMesh();
+
+	// render debug shapes in particle emitter
+	void debugRenderParticleEmissionShape();
 
 	// HDR post-processing functions
 	void renderHDRTonemapping();
@@ -165,9 +171,10 @@ private:
 	BufferObject sharedUBO;
 
 	// Debug Physics VAO and it's corresponding VBO.
-	GLuint debugPhysicsVAO;
+	GLuint debugVAO;
 	BufferObject debugPhysicsVBO;
 	BufferObject debugNavMeshVBO;
+	BufferObject debugParticleShapeVBO;
 
 	Camera camera;
 
@@ -204,6 +211,7 @@ public:
 	Shader overlayShader;
 	Shader objectIdShader;
 	Shader skyboxShader;
+	Shader particleShader;
 	
 	// HDR tone mapping shader
 	Shader toneMappingShader;

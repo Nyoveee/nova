@@ -22,20 +22,26 @@ AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 	selectedFolderId { ASSET_FOLDER },
 	folderIcon		 { nullptr }
 {
-	auto folderPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/folder" }).value()();
+	auto folderPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/folder" }).value()();
 	folderIcon.reset(static_cast<Texture*>(folderPtr.release()));
 
-	auto texturePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/texture" }).value()();
+	auto texturePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,	std::string{ "System/Image/texture" }).value()();
 	textureIcon.reset(static_cast<Texture*>(texturePtr.release()));
 
-	auto audioPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/audio" }).value()();
+	auto audioPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/audio" }).value()();
 	audioIcon.reset(static_cast<Texture*>(audioPtr.release()));
 
-	auto scriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/script" }).value()();
+	auto scriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/script" }).value()();
 	scriptIcon.reset(static_cast<Texture*>(scriptPtr.release()));
 
-	auto scenePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/Image/scene" }).value()();
+	auto scenePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/scene" }).value()();
 	sceneIcon.reset(static_cast<Texture*>(scenePtr.release()));
+
+	auto modelPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/model" }).value()();
+	modelIcon.reset(static_cast<Texture*>(modelPtr.release()));
+
+	auto cubeMapPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,	std::string{ "System/Image/cubemap" }).value()();
+	cubeMapIcon.reset(static_cast<Texture*>(cubeMapPtr.release()));
 }
 
 void AssetManagerUI::update() {
@@ -231,6 +237,12 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 	}
 	else if (resourceManager.isResource<Scene>(resourceId)) {
 		texture = sceneIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Model>(resourceId)) {
+		texture = modelIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<CubeMap>(resourceId)) {
+		texture = cubeMapIcon->getTextureId();
 	}
 
 	displayThumbnail(

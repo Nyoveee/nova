@@ -375,6 +375,13 @@ RECENT REVISION HISTORY:
 
 #define STBI_VERSION 1
 
+#pragma warning( push )
+#pragma warning(disable : 26819)	
+#pragma warning(disable : 7072)
+#pragma warning(disable : 7159)
+#pragma warning(disable : 7262)
+#pragma warning(disable : 7265)
+
 enum
 {
 	STBI_default = 0, // only used for desired_channels
@@ -8102,3 +8109,5 @@ ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ------------------------------------------------------------------------------
 */
+
+#pragma warning( pop )

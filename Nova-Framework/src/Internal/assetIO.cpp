@@ -13,6 +13,9 @@
 #define ResourceSubDirectory(AssetType) \
 	std::pair{ Family::id<AssetType>(), std::filesystem::current_path() / "Resources" / #AssetType }
 
+#define AssetCacheSubDirectory(AssetType) \
+	std::pair{ Family::id<AssetType>(), std::filesystem::current_path() / ".asset_cache" / #AssetType }
+
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDescriptorDirectories {
 	DescriptorSubDirectory(Texture),
 	DescriptorSubDirectory(Model),
@@ -31,12 +34,22 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(Audio),
 	ResourceSubDirectory(Scene),
 	ResourceSubDirectory(NavMesh)
-
 };
 
-std::filesystem::path const AssetIO::assetDirectory = std::filesystem::current_path() / "Assets";
-std::filesystem::path const AssetIO::resourceDirectory = std::filesystem::current_path() / "Resources";
+std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAssetCacheDirectories{
+	AssetCacheSubDirectory(Texture),
+	AssetCacheSubDirectory(Model),
+	AssetCacheSubDirectory(CubeMap),
+	AssetCacheSubDirectory(ScriptAsset),
+	AssetCacheSubDirectory(Audio),
+	AssetCacheSubDirectory(Scene),
+	AssetCacheSubDirectory(NavMesh)
+};
+
+std::filesystem::path const AssetIO::assetDirectory		 = std::filesystem::current_path() / "Assets";
+std::filesystem::path const AssetIO::resourceDirectory	 = std::filesystem::current_path() / "Resources";
 std::filesystem::path const AssetIO::descriptorDirectory = std::filesystem::current_path() / "Descriptors";
+std::filesystem::path const AssetIO::assetCacheDirectory = std::filesystem::current_path() / ".asset_cache";
 
 std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descriptorFile) {
 	try {
@@ -56,14 +69,7 @@ std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descri
 		std::getline(descriptorFile, relativeFilepath);
 		std::string fullFilepath = std::filesystem::path{ assetDirectory / relativeFilepath }.string();
 
-		// reads the 4th line, last write time..
-		long long duration;
-		descriptorFile >> duration;
-		
-		// convert to filesystem last write..
-		std::chrono::milliseconds value{ duration };
-
-		return { { resourceId, std::move(name), std::move(fullFilepath), std::move(value) }};
+		return { { resourceId, std::move(name), std::move(fullFilepath) }};
 	}
 	catch (std::exception const& ex) {
 		Logger::error("Failed to parse descriptor file, reason: {}", ex.what());
@@ -83,16 +89,8 @@ BasicAssetInfo AssetIO::createDescriptorFile(ResourceID id, AssetFilePath const&
 			return assetInfo;
 		}
 
-		// cast from time point to a primitive type.
-		// https://stackoverflow.com/questions/31255486/how-do-i-convert-a-stdchronotime-point-to-long-and-back
-		auto lastWriteTime = std::filesystem::last_write_time(std::filesystem::path{ path });
-		auto epoch = lastWriteTime.time_since_epoch();
-		auto value = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
-
 		// write to file
-		metaDataFile << static_cast<std::size_t>(assetInfo.id) << '\n' << assetInfo.name << '\n' << relativePath.string() << '\n' << value.count() << '\n';
-
-		assetInfo.timeLastWrite = value;
+		metaDataFile << static_cast<std::size_t>(assetInfo.id) << '\n' << assetInfo.name << '\n' << relativePath.string() << '\n';
 		return assetInfo;
 	}
 	catch (std::exception const& ex) {

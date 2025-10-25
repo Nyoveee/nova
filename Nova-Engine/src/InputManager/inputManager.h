@@ -50,13 +50,15 @@ public:
 
 private:
 	// Manages all key callback handlers and properly broadcasts input event with corresponding data to all observers.
-	void handleKeyInput(GLFWInput key, InputType inputType);
+	void handleKeyInput(GLFWInput key, InputType inputType, InputMod mod);
 
 	template<typename InputEvent>
-	void mapKeyBindInput(int key, KeyType type, InputEvent data);
+	void mapKeyBindInput(int key, KeyType type, InputEvent data, InputMod mod = InputMod::None);
 
 	void mainKeyBindMapping();
 
+	// converts from int to a strongly typed input mod
+	InputMod getInputMod(int mod) const;
 public:
 	glm::vec2 mousePosition;
 	float scrollOffsetY;

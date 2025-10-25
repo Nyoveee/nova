@@ -80,7 +80,7 @@ std::optional<ResourceConstructor> ResourceLoader<NavMesh>::load(ResourceID id, 
 		return std::nullopt;
 	}
 
-	dtStatus status = navMesh->init(navData, navDataSize, 0);;
+	dtStatus status = navMesh->init(navData, static_cast<int const>(navDataSize), 0);;
 
 	if (dtStatusFailed(status)) {
 		Logger::error("Could not init Detour navmesh query.");

@@ -87,12 +87,10 @@ void AssetDirectoryWatcher::HandleFileChangeCallback(const std::wstring& path, f
 		}
 
 		auto epoch = std::chrono::duration_cast<std::chrono::milliseconds>(lastWriteTime.time_since_epoch());
-		descriptor->timeLastWrite = epoch;
 
 		Logger::info("Handling file change..");
 		engine.scriptingAPIManager.OnAssetContentModifiedCallback(resourceId);
 		assetManager.onAssetModification(resourceId, absPath);
-
 		break;
 	}
 	default:

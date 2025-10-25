@@ -25,6 +25,9 @@
 #include <float.h>
 #include <new>
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
+
 static const float DT_PI = 3.14159265f;
 
 static int sweepCircleCircle(const float* c0, const float r0, const float* v,
@@ -617,3 +620,5 @@ int dtObstacleAvoidanceQuery::sampleVelocityAdaptive(const float* pos, const flo
 	
 	return ns;
 }
+
+#pragma warning( pop )

@@ -11,18 +11,30 @@ enum class InputType {
 	Release
 };
 
+enum class InputMod {
+	Ctrl,
+	Shift,
+	None
+};
+
 class IKeyBind {
 public:
+	IKeyBind(InputMod mod) :
+		mod { mod }
+	{}
+
 	virtual ~IKeyBind() = 0 {};
 
 public:
+	InputMod mod;
 	virtual void broadcast(InputType inputType) const = 0;
 };
 
 template <typename InputEvent>
 class KeyBind : public IKeyBind {
 public:
-	KeyBind(InputEvent data, std::function<void(InputEvent, InputType)> inputManagerBroadcastMemFn) :
+	KeyBind(InputEvent data, InputMod mod, std::function<void(InputEvent, InputType)> inputManagerBroadcastMemFn) :
+		IKeyBind					{ mod },
 		data						{ data },
 		inputManagerBroadcastMemFn	{ inputManagerBroadcastMemFn }
 	{}

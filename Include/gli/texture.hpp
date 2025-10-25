@@ -8,6 +8,9 @@
 #include "levels.hpp"
 #include <array>
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
+
 namespace gli
 {
 	/// Genetic texture class. It can support any target.
@@ -295,3 +298,4 @@ namespace gli
 
 #include "./core/texture.inl"
 
+#pragma warning( pop )

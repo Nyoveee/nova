@@ -1,6 +1,6 @@
 #include "ScriptingAPI.hxx"
-#include "ScriptLibrary/Script.hxx"
-#include "ScriptLibrary/ScriptLibrary.hxx"
+#include "ScriptLibrary/Core/Script.hxx"
+#include "ScriptLibrary/Extensions/ScriptLibrary.hxx"
 #include "IManagedComponent.hxx"
 #include "IManagedStruct.h"
 #include "ResourceManager/resourceManager.h"
@@ -84,7 +84,13 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 			continue;
 
 		field.name = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
-
+		// GameObject
+		if (fieldType == GameObject::typeid) {
+			GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
+			field.data = entt::entity(gameObject ? gameObject->entityID : entt::null);
+			fieldDatas.push_back(field);
+			continue;
+		}
 		// Struct
 		if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
 			managedStruct->AppendValueToFieldData(field);
@@ -101,7 +107,7 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 		// Scripts
 		if (fieldType->IsSubclassOf(Script::typeid)) {
 			Script^ managedScripts = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
-			field.data = entt::entity(managedScripts ? managedScripts->getEntityID() : entt::null);
+			field.data = entt::entity(managedScripts ? managedScripts->entityID : entt::null);
 			fieldDatas.push_back(field);
 			continue;
 		}
@@ -129,7 +135,7 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 		gameObjectScripts[entityID] = gcnew Scripts();
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
-	newScript->setEntityID(entityID);
+	newScript->entityID = entityID;
 	gameObjectScripts[entityID][scriptId] = newScript;
 }
 
@@ -152,6 +158,17 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 		if (msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name) != fieldData.name)
 			continue;
 		System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
+		// GameObject
+		if (fieldType == GameObject::typeid) {
+			GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
+			if (!gameObject) {
+				gameObject = gcnew GameObject();
+			}
+			gameObject->entityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.data));
+			gameObject->transformReference = gameObject->getComponent<Transform_^>();
+			fieldInfos[i]->SetValue(script, gameObject);
+			return;
+		}
 		// Struct
 		if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
 			// Set the value of the copy

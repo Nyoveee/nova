@@ -21,6 +21,7 @@ private:
 	void renderGammaCorrectionSection();
 
 private:
+	Editor& editor;
 	Engine& engine;
 	Renderer& renderer;
 	ResourceManager& resourceManager;

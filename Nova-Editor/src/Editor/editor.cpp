@@ -122,19 +122,16 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<CopyEntity>(
 		[&](CopyEntity) {
-			if (selectedEntities.size()) {
-				for (entt::entity entity : selectedEntities) {
-					copiedEntityVec.push_back(entity);
-				}
+			if (selectedEntities.size() && !ImGui::IsAnyItemActive()) {
+				copiedEntityVec = selectedEntities;
 			}
 		}
 	);
 
 	inputManager.subscribe<PasteEntity>(
 		[&](PasteEntity) {
-			if (!copiedEntityVec.empty()) {
+			if (!copiedEntityVec.empty() && !ImGui::IsAnyItemActive()) {
 				engine.ecs.copyEntities<ALL_COMPONENTS>(copiedEntityVec);
-				copiedEntityVec.clear();
 			}
 		}
 	);
@@ -219,7 +216,7 @@ void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
 
-	ImGui::ShowDemoWindow();
+	// ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	assetManagerUi.update();
@@ -229,7 +226,8 @@ void Editor::main(float dt) {
 
 	handleEntityHovering();
 	updateMaterialMapping();
-	sandboxWindow();
+
+	// sandboxWindow();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -271,7 +269,7 @@ void Editor::updateMaterialMapping() {
 		}
 
 		if (!materialHasChanged) {
-			return;
+			continue;
 		}
 
 		// lets reupdate our map.
@@ -285,7 +283,9 @@ void Editor::updateMaterialMapping() {
 
 void Editor::handleEntityValidity() {
 	if (!isEntityValid(hoveringEntity) && hoveringEntity != entt::null) {
-		deleteEntity(hoveringEntity);
+		if (engine.ecs.registry.valid(hoveringEntity)) {
+			deleteEntity(hoveringEntity);
+		}
 		hoveringEntity = entt::null;
 	}
 
@@ -298,7 +298,9 @@ void Editor::handleEntityValidity() {
 
 		// we found some invalid entity.
 		if (entity != entt::null) {
-			deleteEntity(entity);
+			if (engine.ecs.registry.valid(entity)) {
+				deleteEntity(entity);
+			}
 			foundInvalidSelectedEntity = true;
 		}
 	}
@@ -411,12 +413,8 @@ void Editor::sandboxWindow() {
 		engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
 	}
 
-	entt::registry& registry = engine.ecs.registry;
-
 	static bool wireFrameMode = false;
-	if (ImGui::Button("Profiler")) {
-		launchProfiler();
-	}
+
 	if (ImGui::Button("Wireframe mode.")) {
 		wireFrameMode = !wireFrameMode;
 		engine.renderer.enableWireframeMode(wireFrameMode);
@@ -466,6 +464,11 @@ void Editor::startSimulation() {
 	}
 
 	engine.startSimulation();
+
+	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
+	AssetFilePath const* filePath = assetManager.getFilepath(id);
+	Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
+
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
 }
@@ -492,7 +495,8 @@ Editor::~Editor() {
 
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
-	if (filePath) {
+
+	if (filePath && !isInSimulationMode()) {
 		Serialiser::serialiseScene(engine.ecs, filePath->string.c_str());
 	}
 }

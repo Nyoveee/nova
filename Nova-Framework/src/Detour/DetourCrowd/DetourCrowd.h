@@ -26,6 +26,9 @@
 #include "DetourProximityGrid.h"
 #include "DetourPathQueue.h"
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
+
 /// The maximum number of neighbors that a crowd agent can take into account
 /// for steering decisions.
 /// @ingroup crowd
@@ -364,6 +367,8 @@ FRAMEWORK_DLL_API dtCrowd* dtAllocCrowd();
 ///  @ingroup crowd
 FRAMEWORK_DLL_API void dtFreeCrowd(dtCrowd* ptr);
 
+
+#pragma warning( pop )
 
 #endif // DETOURCROWD_H
 

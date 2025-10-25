@@ -9,7 +9,6 @@
 #include "ResourceManager/resourceManager.h"
 #include "Profiling.h"
 
-
 #include "Serialisation/serialisation.h"
 #include "ECS/SceneManager.h"
 
@@ -26,11 +25,14 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	physicsManager			{ *this },
 	audioSystem				{ *this },
 	navigationSystem		{ *this }, 
+	particleSystem          { *this },
 	gameWidth				{ gameWidth },
 	gameHeight				{ gameHeight },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false }
-{}
+{
+	std::srand(static_cast<unsigned int>(time(NULL)));
+}
 
 Engine::~Engine() {
 	stopSimulation();
@@ -45,21 +47,22 @@ void Engine::fixedUpdate(float dt) {
 		scriptingAPIManager.update();
 		physicsManager.update(dt);
 		navigationSystem.update(dt);
-		
 	}
 }
 
 void Engine::update(float dt) {
+	ZoneScoped;
+
 	//Note the order should be correct
 	audioSystem.update();
 	cameraSystem.update(dt);
 
 	if (!inSimulationMode) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt);
-
 	}
 
 	transformationSystem.update();
+	particleSystem.update(dt);
 	renderer.update(dt);
 
 	resourceManager.update();
@@ -85,7 +88,7 @@ void Engine::render(RenderTarget target) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh);
+	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh, toDebugRenderParticleEmissionShape);
 
 	if (target == RenderTarget::DefaultFrameBuffer) {
 		renderer.renderToDefaultFBO();
@@ -98,8 +101,6 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		//Serialiser::serialiseScene(ecs);
-
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();

@@ -9,6 +9,9 @@
 #include <string.h>
 #include <new>
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
+
 dtTileCache* dtAllocTileCache()
 {
 	void* mem = dtAlloc(sizeof(dtTileCache), DT_ALLOC_PERM);
@@ -823,3 +826,5 @@ void dtTileCache::getObstacleBounds(const struct dtTileCacheObstacle* ob, float*
 		bmax[2] = orientedBox.center[2] + maxr;
 	}
 }
+
+#pragma warning( pop )

@@ -27,6 +27,10 @@
 #include "DetourAssert.h"
 #include <new>
 
+// Disabling library warnings..
+#pragma warning( push )
+#pragma warning( disable: 4127 )
+#pragma warning( disable: 6385 )
 
 inline bool overlapSlabs(const float* amin, const float* amax,
 						 const float* bmin, const float* bmax,
@@ -1593,3 +1597,4 @@ dtStatus dtNavMesh::getPolyArea(dtPolyRef ref, unsigned char* resultArea) const
 	return DT_SUCCESS;
 }
 
+#pragma warning( pop )

@@ -29,6 +29,10 @@
 #include "../Detour/DetourAssert.h"
 #include "../Detour/DetourAlloc.h"
 
+#pragma warning( push )
+#pragma warning( disable: 26495 )
+#pragma warning( disable: 6385 )
+#pragma warning( disable: 6386 )
 
 dtCrowd* dtAllocCrowd()
 {
@@ -1447,3 +1451,5 @@ void dtCrowd::update(const float dt, dtCrowdAgentDebugInfo* debug)
 	}
 	
 }
+
+#pragma warning( pop )

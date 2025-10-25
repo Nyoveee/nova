@@ -4,6 +4,9 @@
 
 #pragma once
 
+#pragma warning( push )
+#pragma warning( disable: 6385 )
+
 #include <Jolt/Math/Vec4.h>
 
 JPH_NAMESPACE_BEGIN
@@ -230,3 +233,5 @@ static_assert(std::is_trivial<UVec4>(), "Is supposed to be a trivial type!");
 JPH_NAMESPACE_END
 
 #include "UVec4.inl"
+
+#pragma warning( pop )
