@@ -29,7 +29,7 @@ int main() {
 		// Update loop.
 		[&](float dt) {
 			engine.update(dt);
-			engine.render(Engine::RenderTarget::DefaultFrameBuffer);
+			engine.render(Engine::RenderConfig::Editor);
 		}
 	);
 }

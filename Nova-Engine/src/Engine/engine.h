@@ -26,9 +26,9 @@ class ResourceManager;
 
 class Engine {
 public:
-	enum class RenderTarget {
-		MainFrameBuffer,
-		DefaultFrameBuffer
+	enum class RenderConfig {
+		Editor,
+		Game
 	};
 
 public:
@@ -44,7 +44,7 @@ public:
 	ENGINE_DLL_API void fixedUpdate(float dt);
 	ENGINE_DLL_API void update(float dt);
 	
-	ENGINE_DLL_API void render(RenderTarget target);
+	ENGINE_DLL_API void render(RenderConfig renderConfig);
 	
 	ENGINE_DLL_API void startSimulation();
 	ENGINE_DLL_API void stopSimulation();

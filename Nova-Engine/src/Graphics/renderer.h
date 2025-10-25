@@ -44,7 +44,7 @@ public:
 public:
 	void update(float dt);
 
-	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape);
+	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape, bool toRenderObjectId);
 	void renderToDefaultFBO();
 
 public:
@@ -71,6 +71,7 @@ public:
 	ENGINE_DLL_API void setDepthMode(CustomShader::DepthTestingMethod configuration);
 
 	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
+	ENGINE_DLL_API void renderObjectIds();
 
 	// HDR controls
 	ENGINE_DLL_API void setHDRExposure(float exposure);
@@ -115,9 +116,6 @@ private:
 	// Render all particles
 	void renderParticles();
 
-	// renders the object id to the object id framebuffer.
-	void renderObjectId(GLsizei count);
-
 	// render a debug triangles in physics
 	void debugRenderPhysicsCollider();
 
@@ -130,21 +128,14 @@ private:
 	// HDR post-processing functions
 	void renderHDRTonemapping();
 
-	// set up the material's chosen shader and supply the proper uniforms.. returns false if set up failed.
-	bool setupMaterial(Material const& material);
+	// set up the material's chosen shader and supply the proper uniforms..
+	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
+	CustomShader* setupMaterial(Material const& material, Transform const& transform);
 
-#if 0
-	// the different rendering pipelines..
-	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
-	void setupBlinnPhongShader(Material const& material);
-	void setupPBRShader(Material const& material);
-	void setupSkeletalShader(Material const& material);
-	void setupColorShader(Material const& material);
+	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
+	void renderMesh(Mesh const& mesh, Pipeline pipeline);
 
-	// attempts to get the appropriate material from meshrenderer.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
-	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
-#endif
 
 	// sets model specific uniforms for all rendering pipeline. (like model matrix)
 	void setModelUniforms(Transform const& transform, entt::entity entity);

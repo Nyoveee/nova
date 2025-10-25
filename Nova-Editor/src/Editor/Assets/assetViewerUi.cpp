@@ -160,10 +160,10 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 		ImGui::Text("No shader selected.");
 	}
 
-	auto updateMaterialProperty = [&]() {
+	auto updateMaterialProperty = [&](std::unordered_map<std::string, std::string> const& shaderUniforms) {
 		material->materialData.overridenUniforms.clear();
 
-		for (auto&& [identifer, type] : customShader->customShaderData.uniforms) {
+		for (auto&& [identifer, type] : shaderUniforms) {
 			// thank you zhi wei for writing all of the if cases. :)
 			if (type == "bool")
 				material->materialData.overridenUniforms.insert({ identifer, { type, bool{} } });
@@ -208,7 +208,7 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 			return;
 		}
 
-		updateMaterialProperty();
+		updateMaterialProperty(customShader->customShaderData.uniforms);
 	});
 	
 	if (!customShader) {
@@ -216,7 +216,7 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 	}
 
 	if (ImGui::Button("Update Material Properties From Shader")) {
-		updateMaterialProperty();
+		updateMaterialProperty(customShader->customShaderData.uniforms);
 	}
 	
 	// Display the current material values..
@@ -257,7 +257,10 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == descriptor.pipeline)) {
 				descriptor.pipeline = enumValue;
 				shader->customShaderData.pipeline = enumValue;
-
+				
+				// recompile..
+				shader->compile();
+#if 0
 				AssetInfo<CustomShader> descriptorCopy = descriptor;
 
 				// serialise immediately..
@@ -270,13 +273,10 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 				// recompile.., will add to resource manager if compilation is successful.
 				auto&& [customShader, __] = resourceManager.getResource<CustomShader>(assetManager.createResourceFile<CustomShader>(descriptorCopy));
 
-				if (customShader) {
-					customShader->compile();
-				}
-
 				// skip a frame..
 				ImGui::EndCombo();
 				return;
+#endif
 			}
 		}
 
@@ -290,7 +290,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 		auto const& openglShader = openglShaderOpt.value();
 
 		if (!openglShader.hasCompiled()) {
-			ImGui::BeginChild("Error window", ImVec2{0.f, 200.f}, ImGuiChildFlags_Border);
+			ImGui::BeginChild("Error window", ImVec2{0.f, 0.f}, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY);
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.4f, 0.4f, 1.0f));
 			ImGui::TextWrapped("%s", openglShader.getErrorMessage().c_str());
 			ImGui::PopStyleColor();
@@ -298,7 +298,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 		}
 
 		if (ImGui::TreeNode("Vertex Shader")) {
-			ImGui::BeginChild("Vertex Shader", ImVec2{}, ImGuiChildFlags_Border);
+			ImGui::BeginChild("Vertex Shader", ImVec2{}, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY);
 			ImGui::TextWrapped("%s", openglShader.getVertexShader().c_str());
 			ImGui::EndChild();
 
@@ -306,7 +306,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 		}
 
 		if (ImGui::TreeNode("Fragment Shader")) {
-			ImGui::BeginChild("Fragment Shader", ImVec2{}, ImGuiChildFlags_Border);
+			ImGui::BeginChild("Fragment Shader", ImVec2{}, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY);
 			ImGui::TextWrapped("%s", openglShader.getFragmentShader().c_str());
 			ImGui::EndChild();
 

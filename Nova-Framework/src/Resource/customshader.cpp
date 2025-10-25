@@ -85,10 +85,10 @@ void CustomShader::compile()
 	// ========================================================
 	// We attach the custom shader's fragment code and wrap it in main..
 	// ========================================================
-	fShaderLibraryStream << "\n\n// !! ==========================================";
+	fShaderLibraryStream << "\n// !! ==========================================";
 	fShaderLibraryStream << "\n// Custom Shader Fragment Code";
 	fShaderLibraryStream << "\n// !! ==========================================\n\n";
-	fShaderLibraryStream << "void main(){\n" << customShaderData.fShaderCode << "\n}";
+	fShaderLibraryStream << "void main(){" << customShaderData.fShaderCode << "}";
 	std::string fragmentCode = fShaderLibraryStream.str();
 
 	shader = Shader{ std::move(vertexCode), std::move(fragmentCode) };

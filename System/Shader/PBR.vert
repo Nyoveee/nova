@@ -28,7 +28,7 @@ void main()
     // we interpolate the world position of the vertices to obtain fragment positions
     vsOut.fragWorldPos = vec3(model * vec4(pos, 1.0));
     vsOut.textureUnit = textureUnit;
-    vsOut.normal = normalMatrix * normal;
+    vsOut.normal = normalize(normalMatrix * normal);
 
     // TBN matrix.
     if(!isUsingNormalMap) {

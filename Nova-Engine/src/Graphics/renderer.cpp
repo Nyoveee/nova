@@ -153,12 +153,12 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayAttribBinding(mainVAO, 5, 4);
 
 	// Enable attributes
-	glEnableVertexArrayAttrib(particleVAO, 0);
-	glEnableVertexArrayAttrib(particleVAO, 1);
-	glEnableVertexArrayAttrib(particleVAO, 2);
-	glEnableVertexArrayAttrib(particleVAO, 3);
-	glEnableVertexArrayAttrib(particleVAO, 4);
-	glEnableVertexArrayAttrib(particleVAO, 5);
+	glEnableVertexArrayAttrib(mainVAO, 0);
+	glEnableVertexArrayAttrib(mainVAO, 1);
+	glEnableVertexArrayAttrib(mainVAO, 2);
+	glEnableVertexArrayAttrib(mainVAO, 3);
+	glEnableVertexArrayAttrib(mainVAO, 4);
+	glEnableVertexArrayAttrib(mainVAO, 5);
 
 	// ======================================================
 	// Debug VAO configuration
@@ -240,7 +240,7 @@ void Renderer::update([[maybe_unused]] float dt) {
 	ZoneScoped;
 }
 
-void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape) {
+void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape, bool toRenderObjectId) {
 	ZoneScoped;
 	prepareRendering();
 
@@ -252,13 +252,18 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool
 	if (toRenderDebugPhysics) {
 		debugRenderPhysicsCollider();
 	}
+
 	if (toRenderDebugNavMesh) {
 		debugRenderNavMesh();
 	}
+
 	if (toRenderDebugParticleEmissionShape) {
 		debugRenderParticleEmissionShape();
 	}
 
+	if (toRenderObjectId) {
+		renderObjectIds();
+	}
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -471,11 +476,7 @@ void Renderer::prepareRendering() {
 	// =================================================================
 	// Configure pre rendering settings
 	// =================================================================
-	
-	// of course.
-	glEnable(GL_DEPTH_TEST);
-	glStencilMask(0xFF);
-	glDisable(GL_BLEND);
+	glEnable(GL_DITHER);
 
 	// bind the VBOs to their respective binding index
 	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(),			0, sizeof(glm::vec3));
@@ -505,23 +506,6 @@ void Renderer::prepareRendering() {
 	mainFrameBufferActiveIndex = 1;
 	mainFrameBufferReadIndex = 0;
 
-	// Clear object id framebuffer.
-
-	// For some reason, for framebuffers with integer color attachments
-	// we need to bind to a shader that writes to integer output
-	// even though clear operation does not use our shader at all
-	// seems to be a differing / conflicting implementation for NVIDIA GPUs..
-	objectIdShader.use();
-
-	constexpr GLuint	nullEntity			= entt::null;
-	constexpr GLfloat	initialDepth		= 1.f;
-	constexpr GLint		initialStencilValue = 0;
-
-	glDisable(GL_DITHER);
-	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
-	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
-	glEnable(GL_DITHER);
-
 	// =================================================================
 	// Set up the uniforms for my respective shaders
 	// Note: calling shader.use() before setting uniforms is redundant because we are using DSA.
@@ -529,11 +513,6 @@ void Renderer::prepareRendering() {
 	// Shared across all shaders. We use a shared UBO for this.
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection())); // offset bcuz 2nd data member.
-
-	// ==== Set up camera position uniform ====
-	blinnPhongShader.setVec3("cameraPos", camera.getPos());
-	PBRShader.setVec3("cameraPos", camera.getPos());
-	skeletalAnimationShader.setVec3("cameraPos", camera.getPos());
 
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
@@ -611,6 +590,7 @@ void Renderer::prepareRendering() {
 		if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
 			break;
 	}
+
 	// Send it over to SSBO.
 	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
 	glNamedBufferSubData(directionalLightSSBO.id(), 0, sizeof(unsigned int), &numOfDirLights);
@@ -658,15 +638,6 @@ void Renderer::renderSkyBox() {
 void Renderer::renderModels() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);	
 
-	// enable back face culling for our 3d models..
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_STENCIL_TEST);
-
-	// preparing the stencil buffer for rendering outlines..
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);	// replaces the value in stencil buffer if both stencil buffer and depth buffer passed.
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);			// stencil test will always pass, mask of 0xFF means full byte comparison.
-
 	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		// Retrieves model asset from asset manager.
 		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
@@ -676,8 +647,22 @@ void Renderer::renderModels() {
 			continue;
 		}
 
-		// setModelUniforms(transform, entity);
+		// Draw every mesh of a given model.
+		for (auto const& mesh : model->meshes) {
+			Material const* material = obtainMaterial(meshRenderer, mesh);
 
+			if (!material) {
+				continue;
+			}
+
+			// Use the correct shader and configure it's required uniforms..
+			CustomShader* shader = setupMaterial(*material, transform);
+
+			if (shader) {
+				// time to draw!
+				renderMesh(mesh, shader->customShaderData.pipeline);
+			}
+		}
 #if 0
 		// Set up stencil operation
 		if (meshRenderer.toRenderOutline) {
@@ -746,9 +731,6 @@ void Renderer::renderSkinnedModels() {
 		// Setting model specific uniform..
 		skeletalAnimationShader.setMatrix("model", transform.modelMatrix);
 		skeletalAnimationShader.setMatrix("normalMatrix", transform.normalMatrix);
-
-		objectIdShader.setMatrix("model", transform.modelMatrix);
-		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 
 		// upload all bone matrices..
 		glNamedBufferSubData(bonesSSBO.id(), 0, skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
@@ -871,19 +853,6 @@ void Renderer::renderParticles()
 }
 
 #if 0
-void Renderer::renderObjectId(GLsizei count) {
-	glDisable(GL_DITHER);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
-	objectIdShader.use();
-	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
-
-	// after rendering object id, swap back to main frame buffer..	
-	// this function is invoked when rendering models..
-	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
-
-	glEnable(GL_DITHER);
-}
 
 void Renderer::setupBlinnPhongShader(Material const& material) {
 	// Handle albedo.
@@ -1105,7 +1074,6 @@ void Renderer::setupColorShader(Material const& material) {
 	}, material.albedo);
 }
 
-#endif
 
 void Renderer::setModelUniforms(Transform const& transform, entt::entity entity) {
 	blinnPhongShader.setMatrix("model", transform.modelMatrix);
@@ -1120,21 +1088,18 @@ void Renderer::setModelUniforms(Transform const& transform, entt::entity entity)
 	objectIdShader.setMatrix("model", transform.modelMatrix);
 	objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 }
+#endif
 
-#if 0
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {
-	auto iterator = meshRenderer.materials.find(mesh.materialName);
-
-	if (iterator == meshRenderer.materials.end()) {
-		Logger::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
+	if (mesh.materialIndex >= meshRenderer.materialIds.size()) {
 		return nullptr;
 	}
 
-	// We have successfully retrieved the materials. Let's retrieve the individual components.
-	auto&& [__, material] = *iterator;
-	return &material;
+	auto&& [material, _] = resourceManager.getResource<Material>(meshRenderer.materialIds[mesh.materialIndex]);
+	return material;
 }
 
+#if 0
 Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh) {
 	auto iterator = skinnedMeshRenderer.materials.find(mesh.materialName);
 
@@ -1279,6 +1244,51 @@ void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 	}
 }
 
+void Renderer::renderObjectIds() {
+	// Clear object id framebuffer.
+
+	// For some reason, for framebuffers with integer color attachments
+	// we need to bind to a shader that writes to integer output
+	// even though clear operation does not use our shader at all
+	// seems to be a differing / conflicting implementation for NVIDIA GPUs..
+	objectIdShader.use();
+
+	constexpr GLuint	nullEntity = entt::null;
+	constexpr GLfloat	initialDepth = 1.f;
+	constexpr GLint		initialStencilValue = 0;
+
+	glDisable(GL_BLEND);
+	glDisable(GL_DITHER);
+	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
+	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
+	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
+	
+	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
+		// Retrieves model asset from asset manager.
+		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
+
+		if (!model) {
+			// missing model.
+			continue;
+		}
+
+		objectIdShader.setMatrix("model", transform.modelMatrix);
+		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
+		
+		// Draw every mesh of a given model.
+		for (auto const& mesh : model->meshes) {
+			// not rendered, so no point rendering object id..
+			if (!obtainMaterial(meshRenderer, mesh)) {
+				continue;
+			}
+
+			positionsVBO.uploadData(mesh.positions);
+			EBO.uploadData(mesh.indices);
+			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+		}
+	}
+}
+
 void Renderer::renderHDRTonemapping() {
 	ZoneScoped;
 
@@ -1302,7 +1312,7 @@ void Renderer::renderHDRTonemapping() {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-bool Renderer::setupMaterial(Material const& material) {
+CustomShader* Renderer::setupMaterial(Material const& material, Transform const& transform) {
 	// ===========================================================================
 	// Retrieve the underlying shader for this material, and verify it's state.
 	// ===========================================================================
@@ -1311,12 +1321,12 @@ bool Renderer::setupMaterial(Material const& material) {
 	auto&& [customShader, _] = resourceManager.getResource<CustomShader>(customShaderId);
 
 	if (!customShader) {
-		return false;
+		return nullptr;
 	}
 
 	auto const& shaderOpt = customShader->getShader();
 	if (!shaderOpt || !shaderOpt.value().hasCompiled()) {
-		return false;
+		return nullptr;
 	}
 
 	auto const& shaderData = customShader->customShaderData;
@@ -1333,7 +1343,21 @@ bool Renderer::setupMaterial(Material const& material) {
 	// ===========================================================================
 	// Set uniform data..
 	// ===========================================================================
-	
+	switch (shaderData.pipeline)
+	{
+	case Pipeline::PBR:
+		shader.setVec3("cameraPos", camera.getPos());
+		shader.setMatrix("normalMatrix", transform.normalMatrix);
+		[[fallthrough]];
+	case Pipeline::Color:
+		shader.setMatrix("model", transform.modelMatrix);
+		break;
+	default:
+		assert(false && "Unhandled pipeline.");
+		break;
+	}
+
+
 	// We keep track of the number of texture units bound and make sure it doesn't exceed the driver's cap.
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
@@ -1405,7 +1429,29 @@ bool Renderer::setupMaterial(Material const& material) {
 	// Use the shader
 	shader.use();
 
-	return true;
+	return customShader;
+}
+
+void Renderer::renderMesh(Mesh const& mesh, Pipeline pipeline) {
+	switch (pipeline)
+	{
+	case Pipeline::PBR:
+		normalsVBO.uploadData(mesh.normals);
+		tangentsVBO.uploadData(mesh.tangents);
+
+		[[fallthrough]];
+	case Pipeline::Color:
+		positionsVBO.uploadData(mesh.positions);
+		textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
+
+		break;
+	default:
+		assert(false && "Unhandled pipeline.");
+		break;
+	}
+	
+	EBO.uploadData(mesh.indices);
+	glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::setHDRExposure(float exposure) {
