@@ -511,7 +511,18 @@ inline void DisplayProperty<ColorOverLifetime>(Editor& editor, const char* dataM
 		ImGui::EndChild();
 	}
 }
-
+template<>
+inline void DisplayProperty<Trails>(Editor& editor, const char* dataMemberName, Trails& dataMember) {
+	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
+	if (dataMember.selected) {
+		ImGui::BeginChild("", ImVec2(0, 175), ImGuiChildFlags_Border);
+		DisplayProperty<TypedResourceID<Texture>>(editor, "Trail Texture", dataMember.trailTexture);
+		DisplayProperty<float>(editor, "Distance Per Emission", dataMember.distancePerEmission);
+		DisplayProperty<float>(editor, "Trail Size", dataMember.trailSize);
+		DisplayProperty<ColorA>(editor, "Trail Color", dataMember.trailColor);
+		ImGui::EndChild();
+	}
+}
 template<>
 inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& editor, const char*, std::vector<TypedResourceID<Material>>& dataMember) {
 	ImGui::SeparatorText("Material");

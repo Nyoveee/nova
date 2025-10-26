@@ -797,6 +797,7 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
+#if 0
 	glBindVertexArray(particleVAO);
 
 	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
@@ -851,6 +852,7 @@ void Renderer::renderParticles()
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
+#endif
 }
 
 #if 0
