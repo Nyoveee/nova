@@ -21,7 +21,9 @@ private:
 	// Spawning
 	void continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void burstGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
+	void trailGeneration(Transform& transform, ParticleEmitter& emitter);
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
+	
 	// Update
 	void particleMovement(ParticleEmitter& emitter, float dt);
 	void particleOverLifeTime(ParticleEmitter& emitter);

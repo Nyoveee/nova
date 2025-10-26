@@ -1,20 +1,21 @@
 {
     "entities": [
         {
-            "Animator": {
-                "controllerId": 3325653656354111489
-            },
             "EntityData": {
                 "children": null,
-                "name": "Entity 1",
+                "name": "Floor",
                 "parent": 4294967295
             },
-            "SkinnedMeshRenderer": {
+            "MeshRenderer": {
                 "materialIds": [
-                    6,
-                    5
+                    6
                 ],
-                "modelId": 11334566711878598657
+                "modelId": 3
+            },
+            "PositionalAudio": {
+                "innerRadius": 40.0,
+                "maxRadius": 100.0,
+                "toggleSphere": false
             },
             "Transform": {
                 "eulerAngles": {
@@ -55,9 +56,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.029999999329447746,
-                    "y": 0.029999999329447746,
-                    "z": 0.029999999329447746
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
             "id": 0

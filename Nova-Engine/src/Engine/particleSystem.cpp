@@ -2,7 +2,8 @@
 #include "engine.h"
 #include "RandomRange.h"
 #include "Interpolation.h"
-
+#include <algorithm>
+#undef max
 
 ParticleSystem::ParticleSystem(Engine& p_engine)
 	:engine{p_engine}
@@ -18,6 +19,7 @@ void ParticleSystem::update(float dt)
 	for (auto&& [entity, transform, emitter] : engine.ecs.registry.view<Transform, ParticleEmitter>().each()) {
 		continuousGeneration(transform,emitter,dt);
 		burstGeneration(transform, emitter, dt);
+		trailGeneration(transform, emitter);
 		particleMovement(emitter,dt);
 		particleOverLifeTime(emitter);
 	}
@@ -48,22 +50,59 @@ void ParticleSystem::burstGeneration(Transform const& transform, ParticleEmitter
 		
 }
 
+void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emitter)
+{
+	if (!emitter.trails.selected || emitter.trails.distancePerEmission <= 0)
+		return;
+	float distancePerEmission{ std::max(emitter.trails.distancePerEmission,0.00001f) }; // Hard limit to distance
+	if (glm::distance(emitter.prevPosition, transform.position) > distancePerEmission) {
+		if (emitter.b_firstPositionUpdate) {
+			emitter.prevPosition = transform.position;
+			emitter.b_firstPositionUpdate = false;
+			return;
+		}
+		float maxDistance{ glm::distance(emitter.prevPosition,transform.position) };
+		glm::vec3 startPosition{ emitter.prevPosition };
+		glm::vec3 direction{ glm::normalize(transform.position - emitter.prevPosition) };
+		int index{};
+		// Spawn the trail
+		while (maxDistance > 0.f) {
+			// Spawn the particle trail
+			Particle newParticle{};
+			newParticle.texture = emitter.trails.trailTexture;
+			newParticle.position = startPosition + direction * (distancePerEmission * index);
+			newParticle.startSize = newParticle.currentSize = emitter.trails.trailSize;
+			newParticle.startColor = newParticle.currentColor = emitter.trails.trailColor;
+			newParticle.currentLifeTime = emitter.lifeTime;
+			emitter.trailParticles.push_back(newParticle);
+			// Update the loop
+			++index;
+			maxDistance -= distancePerEmission;
+		}
+		emitter.prevPosition = transform.position;
+	}
+}
+
 void ParticleSystem::particleMovement(ParticleEmitter& emitter, float dt)
 {
-	// Move the particles
-	std::vector<Particle>::iterator it = std::remove_if(std::begin(emitter.particles), std::end(emitter.particles), [&emitter, dt](Particle& particle) {
-		particle.currentLifeTime -= dt;
-		if (particle.currentLifeTime <= 0)
-			return true;
-		particle.position += particle.velocity * dt;
-		particle.velocity += emitter.force * dt;
-		particle.rotation += emitter.angularVelocity * dt;
-		return false;
-	});
-	// Remove once end of lifetime
-	if (it != std::end(emitter.particles)) {
-		emitter.particles.erase(it, std::end(emitter.particles));
-	}
+	auto updateParticleMovement = [&](std::vector<Particle>& particles) {
+		// Move the particles
+		std::vector<Particle>::iterator it = std::remove_if(std::begin(particles), std::end(particles), [&emitter, dt](Particle& particle) {
+			particle.currentLifeTime -= dt;
+			if (particle.currentLifeTime <= 0)
+				return true;
+			particle.position += particle.velocity * dt;
+			particle.velocity += emitter.force * dt;
+			particle.rotation += emitter.angularVelocity * dt;
+			return false;
+		});
+		// Remove once end of lifetime
+		if (it != std::end(particles)) {
+			particles.erase(it, std::end(particles));
+		}
+	};
+	updateParticleMovement(emitter.particles);
+	updateParticleMovement(emitter.trailParticles);
 }
 
 void ParticleSystem::particleOverLifeTime(ParticleEmitter& emitter)
@@ -71,20 +110,28 @@ void ParticleSystem::particleOverLifeTime(ParticleEmitter& emitter)
 	if (emitter.lifeTime <= 0)
 		return;
 	if (emitter.sizeOverLifetime.selected) {
-		for (Particle& particle : emitter.particles) {
-			float endSize{ emitter.sizeOverLifetime.endSize };
-			float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
-			float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
-			particle.currentSize = Interpolation::Interpolation(particle.startSize, endSize, interpolationValue, degree);
-		}
+		auto updateSizeOverLifetime = [&](std::vector<Particle>& particles) {
+			for (Particle& particle : particles) {
+				float endSize{ emitter.sizeOverLifetime.endSize };
+				float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
+				float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
+				particle.currentSize = Interpolation::Interpolation(particle.startSize, endSize, interpolationValue, degree);
+			}
+		};
+		updateSizeOverLifetime(emitter.particles);
+		updateSizeOverLifetime(emitter.trailParticles);
 	}
 	if (emitter.colorOverLifetime.selected) {
-		for (Particle& particle : emitter.particles) {
-			glm::vec4 endColor{ emitter.colorOverLifetime.endColor };
-			float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
-			float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
-			particle.currentColor = Interpolation::Interpolation(particle.startColor, endColor, interpolationValue, degree);
-		}
+		auto updateColorOverLifetime = [&](std::vector<Particle>& particles) {
+			for (Particle& particle : particles) {
+				glm::vec4 endColor{ emitter.colorOverLifetime.endColor };
+				float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
+				float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
+				particle.currentColor = Interpolation::Interpolation(particle.startColor, endColor, interpolationValue, degree);
+			}
+		};
+		updateColorOverLifetime(emitter.particles);
+		updateColorOverLifetime(emitter.trailParticles);
 	}
 }
 
@@ -180,9 +227,11 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 	// Change Particles position and velocity based on tranform rotation
 	newParticle.position = rotateParticleSpawnPoint(transform, newParticle.position);
 	newParticle.velocity = rotateParticleVelocity(transform, newParticle.velocity);
+	newParticle.texture = emitter.texture;
 	// Create the new particle
 	emitter.particles.push_back(newParticle);
 }
+
 
 glm::vec3 ParticleSystem::rotateParticleSpawnPoint(Transform const& transform, glm::vec3 position)
 {

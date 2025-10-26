@@ -1,6 +1,6 @@
 #include "ResourceManager/resourceManager.h"
 #include "AssetManager/assetManager.h"
-
+#include "IconsFontAwesome6.h"
 
 template<typename T>
 void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback) {
@@ -47,6 +47,12 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 	}
 
 	if (id) {
+		ImGui::SameLine();
+
+		if (ImGui::Button(ICON_FA_ANCHOR_CIRCLE_XMARK)) {
+			assetViewerUi.selectNewResourceId(id.value());
+		}
+
 		ImGui::PopID();
 	}
 }

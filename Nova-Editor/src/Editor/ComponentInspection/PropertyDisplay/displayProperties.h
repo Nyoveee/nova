@@ -394,6 +394,11 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 
 template<>
 inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& editor, const char*, std::unordered_map<std::string, AudioData>& dataMember) {
+	auto& audioDatas = dataMember;
+	std::string s{};
+	std::string searchQuery{};
+	std::vector<std::string> filteredAudioAssets;
+
 	// Add Audio
 	editor.displayAssetDropDownList<Audio>(std::nullopt, "Add Audio File", [&](ResourceID resourceId)
 	{
@@ -401,51 +406,56 @@ inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& 
 		auto namePtr = editor.assetManager.getName(resourceId);
 
 		if (namePtr)
-			dataMember.emplace(namePtr->c_str(), AudioData{ resourceId, 1.0f, false });
+			audioDatas.emplace(namePtr->c_str(), AudioData{ resourceId, 1.0f, false });
 	});
-
-	AudioSystem& audioSystem = editor.engine.audioSystem;
 
 	// List of Audio Files
 	int i{};
-
 	ImGui::BeginChild("", ImVec2(0, 200), ImGuiChildFlags_Border);
-	for (auto it = dataMember.begin(); it != dataMember.end();) {
+
+	for (auto it = audioDatas.begin(); it != audioDatas.end();) {
 		ImGui::PushID(i++);
+
 		bool keepAudioFile = true;
+
 		auto&& [name, audioData] = *it;
-		auto&& [audioAsset, _] = editor.resourceManager.getResource<Audio>(audioData.AudioId);
+
+		auto&& [audioAsset, _] = editor.resourceManager.getResource<Audio>(audioData.audioId);
+
 		if (!audioAsset) {
 			// Invalid ResourceID
-			Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.AudioId));
+			Logger::warn("Invalid Audio ResourceID: {}", static_cast<std::size_t>(audioData.audioId));
 			ImGui::PopID();
-			it = dataMember.erase(it);
+			it = audioDatas.erase(it);
 			continue;
 		}
 
 		if (ImGui::CollapsingHeader(name.c_str(), &keepAudioFile)) {
+
 			if (ImGui::Button("Play Audio")) {
-				if (audioSystem.isBGM(audioData.AudioId)) {
-					audioSystem.playBGM(audioData.AudioId, audioData.Volume);
+				if (s.substr(0, 4) == "BGM_") {
+					editor.engine.audioSystem.playBGM(audioData.audioId, audioData.volume);
 				}
 				else {
-					audioSystem.playSFX(audioData.AudioId, 0.f, 0.f, 0.f, audioData.Volume);
+					editor.engine.audioSystem.playSFX(audioData.audioId, 0.f, 0.f, 0.f, audioData.volume);
 				}
 			}
-
-			if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
-				audioSystem.AdjustVol(audioData.AudioId, audioData.Volume);
-			}
-
+			ImGui::SameLine();
 			if (ImGui::Button("Stop Audio")) {
-				audioSystem.StopAudio(audioData.AudioId);
+				editor.engine.audioSystem.StopAudio(audioData.audioId);
 			}
+
+			// Adjust Volume slider
+			if (ImGui::DragFloat("Adjust Volume", &audioData.volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
+				editor.engine.audioSystem.AdjustVol(audioData.audioId, audioData.volume);
+			}
+
 		}
 
 		ImGui::PopID();
 
 		if (!keepAudioFile) {
-			it = dataMember.erase(it);
+			it = audioDatas.erase(it);
 		}
 		else {
 			++it;
@@ -515,7 +525,18 @@ inline void DisplayProperty<ColorOverLifetime>(Editor& editor, const char* dataM
 		ImGui::EndChild();
 	}
 }
-
+template<>
+inline void DisplayProperty<Trails>(Editor& editor, const char* dataMemberName, Trails& dataMember) {
+	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
+	if (dataMember.selected) {
+		ImGui::BeginChild("", ImVec2(0, 175), ImGuiChildFlags_Border);
+		DisplayProperty<TypedResourceID<Texture>>(editor, "Trail Texture", dataMember.trailTexture);
+		DisplayProperty<float>(editor, "Distance Per Emission", dataMember.distancePerEmission);
+		DisplayProperty<float>(editor, "Trail Size", dataMember.trailSize);
+		DisplayProperty<ColorA>(editor, "Trail Color", dataMember.trailColor);
+		ImGui::EndChild();
+	}
+}
 template<>
 inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& editor, const char*, std::vector<TypedResourceID<Material>>& dataMember) {
 	ImGui::SeparatorText("Material");
