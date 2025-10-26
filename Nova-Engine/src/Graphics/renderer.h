@@ -13,12 +13,14 @@
 #include "ECS/ECS.h"
 #include "component.h"
 #include "vertex.h"
+#include "font.h"
 
 #include "model.h"
 #include "cubemap.h"
 
 #include "Detour/Detour/DetourNavMesh.h"
 #include "customShader.h"
+
 
 class Engine;
 class ResourceManager;
@@ -115,6 +117,9 @@ private:
 	// render all SkinnedMeshRenderers.
 	void renderSkinnedModels();
 
+	// render all Texts.
+	void renderTexts();
+
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
@@ -142,9 +147,6 @@ private:
 
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
-
-	// sets model specific uniforms for all rendering pipeline. (like model matrix)
-	void setModelUniforms(Transform const& transform, entt::entity entity);
 
 	void printOpenGLDriverDetails() const;
 
@@ -189,6 +191,10 @@ private:
 	BufferObject debugNavMeshVBO;
 	BufferObject debugParticleShapeVBO;
 
+	// Text VAO and VBO
+	GLuint textVAO;
+	BufferObject textVBO;
+
 	Camera camera;
 
 	// contains all the final rendering.
@@ -203,6 +209,11 @@ private:
 
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
+
+	// TEMP Hack method for font storage
+	std::vector<Font> fonts;
+
+	glm::mat4 UIProjection;
 
 private:
 	int numOfPhysicsDebugTriangles;
@@ -226,6 +237,7 @@ public:
 	Shader skyboxShader;
 	Shader particleShader;
 	Shader skeletalAnimationShader;
+	Shader textShader;
 
 	// HDR tone mapping shader
 	Shader toneMappingShader;

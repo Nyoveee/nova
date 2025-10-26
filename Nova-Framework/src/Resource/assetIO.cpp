@@ -30,6 +30,7 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 	DescriptorSubDirectory(Audio),
 	DescriptorSubDirectory(Scene),
 	DescriptorSubDirectory(NavMesh),
+	DescriptorSubDirectory(Font),
 	DescriptorSubDirectory(Controller),
 	DescriptorSubDirectory(CustomShader),
 	DescriptorSubDirectory(Material)
@@ -43,6 +44,7 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(Audio),
 	ResourceSubDirectory(Scene),
 	ResourceSubDirectory(NavMesh),
+	ResourceSubDirectory(Font),
 	ResourceSubDirectory(Controller),
 	ResourceSubDirectory(CustomShader),
 	ResourceSubDirectory(Material)
@@ -56,6 +58,7 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAsse
 	AssetCacheSubDirectory(Audio),
 	AssetCacheSubDirectory(Scene),
 	AssetCacheSubDirectory(NavMesh),
+	AssetCacheSubDirectory(Font),
 	AssetCacheSubDirectory(Controller),
 	AssetCacheSubDirectory(CustomShader),
 	AssetCacheSubDirectory(Material)

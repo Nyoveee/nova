@@ -78,6 +78,30 @@ inline void serializeToBinary<glm::vec2>(std::ofstream& outputFile, glm::vec2 co
 	writeBytesToFile(outputFile, dataMember.y);
 }
 
+// ivector 2
+template <>
+inline void serializeToBinary<glm::ivec2>(std::ofstream& outputFile, glm::ivec2 const& dataMember) {
+	writeBytesToFile(outputFile, dataMember.x);
+	writeBytesToFile(outputFile, dataMember.y);
+}
+
+// ivector 3
+template <>
+inline void serializeToBinary<glm::ivec3>(std::ofstream& outputFile, glm::ivec3 const& dataMember) {
+	writeBytesToFile(outputFile, dataMember.x);
+	writeBytesToFile(outputFile, dataMember.y);
+	writeBytesToFile(outputFile, dataMember.z);
+}
+
+// ivector 4
+template <>
+inline void serializeToBinary<glm::ivec4>(std::ofstream& outputFile, glm::ivec4 const& dataMember) {
+	writeBytesToFile(outputFile, dataMember.x);
+	writeBytesToFile(outputFile, dataMember.y);
+	writeBytesToFile(outputFile, dataMember.z);
+	writeBytesToFile(outputFile, dataMember.w);
+}
+
 // mat 3
 template <>
 inline void serializeToBinary<glm::mat3x3>(std::ofstream& outputFile, glm::mat3x3 const& dataMember) {

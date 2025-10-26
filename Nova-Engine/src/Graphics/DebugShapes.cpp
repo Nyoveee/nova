@@ -15,7 +15,7 @@ std::vector<glm::vec3> DebugShapes::SphereAxisXY(float radius)
 	return result;
 }
 
-std::vector<glm::vec3> DebugShapes::SphereAxisXZ(float radius)
+std::vector<glm::vec3> DebugShapes::SphereAxisXZ([[maybe_unused]] float radius)
 {
 	std::vector<glm::vec3> result;
 	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)

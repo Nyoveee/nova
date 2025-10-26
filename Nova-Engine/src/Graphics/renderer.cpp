@@ -52,6 +52,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
+	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
 	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
 	mainVAO						{},
 	positionsVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -62,6 +63,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
+	textVBO						{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	EBO							{ AMOUNT_OF_MEMORY_ALLOCATED },
 
 								// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
@@ -84,7 +86,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
-	toGammaCorrect				{ true }
+	toGammaCorrect				{ true },
+	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
 	printOpenGLDriverDetails();
 
@@ -162,6 +165,23 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glEnableVertexArrayAttrib(mainVAO, 3);
 	glEnableVertexArrayAttrib(mainVAO, 4);
 	glEnableVertexArrayAttrib(mainVAO, 5);
+
+	// ======================================================
+	// Text VAO configuration
+	// - No EBO. A much simpler VAO containing only position and texture.
+	// ======================================================
+	glGenVertexArrays(1, &textVAO);
+	glBindVertexArray(textVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, textVBO.id());
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	//fonts.push_back(Font::LoadFont("System/Font/calibri.ttf").value());
 }
 
 Renderer::~Renderer() {
@@ -202,6 +222,8 @@ void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool
 	renderModels();
 	renderSkinnedModels();
 	renderParticles();
+
+	renderTexts();
 
 	if (toRenderDebugPhysics) {
 		debugRenderPhysicsCollider();
@@ -266,6 +288,7 @@ void Renderer::recompileShaders() {
 	blinnPhongShader.compile();
 	PBRShader.compile();
 	skyboxShader.compile();
+	textShader.compile();
 	toneMappingShader.compile();
 	particleShader.compile();
 	skeletalAnimationShader.compile();
@@ -626,6 +649,96 @@ void Renderer::renderModels() {
 	}
 
 	glDisable(GL_CULL_FACE);
+}
+
+void Renderer::renderTexts()
+{
+	struct Vertex {
+		GLfloat x, y;   // screen position
+		GLfloat s, t;   // texture coordinates
+	};
+
+	// activate corresponding render state	
+	textShader.use();
+	textShader.setMatrix("projection", UIProjection);
+
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(textVAO);
+
+	// iterate through all characters
+	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
+		// Retrieves font asset from asset manager.
+		auto [font, _] = resourceManager.getResource<Font>(text.font);
+
+		if (!font) {
+			continue;
+		}
+
+		if (text.text.empty()) {
+			continue;
+		}
+
+		textShader.setVec3("textColor", text.fontColor);
+
+		Font::Atlas const& atlas = font->getAtlas();
+		float fontScale = static_cast<float>(text.fontSize) / font->getFontSize();
+
+		float x = transform.position.x;
+		float y = transform.position.y;
+
+		std::vector<Vertex> vertices;
+		vertices.reserve(text.text.size() * 6); // 6 vertices per char, 4 floats per vertex
+
+		std::string::const_iterator c;
+		for (c = text.text.begin(); c != text.text.end(); c++)
+		{
+			const Font::Character& ch = font->getCharacters().at(*c);
+
+			float xpos = x + ch.bearing.x * fontScale;
+			float ypos = y - (ch.size.y - ch.bearing.y) * fontScale;
+
+			float w = ch.size.x * fontScale;
+			float h = ch.size.y * fontScale;
+
+			// advance cursors for next glyph 
+			x += ch.advance * fontScale;
+
+			// Skip invisible glyphs
+			if (w == 0 || h == 0)
+				continue;
+
+			float tx = ch.tx;                   // texture X offset in atlas
+			float ty = 0.f;                     // texture Y offset in atlas
+			float tw = static_cast<float>(ch.size.x) / atlas.width;
+			float th = static_cast<float>(ch.size.y) / atlas.height;
+
+			// 6 vertices per quad (2 triangles)
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos,     ypos,     tx,       ty + th });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+			vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
+		}
+
+		// Bind font atlas texture once per string
+		glBindTexture(GL_TEXTURE_2D, atlas.textureId);
+
+		// Upload vertex data for all glyphs in this string
+		textVBO.uploadData(vertices, 0);
+
+		// Draw all characters in one batched call
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+
+		// Reset bindings
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	glBindVertexArray(mainVAO);
+	glDisable(GL_BLEND);
 }
 
 void Renderer::renderSkinnedModels() {

@@ -95,6 +95,30 @@ inline void deserializeFromBinary<glm::vec2>(std::ifstream& inputFile, glm::vec2
 	readFromFile(inputFile, dataMember.y);
 }
 
+// ivector 2
+template <>
+inline void deserializeFromBinary<glm::ivec2>(std::ifstream& inputFile, glm::ivec2& dataMember) {
+	readFromFile(inputFile, dataMember.x);
+	readFromFile(inputFile, dataMember.y);
+}
+
+// ivector 3
+template <>
+inline void deserializeFromBinary<glm::ivec3>(std::ifstream& inputFile, glm::ivec3& dataMember) {
+	readFromFile(inputFile, dataMember.x);
+	readFromFile(inputFile, dataMember.y);
+	readFromFile(inputFile, dataMember.z);
+}
+
+// ivector 4
+template <>
+inline void deserializeFromBinary<glm::ivec4>(std::ifstream& inputFile, glm::ivec4& dataMember) {
+	readFromFile(inputFile, dataMember.x);
+	readFromFile(inputFile, dataMember.y);
+	readFromFile(inputFile, dataMember.z);
+	readFromFile(inputFile, dataMember.w);
+}
+
 // mat 3
 template <>
 inline void deserializeFromBinary<glm::mat3x3>(std::ifstream& inputFile, glm::mat3x3& dataMember) {

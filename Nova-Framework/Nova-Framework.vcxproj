@@ -120,7 +120,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -187,6 +192,7 @@
     <ClInclude Include="src\Resource\controller.h" />
     <ClInclude Include="src\Resource\cubemap.h" />
     <ClInclude Include="src\Resource\customShader.h" />
+    <ClInclude Include="src\Resource\font.h" />
     <ClInclude Include="src\Resource\Material.h" />
     <ClInclude Include="src\Resource\model.h" />
     <ClInclude Include="src\Resource\navMesh.h" />
@@ -230,6 +236,7 @@
     <ClCompile Include="src\Loader\controllerLoader.cpp" />
     <ClCompile Include="src\Loader\cubemapLoader.cpp" />
     <ClCompile Include="src\Loader\materialLoader.cpp" />
+    <ClCompile Include="src\Loader\fontLoader.cpp" />
     <ClCompile Include="src\Loader\modelLoader.cpp" />
     <ClCompile Include="src\Loader\navMeshLoader.cpp" />
     <ClCompile Include="src\Loader\scriptLoader.cpp" />
@@ -241,6 +248,7 @@
     <ClCompile Include="src\Resource\controller.cpp" />
     <ClCompile Include="src\Resource\cubemap.cpp" />
     <ClCompile Include="src\Resource\customshader.cpp" />
+    <ClCompile Include="src\Resource\font.cpp" />
     <ClCompile Include="src\Resource\Material.cpp" />
     <ClCompile Include="src\Resource\model.cpp" />
     <ClCompile Include="src\Resource\navMesh.cpp" />

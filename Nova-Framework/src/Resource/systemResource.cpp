@@ -1,5 +1,6 @@
 #include "systemResource.h"
 #include "assetIO.h"
+#include "Material.h"
 
 // WE DEFINE ALL SYSTEM RESOURCES HERE!
 

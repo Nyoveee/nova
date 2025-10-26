@@ -37,7 +37,7 @@ class Material;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, SkinnedMeshRenderer, Animator, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, \
-	AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter
+	AudioListener, Scripts, NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text
 
 using ScriptName   = std::string;
 
@@ -520,5 +520,20 @@ struct ParticleEmitter
 		particleColorSelection,
 		sizeOverLifetime,
 		colorOverLifetime
+	)
+};
+
+struct Text {
+	TypedResourceID<Font> font;
+	int fontSize = 13;
+	std::string text;
+	Color fontColor = Color{ 0.f, 0.f, 0.f };
+
+	REFLECTABLE
+	(
+		font,
+		text,
+		fontSize,
+		fontColor
 	)
 };

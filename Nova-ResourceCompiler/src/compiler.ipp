@@ -26,6 +26,9 @@ int Compiler::compileAsset(AssetInfo<T> const& assetInfo, ResourceFilePath const
 	else if constexpr (std::same_as<T, CustomShader>) {
 		return compileShaderAsset(resourceFilePath, assetInfo.filepath, assetInfo.pipeline);
 	}
+	else if constexpr (std::same_as<T, Font>) {
+		return compileFont(resourceFilePath, assetInfo.filepath);
+	}
 	else {
 		return defaultCompile(resourceFilePath, assetInfo.filepath);
 	}

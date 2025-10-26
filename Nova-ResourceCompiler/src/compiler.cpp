@@ -15,6 +15,10 @@
 // Internal Libraries
 #include "Internal/ShaderParser.h"
 
+// Y* libraries
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat) {
 	std::string format;
 	std::string option;
@@ -85,6 +89,114 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 
 	// let's rename the resource.
 	std::filesystem::rename(oldFilePath, resourceFilePath);
+	return 0;
+}
+
+int Compiler::compileFont(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
+	constexpr FT_UInt FONT_SIZE = 48;
+
+	// ============================
+	// 1. Set up FT Library and load font..
+	// ============================
+	FT_Face face;
+	FT_Library ft;
+
+	// Initialize FreeType library
+	if (FT_Init_FreeType(&ft)) {
+		Logger::error("ERROR::FREETYPE: Could not init FreeType Library");
+		return -1;
+	}
+
+	// Load font face using the stored fontPath
+	if (FT_New_Face(ft, intermediaryAssetFilepath.string.c_str(), 0, &face)) {
+		Logger::error("ERROR::FREETYPE: Failed to load font:");
+		return -1;
+	}
+
+	FT_Set_Pixel_Sizes(face, 0, FONT_SIZE);
+	
+	unsigned int atlasWidth = 0;
+	unsigned int atlasHeight = 0;
+	std::vector<Font::Data::Sprite> sprites;
+	std::unordered_map<char, Font::Character> characters;
+
+	// stores the xOffset of each glyph from the start of the texture atlas.
+	int xOffset = 0;
+
+	// ============================
+	// 2. Iterate through every ASCII character and generate its respective glyph bitmap..
+	// ============================
+	// First 32 chars for ascii are control characters
+	for (unsigned char c = 32; c < 128; c++) {
+	
+		// load character glyph 
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+			Logger::error("ERROR::FREETYTPE: Failed to load Glyph for ASCII character: {}", c);
+			continue;
+		}
+
+		FT_GlyphSlot glyph = face->glyph;
+
+		// ============================
+		// 2.1 Calculate atlas
+		// @TODO: Cap texture at 4086 width, more than 1 row. ? is that good?
+		// ============================
+		atlasWidth += glyph->bitmap.width;
+		atlasHeight = std::max(atlasHeight, glyph->bitmap.rows);
+
+		// ============================
+		// 2.2 Store the metadata of each character sprite, like size, bearing and advance..
+		// ============================
+		Font::Character character = {
+			static_cast<float>(xOffset),	// WE STORE THE XOFFSET FIRST, SUBSEQUENTLY THIS WILL BE NORMALISED BASED ON ATLAS WIDTH.
+			glm::ivec2(glyph->bitmap.width, glyph->bitmap.rows),
+			glm::ivec2(glyph->bitmap_left, glyph->bitmap_top),
+			glyph->advance.x >> 6
+		};
+
+		characters.insert({ c, character });
+		xOffset += glyph->bitmap.width;
+
+		// ============================
+		// 2.3 Store the bytes of the glyph's bitmap into a vector..
+		// ============================
+		std::vector<unsigned char> bytes;
+		bytes.resize(glyph->bitmap.width * glyph->bitmap.rows);
+		
+		std::memcpy(bytes.data(), glyph->bitmap.buffer, bytes.size());
+
+		sprites.push_back({
+			glyph->bitmap.width,
+			glyph->bitmap.rows,
+			std::move(bytes)
+		});
+	}
+
+	// normalise texture unit offset in respect to atlas width..
+	for (auto& [c, character] : characters) {
+		character.tx /= atlasWidth;
+	}
+
+	// ============================
+	// 3. Time to serialize.
+	// ============================
+	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
+
+	if (!resourceFile) {
+		Logger::error("Failed to create resource file: {}. Compilation failed.", resourceFilePath.string);
+		return -1;
+	}
+
+	Font::Data data{
+		std::move(sprites),
+		std::move(characters),
+		atlasWidth,
+		atlasHeight,
+		FONT_SIZE
+	};
+
+	serializeToBinary(resourceFile, data);
+
 	return 0;
 }
 
@@ -229,6 +341,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "Material") {
 		return compileAsset.template operator()<Material>();
+	}
+	else if (resourceType == "Font") {
+		return compileAsset.template operator()<Font>();
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);

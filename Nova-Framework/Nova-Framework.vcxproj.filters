@@ -246,6 +246,9 @@
     <ClInclude Include="src\Resource\systemResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resource\font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Imported\glad.cpp">
@@ -420,6 +423,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Resource\systemResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\fontLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
