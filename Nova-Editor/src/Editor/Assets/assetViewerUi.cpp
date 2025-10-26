@@ -285,20 +285,6 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 
 				// recompile..
 				shader->compile();
-#if 0
-				AssetInfo<CustomShader> descriptorCopy = descriptor;
-
-				// we remove this old resource..
-				resourceManager.removeResource(selectedResourceId);
-				assetManager.removeResource(selectedResourceId);
-
-				// recompile.., will add to resource manager if compilation is successful.
-				auto&& [customShader, __] = resourceManager.getResource<CustomShader>(assetManager.createResourceFile<CustomShader>(descriptorCopy));
-
-				// skip a frame..
-				ImGui::EndCombo();
-				return;
-#endif
 			}
 		}
 

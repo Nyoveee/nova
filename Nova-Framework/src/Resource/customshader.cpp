@@ -34,31 +34,44 @@ void CustomShader::compile()
 	// We set up the appropriate vertex and fragment shader library files based on the current pipeline..
 	// ========================================================
 	std::string fShaderLibraryPath{};
-	std::string vShaderPath{};
+	std::string vShaderLibraryPath{};
 
 	switch (customShaderData.pipeline) {
 	case Pipeline::PBR:
-		vShaderPath = "System/Shader/PBR.vert";
+		vShaderLibraryPath = "System/Shader/Library/pbrlibrary.vert";
 		fShaderLibraryPath = "System/Shader/Library/pbrlibrary.frag";
 		break;
 	case Pipeline::Color:
-		vShaderPath = "System/Shader/standard.vert";
-		fShaderLibraryPath = "System/Shader/Library/color.frag";
+		vShaderLibraryPath = "System/Shader/Library/colorlibrary.vert";
+		fShaderLibraryPath = "System/Shader/Library/colorlibrary.frag";
+		break;
+	default:
+		assert(false && "Unhandled pipeline.");
+		return;
 	}
 
 	// ========================================================
-	// We retrieve the string contents from our vertex shader file..
+	// We retrieve the string contents from our vertex shader library file..
 	// ========================================================
-	std::ifstream vShaderFile{};
-	std::stringstream vShaderStream;
-	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	vShaderFile.open(vShaderPath);
+	std::ifstream vShaderLibraryFile{};
+	std::stringstream vShaderLibraryStream;
+	vShaderLibraryFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	vShaderLibraryFile.open(vShaderLibraryPath);
 
-	vShaderStream << vShaderFile.rdbuf();
-	std::string vertexCode = vShaderStream.str();
+	vShaderLibraryStream << vShaderLibraryFile.rdbuf();
 
 	// ========================================================
-	// We retrieve the string contents from our fragment shader file..
+	// We attach the vertex shader's fragment code and wrap it in main..
+	// ========================================================
+	vShaderLibraryStream << "\n// !! ==========================================";
+	vShaderLibraryStream << "\n// Custom Shader Vertex Code";
+	vShaderLibraryStream << "\n// !! ==========================================\n\n";
+	vShaderLibraryStream << "void main(){" << customShaderData.vShaderCode << "}";
+	
+	std::string vertexCode = vShaderLibraryStream.str();
+
+	// ========================================================
+	// We retrieve the string contents from our fragment shader library file..
 	// ========================================================
 	std::ifstream fShaderLibraryFile{};
 	std::stringstream fShaderLibraryStream;
@@ -95,6 +108,8 @@ void CustomShader::compile()
 	fShaderLibraryStream << "void main(){" << customShaderData.fShaderCode << "}";
 	std::string fragmentCode = fShaderLibraryStream.str();
 
+	std::cout << vertexCode << "\n========================\n";
+	std::cout << fragmentCode << "\n========================\n";
 	shader = Shader{ std::move(vertexCode), std::move(fragmentCode) };
 }
 

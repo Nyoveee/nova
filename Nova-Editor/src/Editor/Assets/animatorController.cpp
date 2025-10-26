@@ -432,7 +432,7 @@ void AnimatorController::handleDragAndDrop(Controller& controller) {
 	}
 
 	ImGuiPayload const* payload = nullptr;
-	if (payload = ImGui::AcceptDragDropPayload("DRAGGING_ANIMATION_ITEM"), !payload) {
+	if (payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM"), !payload) {
 		return;
 	}
 

@@ -45,6 +45,7 @@ public:
 		std::unordered_map<ShaderVariableName, ShaderVariableType> uniforms;
 		
 		// Code
+		std::string vShaderCode;
 		std::string fShaderCode;
 
 		Pipeline pipeline;
@@ -53,6 +54,7 @@ public:
 			blendingConfig,
 			depthTestingMethod,
 			uniforms,
+			vShaderCode,
 			fShaderCode,
 			pipeline
 		)

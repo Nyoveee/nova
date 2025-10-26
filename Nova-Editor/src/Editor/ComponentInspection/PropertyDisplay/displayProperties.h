@@ -71,24 +71,28 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 			auto& registry = editor.engine.ecs.registry;
 
 			for (auto entity : editor.getSelectedEntities()) {
-				// get their component..
-				MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
+				auto updateMaterial = [&]<typename T>() {
+					// get their component..
+					T* meshRenderer = registry.try_get<T>(entity);
 
-				if (!meshRenderer) {
-					continue;
-				}
+					if (!meshRenderer) {
+						return;
+					}
 
-				auto&& [model, _] = editor.resourceManager.getResource<Model>(resourceId);
+					auto&& [model, _] = editor.resourceManager.getResource<Model>(resourceId);
 
-				// invalid model..
-				if (!model) {
-					continue;
-				}
+					// invalid model..
+					if (!model) {
+						return;
+					}
 
-				// update material name mapping.. (@TODO: implement default texture)
-				std::vector<TypedResourceID<Material>> materialIds{};
-				materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ INVALID_RESOURCE_ID });
-				meshRenderer->materialIds = materialIds;
+					std::vector<TypedResourceID<Material>> materialIds{};
+					materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
+					meshRenderer->materialIds = materialIds;
+				};
+
+				updateMaterial.template operator()<MeshRenderer>();
+				updateMaterial.template operator()<SkinnedMeshRenderer>();
 			}
 		}
 	});

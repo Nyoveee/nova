@@ -307,7 +307,9 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 				Logger::error("Failed to create shader file.");
 			}
 			else {
-				std::string sampleShaderCode = R"(
+				std::string sampleShaderCode 
+#pragma region sampleShaderCode
+= R"(
 // Specify tags for rendering..
 Tags{
     Blending : AlphaBlending;
@@ -318,17 +320,54 @@ Tags{
 Properties{
     sampler2D albedoMap;
     Color colorTint;
+
     NormalizedFloat roughness;
-    NormalizedFloat metallic; 
+    NormalizedFloat metallic;
     NormalizedFloat occulusion;
+}
+
+// Vertex shader..
+Vert{
+// ======================================================
+// Uncomment this section of the code if you want to use the Color pipeline.
+#if 0
+    gl_Position = calculateClipPosition(position);
+    vsOut.textureUnit = textureUnit; 
+#endif
+
+// ======================================================
+// Comment this section of the code if you want to use the Color pipeline.
+#if 1
+    // Calculate world space of our local attributes..
+    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);
+    gl_Position = calculateClipPosition(worldSpace.position);
+
+    // Pass attributes to fragment shader.. //
+    vsOut.textureUnit = textureUnit;
+    vsOut.fragWorldPos = worldSpace.position.xyz / worldSpace.position.w;
+    vsOut.normal = worldSpace.normal;
+    vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
+#endif
+// ======================================================
 }
 
 // Fragment shader..
 Frag{
+// ======================================================
+// Uncomment this section of the code if you want to use the Color pipeline.
+#if 0
+	FragColor = vec4(color, 1.0);
+#endif
+
+// ======================================================
+// Comment this section of the code if you want to use the Color pipeline.
+#if 1
     vec4 albedo = texture(albedoMap, fsIn.textureUnit);
-    vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, fsIn.normal, roughness, metallic, occulusion);    
-    FragColor = vec4(pbrColor, 1.0); // asd 5 * 2 - 9
+    vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, fsIn.normal, roughness, metallic, occulusion);
+    FragColor = vec4(pbrColor, 1.0);
+#endif
 })";
+#pragma endregion sampleShaderCode
 				std::ofstream& shaderFile = opt.value();
 				shaderFile << sampleShaderCode;
 			}
@@ -484,22 +523,13 @@ void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
 		return;
 	}
 
-	auto beginDragging = [&](const char* dragSourceName) {
-		if (ImGui::BeginDragDropSource()) {
-			std::pair<size_t, const char*> map{ id, name };
-			ImGui::SetDragDropPayload(dragSourceName, &map, sizeof(map));
+	if (ImGui::BeginDragDropSource()) {
+		std::pair<size_t, const char*> map{ id, name };
+		ImGui::SetDragDropPayload("DRAGGING_ASSET_ITEM", &map, sizeof(map));
 
-			ImGui::Text("Dragging: %s", name);
+		ImGui::Text("Dragging: %s", name);
 
-			ImGui::EndDragDropSource();
-		}
-	};
-
-	if (resourceManager.isResource<Scene>(id)) {
-		beginDragging("DRAGGING_SCENE_ITEM");
-	}
-	else if (resourceManager.isResource<Model>(id)) {
-		beginDragging("DRAGGING_ANIMATION_ITEM");
+		ImGui::EndDragDropSource();
 	}
 }
 

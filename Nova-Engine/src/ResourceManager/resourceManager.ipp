@@ -17,17 +17,17 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 
 	// resource is not loaded, let's load it via our loaders.
 	// we first get the filepath of this resource id.
-	
-	// verify if it's the correct type..
-	if (!isResource<T>(id)) {
-		return ResourceQuery<T>{ nullptr, QueryResult::WrongType };
-	}
 
 	auto filepathIterator = resourceFilePaths.find(id);
 
 	// this resource file was never recorded. invalid resource id?
 	if (filepathIterator == resourceFilePaths.end()) {
 		return ResourceQuery<T>{ nullptr, QueryResult::Invalid };
+	}
+
+	// verify if it's the correct type..
+	if (!isResource<T>(id)) {
+		return ResourceQuery<T>{ nullptr, QueryResult::WrongType };
 	}
 
 	auto&& [_, resourceFilePath] = *filepathIterator;

@@ -88,7 +88,7 @@ void GameViewPort::update(float dt) {
 
 	// Accept scene item payload..
 	if (ImGui::BeginDragDropTarget()) {
-		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_SCENE_ITEM")) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
 			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
 
 			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);

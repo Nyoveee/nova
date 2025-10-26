@@ -32,6 +32,11 @@ public:
 		None
 	};
 
+	enum class MeshType {
+		Normal,
+		Skinned
+	};
+
 public:
 	Renderer(Engine& engine, int gameWidth, int gameHeight);
 
@@ -133,9 +138,10 @@ private:
 	CustomShader* setupMaterial(Material const& material, Transform const& transform);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
-	void renderMesh(Mesh const& mesh, Pipeline pipeline);
+	void renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType);
 
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
+	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
 	// sets model specific uniforms for all rendering pipeline. (like model matrix)
 	void setModelUniforms(Transform const& transform, entt::entity entity);
