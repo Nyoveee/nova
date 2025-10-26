@@ -30,7 +30,6 @@ void AssetViewerUI::update() {
 		ImGui::End();
 		return;
 	}
-
 	ImGui::Text("Resource ID: %zu", static_cast<std::size_t>(descriptorPtr->id));
 
 	ImGui::InputText("Name: ", &selectedResourceName);

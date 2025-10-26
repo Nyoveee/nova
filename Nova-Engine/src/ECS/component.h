@@ -21,6 +21,7 @@
 #include "reflection.h"
 #include "Engine/ScriptingAPIManager.h"
 #include "navMesh.h"
+#include "family.h"
 
 // Forward declaring..
 class Model;
@@ -44,11 +45,15 @@ struct EntityData {
 	std::string name;
 	entt::entity parent = entt::null;
 	std::vector<entt::entity> children = {};
+	TypedResourceID<Prefab> prefabID;
+	std::unordered_map<size_t, std::vector<int>> overridenProperties;
 
 	REFLECTABLE(
 		name,
 		parent,
-		children
+		children,
+		prefabID,
+		overridenProperties
 	)
 };
 

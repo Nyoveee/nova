@@ -3,6 +3,7 @@
 #include "AssetManager/assetManager.h"
 #include "Audio/audioSystem.h"
 #include "Engine/engine.h"
+#include "Editor/componentInspector.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <concepts>
@@ -82,20 +83,32 @@ namespace {
 					// here we gooooooooooooooooooooooooooooooo! time to list down all the primitives!
 					if constexpr (std::same_as<DataMemberType, int>) {
 						ImGui::InputInt(fieldData.name(), &dataMember);
+						if (ImGui::IsItemDeactivatedAfterEdit()) {
+							componentInspector.overrideProperties(component, dataMemberName);
+						}
 					}
 
 					else if constexpr (std::same_as<DataMemberType, float>) {
 						ImGui::InputFloat(fieldData.name(), &dataMember);
+						if (ImGui::IsItemDeactivatedAfterEdit()) {
+							componentInspector.overrideProperties(component, dataMemberName);
+						}
 					}
 
 					else if constexpr (std::same_as<DataMemberType, bool>) {
 						ImGui::Checkbox(fieldData.name(), &dataMember);
+						if (ImGui::IsItemDeactivatedAfterEdit()) {
+							componentInspector.overrideProperties(component, dataMemberName);
+						}
 					}
 
 					else if constexpr (std::same_as<DataMemberType, std::string>) {
 						ImGui::PushTextWrapPos();
 						ImGui::Text(fieldData.name());
 						ImGui::InputText("##", &dataMember);
+						if (ImGui::IsItemDeactivatedAfterEdit()) {
+							componentInspector.overrideProperties(component, dataMemberName);
+						}
 						ImGui::PopTextWrapPos();
 					}
 
@@ -112,12 +125,21 @@ namespace {
 
 							ImGui::TableNextColumn();
 							ImGui::InputFloat("x", &dataMember.x);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::TableNextColumn();
 							ImGui::InputFloat("y", &dataMember.y);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::TableNextColumn();
 							ImGui::InputFloat("z", &dataMember.z);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::EndTable();
 						}
@@ -143,15 +165,27 @@ namespace {
 							ImGui::BeginDisabled();
 							ImGui::TableNextColumn();
 							ImGui::SliderFloat("a", &dataMember.w, -1, 1);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::TableNextColumn();
 							ImGui::SliderFloat("bi", &dataMember.x, -1, 1);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::TableNextColumn();
 							ImGui::SliderFloat("cj", &dataMember.y, -1, 1);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::TableNextColumn();
 							ImGui::SliderFloat("dk", &dataMember.z, -1, 1);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 							ImGui::EndDisabled();
 
 							ImGui::EndTable();
@@ -180,12 +214,21 @@ namespace {
 
 							ImGui::TableNextColumn();
 							ImGui::InputFloat("pitch", &eulerAngles.x);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::TableNextColumn();
 							ImGui::InputFloat("yaw", &eulerAngles.y);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::TableNextColumn();
 							ImGui::InputFloat("roll", &eulerAngles.z);
+							if (ImGui::IsItemDeactivatedAfterEdit()) {
+								componentInspector.overrideProperties(component, dataMemberName);
+							}
 
 							ImGui::EndTable();
 						}
@@ -204,6 +247,10 @@ namespace {
 						if (ImGui::SliderFloat(fieldData.name(), &angle, 0.f, 360.f)) {
 							dataMember = toRadian(angle);
 						}
+						if (ImGui::IsItemDeactivatedAfterEdit()) {
+							componentInspector.overrideProperties(component, dataMemberName);
+						}
+
 					}
 
 					if constexpr (std::same_as<DataMemberType, ResourceID>) {
@@ -344,6 +391,9 @@ namespace {
 								if (ImGui::DragFloat("Adjust Volume", &audioData.Volume, 0.10f, 0.0f, 2.0f, "%.2f")) {
 									audioSystem.AdjustVol(audioData.AudioId, audioData.Volume);
 								}
+								if (ImGui::IsItemDeactivatedAfterEdit()) {
+									componentInspector.overrideProperties(component, dataMemberName);
+								}
 
 								if (ImGui::Button("Stop Audio")) {
 									audioSystem.StopAudio(audioData.AudioId);
@@ -379,8 +429,8 @@ namespace {
 							ImGui::EndCombo();
 						}
 					}
-
 					ImGui::PopID();
+
 				},
 			component);
 			ImGui::PopID();

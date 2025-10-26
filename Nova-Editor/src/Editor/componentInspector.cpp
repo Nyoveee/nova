@@ -6,6 +6,7 @@
 #include "ECS/ECS.h"
 #include "AssetManager/assetManager.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include "reflection.h"
 
 #include "IconsFontAwesome6.h"
 
@@ -94,6 +95,10 @@ void ComponentInspector::update() {
 		}
 
 		ImGui::EndChild();
+		std::string prefabIdString = std::to_string(static_cast<std::size_t>(entityData.prefabID));
+		ImGui::Text("PrefabID: ");
+		ImGui::SameLine();
+		ImGui::Text(prefabIdString.c_str());
 		
 	}
 
@@ -132,5 +137,43 @@ void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptDa
 	}
 }
 
+template<typename T>
+void ComponentInspector::overrideProperties( T component, const char* dataMemberName) {
+	entt::entity selectedEntity = editor.getSelectedEntities()[0];
+	entt::registry& registry = ecs.registry;
+
+	EntityData& entityData = registry.get<EntityData>(selectedEntity);
+	int index{};
+	bool sameName{ false };
+
+	reflection::visit(
+		[&](auto fieldData) {
+			auto& dataMember = fieldData.get();
+			constexpr const char* name = fieldData.name();
+
+			if (name == dataMemberName) {
+				sameName = true;
+			}
+			if (!sameName) {
+				index++;
+			}
+
+		}, component);
+	
+	//std::cout << "\nTEST " << Family::id<T>() << std::endl;
+
+	std::vector<int>::iterator it = std::find(entityData.overridenProperties[Family::id<T>()].begin(), entityData.overridenProperties[Family::id<T>()].end(), index);
+	if (it == entityData.overridenProperties[Family::id<T>()].end()) {
+		entityData.overridenProperties[Family::id<T>()].push_back(index);
+	}
+
+	std::sort(entityData.overridenProperties[Family::id<T>()].begin(), entityData.overridenProperties[Family::id<T>()].end());
+	for (std::pair<std::size_t, std::vector<int>> pair : entityData.overridenProperties) {
+		std::cout <<std::endl<< pair.first << " and ";
+		for (int i : pair.second) {
+			std::cout << i << " ";
+		}
+	}
+}
 
 #include "displayComponent.ipp"

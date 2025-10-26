@@ -106,6 +106,20 @@ void GameViewPort::update(float dt) {
 			// deselect entity.
 			editor.selectEntities({});
 		}
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("PREFAB_ITEM")) {
+			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
+
+			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+
+			AssetFilePath const* filePath = editor.assetManager.getFilepath(id);
+
+			if (filePath) {
+				Serialiser::deserialisePrefab(filePath->string.c_str(), engine.ecs.registry, id);
+			}
+
+			// deselect entity.
+			editor.selectEntities({});
+		}
 
 		ImGui::EndDragDropTarget();
 	}

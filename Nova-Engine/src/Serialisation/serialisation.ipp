@@ -259,6 +259,18 @@ namespace Serialiser {
 					componentJson[dataMemberName] = magic_enum::enum_name(dataMember);
 				}
 
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::size_t, std::vector<int>>>) {
+					json overridenProperties;
+					std::vector<json> jsonVec;
+					for (auto&& [componentID, vector] : dataMember) {
+						json tempJson;
+						tempJson["ComponentID"] = componentID;
+						tempJson["index"] = vector;
+						jsonVec.push_back(tempJson);
+					}
+					componentJson[dataMemberName] = jsonVec;
+				}
+
 				else {
 					// int, float, std::string,
 					componentJson[dataMemberName] = dataMember;
@@ -502,6 +514,19 @@ namespace Serialiser {
 					if (temp.has_value()) {
 						dataMember = temp.value();
 					}
+				}
+
+				else if constexpr (std::same_as<DataMemberType, std::unordered_map<std::size_t, std::vector<int>>>) {
+					std::unordered_map<std::size_t, std::vector<int>> map;
+
+					for (auto json : jsonComponent[componentName]["overridenProperties"]) {
+						
+						for (int i : json["index"]) {
+							map[json["ComponentID"]].push_back(i);
+						}
+						
+					}
+					dataMember = map;
 				}
 
 				else {

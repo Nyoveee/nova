@@ -50,7 +50,10 @@ void AssetManagerUI::update() {
 	if (ImGui::BeginDragDropTarget()) {
 		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
 			entt::entity entity = *((entt::entity*)payload->Data);
-			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity);
+			EntityData* entityData = editor.engine.ecs.registry.try_get<EntityData>(entity);
+			std::string fileName = entityData->name;
+			
+			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, createAssetFile(".prefab", fileName), std::numeric_limits<std::size_t>::max());
 		}
 
 		ImGui::EndDragDropTarget();
@@ -369,6 +372,10 @@ void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextur
 		dragAndDrop(name, resourceIdOrFolderId);
 	}
 
+	if (resourceManager.isResource<Prefab>(ResourceID{ resourceIdOrFolderId })) {
+		dragAndDrop(name, resourceIdOrFolderId);
+	}
+
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);
 	ImGui::PopTextWrapPos();
@@ -426,14 +433,28 @@ void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
 		return;
 	}
 
-	if (ImGui::BeginDragDropSource()) {
-		std::pair<size_t, const char*> map{id, name};
-		ImGui::SetDragDropPayload("SCENE_ITEM", &map, sizeof(map));
+	if (resourceManager.isResource<Scene>(ResourceID{ id })) {
+		if (ImGui::BeginDragDropSource()) {
+			std::pair<size_t, const char*> map{ id, name };
+			ImGui::SetDragDropPayload("SCENE_ITEM", &map, sizeof(map));
 
-		ImGui::Text("Dragging: %s", name);
+			ImGui::Text("Dragging: %s", name);
 
-		ImGui::EndDragDropSource();
+			ImGui::EndDragDropSource();
+		}
 	}
+	else if (resourceManager.isResource<Prefab>(ResourceID{ id })) {
+		if (ImGui::BeginDragDropSource()) {
+			std::pair<size_t, const char*> map{ id, name };
+			ImGui::SetDragDropPayload("PREFAB_ITEM", &map, sizeof(map));
+
+			ImGui::Text("Dragging: %s", name);
+
+			ImGui::EndDragDropSource();
+		}
+	}
+	
+
 }
 
 std::optional<std::ofstream> AssetManagerUI::createAssetFile(std::string const& extension, std::string filename) {

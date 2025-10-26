@@ -1,6 +1,7 @@
 #include "imgui.h"
 #include "ECS/ECS.h"
 #include "ECS/Component.h"
+#include "componentInspector.h"
 
 template<typename ...Components>
 void ComponentInspector::displayComponentDropDownList(entt::entity entity) {
