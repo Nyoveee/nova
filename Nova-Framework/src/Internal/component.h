@@ -268,9 +268,9 @@ struct AudioData
 	bool stopAudio							{ false };
 
 	REFLECTABLE(
-		AudioId,
-		Volume,
-		StopAudio
+		audioId,
+		volume,
+		stopAudio
 	)
 	
 };
