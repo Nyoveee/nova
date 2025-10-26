@@ -11,7 +11,7 @@ void main()
 
     // Extract only bright fragments (threshold)
     float brightness = dot(vec3(color), vec3(0.2126, 0.7152, 0.0722)); // luminance
-    if(brightness > 0.7) // threshold
+    if(brightness > 0.6) // threshold
         FragColor = color;
     else
         FragColor = vec4(0.0, 0.0, 0.0, 1.0);

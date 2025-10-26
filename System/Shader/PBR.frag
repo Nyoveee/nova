@@ -14,6 +14,12 @@ uniform vec3 albedo;
 uniform bool isUsingAlbedoMap;
 uniform sampler2D albedoMap;
 
+// === EMISSIVE TEXTURE ===
+uniform bool isUsingEmissiveMap;
+uniform sampler2D emissiveMap;
+uniform vec3 emissiveColor;
+uniform float emissiveIntensity;
+
 struct Config {
 	float roughness;
 	float metallic;
@@ -116,8 +122,16 @@ void main() {
         cfg = material;
     }
 
+    vec3 emissive = vec3(0.0);
+    if (isUsingEmissiveMap)
+        emissive = texture(emissiveMap, fsIn.textureUnit).rgb * emissiveIntensity;
+    else
+        emissive = emissiveColor * emissiveIntensity;
+
+
     // ambient is the easiest.
-    vec3 finalColor = ambientFactor * baseColor * cfg.occulusion;
+    //vec3 finalColor = ambientFactor * baseColor * cfg.occulusion;
+    vec3 finalColor = ambientFactor * baseColor * cfg.occulusion * emissive;
 
     // Calculate diffuse and specular light for each light.
     for(int i = 0; i < pointLightCount; ++i) {

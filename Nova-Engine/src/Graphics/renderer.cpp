@@ -877,6 +877,21 @@ void Renderer::setupPBRShader(Material const& material) {
 
 		}, material.config);
 
+	// --- Emissive Map
+	if (material.emissiveMap) {
+		auto&& [emissive, result] = resourceManager.getResource<Texture>(material.emissiveMap.value());
+		if (emissive) {
+			PBRShader.setBool("isUsingEmissiveMap", true);
+			glBindTextureUnit(3, emissive->getTextureId());
+			PBRShader.setImageUniform("emissiveMap", 3);
+		}
+	}
+	else {
+		PBRShader.setBool("isUsingEmissiveMap", false);
+		PBRShader.setVec3("emissiveColor", 1.0f,0.0f,0.0f);
+		PBRShader.setFloat("emissiveIntensity", 1.0f);
+	}
+
 	PBRShader.setFloat("ambientFactor", material.ambient);
 
 	PBRShader.use();

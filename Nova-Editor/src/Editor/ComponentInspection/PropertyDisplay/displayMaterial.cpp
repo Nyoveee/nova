@@ -150,6 +150,21 @@ void displayMaterialUI(Material& material, ComponentInspector& componentInspecto
 		}
 	}
 
+	if (!material.emissiveMap) {
+		if (ImGui::Button("Use a emissive map.")) {
+			material.emissiveMap = componentInspector.resourceManager.getSomeResourceID<Texture>();
+		}
+	}
+	else {
+		componentInspector.editor.displayAssetDropDownList<Texture>(material.emissiveMap.value(), "Emissive Map", [&](ResourceID selectedResourceId) {
+			material.emissiveMap = selectedResourceId;
+			});
+
+		if (ImGui::Button("Remove emissive map.")) {
+			material.emissiveMap = std::nullopt;
+		}
+	}
+
 	if (material.renderingPipeline == Material::Pipeline::Color) {
 		ImGui::EndDisabled();
 	}

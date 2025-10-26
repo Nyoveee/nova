@@ -69,6 +69,7 @@ struct Material {
 	std::variant<ResourceID, Color>		albedo = Color{ 0.1f, 0.1f, 0.1f };
 	std::variant<ResourceID, Config>	config = Config{ 0.5f, 0.f, 0.f };
 	std::optional<ResourceID>			normalMap = std::nullopt;
+	std::optional<ResourceID>			emissiveMap = std::nullopt;
 
 	float ambient = 0.1f;
 };
