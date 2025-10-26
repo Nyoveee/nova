@@ -94,22 +94,35 @@ void AssetManager::updateAssetCache(AssetInfo<T> const& descriptor) const {
 template<ValidResource T>
 void AssetManager::loadSystemResourceDescriptor(std::unordered_map<ResourceID, ResourceFilePath> const& systemResources) {
 	for (auto&& [id, filepath] : systemResources) {
-		std::string name = "[SYSTEM] " + static_cast<std::filesystem::path>(filepath).filename().string();
-		BasicAssetInfo assetInfo{ id, std::move(name) };
-		assetToDescriptor.insert({ id, std::make_unique<AssetInfo<T>>(assetInfo) });
+		DescriptorFilePath descriptorFilePath = std::filesystem::path{ filepath }.replace_extension(".desc");
+		
+		auto optional = AssetIO::parseDescriptorFile<T>(descriptorFilePath, AssetIO::systemResourceDirectory);
+
+		AssetInfo<T> descriptor = [&]() {
+			if (optional) { return optional.value(); }
+			else		  { return AssetInfo<T>{id, static_cast<std::filesystem::path>(filepath).filename().string()}; }
+		}();
+
+		descriptor.id = id;
+		assetToDescriptor.insert({ id, std::make_unique<AssetInfo<T>>(descriptor) });
+		systemResourcesId.insert(id);
 	}
 }
 
 template<ValidResource T>
 void AssetManager::serializeAllResources() {
 	for (auto const& resourceId : resourceManager.getAllResources<T>()) {
+		if (systemResourcesId.contains(resourceId)) {
+			continue;
+		}
+
 		T* resource = resourceManager.getResourceOnlyIfLoaded<T>(resourceId);
 
 		if (!resource) {
 			continue;
 		}
 
-		// get asset file path.
+		// get descriptor..
 		auto iterator = assetToDescriptor.find(resourceId);
 
 		if (iterator == assetToDescriptor.end()) {
@@ -119,26 +132,44 @@ void AssetManager::serializeAllResources() {
 
 		auto&& [__, descriptor] = *iterator;
 
-		AssetFilePath const& assetFilePath = descriptor->filepath;
+		std::ofstream outputFile = [&]() -> std::ofstream {
+			// Controller and material wants to overwrite the original asset file..
+			if constexpr (std::same_as<T, Controller> || std::same_as<T, Material>) {
+				return std::ofstream{ descriptor->filepath };
+			}
+			// Custom shader wants to overwrite the resource file..
+			else if constexpr (std::same_as <T, CustomShader>) {
+				return std::ofstream{ AssetIO::getResourceFilename<T>(resourceId) };
+			}
+			else {
+				static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
+				return {};
+			}
+		}();
 
-		// overwrite the original asset file.
-		std::ofstream outputFile{ assetFilePath };
+		if (!outputFile) {
+			assert(false && "Invalid file?");
+			continue;
+		}
 
+		// get resource file..
 		if constexpr (std::same_as<T, Controller>) {
 			Serialiser::serializeToJsonFile(resource->data, outputFile);
+			Logger::info("Serialised controller: {}", static_cast<std::size_t>(resourceId));
 		}
 		else if constexpr (std::same_as<T, Material>) {
 			Serialiser::serializeToJsonFile(resource->materialData, outputFile);
+			Logger::info("Serialised material: {}", static_cast<std::size_t>(resourceId));
 		}
 		else if constexpr (std::same_as<T, CustomShader>) {
 			Serialiser::serializeToJsonFile(resource->customShaderData, outputFile);
+			Logger::info("Serialised shader: {}", static_cast<std::size_t>(resourceId));
 		}
 		else {
 			static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
 			return;
 		}
 
-		Logger::info("Serialised asset: {}", assetFilePath.string);
 	}
 }
 

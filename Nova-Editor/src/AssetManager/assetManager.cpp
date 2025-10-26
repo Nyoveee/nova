@@ -129,10 +129,13 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	// 5. We load descriptors for system resources, most importantly name.
 	// ========================================
 	Logger::info("===========================");
-	Logger::info("Loading system resources name..");
+	Logger::info("Loading system resources descriptors..");
 	Logger::info("===========================\n");
 
-	loadSystemResourceDescriptor<Model>(ResourceManager::systemModelResources);
+	loadSystemResourceDescriptor<Model>(AssetIO::systemModelResources);
+	loadSystemResourceDescriptor<CustomShader>(AssetIO::systemShaderResources);
+	loadSystemResourceDescriptor<Material>(AssetIO::systemMaterialResources);
+	loadSystemResourceDescriptor<Texture>(AssetIO::systemTextureResources);
 
 	// By now everything should be serialized, compile the entity scripts
 	engine.scriptingAPIManager.compileScriptAssembly();
@@ -154,6 +157,7 @@ AssetManager::~AssetManager() {
 	// Asset manager serialises all of the resources that is modified directly in the end.
 	serializeAllResources<Controller>();
 	serializeAllResources<Material>();
+	serializeAllResources<CustomShader>();
 }
 
 void AssetManager::submitCallback(std::function<void()> callback) {

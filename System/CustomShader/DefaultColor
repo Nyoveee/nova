@@ -1,0 +1,10 @@
+{
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "DepthTest",
+    "fShaderCode": "\n    FragColor = vec4(color, 1.0); // ok\n",
+    "pipeline": "Color",
+    "uniforms": {
+        "color": "Color"
+    },
+    "vShaderCode": "    \n    gl_Position = calculateClipPosition(position);\n\n    // pass texture units to fragment shader..\n    vsOut.textureUnit = textureUnit; \n"
+}

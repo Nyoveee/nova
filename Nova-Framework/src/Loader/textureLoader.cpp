@@ -10,7 +10,7 @@
 
 std::optional<ResourceConstructor> ResourceLoader<Texture>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
 	gli::texture texture = gli::load(resourceFilePath.string);
-	
+
 	if (texture.empty()) {
 		return std::nullopt;
 	}

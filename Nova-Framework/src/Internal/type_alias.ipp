@@ -180,7 +180,8 @@ constexpr FolderID::operator std::size_t() const {
 	return id;
 }
 
-constexpr inline FolderID ASSET_FOLDER{ std::numeric_limits<std::size_t>::max() };
+constexpr inline FolderID ASSET_FOLDER	{ std::numeric_limits<std::size_t>::max() };
+constexpr inline FolderID NO_FOLDER		{ std::numeric_limits<std::size_t>::max() - 1UL };
 
 // ================ AudioInstanceID ==================
 constexpr AudioInstanceID::AudioInstanceID() : id{} {}

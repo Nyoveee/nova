@@ -5,7 +5,6 @@ layout (location = 1) in vec2 textureUnit;
 layout (location = 2) in vec3 normal;
 layout (location = 3) in vec3 tangent;
 layout (location = 4) in vec3 bitangent;
-
 layout (location = 5) in ivec4 boneIds;
 layout (location = 6) in vec4 boneWeights;
 
@@ -34,8 +33,6 @@ const int INVALID_BONE = -1;
 
 void main()
 {
-    mat4 boneTransform = mat4(1.0);
-
     vec4 localPosition = vec4(0.0);
     vec3 localNormal = vec3(0.0);
     vec3 localTangent = vec3(0.0);

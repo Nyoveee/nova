@@ -16,6 +16,8 @@
 #include "Profiling.h"
 #include "Logger.h"
 
+#include "systemResource.h"
+
 #undef max
 
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
@@ -70,7 +72,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 								// we allocate memory for view and projection matrix.
 	sharedUBO					{ 2 * sizeof(glm::mat4) },
 	
-	bonesSSBO					{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) },
+								// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
+	bonesSSBO					{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
 	camera						{},
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
@@ -159,55 +162,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glEnableVertexArrayAttrib(mainVAO, 3);
 	glEnableVertexArrayAttrib(mainVAO, 4);
 	glEnableVertexArrayAttrib(mainVAO, 5);
-
-	// ======================================================
-	// Debug VAO configuration
-	// - No EBO. A much simpler VAO containing only position.
-	// ======================================================
-#if 0
-	glCreateVertexArrays(1, &debugVAO);
-	
-	// for this VAO, associate bindingIndex 0 with this VBO. 
-	constexpr GLuint debugBindingIndex = 0;
-
-	glVertexArrayVertexBuffer(debugVAO, debugBindingIndex, debugPhysicsVBO.id(), 0, sizeof(SimpleVertex));
-
-	// associate attribute index 0 with the respective attribute properties.
-	glVertexArrayAttribFormat(debugVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(SimpleVertex, pos));
-
-	// enable attribute
-	glEnableVertexArrayAttrib(debugVAO, 0);
-
-	// associate vertex attribute 0 with binding index 1.
-	glVertexArrayAttribBinding(debugVAO, 0, debugBindingIndex);
-	// ======================================================
-	// Particle VAO configuration
-	// ======================================================
-	glCreateVertexArrays(1, &particleVAO);
-	constexpr GLuint particleBindingIndex = 0;
-
-	// Bind this EBO to this VAO.
-	glVertexArrayElementBuffer(particleVAO, EBO.id());
-
-	// Associate binding index 0 with this vbo for particleVAO
-	glVertexArrayVertexBuffer(particleVAO, particleBindingIndex, mainVBO.id(), 0, sizeof(ParticleVertex));
-
-	// Associate Attribute Indexes with their properties
-	glVertexArrayAttribFormat(particleVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, localPos));
-	glVertexArrayAttribFormat(particleVAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, worldPos));
-	glVertexArrayAttribFormat(particleVAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, texCoord));
-	glVertexArrayAttribFormat(particleVAO, 3, 4, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, color));
-	glVertexArrayAttribFormat(particleVAO, 4, 1, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, rotation));
-
-
-
-	// Associate vertex attributes with binding index 0
-	glVertexArrayAttribBinding(particleVAO, 0, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 1, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 2, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 3, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 4, particleBindingIndex);
-#endif
 }
 
 Renderer::~Renderer() {
@@ -638,6 +592,12 @@ void Renderer::renderSkyBox() {
 void Renderer::renderModels() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);	
 
+	glEnable(GL_CULL_FACE);
+
+	// indicate that this is NOT a skinned mesh renderer..
+	static const unsigned int isNotASkinnedMeshRenderer = 0;
+	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
+
 	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
 		// Retrieves model asset from asset manager.
 		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
@@ -660,49 +620,9 @@ void Renderer::renderModels() {
 
 			if (shader) {
 				// time to draw!
-				renderMesh(mesh, shader->customShaderData.pipeline);
+				renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
 			}
 		}
-#if 0
-		// Set up stencil operation
-		if (meshRenderer.toRenderOutline) {
-			glStencilMask(0xFF);	// allows writing the full byte of the stencil's buffer.
-		}
-		else {
-			glStencilMask(0x00);	// don't write to the stencil buffer. this object is not going to be outlined.
-		}
-		
-		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			Material const* material = obtainMaterial(meshRenderer, mesh);
-
-			if (!material) {
-				continue;
-			}
-
-			// uses the appropriate shader and sets the appropriate uniform based on
-			// configured rendering pipeline.
-			switch (material->renderingPipeline)
-			{
-			case Material::Pipeline::PBR:	
-				setupPBRShader(*material);
-				break;
-			case Material::Pipeline::BlinnPhong:
-				setupBlinnPhongShader(*material);
-				break;
-			case Material::Pipeline::Color:
-				setupColorShader(*material);
-			}
-
-			// time to draw!
-			mainVBO.uploadData(mesh.vertices);
-			EBO.uploadData(mesh.indices);
-			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
-
-			// render object id into object id FBO.
-			renderObjectId(mesh.numOfTriangles * 3);
-		}
-#endif
 	}
 
 	glDisable(GL_CULL_FACE);
@@ -714,9 +634,9 @@ void Renderer::renderSkinnedModels() {
 	// enable back face culling for our 3d models..
 	glEnable(GL_CULL_FACE);
 
-	// enable skeletal animation vertex attribute..
-	glEnableVertexArrayAttrib(mainVAO, 5);
-	glEnableVertexArrayAttrib(mainVAO, 6);
+	// indicate that this is a skinned mesh renderer..
+	static const unsigned int isSkinnedMeshRenderer = 1;
+	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isSkinnedMeshRenderer);
 
 	for (auto&& [entity, transform, skinnedMeshRenderer] : registry.view<Transform, SkinnedMeshRenderer>().each()) {
 		// Retrieves model asset from asset manager.
@@ -726,14 +646,9 @@ void Renderer::renderSkinnedModels() {
 			// missing model.
 			continue;
 		}
-
-#if 0
-		// Setting model specific uniform..
-		skeletalAnimationShader.setMatrix("model", transform.modelMatrix);
-		skeletalAnimationShader.setMatrix("normalMatrix", transform.normalMatrix);
-
+		
 		// upload all bone matrices..
-		glNamedBufferSubData(bonesSSBO.id(), 0, skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
+		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
 
 		// Draw every mesh of a given model.
 		for (auto const& mesh : model->meshes) {
@@ -743,26 +658,17 @@ void Renderer::renderSkinnedModels() {
 				continue;
 			}
 
-			// TEMP!! WE FORCE EVERY SKINNED MESH RENDERER TO USE A PBR FOR NOW.
-			setupSkeletalShader(*material);
+			// Use the correct shader and configure it's required uniforms..
+			CustomShader* shader = setupMaterial(*material, transform);
 
-			// time to draw!
-			mainVBO.uploadData(mesh.vertices);
-			skeletalVBO.uploadData(mesh.vertexWeights);
-
-			EBO.uploadData(mesh.indices);
-			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
-
-			// render object id into object id FBO.
-			renderObjectId(mesh.numOfTriangles * 3);
+			if (shader) {
+				// time to draw!
+				renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
+			}
 		}
-#endif 
 	}
 
 	glDisable(GL_CULL_FACE);
-
-	glDisableVertexArrayAttrib(mainVAO, 5);
-	glDisableVertexArrayAttrib(mainVAO, 6);
 }
 
 void Renderer::renderOutline() {
@@ -855,244 +761,6 @@ void Renderer::renderParticles()
 #endif
 }
 
-#if 0
-
-void Renderer::setupBlinnPhongShader(Material const& material) {
-	// Handle albedo.
-	std::visit([&](auto&& albedo) {
-		using T = std::decay_t<decltype(albedo)>;
-
-		if constexpr (std::same_as<T, ResourceID>) {
-			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
-
-			if (!texture) {
-				// fallback..
-				blinnPhongShader.setBool("isUsingAlbedoMap", false);
-				blinnPhongShader.setVec3("albedo", { 0.2f, 0.2f, 0.2f });
-			}
-			else {
-				blinnPhongShader.setBool("isUsingAlbedoMap", true);
-				glBindTextureUnit(0, texture->getTextureId());
-				blinnPhongShader.setImageUniform("albedoMap", 0);
-			}
-		}
-		else /* it's Color */ {
-			blinnPhongShader.setBool("isUsingAlbedoMap", false);
-			blinnPhongShader.setVec3("albedo", albedo);
-		}
-
-	}, material.albedo);
-
-	// Handle normal map
-	if (material.normalMap) {
-		auto&& [normalMap, result] = resourceManager.getResource<Texture>(material.normalMap.value());
-
-		if (normalMap) {
-			blinnPhongShader.setBool("isUsingNormalMap", true);
-			glBindTextureUnit(1, normalMap->getTextureId());
-			blinnPhongShader.setImageUniform("normalMap", 1);
-		}
-	}
-	else {
-		blinnPhongShader.setBool("isUsingNormalMap", false);
-	}
-
-	blinnPhongShader.setFloat("ambientFactor", material.ambient);
-
-	// calling use after setting uniforms?
-	// thats right, DSA the goat.
-	blinnPhongShader.use();
-}
-
-void Renderer::setupPBRShader(Material const& material) {
-	// Handle albedo.
-	std::visit([&](auto&& albedo) {
-		using T = std::decay_t<decltype(albedo)>;
-
-		if constexpr (std::same_as<T, ResourceID>) {
-			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
-
-			if (!texture) {
-				// fallback..
-				PBRShader.setBool("isUsingAlbedoMap", false);
-				PBRShader.setVec3("albedo", { 0.2f, 0.2f, 0.2f });
-			}
-			else {
-				PBRShader.setBool("isUsingAlbedoMap", true);
-				glBindTextureUnit(0, texture->getTextureId());
-				PBRShader.setImageUniform("albedoMap", 0);
-			}
-		}
-		else /* it's Color */ {
-			PBRShader.setBool("isUsingAlbedoMap", false);
-			PBRShader.setVec3("albedo", albedo);
-		}
-
-		}, material.albedo);
-
-	// Handle normal map
-	if (material.normalMap) {
-		auto&& [normalMap, result] = resourceManager.getResource<Texture>(material.normalMap.value());
-
-		if (normalMap) {
-			PBRShader.setBool("isUsingNormalMap", true);
-			glBindTextureUnit(1, normalMap->getTextureId());
-			PBRShader.setImageUniform("normalMap", 1);
-		}
-	}
-	else {
-		PBRShader.setBool("isUsingNormalMap", false);
-	}
-
-	std::visit([&](auto&& config) {
-		using T = std::decay_t<decltype(config)>;
-
-		// Packed map
-		if constexpr (std::same_as<T, ResourceID>) {
-			auto&& [texture, result] = resourceManager.getResource<Texture>(config);
-			if (!texture) {
-				PBRShader.setBool("isUsingPackedTextureMap", false);
-				PBRShader.setFloat("material.roughness", 0.2f);
-				PBRShader.setFloat("material.metallic", 0.2f);
-				PBRShader.setFloat("material.occulusion", 0.2f);
-			}
-			else {
-				PBRShader.setBool("isUsingPackedTextureMap", true);
-				glBindTextureUnit(2, texture->getTextureId());
-				PBRShader.setImageUniform("packedMap", 2);
-			}
-		}
-		// Constants
-		else {
-			PBRShader.setBool("isUsingPackedTextureMap", false);
-			PBRShader.setFloat("material.roughness", config.roughness);
-			PBRShader.setFloat("material.metallic", config.metallic);
-			PBRShader.setFloat("material.occulusion", config.occulusion);
-		}
-
-		}, material.config);
-
-	PBRShader.setFloat("ambientFactor", material.ambient);
-
-	PBRShader.use();
-}
-
-void Renderer::setupSkeletalShader(Material const& material) {
-	// Handle albedo.
-	std::visit([&](auto&& albedo) {
-		using T = std::decay_t<decltype(albedo)>;
-
-		if constexpr (std::same_as<T, ResourceID>) {
-			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
-
-			if (!texture) {
-				// fallback..
-				skeletalAnimationShader.setBool("isUsingAlbedoMap", false);
-				skeletalAnimationShader.setVec3("albedo", { 0.2f, 0.2f, 0.2f });
-			}
-			else {
-				skeletalAnimationShader.setBool("isUsingAlbedoMap", true);
-				glBindTextureUnit(0, texture->getTextureId());
-				skeletalAnimationShader.setImageUniform("albedoMap", 0);
-			}
-		}
-		else /* it's Color */ {
-			skeletalAnimationShader.setBool("isUsingAlbedoMap", false);
-			skeletalAnimationShader.setVec3("albedo", albedo);
-		}
-
-		}, material.albedo);
-
-	// Handle normal map
-	if (material.normalMap) {
-		auto&& [normalMap, result] = resourceManager.getResource<Texture>(material.normalMap.value());
-
-		if (normalMap) {
-			skeletalAnimationShader.setBool("isUsingNormalMap", true);
-			glBindTextureUnit(1, normalMap->getTextureId());
-			skeletalAnimationShader.setImageUniform("normalMap", 1);
-		}
-	}
-	else {
-		skeletalAnimationShader.setBool("isUsingNormalMap", false);
-	}
-
-	std::visit([&](auto&& config) {
-		using T = std::decay_t<decltype(config)>;
-
-		// Packed map
-		if constexpr (std::same_as<T, ResourceID>) {
-			auto&& [texture, result] = resourceManager.getResource<Texture>(config);
-			if (!texture) {
-				skeletalAnimationShader.setBool("isUsingPackedTextureMap", false);
-				skeletalAnimationShader.setFloat("material.roughness", 0.2f);
-				skeletalAnimationShader.setFloat("material.metallic", 0.2f);
-				skeletalAnimationShader.setFloat("material.occulusion", 0.2f);
-			}
-			else {
-				skeletalAnimationShader.setBool("isUsingPackedTextureMap", true);
-				glBindTextureUnit(2, texture->getTextureId());
-				skeletalAnimationShader.setImageUniform("packedMap", 2);
-			}
-		}
-		// Constants
-		else {
-			skeletalAnimationShader.setBool("isUsingPackedTextureMap", false);
-			skeletalAnimationShader.setFloat("material.roughness", config.roughness);
-			skeletalAnimationShader.setFloat("material.metallic", config.metallic);
-			skeletalAnimationShader.setFloat("material.occulusion", config.occulusion);
-		}
-
-	}, material.config);
-
-	skeletalAnimationShader.setFloat("ambientFactor", material.ambient);
-
-	skeletalAnimationShader.use();
-}
-
-void Renderer::setupColorShader(Material const& material) {
-	// Handle albedo.
-	std::visit([&](auto&& albedo) {
-		using T = std::decay_t<decltype(albedo)>;
-
-		if constexpr (std::same_as<T, ResourceID>) {
-			auto&& [texture, result] = resourceManager.getResource<Texture>(albedo);
-
-			if (!texture) {
-				// fallback..
-				colorShader.use();
-				colorShader.setVec3("color", { 0.2f, 0.2f, 0.2f });
-			}
-			else {
-				textureShader.use();
-				glBindTextureUnit(0, texture->getTextureId());
-				textureShader.setImageUniform("image", 0);
-			}
-		}
-		else /* it's Color */ {
-			colorShader.use();
-			colorShader.setVec3("color", albedo);
-		}
-
-	}, material.albedo);
-}
-
-
-void Renderer::setModelUniforms(Transform const& transform, entt::entity entity) {
-	blinnPhongShader.setMatrix("model", transform.modelMatrix);
-	blinnPhongShader.setMatrix("normalMatrix", transform.normalMatrix);
-	PBRShader.setMatrix("model", transform.modelMatrix);
-	PBRShader.setMatrix("normalMatrix", transform.normalMatrix);
-
-	colorShader.setMatrix("model", transform.modelMatrix);
-
-	textureShader.setMatrix("model", transform.modelMatrix);
-
-	objectIdShader.setMatrix("model", transform.modelMatrix);
-	objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
-}
-#endif
-
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {
 	if (mesh.materialIndex >= meshRenderer.materialIds.size()) {
 		return nullptr;
@@ -1102,20 +770,14 @@ Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh 
 	return material;
 }
 
-#if 0
 Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh) {
-	auto iterator = skinnedMeshRenderer.materials.find(mesh.materialName);
-
-	if (iterator == skinnedMeshRenderer.materials.end()) {
-		Logger::warn("This shouldn't happen. Material in component does not correspond to material on mesh.");
+	if (mesh.materialIndex >= skinnedMeshRenderer.materialIds.size()) {
 		return nullptr;
 	}
 
-	// We have successfully retrieved the materials. Let's retrieve the individual components.
-	auto&& [__, material] = *iterator;
-	return &material;
+	auto&& [material, _] = resourceManager.getResource<Material>(skinnedMeshRenderer.materialIds[mesh.materialIndex]);
+	return material;
 }
-#endif
 
 void Renderer::setBlendMode(CustomShader::BlendingConfig configuration) {
 	switch (configuration) {
@@ -1290,6 +952,31 @@ void Renderer::renderObjectIds() {
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
+
+	for (auto&& [entity, transform, skinnedMeshRenderer] : registry.view<Transform, SkinnedMeshRenderer>().each()) {
+		// Retrieves model asset from asset manager.
+		auto [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
+
+		if (!model) {
+			// missing model.
+			continue;
+		}
+
+		objectIdShader.setMatrix("model", transform.modelMatrix);
+		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
+
+		// Draw every mesh of a given model.
+		for (auto const& mesh : model->meshes) {
+			// not rendered, so no point rendering object id..
+			if (!obtainMaterial(skinnedMeshRenderer, mesh)) {
+				continue;
+			}
+
+			positionsVBO.uploadData(mesh.positions);
+			EBO.uploadData(mesh.indices);
+			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+		}
+	}
 }
 
 void Renderer::renderHDRTonemapping() {
@@ -1411,8 +1098,10 @@ CustomShader* Renderer::setupMaterial(Material const& material, Transform const&
 				auto&& [texture, _] = resourceManager.getResource<Texture>(value);
 				
 				if (!texture) {
-					// @TODO: Add error texture..
-					return;
+					// We bind an invalid texture..
+					auto&& [invalidTexture, __] = resourceManager.getResource<Texture>(INVALID_TEXTURE_ID);
+					assert(invalidTexture && "System resource should always be valid.");
+					texture = invalidTexture;
 				}
 
 				if (numOfTextureUnitBound >= maxTextureUnits) {
@@ -1435,7 +1124,7 @@ CustomShader* Renderer::setupMaterial(Material const& material, Transform const&
 	return customShader;
 }
 
-void Renderer::renderMesh(Mesh const& mesh, Pipeline pipeline) {
+void Renderer::renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType) {
 	switch (pipeline)
 	{
 	case Pipeline::PBR:
@@ -1453,6 +1142,10 @@ void Renderer::renderMesh(Mesh const& mesh, Pipeline pipeline) {
 		break;
 	}
 	
+	if (meshType == MeshType::Skinned) {
+		skeletalVBO.uploadData(mesh.vertexWeights);
+	}
+
 	EBO.uploadData(mesh.indices);
 	glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 }

@@ -82,10 +82,10 @@ private:
 
 	// records all the given resources in a given directory, taking note of their filepaths.
 	template<ValidResource ...T>
-	void recordAllResources();
+	void loadAllResources();
 
 	// records all the given system resources in a given directory, taking note of their filepaths.
-	void recordAllSystemResources();
+	void loadAllSystemResources();
 
 	// this is only called by the asset manager to remove outdated resources. (housekeeping)
 	ENGINE_DLL_API void removeResource(ResourceID id);
@@ -105,9 +105,6 @@ private:
 	// this function will construct the aset type, and store it in resources, the main container containing all LOADED resources.
 	std::mutex initialisationQueueMutex;
 	std::queue<std::function<void()>> initialisationQueue;
-
-	// the resource manager owns some default system resources.
-	ENGINE_DLL_API static const std::unordered_map<ResourceID, ResourceFilePath> systemModelResources;
 };
 
 #include "resourceManager.ipp"

@@ -12,40 +12,6 @@
 #include "export.h"
 #include "reflection.h"
 
-// ================================================================================================================================
-enum class Pipeline {
-	PBR,			// uses everything.
-	Color,			// only uses albedo.
-};
-
-class Texture;
-
-#define AllUniformTypes \
-	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>, Color, ColorA, NormalizedFloat
-
-struct OverriddenUniformData {
-	std::string type;
-	std::variant<AllUniformTypes> value;
-
-	REFLECTABLE(
-		type,
-		value
-	)
-};
-
-class CustomShader;
-
-struct MaterialData {
-	TypedResourceID<CustomShader> selectedShader;
-	std::unordered_map<std::string, OverriddenUniformData> overridenUniforms;
-
-	REFLECTABLE(
-		selectedShader,
-		overridenUniforms
-	)
-};
-// ================================================================================================================================
-
 class Shader
 {
 public:

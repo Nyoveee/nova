@@ -84,9 +84,39 @@ bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderPars
 	}
 	return true;
 }
+
+bool ParseVertexShader(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
+	// Get full definition
+	std::regex vertexShaderRegex{ R"(Vert\s*\{[\#\{\}\<\>\_\*\-\+/\w\s=(.,);\[\]]+\}[\#\{\}\<\>\_\*\-\+/\w\s=(.,);\[\]]*Frag\{)" };
+
+	auto vertexShaderRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data), vertexShaderRegex) };
+	ptrdiff_t count{ std::distance(vertexShaderRegexBegin,std::sregex_iterator()) };
+
+	// Check Count
+	if (count > 1) {
+		Logger::error("Unable to Parse Shader, Multiple Vertex Shaders Found");
+		return false;
+	}
+
+	if (count == 0) {
+		Logger::error("Unable to Parse Shader, No Vertex Shader Found");
+		return false;
+	}
+	
+	// Parse into shaderparserdata
+	std::string result{ vertexShaderRegexBegin->str() };
+	shaderParserData.vShaderCode = result.substr(result.find_first_of('{') + 1, result.find_last_of('}') - result.find_first_of('{') - 1);
+
+	if (shaderParserData.vShaderCode.empty()) {
+		return false;
+	}
+
+	return true;
+}
+
 bool ParseFragmentShader(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
 	// Get full definition
-	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\*\-\+/\w\s=(.,);\[\]]+\})" };
+	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\#\{\}\<\>\_\*\-\+/\w\s=(.,);\[\]]+\})" };
 	auto fragmentShaderRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data),fragmentShaderRegex) };
 	ptrdiff_t count{ std::distance(fragmentShaderRegexBegin,std::sregex_iterator()) };
 	// Check Count
@@ -94,8 +124,12 @@ bool ParseFragmentShader(std::string& data, CustomShader::ShaderParserData& shad
 		Logger::error("Unable to Parse Shader, Multiple Fragments Found");
 		return false;
 	}
-	if (count == 0)
-		return true;
+
+	if (count == 0) {
+		Logger::error("Unable to Parse Shader, No Fragment Shader Found");
+		return false;
+	}
+
 	// Parse into shaderparserdata
 	std::string result{ fragmentShaderRegexBegin->str() };
 	shaderParserData.fShaderCode = result.substr(result.find_first_of('{')+1, result.find_last_of('}') - result.find_first_of('{')-1);
@@ -130,9 +164,12 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 		return false;
 	if (!ParseUniforms(data, shaderParserData))
 		return false;
+	if (!ParseVertexShader(data, shaderParserData))
+		return false;
 	if (!ParseFragmentShader(data, shaderParserData))
 		return false;
 	
+#if 1
 	Logger::info("BlendingConfig = {}", magic_enum::enum_name(shaderParserData.blendingConfig));
 	Logger::info("DepthTestingMethod = {}", magic_enum::enum_name(shaderParserData.depthTestingMethod));
 	
@@ -140,6 +177,9 @@ bool ShaderParser::Parse(AssetFilePath const& intermediaryAssetFilepath, CustomS
 		Logger::info("Uniform = {}, Type = {}", identifier, type);
 	}
 
+	Logger::info("Vertex Shader Code\n{}", shaderParserData.vShaderCode);
 	Logger::info("Fragment Shader Code\n{}", shaderParserData.fShaderCode);
+#endif
+
 	return true;
 }

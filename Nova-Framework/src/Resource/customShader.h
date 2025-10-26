@@ -13,6 +13,11 @@ using ShaderVariableType = std::string;
 
 class ResourceManager;
 
+enum class Pipeline {
+	PBR,			// uses everything.
+	Color,			// only uses albedo.
+};
+
 class CustomShader: public Resource
 {
 public:
@@ -40,6 +45,7 @@ public:
 		std::unordered_map<ShaderVariableName, ShaderVariableType> uniforms;
 		
 		// Code
+		std::string vShaderCode;
 		std::string fShaderCode;
 
 		Pipeline pipeline;
@@ -48,6 +54,7 @@ public:
 			blendingConfig,
 			depthTestingMethod,
 			uniforms,
+			vShaderCode,
 			fShaderCode,
 			pipeline
 		)

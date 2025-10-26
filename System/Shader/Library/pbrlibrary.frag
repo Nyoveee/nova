@@ -98,6 +98,8 @@ vec3  BRDFCalculation       (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 b
 
 // !! THE public facing function API to be used.
 vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metallic, float occulusion) {
+    normal = normalize(normal);
+
     // ambient is the easiest.
     vec3 finalColor = ambientFactor * albedoColor * occulusion;
 

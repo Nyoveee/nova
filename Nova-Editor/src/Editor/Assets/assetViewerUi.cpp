@@ -18,6 +18,8 @@
 #include "Serialisation/serialisation.h"
 #include "Editor/ComponentInspection/PropertyDisplay/displayProperties.h"
 
+#include "systemResource.h"
+
 AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager) :
 	editor							{ editor },
 	assetManager					{ assetManager },
@@ -141,7 +143,7 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 
 void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& descriptor)
 {
-	if (!ImGui::CollapsingHeader("Material")) {
+	if (!ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
 		return;
 	}
 
@@ -184,13 +186,13 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 			if (type == "mat4")
 				material->materialData.overridenUniforms.insert({ identifer, { type, glm::mat4{} } });
 			if (type == "sampler2D")
-				material->materialData.overridenUniforms.insert({ identifer, { type, TypedResourceID<Texture>{ INVALID_RESOURCE_ID } } });
+				material->materialData.overridenUniforms.insert({ identifer, { type, TypedResourceID<Texture>{ NONE_TEXTURE_ID } } });
 
 			// custom glsl types..
 			if (type == "Color")
-				material->materialData.overridenUniforms.insert({ identifer, { type, Color{} } });
+				material->materialData.overridenUniforms.insert({ identifer, { type, Color{ 1.f, 1.f, 1.f } } });
 			if (type == "ColorA")
-				material->materialData.overridenUniforms.insert({ identifer, { type, ColorA{} } });
+				material->materialData.overridenUniforms.insert({ identifer, { type, ColorA{ 1.f, 1.f, 1.f, 1.f } } });
 			if (type == "NormalizedFloat")
 				material->materialData.overridenUniforms.insert({ identifer, { type, NormalizedFloat{} } });
 		}
@@ -215,13 +217,31 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 		return;
 	}
 
+	if (!customShader->getShader() || !customShader->getShader().value().hasCompiled()) {
+		ImGui::Text("Invalid shader. Underlying shader failed to compile.");
+
+		if (!customShader->getShader()) {
+			ImGui::Text("Syntax error. Custom parser failed to parse.");
+		}
+		else {
+			auto&& shader = customShader->getShader().value();
+			ImGui::TextWrapped("%s", shader.getErrorMessage().c_str());
+		}
+
+		return;
+	}
+
 	if (ImGui::Button("Update Material Properties From Shader")) {
 		updateMaterialProperty(customShader->customShaderData.uniforms);
 	}
 	
+	int imguiCounter = 0;
+
 	// Display the current material values..
 	for (auto&& [name, uniformData] : material->materialData.overridenUniforms) {
 		auto&& [type, uniformValue] = uniformData;
+
+		ImGui::PushID(imguiCounter++);
 
 		std::visit([&](auto&& value) {
 			using Type = std::decay_t<decltype(value)>;
@@ -233,6 +253,8 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 				DisplayProperty<Type>(editor, name.c_str(), value);
 			}
 		}, uniformValue);
+
+		ImGui::PopID();
 	}
 }
 
@@ -248,7 +270,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 
 	constexpr auto listOfEnumValues = magic_enum::enum_entries<Pipeline>();
 
-	if (!ImGui::CollapsingHeader("Shader")) {
+	if (!ImGui::CollapsingHeader("Shader", ImGuiTreeNodeFlags_DefaultOpen)) {
 		return;
 	}
 
@@ -258,25 +280,11 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 				descriptor.pipeline = enumValue;
 				shader->customShaderData.pipeline = enumValue;
 				
-				// recompile..
-				shader->compile();
-#if 0
-				AssetInfo<CustomShader> descriptorCopy = descriptor;
-
 				// serialise immediately..
 				assetManager.serialiseDescriptor<CustomShader>(selectedResourceId);
 
-				// we remove this old resource..
-				resourceManager.removeResource(selectedResourceId);
-				assetManager.removeResource(selectedResourceId);
-
-				// recompile.., will add to resource manager if compilation is successful.
-				auto&& [customShader, __] = resourceManager.getResource<CustomShader>(assetManager.createResourceFile<CustomShader>(descriptorCopy));
-
-				// skip a frame..
-				ImGui::EndCombo();
-				return;
-#endif
+				// recompile..
+				shader->compile();
 			}
 		}
 
@@ -284,7 +292,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 	}
 
 	if (!openglShaderOpt) {
-		ImGui::Text("This shader is not compatible with the current pipeline.");
+		ImGui::Text("Custom shader failed to parsed. Please check for syntax error.");
 	}
 	else {
 		auto const& openglShader = openglShaderOpt.value();
@@ -299,7 +307,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 
 		if (ImGui::TreeNode("Vertex Shader")) {
 			ImGui::BeginChild("Vertex Shader", ImVec2{}, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY);
-			ImGui::TextWrapped("%s", openglShader.getVertexShader().c_str());
+			ImGui::Text("%s", openglShader.getVertexShader().c_str());
 			ImGui::EndChild();
 
 			ImGui::TreePop();
@@ -307,7 +315,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 
 		if (ImGui::TreeNode("Fragment Shader")) {
 			ImGui::BeginChild("Fragment Shader", ImVec2{}, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY);
-			ImGui::TextWrapped("%s", openglShader.getFragmentShader().c_str());
+			ImGui::Text("%s", openglShader.getFragmentShader().c_str());
 			ImGui::EndChild();
 
 			ImGui::TreePop();
@@ -371,7 +379,7 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 		}
 	}
 
-	if (ImGui::CollapsingHeader("Model")) {
+	if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::SeparatorText(std::string{ "Materials: " + std::to_string(model->materialNames.size()) }.c_str());
 
 		for (unsigned int i = 0; i < model->materialNames.size(); ++i) {
@@ -470,7 +478,7 @@ void AssetViewerUI::displayAnimationInfo([[maybe_unused]] AssetInfo<Model>& desc
 		}
 	}
 
-	if (ImGui::CollapsingHeader("Animation")) {
+	if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen)) {
 		for (auto&& animation : animationResource->animations) {
 			ImGui::SeparatorText(animation.name.c_str());
 			ImGui::Text("Duration (in seconds): %.2f", animation.durationInSeconds);

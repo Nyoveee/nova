@@ -10,18 +10,7 @@
 // rest of the bytes -> custom file format.
 // ========================================================
 template <ValidResource T>
-int Compiler::compileAsset(DescriptorFilePath const& descriptorFilepath) {
-	// Retrieve descriptor info.
-	std::optional<AssetInfo<T>> optAssetInfo = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
-
-	if (!optAssetInfo) {
-		Logger::error("Failed to parse descriptor file: {}. Compilation failed.", descriptorFilepath.string);
-		return -1;
-	}
-
-	AssetInfo<T> assetInfo = optAssetInfo.value();
-	ResourceFilePath resourceFilePath = AssetIO::getResourceFilename<T>(assetInfo.id);
-
+int Compiler::compileAsset(AssetInfo<T> const& assetInfo, ResourceFilePath const& resourceFilePath) {
 	if constexpr (std::same_as<T, Texture>) {
 		return compileTexture(resourceFilePath, assetInfo.filepath, assetInfo.compression);
 	}
