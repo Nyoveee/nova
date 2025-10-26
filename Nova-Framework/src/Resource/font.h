@@ -6,6 +6,8 @@
 
 using GLuint = unsigned int; 
 
+constexpr unsigned int DEFAULT_FONT_SIZE = 48;
+
 class Font : public Resource {
 public:
 	struct Atlas {
@@ -76,5 +78,10 @@ public:
 private:
 	Atlas atlas;
 	std::unordered_map<char, Character> characters;
+	unsigned int fontSize;
+};
+
+template <>
+struct AssetInfo<Font> : public BasicAssetInfo {
 	unsigned int fontSize;
 };

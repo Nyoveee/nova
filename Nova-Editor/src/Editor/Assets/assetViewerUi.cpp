@@ -138,6 +138,12 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	selectedResourceName = descriptorPtr->name;
 	selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.filename().string();
 	selectedResourceExtension = std::filesystem::path{ descriptorPtr->filepath }.extension().string();
+
+	// save a copy of the current font size..
+	if (resourceManager.isResource<Font>(id)) {
+		AssetInfo<Font>* fontDescriptorPtr = static_cast<AssetInfo<Font>*>(descriptorPtr);
+		copyOfSelectedFontSize = fontDescriptorPtr->fontSize;
+	}
 }
 
 
@@ -493,6 +499,34 @@ void AssetViewerUI::displayAnimationInfo([[maybe_unused]] AssetInfo<Model>& desc
 				ImGui::Text("Channel name: %s | Highest pos key: %2.f, rot key: %2.f, scale key: %2.f", channelName.c_str(), highestPositionKey, highestRotationKey, highestScaleKey);
 			}
 		}
+	}
+}
+
+void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
+	static const unsigned int minVal = 1;
+	static const unsigned int maxVal = 100;
+
+	ImGui::SliderScalar("Font Size", ImGuiDataType_U32, &copyOfSelectedFontSize, &minVal, &maxVal, "%u");
+
+	if (ImGui::IsItemDeactivatedAfterEdit()) {
+		if (copyOfSelectedFontSize == descriptor.fontSize) {
+			return;
+		}
+
+		descriptor.fontSize = copyOfSelectedFontSize;
+		
+		// serialise immediately..
+		assetManager.serialiseDescriptor<Font>(selectedResourceId);
+
+		// we make a copy of asset info, descriptor the reference is getting invalidated..
+		AssetInfo<Font> fontInfoCopy = descriptor;
+
+		// we remove this old resource..
+		resourceManager.removeResource(selectedResourceId);
+		assetManager.removeResource(selectedResourceId);
+
+		// recompile.., will add to resource manager if compilation is successful.
+		assetManager.createResourceFile<Font>(fontInfoCopy);
 	}
 }
 

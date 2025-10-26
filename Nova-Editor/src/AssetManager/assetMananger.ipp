@@ -316,6 +316,9 @@ void AssetManager::serialiseDescriptor(ResourceID id) {
 	else if constexpr (std::same_as<T, CustomShader>) {
 		descriptorFile << magic_enum::enum_name(assetInfo->pipeline) << '\n';
 	}
+	else if constexpr (std::same_as<T, Font>) {
+		descriptorFile << assetInfo->fontSize << '\n';
+	}
 
 	// ============================
 	Logger::info("Successfully serialised descriptor file for {}", assetInfo->filepath.string);

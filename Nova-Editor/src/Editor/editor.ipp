@@ -38,10 +38,10 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 	// handle drag and drop..
 	if (ImGui::BeginDragDropTarget()) {
 		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
-			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+			auto&& [draggedId, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
 			
-			if (resourceManager.isResource<T>(id)) {
-				onClickCallback(id);
+			if (resourceManager.isResource<T>(draggedId)) {
+				onClickCallback(draggedId);
 			}
 		}
 	}

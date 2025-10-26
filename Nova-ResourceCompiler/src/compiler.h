@@ -16,7 +16,7 @@ private:
 	static int compileAsset			(AssetInfo<T> const& assetInfo, ResourceFilePath const& resourceFilePath);
 
 	static int compileTexture		(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, AssetInfo<Texture>::Compression compressionFormat);
-	static int compileFont			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
+	static int compileFont			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, unsigned int fontSize);
 
 	static int compileModel			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath);
 	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, std::string className);

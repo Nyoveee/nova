@@ -92,9 +92,7 @@ int Compiler::compileTexture(ResourceFilePath const& resourceFilePath, AssetFile
 	return 0;
 }
 
-int Compiler::compileFont(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath) {
-	constexpr FT_UInt FONT_SIZE = 48;
-
+int Compiler::compileFont(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, unsigned int fontSize) {
 	// ============================
 	// 1. Set up FT Library and load font..
 	// ============================
@@ -113,7 +111,7 @@ int Compiler::compileFont(ResourceFilePath const& resourceFilePath, AssetFilePat
 		return -1;
 	}
 
-	FT_Set_Pixel_Sizes(face, 0, FONT_SIZE);
+	FT_Set_Pixel_Sizes(face, 0, fontSize);
 	
 	unsigned int atlasWidth = 0;
 	unsigned int atlasHeight = 0;
@@ -192,7 +190,7 @@ int Compiler::compileFont(ResourceFilePath const& resourceFilePath, AssetFilePat
 		std::move(characters),
 		atlasWidth,
 		atlasHeight,
-		FONT_SIZE
+		fontSize
 	};
 
 	serializeToBinary(resourceFile, data);

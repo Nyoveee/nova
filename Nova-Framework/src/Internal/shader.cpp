@@ -12,6 +12,8 @@
 
 #include "customShader.h"
 
+#include <glad/glad.h>
+
 Shader::Shader(const char* vertexPath, const char* fragmentPath) 
 	:	shaderCompileStatus	{ ShaderCompileStatus::Failed }	
 	,	vShaderCode			{}

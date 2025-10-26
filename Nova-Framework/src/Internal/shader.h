@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <string>
@@ -11,6 +10,8 @@
 #include "type_alias.h"
 #include "export.h"
 #include "reflection.h"
+
+using GLuint = unsigned int;
 
 class Shader
 {

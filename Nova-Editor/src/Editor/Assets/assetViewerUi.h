@@ -24,6 +24,7 @@ private:
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 	void displayAnimationInfo(AssetInfo<Model>& descriptor);
+	void displayFontInfo(AssetInfo<Font>& descriptor);
 
 	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
@@ -37,6 +38,8 @@ private:
 	std::string selectedResourceName;
 	std::string selectedResourceStemCopy;
 	std::string selectedResourceExtension;
+
+	unsigned int copyOfSelectedFontSize = 1;
 
 	bool toSerialiseSelectedDescriptor;
 };

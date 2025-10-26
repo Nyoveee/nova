@@ -27,7 +27,7 @@ int Compiler::compileAsset(AssetInfo<T> const& assetInfo, ResourceFilePath const
 		return compileShaderAsset(resourceFilePath, assetInfo.filepath, assetInfo.pipeline);
 	}
 	else if constexpr (std::same_as<T, Font>) {
-		return compileFont(resourceFilePath, assetInfo.filepath);
+		return compileFont(resourceFilePath, assetInfo.filepath, assetInfo.fontSize);
 	}
 	else {
 		return defaultCompile(resourceFilePath, assetInfo.filepath);

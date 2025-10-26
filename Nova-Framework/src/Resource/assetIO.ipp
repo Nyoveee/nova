@@ -60,6 +60,17 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 				assetInfo.pipeline = pipelineOpt.value();
 			}
 		}
+		else if constexpr (std::same_as<T, Font>) {
+			std::string fontString;
+			std::getline(descriptorFile, fontString);
+			
+			try {
+				assetInfo.fontSize = static_cast<unsigned int>(std::stoul(fontString));
+			}
+			catch (std::exception const&) {
+				assetInfo.fontSize = DEFAULT_FONT_SIZE;
+			}
+		}
 
 		// ============================
 		return assetInfo;
@@ -101,6 +112,9 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 	}
 	else if constexpr (std::same_as<T, CustomShader>) {
 		descriptorFile << magic_enum::enum_name(Pipeline::PBR) << '\n';
+	}
+	else if constexpr (std::same_as<T, Font>) {
+		descriptorFile << DEFAULT_FONT_SIZE << '\n';
 	}
 
 	// ============================

@@ -16,4 +16,7 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 	else if constexpr (std::same_as <T, CustomShader>) {
 		displayShaderInfo(typedDescriptor);
 	}
+	else if constexpr (std::same_as <T, Font>) {
+		displayFontInfo(typedDescriptor);
+	}
 }
