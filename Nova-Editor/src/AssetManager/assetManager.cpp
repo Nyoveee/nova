@@ -9,7 +9,6 @@
 #include "cubemap.h"
 #include "Engine/engine.h"
 
-#include "Serialisation/serialisation.h"
 #include "Material.h"
 
 #define RecordAssetSubdirectory(AssetType) \
@@ -126,6 +125,15 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		}
 	}
 
+	// ========================================
+	// 5. We load descriptors for system resources, most importantly name.
+	// ========================================
+	Logger::info("===========================");
+	Logger::info("Loading system resources name..");
+	Logger::info("===========================\n");
+
+	loadSystemResourceDescriptor<Model>(ResourceManager::systemModelResources);
+
 	// By now everything should be serialized, compile the entity scripts
 	engine.scriptingAPIManager.compileScriptAssembly();
 
@@ -143,35 +151,9 @@ AssetManager::~AssetManager() {
 	}
 #endif
 
-	// For controller, asset manager serialises all of them in the end.
-	auto const& controllerIds = resourceManager.getAllResources<Controller>();
-
-	for (auto const& controllerId : controllerIds) {
-		auto const& [controller, _] = resourceManager.getResource<Controller>(controllerId);
-		
-		if (!controller) {
-			Logger::error("Failed to serialise {}", static_cast<std::size_t>(controllerId));
-			continue;
-		}
-
-		// get asset file path.
-		auto iterator = assetToDescriptor.find(controllerId);
-
-		if (iterator == assetToDescriptor.end()) {
-			Logger::error("Failed to serialise {}", static_cast<std::size_t>(controllerId));
-			continue;
-		}
-
-		auto&& [__, descriptor] = *iterator;
-		
-		AssetFilePath const& assetFilePath = descriptor->filepath;
-		
-		// overwrite the original asset file.
-		std::ofstream outputFile{ assetFilePath };
-		Serialiser::serializeToJsonFile(*controller, outputFile);
-
-		Logger::info("Serialised controller: {}", assetFilePath.string);
-	}
+	// Asset manager serialises all of the resources that is modified directly in the end.
+	serializeAllResources<Controller>();
+	serializeAllResources<Material>();
 }
 
 void AssetManager::submitCallback(std::function<void()> callback) {

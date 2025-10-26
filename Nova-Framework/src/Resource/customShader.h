@@ -11,7 +11,7 @@
 using ShaderVariableName = std::string;
 using ShaderVariableType = std::string;
 
-class Material;
+class ResourceManager;
 
 class CustomShader: public Resource
 {
@@ -23,6 +23,7 @@ public:
 		PremultipliedAlpha,
 		Disabled
 	};
+
 	enum class DepthTestingMethod {
 		DepthTest,
 		NoDepthWrite,
@@ -41,11 +42,14 @@ public:
 		// Code
 		std::string fShaderCode;
 
+		Pipeline pipeline;
+
 		REFLECTABLE(
 			blendingConfig,
 			depthTestingMethod,
 			uniforms,
-			fShaderCode
+			fShaderCode,
+			pipeline
 		)
 
 	} customShaderData;
@@ -60,10 +64,34 @@ public:
 	FRAMEWORK_DLL_API CustomShader& operator=(CustomShader&& other) = delete;
 
 public:
-	FRAMEWORK_DLL_API void use(MaterialData const& data);
-	FRAMEWORK_DLL_API void compileWithPipeline(Material const& material);
+	FRAMEWORK_DLL_API void compile();
+	FRAMEWORK_DLL_API std::optional<Shader> const& getShader() const;
 
 private:
-	std::unordered_map<Pipeline, std::optional<Shader>> shaders;
+	std::optional<Shader> shader;
+
+public:
+	static inline const std::unordered_set<std::string> validGlslPrimitive {
+		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D"
+	};
+
+	static inline const std::unordered_set<std::string> validCustomTypes{
+		"Color", "ColorA", "NormalizedFloat"
+	};
+
+	static inline const std::unordered_map<std::string, std::string> customTypeToGlslPrimitive{
+		{ "Color",			"vec3"		},
+		{ "ColorA",			"vec4"		},
+		{ "NormalizedFloat", "float"	},
+	};
+
+	static inline const std::unordered_set<std::string> allValidShaderTypes = {
+		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D",
+		"Color", "ColorA", "NormalizedFloat"
+	};
 };
 
+template <>
+struct AssetInfo<CustomShader> : public BasicAssetInfo {
+	Pipeline pipeline;
+};

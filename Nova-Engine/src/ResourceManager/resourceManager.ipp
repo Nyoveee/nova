@@ -43,11 +43,28 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 }
 
 template<ValidResource T>
-ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath) {
+T* ResourceManager::getResourceOnlyIfLoaded(ResourceID id) {
+	// Let's find our loaded resource in the map
+	auto iterator = loadedResources.find(id);
+
+	// resource is already loaded, let's return it.
+	if (iterator != loadedResources.end()) {
+		T* resource = dynamic_cast<T*>(iterator->second.get());
+		return resource;
+	}
+
+	return nullptr;
+}
+
+template<ValidResource T>
+ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath, ResourceID id) {
 	try {
-		// Retrieve the Resource ID from filepath.
-		// May throw an exception.
-		ResourceID id = std::stoull(std::filesystem::path{ filepath }.stem().string());
+		if (id == INVALID_RESOURCE_ID) {
+			// Retrieve the Resource ID from filepath.
+			// May throw an exception.
+			id = std::stoull(std::filesystem::path{ filepath }.stem().string());
+		}
+
 		auto [iterator, success] = resourceFilePaths.insert({ id, filepath });
 
 		if (!success) {

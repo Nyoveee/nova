@@ -34,7 +34,11 @@ ResourceManager::ResourceManager() {
 		// ========================================
 		recordAllResources<ALL_RESOURCES>();
 
-}
+		// ========================================
+		// 3. Record all system resources..
+		// ========================================
+		recordAllSystemResources();
+	}
 	catch (const std::filesystem::filesystem_error& ex) {
 		Logger::error("Filesystem error: {}", ex.what());
 	}
@@ -71,5 +75,11 @@ void ResourceManager::removeResource(ResourceID id) {
 		if (iterator != resourceIds.end()) {
 			resourceIds.erase(iterator);
 		}
+	}
+}
+
+void ResourceManager::recordAllSystemResources() {
+	for (auto&& [id, resourceFilePath] : systemModelResources) {
+		addResourceFile<Model>(resourceFilePath, id);
 	}
 }

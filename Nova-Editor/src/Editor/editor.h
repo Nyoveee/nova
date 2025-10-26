@@ -90,7 +90,7 @@ public:
 
 	NavMeshGeneration navMeshGenerator;
 
-private:
+public:
 	Window& window;
 
 	GameViewPort gameViewPort;

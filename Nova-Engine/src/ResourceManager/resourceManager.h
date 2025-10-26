@@ -1,4 +1,4 @@
-	#pragma once
+#pragma once
 
 #include "export.h"
 #include "resource.h"
@@ -49,6 +49,9 @@ public:
 	// main way all systems query for a specific resource.
 	template <ValidResource T>
 	ResourceQuery<T> getResource(ResourceID id);
+	
+	template <ValidResource T>
+	T* getResourceOnlyIfLoaded(ResourceID id);
 
 	// retrieve all resource ids of a given type.
 	template <ValidResource T>
@@ -73,13 +76,16 @@ private:
 	friend AssetViewerUI;
 
 	// parses a given resource file. returns a valid resource id if its valid,
-	// INVALID_RESOURCE_ID otherwise.
+	// you can provide an resource id for the resource manager to use. (mainly used for system resources)
 	template <ValidResource T>
-	ResourceID addResourceFile(ResourceFilePath const& filepath);
+	ResourceID addResourceFile(ResourceFilePath const& filepath, ResourceID id = INVALID_RESOURCE_ID);
 
 	// records all the given resources in a given directory, taking note of their filepaths.
 	template<ValidResource ...T>
 	void recordAllResources();
+
+	// records all the given system resources in a given directory, taking note of their filepaths.
+	void recordAllSystemResources();
 
 	// this is only called by the asset manager to remove outdated resources. (housekeeping)
 	ENGINE_DLL_API void removeResource(ResourceID id);
@@ -99,6 +105,9 @@ private:
 	// this function will construct the aset type, and store it in resources, the main container containing all LOADED resources.
 	std::mutex initialisationQueueMutex;
 	std::queue<std::function<void()>> initialisationQueue;
+
+	// the resource manager owns some default system resources.
+	ENGINE_DLL_API static const std::unordered_map<ResourceID, ResourceFilePath> systemModelResources;
 };
 
 #include "resourceManager.ipp"

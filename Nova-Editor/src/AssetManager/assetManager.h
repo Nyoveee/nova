@@ -115,6 +115,12 @@ private:
 	template <ValidResource T>
 	void updateAssetCache(AssetInfo<T> const& descriptor) const;
 
+	template <ValidResource T>
+	void loadSystemResourceDescriptor(std::unordered_map<ResourceID, ResourceFilePath> const& systemResources);
+
+	template <ValidResource T>
+	void serializeAllResources();
+
 private:
 	ResourceManager& resourceManager;
 	Engine& engine;

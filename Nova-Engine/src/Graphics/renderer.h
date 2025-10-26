@@ -18,20 +18,13 @@
 #include "cubemap.h"
 
 #include "Detour/Detour/DetourNavMesh.h"
+#include "customShader.h"
 
 class Engine;
 class ResourceManager;
 
 class Renderer {
 public:
-	enum class BlendingConfig {
-		AlphaBlending,
-		AdditiveBlending,
-		PureAdditiveBlending,
-		PremultipliedAlpha,
-		Disabled
-	};
-
 	enum class ToneMappingMethod {
 		Exposure,
 		Reinhard,
@@ -51,7 +44,7 @@ public:
 public:
 	void update(float dt);
 
-	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape);
+	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape, bool toRenderObjectId);
 	void renderToDefaultFBO();
 
 public:
@@ -74,8 +67,11 @@ public:
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
 
-	ENGINE_DLL_API void setBlendMode(BlendingConfig configuration);
+	ENGINE_DLL_API void setBlendMode(CustomShader::BlendingConfig configuration);
+	ENGINE_DLL_API void setDepthMode(CustomShader::DepthTestingMethod configuration);
+
 	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
+	ENGINE_DLL_API void renderObjectIds();
 
 	// HDR controls
 	ENGINE_DLL_API void setHDRExposure(float exposure);
@@ -120,9 +116,6 @@ private:
 	// Render all particles
 	void renderParticles();
 
-	// renders the object id to the object id framebuffer.
-	void renderObjectId(GLsizei count);
-
 	// render a debug triangles in physics
 	void debugRenderPhysicsCollider();
 
@@ -135,18 +128,14 @@ private:
 	// HDR post-processing functions
 	void renderHDRTonemapping();
 
-#if 0
-	// the different rendering pipelines..
-	// uses the corresponding shader, and sets up corresponding uniform based on rendering pipeline and material.
-	void setupBlinnPhongShader(Material const& material);
-	void setupPBRShader(Material const& material);
-	void setupSkeletalShader(Material const& material);
-	void setupColorShader(Material const& material);
+	// set up the material's chosen shader and supply the proper uniforms..
+	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
+	CustomShader* setupMaterial(Material const& material, Transform const& transform);
 
-	// attempts to get the appropriate material from meshrenderer.
+	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
+	void renderMesh(Mesh const& mesh, Pipeline pipeline);
+
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
-	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
-#endif
 
 	// sets model specific uniforms for all rendering pipeline. (like model matrix)
 	void setModelUniforms(Transform const& transform, entt::entity entity);
@@ -168,9 +157,14 @@ private:
 
 	// Main VAO and their related buffers
 	GLuint mainVAO;
-	BufferObject mainVBO;
-	BufferObject skeletalVBO;
-	BufferObject EBO;
+	BufferObject positionsVBO;				// VA 0
+	BufferObject textureCoordinatesVBO;		// VA 1
+	BufferObject normalsVBO;				// VA 2
+	BufferObject tangentsVBO;				// VA 3
+
+	// Skeletal animation VBO..
+	BufferObject skeletalVBO;				// VA 4
+	BufferObject EBO;						// VA 5
 
 	// SSBO and UBO.
 	BufferObject pointLightSSBO;
@@ -185,7 +179,6 @@ private:
 	GLuint particleVAO;
 
 	// Debug Physics VAO and it's corresponding VBO.
-	GLuint debugVAO;
 	BufferObject debugPhysicsVBO;
 	BufferObject debugNavMeshVBO;
 	BufferObject debugParticleShapeVBO;

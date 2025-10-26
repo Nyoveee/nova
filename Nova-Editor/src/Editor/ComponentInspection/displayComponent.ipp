@@ -8,10 +8,9 @@ namespace {
 	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
 		(void) entity;
 
-		[[maybe_unused]] ResourceManager& resourceManager = componentInspector.resourceManager;
-		[[maybe_unused]] AssetManager& assetManager		  = componentInspector.assetManager;
-		[[maybe_unused]] AudioSystem& audioSystem		  = componentInspector.audioSystem;
+		[[maybe_unused]] Editor& editor = componentInspector.editor;
 		
+#if 0
 		PropertyReferences propertyReferences { 
 			entity,
 			componentInspector,
@@ -23,6 +22,7 @@ namespace {
 			componentInspector.editor, 
 			componentInspector.editor.engine.ecs
 		};
+#endif
 
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
@@ -72,7 +72,7 @@ namespace {
 					using DataMemberType = std::decay_t<decltype(dataMember)>;
 					ImGui::PushID(static_cast<int>(std::hash<std::string>{}(dataMemberName)));
 					// Generalization
-					DisplayProperty<DataMemberType>(propertyReferences, dataMemberName, dataMember);
+					DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
 					ImGui::PopID();
 				},
 			component);

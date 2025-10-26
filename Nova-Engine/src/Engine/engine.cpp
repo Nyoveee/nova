@@ -85,17 +85,16 @@ void Engine::setupSimulation() {
 	setupSimulationFunction = std::nullopt;
 }
 
-void Engine::render(RenderTarget target) {
+void Engine::render(RenderConfig renderConfig) {
 	ZoneScoped;
-
 
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh, toDebugRenderParticleEmissionShape);
+	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh, toDebugRenderParticleEmissionShape, renderConfig == RenderConfig::Editor);
 
-	if (target == RenderTarget::DefaultFrameBuffer) {
+	if (renderConfig == RenderConfig::Game) {
 		renderer.renderToDefaultFBO();
 	}
 }

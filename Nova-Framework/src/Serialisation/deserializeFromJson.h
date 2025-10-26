@@ -137,6 +137,12 @@ inline void deserializeFromJson(T& dataMember, Json const& json) {
 	Listings
 ****************************************************************************************/
 template<>
+inline void deserializeFromJson<NormalizedFloat>(NormalizedFloat& dataMember, Json const& json) {
+	float value = json;
+	dataMember = value;
+}
+
+template<>
 inline void deserializeFromJson<entt::entity>(entt::entity& dataMember, Json const& json) {
 	unsigned int entityNum = json;
 	entt::entity entity = entityNum == std::numeric_limits<unsigned int>::max() ? entt::null : static_cast<entt::entity>(entityNum);

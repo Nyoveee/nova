@@ -3,12 +3,12 @@
 
 #include "customShader.h"
 
-#include "Serialisation/deserializeFromBinary.h"
+#include "Serialisation/serialisation.h"
 
 std::optional<ResourceConstructor> ResourceLoader<CustomShader>::load(ResourceID id, ResourceFilePath const& resourceFilePath){
 	Logger::info("Loading shader resource file {}", resourceFilePath.string);
 
-	std::ifstream resourceFile{ resourceFilePath.string, std::ios::binary };
+	std::ifstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {
 		Logger::error("Failed to parse shader.");
@@ -17,7 +17,7 @@ std::optional<ResourceConstructor> ResourceLoader<CustomShader>::load(ResourceID
 	resourceFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 	CustomShader::ShaderParserData shaderData;
-	deserializeFromBinary(resourceFile, shaderData);
+	Serialiser::deserializeFromJsonFile(shaderData, resourceFile);
 
 	// Returns a ResourceConstructor
 	return { ResourceConstructor{[id, resourceFilePath, shaderData = std::move(shaderData)]() {

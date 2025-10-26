@@ -45,7 +45,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	componentInspector				{ *this },
-	assetViewerUi					{ assetManager, resourceManager },
+	assetViewerUi					{ *this, assetManager, resourceManager },
 	assetManagerUi					{ *this, assetViewerUi },
 	navMeshGenerator				{ *this },
 	navigationWindow				{ *this, engine.navigationSystem, navMeshGenerator },

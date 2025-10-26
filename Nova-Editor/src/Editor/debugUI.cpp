@@ -97,7 +97,7 @@ void DebugUI::renderHDRSection() {
 	auto currentMethod = renderer.getToneMappingMethod();
 
 	// get the list of all possible enum values
-	constexpr auto listOfEnumValues = magic_enum::enum_entries<Renderer::ToneMappingMethod>();
+	constexpr auto listOfEnumValues = magic_enum::enum_entries<Renderer::ToneMappingMethod>();	
 
 	if (ImGui::BeginCombo("Tone Mapping Method", std::string{ magic_enum::enum_name<Renderer::ToneMappingMethod>(currentMethod) }.c_str())) {
 		for (auto&& [enumValue, enumInString] : listOfEnumValues) {

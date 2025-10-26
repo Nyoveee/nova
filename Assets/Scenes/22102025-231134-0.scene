@@ -11,8 +11,14 @@
             },
             "EntityData": {
                 "children": null,
-                "name": "Floor",
+                "name": "Floor Copy Copy",
                 "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385
+                ],
+                "modelId": 7313186508846628865
             },
             "Rigidbody": {
                 "initialVelocity": {
@@ -52,9 +58,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.6493576765060425,
-                    "y": -3.2980496883392334,
-                    "z": 0.0655522495508194
+                    "x": 0.0,
+                    "y": -8.083630561828613,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -63,9 +69,224 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 6.3460612297058105,
+                    "x": 20.20724868774414,
                     "y": 1.0,
-                    "z": 9.147489547729492
+                    "z": 27.972782135009766
+                }
+            },
+            "id": 6
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Floor Copy",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385
+                ],
+                "modelId": 7313186508846628865
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -15.875726699829102,
+                    "y": 3.0387399196624756,
+                    "z": -12.938953399658203
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "LIGHT",
+                "parent": 4294967295
+            },
+            "Light": {
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 1000.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "PointLight"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -3.7032604217529297,
+                    "y": 71.46173095703125,
+                    "z": 31.880578994750977
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 3
+        },
+        {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Floor",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385
+                ],
+                "modelId": 5007343499632934915
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -16.671703338623047,
+                    "y": 3.214122772216797,
+                    "z": -10.190760612487793
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
             "id": 2
@@ -99,9 +320,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.45815926790237427,
-                    "y": 5.878350257873535,
-                    "z": 1.4178279638290405
+                    "x": 0.458160400390625,
+                    "y": 142.33277893066406,
+                    "z": 75.41450500488281
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -112,12 +333,12 @@
                 "localScale": {
                     "x": 0.9999993443489075,
                     "y": 1.0,
-                    "z": 0.9999992251396179
+                    "z": 0.9999980330467224
                 },
                 "position": {
-                    "x": 1.232932448387146,
-                    "y": 2.5658302307128906,
-                    "z": 2.3567867279052734
+                    "x": -6.597865581512451,
+                    "y": 15.459548950195313,
+                    "z": 14.14008617401123
                 },
                 "rotation": {
                     "w": 1.0,
@@ -126,9 +347,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 2.3391592502593994,
-                    "y": 0.5804992914199829,
-                    "z": 0.8998014330863953
+                    "x": 0.09999993443489075,
+                    "y": 0.10000000149011612,
+                    "z": 0.0999998077750206
                 }
             },
             "id": 1
@@ -162,6 +383,182 @@
                 ],
                 "name": "Box",
                 "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385,
+                    8136773492355088385
+                ],
+                "modelId": 11334566711878598657
+            },
+            "ParticleEmitter": {
+                "angularVelocity": 0.0,
+                "burstAmount": 30,
+                "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "endColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "interpolationType": "Linear",
+                    "selected": false
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 1000,
+                "particleColorSelection": {
+                    "color": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "randomizedColor": false
+                },
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        }
+                    },
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    }
+                },
+                "particleRate": 100.0,
+                "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Linear",
+                    "selected": false
+                },
+                "startSize": 1.0,
+                "startSpeed": 1.0,
+                "texture": 0
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "scriptId": 200674448099901461
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -6.643681526184082,
+                    "y": 1.2262706756591797,
+                    "z": 6.598635673522949
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                }
+            },
+            "id": 0
+        },
+        {
+            "AudioComponent": {
+                "data": {
+                    "BGM_AudioTest2.wav": {
+                        "AudioId": 16809448490756653059,
+                        "StopAudio": false,
+                        "Volume": 1.0
+                    },
+                    "METAL PIPE": {
+                        "AudioId": 10000507237258100737,
+                        "StopAudio": false,
+                        "Volume": 0.20000000298023224
+                    }
+                }
+            },
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Box Copy",
+                "parent": 4294967295
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    8136773492355088385,
+                    8136773492355088385
+                ],
+                "modelId": 11334566711878598657
             },
             "ParticleEmitter": {
                 "angularVelocity": 0.0,
@@ -280,8 +677,8 @@
                 },
                 "position": {
                     "x": 0.16122424602508545,
-                    "y": -0.8465479612350464,
-                    "z": 1.081022024154663
+                    "y": -0.846548318862915,
+                    "z": 5.809637069702148
                 },
                 "rotation": {
                     "w": 1.0,
@@ -290,12 +687,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 2.339160680770874,
-                    "y": 0.5804992914199829,
-                    "z": 0.8998021483421326
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
                 }
             },
-            "id": 0
+            "id": 4
         }
     ]
 }

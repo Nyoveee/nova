@@ -299,6 +299,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 			}
 		}
 		
+#if 0
 		if (ImGui::MenuItem("[+] Shader")) {
 			std::optional<std::ofstream> opt = createAssetFile(".shader");
 
@@ -310,6 +311,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 				Serialiser::serializeToJsonFile(shader, opt.value());
 			}
 		}
+#endif
 
 		if (ImGui::MenuItem("[+] Material")) {
 			std::optional<std::ofstream> opt = createAssetFile(".material");

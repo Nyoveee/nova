@@ -1,7 +1,7 @@
 #version 450 core
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTextureUnit;
+layout (location = 0) in vec3 pos;
+layout (location = 1) in vec2 textureUnit;
 
 layout(std140, binding = 0) uniform Camera {
     mat4 view;
@@ -10,10 +10,12 @@ layout(std140, binding = 0) uniform Camera {
 
 uniform mat4 model;
 
-out vec2 textureUnit;
+out VS_OUT {
+    out vec2 textureUnit;
+} vsOut;
 
 void main()
 {  
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
-    textureUnit = aTextureUnit;
+    gl_Position = projection * view * model * vec4(pos, 1.0);
+    vsOut.textureUnit = textureUnit;
 }

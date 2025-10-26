@@ -102,9 +102,9 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 		for (const Mesh& meshData : model->meshes)
 		{
 
-			for (const Vertex& vertex : meshData.vertices)
+			for (glm::vec3 const& localPosition : meshData.positions)
 			{
-				glm::vec4 worldPos = transform.modelMatrix * glm::vec4(vertex.pos, 1.0f);
+				glm::vec4 worldPos = transform.modelMatrix * glm::vec4(localPosition, 1.0f);
 				vertexSoup.push_back(worldPos.x);
 				vertexSoup.push_back(worldPos.y);
 				vertexSoup.push_back(worldPos.z);
@@ -133,7 +133,7 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 				triIndex++;
 			}
 			
-			vertexOffset += meshData.vertices.size();
+			vertexOffset += meshData.positions.size();
 		}
 	
 	}

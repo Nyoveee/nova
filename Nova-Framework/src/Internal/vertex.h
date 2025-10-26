@@ -26,6 +26,7 @@ using GlobalVertexIndex = unsigned int;		// global vertex index are like indices
 
 using MaterialName		= std::string;
 
+#if 0
 struct Vertex {
 	glm::vec3 pos;
 	glm::vec2 textureUnit;
@@ -45,6 +46,8 @@ struct Vertex {
 struct SimpleVertex {
 	glm::vec3 pos;
 };
+#endif
+
 struct ParticleVertex {
 	glm::vec3 localPos;
 	glm::vec3 worldPos;
@@ -55,9 +58,17 @@ struct ParticleVertex {
 
 struct Mesh {
 	std::string name;
-	std::vector<Vertex> vertices;
+	
+	// std::vector<Vertex> vertices;
+
+	// each vertex attribute will be a stream.
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec2> textureCoordinates;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec3> tangents;
+
 	std::vector<unsigned int> indices;
-	std::string materialName;
+	unsigned int materialIndex;			// holds an index to the std::vector of material names in the model class.
 
 	int numOfTriangles;
 	
@@ -66,9 +77,12 @@ struct Mesh {
 
 	REFLECTABLE(
 		name,
-		vertices,
+		positions,
+		textureCoordinates,
+		normals,
+		tangents,
 		indices,
-		materialName,
+		materialIndex,
 		numOfTriangles,
 		vertexWeights
 	)
@@ -77,7 +91,7 @@ struct Mesh {
 // this is the model data that will be de/serialised.
 struct ModelData {
 	std::vector<Mesh> meshes;
-	std::unordered_set<MaterialName> materialNames;
+	std::vector<MaterialName> materialNames;
 
 	// skeleton.
 	std::optional<Skeleton> skeleton;
