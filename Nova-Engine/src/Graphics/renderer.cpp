@@ -679,9 +679,9 @@ void Renderer::renderTexts()
 
 		//const Font& font = fonts[0];	// TODO: change
 		const Font::Atlas& atlas = font->getAtlasDetails();
-		Font& font = fonts[0];	// TODO: change
+		//Font& font = fonts[0];	// TODO: change
 		// Very small due to it being in pixel size
-		float fontScale = static_cast<float>(text.fontSize) / font.getDefaultFontSize();
+		float fontScale = static_cast<float>(text.fontSize) / font->getDefaultFontSize();
 
 		float x = transform.position.x;
 		float y = transform.position.y;
@@ -694,15 +694,14 @@ void Renderer::renderTexts()
 		{
 			const Font::Character& ch = font->getCharacters().at(*c);
 
-			float xpos = x + ch.bearing.x * transform.scale.x * fontScale;
-			float ypos = y - (ch.size.y - ch.bearing.y) * transform.scale.y * fontScale;
+			float xpos = x + ch.bearing.x * fontScale;
+			float ypos = y - (ch.size.y - ch.bearing.y) * fontScale;
 
-			float w = ch.size.x * transform.scale.x * fontScale;
-			float h = ch.size.y * transform.scale.y * fontScale;
+			float w = ch.size.x * fontScale;
+			float h = ch.size.y * fontScale;
 
 			// advance cursors for next glyph 
-			x += ch.advance.x * transform.scale.x * fontScale;
-			y += ch.advance.y * transform.scale.y * fontScale;
+			x += ch.advance * fontScale;
 
 			// Skip invisible glyphs
 			if (w == 0 || h == 0)

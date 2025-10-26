@@ -75,7 +75,7 @@ Font::Font(ResourceID id, ResourceFilePath resourceFilePath) :
             (float)x / w,
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-            glm::ivec2(face->glyph->advance.x >> 6, face->glyph->advance.y >> 6)
+            face->glyph->advance.x >> 6
         };
         Characters.insert(std::pair<char, Character>(c, character));
         x += g->bitmap.width;

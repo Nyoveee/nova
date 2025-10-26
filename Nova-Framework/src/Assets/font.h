@@ -17,7 +17,7 @@ public:
 		float tx;				 // X offset of glyph in texture coords
 		glm::ivec2   size;       // Size of glyph
 		glm::ivec2   bearing;    // Offset from baseline to left/top of glyph
-		glm::uvec2	 advance;    // Offset to advance to next glyph
+		int			 advance;    // Offset to advance to next glyph
 	};
 
 	FRAMEWORK_DLL_API Font(ResourceID id, ResourceFilePath resourceFilePath);
@@ -36,5 +36,5 @@ public:
 
 private:
 	Atlas atlas;
-	std::map<char, Character> Characters;
+	std::unordered_map<char, Character> Characters;
 };
