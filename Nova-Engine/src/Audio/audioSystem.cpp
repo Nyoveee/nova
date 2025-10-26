@@ -137,17 +137,10 @@ void AudioSystem::updatePositionalAudio() {
 	Camera const& camera = engine.renderer.getCamera();
 	glm::vec3 listenerPos = camera.getPos();
 
-	for (auto&& [entity, positionalAudio] : engine.ecs.registry.view<PositionalAudio>().each()) {
-
-		Transform* transform = engine.ecs.registry.try_get<Transform>(entity);
-		if (!transform)
-			continue;
-
-		AudioComponent* audioComponent = engine.ecs.registry.try_get<AudioComponent>(entity);
-		if (!audioComponent)
-			continue;
-
-		glm::vec3 sourcePos = transform->position;
+	// Get all objects with PositionalAudio Component
+	for (auto&& [entity,transform,audioComponent,positionalAudio] : engine.ecs.registry.view< Transform, AudioComponent, PositionalAudio>().each()) {
+		
+		glm::vec3 sourcePos = transform.position;
 		glm::vec3 listenerPos = engine.renderer.getCamera().getPos();
 		float distance = glm::length(sourcePos - listenerPos);
 
@@ -161,7 +154,7 @@ void AudioSystem::updatePositionalAudio() {
 
 		for (auto& [instanceId, audioInstance] : audioInstances) {
 			bool belongsToEntity = false;
-			for (auto const& [soundName, audioData] : audioComponent->data) {
+			for (auto const& [soundName, audioData] : audioComponent.data) {
 				if (audioData.audioId == audioInstance.audioId) {
 					belongsToEntity = true;
 					break;
@@ -265,7 +258,7 @@ void AudioSystem::playSFX(entt::entity entity, std::string soundName)
 	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
 	auto&& [_, audioData] = *iterator;
 
-	AudioInstance* audioInstance = createSoundInstance(audioData.audioId, audioData.volume);
+	AudioInstance* audioInstance = createSoundInstance(audioData.audioId, audioData.volume, entity);
 	if (!audioInstance) return;
 
 	FMOD_VECTOR pos = { transform.position.x, transform.position.y, transform.position.z };
@@ -484,7 +477,7 @@ AudioInstanceID AudioSystem::getNewAudioInstanceId() {
 	return idToReturn;
 }
 
-AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId, float volume) {
+AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId, float volume, entt::entity entity ) {
 	FMOD::Sound* audio = AudioSystem::getSound(audioId);
 
 	if (!audio) {
@@ -499,7 +492,7 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		AudioInstanceID	audioInstanceId = getNewAudioInstanceId();
 		AudioInstance& audioInstance = audioInstances[audioInstanceId];
 
-		audioInstance = { audioInstanceId, audioId, channel, volume };
+		audioInstance = { audioInstanceId, audioId, channel, entity , volume };
 		audioInstance.channel->setVolume(audioInstance.volume);
 		audioInstance.channel->setCallback(channelCallback);
 

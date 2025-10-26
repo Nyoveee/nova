@@ -238,7 +238,7 @@ struct AudioComponent
 
 struct PositionalAudio
 {
-	bool toggleSphere	{ false };	// toggle to see the sphere that has the radius of maxRadius ( Not Working )
+	bool  toggleSphere	{ false };	// toggle to see the sphere that has the radius of maxRadius
 	float innerRadius	= 40.0f;	// If cameraPosition is within this inner radius, vol at max.
 	float maxRadius		= 100.0f;	// If cameraPosition is within this radius, vol will change based on dist to centerPoint.
 

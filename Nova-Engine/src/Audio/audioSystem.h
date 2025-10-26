@@ -19,7 +19,8 @@ public:
 		AudioInstanceID id;			// an id representing this audio instance
 		ResourceID audioId;			// holds an id back to the original audio file
 		FMOD::Channel* channel;		// contains audio instance specific data 
-
+		entt::entity  entity = entt::null;
+	
 		float volume = 1.f;
 		bool toDelete = false;		// indicate that the audio instance should be deleted. should be used by callback only.
 	};
@@ -100,7 +101,7 @@ private:
 	void loadSound(ResourceID audioId);
 
 	AudioInstanceID getNewAudioInstanceId();
-	AudioInstance* createSoundInstance(ResourceID audioId, float volume = 1.f);
+	AudioInstance* createSoundInstance(ResourceID audioId, float volume = 1.f, entt::entity entity = entt::null);
 
 private:
 	FMOD::System* fmodSystem;
