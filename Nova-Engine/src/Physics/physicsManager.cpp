@@ -4,9 +4,10 @@
 #include "ECS/ECS.h"
 #include "Engine/window.h"
 #include "ECS/Events.h"
+#include "ResourceManager/resourceManager.h"
 
 #include "Profiling.h"
-
+#include <memory>
 #include <iostream>
 #include <cstdarg>
 
@@ -134,6 +135,19 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	
 	//set transformUpdateListener to listen to transfrom events from transform system
 	engine.ecs.systemEventDispatcher.sink<TransformUpdateEvent>().connect<&PhysicsManager::transformUpdateListener>(*this);
+	
+	//Hear construct and destroy functions ------------
+	registry.on_construct<Rigidbody>().connect<&PhysicsManager::addBodiesToSystem>(*this);
+	registry.on_construct<BoxCollider>().connect<&PhysicsManager::addBodiesToSystem>(*this);
+	registry.on_construct<SphereCollider>().connect<&PhysicsManager::addBodiesToSystem>(*this);
+	
+
+	registry.on_destroy<Rigidbody>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
+	registry.on_destroy<BoxCollider>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
+	registry.on_destroy<SphereCollider>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
+
+	//--------------------------------------------------------------------//
+
 
 	// We create some primitive shapes to be shared.
 	createPrimitiveShapes();
@@ -160,33 +174,6 @@ PhysicsManager::~PhysicsManager() {
 }
 
 void PhysicsManager::simulationInitialise() {
-	//for (auto&& [entityId, transform, rigidbody, boxCollider] : registry.view<Transform, Rigidbody, BoxCollider>().each()) {
-
-	//	// Create and add body based on entity's component.
-	//	JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidbody.layer);
-
-	//	JPH::BodyCreationSettings bodySettings{
-	//		new JPH::ScaledShape(box, toJPHVec3(transform.scale * boxCollider.scaleMultiplier)),	// scaled shape
-	//		toJPHVec3(transform.position),															// position
-	//		toJPHQuat(transform.rotation),															// rotation (in quartenions)
-	//		rigidbody.motionType,																	// motion type
-	//		layer																					// in which layer?
-	//	};
-
-	//	JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
-	//		bodySettings, 
-	//		JPH::EActivation::Activate //should always be active imo lmao
-	//	);
-
-	//	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityId));
-	//	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidbody.initialVelocity));
-	//	createdBodies.push_back(bodyId);
-
-	//	rigidbody.bodyId = bodyId;
-	//}
-
-	//physicsSystem.OptimizeBroadPhase();
-
 
 	//just set active is alright liao i think
 	for (auto const& bodyID : createdBodies)
@@ -199,29 +186,12 @@ void PhysicsManager::simulationInitialise() {
 void PhysicsManager::systemInitialise()
 {
 	for (auto&& [entityId, transform, rigidbody, boxCollider] : registry.view<Transform, Rigidbody, BoxCollider>().each()) {
-		// Create and add body based on entity's component.
-		JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidbody.layer);
 
-		JPH::BodyCreationSettings bodySettings{
-			new JPH::ScaledShape(box, toJPHVec3(transform.scale * boxCollider.scaleMultiplier)),	// scaled shape
-			toJPHVec3(transform.position),															// position
-			toJPHQuat(transform.rotation),															// rotation (in quartenions)
-			rigidbody.motionType,																	// motion type
-			layer																					// in which layer?
-		};
+		//due to the listener system it is possible the the objects have already been created on scene create 
+		// if that is the case do not double add objects
+		if (rigidbody.bodyId == JPH::BodyID{})
+		initialiseBodyComponent(entityId);
 
-		JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
-
-		JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
-			bodySettings,
-		    activationType //should always be inactive unless its simulation step
-		);
-
-		bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityId));
-		bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidbody.initialVelocity));
-		createdBodies.push_back(bodyId);
-
-		rigidbody.bodyId = bodyId;
 	}
 
 	physicsSystem.OptimizeBroadPhase();
@@ -307,17 +277,26 @@ void PhysicsManager::debugRender() {
 	physicsSystem.DrawBodies(debugDrawSettings, &debugRenderer);
 }
 
-void PhysicsManager::transformUpdateListener(TransformUpdateEvent const& event)
+void PhysicsManager::resetPhysicsState()
 {
-	auto&& [rigidbody, boxCollider] = registry.try_get<Rigidbody, BoxCollider>(event.entityID);
-	if (rigidbody == nullptr)
-	{
-		return;
+	//clear the stack, do not allow anymore updates,
+	//reset transformation data.
+	transformUpdateStack = std::stack<entt::entity>();
+
+	//set all bodyId to invalid
+	for (auto&& [entityId, rigidbody] : registry.view<Rigidbody>().each()) {
+
+		rigidbody.bodyId = JPH::BodyID{};
 
 	}
-	
-	//later on can have many types of collider as long as have one can.
-	if (boxCollider == nullptr)
+	this->clear();
+	this->systemInitialise();
+
+}
+
+void PhysicsManager::transformUpdateListener(TransformUpdateEvent const& event)
+{
+	if (!hasRequiredPhysicsComponents(event.entityID))
 	{
 		return;
 	}
@@ -339,13 +318,30 @@ void PhysicsManager::updateTransformBodies()
 			continue;
 		}
 
-		// our engine doesnt move static objects.
-		if (rigidbody.motionType == JPH::EMotionType::Static) {
-			continue;
-		}
-
 		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
 	}
+}
+
+void PhysicsManager::addBodiesToSystem(entt::registry& registry, entt::entity entityID)
+{
+	if (!hasRequiredPhysicsComponents(entityID))
+	{
+		return;
+	}
+
+	initialiseBodyComponent(entityID);
+
+
+}
+
+void PhysicsManager::removeBodiesFromSystem(entt::registry& registry, entt::entity entityID)
+{
+	if (!hasRequiredPhysicsComponents(entityID))
+	{
+
+	}
+
+
 }
 
 void PhysicsManager::createPrimitiveShapes() {
@@ -365,6 +361,85 @@ void PhysicsManager::createPrimitiveShapes() {
 	sphereSettings.SetEmbedded(); // whatever i just yapped at the top
 
 	sphere = sphereSettings.Create().Get();
+}
+
+void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID)
+{
+
+	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider] = registry.try_get<Transform,MeshRenderer,Rigidbody, BoxCollider, SphereCollider>(entityID);
+	// Create and add body based on entity's component.
+	JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidBody->layer);
+
+	JPH::ScaledShape* shape = nullptr;
+
+	glm::vec3 scale;
+
+	//if have model use model scale, else init without model
+	if (meshRenderer != nullptr)
+	{
+		 auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+		 scale = glm::vec3(1.f * model->maxDimension , 1.f * model->maxDimension, 1.f * model->maxDimension);
+
+		 if (model->maxDimension == 0)
+		 {
+			 scale = transform->scale;
+		 }
+
+	}
+	else
+	{
+		scale = transform->scale;
+	}
+
+
+	//Alright here we go have to list down all the possible collider type cause we dk which one is it. :P, 
+	// we only support one type of collider per entt now i think
+	if (boxCollider != nullptr)
+	{
+		shape = new JPH::ScaledShape(box, toJPHVec3(glm::vec3(scale * boxCollider->scaleMultiplier) ) );
+	}
+
+	if (sphereCollider != nullptr)
+	{
+		shape = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(scale * sphereCollider->radius) ));
+	}
+
+
+	//-----------------------------------------------------------------------------------------------//
+
+	JPH::BodyCreationSettings bodySettings{
+		shape,	// scaled shape
+		toJPHVec3(transform->position),															// position
+		toJPHQuat(transform->rotation),															// rotation (in quartenions)
+		rigidBody->motionType,																	// motion type
+		layer																					// in which layer?
+	};
+
+	JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
+
+	JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
+		bodySettings,
+		activationType //should always be inactive unless its simulation step
+	);
+
+	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityID));
+	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody->initialVelocity));
+	createdBodies.push_back(bodyId);
+
+	rigidBody->bodyId = bodyId;
+
+}
+
+bool PhysicsManager::hasRequiredPhysicsComponents(entt::entity const& entityID)
+{
+	bool check = false;
+
+	if (registry.any_of<BoxCollider, SphereCollider>(entityID) && registry.all_of<Rigidbody>(entityID))
+	{
+		check = true;
+	}
+
+	return check;
 }
 
 void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {

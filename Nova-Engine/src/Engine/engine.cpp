@@ -130,13 +130,12 @@ void Engine::stopSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		//physicsManager.clear(); ray: i dont think you have to clear bodies since you rollback registry already
 		audioSystem.unloadAllSounds();
 		cameraSystem.endSimulation();
 
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
-
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		physicsManager.resetPhysicsState();
 		scriptingAPIManager.stopSimulation();
 
 		inSimulationMode = false;

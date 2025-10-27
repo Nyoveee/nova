@@ -41,8 +41,13 @@ public:
 	void clear();
 	void updatePhysics(float dt);
 	void debugRender();
+	void resetPhysicsState();
 	void transformUpdateListener(TransformUpdateEvent const& event);
 	void updateTransformBodies();
+
+	//add to system and remove from system
+	void addBodiesToSystem(entt::registry & registry, entt::entity entityID);
+	void removeBodiesFromSystem(entt::registry& registry, entt::entity entityID);
 
 	// Nova Collision Listener submits all collision event here..
 	void submitCollision(entt::entity entityOne, entt::entity entityTwo);
@@ -52,6 +57,8 @@ public:
 
 private:
 	void createPrimitiveShapes();
+	void initialiseBodyComponent(entt::entity const& entityID);
+	bool hasRequiredPhysicsComponents(entt::entity const& entityID);
 
 private:
 	// we use a placeholder data member to invoke certain functions before the construction of the following Jolt data members.
