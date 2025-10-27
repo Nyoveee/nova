@@ -23,6 +23,8 @@
 #include "navBar.h"
 #include "navigationWindow.h"
 
+#include "type_concepts.h"
+
 using GLuint = unsigned int;
 
 class Window;
@@ -64,6 +66,9 @@ public:
 	template <typename T>
 	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback);
 	
+	template <IsEnum T>
+	void displayEnumDropDownList(T value, const char* labelName, std::function<void(T)> onClickCallback);
+
 	void launchProfiler();
 
 public:

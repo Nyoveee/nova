@@ -6,7 +6,7 @@
 #include "Logger.h"
 
 #define DEBUGGING true
-#define RECOMPILE_ALL_SYSTEM_RESOURCES false
+#define RECOMPILE_ALL_SYSTEM_RESOURCES true
 
 // This program expects an argc count of 2, <executable> <path to descriptor file>
 int main([[maybe_unused]] int argc, [[maybe_unused]] const char* argv[]) {
@@ -16,8 +16,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] const char* argv[]) {
 #if RECOMPILE_ALL_SYSTEM_RESOURCES 
 		Compiler::recompileAllSystemAssets(); 
 #endif
-		std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Font" / "2790560934101794817.desc";
-		return Compiler::compile(std::string{ testingPath.string().c_str() });
+		// std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Font" / "2790560934101794817.desc";
+		// return Compiler::compile(std::string{ testingPath.string().c_str() });
 		
 		//std::filesystem::path testingPath = std::filesystem::current_path() / "Descriptors" / "Model" / "16153963675574681603.desc";
 		//return Compiler::compile(std::string{ testingPath.string().c_str() });

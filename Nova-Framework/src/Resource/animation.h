@@ -72,7 +72,7 @@ struct AnimationChannel {
 		}
 
 		assert(false && "no key found?");
-		return static_cast<int>(container.size()) - 1;
+		return static_cast<int>(container.size()) - 2;
 	}
 
 	// calculate the appropriate lerp factor based on the current time, the first key and the 2nd (next) key.

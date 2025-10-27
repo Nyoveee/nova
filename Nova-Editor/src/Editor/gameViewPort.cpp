@@ -18,6 +18,7 @@ GameViewPort::GameViewPort(Editor& editor) :
 void GameViewPort::update(float dt) {
 	ImGui::Begin(ICON_FA_GAMEPAD " Game");
 	isHoveringOver = ImGui::IsWindowHovered();
+	isActive = ImGui::IsWindowFocused();
 
 	// Get ImGui window's top left and bottom right.
 	ImVec2 gameWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();

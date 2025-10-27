@@ -25,6 +25,13 @@
                 "__variant_value": 0.0
             }
         },
+        "normalMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 7
+            }
+        },
         "occulusion": {
             "type": "NormalizedFloat",
             "value": {
@@ -32,11 +39,32 @@
                 "__variant_value": 0.0
             }
         },
+        "packedMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 7
+            }
+        },
         "roughness": {
             "type": "NormalizedFloat",
             "value": {
                 "__variant_type": 12,
-                "__variant_value": 0.2800000011920929
+                "__variant_value": 0.2980000078678131
+            }
+        },
+        "toUseNormalMap": {
+            "type": "bool",
+            "value": {
+                "__variant_type": 0,
+                "__variant_value": false
+            }
+        },
+        "toUsePackedMap": {
+            "type": "bool",
+            "value": {
+                "__variant_type": 0,
+                "__variant_value": false
             }
         }
     },

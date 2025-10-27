@@ -26,16 +26,9 @@ AnimatorController::AnimatorController(Editor& editor) :
 	editor				{ editor },
 	resourceManager		{ editor.resourceManager },
 	assetManager		{ editor.assetManager },
-	context				{ nullptr },
-	toCenterToStartNode	{ false }
+	context				{ nullptr }
 {
-	context = ed::CreateEditor(nullptr);
-
-	InputManager& inputManager = editor.engine.inputManager;
-	
-	inputManager.subscribe<ToCenterControllerView>([&](auto) {
-		toCenterToStartNode = true;
-	});
+	context = ed::CreateEditor(nullptr);	
 }
 
 AnimatorController::~AnimatorController() {
@@ -61,7 +54,6 @@ void AnimatorController::update() {
 	if (!animator) {
 		ImGui::Text("Selected entity has no animator component.");
 		ImGui::End();
-		toCenterToStartNode = false;
 		return;
 	}
 
@@ -72,28 +64,23 @@ void AnimatorController::update() {
 		{
 		case ResourceManager::QueryResult::Invalid:
 			ImGui::Text("Animator is pointing to an invalid animation controller asset.");
-			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		case ResourceManager::QueryResult::WrongType:
 			ImGui::Text("This should never happened. Resource ID is not a controller?");
 			assert(false && "Resource ID is not a controller.");
-			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		case ResourceManager::QueryResult::Loading:
 			ImGui::Text("Loading..");
-			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		case ResourceManager::QueryResult::LoadingFailed:
 			ImGui::Text("Loading of model failed.");
-			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		default:
 			assert(false);
-			toCenterToStartNode = false;
 			ImGui::End();
 			return;
 		}
@@ -122,24 +109,30 @@ void AnimatorController::displayLeftPanel(Controller& controller) {
 	// 2) Render all the links..
 	renderNodeLinks(controller);
 
-	// 3) Handle interactions
-	if (ed::BeginCreate()) {
-		handleNodeLinking(controller);
-	}
-
-	ed::EndCreate(); // Wraps up object creation action handling.
-
-	if (toCenterToStartNode) {
-		toCenterToStartNode = false;
-		ed::CenterNodeOnScreen(startNodeId);
-	}
-
-	ed::End();
-
 	// Update selected nodes.. such a bad api not gonna lie..
 	selectedNodes.resize(ed::GetSelectedObjectCount());
 	int nodeCount = ed::GetSelectedNodes(selectedNodes.data(), static_cast<int>(selectedNodes.size()));
 	selectedNodes.resize(nodeCount);
+
+	// Update selected links.. such a bad api not gonna lie..
+	selectedLinks.resize(ed::GetSelectedObjectCount());
+	int linkCount = ed::GetSelectedLinks(selectedLinks.data(), static_cast<int>(selectedLinks.size()));
+	selectedLinks.resize(linkCount);
+
+
+	// 3) Handle interactions
+	if (ed::BeginCreate()) {
+		handleNodeLinking(controller);
+	}
+	ed::EndCreate(); // Wraps up object creation action handling.
+
+	// 4) Handle deletion action
+	if (ed::BeginDelete()) {
+		handleDeletion(controller);
+	}
+	ed::EndDelete();
+
+	ed::End();
 
 	ImGui::EndChild();
 }
@@ -147,14 +140,14 @@ void AnimatorController::displayLeftPanel(Controller& controller) {
 void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, Controller& controller) {
 	ImGui::BeginChild("Right Panel");
 
-	if (ImGui::Button("Reset all node position")) {
+	if (ImGui::Button("Center all node position")) {
+
 		for (auto&& [nodeId, _] : controller.data.nodes) {
 			ed::NodeId edNodeId = static_cast<std::size_t>(nodeId);
 			ed::SetNodePosition(edNodeId, { 0.f, 0.f });
 		}
 
-		// reset start pos too.
-		ed::SetNodePosition(startNodeId, { 0.f, 0.f });
+		ed::NavigateToContent(0.0f);
 	}
 
 	if (ImGui::BeginTabBar("TabBar")) {
@@ -163,7 +156,7 @@ void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, 
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Selected Node")) {
+		if (ImGui::BeginTabItem("Inspector")) {
 			displaySelectedNodeProperties(controller);
 			ImGui::EndTabItem();
 		}
@@ -186,16 +179,6 @@ void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, 
 				++imguiCounter;
 			}
 
-			auto pos = ed::GetNodePosition(startNodeId);
-			ImGui::PushID(imguiCounter);
-
-			ImGui::Text("Node: Start, x: %f, y: %f", pos.x, pos.y);
-
-			if (ImGui::Button("Center button to screen")) {
-				ed::CenterNodeOnScreen(startNodeId);
-			}
-
-			ImGui::PopID();
 			ImGui::EndTabItem();
 		}
 
@@ -232,10 +215,6 @@ void AnimatorController::displayParameterWindow(Controller& controller) {
 
 		if (ImGui::Selectable("Float")) {
 			parameters.push_back({ name + std::to_string(counter++), 0.f });
-		}
-
-		if (ImGui::Selectable("String")) {
-			parameters.push_back({ name + std::to_string(counter++), "" });
 		}
 
 		ImGui::EndCombo();
@@ -279,9 +258,6 @@ void AnimatorController::displayParameterWindow(Controller& controller) {
 				else if constexpr (std::same_as<float, ParameterType>) {
 					typeInText = "float";
 
-				}
-				else if constexpr (std::same_as<std::string, ParameterType>) {
-					typeInText = "string";
 				}
 				else {
 					[&] <bool flag = false, typename T = ParameterType>() {
@@ -342,9 +318,6 @@ void AnimatorController::displayParameterWindow(Controller& controller) {
 				else if constexpr (std::same_as<float, ParameterType>) {
 					ImGui::InputFloat("##value", &parameter);
 				}
-				else if constexpr (std::same_as<std::string, ParameterType>) {
-					ImGui::InputText("##value", &parameter);
-				}
 				else {
 					[&] <bool flag = false, typename T = ParameterType>() {
 						static_assert(flag, "Not all types of variant accounted for." __FUNCSIG__);
@@ -392,35 +365,70 @@ void AnimatorController::displaySelectedNodeProperties(Controller& controller) {
 	}
 
 	for (auto&& edNodeId : selectedNodes) {
-		std::string nodeName;
-		ControllerNodeID nextNode;
-
-		if (edNodeId == startNodeId) {
-			nodeName = "Start";
-			nextNode = controller.data.entryNode;
-		}
-		else {
-			ControllerNodeID nodeId = static_cast<ControllerNodeID>(static_cast<std::size_t>(edNodeId));
-			auto&& node = nodes.at(nodeId);
-			nodeName = node.name;
-			nextNode = node.nextNode;
+		ControllerNodeID nodeId = static_cast<ControllerNodeID>(static_cast<std::size_t>(edNodeId));
+		auto iterator = nodes.find(nodeId);
+		
+		if (iterator == nodes.end()) {
+			continue;
 		}
 
-		ImGui::SeparatorText(std::string{ "Name: " + nodeName }.c_str());
+		auto&& [_, node] = *iterator;
+
+		ImGui::SeparatorText(std::string{ "Name: " + node.name }.c_str());
 		ImGui::Text("ID: %zu", static_cast<std::size_t>(edNodeId));
 
-		ImGui::NewLine();
+		// Display transitions window..
+		ImGui::BeginChild("Transition Window", {}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 
-		// get details of next node..
-		auto nextIterator = nodes.find(nextNode);
+		int imguiCounter = 0;
 
-		// no next node..
-		if (nextIterator == nodes.end()) {
-			ImGui::Text("No next node.");
+		if (node.transitions.empty()) {
+			ImGui::Text("No transition. Create a transition in the node graph!");
 		}
 		else {
-			ImGui::Text("Next Node: %s", nextIterator->second.name.c_str());
+			for (Controller::Transition& transition : node.transitions) {
+				auto nextIterator = nodes.find(transition.nextNode);
+
+				if (nextIterator == nodes.end()) {
+					continue;
+				}
+
+				ImGui::PushID(imguiCounter++);
+
+				auto&& [__, nextNode] = *nextIterator;
+
+				ImGui::Text("Transition: %s to %s", node.name.c_str(), nextNode.name.c_str());
+				ImGui::Text("Conditions");
+
+				if (transition.conditions.empty()) {
+					ImGui::Text("No conditions. This transition will always happen.");
+				}
+				else {
+					if (ImGui::BeginTable("Condition Table", 3, ImGuiTableFlags_Borders)) {
+						//ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+						//ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+
+						for (Controller::Condition& condition : transition.conditions) {
+							ImGui::TableNextRow();
+
+							ImGui::TableNextColumn();
+							ImGui::Text("%s", condition.name.c_str());
+
+							ImGui::TableNextColumn();
+
+							DisplayProperty<Controller::Condition::Check>(editor, "##", condition.check);
+							DisplayProperty<decltype(condition.value)>(editor, "##", condition.value);
+						}
+
+						ImGui::EndTable();
+					}
+				}
+
+				ImGui::PopID();
+			}
 		}
+
+		ImGui::EndChild();
 	}
 
 	ImGui::EndChild();
@@ -445,11 +453,11 @@ void AnimatorController::handleDragAndDrop(Controller& controller) {
 
 	ControllerNodeID nodeId = Math::getGUID();
 
-	controller.data.nodes.insert({ nodeId, Controller::Node{
+	controller.data.nodes.insert({ nodeId, Controller::Node {
 		nodeId,
-		NO_CONTROLLER_NODE,
-		NO_CONTROLLER_NODE,
 		animationId,
+		{},
+		true,
 		name
 	}});
 }
@@ -460,40 +468,41 @@ void AnimatorController::renderNodes(Controller& controller) {
 
 	int counter = 1;
 
-	// Render the start node..
-	ed::BeginNode(startNodeId);
-	ImGui::Text("Start");
-
-	ImGui::SameLine();
-
-	ed::BeginPin(startPinId, ed::PinKind::Output);
-	ImGui::Text("Out ->");
-	ed::EndPin();
-	ed::EndNode();
-
 	// Render all nodes..
 	for (auto&& [id, node] : controller.data.nodes) {
-		ImGui::PushID(static_cast<int>(static_cast<std::size_t>(id)));
 		ed::NodeId nodeId = static_cast<std::size_t>(id);
 		ed::PinId inPinId = counter++;
 		ed::PinId outPinId = counter++;
 
-		// Get animation name..
-		auto* descriptor = assetManager.getDescriptor(node.animation);
+		std::string animationName;
 
-		if (!descriptor) {
-			continue;
+		if (id == ENTRY_NODE) {
+			animationName = node.name;
 		}
+		else {
+			// Get animation name..
+			auto* descriptor = assetManager.getDescriptor(node.animation);
+
+			if (!descriptor) {
+				continue;
+			}
+
+			animationName = descriptor->name;
+		}
+
+		ImGui::PushID(static_cast<int>(static_cast<std::size_t>(id)));
 
 		// Render a node..
 		ed::BeginNode(nodeId);
-		ImGui::Text("%s", descriptor->name.c_str());
+		ImGui::Text("%s", animationName.c_str());
 
-		ed::BeginPin(inPinId, ed::PinKind::Input);
-		ImGui::Text("-> In");
-		ed::EndPin();
-
-		ImGui::SameLine();
+		if (id != ENTRY_NODE) {
+			ed::BeginPin(inPinId, ed::PinKind::Input);
+			ImGui::Text("-> In");
+			ed::EndPin();
+		
+			ImGui::SameLine();
+		}
 
 		ed::BeginPin(outPinId, ed::PinKind::Output);
 		ImGui::Text("Out ->");
@@ -516,47 +525,50 @@ void AnimatorController::renderNodes(Controller& controller) {
 
 void AnimatorController::renderNodeLinks(Controller& controller) {
 	auto&& nodes = controller.data.nodes;
+
 	int linkCounter = 1;
 
-	// Link the start node if it points to something valid..
-	auto entryIterator = nodes.find(controller.data.entryNode);
+	// [data cleaning]
+	// we first iterate through every node and remove invalid transitions..
+	for (auto&& [nodeId, node] : nodes) {
 
-	if (entryIterator != nodes.end()) {
-		ed::LinkId linkId = linkCounter++;
+		for (auto it = node.transitions.begin(); it != node.transitions.end();) {
+			auto& transition = *it;
 
-		// get the in pin of this new node..
-		auto&& [inPin, outPin] = nodeToPins.at(entryIterator->second.id);
+			auto iterator = nodes.find(transition.nextNode);
 
-		// create link..
-		ed::Link(linkId, startPinId, inPin);
+			// a transition is invalid if it's next node is invalid.
+			if (iterator == nodes.end()) {
+				it = node.transitions.erase(it);
+			}
+			else {
+				++it;
+			}
+		}
 	}
 
 	// for every node..
 	for (auto&& [nodeId, node] : nodes) {
-		// we check if it's connected to something else..
-		if (node.nextNode == NO_CONTROLLER_NODE) {
-			continue;
+		int transitionIndex = 0;
+
+		// iterate through the node's transitions..
+		for (auto&& transition : node.transitions) {
+			// we retrieve details about the next node
+			auto iterator = nodes.find(transition.nextNode);
+			auto&& [nextNodeId, nextNode] = *iterator;	// we have cleaned the data in the previous loop, safe deference.
+
+			// get the respective out and in pins..
+			auto&& [_, outPin] = nodeToPins.at(nodeId);
+			auto&& [inPin, __] = nodeToPins.at(nextNodeId);
+
+			ed::LinkId linkId = linkCounter++;
+
+			// create link..
+			ed::Link(linkId, outPin, inPin);
+
+			linksToTransition.insert({ static_cast<std::size_t>(linkId), { nodeId, transitionIndex } });
+			++transitionIndex;
 		}
-
-		// we verify the validity of this next node..
-		auto iterator = nodes.find(node.nextNode);
-
-		if (iterator == nodes.end()) {
-			// next node pointing to something invalid?
-			node.nextNode = NO_CONTROLLER_NODE;
-			continue;
-		}
-
-		auto&& [nextNodeId, nextNode] = *iterator;
-
-		// get the respective out and in pins..
-		auto&& [_, outPin] = nodeToPins.at(nodeId);
-		auto&& [inPin, __] = nodeToPins.at(nextNodeId);
-
-		ed::LinkId linkId = linkCounter++;
-
-		// create link..
-		ed::Link(linkId, outPin, inPin);
 	}
 }
 
@@ -576,20 +588,11 @@ void AnimatorController::handleNodeLinking(Controller& controller) {
 		return;
 	}
 
-	// ed::AcceptNewItem() return true when user release mouse button.
-	if (!ed::AcceptNewItem()) {
-		return;
-	}
-
 	auto&& inPinIterator  = pinMetaData.find(static_cast<std::size_t>(inPinId));
 	auto&& outPinIterator = pinMetaData.find(static_cast<std::size_t>(outPinId));
 
-	// re assigning our start node..
-	if (outPinId == startPinId && inPinIterator != pinMetaData.end()) {
-		controller.data.entryNode = inPinIterator->second.node;
-	}
 	// these iterators are valid..
-	else if (inPinIterator != pinMetaData.end() && outPinIterator != pinMetaData.end()) {
+	if (inPinIterator != pinMetaData.end() && outPinIterator != pinMetaData.end()) {
 		auto&& [_,		   pinInData]	= *inPinIterator;
 		auto&& [__,		   pinOutData]	= *outPinIterator;
 		auto&& [nodeInId,  pinInType]	= pinInData;
@@ -597,18 +600,94 @@ void AnimatorController::handleNodeLinking(Controller& controller) {
 
 		// pins are not in and out respectively.. reject!
 		if (pinInType != PinData::Type::In || pinOutType != PinData::Type::Out) {
-			ed::RejectNewItem();
+			ed::RejectNewItem(ImVec4{ 1.0f, 0.f, 0.f, 1.f }, 2.f);
 		}
-		else {
+		// pins in & out result in the same node..
+		else if (nodeInId == nodeOutId) {
+			ed::RejectNewItem(ImVec4{ 1.0f, 0.f, 0.f, 1.f }, 2.f);
+		} 
+		// ed::AcceptNewItem() return true when user release mouse button.
+		else if (ed::AcceptNewItem()) {
 			// we link them..
-			Controller::Node& nodeIn = nodes.at(nodeInId);
+			// Controller::Node& nodeIn = nodes.at(nodeInId);
 			Controller::Node& nodeOut = nodes.at(nodeOutId);
 
-			nodeOut.nextNode = nodeInId;
-			nodeIn.previousNode = nodeOutId;
+			// we create a new transition..
+			Controller::Transition newTransition {
+				nodeInId,
+				{}
+			};
+
+			nodeOut.transitions.push_back(newTransition);
 		}
 	}
 	else {
-		ed::RejectNewItem();
+		ed::RejectNewItem(ImVec4{ 1.0f, 0.f, 0.f, 1.f }, 2.f);
+	}
+}
+
+void AnimatorController::handleDeletion(Controller& controller) {
+	ed::LinkId deletedLinkId;
+
+	std::unordered_map<ControllerNodeID, std::unordered_set<int>> transitionsToDelete;
+
+	while (ed::QueryDeletedLink(&deletedLinkId)) {
+		// If you agree that link can be deleted, accept deletion.
+		if (!ed::AcceptDeletedItem()) {
+			continue;
+		}
+
+		auto iterator = linksToTransition.find(static_cast<std::size_t>(deletedLinkId));
+		
+		if (iterator == linksToTransition.end()) {
+			continue;
+		}
+
+		auto&& [_, transition] = *iterator;
+		transitionsToDelete[transition.node].insert(transition.index);
+	}
+
+	// so, how do we safely delete different elements in a vector where the index and iterator could be invalidated?
+	// the trick is, you don't ;) you simply make a copy of the existing vector consisting only of the valid elements.
+	for (auto&& [nodeId, transitionIndicesToDelete] : transitionsToDelete) {
+		std::vector<Controller::Transition> nonDeletedTransitions;
+
+		// can't be invalid, right?
+		auto&& node = controller.data.nodes.at(nodeId);
+
+		for (int i = 0; i < node.transitions.size(); ++i) {
+			// this index has been indicated to be deleted.
+			if (transitionIndicesToDelete.contains(i)) {
+				continue;
+			}
+
+			nonDeletedTransitions.push_back(node.transitions[i]);
+		}
+
+		node.transitions = std::move(nonDeletedTransitions);
+	}
+
+	ed::NodeId deletedNodeId;
+
+	while (ed::QueryDeletedNode(&deletedNodeId)) {
+		if (static_cast<std::size_t>(deletedNodeId) == static_cast<std::size_t>(ENTRY_NODE)) {
+			ed::RejectDeletedItem();
+			continue;
+		}
+		else if (!ed::AcceptDeletedItem()) {
+			continue;
+		}
+		
+		ControllerNodeID nodeId = static_cast<std::size_t>(deletedNodeId);
+
+		// because nodes are in an unorderd_map, handling iterator validation is much simpler.
+		auto iterator = controller.data.nodes.find(nodeId);
+		
+		if (iterator == controller.data.nodes.end()) {
+			assert(false && "The node graph shouldn't have invalid node id to begin with.");
+			continue;
+		}
+
+		controller.data.nodes.erase(iterator);
 	}
 }

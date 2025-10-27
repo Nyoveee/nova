@@ -3,72 +3,26 @@
 #include "ResourceManager/resourceManager.h"
 #include "InputManager/inputManager.h"
 
+#undef max
+#undef min
+
 AnimationSystem::AnimationSystem(Engine& p_engine) : 
 	engine				{ p_engine },
 	resourceManager		{ p_engine.resourceManager },
 	toAdvanceAnimation	{ true }
 {
-	InputManager& inputManager = p_engine.inputManager;
+	// InputManager& inputManager = p_engine.inputManager;
 
-	inputManager.subscribe<ToggleAnimate>([&](auto) {
-		toAdvanceAnimation = !toAdvanceAnimation;
-	});
+	//inputManager.subscribe<ToggleAnimate>([&](auto) {
+	//	toAdvanceAnimation = !toAdvanceAnimation;
+	//});
 }
 
 void AnimationSystem::update([[maybe_unused]] float dt) {
 	entt::registry& registry = engine.ecs.registry;
 
-	// =======================================================
-	// We first update all our animator components, handling it's state
-	// in the animation controller node graphs
-	// =======================================================
-	for (auto&& [entityId, animator] : registry.view<Animator>().each()) {
-		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
-
-		if (!controllerPtr) {
-			continue;
-		}
-
-		Controller const& controller = *controllerPtr;
-
-		// don't advance..
-		if (!toAdvanceAnimation) {
-			continue;
-		}
-
-		// if current node is invalid, we do nothing..
-		if (animator.currentNode == NO_CONTROLLER_NODE) {
-			animator.timeElapsed = 0.f;
-			animator.currentNode = controller.data.entryNode;
-		}
-
-		auto&& nodes = controller.getNodes();
-
-		// if it's still invalid, we skip this animator.. (maybe controller's entryNode is invalid.)
-		auto iterator = nodes.find(animator.currentNode);
-		if (animator.currentNode == NO_CONTROLLER_NODE || iterator == nodes.end()) {
-			continue;
-		}
-
-		auto&& [id, currentNode] = *iterator;
-		animator.currentAnimation = currentNode.animation;
-
-		// retrieve the current animation based on current node..
-		auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
-
-		if (!animation || animation->animations.empty()) {
-			continue;
-		}
-
-		// advance time..
-		animator.timeElapsed += dt;
-
-		// check if enough time has elapsed, if so we go to the next node.
-		if (animator.timeElapsed >= animation->animations[0].durationInSeconds) {
-			animator.timeElapsed = 0;
-			animator.currentNode = currentNode.nextNode;
-			animator.currentAnimation = currentNode.animation;
-		}
+	if (engine.isInSimulationMode() && toAdvanceAnimation) {
+		updateAnimator(dt);
 	}
 
 	// =======================================================
@@ -97,13 +51,106 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 
 			if (animation && animation->animations.size()) {
 				currentAnimation = &animation->animations[0];
-				timeInTicks = animator->timeElapsed * currentAnimation->ticksPerSecond;
+				timeInTicks = std::min(animator->timeElapsed * currentAnimation->ticksPerSecond, currentAnimation->durationInTicks - 0.01f);
 			}
 		}
 
 		// we find the root node first, and recursively calculate the final transformation matrix down...
 		ModelNodeIndex rootNode = skeleton.rootNode;
 		calculateFinalMatrix(rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
+	}
+}
+
+void AnimationSystem::initialiseAllControllers() {
+	entt::registry& registry = engine.ecs.registry;
+
+	for (auto&& [entityId, animator] : registry.view<Animator>().each()) {
+		animator.timeElapsed = 0.f;
+		animator.currentNode = NO_CONTROLLER_NODE;
+		animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
+
+		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
+
+		if (!controllerPtr) {
+			continue;
+		}
+
+		animator.currentNode = controllerPtr->getNodes().at(ENTRY_NODE).id;
+		// animator.currentAnimation = controllerPtr->getNodes().at(ENTRY_NODE).animation;
+	}
+}
+
+void AnimationSystem::handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller) {
+	// check transition in sequence..
+	for (auto&& transition : currentNode.transitions) {
+		// @TODO: Handle conditions..
+
+		// We found a valid transition..
+		auto iterator = controller.data.nodes.find(transition.nextNode);
+
+		if (iterator == controller.data.nodes.end()) {
+			assert(false && "Transition pointing to an invalid node?");
+			continue;
+		}
+
+		animator.currentNode = transition.nextNode;
+		animator.timeElapsed = 0;
+		animator.currentAnimation = iterator->second.animation;
+		break;
+	}
+}
+
+void AnimationSystem::updateAnimator(float dt) {
+	entt::registry& registry = engine.ecs.registry;
+
+	// =======================================================
+	// We first update all our animator components, handling it's state
+	// in the animation controller node graphs
+	// =======================================================
+
+	for (auto&& [entityId, animator] : registry.view<Animator>().each()) {
+		// Get controller resource..
+		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
+
+		if (!controllerPtr) {
+			continue;
+		}
+
+		Controller const& controller = *controllerPtr;
+
+		auto&& nodes = controller.getNodes();
+		auto iterator = nodes.find(animator.currentNode);
+		
+		// if current node is invalid, we do nothing.. (this shouldn't happen)
+		if (iterator == nodes.end()) {
+			assert(false && "Animator's current node is pointing to an invalid node?");
+			continue;
+		}
+
+		// set the current animation..
+		auto&& [id, currentNode] = *iterator;
+
+		// if current node is entry node..
+		if (id == ENTRY_NODE) {
+			handleTransition(animator, currentNode, controller);
+			continue;
+		}
+
+		// retrieve the current animation based on current node..
+		auto&& [animation, __] = resourceManager.getResource<Model>(animator.currentAnimation);
+
+		if (!animation || animation->animations.empty()) {
+			continue;
+		}
+
+		if (animator.timeElapsed >= animation->animations[0].durationInSeconds) {
+			animator.timeElapsed = 0;
+			handleTransition(animator, currentNode, controller);
+		}
+		else {
+			// advance time..
+			animator.timeElapsed += dt;
+		}
 	}
 }
 

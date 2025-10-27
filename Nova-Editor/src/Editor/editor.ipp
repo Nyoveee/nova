@@ -1,6 +1,7 @@
 #include "ResourceManager/resourceManager.h"
 #include "AssetManager/assetManager.h"
 #include "IconsFontAwesome6.h"
+#include "editor.h"
 
 template<typename T>
 void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback) {
@@ -54,5 +55,22 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 		}
 
 		ImGui::PopID();
+	}
+}
+
+template<IsEnum T>
+void Editor::displayEnumDropDownList(T value, const char* labelName, std::function<void(T)> onClickCallback) {
+	// get the list of all possible enum values
+	constexpr auto listOfEnumValues = magic_enum::enum_entries<T>();
+
+	if (ImGui::BeginCombo(labelName, std::string{ magic_enum::enum_name<T>(value) }.c_str())) {
+
+		for (auto&& [enumValue, enumInString] : listOfEnumValues) {
+			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == value)) {
+				onClickCallback(enumValue);
+			}
+		}
+
+		ImGui::EndCombo();
 	}
 }

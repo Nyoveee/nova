@@ -11,33 +11,13 @@ class Model;
 class Controller : public Resource {
 public:
 	struct Data;
-	struct Node {
-		ControllerNodeID id			  = NO_CONTROLLER_NODE;
-		ControllerNodeID previousNode = NO_CONTROLLER_NODE;
-		ControllerNodeID nextNode	  = NO_CONTROLLER_NODE;
+	struct Condition;
+	struct Transition;
+	struct Node;
+	struct Parameter;
 
-		TypedResourceID<Model> animation{ INVALID_RESOURCE_ID };
-
-		std::string name;
-
-		REFLECTABLE(
-			id,
-			previousNode,
-			nextNode,
-			animation,
-			name
-		)
-	};
-
-	struct Parameter {
-		std::string name;
-		std::variant<int, float, bool, std::string> value;
-
-		REFLECTABLE(
-			name,
-			value
-		)
-	};
+	// Defines all these structs..
+	#include "controllerStructs.h"
 
 public:
 	FRAMEWORK_DLL_API Controller(ResourceID id, ResourceFilePath filePath, Data data);
@@ -46,11 +26,15 @@ public:
 	FRAMEWORK_DLL_API std::unordered_map<ControllerNodeID, Controller::Node> const& getNodes() const;
 
 public:
+
 	// this is the stuff that is de/serialised for resource pipeline.
 	struct Data {
-		ControllerNodeID entryNode = NO_CONTROLLER_NODE;
-		std::unordered_map<ControllerNodeID, Node> nodes;
-		std::vector<Parameter> parameters;
+		ControllerNodeID entryNode = ENTRY_NODE;
+		std::unordered_map<ControllerNodeID, Node> nodes { 
+			{ ENTRY_NODE, Node{ ENTRY_NODE, INVALID_RESOURCE_ID, {}, true, "Entry Node" }}
+		};
+
+		std::vector<Parameter> parameters {};
 
 		REFLECTABLE(
 			entryNode,

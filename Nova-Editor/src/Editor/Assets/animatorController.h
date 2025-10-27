@@ -16,6 +16,21 @@ struct Animator;
 
 namespace ed = ax::NodeEditor;
 
+#if 0
+template<>
+struct std::hash<TransitionID> {
+	std::size_t operator()(TransitionID const& transitionId) const noexcept {
+		std::size_t h1 = std::hash<ControllerNodeID>{}(transitionId.node);
+		std::size_t h2 = std::hash<int>{}(transitionId.index);
+		return h1 ^ (h2 << 1);
+	}
+};
+
+inline bool operator==(TransitionID const& lhs, TransitionID const& rhs) {
+	return lhs.node == rhs.node && lhs.index == rhs.index;
+}
+#endif
+
 class AnimatorController {
 public:
 	struct PinData {
@@ -30,6 +45,11 @@ public:
 	struct Pins {
 		ed::PinId pinIn;
 		ed::PinId pinOut;
+	};
+
+	struct TransitionData {
+		ControllerNodeID node; // what node does this transition belong to?
+		int index;			   // what index is this transition in?
 	};
 
 public:
@@ -57,11 +77,13 @@ private:
 	void renderNodes(Controller& controller);
 	void renderNodeLinks(Controller& controller);
 	void handleNodeLinking(Controller& controller);
+	void handleDeletion(Controller& controller);
 
 private:
 	Editor& editor;
 	ResourceManager& resourceManager;
 	AssetManager& assetManager;
+
 	ax::NodeEditor::EditorContext* context;
 
 	// stores the name of parameter temporarily for editing..
@@ -73,9 +95,14 @@ private:
 	// map nodes back to their pins..
 	std::unordered_map<ControllerNodeID, Pins> nodeToPins;
 
-	bool toCenterToStartNode;
+	// map links to transitions..
+	std::unordered_map<std::size_t, TransitionData> linksToTransition;
 
 	std::vector<ed::NodeId> selectedNodes;
-	static inline const ed::NodeId startNodeId  = 1000;
-	static inline const ed::PinId  startPinId   = 1001;
+	std::vector<ed::LinkId> selectedLinks;
+
+	// static inline const ed::NodeId startNodeId  = 1000;
+	// static inline const ed::PinId  startPinId   = 1001;
+
+	bool isFirstFrame = true;
 };

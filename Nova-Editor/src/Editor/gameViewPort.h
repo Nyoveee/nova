@@ -17,6 +17,7 @@ public:
 
 public:
 	bool isHoveringOver;
+	bool isActive;
 	ControlOverlay controlOverlay;
 
 private:

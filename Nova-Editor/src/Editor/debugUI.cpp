@@ -96,18 +96,9 @@ void DebugUI::renderHDRSection() {
 	// Tone mapping method selection
 	auto currentMethod = renderer.getToneMappingMethod();
 
-	// get the list of all possible enum values
-	constexpr auto listOfEnumValues = magic_enum::enum_entries<Renderer::ToneMappingMethod>();	
-
-	if (ImGui::BeginCombo("Tone Mapping Method", std::string{ magic_enum::enum_name<Renderer::ToneMappingMethod>(currentMethod) }.c_str())) {
-		for (auto&& [enumValue, enumInString] : listOfEnumValues) {
-			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == currentMethod)) {
-				renderer.setToneMappingMethod(enumValue);
-			}
-		}
-
-		ImGui::EndCombo();
-	}
+	editor.displayEnumDropDownList<Renderer::ToneMappingMethod>(currentMethod, "Tone Mapping Method", [&](auto enumValue) {
+		renderer.setToneMappingMethod(enumValue);
+	});
 }
 
 void DebugUI::renderGammaCorrectionSection() {

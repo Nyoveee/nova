@@ -105,6 +105,8 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
+		animationSystem.initialiseAllControllers();
+
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 		physicsManager.initialise();
 		audioSystem.loadAllSounds();

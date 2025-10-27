@@ -55,8 +55,9 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 template<NonSerializableTypes DataMemberType>
 inline void DisplayProperty(Editor&, const char*, auto&) {};
 
+
 /***************************************************************************************
-	here we gooooooooooooooooooooooooooooooo! time to list down all the primitives!
+	Partial constraints..
 ****************************************************************************************/
 template<IsTypedResourceID DataMemberType>
 inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& dataMember) {
@@ -114,6 +115,18 @@ inline void DisplayProperty(Editor&, const char* dataMemberName, auto& dataMembe
 		ImGui::EndCombo();
 	}
 }
+
+template<typename DataMemberType> requires is_variant<DataMemberType>::value
+inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& variant) {
+	std::visit([&](auto&& value) {
+		using Type = std::decay_t<decltype(value)>;
+		DisplayProperty<Type>(editor, dataMemberName, value);
+	}, variant);
+}
+
+/***************************************************************************************
+	here we gooooooooooooooooooooooooooooooo! time to list down all the primitives!
+****************************************************************************************/
 template<>
 inline void DisplayProperty<int>(Editor&, const char* dataMemberName, int& dataMember) {
 	ImGui::InputInt(dataMemberName, &dataMember);

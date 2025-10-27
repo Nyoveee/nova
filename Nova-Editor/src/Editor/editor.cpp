@@ -117,6 +117,10 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<DeleteSelectedEntity>(
 		[&](DeleteSelectedEntity) {
+			if (!gameViewPort.isHoveringOver) {
+				return;
+			}
+
 			// @TODO: Confirmation prompt LMAOO
 			for (entt::entity entity : selectedEntities) {
 				deleteEntity(entity);
@@ -404,7 +408,7 @@ void Editor::handleEntityHovering() {
 
 // handles object picker in game viewport
 void Editor::handleEntitySelection() {	
-	if (!gameViewPort.isHoveringOver) {
+	if (!gameViewPort.isHoveringOver || !gameViewPort.isActive) {
 		return;
 	}
 	
