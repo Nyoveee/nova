@@ -68,6 +68,11 @@ concept isTypedID = requires {
 	static_cast<typename T::Underlying_ID>(std::declval<T>());
 };
 
+template <typename From, typename To>
+concept ExplicitlyCastable = requires(From f) {
+	static_cast<To>(f);
+};
+
 // Old school type traits.
 // Check if its std::array
 template <typename T>

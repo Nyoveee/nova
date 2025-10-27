@@ -67,5 +67,15 @@ void GameViewPort::update(float dt) {
 		static_cast<int>(viewportHeight)
 	});
 
+#if 0
+	// Calculate the mouse position relative to the game's viewport.
+	mouseRelativeToViewPort = ImGui::GetMousePos();
+	mouseRelativeToViewPort -= gameWindowTopLeft;
+	mouseRelativeToViewPort /= ImVec2{ viewportWidth, viewportHeight };
+
+	// Flip y..
+	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+#endif
+
 	ImGui::End();
 }

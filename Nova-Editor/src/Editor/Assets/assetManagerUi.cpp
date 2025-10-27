@@ -13,6 +13,7 @@
 
 #include <sstream>
 #include <Windows.h>
+#include "Engine/engine.h"
 
 #undef max
 
@@ -52,6 +53,20 @@ void AssetManagerUI::update() {
 	displayLeftNavigationPanel();
 	ImGui::SameLine(); 
 	displayRightContentPanel();
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			entt::entity entity = *((entt::entity*)payload->Data);
+			EntityData* entityData = editor.engine.ecs.registry.try_get<EntityData>(entity);
+			std::string fileName = entityData->name;
+
+			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, createAssetFile(".prefab", fileName), std::numeric_limits<std::size_t>::max());
+		}
+
+		ImGui::EndDragDropTarget();
+
+	}
+
 	ImGui::End();
 	
 }
@@ -526,9 +541,7 @@ void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
 	if (ImGui::BeginDragDropSource()) {
 		std::pair<size_t, const char*> map{ id, name };
 		ImGui::SetDragDropPayload("DRAGGING_ASSET_ITEM", &map, sizeof(map));
-
 		ImGui::Text("Dragging: %s", name);
-
 		ImGui::EndDragDropSource();
 	}
 }

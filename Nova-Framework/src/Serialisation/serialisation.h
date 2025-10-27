@@ -17,6 +17,11 @@ namespace Serialiser {
 	FRAMEWORK_DLL_API void serialiseEditorConfig(const char* fileName, bool consol, bool debugUi, bool hierarchy, bool componentInspector);
 	FRAMEWORK_DLL_API void deserialiseEditorConfig(const char* fileName);
 
+	FRAMEWORK_DLL_API void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id);
+	FRAMEWORK_DLL_API void serialisePrefab(entt::registry& registry, entt::entity entity, std::optional<std::ofstream> opt, std::size_t id);
+	FRAMEWORK_DLL_API void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<Json>& jsonVec, bool checkParent, std::size_t id);
+	FRAMEWORK_DLL_API void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t id);
+
 	template <typename ...Components>
 	Json serialiseComponents(entt::registry& registry, entt::entity entity);
 

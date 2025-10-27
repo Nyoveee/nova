@@ -7,6 +7,7 @@
 
 #include "IconsFontAwesome6.h"
 #include "component.h"
+#include "Serialisation/serialisation.h"
 
 #include <ranges>
 

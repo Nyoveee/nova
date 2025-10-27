@@ -110,7 +110,15 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 	dataMember.clear();
 
 	for (auto&& [name, elementJson] : json.items()) {
-		typename DataMemberType::key_type key = static_cast<typename DataMemberType::key_type>(name);
+		typename DataMemberType::key_type key = [&]() {
+			if constexpr (std::same_as<typename DataMemberType::key_type, std::size_t>) {
+				return std::stoull(name);
+			}
+			else {
+				return static_cast<typename DataMemberType::key_type>(name);
+			}
+		}();
+
 		typename DataMemberType::mapped_type value;
 
 		deserializeFromJson(value, elementJson);

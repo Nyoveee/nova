@@ -33,7 +33,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 	DescriptorSubDirectory(Font),
 	DescriptorSubDirectory(Controller),
 	DescriptorSubDirectory(CustomShader),
-	DescriptorSubDirectory(Material)
+	DescriptorSubDirectory(Material),
+	DescriptorSubDirectory(Prefab)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subResourceDirectories{
@@ -47,7 +48,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(Font),
 	ResourceSubDirectory(Controller),
 	ResourceSubDirectory(CustomShader),
-	ResourceSubDirectory(Material)
+	ResourceSubDirectory(Material),
+	ResourceSubDirectory(Prefab)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAssetCacheDirectories{
@@ -61,23 +63,9 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAsse
 	AssetCacheSubDirectory(Font),
 	AssetCacheSubDirectory(Controller),
 	AssetCacheSubDirectory(CustomShader),
-	AssetCacheSubDirectory(Material)
+	AssetCacheSubDirectory(Material),
+	AssetCacheSubDirectory(Prefab)
 };
-
-#if 0
-std::unordered_map<ResourceTypeID, std::filesystem::path> const subSystemResourceDirectories{
-	SystemResourceSubDirectory(Texture),
-	SystemResourceSubDirectory(Model),
-	SystemResourceSubDirectory(CubeMap),
-	SystemResourceSubDirectory(ScriptAsset),
-	SystemResourceSubDirectory(Audio),
-	SystemResourceSubDirectory(Scene),
-	SystemResourceSubDirectory(NavMesh),
-	SystemResourceSubDirectory(Controller),
-	SystemResourceSubDirectory(CustomShader),
-	SystemResourceSubDirectory(Material)
-};
-#endif
 
 std::filesystem::path const AssetIO::assetDirectory				= std::filesystem::current_path() / "Assets";
 std::filesystem::path const AssetIO::resourceDirectory			= std::filesystem::current_path() / "Resources";

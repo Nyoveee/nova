@@ -84,7 +84,7 @@ void EditorViewPort::update(float dt) {
 
 			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
 
-			// only handle it if it's a scene.
+			// handling scene drop request..
 			if (editor.resourceManager.isResource<Scene>(id)) {
 				AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
 
@@ -94,6 +94,16 @@ void EditorViewPort::update(float dt) {
 
 				engine.ecs.sceneManager.loadScene(id);
 				controlOverlay.clearNotification();
+
+				// deselect entity.
+				editor.selectEntities({});
+			}
+			else if (editor.resourceManager.isResource<Prefab>(id)) {
+				AssetFilePath const* filePath = editor.assetManager.getFilepath(id);
+
+				if (filePath) {
+					Serialiser::deserialisePrefab(filePath->string.c_str(), engine.ecs.registry, id);
+				}
 
 				// deselect entity.
 				editor.selectEntities({});

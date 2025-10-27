@@ -90,7 +90,16 @@ inline Json serializeToJson(DataMemberType const& dataMember) {
 	Json json;
 
 	for (auto&& [key, value] : dataMember) {
-		json[static_cast<std::string>(key)] = serializeToJson(value);
+		using T = std::decay_t<decltype(key)>;
+		if constexpr (std::same_as<T, std::string>) {
+			json[key] = serializeToJson(value);
+		}
+		else if constexpr (ExplicitlyCastable<T, std::string>)  {
+			json[static_cast<std::string>(key)] = serializeToJson(value);
+		}
+		else {
+			json[std::to_string(key)] = serializeToJson(value);
+		}
 	}
 
 	return json;

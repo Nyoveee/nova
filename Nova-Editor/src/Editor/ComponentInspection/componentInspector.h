@@ -22,10 +22,14 @@ public:
 public:
 	void update();
 	void displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback);
+	//void overrideProperties(int index);
 
 public:
 	template <typename ...Components>
 	void displayComponentDropDownList(entt::entity entity);
+
+	template<typename T>
+	void overrideProperties(T component, const char* dataMemberName);
 
 public:
 	ECS& ecs;

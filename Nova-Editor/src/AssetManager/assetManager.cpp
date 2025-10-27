@@ -219,6 +219,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".ttf") {
 		return initialiseResourceFile.template operator()<Font>();
 	}
+	else if (fileExtension == ".prefab") {
+		return initialiseResourceFile.template operator()<Prefab> ();
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return INVALID_RESOURCE_ID;

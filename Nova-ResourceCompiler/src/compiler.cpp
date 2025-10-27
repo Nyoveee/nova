@@ -343,6 +343,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	else if (resourceType == "Font") {
 		return compileAsset.template operator()<Font>();
 	}
+	else if (resourceType == "Prefab") {
+		return compileAsset.template operator()<Prefab>();
+	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);
 		return -1;

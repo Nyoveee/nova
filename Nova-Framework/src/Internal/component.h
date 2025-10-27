@@ -72,14 +72,18 @@ struct FieldData {
 // ===================================
 
 struct EntityData {
-	std::string name						{};
-	entt::entity parent						= entt::null;
-	std::vector<entt::entity> children		{};
+	std::string name													{};
+	entt::entity parent													= entt::null;
+	std::vector<entt::entity> children									{};
+	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
+	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 
 	REFLECTABLE(
 		name,
 		parent,
-		children
+		children,
+		prefabID,
+		overridenProperties
 	)
 };
 

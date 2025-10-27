@@ -42,7 +42,10 @@ public:
 
 	// this copies the entities in a given vector
 	template<typename ...Components>
-	void copyEntities(std::vector<entt::entity> const& entityVec);
+	void copyVectorEntities(std::vector<entt::entity> const& entityVec);
+
+	template<typename ...Components>
+	void copyEntity(entt::entity en, entt::entity parent);
 
 public:
 	// public!
@@ -98,31 +101,62 @@ void ECS::rollbackRegistry() {
 }
 
 template<typename ...Components>
-void ECS::copyEntities(std::vector<entt::entity> const& entityVec)
-{
+void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
 	for (auto en : entityVec) {
-		auto tempEntity = registry.create();
+		copyEntity<ALL_COMPONENTS>(en, entt::null);
+	}
+	//for (auto en : entityVec) {
+	//	auto tempEntity = registry.create();
+	//	([&]() {
+	//		Components* component = registry.try_get<Components>(en);
+	//		if (component) {
+	//			registry.emplace<Components>(tempEntity, *component);
+	//		}
+	//		}(), ...);
 
-		([&]() {
-			if constexpr (std::same_as<Components, EntityData>) {
-				registry.emplace<Components>(tempEntity, Components{ registry.get<Components>(en).name + " Copy" });
-			}
-			else {
-				Components* component = registry.try_get<Components>(en);
-				if (component) {
-					registry.emplace<Components>(tempEntity, *component);
-				}
-			}
+	//	EntityData* ed = registry.try_get<EntityData>(en);
+	//	if (ed->parent != entt::null) {
+	//		EntityData* parent = registry.try_get<EntityData>(ed->parent);
+	//		parent->children.push_back(tempEntity);
 
+	//	}
+	//}
+}
+
+template<typename ...Components>
+void ECS::copyEntity(entt::entity en, entt::entity parent) {
+	//create new entity
+	auto tempEntity = registry.create();
+	([&]() {
+		Components* component = registry.try_get<Components>(en);
+		if (component) {
+			registry.emplace<Components>(tempEntity, *component);
+		}
 		}(), ...);
 
-#if 0
-		EntityData* ed = registry.try_get<EntityData>(en);
-		if (ed->parent != entt::null) {
-			EntityData* parent = registry.try_get<EntityData>(ed->parent);
-			parent->children.push_back(tempEntity);
+	EntityData& entityData = registry.get<EntityData>(tempEntity);
 
+	// if there is a parent, push temp entity into the parent and set the parent of the temp entity
+	if (parent != entt::null) {
+		EntityData* p = registry.try_get<EntityData>(parent);
+		p->children.push_back(tempEntity);
+
+		entityData.parent = parent;
+	}
+
+	//if temp entity is a parent, call the function recursively
+	if (!entityData.children.empty()) {
+		EntityData& parentED = registry.get<EntityData>(en);
+		entityData.children.clear();
+		for (entt::entity child : parentED.children) {
+			copyEntity<ALL_COMPONENTS>(child, tempEntity);
 		}
-#endif
+	}
+
+	//if the selected entity is a child
+	EntityData* ed = registry.try_get<EntityData>(en);
+	if (ed->parent != entt::null && parent == entt::null) {
+		EntityData* parent = registry.try_get<EntityData>(ed->parent);
+		parent->children.push_back(tempEntity);
 	}
 }
