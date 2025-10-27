@@ -112,7 +112,7 @@ void AudioSystem::update() {
 
 void AudioSystem::updateListener() {
 	// Get camera position and orientation
-	Camera const& camera	= engine.renderer.getCamera();
+	Camera const& camera	= engine.renderer.getGameCamera();
 	glm::vec3 listenerPos	= camera.getPos();
 	glm::vec3 listenerFront = camera.getFront();
 	glm::vec3 listenerRight = camera.getRight();
@@ -134,7 +134,7 @@ void AudioSystem::updateListener() {
 
 void AudioSystem::updatePositionalAudio() {
 	// Get camera position for distance calculations
-	Camera const& camera = engine.renderer.getCamera();
+	Camera const& camera = engine.renderer.getGameCamera();
 	glm::vec3 listenerPos = camera.getPos();
 
 	// Get all objects with PositionalAudio Component

@@ -10,14 +10,20 @@
 class Engine;
 class Editor;
 
-class GameViewPort {
+class EditorViewPort {
 public:
-	GameViewPort(Editor& editor);
+	EditorViewPort(Editor& editor);
 
 public:
 	void update(float dt);
 
+public:
+	bool isHoveringOver;
+	bool isActive;
+	ControlOverlay controlOverlay;
+
 private:
 	Editor& editor;
 	Engine& engine;
+	Gizmo gizmo;
 };

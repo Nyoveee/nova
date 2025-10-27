@@ -17,7 +17,8 @@ CameraSystem::CameraSystem(Engine& engine) :
 	isSimulationActive		{},
 	lastMouseX				{},
 	lastMouseY				{},
-	camera					{ engine.renderer.getCamera() },
+	editorCamera			{ engine.renderer.getEditorCamera() },
+	gameCamera				{ engine.renderer.getGameCamera() },
 	levelEditorCamera		{ { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, -90.f, 0.f },
 	isInControl				{ false },
 	isThereActiveGameCamera	{ false },
@@ -77,22 +78,18 @@ CameraSystem::CameraSystem(Engine& engine) :
 void CameraSystem::update(float dt) {
 	ZoneScoped;
 
-	// for game camera
-	if(isSimulationActive)
+	for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
 	{
-		isThereActiveGameCamera = false;
-
-		for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
+		if (cameraComponent.camStatus)
 		{
-			if (cameraComponent.camStatus)
-			{
-				Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
-				// Use Transform data to set camera variables.
-				camera.setPos(objTransform.position);
-				camera.setFront(objTransform.front);
-				isThereActiveGameCamera = true;
-				break;
-			}
+			Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
+			// Use Transform data to set camera variables.
+			gameCamera.setPos(objTransform.position);
+			gameCamera.setFront(objTransform.front);
+
+			gameCamera.recalculateViewMatrix();
+			gameCamera.recalculateProjectionMatrix();
+			break;
 		}
 	}
 
@@ -106,19 +103,19 @@ void CameraSystem::update(float dt) {
 		cameraSpeed = std::exp(cameraSpeedExponent);
 
 		if (isMovingFront) {
-			levelEditorCamera.position += cameraSpeed * dt * camera.getFront();
+			levelEditorCamera.position += cameraSpeed * dt * editorCamera.getFront();
 		}
 
 		if (isMovingLeft) {
-			levelEditorCamera.position -= cameraSpeed * dt * camera.getRight();
+			levelEditorCamera.position -= cameraSpeed * dt * editorCamera.getRight();
 		}
 
 		if (isMovingBack) {
-			levelEditorCamera.position -= cameraSpeed * dt * camera.getFront();
+			levelEditorCamera.position -= cameraSpeed * dt * editorCamera.getFront();
 		}
 
 		if (isMovingRight) {
-			levelEditorCamera.position += cameraSpeed * dt * camera.getRight();
+			levelEditorCamera.position += cameraSpeed * dt * editorCamera.getRight();
 		}
 
 		if (isMovingUp) {
@@ -129,12 +126,13 @@ void CameraSystem::update(float dt) {
 			levelEditorCamera.position -= cameraSpeed * dt * Camera::Up;
 		}
 	
-		camera.setPos(levelEditorCamera.position);
-		camera.setFront(glm::normalize(levelEditorCamera.front));
+		editorCamera.setPos(levelEditorCamera.position);
+		editorCamera.setFront(glm::normalize(levelEditorCamera.front));
 	}
 	
-	camera.recalculateViewMatrix();
-	camera.recalculateProjectionMatrix();
+	editorCamera.recalculateViewMatrix();
+	editorCamera.recalculateProjectionMatrix();
+
 }
 
 void CameraSystem::setMovement(CameraMovement movement, bool toMove) {
@@ -206,8 +204,8 @@ void CameraSystem::startSimulation() {
 void CameraSystem::endSimulation() {
 	isSimulationActive = false;
 
-	camera.setPos(levelEditorCamera.position);
-	camera.setFront(glm::normalize(levelEditorCamera.front));
-	camera.recalculateViewMatrix();
-	camera.recalculateProjectionMatrix();
+	editorCamera.setPos(levelEditorCamera.position);
+	editorCamera.setFront(glm::normalize(levelEditorCamera.front));
+	editorCamera.recalculateViewMatrix();
+	editorCamera.recalculateProjectionMatrix();
 }

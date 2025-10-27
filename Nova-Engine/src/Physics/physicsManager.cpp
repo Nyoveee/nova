@@ -285,8 +285,8 @@ PhysicsRay PhysicsManager::getRayFromMouse() const {
 	glm::vec3 farClipPos = { engine.window.getClipSpacePos(), 1.f };
 	glm::vec3 nearClipPos = { farClipPos.x, farClipPos.y, -1.f };
 
-	glm::vec3 farWorldPos = engine.renderer.getCamera().clipToWorldSpace(farClipPos);
-	glm::vec3 nearWorldPos = engine.renderer.getCamera().clipToWorldSpace(nearClipPos);
+	glm::vec3 farWorldPos = engine.renderer.getGameCamera().clipToWorldSpace(farClipPos);
+	glm::vec3 nearWorldPos = engine.renderer.getGameCamera().clipToWorldSpace(nearClipPos);
 
 	glm::vec3 raycastDirection = glm::normalize(farWorldPos - nearWorldPos);
 

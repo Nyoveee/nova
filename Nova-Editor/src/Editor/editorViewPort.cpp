@@ -2,18 +2,23 @@
 #include "Engine/window.h"
 
 #include "editor.h"
-#include "gameViewPort.h"
+#include "editorViewPort.h"
 #include "Serialisation/serialisation.h"
 #include "IconsFontAwesome6.h"
 #include "AssetManager/assetManager.h"
 
-GameViewPort::GameViewPort(Editor& editor) :
-	editor			{ editor },
-	engine			{ editor.engine }
+EditorViewPort::EditorViewPort(Editor& editor) :
+	editor					{ editor },
+	engine					{ editor.engine },
+	gizmo					{ editor, engine.ecs },
+	controlOverlay			{ editor },
+	isHoveringOver			{ false }
 {}
 
-void GameViewPort::update(float dt) {
-	ImGui::Begin(ICON_FA_GAMEPAD " Game");
+void EditorViewPort::update(float dt) {
+	ImGui::Begin(ICON_FA_GAMEPAD " Editor");
+	isHoveringOver = ImGui::IsWindowHovered();
+	isActive = ImGui::IsWindowFocused();
 
 	// Get ImGui window's top left and bottom right.
 	ImVec2 gameWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();
@@ -57,15 +62,47 @@ void GameViewPort::update(float dt) {
 	gameWindowBottomRight = { gameWindowTopLeft.x + viewportWidth, gameWindowTopLeft.y + viewportHeight };
 
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
-	ImTextureID textureId = engine.renderer.getGameFrameBufferTexture();
+	ImTextureID textureId = engine.renderer.getEditorFrameBufferTexture();
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
-
-	engine.window.setGameViewPort({
-		static_cast<int>(gameWindowTopLeft.x),
+	
+	engine.window.setGameViewPort({ 
+		static_cast<int>(gameWindowTopLeft.x), 
 		static_cast<int>(gameWindowTopLeft.y),
-		static_cast<int>(viewportWidth),
-		static_cast<int>(viewportHeight)
+		static_cast<int>(viewportWidth), 
+		static_cast<int>(viewportHeight) 
 	});
 
+	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
+	controlOverlay.update(dt, gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
+
+	ImGui::Dummy(ImGui::GetContentRegionAvail());
+
+	// Accept scene item payload..
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
+			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
+
+			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+
+			// only handle it if it's a scene.
+			if (editor.resourceManager.isResource<Scene>(id)) {
+				AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
+
+				if (filePath) {
+					Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+				}
+
+				engine.ecs.sceneManager.loadScene(id);
+				controlOverlay.clearNotification();
+
+				// deselect entity.
+				editor.selectEntities({});
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
 	ImGui::End();
+	
 }

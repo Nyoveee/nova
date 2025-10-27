@@ -56,7 +56,8 @@ private:
 	bool toResetMousePos;
 
 	Engine& engine;
-	Camera& camera;
+	Camera& editorCamera;
+	Camera& gameCamera;
 
 	bool isMovingUp;
 	bool isMovingDown;

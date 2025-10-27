@@ -76,14 +76,16 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	
 								// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
 	bonesSSBO					{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
-	camera						{},
+	editorCamera				{},
+	gameCamera					{},
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
 	hdrExposure					{ 0.25f },
 	toneMappingMethod			{ ToneMappingMethod::None },
 
-	mainFrameBuffers			{ {{ gameWidth, gameHeight, { GL_RGBA16F } }, { gameWidth, gameHeight, { GL_RGBA16F } }} },
+	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
+	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true },
@@ -214,55 +216,102 @@ void Renderer::update([[maybe_unused]] float dt) {
 	ZoneScoped;
 }
 
-void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape, bool toRenderObjectId) {
+void Renderer::renderMain(RenderConfig renderConfig) {
 	ZoneScoped;
 	prepareRendering();
 
-	renderSkyBox();
-	renderModels();
-	renderSkinnedModels();
-	renderParticles();
+	// The renderer 
+	switch (renderConfig)
+	{
+	// ===============================================
+	// In this case, we focus on rendering to the editor's FBO.
+	// ===============================================
+	case RenderConfig::Editor:
+		// Main render function
+		render(editorMainFrameBuffer, editorCamera);
 
-	renderTexts();
+		// ===============================================
+		// Debug rendering + object ids for editor..
+		// ===============================================
+		if (engine.toDebugRenderPhysics) {
+			debugRenderPhysicsCollider();
+		}
 
-	if (toRenderDebugPhysics) {
-		debugRenderPhysicsCollider();
-	}
+		if (engine.toDebugRenderNavMesh) {
+			debugRenderNavMesh();
+		}
 
-	if (toRenderDebugNavMesh) {
-		debugRenderNavMesh();
-	}
+		if (engine.toDebugRenderParticleEmissionShape) {
+			debugRenderParticleEmissionShape();
+		}
 
-	if (toRenderDebugParticleEmissionShape) {
-		debugRenderParticleEmissionShape();
-	}
-
-	if (toRenderObjectId) {
 		renderObjectIds();
+
+	// ===============================================
+	// In this case, we focus on rendering to the game's FBO.
+	// ===============================================
+	// Editor mode would also need to do the same work to render into the game's FBO..
+	[[fallthrough]];
+	case RenderConfig::Game:
+		// Main render function
+		render(gameMainFrameBuffer, gameCamera);
+
+		// only render to default FBO if it's truly game mode.
+		if (renderConfig == RenderConfig::Game) {
+			renderToDefaultFBO();
+		}
+
+		break;
+	default:
+		assert(false && "Forget to account for a case.");
+		break;
 	}
+
+	// Bind back to default FBO for ImGui or Nova-Game to work on.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
+	// We clear this pair frame buffer..
+	frameBuffers.clearFrameBuffers();
+
+	// We bind to the active framebuffer for majority of the in game rendering..
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	// We upload camera data to the UBO..
+	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
+	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
+
+	// We render individual game objects..
+	renderSkyBox();
+	renderModels(camera);
+	renderSkinnedModels(camera);
+	renderParticles();
+	renderTexts();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
 	// Apply HDR tone mapping + gamma correction post-processing
-	renderHDRTonemapping();
-
-	// Bind back to default FBO for ImGui or Nova-Game to work on.
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	renderHDRTonemapping(frameBuffers);
 }
 
 void Renderer::renderToDefaultFBO() {
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
-	glBindTextureUnit(0, getMainFrameBufferTexture());
+	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-GLuint Renderer::getMainFrameBufferTexture() const {
-	return getActiveMainFrameBuffer().textureIds()[0];
+GLuint Renderer::getEditorFrameBufferTexture() const {
+	return editorMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+}
+
+GLuint Renderer::getGameFrameBufferTexture() const {
+	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -276,12 +325,20 @@ void Renderer::enableWireframeMode(bool toEnable) {
 	}
 }
 
-Camera& Renderer::getCamera() {
-	return camera;
+Camera& Renderer::getEditorCamera() {
+	return editorCamera;
 }
 
-Camera const& Renderer::getCamera() const {
-	return camera;
+Camera const& Renderer::getEditorCamera() const {
+	return editorCamera;
+}
+
+Camera& Renderer::getGameCamera() {
+	return gameCamera;
+}
+
+Camera const& Renderer::getGameCamera() const {
+	return gameCamera;
 }
 
 void Renderer::recompileShaders() {
@@ -337,7 +394,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	}
 
 	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
-	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
 	
 	// set image uniform accordingly..
 	glBindTextureUnit(0, physicsDebugFrameBuffer.textureIds()[0]);
@@ -354,7 +411,8 @@ void Renderer::debugRenderNavMesh() {
 	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugNavMeshVBO.id(), 0, sizeof(glm::vec3));
 
 	glBindVertexArray(mainVAO);
-	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+	
+	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
 	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
@@ -376,7 +434,9 @@ void Renderer::debugRenderParticleEmissionShape()
 	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 
 	glBindVertexArray(mainVAO);
-	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+
+	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+	
 	glEnable(GL_DEPTH_TEST);
 	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 
@@ -471,25 +531,10 @@ void Renderer::prepareRendering() {
 	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Clear both main framebuffers.
-	for (auto&& framebuffer : mainFrameBuffers) {
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.fboId());
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	}
-
-	// We choose 1 as the active index because we last bind to the last element of the array above^
-	
-	// Reset main frame buffer indices..
-	mainFrameBufferActiveIndex = 1;
-	mainFrameBufferReadIndex = 0;
-
 	// =================================================================
 	// Set up the uniforms for my respective shaders
 	// Note: calling shader.use() before setting uniforms is redundant because we are using DSA.
 	// =================================================================
-	// Shared across all shaders. We use a shared UBO for this.
-	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
-	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection())); // offset bcuz 2nd data member.
 
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
@@ -579,15 +624,6 @@ void Renderer::prepareRendering() {
 	glNamedBufferSubData(pointLightSSBO.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
 	glNamedBufferSubData(directionalLightSSBO.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
 	glNamedBufferSubData(spotLightSSBO.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
-
-	// ==== Color shader ====
-	// ..
-	
-	// ==== Texture shader ====
-	// ..
-
-	// ==== Outline Shader ====
-	// ..
 }
 
 void Renderer::renderSkyBox() {
@@ -612,7 +648,7 @@ void Renderer::renderSkyBox() {
 	}
 }
 
-void Renderer::renderModels() {
+void Renderer::renderModels(Camera const& camera) {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);	
 
 	glEnable(GL_CULL_FACE);
@@ -639,7 +675,7 @@ void Renderer::renderModels() {
 			}
 
 			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(*material, transform);
+			CustomShader* shader = setupMaterial(camera, *material, transform);
 
 			if (shader) {
 				// time to draw!
@@ -741,7 +777,7 @@ void Renderer::renderTexts()
 	glDisable(GL_BLEND);
 }
 
-void Renderer::renderSkinnedModels() {
+void Renderer::renderSkinnedModels(Camera const& camera) {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 
 	// enable back face culling for our 3d models..
@@ -772,7 +808,7 @@ void Renderer::renderSkinnedModels() {
 			}
 
 			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(*material, transform);
+			CustomShader* shader = setupMaterial(camera, *material, transform);
 
 			if (shader) {
 				// time to draw!
@@ -961,28 +997,6 @@ void Renderer::printOpenGLDriverDetails() const {
 	}
 }
 
-FrameBuffer const& Renderer::getActiveMainFrameBuffer() const {
-	return mainFrameBuffers[mainFrameBufferActiveIndex];
-}
-
-FrameBuffer const& Renderer::getReadMainFrameBuffer() const {
-	return mainFrameBuffers[mainFrameBufferReadIndex];
-}
-
-void Renderer::swapMainFrameBuffers() {
-	if (mainFrameBufferActiveIndex == 0) {
-		mainFrameBufferActiveIndex = 1;
-		mainFrameBufferReadIndex = 0;
-	}
-	else if (mainFrameBufferActiveIndex == 1){
-		mainFrameBufferActiveIndex = 0;
-		mainFrameBufferReadIndex = 1;
-	}
-	else {
-		assert(false && "Invalid index.");
-	}
-}
-
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
 		const dtMeshTile* tile = mesh.getTile(tileNum);
@@ -1092,13 +1106,13 @@ void Renderer::renderObjectIds() {
 	}
 }
 
-void Renderer::renderHDRTonemapping() {
+void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	ZoneScoped;
 
-	swapMainFrameBuffers();
+	frameBuffers.swapFrameBuffer();
 
 	// Bind the post-processing framebuffer for LDR output
-	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
 	// Set up tone mapping shader
 	toneMappingShader.use();
@@ -1108,14 +1122,14 @@ void Renderer::renderHDRTonemapping() {
 	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
 
 	// Bind the HDR texture from main framebuffer
-	glBindTextureUnit(0, getReadMainFrameBuffer().textureIds()[0]);
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
 	toneMappingShader.setImageUniform("hdrBuffer", 0);
 
 	// Render fullscreen triangle (more efficient than quad)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-CustomShader* Renderer::setupMaterial(Material const& material, Transform const& transform) {
+CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& material, Transform const& transform) {
 	// ===========================================================================
 	// Retrieve the underlying shader for this material, and verify it's state.
 	// ===========================================================================

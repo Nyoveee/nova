@@ -44,6 +44,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	resourceManager					{ resourceManager },
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
+	editorViewPort					{ *this },
 	componentInspector				{ *this },
 	assetViewerUi					{ *this, assetManager, resourceManager },
 	assetManagerUi					{ *this, assetViewerUi },
@@ -99,7 +100,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		
 	inputManager.subscribe<ToggleEditorControl>(
 		[&](ToggleEditorControl) {
-			if (gameViewPort.isHoveringOver) {
+			if (editorViewPort.isHoveringOver) {
 				toggleViewPortControl(true);
 				ImGui::SetWindowFocus(nullptr);
 			}
@@ -117,7 +118,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<DeleteSelectedEntity>(
 		[&](DeleteSelectedEntity) {
-			if (!gameViewPort.isHoveringOver || !gameViewPort.isActive) {
+			if (!editorViewPort.isHoveringOver || !editorViewPort.isActive) {
 				return;
 			}
 
@@ -145,7 +146,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	);
 
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
-		gameViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
+		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
 }
 
@@ -228,6 +229,7 @@ void Editor::main(float dt) {
 	ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
+	editorViewPort.update(dt);
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
@@ -408,7 +410,7 @@ void Editor::handleEntityHovering() {
 
 // handles object picker in game viewport
 void Editor::handleEntitySelection() {	
-	if (!gameViewPort.isHoveringOver || !gameViewPort.isActive) {
+	if (!editorViewPort.isHoveringOver) {
 		return;
 	}
 	

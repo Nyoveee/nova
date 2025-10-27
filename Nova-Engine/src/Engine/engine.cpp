@@ -92,11 +92,7 @@ void Engine::render(RenderConfig renderConfig) {
 		physicsManager.debugRender();
 	}
 
-	renderer.render(toDebugRenderPhysics, toDebugRenderNavMesh, toDebugRenderParticleEmissionShape, renderConfig == RenderConfig::Editor);
-
-	if (renderConfig == RenderConfig::Game) {
-		renderer.renderToDefaultFBO();
-	}
+	renderer.renderMain(renderConfig);
 }
 
 void Engine::startSimulation() {

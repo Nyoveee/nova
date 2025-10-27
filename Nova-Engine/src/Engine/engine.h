@@ -26,12 +26,6 @@ class ResourceManager;
 
 class Engine {
 public:
-	enum class RenderConfig {
-		Editor,
-		Game
-	};
-
-public:
 	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight);
 
 	ENGINE_DLL_API ~Engine();

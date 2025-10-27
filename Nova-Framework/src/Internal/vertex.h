@@ -26,27 +26,11 @@ using GlobalVertexIndex = unsigned int;		// global vertex index are like indices
 
 using MaterialName		= std::string;
 
-#if 0
-struct Vertex {
-	glm::vec3 pos;
-	glm::vec2 textureUnit;
-	glm::vec3 normal;
-	glm::vec3 tangent;
-	glm::vec3 bitangent;
-
-	REFLECTABLE(
-		pos,
-		textureUnit,
-		normal,
-		tangent,
-		bitangent
-	)
+// i genuinely have no idea where to put this
+enum class RenderConfig {
+	Editor,
+	Game
 };
-
-struct SimpleVertex {
-	glm::vec3 pos;
-};
-#endif
 
 struct ParticleVertex {
 	glm::vec3 localPos;

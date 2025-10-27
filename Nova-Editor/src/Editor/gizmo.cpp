@@ -51,8 +51,8 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 
 	Transform& transform = ecs.registry.get<Transform>(selectedEntity);
-	float const* cameraView = glm::value_ptr(editor.engine.renderer.getCamera().view());
-	float const* cameraProjection = glm::value_ptr(editor.engine.renderer.getCamera().projection());
+	float const* cameraView = glm::value_ptr(editor.engine.renderer.getEditorCamera().view());
+	float const* cameraProjection = glm::value_ptr(editor.engine.renderer.getEditorCamera().projection());
 
 	ImGuizmo::Manipulate(cameraView, cameraProjection, operation, ImGuizmo::WORLD, glm::value_ptr(transform.modelMatrix));
 

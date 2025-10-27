@@ -177,6 +177,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\ImGui\imgui_node_editor.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_node_editor_api.cpp" />
     <ClCompile Include="src\Editor\ImGui\ImSequencer.cpp" />
+    <ClCompile Include="src\Editor\gameViewPort.cpp" />
     <ClCompile Include="src\Editor\navigationWindow.cpp" />
     <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\Assets\assetManagerUi.cpp" />
@@ -186,7 +187,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\editor.cpp" />
     <ClCompile Include="src\Editor\gizmo.cpp" />
     <ClCompile Include="src\Editor\hierarchy.cpp" />
-    <ClCompile Include="src\Editor\gameViewPort.cpp" />
+    <ClCompile Include="src\Editor\editorViewPort.cpp" />
     <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui.cpp" />
@@ -245,6 +246,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ImGui\imgui_node_editor.h" />
     <ClInclude Include="src\Editor\ImGui\imgui_node_editor_internal.h" />
     <ClInclude Include="src\Editor\ImGui\ImSequencer.h" />
+    <ClInclude Include="src\Editor\gameViewPort.h" />
     <ClInclude Include="src\Editor\navigationWindow.h" />
     <ClInclude Include="src\Navigation\navMeshGeneration.h" />
     <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />
@@ -261,7 +263,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\editor.h" />
     <ClInclude Include="src\Editor\gizmo.h" />
     <ClInclude Include="src\Editor\hierarchy.h" />
-    <ClInclude Include="src\Editor\gameViewPort.h" />
+    <ClInclude Include="src\Editor\editorViewPort.h" />
     <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3_loader.h" />

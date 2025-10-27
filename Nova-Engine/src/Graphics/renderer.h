@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "bufferObject.h"
 #include "framebuffer.h"
+#include "pairFrameBuffer.h"
 #include "ECS/ECS.h"
 #include "component.h"
 #include "vertex.h"
@@ -20,7 +21,6 @@
 
 #include "Detour/Detour/DetourNavMesh.h"
 #include "customShader.h"
-
 
 class Engine;
 class ResourceManager;
@@ -51,7 +51,10 @@ public:
 public:
 	void update(float dt);
 
-	void render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape, bool toRenderObjectId);
+	void renderMain(RenderConfig renderConfig);
+
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
+	
 	void renderToDefaultFBO();
 
 public:
@@ -60,7 +63,9 @@ public:
 	// =============================================
 
 	// get the main texture of the main frame buffer.
-	ENGINE_DLL_API GLuint getMainFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getEditorFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
+
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// gets object id from color attachment 1 of the main framebuffer.
@@ -68,8 +73,11 @@ public:
 	// retrieves the value in that position of the framebuffer.
 	ENGINE_DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
 
-	ENGINE_DLL_API Camera& getCamera();
-	ENGINE_DLL_API Camera const& getCamera() const;
+	ENGINE_DLL_API Camera& getEditorCamera();
+	ENGINE_DLL_API Camera const& getEditorCamera() const;
+
+	ENGINE_DLL_API Camera& getGameCamera();
+	ENGINE_DLL_API Camera const& getGameCamera() const;
 
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
@@ -112,10 +120,10 @@ private:
 	void renderSkyBox();
 
 	// render all MeshRenderers.
-	void renderModels();
+	void renderModels(Camera const& camera);
 
 	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels();
+	void renderSkinnedModels(Camera const& camera);
 
 	// render all Texts.
 	void renderTexts();
@@ -136,11 +144,11 @@ private:
 	void debugRenderParticleEmissionShape();
 
 	// HDR post-processing functions
-	void renderHDRTonemapping();
+	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
 
 	// set up the material's chosen shader and supply the proper uniforms..
 	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
-	CustomShader* setupMaterial(Material const& material, Transform const& transform);
+	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
 	void renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType);
@@ -149,14 +157,6 @@ private:
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
 	void printOpenGLDriverDetails() const;
-
-	// =============================================
-	// Main Frame Buffer operations..
-	// =============================================
-	FrameBuffer const& getActiveMainFrameBuffer() const;
-	FrameBuffer const& getReadMainFrameBuffer() const;
-
-	void swapMainFrameBuffers();
 
 private:
 	Engine& engine;
@@ -195,24 +195,18 @@ private:
 	GLuint textVAO;
 	BufferObject textVBO;
 
-	Camera camera;
+	Camera editorCamera;
+	Camera gameCamera;
 
-	// contains all the final rendering.
-	// we use 2 frame buffers to alternate between the two between post processing..
-	std::array<FrameBuffer, 2> mainFrameBuffers;
-
-	int mainFrameBufferActiveIndex = 0;	// which framebuffer we are current writing to, and contains the latest image.
-	int mainFrameBufferReadIndex  = 1;	// which framebuffer we are current reading from, to do additional post processing..
+	PairFrameBuffer editorMainFrameBuffer;
+	PairFrameBuffer gameMainFrameBuffer;
 
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
-
-	// TEMP Hack method for font storage
-	std::vector<Font> fonts;
-
+	
 	glm::mat4 UIProjection;
 
 private:
@@ -220,7 +214,6 @@ private:
 	int numOfNavMeshDebugTriangles;
 
 	bool isOnWireframeMode;
-	
 
 public:
 	Shader basicShader;

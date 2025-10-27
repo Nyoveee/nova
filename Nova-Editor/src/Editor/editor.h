@@ -15,6 +15,7 @@
 #include "Assets/animatorController.h"
 
 #include "gameViewPort.h"
+#include "editorViewPort.h"
 #include "ComponentInspection/componentInspector.h"
 #include "Navigation/navMeshGeneration.h"
 #include "hierarchy.h"
@@ -99,6 +100,7 @@ public:
 	Window& window;
 
 	GameViewPort gameViewPort;
+	EditorViewPort editorViewPort;
 	ComponentInspector componentInspector;
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;

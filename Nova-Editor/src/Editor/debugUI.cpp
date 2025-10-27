@@ -69,8 +69,8 @@ void DebugUI::renderPhysicsSection() {
 	glm::vec3 farClipPos = { window.getClipSpacePos(), 1.f };
 	glm::vec3 nearClipPos = { farClipPos.x, farClipPos.y, -1.f };
 
-	glm::vec3 farWorldPos = renderer.getCamera().clipToWorldSpace(farClipPos);
-	glm::vec3 nearWorldPos = renderer.getCamera().clipToWorldSpace(nearClipPos);
+	glm::vec3 farWorldPos = renderer.getEditorCamera().clipToWorldSpace(farClipPos);
+	glm::vec3 nearWorldPos = renderer.getEditorCamera().clipToWorldSpace(nearClipPos);
 
 	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
 

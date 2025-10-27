@@ -1,371 +1,125 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp" />
+    <ClCompile Include="src\AssetManager\assetManager.cpp" />
+    <ClCompile Include="src\Editor\Assets\animatorController.cpp" />
+    <ClCompile Include="src\Editor\Assets\animationTimeline.cpp" />
+    <ClCompile Include="src\Editor\Assets\assetViewerUi.cpp" />
+    <ClCompile Include="src\Editor\ComponentInspection\componentInspector.cpp" />
+    <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp" />
+    <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp" />
+    <ClCompile Include="src\Editor\ImGui\crude_json.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_canvas.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_neo_internal.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_neo_sequencer.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_node_editor.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_node_editor_api.cpp" />
+    <ClCompile Include="src\Editor\ImGui\ImSequencer.cpp" />
+    <ClCompile Include="src\Editor\gameViewPort.cpp" />
+    <ClCompile Include="src\Editor\navigationWindow.cpp" />
+    <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
+    <ClCompile Include="src\Editor\Assets\assetManagerUi.cpp" />
+    <ClCompile Include="src\Editor\console.cpp" />
+    <ClCompile Include="src\Editor\controlOverlay.cpp" />
+    <ClCompile Include="src\Editor\debugUI.cpp" />
+    <ClCompile Include="src\Editor\editor.cpp" />
+    <ClCompile Include="src\Editor\gizmo.cpp" />
+    <ClCompile Include="src\Editor\hierarchy.cpp" />
+    <ClCompile Include="src\Editor\editorViewPort.cpp" />
+    <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui.cpp" />
+    <ClCompile Include="src\Editor\ImGui\ImGuizmo.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="src\Editor\navBar.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="src\Editor\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="src\Navigation\Recast\Recast.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastAlloc.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastArea.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastAssert.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastContour.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastFilter.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastLayers.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastMesh.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastMeshDetail.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastRasterization.cpp" />
+    <ClCompile Include="src\Navigation\Recast\RecastRegion.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\DebugDraw.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\DetourDebugDraw.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\RecastDebugDraw.cpp" />
+    <ClCompile Include="src\Navigation\Recast_DebugUtils\RecastDump.cpp" />
+    <ClCompile Include="src\Editor\themes.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_glfw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\backends\imgui_impl_opengl3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_tables.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\themes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\Assets\assetManagerUi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\gameViewPort.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\hierarchy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\ImGuizmo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\gizmo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\debugUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\controlOverlay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\Recast.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastAlloc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastArea.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastAssert.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastContour.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastFilter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastLayers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastMeshDetail.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastRasterization.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast\RecastRegion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast_DebugUtils\DebugDraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast_DebugUtils\DetourDebugDraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast_DebugUtils\RecastDebugDraw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\Recast_DebugUtils\RecastDump.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Navigation\navMeshGeneration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AssetManager\assetManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\console.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\navBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\Assets\assetViewerUi.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\navigationWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\navBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ComponentInspection\componentInspector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\Assets\animationTimeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_neo_internal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_neo_sequencer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\ImSequencer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_node_editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_node_editor_api.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\imgui_canvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\ImGui\crude_json.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Editor\Assets\animatorController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="src\Editor\Assets\animatorController.h" />
+    <ClInclude Include="src\Editor\Assets\animationTimeline.h" />
+    <ClInclude Include="src\Editor\Assets\assetViewerUi.ipp" />
+    <ClInclude Include="src\Editor\Assets\assetViewerUi.h" />
+    <ClInclude Include="src\Editor\ComponentInspection\componentInspector.h" />
+    <ClInclude Include="src\Editor\ComponentInspection\componentInspector.ipp" />
+    <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp" />
+    <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
+    <ClInclude Include="src\Editor\editor.ipp" />
+    <ClInclude Include="src\Editor\ImGui\crude_json.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_bezier_math.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_canvas.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_extra_math.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_neo_internal.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_neo_sequencer.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_node_editor.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_node_editor_internal.h" />
+    <ClInclude Include="src\Editor\ImGui\ImSequencer.h" />
+    <ClInclude Include="src\Editor\gameViewPort.h" />
+    <ClInclude Include="src\Editor\navigationWindow.h" />
+    <ClInclude Include="src\Navigation\navMeshGeneration.h" />
+    <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />
+    <ClInclude Include="src\AssetManager\assetFunctor.h" />
+    <ClInclude Include="src\AssetManager\assetFunctor.ipp" />
+    <ClInclude Include="src\AssetManager\assetManager.h" />
+    <ClInclude Include="src\AssetManager\assetMananger.ipp" />
+    <ClInclude Include="src\AssetManager\FileWatch.hpp" />
+    <ClInclude Include="src\AssetManager\folder.h" />
+    <ClInclude Include="src\Editor\Assets\assetManagerUi.h" />
+    <ClInclude Include="src\Editor\console.h" />
+    <ClInclude Include="src\Editor\controlOverlay.h" />
+    <ClInclude Include="src\Editor\debugUI.h" />
+    <ClInclude Include="src\Editor\editor.h" />
+    <ClInclude Include="src\Editor\gizmo.h" />
+    <ClInclude Include="src\Editor\hierarchy.h" />
+    <ClInclude Include="src\Editor\editorViewPort.h" />
+    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\Editor\ImGui\IconsFontAwesome6.h" />
+    <ClInclude Include="src\Editor\ImGui\imconfig.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui.h" />
+    <ClInclude Include="src\Editor\ImGUI\ImGuizmo.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\Editor\ImGui\imgui_internal.h" />
+    <ClInclude Include="src\Editor\navBar.h" />
+    <ClInclude Include="src\Editor\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="src\Editor\ImGui\imstb_textedit.h" />
+    <ClInclude Include="src\Editor\ImGui\imstb_truetype.h" />
+    <ClInclude Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="src\Navigation\Recast\Recast.h" />
+    <ClInclude Include="src\Navigation\Recast\RecastAlloc.h" />
+    <ClInclude Include="src\Navigation\Recast\RecastAssert.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\DebugDraw.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\DetourDebugDraw.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDebugDraw.h" />
+    <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDump.h" />
+    <ClInclude Include="src\Editor\themes.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Editor\ImGUI\imgui_impl_glfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGUI\imgui_impl_opengl3_loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGUI\ImGuizmo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_glfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\backends\imgui_impl_opengl3_loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imstb_rectpack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imstb_textedit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imstb_truetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\misc\cpp\imgui_stdlib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\themes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\Assets\assetManagerUi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\gameViewPort.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\hierarchy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\IconsFontAwesome6.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\gizmo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\debugUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\controlOverlay.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\Recast\Recast.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\Recast\RecastAlloc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\Recast\RecastAssert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\Recast_DebugUtils\DebugDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\Recast_DebugUtils\DetourDebugDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDebugDraw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDump.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Navigation\navMeshGeneration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\assetFunctor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\assetFunctor.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\assetManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\assetMananger.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\FileWatch.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\folder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\console.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\navBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\Assets\assetViewerUi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\navigationWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\editor.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\navBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ComponentInspection\componentInspector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ComponentInspection\componentInspector.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\Assets\assetViewerUi.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\Assets\animationTimeline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_neo_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_neo_sequencer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\ImSequencer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_node_editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_node_editor_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_extra_math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_canvas.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\imgui_bezier_math.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\ImGui\crude_json.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\Assets\animatorController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Editor\ImGui\imgui_node_editor_internal.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="src\Editor\ImGui\imgui_extra_math.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="src\Editor\ImGui\imgui_bezier_math.inl">
-      <Filter>Header Files</Filter>
-    </None>
+    <None Include="src\Editor\ImGui\imgui_bezier_math.inl" />
+    <None Include="src\Editor\ImGui\imgui_extra_math.inl" />
+    <None Include="src\Editor\ImGui\imgui_node_editor_internal.inl" />
   </ItemGroup>
 </Project>
