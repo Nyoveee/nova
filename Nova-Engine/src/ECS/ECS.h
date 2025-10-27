@@ -156,7 +156,7 @@ void ECS::copyEntity(entt::entity en, entt::entity parent) {
 	//if the selected entity is a child
 	EntityData* ed = registry.try_get<EntityData>(en);
 	if (ed->parent != entt::null && parent == entt::null) {
-		EntityData* parent = registry.try_get<EntityData>(ed->parent);
-		parent->children.push_back(tempEntity);
+		EntityData& p = registry.get<EntityData>(ed->parent);
+		p.children.push_back(tempEntity);
 	}
 }

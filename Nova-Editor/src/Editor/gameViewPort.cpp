@@ -12,7 +12,7 @@ GameViewPort::GameViewPort(Editor& editor) :
 	engine			{ editor.engine }
 {}
 
-void GameViewPort::update(float dt) {
+void GameViewPort::update([[maybe_unused]] float dt) {
 	ImGui::Begin(ICON_FA_GAMEPAD " Game");
 
 	// Get ImGui window's top left and bottom right.
