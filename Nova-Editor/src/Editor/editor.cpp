@@ -117,7 +117,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<DeleteSelectedEntity>(
 		[&](DeleteSelectedEntity) {
-			if (!gameViewPort.isHoveringOver) {
+			if (!gameViewPort.isHoveringOver || !gameViewPort.isActive) {
 				return;
 			}
 
