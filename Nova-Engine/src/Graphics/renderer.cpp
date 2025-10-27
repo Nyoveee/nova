@@ -184,30 +184,58 @@ void Renderer::update([[maybe_unused]] float dt) {
 void Renderer::render(bool toRenderDebugPhysics, bool toRenderDebugNavMesh, bool toRenderDebugParticleEmissionShape) {
 	ZoneScoped;
 	prepareRendering();
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
+	{
+		renderSkyBox();
+		renderModels();
+		renderParticles();
 
-	renderSkyBox();
-	renderModels();
-	renderParticles();
+		if (toRenderDebugPhysics) {
+			debugRenderPhysicsCollider();
+		}
+		if (toRenderDebugNavMesh) {
+			debugRenderNavMesh();
+		}
+		if (toRenderDebugParticleEmissionShape) {
+			debugRenderParticleEmissionShape();
+		}
 
-	if (toRenderDebugPhysics) {
-		debugRenderPhysicsCollider();
+
+		// ======= Post Processing =======
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+
+		// Apply HDR tone mapping + gamma correction post-processing
+		renderHDRTonemapping();
 	}
-	if (toRenderDebugNavMesh) {
-		debugRenderNavMesh();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, getActiveGameVPFrameBuffer().fboId());
+	{
+		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(gameCam.view()));
+		glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(gameCam.projection())); // offset bcuz 2nd data member.
+
+		renderSkyBox();
+		renderModels();
+		renderParticles();
+
+		/*if (toRenderDebugPhysics) {
+			debugRenderPhysicsCollider();
+		}
+		if (toRenderDebugNavMesh) {
+			debugRenderNavMesh();
+		}
+		if (toRenderDebugParticleEmissionShape) {
+			debugRenderParticleEmissionShape();
+		}*/
+
+
+		// ======= Post Processing =======
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+
+		// Apply HDR tone mapping + gamma correction post-processing
+		// renderHDRTonemapping();
 	}
-	if (toRenderDebugParticleEmissionShape) {
-		debugRenderParticleEmissionShape();
-	}
-
-
-	// ======= Post Processing =======
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-
-	// Apply HDR tone mapping + gamma correction post-processing
-	renderHDRTonemapping();
-
-	renderGameVP();
 
 	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -255,10 +283,6 @@ Camera& Renderer::getGameVP() {
 
 Camera const& Renderer::getGameVP() const {
 	return gameCam;
-}
-
-void Renderer::setGameVP(Camera& cam) {
-	gameCam = cam;
 }
 
 void Renderer::recompileShaders() {
@@ -423,11 +447,19 @@ void Renderer::prepareRendering() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
+	for (auto&& framebuffer : gameVPFrameBuffers) {
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.fboId());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
+
 	// We choose 1 as the active index because we last bind to the last element of the array above^
 	
 	// Reset main frame buffer indices..
 	mainFrameBufferActiveIndex = 1;
 	mainFrameBufferReadIndex = 0;
+
+	gameVPFrameBufferActiveIndex = 1;
+	gameVPFrameBufferReadIndex = 0;
 
 	// Clear object id framebuffer.
 
@@ -639,7 +671,7 @@ void Renderer::renderModels() {
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 
 			// render object id into object id FBO.
-			renderObjectId(mesh.numOfTriangles * 3);
+			//renderObjectId(mesh.numOfTriangles * 3);
 		}
 	}
 

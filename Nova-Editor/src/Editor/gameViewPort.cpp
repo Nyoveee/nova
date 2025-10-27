@@ -16,7 +16,7 @@ GameViewPort::GameViewPort(Editor& editor) :
 {}
 
 void GameViewPort::update(float dt) {
-	ImGui::Begin(ICON_FA_GAMEPAD " Game");
+	ImGui::Begin(ICON_FA_GAMEPAD " Editor");
 	isHoveringOver = ImGui::IsWindowHovered();
 
 	// Get ImGui window's top left and bottom right.

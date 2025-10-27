@@ -10,14 +10,14 @@
 GameCamViewPort::GameCamViewPort(Editor& editor) :
 	editor{ editor },
 	engine{ editor.engine },
-	gizmo{ editor, engine.ecs },
-	controlOverlay{ editor },
+	//gizmo{ editor, engine.ecs },
+	//controlOverlay{ editor },
 	isHoveringOver{ false }
 {
 }
 
 void GameCamViewPort::update(float dt) {
-	ImGui::Begin(ICON_FA_GAMEPAD " In-Game Camera");
+	ImGui::Begin(ICON_FA_GAMEPAD " Game");
 	isHoveringOver = ImGui::IsWindowHovered();
 
 	// Get ImGui window's top left and bottom right.

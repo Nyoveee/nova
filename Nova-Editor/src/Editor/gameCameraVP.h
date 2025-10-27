@@ -17,10 +17,10 @@ public:
 
 public:
 	bool isHoveringOver;
-	ControlOverlay controlOverlay;
+	//ControlOverlay controlOverlay;
 
 private:
 	Editor& editor;
 	Engine& engine;
-	Gizmo gizmo;
+	//Gizmo gizmo;
 };

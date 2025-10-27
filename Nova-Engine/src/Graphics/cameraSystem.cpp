@@ -86,30 +86,11 @@ void CameraSystem::update(float dt) {
 			// Use Transform data to set camera variables.
 			gameCamera.setPos(objTransform.position);
 			gameCamera.setFront(objTransform.front);
-			engine.renderer.setGameVP(gameCamera);
+			//engine.renderer.setGameVP(gameCamera);
+			gameCamera.recalculateViewMatrix();
+			gameCamera.recalculateProjectionMatrix();
 			break;
 		}
-	}
-
-
-	// for game camera
-	if(isSimulationActive)
-	{
-		//isThereActiveGameCamera = false;
-
-		//for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
-		//{
-		//	if (cameraComponent.camStatus)
-		//	{
-		//		Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
-		//		// Use Transform data to set camera variables.
-		//		camera.setPos(objTransform.position);
-		//		camera.setFront(objTransform.front);
-		//		isThereActiveGameCamera = true;
-		//		break;
-		//	}
-		//}
-		camera = gameCamera;
 	}
 
 	// for editor camera
@@ -151,6 +132,7 @@ void CameraSystem::update(float dt) {
 	
 	camera.recalculateViewMatrix();
 	camera.recalculateProjectionMatrix();
+
 }
 
 void CameraSystem::setMovement(CameraMovement movement, bool toMove) {

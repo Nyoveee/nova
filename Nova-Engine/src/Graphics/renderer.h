@@ -75,7 +75,7 @@ public:
 	ENGINE_DLL_API Camera& getGameVP();
 	ENGINE_DLL_API Camera const& getGameVP() const;
 
-	ENGINE_DLL_API void setGameVP(Camera& cam);
+	//ENGINE_DLL_API void setGameVP(Camera& cam);
 
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
