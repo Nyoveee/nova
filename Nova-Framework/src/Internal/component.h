@@ -231,7 +231,7 @@ struct BoxCollider {
 };
 
 struct SphereCollider {
-	float radius {};
+	float radius {1.f};
 
 	REFLECTABLE(
 		radius

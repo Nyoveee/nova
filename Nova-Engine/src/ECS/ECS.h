@@ -50,6 +50,7 @@ public:
 public:
 	// public!
 	entt::registry registry;
+	entt::dispatcher systemEventDispatcher; //note we probably only need one just giga dump all events in here lol. 
 	SceneManager sceneManager;
 
 private:

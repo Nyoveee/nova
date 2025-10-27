@@ -3,20 +3,21 @@
         {
             "EntityData": {
                 "children": null,
-                "name": "TEXT",
+                "name": "Entity 3",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615
             },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
+            "Light": {
+                "color": {
                     "b": 1.0,
                     "g": 1.0,
                     "r": 1.0
                 },
-                "fontSize": 50,
-                "text": "We are flying high! There's no way to say goodbye."
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 1.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "PointLight"
             },
             "Transform": {
                 "eulerAngles": {
@@ -46,9 +47,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 5.262631416320801,
-                    "y": 7.950784206390381,
-                    "z": 0.0
+                    "x": -1.8213428258895874,
+                    "y": 0.0,
+                    "z": 3.1202261447906494
                 },
                 "rotation": {
                     "w": 1.0,
@@ -62,7 +63,7 @@
                     "z": 1.0
                 }
             },
-            "id": 0
+            "id": 2
         },
         {
             "EntityData": {
@@ -127,21 +128,20 @@
         {
             "EntityData": {
                 "children": null,
-                "name": "Entity 3",
+                "name": "TEXT",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615
             },
-            "Light": {
-                "color": {
+            "Text": {
+                "font": 5724840809338667009,
+                "fontColor": {
                     "b": 1.0,
                     "g": 1.0,
                     "r": 1.0
                 },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 1.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "type": "PointLight"
+                "fontSize": 50,
+                "text": "We are flying high! There's no way to say goodbye."
             },
             "Transform": {
                 "eulerAngles": {
@@ -171,9 +171,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -1.8213428258895874,
-                    "y": 0.0,
-                    "z": 3.1202261447906494
+                    "x": 5.262631416320801,
+                    "y": 7.950784206390381,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -187,7 +187,7 @@
                     "z": 1.0
                 }
             },
-            "id": 2
+            "id": 0
         }
     ]
 }

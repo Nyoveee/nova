@@ -47,9 +47,10 @@ Engine::~Engine() {
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
+	physicsManager.updateTransformBodies();
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
-		physicsManager.update(dt);
+		physicsManager.updatePhysics(dt);
 		navigationSystem.update(dt);
 	}
 }
@@ -104,7 +105,7 @@ void Engine::startSimulation() {
 		animationSystem.initialiseAllControllers();
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
-		physicsManager.initialise();
+		physicsManager.simulationInitialise();
 		audioSystem.loadAllSounds();
 		cameraSystem.startSimulation();
 		navigationSystem.initNavMeshSystems();
@@ -131,13 +132,12 @@ void Engine::stopSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		physicsManager.clear();
 		audioSystem.unloadAllSounds();
 		cameraSystem.endSimulation();
 
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
-
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		physicsManager.resetPhysicsState();
 		scriptingAPIManager.stopSimulation();
 
 		inSimulationMode = false;
@@ -166,6 +166,7 @@ bool Engine::isInSimulationMode() const {
 
 void Engine::SystemsOnLoad()
 {
-	// this->navigationSystem.initNavMeshSystems();
+	this->navigationSystem.initNavMeshSystems();
+	this->physicsManager.systemInitialise();
 	
 }

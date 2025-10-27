@@ -7,6 +7,7 @@
 #include <utility>
 #include <queue>
 #include <optional>
+#include <stack>
 
 class Engine;
 
@@ -19,6 +20,7 @@ class Engine;
 #include "joltPhysicsInterface.h"
 #include "debugRenderer.h"
 #include "contactListener.h"
+#include "ECS/Events.h"
 
 #include "export.h"
 #include "physics.h"
@@ -34,10 +36,18 @@ public:
 	PhysicsManager& operator=(PhysicsManager&& other)		= delete;
 
 public:
-	void initialise();
+	void simulationInitialise();
+	void systemInitialise();
 	void clear();
-	void update(float dt);
+	void updatePhysics(float dt);
 	void debugRender();
+	void resetPhysicsState();
+	void transformUpdateListener(TransformUpdateEvent const& event);
+	void updateTransformBodies();
+
+	//add to system and remove from system
+	void addBodiesToSystem(entt::registry&, entt::entity entityID);
+	void removeBodiesFromSystem(entt::registry&, entt::entity entityID);
 
 	// Nova Collision Listener submits all collision event here..
 	void submitCollision(entt::entity entityOne, entt::entity entityTwo);
@@ -47,6 +57,8 @@ public:
 
 private:
 	void createPrimitiveShapes();
+	void initialiseBodyComponent(entt::entity const& entityID);
+	bool hasRequiredPhysicsComponents(entt::entity const& entityID);
 
 private:
 	// we use a placeholder data member to invoke certain functions before the construction of the following Jolt data members.
@@ -92,6 +104,9 @@ private:
 	JPH::Ref<JPH::Shape> sphere;
 
 	std::vector<JPH::BodyID> createdBodies;
+
+	//on update transform 
+	std::stack<entt::entity> transformUpdateStack; //when transform is updated push the id on stack. updateTransformBodies read from stack and update transform
 
 	// we queue entities on collision for thread safety.
 	std::queue<std::pair<entt::entity, entt::entity>> onCollision;

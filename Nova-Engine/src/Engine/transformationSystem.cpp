@@ -2,6 +2,7 @@
 
 #include "transformationSystem.h"
 #include "ECS/ECS.h"
+#include "ECS/Events.h"
 
 #include "component.h"
 #include "nova_math.h"
@@ -12,7 +13,8 @@ constexpr glm::vec3 defaultUp = { 0, 1.f, 0 };
 glm::vec3 defaultRight = { glm::normalize(glm::cross(defaultFront, defaultUp)) };
 
 TransformationSystem::TransformationSystem(ECS& ecs) :
-	registry {ecs.registry}
+	registry {ecs.registry},
+	eventDispatcher{ ecs.systemEventDispatcher }
 {}
 
 void TransformationSystem::update() {
@@ -41,6 +43,13 @@ void TransformationSystem::update() {
 				transform.rotation = glm::normalize(transform.rotation);
 			}
 
+			//Update events, try to save old data for more tweking
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
+																				transform.lastPosition,
+																				transform.lastScale,
+																				transform.lastRotation });
+
+
 			transform.front				= transform.rotation * defaultFront;
 			transform.up				= transform.rotation * defaultUp;
 			transform.right				= transform.rotation * defaultRight;
@@ -58,6 +67,7 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
+
 		}
 
 		// Figure out if the entity requires updating it's local matrix.
@@ -80,6 +90,7 @@ void TransformationSystem::update() {
 		) {
 			// World matrix needs recalculating because local matrix has been modified.
 			transform.needsRecalculating = true;
+
 			
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
@@ -95,6 +106,12 @@ void TransformationSystem::update() {
 				transform.localRotation = glm::normalize(transform.localRotation);
 			}
 
+			//Update events, try to save old data for more tweking
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
+																				transform.lastLocalPosition,  
+																				transform.lastLocalScale,
+																				transform.lastLocalRotation });
+
 			// We recalculate local matrix if there is a change in local transform.
 			transform.lastLocalPosition		= transform.localPosition;
 			transform.lastLocalScale		= transform.localScale;
@@ -105,7 +122,11 @@ void TransformationSystem::update() {
 			transform.localMatrix = glm::translate(transform.localMatrix, transform.localPosition);
 			transform.localMatrix = transform.localMatrix * glm::mat4_cast(transform.localRotation);
 			transform.localMatrix = glm::scale(transform.localMatrix, transform.localScale);
+
+
 		}
+
+
 	}
 
 	// We will reupdate all world transforms that are affected indirectly due to ancenstor's change in world and local transform.
@@ -118,7 +139,17 @@ void TransformationSystem::update() {
 			goto endOfLoop;
 		}
 
+
+
+
 		if (transform.worldHasChanged) {
+
+			//Update events, try to save old data for more tweking
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
+																				transform.lastLocalPosition,
+																				transform.lastLocalScale,
+																				transform.lastLocalRotation });
+
 			// World transform has changed. This means it has been directly edited.
 			// If world transform is modified directly, we ignore all indirect modifications due to ancenstor's transform change.
 			// In this case we want to calculate the appropriate local transform corresponding to this world transform.
@@ -133,6 +164,11 @@ void TransformationSystem::update() {
 			if (!transform.needsRecalculating) {
 				continue;
 			}
+			//Update events, try to save old data for more tweking
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
+																				transform.lastPosition,
+																				transform.lastScale,
+																				transform.lastRotation });
 
 			// To recalculate our model matrix, we also need make sure the parent's world matrix is updated
 			// We recursively check its parent's model matrix, until we know its updated or we reach a root entity.
@@ -143,6 +179,7 @@ void TransformationSystem::update() {
 	endOfLoop:
 		transform.worldHasChanged = false;
 	}
+
 }
 
 void TransformationSystem::setLocalTransformFromWorld(entt::entity entity) {
