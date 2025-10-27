@@ -2,6 +2,7 @@
 
 #include "transformationSystem.h"
 #include "ECS/ECS.h"
+#include "ECS/Events.h"
 
 #include "component.h"
 #include "nova_math.h"
@@ -12,7 +13,8 @@ constexpr glm::vec3 defaultUp = { 0, 1.f, 0 };
 glm::vec3 defaultRight = { glm::normalize(glm::cross(defaultFront, defaultUp)) };
 
 TransformationSystem::TransformationSystem(ECS& ecs) :
-	registry {ecs.registry}
+	registry {ecs.registry},
+	eventDispatcher{ ecs.systemEventDispatcher }
 {}
 
 void TransformationSystem::update() {
@@ -58,6 +60,9 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
+
+			//Update events
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity });
 		}
 
 		// Figure out if the entity requires updating it's local matrix.
@@ -80,6 +85,7 @@ void TransformationSystem::update() {
 		) {
 			// World matrix needs recalculating because local matrix has been modified.
 			transform.needsRecalculating = true;
+
 			
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
@@ -105,7 +111,12 @@ void TransformationSystem::update() {
 			transform.localMatrix = glm::translate(transform.localMatrix, transform.localPosition);
 			transform.localMatrix = transform.localMatrix * glm::mat4_cast(transform.localRotation);
 			transform.localMatrix = glm::scale(transform.localMatrix, transform.localScale);
+
+			//Update events
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity });
 		}
+
+
 	}
 
 	// We will reupdate all world transforms that are affected indirectly due to ancenstor's change in world and local transform.
@@ -140,9 +151,13 @@ void TransformationSystem::update() {
 			transform.needsRecalculating = false;
 		}
 
+		//set to update transfrom events
+		eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity });
+
 	endOfLoop:
 		transform.worldHasChanged = false;
 	}
+
 }
 
 void TransformationSystem::setLocalTransformFromWorld(entt::entity entity) {

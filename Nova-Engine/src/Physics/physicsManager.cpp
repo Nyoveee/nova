@@ -3,6 +3,7 @@
 #include "component.h"
 #include "ECS/ECS.h"
 #include "Engine/window.h"
+#include "ECS/Events.h"
 
 #include "Profiling.h"
 
@@ -131,6 +132,9 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	// Now we can create the actual physics system.
 	physicsSystem.Init(maxBodies, numBodyMutexes, maxBodyPairs, maxContactConstraints, broad_phase_layer_interface, object_vs_broadphase_layer_filter, object_vs_object_layer_filter);
 	
+	//set transformUpdateListener to listen to transfrom events from transform system
+	engine.ecs.systemEventDispatcher.sink<TransformUpdateEvent>().connect<&PhysicsManager::transformUpdateListener>(*this);
+
 	// We create some primitive shapes to be shared.
 	createPrimitiveShapes();
 
@@ -155,7 +159,45 @@ PhysicsManager::~PhysicsManager() {
 	delete JPH::Factory::sInstance;
 }
 
-void PhysicsManager::initialise() {
+void PhysicsManager::simulationInitialise() {
+	//for (auto&& [entityId, transform, rigidbody, boxCollider] : registry.view<Transform, Rigidbody, BoxCollider>().each()) {
+
+	//	// Create and add body based on entity's component.
+	//	JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidbody.layer);
+
+	//	JPH::BodyCreationSettings bodySettings{
+	//		new JPH::ScaledShape(box, toJPHVec3(transform.scale * boxCollider.scaleMultiplier)),	// scaled shape
+	//		toJPHVec3(transform.position),															// position
+	//		toJPHQuat(transform.rotation),															// rotation (in quartenions)
+	//		rigidbody.motionType,																	// motion type
+	//		layer																					// in which layer?
+	//	};
+
+	//	JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
+	//		bodySettings, 
+	//		JPH::EActivation::Activate //should always be active imo lmao
+	//	);
+
+	//	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityId));
+	//	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidbody.initialVelocity));
+	//	createdBodies.push_back(bodyId);
+
+	//	rigidbody.bodyId = bodyId;
+	//}
+
+	//physicsSystem.OptimizeBroadPhase();
+
+
+	//just set active is alright liao i think
+	for (auto const& bodyID : createdBodies)
+	{
+		bodyInterface.ActivateBody(bodyID);
+	}
+
+}
+
+void PhysicsManager::systemInitialise()
+{
 	for (auto&& [entityId, transform, rigidbody, boxCollider] : registry.view<Transform, Rigidbody, BoxCollider>().each()) {
 		// Create and add body based on entity's component.
 		JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidbody.layer);
@@ -168,9 +210,11 @@ void PhysicsManager::initialise() {
 			layer																					// in which layer?
 		};
 
+		JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
+
 		JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
-			bodySettings, 
-			rigidbody.motionType == JPH::EMotionType::Dynamic ? JPH::EActivation::Activate : JPH::EActivation::DontActivate
+			bodySettings,
+		    activationType //should always be inactive unless its simulation step
 		);
 
 		bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityId));
@@ -181,6 +225,8 @@ void PhysicsManager::initialise() {
 	}
 
 	physicsSystem.OptimizeBroadPhase();
+
+
 }
 
 void PhysicsManager::clear() {
@@ -193,25 +239,26 @@ void PhysicsManager::clear() {
 	}
 }
 
-void PhysicsManager::update(float dt) {
+void PhysicsManager::updatePhysics(float dt) {
 	ZoneScoped;
 
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
-	// @TODO: Don't update every frame! Only update when there is a change in transform.
+	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
 	// =============================================================
-	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
-		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
-			continue;
-		}
+	//for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+	//	if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
+	//		continue;
+	//	}
 
-		// our engine doesnt move static objects.
-		if (rigidbody.motionType == JPH::EMotionType::Static) {
-			continue;
-		}
+	//	// our engine doesnt move static objects.
+	//	if (rigidbody.motionType == JPH::EMotionType::Static) {
+	//		continue;
+	//	}
 
-		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
-	}
+	//	bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
+	//}
+	//Update transform bodies have been moved outside to another function
 
 	// run physics simulation.
 	physicsSystem.Update(dt, 1, &temp_allocator, &job_system);	
@@ -253,8 +300,52 @@ void PhysicsManager::update(float dt) {
 }
 
 void PhysicsManager::debugRender() {
+
+	//i think the best way to handle debugRender is that it is independent of whether the simulation is running. If the simulation is running
+	// it is assumed that physics update handles transformation changes else look at transform and draw it.
 	constexpr JPH::BodyManager::DrawSettings debugDrawSettings {};
 	physicsSystem.DrawBodies(debugDrawSettings, &debugRenderer);
+}
+
+void PhysicsManager::transformUpdateListener(TransformUpdateEvent const& event)
+{
+	auto&& [rigidbody, boxCollider] = registry.try_get<Rigidbody, BoxCollider>(event.entityID);
+	if (rigidbody == nullptr)
+	{
+		return;
+
+	}
+	
+	//later on can have many types of collider as long as have one can.
+	if (boxCollider == nullptr)
+	{
+		return;
+	}
+
+	transformUpdateStack.push(event.entityID);
+}
+
+void PhysicsManager::updateTransformBodies()
+{
+	//Look at transformUpdateListener, is filled from transform system
+	while (!transformUpdateStack.empty())
+	{
+		entt::entity entity = transformUpdateStack.top();
+		transformUpdateStack.pop();
+
+		auto&& [transform , rigidbody ] = registry.get<Transform, Rigidbody>(entity);
+
+		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
+			continue;
+		}
+
+		// our engine doesnt move static objects.
+		if (rigidbody.motionType == JPH::EMotionType::Static) {
+			continue;
+		}
+
+		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
+	}
 }
 
 void PhysicsManager::createPrimitiveShapes() {

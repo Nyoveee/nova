@@ -43,9 +43,10 @@ Engine::~Engine() {
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
+	physicsManager.updateTransformBodies();
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
-		physicsManager.update(dt);
+		physicsManager.updatePhysics(dt);
 		navigationSystem.update(dt);
 	}
 }
@@ -102,7 +103,7 @@ void Engine::startSimulation() {
 
 	setupSimulationFunction = [&]() {
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
-		physicsManager.initialise();
+		physicsManager.simulationInitialise();
 		audioSystem.loadAllSounds();
 		cameraSystem.startSimulation();
 		navigationSystem.initNavMeshSystems();
@@ -129,7 +130,7 @@ void Engine::stopSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		physicsManager.clear();
+		//physicsManager.clear(); ray: i dont think you have to clear bodies since you rollback registry already
 		audioSystem.unloadAllSounds();
 		cameraSystem.endSimulation();
 
@@ -157,6 +158,6 @@ bool Engine::isInSimulationMode() const {
 void Engine::SystemsOnLoad()
 {
 	this->navigationSystem.initNavMeshSystems();
-
+	this->physicsManager.systemInitialise();
 	
 }

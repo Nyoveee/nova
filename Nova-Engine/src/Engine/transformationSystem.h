@@ -28,6 +28,8 @@ public:
 	// just a more convenient public facing function that doesnt require additional parameters.
 	void setLocalTransformFromWorld(entt::entity entity);
 
+
+
 private:
 	// Sets the local matrix and position, scale and rotation based on the world matrix of the entity.
 	void setLocalTransformFromWorld(Transform& transform, EntityData& entityData);
@@ -43,4 +45,5 @@ private:
 
 private:
 	entt::registry& registry;
+	entt::dispatcher& eventDispatcher;
 };
