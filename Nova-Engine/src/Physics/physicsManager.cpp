@@ -10,6 +10,7 @@
 #include <memory>
 #include <iostream>
 #include <cstdarg>
+#include <algorithm>
 
 #include <Jolt/Jolt.h>
 
@@ -336,13 +337,35 @@ void PhysicsManager::addBodiesToSystem(entt::registry& registry, entt::entity en
 
 void PhysicsManager::removeBodiesFromSystem(entt::registry& registry, entt::entity entityID)
 {
-	if (!hasRequiredPhysicsComponents(entityID))
-	{
+		
+		auto&& [transform, rigidBody]= registry.try_get<Transform, Rigidbody>(entityID);
 
-	}
 
+		if (hasRequiredPhysicsComponents(entityID))
+		{
+
+			if (rigidBody == nullptr)
+			{
+				return;
+			}
+
+			if (rigidBody->bodyId == JPH::BodyID{})
+			{
+				return;
+			}
+
+			bodyInterface.RemoveBody(rigidBody->bodyId);
+
+			auto it = std::find(createdBodies.begin(), createdBodies.end(), rigidBody->bodyId);
+
+			std::swap(*it, *(createdBodies.end() - 1));
+
+			createdBodies.erase(createdBodies.end() - 1);
+		}
 
 }
+
+
 
 void PhysicsManager::createPrimitiveShapes() {
 	// ===========================================
