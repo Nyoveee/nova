@@ -321,6 +321,20 @@ void PhysicsManager::updateTransformBodies()
 
 		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
 	}
+
+	//can optmise later to listen to patch events
+	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each())
+	{
+		auto&& [boxCollider, sphereCollider] = registry.try_get<BoxCollider, SphereCollider>(entityId);
+		if (boxCollider != nullptr)
+		{
+			//auto shape  = bodyInterface.GetShape(rigidbody.bodyId);
+			//shape->shape
+		}
+
+	}
+
+
 }
 
 void PhysicsManager::addBodiesToSystem(entt::registry& registry, entt::entity entityID)
