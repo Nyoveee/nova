@@ -87,14 +87,6 @@
                     }
                 ]
             },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
                 "name": "Cube Copy Copy",
@@ -199,14 +191,6 @@
                     }
                 ]
             },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
                 "name": "Cube Copy Copy",
@@ -310,14 +294,6 @@
                         "name": "METAL PIPE"
                     }
                 ]
-            },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
             },
             "EntityData": {
                 "children": [],
@@ -424,12 +400,12 @@
                 ]
             },
             "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 2.0,
                     "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
+                    "z": 2.0
+                }
             },
             "EntityData": {
                 "children": [],
@@ -480,7 +456,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.05237969011068344,
+                    "y": 0.05237969383597374,
                     "z": 0.0
                 },
                 "localEulerAngles": {
@@ -534,14 +510,6 @@
                         "name": "METAL PIPE"
                     }
                 ]
-            },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
             },
             "EntityData": {
                 "children": [],
@@ -647,14 +615,6 @@
                     }
                 ]
             },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
                 "name": "Cube Copy",
@@ -759,14 +719,6 @@
                     }
                 ]
             },
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
                 "name": "Cube",
@@ -860,14 +812,6 @@
             "id": 1048594
         },
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
                 "name": "Floor",
@@ -953,14 +897,6 @@
             "id": 1048586
         },
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
                 "name": "Floor",
@@ -1046,14 +982,6 @@
             "id": 1048579
         },
         {
-            "BoxCollider": {
-                "scaleMultiplier": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "scaleWithTransform": true
-            },
             "EntityData": {
                 "children": [],
                 "name": "Floor",

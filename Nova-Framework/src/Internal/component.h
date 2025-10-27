@@ -182,11 +182,11 @@ struct Rigidbody {
 };
 
 struct BoxCollider {
-	glm::vec3 scaleMultiplier	{ 1.f, 1.f, 1.f };
+	glm::vec3 shapeScale	{ 1.f, 1.f, 1.f };
 	bool scaleWithTransform		= true;
 
 	REFLECTABLE(
-		scaleMultiplier,
+		shapeScale,
 		scaleWithTransform
 	)
 };

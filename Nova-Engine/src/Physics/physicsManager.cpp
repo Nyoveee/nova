@@ -191,7 +191,7 @@ void PhysicsManager::systemInitialise()
 		//due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
 		if (rigidbody.bodyId == JPH::BodyID{})
-		initialiseBodyComponent(entityId);
+			initialiseBodyComponent(entityId, false);
 
 	}
 
@@ -326,10 +326,31 @@ void PhysicsManager::updateTransformBodies()
 	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each())
 	{
 		auto&& [boxCollider, sphereCollider] = registry.try_get<BoxCollider, SphereCollider>(entityId);
+
+		JPH::RefConst<JPH::Shape> shape = bodyInterface.GetShape(rigidbody.bodyId);
+
+		JPH::EActivation type;
+		if (bodyInterface.IsActive(rigidbody.bodyId))
+		{
+			type = JPH::EActivation::Activate;
+		}
+		else
+		{
+			type = JPH::EActivation::DontActivate;
+		}
+
 		if (boxCollider != nullptr)
 		{
-			//auto shape  = bodyInterface.GetShape(rigidbody.bodyId);
-			//shape->shape
+			auto* result = new JPH::ScaledShape(box, toJPHVec3(boxCollider->shapeScale));
+			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+				
+		}
+
+		if (sphereCollider != nullptr)
+		{
+			auto* result = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
+			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+
 		}
 
 	}
@@ -344,7 +365,7 @@ void PhysicsManager::addBodiesToSystem(entt::registry& registry, entt::entity en
 		return;
 	}
 
-	initialiseBodyComponent(entityID);
+	initialiseBodyComponent(entityID, true);
 
 
 }
@@ -400,45 +421,60 @@ void PhysicsManager::createPrimitiveShapes() {
 	sphere = sphereSettings.Create().Get();
 }
 
-void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID)
+void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling)
 {
 
-	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider] = registry.try_get<Transform,MeshRenderer,Rigidbody, BoxCollider, SphereCollider>(entityID);
+	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, BoxCollider, SphereCollider>(entityID);
 	// Create and add body based on entity's component.
 	JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidBody->layer);
-
 	JPH::ScaledShape* shape = nullptr;
-
 	glm::vec3 scale;
-
-	//if have model use model scale, else init without model
-	if (meshRenderer != nullptr)
+	if (automateColliderScaling)
 	{
-		 auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
-		 scale = glm::vec3(1.f * model->maxDimension , 1.f * model->maxDimension, 1.f * model->maxDimension);
+		//if have model use model scale, else init without model
+		if (meshRenderer != nullptr)
+		{
+			auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+			scale = glm::vec3(1.f * model->maxDimension, 1.f * model->maxDimension, 1.f * model->maxDimension);
 
-		 if (model->maxDimension == 0)
-		 {
-			 scale = transform->scale;
-		 }
+			if (model->maxDimension == 0)
+			{
+				scale = transform->scale;
+			}
 
+		}
+		else
+		{
+			scale = transform->scale;
+		}
 	}
-	else
-	{
-		scale = transform->scale;
-	}
-
 
 	//Alright here we go have to list down all the possible collider type cause we dk which one is it. :P, 
 	// we only support one type of collider per entt now i think
+
 	if (boxCollider != nullptr)
 	{
-		shape = new JPH::ScaledShape(box, toJPHVec3(glm::vec3(scale * boxCollider->scaleMultiplier) ) );
+		if (automateColliderScaling)
+		{
+			shape = new JPH::ScaledShape(box, box->MakeScaleValid(toJPHVec3(scale)));
+		}
+		else
+		{
+			shape = new JPH::ScaledShape(box, toJPHVec3(glm::vec3(boxCollider->shapeScale) ));
+		}
 	}
 
 	if (sphereCollider != nullptr)
 	{
-		shape = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(scale * sphereCollider->radius) ));
+		if (automateColliderScaling)
+		{
+			shape = new JPH::ScaledShape(sphere, sphere->MakeScaleValid(toJPHVec3(scale)) );
+		}
+		else
+		{
+			shape = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
+		}
+		
 	}
 
 
