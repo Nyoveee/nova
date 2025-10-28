@@ -60,6 +60,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	normalsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	tangentsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	skeletalVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
+	particleVBO                 { AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
@@ -183,11 +184,45 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	//fonts.push_back(Font::LoadFont("System/Font/calibri.ttf").value());
+	// ======================================================
+	// Particle VAO configuration
+	// ======================================================
+	glCreateVertexArrays(1, &particleVAO);
+	constexpr GLuint particleBindingIndex = 0;
+
+	// Bind this EBO to this VAO.
+	glVertexArrayElementBuffer(particleVAO, EBO.id());
+
+	// Associate binding index 0 with this vbo for particleVAO
+	glVertexArrayVertexBuffer(particleVAO, particleBindingIndex, particleVBO.id(), 0, sizeof(ParticleVertex));
+
+	// Associate Attribute Indexes with their properties
+	glVertexArrayAttribFormat(particleVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, localPos));
+	glVertexArrayAttribFormat(particleVAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, worldPos));
+	glVertexArrayAttribFormat(particleVAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, texCoord));
+	glVertexArrayAttribFormat(particleVAO, 3, 4, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, color));
+	glVertexArrayAttribFormat(particleVAO, 4, 1, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, rotation));
+
+	// Associate vertex attributes with binding index 0
+	glVertexArrayAttribBinding(particleVAO, 0, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 1, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 2, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 3, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 4, particleBindingIndex);
+
+	// Enable Attributes
+	glEnableVertexArrayAttrib(particleVAO, 0);
+	glEnableVertexArrayAttrib(particleVAO, 1);
+	glEnableVertexArrayAttrib(particleVAO, 2);
+	glEnableVertexArrayAttrib(particleVAO, 3);
+	glEnableVertexArrayAttrib(particleVAO, 4);
+
 }
 
 Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &mainVAO);
+	glDeleteVertexArrays(1, &textVAO);
+	glDeleteVertexArrays(1, &particleVAO);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -852,10 +887,9 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
-#if 0
-	glBindVertexArray(particleVAO);
 
-	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
+	glBindVertexArray(particleVAO);
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 	particleShader.use();
 
 	// Disable writing to depth buffer for particles
@@ -901,13 +935,13 @@ void Renderer::renderParticles()
 		};
 		addParticleBatch(emitter.trailParticles);
 		addParticleBatch(emitter.particles);
-		mainVBO.uploadData(particleVertexes);
+		particleVBO.uploadData(particleVertexes);
 		EBO.uploadData(indices);
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
-#endif
+
 }
 
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {
