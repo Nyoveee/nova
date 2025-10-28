@@ -912,7 +912,7 @@ void Renderer::renderParticles()
 		std::vector<ParticleVertex> particleVertexes;
 		std::vector<unsigned int> indices;
 		int i{};
-		auto addParticleBatch = [&](std::vector<Particle> const &particles) {
+		auto renderParticleBatch = [&](std::vector<Particle> const &particles) {
 			for (Particle const &particle: particles) {
 				auto&& [texture, result] = resourceManager.getResource<Texture>(particle.texture);
 				if (!texture)
@@ -932,12 +932,14 @@ void Renderer::renderParticles()
 					indices.push_back(squareIndices[j] + i * 4);
 				++i;
 			}
+			particleVBO.uploadData(particleVertexes);
+			EBO.uploadData(indices);
+			glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 		};
-		addParticleBatch(emitter.trailParticles);
-		addParticleBatch(emitter.particles);
-		particleVBO.uploadData(particleVertexes);
-		EBO.uploadData(indices);
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
+		renderParticleBatch(emitter.trailParticles);
+		renderParticleBatch(emitter.particles);
+		
+		
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
