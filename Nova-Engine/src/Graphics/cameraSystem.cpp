@@ -5,7 +5,9 @@
 #include "renderer.h"
 #include "InputManager/inputManager.h"
 #include "Profiling.h"
-
+namespace {
+	constexpr float sensitivity = 0.1f;		// change this value to your liking
+}
 CameraSystem::CameraSystem(Engine& engine) :
 	engine					{ engine },
 	isMovingDown			{},
@@ -57,8 +59,9 @@ CameraSystem::CameraSystem(Engine& engine) :
 				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 				toResetMousePos = false;
 			}
-			else if (isInControl) {
-				calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+			calculateMouseOffset(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
+			if (isInControl) {
+				calculateEulerAngle();
 			}
 		}
 	);
@@ -78,6 +81,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 void CameraSystem::update(float dt) {
 	ZoneScoped;
 
+	xOffset = yOffset = 0;
 	for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
 	{
 		if (cameraComponent.camStatus)
@@ -174,17 +178,25 @@ CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() cons
     return levelEditorCamera;
 }
 
-void CameraSystem::calculateEulerAngle(float mouseX, float mouseY) {
-	constexpr float sensitivity = 0.1f;		// change this value to your liking
-	
-	float xOffset = mouseX - lastMouseX;
-	float yOffset = lastMouseY - mouseY; // reversed since y-coordinates go from bottom to top
+// Unity Definition: mouse delta * sensitivity, which is just the offset
+float CameraSystem::getMouseAxisX(){
+	return xOffset;
+}
+
+float CameraSystem::getMouseAxisY(){
+	return yOffset;
+}
+void CameraSystem::calculateMouseOffset(float mouseX, float mouseY)
+{
+	xOffset = mouseX - lastMouseX;
+	yOffset = lastMouseY - mouseY; // reversed since y-coordinates go from bottom to top
 	lastMouseX = mouseX;
 	lastMouseY = mouseY;
 
 	xOffset *= sensitivity;
 	yOffset *= sensitivity;
-
+}
+void CameraSystem::calculateEulerAngle() {
 	levelEditorCamera.yaw += xOffset;
 	levelEditorCamera.pitch += yOffset;
 

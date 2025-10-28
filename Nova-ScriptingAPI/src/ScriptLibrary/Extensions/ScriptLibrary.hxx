@@ -37,7 +37,13 @@ public ref class Debug {
 public:
 	static void Print(IManagedComponent^ component) { Logger::info(Convert(component->ToString()));}
 	static void Print(System::String^ string)		{ Logger::info(Convert(string)); }
-	static void Print(Object^ object)               { Logger::info(Convert(object->GetType()->Name) + Convert(object->ToString())); }
+	static void Print(Object^ object)               { 
+		if (object->GetType()->IsPrimitive) {
+			Logger::info(Convert(object->ToString()));
+			return;
+		}
+		Logger::info(Convert(object->GetType()->Name) + Convert(object->ToString())); 
+	}
 };
 
 // ======================================
@@ -50,7 +56,17 @@ public:
 		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key)) };
 		observerIds.Add(observerId);
 	}
-
+	static float GetMouseAxis(MouseAxis axis) {
+		if (axis == MouseAxis::Horizontal) 
+			return Interface::engine->cameraSystem.getMouseAxisX();
+		return Interface::engine->cameraSystem.getMouseAxisY();
+	}
+	static float GetMouseAxisRaw(MouseAxis axis) {
+		float output{ GetMouseAxis(axis) };
+		if (output > 0) return 1;
+		if (output < 0) return -1;
+		return 0.f;
+	}
 	static Vector2 V_MousePosition()	{ return Vector2(Interface::engine->inputManager.mousePosition); }
 	static float V_ScrollOffsetY()		{ return Interface::engine->inputManager.scrollOffsetY; }
 
