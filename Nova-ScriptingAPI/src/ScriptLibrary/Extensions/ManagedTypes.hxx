@@ -31,15 +31,15 @@ ManagedStruct(
 // New managed type Vector3 now has data member of x, y, z corresponding to the data members of glm::vec3.
 
 ManagedStruct(
-	Ray,		PhysicsRay,
-	Vector3,	origin,
-	Vector3,	direction
+	Ray, PhysicsRay,
+	Vector3, origin,
+	Vector3, direction
 )
 
 ManagedStruct(
-	RayCastResult,	PhysicsRayCastResult,
-	entt::entity,	entity,
-	Vector3,		point
+	RayCastResult, PhysicsRayCastResult,
+	entt::entity, entity,
+	Vector3, point
 )
 
 // ===========================================================================================
@@ -63,7 +63,8 @@ ManagedComponentDeclaration(
 	Vector3, scale,
 	Vector3, front,
 	Vector3, right,
-	Vector3, up
+	Vector3, up,
+	Vector3, eulerAngles
 )
 void rotate(Vector3 axis, float angle);
 

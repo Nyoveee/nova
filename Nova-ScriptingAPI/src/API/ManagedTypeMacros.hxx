@@ -70,14 +70,16 @@ struct ManagedToNative<ManagedType> {																								\
 // =====================================================
 // Managed component macro generator.
 // =====================================================
-#define PropertyDeclaration(Type, Name)					                \
-property Type Name														\
-{																		\
-	Type get()				{ return Type(componentReference->Name); }	\
-	void set(Type value)	{											\
-		using NativeType = decltype(componentReference->Name);			\
-		componentReference->Name = native<NativeType>(value);			\
-	}																	\
+#define PropertyDeclaration(Type, Name)														\
+property Type Name																			\
+{																							\
+	Type get()				{																\
+		return Type(static_cast<ManagedToNative<Type>::Native>(componentReference->Name));	\
+	}																						\
+	void set(Type value)	{																\
+		using NativeType = decltype(componentReference->Name);								\
+		componentReference->Name = native<ManagedToNative<Type>::Native>(value);			\
+	}																						\
 }
 
 #define ManagedComponentDeclaration(ComponentType, ...)												\

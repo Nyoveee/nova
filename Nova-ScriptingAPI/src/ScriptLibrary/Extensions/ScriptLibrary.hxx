@@ -6,7 +6,7 @@
 #include "API/ConversionUtils.hxx"
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
-
+#include <numbers>
 
 #undef PlaySound
 
@@ -134,4 +134,17 @@ public:
 	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition) {
 		return Interface::engine->navigationSystem.setDestination(Convert(gameObject), targetPosition->native());
 	}
+};
+// ======================================
+// This class is responsible for math related functionality, espeically cause some require conversion to double for some reason
+// ======================================
+public ref class Mathf {
+public:
+	// C# doesn't support cos/sin with floats without conversion
+	static float Cos(float radian) { return std::cos(radian); }
+	static float Sin(float radian) { return std::sin(radian); }
+	static float Clamp(float value, float min, float max) { return std::clamp(value, min, max); }
+public:
+	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
+	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
 };
