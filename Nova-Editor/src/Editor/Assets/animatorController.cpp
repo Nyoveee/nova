@@ -1,5 +1,7 @@
 #include <utility>
 #include <ranges>
+#include <functional>
+#include <algorithm>
 
 #include "animatorController.h"
 
@@ -86,7 +88,7 @@ void AnimatorController::update() {
 		}
 	}
 
-	displayLeftPanel(*controller);
+	displayLeftPanel(*animator, *controller);
 	handleDragAndDrop(*controller);
 
 	ImGui::SameLine();
@@ -95,7 +97,7 @@ void AnimatorController::update() {
 	ImGui::End();
 }
 
-void AnimatorController::displayLeftPanel(Controller& controller) {
+void AnimatorController::displayLeftPanel(Animator& animator, Controller& controller) {
 	ImGui::BeginChild("Left Panel", ImVec2(0, 0), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
 	
 	ed::SetCurrentEditor(context);
@@ -104,7 +106,7 @@ void AnimatorController::displayLeftPanel(Controller& controller) {
 	ed::Begin("Node Editor", ImVec2(0.0f, 0.0f));
 
 	// 1) Render all the nodes..
-	renderNodes(controller);
+	renderNodes(animator, controller);
 
 	// 2) Render all the links..
 	renderNodeLinks(controller);
@@ -119,17 +121,17 @@ void AnimatorController::displayLeftPanel(Controller& controller) {
 	int linkCount = ed::GetSelectedLinks(selectedLinks.data(), static_cast<int>(selectedLinks.size()));
 	selectedLinks.resize(linkCount);
 
-
 	// 3) Handle interactions
 	if (ed::BeginCreate()) {
 		handleNodeLinking(controller);
 	}
 	ed::EndCreate(); // Wraps up object creation action handling.
 
-	// 4) Handle deletion action
-	if (ed::BeginDelete()) {
+	// 4) Handle deletion action, only when not in simulation mode.
+	if (!editor.engine.isInSimulationMode() && ed::BeginDelete()) {
 		handleDeletion(controller);
 	}
+
 	ed::EndDelete();
 
 	ed::End();
@@ -137,7 +139,7 @@ void AnimatorController::displayLeftPanel(Controller& controller) {
 	ImGui::EndChild();
 }
 
-void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, Controller& controller) {
+void AnimatorController::displayRightPanel(Animator& animator, Controller& controller) {
 	ImGui::BeginChild("Right Panel");
 
 	if (ImGui::Button("Center all node position")) {
@@ -151,13 +153,10 @@ void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, 
 	}
 
 	if (ImGui::BeginTabBar("TabBar")) {
-		if (ImGui::BeginTabItem("Parameter")) {
-			displayParameterWindow(controller);
-			ImGui::EndTabItem();
-		}
-
 		if (ImGui::BeginTabItem("Inspector")) {
-			displaySelectedNodeProperties(controller);
+			displayParameterWindow(animator, controller);
+			displaySelectedNodeProperties(animator, controller);
+
 			ImGui::EndTabItem();
 		}
 
@@ -188,23 +187,27 @@ void AnimatorController::displayRightPanel([[maybe_unused]] Animator& animator, 
 	ImGui::EndChild();
 }
 
-void AnimatorController::displayParameterWindow(Controller& controller) {
-	auto&& parameters = controller.data.parameters;
+void AnimatorController::displayParameterWindow(Animator& animator, Controller& controller) {
+	ImGui::BeginChild("Parameter Window", {}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 
-	ImVec2 child_size = ImGui::GetContentRegionAvail();
-	child_size.y = 0.f;
-
-	ImGui::BeginChild("Parameters Panel", child_size);
-
-	if (editor.isInSimulationMode()) {
-		ImGui::BeginDisabled();
-	}
+	// In simulation mode, every animator component will have a copy of the parameters.
+	// In non simulation mode, we are actually viewing at the controller's parameter. 
+	// Very cool. Let's utilise IILE to construct our parameter container based on condition.
+	auto&& parameters = [&]() -> std::vector<Controller::Parameter>& {
+		if (editor.isInSimulationMode()) {
+			return animator.parameters;
+		}
+		else {
+			return controller.data.parameters;
+		}
+	}();
 
 	static int counter = 0;
 
 	// Display combo box to add parameter
-	if (ImGui::BeginCombo("##", "[+] Add Paramter")) {
-		std::string name = "Parameter ";
+	if (ImGui::BeginCombo("##", "[+] Add Parameter")) {
+		std::string name = Logger::getUniqueTimedId();
+
 		if (ImGui::Selectable("Boolean")) {
 			parameters.push_back({ name + std::to_string(counter++), false });
 		}
@@ -230,11 +233,11 @@ void AnimatorController::displayParameterWindow(Controller& controller) {
 		ImGui::TableSetupColumn("Value",   ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("Delete?", ImGuiTableColumnFlags_WidthFixed, 40.0f);
 
-		ImGui::TableHeadersRow(); 
+		// ImGui::TableHeadersRow(); 
 
 		// Populate table rows
 		int imguiCounter = 0;
-		for (auto it = controller.data.parameters.begin(); it != controller.data.parameters.end();) {
+		for (auto it = parameters.begin(); it != parameters.end();) {
 			ImGui::PushID(imguiCounter++);
 
 			auto&& [name, variant] = *it;
@@ -303,27 +306,8 @@ void AnimatorController::displayParameterWindow(Controller& controller) {
 			// =================================================================
 			// Column 3: Handle variant value..
 			// =================================================================
-			std::visit([&](auto&& parameter) {
-				using ParameterType = std::decay_t<decltype(parameter)>;
-
-				// Column 3
-				ImGui::TableSetColumnIndex(2);
-
-				if constexpr (std::same_as<bool, ParameterType>) {
-					ImGui::Checkbox("##value", &parameter);
-				}
-				else if constexpr (std::same_as<int, ParameterType>) {
-					ImGui::InputInt("##value", &parameter, 0);
-				}
-				else if constexpr (std::same_as<float, ParameterType>) {
-					ImGui::InputFloat("##value", &parameter);
-				}
-				else {
-					[&] <bool flag = false, typename T = ParameterType>() {
-						static_assert(flag, "Not all types of variant accounted for." __FUNCSIG__);
-					}();
-				}
-			}, variant);
+			ImGui::TableSetColumnIndex(2);
+			DisplayProperty<std::decay_t<decltype(variant)>>(editor, "##value", variant);
 
 			// =================================================================
 			// Column 4: Handle parameter deletion..
@@ -343,26 +327,18 @@ void AnimatorController::displayParameterWindow(Controller& controller) {
 		ImGui::EndTable();
 	}
 
-	if (editor.isInSimulationMode()) {
-		ImGui::EndDisabled();
-	}
-
 	ImGui::EndChild();
 }
 
-void AnimatorController::displaySelectedNodeProperties(Controller& controller) {
+void AnimatorController::displaySelectedNodeProperties([[maybe_unused]] Animator& animator, Controller& controller) {
 	auto&& nodes = controller.data.nodes;
-
-	ImVec2 child_size = ImGui::GetContentRegionAvail();
-	child_size.y = 0.f;
-
-	ImGui::BeginChild("Selected Node Properties", child_size);
 
 	if (selectedNodes.empty()) {
 		ImGui::Text("No node selected.");
-		ImGui::EndChild();
 		return;
 	}
+
+	ImGui::BeginChild("Transition Window", {}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 
 	for (auto&& edNodeId : selectedNodes) {
 		ControllerNodeID nodeId = static_cast<ControllerNodeID>(static_cast<std::size_t>(edNodeId));
@@ -374,18 +350,19 @@ void AnimatorController::displaySelectedNodeProperties(Controller& controller) {
 
 		auto&& [_, node] = *iterator;
 
-		ImGui::SeparatorText(std::string{ "Name: " + node.name }.c_str());
-		ImGui::Text("ID: %zu", static_cast<std::size_t>(edNodeId));
+		ImGui::SeparatorText(node.name.c_str());
+		// ImGui::Text("ID: %zu", static_cast<std::size_t>(edNodeId));
 
-		// Display transitions window..
-		ImGui::BeginChild("Transition Window", {}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
-
-		int imguiCounter = 0;
+		ImGui::Checkbox("To loop?", &node.toLoop);
 
 		if (node.transitions.empty()) {
 			ImGui::Text("No transition. Create a transition in the node graph!");
 		}
 		else {
+			std::function<void()> swapTransitionOrder = nullptr;
+
+			int transitionIndex = 0;
+
 			for (Controller::Transition& transition : node.transitions) {
 				auto nextIterator = nodes.find(transition.nextNode);
 
@@ -393,42 +370,95 @@ void AnimatorController::displaySelectedNodeProperties(Controller& controller) {
 					continue;
 				}
 
-				ImGui::PushID(imguiCounter++);
+				ImGui::PushID(transitionIndex);
 
 				auto&& [__, nextNode] = *nextIterator;
 
-				ImGui::Text("Transition: %s to %s", node.name.c_str(), nextNode.name.c_str());
-				ImGui::Text("Conditions");
-
-				if (transition.conditions.empty()) {
-					ImGui::Text("No conditions. This transition will always happen.");
+				std::string transitionText = "[" + std::to_string(transitionIndex) +  "] Transition: '" + node.name + "' >> '" + nextNode.name + "'";
+				
+				bool isTreeNodeActive = ImGui::TreeNode(transitionText.c_str());
+				
+				// Drag and drop to swap transition..
+				if (ImGui::BeginDragDropSource()) {
+					ImGui::SetDragDropPayload("SWAP_TRANSITION", &transitionIndex, sizeof(int));
+					ImGui::EndDragDropSource();
 				}
-				else {
-					if (ImGui::BeginTable("Condition Table", 3, ImGuiTableFlags_Borders)) {
-						//ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-						//ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
 
-						for (Controller::Condition& condition : transition.conditions) {
+				// Drop Target
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SWAP_TRANSITION")) {
+						int fromTransitionIndex = *(const int*)payload->Data;
+
+						swapTransitionOrder = [&, fromIndex = fromTransitionIndex, toIndex = transitionIndex]() {
+							std::swap(node.transitions[fromIndex], node.transitions[toIndex]);
+						};
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+				if (isTreeNodeActive) {
+					if (transition.conditions.empty()) {
+						ImGui::Text("No conditions. This transition will always happen.");
+					}
+					else if (ImGui::BeginTable("Condition Table", 4, ImGuiTableFlags_Borders)) {
+						ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+						ImGui::TableSetupColumn("Check", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+						ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
+						ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 30.f);
+
+						int transitionCounter = 1;
+
+						for (auto it = transition.conditions.begin(); it != transition.conditions.end();) {
+							Controller::Condition& condition = *it;
+
+							ImGui::PushID(transitionCounter++);
 							ImGui::TableNextRow();
 
 							ImGui::TableNextColumn();
-							ImGui::Text("%s", condition.name.c_str());
+							displayParameterComboBox(controller, condition);
 
 							ImGui::TableNextColumn();
 
-							DisplayProperty<Controller::Condition::Check>(editor, "##", condition.check);
-							DisplayProperty<decltype(condition.value)>(editor, "##", condition.value);
+							if (std::holds_alternative<bool>(condition.value)) {
+								ImGui::Text("==");
+							}
+							else {
+								DisplayProperty<Controller::Condition::Check>(editor, "##check", condition.check);
+							}
+
+							ImGui::TableNextColumn();
+							DisplayProperty<decltype(condition.value)>(editor, "##value", condition.value);
+
+							ImGui::TableNextColumn();
+
+							if (ImGui::Button("[-]")) {
+								it = transition.conditions.erase(it);
+							}
+							else {
+								++it;
+							}
+
+							ImGui::PopID();
 						}
 
 						ImGui::EndTable();
 					}
+
+					if (ImGui::Button("[+] Add condition")) {
+						createNewCondition(controller, transition);
+					}
+
+					ImGui::TreePop();
 				}
 
 				ImGui::PopID();
+				transitionIndex++;
+			}
+
+			if (swapTransitionOrder) {
+				swapTransitionOrder();
 			}
 		}
-
-		ImGui::EndChild();
 	}
 
 	ImGui::EndChild();
@@ -462,7 +492,7 @@ void AnimatorController::handleDragAndDrop(Controller& controller) {
 	}});
 }
 
-void AnimatorController::renderNodes(Controller& controller) {
+void AnimatorController::renderNodes(Animator& animator, Controller& controller) {
 	pinMetaData.clear();
 	nodeToPins.clear();
 
@@ -492,6 +522,12 @@ void AnimatorController::renderNodes(Controller& controller) {
 
 		ImGui::PushID(static_cast<int>(static_cast<std::size_t>(id)));
 
+		// Highlight the currently selected node.
+		if (animator.currentNode == id && animator.currentNode != ENTRY_NODE) {
+			ed::PushStyleColor(ed::StyleColor_NodeBorder, ImVec4{ 1.f, 1.f, 0.f, 1.f });
+			ed::PushStyleColor(ed::StyleColor_NodeBg,	  ImVec4{ 0.2f, 0.5f, 0.5f, 0.5f });
+		}
+
 		// Render a node..
 		ed::BeginNode(nodeId);
 		ImGui::Text("%s", animationName.c_str());
@@ -507,7 +543,22 @@ void AnimatorController::renderNodes(Controller& controller) {
 		ed::BeginPin(outPinId, ed::PinKind::Output);
 		ImGui::Text("Out ->");
 		ed::EndPin();
+
+		// Render progress bar..
+		// Attempts to get animation data from the current node..
+		auto&& [animation, _] = resourceManager.getResource<Model>(node.animation);
+
+		if (animation && animation->animations.size()) {
+			float percentage = animator.currentNode == id ? animator.timeElapsed / animation->animations[0].durationInSeconds : 0.f;
+			ImGui::ProgressBar(percentage, ImVec2{ 100.f, 20.f });
+		}
+
 		ed::EndNode();
+
+		// Highlight the currently selected node, pop style.
+		if (animator.currentNode == id && animator.currentNode != ENTRY_NODE) {
+			ed::PopStyleColor(2);
+		}
 
 		ImGui::PopID();
 
@@ -546,6 +597,8 @@ void AnimatorController::renderNodeLinks(Controller& controller) {
 			}
 		}
 	}
+
+	linksToTransition.clear();
 
 	// for every node..
 	for (auto&& [nodeId, node] : nodes) {
@@ -612,13 +665,14 @@ void AnimatorController::handleNodeLinking(Controller& controller) {
 			// Controller::Node& nodeIn = nodes.at(nodeInId);
 			Controller::Node& nodeOut = nodes.at(nodeOutId);
 
-			// we create a new transition..
-			Controller::Transition newTransition {
-				nodeInId,
-				{}
-			};
-
-			nodeOut.transitions.push_back(newTransition);
+			// we create a new transition, only if the current list of transitions dont have nodeIn..
+			if (std::ranges::find_if(nodeOut.transitions, [&](auto const& transition) { return transition.nextNode == nodeInId; }) == nodeOut.transitions.end()) {
+				Controller::Transition newTransition{
+					nodeInId,
+					{}
+				};
+				nodeOut.transitions.push_back(newTransition);
+			}
 		}
 	}
 	else {
@@ -689,5 +743,31 @@ void AnimatorController::handleDeletion(Controller& controller) {
 		}
 
 		controller.data.nodes.erase(iterator);
+	}
+}
+
+void AnimatorController::createNewCondition(Controller& controller, Controller::Transition& transition){
+	// retrieve all parameters from the controller, and we default select the first parameter as our condition..
+	
+	if (controller.data.parameters.empty()) {
+		// default construct one random condition?
+		transition.conditions.push_back({});
+		return;
+	}
+
+	auto const& parameter = controller.data.parameters.front();
+	transition.conditions.push_back({ parameter.name, parameter.value });
+}
+
+void AnimatorController::displayParameterComboBox(Controller& controller, Controller::Condition& condition) {
+	if (ImGui::BeginCombo("##Combo", condition.name.c_str())) {
+		for (auto&& parameter : controller.data.parameters) {
+			if (ImGui::Selectable(parameter.name.c_str(), parameter.name == condition.name)) {
+				condition.name = parameter.name;
+				condition.value = parameter.value;
+			}
+		}
+
+		ImGui::EndCombo();
 	}
 }

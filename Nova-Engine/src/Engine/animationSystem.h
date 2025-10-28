@@ -40,6 +40,8 @@ private:
 	ENGINE_DLL_API void calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4 const& globalTransformationMatrix, Skeleton const& skeleton, SkinnedMeshRenderer& skinnedMeshRenderer, Animation const* animation, float timeInSeconds);
 	ENGINE_DLL_API AnimationChannel const* findAnimationChannel(std::string const& nodeName, Animation const& animation);
 
+	bool checkIfConditionFulfilled(Animator const& animator, Controller::Transition const& transition);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;

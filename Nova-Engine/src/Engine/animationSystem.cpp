@@ -68,15 +68,15 @@ void AnimationSystem::initialiseAllControllers() {
 		animator.timeElapsed = 0.f;
 		animator.currentNode = NO_CONTROLLER_NODE;
 		animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
-
+			
 		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
 
 		if (!controllerPtr) {
 			continue;
 		}
 
+		animator.parameters = controllerPtr->data.parameters;
 		animator.currentNode = controllerPtr->getNodes().at(ENTRY_NODE).id;
-		// animator.currentAnimation = controllerPtr->getNodes().at(ENTRY_NODE).animation;
 	}
 }
 
@@ -84,6 +84,9 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 	// check transition in sequence..
 	for (auto&& transition : currentNode.transitions) {
 		// @TODO: Handle conditions..
+		if (!checkIfConditionFulfilled(animator, transition)) {
+			continue;
+		}
 
 		// We found a valid transition..
 		auto iterator = controller.data.nodes.find(transition.nextNode);
@@ -96,7 +99,12 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 		animator.currentNode = transition.nextNode;
 		animator.timeElapsed = 0;
 		animator.currentAnimation = iterator->second.animation;
-		break;
+		return;
+	}
+
+	// no valid transition found..
+	if (currentNode.toLoop) {
+		animator.timeElapsed = 0;
 	}
 }
 
@@ -144,7 +152,7 @@ void AnimationSystem::updateAnimator(float dt) {
 		}
 
 		if (animator.timeElapsed >= animation->animations[0].durationInSeconds) {
-			animator.timeElapsed = 0;
+			animator.timeElapsed = animation->animations[0].durationInSeconds;
 			handleTransition(animator, currentNode, controller);
 		}
 		else {
@@ -194,4 +202,57 @@ AnimationChannel const* AnimationSystem::findAnimationChannel(std::string const&
 	}
 
 	return nullptr;
+}
+
+bool AnimationSystem::checkIfConditionFulfilled(Animator const& animator, Controller::Transition const& transition) {
+	// all conditions have to be fulfilled.
+	for (auto&& condition : transition.conditions) {
+		// find the value to compare with from animator..
+		auto iterator = std::ranges::find_if(animator.parameters, [&](auto&& parameter) {
+			return parameter.name == condition.name;
+		});
+
+		// if doesn't match (shouldn't really happen though, we fail immediately.)
+		if (iterator == animator.parameters.end()) {
+			return false;
+		}
+
+		Controller::Parameter const& animatorParameter = *iterator;
+
+		bool checkResult = std::visit([&](auto&& animatorValue) {
+			// animator's parameter should be the exact same type as condition.
+			using T = std::decay_t<decltype(animatorValue)>;
+			T const& testValue = std::get<T>(condition.value);
+
+			// we now run the respective checks..
+			// for boolean, its a simple check if its the same
+			if constexpr (std::same_as<T, bool>) {
+				return animatorValue == testValue;
+			}
+			else {
+				switch (condition.check)
+				{
+					using enum Controller::Condition::Check;
+				case Greater:
+					return animatorValue >= testValue;
+				case Lesser:
+					return animatorValue <= testValue;
+				case Equal:
+					return animatorValue == testValue;
+				case NotEqual:
+					return animatorValue != testValue;
+				default:
+					assert(false && "Unhandled check.");
+					return false;
+				}
+			}
+		}, animatorParameter.value);
+
+		// failed the check..
+		if (!checkResult) {
+			return false;
+		}
+	}
+
+	return true;
 }

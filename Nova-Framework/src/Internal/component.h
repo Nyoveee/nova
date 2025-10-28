@@ -21,6 +21,7 @@
 #include "vertex.h"
 #include "reflection.h"
 #include "navMesh.h"
+#include "controller.h"
 
 // Forward declaring..
 class Model;
@@ -197,6 +198,9 @@ struct Animator {
 	float timeElapsed = 0;
 	ControllerNodeID currentNode = NO_CONTROLLER_NODE;
 	TypedResourceID<Model> currentAnimation;
+	
+	// this will be instantiated in runtime.
+	std::vector<Controller::Parameter> parameters;
 };
 
 struct Rigidbody {
