@@ -94,3 +94,7 @@ enum class PasteEntity {
 	Paste
 };
 
+enum class FocusSelectedEntity {
+	Sentinel
+};
+

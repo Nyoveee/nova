@@ -34,6 +34,8 @@ class InputManager;
 class AssetManager;
 class ResourceManager;
 
+enum class FocusSelectedEntity;
+
 class Editor {
 public:
 	Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager);
@@ -83,6 +85,7 @@ private:
 	void handleEntityValidity();
 	void handleEntityHovering();
 	void handleEntitySelection();
+	void handleFocusOnSelectedEntity(FocusSelectedEntity);
 	void sandboxWindow();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;

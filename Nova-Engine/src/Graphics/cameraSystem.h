@@ -38,12 +38,18 @@ public:
 	void startSimulation();
 	void endSimulation();
 
+	ENGINE_DLL_API void focusOnPosition(glm::vec3 const& targetPosition);
+
 	ENGINE_DLL_API float getCameraSpeed() const;
 	ENGINE_DLL_API LevelEditorCamera const& getLevelEditorCamera() const;
 
 public:
-	// the formula of camera speed is e^x, to appropriately scale speed. 
+	// the formula of camera speed is e^x, to appropriately scale speed.
 	float cameraSpeedExponent;
+
+	// Focus camera settings - adjust these to change focus behavior
+	float focusOffsetDistance;  // Distance behind the target
+	float focusHeightOffset;    // Height above the target
 
 private:
 	LevelEditorCamera levelEditorCamera;

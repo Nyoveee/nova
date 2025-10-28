@@ -24,7 +24,9 @@ CameraSystem::CameraSystem(Engine& engine) :
 	isThereActiveGameCamera	{ false },
 	toResetMousePos			{ true },
 	cameraSpeedExponent		{ 2.f },
-	cameraSpeed				{ std::exp(cameraSpeedExponent) }
+	cameraSpeed				{ std::exp(cameraSpeedExponent) },
+	focusOffsetDistance		{ 5.0f },
+	focusHeightOffset		{ 2.0f }
 {
 	// Subscribe to the input manager that the camera system is interested in 
 	// any input related to CameraMovement
@@ -204,6 +206,29 @@ void CameraSystem::startSimulation() {
 void CameraSystem::endSimulation() {
 	isSimulationActive = false;
 
+	editorCamera.setPos(levelEditorCamera.position);
+	editorCamera.setFront(glm::normalize(levelEditorCamera.front));
+	editorCamera.recalculateViewMatrix();
+	editorCamera.recalculateProjectionMatrix();
+}
+
+void CameraSystem::focusOnPosition(glm::vec3 const& targetPosition) {
+	// Position camera behind and above the target using configurable offsets
+	glm::vec3 offset = glm::vec3(0.0f, focusHeightOffset, focusOffsetDistance);
+	levelEditorCamera.position = targetPosition + offset;
+
+	// Calculate direction from camera to target
+	glm::vec3 direction = glm::normalize(targetPosition - levelEditorCamera.position);
+	levelEditorCamera.front = direction;
+
+	// Calculate yaw and pitch from direction vector
+	// yaw: angle around y-axis (horizontal rotation)
+	levelEditorCamera.yaw = Degree{ glm::degrees(std::atan2(direction.z, direction.x)) };
+
+	// pitch: angle up/down
+	levelEditorCamera.pitch = Degree{ glm::degrees(std::asin(direction.y)) };
+
+	// Update the editor camera immediately
 	editorCamera.setPos(levelEditorCamera.position);
 	editorCamera.setFront(glm::normalize(levelEditorCamera.front));
 	editorCamera.recalculateViewMatrix();
