@@ -45,10 +45,10 @@ public:
 	ENGINE_DLL_API void stopSimulation();
 	ENGINE_DLL_API void setupSimulation();
 	ENGINE_DLL_API bool isInSimulationMode() const;
-
 	
 	ENGINE_DLL_API void SystemsOnLoad(); //on scene load, some system might want to reload/unload/init stuff
 
+	ENGINE_DLL_API float getDeltaTime() const;
 
 public:
 	ENGINE_DLL_API int getGameWidth() const;

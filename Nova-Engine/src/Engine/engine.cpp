@@ -70,8 +70,6 @@ void Engine::update(float dt) {
 	renderer.update(dt);
 
 	resourceManager.update();
-	
-
 }
 
 void Engine::setupSimulation() {
@@ -184,4 +182,8 @@ void Engine::SystemsOnLoad()
 {
 	this->navigationSystem.initNavMeshSystems();
 	this->physicsManager.systemInitialise();
+}
+
+float Engine::getDeltaTime() const {
+	return window.getDeltaTime();
 }

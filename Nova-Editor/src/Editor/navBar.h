@@ -18,7 +18,7 @@ public:
 	NavBar(Editor& editor);
 	void update();
 
-private:
+public:
 	Engine& engine;
 
 	Console console;

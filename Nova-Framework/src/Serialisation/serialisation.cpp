@@ -71,7 +71,7 @@ namespace Serialiser {
 
 			outputFile << std::setw(4) << config << std::endl;
 		}
-		catch (const std::exception& e) {}
+		catch (const std::exception&) {}
 	}
 
 	GameConfig deserialiseGameConfig(const char* fileName) {
@@ -112,7 +112,7 @@ namespace Serialiser {
 				}
 			}
 		}
-		catch (const std::exception& e) {}
+		catch (const std::exception&) {}
 
 		return gameConfig;
 	}

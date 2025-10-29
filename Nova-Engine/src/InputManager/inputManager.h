@@ -25,8 +25,6 @@ public:
 	ENGINE_DLL_API InputManager& operator=(InputManager&& other)		= delete;
 
 public:
-	void update();
-public:
 	// Systems can call this member function to observe to a certain InputEvent, providing the input manager with a callback.
 	// Whenever this InputEvent happens, the callback is involved with the InputEvent's data.
 	template <typename InputEvent>
@@ -61,8 +59,9 @@ private:
 	InputMod getInputMod(int mod) const;
 
 public:
+	// Input manager internally calculates mouse delta x and delta y, by keeping track of the last mouseX and mouseY.
 	glm::vec2 mousePosition;
-	float scrollOffsetY;
+	glm::vec2 lastMousePosition;
 
 private:
 	// maps Input Event to all interested observers.

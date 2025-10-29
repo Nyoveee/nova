@@ -102,13 +102,13 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		
 	inputManager.subscribe<ToggleEditorControl>(
 		[&](ToggleEditorControl) {
-			if (!inSimulationMode && editorViewPort.isHoveringOver) {
+			if (editorViewPort.isHoveringOver) {
 				toggleViewPortControl(true);
 				ImGui::SetWindowFocus(nullptr);
 			}
 		},
 		[&](ToggleEditorControl) {
-			if(!inSimulationMode) toggleViewPortControl(false);
+			if(isControllingInViewPort) toggleViewPortControl(false);
 		}
 	);
 
@@ -120,7 +120,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<DeleteSelectedEntity>(
 		[&](DeleteSelectedEntity) {
-			if (!editorViewPort.isHoveringOver || !editorViewPort.isActive) {
+			if ((!editorViewPort.isHoveringOver || !editorViewPort.isActive) && !navBar.hierarchyList.isHovering) {
 				return;
 			}
 
@@ -352,7 +352,7 @@ void Editor::handleEntitySelection() {
 	}
 
 	// not actually trying to deselect anything, am using imguizmo controls.
-	if (ImGuizmo::IsUsing() || ImGuizmo::IsOver()) {
+	if (selectedEntities.size() && (ImGuizmo::IsUsing() || ImGuizmo::IsOver())) {
 		return;
 	}
 

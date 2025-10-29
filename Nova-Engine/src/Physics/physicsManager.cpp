@@ -188,16 +188,13 @@ void PhysicsManager::systemInitialise()
 {
 	for (auto&& [entityId, transform, rigidbody, boxCollider] : registry.view<Transform, Rigidbody, BoxCollider>().each()) {
 
-		//due to the listener system it is possible the the objects have already been created on scene create 
+		// due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
 		if (rigidbody.bodyId == JPH::BodyID{})
-		initialiseBodyComponent(entityId);
-
+			initialiseBodyComponent(entityId, false);
 	}
 
 	physicsSystem.OptimizeBroadPhase();
-
-
 }
 
 void PhysicsManager::clear() {
@@ -213,23 +210,25 @@ void PhysicsManager::clear() {
 void PhysicsManager::updatePhysics(float dt) {
 	ZoneScoped;
 
+	//Update transform bodies have been moved outside to another function
+#if 0
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
 	// =============================================================
-	//for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
-	//	if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
-	//		continue;
-	//	}
+	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
+			continue;
+		}
 
-	//	// our engine doesnt move static objects.
-	//	if (rigidbody.motionType == JPH::EMotionType::Static) {
-	//		continue;
-	//	}
+		// our engine doesnt move static objects.
+		if (rigidbody.motionType == JPH::EMotionType::Static) {
+			continue;
+		}
 
-	//	bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
-	//}
-	//Update transform bodies have been moved outside to another function
+		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
+	}
+#endif
 
 	// run physics simulation.
 	physicsSystem.Update(dt, 1, &temp_allocator, &job_system);	
@@ -252,7 +251,7 @@ void PhysicsManager::updatePhysics(float dt) {
 		JPH::Quat rotation;
 
 		bodyInterface.GetPositionAndRotation(rigidbody.bodyId, pos, rotation);
-		transform.position = toGlmVec3(pos);
+		transform.position = toGlmVec3(pos) - rigidbody.offset;
 		transform.rotation = toGlmQuat(rotation);
 	}
 
@@ -313,28 +312,49 @@ void PhysicsManager::updateTransformBodies()
 		entt::entity entity = transformUpdateStack.top();
 		transformUpdateStack.pop();
 
-		auto&& [transform , rigidbody ] = registry.get<Transform, Rigidbody>(entity);
+		auto [transform, rigidbody] = registry.try_get<Transform, Rigidbody>(entity);
 
-		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
+		if (!transform || !rigidbody || rigidbody->bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
 
-		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
+		bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
 	}
 
-	//can optmise later to listen to patch events
+	//can optimise later to listen to patch events
 	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each())
 	{
 		auto&& [boxCollider, sphereCollider] = registry.try_get<BoxCollider, SphereCollider>(entityId);
-		if (boxCollider != nullptr)
+
+		JPH::RefConst<JPH::Shape> shape = bodyInterface.GetShape(rigidbody.bodyId);
+
+		JPH::EActivation type;
+		if (bodyInterface.IsActive(rigidbody.bodyId))
 		{
-			//auto shape  = bodyInterface.GetShape(rigidbody.bodyId);
-			//shape->shape
+			type = JPH::EActivation::Activate;
+		}
+		else
+		{
+			type = JPH::EActivation::DontActivate;
 		}
 
+		if (boxCollider != nullptr)
+		{
+			auto* result = new JPH::ScaledShape(box, toJPHVec3(boxCollider->shapeScale));
+			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+			rigidbody.offset = boxCollider->offset;
+			transformUpdateStack.push(entityId);
+
+		}
+
+		else if (sphereCollider != nullptr)
+		{
+			auto* result = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
+			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+			rigidbody.offset = sphereCollider->offset;
+			transformUpdateStack.push(entityId);
+		}
 	}
-
-
 }
 
 void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
@@ -344,7 +364,7 @@ void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
 		return;
 	}
 
-	initialiseBodyComponent(entityID);
+	initialiseBodyComponent(entityID, true);
 }
 
 void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entityID)
@@ -398,45 +418,64 @@ void PhysicsManager::createPrimitiveShapes() {
 	sphere = sphereSettings.Create().Get();
 }
 
-void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID)
+void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling)
 {
-
-	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider] = registry.try_get<Transform,MeshRenderer,Rigidbody, BoxCollider, SphereCollider>(entityID);
+	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, BoxCollider, SphereCollider>(entityID);
+	
 	// Create and add body based on entity's component.
 	JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidBody->layer);
-
 	JPH::ScaledShape* shape = nullptr;
-
 	glm::vec3 scale;
 
-	//if have model use model scale, else init without model
-	if (meshRenderer != nullptr)
+	if (automateColliderScaling)
 	{
-		 auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+		//if have model use model scale, else init without model
+		if (meshRenderer != nullptr)
+		{
+			auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+			scale = glm::vec3(1.f * model->maxDimension, 1.f * model->maxDimension, 1.f * model->maxDimension);
 
-		 if (!model || model->maxDimension == 0) {
-			 scale = transform->scale;
-		 }
-		 else {
-			 scale = glm::vec3(1.f * model->maxDimension, 1.f * model->maxDimension, 1.f * model->maxDimension);
-		 }
+			if (!model || model->maxDimension == 0)	{
+				scale = transform->scale;
+			}
+			 else {
+				 scale = glm::vec3(1.f * model->maxDimension, 1.f * model->maxDimension, 1.f * model->maxDimension);
+			 }
+		}
+		else
+		{
+			scale = transform->scale;
+		}
 	}
-	else
-	{
-		scale = transform->scale;
-	}
 
-
-	//Alright here we go have to list down all the possible collider type cause we dk which one is it. :P, 
+	// Alright here we go have to list down all the possible collider type cause we dk which one is it. :P, 
 	// we only support one type of collider per entt now i think
 	if (boxCollider != nullptr)
 	{
-		shape = new JPH::ScaledShape(box, toJPHVec3(glm::vec3(scale * boxCollider->scaleMultiplier) ) );
+		if (automateColliderScaling)
+		{
+			shape = new JPH::ScaledShape(box, box->MakeScaleValid(toJPHVec3(scale)));
+		}
+		else
+		{
+			shape = new JPH::ScaledShape(box, toJPHVec3(glm::vec3(boxCollider->shapeScale) ));
+		}
+
+		rigidBody->offset = boxCollider->offset;
 	}
 
-	if (sphereCollider != nullptr)
+	else if (sphereCollider != nullptr)
 	{
-		shape = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(scale * sphereCollider->radius) ));
+		if (automateColliderScaling)
+		{
+			shape = new JPH::ScaledShape(sphere, sphere->MakeScaleValid(toJPHVec3(scale)) );
+		}
+		else
+		{
+			shape = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
+		}
+		
+		rigidBody->offset = sphereCollider->offset;
 	}
 
 
@@ -465,16 +504,8 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID)
 
 }
 
-bool PhysicsManager::hasRequiredPhysicsComponents(entt::entity const& entityID)
-{
-	bool check = false;
-
-	if (registry.any_of<BoxCollider, SphereCollider>(entityID) && registry.all_of<Rigidbody>(entityID))
-	{
-		check = true;
-	}
-
-	return check;
+bool PhysicsManager::hasRequiredPhysicsComponents(entt::entity const& entityID) {
+	return registry.any_of<BoxCollider, SphereCollider>(entityID) && registry.all_of<Rigidbody>(entityID);
 }
 
 void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {

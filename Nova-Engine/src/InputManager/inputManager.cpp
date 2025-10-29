@@ -7,6 +7,7 @@
 
 InputManager::InputManager() :
 	mousePosition		{},
+	lastMousePosition	{},
 	currentObserverId	{ 0 }
 {
 	mainKeyBindMapping();
@@ -15,15 +16,20 @@ InputManager::InputManager() :
 void InputManager::handleMouseMovement(Window& window, double xPosIn, double yPosIn) {
 	(void) window;
 
-	mousePosition = { xPosIn,yPosIn };
-	broadcast(MousePosition{ xPosIn, yPosIn }, InputType::Press);
+	lastMousePosition = mousePosition;
+	mousePosition = { xPosIn, yPosIn };
+
+	glm::vec2 deltaMousePosition = lastMousePosition - glm::vec2{ xPosIn, yPosIn };
+
+	broadcast(MousePosition{ -deltaMousePosition.x, deltaMousePosition.y }, InputType::Press);
 }
 
 void InputManager::handleScroll(Window& window, double xOffset, double yOffset) {
 	(void) window;
 	(void) xOffset;
-	scrollOffsetY = static_cast<float>(yOffset);
+
 	broadcast(AdjustCameraSpeed{ yOffset });
+	broadcast(Scroll{ yOffset });
 }
 
 void InputManager::handleKeyboardInput(Window& window, int key, int scancode, int action, int mods) {
@@ -52,10 +58,6 @@ void InputManager::handleKeyInput(GLFWInput input, InputType inputType, InputMod
 			keyBind->broadcast(inputType);
 		}
 	}
-}
-void InputManager::update()
-{
-	scrollOffsetY = 0;
 }
 
 InputMod InputManager::getInputMod(int mod) const {

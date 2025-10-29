@@ -3,7 +3,7 @@
 // Editor will automatically rename and recompile this file.
 class PlayerController : Script
 {
-    public float cameraSensitivity = 0.1f;
+    public float cameraSensitivity = 0.03f;
     
     [SerializableField]
     private Transform_? cameraObject = null;
@@ -11,25 +11,26 @@ class PlayerController : Script
     protected override void init()
     {
         CameraAPI.LockMouse();
+        Input.MouseMoveCallback(CameraMovement);
     }
 
     // This function is invoked every fixed update.
     protected override void update()
-    {
-        CameraMovement();   
-    }
-    private void CameraMovement()
-    {
+    {}
 
+    private void CameraMovement(float deltaMouseX, float deltaMouseY)
+    {
         if (cameraObject != null)
         {
             // x is pitch, y is yaw
             Vector3 euler = cameraObject.eulerAngles;
 
-            euler.y -= cameraSensitivity * Input.GetMouseAxis(MouseAxis.Horizontal);
-            euler.x -= cameraSensitivity * Input.GetMouseAxis(MouseAxis.Vertical);
-            euler.x = Mathf.Clamp(euler.x, -89.0f * Mathf.Deg2Rad, 89.0f * Mathf.Deg2Rad);
+            euler.x -= cameraSensitivity * deltaMouseY * Time.V_DeltaTime();
+            euler.y -= cameraSensitivity * deltaMouseX * Time.V_DeltaTime();
+            euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
+            euler.y = Mathf.Clamp(euler.y, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
 
+            Debug.Print(euler.x);
             cameraObject.eulerAngles = euler;  
 #if false
             Vector3 front = cameraObject.front;

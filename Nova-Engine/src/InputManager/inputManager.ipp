@@ -55,7 +55,14 @@ void InputManager::broadcast(InputEvent data, InputType inputType) {
 	}
 
 	for (ObserverID id : iterator->second) {
-		auto& iObserver = observerIds.at(id);
+		auto observerIterator = observerIds.find(id);
+
+		// recently deleted
+		if (observerIterator == observerIds.end()) {
+			continue;
+		}
+
+		auto&& [_, iObserver] = *observerIterator;
 
 		// Dynamic cast my observer interface to get my actual object..
 		Observer<InputEvent>* observer = dynamic_cast<Observer<InputEvent>*>(iObserver.get());

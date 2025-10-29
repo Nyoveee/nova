@@ -56,7 +56,7 @@ void EditorConfigUI::loadConfig() {
          //   std::cout << "Config file not found: " << configPath << std::endl;
         }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception&) {
      //   std::cout << "Error loading config: " << e.what() << std::endl;
         fontSize = 13;
     }
@@ -73,7 +73,7 @@ void EditorConfigUI::saveConfig() {
                 config = json::parse(inputFile);
               //  std::cout << "Loaded existing config file" << std::endl;
             }
-            catch (const std::exception& e) {
+            catch (const std::exception&) {
                // std::cout << "Error parsing existing config, creating new one: " << e.what() << std::endl;
             }
         }
@@ -97,7 +97,7 @@ void EditorConfigUI::saveConfig() {
           //  std::cout << "Failed to open file for writing: " << configPath << std::endl;
         }
     }
-    catch (const std::exception& e) {
+    catch (const std::exception&) {
        // std::cout << "Exception in saveConfig: " << e.what() << std::endl;
     }
 }

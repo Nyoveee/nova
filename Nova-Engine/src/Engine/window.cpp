@@ -178,7 +178,7 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 				break;
 			}
 		}	
-		if(numOfFixedSteps != 0) inputManager.update();
+
 		// executes a normal update
 		updateFunc(static_cast<float>(deltaTime));
 
@@ -257,6 +257,10 @@ glm::vec2 Window::getClipSpacePos() const {
 	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
 
 	return mouseRelativeToViewPort * 2.f - 1.f;
+}
+
+float Window::getDeltaTime() const {
+	return static_cast<float>(deltaTime);
 }
 
 namespace {

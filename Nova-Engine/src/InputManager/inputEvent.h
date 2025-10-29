@@ -81,6 +81,11 @@ struct AdjustCameraSpeed {
 	double value;
 };
 
+// General purpose scroll event.
+struct Scroll {
+	double value;
+};
+
 enum class CopyEntity {
 	Copy
 };

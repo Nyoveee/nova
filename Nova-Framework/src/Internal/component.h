@@ -222,23 +222,32 @@ struct Rigidbody {
 		initialVelocity,
 		mass
 	)
+
+	// when this rigidbody is instianted, this offset property is set based on whatever collider's offset.
+	// runtime only and is not de/serialised.
+	glm::vec3 offset;
 };
 
 struct BoxCollider {
-	glm::vec3 scaleMultiplier	{ 1.f, 1.f, 1.f };
-	bool scaleWithTransform		= true;
+	glm::vec3 shapeScale	{ 1.f, 1.f, 1.f };
+	glm::vec3 offset		{ 0.f, 0.f, 0.f };
+
+	bool scaleWithTransform	= true;
 
 	REFLECTABLE(
-		scaleMultiplier,
+		shapeScale,
+		offset,
 		scaleWithTransform
 	)
 };
 
 struct SphereCollider {
-	float radius {1.f};
+	float		radius	{ 1.f };
+	glm::vec3	offset	{ 0.f, 0.f, 0.f };
 
 	REFLECTABLE(
-		radius
+		radius,
+		offset
 	)
 };
 

@@ -139,9 +139,6 @@ void TransformationSystem::update() {
 			goto endOfLoop;
 		}
 
-
-
-
 		if (transform.worldHasChanged) {
 
 			//Update events, try to save old data for more tweking

@@ -94,6 +94,8 @@ void Hierarchy::update() {
 	// Show all game objects..
 	ImGui::Begin(ICON_FA_LIST " Hierarchy");
 
+	isHovering = ImGui::IsWindowHovered();
+
 	if (ecs.sceneManager.hasNoSceneSelected()) {
 		ImGui::Text("No scene loaded.");
 		ImGui::TextWrapped("Create a new scene by dragging a scene from the content browser to the viewport!");

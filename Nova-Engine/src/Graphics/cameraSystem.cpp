@@ -5,9 +5,11 @@
 #include "renderer.h"
 #include "InputManager/inputManager.h"
 #include "Profiling.h"
+
 namespace {
 	constexpr float sensitivity = 0.1f;		// change this value to your liking
 }
+
 CameraSystem::CameraSystem(Engine& engine) :
 	engine					{ engine },
 	isMovingDown			{},
@@ -17,8 +19,6 @@ CameraSystem::CameraSystem(Engine& engine) :
 	isMovingLeft			{},
 	isMovingRight			{},
 	isSimulationActive		{},
-	lastMouseX				{},
-	lastMouseY				{},
 	editorCamera			{ engine.renderer.getEditorCamera() },
 	gameCamera				{ engine.renderer.getGameCamera() },
 	levelEditorCamera		{ { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, -90.f, 0.f },
@@ -55,13 +55,8 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 	engine.inputManager.subscribe<MousePosition>(
 		[&](MousePosition mousePos) {
-			if (toResetMousePos) {
-				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
-				toResetMousePos = false;
-			}
-			calculateMouseOffset(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 			if (isInControl) {
-				calculateEulerAngle();
+				calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 			}
 		}
 	);
@@ -81,7 +76,6 @@ CameraSystem::CameraSystem(Engine& engine) :
 void CameraSystem::update(float dt) {
 	ZoneScoped;
 
-	xOffset = yOffset = 0;
 	for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
 	{
 		if (cameraComponent.camStatus)
@@ -165,11 +159,6 @@ void CameraSystem::setMovement(CameraMovement movement, bool toMove) {
 	}
 }
 
-void CameraSystem::setLastMouse(float mouseX, float mouseY) {
-	lastMouseX = mouseX;
-	lastMouseY = mouseY;
-}
-
 float CameraSystem::getCameraSpeed() const {
 	return cameraSpeed;
 }
@@ -178,27 +167,9 @@ CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() cons
     return levelEditorCamera;
 }
 
-// Unity Definition: mouse delta * sensitivity, which is just the offset
-float CameraSystem::getMouseAxisX(){
-	return xOffset;
-}
-
-float CameraSystem::getMouseAxisY(){
-	return yOffset;
-}
-void CameraSystem::calculateMouseOffset(float mouseX, float mouseY)
-{
-	xOffset = mouseX - lastMouseX;
-	yOffset = lastMouseY - mouseY; // reversed since y-coordinates go from bottom to top
-	lastMouseX = mouseX;
-	lastMouseY = mouseY;
-
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
-}
-void CameraSystem::calculateEulerAngle() {
-	levelEditorCamera.yaw += xOffset;
-	levelEditorCamera.pitch += yOffset;
+void CameraSystem::calculateEulerAngle(float xOffset, float yOffset) {
+	levelEditorCamera.yaw += xOffset * sensitivity;
+	levelEditorCamera.pitch += yOffset * sensitivity;
 
 	// make sure that when pitch is out of bounds, screen doesn't get flipped
 	levelEditorCamera.pitch = std::clamp(static_cast<float>(levelEditorCamera.pitch), -89.0f, 89.0f);

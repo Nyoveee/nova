@@ -280,6 +280,9 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 			debugRenderParticleEmissionShape();
 		}
 
+		// after debug rendering.. bind main position VBO back to VAO..
+		glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
+
 		renderObjectIds();
 
 	// ===============================================

@@ -32,6 +32,7 @@
 public ref class Time {
 public:
 	static float V_FixedDeltaTime() { return 1 / 60.f; } // Replace with config
+	static float V_DeltaTime()		{ return Interface::engine->getDeltaTime(); } // Replace with config
 };
 
 public ref class Debug {
@@ -57,19 +58,34 @@ public:
 		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key)) };
 		observerIds.Add(observerId);
 	}
+
+	static void MouseMoveCallback(MouseEventCallback^ callback) {
+		std::size_t observerId{ Interface::engine->inputManager.subscribe<MousePosition>(CreateMouseCallback(callback)) };
+		observerIds.Add(observerId);
+	}
+
+	static void ScrollCallback(ScrollEventCallback^ callback) {
+		std::size_t observerId{ Interface::engine->inputManager.subscribe<Scroll>(CreateScrollCallback(callback)) };
+		observerIds.Add(observerId);
+	}
+
+#if 0
 	static float GetMouseAxis(MouseAxis axis) {
 		if (axis == MouseAxis::Horizontal) 
 			return Interface::engine->cameraSystem.getMouseAxisX();
 		return Interface::engine->cameraSystem.getMouseAxisY();
 	}
+
 	static float GetMouseAxisRaw(MouseAxis axis) {
 		float output{ GetMouseAxis(axis) };
 		if (output > 0) return 1;
 		if (output < 0) return -1;
 		return 0.f;
 	}
-	static Vector2 V_MousePosition()	{ return Vector2(Interface::engine->inputManager.mousePosition); }
+
 	static float V_ScrollOffsetY()		{ return Interface::engine->inputManager.scrollOffsetY; }
+#endif
+	static Vector2 V_MousePosition()	{ return Vector2(Interface::engine->inputManager.mousePosition); }
 
 internal:
 	static void ClearAllKeyMapping() {

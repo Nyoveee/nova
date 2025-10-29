@@ -22,7 +22,6 @@ public:
 public:
 	void update();
 	void displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback);
-	//void overrideProperties(int index);
 
 public:
 	template <typename ...Components>
@@ -37,6 +36,12 @@ public:
 	ResourceManager& resourceManager;
 	AssetManager& assetManager;
 	AudioSystem& audioSystem;
+
+public:
+	std::string componentSearchQuery;
+
+	std::string uppercaseSearchQuery;
+	std::string uppercaseTypeName;
 };
 
 #include "componentInspector.ipp"

@@ -57,8 +57,9 @@ public:
 
 private:
 	void createPrimitiveShapes();
-	void initialiseBodyComponent(entt::entity const& entityID);
+	void initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling);
 	bool hasRequiredPhysicsComponents(entt::entity const& entityID);
+
 
 private:
 	// we use a placeholder data member to invoke certain functions before the construction of the following Jolt data members.

@@ -32,18 +32,13 @@ public:
 	void update(float dt);
 
 	void setMovement(CameraMovement movement, bool toMove);
-	void setLastMouse(float mouseX, float mouseY);
-	void calculateMouseOffset(float mouseX, float mouseY);
-	void calculateEulerAngle();
+	void calculateEulerAngle(float xOffset, float yOffset);
 
 	void startSimulation();
 	void endSimulation();
 
 	ENGINE_DLL_API float getCameraSpeed() const;
 	ENGINE_DLL_API LevelEditorCamera const& getLevelEditorCamera() const;
-
-	ENGINE_DLL_API float getMouseAxisX();
-	ENGINE_DLL_API float getMouseAxisY();
 
 public:
 	// the formula of camera speed is e^x, to appropriately scale speed. 
@@ -69,10 +64,4 @@ private:
 	bool isMovingBack;
 	bool isMovingLeft;
 	bool isMovingRight;
-
-	float lastMouseX;
-	float lastMouseY;
-
-	float xOffset;
-	float yOffset;
 };

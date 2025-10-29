@@ -54,6 +54,7 @@ public:
 	ENGINE_DLL_API GLFWwindow* getGLFWwindow() const;
 	ENGINE_DLL_API void toggleFullScreen();
 	ENGINE_DLL_API float fps() const;
+	ENGINE_DLL_API float getDeltaTime() const;
 
 	ENGINE_DLL_API void setGameViewPort(GameViewPort gameViewPort);
 	ENGINE_DLL_API glm::vec2 getClipSpacePos() const;
