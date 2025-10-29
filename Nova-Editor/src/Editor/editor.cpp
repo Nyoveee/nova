@@ -226,16 +226,16 @@ void Editor::main(float dt) {
 	handleEntityValidity();
 
 	//
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
-	navigationWindow.update();
-	animationTimeLine.update();
-	animatorController.update();
+	//navigationWindow.update();
+	//animationTimeLine.update();
+	//animatorController.update();
 	
 	handleEntityHovering();
 	updateMaterialMapping();

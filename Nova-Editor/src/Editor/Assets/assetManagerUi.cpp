@@ -192,7 +192,7 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 void AssetManagerUI::displayFolderContent(FolderID folderId) {
 	// This displays a table of asset content
 	// We need to calculate the number of columns based on a fixed size of the asset thumbnail.
-
+	
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. attempting to display invalid folder id.");
 
