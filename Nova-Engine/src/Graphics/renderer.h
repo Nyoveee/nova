@@ -148,7 +148,7 @@ private:
 
 	// set up the material's chosen shader and supply the proper uniforms..
 	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
-	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform);
+	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale = 1.f);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
 	void renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType);

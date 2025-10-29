@@ -9,75 +9,16 @@
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 3485249974091497493
+                    "nextNode": 3393788201250062337
                 }
             ]
         },
-        "2481782887480983553": {
-            "animation": 587869709114884109,
-            "id": 2481782887480983553,
-            "name": "Standing Melee Attack Horizontal_Skin",
+        "3393788201250062337": {
+            "animation": 10496052774495485969,
+            "id": 3393788201250062337,
+            "name": "Standing React Large From Left_Skin",
             "toLoop": true,
-            "transitions": [
-                {
-                    "conditions": null,
-                    "nextNode": 3485249974091497493
-                }
-            ]
-        },
-        "3485249974091497493": {
-            "animation": 12693545507486793753,
-            "id": 3485249974091497493,
-            "name": "Unarmed Idle_Skin",
-            "toLoop": false,
-            "transitions": [
-                {
-                    "conditions": [
-                        {
-                            "check": "Greater",
-                            "name": "GO GO GO GO",
-                            "value": {
-                                "__variant_type": 2,
-                                "__variant_value": true
-                            }
-                        },
-                        {
-                            "check": "Greater",
-                            "name": "speed",
-                            "value": {
-                                "__variant_type": 0,
-                                "__variant_value": 5
-                            }
-                        }
-                    ],
-                    "nextNode": 9826318249429106707
-                },
-                {
-                    "conditions": [
-                        {
-                            "check": "Greater",
-                            "name": "speed",
-                            "value": {
-                                "__variant_type": 0,
-                                "__variant_value": 6
-                            }
-                        }
-                    ],
-                    "nextNode": 2481782887480983553
-                }
-            ]
-        },
-        "9826318249429106707": {
-            "animation": 13270006259790217237,
-            "id": 9826318249429106707,
-            "name": "Standing Walk Forward_Skin",
-            "toLoop": false,
-            "transitions": [
-                {
-                    "conditions": null,
-                    "nextNode": 3485249974091497493
-                }
-            ]
+            "transitions": null
         }
     },
     "parameters": [

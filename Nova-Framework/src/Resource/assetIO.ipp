@@ -71,6 +71,17 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 				assetInfo.fontSize = DEFAULT_FONT_SIZE;
 			}
 		}
+		else if constexpr (std::same_as<T, Model>) {
+			std::string scaleString;
+			std::getline(descriptorFile, scaleString);
+
+			try {
+				assetInfo.scale = static_cast<float>(std::stof(scaleString));
+			}
+			catch (std::exception const&) {
+				assetInfo.scale = 1.f;
+			}
+		}
 
 		// ============================
 		return assetInfo;
@@ -115,6 +126,9 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 	}
 	else if constexpr (std::same_as<T, Font>) {
 		descriptorFile << DEFAULT_FONT_SIZE << '\n';
+	}
+	else if constexpr (std::same_as<T, Model>) {
+		descriptorFile << 1.f << '\n';
 	}
 
 	// ============================

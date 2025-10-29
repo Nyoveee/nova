@@ -24,7 +24,7 @@ struct Bone {
 	std::string name;
 	glm::mat4x4 offsetMatrix;
 
-	// containing data related to the bone hirerarchy.
+	// containing data related to the bone hierarchy.
 	BoneIndex parentBone = NO_BONE;
 	std::vector<BoneIndex> boneChildrens{};
 
@@ -37,7 +37,7 @@ struct Bone {
 };
 
 /*
-	Model Nodes represents an Assimp node. It is part of the node hirerachy, and contain
+	Model Nodes represents an Assimp node. It is part of the node hierarchy, and contain
 	important data like name, transformation matrix.
 
 	A ModelNode may be a bone. In that case, the isBone flag is set to true, and it contains an index to query the bone

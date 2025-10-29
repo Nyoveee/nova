@@ -319,6 +319,9 @@ void AssetManager::serialiseDescriptor(ResourceID id) {
 	else if constexpr (std::same_as<T, Font>) {
 		descriptorFile << assetInfo->fontSize << '\n';
 	}
+	else if constexpr (std::same_as<T, Model>) {
+		descriptorFile << assetInfo->scale << '\n';
+	}
 
 	// ============================
 	Logger::info("Successfully serialised descriptor file for {}", assetInfo->filepath.string);

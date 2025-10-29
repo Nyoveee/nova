@@ -46,7 +46,7 @@ namespace {
 	}
 }
 
-std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
+std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, float scale) {
 	constexpr unsigned int PostProcessingFlags {
 		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
 	};
@@ -85,12 +85,12 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 
 	std::optional<Skeleton> skeletonOpt;
 
-	// Process node hirerchy.. (if this model has bones..)
+	// Process node hierarchy.. (if this model has bones..)
 	if (bones.size()) {
 		Skeleton skeleton {};
 		skeleton.bones = std::move(bones);
 
-		// start recursingly processing..
+		// start recursive processing..
 		processNodeHierarchy(skeleton, scene->mRootNode, NO_NODE);
 		skeletonOpt = std::move(skeleton);
 	}
@@ -115,7 +115,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath) {
 	printBone(rootBone, 0);
 #endif
 
-	return {{ std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension }};
+	return {{ std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension * scale, scale }};
 }
 
 Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, std::vector<MaterialName>& materialNames) {

@@ -710,7 +710,7 @@ void Renderer::renderModels(Camera const& camera) {
 			}
 
 			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(camera, *material, transform);
+			CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
 
 			if (shader) {
 				// time to draw!
@@ -843,7 +843,7 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 			}
 
 			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(camera, *material, transform);
+			CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
 
 			if (shader) {
 				// time to draw!
@@ -1085,6 +1085,8 @@ void Renderer::renderObjectIds() {
 	constexpr GLfloat	initialDepth = 1.f;
 	constexpr GLint		initialStencilValue = 0;
 
+	glBindVertexArray(mainVAO);
+
 	glDisable(GL_BLEND);
 	glDisable(GL_DITHER);
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
@@ -1101,6 +1103,7 @@ void Renderer::renderObjectIds() {
 		}
 
 		objectIdShader.setMatrix("model", transform.modelMatrix);
+		objectIdShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
 		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 		
 		// Draw every mesh of a given model.
@@ -1126,6 +1129,7 @@ void Renderer::renderObjectIds() {
 		}
 
 		objectIdShader.setMatrix("model", transform.modelMatrix);
+		objectIdShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
 		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 
 		// Draw every mesh of a given model.
@@ -1165,7 +1169,7 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& material, Transform const& transform) {
+CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale) {
 	// ===========================================================================
 	// Retrieve the underlying shader for this material, and verify it's state.
 	// ===========================================================================
@@ -1201,9 +1205,12 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	case Pipeline::PBR:
 		shader.setVec3("cameraPos", camera.getPos());
 		shader.setMatrix("normalMatrix", transform.normalMatrix);
+
+		// both pipeline requires these to be set..
 		[[fallthrough]];
 	case Pipeline::Color:
 		shader.setMatrix("model", transform.modelMatrix);
+		shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
 		break;
 	default:
 		assert(false && "Unhandled pipeline.");

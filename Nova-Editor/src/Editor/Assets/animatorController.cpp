@@ -353,7 +353,9 @@ void AnimatorController::displaySelectedNodeProperties([[maybe_unused]] Animator
 		ImGui::SeparatorText(node.name.c_str());
 		// ImGui::Text("ID: %zu", static_cast<std::size_t>(edNodeId));
 
-		ImGui::Checkbox("To loop?", &node.toLoop);
+		if (nodeId != ENTRY_NODE) {
+			ImGui::Checkbox("To loop?", &node.toLoop);
+		}
 
 		if (node.transitions.empty()) {
 			ImGui::Text("No transition. Create a transition in the node graph!");
@@ -498,6 +500,25 @@ void AnimatorController::renderNodes(Animator& animator, Controller& controller)
 
 	int counter = 1;
 
+	// [data cleaning]
+	// we first iterate through every node and remove invalid nodes (nodes are invalid when they are pointing to an invalid animation..
+	for (auto it = controller.data.nodes.begin(); it != controller.data.nodes.end();) {
+		auto&& [id, node] = *it;
+		
+		// the only exception is the entry node.
+		if (id == ENTRY_NODE) {
+			++it;
+			continue;
+		}
+
+		if (resourceManager.isResource<Model>(node.animation)) {
+			++it;
+		}
+		else {
+			it = controller.data.nodes.erase(it);
+		}
+	}
+
 	// Render all nodes..
 	for (auto&& [id, node] : controller.data.nodes) {
 		ed::NodeId nodeId = static_cast<std::size_t>(id);
@@ -610,7 +631,6 @@ void AnimatorController::renderNodeLinks(Controller& controller) {
 			auto iterator = nodes.find(transition.nextNode);
 			auto&& [nextNodeId, nextNode] = *iterator;	// we have cleaned the data in the previous loop, safe deference.
 
-			// get the respective out and in pins..
 			auto&& [_, outPin] = nodeToPins.at(nodeId);
 			auto&& [inPin, __] = nodeToPins.at(nextNodeId);
 

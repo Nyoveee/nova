@@ -43,6 +43,7 @@ const int INVALID_BONE = -1;
 
 uniform mat4 model;
 uniform mat3 normalMatrix;
+uniform mat4 localScale;
 
 out VS_OUT {
     vec2 textureUnit;
@@ -71,7 +72,7 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
 
     // this is not a skinned mesh.
     if(isSkinnedMesh == 0) {
-        worldSpace.position = model * vec4(position, 1.0);
+        worldSpace.position = model * localScale * vec4(position, 1.0);
         worldSpace.normal   = normalize(normalMatrix * normal);
         worldSpace.tangent  = normalize(normalMatrix * tangent);
         return worldSpace;
@@ -101,7 +102,7 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
             localTangent += normalBoneTransform * tangent;
         }
 
-        worldSpace.position = model * localPosition;
+        worldSpace.position = model * localScale * localPosition;
         worldSpace.normal   = normalize(normalMatrix * localNormal);
         worldSpace.tangent  = normalize(normalMatrix * localTangent);
         return worldSpace;

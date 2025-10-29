@@ -29,18 +29,31 @@ private:
 	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
 
+	template <typename T>
+	void recompileResourceWithUpdatedDescriptor(AssetInfo<T> const& assetInfo);
+
 private:
 	ResourceID selectedResourceId;
 	Editor& editor;
 	AssetManager& assetManager;
 	ResourceManager& resourceManager;
 
+private:
+	// We make a copy of the following data members for temporarily editing..
+	// Once these fields are edited, we verify the validity of these fields are recompile asset when needed.
+	// ---------------------------------------------------
+	// Name applies for all resource
 	std::string selectedResourceName;
 	std::string selectedResourceStemCopy;
 	std::string selectedResourceExtension;
 
+	// Font
 	unsigned int copyOfSelectedFontSize = 1;
 
+	// Model
+	float copyOfScale = 1.f;
+
+	// ---------------------------------------------------
 	bool toSerialiseSelectedDescriptor;
 };
 

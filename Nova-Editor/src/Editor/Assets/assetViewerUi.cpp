@@ -123,7 +123,7 @@ void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::str
 
 	outputScriptFile << scriptContents;
 
-	Logger::info("Succesfully updated script name.");
+	Logger::info("Successfully updated script name.");
 }
 
 void AssetViewerUI::selectNewResourceId(ResourceID id) {
@@ -143,6 +143,10 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	if (resourceManager.isResource<Font>(id)) {
 		AssetInfo<Font>* fontDescriptorPtr = static_cast<AssetInfo<Font>*>(descriptorPtr);
 		copyOfSelectedFontSize = fontDescriptorPtr->fontSize;
+	}
+	else if (resourceManager.isResource<Model>(id)) {
+		AssetInfo<Model>* modelDescriptorPtr = static_cast<AssetInfo<Model>*>(descriptorPtr);
+		copyOfScale = modelDescriptorPtr->scale;
 	}
 }
 
@@ -339,19 +343,7 @@ void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == textureInfo.compression)) {
 				if (enumValue != textureInfo.compression) {
 					textureInfo.compression = enumValue;
-
-					// serialise immediately..
-					assetManager.serialiseDescriptor<Texture>(selectedResourceId);
-
-					// we make a copy of asset info, because the reference is getting invalidated..
-					AssetInfo<Texture> textureInfoCopy = textureInfo;
-
-					// we remove this old resource..
-					resourceManager.removeResource(selectedResourceId);
-					assetManager.removeResource(selectedResourceId);
-
-					// recompile.., will add to resource manager if compilation is successful.
-					assetManager.createResourceFile<Texture>(textureInfoCopy);
+					recompileResourceWithUpdatedDescriptor<Texture>(textureInfo);
 				}
 			}
 		}
@@ -386,6 +378,23 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 	}
 
 	if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::Text("Max dimension: %.2f", model->maxDimension);
+
+		ImGui::InputFloat("Scale", &copyOfScale);
+
+		if (ImGui::IsItemDeactivatedAfterEdit()) {
+			if (copyOfScale <= 0.f) {
+				// invalid scale..
+				copyOfScale = descriptor.scale;
+			}
+			else {
+				// we recompile..
+				descriptor.scale = copyOfScale;
+				recompileResourceWithUpdatedDescriptor<Model>(descriptor);
+				return;
+			}
+		}
+
 		ImGui::SeparatorText(std::string{ "Materials: " + std::to_string(model->materialNames.size()) }.c_str());
 
 		for (unsigned int i = 0; i < model->materialNames.size(); ++i) {
@@ -514,19 +523,7 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 		}
 
 		descriptor.fontSize = copyOfSelectedFontSize;
-		
-		// serialise immediately..
-		assetManager.serialiseDescriptor<Font>(selectedResourceId);
-
-		// we make a copy of asset info, descriptor the reference is getting invalidated..
-		AssetInfo<Font> fontInfoCopy = descriptor;
-
-		// we remove this old resource..
-		resourceManager.removeResource(selectedResourceId);
-		assetManager.removeResource(selectedResourceId);
-
-		// recompile.., will add to resource manager if compilation is successful.
-		assetManager.createResourceFile<Font>(fontInfoCopy);
+		recompileResourceWithUpdatedDescriptor<Font>(descriptor);
 	}
 }
 

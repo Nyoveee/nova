@@ -84,13 +84,15 @@ struct ModelData {
 	std::vector<Animation> animations;
 
 	float maxDimension;
+	float scale = 1.f;
 
 	REFLECTABLE(
 		meshes,
 		materialNames,
 		skeleton,
 		animations,
-		maxDimension
+		maxDimension,
+		scale
 	)
 };
 

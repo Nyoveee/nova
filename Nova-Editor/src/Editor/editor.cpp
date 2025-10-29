@@ -424,7 +424,6 @@ void Editor::handleEntitySelection() {
 		return;
 	}
 
-	toOutline(selectedEntities, false);
 	selectedEntities.clear();
 
 	if (hoveringEntity == entt::null) {
@@ -432,48 +431,8 @@ void Editor::handleEntitySelection() {
 	}
 
 	selectedEntities.push_back(hoveringEntity);
-	toOutline(selectedEntities, true);
 }
 
-// throw all your ooga booga testing code here code quality doesnt matter
-void Editor::sandboxWindow() {
-
-	ImGui::Begin("ooga booga sandbox area");
-
-	// if (ImGui::Button("SFX Audio Test"))
-	// {
-	// 	engine.audioSystem.playSFX( engine.audioSystem.getResourceId("SFX_AudioTest1"), 0.0f, 0.0f, 0.0f);
-	// }
-
-	// if (ImGui::Button("BGM Audio Test"))
-	// {
-	// 	engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest") );
-	// }
-
-	// if (ImGui::Button("BGM Audio Test 2"))
-	// {
-	// 	engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest2") );	
-	// }
-
-	// if (ImGui::Button("Stop Audio Test"))
-	// {
-	// 	// Stops all audio channels that has the same string ID as "SFX_AudioTest1"
-	// 	engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
-	// }
-
-	static bool wireFrameMode = false;
-
-	if (ImGui::Button("Wireframe mode.")) {
-		wireFrameMode = !wireFrameMode;
-		engine.renderer.enableWireframeMode(wireFrameMode);
-	}
-
-	if (ImGui::Button("Navigation Debug")) {
-		engine.navigationSystem.NavigationDebug();
-	}
-
-	ImGui::End();
-}
 
 void Editor::launchProfiler()
 {

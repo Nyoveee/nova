@@ -13,7 +13,7 @@ struct aiAnimation;
 
 class ModelLoader {
 public:
-	static std::optional<ModelData> loadModel(std::string const& filepath);
+	static std::optional<ModelData> loadModel(std::string const& filepath, float scale);
 
 private:
 	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, std::vector<MaterialName>& materialNames);

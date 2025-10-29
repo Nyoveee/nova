@@ -32,4 +32,10 @@ public:
 	std::vector<Animation> animations;
 
 	float maxDimension;
+	float scale;
+};
+
+template <>
+struct AssetInfo<Model> : public BasicAssetInfo {
+	float scale = 1.f;
 };

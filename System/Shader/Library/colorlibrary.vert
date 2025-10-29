@@ -26,6 +26,7 @@ const int MAX_NUMBER_OF_BONES = 4;
 const int INVALID_BONE = -1;
 
 uniform mat4 model;
+uniform mat4 localScale;
 
 out VS_OUT {
     out vec2 textureUnit;
@@ -37,7 +38,7 @@ out VS_OUT {
 vec4 calculateClipPosition(vec3 position) {
     // this is not a skinned mesh.
     if(isSkinnedMesh == 0) {
-        return projection * view * model * vec4(position, 1.0);
+        return projection * view * model * localScale * vec4(position, 1.0);
     }
     // this is a skinned mesh.
     else {
@@ -57,6 +58,6 @@ vec4 calculateClipPosition(vec3 position) {
             localPosition += (bonesFinalMatrices[boneId] * vec4(position, 1.0)) * boneWeight;
         }
 
-        return projection * view * model * localPosition;
+        return projection * view * model * localScale * localPosition;
     }
 }

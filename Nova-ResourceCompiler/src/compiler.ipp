@@ -15,7 +15,7 @@ int Compiler::compileAsset(AssetInfo<T> const& assetInfo, ResourceFilePath const
 		return compileTexture(resourceFilePath, assetInfo.filepath, assetInfo.compression);
 	}
 	else if constexpr (std::same_as<T, Model>) {
-		return compileModel(resourceFilePath, assetInfo.filepath);
+		return compileModel(resourceFilePath, assetInfo.filepath, assetInfo.scale);
 	}
 	else if constexpr (std::same_as<T, CubeMap>) {
 		return compileTexture(resourceFilePath, assetInfo.filepath, AssetInfo<Texture>::Compression::BC6H);

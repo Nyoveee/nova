@@ -9,6 +9,7 @@ layout(std140, binding = 0) uniform Camera {
 };
 
 uniform mat4 model;
+uniform mat4 localScale;
 
 out VS_OUT {
     out vec2 textureUnit;
@@ -16,6 +17,6 @@ out VS_OUT {
 
 void main()
 {  
-    gl_Position = projection * view * model * vec4(pos, 1.0);
+    gl_Position = projection * view * model * localScale * vec4(pos, 1.0);
     vsOut.textureUnit = textureUnit;
 }
