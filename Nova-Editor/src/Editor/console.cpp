@@ -12,6 +12,8 @@ void Console::update() {
     ImGui::SameLine();
     ImGui::Checkbox("Errors", &showErrors);
     ImGui::SameLine();
+    ImGui::Checkbox("Debug", &showDebug);
+    ImGui::SameLine();
     ImGui::Checkbox("Auto-scroll", &autoScroll);
 
     // Clear button
@@ -41,6 +43,10 @@ void Console::update() {
             shouldShow = showWarnings;
             color = ImVec4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
             break;
+        case LogLevel::Debug:
+            shouldShow = showDebug;
+            color = ImVec4(0.0f, 1.0f, 0.0f, 1.0f); // Green
+            break;
         case LogLevel::Error:
             shouldShow = showErrors;
             color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); // Red
@@ -54,6 +60,7 @@ void Console::update() {
             std::string levelStr;
             switch (entry.level) {
             case LogLevel::Info: levelStr = "[Info]"; break;
+            case LogLevel::Debug: levelStr = "[Debug]"; break;
             case LogLevel::Warning: levelStr = "[Warning]"; break;
             case LogLevel::Error: levelStr = "[Error]"; break;
             }

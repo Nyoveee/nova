@@ -108,8 +108,6 @@ void CustomShader::compile()
 	fShaderLibraryStream << "void main(){" << customShaderData.fShaderCode << "}";
 	std::string fragmentCode = fShaderLibraryStream.str();
 
-	std::cout << vertexCode << "\n========================\n";
-	std::cout << fragmentCode << "\n========================\n";
 	shader = Shader{ std::move(vertexCode), std::move(fragmentCode) };
 }
 

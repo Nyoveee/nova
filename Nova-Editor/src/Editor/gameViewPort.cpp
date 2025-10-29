@@ -77,5 +77,9 @@ void GameViewPort::update([[maybe_unused]] float dt) {
 	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
 #endif
 
+	if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0)) {
+		if (editor.isInSimulationMode()) engine.editorControlMouse(false);
+	}
+
 	ImGui::End();
 }

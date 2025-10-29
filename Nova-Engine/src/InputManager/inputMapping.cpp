@@ -43,7 +43,8 @@ void InputManager::mainKeyBindMapping() {
 	//
 	mapKeyBindInput(	GLFW_KEY_SPACE,				KeyType::Keyboard,		ToggleAnimate::Sentinel				);
 	//
-	//	Mapping controller controls..
+	//	Mapping editor mouse control request
 	//
-	mapKeyBindInput(	GLFW_KEY_SPACE,				KeyType::Keyboard,		ToCenterControllerView::Sentinel	);
+	mapKeyBindInput(	GLFW_KEY_ESCAPE,			KeyType::Keyboard,		EditorWantsToControlMouse::Sentinel	);
+
 }

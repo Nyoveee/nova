@@ -4,16 +4,19 @@
 #include <entt/entt.hpp>
 #include <json/json.hpp>
 #include "export.h"
+#include "type_alias.h"
+#include "config.h"
 
 using Json = nlohmann::json;
 
 namespace Serialiser {
 	FRAMEWORK_DLL_API void serialiseScene(entt::registry& registry, const char* fileName);
 
-	FRAMEWORK_DLL_API void serialiseGameConfig(const char* fileName, int gamewidth, int gameHeight);
 	FRAMEWORK_DLL_API void deserialiseScene(entt::registry& registry, const char* fileName);
 
-	FRAMEWORK_DLL_API void deserialiseGameConfig(const char* fileName, int& gameWidth, int& gameHeight, std::string& windowName);
+	FRAMEWORK_DLL_API GameConfig deserialiseGameConfig(const char* fileName);
+	FRAMEWORK_DLL_API void serialiseGameConfig(const char* fileName, GameConfig const& config);
+
 	FRAMEWORK_DLL_API void serialiseEditorConfig(const char* fileName, bool consol, bool debugUi, bool hierarchy, bool componentInspector);
 	FRAMEWORK_DLL_API void deserialiseEditorConfig(const char* fileName);
 

@@ -53,6 +53,8 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	navBar							{ *this },
 	animationTimeLine				{ *this },
 	animatorController				{ *this },
+	gameConfigUI					{ *this },
+	editorConfigUI					{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false },
@@ -100,13 +102,13 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		
 	inputManager.subscribe<ToggleEditorControl>(
 		[&](ToggleEditorControl) {
-			if (editorViewPort.isHoveringOver) {
+			if (!inSimulationMode && editorViewPort.isHoveringOver) {
 				toggleViewPortControl(true);
 				ImGui::SetWindowFocus(nullptr);
 			}
 		},
 		[&](ToggleEditorControl) {
-			toggleViewPortControl(false);
+			if(!inSimulationMode) toggleViewPortControl(false);
 		}
 	);
 
@@ -142,6 +144,12 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			if (!copiedEntityVec.empty() && !ImGui::IsAnyItemActive()) {
 				engine.ecs.copyVectorEntities<ALL_COMPONENTS>(copiedEntityVec);
 			}
+		}
+	);
+
+	inputManager.subscribe<EditorWantsToControlMouse>(
+		[&](EditorWantsToControlMouse) {
+			engine.editorControlMouse(true);
 		}
 	);
 
@@ -192,9 +200,7 @@ bool Editor::hasAnyEntitySelected() const {
 }
 
 void Editor::selectEntities(std::vector<entt::entity> entities) {
-	toOutline(selectedEntities, false);
 	selectedEntities = std::move(entities);
-	toOutline(selectedEntities, true);
 }
 
 std::vector<entt::entity> const& Editor::getSelectedEntities() const {
@@ -236,11 +242,10 @@ void Editor::main(float dt) {
 	navigationWindow.update();
 	animationTimeLine.update();
 	animatorController.update();
-	
-	handleEntityHovering();
-	updateMaterialMapping();
+	gameConfigUI.update();
+	editorConfigUI.update();
 
-	// sandboxWindow();
+	handleEntityHovering();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -255,78 +260,6 @@ void Editor::toggleViewPortControl(bool toControl) {
 		inputManager.broadcast<ToCameraControl>(ToCameraControl::Release);
 		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Enable);
 	}
-}
-
-void Editor::updateMaterialMapping() {
-#if 0
-	entt::registry& registry = engine.ecs.registry;
-
-	// Find all material names with the associated asset.
-	for (auto&& [entity, modelRenderer] : registry.view<MeshRenderer>().each()) {
-		auto [model, _] = resourceManager.getResource<Model>(modelRenderer.modelId);
-
-		if (!model) {
-			continue;
-		}
-
-		bool materialHasChanged = false;
-
-		// check if there is a match. if there is a mismatch, the material requirement
-		// of the mesh probably changed / changed mesh.
-		for (auto const& materialName : model->materialNames) {
-			auto iterator = modelRenderer.materials.find(materialName);
-
-			if (iterator == modelRenderer.materials.end()) {
-				materialHasChanged = true;
-				break;
-			}
-		}
-
-		if (!materialHasChanged) {
-			continue;
-		}
-
-		// lets reupdate our map.
-		modelRenderer.materials.clear();
-
-		for (auto const& materialName : model->materialNames) {
-			modelRenderer.materials[materialName];
-		}
-	}
-
-	// Find all material names with the associated asset.
-	for (auto&& [entity, skinnedModelRenderer] : registry.view<SkinnedMeshRenderer>().each()) {
-		auto [model, _] = resourceManager.getResource<Model>(skinnedModelRenderer.modelId);
-
-		if (!model) {
-			continue;
-		}
-
-		bool materialHasChanged = false;
-
-		// check if there is a match. if there is a mismatch, the material requirement
-		// of the mesh probably changed / changed mesh.
-		for (auto const& materialName : model->materialNames) {
-			auto iterator = skinnedModelRenderer.materials.find(materialName);
-
-			if (iterator == skinnedModelRenderer.materials.end()) {
-				materialHasChanged = true;
-				break;
-			}
-		}
-
-		if (!materialHasChanged) {
-			continue;
-		}
-
-		// lets reupdate our map.
-		skinnedModelRenderer.materials.clear();
-
-		for (auto const& materialName : model->materialNames) {
-			skinnedModelRenderer.materials[materialName];
-		}
-	}
-#endif
 }
 
 void Editor::handleEntityValidity() {
@@ -356,7 +289,6 @@ void Editor::handleEntityValidity() {
 	// deselect all entities.
 	if (foundInvalidSelectedEntity) {
 		selectEntities({}); // by selecting 0 entities haha
-		//ImGuizmo::
 	}
 }
 
@@ -466,11 +398,14 @@ void Editor::startSimulation() {
 		return; // already in simulation mode.
 	}
 
+	engine.editorControlMouse(false);
 	engine.startSimulation();
 
+#if 0
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+#endif
 
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
@@ -481,6 +416,7 @@ void Editor::stopSimulation() {
 		return; // already not in simulation mode.
 	}
 
+	engine.editorControlMouse(true);
 	engine.stopSimulation();
 	inSimulationMode = false;
 	isThereChangeInSimulationMode = true;

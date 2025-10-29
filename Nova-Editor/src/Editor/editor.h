@@ -25,6 +25,8 @@
 #include "navigationWindow.h"
 
 #include "type_concepts.h"
+#include "Configuration/editorConfigUI.h"
+#include "Configuration/gameConfigUI.h"
 
 using GLuint = unsigned int;
 
@@ -79,11 +81,9 @@ public:
 private:
 	void main(float dt);
 	void toggleViewPortControl(bool toControl);
-	void updateMaterialMapping();
 	void handleEntityValidity();
 	void handleEntityHovering();
 	void handleEntitySelection();
-	void sandboxWindow();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
@@ -105,6 +105,8 @@ public:
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
 	NavigationWindow navigationWindow;
+	GameConfigUI gameConfigUI;
+	EditorConfigUI editorConfigUI;
 	NavBar navBar;
 	AnimationTimeLine animationTimeLine;
 	AnimatorController animatorController;

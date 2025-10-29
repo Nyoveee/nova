@@ -6,6 +6,7 @@
 
 #include "ScriptingAPIManager.h"
 
+#include "config.h"
 #include "export.h"
 #include "Graphics/renderer.h"
 #include "ECS/ECS.h"
@@ -26,7 +27,7 @@ class ResourceManager;
 
 class Engine {
 public:
-	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight);
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig);
 
 	ENGINE_DLL_API ~Engine();
 	ENGINE_DLL_API Engine(Engine const& other)				= delete;
@@ -56,6 +57,9 @@ public:
 	ENGINE_DLL_API void setGameWidth(int value);
 	ENGINE_DLL_API void setGameHeight(int value);
 
+	ENGINE_DLL_API void editorControlMouse(bool value);
+	ENGINE_DLL_API void gameLockMouse(bool value);
+
 public:
 	// allow all systems to have references of each other via the engine.
 	Window&					window;
@@ -82,16 +86,22 @@ public:
 	// allows render debug for particle emission shapes
 	bool                    toDebugRenderParticleEmissionShape;
 
-private:
-	int				gameWidth;
-	int				gameHeight;
+	GameConfig				gameConfig;
 
-	bool			inSimulationMode;
+private:
+	// Editor mouse control represents whether the editor has control over the mouse
+	// The editor has the final authority over mouse control
+	bool					isEditorControllingMouse = false;
+
+	// Game Is Mouse Locked represents whether the current game wants the mouse to be locked.
+	// If editor is not in control, and mouse is locked, cursor will be locked and disappear.
+	bool					isGameLockingMouse		 = false;
+
+	bool					inSimulationMode;
 
 	// when transitioning between from non simulation mode to simulation mode and vice versa,
 	// we will need to do some setup. 
 	// this function contains the neccessary steps to setup when entering a simulation or when exiting a simulation
 	// this function is assigned in the startSimulation and stopSimulation function.
-	// function returns false if setup has failed.
 	std::optional<std::function<void()>> setupSimulationFunction;
 };

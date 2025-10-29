@@ -291,6 +291,9 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera);
 
+		// Bind back to default FBO for ImGui or Nova-Game to work on.
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
 			renderToDefaultFBO();
@@ -301,9 +304,6 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		assert(false && "Forget to account for a case.");
 		break;
 	}
-
-	// Bind back to default FBO for ImGui or Nova-Game to work on.
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {

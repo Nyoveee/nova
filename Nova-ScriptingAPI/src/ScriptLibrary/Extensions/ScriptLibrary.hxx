@@ -6,6 +6,7 @@
 #include "API/ConversionUtils.hxx"
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
+
 #include <numbers>
 
 #undef PlaySound
@@ -122,6 +123,14 @@ public:
 	static Ray getRayFromMouse() {
 		auto ray = Interface::engine->physicsManager.getRayFromMouse();
 		return Ray{ ray };
+	}
+
+	static void LockMouse() {
+		Interface::engine->gameLockMouse(true);
+	}
+
+	static void UnlockMouse() {
+		Interface::engine->gameLockMouse(false);
 	}
 };
 

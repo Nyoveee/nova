@@ -14,7 +14,6 @@ NavBar::NavBar(Editor& editor) :
 	debugUi{ editor },
 	hierarchyList{editor},
 	componentInspector{editor},
-	gameConfig{editor},
 	consoleBool{true},
 	debugUiBool{true},
 	hierarchyBool{true},
@@ -47,8 +46,4 @@ void NavBar::update() {
 	if (componentInspectorBool) {
 		componentInspector.update();
 	}
-	if (gameConfigBool) {
-		gameConfig.update();
-	}
-	
 }

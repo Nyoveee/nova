@@ -59,6 +59,7 @@ private:
 
 	// converts from int to a strongly typed input mod
 	InputMod getInputMod(int mod) const;
+
 public:
 	glm::vec2 mousePosition;
 	float scrollOffsetY;

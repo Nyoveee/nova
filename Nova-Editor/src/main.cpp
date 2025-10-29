@@ -19,17 +19,14 @@ constexpr int			windowHeight	= 900;
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	int gameWidth, gameHeight;
-	std::string windowName;
-	Serialiser::deserialiseGameConfig("gameConfig.json", gameWidth, gameHeight, windowName);
-	//Serialiser::serialiseEditorConfig("editorConfig.json");
+	GameConfig gameConfig = Serialiser::deserialiseGameConfig("gameConfig.json");
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
-	Window			window			{ windowName.c_str(), {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
+	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
 	
 	ResourceManager resourceManager {};
-	Engine			engine			{ window, inputManager, resourceManager, gameWidth, gameHeight };
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig };
 
 	AssetManager	assetManager	{ resourceManager, engine };
 	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };

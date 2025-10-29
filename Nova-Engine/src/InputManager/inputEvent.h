@@ -69,11 +69,6 @@ enum class ToggleAnimate {
 	Sentinel
 };
 
-// This input event tells the Animation System to center camera to node.
-enum class ToCenterControllerView {
-	Sentinel
-};
-
 // ======= Mouse movement and scroll specific ==========
 // Moving mouse position
 struct MousePosition {
@@ -94,3 +89,6 @@ enum class PasteEntity {
 	Paste
 };
 
+enum class EditorWantsToControlMouse {
+	Sentinel
+};
