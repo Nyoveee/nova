@@ -103,6 +103,7 @@ private:
 	// We let this physics manager owns some basic primitive shapes.
 	JPH::Ref<JPH::Shape> box;
 	JPH::Ref<JPH::Shape> sphere;
+	JPH::Ref<JPH::Shape> capsule;
 
 	std::vector<JPH::BodyID> createdBodies;
 

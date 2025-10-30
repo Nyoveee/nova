@@ -1,6 +1,83 @@
 {
     "entities": [
         {
+            "EntityData": {
+                "children": null,
+                "name": "Entity 1",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615
+            },
+            "MeshCollider": {
+                "isTrigger": false
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5,
+                    5,
+                    5,
+                    5,
+                    5
+                ],
+                "modelId": 1096626937628000257
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -1.5707964897155762,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -14.140829086303711,
+                    "y": 22.314741134643555,
+                    "z": 24.924571990966797
+                },
+                "rotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.7071068286895752,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 5.137499809265137,
+                    "y": 5.137296676635742,
+                    "z": 5.137296676635742
+                }
+            },
+            "id": 5
+        },
+        {
             "CameraComponent": {
                 "camStatus": true
             },
@@ -17,12 +94,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.024968832731246948,
+                    "y": -0.0249689519405365,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.024968832731246948,
+                    "y": -0.0249689519405365,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -33,7 +110,7 @@
                 "localRotation": {
                     "w": 0.9999221563339233,
                     "x": 0.0,
-                    "y": -0.012484090402722359,
+                    "y": -0.012484150007367134,
                     "z": 0.0
                 },
                 "localScale": {
@@ -42,14 +119,14 @@
                     "z": 1.0000038146972656
                 },
                 "position": {
-                    "x": 15.739063262939453,
-                    "y": 38.48551940917969,
-                    "z": 8.47494125366211
+                    "x": 44.68886947631836,
+                    "y": 41.40416717529297,
+                    "z": 21.74822425842285
                 },
                 "rotation": {
                     "w": 0.9999221563339233,
                     "x": 0.0,
-                    "y": -0.012484090402722359,
+                    "y": -0.012484150007367134,
                     "z": 0.0
                 },
                 "scale": {
@@ -61,25 +138,15 @@
             "id": 4
         },
         {
-            "BoxCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 100.0,
-                    "y": 1.0,
-                    "z": 50.0
-                }
-            },
             "EntityData": {
                 "children": null,
                 "name": "Floor",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615
+            },
+            "MeshCollider": {
+                "isTrigger": false
             },
             "MeshRenderer": {
                 "materialIds": [
@@ -127,7 +194,7 @@
                 "position": {
                     "x": -0.8923864364624023,
                     "y": -2.940403938293457,
-                    "z": 0.0
+                    "z": -1.754465103149414
                 },
                 "rotation": {
                     "w": 1.0,
@@ -144,18 +211,13 @@
             "id": 1
         },
         {
-            "BoxCollider": {
+            "CapsuleCollider": {
                 "offset": {
                     "x": 0.0,
-                    "y": 15.0,
+                    "y": 18.0,
                     "z": 0.0
                 },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 5.0,
-                    "y": 20.0,
-                    "z": 5.0
-                }
+                "shapeScale": 20.0
             },
             "EntityData": {
                 "children": [
@@ -233,9 +295,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 15.739063262939453,
-                    "y": 9.629852294921875,
-                    "z": 3.8681564331054688
+                    "x": 44.68886947631836,
+                    "y": 12.548498153686523,
+                    "z": 17.14143943786621
                 },
                 "rotation": {
                     "w": 1.0,

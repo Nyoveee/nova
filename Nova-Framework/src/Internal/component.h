@@ -37,7 +37,7 @@ class Material;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator
 
 using ScriptName   = std::string;
@@ -248,6 +248,24 @@ struct SphereCollider {
 	REFLECTABLE(
 		radius,
 		offset
+	)
+};
+
+struct CapsuleCollider {
+	float shapeScale = 1.f;
+	glm::vec3 offset{ 0.f, 0.f, 0.f };
+
+	REFLECTABLE(
+		shapeScale,
+		offset
+	)
+};
+
+struct MeshCollider {
+	bool isTrigger;
+
+	REFLECTABLE(
+		isTrigger
 	)
 };
 

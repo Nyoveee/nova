@@ -24,6 +24,8 @@
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/ScaledShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include <Jolt/Physics/Collision/Shape/MeshShape.h>
 #include <Jolt/Physics/Collision/RayCast.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
 #include <Jolt/Physics/Body/BodyActivationListener.h>
@@ -55,7 +57,7 @@ namespace {
 		return { glmVec3.x, glmVec3.y, glmVec3.z };
 	}
 
-	glm::vec3 toGlmVec3(JPH::RVec3Arg const& jphVec3) {
+	constexpr glm::vec3 toGlmVec3(JPH::RVec3Arg const& jphVec3) {
 		return { jphVec3.GetX(), jphVec3.GetY(), jphVec3.GetZ() };
 	}
 
@@ -63,7 +65,7 @@ namespace {
 		return { glmQuat.x, glmQuat.y, glmQuat.z, glmQuat.w };
 	}
 
-	glm::quat toGlmQuat(JPH::Quat const& jphQuat) {
+	constexpr glm::quat toGlmQuat(JPH::Quat const& jphQuat) {
 		// because glm built different.
 		return { jphQuat.GetW(), jphQuat.GetX(), jphQuat.GetY(), jphQuat.GetZ() };
 	}
@@ -141,12 +143,15 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	registry.on_construct<Rigidbody>().connect<&PhysicsManager::addBodiesToSystem>(*this);
 	registry.on_construct<BoxCollider>().connect<&PhysicsManager::addBodiesToSystem>(*this);
 	registry.on_construct<SphereCollider>().connect<&PhysicsManager::addBodiesToSystem>(*this);
-	
+	registry.on_construct<CapsuleCollider>().connect<&PhysicsManager::addBodiesToSystem>(*this);
+	registry.on_construct<MeshCollider>().connect<&PhysicsManager::addBodiesToSystem>(*this);
+
 
 	registry.on_destroy<Rigidbody>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
 	registry.on_destroy<BoxCollider>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
 	registry.on_destroy<SphereCollider>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
-
+	registry.on_destroy<CapsuleCollider>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
+	registry.on_destroy<MeshCollider>().connect<&PhysicsManager::removeBodiesFromSystem>(*this);
 	//--------------------------------------------------------------------//
 
 
@@ -186,11 +191,11 @@ void PhysicsManager::simulationInitialise() {
 
 void PhysicsManager::systemInitialise()
 {
-	for (auto&& [entityId, transform, rigidbody, boxCollider] : registry.view<Transform, Rigidbody, BoxCollider>().each()) {
+	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
 
 		// due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
-		if (rigidbody.bodyId == JPH::BodyID{})
+		if (rigidbody.bodyId == JPH::BodyID{} && hasRequiredPhysicsComponents(entityId))
 			initialiseBodyComponent(entityId, false);
 	}
 
@@ -202,7 +207,7 @@ void PhysicsManager::clear() {
 	bodyInterface.DestroyBodies(createdBodies.data(), static_cast<int>(createdBodies.size()));
 	createdBodies.clear();
 
-	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+	for (auto&& [entityId, rigidbody] : registry.view<Rigidbody>().each()) {
 		rigidbody.bodyId = JPH::BodyID{}; // default constructed bodyID is invalid.
 	}
 }
@@ -283,15 +288,8 @@ void PhysicsManager::resetPhysicsState()
 	//reset transformation data.
 	transformUpdateStack = std::stack<entt::entity>();
 
-	//set all bodyId to invalid
-	for (auto&& [entityId, rigidbody] : registry.view<Rigidbody>().each()) {
-
-		rigidbody.bodyId = JPH::BodyID{};
-
-	}
-	this->clear();
-	this->systemInitialise();
-
+	clear();
+	systemInitialise();
 }
 
 void PhysicsManager::transformUpdateListener(TransformUpdateEvent const& event)
@@ -324,7 +322,7 @@ void PhysicsManager::updateTransformBodies()
 	//can optimise later to listen to patch events
 	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each())
 	{
-		auto&& [boxCollider, sphereCollider] = registry.try_get<BoxCollider, SphereCollider>(entityId);
+		auto&& [boxCollider, sphereCollider, capsuleCollider] = registry.try_get<BoxCollider, SphereCollider, CapsuleCollider>(entityId);
 
 		JPH::RefConst<JPH::Shape> shape = bodyInterface.GetShape(rigidbody.bodyId);
 
@@ -346,12 +344,22 @@ void PhysicsManager::updateTransformBodies()
 			transformUpdateStack.push(entityId);
 
 		}
-
 		else if (sphereCollider != nullptr)
 		{
 			auto* result = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
 			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
 			rigidbody.offset = sphereCollider->offset;
+			transformUpdateStack.push(entityId);
+		}
+		else if (capsuleCollider != nullptr)
+		{
+			// Scale validation.
+			// JPH::Vec3 validScale = capsule->MakeScaleValid(toJPHVec3(capsuleCollider->shapeScale));
+			// capsuleCollider->shapeScale = toGlmVec3(validScale);
+
+			auto* result = new JPH::ScaledShape(capsule, JPH::Vec3(capsuleCollider->shapeScale, capsuleCollider->shapeScale, capsuleCollider->shapeScale));
+			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+			rigidbody.offset = capsuleCollider->offset;
 			transformUpdateStack.push(entityId);
 		}
 	}
@@ -367,34 +375,29 @@ void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
 	initialiseBodyComponent(entityID, true);
 }
 
-void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entityID)
-{
-		
-		auto&& [transform, rigidBody]= registry.try_get<Transform, Rigidbody>(entityID);
+void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entityID) {
+	auto&& [transform, rigidBody]= registry.try_get<Transform, Rigidbody>(entityID);
 
-
-		if (hasRequiredPhysicsComponents(entityID))
+	if (hasRequiredPhysicsComponents(entityID))
+	{
+		if (rigidBody == nullptr)
 		{
-
-			if (rigidBody == nullptr)
-			{
-				return;
-			}
-
-			if (rigidBody->bodyId == JPH::BodyID{})
-			{
-				return;
-			}
-
-			bodyInterface.RemoveBody(rigidBody->bodyId);
-
-			auto it = std::find(createdBodies.begin(), createdBodies.end(), rigidBody->bodyId);
-
-			std::swap(*it, *(createdBodies.end() - 1));
-
-			createdBodies.erase(createdBodies.end() - 1);
+			return;
 		}
 
+		if (rigidBody->bodyId == JPH::BodyID{})
+		{
+			return;
+		}
+
+		bodyInterface.RemoveBody(rigidBody->bodyId);
+
+		auto it = std::find(createdBodies.begin(), createdBodies.end(), rigidBody->bodyId);
+
+		std::swap(*it, *(createdBodies.end() - 1));
+
+		createdBodies.erase(createdBodies.end() - 1);
+	}
 }
 
 
@@ -416,14 +419,27 @@ void PhysicsManager::createPrimitiveShapes() {
 	sphereSettings.SetEmbedded(); // whatever i just yapped at the top
 
 	sphere = sphereSettings.Create().Get();
+
+
+	// ===========================================
+	// 3. Constructing a capsule shape.
+	// ===========================================
+	JPH::CapsuleShapeSettings capsuleSettings{ 0.5f, 0.5f };
+	capsuleSettings.SetEmbedded();
+
+	capsule = capsuleSettings.Create().Get();
 }
 
 void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling)
 {
-	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, BoxCollider, SphereCollider>(entityID);
+	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider, capsuleCollider, meshCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, 
+		BoxCollider, 
+		SphereCollider,
+		CapsuleCollider,
+		MeshCollider
+	>(entityID);
 	
 	// Create and add body based on entity's component.
-	JPH::ObjectLayer layer = static_cast<JPH::ObjectLayer>(rigidBody->layer);
 	JPH::ScaledShape* shape = nullptr;
 	glm::vec3 scale;
 
@@ -433,14 +449,14 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		if (meshRenderer != nullptr)
 		{
 			auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
-			scale = glm::vec3(1.f * model->maxDimension, 1.f * model->maxDimension, 1.f * model->maxDimension);
+			scale = glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
 
 			if (!model || model->maxDimension == 0)	{
 				scale = transform->scale;
 			}
-			 else {
-				 scale = glm::vec3(1.f * model->maxDimension, 1.f * model->maxDimension, 1.f * model->maxDimension);
-			 }
+			else {
+				scale = glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
+			}
 		}
 		else
 		{
@@ -458,7 +474,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		}
 		else
 		{
-			shape = new JPH::ScaledShape(box, toJPHVec3(glm::vec3(boxCollider->shapeScale) ));
+			shape = new JPH::ScaledShape(box, toJPHVec3(boxCollider->shapeScale));
 		}
 
 		rigidBody->offset = boxCollider->offset;
@@ -477,7 +493,71 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		
 		rigidBody->offset = sphereCollider->offset;
 	}
+	else if (capsuleCollider != nullptr) {
+		if (automateColliderScaling)
+		{
+			shape = new JPH::ScaledShape(capsule, sphere->MakeScaleValid(toJPHVec3(scale)));
+		}
+		else
+		{
+			shape = new JPH::ScaledShape(capsule, JPH::Vec3(capsuleCollider->shapeScale, capsuleCollider->shapeScale, capsuleCollider->shapeScale));
+		}
 
+		rigidBody->offset = capsuleCollider->offset;
+	}
+	else if (meshRenderer && meshCollider) {
+		rigidBody->offset = { 0.f, 0.f, 0.f };
+
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+
+		if (model) {
+			unsigned int vertexOffset = 0;
+
+			// Get the vertices and indices..
+			JPH::VertexList vertexList;
+			JPH::IndexedTriangleList indexedTriangleList;
+
+			for (auto&& meshData : model->meshes) {
+				for (glm::vec3 const& localPosition : meshData.positions) {
+					vertexList.push_back({ localPosition.x, localPosition.y, localPosition.z });
+				}
+				
+				// map triangle soup with corresponding indices in each mesh
+				for (size_t i = 0; i < meshData.indices.size(); i += 3) {
+					indexedTriangleList.push_back({
+						meshData.indices[i + 0] + vertexOffset,
+						meshData.indices[i + 1] + vertexOffset,
+						meshData.indices[i + 2] + vertexOffset
+					});
+				}
+				
+				vertexOffset += static_cast<unsigned int>(meshData.positions.size());
+			}
+
+			// Create the shape..
+			JPH::MeshShapeSettings meshShape{ vertexList, indexedTriangleList };
+			meshShape.SetEmbedded();
+
+			auto&& result = meshShape.Create();
+			
+			if (result.HasError()) {
+				Logger::error("Error creating mesh shape settings.. {}", result.GetError());
+				return;
+			}
+			else {
+				// Object needs to be non moving and static.
+				rigidBody->layer = Rigidbody::Layer::NonMoving;
+				rigidBody->motionType = JPH::EMotionType::Static;
+
+				shape = new JPH::ScaledShape(result.Get(), toJPHVec3(transform->scale));
+			}
+		}
+	}
+
+	if (!shape) {
+		Logger::error("Failed to create shape for entity: {}", static_cast<unsigned int>(entityID));
+		return;
+	}
 
 	//-----------------------------------------------------------------------------------------------//
 
@@ -486,7 +566,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		toJPHVec3(transform->position),															// position
 		toJPHQuat(transform->rotation),															// rotation (in quartenions)
 		rigidBody->motionType,																	// motion type
-		layer																					// in which layer?
+		static_cast<JPH::ObjectLayer>(rigidBody->layer)											// in which layer?
 	};
 
 	JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
@@ -505,7 +585,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 }
 
 bool PhysicsManager::hasRequiredPhysicsComponents(entt::entity const& entityID) {
-	return registry.any_of<BoxCollider, SphereCollider>(entityID) && registry.all_of<Rigidbody>(entityID);
+	return registry.any_of<BoxCollider, SphereCollider, MeshCollider, CapsuleCollider>(entityID) && registry.all_of<Rigidbody>(entityID);
 }
 
 void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {
