@@ -1,18 +1,37 @@
 {
     "entities": [
         {
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                },
+                "scaleWithTransform": true
+            },
             "EntityData": {
                 "children": null,
                 "name": "Floor",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "MeshRenderer": {
                 "materialIds": [
                     6
                 ],
                 "modelId": 3
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
             },
             "Transform": {
                 "eulerAngles": {
@@ -61,15 +80,39 @@
             "id": 1
         },
         {
-            "CameraComponent": {
-                "camStatus": true
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 0.30000001192092896,
+                    "y": 0.30000001192092896,
+                    "z": 0.30000001192092896
+                },
+                "scaleWithTransform": true
             },
             "EntityData": {
-                "children": null,
+                "children": [
+                    1048584
+                ],
                 "name": "Player",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": "Player"
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 16639956620549636097
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
             },
             "Scripts": {
                 "scriptDatas": [
@@ -90,7 +133,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 1.5707963705062866,
                     "z": 0.0
                 },
                 "localEulerAngles": {
@@ -115,23 +158,284 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 2.2564072608947754,
-                    "z": 0.0
+                    "x": -8.115396499633789,
+                    "y": 3.7924845218658447,
+                    "z": -0.8945897817611694
                 },
                 "rotation": {
+                    "w": 0.7071068286895752,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.3000202178955078,
+                    "y": 0.30000001192092896,
+                    "z": 0.3000202178955078
+                }
+            },
+            "id": 0
+        },
+        {
+            "CameraComponent": {
+                "camStatus": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Camera",
+                "overridenProperties": null,
+                "parent": 0,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 2.1316429456535828e-14,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.21992087364196777,
+                    "y": 0.921330451965332,
+                    "z": 1.6047840118408203
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 1.0658214728267914e-14,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.999993085861206,
+                    "y": 0.9999997615814209,
+                    "z": 0.999993085861206
+                },
+                "position": {
+                    "x": -7.6339287757873535,
+                    "y": 4.068883895874023,
+                    "z": -0.9605705738067627
+                },
+                "rotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.30001816153526306,
+                    "y": 0.2999999523162842,
+                    "z": 0.30001816153526306
+                }
+            },
+            "id": 1048584
+        },
+        {
+            "Animator": {
+                "controllerId": 8081859489068384285
+            },
+            "BoxCollider": {
+                "scaleMultiplier": {
+                    "x": 30.0,
+                    "y": 1.0,
+                    "z": 30.0
+                },
+                "scaleWithTransform": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Enemy",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "ParticleEmitter": {
+                "angularVelocity": 0.0,
+                "burstAmount": 30,
+                "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "endColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "interpolationType": "Cubic",
+                    "selected": true
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 1000,
+                "particleColorSelection": {
+                    "color": {
+                        "a": 0.7333333492279053,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 1.0
+                    },
+                    "randomizedColor": false
+                },
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 25.0,
+                        "distance": 2.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        }
+                    },
+                    "emissionShape": "Cone",
+                    "radiusEmitter": {
+                        "radius": 0.20000000298023224
+                    }
+                },
+                "particleRate": 1000.0,
+                "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Cubic",
+                    "selected": true
+                },
+                "startSize": 0.029999999329447746,
+                "startSpeed": 1.5,
+                "texture": 10264539576361746591,
+                "trails": {
+                    "distancePerEmission": 0.009999999776482582,
+                    "selected": true,
+                    "trailColor": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 0.3490196168422699,
+                        "r": 1.0
+                    },
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 1041167539506921567
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 2,
+                                    "__variant_value": 1048578
+                                },
+                                "name": "enemyStats"
+                            }
+                        ],
+                        "scriptId": 11126512743298908161
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 2.0
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 5.0
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 25.0
+                                },
+                                "name": "movementSpeed"
+                            }
+                        ],
+                        "scriptId": 12855895000209178627
+                    }
+                ]
+            },
+            "SkinnedMeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 587869709114884109
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -3.1415908336639404,
+                    "y": -1.3746774196624756,
+                    "z": -3.1415908336639404
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
+                "localScale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
+                },
+                "position": {
+                    "x": 8.183247566223145,
+                    "y": 1.136075496673584,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": -0.6344823837280273,
+                    "x": -1.2806997347070137e-06,
+                    "y": 0.7729373574256897,
+                    "z": -1.2806997347070137e-06
+                },
+                "scale": {
+                    "x": 0.005000005010515451,
+                    "y": 0.004999999888241291,
+                    "z": 0.005000005010515451
                 }
             },
-            "id": 0
+            "id": 1048578
         }
     ]
 }

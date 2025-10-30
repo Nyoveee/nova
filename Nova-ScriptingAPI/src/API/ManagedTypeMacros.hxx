@@ -55,18 +55,17 @@ public value struct ManagedType : IManagedStruct {																					\
 		return result;																												\
 	}																																\
 	Call_Macro_Double(Declaration,__VA_ARGS__)																						\
+
+#define ManagedStructEnd(ManagedType,NativeType)																					\
 };																																	\
-																																	\
 template <typename T>																												\
-inline T native(ManagedType managedType) {																							\
+inline T native(ManagedType managedType){																							\
 	return managedType.native();																									\
 }																																	\
-																																	\
 template <>																															\
 struct ManagedToNative<ManagedType> {																								\
 	using Native = NativeType;																										\
 };																																	\
-
 // =====================================================
 // Managed component macro generator.
 // =====================================================

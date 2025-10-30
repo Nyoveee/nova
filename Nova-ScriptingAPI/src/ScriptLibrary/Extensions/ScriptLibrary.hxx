@@ -35,14 +35,32 @@ public:
 
 public ref class Debug {
 public:
-	static void Print(IManagedComponent^ component) { Logger::info(Convert(component->ToString()));}
-	static void Print(System::String^ string)		{ Logger::info(Convert(string)); }
-	static void Print(Object^ object)               { 
+	static void Log(IManagedComponent^ component) { Logger::info(Convert(component->ToString()));}
+	static void Log(System::String^ string)		{ Logger::info(Convert(string)); }
+	static void Log(Object^ object)               { 
 		if (object->GetType()->IsPrimitive) {
 			Logger::info(Convert(object->ToString()));
 			return;
 		}
 		Logger::info(Convert(object->GetType()->Name) + Convert(object->ToString())); 
+	}
+	static void LogWarning(IManagedComponent^ component) { Logger::warn(Convert(component->ToString())); }
+	static void LogWarning(System::String^ string) { Logger::warn(Convert(string)); }
+	static void LogWarning(Object^ object) {
+		if (object->GetType()->IsPrimitive) {
+			Logger::warn(Convert(object->ToString()));
+			return;
+		}
+		Logger::warn(Convert(object->GetType()->Name) + Convert(object->ToString()));
+	}
+	static void LogError(IManagedComponent^ component) { Logger::warn(Convert(component->ToString())); }
+	static void LogError(System::String^ string) { Logger::warn(Convert(string)); }
+	static void LogError(Object^ object) {
+		if (object->GetType()->IsPrimitive) {
+			Logger::warn(Convert(object->ToString()));
+			return;
+		}
+		Logger::warn(Convert(object->GetType()->Name) + Convert(object->ToString()));
 	}
 };
 

@@ -16,31 +16,64 @@
 // ===========================================================================================
 
 
+// ======================================
+// This struct is responsible for Vector2 Types
+// ======================================
 ManagedStruct(
 	Vector2, glm::vec2,
 	float, x,
 	float, y
 )
-
+float Length();
+void Normalize();
+static float Distance(Vector2 a, Vector2 b);
+static Vector2 operator-(Vector2 a, Vector2 b);
+static Vector2 operator+(Vector2 a, Vector2 b);
+static Vector2 operator*(Vector2 a, float d);
+static Vector2 operator*(float d, Vector2 a);
+static Vector2 operator/(Vector2 a, float d);
+static bool operator!=(Vector2 a, Vector2 b);
+static bool operator==(Vector2 a, Vector2 b);
+ManagedStructEnd(Vector2, glm::vec2)
+// ======================================
+// This struct is responsible for Vector3 Types
+// ======================================
 ManagedStruct(
-	Vector3, glm::vec3,		// Creates a new managed type Vector3 that is associated with glm::vec3
+	Vector3, glm::vec3,
 	float, x,
 	float, y,
 	float, z
 )
-// New managed type Vector3 now has data member of x, y, z corresponding to the data members of glm::vec3.
+float Length();
+void Normalize();
+static float Distance(Vector3 a, Vector3 b);
+static Vector3 operator-(Vector3 a, Vector3 b);
+static Vector3 operator+(Vector3 a, Vector3 b);
+static Vector3 operator*(Vector3 a, float d);
+static Vector3 operator*(float d, Vector3 a);
+static Vector3 operator/(Vector3 a, float d);
+static bool operator!=(Vector3 a, Vector3 b);
+static bool operator==(Vector3 a, Vector3 b);
 
+ManagedStructEnd(Vector3,glm::vec3)
+// ======================================
+// This struct is responsible for Ray Types
+// ======================================
 ManagedStruct(
 	Ray, PhysicsRay,
 	Vector3, origin,
 	Vector3, direction
 )
-
+ManagedStructEnd(Ray, PhysicsRay)
+// ======================================
+// This struct is responsible for RayCastResult Types
+// ======================================
 ManagedStruct(
 	RayCastResult, PhysicsRayCastResult,
 	entt::entity, entity,
 	Vector3, point
 )
+ManagedStructEnd(RayCastResult, PhysicsRayCastResult)
 
 // ===========================================================================================
 // 2. Defining managed component types..

@@ -273,23 +273,6 @@ bool ScriptingAPIManager::compileScriptAssembly()
 	return true;
 }
 
-#if 0
-void ScriptingAPIManager::loadEntityScript(entt::entity entityID, ResourceID scriptID)
-{
-	addEntityScript(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
-}
-
-void ScriptingAPIManager::removeEntityScript(entt::entity entityID, ResourceID scriptID)
-{
-	removeEntityScript_(static_cast<unsigned int>(entityID), static_cast<unsigned long long>(scriptID));
-}
-
-ENGINE_DLL_API void ScriptingAPIManager::removeEntity(entt::entity entityID)
-{
-	removeEntity_(static_cast<unsigned int>(entityID));
-}
-#endif
-
 bool ScriptingAPIManager::isNotCompiled() const
 {
 	return compileState != CompileState::Compiled;
@@ -367,6 +350,11 @@ bool ScriptingAPIManager::startSimulation() {
 	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 		for (auto&& script : scripts.scriptDatas) {
 			addEntityScript(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId));
+		}
+	}
+	// All scripts loaded, set script fields(Which include scripts loaded already)
+	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+		for (auto&& script : scripts.scriptDatas) {
 			for (auto&& fieldData : script.fields)
 				setScriptFieldData(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId), fieldData);
 		}
