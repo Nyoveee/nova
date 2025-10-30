@@ -181,6 +181,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\gameViewPort.cpp" />
     <ClCompile Include="src\Editor\gameConfig.cpp" />
     <ClCompile Include="src\Editor\navigationWindow.cpp" />
+    <ClCompile Include="src\Editor\uiViewPort.cpp" />
     <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\Assets\assetManagerUi.cpp" />
     <ClCompile Include="src\Editor\console.cpp" />
@@ -252,6 +253,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\gameViewPort.h" />
     <ClInclude Include="src\Editor\gameConfig.h" />
     <ClInclude Include="src\Editor\navigationWindow.h" />
+    <ClInclude Include="src\Editor\uiViewPort.h" />
     <ClInclude Include="src\Navigation\navMeshGeneration.h" />
     <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />
     <ClInclude Include="src\AssetManager\assetFunctor.h" />

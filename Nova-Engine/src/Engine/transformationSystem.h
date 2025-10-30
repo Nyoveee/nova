@@ -26,15 +26,15 @@ public:
 
 	// Sets the world matrix and position, scale and rotation based on the local matrix of the entity.
 	// just a more convenient public facing function that doesnt require additional parameters.
-	void setLocalTransformFromWorld(entt::entity entity);
+	void setLocalTransformFromWorld(entt::entity entity, entt::registry& _registry);
 
 
 
 private:
 	// Sets the local matrix and position, scale and rotation based on the world matrix of the entity.
-	void setLocalTransformFromWorld(Transform& transform, EntityData& entityData);
+	void setLocalTransformFromWorld(Transform& transform, EntityData& entityData, entt::registry& _registry);
 
-	void setChildrenDirtyFlag(entt::entity entity);
+	void setChildrenDirtyFlag(entt::entity entity, entt::registry& _registry);
 
 	// Gets the most updated model matrix of a given entity.
 	// Recalculates the model matrix if required.
@@ -43,7 +43,12 @@ private:
 	// Recalculate model matrix due to changes in ancestor's world transform.
 	void recalculateModelMatrix(entt::entity entity);
 
+	// Updates per registry
+	void updateRegistry(entt::registry& _registry);
+
+
 private:
 	entt::registry& registry;
+	entt::registry& uiRegistry;
 	entt::dispatcher& eventDispatcher;
 };

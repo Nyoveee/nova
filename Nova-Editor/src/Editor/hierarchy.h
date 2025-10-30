@@ -13,8 +13,10 @@ public:
 	void update();
 
 private:
-	void createGameObject();
-	void displayEntityHierarchy(entt::entity entity);
+	void createGameObject(entt::registry& registry);
+	void displayEntityHierarchy(entt::entity entity, entt::registry& registry);
+	void displayEntityWindow();
+	void displayUIWindow();
 
 private:
 	ECS& ecs;

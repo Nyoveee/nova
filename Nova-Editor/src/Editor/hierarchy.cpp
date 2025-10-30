@@ -16,17 +16,16 @@ Hierarchy::Hierarchy(Editor& editor) :
 	editor	{ editor }
 {}
 
-void Hierarchy::createGameObject() {
-	entt::registry& registry = ecs.registry;
+void Hierarchy::createGameObject(entt::registry& registry) {
 	static int counter = 0;
 
 	entt::entity entity = registry.create();
+	std::cout << static_cast<int>(entity) << std::endl;
 	registry.emplace<EntityData>(entity, EntityData{"Entity " + std::to_string(++counter) });
 	registry.emplace<Transform>(entity);
 }
 
-void Hierarchy::displayEntityHierarchy(entt::entity entity) {
-	entt::registry& registry = ecs.registry;
+void Hierarchy::displayEntityHierarchy(entt::entity entity, entt::registry& registry) {
 	EntityData const& entityData = registry.get<EntityData>(entity);
 
 	bool toDisplayTreeNode = false;
@@ -58,7 +57,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 		
 	// I want my widgets to be draggable, providing the entity id as the payload.
 	if (ImGui::BeginDragDropSource()) {
-		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity*));
+		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity));
 
 		// Draw tooltip-style preview while dragging
 		ImGui::Text(entityData.name.c_str());
@@ -70,7 +69,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 	if (ImGui::BeginDragDropTarget()) {
 		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
 			entt::entity childEntity = *((entt::entity*)payload->Data);
-			ecs.setEntityParent(childEntity, entity);
+			ecs.setEntityParent(childEntity, entity, registry);
 		}
 
 		ImGui::EndDragDropTarget();
@@ -81,15 +80,75 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 	// recursively displays tree hierarchy..
 	if (toDisplayTreeNode) {
 		for (entt::entity child : entityData.children) {
-			displayEntityHierarchy(child);
+			displayEntityHierarchy(child, registry);
 		}
 
 		ImGui::TreePop();
 	}
 }
 
+void Hierarchy::displayEntityWindow()
+{
+	entt::registry& registry = ecs.registry;
+
+	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Create new entity")) {
+		createGameObject(registry);
+	}
+
+	ImGui::BeginChild("Entities", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders);
+	for (auto&& [entity, entityData] : registry.view<EntityData>().each()) {
+		// Any child entities will be displayed by the parent entity in a hierarchy. 
+		if (entityData.parent != entt::null) {
+			continue;
+		}
+
+		displayEntityHierarchy(entity, registry);
+	}
+	ImGui::EndChild();
+
+	// If the drag target is the child window itself, this means removing parent from entity.
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			entt::entity childEntity = *((entt::entity*)payload->Data);
+			ecs.removeEntityParent(childEntity, registry);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+}
+
+void Hierarchy::displayUIWindow()
+{
+	entt::registry& uiRegistry = ecs.uiRegistry;
+
+	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Create new UI")) {
+		createGameObject(uiRegistry);
+	}
+
+	ImGui::BeginChild("UI", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders);
+	for (auto&& [entity, entityData] : uiRegistry.view<EntityData>().each()) {
+		// Any child entities will be displayed by the parent entity in a hierarchy. 
+		if (entityData.parent != entt::null) {
+			continue;
+		}
+
+		displayEntityHierarchy(entity, uiRegistry);
+	}
+	ImGui::EndChild();
+	// If the drag target is the child window itself, this means removing parent from entity.
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			entt::entity childEntity = *((entt::entity*)payload->Data);
+			ecs.removeEntityParent(childEntity, uiRegistry);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+}
+
 void Hierarchy::update() {
 	entt::registry& registry = ecs.registry;
+	entt::registry& uiRegistry = ecs.uiRegistry;
 
 	// Show all game objects..
 	ImGui::Begin(ICON_FA_LIST " Hierarchy");
@@ -104,6 +163,10 @@ void Hierarchy::update() {
 
 	ImGui::Text("Scene loaded: Sample Scene");
 	ImGui::Text("Entities: %zu", registry.view<EntityData>().size());
+	ImGui::SameLine();
+	ImGui::Text("UI: %zu", uiRegistry.view<EntityData>().size());
+
+#if 0
 	ImGui::Text("Selected entity: ");
 	ImGui::SameLine();
 
@@ -114,40 +177,28 @@ void Hierarchy::update() {
 		std::string text = "";
 
 		for (entt::entity entity : editor.getSelectedEntities()) {
+			// @TODO: figure out
 			std::string const& name = registry.get<EntityData>(entity).name;
 			text += name + " (id: " + std::to_string(static_cast<unsigned int>(entity)) + ") ";
 		}
 
 		ImGui::Text(text.c_str());
 	}
-
+#endif
 	ImGui::Separator();
 
-	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Create new entity")) {
-		createGameObject();
-	}
 
-	ImGui::BeginChild("Entities", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders);
-	
-	for (auto&& [entity, entityData] : registry.view<EntityData>().each()) {
-		// Any child entities will be displayed by the parent entity in a hierarchy. 
-		if (entityData.parent != entt::null) {
-			continue;
+	if (ImGui::BeginTabBar("TabBar")) {
+		if (ImGui::BeginTabItem("Entities")) {
+			displayEntityWindow();
+			ImGui::EndTabItem();
 		}
 
-		displayEntityHierarchy(entity);
-	}
-	
-	ImGui::EndChild();
-	
-	// If the drag target is the child window itself, this means removing parent from entity.
-	if (ImGui::BeginDragDropTarget()) {
-		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
-			entt::entity childEntity = *((entt::entity*)payload->Data);
-			ecs.removeEntityParent(childEntity);
+		if (ImGui::BeginTabItem("UI")) {
+			displayUIWindow();
+			ImGui::EndTabItem();
 		}
-
-		ImGui::EndDragDropTarget();
+		ImGui::EndTabBar();
 	}
 
 	ImGui::End();

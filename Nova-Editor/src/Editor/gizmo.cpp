@@ -40,7 +40,7 @@ Gizmo::Gizmo(Editor& editor, ECS& ecs) :
 	);
 }
 
-void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
+void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight, entt::registry& registry) {
 	if (!editor.hasAnyEntitySelected()) {
 		return;
 	}
@@ -50,7 +50,7 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 
 	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 
-	Transform& transform = ecs.registry.get<Transform>(selectedEntity);
+	Transform& transform = registry.get<Transform>(selectedEntity);
 	float const* cameraView = glm::value_ptr(editor.engine.renderer.getEditorCamera().view());
 	float const* cameraProjection = glm::value_ptr(editor.engine.renderer.getEditorCamera().projection());
 

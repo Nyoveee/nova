@@ -2,12 +2,12 @@
 #include "Engine/window.h"
 
 #include "editor.h"
-#include "editorViewPort.h"
+#include "UIViewPort.h"
 #include "Serialisation/serialisation.h"
 #include "IconsFontAwesome6.h"
 #include "AssetManager/assetManager.h"
 
-EditorViewPort::EditorViewPort(Editor& editor) :
+UIViewPort::UIViewPort(Editor& editor) :
 	editor					{ editor },
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
@@ -15,10 +15,15 @@ EditorViewPort::EditorViewPort(Editor& editor) :
 	isHoveringOver			{ false }
 {}
 
-void EditorViewPort::update(float dt) {
-	ImGui::Begin(ICON_FA_GAMEPAD " Editor");
+void UIViewPort::update() {
+	ImGui::Begin(ICON_FA_GAMEPAD " UIEditor");
 	isHoveringOver = ImGui::IsWindowHovered();
 	isActive = ImGui::IsWindowFocused();
+
+	if (!isActive) {
+		ImGui::End();
+		return;
+	}
 
 	// Get ImGui window's top left and bottom right.
 	ImVec2 gameWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();
@@ -72,46 +77,7 @@ void EditorViewPort::update(float dt) {
 		static_cast<int>(viewportHeight) 
 	});
 
-	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight, engine.ecs.registry);
-	controlOverlay.update(dt, gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
-
-	ImGui::Dummy(ImGui::GetContentRegionAvail());
-
-	// Accept scene item payload..
-	if (ImGui::BeginDragDropTarget()) {
-		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
-			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
-
-			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
-
-			// handling scene drop request..
-			if (editor.resourceManager.isResource<Scene>(id)) {
-				AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
-
-				if (filePath) {
-					Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
-				}
-
-				engine.ecs.sceneManager.loadScene(id);
-				controlOverlay.clearNotification();
-
-				// deselect entity.
-				editor.selectEntities({});
-			}
-			else if (editor.resourceManager.isResource<Prefab>(id)) {
-				AssetFilePath const* filePath = editor.assetManager.getFilepath(id);
-
-				if (filePath) {
-					Serialiser::deserialisePrefab(filePath->string.c_str(), engine.ecs.registry, id);
-				}
-
-				// deselect entity.
-				editor.selectEntities({});
-			}
-		}
-
-		ImGui::EndDragDropTarget();
-	}
+	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight, engine.ecs.uiRegistry);
 
 	ImGui::End();
 	
