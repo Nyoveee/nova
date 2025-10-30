@@ -86,6 +86,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
 	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	uiMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8  } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true },
@@ -246,15 +247,18 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		}
 
 		renderObjectIds();
-
+		// Main render function
+		render(gameMainFrameBuffer, gameCamera);
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
+		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
 	// ===============================================
-	// Editor mode would also need to do the same work to render into the game's FBO..
-	[[fallthrough]];
 	case RenderConfig::Game:
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera);
+		renderUI();
 
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
@@ -269,6 +273,21 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::renderUI()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.fboId());
+	glViewport(0, 0, uiMainFrameBuffer.getWidth(), uiMainFrameBuffer.getHeight());
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+
+	// UI draw calls here
+	renderTexts();   
+
+	glDisable(GL_BLEND);
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
@@ -287,7 +306,6 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
-	renderTexts();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -298,12 +316,36 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 }
 
 void Renderer::renderToDefaultFBO() {
+
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// === 2. Blend the UI FBO on top ===
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
+}
+
+void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	overlayShader.use();
+	overlayShader.setImageUniform("overlay", 0);
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
 }
 
 GLuint Renderer::getEditorFrameBufferTexture() const {
@@ -312,6 +354,11 @@ GLuint Renderer::getEditorFrameBufferTexture() const {
 
 GLuint Renderer::getGameFrameBufferTexture() const {
 	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+}
+
+ENGINE_DLL_API GLuint Renderer::getUIFrameBufferTexture() const
+{
+	return uiMainFrameBuffer.textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {

@@ -26,12 +26,12 @@ void UIViewPort::update() {
 	}
 
 	// Get ImGui window's top left and bottom right.
-	ImVec2 gameWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();
-	ImVec2 gameWindowBottomRight = ImGui::GetWindowContentRegionMax() + ImGui::GetWindowPos();
+	ImVec2 uiWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();
+	ImVec2 uiWindowBottomRight = ImGui::GetWindowContentRegionMax() + ImGui::GetWindowPos();
 
 	// Dimension of the actual window.
-	float windowWidth = gameWindowBottomRight.x - gameWindowTopLeft.x;
-	float windowHeight = gameWindowBottomRight.y - gameWindowTopLeft.y;
+	float windowWidth = uiWindowBottomRight.x - uiWindowTopLeft.x;
+	float windowHeight = uiWindowBottomRight.y - uiWindowTopLeft.y;
 
 	// Specified dimension for our game.
 	float gameWidth = static_cast<float>(engine.getGameWidth());
@@ -62,22 +62,22 @@ void UIViewPort::update() {
 	float centerXOffset = (windowWidth - viewportWidth) / 2.f;
 	float centerYOffset = (windowHeight - viewportHeight) / 2.f;
 
-	gameWindowTopLeft.x += centerXOffset;
-	gameWindowTopLeft.y += centerYOffset;
-	gameWindowBottomRight = { gameWindowTopLeft.x + viewportWidth, gameWindowTopLeft.y + viewportHeight };
+	uiWindowTopLeft.x += centerXOffset;
+	uiWindowTopLeft.y += centerYOffset;
+	uiWindowBottomRight = { uiWindowTopLeft.x + viewportWidth, uiWindowTopLeft.y + viewportHeight };
 
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
-	ImTextureID textureId = engine.renderer.getEditorFrameBufferTexture();
-	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
+	ImTextureID textureId = engine.renderer.getUIFrameBufferTexture();
+	ImGui::GetWindowDrawList()->AddImage(textureId, uiWindowTopLeft, uiWindowBottomRight, { 0, 1 }, { 1, 0 });
 	
 	engine.window.setGameViewPort({ 
-		static_cast<int>(gameWindowTopLeft.x), 
-		static_cast<int>(gameWindowTopLeft.y),
+		static_cast<int>(uiWindowTopLeft.x), 
+		static_cast<int>(uiWindowTopLeft.y),
 		static_cast<int>(viewportWidth), 
 		static_cast<int>(viewportHeight) 
 	});
 
-	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight, engine.ecs.uiRegistry);
+	gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, engine.ecs.uiRegistry);
 
 	ImGui::End();
 	

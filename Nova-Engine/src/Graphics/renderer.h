@@ -53,10 +53,13 @@ public:
 
 	void renderMain(RenderConfig renderConfig);
 
+	void renderUI();
+
 	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
 	
 	void renderToDefaultFBO();
 
+	void overlayUIToBuffer(PairFrameBuffer& target);
 public:
 	// =============================================
 	// Public facing API.
@@ -65,6 +68,7 @@ public:
 	// get the main texture of the main frame buffer.
 	ENGINE_DLL_API GLuint getEditorFrameBufferTexture() const;
 	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getUIFrameBufferTexture() const;
 
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
@@ -201,6 +205,7 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
+	FrameBuffer uiMainFrameBuffer;
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
