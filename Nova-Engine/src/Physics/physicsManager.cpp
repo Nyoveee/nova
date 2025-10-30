@@ -319,6 +319,11 @@ void PhysicsManager::updateTransformBodies()
 		bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
 	}
 
+	// i don't want to constantly override my position, i want to let my forces do their thing..
+	if (engine.isInSimulationMode()) {
+		return;
+	}
+
 	//can optimise later to listen to patch events
 	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each())
 	{
@@ -339,7 +344,7 @@ void PhysicsManager::updateTransformBodies()
 		if (boxCollider != nullptr)
 		{
 			auto* result = new JPH::ScaledShape(box, toJPHVec3(boxCollider->shapeScale));
-			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
 			rigidbody.offset = boxCollider->offset;
 			transformUpdateStack.push(entityId);
 
@@ -347,7 +352,7 @@ void PhysicsManager::updateTransformBodies()
 		else if (sphereCollider != nullptr)
 		{
 			auto* result = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
-			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
 			rigidbody.offset = sphereCollider->offset;
 			transformUpdateStack.push(entityId);
 		}
@@ -358,7 +363,7 @@ void PhysicsManager::updateTransformBodies()
 			// capsuleCollider->shapeScale = toGlmVec3(validScale);
 
 			auto* result = new JPH::ScaledShape(capsule, JPH::Vec3(capsuleCollider->shapeScale, capsuleCollider->shapeScale, capsuleCollider->shapeScale));
-			bodyInterface.SetShape(rigidbody.bodyId, result, true, type);
+			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
 			rigidbody.offset = capsuleCollider->offset;
 			transformUpdateStack.push(entityId);
 		}
@@ -569,12 +574,22 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		static_cast<JPH::ObjectLayer>(rigidBody->layer)											// in which layer?
 	};
 
+	// We now specify mass.. (if it's dynamic..)
+	if (rigidBody->motionType == JPH::EMotionType::Dynamic) {
+		JPH::MassProperties massProperties;
+		massProperties.ScaleToMass(rigidBody->mass == 0 ? 1.f : rigidBody->mass); //actual mass in kg
+
+		bodySettings.mMassPropertiesOverride = massProperties;
+		bodySettings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
+	}
+
 	JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
 
 	JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
 		bodySettings,
 		activationType //should always be inactive unless its simulation step
 	);
+
 
 	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityID));
 	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody->initialVelocity));
@@ -621,4 +636,22 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 	}
 
 	return std::nullopt;
+}
+
+void PhysicsManager::addForce(Rigidbody const& rigidbody, glm::vec3 forceVector) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	bodyInterface.AddForce(rigidbody.bodyId, toJPHVec3(forceVector));
+}
+
+void PhysicsManager::addImpulse(Rigidbody const& rigidbody, glm::vec3 forceVector){
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	bodyInterface.AddImpulse(rigidbody.bodyId, toJPHVec3(forceVector));
 }

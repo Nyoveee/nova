@@ -4,6 +4,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm/gtx/quaternion.hpp>
+
 void Transform_::rotate(Vector3 axis, float degrees) {
 	Transform* transform = nativeComponent();
 
@@ -19,3 +20,20 @@ void ParticleEmitter_::emit(int count)
 	if(transform && emitter)
 		Interface::engine->particleSystem.emit(*transform, *emitter, count);
 }
+
+void Rigidbody_::addForce(Vector3 forceVector) {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.addForce(*rigidbody, forceVector.native());
+	}
+}
+
+void Rigidbody_::addImpulse(Vector3 forceVector) {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.addImpulse(*rigidbody, forceVector.native());
+	}
+}
+

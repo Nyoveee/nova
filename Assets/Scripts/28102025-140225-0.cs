@@ -7,16 +7,30 @@ class PlayerController : Script
     
     [SerializableField]
     private Transform_? cameraObject = null;
+
+    private Rigidbody_? rigidbody;
+
+    private bool isMovingForward = false;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
+        rigidbody = getComponent<Rigidbody_>();
+
         CameraAPI.LockMouse();
+
         Input.MouseMoveCallback(CameraMovement);
+        Input.MapKey(Key.W, beginWalkingForward, endWalkingForward);
     }
 
     // This function is invoked every fixed update.
     protected override void update()
-    {}
+    {
+        if (isMovingForward)
+        {
+            rigidbody.addImpulse(cameraObject.front);
+        }
+    }
 
     private void CameraMovement(float deltaMouseX, float deltaMouseY)
     {
@@ -30,16 +44,17 @@ class PlayerController : Script
             euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
             euler.y = Mathf.Clamp(euler.y, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
 
-            Debug.Print(euler.x);
             cameraObject.eulerAngles = euler;  
-#if false
-            Vector3 front = cameraObject.front;
-            front.x = Mathf.Cos(euler.y) * Mathf.Cos(euler.x);
-            front.y = Mathf.Sin(euler.x);
-            front.z = Mathf.Sin(euler.y) * Mathf.Cos(euler.x);
-            cameraObject.front = front;
-#endif
         }
     }
 
+    private void beginWalkingForward()
+    {
+        isMovingForward = true;
+    }
+
+    private void endWalkingForward()
+    {
+        isMovingForward = false;
+    }
 }

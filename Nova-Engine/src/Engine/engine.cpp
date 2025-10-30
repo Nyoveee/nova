@@ -45,9 +45,13 @@ Engine::~Engine() {
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
-	physicsManager.updateTransformBodies();
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
+	}
+	
+	physicsManager.updateTransformBodies();
+
+	if (inSimulationMode) {
 		physicsManager.updatePhysics(dt);
 		navigationSystem.update(dt);
 	}

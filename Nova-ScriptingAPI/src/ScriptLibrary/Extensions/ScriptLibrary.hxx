@@ -54,6 +54,11 @@ public:
 
 public ref class Input {
 public:
+	static void MapKey(Key key, EventCallback^ pressCallback) {
+		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key)) };
+		observerIds.Add(observerId);
+	}
+
 	static void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) { 
 		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key)) };
 		observerIds.Add(observerId);

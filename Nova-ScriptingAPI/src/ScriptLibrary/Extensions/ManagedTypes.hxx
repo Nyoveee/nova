@@ -76,3 +76,12 @@ ManagedComponentDeclaration(
 void emit(int count);
 
 ManagedComponentEnd()
+
+ManagedComponentDeclaration(
+	Rigidbody
+)
+
+void addForce(Vector3 forceVector);
+void addImpulse(Vector3 forceVector);
+
+ManagedComponentEnd()
