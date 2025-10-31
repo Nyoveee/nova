@@ -22,7 +22,6 @@ NavBar::NavBar(Editor& editor) :
 {}
 
 void NavBar::update() {
-
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("Windows")) {
 			if (ImGui::Checkbox("console",&consoleBool)) {	}

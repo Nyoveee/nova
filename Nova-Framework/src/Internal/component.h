@@ -226,9 +226,11 @@ struct Rigidbody {
 		isRotatable
 	)
 
+	// RUNTIME PROPERTIES!
 	JPH::BodyID bodyId				{}; // default constructed body ID is invalid.
-	
-	// when this rigidbody is instianted, this offset property is set based on whatever collider's offset.
+	glm::vec3   velocity;
+
+	// when this rigidbody is instantiated, this offset property is set based on whatever collider's offset.
 	// runtime only and is not de/serialised.
 	glm::vec3 offset;
 };

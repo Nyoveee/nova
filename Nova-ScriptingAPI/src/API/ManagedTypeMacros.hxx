@@ -28,9 +28,11 @@ NativeType native(ManagedType managedType) {
 // For managed structs -> to convert native types to managed types for interaction
 // =====================================================
 #define Declaration(Type, Name) Type Name;
-#define ConstructorDefinition(Type, Name) Name{native.Name}
+#define ConstructorDefinition(Type, Name) Name{ native.Name }
 #define ConstructorDefinition2(Type, Name) Name { Name }
+
 #define ListInitialization(Type, Name) ::native<ManagedToNative<Type>::Native>(Name)
+
 #define Parameter(Type, Name) Type Name
 
 #define ManagedStruct(ManagedType,NativeType,...)																					\

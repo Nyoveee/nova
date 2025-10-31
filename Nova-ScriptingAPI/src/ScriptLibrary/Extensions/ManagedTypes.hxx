@@ -15,25 +15,36 @@
 // later in 2. with the managed type.
 // ===========================================================================================
 
-
 // ======================================
 // This struct is responsible for Vector2 Types
 // ======================================
+
 ManagedStruct(
 	Vector2, glm::vec2,
 	float, x,
 	float, y
 )
+
 float Length();
 void Normalize();
 static float Distance(Vector2 a, Vector2 b);
 static Vector2 operator-(Vector2 a, Vector2 b);
+static Vector2 operator-(Vector2 a);
 static Vector2 operator+(Vector2 a, Vector2 b);
 static Vector2 operator*(Vector2 a, float d);
 static Vector2 operator*(float d, Vector2 a);
 static Vector2 operator/(Vector2 a, float d);
 static bool operator!=(Vector2 a, Vector2 b);
 static bool operator==(Vector2 a, Vector2 b);
+
+static Vector2 Up		= Vector2{  0.f,  1.f };
+static Vector2 Down		= Vector2{  0.f, -1.f };
+static Vector2 Left		= Vector2{ -1.f,  0.f };
+static Vector2 Right	= Vector2{  1.f,  0.f };
+
+static Vector2 One		= Vector2{ 0.f,  0.f };
+static Vector2 Zero		= Vector2{ 1.f,  1.f };
+
 ManagedStructEnd(Vector2, glm::vec2)
 // ======================================
 // This struct is responsible for Vector3 Types
@@ -44,16 +55,29 @@ ManagedStruct(
 	float, y,
 	float, z
 )
+
 float Length();
 void Normalize();
+
 static float Distance(Vector3 a, Vector3 b);
 static Vector3 operator-(Vector3 a, Vector3 b);
+static Vector3 operator-(Vector3 a);
 static Vector3 operator+(Vector3 a, Vector3 b);
 static Vector3 operator*(Vector3 a, float d);
 static Vector3 operator*(float d, Vector3 a);
 static Vector3 operator/(Vector3 a, float d);
 static bool operator!=(Vector3 a, Vector3 b);
 static bool operator==(Vector3 a, Vector3 b);
+
+static Vector3 Up		= Vector3{ 0.f,  1.f,  0.f };
+static Vector3 Down		= Vector3{ 0.f, -1.f,  0.f };
+static Vector3 Front	= Vector3{ 0.f,  0.f,  1.f };
+static Vector3 Back		= Vector3{ 0.f,  0.f,  -1.f };
+static Vector3 Left		= Vector3{ -1.f,  0.f,  0.f };
+static Vector3 Right	= Vector3{  1.f,  0.f,  0.f };
+
+static Vector3 One		= Vector3{ 0.f,  0.f,  0.f };
+static Vector3 Zero		= Vector3{ 1.f,  1.f,  1.f };
 
 ManagedStructEnd(Vector3,glm::vec3)
 // ======================================
@@ -68,11 +92,13 @@ ManagedStructEnd(Ray, PhysicsRay)
 // ======================================
 // This struct is responsible for RayCastResult Types
 // ======================================
+
 ManagedStruct(
 	RayCastResult, PhysicsRayCastResult,
 	entt::entity, entity,
 	Vector3, point
 )
+
 ManagedStructEnd(RayCastResult, PhysicsRayCastResult)
 
 // ===========================================================================================
@@ -97,8 +123,10 @@ ManagedComponentDeclaration(
 	Vector3, front,
 	Vector3, right,
 	Vector3, up,
+	Vector3, eulerAngles,
 	Vector3, localEulerAngles
 )
+
 void rotate(Vector3 axis, float angle);
 
 ManagedComponentEnd()
@@ -114,7 +142,11 @@ ManagedComponentDeclaration(
 	Rigidbody
 )
 
-void addForce(Vector3 forceVector);
-void addImpulse(Vector3 forceVector);
+void AddForce(Vector3 forceVector);
+void AddImpulse(Vector3 forceVector);
+
+void AddVelocity(Vector3 velocity);
+void SetVelocity(Vector3 velocity);
+Vector3 GetVelocity();
 
 ManagedComponentEnd()

@@ -152,12 +152,27 @@ public:
 public ref class PhysicsAPI {
 public:
 	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance) {
-		return Raycast(Ray{ origin, directionVector }, maxDistance);
+		return Raycast(Ray{ origin, directionVector }, maxDistance, {});
+	}
+
+	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, GameObject^ entityToIgnore) {
+		return Raycast(Ray{ origin, directionVector }, maxDistance, entityToIgnore);
 	}
 
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance) {
 		PhysicsRay ray{ p_ray->native() };
 		auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance);
+
+		if (!opt) {
+			return {}; // returns null, no ray cast..
+		}
+
+		return System::Nullable<RayCastResult>(RayCastResult{ opt.value() });
+	}
+
+	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore) {
+		PhysicsRay ray{ p_ray->native() };
+		auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance, { static_cast<entt::entity>(entityToIgnore->entityID) });
 
 		if (!opt) {
 			return {}; // returns null, no ray cast..

@@ -212,7 +212,7 @@ inline void DisplayProperty<glm::quat>(Editor&, const char* dataMemberName, glm:
 	}
 
 	if (ImGui::Button(ICON_FA_RECYCLE " Reset")) {
-		dataMember = {};
+		dataMember = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 	}
 }
 template<>
@@ -245,8 +245,8 @@ inline void DisplayProperty<EulerAngles>(Editor&, const char* dataMemberName, Eu
 	}
 
 	// Clamp result..
-	eulerAngles.x = std::clamp(eulerAngles.x, -180.f, 180.f);
-	eulerAngles.y = std::clamp(eulerAngles.y, -90.f, 90.f);
+	eulerAngles.y = std::clamp(eulerAngles.y, -180.f, 180.f);
+	eulerAngles.x = std::clamp(eulerAngles.x, -90.f, 90.f);
 	eulerAngles.z = std::clamp(eulerAngles.z, -180.f, 180.f);
 	dataMember = EulerAngles{ {toRadian(eulerAngles.x), toRadian(eulerAngles.y), toRadian(eulerAngles.z)} };
 }

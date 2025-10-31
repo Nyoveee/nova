@@ -259,6 +259,8 @@ void PhysicsManager::updatePhysics(float dt) {
 		bodyInterface.GetPositionAndRotation(rigidbody.bodyId, pos, rotation);
 		transform.position = toGlmVec3(pos) - rigidbody.offset;
 		transform.rotation = toGlmQuat(rotation);
+
+		rigidbody.velocity = toGlmVec3(bodyInterface.GetLinearVelocity(rigidbody.bodyId));
 	}
 
 	for (auto bodyId : nonRotatableBodies) {
@@ -346,7 +348,7 @@ void PhysicsManager::updateTransformBodies()
 			type = JPH::EActivation::DontActivate;
 		}
 
-		if (boxCollider != nullptr)
+		if (boxCollider != nullptr && glm::all(glm::greaterThan(boxCollider->shapeScale, glm::vec3{})))
 		{
 			auto* result = new JPH::ScaledShape(box, toJPHVec3(boxCollider->shapeScale));
 			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
@@ -354,14 +356,14 @@ void PhysicsManager::updateTransformBodies()
 			transformUpdateStack.push(entityId);
 
 		}
-		else if (sphereCollider != nullptr)
+		else if (sphereCollider != nullptr && sphereCollider->radius > 0.f)
 		{
 			auto* result = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
 			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
 			rigidbody.offset = sphereCollider->offset;
 			transformUpdateStack.push(entityId);
 		}
-		else if (capsuleCollider != nullptr)
+		else if (capsuleCollider != nullptr && capsuleCollider->shapeScale > 0.f)
 		{
 			// Scale validation.
 			// JPH::Vec3 validScale = capsule->MakeScaleValid(toJPHVec3(capsuleCollider->shapeScale));
@@ -628,13 +630,23 @@ PhysicsRay PhysicsManager::getRayFromMouse() const {
 	return { nearWorldPos, raycastDirection };
 }
 
-std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, float maxDistance) {
+std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, float maxDistance, std::vector<entt::entity> const& ignoredEntities) {
 	auto&& narrowPhaseQuery = physicsSystem.GetNarrowPhaseQuery();
 	
 	JPH::RayCastResult rayCastResult;
 	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
 
-	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult)) {
+	JPH::IgnoreMultipleBodiesFilter ignoreFilter;
+	
+	for (entt::entity entity : ignoredEntities) {
+		Rigidbody* rigidbody = registry.try_get<Rigidbody>(entity);
+
+		if (rigidbody) {
+			ignoreFilter.IgnoreBody(rigidbody->bodyId);
+		}
+	}
+
+	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult, {}, {}, ignoreFilter)) {
 		JPH::BodyID bodyId = rayCastResult.mBodyID;
 
 		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
@@ -662,4 +674,14 @@ void PhysicsManager::addImpulse(Rigidbody const& rigidbody, glm::vec3 forceVecto
 	}
 
 	bodyInterface.AddImpulse(rigidbody.bodyId, toJPHVec3(forceVector));
+}
+
+void PhysicsManager::setVelocity(Rigidbody& rigidbody, glm::vec3 velocity) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(velocity));
+	rigidbody.velocity = velocity;
 }
