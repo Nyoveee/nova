@@ -155,9 +155,7 @@ AssetManager::~AssetManager() {
 #endif
 
 	// Asset manager serialises all of the resources that is modified directly in the end.
-	serializeAllResources<Controller>();
-	serializeAllResources<Material>();
-	serializeAllResources<CustomShader>();
+	serialiseResources();
 }
 
 void AssetManager::submitCallback(std::function<void()> callback) {
@@ -473,6 +471,12 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 		auto&& [_, parentFolderId] = *folderIterator;
 		directories[parentFolderId].assets.insert(resourceId);
 	}
+}
+
+void AssetManager::serialiseResources() {
+	serializeAllResources<Controller>();
+	serializeAllResources<Material>();
+	serializeAllResources<CustomShader>();
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

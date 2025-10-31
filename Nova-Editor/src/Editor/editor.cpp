@@ -401,11 +401,12 @@ void Editor::startSimulation() {
 	engine.editorControlMouse(false);
 	engine.startSimulation();
 
-#if 1
+	// We serialise everything, resources to current scene when starting a simulation..
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
-#endif
+
+	assetManager.serialiseResources();
 
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
