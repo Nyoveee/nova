@@ -53,6 +53,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
 	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
+	texture2dShader				{ "System/Shader/text.vert",				"System/Shader/image2D.frag"},
 	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
 	mainVAO						{},
 	positionsVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -183,8 +184,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
-	//fonts.push_back(Font::LoadFont("System/Font/calibri.ttf").value());
 }
 
 Renderer::~Renderer() {
@@ -292,6 +291,7 @@ void Renderer::renderUI()
 
 	// UI draw calls here
 	renderTexts();   
+	renderImages();
 
 	glDisable(GL_BLEND);
 }
@@ -829,6 +829,83 @@ void Renderer::renderTexts()
 	glBindVertexArray(mainVAO);
 	glDisable(GL_BLEND);
 }
+
+void Renderer::renderImages()
+{
+	struct Vertex {
+		GLfloat x, y;   // screen position
+		GLfloat s, t;   // texture coordinates
+	};
+
+	texture2dShader.use();
+	texture2dShader.setMatrix("projection", UIProjection);
+	texture2dShader.setInt("image", 0);
+
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	glDisable(GL_DEPTH_TEST);
+	glBindVertexArray(textVAO);
+
+	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
+		// Get texture resource
+		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
+		if (!textureAsset) {
+			continue;
+		}
+
+		GLuint textureId = textureAsset->getTextureId();
+		if (textureId == 0) {
+			continue;
+		}
+
+		glm::vec2 position = glm::vec2(transform.position);
+		glm::vec2 scale = glm::vec2(transform.scale.x, transform.scale.y);
+		float rotation = transform.rotation.z;
+
+		// Build vertex buffer (two triangles)
+		std::vector<Vertex> vertices = {
+			{ position.x,           position.y + scale.y, 0.f, 0.f },
+			{ position.x,           position.y,           0.f, 1.f },
+			{ position.x + scale.x, position.y,           1.f, 1.f },
+			{ position.x,           position.y + scale.y, 0.f, 0.f },
+			{ position.x + scale.x, position.y,           1.f, 1.f },
+			{ position.x + scale.x, position.y + scale.y, 1.f, 0.f },
+		};
+
+
+		// Apply rotation
+		if (rotation != 0.f) {
+			glm::vec2 center = position + scale * 0.5f;
+			float s = sin(rotation);
+			float c = cos(rotation);
+
+			for (auto& v : vertices) {
+				glm::vec2 p = { v.x, v.y };
+				// rotate about center
+				p -= center;
+				// 2d rotation
+				glm::vec2 rotated = { p.x * c - p.y * s, p.x * s + p.y * c };
+				rotated += center;
+
+				v.x = rotated.x;
+				v.y = rotated.y;
+			}
+		}
+
+		// Upload to GPU
+		textVBO.uploadData(vertices, 0);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureId);
+
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	glBindVertexArray(mainVAO);
+	glDisable(GL_BLEND);
+}
+
 
 void Renderer::renderSkinnedModels(Camera const& camera) {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);

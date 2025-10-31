@@ -37,7 +37,8 @@ class Material;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
+	Image
 
 using ScriptName   = std::string;
 
@@ -243,6 +244,14 @@ struct SkyBox {
 	
 	REFLECTABLE(
 		cubeMapId
+	)
+};
+
+struct Image {
+	TypedResourceID<Texture> texture{ INVALID_RESOURCE_ID };
+
+	REFLECTABLE(
+		texture
 	)
 };
 

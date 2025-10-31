@@ -41,20 +41,25 @@ Gizmo::Gizmo(Editor& editor, ECS& ecs) :
 }
 
 void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight,
-					float const* view, float const* proj) {
+					float const* view, float const* proj, bool isUI) {
 	if (!editor.hasAnyEntitySelected()) {
 		return;
 	}
 
 	ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
 	ImGuizmo::SetRect(viewportPosX, viewportPosY, viewportWidth, viewportHeight);
-	ImGui::SetItemAllowOverlap();
 
 	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 
 	Transform& transform = ecs.registry.get<Transform>(selectedEntity);
+	// Make sure object stays in front of camera if it is UI space
+	if (isUI && transform.position.z < 0.0f) {
+		transform.position.z = 0.0f;
+	}
 
-	ImGuizmo::Manipulate(view, proj, operation, ImGuizmo::WORLD, glm::value_ptr(transform.modelMatrix));
+	ImGuizmo::SetOrthographic(isUI);
+	ImGuizmo::MODE mode = isUI ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
+	ImGuizmo::Manipulate(view, proj, operation, mode, glm::value_ptr(transform.modelMatrix));
 
 	if (!ImGuizmo::IsUsing()) {
 		return;

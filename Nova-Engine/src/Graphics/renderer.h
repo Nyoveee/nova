@@ -135,6 +135,9 @@ private:
 	// render all Texts.
 	void renderTexts();
 
+	// render ui images.
+	void renderImages();
+
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
@@ -239,6 +242,7 @@ public:
 	Shader particleShader;
 	Shader skeletalAnimationShader;
 	Shader textShader;
+	Shader texture2dShader;
 
 	// HDR tone mapping shader
 	Shader toneMappingShader;
