@@ -240,6 +240,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ComponentInspection\componentInspector.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
+    <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayPropertiesOverride.h" />
     <ClInclude Include="src\Editor\Configuration\editorConfigUI.h" />
     <ClInclude Include="src\Editor\Configuration\gameConfigUI.h" />
     <ClInclude Include="src\Editor\editor.ipp" />

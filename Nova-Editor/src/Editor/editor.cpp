@@ -401,7 +401,7 @@ void Editor::startSimulation() {
 	engine.editorControlMouse(false);
 	engine.startSimulation();
 
-#if 0
+#if 1
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());

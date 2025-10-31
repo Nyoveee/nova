@@ -30,6 +30,7 @@ public:
 public:
 	ENGINE_DLL_API void update(float dt);
 	ENGINE_DLL_API void initialiseAllControllers();
+	ENGINE_DLL_API void setParameter(Animator& animator, std::string name, Controller::ParameterTypes const& value);
 
 private:
 	ENGINE_DLL_API void handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller);

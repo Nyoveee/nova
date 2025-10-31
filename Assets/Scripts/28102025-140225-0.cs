@@ -26,10 +26,12 @@ class PlayerController : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        if (isMovingForward)
+#if false
+        if (rigidbody != null && cameraObject!= null && isMovingForward)
         {
             rigidbody.addImpulse(cameraObject.front);
         }
+#endif
     }
 
     private void CameraMovement(float deltaMouseX, float deltaMouseY)
