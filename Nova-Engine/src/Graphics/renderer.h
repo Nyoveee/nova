@@ -100,6 +100,9 @@ public:
 	ENGINE_DLL_API void setToneMappingMethod(ToneMappingMethod method);
 	ENGINE_DLL_API ToneMappingMethod getToneMappingMethod() const;
 
+	// UI projection
+	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.

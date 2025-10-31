@@ -40,21 +40,21 @@ Gizmo::Gizmo(Editor& editor, ECS& ecs) :
 	);
 }
 
-void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight, entt::registry& registry) {
+void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight,
+					float const* view, float const* proj, entt::registry& registry) {
 	if (!editor.hasAnyEntitySelected()) {
 		return;
 	}
 
 	ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
 	ImGuizmo::SetRect(viewportPosX, viewportPosY, viewportWidth, viewportHeight);
+	ImGui::SetItemAllowOverlap();
 
 	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 
 	Transform& transform = registry.get<Transform>(selectedEntity);
-	float const* cameraView = glm::value_ptr(editor.engine.renderer.getEditorCamera().view());
-	float const* cameraProjection = glm::value_ptr(editor.engine.renderer.getEditorCamera().projection());
 
-	ImGuizmo::Manipulate(cameraView, cameraProjection, operation, ImGuizmo::WORLD, glm::value_ptr(transform.modelMatrix));
+	ImGuizmo::Manipulate(view, proj, operation, ImGuizmo::WORLD, glm::value_ptr(transform.modelMatrix));
 
 	if (!ImGuizmo::IsUsing()) {
 		return;

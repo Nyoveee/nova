@@ -277,8 +277,12 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 void Renderer::renderUI()
 {
+
 	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.fboId());
 	glViewport(0, 0, uiMainFrameBuffer.getWidth(), uiMainFrameBuffer.getHeight());
+
+	glClearColor(0, 0, 0, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1338,4 +1342,9 @@ void Renderer::setToneMappingMethod(ToneMappingMethod method) {
 
 Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
+}
+
+ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
+{
+	return UIProjection;
 }

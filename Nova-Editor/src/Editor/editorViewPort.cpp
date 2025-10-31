@@ -72,7 +72,10 @@ void EditorViewPort::update(float dt) {
 		static_cast<int>(viewportHeight) 
 	});
 
-	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight, engine.ecs.registry);
+	float const* cameraView = glm::value_ptr(editor.engine.renderer.getEditorCamera().view());
+	float const* cameraProjection = glm::value_ptr(editor.engine.renderer.getEditorCamera().projection());
+	gizmo.update(gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight, 
+				cameraView, cameraProjection, engine.ecs.registry);
 	controlOverlay.update(dt, gameWindowTopLeft.x, gameWindowTopLeft.y, viewportWidth, viewportHeight);
 
 	ImGui::Dummy(ImGui::GetContentRegionAvail());

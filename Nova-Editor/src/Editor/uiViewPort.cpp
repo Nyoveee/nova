@@ -20,11 +20,6 @@ void UIViewPort::update() {
 	isHoveringOver = ImGui::IsWindowHovered();
 	isActive = ImGui::IsWindowFocused();
 
-	if (!isActive) {
-		ImGui::End();
-		return;
-	}
-
 	// Get ImGui window's top left and bottom right.
 	ImVec2 uiWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();
 	ImVec2 uiWindowBottomRight = ImGui::GetWindowContentRegionMax() + ImGui::GetWindowPos();
@@ -69,7 +64,7 @@ void UIViewPort::update() {
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getUIFrameBufferTexture();
 	ImGui::GetWindowDrawList()->AddImage(textureId, uiWindowTopLeft, uiWindowBottomRight, { 0, 1 }, { 1, 0 });
-	
+
 	engine.window.setGameViewPort({ 
 		static_cast<int>(uiWindowTopLeft.x), 
 		static_cast<int>(uiWindowTopLeft.y),
@@ -77,7 +72,9 @@ void UIViewPort::update() {
 		static_cast<int>(viewportHeight) 
 	});
 
-	gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, engine.ecs.uiRegistry);
+	float const* uiView = glm::value_ptr(glm::mat4(1.0f));
+	float const* uiProjection = glm::value_ptr(engine.renderer.getUIProjection());
+	gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, uiView, uiProjection, engine.ecs.uiRegistry);
 
 	ImGui::End();
 	
