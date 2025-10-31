@@ -247,10 +247,12 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		}
 
 		renderObjectIds();
+
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera);
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
+
 		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
@@ -259,6 +261,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera);
 		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
 
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
@@ -277,11 +280,10 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 void Renderer::renderUI()
 {
-
 	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.fboId());
 	glViewport(0, 0, uiMainFrameBuffer.getWidth(), uiMainFrameBuffer.getHeight());
 
-	glClearColor(0, 0, 0, 1);
+	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glEnable(GL_BLEND);
@@ -360,7 +362,7 @@ GLuint Renderer::getGameFrameBufferTexture() const {
 	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
 }
 
-ENGINE_DLL_API GLuint Renderer::getUIFrameBufferTexture() const
+GLuint Renderer::getUIFrameBufferTexture() const
 {
 	return uiMainFrameBuffer.textureIds()[0];
 }
@@ -749,7 +751,7 @@ void Renderer::renderTexts()
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
 
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 
