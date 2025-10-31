@@ -1,6 +1,131 @@
 {
     "entities": [
         {
+            "CameraComponent": {
+                "camStatus": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "CAMERA",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -3.1415908336639404,
+                    "y": -0.04908490926027298,
+                    "z": 3.1415908336639404
+                },
+                "localEulerAngles": {
+                    "x": 1.261210400116397e-06,
+                    "y": 1.1548223000090729e-07,
+                    "z": 5.977826162961719e-07
+                },
+                "localPosition": {
+                    "x": -6.654331207275391,
+                    "y": 76.40824127197266,
+                    "z": 182.82655334472656
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 6.306052000581985e-07,
+                    "y": 5.774130329427862e-08,
+                    "z": 2.988912797263765e-07
+                },
+                "localScale": {
+                    "x": 1.0000120401382446,
+                    "y": 1.0,
+                    "z": 1.0000120401382446
+                },
+                "position": {
+                    "x": 58.560245513916016,
+                    "y": 201.08499145507813,
+                    "z": 95.08798217773438
+                },
+                "rotation": {
+                    "w": -0.024539990350604057,
+                    "x": 8.873566343936545e-07,
+                    "y": 0.9996988773345947,
+                    "z": -8.873586807567335e-07
+                },
+                "scale": {
+                    "x": 1.0000801086425781,
+                    "y": 1.0,
+                    "z": 1.0000801086425781
+                }
+            },
+            "id": 1048585
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "CAMERA HOLDER",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 13153229315663511553
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -3.141592025756836,
+                    "y": -0.04908479377627373,
+                    "z": 3.1415915489196777
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 60.884395599365234,
+                    "y": 124.67684936523438,
+                    "z": 278.0333251953125
+                },
+                "rotation": {
+                    "w": -0.02453993260860443,
+                    "x": 6.040304469934199e-07,
+                    "y": 0.9996988773345947,
+                    "z": -2.49608632429954e-07
+                },
+                "scale": {
+                    "x": 1.000067949295044,
+                    "y": 1.0,
+                    "z": 1.000067949295044
+                }
+            },
+            "id": 1048584
+        },
+        {
             "Animator": {
                 "controllerId": 8081859489068384285
             },
@@ -9,7 +134,8 @@
                 "name": "Mesh",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "SkinnedMeshRenderer": {
                 "materialIds": [
@@ -45,9 +171,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 51.87242126464844,
-                    "y": 32.49858856201172,
-                    "z": -90.69886016845703
+                    "x": -33.681312561035156,
+                    "y": 36.311622619628906,
+                    "z": -79.23147583007813
                 },
                 "rotation": {
                     "w": 1.0,
@@ -61,185 +187,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048581
-        },
-        {
-            "Animator": {
-                "controllerId": 8081859489068384285
-            },
-            "EntityData": {
-                "children": null,
-                "name": "Mesh",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615
-            },
-            "SkinnedMeshRenderer": {
-                "materialIds": null,
-                "modelId": 18446744073709551615
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -64.96990203857422,
-                    "y": 29.885210037231445,
-                    "z": -170.0123748779297
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 4
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "name": "Skybox",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615
-            },
-            "SkyBox": {
-                "cubeMapId": 10967197866904813569
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 0
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "name": "Cube",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": -42.186424255371094
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 134.55712890625,
-                    "y": 17.926498413085938,
-                    "z": 198.7730712890625
-                }
-            },
-            "id": 1
+            "id": 1048579
         },
         {
             "EntityData": {
@@ -247,7 +195,8 @@
                 "name": "LIGHT",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "Light": {
                 "color": {
@@ -307,6 +256,125 @@
             "id": 2
         },
         {
+            "EntityData": {
+                "children": null,
+                "name": "Cube",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -42.186424255371094
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 134.55712890625,
+                    "y": 17.926498413085938,
+                    "z": 198.7730712890625
+                }
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "Skybox",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "SkyBox": {
+                "cubeMapId": 10967197866904813569
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 0
+        },
+        {
             "Animator": {
                 "controllerId": 8081859489068384285
             },
@@ -315,7 +383,70 @@
                 "name": "Mesh",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "SkinnedMeshRenderer": {
+                "materialIds": null,
+                "modelId": 18446744073709551615
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -64.96990203857422,
+                    "y": 29.885210037231445,
+                    "z": -170.0123748779297
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 4
+        },
+        {
+            "Animator": {
+                "controllerId": 8081859489068384285
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Mesh",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "SkinnedMeshRenderer": {
                 "materialIds": [
@@ -351,9 +482,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -33.681312561035156,
-                    "y": 36.311622619628906,
-                    "z": -79.23147583007813
+                    "x": 51.87242126464844,
+                    "y": 32.49858856201172,
+                    "z": -90.69886016845703
                 },
                 "rotation": {
                     "w": 1.0,
@@ -367,132 +498,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048579
-        },
-        {
-            "EntityData": {
-                "children": [
-                    1048585
-                ],
-                "name": "CAMERA HOLDER",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744072863924225
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 13153229315663511553
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": -3.141592025756836,
-                    "y": -0.04908479377627373,
-                    "z": 3.1415915489196777
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 60.884395599365234,
-                    "y": 124.67684936523438,
-                    "z": 278.0333251953125
-                },
-                "rotation": {
-                    "w": -0.02453993260860443,
-                    "x": 6.040304469934199e-07,
-                    "y": 0.9996988773345947,
-                    "z": -2.49608632429954e-07
-                },
-                "scale": {
-                    "x": 1.000067949295044,
-                    "y": 1.0,
-                    "z": 1.000067949295044
-                }
-            },
-            "id": 1048584
-        },
-        {
-            "CameraComponent": {
-                "camStatus": true
-            },
-            "EntityData": {
-                "children": null,
-                "name": "CAMERA",
-                "overridenProperties": null,
-                "parent": 1048584,
-                "prefabID": 4294967295
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": -3.1415908336639404,
-                    "y": -0.04908490926027298,
-                    "z": 3.1415908336639404
-                },
-                "localEulerAngles": {
-                    "x": 1.261210400116397e-06,
-                    "y": 1.1548223000090729e-07,
-                    "z": 5.977826162961719e-07
-                },
-                "localPosition": {
-                    "x": -6.654331207275391,
-                    "y": 76.40824127197266,
-                    "z": 182.82655334472656
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 6.306052000581985e-07,
-                    "y": 5.774130329427862e-08,
-                    "z": 2.988912797263765e-07
-                },
-                "localScale": {
-                    "x": 1.0000120401382446,
-                    "y": 1.0,
-                    "z": 1.0000120401382446
-                },
-                "position": {
-                    "x": 58.560245513916016,
-                    "y": 201.08499145507813,
-                    "z": 95.08798217773438
-                },
-                "rotation": {
-                    "w": -0.024539990350604057,
-                    "x": 8.873566343936545e-07,
-                    "y": 0.9996988773345947,
-                    "z": -8.873586807567335e-07
-                },
-                "scale": {
-                    "x": 1.0000801086425781,
-                    "y": 1.0,
-                    "z": 1.0000801086425781
-                }
-            },
-            "id": 1048585
+            "id": 1048581
         }
     ]
 }

@@ -74,6 +74,7 @@ struct FieldData {
 
 struct EntityData {
 	std::string name													{};
+	std::string tag                                                     {};
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
@@ -81,6 +82,7 @@ struct EntityData {
 
 	REFLECTABLE(
 		name,
+		tag,
 		parent,
 		children,
 		prefabID,

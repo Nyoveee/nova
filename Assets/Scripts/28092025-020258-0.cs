@@ -23,12 +23,12 @@ class PathFinding : Script
 
         if(result != null)
         {
-            Debug.Print("ray hit at " + result.Value.point + ", hitting entity " + result.Value.entity);
+            Debug.Log("ray hit at " + result.Value.point + ", hitting entity " + result.Value.entity);
             NavigationAPI.setDestination(gameObject, result.Value.point);
         }
         else
         {
-            Debug.Print("ray cast miss!");
+            Debug.Log("ray cast miss!");
         }
     }
 

@@ -6,7 +6,8 @@
                 "name": "Entity 1",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "MeshCollider": {
                 "isTrigger": false
@@ -50,8 +51,8 @@
                 },
                 "position": {
                     "x": -20.491737365722656,
-                    "y": 22.314741134643555,
-                    "z": 60.79963684082031
+                    "y": 7.709334850311279,
+                    "z": 20.593536376953125
                 },
                 "rotation": {
                     "w": -0.7071067094802856,
@@ -61,8 +62,8 @@
                 },
                 "scale": {
                     "x": 5.137499809265137,
-                    "y": 5.137312412261963,
-                    "z": 5.137312412261963
+                    "y": 5.137276649475098,
+                    "z": 5.137276649475098
                 }
             },
             "id": 5
@@ -75,8 +76,9 @@
                 "children": null,
                 "name": "Camera",
                 "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 18446744073709551615
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "Scripts": {
                 "scriptDatas": null
@@ -133,7 +135,8 @@
                 "name": "Floor",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "MeshCollider": {
                 "isTrigger": false
@@ -211,13 +214,12 @@
                 "shapeScale": 20.0
             },
             "EntityData": {
-                "children": [
-                    4
-                ],
+                "children": null,
                 "name": "Player",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "MeshRenderer": {
                 "materialIds": [
@@ -311,7 +313,8 @@
                 "name": "Sky Box",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "SkyBox": {
                 "cubeMapId": 10390737114601406469
@@ -368,7 +371,8 @@
                 "name": "Directional Light",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "Light": {
                 "color": {

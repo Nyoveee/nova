@@ -459,7 +459,6 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		if (meshRenderer != nullptr)
 		{
 			auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
-			scale = glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
 
 			if (!model || model->maxDimension == 0)	{
 				scale = transform->scale;
