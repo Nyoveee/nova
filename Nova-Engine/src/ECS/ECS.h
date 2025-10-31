@@ -22,14 +22,14 @@ public:
 public:
 	// Set newParentEntity as the new parent for childEntity.
 	// You can pass entt::null as the new parent and this makes the child entity a root entity with no parent.
-	ENGINE_DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity, entt::registry& _registry);
-	ENGINE_DLL_API void removeEntityParent(entt::entity childEntity, entt::registry& _registry);
+	ENGINE_DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity);
+	ENGINE_DLL_API void removeEntityParent(entt::entity childEntity);
 
 	// Finds out if a given entity is a descendant of parent (direct and indirect children).
-	ENGINE_DLL_API bool isDescendantOf(entt::entity entity, entt::entity parent, entt::registry& _registry);
+	ENGINE_DLL_API bool isDescendantOf(entt::entity entity, entt::entity parent);
 
 	// this deletes an entity whilst preserving transform hirearchy invariant.
-	ENGINE_DLL_API void deleteEntity(entt::entity entity, entt::registry& _registry);
+	ENGINE_DLL_API void deleteEntity(entt::entity entity);
 
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
@@ -50,7 +50,6 @@ public:
 public:
 	// public!
 	entt::registry registry;
-	entt::registry uiRegistry;
 	entt::dispatcher systemEventDispatcher; //note we probably only need one just giga dump all events in here lol. 
 	SceneManager sceneManager;
 

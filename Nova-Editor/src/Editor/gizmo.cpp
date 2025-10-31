@@ -41,7 +41,7 @@ Gizmo::Gizmo(Editor& editor, ECS& ecs) :
 }
 
 void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight,
-					float const* view, float const* proj, entt::registry& registry) {
+					float const* view, float const* proj) {
 	if (!editor.hasAnyEntitySelected()) {
 		return;
 	}
@@ -52,7 +52,7 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 
 	entt::entity selectedEntity = editor.getSelectedEntities()[0];
 
-	Transform& transform = registry.get<Transform>(selectedEntity);
+	Transform& transform = ecs.registry.get<Transform>(selectedEntity);
 
 	ImGuizmo::Manipulate(view, proj, operation, ImGuizmo::WORLD, glm::value_ptr(transform.modelMatrix));
 

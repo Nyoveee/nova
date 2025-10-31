@@ -207,28 +207,18 @@ bool Editor::isActive() const {
 }
 
 bool Editor::isEntityValid(entt::entity entity) const {
-	return engine.ecs.registry.all_of<EntityData, Transform>(entity) ||
-		engine.ecs.uiRegistry.all_of<EntityData, Transform>(entity);
+	return engine.ecs.registry.all_of<EntityData, Transform>(entity);
 }
 
 void Editor::deleteEntity(entt::entity entity) {
-	// Assumes only valid for one registry
-	bool isEntity = engine.ecs.registry.valid(entity);
-	bool isUI = !isEntity && engine.ecs.uiRegistry.valid(entity);
-
-	if (!isEntity && !isUI) {
+	if (!engine.ecs.registry.valid(entity)) {
 		return;
 	}
 
-	ImGuizmo::Enable(false); 
-	ImGuizmo::Enable(true);   
+	ImGuizmo::Enable(false);
+	ImGuizmo::Enable(true);
 
-	if (isEntity) {
-		engine.ecs.deleteEntity(entity, engine.ecs.registry);
-	}
-	else {
-		engine.ecs.deleteEntity(entity, engine.ecs.uiRegistry);
-	}
+	engine.ecs.deleteEntity(entity);
 }
 
 // Our main bulk of code should go here, in the main function.
@@ -241,7 +231,7 @@ void Editor::main(float dt) {
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
-	uiViewPort.update();
+	//uiViewPort.update();
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
@@ -343,7 +333,7 @@ void Editor::updateMaterialMapping() {
 
 void Editor::handleEntityValidity() {
 	if (!isEntityValid(hoveringEntity) && hoveringEntity != entt::null) {
-		if (engine.ecs.registry.valid(hoveringEntity) || engine.ecs.uiRegistry.valid(hoveringEntity)) {
+		if (engine.ecs.registry.valid(hoveringEntity)) {
 			deleteEntity(hoveringEntity);
 		}
 		hoveringEntity = entt::null;
@@ -358,7 +348,7 @@ void Editor::handleEntityValidity() {
 
 		// we found some invalid entity.
 		if (entity != entt::null) {
-			if (engine.ecs.registry.valid(entity) || engine.ecs.uiRegistry.valid(entity)) {
+			if (engine.ecs.registry.valid(entity)) {
 				deleteEntity(entity);
 			}
 			foundInvalidSelectedEntity = true;
@@ -443,16 +433,7 @@ void Editor::handleEntitySelection() {
 		return;
 	}
 
-	entt::registry* registry = nullptr;
-
-	if (engine.ecs.registry.valid(hoveringEntity))
-		registry = &engine.ecs.registry;
-	else if (engine.ecs.uiRegistry.valid(hoveringEntity))
-		registry = &engine.ecs.uiRegistry;
-
-	if (registry) {
-		selectedEntities.push_back(hoveringEntity);
-	}
+	selectedEntities.push_back(hoveringEntity);
 	toOutline(selectedEntities, true);
 }
 
@@ -533,7 +514,6 @@ void Editor::startSimulation() {
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
-	Serialiser::serialiseScene(engine.ecs.uiRegistry, filePath->string.c_str());
 
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;

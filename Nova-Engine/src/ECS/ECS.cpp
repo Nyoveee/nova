@@ -14,9 +14,9 @@ ECS::ECS(Engine& engine) :
 
 ECS::~ECS() {}
 
-void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, entt::registry& _registry) {
-	EntityData& childEntityData = _registry.get<EntityData>(childEntity);
-	EntityData& newParentEntityData = _registry.get<EntityData>(newParentEntity);
+void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity) {
+	EntityData& childEntityData = registry.get<EntityData>(childEntity);
+	EntityData& newParentEntityData = registry.get<EntityData>(newParentEntity);
 
 	if (childEntity == newParentEntity) {
 		return;
@@ -28,20 +28,20 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 
 	// This removes parent child relationship with the entity.
 	if (newParentEntity == entt::null) {
-		removeEntityParent(childEntity, _registry);
+		removeEntityParent(childEntity);
 		return;
 	}
 
 	// 1. We need to check for potential cycle.
 	// A cycle happens when if the childEntity's descendant contains newParentEntity.
-	if (isDescendantOf(newParentEntity, childEntity, _registry)) {
+	if (isDescendantOf(newParentEntity, childEntity)) {
 		Logger::error("Cyclic relationship detected. Failed to set {} as {}'s new parent.", newParentEntityData.name, childEntityData.name);
 		return;
 	}
 
 	// 2. Remove itself from the childrens of the old parent.
 	if (childEntityData.parent != entt::null) {
-		EntityData& oldParentEntityData = _registry.get<EntityData>(childEntityData.parent);
+		EntityData& oldParentEntityData = registry.get<EntityData>(childEntityData.parent);
 		auto iterator = std::ranges::find(oldParentEntityData.children, childEntity);
 
 		if (iterator == std::end(oldParentEntityData.children)) {
@@ -57,17 +57,17 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 	newParentEntityData.children.push_back(childEntity);
 
 	// 4. Properly set the local transform of the entity.
-	engine.transformationSystem.setLocalTransformFromWorld(childEntity, _registry);
+	engine.transformationSystem.setLocalTransformFromWorld(childEntity);
 }
 
-void ECS::removeEntityParent(entt::entity childEntity, entt::registry& _registry) {
-	EntityData& childEntityData = _registry.get<EntityData>(childEntity);
+void ECS::removeEntityParent(entt::entity childEntity) {
+	EntityData& childEntityData = registry.get<EntityData>(childEntity);
 
 	if (childEntityData.parent == entt::null) {
 		return;
 	}
 
-	EntityData& oldParentEntityData = _registry.get<EntityData>(childEntityData.parent);
+	EntityData& oldParentEntityData = registry.get<EntityData>(childEntityData.parent);
 	auto iterator = std::ranges::find(oldParentEntityData.children, childEntity);
 
 	if (iterator == std::end(oldParentEntityData.children)) {
@@ -80,10 +80,10 @@ void ECS::removeEntityParent(entt::entity childEntity, entt::registry& _registry
 }
 
 // Finds out if a given entity is a descendant of parent (direct and indirect children).
-bool ECS::isDescendantOf(entt::entity entity, entt::entity parent, entt::registry& _registry) {
+bool ECS::isDescendantOf(entt::entity entity, entt::entity parent) {
 	if (entity == parent) return false;
 
-	EntityData& parentData = _registry.get<EntityData>(parent);
+	EntityData& parentData = registry.get<EntityData>(parent);
 
 	bool isDescendant = false;
 
@@ -93,7 +93,7 @@ bool ECS::isDescendantOf(entt::entity entity, entt::entity parent, entt::registr
 			break;
 		}
 		else {
-			isDescendant |= isDescendantOf(entity, child, _registry);
+			isDescendant |= isDescendantOf(entity, child);
 			if (isDescendant) break;
 		}
 	}
@@ -101,7 +101,7 @@ bool ECS::isDescendantOf(entt::entity entity, entt::entity parent, entt::registr
 	return isDescendant;
 }
 
-void ECS::deleteEntity(entt::entity entity, entt::registry& _registry) {
+void ECS::deleteEntity(entt::entity entity) {
 	EntityData* entityData = registry.try_get<EntityData>(entity);
 	
 	if (entityData) {
@@ -112,7 +112,7 @@ void ECS::deleteEntity(entt::entity entity, entt::registry& _registry) {
 		entt::entity parent = entityData->parent;
 
 		for (entt::entity child : entityData->children) {
-			EntityData& childEntityData = _registry.get<EntityData>(child);
+			EntityData& childEntityData = registry.get<EntityData>(child);
 			childEntityData.parent = parent;
 		}
 
@@ -121,7 +121,7 @@ void ECS::deleteEntity(entt::entity entity, entt::registry& _registry) {
 		// =======================
 		if (parent != entt::null) {
 			// Remove this entity from list of children
-			EntityData& parentEntityData = _registry.get<EntityData>(parent);
+			EntityData& parentEntityData = registry.get<EntityData>(parent);
 
 			auto iterator = std::ranges::find(parentEntityData.children, entity);
 			assert(iterator != parentEntityData.children.end() && "Invariant broken.");
@@ -135,5 +135,5 @@ void ECS::deleteEntity(entt::entity entity, entt::registry& _registry) {
 	}
 
 	// 3. Delete the entity!
-	_registry.destroy(entity);
+	registry.destroy(entity);
 }
