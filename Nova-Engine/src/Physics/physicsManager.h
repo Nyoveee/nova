@@ -113,6 +113,9 @@ private:
 
 	std::vector<JPH::BodyID> createdBodies;
 
+	// we keep track of bodies, manaully setting their angular velocity to 0.
+	std::vector<JPH::BodyID> nonRotatableBodies;
+
 	//on update transform 
 	std::stack<entt::entity> transformUpdateStack; //when transform is updated push the id on stack. updateTransformBodies read from stack and update transform
 

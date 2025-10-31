@@ -9,31 +9,66 @@
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 3393788201250062337
+                    "nextNode": 3193844213719515157
                 }
             ]
         },
-        "3393788201250062337": {
-            "animation": 10496052774495485969,
-            "id": 3393788201250062337,
-            "name": "Standing React Large From Left_Skin",
+        "10687833993663971347": {
+            "animation": 17413581802136567827,
+            "id": 10687833993663971347,
+            "name": "Standing Run Forward_Skin",
+            "toLoop": true,
+            "transitions": null
+        },
+        "1692377523110592525": {
+            "animation": 1692377523108741129,
+            "id": 1692377523110592525,
+            "name": "Enemy Running",
+            "toLoop": true,
+            "transitions": null
+        },
+        "3193844213719515157": {
+            "animation": 119759233033879573,
+            "id": 3193844213719515157,
+            "name": "Standing Walk Forward_Skin",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": [
+                        {
+                            "check": "Greater",
+                            "name": "isWalking",
+                            "value": {
+                                "__variant_type": 2,
+                                "__variant_value": true
+                            }
+                        }
+                    ],
+                    "nextNode": 3421759780022173711
+                }
+            ]
+        },
+        "3421759780022173711": {
+            "animation": 14374514073784057863,
+            "id": 3421759780022173711,
+            "name": "Enemy Idle (Base)",
+            "toLoop": true,
+            "transitions": null
+        },
+        "8033445798448218123": {
+            "animation": 1692377523108741129,
+            "id": 8033445798448218123,
+            "name": "Enemy Running",
             "toLoop": true,
             "transitions": null
         }
     },
     "parameters": [
         {
-            "name": "GO GO GO GO",
+            "name": "isWalking",
             "value": {
                 "__variant_type": 2,
-                "__variant_value": false
-            }
-        },
-        {
-            "name": "speed",
-            "value": {
-                "__variant_type": 0,
-                "__variant_value": 5
+                "__variant_value": true
             }
         }
     ]

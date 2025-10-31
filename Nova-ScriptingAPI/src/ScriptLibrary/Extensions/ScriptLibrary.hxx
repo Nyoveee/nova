@@ -56,22 +56,22 @@ public ref class Input {
 public:
 	static void MapKey(Key key, EventCallback^ pressCallback) {
 		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key)) };
-		observerIds.Add(observerId);
+		scriptObserverIds.Add(observerId);
 	}
 
 	static void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) { 
 		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key)) };
-		observerIds.Add(observerId);
+		scriptObserverIds.Add(observerId);
 	}
 
 	static void MouseMoveCallback(MouseEventCallback^ callback) {
 		std::size_t observerId{ Interface::engine->inputManager.subscribe<MousePosition>(CreateMouseCallback(callback)) };
-		observerIds.Add(observerId);
+		mouseMoveObserverIds.Add(observerId);
 	}
 
 	static void ScrollCallback(ScrollEventCallback^ callback) {
 		std::size_t observerId{ Interface::engine->inputManager.subscribe<Scroll>(CreateScrollCallback(callback)) };
-		observerIds.Add(observerId);
+		mouseScrollObserverIds.Add(observerId);
 	}
 
 #if 0
@@ -94,15 +94,28 @@ public:
 
 internal:
 	static void ClearAllKeyMapping() {
-		for each (std::size_t observerId in observerIds) {
+		for each (std::size_t observerId in scriptObserverIds) {
 			Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
 		}
 
-		observerIds.Clear();
+		for each (std::size_t observerId in mouseMoveObserverIds) {
+			Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
+		}
+
+		for each (std::size_t observerId in mouseScrollObserverIds) {
+			Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
+		}
+
+		scriptObserverIds.Clear();
+		mouseMoveObserverIds.Clear();
+		mouseScrollObserverIds.Clear();
 	}
 
 private:
-	static System::Collections::Generic::List<std::size_t> observerIds;
+	static System::Collections::Generic::List<std::size_t> scriptObserverIds;
+	static System::Collections::Generic::List<std::size_t> mouseMoveObserverIds;
+	static System::Collections::Generic::List<std::size_t> mouseScrollObserverIds;
+
 };
 
 // ======================================

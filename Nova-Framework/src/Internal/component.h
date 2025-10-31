@@ -214,15 +214,18 @@ struct Rigidbody {
 	glm::vec3 initialVelocity		{};
 	float mass						{};
 
-	JPH::BodyID bodyId				{}; // default constructed body ID is invalid.
+	bool isRotatable				{ true };
 
 	REFLECTABLE(
 		motionType,
 		layer,
 		initialVelocity,
-		mass
+		mass,
+		isRotatable
 	)
 
+	JPH::BodyID bodyId				{}; // default constructed body ID is invalid.
+	
 	// when this rigidbody is instianted, this offset property is set based on whatever collider's offset.
 	// runtime only and is not de/serialised.
 	glm::vec3 offset;

@@ -206,6 +206,7 @@ void PhysicsManager::clear() {
 	bodyInterface.RemoveBodies(createdBodies.data(), static_cast<int>(createdBodies.size()));
 	bodyInterface.DestroyBodies(createdBodies.data(), static_cast<int>(createdBodies.size()));
 	createdBodies.clear();
+	nonRotatableBodies.clear();
 
 	for (auto&& [entityId, rigidbody] : registry.view<Rigidbody>().each()) {
 		rigidbody.bodyId = JPH::BodyID{}; // default constructed bodyID is invalid.
@@ -258,6 +259,10 @@ void PhysicsManager::updatePhysics(float dt) {
 		bodyInterface.GetPositionAndRotation(rigidbody.bodyId, pos, rotation);
 		transform.position = toGlmVec3(pos) - rigidbody.offset;
 		transform.rotation = toGlmQuat(rotation);
+	}
+
+	for (auto bodyId : nonRotatableBodies) {
+		bodyInterface.SetAngularVelocity(bodyId, JPH::Vec3::sZero());
 	}
 
 	// =============================================================
@@ -597,6 +602,10 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 
 	rigidBody->bodyId = bodyId;
 
+	// Record not rotatable objects.. (non static)
+	if (rigidBody->motionType != JPH::EMotionType::Static) {
+		nonRotatableBodies.push_back(bodyId);
+	}
 }
 
 bool PhysicsManager::hasRequiredPhysicsComponents(entt::entity const& entityID) {

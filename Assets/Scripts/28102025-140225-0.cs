@@ -37,17 +37,18 @@ class PlayerController : Script
         if (cameraObject != null)
         {
             // x is pitch, y is yaw
-            Vector3 euler = cameraObject.eulerAngles;
+            Vector3 euler = cameraObject.localEulerAngles;
 
             euler.x -= cameraSensitivity * deltaMouseY * Time.V_DeltaTime();
             euler.y -= cameraSensitivity * deltaMouseX * Time.V_DeltaTime();
             euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
             euler.y = Mathf.Clamp(euler.y, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
 
-            cameraObject.eulerAngles = euler;  
+            cameraObject.localEulerAngles = euler;  
         }
     }
 
+    // ============ INPUT CALLBACK ==========
     private void beginWalkingForward()
     {
         isMovingForward = true;

@@ -64,7 +64,7 @@ ManagedComponentDeclaration(
 	Vector3, front,
 	Vector3, right,
 	Vector3, up,
-	Vector3, eulerAngles
+	Vector3, localEulerAngles
 )
 void rotate(Vector3 axis, float angle);
 
