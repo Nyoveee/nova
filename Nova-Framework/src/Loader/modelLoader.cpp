@@ -9,8 +9,6 @@
 #include "Serialisation/deserializeFromBinary.h"
 
 std::optional<ResourceConstructor> ResourceLoader<Model>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
-	Logger::info("Loading model resource file {}", resourceFilePath.string);
-
 	std::ifstream resourceFile{ resourceFilePath.string, std::ios::binary };
 
 	if (!resourceFile) {

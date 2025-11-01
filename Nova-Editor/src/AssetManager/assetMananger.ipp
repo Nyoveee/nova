@@ -27,15 +27,15 @@ bool AssetManager::compileIntermediaryFile(AssetInfo<T> const& descriptor) {
 	// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
 	std::string command = "\"\"" + compilerPath.string() + "\" \"" + descriptorFilePath.string + "\"\"";
 
-	Logger::info("Running command: {}", command);
+	Logger::debug("Running command: {}", command);
 
 	if (std::system(command.c_str())) {
 		Logger::error("Error compiling {}", descriptorFilePath.string);
 		return false;
 	}
 	else {
-		Logger::info("Successful compiling {}", descriptorFilePath.string);
-		Logger::info("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
+		Logger::debug("Successful compiling {}", descriptorFilePath.string);
+		Logger::debug("Resource file created: {}", AssetIO::getResourceFilename<T>(descriptor.id).string);
 		return true;
 	}
 }
@@ -88,7 +88,7 @@ void AssetManager::updateAssetCache(AssetInfo<T> const& descriptor) const {
 	long long duration = assetEpoch.count();
 
 	cacheFile << duration << '\n';
-	Logger::info("Successfully updated {} cache.", descriptor.filepath.string);
+	Logger::debug("Successfully updated {} cache.", descriptor.filepath.string);
 }
 
 template<ValidResource T>
@@ -155,15 +155,15 @@ void AssetManager::serializeAllResources() {
 		// get resource file..
 		if constexpr (std::same_as<T, Controller>) {
 			Serialiser::serializeToJsonFile(resource->data, outputFile);
-			Logger::info("Serialised controller: {}", static_cast<std::size_t>(resourceId));
+			Logger::debug("Serialised controller: {}", static_cast<std::size_t>(resourceId));
 		}
 		else if constexpr (std::same_as<T, Material>) {
 			Serialiser::serializeToJsonFile(resource->materialData, outputFile);
-			Logger::info("Serialised material: {}", static_cast<std::size_t>(resourceId));
+			Logger::debug("Serialised material: {}", static_cast<std::size_t>(resourceId));
 		}
 		else if constexpr (std::same_as<T, CustomShader>) {
 			Serialiser::serializeToJsonFile(resource->customShaderData, outputFile);
-			Logger::info("Serialised shader: {}", static_cast<std::size_t>(resourceId));
+			Logger::debug("Serialised shader: {}", static_cast<std::size_t>(resourceId));
 		}
 		else {
 			static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
@@ -180,9 +180,9 @@ void AssetManager::loadAllDescriptorFiles() {
 		assert(iterator != AssetIO::subDescriptorDirectories.end() && "This descriptor sub directory is not recorded.");
 		std::filesystem::path const& directory = iterator->second;
 
-		Logger::info("===========================");
-		Logger::info("Loading all {} descriptors.", directory.stem().string());
-		Logger::info("----");
+		Logger::debug("===========================");
+		Logger::debug("Loading all {} descriptors.", directory.stem().string());
+		Logger::debug("----");
 
 		// recursively iterate through a directory and parse all descriptor files.
 		for (const auto& entry : std::filesystem::recursive_directory_iterator{ directory }) {
@@ -196,30 +196,30 @@ void AssetManager::loadAllDescriptorFiles() {
 				continue;
 			}
 
-			Logger::info("Parsing {}..", descriptorFilepath.string());
+			Logger::debug("Parsing {}..", descriptorFilepath.string());
 
 			// We attempt to parse the descriptor file, to find out the original asset it is referencing...
 			std::optional<AssetInfo<T>> opt = AssetIO::parseDescriptorFile<T>(descriptorFilepath);
 			AssetInfo<T> descriptor;
 
 			if (!opt) {
-				Logger::info("Parsing failed, removing invalid descriptor file..\n");
+				Logger::debug("Parsing failed, removing invalid descriptor file..\n");
 				std::filesystem::remove(descriptorFilepath);
 				continue;
 			}
 			// We check the validity of descriptor file, whether the asset path is pointing to a valid file.
 			else if (!std::filesystem::is_regular_file(std::filesystem::path{ opt.value().filepath })) {
-				Logger::info("Descriptor file is pointing to an invalid asset filepath, removing descriptor file..\n");
+				Logger::debug("Descriptor file is pointing to an invalid asset filepath, removing descriptor file..\n");
 				std::filesystem::remove(descriptorFilepath);
 				continue;
 			}
 			else {
-				Logger::info("Sucessfully parsed descriptor file.");
+				Logger::debug("Sucessfully parsed descriptor file.");
 				descriptor = opt.value();
 			}
 			
 			if (hasAssetChanged<T>(descriptor)) {
-				Logger::info("Asset has changed, recompiling it's corresponding resource file..\n");
+				Logger::debug("Asset has changed, recompiling it's corresponding resource file..\n");
 				resourceManager.removeResource(descriptor.id);
 				createResourceFile<T>(descriptor);
 			}
@@ -227,11 +227,11 @@ void AssetManager::loadAllDescriptorFiles() {
 			// If it doesn't exist, it means that this resource file is missing / invalid.
 			// Let's compile the corresponding intermediary asset file and load it to the resource manager.
 			else if (!resourceManager.doesResourceExist(descriptor.id)) {
-				Logger::info("Corresponding resource file does not exist, compiling intermediary asset {}\n", descriptor.filepath.string);
+				Logger::debug("Corresponding resource file does not exist, compiling intermediary asset {}\n", descriptor.filepath.string);
 				createResourceFile<T>(descriptor);
 			}
 			else {
-				Logger::info("A valid resource file exist for this descriptor and asset.\n");
+				Logger::debug("A valid resource file exist for this descriptor and asset.\n");
 				// we record all encountered intermediary assets with corresponding filepaths.
 				intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
 
@@ -246,7 +246,7 @@ void AssetManager::loadAllDescriptorFiles() {
 			}
 		}
 
-		Logger::info("===========================\n");
+		Logger::debug("===========================\n");
 	}(), ...);
 }
 
@@ -324,5 +324,5 @@ void AssetManager::serialiseDescriptor(ResourceID id) {
 	}
 
 	// ============================
-	Logger::info("Successfully serialised descriptor file for {}", assetInfo->filepath.string);
+	Logger::debug("Successfully serialised descriptor file for {}", assetInfo->filepath.string);
 }
