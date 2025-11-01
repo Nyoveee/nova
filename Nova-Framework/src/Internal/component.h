@@ -250,10 +250,12 @@ struct SkyBox {
 struct Image {
 	TypedResourceID<Texture> texture{ INVALID_RESOURCE_ID };
 	Color colorTint{ 1.f,1.f,1.f };
+	Radian angle = 0;
 
 	REFLECTABLE(
 		texture,
-		colorTint
+		colorTint,
+		angle
 	)
 };
 

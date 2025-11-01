@@ -860,7 +860,7 @@ void Renderer::renderImages()
 		texture2dShader.setVec3("tintColor", image.colorTint);
 		glm::vec2 position = glm::vec2(transform.position);
 		glm::vec2 scale = glm::vec2(transform.scale.x, transform.scale.y);
-		float rotation = transform.rotation.z;
+		float rotation = image.angle;
 
 		// Build vertex buffer (two triangles)
 		std::vector<Vertex> vertices = {
