@@ -65,12 +65,8 @@ void UIViewPort::update() {
 	ImTextureID textureId = engine.renderer.getUIFrameBufferTexture();
 	ImGui::GetWindowDrawList()->AddImage(textureId, uiWindowTopLeft, uiWindowBottomRight, { 0, 1 }, { 1, 0 });
 
-	engine.window.setGameViewPort({ 
-		static_cast<int>(uiWindowTopLeft.x), 
-		static_cast<int>(uiWindowTopLeft.y),
-		static_cast<int>(viewportWidth), 
-		static_cast<int>(viewportHeight) 
-	});
+	windowTopLeft = uiWindowTopLeft;
+	windowDimension = { viewportWidth, viewportHeight };
 
 	gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, true);
 	

@@ -22,6 +22,9 @@ public:
 	bool isActive;
 	ControlOverlay controlOverlay;
 
+	ImVec2 windowTopLeft;
+	ImVec2 windowDimension;
+
 private:
 	Editor& editor;
 	Engine& engine;

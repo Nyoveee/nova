@@ -83,10 +83,12 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 		projMat = editor.engine.renderer.getEditorCamera().projection();
 	}
 
+#if 0
 	// Assumes UI is the only ones that would need this
 	if (isUI) {
 		transform.modelMatrix = Math::composeMatrix(transform.position, transform.rotation, transform.scale);
 	}
+#endif
 	ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), operation, mode, glm::value_ptr(transform.modelMatrix));
 
 	if (!ImGuizmo::IsUsing()) {

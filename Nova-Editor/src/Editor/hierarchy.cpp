@@ -95,7 +95,6 @@ void Hierarchy::update() {
 	// Show all game objects..
 	ImGui::Begin(ICON_FA_LIST " Hierarchy");
 
-	isHovering = ImGui::IsWindowHovered();
 
 	if (ecs.sceneManager.hasNoSceneSelected()) {
 		ImGui::Text("No scene loaded.");
@@ -108,7 +107,6 @@ void Hierarchy::update() {
 	ImGui::Text("Scene loaded: Sample Scene");
 	ImGui::Text("Entities: %zu", registry.view<EntityData>().size());
 
-#if 0
 	ImGui::Text("Selected entity: ");
 	ImGui::SameLine();
 
@@ -126,7 +124,7 @@ void Hierarchy::update() {
 
 		ImGui::Text(text.c_str());
 	}
-#endif
+
 	ImGui::Separator();
 
 	if (ImGui::Button(ICON_FA_PLUG_CIRCLE_PLUS "  Create new entity")) {
@@ -134,6 +132,8 @@ void Hierarchy::update() {
 	}
 
 	ImGui::BeginChild("Entities", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders);
+
+	isHovering = ImGui::IsWindowHovered();
 
 	for (auto&& [entity, entityData] : registry.view<EntityData>().each()) {
 		// Any child entities will be displayed by the parent entity in a hierarchy. 

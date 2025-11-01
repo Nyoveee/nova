@@ -290,14 +290,21 @@ struct SkyBox {
 };
 
 struct Image {
-	TypedResourceID<Texture> texture{ INVALID_RESOURCE_ID };
-	Color colorTint{ 1.f,1.f,1.f };
-	Radian angle = 0;
+	TypedResourceID<Texture>	texture		{ INVALID_RESOURCE_ID };
+	ColorA						colorTint	{ 1.f, 1.f, 1.f, 1.f };
+	
+	enum class AnchorMode {
+		Center,
+		BottomLeft,
+		BottomRight,
+		TopLeft,
+		TopRight
+	} anchorMode = AnchorMode::Center;
 
 	REFLECTABLE(
 		texture,
 		colorTint,
-		angle
+		anchorMode
 	)
 };
 

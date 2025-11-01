@@ -20,6 +20,8 @@ int main() {
 	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, Window::Configuration::FullScreen, inputManager, Window::Viewport::ChangeDuringResize};
 	Engine			engine			{ window, inputManager, resourceManager, gameConfig };
 
+	// Start up scene
+	engine.ecs.sceneManager.loadScene(gameConfig.sceneStartUp);
 	engine.startSimulation();
 	engine.setupSimulation();
 

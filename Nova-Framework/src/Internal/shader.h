@@ -63,10 +63,16 @@ public:
 public:
 	FRAMEWORK_DLL_API void compile();
 
+	// used by editor to re-read file paths
+	FRAMEWORK_DLL_API void recompile();
+
 private:
 	GLuint m_id;
 	std::string vShaderCode;
 	std::string fShaderCode;
 
 	std::string errorMessage;
+
+	const char* vertexShaderPath = nullptr;
+	const char* fragmentShaderPath = nullptr;
 };

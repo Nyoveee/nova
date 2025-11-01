@@ -86,6 +86,7 @@ private:
 	void handleEntityValidity();
 	void handleEntityHovering();
 	void handleEntitySelection();
+	void handleUIEntitySelection();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
