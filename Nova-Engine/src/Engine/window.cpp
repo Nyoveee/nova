@@ -277,7 +277,7 @@ namespace {
 
 		bool isAnError = true;
 
-		if (id == 131169 || id == 131185 || id == 131218 || id == 131204 || id == 7) {
+		if (id == 131169 || id == 131185 || id == 131218 || id == 131204 || id == 7 || id == 8) {
 			isAnError = false;
 			return;
 		}
