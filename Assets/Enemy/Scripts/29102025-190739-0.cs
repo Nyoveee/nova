@@ -14,6 +14,8 @@ class Enemy : Script
     private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
     private GameObject? player = null;
     private float distance = 0f;
+    private float currentAttackTime = 0f;
+    private bool emitted = false;
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -21,40 +23,41 @@ class Enemy : Script
     private EnemyStats? enemyStats = null;
     [SerializableField]
     private Animator_? animator = null;
+    [SerializableField]
+    private ParticleEmitter_ emitter = null;
     // This function is first invoked when game starts.
     protected override void init()
     {
+        if (animator != null)
+            animator.PlayAnimation("Enemy Running");
         updateState.Add(EnemyState.Chasing, Update_ChasingState);
         updateState.Add(EnemyState.Attacking, Update_AttackState);
         player = GameObject.FindWithTag("Player");
-        if(animator!= null && enemyStats != null)
-        {
-            animator.SetFloat("Health", enemyStats.health);
-        }
     }
 
     // This function is invoked every fixed update.
     protected override void update()
-    {
-        if (animator != null && player != null)
-        {
-            distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
-            animator.SetFloat("Range", distance);
-        }
+    {      
         updateState[enemyState]();
     }
     private void Update_ChasingState()
     {
-        if(player == null || enemyStats == null)
+        
+        if(player == null || enemyStats == null || animator == null)
         {
             Debug.LogWarning("Missing Reference Found");
             return;
         }
+        distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
+        animator.SetFloat("Range", distance);
         // Change State
-        if(distance <= enemyStats.attackRadius)
+        if (distance <= enemyStats.attackRadius)
         {
+            if (animator != null)
+                animator.PlayAnimation("Enemy Attack");
             enemyState = EnemyState.Attacking;
-            // Change Animation
+            currentAttackTime = 0f;
+            emitted = false;
             return;
         }
         LookAtPlayer();
@@ -67,6 +70,7 @@ class Enemy : Script
     }
     private void Update_AttackState()
     {
+        currentAttackTime += Time.V_FixedDeltaTime();
         if (player == null || enemyStats == null)
         {
             Debug.LogWarning("Missing Reference Found");
@@ -74,15 +78,23 @@ class Enemy : Script
         }
         LookAtPlayer();
         // Change State
-        if (distance > enemyStats.attackRadius)
+        if(currentAttackTime >= enemyStats.particleEmitTime && !emitted)
         {
+            emitted = true;
+            emitter.emit(1000);
+        }
+        if (currentAttackTime >= enemyStats.attackTime)
+        {
+            if (animator != null)
+                animator.PlayAnimation("Enemy Running");
             enemyState = EnemyState.Chasing;
         }
 
     }
     private void LookAtPlayer()
     {
-        gameObject.transform.LookAt(player.transform);
+        if(player!= null)
+            gameObject.transform.LookAt(player.transform);
         Vector3 eulerAngles = gameObject.transform.eulerAngles;
         eulerAngles.x = eulerAngles.z = 0;
         gameObject.transform.eulerAngles = eulerAngles;

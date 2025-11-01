@@ -219,6 +219,7 @@ public:
 	// C# doesn't support cos/sin with floats without conversion
 	static float Cos(float radian) { return std::cos(radian); }
 	static float Sin(float radian) { return std::sin(radian); }
+	static float Atan2(float y, float x) { return std::tan(y / x); }
 	static float Clamp(float value, float min, float max) { return std::clamp(value, min, max); }
 public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);

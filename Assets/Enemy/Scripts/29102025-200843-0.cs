@@ -5,6 +5,8 @@ class EnemyStats : Script
 {
     public float health = 100f;
     public float attackRadius = 2f;
+    public float attackTime = 2.4f;
+    public float particleEmitTime = 1.0f;
     public float damage = 5f;
     public float movementSpeed = 10f;
 }

@@ -18,68 +18,14 @@
             "id": 13268528521715056641,
             "name": "Enemy Idle (Base)",
             "toLoop": true,
-            "transitions": [
-                {
-                    "conditions": [
-                        {
-                            "check": "Lesser",
-                            "name": "Range",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 20.0
-                            }
-                        }
-                    ],
-                    "nextNode": 4045156484860542979
-                },
-                {
-                    "conditions": [
-                        {
-                            "check": "Lesser",
-                            "name": "Health",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 0.0
-                            }
-                        }
-                    ],
-                    "nextNode": 586391971040182281
-                }
-            ]
+            "transitions": null
         },
         "3468695732557168647": {
             "animation": 2369579928887328769,
             "id": 3468695732557168647,
             "name": "Enemy Attack",
             "toLoop": true,
-            "transitions": [
-                {
-                    "conditions": [
-                        {
-                            "check": "Greater",
-                            "name": "Range",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 5.0
-                            }
-                        }
-                    ],
-                    "nextNode": 5774538741771059211
-                },
-                {
-                    "conditions": [
-                        {
-                            "check": "Lesser",
-                            "name": "Health",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 0.0
-                            }
-                        }
-                    ],
-                    "nextNode": 586391971040182281
-                }
-            ]
+            "transitions": null
         },
         "4045156484860542979": {
             "animation": 14475255727259238409,
@@ -94,37 +40,11 @@
                             "name": "Range",
                             "value": {
                                 "__variant_type": 1,
-                                "__variant_value": 5.0
+                                "__variant_value": 10.0
                             }
                         }
                     ],
                     "nextNode": 5774538741771059211
-                },
-                {
-                    "conditions": [
-                        {
-                            "check": "Greater",
-                            "name": "Range",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 20.0
-                            }
-                        }
-                    ],
-                    "nextNode": 13268528521715056641
-                },
-                {
-                    "conditions": [
-                        {
-                            "check": "Lesser",
-                            "name": "Health",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 0.0
-                            }
-                        }
-                    ],
-                    "nextNode": 586391971040182281
                 }
             ]
         },
@@ -137,41 +57,15 @@
                 {
                     "conditions": [
                         {
-                            "check": "Lesser",
-                            "name": "Range",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 5.0
-                            }
-                        }
-                    ],
-                    "nextNode": 3468695732557168647
-                },
-                {
-                    "conditions": [
-                        {
                             "check": "Greater",
                             "name": "Range",
                             "value": {
                                 "__variant_type": 1,
-                                "__variant_value": 5.0
+                                "__variant_value": 10.0
                             }
                         }
                     ],
                     "nextNode": 4045156484860542979
-                },
-                {
-                    "conditions": [
-                        {
-                            "check": "Lesser",
-                            "name": "Health",
-                            "value": {
-                                "__variant_type": 1,
-                                "__variant_value": 0.0
-                            }
-                        }
-                    ],
-                    "nextNode": 586391971040182281
                 }
             ]
         },
@@ -184,13 +78,6 @@
         }
     },
     "parameters": [
-        {
-            "name": "Health",
-            "value": {
-                "__variant_type": 1,
-                "__variant_value": 0.0
-            }
-        },
         {
             "name": "Range",
             "value": {
