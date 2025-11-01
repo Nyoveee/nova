@@ -37,7 +37,8 @@ class Enemy : Script
 
     // This function is invoked every fixed update.
     protected override void update()
-    {      
+    {
+        distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
         updateState[enemyState]();
     }
     private void Update_ChasingState()
@@ -48,7 +49,6 @@ class Enemy : Script
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
         animator.SetFloat("Range", distance);
         // Change State
         if (distance <= enemyStats.attackRadius)
@@ -83,11 +83,19 @@ class Enemy : Script
             emitted = true;
             emitter.emit(1000);
         }
-        if (currentAttackTime >= enemyStats.attackTime)
+        if (animator!= null && currentAttackTime >= enemyStats.attackTime)
         {
-            if (animator != null)
+            if (distance <= enemyStats.attackRadius)
+            {
+                currentAttackTime = 0f;
+                emitted = false;
+            }
+            else
+            {
                 animator.PlayAnimation("Enemy Running");
-            enemyState = EnemyState.Chasing;
+                enemyState = EnemyState.Chasing;
+            }
+              
         }
 
     }
