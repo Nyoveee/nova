@@ -857,7 +857,7 @@ void Renderer::renderImages()
 			continue;
 		}
 
-		//texture2dShader.setVec4("tintColor", glm::vec4(1.0));
+		texture2dShader.setVec3("tintColor", image.colorTint);
 		glm::vec2 position = glm::vec2(transform.position);
 		glm::vec2 scale = glm::vec2(transform.scale.x, transform.scale.y);
 		float rotation = transform.rotation.z;
@@ -875,7 +875,7 @@ void Renderer::renderImages()
 
 		// Apply rotation
 		if (rotation != 0.f) {
-			glm::vec2 center = position + scale * 0.5f;
+			glm::vec2 center = position;
 			float s = sin(rotation);
 			float c = cos(rotation);
 
