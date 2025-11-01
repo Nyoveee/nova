@@ -857,18 +857,19 @@ void Renderer::renderImages()
 			continue;
 		}
 
+		//texture2dShader.setVec4("tintColor", glm::vec4(1.0));
 		glm::vec2 position = glm::vec2(transform.position);
 		glm::vec2 scale = glm::vec2(transform.scale.x, transform.scale.y);
 		float rotation = transform.rotation.z;
 
 		// Build vertex buffer (two triangles)
 		std::vector<Vertex> vertices = {
-			{ position.x,           position.y + scale.y, 0.f, 0.f },
-			{ position.x,           position.y,           0.f, 1.f },
-			{ position.x + scale.x, position.y,           1.f, 1.f },
-			{ position.x,           position.y + scale.y, 0.f, 0.f },
-			{ position.x + scale.x, position.y,           1.f, 1.f },
-			{ position.x + scale.x, position.y + scale.y, 1.f, 0.f },
+			{ position.x - scale.x * 0.5f, position.y + scale.y * 0.5f, 0.f, 0.f },
+			{ position.x - scale.x * 0.5f, position.y - scale.y * 0.5f, 0.f, 1.f },
+			{ position.x + scale.x * 0.5f, position.y - scale.y * 0.5f, 1.f, 1.f },
+			{ position.x - scale.x * 0.5f, position.y + scale.y * 0.5f, 0.f, 0.f },
+			{ position.x + scale.x * 0.5f, position.y - scale.y * 0.5f, 1.f, 1.f },
+			{ position.x + scale.x * 0.5f, position.y + scale.y * 0.5f, 1.f, 0.f },
 		};
 
 
@@ -880,7 +881,6 @@ void Renderer::renderImages()
 
 			for (auto& v : vertices) {
 				glm::vec2 p = { v.x, v.y };
-				// rotate about center
 				p -= center;
 				// 2d rotation
 				glm::vec2 rotated = { p.x * c - p.y * s, p.x * s + p.y * c };
