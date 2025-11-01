@@ -231,7 +231,7 @@ void Editor::main(float dt) {
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
-	//uiViewPort.update();
+	uiViewPort.update();
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();

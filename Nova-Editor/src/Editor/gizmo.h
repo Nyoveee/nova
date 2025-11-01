@@ -11,8 +11,7 @@ public:
 	Gizmo(Editor& editor, ECS& ecs);
 
 public:
-	void update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight, 
-				float const* view, float const* proj, bool isUI = false);
+	void update(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight, bool isUI = false);
 
 private:
 	ECS& ecs;

@@ -72,17 +72,8 @@ void UIViewPort::update() {
 		static_cast<int>(viewportHeight) 
 	});
 
-	float const* uiView = glm::value_ptr(glm::mat4(1.0f));
-	//float const* uiProjection = glm::value_ptr(engine.renderer.getUIProjection());
-	//gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, uiView, uiProjection, engine.ecs.uiRegistry);
-	float const* uiProjection = glm::value_ptr(glm::ortho(
-		0.0f,
-		viewportWidth,
-		0.0f,
-		viewportHeight
-	));
-	//gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, uiView, uiProjection, true);
-
+	gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, true);
+	
 	ImGui::End();
 	
 }
