@@ -77,6 +77,11 @@ void Transform_::LookAt(Transform_^ target) {
 	glm::vec3 nativeEuler= glm::eulerAngles(quat);
 	eulerAngles = Vector3{ nativeEuler.x,nativeEuler.y, nativeEuler.z };
 }
+
+// =================================================================
+// Particle Emitter
+// =================================================================
+
 void ParticleEmitter_::emit(int count)
 {
 	Transform* transform = Convert(gameObject->transform);
@@ -84,6 +89,10 @@ void ParticleEmitter_::emit(int count)
 	if(transform && emitter)
 		Interface::engine->particleSystem.emit(*transform, *emitter, count);
 }
+
+// =================================================================
+// Rigidbody
+// =================================================================
 
 void Rigidbody_::AddForce(Vector3 forceVector) {
 	Rigidbody* rigidbody = nativeComponent();
@@ -99,17 +108,6 @@ void Rigidbody_::AddImpulse(Vector3 forceVector) {
 	if (rigidbody) {
 		Interface::engine->physicsManager.addImpulse(*rigidbody, forceVector.native());
 	}
-}
-void Animator_::SetBool(System::String^ name, bool value){
-	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
-}
-
-void Animator_::SetFloat(System::String^ name, float value){
-	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
-}
-
-void Animator_::SetInteger(System::String^ name, int value){
-	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
 void Rigidbody_::AddVelocity(Vector3 velocity) {
@@ -136,4 +134,24 @@ Vector3 Rigidbody_::GetVelocity() {
 	}
 
 	return Vector3{};
+}
+
+// =================================================================
+// Animator
+// =================================================================
+
+void Animator_::SetBool(System::String^ name, bool value){
+	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
+}
+
+void Animator_::SetFloat(System::String^ name, float value){
+	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
+}
+
+void Animator_::SetInteger(System::String^ name, int value){
+	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
+}
+
+void Animator_::PlayAnimation(System::String^ name) {
+	Interface::engine->animationSystem.playAnimation(*nativeComponent(), Convert(name));
 }

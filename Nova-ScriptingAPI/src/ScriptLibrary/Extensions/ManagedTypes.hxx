@@ -159,6 +159,7 @@ void SetVelocity(Vector3 velocity);
 Vector3 GetVelocity();
 
 ManagedComponentEnd()
+
 // ======================================
 // Animator Component
 // ======================================
@@ -168,4 +169,7 @@ ManagedComponentDeclaration(
 void SetBool(System::String^ name, bool value);
 void SetFloat(System::String^ name, float value);
 void SetInteger(System::String^ name, int value);
+
+void PlayAnimation(System::String^ name);
+
 ManagedComponentEnd()

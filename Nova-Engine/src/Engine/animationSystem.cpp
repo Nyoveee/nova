@@ -128,6 +128,30 @@ void AnimationSystem::setParameter(Animator& animator, std::string name, Control
 	}
 }
 
+void AnimationSystem::playAnimation(Animator& animator, std::string name) {
+	auto&& [controller, _] = resourceManager.getResource<Controller>(animator.controllerId);
+	
+	if (!controller) {
+		Logger::warn("Invalid controller.");
+		return;
+	}
+
+	// Attempt to find the animation..
+	auto iterator = std::ranges::find_if(controller->data.nodes, [&](auto const& pair) {
+		Controller::Node const& node = pair.second;
+		return node.name == name;
+	});
+
+	if (iterator == controller->data.nodes.end()) {
+		Logger::warn("Invalid animation name.");
+		return;
+	}
+
+	animator.currentNode = iterator->first;
+	animator.timeElapsed = 0;
+	animator.currentAnimation = iterator->second.animation;
+}
+
 void AnimationSystem::updateAnimator(float dt) {
 	entt::registry& registry = engine.ecs.registry;
 
