@@ -108,6 +108,26 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 	}
 }
 
+void AnimationSystem::setParameter(Animator& animator, std::string name, Controller::ParameterTypes const& value){
+	auto&& iter = std::find_if(std::begin(animator.parameters), std::end(animator.parameters), [&](auto&& parameter) {return parameter.name == name; });
+	if (iter != std::end(animator.parameters)) {
+		std::visit(
+			[&](auto& param,auto const& setterValue) {
+				using ParameterType = std::decay_t<decltype(param)>;
+				using SetterType = std::decay_t<decltype(setterValue)>;
+				if constexpr (std::is_same_v<ParameterType, SetterType>)
+					param = setterValue;
+				else
+					Logger::warn("Attempting to set animator parameter of a different type");
+			}
+		, iter->value,value);
+	}
+	else
+	{
+		Logger::warn("Attempting to set animator parameter with invalid name");
+	}
+}
+
 void AnimationSystem::updateAnimator(float dt) {
 	entt::registry& registry = engine.ecs.registry;
 

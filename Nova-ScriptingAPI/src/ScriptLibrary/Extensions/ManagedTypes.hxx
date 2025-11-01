@@ -116,6 +116,12 @@ ManagedStructEnd(RayCastResult, PhysicsRayCastResult)
 // Defining a component here allows the C# script to call GetComponent<...> to retrieve the components
 // of a given entity.
 // ===========================================================================================
+
+
+
+// ======================================
+// Transform Component
+// ======================================
 ManagedComponentDeclaration(
 	Transform,					// Creates a new managed component Transform_ that is associated with the Transform component
 	Vector3, position,			// Transform_ now has data member position, of type Vector3 which is associated with glm::vec3 (type of original data member).
@@ -128,20 +134,23 @@ ManagedComponentDeclaration(
 )
 
 void rotate(Vector3 axis, float angle);
-
+void LookAt(Transform_^ target);
 ManagedComponentEnd()
-
+// ======================================
+// ParticleEmitter Component
+// ======================================
 ManagedComponentDeclaration(
 	ParticleEmitter
 )
 void emit(int count);
 
 ManagedComponentEnd()
-
+// ======================================
+// RigidBody Component
+// ======================================
 ManagedComponentDeclaration(
 	Rigidbody
 )
-
 void AddForce(Vector3 forceVector);
 void AddImpulse(Vector3 forceVector);
 
@@ -149,4 +158,14 @@ void AddVelocity(Vector3 velocity);
 void SetVelocity(Vector3 velocity);
 Vector3 GetVelocity();
 
+ManagedComponentEnd()
+// ======================================
+// Animator Component
+// ======================================
+ManagedComponentDeclaration(
+	Animator
+)
+void SetBool(System::String^ name, bool value);
+void SetFloat(System::String^ name, float value);
+void SetInteger(System::String^ name, int value);
 ManagedComponentEnd()

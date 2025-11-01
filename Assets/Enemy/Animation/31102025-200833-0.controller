@@ -1,0 +1,202 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 13268528521715056641
+                }
+            ]
+        },
+        "13268528521715056641": {
+            "animation": 9863569708831850503,
+            "id": 13268528521715056641,
+            "name": "Enemy Idle (Base)",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 20.0
+                            }
+                        }
+                    ],
+                    "nextNode": 4045156484860542979
+                },
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Health",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 0.0
+                            }
+                        }
+                    ],
+                    "nextNode": 586391971040182281
+                }
+            ]
+        },
+        "3468695732557168647": {
+            "animation": 2369579928887328769,
+            "id": 3468695732557168647,
+            "name": "Enemy Attack",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": [
+                        {
+                            "check": "Greater",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 5.0
+                            }
+                        }
+                    ],
+                    "nextNode": 5774538741771059211
+                },
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Health",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 0.0
+                            }
+                        }
+                    ],
+                    "nextNode": 586391971040182281
+                }
+            ]
+        },
+        "4045156484860542979": {
+            "animation": 14475255727259238409,
+            "id": 4045156484860542979,
+            "name": "Enemy Running",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 5.0
+                            }
+                        }
+                    ],
+                    "nextNode": 5774538741771059211
+                },
+                {
+                    "conditions": [
+                        {
+                            "check": "Greater",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 20.0
+                            }
+                        }
+                    ],
+                    "nextNode": 13268528521715056641
+                },
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Health",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 0.0
+                            }
+                        }
+                    ],
+                    "nextNode": 586391971040182281
+                }
+            ]
+        },
+        "5774538741771059211": {
+            "animation": 2369579928887328773,
+            "id": 5774538741771059211,
+            "name": "Enemy Forward",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 5.0
+                            }
+                        }
+                    ],
+                    "nextNode": 3468695732557168647
+                },
+                {
+                    "conditions": [
+                        {
+                            "check": "Greater",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 5.0
+                            }
+                        }
+                    ],
+                    "nextNode": 4045156484860542979
+                },
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Health",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 0.0
+                            }
+                        }
+                    ],
+                    "nextNode": 586391971040182281
+                }
+            ]
+        },
+        "586391971040182281": {
+            "animation": 12169412718045528067,
+            "id": 586391971040182281,
+            "name": "Enemy Death",
+            "toLoop": true,
+            "transitions": null
+        }
+    },
+    "parameters": [
+        {
+            "name": "Health",
+            "value": {
+                "__variant_type": 1,
+                "__variant_value": 0.0
+            }
+        },
+        {
+            "name": "Range",
+            "value": {
+                "__variant_type": 1,
+                "__variant_value": 0.0
+            }
+        }
+    ]
+}

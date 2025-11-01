@@ -47,6 +47,7 @@ class PlayerController : Script
     int jumpCount = 0;
 
     // Dash
+    private float dashTimerCap;
     private float dashTimer;
     private bool isDashing = false;
     private float dashTimeElapsed = 0f;
@@ -61,7 +62,8 @@ class PlayerController : Script
         CameraAPI.LockMouse();
 
         // Dash
-        dashTimer = dashCooldown * dashCount;
+        dashTimerCap = dashCooldown * dashCount;
+        dashTimer = dashTimerCap;
 
         // Controls..
         Input.MouseMoveCallback(CameraMovement);
@@ -113,6 +115,7 @@ class PlayerController : Script
         // ===================================
         else
         {
+            dashTimer = Mathf.Clamp(dashTimer + Time.V_DeltaTime(), 0f, dashTimerCap);
             handleMovement();
         }
 
@@ -308,7 +311,7 @@ class PlayerController : Script
         {
             // Default forward..
             dashVector = new Vector3(cameraObject.front.x, 0, cameraObject.front.z);
-        }
+        } 
 
         dashVector.Normalize();
         rigidbody.SetVelocity(dashVector * dashStrength);

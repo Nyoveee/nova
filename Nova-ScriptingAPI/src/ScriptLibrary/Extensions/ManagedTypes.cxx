@@ -1,6 +1,8 @@
 #include "ManagedTypes.hxx"
 #include "nova_math.h"
 #include "API/ConversionUtils.hxx"
+#include "ResourceManager/resourceManager.h"
+#include "ScriptLibrary.hxx"
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm/gtx/quaternion.hpp>
@@ -68,7 +70,13 @@ void Transform_::rotate(Vector3 axis, float degrees) {
 		transform->rotation = glm::rotate(transform->rotation, static_cast<float>(toRadian(degrees)), axis.native());
 	}
 }
-
+void Transform_::LookAt(Transform_^ target) {
+	Vector3 direction = target->position - position;
+	direction.Normalize();
+	glm::quat quat = glm::quatLookAt(direction.native(), glm::vec3{0,1,0});
+	glm::vec3 nativeEuler= glm::eulerAngles(quat);
+	eulerAngles = Vector3{ nativeEuler.x,nativeEuler.y, nativeEuler.z };
+}
 void ParticleEmitter_::emit(int count)
 {
 	Transform* transform = Convert(gameObject->transform);
@@ -91,6 +99,17 @@ void Rigidbody_::AddImpulse(Vector3 forceVector) {
 	if (rigidbody) {
 		Interface::engine->physicsManager.addImpulse(*rigidbody, forceVector.native());
 	}
+}
+void Animator_::SetBool(System::String^ name, bool value){
+	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
+}
+
+void Animator_::SetFloat(System::String^ name, float value){
+	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
+}
+
+void Animator_::SetInteger(System::String^ name, int value){
+	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
 void Rigidbody_::AddVelocity(Vector3 velocity) {
