@@ -99,6 +99,9 @@ constexpr unsigned int maxBodyPairs = 1024;
 // Note: This value is low because this is a simple test. For a real project use something in the order of 10240.
 constexpr unsigned int maxContactConstraints = 1024;
 
+// GRAVITY!
+const	  JPH::Vec3	   gravityStrength = JPH::Vec3(0.0f, -15.0f, 0.0f);
+
 PhysicsManager::PhysicsManager(Engine& engine) :
 	// we use a placeholder to invoke a function before constructing the rest of the data member.
 	placeholder		{ [&](){ 
@@ -171,6 +174,8 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	// Note that this is called from a job so whatever you do here needs to be thread safe.
 	// Registering one is entirely optional.
 	physicsSystem.SetContactListener(&contactListener);
+
+	physicsSystem.SetGravity(gravityStrength);
 
 }
 

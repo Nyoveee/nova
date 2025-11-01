@@ -408,13 +408,14 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 
-	// enable wireframe mode only for debug overlay.
-	if (!isOnWireframeMode) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
 
 	debugShader.use();
+	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 0.2f });
+	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
+
+	// enable wireframe mode only for debug overlay.
 	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 1.f });
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	glDisable(GL_DEPTH_TEST);
@@ -427,9 +428,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	// ================================================
 
 	// disable wireframe mode, restoring to normal fill
-	if (!isOnWireframeMode) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
@@ -1092,6 +1091,9 @@ void Renderer::renderObjectIds() {
 
 	glDisable(GL_BLEND);
 	glDisable(GL_DITHER);
+
+	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);

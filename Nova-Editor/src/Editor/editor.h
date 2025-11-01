@@ -120,6 +120,12 @@ private:
 	// This indicates whether the editor is in simulation mode.
 	bool inSimulationMode;
 	bool isThereChangeInSimulationMode;
+
+	std::string assetSearchQuery;
+	std::string uppercaseSearchQuery;
+	std::string uppercaseAssetName;
+
+
 };
 
 #include "editor.ipp"
