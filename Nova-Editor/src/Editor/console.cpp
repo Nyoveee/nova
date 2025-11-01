@@ -46,7 +46,7 @@ void Console::update() {
             break;
         case LogLevel::Debug:
             shouldShow = showDebug;
-            color = ImVec4(0.0f, 1.0f, 0.0f, 1.0f); // Green
+            color = ImVec4(0.3f, 0.6f, 0.3f, 1.0f);  // Green
             break;
         case LogLevel::Error:
             shouldShow = showErrors;

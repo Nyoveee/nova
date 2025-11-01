@@ -64,9 +64,9 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	// With descriptors, we verify if every intermediary file has it's corresponding resources asset compiled.
 	// If not, we compile the intermediary asset to it's specific resource file and load it into the resources manager.
 	// ========================================
-	Logger::info("===========================");
-	Logger::info("Loading all descriptor files..");
-	Logger::info("===========================\n");
+	Logger::debug("===========================");
+	Logger::debug("Loading all descriptor files..");
+	Logger::debug("===========================\n");
 
 	loadAllDescriptorFiles<ALL_RESOURCES>();
 
@@ -77,9 +77,9 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	// When we iterate through all the intermediate assets, we also keep track of the directory it is in to record
 	// the entire directory structure for asset viewer UI.
 	// ========================================
-	Logger::info("===========================");
-	Logger::info("Verifying every intermediary assets..");
-	Logger::info("===========================\n");
+	Logger::debug("===========================");
+	Logger::debug("Verifying every intermediary assets..");
+	Logger::debug("===========================\n");
 
 	for (const auto& entry : std::filesystem::recursive_directory_iterator{ AssetIO::assetDirectory }) {
 		processAssetFilePath(entry.path());
@@ -100,13 +100,13 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 			auto iterator = assetToDescriptor.find(id);
 			
 			if (iterator == assetToDescriptor.end()) {
-				Logger::info("Found dangling resource file {} with no corresponding descriptor file, removing it..", resourcePath.string());
+				Logger::debug("Found dangling resource file {} with no corresponding descriptor file, removing it..", resourcePath.string());
 				std::filesystem::remove(resourcePath);
 				resourceManager.removeResource(id);
 			}
 		}
 		catch (std::exception const&) {
-			Logger::info("Failed to get resource id {} from file, removing it..", resourcePath.string());
+			Logger::debug("Failed to get resource id {} from file, removing it..", resourcePath.string());
 		}
 	}
 
@@ -272,7 +272,7 @@ bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
 	}
 
 	descriptor->filepath = newFullFilePath;
-	Logger::info("Asset filepath rename successful.");
+	Logger::debug("Asset filepath rename successful.");
 
 	return true;
 }
@@ -328,7 +328,7 @@ void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
 }
 
 void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& assetFilePath) {
-	Logger::info("Asset watcher notices that asset {} has changed, recompiling it's corresponding resource file..\n", assetFilePath.string);
+	Logger::debug("Asset watcher notices that asset {} has changed, recompiling it's corresponding resource file..\n", assetFilePath.string);
 
 	auto recreateResourceFile = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
@@ -405,8 +405,8 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 
 	// intermediary asset not recorded (missing corresponding descriptor and resource file.)
 	if (iterator == std::end(intermediaryAssetsToDescriptor)) {
-		Logger::info("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string);
-		Logger::info("");
+		Logger::debug("Intermediary asset {} has missing file descriptor and resource file. Creating one..", assetPath.string);
+		Logger::debug("");
 
 		// we need to generate the corresponding descriptor file for this intermediary file.
 		resourceId = parseIntermediaryAssetFile(assetPath);
