@@ -13,6 +13,7 @@ class Enemy : Script
     private EnemyState enemyState = EnemyState.Chasing;
     private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
     private GameObject? player = null;
+   
     private float distance = 0f;
     private float currentAttackTime = 0f;
     private bool emitted = false;
@@ -25,6 +26,8 @@ class Enemy : Script
     private Animator_? animator = null;
     [SerializableField]
     private ParticleEmitter_ emitter = null;
+    [SerializableField]
+    private Rigidbody_? rigidbody = null;
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -55,17 +58,19 @@ class Enemy : Script
         {
             if (animator != null)
                 animator.PlayAnimation("Enemy Attack");
+            rigidbody.SetVelocity(Vector3.Zero);
             enemyState = EnemyState.Attacking;
             currentAttackTime = 0f;
             emitted = false;
             return;
         }
         LookAtPlayer();
-        // Move Enemy using transform for now
+        // Move Enemy 
         Vector3 direction = player.transform.position - gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
-        gameObject.transform.position = gameObject.transform.position + direction * enemyStats.movementSpeed*Time.V_FixedDeltaTime();
+        rigidbody.SetVelocity(direction * enemyStats.movementSpeed);
+        
 
     }
     private void Update_AttackState()
