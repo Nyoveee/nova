@@ -53,6 +53,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
 	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
+	texture2dShader				{ "System/Shader/text.vert",				"System/Shader/image2D.frag"},
 	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
 	mainVAO						{},
 	positionsVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -87,6 +88,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
 	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	uiMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8  } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true },
@@ -285,17 +287,20 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 		renderObjectIds();
 
+		// Main render function
+		render(gameMainFrameBuffer, gameCamera);
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
+
+		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
 	// ===============================================
-	// Editor mode would also need to do the same work to render into the game's FBO..
-	[[fallthrough]];
 	case RenderConfig::Game:
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera);
-
-		// Bind back to default FBO for ImGui or Nova-Game to work on.
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
 
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
@@ -307,6 +312,28 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		assert(false && "Forget to account for a case.");
 		break;
 	}
+
+	// Bind back to default FBO for ImGui or Nova-Game to work on.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::renderUI()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.fboId());
+	glViewport(0, 0, uiMainFrameBuffer.getWidth(), uiMainFrameBuffer.getHeight());
+
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+
+	// UI draw calls here
+	renderTexts();   
+	renderImages();
+
+	glDisable(GL_BLEND);
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
@@ -325,7 +352,6 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
-	renderTexts();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -336,12 +362,36 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 }
 
 void Renderer::renderToDefaultFBO() {
+
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// === 2. Blend the UI FBO on top ===
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
+}
+
+void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	overlayShader.use();
+	overlayShader.setImageUniform("overlay", 0);
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
 }
 
 GLuint Renderer::getEditorFrameBufferTexture() const {
@@ -350,6 +400,11 @@ GLuint Renderer::getEditorFrameBufferTexture() const {
 
 GLuint Renderer::getGameFrameBufferTexture() const {
 	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+}
+
+GLuint Renderer::getUIFrameBufferTexture() const
+{
+	return uiMainFrameBuffer.textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -735,7 +790,7 @@ void Renderer::renderTexts()
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
 
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 
@@ -813,6 +868,83 @@ void Renderer::renderTexts()
 	glBindVertexArray(mainVAO);
 	glDisable(GL_BLEND);
 }
+
+void Renderer::renderImages()
+{
+	struct Vertex {
+		GLfloat x, y;   // screen position
+		GLfloat s, t;   // texture coordinates
+	};
+
+	texture2dShader.use();
+	texture2dShader.setMatrix("projection", UIProjection);
+	texture2dShader.setInt("image", 0);
+
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	glDisable(GL_DEPTH_TEST);
+	glBindVertexArray(textVAO);
+
+	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
+		// Get texture resource
+		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
+		if (!textureAsset) {
+			continue;
+		}
+
+		GLuint textureId = textureAsset->getTextureId();
+		if (textureId == 0) {
+			continue;
+		}
+
+		texture2dShader.setVec3("tintColor", image.colorTint);
+		glm::vec2 position = glm::vec2(transform.position);
+		glm::vec2 scale = glm::vec2(transform.scale.x, transform.scale.y);
+		float rotation = image.angle;
+
+		// Build vertex buffer (two triangles)
+		std::vector<Vertex> vertices = {
+			{ position.x - scale.x * 0.5f, position.y + scale.y * 0.5f, 0.f, 0.f },
+			{ position.x - scale.x * 0.5f, position.y - scale.y * 0.5f, 0.f, 1.f },
+			{ position.x + scale.x * 0.5f, position.y - scale.y * 0.5f, 1.f, 1.f },
+			{ position.x - scale.x * 0.5f, position.y + scale.y * 0.5f, 0.f, 0.f },
+			{ position.x + scale.x * 0.5f, position.y - scale.y * 0.5f, 1.f, 1.f },
+			{ position.x + scale.x * 0.5f, position.y + scale.y * 0.5f, 1.f, 0.f },
+		};
+
+
+		// Apply rotation
+		if (rotation != 0.f) {
+			glm::vec2 center = position;
+			float s = sin(rotation);
+			float c = cos(rotation);
+
+			for (auto& v : vertices) {
+				glm::vec2 p = { v.x, v.y };
+				p -= center;
+				// 2d rotation
+				glm::vec2 rotated = { p.x * c - p.y * s, p.x * s + p.y * c };
+				rotated += center;
+
+				v.x = rotated.x;
+				v.y = rotated.y;
+			}
+		}
+
+		// Upload to GPU
+		textVBO.uploadData(vertices, 0);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureId);
+
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	glBindVertexArray(mainVAO);
+	glDisable(GL_BLEND);
+}
+
 
 void Renderer::renderSkinnedModels(Camera const& camera) {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
@@ -1339,4 +1471,9 @@ void Renderer::setToneMappingMethod(ToneMappingMethod method) {
 
 Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
+}
+
+ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
+{
+	return UIProjection;
 }

@@ -1,30 +1,16 @@
 {
     "entities": [
         {
-            "Animator": {
-                "controllerId": 8911638931419971587
-            },
             "EntityData": {
                 "children": null,
-                "name": "Entity 1",
+                "name": "Skybox",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": null,
-                        "scriptId": 200674448099901461
-                    }
-                ]
-            },
-            "SkinnedMeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 12801895783709179919
+            "SkyBox": {
+                "cubeMapId": 10967197866904813569
             },
             "Transform": {
                 "eulerAngles": {
@@ -54,7 +40,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -25.619609832763672,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -70,7 +56,68 @@
                     "z": 1.0
                 }
             },
-            "id": 3
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "Cube",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 134.55712890625,
+                    "y": 17.926498413085938,
+                    "z": 198.7730712890625
+                }
+            },
+            "id": 1
         },
         {
             "EntityData": {
@@ -139,16 +186,22 @@
             "id": 2
         },
         {
+            "Animator": {
+                "controllerId": 8081859489068384285
+            },
             "EntityData": {
                 "children": null,
-                "name": "Skybox",
+                "name": "Mesh",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "SkyBox": {
-                "cubeMapId": 10967197866904813569
+            "SkinnedMeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 587869709114884109
             },
             "Transform": {
                 "eulerAngles": {
@@ -194,7 +247,7 @@
                     "z": 1.0
                 }
             },
-            "id": 0
+            "id": 1048579
         },
         {
             "EntityData": {
@@ -256,6 +309,70 @@
                 }
             },
             "id": 1048584
+        },
+        {
+            "CameraComponent": {
+                "camStatus": true
+            },
+            "EntityData": {
+                "children": null,
+                "name": "CAMERA",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -3.141592025756836,
+                    "y": -0.049084845930337906,
+                    "z": 3.1415915489196777
+                },
+                "localEulerAngles": {
+                    "x": 8.526525704022e-14,
+                    "y": 5.2154305762996955e-08,
+                    "z": -2.380323314756655e-13
+                },
+                "localPosition": {
+                    "x": 1.5581436157226563,
+                    "y": 141.2745361328125,
+                    "z": 15.653411865234375
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 4.263263190824179e-14,
+                    "y": 2.6077152881498478e-08,
+                    "z": -1.1901616573783275e-13
+                },
+                "localScale": {
+                    "x": 0.9999953508377075,
+                    "y": 1.0,
+                    "z": 0.9999953508377075
+                },
+                "position": {
+                    "x": 58.56010437011719,
+                    "y": 265.9513854980469,
+                    "z": 262.4740905761719
+                },
+                "rotation": {
+                    "w": -0.02453995868563652,
+                    "x": 6.040302764631633e-07,
+                    "y": 0.9996988773345947,
+                    "z": -2.49608632429954e-07
+                },
+                "scale": {
+                    "x": 1.000063419342041,
+                    "y": 1.0,
+                    "z": 1.000063419342041
+                }
+            },
+            "id": 1048585
         }
     ]
 }

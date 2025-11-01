@@ -53,10 +53,13 @@ public:
 
 	void renderMain(RenderConfig renderConfig);
 
+	void renderUI();
+
 	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
 	
 	void renderToDefaultFBO();
 
+	void overlayUIToBuffer(PairFrameBuffer& target);
 public:
 	// =============================================
 	// Public facing API.
@@ -65,6 +68,7 @@ public:
 	// get the main texture of the main frame buffer.
 	ENGINE_DLL_API GLuint getEditorFrameBufferTexture() const;
 	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getUIFrameBufferTexture() const;
 
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
@@ -95,6 +99,9 @@ public:
 	// Tone mapping controls
 	ENGINE_DLL_API void setToneMappingMethod(ToneMappingMethod method);
 	ENGINE_DLL_API ToneMappingMethod getToneMappingMethod() const;
+
+	// UI projection
+	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
 
 public:
 	// =============================================
@@ -127,6 +134,9 @@ private:
 
 	// render all Texts.
 	void renderTexts();
+
+	// render ui images.
+	void renderImages();
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();
@@ -202,6 +212,7 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
+	FrameBuffer uiMainFrameBuffer;
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
@@ -232,6 +243,7 @@ public:
 	Shader particleShader;
 	Shader skeletalAnimationShader;
 	Shader textShader;
+	Shader texture2dShader;
 
 	// HDR tone mapping shader
 	Shader toneMappingShader;

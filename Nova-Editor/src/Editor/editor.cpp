@@ -45,6 +45,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	editorViewPort					{ *this },
+	uiViewPort						{ *this },
 	componentInspector				{ *this },
 	assetViewerUi					{ *this, assetManager, resourceManager },
 	assetManagerUi					{ *this, assetViewerUi },
@@ -220,8 +221,8 @@ void Editor::deleteEntity(entt::entity entity) {
 		return;
 	}
 
-	ImGuizmo::Enable(false); 
-	ImGuizmo::Enable(true);   
+	ImGuizmo::Enable(false);
+	ImGuizmo::Enable(true);
 
 	engine.ecs.deleteEntity(entity);
 }
@@ -236,6 +237,7 @@ void Editor::main(float dt) {
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
+	uiViewPort.update();
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();

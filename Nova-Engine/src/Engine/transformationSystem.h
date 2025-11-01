@@ -41,6 +41,7 @@ private:
 	// Recalculate model matrix due to changes in ancestor's world transform.
 	void recalculateModelMatrix(entt::entity entity);
 
+
 private:
 	entt::registry& registry;
 	entt::dispatcher& eventDispatcher;
