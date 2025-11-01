@@ -7,6 +7,7 @@
 #include "type_alias.h"
 
 class Model;
+class ScriptAsset;
 
 class Controller : public Resource {
 public:

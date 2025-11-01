@@ -203,6 +203,10 @@ struct Animator {
 	
 	// this will be instantiated in runtime.
 	std::vector<Controller::Parameter> parameters;
+
+	// each animator component keeps track of already executed animation events keyframes..
+	// this container is reset everytime it changes animation..
+	std::unordered_set<int> executedAnimationEvents;
 };
 
 struct Rigidbody {

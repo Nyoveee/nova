@@ -68,7 +68,8 @@ void AnimationSystem::initialiseAllControllers() {
 		animator.timeElapsed = 0.f;
 		animator.currentNode = NO_CONTROLLER_NODE;
 		animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
-			
+		animator.executedAnimationEvents.clear();
+
 		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
 
 		if (!controllerPtr) {
@@ -99,12 +100,14 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 		animator.currentNode = transition.nextNode;
 		animator.timeElapsed = 0;
 		animator.currentAnimation = iterator->second.animation;
+		animator.executedAnimationEvents.clear();
 		return;
 	}
 
 	// no valid transition found..
 	if (currentNode.toLoop) {
 		animator.timeElapsed = 0;
+		animator.executedAnimationEvents.clear();
 	}
 }
 
@@ -202,6 +205,16 @@ void AnimationSystem::updateAnimator(float dt) {
 		else {
 			// advance time..
 			animator.timeElapsed += dt;
+
+			// trigger animation event if possible..
+			int frameIndex = static_cast<int>(animator.timeElapsed * animation->animations[0].ticksPerSecond);
+
+			for (auto&& animationEvent : currentNode.animationEvents) {
+				if (frameIndex > animationEvent.key && !animator.executedAnimationEvents.count(animationEvent.key)) {
+					animator.executedAnimationEvents.insert(animationEvent.key);
+					engine.scriptingAPIManager.executeFunction(entityId, animationEvent.scriptId, animationEvent.functionName);
+				}
+			};
 		}
 	}
 }

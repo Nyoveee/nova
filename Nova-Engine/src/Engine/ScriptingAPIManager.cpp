@@ -129,6 +129,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		
 		setScriptFieldData		                = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
 		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
+		executeFunction_						= GetFunctionPtr<ExecuteFunctionPtr>("Interface", "executeEntityScriptFunction");
 
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
@@ -397,4 +398,8 @@ void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity 
 }
 
 void ScriptingAPIManager::onCollisionExit([[maybe_unused]] entt::entity entityOne, [[maybe_unused]] entt::entity entityTwo) {}
+
+void ScriptingAPIManager::executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName) {
+	executeFunction_(static_cast<unsigned>(entityOne), static_cast<unsigned long long>(scriptID), functionName);
+}
 

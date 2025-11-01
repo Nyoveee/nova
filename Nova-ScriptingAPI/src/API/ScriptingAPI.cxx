@@ -57,6 +57,31 @@ void Interface::handleOnCollision(EntityID entityOne, EntityID entityTwo) {
 	}
 }
 
+void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId, std::string const& name) {
+	System::String^ functionName = msclr::interop::marshal_as<System::String^>(name);
+
+	if (!gameObjectScripts->ContainsKey(entityID)) {
+		Logger::warn("Attempt to invoke script function of unknown entity {}", entityID);
+		return;
+	}
+
+	if (!gameObjectScripts[entityID]->ContainsKey(scriptId)) {
+		Logger::warn("Attempt to invoke unknown script id {} of entity {}", scriptId, entityID);
+		return;
+	}
+
+	Script^ script = gameObjectScripts[entityID][scriptId];
+	System::Type^ scriptType = script->GetType();
+
+	try {
+		System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+		function->Invoke(script, nullptr);
+	}
+	catch (System::Exception^ ex) {
+		Logger::warn("Error when invoking function name {} of script id {} of entity {}", msclr::interop::marshal_as<std::string>(ex->ToString()), scriptId, entityID);
+	}
+}
+
 std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 {
 	using BindingFlags = System::Reflection::BindingFlags;
