@@ -42,6 +42,8 @@ public:
 	static void error(std::string_view rt_fmt_str, Args&&... args);
 	template<typename ...Args>
 	static void debug(std::string_view rt_fmt_str, Args&&... args);
+	
+	//static void log(LogLevel level, const std::string& message);
 };
 
 #include "Logger.ipp"

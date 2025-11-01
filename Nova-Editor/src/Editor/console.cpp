@@ -27,12 +27,13 @@ void Console::update() {
     // Log display area
     ImGui::BeginChild("LogArea", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-    const auto logEntries = Logger::getLogEntries(); // Now returns by value
+    const auto logEntries = Logger::getLogEntries();
+
+    //static int lastLogCount = 0; // For tracking new log entries
 
     for (const auto& entry : logEntries) {
-        // Filter based on log level
         bool shouldShow = false;
-        ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // white
+        ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // default white
 
         switch (entry.level) {
         case LogLevel::Info:
@@ -56,7 +57,6 @@ void Console::update() {
         if (shouldShow) {
             ImGui::PushStyleColor(ImGuiCol_Text, color);
 
-            // format: [timestamp] [level] message
             std::string levelStr;
             switch (entry.level) {
             case LogLevel::Info: levelStr = "[Info]"; break;
@@ -70,10 +70,18 @@ void Console::update() {
         }
     }
 
-    // for auto scroll button
-    if (autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()) {
+    static bool previousAutoScroll = true; // remember previous frame state
+    static int lastLogCount = 0;           // remember previous number of logs
+
+    int currentLogCount = (int)logEntries.size();
+
+    if (autoScroll && (!previousAutoScroll || currentLogCount != lastLogCount)) {
         ImGui::SetScrollHereY(1.0f);
     }
+
+    previousAutoScroll = autoScroll;
+    lastLogCount = currentLogCount;
+
 
     ImGui::EndChild();
     ImGui::End();

@@ -17,6 +17,11 @@ void Logger::ensureInitialized()
         if (!logEntries) {
             logEntries = std::make_unique<std::vector<LogEntry>>();
             logMutex = std::make_unique<std::mutex>();
+
+          /*  Logger::log(LogLevel::Info, "Testing auto-scroll...");
+            Logger::log(LogLevel::Warning, "This is a warning message");
+            Logger::log(LogLevel::Error, "An error occurred!");
+            Logger::log(LogLevel::Debug, "Debugging value = 42");*/
         }
     }
 }
@@ -54,6 +59,11 @@ std::string Logger::getUniqueTimedId() {
 #pragma warning(default:4996)
 	return ss.str() + std::to_string(counter++);
 }
+
+//void Logger::log(LogLevel level, const std::string& message)
+//{
+//    addLogEntry(level, message);
+//}
 
 void Logger::addLogEntry(LogLevel level, const std::string& message)
 {
