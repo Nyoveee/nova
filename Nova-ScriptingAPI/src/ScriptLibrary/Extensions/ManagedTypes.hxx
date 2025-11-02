@@ -76,7 +76,17 @@ static Vector3 One();
 static Vector3 Zero();
 
 ManagedStructEnd(Vector3, glm::vec3)
-
+// ======================================
+// This struct is responsible for ColorA Types
+// ======================================
+ManagedStruct(
+	ColorAlpha, glm::vec4,
+	float, r,
+	float, g,
+	float, b,
+	float, a
+)
+ManagedStructEnd(ColorAlpha, glm::vec4)
 // ======================================
 // This struct is responsible for Quartenion Types
 // ======================================
@@ -191,4 +201,20 @@ void SetInteger(System::String^ name, int value);
 
 void PlayAnimation(System::String^ name);
 
+ManagedComponentEnd()
+// ======================================
+// Image Component
+// ======================================
+ManagedComponentDeclaration(
+	Image,
+	ColorAlpha, colorTint
+)
+ManagedComponentEnd()
+// ======================================
+// Text Component
+// ======================================
+ManagedComponentDeclaration(
+	Text
+)
+void SetText(System::String^ text);
 ManagedComponentEnd()

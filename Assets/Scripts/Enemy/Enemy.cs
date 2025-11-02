@@ -45,7 +45,9 @@ class Enemy : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        distance = Vector3.Distance(player.transform.position, gameObject.transform.position);
+        Vector3 playerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
+        Vector3 enemyPosition = new Vector3(gameObject.transform.position.x,0,gameObject.transform.position.z);
+        distance = Vector3.Distance(playerPosition, enemyPosition);
         updateState[enemyState]();
     }
     public bool IsEngagedInBattle()
