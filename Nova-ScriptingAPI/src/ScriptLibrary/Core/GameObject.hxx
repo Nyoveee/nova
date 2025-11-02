@@ -5,13 +5,17 @@ public ref class GameObject : ComponentAccessor
 {
 internal:
 	static GameObject^ GetReference(System::UInt32 p_entityID);
+
 public:
 	static GameObject^ Find(System::String^ name);
 	static array<GameObject^>^ FindGameObjectsWithTag(System::String^ tag);
 	static GameObject^ FindWithTag(System::String^ tag);
+
 public:
 	virtual System::String^ ToString() override sealed;
 	GameObject^ GetParent();
+	
+	void Destroy();
 public:
 	property Transform_^ transform{
 		Transform_^ get();

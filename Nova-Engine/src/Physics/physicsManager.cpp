@@ -495,7 +495,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 	{
 		if (automateColliderScaling)
 		{
-			shape = new JPH::ScaledShape(box, box->MakeScaleValid(toJPHVec3(scale)));
+			shape = new JPH::ScaledShape(box, box->MakeScaleValid(toJPHVec3(boxCollider->shapeScale)));
 		}
 		else
 		{
@@ -509,7 +509,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 	{
 		if (automateColliderScaling)
 		{
-			shape = new JPH::ScaledShape(sphere, sphere->MakeScaleValid(toJPHVec3(scale)) );
+			shape = new JPH::ScaledShape(sphere, sphere->MakeScaleValid(toJPHVec3(glm::vec3(sphereCollider->radius))));
 		}
 		else
 		{
@@ -519,15 +519,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		rigidBody->offset = sphereCollider->offset;
 	}
 	else if (capsuleCollider != nullptr) {
-		if (automateColliderScaling)
-		{
-			shape = new JPH::ScaledShape(capsule, sphere->MakeScaleValid(toJPHVec3(scale)));
-		}
-		else
-		{
-			shape = new JPH::ScaledShape(capsule, JPH::Vec3(capsuleCollider->shapeScale, capsuleCollider->shapeScale, capsuleCollider->shapeScale));
-		}
-
+		shape = new JPH::ScaledShape(capsule, JPH::Vec3(capsuleCollider->shapeScale, capsuleCollider->shapeScale, capsuleCollider->shapeScale));
 		rigidBody->offset = capsuleCollider->offset;
 	}
 	else if (meshRenderer && meshCollider) {
@@ -613,6 +605,8 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 
 	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityID));
 	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody->initialVelocity));
+	bodyInterface.SetIsSensor(bodyId, rigidBody->isTrigger);
+
 	createdBodies.push_back(bodyId);
 
 	rigidBody->bodyId = bodyId;

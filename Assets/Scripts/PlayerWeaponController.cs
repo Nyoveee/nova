@@ -6,7 +6,10 @@ using ScriptingAPI;
 
 class PlayerWeaponController : Script
 {
-    public Prefab bulletPrefab;
+    public required Prefab bulletPrefab;
+    public required Transform_ gunHolder;   // for gun origin.
+    public required Transform_ camera;      // for gun path
+    public required float bulletSpeed = 10f;
 
     protected override void init()
     {
@@ -19,6 +22,10 @@ class PlayerWeaponController : Script
 
     private void SpawnBullet()
     {
-        // ObjectAPI.Instantiate(bulletPrefab);
+        GameObject bullet = ObjectAPI.Instantiate(bulletPrefab, gunHolder.position, null);
+
+        if (bullet != null) {
+            bullet.getComponent<Rigidbody_>().SetVelocity(camera.front * bulletSpeed);
+        }
     }
 }

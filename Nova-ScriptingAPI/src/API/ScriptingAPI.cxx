@@ -177,6 +177,10 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 	gameObjectScripts[entityID][scriptId] = newScript;
 }
 
+void Interface::initializeScript(EntityID entityID, ScriptID scriptId) {
+	gameObjectScripts[entityID][scriptId]->callInit();
+}
+
 void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
 {
 	if (!gameObjectScripts->ContainsKey(entityID) || !gameObjectScripts[entityID]->ContainsKey(scriptID)) {

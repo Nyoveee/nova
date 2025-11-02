@@ -3,12 +3,25 @@
 // Editor will automatically rename and recompile this file.
 class BulletScript : Script
 {
+    public required float lifeTime = 2f;
+
+    private float timeElapsed = 0;
+
     // This function is first invoked when game starts.
     protected override void init()
     {}
 
     // This function is invoked every fixed update.
     protected override void update()
-    {}
+    {
+        if(timeElapsed > lifeTime)
+        {
+
+        }
+        else
+        {
+            timeElapsed += Time.V_FixedDeltaTime();
+        }
+    }
 
 }

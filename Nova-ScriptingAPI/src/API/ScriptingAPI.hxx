@@ -16,6 +16,7 @@ public ref class Interface
 public:
 	using ScriptID = System::UInt64;
 	using EntityID = System::UInt32;
+
 internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
 	static void loadAssembly();
@@ -25,6 +26,7 @@ internal:
 
 	// static void editorModeUpdate();
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
+	static void initializeScript(EntityID entityID, ScriptID scriptId);
 
 	static void removeEntity(EntityID entityID);
 	static void removeEntityScript(EntityID entityID, ScriptID scriptId);

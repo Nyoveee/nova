@@ -241,7 +241,8 @@ public:
 // ======================================
 public ref class ObjectAPI {
 public:
-	static void Instantiate(ScriptingAPI::Prefab prefab) {
-		Interface::engine->prefabManager.instantiatePrefab(prefab.getId());
-	}
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent);
 };
