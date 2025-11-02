@@ -15,10 +15,38 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 4,
                                     "__variant_value": 21
                                 },
                                 "name": "dashBar"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 14
+                                },
+                                "name": "healthBar"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 22
+                                },
+                                "name": "image"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 11
+                                },
+                                "name": "healthText"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 2.0
+                                },
+                                "name": "damageFadeTime"
                             }
                         ],
                         "scriptId": 11697264835426484225
@@ -74,7 +102,7 @@
         {
             "EntityData": {
                 "children": null,
-                "name": "Entity 1",
+                "name": "Damaged Background",
                 "overridenProperties": null,
                 "parent": 4,
                 "prefabID": 18446744073709551615,
@@ -83,55 +111,55 @@
             "Image": {
                 "anchorMode": "Center",
                 "colorTint": {
-                    "a": 0.3921568691730499,
-                    "b": 0.2631866931915283,
-                    "g": 0.2631866931915283,
-                    "r": 0.748275876045227
+                    "a": 0.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
                 },
-                "texture": 1041167539507003581
+                "texture": 17567337514139779073
             },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
-                    "z": 0.3487185835838318
+                    "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
-                    "z": 0.3487185835838318
+                    "z": 0.0
                 },
                 "localPosition": {
-                    "x": 214.12799072265625,
-                    "y": 943.3621826171875,
+                    "x": 957.0046997070313,
+                    "y": 540.0,
                     "z": -100.0
                 },
                 "localRotation": {
-                    "w": 0.9848378896713257,
+                    "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 0.1734771877527237
+                    "z": 0.0
                 },
                 "localScale": {
-                    "x": 630.0001220703125,
-                    "y": 630.0001220703125,
-                    "z": 1.2599999904632568
+                    "x": 2113.546875,
+                    "y": 1212.631591796875,
+                    "z": 1.0
                 },
                 "position": {
-                    "x": 217.123291015625,
-                    "y": 943.3621826171875,
+                    "x": 960.0,
+                    "y": 540.0,
                     "z": 0.0
                 },
                 "rotation": {
-                    "w": 0.9848378896713257,
+                    "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 0.1734771877527237
+                    "z": 0.0
                 },
                 "scale": {
-                    "x": 630.0001220703125,
-                    "y": 630.0001220703125,
-                    "z": 1.2599999904632568
+                    "x": 2113.546875,
+                    "y": 1212.631591796875,
+                    "z": 1.0
                 }
             },
             "id": 22
@@ -168,7 +196,7 @@
                 },
                 "localPosition": {
                     "x": 0.003216385841369629,
-                    "y": 3.814697265625e-06,
+                    "y": 5.066394805908203e-06,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -184,7 +212,7 @@
                 },
                 "position": {
                     "x": 273.2760009765625,
-                    "y": 93.58793640136719,
+                    "y": 93.58805847167969,
                     "z": 1.0
                 },
                 "rotation": {
@@ -213,10 +241,10 @@
             "Image": {
                 "anchorMode": "TopLeft",
                 "colorTint": {
-                    "a": 0.19607843458652496,
-                    "b": 0.4275861978530884,
-                    "g": 0.4275861978530884,
-                    "r": 0.4275861978530884
+                    "a": 0.3921568691730499,
+                    "b": 0.4274509847164154,
+                    "g": 0.4274509847164154,
+                    "r": 0.4274509847164154
                 },
                 "texture": 7
             },
@@ -233,7 +261,7 @@
                 },
                 "localPosition": {
                     "x": 0.0032159090042114258,
-                    "y": 2.5033950805664063e-06,
+                    "y": 3.814697265625e-06,
                     "z": -1.0
                 },
                 "localRotation": {
@@ -249,7 +277,7 @@
                 },
                 "position": {
                     "x": 273.2757263183594,
-                    "y": 93.58780670166016,
+                    "y": 93.58792877197266,
                     "z": 0.0
                 },
                 "rotation": {
@@ -269,8 +297,8 @@
         {
             "EntityData": {
                 "children": [
-                    16,
-                    21
+                    21,
+                    16
                 ],
                 "name": "Dash Container",
                 "overridenProperties": null,
@@ -722,77 +750,84 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 8,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.0010000000474974513
                                 },
                                 "name": "cameraSensitivity"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
-                                    "__variant_value": 5.0
+                                    "__variant_type": 13,
+                                    "__variant_value": 20.0
                                 },
                                 "name": "maximumMoveSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
-                                    "__variant_value": 20.0
+                                    "__variant_type": 13,
+                                    "__variant_value": 5.0
                                 },
                                 "name": "accelerationStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
-                                    "__variant_value": 10.0
+                                    "__variant_type": 13,
+                                    "__variant_value": 15.0
                                 },
                                 "name": "jumpStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 7,
+                                    "__variant_type": 12,
                                     "__variant_value": 2
                                 },
                                 "name": "maxJumpCount"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
-                                    "__variant_value": 0.5
+                                    "__variant_type": 13,
+                                    "__variant_value": 0.25
                                 },
                                 "name": "dashDuration"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 7,
+                                    "__variant_type": 12,
                                     "__variant_value": 3
                                 },
                                 "name": "dashCount"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
+                                    "__variant_type": 13,
                                     "__variant_value": 3.0
                                 },
                                 "name": "dashCooldown"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
-                                    "__variant_value": 20.0
+                                    "__variant_type": 13,
+                                    "__variant_value": 75.0
                                 },
                                 "name": "dashStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "maxHealth"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
                                     "__variant_value": 27
                                 },
                                 "name": "cameraObject"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 4,
                                     "__variant_value": 25
                                 },
                                 "name": "gameUIManager"
@@ -805,7 +840,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.8784545660018921,
+                    "y": 0.8784540891647339,
                     "z": 0.0
                 },
                 "localEulerAngles": {
@@ -835,9 +870,9 @@
                     "z": 0.0
                 },
                 "rotation": {
-                    "w": 0.9050805568695068,
+                    "w": 0.9050806164741516,
                     "x": 0.0,
-                    "y": 0.4252401888370514,
+                    "y": 0.42524001002311707,
                     "z": 0.0
                 },
                 "scale": {
@@ -957,8 +992,8 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 6
+                                    "__variant_type": 13,
+                                    "__variant_value": 0.0
                                 },
                                 "name": "transitionTime"
                             }
@@ -1016,9 +1051,9 @@
         {
             "EntityData": {
                 "children": [
-                    11,
                     12,
                     15,
+                    11,
                     22
                 ],
                 "name": "UI",
@@ -1106,12 +1141,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752936601638794,
+                    "y": -0.20752952992916107,
                     "z": -2.7903568744659424
                 },
                 "localEulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752936601638794,
+                    "y": -0.20752952992916107,
                     "z": -2.7903568744659424
                 },
                 "localPosition": {
@@ -1120,13 +1155,13 @@
                     "z": -36.7643928527832
                 },
                 "localRotation": {
-                    "w": -0.002322694519534707,
+                    "w": -0.002322787418961525,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "localScale": {
-                    "x": 1.0005053281784058,
+                    "x": 1.0005035400390625,
                     "y": 1.0002168416976929,
                     "z": 1.0002104043960571
                 },
@@ -1136,13 +1171,13 @@
                     "z": -36.7643928527832
                 },
                 "rotation": {
-                    "w": -0.002322694519534707,
+                    "w": -0.002322787418961525,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "scale": {
-                    "x": 1.0005053281784058,
+                    "x": 1.0005035400390625,
                     "y": 1.0002168416976929,
                     "z": 1.0002104043960571
                 }
@@ -1238,12 +1273,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752936601638794,
+                    "y": -0.20752954483032227,
                     "z": -2.7903568744659424
                 },
                 "localEulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752936601638794,
+                    "y": -0.20752954483032227,
                     "z": -2.7903568744659424
                 },
                 "localPosition": {
@@ -1252,13 +1287,13 @@
                     "z": -36.06193542480469
                 },
                 "localRotation": {
-                    "w": -0.0023226989433169365,
+                    "w": -0.0023227918427437544,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "localScale": {
-                    "x": 1.000378131866455,
+                    "x": 1.0003762245178223,
                     "y": 1.0001912117004395,
                     "z": 1.0001250505447388
                 },
@@ -1268,13 +1303,13 @@
                     "z": -36.06193542480469
                 },
                 "rotation": {
-                    "w": -0.0023226989433169365,
+                    "w": -0.0023227918427437544,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "scale": {
-                    "x": 1.000378131866455,
+                    "x": 1.0003762245178223,
                     "y": 1.0001912117004395,
                     "z": 1.0001250505447388
                 }
@@ -1440,8 +1475,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 79.36190795898438,
-                    "y": 76.74176025390625,
+                    "x": 67.73727416992188,
+                    "y": 84.4915542602539,
                     "z": -99.0
                 },
                 "localRotation": {
@@ -1456,8 +1491,8 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 82.35720825195313,
-                    "y": 76.74176025390625,
+                    "x": 70.73257446289063,
+                    "y": 84.4915542602539,
                     "z": 1.0
                 },
                 "rotation": {
@@ -1908,7 +1943,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.8784544467926025,
+                    "y": 0.8784539103507996,
                     "z": 0.0
                 },
                 "localEulerAngles": {
@@ -1935,12 +1970,12 @@
                 "position": {
                     "x": 27.562719345092773,
                     "y": 0.0005569905042648315,
-                    "z": -3.07958762277849e-05
+                    "z": -3.079586895182729e-05
                 },
                 "rotation": {
-                    "w": 0.9050805568695068,
+                    "w": 0.9050806164741516,
                     "x": 0.0,
-                    "y": 0.425240159034729,
+                    "y": 0.4252399504184723,
                     "z": 0.0
                 },
                 "scale": {
@@ -2055,7 +2090,7 @@
                 },
                 "localPosition": {
                     "x": -0.08759307861328125,
-                    "y": 2.713402271270752,
+                    "y": 2.713409900665283,
                     "z": 2.023620367050171
                 },
                 "localRotation": {
@@ -2066,12 +2101,12 @@
                 },
                 "localScale": {
                     "x": 1.0000009536743164,
-                    "y": 0.9998369216918945,
-                    "z": 1.000046968460083
+                    "y": 0.9998359680175781,
+                    "z": 1.0000450611114502
                 },
                 "position": {
                     "x": -74.26976776123047,
-                    "y": -5.911584854125977,
+                    "y": -5.911577224731445,
                     "z": -2.023620367050171
                 },
                 "rotation": {
@@ -2082,8 +2117,8 @@
                 },
                 "scale": {
                     "x": 1.0000009536743164,
-                    "y": 0.9998369216918945,
-                    "z": 1.000096321105957
+                    "y": 0.9998359680175781,
+                    "z": 1.0000944137573242
                 }
             },
             "id": 2097157
@@ -2146,74 +2181,74 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 100
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 10
-                                },
-                                "name": "attackRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 50
-                                },
-                                "name": "chasingRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 5
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 10
-                                },
-                                "name": "movementSpeed"
-                            }
-                        ],
-                        "scriptId": 10701564697501106251
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 4,
                                     "__variant_value": 1048576
                                 },
                                 "name": "enemyStats"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 4,
                                     "__variant_value": 1048576
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 4,
                                     "__variant_value": 2097157
                                 },
                                 "name": "emitter"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 4,
                                     "__variant_value": 1048576
                                 },
                                 "name": "rigidbody"
                             }
                         ],
                         "scriptId": 17619093725142188105
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 2.0
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 20.0
+                                },
+                                "name": "chasingRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 5.0
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "movementSpeed"
+                            }
+                        ],
+                        "scriptId": 10701564697501106251
                     }
                 ]
             },

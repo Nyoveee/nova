@@ -56,8 +56,8 @@ using ScriptName   = std::string;
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
-		ALL_TYPED_RESOURCE_ID,																\
+		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
+		ALL_TYPED_RESOURCE_ID,																		\
 		ALL_FIELD_PRIMITIVES
 #endif
 

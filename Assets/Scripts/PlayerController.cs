@@ -26,6 +26,9 @@ class PlayerController : Script
     public float dashCooldown           = 3f; // per dash, you have to wait `dashCooldown` seconds.
     public float dashStrength           = 2f;
 
+    // Health
+    public float maxHealth              = 100f;
+
     [SerializableField]
     private Transform_? cameraObject = null;
     [SerializableField]
@@ -54,6 +57,9 @@ class PlayerController : Script
     private float dashTimeElapsed = 0f;
     private Vector3 dashVector;
 
+    // Health
+    private float currentHealth = 0f;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -61,6 +67,9 @@ class PlayerController : Script
         rigidbody = getComponent<Rigidbody_>();
 
         CameraAPI.LockMouse();
+
+        // Health
+        currentHealth = maxHealth;
 
         // Dash
         dashTimerCap = dashCooldown * dashCount;
@@ -77,7 +86,7 @@ class PlayerController : Script
         Input.MapKey(Key.Space, jump);
 
         Input.MapKey(Key.LeftShift, dashInputHandler);
-
+    
     }
 
     // This function is invoked every fixed update.
@@ -120,9 +129,11 @@ class PlayerController : Script
             handleMovement();
         }
         // ===================================
-        // Stamina
+        // UI
         // ===================================
-        gameUIManager.SetDashBarProgress(dashTimer, dashTimerCap);
+        gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, dashTimer, dashTimerCap);
+        gameUIManager.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+        gameUIManager.SetHealthText((int)currentHealth);
     }
     private void handleMovement()
     {

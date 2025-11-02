@@ -44,7 +44,7 @@ bool Interface::SetScriptPrimitiveFromNativeData(FieldData const& fieldData, Scr
 
 template<typename Type, typename ...Types>
 bool Interface::ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ object, System::Type^ originalType) {
-	if (originalType == Type::typeid) {
+		if (originalType == Type::typeid) {
 		try {
 			Type^ value = safe_cast<Type^>(object);
 

@@ -15,10 +15,38 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 3,
-                                    "__variant_value": 21
+                                    "__variant_type": 4,
+                                    "__variant_value": 16
                                 },
                                 "name": "dashBar"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 13
+                                },
+                                "name": "healthBar"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 4294967295
+                                },
+                                "name": "image"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 11
+                                },
+                                "name": "healthText"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 2.0
+                                },
+                                "name": "damageFadeTime"
                             }
                         ],
                         "scriptId": 11697264835426484225
@@ -168,7 +196,7 @@
                 },
                 "localPosition": {
                     "x": 0.003216385841369629,
-                    "y": 4.887580871582031e-06,
+                    "y": 5.364418029785156e-06,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -184,7 +212,7 @@
                 },
                 "position": {
                     "x": 273.2760009765625,
-                    "y": 93.58804321289063,
+                    "y": 93.58808898925781,
                     "z": 1.0
                 },
                 "rotation": {
@@ -233,7 +261,7 @@
                 },
                 "localPosition": {
                     "x": 0.0032159090042114258,
-                    "y": 3.5762786865234375e-06,
+                    "y": 4.0531158447265625e-06,
                     "z": -1.0
                 },
                 "localRotation": {
@@ -249,7 +277,7 @@
                 },
                 "position": {
                     "x": 273.2757263183594,
-                    "y": 93.5879135131836,
+                    "y": 93.58795928955078,
                     "z": 0.0
                 },
                 "rotation": {
@@ -691,7 +719,8 @@
             },
             "EntityData": {
                 "children": [
-                    27
+                    27,
+                    29
                 ],
                 "name": "Player",
                 "overridenProperties": null,
@@ -722,116 +751,90 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 12,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.0010000000474974513
                                 },
                                 "name": "cameraSensitivity"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 12,
+                                    "__variant_type": 13,
                                     "__variant_value": 20.0
                                 },
                                 "name": "maximumMoveSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 12,
+                                    "__variant_type": 13,
                                     "__variant_value": 5.0
                                 },
                                 "name": "accelerationStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 12,
+                                    "__variant_type": 13,
                                     "__variant_value": 15.0
                                 },
                                 "name": "jumpStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 11,
+                                    "__variant_type": 12,
                                     "__variant_value": 2
                                 },
                                 "name": "maxJumpCount"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 12,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.25
                                 },
                                 "name": "dashDuration"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 11,
+                                    "__variant_type": 12,
                                     "__variant_value": 3
                                 },
                                 "name": "dashCount"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 12,
+                                    "__variant_type": 13,
                                     "__variant_value": 3.0
                                 },
                                 "name": "dashCooldown"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 12,
+                                    "__variant_type": 13,
                                     "__variant_value": 75.0
                                 },
                                 "name": "dashStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "maxHealth"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
                                     "__variant_value": 27
                                 },
                                 "name": "cameraObject"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 3,
+                                    "__variant_type": 4,
                                     "__variant_value": 25
                                 },
                                 "name": "gameUIManager"
                             }
                         ],
                         "scriptId": 2684453670933381121
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 6,
-                                    "__variant_value": 15060600528238723073
-                                },
-                                "name": "prefab"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 8,
-                                    "__variant_value": 8
-                                },
-                                "name": "texture"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 9,
-                                    "__variant_value": 3827030963018743811
-                                },
-                                "name": "material"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 10496052774495485969
-                                },
-                                "name": "model"
-                            }
-                        ],
-                        "scriptId": 12648553499852783619
                     }
                 ]
             },
@@ -991,7 +994,7 @@
                             {
                                 "data": {
                                     "__variant_type": 12,
-                                    "__variant_value": 0.0
+                                    "__variant_value": 0
                                 },
                                 "name": "transitionTime"
                             }
@@ -1140,12 +1143,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752951502799988,
+                    "y": -0.20752957463264465,
                     "z": -2.7903568744659424
                 },
                 "localEulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752951502799988,
+                    "y": -0.20752957463264465,
                     "z": -2.7903568744659424
                 },
                 "localPosition": {
@@ -1154,13 +1157,13 @@
                     "z": -36.7643928527832
                 },
                 "localRotation": {
-                    "w": -0.0023227741476148367,
+                    "w": -0.002322809537872672,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "localScale": {
-                    "x": 1.0005037784576416,
+                    "x": 1.0005030632019043,
                     "y": 1.0002168416976929,
                     "z": 1.0002104043960571
                 },
@@ -1170,13 +1173,13 @@
                     "z": -36.7643928527832
                 },
                 "rotation": {
-                    "w": -0.0023227741476148367,
+                    "w": -0.002322809537872672,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "scale": {
-                    "x": 1.0005037784576416,
+                    "x": 1.0005030632019043,
                     "y": 1.0002168416976929,
                     "z": 1.0002104043960571
                 }
@@ -1272,12 +1275,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752952992916107,
+                    "y": -0.20752955973148346,
                     "z": -2.7903568744659424
                 },
                 "localEulerAngles": {
                     "x": -2.1032211780548096,
-                    "y": -0.20752952992916107,
+                    "y": -0.20752955973148346,
                     "z": -2.7903568744659424
                 },
                 "localPosition": {
@@ -1286,15 +1289,15 @@
                     "z": -36.06193542480469
                 },
                 "localRotation": {
-                    "w": -0.0023227829951792955,
+                    "w": -0.0023228006903082132,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "localScale": {
-                    "x": 1.0003764629364014,
+                    "x": 1.000375747680664,
                     "y": 1.0001912117004395,
-                    "z": 1.0001250505447388
+                    "z": 1.0001246929168701
                 },
                 "position": {
                     "x": 65.41069793701172,
@@ -1302,15 +1305,15 @@
                     "z": -36.06193542480469
                 },
                 "rotation": {
-                    "w": -0.0023227829951792955,
+                    "w": -0.0023228006903082132,
                     "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "scale": {
-                    "x": 1.0003764629364014,
+                    "x": 1.000375747680664,
                     "y": 1.0001912117004395,
-                    "z": 1.0001250505447388
+                    "z": 1.0001246929168701
                 }
             },
             "id": 8
@@ -1932,9 +1935,7 @@
                 "camStatus": true
             },
             "EntityData": {
-                "children": [
-                    29
-                ],
+                "children": null,
                 "name": "Camera",
                 "overridenProperties": null,
                 "parent": 28,
@@ -1954,7 +1955,7 @@
                 },
                 "localPosition": {
                     "x": 3.0517574487021193e-05,
-                    "y": 3.743386745452881,
+                    "y": 3.74338960647583,
                     "z": -1.3351449524634518e-05
                 },
                 "localRotation": {
@@ -1970,7 +1971,7 @@
                 },
                 "position": {
                     "x": 9.203219633491244e-06,
-                    "y": -2.498741626739502,
+                    "y": -2.4987387657165527,
                     "z": -3.2013398595154285e-05
                 },
                 "rotation": {
@@ -2086,7 +2087,7 @@
                 },
                 "localEulerAngles": {
                     "x": 1.570796012878418,
-                    "y": -2.560796019679401e-10,
+                    "y": -2.561364453868009e-10,
                     "z": -3.1415908336639404
                 },
                 "localPosition": {
@@ -2095,14 +2096,14 @@
                     "z": 2.023620128631592
                 },
                 "localRotation": {
-                    "w": -6.435310524466331e-07,
+                    "w": -6.43531109290052e-07,
                     "x": -6.43349778783886e-07,
                     "y": 0.7071066498756409,
                     "z": 0.70710688829422
                 },
                 "localScale": {
                     "x": 1.0000009536743164,
-                    "y": 0.9998354911804199,
+                    "y": 0.9998348355293274,
                     "z": 1.000046968460083
                 },
                 "position": {
@@ -2118,7 +2119,7 @@
                 },
                 "scale": {
                     "x": 1.570001482963562,
-                    "y": 1.5697416067123413,
+                    "y": 1.569740653038025,
                     "z": 1.5701512098312378
                 }
             },
@@ -2177,81 +2178,7 @@
                 "motionType": "Dynamic"
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 3,
-                                    "__variant_value": 1048576
-                                },
-                                "name": "enemyStats"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 3,
-                                    "__variant_value": 1048576
-                                },
-                                "name": "animator"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 3,
-                                    "__variant_value": 2097157
-                                },
-                                "name": "emitter"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 3,
-                                    "__variant_value": 1048576
-                                },
-                                "name": "rigidbody"
-                            }
-                        ],
-                        "scriptId": 17619093725142188105
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 2.0
-                                },
-                                "name": "attackRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "chasingRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "movementSpeed"
-                            }
-                        ],
-                        "scriptId": 10701564697501106251
-                    }
-                ]
+                "scriptDatas": null
             },
             "SkinnedMeshRenderer": {
                 "materialIds": [
@@ -2310,7 +2237,7 @@
                 "children": null,
                 "name": "Gun Holder",
                 "overridenProperties": null,
-                "parent": 27,
+                "parent": 28,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
@@ -2329,29 +2256,29 @@
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -1.488825798034668,
+                    "y": -1.4888279438018799,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.20742611587047577,
-                    "y": -0.21332043409347534,
-                    "z": 0.3317027986049652
+                    "x": -1.065612554550171,
+                    "y": 2.647512912750244,
+                    "z": 1.7040355205535889
                 },
                 "localRotation": {
-                    "w": 0.7354857325553894,
+                    "w": 0.7354856729507446,
                     "x": 0.0,
-                    "y": -0.6775401830673218,
+                    "y": -0.6775403618812561,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.19465789198875427,
-                    "y": 0.19464978575706482,
-                    "z": 0.19465139508247375
+                    "x": 1.000011682510376,
+                    "y": 0.999961256980896,
+                    "z": 1.000012755393982
                 },
                 "position": {
-                    "x": 0.6314532160758972,
-                    "y": -3.594618320465088,
-                    "z": 1.9079927206039429
+                    "x": 0.6314536333084106,
+                    "y": -3.5946154594421387,
+                    "z": 1.9079928398132324
                 },
                 "rotation": {
                     "w": 0.9537910223007202,
@@ -2360,9 +2287,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999996423721313,
+                    "x": 0.9999997019767761,
                     "y": 0.999961256980896,
-                    "z": 1.0000007152557373
+                    "z": 1.0000008344650269
                 }
             },
             "id": 29

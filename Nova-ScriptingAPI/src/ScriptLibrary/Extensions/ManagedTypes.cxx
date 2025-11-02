@@ -187,3 +187,9 @@ void Animator_::SetInteger(System::String^ name, int value){
 void Animator_::PlayAnimation(System::String^ name) {
 	Interface::engine->animationSystem.playAnimation(*nativeComponent(), Convert(name));
 }
+// =================================================================
+// Text
+// =================================================================
+void Text_::SetText(System::String^ text) {
+	nativeComponent()->text = Convert(text);
+}

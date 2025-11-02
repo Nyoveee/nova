@@ -6,6 +6,7 @@
 #include "API/ConversionUtils.hxx"
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
+#include "Interpolation.h"
 
 #include <numbers>
 
@@ -227,6 +228,9 @@ public:
 	static float Sin(float radian) { return std::sin(radian); }
 	static float Atan2(float y, float x) { return std::tan(y / x); }
 	static float Clamp(float value, float min, float max) { return std::clamp(value, min, max); }
+	static float Interpolate(float a, float b, float t, float degree) { return Interpolation::Interpolation(a, b, t, degree); }
+	static float Min(float a, float b) { return std::min(a, b); }
+	static float Max(float a, float b) { return std::max(a, b); }
 public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
