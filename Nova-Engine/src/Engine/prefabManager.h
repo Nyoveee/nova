@@ -101,7 +101,7 @@ void PrefabManager::instantiatePrefabRecursive(ResourceID id, entt::registry& ec
 
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(ecsEntity);
 	if (entityData->children.size()) {
-		for (entt::entity child : entityData->children) {
+		for ([[maybe_unused]] entt::entity child : entityData->children) {
 			instantiatePrefabRecursive(id, ecsRegistry, entityVec);
 		}
 	}

@@ -1,294 +1,6 @@
 {
     "entities": [
         {
-            "Animator": {
-                "controllerId": 10440030461135765519
-            },
-            "BoxCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 2.700000047683716,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 0.6499999761581421,
-                    "y": 2.5,
-                    "z": 0.6499999761581421
-                }
-            },
-            "EntityData": {
-                "children": null,
-                "name": "Enemy",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 311558145,
-                "tag": ""
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "attackRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "movementSpeed"
-                            }
-                        ],
-                        "scriptId": 2946040681190768653
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 7
-                                },
-                                "name": "enemyStats"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 7
-                                },
-                                "name": "animator"
-                            }
-                        ],
-                        "scriptId": 2369579928887345163
-                    }
-                ]
-            },
-            "SkinnedMeshRenderer": {
-                "materialIds": [
-                    3827030963018743811
-                ],
-                "modelId": 9863569708831850503
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": -0.0,
-                    "z": 3.1415927410125732
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 4.093408584594727,
-                    "y": 0.0,
-                    "z": 31.21356964111328
-                },
-                "rotation": {
-                    "w": 0.0,
-                    "x": 0.0,
-                    "y": 1.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 7
-        },
-        {
-            "Animator": {
-                "controllerId": 10440030461135765519
-            },
-            "BoxCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 2.700000047683716,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 0.6499999761581421,
-                    "y": 2.5,
-                    "z": 0.6499999761581421
-                }
-            },
-            "EntityData": {
-                "children": null,
-                "name": "Enemy",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 311558145,
-                "tag": ""
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "attackRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "movementSpeed"
-                            }
-                        ],
-                        "scriptId": 2946040681190768653
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 6
-                                },
-                                "name": "enemyStats"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 6
-                                },
-                                "name": "animator"
-                            }
-                        ],
-                        "scriptId": 2369579928887345163
-                    }
-                ]
-            },
-            "SkinnedMeshRenderer": {
-                "materialIds": [
-                    3827030963018743811
-                ],
-                "modelId": 9863569708831850503
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": -0.0,
-                    "z": 3.1415927410125732
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": -3.8887805938720703,
-                    "y": 0.0,
-                    "z": 21.376049041748047
-                },
-                "rotation": {
-                    "w": 0.0,
-                    "x": 0.0,
-                    "y": 1.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 6
-        },
-        {
             "EntityData": {
                 "children": null,
                 "name": "Directional Light",
@@ -310,9 +22,9 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -1.2385015487670898,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 2.6367428302764893,
+                    "y": 0.2529333531856537,
+                    "z": 2.5429673194885254
                 },
                 "localEulerAngles": {
                     "x": 0.0,
@@ -337,19 +49,19 @@
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 25.87248992919922,
+                    "y": 24.432653427124023,
                     "z": 0.0
                 },
                 "rotation": {
-                    "w": 0.8143136501312256,
-                    "x": -0.5804252624511719,
-                    "y": 0.0,
-                    "z": 0.0
+                    "w": 0.18975749611854553,
+                    "x": 0.2531382441520691,
+                    "y": 0.9271572232246399,
+                    "z": 0.20073021948337555
                 },
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0000007152557373,
-                    "z": 1.0000007152557373
+                    "x": 1.0000479221343994,
+                    "y": 1.000020980834961,
+                    "z": 1.0000700950622559
                 }
             },
             "id": 1048578
@@ -449,27 +161,7 @@
                 "motionType": "Dynamic"
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "cameraSensitivity"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 4
-                                },
-                                "name": "cameraObject"
-                            }
-                        ],
-                        "scriptId": 5926288933935464449
-                    }
-                ]
+                "scriptDatas": null
             },
             "Transform": {
                 "eulerAngles": {
@@ -499,9 +191,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -14.372753143310547,
-                    "y": -4.797062873840332,
-                    "z": -29.537206649780273
+                    "x": 4.6596293449401855,
+                    "y": -16.718706130981445,
+                    "z": 36.18043518066406
                 },
                 "rotation": {
                     "w": 1.0,
@@ -593,12 +285,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.02496933937072754,
+                    "y": -0.02496945858001709,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.02496933937072754,
+                    "y": -0.02496945858001709,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -609,7 +301,7 @@
                 "localRotation": {
                     "w": 0.9999221563339233,
                     "x": 0.0,
-                    "y": -0.012484343722462654,
+                    "y": -0.01248440332710743,
                     "z": 0.0
                 },
                 "localScale": {
@@ -618,14 +310,14 @@
                     "z": 1.0000038146972656
                 },
                 "position": {
-                    "x": -14.366512298583984,
-                    "y": -0.23482322692871094,
-                    "z": -29.186124801635742
+                    "x": 4.665870189666748,
+                    "y": -12.156466484069824,
+                    "z": 36.531517028808594
                 },
                 "rotation": {
                     "w": 0.9999221563339233,
                     "x": 0.0,
-                    "y": -0.012484343722462654,
+                    "y": -0.01248440332710743,
                     "z": 0.0
                 },
                 "scale": {
@@ -667,7 +359,7 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -1.5707964897155762,
+                    "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
@@ -694,19 +386,19 @@
                 },
                 "position": {
                     "x": 1.6364028453826904,
-                    "y": -11.222358703613281,
-                    "z": 20.593536376953125
+                    "y": -20.572681427001953,
+                    "z": 7.4766082763671875
                 },
                 "rotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.7071068286895752,
+                    "w": 0.9999999403953552,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
                     "x": 50.83549118041992,
-                    "y": 109.17206573486328,
-                    "z": 0.9999481439590454
+                    "y": 1.0,
+                    "z": 50.0
                 }
             },
             "id": 1048577
@@ -718,7 +410,7 @@
             "BoxCollider": {
                 "offset": {
                     "x": 0.0,
-                    "y": 2.700000047683716,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "scaleWithTransform": true,
@@ -730,7 +422,7 @@
             },
             "EntityData": {
                 "children": null,
-                "name": "Enemy",
+                "name": "Enemy 3",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 311558145,
@@ -754,28 +446,28 @@
                             {
                                 "data": {
                                     "__variant_type": 7,
-                                    "__variant_value": 100.0
+                                    "__variant_value": 100
                                 },
                                 "name": "health"
                             },
                             {
                                 "data": {
                                     "__variant_type": 7,
-                                    "__variant_value": 5.0
+                                    "__variant_value": 5
                                 },
                                 "name": "attackRadius"
                             },
                             {
                                 "data": {
                                     "__variant_type": 7,
-                                    "__variant_value": 5.0
+                                    "__variant_value": 5
                                 },
                                 "name": "damage"
                             },
                             {
                                 "data": {
                                     "__variant_type": 7,
-                                    "__variant_value": 10.0
+                                    "__variant_value": 10
                                 },
                                 "name": "movementSpeed"
                             }
@@ -786,17 +478,24 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 2097162
+                                    "__variant_type": 3,
+                                    "__variant_value": 6
                                 },
                                 "name": "enemyStats"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 2097162
+                                    "__variant_type": 3,
+                                    "__variant_value": 6
                                 },
                                 "name": "animator"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 3,
+                                    "__variant_value": 6
+                                },
+                                "name": "transform"
                             }
                         ],
                         "scriptId": 2369579928887345163
@@ -812,7 +511,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
@@ -837,9 +536,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -0.8923864364624023,
-                    "y": -2.940403938293457,
-                    "z": -1.754465103149414
+                    "x": 10.136791229248047,
+                    "y": -2.246464252471924,
+                    "z": -2.018634557723999
                 },
                 "rotation": {
                     "w": 1.0,
@@ -848,12 +547,314 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": -1.0,
-                    "y": 1.0,
-                    "z": -1.0
+                    "x": 1.0001024007797241,
+                    "y": 1.0001158714294434,
+                    "z": 1.0001461505889893
                 }
             },
-            "id": 2097162
+            "id": 6
+        },
+        {
+            "Animator": {
+                "controllerId": 10440030461135765519
+            },
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 0.6499999761581421,
+                    "y": 2.5,
+                    "z": 0.6499999761581421
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Enemy 2",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 311558145,
+                "tag": ""
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 100
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 5
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 5
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 10
+                                },
+                                "name": "movementSpeed"
+                            }
+                        ],
+                        "scriptId": 2946040681190768653
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 3,
+                                    "__variant_value": 7
+                                },
+                                "name": "enemyStats"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 3,
+                                    "__variant_value": 7
+                                },
+                                "name": "animator"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 3,
+                                    "__variant_value": 7
+                                },
+                                "name": "transform"
+                            }
+                        ],
+                        "scriptId": 2369579928887345163
+                    }
+                ]
+            },
+            "SkinnedMeshRenderer": {
+                "materialIds": [
+                    3827030963018743811
+                ],
+                "modelId": 9863569708831850503
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -3.985280752182007,
+                    "y": -2.2479281425476074,
+                    "z": 4.05130672454834
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0001024007797241,
+                    "y": 1.0001158714294434,
+                    "z": 1.0001461505889893
+                }
+            },
+            "id": 7
+        },
+        {
+            "Animator": {
+                "controllerId": 10440030461135765519
+            },
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 0.6499999761581421,
+                    "y": 2.5,
+                    "z": 0.6499999761581421
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Enemy 1",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 311558145,
+                "tag": ""
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 100
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 5
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 5
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 10
+                                },
+                                "name": "movementSpeed"
+                            }
+                        ],
+                        "scriptId": 2946040681190768653
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 3,
+                                    "__variant_value": 8
+                                },
+                                "name": "enemyStats"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 3,
+                                    "__variant_value": 8
+                                },
+                                "name": "animator"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 3,
+                                    "__variant_value": 8
+                                },
+                                "name": "transform"
+                            }
+                        ],
+                        "scriptId": 2369579928887345163
+                    }
+                ]
+            },
+            "SkinnedMeshRenderer": {
+                "materialIds": [
+                    3827030963018743811
+                ],
+                "modelId": 9863569708831850503
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.01203310489654541,
+                    "y": -2.2464656829833984,
+                    "z": 1.783477783203125
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0001024007797241,
+                    "y": 1.0001158714294434,
+                    "z": 1.0001461505889893
+                }
+            },
+            "id": 8
         }
     ]
 }

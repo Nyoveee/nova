@@ -58,6 +58,17 @@ bool Vector3::operator!=(Vector3 a, Vector3 b)   { return a.native() != b.native
 bool Vector3::operator==(Vector3 a, Vector3 b)   { return a.native() == b.native();}
 
 
+// =================================================================
+// QUATERNION
+// =================================================================
+
+Vector3 Quartenion::operator*(Quartenion quaternion, Vector3 axis) {
+	return Vector3{ quaternion.native() * axis.native() };
+}
+
+Vector3 Quartenion::operator*(Vector3 axis, Quartenion quaternion) {
+	return Vector3{ axis.native() * quaternion.native() };
+}
 
 // =================================================================
 // TRANSFORM
@@ -70,12 +81,20 @@ void Transform_::rotate(Vector3 axis, float degrees) {
 		transform->rotation = glm::rotate(transform->rotation, static_cast<float>(toRadian(degrees)), axis.native());
 	}
 }
-void Transform_::LookAt(Transform_^ target) {
-	Vector3 direction = target->position - position;
+
+void Transform_::rotate(Quartenion quartenion) {
+	nativeComponent()->rotation = quartenion.native() * nativeComponent()->rotation;
+}
+
+Quartenion Transform_::LookAt(Transform_^ target) {
+	Vector3 direction = position - target->position;
 	direction.Normalize();
-	glm::quat quat = glm::quatLookAt(direction.native(), glm::vec3{0,1,0});
-	glm::vec3 nativeEuler= glm::eulerAngles(quat);
-	eulerAngles = Vector3{ nativeEuler.x,nativeEuler.y, nativeEuler.z };
+	
+	return Quartenion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
+}
+
+void Transform_::setFront(Vector3 frontAxis) {
+	nativeComponent()->rotation = glm::quatLookAt(-frontAxis.native(), glm::vec3{ 0,1,0 });
 }
 
 // =================================================================

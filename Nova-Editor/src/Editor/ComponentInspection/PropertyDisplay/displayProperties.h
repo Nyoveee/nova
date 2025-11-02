@@ -244,10 +244,12 @@ inline void DisplayProperty<EulerAngles>(Editor&, const char* dataMemberName, Eu
 		ImGui::EndTable();
 	}
 
+#if 0
 	// Clamp result..
 	eulerAngles.y = std::clamp(eulerAngles.y, -180.f, 180.f);
 	eulerAngles.x = std::clamp(eulerAngles.x, -90.f, 90.f);
 	eulerAngles.z = std::clamp(eulerAngles.z, -180.f, 180.f);
+#endif
 	dataMember = EulerAngles{ {toRadian(eulerAngles.x), toRadian(eulerAngles.y), toRadian(eulerAngles.z)} };
 }
 template<>

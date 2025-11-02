@@ -223,7 +223,7 @@ void PhysicsManager::updatePhysics(float dt) {
 	ZoneScoped;
 
 	//Update transform bodies have been moved outside to another function
-#if 0
+#if 1
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
@@ -238,7 +238,7 @@ void PhysicsManager::updatePhysics(float dt) {
 			continue;
 		}
 
-		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
+		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position + rigidbody.offset), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
 	}
 #endif
 
@@ -329,7 +329,7 @@ void PhysicsManager::updateTransformBodies()
 			continue;
 		}
 
-		bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
+		// bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
 	}
 
 	// i don't want to constantly override my position, i want to let my forces do their thing..

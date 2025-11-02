@@ -79,7 +79,24 @@ static Vector3 Right	= Vector3{  1.f,  0.f,  0.f };
 static Vector3 One		= Vector3{ 0.f,  0.f,  0.f };
 static Vector3 Zero		= Vector3{ 1.f,  1.f,  1.f };
 
-ManagedStructEnd(Vector3,glm::vec3)
+ManagedStructEnd(Vector3, glm::vec3)
+
+// ======================================
+// This struct is responsible for Quartenion Types
+// ======================================
+ManagedStruct(
+	Quartenion, glm::quat,
+	float, x,
+	float, y,
+	float, z,
+	float, w
+)
+
+static Vector3 operator*(Quartenion quaternion, Vector3 axis);
+static Vector3 operator*(Vector3 axis, Quartenion quaternion);
+
+ManagedStructEnd(Quartenion, glm::quat)
+
 // ======================================
 // This struct is responsible for Ray Types
 // ======================================
@@ -123,18 +140,24 @@ ManagedStructEnd(RayCastResult, PhysicsRayCastResult)
 // Transform Component
 // ======================================
 ManagedComponentDeclaration(
-	Transform,					// Creates a new managed component Transform_ that is associated with the Transform component
-	Vector3, position,			// Transform_ now has data member position, of type Vector3 which is associated with glm::vec3 (type of original data member).
-	Vector3, scale,
-	Vector3, front,
-	Vector3, right,
-	Vector3, up,
-	Vector3, eulerAngles,
-	Vector3, localEulerAngles
+	Transform,						// Creates a new managed component Transform_ that is associated with the Transform component
+	Vector3,	position,			// Transform_ now has data member position, of type Vector3 which is associated with glm::vec3 (type of original data member).
+	Vector3,	scale,
+	Vector3,	front,
+	Vector3,	right,
+	Vector3,	up,
+	Vector3,	eulerAngles,
+	Vector3,	localEulerAngles,
+	Quartenion, rotation,
+	Quartenion, localRotation
 )
 
 void rotate(Vector3 axis, float angle);
-void LookAt(Transform_^ target);
+void rotate(Quartenion quartenion);
+
+Quartenion LookAt(Transform_^ target);
+void setFront(Vector3 frontAxis);
+
 ManagedComponentEnd()
 // ======================================
 // ParticleEmitter Component

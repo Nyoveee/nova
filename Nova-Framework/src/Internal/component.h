@@ -52,7 +52,7 @@ using ScriptName   = std::string;
 #endif
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, entt::entity, PhysicsRay, PhysicsRayCastResult, \
+		glm::vec2, glm::vec3, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult, \
 		ALL_FIELD_PRIMITIVES
 #endif
 enum class InterpolationType : unsigned int {

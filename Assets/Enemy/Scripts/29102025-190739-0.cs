@@ -21,6 +21,9 @@ class Enemy : Script
     private EnemyStats? enemyStats = null;
     [SerializableField]
     private Animator_? animator = null;
+    [SerializableField]
+    private Transform_? transform = null;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -57,12 +60,16 @@ class Enemy : Script
             // Change Animation
             return;
         }
+
+        // transform.rotate(Vector3.Up, 1f);
         LookAtPlayer();
+
+
         // Move Enemy using transform for now
         Vector3 direction = player.transform.position - gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
-        gameObject.transform.position = gameObject.transform.position + direction * enemyStats.movementSpeed*Time.V_FixedDeltaTime();
+        gameObject.transform.position = gameObject.transform.position + direction * enemyStats.movementSpeed * Time.V_FixedDeltaTime();
 
     }
     private void Update_AttackState()
@@ -82,9 +89,10 @@ class Enemy : Script
     }
     private void LookAtPlayer()
     {
-        gameObject.transform.LookAt(player.transform);
-        Vector3 eulerAngles = gameObject.transform.eulerAngles;
-        eulerAngles.x = eulerAngles.z = 0;
-        gameObject.transform.eulerAngles = eulerAngles;
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+
+        transform.setFront(direction);
     }
 }
