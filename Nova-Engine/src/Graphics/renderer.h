@@ -53,10 +53,13 @@ public:
 
 	void renderMain(RenderConfig renderConfig);
 
+	void renderUI();
+
 	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
 	
 	void renderToDefaultFBO();
 
+	void overlayUIToBuffer(PairFrameBuffer& target);
 public:
 	// =============================================
 	// Public facing API.
@@ -65,13 +68,15 @@ public:
 	// get the main texture of the main frame buffer.
 	ENGINE_DLL_API GLuint getEditorFrameBufferTexture() const;
 	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getUIFrameBufferTexture() const;
 
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
-	// gets object id from color attachment 1 of the main framebuffer.
 	// parameter normalisedPosition expects value of range [0, 1], representing the spot in the color attachment from bottom left.
 	// retrieves the value in that position of the framebuffer.
 	ENGINE_DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
+
+	ENGINE_DLL_API GLuint getObjectUiId(glm::vec2 normalisedPosition) const;
 
 	ENGINE_DLL_API Camera& getEditorCamera();
 	ENGINE_DLL_API Camera const& getEditorCamera() const;
@@ -87,6 +92,7 @@ public:
 
 	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
 	ENGINE_DLL_API void renderObjectIds();
+	ENGINE_DLL_API void renderUiObjectIds();
 
 	// HDR controls
 	ENGINE_DLL_API void setHDRExposure(float exposure);
@@ -95,6 +101,9 @@ public:
 	// Tone mapping controls
 	ENGINE_DLL_API void setToneMappingMethod(ToneMappingMethod method);
 	ENGINE_DLL_API ToneMappingMethod getToneMappingMethod() const;
+
+	// UI projection
+	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
 
 public:
 	// =============================================
@@ -127,6 +136,9 @@ private:
 
 	// render all Texts.
 	void renderTexts();
+
+	// render ui images.
+	void renderImages();
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();
@@ -202,12 +214,14 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
+	FrameBuffer uiMainFrameBuffer;
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
-	
+	FrameBuffer uiObjectIdFrameBuffer;
+
 	glm::mat4 UIProjection;
 
 private:
@@ -223,15 +237,20 @@ public:
 	Shader colorShader;
 	Shader gridShader;
 	Shader outlineShader;
-	Shader blinnPhongShader;
-	Shader PBRShader;
+	// Shader blinnPhongShader;
+	// Shader PBRShader;
 	Shader debugShader;
 	Shader overlayShader;
+
 	Shader objectIdShader;
+	Shader uiImageObjectIdShader;
+	Shader uiTextObjectIdShader;
+	
 	Shader skyboxShader;
 	Shader particleShader;
 	Shader skeletalAnimationShader;
 	Shader textShader;
+	Shader texture2dShader;
 
 	// HDR tone mapping shader
 	Shader toneMappingShader;

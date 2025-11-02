@@ -29,6 +29,10 @@ int main() {
 	Engine			engine			{ window, inputManager, resourceManager, gameConfig };
 
 	AssetManager	assetManager	{ resourceManager, engine };
+
+	// Start up scene
+	engine.ecs.sceneManager.loadScene(gameConfig.sceneStartUp);
+
 	Editor			editor			{ window, engine, inputManager, assetManager, resourceManager };
 
 	window.run(

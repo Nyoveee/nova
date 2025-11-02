@@ -6,6 +6,8 @@
 
 #include "IconsFontAwesome6.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "imgui.h"
 #include "imgui_node_editor.h"
 #include "ImGui/misc/cpp/imgui_stdlib.h"
@@ -32,6 +34,7 @@
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
 
+
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -45,6 +48,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	editorViewPort					{ *this },
+	uiViewPort						{ *this },
 	componentInspector				{ *this },
 	assetViewerUi					{ *this, assetManager, resourceManager },
 	assetManagerUi					{ *this, assetViewerUi },
@@ -220,8 +224,8 @@ void Editor::deleteEntity(entt::entity entity) {
 		return;
 	}
 
-	ImGuizmo::Enable(false); 
-	ImGuizmo::Enable(true);   
+	ImGuizmo::Enable(false);
+	ImGuizmo::Enable(true);
 
 	engine.ecs.deleteEntity(entity);
 }
@@ -236,6 +240,7 @@ void Editor::main(float dt) {
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
+	uiViewPort.update();
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
@@ -293,7 +298,7 @@ void Editor::handleEntityValidity() {
 }
 
 void Editor::handleEntityHovering() {
-	if (!isActive() || isInSimulationMode()) {
+	if (!isActive() || !editorViewPort.isActive) {
 		return;
 	}
 
@@ -342,6 +347,8 @@ void Editor::handleEntityHovering() {
 
 // handles object picker in game viewport
 void Editor::handleEntitySelection() {	
+	handleUIEntitySelection();
+
 	if (!editorViewPort.isHoveringOver) {
 		return;
 	}
@@ -365,6 +372,44 @@ void Editor::handleEntitySelection() {
 	selectedEntities.push_back(hoveringEntity);
 }
 
+void Editor::handleUIEntitySelection() {
+	if (!uiViewPort.isHoveringOver) {
+		return;
+	}
+
+	ImVec2 mouseRelativeToViewPort = ImGui::GetMousePos();
+
+	// Calculate the mouse position relative to the game's viewport.
+	mouseRelativeToViewPort -= uiViewPort.windowTopLeft;
+	mouseRelativeToViewPort /= ImVec2{ uiViewPort.windowDimension.x, uiViewPort.windowDimension.y };
+
+	// Flip y..
+	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+
+	if (
+			mouseRelativeToViewPort.x < 0.f
+		||	mouseRelativeToViewPort.x >= 1.f
+		||	mouseRelativeToViewPort.y < 0.f
+		||	mouseRelativeToViewPort.y >= 1.f
+	) {
+		return;
+	}
+
+	entt::entity selectedUIEntity = static_cast<entt::entity>(engine.renderer.getObjectUiId(glm::vec2{ mouseRelativeToViewPort.x, mouseRelativeToViewPort.y }));
+
+	// not actually trying to deselect anything, am using imguizmo controls.
+	if (selectedEntities.size() && (ImGuizmo::IsUsing() || ImGuizmo::IsOver())) {
+		return;
+	}
+
+	selectedEntities.clear();
+
+	if (selectedUIEntity == entt::null) {
+		return;
+	}
+
+	selectedEntities.push_back(selectedUIEntity);
+}
 
 void Editor::launchProfiler()
 {

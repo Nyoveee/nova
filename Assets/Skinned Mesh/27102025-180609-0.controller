@@ -3,51 +3,11 @@
     "nodes": {
         "1000": {
             "animation": 18446744073709551615,
+            "animationEvents": null,
             "id": 1000,
             "name": "Entry Node",
             "toLoop": true,
-            "transitions": [
-                {
-                    "conditions": null,
-                    "nextNode": 3846479126125215745
-                }
-            ]
-        },
-        "11869518716972498947": {
-            "animation": 13153229315663511553,
-            "id": 11869518716972498947,
-            "name": "Capoeira",
-            "toLoop": true,
-            "transitions": [
-                {
-                    "conditions": null,
-                    "nextNode": 3846479126125215745
-                }
-            ]
-        },
-        "3846479126125215745": {
-            "animation": 15676520539766964225,
-            "id": 3846479126125215745,
-            "name": "Rumba Dancing",
-            "toLoop": true,
-            "transitions": [
-                {
-                    "conditions": null,
-                    "nextNode": 8458165144552685571
-                }
-            ]
-        },
-        "8458165144552685571": {
-            "animation": 13848120666360987649,
-            "id": 8458165144552685571,
-            "name": "Hip Hop Dancing",
-            "toLoop": true,
-            "transitions": [
-                {
-                    "conditions": null,
-                    "nextNode": 11869518716972498947
-                }
-            ]
+            "transitions": null
         }
     },
     "parameters": null

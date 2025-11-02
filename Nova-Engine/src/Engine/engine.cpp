@@ -32,7 +32,6 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	toDebugRenderPhysics	{ false }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
-	ecs.sceneManager.loadScene(gameConfig.sceneStartUp);
 }
 
 Engine::~Engine() {

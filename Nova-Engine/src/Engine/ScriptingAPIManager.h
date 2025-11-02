@@ -36,7 +36,7 @@ using GetScriptFieldsFunctionPtr    = std::vector<FieldData> (*)(std::size_t);
 using SetScriptFieldFunctionPtr		= void (*)(unsigned int, unsigned long long, FieldData const& fieldData);
 
 using handleOnCollisionFunctionPtr  = void (*)(unsigned int, unsigned int);
-
+using ExecuteFunctionPtr			= void (*)(unsigned int, unsigned long long, std::string const&);
 class Engine;
 
 class ScriptingAPIManager {
@@ -72,8 +72,6 @@ public:
 	ENGINE_DLL_API void update();
 	ENGINE_DLL_API void checkIfRecompilationNeeded(float dt);
 
-	// ENGINE_DLL_API void editorModeUpdate(float dt);
-
 	// Serializable Field Reference
 	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(ResourceID scriptID);
 
@@ -88,8 +86,12 @@ public:
 	// This is the callback when the assets files are deleted
 	ENGINE_DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
 
+public:
+	// Interfaces
 	ENGINE_DLL_API void onCollisionEnter(entt::entity entityOne, entt::entity entityTwo);
 	ENGINE_DLL_API void onCollisionExit(entt::entity entityOne, entt::entity entityTwo);
+
+	ENGINE_DLL_API void executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName);
 
 private:
 	template<typename Func>
@@ -130,6 +132,7 @@ private:
 	GetScriptFieldsFunctionPtr		getScriptFieldDatas_;
 	SetScriptFieldFunctionPtr		setScriptFieldData;
 	handleOnCollisionFunctionPtr	handleOnCollision_;
+	ExecuteFunctionPtr				executeFunction_;
 
 private:
 	CompileState compileState;

@@ -869,7 +869,7 @@ namespace ImGui
 
         static char childNameStorage[64];
         snprintf(childNameStorage, sizeof(childNameStorage), "##%s_child_wrapper", idin);
-        const bool openChild = BeginChild(childNameStorage);
+		const bool openChild = BeginChild(childNameStorage, {}, ImGuiChildFlags_AutoResizeY);
 
         if (!openChild)
         {

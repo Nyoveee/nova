@@ -60,12 +60,12 @@ void GameViewPort::update([[maybe_unused]] float dt) {
 	ImTextureID textureId = engine.renderer.getGameFrameBufferTexture();
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
 
-	engine.window.setGameViewPort({
-		static_cast<int>(gameWindowTopLeft.x),
-		static_cast<int>(gameWindowTopLeft.y),
-		static_cast<int>(viewportWidth),
-		static_cast<int>(viewportHeight)
-	});
+	//engine.window.setGameViewPort({
+	//	static_cast<int>(gameWindowTopLeft.x),
+	//	static_cast<int>(gameWindowTopLeft.y),
+	//	static_cast<int>(viewportWidth),
+	//	static_cast<int>(viewportHeight)
+	//});
 
 #if 0
 	// Calculate the mouse position relative to the game's viewport.

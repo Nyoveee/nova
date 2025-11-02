@@ -3,10 +3,12 @@
 #include <functional>
 #include <algorithm>
 
+
 #include "animatorController.h"
 
 #include "imgui.h"
 #include "imgui_node_editor.h"
+#include "imgui_neo_sequencer.h"
 #include "IconsFontAwesome6.h"
 
 #include "Editor/editor.h"
@@ -30,7 +32,29 @@ AnimatorController::AnimatorController(Editor& editor) :
 	assetManager		{ editor.assetManager },
 	context				{ nullptr }
 {
-	context = ed::CreateEditor(nullptr);	
+	context = ed::CreateEditor(nullptr);
+
+	ImGuiNeoSequencerStyle& style = ImGui::GetNeoSequencerStyle();
+	auto& colors = style.Colors;
+
+	colors[ImGuiNeoSequencerCol_Bg] = ImVec4(0.10f, 0.10f, 0.11f, 1.0f);
+	colors[ImGuiNeoSequencerCol_TimelinesBg] = ImVec4(0.15f, 0.15f, 0.18f, 1.0f);
+	colors[ImGuiNeoSequencerCol_SelectedTimeline] = ImVec4(0.25f, 0.25f, 0.28f, 1.0f);
+
+	colors[ImGuiNeoSequencerCol_TimelineBorder] = ImVec4(0.45f, 0.45f, 0.50f, 1.0f);
+	colors[ImGuiNeoSequencerCol_TopBarBg] = ImVec4(0.13f, 0.13f, 0.15f, 1.0f);
+
+	colors[ImGuiNeoSequencerCol_Selection] = ImVec4(0.30f, 0.50f, 0.80f, 0.60f);
+	colors[ImGuiNeoSequencerCol_Keyframe] = ImVec4(0.80f, 0.80f, 0.85f, 1.0f);
+	colors[ImGuiNeoSequencerCol_KeyframeHovered] = ImVec4(1.00f, 0.65f, 0.25f, 1.0f);
+	colors[ImGuiNeoSequencerCol_KeyframeSelected] = ImVec4(1.00f, 0.45f, 0.10f, 1.0f);
+
+	colors[ImGuiNeoSequencerCol_ZoomBarBg] = ImVec4(0.10f, 0.10f, 0.11f, 1.0f);
+	colors[ImGuiNeoSequencerCol_ZoomBarSlider] = ImVec4(0.30f, 0.10f, 0.11f, 1.0f);
+	colors[ImGuiNeoSequencerCol_ZoomBarSliderHovered] = ImVec4(0.40f, 0.15f, 0.16f, 1.0f);
+
+	colors[ImGuiNeoSequencerCol_ZoomBarSliderEnds] = ImVec4(0.03f, 0.03f, 0.20f, 1.0f);
+	colors[ImGuiNeoSequencerCol_ZoomBarSliderEndsHovered] = ImVec4(0.05f, 0.05f, 0.25f, 1.0f);
 }
 
 AnimatorController::~AnimatorController() {
@@ -93,6 +117,7 @@ void AnimatorController::update() {
 
 	ImGui::SameLine();
 	displayRightPanel(*animator, *controller);
+
 
 	ImGui::End();
 }
@@ -181,7 +206,167 @@ void AnimatorController::displayRightPanel(Animator& animator, Controller& contr
 			ImGui::EndTabItem();
 		}
 
+		if (ImGui::BeginTabItem("Animation Clip")) {
+			displaySelectedAnimationTimeline(animator, controller);
+			ImGui::EndTabItem();
+		}
+
 		ImGui::EndTabBar();
+	}
+
+	ImGui::EndChild();
+}
+
+void AnimatorController::displaySelectedAnimationTimeline(Animator& animator, Controller& controller) {
+	// we change animator's animation to whichever node selected.
+	ControllerNodeID nodeId;
+
+	if (!editor.isInSimulationMode()) {
+		if (selectedNodes.empty()) {
+			return;
+		}
+
+		nodeId = static_cast<std::size_t>(selectedNodes[0]);
+	}
+	// we inspect the currently active animation..
+	else {
+		nodeId = animator.currentNode;
+	}
+
+	auto iterator = controller.data.nodes.find(nodeId);
+
+	if (iterator == controller.data.nodes.end()) {
+		return;
+	}
+
+	auto&& [_, node] = *iterator;
+	auto&& [animationResource, loadStatus] = resourceManager.getResource<Model>(node.animation);
+
+	if (!animationResource) {
+		return;
+	}
+
+	if (animationResource->animations.empty()) {
+		return;
+	}
+
+	// ===================================================================================
+	// We display timeline accordingly to the animation clip's data..
+	// ===================================================================================
+	ImGui::BeginChild("Animation Timeline");
+
+	Animation const& animation = animationResource->animations[0];
+
+	int currentFrame = static_cast<int>(animator.timeElapsed * animation.ticksPerSecond);
+
+	// switch animation..
+	if (!editor.isInSimulationMode()) {
+		animator.currentAnimation = node.animation;
+	}
+
+	int startFrame = 0;
+	int endFrame = static_cast<int>(animation.durationInTicks);
+
+	if (ImGui::BeginNeoSequencer(animation.name.c_str(), &currentFrame, &startFrame, &endFrame, {})) {
+		if (ImGui::BeginNeoTimelineEx("Timeline", nullptr)) {
+			for (auto&& animationEvent : node.animationEvents) {
+				int copyKey = animationEvent.key;
+				
+				ImGui::PushID(copyKey);
+				ImGui::NeoKeyframe(&copyKey);
+				ImGui::PopID();
+			}
+
+			ImGui::EndNeoTimeLine();
+		}
+
+		ImGui::EndNeoSequencer();
+	}
+
+	std::function<void()> moveAnimationEventRequest;
+
+	ImGui::SeparatorText("Animation Events");
+
+	if (ImGui::Button("[+] Add")) {
+		// find a suitable key..
+		int freeKey = 0;
+
+		while (
+				std::ranges::find_if(node.animationEvents, [&](auto&& event) { return event.key == freeKey; }) != node.animationEvents.end()
+			&&	freeKey < animation.durationInTicks
+		) {
+			++freeKey;
+		}
+
+		node.animationEvents.push_back({ freeKey, TypedResourceID<ScriptAsset>{ INVALID_RESOURCE_ID }, "event", -1 });
+	}
+
+	if (ImGui::BeginTable("Animation Event Table", 4)) {
+		ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Script", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Delete", ImGuiTableColumnFlags_WidthFixed, 40.0f);
+
+		// Populate table rows
+		int imguiCounter = 0;
+		
+		for (auto it = node.animationEvents.begin(); it != node.animationEvents.end();) {
+			auto&& animationEvent = *it;
+			auto&& [key, scriptId, name, copyKey] = animationEvent;
+
+			ImGui::PushID(imguiCounter++);
+
+			ImGui::TableNextRow();		// Start a new row
+			
+			ImGui::TableSetColumnIndex(0);
+			
+			if (copyKey == -1) {
+				copyKey = key;
+			}
+
+			ImGui::InputInt("Key", &copyKey);
+
+			if (ImGui::IsItemDeactivatedAfterEdit()) {
+				// Verify if key is valid..
+				if (
+						copyKey < 0 || copyKey > animation.durationInTicks 
+					||  std::ranges::find_if(node.animationEvents, [&](auto&& event) { return event.key == copyKey; }) != node.animationEvents.end()
+				) {
+					copyKey = key;
+				}
+				else {
+					key = copyKey;
+				}
+			}
+
+			ImGui::TableSetColumnIndex(1);
+			editor.displayAssetDropDownList<ScriptAsset>(scriptId, "##script", [&](ResourceID newScriptId) {
+				scriptId = TypedResourceID<ScriptAsset>{ newScriptId };
+			});
+
+			ImGui::TableSetColumnIndex(2);
+			ImGui::InputText("Function name", &animationEvent.functionName);
+
+			ImGui::TableSetColumnIndex(3);
+	
+			if (ImGui::Button("[-]")) {
+				it = node.animationEvents.erase(it);
+			}
+			else {
+				++it;
+			}
+
+			ImGui::PopID();
+		}
+		ImGui::EndTable();
+	}
+
+	if (moveAnimationEventRequest) {
+		moveAnimationEventRequest();
+	}
+
+	if (!editor.isInSimulationMode()) {
+		animator.timeElapsed = static_cast<float>(currentFrame) / animation.ticksPerSecond;
 	}
 
 	ImGui::EndChild();

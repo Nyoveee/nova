@@ -69,7 +69,9 @@ public:
 private:
 	void displayLeftPanel(Animator& animator, Controller& controller);
 	void displayRightPanel(Animator& animator, Controller& controller);
-	
+
+	void displaySelectedAnimationTimeline(Animator& animator, Controller& controller);
+
 	void displayParameterWindow(Animator& animator, Controller& controller);
 	void displaySelectedNodeProperties(Animator& animator, Controller& controller);
 
@@ -110,4 +112,6 @@ private:
 	// static inline const ed::PinId  startPinId   = 1001;
 
 	bool isFirstFrame = true;
+
+	int selectedAnimationFrame;
 };

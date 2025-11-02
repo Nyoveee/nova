@@ -33,6 +33,8 @@ internal:
 
 	static void handleOnCollision(EntityID entityOne, EntityID entityTwo);
 
+	static void executeEntityScriptFunction(EntityID entityID, ScriptID scriptId, std::string const& functionName);
+
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);

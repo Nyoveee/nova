@@ -38,7 +38,8 @@ class Material;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
+	Image
 
 using ScriptName   = std::string;
 
@@ -203,6 +204,10 @@ struct Animator {
 	
 	// this will be instantiated in runtime.
 	std::vector<Controller::Parameter> parameters;
+
+	// each animator component keeps track of already executed animation events keyframes..
+	// this container is reset everytime it changes animation..
+	std::unordered_set<int> executedAnimationEvents;
 };
 
 struct Rigidbody {
@@ -281,6 +286,25 @@ struct SkyBox {
 	
 	REFLECTABLE(
 		cubeMapId
+	)
+};
+
+struct Image {
+	TypedResourceID<Texture>	texture		{ INVALID_RESOURCE_ID };
+	ColorA						colorTint	{ 1.f, 1.f, 1.f, 1.f };
+	
+	enum class AnchorMode {
+		Center,
+		BottomLeft,
+		BottomRight,
+		TopLeft,
+		TopRight
+	} anchorMode = AnchorMode::Center;
+
+	REFLECTABLE(
+		texture,
+		colorTint,
+		anchorMode
 	)
 };
 

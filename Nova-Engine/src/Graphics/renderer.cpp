@@ -42,17 +42,20 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
+	// blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
+	// PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
 	overlayShader				{ "System/Shader/squareOverlay.vert",		"System/Shader/overlay.frag" },
 	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
+	uiImageObjectIdShader		{ "System/Shader/texture2D.vert",			"System/Shader/objectId.frag" },
+	uiTextObjectIdShader		{ "System/Shader/text.vert",				"System/Shader/objectId.frag" },
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
 	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
+	texture2dShader				{ "System/Shader/texture2d.vert",			"System/Shader/image2D.frag"},
 	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
 	mainVAO						{},
 	positionsVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -87,8 +90,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
 	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	uiMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8  } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
+	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
@@ -247,6 +252,28 @@ GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 	return objectId;
 }
 
+GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
+	GLuint objectId;
+
+	int xOffset = static_cast<int>(normalisedPosition.x * uiObjectIdFrameBuffer.getWidth());	// x offset
+	int yOffset = static_cast<int>(normalisedPosition.y * uiObjectIdFrameBuffer.getHeight());	// y offset
+
+	glGetTextureSubImage(
+		uiObjectIdFrameBuffer.textureIds()[0],
+		0,					// mipmap level (0 = base image)
+		xOffset,			// x offset
+		yOffset,			// y offset
+		0,					// z offset
+		1, 1, 1,			// width, height and depth of pixels to be read
+		GL_RED_INTEGER,
+		GL_UNSIGNED_INT,
+		sizeof(GLuint),		// size of pixels to be read
+		&objectId			// output parameter.
+	);
+
+	return objectId;
+}
+
 void Renderer::update([[maybe_unused]] float dt) {
 	ZoneScoped;
 }
@@ -285,17 +312,22 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 		renderObjectIds();
 
+		// Main render function
+		render(gameMainFrameBuffer, gameCamera);
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
+
+		renderUiObjectIds();
+
+		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
 	// ===============================================
-	// Editor mode would also need to do the same work to render into the game's FBO..
-	[[fallthrough]];
 	case RenderConfig::Game:
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera);
-
-		// Bind back to default FBO for ImGui or Nova-Game to work on.
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
 
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
@@ -307,6 +339,28 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		assert(false && "Forget to account for a case.");
 		break;
 	}
+
+	// Bind back to default FBO for ImGui or Nova-Game to work on.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::renderUI()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.fboId());
+	glViewport(0, 0, uiMainFrameBuffer.getWidth(), uiMainFrameBuffer.getHeight());
+
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+
+	// UI draw calls here
+	renderTexts();   
+	renderImages();
+
+	glDisable(GL_BLEND);
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
@@ -325,7 +379,6 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
-	renderTexts();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -336,12 +389,36 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 }
 
 void Renderer::renderToDefaultFBO() {
+
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// === 2. Blend the UI FBO on top ===
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
+}
+
+void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	overlayShader.use();
+	overlayShader.setImageUniform("overlay", 0);
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
 }
 
 GLuint Renderer::getEditorFrameBufferTexture() const {
@@ -350,6 +427,11 @@ GLuint Renderer::getEditorFrameBufferTexture() const {
 
 GLuint Renderer::getGameFrameBufferTexture() const {
 	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+}
+
+GLuint Renderer::getUIFrameBufferTexture() const
+{
+	return uiMainFrameBuffer.textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -380,13 +462,14 @@ Camera const& Renderer::getGameCamera() const {
 }
 
 void Renderer::recompileShaders() {
-	blinnPhongShader.compile();
-	PBRShader.compile();
-	skyboxShader.compile();
-	textShader.compile();
-	toneMappingShader.compile();
-	particleShader.compile();
-	skeletalAnimationShader.compile();
+	//blinnPhongShader.compile();
+	//PBRShader.compile();
+	skyboxShader.recompile();
+	textShader.recompile();
+	toneMappingShader.recompile();
+	particleShader.recompile();
+	skeletalAnimationShader.recompile();
+	texture2dShader.recompile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -735,7 +818,7 @@ void Renderer::renderTexts()
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
 
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 
@@ -813,6 +896,45 @@ void Renderer::renderTexts()
 	glBindVertexArray(mainVAO);
 	glDisable(GL_BLEND);
 }
+
+void Renderer::renderImages()
+{
+	texture2dShader.use();
+	texture2dShader.setMatrix("uiProjection", UIProjection);
+
+	texture2dShader.setInt("image", 0);
+
+	glBindVertexArray(textVAO);
+
+	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+
+	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
+		// Get texture resource
+		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
+		if (!textureAsset) {
+			continue;
+		}
+
+		GLuint textureId = textureAsset->getTextureId();
+		if (textureId == 0) {
+			continue;
+		}
+
+		texture2dShader.setVec4("tintColor", image.colorTint);
+		texture2dShader.setMatrix("model", transform.modelMatrix);
+		texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureId);
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	}
+
+	glBindVertexArray(mainVAO);
+	glDisable(GL_BLEND);
+}
+
 
 void Renderer::renderSkinnedModels(Camera const& camera) {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
@@ -1151,6 +1273,129 @@ void Renderer::renderObjectIds() {
 	}
 }
 
+void Renderer::renderUiObjectIds() {
+	// Clear object id framebuffer.
+
+	// For some reason, for framebuffers with integer color attachments
+	// we need to bind to a shader that writes to integer output
+	// even though clear operation does not use our shader at all
+	// seems to be a differing / conflicting implementation for NVIDIA GPUs..
+	uiImageObjectIdShader.use();
+
+	constexpr GLuint	nullEntity = entt::null;
+	constexpr GLfloat	initialDepth = 1.f;
+	constexpr GLint		initialStencilValue = 0;
+
+	glBindVertexArray(mainVAO);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_DITHER);
+
+	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, uiObjectIdFrameBuffer.fboId());
+	glClearNamedFramebufferuiv(uiObjectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
+	glClearNamedFramebufferfi(uiObjectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
+
+	uiImageObjectIdShader.setMatrix("uiProjection", UIProjection);
+
+	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
+		// Get texture resource
+		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
+		if (!textureAsset) {
+			continue;
+		}
+
+		uiImageObjectIdShader.setMatrix("model", transform.modelMatrix);
+		uiImageObjectIdShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
+		uiImageObjectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
+	uiTextObjectIdShader.use();
+
+	struct Vertex {
+		GLfloat x, y;   // screen position
+		GLfloat s, t;   // texture coordinates
+	};
+
+	glBindVertexArray(textVAO);
+
+	uiTextObjectIdShader.setMatrix("projection", UIProjection);
+
+	// iterate through all characters
+	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
+		// Retrieves font asset from asset manager.
+		auto [font, _] = resourceManager.getResource<Font>(text.font);
+
+		if (!font) {
+			continue;
+		}
+
+		if (text.text.empty()) {
+			continue;
+		}
+
+		Font::Atlas const& atlas = font->getAtlas();
+		float fontScale = static_cast<float>(text.fontSize) / font->getFontSize();
+
+		float x = transform.position.x;
+		float y = transform.position.y;
+
+		std::vector<Vertex> vertices;
+		vertices.reserve(text.text.size() * 6); // 6 vertices per char, 4 floats per vertex
+
+		std::string::const_iterator c;
+		for (c = text.text.begin(); c != text.text.end(); c++)
+		{
+			const Font::Character& ch = font->getCharacters().at(*c);
+
+			float xpos = x + ch.bearing.x * fontScale;
+			float ypos = y - (ch.size.y - ch.bearing.y) * fontScale;
+
+			float w = ch.size.x * fontScale;
+			float h = ch.size.y * fontScale;
+
+			// advance cursors for next glyph 
+			x += ch.advance * fontScale;
+
+			// Skip invisible glyphs
+			if (w == 0 || h == 0)
+				continue;
+
+			float tx = ch.tx;                   // texture X offset in atlas
+			float ty = 0.f;                     // texture Y offset in atlas
+			float tw = static_cast<float>(ch.size.x) / atlas.width;
+			float th = static_cast<float>(ch.size.y) / atlas.height;
+
+			// 6 vertices per quad (2 triangles)
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos,     ypos,     tx,       ty + th });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+			vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
+		}
+
+		// Bind font atlas texture once per string
+		glBindTexture(GL_TEXTURE_2D, atlas.textureId);
+
+		// Upload vertex data for all glyphs in this string
+		textVBO.uploadData(vertices, 0);
+
+		uiTextObjectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
+
+		// Draw all characters in one batched call
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+
+		// Reset bindings
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+}
+
 void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	ZoneScoped;
 
@@ -1339,4 +1584,9 @@ void Renderer::setToneMappingMethod(ToneMappingMethod method) {
 
 Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
+}
+
+ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
+{
+	return UIProjection;
 }

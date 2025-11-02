@@ -28,6 +28,15 @@ namespace Math {
 		};
 	}
 
+	FRAMEWORK_DLL_API glm::mat4 composeMatrix(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale)
+	{
+		glm::mat4 translation = glm::translate(glm::mat4(1.0f), position);
+		glm::mat4 rotationMatrix = glm::mat4_cast(rotation);  // Converts quaternion to a rotation matrix
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+
+		return translation * rotationMatrix * scaleMatrix;
+	}
+
     std::size_t getGUID() {
 		xresource::instance_guid guid = xresource::instance_guid::GenerateGUIDCopy();
 		return guid.m_Value;

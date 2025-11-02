@@ -19,30 +19,10 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
 	,	vShaderCode			{}
 	,	fShaderCode			{}
 	,	m_id				{}
+	,	vertexShaderPath	{ vertexPath }
+	,	fragmentShaderPath	{ fragmentPath }
 {
-	// retrieve the vertex/fragment source code from filePath
-	std::ifstream vShaderFile;
-	std::ifstream fShaderFile;
-
-	// ensure ifstream objects can throw exceptions:
-	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-	// open files
-	vShaderFile.open(vertexPath);
-	fShaderFile.open(fragmentPath);
-
-	std::stringstream vShaderStream, fShaderStream;
-
-	// read file's buffer contents into streams
-	vShaderStream << vShaderFile.rdbuf();
-	fShaderStream << fShaderFile.rdbuf();
-
-	// convert stream into string
-	vShaderCode = vShaderStream.str();
-	fShaderCode = fShaderStream.str();
-
-	compile();
+	recompile();
 }
 
 Shader::Shader(std::string vertexCode, std::string fragmentCode)
@@ -175,6 +155,34 @@ void Shader::compile() {
 	glDeleteShader(fragment);
 	shaderCompileStatus = ShaderCompileStatus::Success;
 	errorMessage.clear();
+}
+
+void Shader::recompile() {
+	if (vertexShaderPath && fragmentShaderPath) {
+		// retrieve the vertex/fragment source code from filePath
+		std::ifstream vShaderFile;
+		std::ifstream fShaderFile;
+
+		// ensure ifstream objects can throw exceptions:
+		vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+		// open files
+		vShaderFile.open(vertexShaderPath);
+		fShaderFile.open(fragmentShaderPath);
+
+		std::stringstream vShaderStream, fShaderStream;
+
+		// read file's buffer contents into streams
+		vShaderStream << vShaderFile.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();
+
+		// convert stream into string
+		vShaderCode = vShaderStream.str();
+		fShaderCode = fShaderStream.str();
+
+		compile();
+	}
 }
 
 void Shader::setBool(const std::string& name, bool const value) const {

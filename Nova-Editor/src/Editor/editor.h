@@ -16,6 +16,7 @@
 
 #include "gameViewPort.h"
 #include "editorViewPort.h"
+#include "uiViewPort.h"
 #include "ComponentInspection/componentInspector.h"
 #include "Navigation/navMeshGeneration.h"
 #include "hierarchy.h"
@@ -47,6 +48,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
+
 	void update(float dt, std::function<void(bool)> changeSimulationCallback);
 	
 	bool isEntitySelected(entt::entity entity);
@@ -84,6 +86,7 @@ private:
 	void handleEntityValidity();
 	void handleEntityHovering();
 	void handleEntitySelection();
+	void handleUIEntitySelection();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
@@ -101,6 +104,7 @@ public:
 
 	GameViewPort gameViewPort;
 	EditorViewPort editorViewPort;
+	UIViewPort uiViewPort;
 	ComponentInspector componentInspector;
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
