@@ -651,6 +651,7 @@ void Renderer::prepareRendering() {
 	// Configure pre rendering settings
 	// =================================================================
 	glEnable(GL_DITHER);
+	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
 
 	// bind the VBOs to their respective binding index
 	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(),			0, sizeof(glm::vec3));
@@ -924,7 +925,6 @@ void Renderer::renderImages()
 
 	glBindVertexArray(textVAO);
 
-	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
 
 	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
 		// Get texture resource
@@ -1308,8 +1308,6 @@ void Renderer::renderUiObjectIds() {
 
 	glDisable(GL_BLEND);
 	glDisable(GL_DITHER);
-
-	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, uiObjectIdFrameBuffer.fboId());
 	glClearNamedFramebufferuiv(uiObjectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);

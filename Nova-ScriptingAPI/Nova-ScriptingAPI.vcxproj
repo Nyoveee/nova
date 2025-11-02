@@ -140,6 +140,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -176,6 +177,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>

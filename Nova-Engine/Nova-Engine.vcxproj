@@ -130,6 +130,7 @@
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,6 +159,7 @@
       <ShowIncludes>false</ShowIncludes>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

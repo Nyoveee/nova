@@ -7,14 +7,17 @@
 
 class ECS;
 class Engine;
+class ResourceManager;
 
 class PrefabManager {
 public:
 	PrefabManager(Engine& engine);
 
 	template<typename ...Components>
-	void instantiatePrefab(ResourceID id, entt::registry& ecsRegistry, const char* fileName);
+	void instantiatePrefab(ResourceID id);
 	
+private:
+
 	template<typename ...Components>
 	void instantiatePrefabRecursive(ResourceID id, entt::registry& ecsRegistry, std::vector<entt::entity>& entityVec);
 
@@ -26,13 +29,20 @@ public:
 private:
 	entt::registry prefabRegistry;
 	std::unordered_map<ResourceID, entt::entity> prefabMap;
-	Engine& engine;
+	ResourceManager& resourceManager;
+	entt::registry& ecsRegistry;	
 };
 
+#include "ResourceManager/resourceManager.h"
+
 template<typename ...Components>
-void PrefabManager::instantiatePrefab(ResourceID id, entt::registry& ecsRegistry, const char* fileName) {
+void PrefabManager::instantiatePrefab(ResourceID id) {
+	auto&& [resource, result] = resourceManager.getResource<Prefab>(id);
 
 	std::vector<entt::entity> entityVec;
+
+	const char* fileName = resource->getFilePath().string.c_str();
+
 	//if ID is not found in the map, deserialise it from file
 	if (prefabMap.find(id) == prefabMap.end()) {
 		//entity = Serialiser::deserialisePrefab(fileName, ecsRegistry, static_cast<std::size_t>(id), prefabRegistry, prefabMap);

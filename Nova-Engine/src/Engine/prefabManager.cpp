@@ -1,10 +1,13 @@
 #include "prefabManager.h"
 #include "Serialisation/serialisation.h"
 #include "component.h"
+#include "engine.h"
 
 PrefabManager::PrefabManager(Engine& engine) :
-	engine{ engine }
+	resourceManager { engine.resourceManager },
+	ecsRegistry		{ engine.ecs.registry }
 {}
+
 //definition in .h
 
 //template<typename ...Components>

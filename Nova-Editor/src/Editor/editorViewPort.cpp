@@ -101,17 +101,7 @@ void EditorViewPort::update(float dt) {
 				editor.selectEntities({});
 			}
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
-
-				auto&&[resource, result] = editor.resourceManager.getResource<Prefab>(id);
-				engine.prefabManager.instantiatePrefab<ALL_COMPONENTS>(id, engine.ecs.registry, resource->getFilePath().string.c_str());
-				//Serialiser::deserialisePrefab(resource->getFilePath().string.c_str(), engine.ecs.registry, id);
-				//if (filePath) {
-				//	//Serialiser::deserialisePrefab(filePath->string.c_str(), engine.ecs.registry, id);
-				//	//Serialiser::deserialisePrefab(resource->getFilePath().c_str(), engine.ecs.registry, id);
-				//	std::cout << filePath;
-				//}
-
-				// deselect entity.
+				engine.prefabManager.instantiatePrefab<ALL_COMPONENTS>(id);
 				editor.selectEntities({});
 			}
 		}
