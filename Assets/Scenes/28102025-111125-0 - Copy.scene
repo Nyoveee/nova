@@ -2,8 +2,11 @@
     "entities": [
         {
             "EntityData": {
-                "children": null,
-                "name": "GameUIManager",
+                "children": [
+                    2097157,
+                    29
+                ],
+                "name": "Enemy",
                 "overridenProperties": null,
                 "parent": 23,
                 "prefabID": 18446744073709551615,
@@ -37,16 +40,49 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 11
+                                    "__variant_value": 1048576
                                 },
-                                "name": "healthText"
+                                "name": "rigidbody"
+                            }
+                        ],
+                        "scriptId": 17619093725142188105
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "health"
                             },
                             {
                                 "data": {
                                     "__variant_type": 13,
-                                    "__variant_value": 2.0
+                                    "__variant_value": 4.0
                                 },
-                                "name": "damageFadeTime"
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "chasingRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 5.0
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "movementSpeed"
                             }
                         ],
                         "scriptId": 11697264835426484225
@@ -140,48 +176,62 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 2113.546875,
-                    "y": 1212.631591796875,
-                    "z": 1.0
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 15.0,
+                        "distance": 2.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        }
+                    },
+                    "emissionShape": "Edge",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    }
                 },
-                "position": {
-                    "x": 960.0,
-                    "y": 540.0,
-                    "z": 0.0
+                "particleRate": 0.0,
+                "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Linear",
+                    "selected": true
                 },
-                "rotation": {
-                    "w": 1.0,
+                "startSize": 0.10000000149011612,
+                "startSpeed": 0.0,
+                "texture": 10841000328665055267,
+                "trails": {
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
+                    "trailColor": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 0
+                }
+            },
+            "Rigidbody": {
+                "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 2113.546875,
-                    "y": 1212.631591796875,
-                    "z": 1.0
-                }
-            },
-            "id": 22
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "name": "Dash Bar",
-                "overridenProperties": null,
-                "parent": 15,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "TopLeft",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.8549019694328308,
-                    "g": 1.0,
-                    "r": 0.0
-                },
-                "texture": 7
+                "isRotatable": true,
+                "isTrigger": true,
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
             },
             "Transform": {
                 "eulerAngles": {
@@ -195,9 +245,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.003216385841369629,
-                    "y": 5.4836273193359375e-06,
-                    "z": 0.0
+                    "x": -0.08759307861328125,
+                    "y": 2.713414192199707,
+                    "z": 2.023620367050171
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -206,14 +256,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.6945023536682129,
-                    "y": 0.19998788833618164,
-                    "z": 1.0
+                    "x": 1.0000009536743164,
+                    "y": 0.9998354315757751,
+                    "z": 1.0000439882278442
                 },
                 "position": {
-                    "x": 273.2760009765625,
-                    "y": 93.58810424804688,
-                    "z": 1.0
+                    "x": -74.26976776123047,
+                    "y": -5.9115729331970215,
+                    "z": -2.023620367050171
                 },
                 "rotation": {
                     "w": 1.0,
@@ -222,9 +272,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 404.2054443359375,
-                    "y": 20.0,
-                    "z": 1.0
+                    "x": 1.0000009536743164,
+                    "y": 0.9998354315757751,
+                    "z": 1.0000933408737183
                 }
             },
             "id": 21
@@ -260,9 +310,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0032159090042114258,
-                    "y": 4.231929779052734e-06,
-                    "z": -1.0
+                    "x": 4.1961669921875e-05,
+                    "y": -5.238689482212067e-10,
+                    "z": -3.0517578125e-05
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -276,9 +326,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 273.2757263183594,
-                    "y": 93.58797454833984,
-                    "z": 0.0
+                    "x": 27.562711715698242,
+                    "y": 0.0005569899803958833,
+                    "z": -5.1780149078695104e-05
                 },
                 "rotation": {
                     "w": 1.0,
@@ -1208,14 +1258,14 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -2.1032211780548096,
-                    "y": -0.20752912759780884,
-                    "z": -2.7903566360473633
+                    "x": -2.1032214164733887,
+                    "y": -0.20752961933612823,
+                    "z": -2.7903568744659424
                 },
                 "localEulerAngles": {
-                    "x": -2.1032211780548096,
-                    "y": -0.20752912759780884,
-                    "z": -2.7903566360473633
+                    "x": -2.1032214164733887,
+                    "y": -0.20752961933612823,
+                    "z": -2.7903568744659424
                 },
                 "localPosition": {
                     "x": -78.46746826171875,
@@ -1223,15 +1273,15 @@
                     "z": 11.151723861694336
                 },
                 "localRotation": {
-                    "w": -0.0023225704208016396,
-                    "x": -0.20147959887981415,
+                    "w": -0.0023228360805660486,
+                    "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "localScale": {
-                    "x": 1.0003137588500977,
-                    "y": 1.0001782178878784,
-                    "z": 1.000082015991211
+                    "x": 1.0003751516342163,
+                    "y": 1.0001912117004395,
+                    "z": 1.0001246929168701
                 },
                 "position": {
                     "x": -78.46746826171875,
@@ -1239,15 +1289,15 @@
                     "z": 11.151723861694336
                 },
                 "rotation": {
-                    "w": -0.0023225704208016396,
-                    "x": -0.20147959887981415,
+                    "w": -0.0023228360805660486,
+                    "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "scale": {
-                    "x": 1.0003137588500977,
-                    "y": 1.0001782178878784,
-                    "z": 1.000082015991211
+                    "x": 1.0003751516342163,
+                    "y": 1.0001912117004395,
+                    "z": 1.0001246929168701
                 }
             },
             "id": 7
@@ -1340,14 +1390,14 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -2.1032211780548096,
-                    "y": -0.20752915740013123,
-                    "z": -2.7903566360473633
+                    "x": -2.1032214164733887,
+                    "y": -0.20752961933612823,
+                    "z": -2.7903568744659424
                 },
                 "localEulerAngles": {
-                    "x": -2.1032211780548096,
-                    "y": -0.20752915740013123,
-                    "z": -2.7903566360473633
+                    "x": -2.1032214164733887,
+                    "y": -0.20752961933612823,
+                    "z": -2.7903568744659424
                 },
                 "localPosition": {
                     "x": 62.65027618408203,
@@ -1355,15 +1405,15 @@
                     "z": 27.852375030517578
                 },
                 "localRotation": {
-                    "w": -0.0023225792683660984,
-                    "x": -0.20147961378097534,
+                    "w": -0.002322840504348278,
+                    "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "localScale": {
-                    "x": 1.0004560947418213,
-                    "y": 1.0002065896987915,
-                    "z": 1.00017511844635
+                    "x": 1.0005024671554565,
+                    "y": 1.0002166032791138,
+                    "z": 1.0002104043960571
                 },
                 "position": {
                     "x": 62.65027618408203,
@@ -1371,15 +1421,15 @@
                     "z": 27.852375030517578
                 },
                 "rotation": {
-                    "w": -0.0023225792683660984,
-                    "x": -0.20147961378097534,
+                    "w": -0.002322840504348278,
+                    "x": -0.20147962868213654,
                     "y": 0.8412919640541077,
                     "z": -0.5016260147094727
                 },
                 "scale": {
-                    "x": 1.0004560947418213,
-                    "y": 1.0002065896987915,
-                    "z": 1.00017511844635
+                    "x": 1.0005024671554565,
+                    "y": 1.0002166032791138,
+                    "z": 1.0002104043960571
                 }
             },
             "id": 9
@@ -1455,15 +1505,21 @@
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "fontSize": 100,
-                "text": "100"
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 6.0
+                                },
+                                "name": "transitionTime"
+                            }
+                        ],
+                        "scriptId": 14160329211321663571
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
@@ -1613,9 +1669,102 @@
                 },
                 "isRotatable": true,
                 "isTrigger": false,
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
+                "layer": "Moving",
+                "mass": 1.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 0.0010000000474974513
+                                },
+                                "name": "cameraSensitivity"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 20.0
+                                },
+                                "name": "maximumMoveSpeed"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 5.0
+                                },
+                                "name": "accelerationStrength"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "jumpStrength"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 12,
+                                    "__variant_value": 2
+                                },
+                                "name": "maxJumpCount"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 0.25
+                                },
+                                "name": "dashDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 12,
+                                    "__variant_value": 3
+                                },
+                                "name": "dashCount"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 3.0
+                                },
+                                "name": "dashCooldown"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 75.0
+                                },
+                                "name": "dashStrength"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "maxHealth"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 27
+                                },
+                                "name": "cameraObject"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 25
+                                },
+                                "name": "gameUIManager"
+                            }
+                        ],
+                        "scriptId": 2684453670933381121
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
@@ -2027,61 +2176,59 @@
                     "y": 0.09000000357627869,
                     "z": 0.03200000151991844
                 },
-                "looping": true,
-                "maxParticles": 10000,
-                "particleColorSelection": {
-                    "color": {
-                        "a": 1.0,
-                        "b": 0.6235294342041016,
-                        "g": 0.19607843458652496,
-                        "r": 0.4156862795352936
-                    },
-                    "randomizedColor": false
+                "localPosition": {
+                    "x": 0.0032159090042114258,
+                    "y": 4.410743713378906e-06,
+                    "z": -1.0
                 },
-                "particleEmissionTypeSelection": {
-                    "coneEmitter": {
-                        "arc": 15.0,
-                        "distance": 2.0
-                    },
-                    "cubeEmitter": {
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        },
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        }
-                    },
-                    "emissionShape": "Edge",
-                    "radiusEmitter": {
-                        "radius": 5.0
-                    }
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
-                "particleRate": 0.0,
-                "randomizedDirection": false,
-                "sizeOverLifetime": {
-                    "endSize": 0.0,
-                    "interpolationType": "Linear",
-                    "selected": true
+                "localScale": {
+                    "x": 0.6872766017913818,
+                    "y": 0.19998788833618164,
+                    "z": 1.0
                 },
-                "startSize": 0.10000000149011612,
-                "startSpeed": 0.0,
-                "texture": 10841000328665055267,
-                "trails": {
-                    "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
-                    "trailColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                "position": {
+                    "x": 273.2757263183594,
+                    "y": 93.58799743652344,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 400.0000305175781,
+                    "y": 20.0,
+                    "z": 1.0
                 }
+            },
+            "id": 16
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "Dash Bar",
+                "overridenProperties": null,
+                "parent": 15,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "TopLeft",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.8549019694328308,
+                    "g": 1.0,
+                    "r": 0.0
+                },
+                "texture": 7
             },
             "Transform": {
                 "eulerAngles": {
@@ -2095,9 +2242,9 @@
                     "z": -3.1415908336639404
                 },
                 "localPosition": {
-                    "x": -0.08759307861328125,
-                    "y": 2.7134127616882324,
-                    "z": 2.023620367050171
+                    "x": 0.003216385841369629,
+                    "y": 5.7220458984375e-06,
+                    "z": 0.0
                 },
                 "localRotation": {
                     "w": -6.43531109290052e-07,
@@ -2111,9 +2258,9 @@
                     "z": 1.000044345855713
                 },
                 "position": {
-                    "x": -74.26976776123047,
-                    "y": -5.911574363708496,
-                    "z": -2.023620367050171
+                    "x": 273.2760009765625,
+                    "y": 93.58812713623047,
+                    "z": 1.0
                 },
                 "rotation": {
                     "w": -0.7071066498756409,
@@ -2309,7 +2456,87 @@
                     "z": 1.0
                 }
             },
-            "id": 1048576
+            "id": 25
+        },
+        {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 2.0,
+                    "z": 1.5
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "name": "Hit Box",
+                "overridenProperties": null,
+                "parent": 1048576,
+                "prefabID": 18446744073709551615,
+                "tag": "EnemyHitBox"
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": true,
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Kinematic"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -0.0,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 0.246917724609375,
+                    "y": 2.9964399337768555,
+                    "z": 2.3162310123443604
+                },
+                "localRotation": {
+                    "w": 0.0,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 0.999950647354126,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -74.60427856445313,
+                    "y": -5.628533363342285,
+                    "z": -2.3162310123443604
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 29
         }
     ]
 }

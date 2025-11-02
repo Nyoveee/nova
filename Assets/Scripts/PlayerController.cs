@@ -327,4 +327,18 @@ class PlayerController : Script
         dashVector.Normalize();
         rigidbody.SetVelocity(dashVector * dashStrength);
     }
+    protected override void onCollisionEnter(GameObject other)
+    {
+        if (other.tag != "EnemyHitBox"){
+            return;
+        }
+        Enemy enemy = other.GetParent().getScript<Enemy>();
+ 
+        if (enemy.HasHitPlayerThisAttack() || !enemy.IsSwinging())
+            return;
+        EnemyStats enemyStats = other.GetParent().getScript<EnemyStats>();
+        currentHealth -= enemyStats.damage;
+        gameUIManager.ActivateDamageUI();
+        enemy.OnPlayerHit();
+    }
 }

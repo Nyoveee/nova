@@ -6,23 +6,19 @@ using ScriptingAPI;
 
 class PlayerWeaponController : Script
 {
-    public Prefab prefab;
-    public Texture texture; //asd as BLUE ARCHIVE S asd sds
-    public Material material;
-    public Model model;
+    public Prefab bulletPrefab;
 
-    // adasdasd
-    // This function is first invoked when game starts.
     protected override void init()
     {
-        Debug.Log(prefab);
-        Debug.Log(texture);
-        Debug.Log(material);
-        Debug.Log(model);
+        Input.MapKey(Key.MouseLeft, SpawnBullet);
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {}
 
+    private void SpawnBullet()
+    {
+        // ObjectAPI.Instantiate(bulletPrefab);
+    }
 }

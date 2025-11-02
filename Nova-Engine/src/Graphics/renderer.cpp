@@ -372,6 +372,8 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
 
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
+
 	// We render individual game objects..
 	renderSkyBox();
 	renderModels(camera);
@@ -381,6 +383,8 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
 
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping(frameBuffers);

@@ -15,6 +15,8 @@ class Enemy : Script
     private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
     private GameObject? player = null;
     private float distance = 0f;
+    private bool b_HitPlayerThisAttack = false;
+    private bool b_IsSwinging = false;
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -50,9 +52,24 @@ class Enemy : Script
         distance = Vector3.Distance(playerPosition, enemyPosition);
         updateState[enemyState]();
     }
+    /**********************************************************************
+        Public Functions
+    **********************************************************************/
     public bool IsEngagedInBattle()
     {
         return enemyState != EnemyState.Idle;
+    }
+    public void OnPlayerHit()
+    {
+        b_HitPlayerThisAttack = true;
+    }
+    public bool HasHitPlayerThisAttack()
+    {
+        return b_HitPlayerThisAttack;
+    }
+    public bool IsSwinging()
+    {
+        return b_IsSwinging;
     }
     /**********************************************************************
         Enemy States
@@ -127,13 +144,21 @@ class Enemy : Script
     {
         AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
         emitter.emit(1000);
+        b_IsSwinging = false;
     }
     public void EndAttack()
     {
+        Debug.Log("end of attack....");
+
+        b_HitPlayerThisAttack = false;
         if (distance > enemyStats.attackRadius)
         {
             animator.PlayAnimation("Enemy Running");
             enemyState = EnemyState.Chasing;
         }
+    }
+    public void BeginSwing()
+    {
+        b_IsSwinging = true;
     }
 }

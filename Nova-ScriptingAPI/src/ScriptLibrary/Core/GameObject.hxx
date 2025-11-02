@@ -11,9 +11,13 @@ public:
 	static GameObject^ FindWithTag(System::String^ tag);
 public:
 	virtual System::String^ ToString() override sealed;
+	GameObject^ GetParent();
 public:
 	property Transform_^ transform{
-		Transform_^ get() { return transformReference; };
+		Transform_^ get();
+	}
+	property System::String^ tag {
+		System::String^ get();
 	}
 internal:
 	Transform_^ transformReference;
