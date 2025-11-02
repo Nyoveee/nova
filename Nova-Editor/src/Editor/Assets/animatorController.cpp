@@ -265,7 +265,7 @@ void AnimatorController::displaySelectedAnimationTimeline(Animator& animator, Co
 	}
 
 	int startFrame = 0;
-	int endFrame = static_cast<int>(animation.durationInTicks);
+	int endFrame = static_cast<int>(animation.durationInTicks)-1;
 
 	if (ImGui::BeginNeoSequencer(animation.name.c_str(), &currentFrame, &startFrame, &endFrame, {})) {
 		if (ImGui::BeginNeoTimelineEx("Timeline", nullptr)) {

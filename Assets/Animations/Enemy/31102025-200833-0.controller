@@ -1,0 +1,106 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "animationEvents": null,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 16413369274166214657
+                }
+            ]
+        },
+        "10648761751132241929": {
+            "animation": 4360496422163415045,
+            "animationEvents": null,
+            "id": 10648761751132241929,
+            "name": "Enemy Death",
+            "toLoop": true,
+            "transitions": null
+        },
+        "14683987017256009733": {
+            "animation": 325271156039450635,
+            "animationEvents": null,
+            "id": 14683987017256009733,
+            "name": "Enemy Running",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": [
+                        {
+                            "check": "Lesser",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 15.0
+                            }
+                        }
+                    ],
+                    "nextNode": 7766457989615091719
+                }
+            ]
+        },
+        "16413369274166214657": {
+            "animation": 12430946954411343881,
+            "animationEvents": null,
+            "id": 16413369274166214657,
+            "name": "Enemy Idle (Base)",
+            "toLoop": true,
+            "transitions": null
+        },
+        "7766457989615091719": {
+            "animation": 11278025449804496903,
+            "animationEvents": null,
+            "id": 7766457989615091719,
+            "name": "Enemy Forward",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": [
+                        {
+                            "check": "Greater",
+                            "name": "Range",
+                            "value": {
+                                "__variant_type": 1,
+                                "__variant_value": 15.0
+                            }
+                        }
+                    ],
+                    "nextNode": 14683987017256009733
+                }
+            ]
+        },
+        "848928961973829635": {
+            "animation": 18195554477445562371,
+            "animationEvents": [
+                {
+                    "functionName": "Slash",
+                    "key": 31,
+                    "scriptId": 17619093725142188105
+                },
+                {
+                    "functionName": "EndAttack",
+                    "key": 71,
+                    "scriptId": 17619093725142188105
+                }
+            ],
+            "id": 848928961973829635,
+            "name": "Enemy Attack",
+            "toLoop": true,
+            "transitions": null
+        }
+    },
+    "parameters": [
+        {
+            "name": "Range",
+            "value": {
+                "__variant_type": 1,
+                "__variant_value": 0.0
+            }
+        }
+    ]
+}

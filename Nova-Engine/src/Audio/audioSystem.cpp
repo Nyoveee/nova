@@ -239,38 +239,6 @@ void AudioSystem::stopAudioInstance(AudioInstanceID audioInstanceId) {
 	stopAudioInstance(audioInstance);
 }
 
-void AudioSystem::playSFX(entt::entity entity, std::string soundName)
-{
-	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
-	if (!audio) {
-		Logger::warn("Attempting to play sound from entity with no audio component!");
-		return;
-	}
-
-	auto iterator = audio->data.find(soundName);
-	if (iterator == audio->data.end()) {
-		Logger::warn("Entity has no sound named {}", soundName);
-		return;
-	}
-
-	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
-	auto&& [_, audioData] = *iterator;
-
-	AudioInstance* audioInstance = createSoundInstance(audioData.audioId, audioData.volume, entity);
-	if (!audioInstance) return;
-
-	FMOD_VECTOR pos = { transform.position.x, transform.position.y, transform.position.z };
-	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
-	audioInstance->channel->set3DAttributes(&pos, &vel);
-
-	// Apply per-entity attenuation
-	if (auto* positional = engine.ecs.registry.try_get<PositionalAudio>(entity)) 
-	{
-		audioInstance->channel->set3DMinMaxDistance(positional->innerRadius, positional->maxRadius);
-	}
-
-	audioInstance->channel->setPaused(false);
-}
 
 FMOD::Sound* AudioSystem::getSound(ResourceID audioId) const {
 	auto iterator = sounds.find(audioId);
@@ -500,4 +468,73 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		Logger::warn("Failed to create sound instance with audioId: {}", static_cast<std::size_t>(audioId));
 		return nullptr;
 	}
+}
+
+/***********************************************************************************************************
+	Scripting Functions
+***********************************************************************************************************/
+void AudioSystem::playBGM(entt::entity entity, std::string soundName)
+{
+	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
+	if (!audio) {
+		Logger::warn("Attempting to play sound from entity with no audio component!");
+		return;
+	}
+
+	auto iterator = audio->data.find(soundName);
+	if (iterator == audio->data.end()) {
+		Logger::warn("Entity has no sound named {}", soundName);
+		return;
+	}
+	auto&& [_, audioData] = *iterator;
+	playBGM(audioData.audioId, audioData.volume);
+
+}
+void AudioSystem::playSFX(entt::entity entity, std::string soundName)
+{
+	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
+	if (!audio) {
+		Logger::warn("Attempting to play sound from entity with no audio component!");
+		return;
+	}
+
+	auto iterator = audio->data.find(soundName);
+	if (iterator == audio->data.end()) {
+		Logger::warn("Entity has no sound named {}", soundName);
+		return;
+	}
+
+	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
+	auto&& [_, audioData] = *iterator;
+
+	AudioInstance* audioInstance = createSoundInstance(audioData.audioId, audioData.volume, entity);
+	if (!audioInstance) return;
+
+	FMOD_VECTOR pos = { transform.position.x, transform.position.y, transform.position.z };
+	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
+	audioInstance->channel->set3DAttributes(&pos, &vel);
+
+	// Apply per-entity attenuation
+	if (auto* positional = engine.ecs.registry.try_get<PositionalAudio>(entity))
+	{
+		audioInstance->channel->set3DMinMaxDistance(positional->innerRadius, positional->maxRadius);
+	}
+
+	audioInstance->channel->setPaused(false);
+}
+void AudioSystem::stopSound(entt::entity entity, std::string soundName)
+{
+	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
+	if (!audio) {
+		Logger::warn("Attempting to stop sound from entity with no audio component!");
+		return;
+	}
+
+	auto iterator = audio->data.find(soundName);
+	if (iterator == audio->data.end()) {
+		Logger::warn("Entity has no sound named {}", soundName);
+		return;
+	}
+	auto&& [_, audioData] = *iterator;
+	StopAudio(audioData.audioId);
 }

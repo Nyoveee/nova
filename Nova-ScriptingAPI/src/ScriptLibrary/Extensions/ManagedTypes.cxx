@@ -29,7 +29,12 @@ Vector2 Vector2::operator*(float d, Vector2 a) { return Vector2{ a.x * d, a.y * 
 Vector2 Vector2::operator/(Vector2 a, float d) { return Vector2{ a.x / d, a.y / d}; }
 bool Vector2::operator!=(Vector2 a, Vector2 b) { return a.native() != b.native(); }
 bool Vector2::operator==(Vector2 a, Vector2 b) { return a.native() == b.native(); }
-
+Vector2 Vector2::Up() { return Vector2{ 0.f,  1.f };}
+Vector2 Vector2::Down() { return Vector2{ 0.f, -1.f };}
+Vector2 Vector2::Left() { return Vector2{ -1.f,  0.f };}
+Vector2 Vector2::Right() { return Vector2{ 1.f,  0.f };}
+Vector2 Vector2::One() { return Vector2{ 0.f,  0.f };}
+Vector2 Vector2::Zero() { return Vector2{ 1.f,  1.f };}
 // =================================================================
 // VECTOR 3
 // =================================================================
@@ -56,6 +61,14 @@ Vector3 Vector3::operator*(float d, Vector3 a)   { return Vector3{ a.x * d, a.y 
 Vector3 Vector3::operator/(Vector3 a, float d)   { return Vector3{ a.x / d, a.y / d,a.z / d }; }
 bool Vector3::operator!=(Vector3 a, Vector3 b)   { return a.native() != b.native(); }
 bool Vector3::operator==(Vector3 a, Vector3 b)   { return a.native() == b.native();}
+Vector3 Vector3::Up(){ return Vector3{ 0.f,  1.f,  0.f };}
+Vector3 Vector3::Down(){ return Vector3{ 0.f, -1.f,  0.f };}
+Vector3 Vector3::Front(){ return Vector3{ 0.f,  0.f,  1.f };}
+Vector3 Vector3::Back(){ return  Vector3{ 0.f,  0.f,  -1.f };}
+Vector3 Vector3::Left(){ return Vector3{ -1.f,  0.f,  0.f };}
+Vector3 Vector3::Right(){ return Vector3{ 1.f,  0.f,  0.f };}
+Vector3 Vector3::One() { return Vector3{ 0.f,  0.f,  0.f };}
+Vector3 Vector3::Zero(){ return Vector3{ 1.f,  1.f,  1.f }; }
 
 
 // =================================================================
