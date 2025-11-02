@@ -17,6 +17,7 @@
 #include "Navigation/Navigation.h"
 #include "Engine/particleSystem.h"
 #include "Engine/animationSystem.h"
+#include "Engine/prefabManager.h"
 
 #define _CRTDBG_MAP_ALLOC
 
@@ -24,6 +25,7 @@ class Window;
 class InputManager;
 class ScriptingAPIManager;
 class ResourceManager;
+class PrefabManager;
 
 class Engine {
 public:
@@ -76,6 +78,7 @@ public:
 	NavigationSystem		navigationSystem;
 	ParticleSystem          particleSystem;
 	AnimationSystem			animationSystem;
+	PrefabManager			prefabManager;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;

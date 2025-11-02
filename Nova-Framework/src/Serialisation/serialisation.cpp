@@ -144,7 +144,10 @@ namespace Serialiser {
 		file >> j;
 	}
 
-	void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id) {
+	//void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id) {
+	//std::vector<entt::entity> deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id, entt::registry& prefabRegistry) {
+	void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id, entt::registry& prefabRegistry, std::vector<entt::entity>& entityVec) {
+	//entt::entity deserialisePrefab(ResourceFilePath fileName, entt::registry& registry, std::size_t id) {
 		std::ifstream file(fileName);
 		
 		if (!file.is_open())
@@ -155,21 +158,17 @@ namespace Serialiser {
 
 		entt::entity highest = entt::null;
 		entt::id_type highestID = 0;
+		entt::entity rootEntity = entt::null;
 
-		//find the highest entity
-		for (auto&& [entity] : registry.view<entt::entity>().each()) {
-			if (static_cast<entt::id_type>(entity) > highestID) {
-				highest = entity;
-				highestID = static_cast<entt::id_type>(highest);
-			}
-		}
+
+
+		highestID = findLargestEntity(registry);
 
 		//vector to store the child enities
 		std::vector<entt::entity> childVec;
 
 		//deserialise recursively starting from the child
-		deserialisePrefabRecursive(j["Entities"], static_cast<int>(j["Entities"].size()) - 1, registry, highestID + 1, childVec, static_cast<int>(id));
-
+		deserialisePrefabRecursive(j["Entities"], static_cast<int>(j["Entities"].size()) - 1, registry, highestID + 1, childVec, static_cast<int>(id), entityVec, prefabRegistry);
 	}
 	void serialisePrefab(entt::registry& registry, entt::entity entity, std::optional<std::ofstream> opt, std::size_t id) {
 		std::ofstream& file = opt.value();
@@ -206,14 +205,18 @@ namespace Serialiser {
 		}
 
 	}
-	void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid) {
+	void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid, std::vector<entt::entity>& entityVec, entt::registry& prefabRegistry) {
+	//void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid, entt::entity& rootEntity, entt::registry& prefabRegistry) {
+	//entt::entity deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid) {
 		if (end < 0) {
 			return;
 		}
 
+
 		entt::id_type id = jsonVec[end]["id"] + highestID;
 		auto entity = registry.create(static_cast<entt::entity>(id));
 		deserialiseComponents<ALL_COMPONENTS>(registry, entity, jsonVec[end]);
+
 
 		EntityData* entityData = registry.try_get<EntityData>(entity);
 
@@ -228,11 +231,30 @@ namespace Serialiser {
 		}
 		if (end == 0) {
 			entityData->prefabID = TypedResourceID<Prefab>{ resourceid };
+			//rootEntity = entity;
+			/*rootEntity = entity;*/
 		}
 		else {
 			childVec.push_back(entity);
 		}
+		entityVec.push_back(entity);
 
-		deserialisePrefabRecursive(jsonVec, end-1, registry, highestID, childVec, resourceid);
+		deserialisePrefabRecursive(jsonVec, end-1, registry, highestID, childVec, resourceid, entityVec, prefabRegistry);
+	}
+
+	entt::id_type findLargestEntity(entt::registry& registry) {
+		entt::id_type highestID{};
+		entt::entity highest = entt::null;
+		if (registry.view<EntityData>().size() == 0) {
+			return highestID;
+		}
+
+		for (auto entity : registry.view<EntityData>()) {
+			if (static_cast<entt::id_type>(entity) > highestID) {
+				highest = entity;
+				highestID = static_cast<entt::id_type>(highest);
+			}
+		}
+		return highestID;
 	}
 };

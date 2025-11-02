@@ -29,7 +29,8 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	animationSystem			{ *this },
 	gameConfig				{ gameConfig },
 	inSimulationMode		{ false },
-	toDebugRenderPhysics	{ false }
+	toDebugRenderPhysics	{ false },
+	prefabManager			{ *this }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
 }
