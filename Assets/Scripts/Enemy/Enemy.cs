@@ -83,6 +83,7 @@ class Enemy : Script
         {
             animator.PlayAnimation("Enemy Idle (Base)");
             enemyState = EnemyState.Idle;
+            rigidbody.SetVelocity(new Vector3(0, rigidbody.GetVelocity().y, 0));
             return;
         }
         // Change State

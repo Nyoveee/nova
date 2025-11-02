@@ -10,21 +10,26 @@ class TEST : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        transform = getComponent<Transform_>();
-        Input.MapKey(Key.Space, toggle);
+        // transform = getComponent<Transform_>();
+        // Input.MapKey(Key.Space, toggle);
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {
-        if (startMoving) {
-            transform.position = new Vector3 ( transform.position.x + Time.V_DeltaTime() * 5, transform.position.y, transform.position.z );
-        }
+        //if (startMoving) {
+        //    transform.position = new Vector3 ( transform.position.x + Time.V_DeltaTime() * 5, transform.position.y, transform.position.z );
+        //}
     }
 
     private void toggle()
     {
-        startMoving = !startMoving; 
+        //startMoving = !startMoving; 
+    }
+
+    protected override void onCollisionEnter(GameObject other)
+    {
+        Debug.Log("collision");
     }
 
 }

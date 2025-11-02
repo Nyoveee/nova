@@ -188,10 +188,13 @@ void PhysicsManager::simulationInitialise() {
 
 	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
 		if (rigidbody.bodyId == JPH::BodyID{}) {
-			bodyInterface.ActivateBody(rigidbody.bodyId);
-			bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(rigidbody.initialVelocity));
-			rigidbody.velocity = rigidbody.initialVelocity;
+			continue;
 		}
+
+		bodyInterface.ActivateBody(rigidbody.bodyId);
+		bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(rigidbody.initialVelocity));
+		rigidbody.velocity = rigidbody.initialVelocity;
+		bodyInterface.SetIsSensor(rigidbody.bodyId, rigidbody.isTrigger);
 	}
 }
 
@@ -323,16 +326,20 @@ void PhysicsManager::updateTransformBodies()
 		entt::entity entity = transformUpdateStack.top();
 		transformUpdateStack.pop();
 
+		// simulation mode requires a different update sequence.. we just clear the stack if so..
+		if (engine.isInSimulationMode()) {
+			continue;
+		}
+
 		auto [transform, rigidbody] = registry.try_get<Transform, Rigidbody>(entity);
 
 		if (!transform || !rigidbody || rigidbody->bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
 
-		// bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
+		bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
 	}
 
-	// i don't want to constantly override my position, i want to let my forces do their thing..
 	if (engine.isInSimulationMode()) {
 		return;
 	}
@@ -380,6 +387,8 @@ void PhysicsManager::updateTransformBodies()
 			rigidbody.offset = capsuleCollider->offset;
 			transformUpdateStack.push(entityId);
 		}
+
+		bodyInterface.SetIsSensor(rigidbody.bodyId, rigidbody.isTrigger);
 	}
 }
 
@@ -396,26 +405,25 @@ void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
 void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entityID) {
 	auto&& [transform, rigidBody]= registry.try_get<Transform, Rigidbody>(entityID);
 
-	if (hasRequiredPhysicsComponents(entityID))
+	if (rigidBody == nullptr)
 	{
-		if (rigidBody == nullptr)
-		{
-			return;
-		}
-
-		if (rigidBody->bodyId == JPH::BodyID{})
-		{
-			return;
-		}
-
-		bodyInterface.RemoveBody(rigidBody->bodyId);
-
-		auto it = std::find(createdBodies.begin(), createdBodies.end(), rigidBody->bodyId);
-
-		std::swap(*it, *(createdBodies.end() - 1));
-
-		createdBodies.erase(createdBodies.end() - 1);
+		return;
 	}
+
+	if (rigidBody->bodyId == JPH::BodyID{})
+	{
+		return;
+	}
+
+	bodyInterface.RemoveBody(rigidBody->bodyId);
+
+	auto it = std::find(createdBodies.begin(), createdBodies.end(), rigidBody->bodyId);
+
+	std::swap(*it, *(createdBodies.end() - 1));
+
+	createdBodies.erase(createdBodies.end() - 1);
+
+	rigidBody->bodyId = JPH::BodyID{};
 }
 
 

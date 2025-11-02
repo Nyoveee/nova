@@ -27,6 +27,7 @@ constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
 
 // we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
 constexpr int MAX_DEBUG_TRIANGLES = 10000;
+constexpr int MAX_DEBUG_LINES	  = 10000;
 constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
 
 // ok right?
@@ -65,6 +66,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	skeletalVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	particleVBO                 { AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugPhysicsLineVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
 	textVBO						{ AMOUNT_OF_MEMORY_FOR_DEBUG },
@@ -352,15 +354,11 @@ void Renderer::renderUI()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_DEPTH_TEST);
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
 
 	// UI draw calls here
-	renderTexts();   
 	renderImages();
-
-	glDisable(GL_BLEND);
+	renderTexts();   
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
@@ -410,8 +408,7 @@ void Renderer::renderToDefaultFBO() {
 void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
@@ -490,8 +487,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-
-
+	
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 0.2f });
 	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
@@ -501,17 +497,28 @@ void Renderer::debugRenderPhysicsCollider() {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
+	// disable wireframe mode, restoring to normal fill
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsLineVBO.id(), 0, sizeof(glm::vec3));
+
+	glDisable(GL_CULL_FACE);
+
+	debugShader.setVec4("color", { 1.f, 0.2f, 0.2f, 1.f });
+	glDrawArrays(GL_LINES, 0, numOfPhysicsDebugLines * 2);
+
+	numOfPhysicsDebugTriangles = 0;
+	numOfPhysicsDebugLines = 0;
+
 	glDisable(GL_DEPTH_TEST);
 	overlayShader.use();
-	numOfPhysicsDebugTriangles = 0;
 	
 	// ================================================
 	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
 	// (so post processing)
 	// ================================================
 
-	// disable wireframe mode, restoring to normal fill
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 
 	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
@@ -616,6 +623,16 @@ void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 
 
 	debugPhysicsVBO.uploadData(std::vector<glm::vec3>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfPhysicsDebugTriangles * sizeof(glm::vec3));
 	++numOfPhysicsDebugTriangles;
+}
+
+void Renderer::submitLine(glm::vec3 vertice1, glm::vec3 vertice2) {
+	if (numOfPhysicsDebugLines > MAX_DEBUG_LINES) {
+		std::cerr << "too much triangles!\n";
+		return;
+	}
+
+	debugPhysicsLineVBO.uploadData(std::vector<glm::vec3>{ { vertice1 }, { vertice2 } }, 2 * numOfPhysicsDebugLines * sizeof(glm::vec3));
+	++numOfPhysicsDebugLines;
 }
 
 void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3){
@@ -818,7 +835,8 @@ void Renderer::renderTexts()
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
 
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setDepthMode(CustomShader::DepthTestingMethod::NoDepthWriteTest);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 

@@ -36,7 +36,12 @@ void InputManager::handleKeyboardInput(Window& window, int key, int scancode, in
 	(void) window;
 	(void) scancode;
 
-	handleKeyInput({ key, KeyType::Keyboard }, action == GLFW_RELEASE ? InputType::Release : InputType::Press, getInputMod(mods));
+	if (action == GLFW_PRESS) {
+		handleKeyInput({ key, KeyType::Keyboard }, InputType::Press, getInputMod(mods));
+	}
+	else if (action == GLFW_RELEASE) {
+		handleKeyInput({ key, KeyType::Keyboard }, InputType::Release, getInputMod(mods));
+	}
 
 	// broadcast all ScriptingInputEvent regardless of registered key mapping.
 	broadcast(ScriptingInputEvents{ key }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
@@ -46,7 +51,12 @@ void InputManager::handleMouseInput(Window& window, int key, int action, int mod
 	(void) window;
 	(void) mods;
 
-	handleKeyInput({ key, KeyType::MouseClick }, action == GLFW_RELEASE ? InputType::Release : InputType::Press, getInputMod(mods));
+	if (action == GLFW_PRESS) {
+		handleKeyInput({ key, KeyType::MouseClick }, InputType::Press, getInputMod(mods));
+	}
+	else if (action == GLFW_RELEASE) {
+		handleKeyInput({ key, KeyType::MouseClick }, InputType::Release, getInputMod(mods));
+	}
 
 	// broadcast all ScriptingInputEvent regardless of registered key mapping.
 	broadcast(ScriptingInputEvents{ key }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);

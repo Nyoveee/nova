@@ -235,13 +235,15 @@ struct Rigidbody {
 	float mass						{};
 
 	bool isRotatable				{ true };
-
+	bool isTrigger					{ false };
+	
 	REFLECTABLE(
 		motionType,
 		layer,
 		initialVelocity,
 		mass,
-		isRotatable
+		isRotatable,
+		isTrigger
 	)
 
 	// RUNTIME PROPERTIES!

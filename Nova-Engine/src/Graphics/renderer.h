@@ -112,6 +112,8 @@ public:
 
 	// submit triangles to be rendered at the end
 	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
+	void submitLine(glm::vec3 vertice1, glm::vec3 vertice2);
+
 	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 
 public:
@@ -201,6 +203,8 @@ private:
 
 	// Debug Physics VAO and it's corresponding VBO.
 	BufferObject debugPhysicsVBO;
+	BufferObject debugPhysicsLineVBO;
+
 	BufferObject debugNavMeshVBO;
 	BufferObject debugParticleShapeVBO;
 
@@ -226,6 +230,7 @@ private:
 
 private:
 	int numOfPhysicsDebugTriangles;
+	int numOfPhysicsDebugLines;
 	int numOfNavMeshDebugTriangles;
 
 	bool isOnWireframeMode;
