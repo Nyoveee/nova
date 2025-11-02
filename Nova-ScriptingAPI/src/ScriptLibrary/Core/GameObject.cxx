@@ -39,3 +39,12 @@ System::String^ GameObject::ToString()
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(static_cast<entt::entity>(entityID));
 	return entityData ? msclr::interop::marshal_as<System::String^>(entityData->name.c_str()) : "";
 }
+GameObject^ GameObject::GetParent()
+{
+	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(static_cast<entt::entity>(entityID));
+	if (entityData->parent == entt::null)
+		return nullptr;
+	return GetReference(static_cast<unsigned int>(entityData->parent));
+}
+Transform_^ GameObject::transform::get() { return transformReference; };
+System::String^ GameObject::tag::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->tag); }
