@@ -36,6 +36,7 @@ class Enemy : Script
         updateState.Add(EnemyState.Chasing, Update_ChasingState);
         updateState.Add(EnemyState.Attacking, Update_AttackState);
         player = GameObject.FindWithTag("Player");
+        rigidbody.SetVelocity(new Vector3( 0, 0, 0));
     }
 
     // This function is invoked every fixed update.
@@ -69,8 +70,7 @@ class Enemy : Script
         Vector3 direction = player.transform.position - gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
-        rigidbody.SetVelocity(direction * enemyStats.movementSpeed);
-        
+        rigidbody.SetVelocity(direction * enemyStats.movementSpeed + new Vector3( 0,rigidbody.GetVelocity().y,0));
 
     }
     private void Update_AttackState()
