@@ -156,9 +156,9 @@ namespace Serialiser {
 		Json j;
 		file >> j;
 
-		entt::entity highest = entt::null;
+		// entt::entity highest = entt::null;
 		entt::id_type highestID = 0;
-		entt::entity rootEntity = entt::null;
+		// entt::entity rootEntity = entt::null;
 
 
 

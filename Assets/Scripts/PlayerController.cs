@@ -224,7 +224,6 @@ class PlayerController : Script
         euler.x -= cameraSensitivity * deltaMouseY;
         euler.y -= cameraSensitivity * deltaMouseX;
         euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
-
         // euler.y = Mathf.Clamp(euler.y, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
 
         cameraObject.localEulerAngles = euler;  

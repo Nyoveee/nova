@@ -77,8 +77,8 @@ void PrefabManager::instantiatePrefab(ResourceID id, entt::registry& ecsRegistry
 	}
 
 	else {
-		std::vector<entt::entity> entityVec;
-		instantiatePrefabRecursive<ALL_COMPONENTS>(id, ecsRegistry, entityVec);
+		std::vector<entt::entity> entityVector;
+		instantiatePrefabRecursive<ALL_COMPONENTS>(id, ecsRegistry, entityVector);
 
 	}
 }

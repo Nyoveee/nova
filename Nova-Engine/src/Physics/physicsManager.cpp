@@ -186,12 +186,13 @@ PhysicsManager::~PhysicsManager() {
 
 void PhysicsManager::simulationInitialise() {
 
-	//just set active is alright liao i think
-	for (auto const& bodyID : createdBodies)
-	{
-		bodyInterface.ActivateBody(bodyID);
+	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+		if (rigidbody.bodyId == JPH::BodyID{}) {
+			bodyInterface.ActivateBody(rigidbody.bodyId);
+			bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(rigidbody.initialVelocity));
+			rigidbody.velocity = rigidbody.initialVelocity;
+		}
 	}
-
 }
 
 void PhysicsManager::systemInitialise()

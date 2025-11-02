@@ -10,28 +10,34 @@
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 10641021188337041425
+                    "nextNode": 3898358490745143297
                 }
             ]
         },
-        "10641021188337041425": {
-            "animation": 119759233033945129,
-            "animationEvents": null,
-            "id": 10641021188337041425,
-            "name": "Rumba Dancing",
+        "3898358490745143297": {
+            "animation": 1849141489944117257,
+            "animationEvents": [
+                {
+                    "functionName": "Event",
+                    "key": 31,
+                    "scriptId": 200674448099901461
+                }
+            ],
+            "id": 3898358490745143297,
+            "name": "Standing Melee Attack Backhand_Skin",
             "toLoop": true,
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 8911638931426803731
+                    "nextNode": 439593976924618755
                 }
             ]
         },
-        "8911638931426803731": {
-            "animation": 17990042554440073255,
+        "439593976924618755": {
+            "animation": 8190209765281808409,
             "animationEvents": null,
-            "id": 8911638931426803731,
-            "name": "Hip Hop Dancing",
+            "id": 439593976924618755,
+            "name": "Unarmed Idle_Skin",
             "toLoop": true,
             "transitions": null
         }
