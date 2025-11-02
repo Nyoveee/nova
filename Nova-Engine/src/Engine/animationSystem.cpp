@@ -153,6 +153,7 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 	animator.currentNode = iterator->first;
 	animator.timeElapsed = 0;
 	animator.currentAnimation = iterator->second.animation;
+	animator.executedAnimationEvents.clear();
 }
 
 void AnimationSystem::updateAnimator(float dt) {

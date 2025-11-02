@@ -13,10 +13,7 @@ class Enemy : Script
     private EnemyState enemyState = EnemyState.Chasing;
     private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
     private GameObject? player = null;
-   
     private float distance = 0f;
-    private float currentAttackTime = 0f;
-    private bool emitted = false;
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -59,10 +56,8 @@ class Enemy : Script
         {
             if (animator != null)
                 animator.PlayAnimation("Enemy Attack");
-            rigidbody.SetVelocity(Vector3.Zero);
+            rigidbody.SetVelocity(Vector3.Zero());
             enemyState = EnemyState.Attacking;
-            currentAttackTime = 0f;
-            emitted = false;
             return;
         }
         LookAtPlayer();
@@ -75,34 +70,12 @@ class Enemy : Script
     }
     private void Update_AttackState()
     {
-        currentAttackTime += Time.V_FixedDeltaTime();
         if (player == null || enemyStats == null)
         {
             Debug.LogWarning("Missing Reference Found");
             return;
         }
         LookAtPlayer();
-        // Change State
-        if(currentAttackTime >= enemyStats.particleEmitTime && !emitted)
-        {
-            emitted = true;
-            emitter.emit(1000);
-        }
-        if (animator!= null && currentAttackTime >= enemyStats.attackTime)
-        {
-            if (distance <= enemyStats.attackRadius)
-            {
-                currentAttackTime = 0f;
-                emitted = false;
-            }
-            else
-            {
-                animator.PlayAnimation("Enemy Running");
-                enemyState = EnemyState.Chasing;
-            }
-              
-        }
-
     }
     private void LookAtPlayer()
     {
@@ -111,5 +84,20 @@ class Enemy : Script
         Vector3 eulerAngles = gameObject.transform.eulerAngles;
         eulerAngles.x = eulerAngles.z = 0;
         gameObject.transform.eulerAngles = eulerAngles;
+    }
+    /****************************************************************
+        Animation Events
+    ****************************************************************/
+    public void Slash()
+    {
+        emitter.emit(1000);
+    }
+    public void EndAttack()
+    {
+        if (distance > enemyStats.attackRadius)
+        {
+            animator.PlayAnimation("Enemy Running");
+            enemyState = EnemyState.Chasing;
+        }
     }
 }

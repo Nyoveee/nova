@@ -36,14 +36,12 @@ static Vector2 operator*(float d, Vector2 a);
 static Vector2 operator/(Vector2 a, float d);
 static bool operator!=(Vector2 a, Vector2 b);
 static bool operator==(Vector2 a, Vector2 b);
-
-static Vector2 Up		= Vector2{  0.f,  1.f };
-static Vector2 Down		= Vector2{  0.f, -1.f };
-static Vector2 Left		= Vector2{ -1.f,  0.f };
-static Vector2 Right	= Vector2{  1.f,  0.f };
-
-static Vector2 One		= Vector2{ 0.f,  0.f };
-static Vector2 Zero		= Vector2{ 1.f,  1.f };
+static Vector2 Up();
+static Vector2 Down();
+static Vector2 Left();
+static Vector2 Right();
+static Vector2 One();
+static Vector2 Zero();
 
 ManagedStructEnd(Vector2, glm::vec2)
 // ======================================
@@ -68,16 +66,14 @@ static Vector3 operator*(float d, Vector3 a);
 static Vector3 operator/(Vector3 a, float d);
 static bool operator!=(Vector3 a, Vector3 b);
 static bool operator==(Vector3 a, Vector3 b);
-
-static Vector3 Up		= Vector3{ 0.f,  1.f,  0.f };
-static Vector3 Down		= Vector3{ 0.f, -1.f,  0.f };
-static Vector3 Front	= Vector3{ 0.f,  0.f,  1.f };
-static Vector3 Back		= Vector3{ 0.f,  0.f,  -1.f };
-static Vector3 Left		= Vector3{ -1.f,  0.f,  0.f };
-static Vector3 Right	= Vector3{  1.f,  0.f,  0.f };
-
-static Vector3 One		= Vector3{ 0.f,  0.f,  0.f };
-static Vector3 Zero		= Vector3{ 1.f,  1.f,  1.f };
+static Vector3 Up();
+static Vector3 Down();
+static Vector3 Front();
+static Vector3 Back();
+static Vector3 Left();
+static Vector3 Right();
+static Vector3 One();
+static Vector3 Zero();
 
 ManagedStructEnd(Vector3,glm::vec3)
 // ======================================

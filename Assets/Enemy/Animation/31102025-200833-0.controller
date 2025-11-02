@@ -24,7 +24,18 @@
         },
         "3468695732557168647": {
             "animation": 2369579928887328769,
-            "animationEvents": null,
+            "animationEvents": [
+                {
+                    "functionName": "Slash",
+                    "key": 31,
+                    "scriptId": 6336872971038588929
+                },
+                {
+                    "functionName": "EndAttack",
+                    "key": 71,
+                    "scriptId": 6336872971038588929
+                }
+            ],
             "id": 3468695732557168647,
             "name": "Enemy Attack",
             "toLoop": true,
