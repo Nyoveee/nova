@@ -50,11 +50,17 @@ using ScriptName   = std::string;
 #define ALL_FIELD_PRIMITIVES \
 		bool, int, float, double
 #endif
+
+#define ALL_TYPED_RESOURCE_ID \
+	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>
+
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult, \
+		glm::vec2, glm::vec3, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
+		ALL_TYPED_RESOURCE_ID,																\
 		ALL_FIELD_PRIMITIVES
 #endif
+
 enum class InterpolationType : unsigned int {
 	Root,
 	Linear,

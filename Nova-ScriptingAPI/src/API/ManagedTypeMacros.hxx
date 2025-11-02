@@ -116,3 +116,17 @@ private:																							\
 public:																								\
 
 #define ManagedComponentEnd()																		};
+
+#define ManagedResource(Resource)																	\
+public ref class Resource : IManagedResourceID {													\
+public:																								\
+	Resource(TypedResourceID<::Resource> id) : IManagedResourceID(static_cast<std::size_t>(id)) {};	\
+																									\
+	virtual System::String^ ToString() override sealed {											\
+		return resourceID.ToString();																\
+	}																								\
+																									\
+	TypedResourceID<::Resource> getId() {															\
+		return { resourceID };																		\
+	};																								\
+};																									

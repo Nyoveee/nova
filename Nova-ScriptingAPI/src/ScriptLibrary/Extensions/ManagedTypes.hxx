@@ -2,7 +2,7 @@
 
 #include "component.h"
 #include "API/ManagedTypeMacros.hxx"
-
+#include "API/IManagedResourceID.hxx"
 // ===========================================================================================
 // 1. Defining structs..
 // 
@@ -192,3 +192,17 @@ void SetInteger(System::String^ name, int value);
 void PlayAnimation(System::String^ name);
 
 ManagedComponentEnd()
+
+// ===========================================================================================
+// 3. Defining managed typed resource..
+// ===========================================================================================
+
+namespace ScriptingAPI {
+	ManagedResource(Prefab)
+	ManagedResource(Texture)
+	ManagedResource(Model)
+	ManagedResource(Material)
+}
+
+#define ALL_MANAGED_TYPED_RESOURCE_ID \
+	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material

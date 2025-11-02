@@ -136,6 +136,19 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 			fieldDatas.push_back(field);
 			continue;
 		}
+
+		// Typed Resource ID
+		if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
+			if (ObtainTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(field, fieldInfos[i]->GetValue(script), fieldType)) {
+				fieldDatas.push_back(field);
+				continue;
+			}
+			else {
+				Logger::warn("Typed resource type in script currently not supported for script serialization.");
+				continue;
+			}
+		}
+
 		// Primitives
 		if (fieldType->IsPrimitive && ObtainPrimitiveDataFromScript<ALL_FIELD_PRIMITIVES>(field, fieldInfos[i]->GetValue(script))) {
 			fieldDatas.push_back(field);
@@ -226,6 +239,12 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 			}
 			fieldInfos[i]->SetValue(script, referencedScript);
 			return;
+		}
+		// Typed Resource ID
+		if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
+			if (!SetTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(fieldData, script, fieldInfos[i])) {
+				Logger::warn("Typed resource type in script currently not supported for script setting");
+			}
 		}
 		// Primitives
 		if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, script, fieldInfos[i]))

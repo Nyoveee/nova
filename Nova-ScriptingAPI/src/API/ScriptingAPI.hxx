@@ -56,6 +56,12 @@ internal:
 	template<typename Type, typename ...Types>
 	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
 
+	template <typename Type, typename ...Types>
+	static bool ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ object, System::Type^ originalType);
+
+	template <typename Type, typename ...Types>
+	static bool SetTypedResourceIDFromScript(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+
 private:
 	// static void updateReference(Script^ script);
 
