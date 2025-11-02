@@ -28,7 +28,8 @@ class PlayerController : Script
 
     [SerializableField]
     private Transform_? cameraObject = null;
-
+    [SerializableField]
+    private GameUIManager? gameUIManager = null;
     // ==================================
     // Internal / Runtime variables..
     // ==================================
@@ -115,12 +116,14 @@ class PlayerController : Script
         // ===================================
         else
         {
-            dashTimer = Mathf.Clamp(dashTimer + Time.V_DeltaTime(), 0f, dashTimerCap);
+            dashTimer = Mathf.Clamp(dashTimer + Time.V_FixedDeltaTime(), 0f, dashTimerCap);
             handleMovement();
         }
-
+        // ===================================
+        // Stamina
+        // ===================================
+        gameUIManager.SetDashBarProgress(dashTimer, dashTimerCap);
     }
-
     private void handleMovement()
     {
         // ==============================
@@ -235,37 +238,30 @@ class PlayerController : Script
     {
         isMovingForward = true;
     }
-
     private void endWalkingForward()
     {
         isMovingForward = false;
     }
-
     private void beginWalkingBackward()
     {
         isMovingBackward = true;
     }
-
     private void endWalkingBackward()
     {
         isMovingBackward = false;
     }
-
     private void beginWalkingLeft()
     {
         isMovingLeft = true;
     }
-
     private void endWalkingLeft()
     {
         isMovingLeft = false;
     }
-
     private void beginWalkingRight()
     {
         isMovingRight = true;
     }
-
     private void endWalkingRight()
     {
         isMovingRight = false;
@@ -275,6 +271,8 @@ class PlayerController : Script
     {
         if (jumpCount < maxJumpCount)
         {
+
+            AudioAPI.PlaySound(gameObject, jumpCount == 0? "jump1_sfx" : "jump2_sfx");
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
@@ -284,11 +282,12 @@ class PlayerController : Script
 
     private void dashInputHandler()
     {
-        //if (isDashing || dashTimer < dashCooldown)
-        //{
-        //    return;
-        //}
+        if (isDashing || dashTimer < dashCooldown)
+        {
+            return;
+        }
 
+        AudioAPI.PlaySound(gameObject, "dash1_sfx");
         // We initialise dashing mechanic..
         isDashing = true;
         dashTimer -= dashCooldown;

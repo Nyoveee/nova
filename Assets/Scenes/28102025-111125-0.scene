@@ -115,8 +115,8 @@
                 },
                 "localScale": {
                     "x": 1.0000009536743164,
-                    "y": 0.9998380541801453,
-                    "z": 1.0000492334365845
+                    "y": 0.9998376369476318,
+                    "z": 1.0000483989715576
                 },
                 "position": {
                     "x": 0.08759009838104248,
@@ -131,8 +131,8 @@
                 },
                 "scale": {
                     "x": 1.0000009536743164,
-                    "y": 0.9998380541801453,
-                    "z": 1.0000985860824585
+                    "y": 0.9998376369476318,
+                    "z": 1.0000977516174316
                 }
             },
             "id": 0
@@ -179,83 +179,7 @@
                 "motionType": "Dynamic"
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 0.0010000000474974513
-                                },
-                                "name": "cameraSensitivity"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "maximumMoveSpeed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 4.0
-                                },
-                                "name": "accelerationStrength"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 15.0
-                                },
-                                "name": "jumpStrength"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 6,
-                                    "__variant_value": 2
-                                },
-                                "name": "maxJumpCount"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 0.25
-                                },
-                                "name": "dashDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 6,
-                                    "__variant_value": 3
-                                },
-                                "name": "dashCount"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 3.0
-                                },
-                                "name": "dashCooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "dashStrength"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 2,
-                                    "__variant_value": 2097168
-                                },
-                                "name": "cameraObject"
-                            }
-                        ],
-                        "scriptId": 2684453670933381121
-                    }
-                ]
+                "scriptDatas": null
             },
             "Transform": {
                 "eulerAngles": {
@@ -480,7 +404,7 @@
                 "localPosition": {
                     "x": 2.6702880859375e-05,
                     "y": -1.1641532182693481e-09,
-                    "z": -0.00012874603271484375
+                    "z": -0.00014591217041015625
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -494,9 +418,9 @@
                     "z": 5.137276649475098
                 },
                 "position": {
-                    "x": 27.562625885009766,
+                    "x": 27.562612533569336,
                     "y": 0.0005570042412728071,
-                    "z": -23.018827438354492
+                    "z": -23.01883888244629
                 },
                 "rotation": {
                     "w": 0.9050807356834412,
@@ -572,7 +496,7 @@
         },
         {
             "Animator": {
-                "controllerId": 10440030461135765519
+                "controllerId": 17042632972838715393
             },
             "BoxCollider": {
                 "offset": {
@@ -614,6 +538,39 @@
                         "fields": [
                             {
                                 "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 5.0
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "movementSpeed"
+                            }
+                        ],
+                        "scriptId": 10701564697501106251
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
                                     "__variant_type": 2,
                                     "__variant_value": 2097162
                                 },
@@ -641,48 +598,15 @@
                                 "name": "rigidbody"
                             }
                         ],
-                        "scriptId": 6336872971038588929
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 7.5
-                                },
-                                "name": "attackRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "movementSpeed"
-                            }
-                        ],
-                        "scriptId": 18442548769410482179
+                        "scriptId": 17619093725142188105
                     }
                 ]
             },
             "SkinnedMeshRenderer": {
                 "materialIds": [
-                    3827030963018743811
+                    5
                 ],
-                "modelId": 9863569708831850503
+                "modelId": 12430946954411343881
             },
             "Transform": {
                 "eulerAngles": {

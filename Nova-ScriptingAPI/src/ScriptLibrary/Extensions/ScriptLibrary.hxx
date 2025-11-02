@@ -144,6 +144,12 @@ public:
 	static void PlaySound(GameObject^ gameObject, System::String^ string) {
 		Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
 	}
+	static void PlayBGM(GameObject^ gameObject, System::String^ string) {
+		Interface::engine->audioSystem.playBGM(Convert(gameObject), Convert(string));
+	}
+	static void StopSound(GameObject^ gameObject, System::String^ string) {
+		Interface::engine->audioSystem.stopSound(Convert(gameObject), Convert(string));
+	}
 };
 
 // ======================================
