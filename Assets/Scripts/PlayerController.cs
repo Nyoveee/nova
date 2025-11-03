@@ -329,16 +329,15 @@ class PlayerController : Script
     }
     protected override void onCollisionEnter(GameObject other)
     {
-        if (other.tag != "EnemyHitBox"){
+        if (other.tag != "EnemyHitBox")
             return;
-        }
-        Enemy enemy = other.GetParent().getScript<Enemy>();
- 
-        if (enemy.HasHitPlayerThisAttack() || !enemy.IsSwinging())
+
+        EnemyHitBox enemyHitBox = other.getScript<EnemyHitBox>();
+
+        if (enemyHitBox == null || enemyHitBox.HasHitPlayerThisAttack())
             return;
-        EnemyStats enemyStats = other.GetParent().getScript<EnemyStats>();
-        currentHealth -= enemyStats.damage;
+        currentHealth = Mathf.Max(0,currentHealth- enemyHitBox.GetDamage());
         gameUIManager.ActivateDamageUI();
-        enemy.OnPlayerHit();
+        enemyHitBox.OnPlayerHit();
     }
 }

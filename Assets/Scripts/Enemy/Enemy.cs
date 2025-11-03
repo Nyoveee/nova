@@ -15,6 +15,11 @@ class Enemy : Script
     private ParticleEmitter_ emitter = null;
 
     [SerializableField]
+    private Prefab? hitboxPrefab = null;
+    [SerializableField]
+    private GameObject? hitboxPosition = null;
+
+    [SerializableField]
     private float maximumHealth = 100f;
 
     [SerializableField]
@@ -62,6 +67,12 @@ class Enemy : Script
 
     private float hurtTimeElapsed = 0f;
     private bool recentlyTookDamage = false;
+
+    private GameObject? hitbox = null;
+
+    /***********************************************************
+        Inspector Variables
+    ***********************************************************/
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -118,18 +129,6 @@ class Enemy : Script
     {
         return enemyState != EnemyState.Idle;
     }
-    public void OnPlayerHit()
-    {
-        b_HitPlayerThisAttack = true;
-    }
-    public bool HasHitPlayerThisAttack()
-    {
-        return b_HitPlayerThisAttack;
-    }
-    public bool IsSwinging()
-    {
-        return b_IsSwinging;
-    }
 
     public void TakeDamage(float damage)
     {
@@ -150,6 +149,7 @@ class Enemy : Script
         {
             enemyState = EnemyState.Death;
             animator.PlayAnimation("Enemy Death");
+            rigidbody.SetVelocity(Vector3.Zero());
         }
     }
 
@@ -235,15 +235,15 @@ class Enemy : Script
     ****************************************************************/
     public void Slash()
     {
-        AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
+
         emitter.emit(1000);
-        b_IsSwinging = false;
+        if (hitbox != null)
+            ObjectAPI.Destroy(hitbox);
     }
     public void EndAttack()
     {
         Debug.Log("end of attack....");
 
-        b_HitPlayerThisAttack = false;
         if (distance > enemyStats.attackRadius)
         {
             animator.PlayAnimation("Enemy Running");
@@ -252,6 +252,16 @@ class Enemy : Script
     }
     public void BeginSwing()
     {
-        b_IsSwinging = true;
+        AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
+        if (hitboxPrefab == null)
+            return;
+        hitbox = ObjectAPI.Instantiate(hitboxPrefab);
+        if(hitbox!= null && hitboxPosition!= null){
+            hitbox.transform.position = hitboxPosition.transform.position;
+            EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
+            if (enemyHitBox != null && enemyStats != null)
+                enemyHitBox.SetDamage(enemyStats.damage);
+        }
+           
     }
 }
