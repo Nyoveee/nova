@@ -1,0 +1,53 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "animationEvents": null,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 9728760791543595025
+                }
+            ]
+        },
+        "12611064553060696079": {
+            "animation": 17990042554440073255,
+            "animationEvents": null,
+            "id": 12611064553060696079,
+            "name": "Hip Hop Dancing",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 1658310259297599509
+                }
+            ]
+        },
+        "1658310259297599509": {
+            "animation": 17990042554440040483,
+            "animationEvents": null,
+            "id": 1658310259297599509,
+            "name": "Capoeira",
+            "toLoop": true,
+            "transitions": null
+        },
+        "9728760791543595025": {
+            "animation": 119759233033945129,
+            "animationEvents": null,
+            "id": 9728760791543595025,
+            "name": "Rumba Dancing",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 12611064553060696079
+                }
+            ]
+        }
+    },
+    "parameters": null
+}

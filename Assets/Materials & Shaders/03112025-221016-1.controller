@@ -1,0 +1,58 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "animationEvents": null,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 12611064553058926603
+                }
+            ]
+        },
+        "12611064553058926603": {
+            "animation": 119759233033879573,
+            "animationEvents": null,
+            "id": 12611064553058926603,
+            "name": "Standing Walk Forward_Skin",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 7422917782328033287
+                }
+            ]
+        },
+        "2811231763900661769": {
+            "animation": 119759233033879573,
+            "animationEvents": null,
+            "id": 2811231763900661769,
+            "name": "Standing Walk Forward_Skin",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 7422917782328033287
+                }
+            ]
+        },
+        "7422917782328033287": {
+            "animation": 1849141489944117257,
+            "animationEvents": null,
+            "id": 7422917782328033287,
+            "name": "Standing Melee Attack Backhand_Skin",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 2811231763900661769
+                }
+            ]
+        }
+    },
+    "parameters": null
+}
