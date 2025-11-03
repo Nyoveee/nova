@@ -124,7 +124,14 @@ System::Nullable<RayCastResult> PhysicsAPI::Raycast(Ray^ p_ray, float maxDistanc
 
 System::Nullable<RayCastResult> PhysicsAPI::Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore) {
 	PhysicsRay ray{ p_ray->native() };
-	auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance, { static_cast<entt::entity>(entityToIgnore->entityID) });
+	std::optional<PhysicsRayCastResult> opt;
+
+	if (entityToIgnore) {
+		opt = Interface::engine->physicsManager.rayCast(ray, maxDistance, { static_cast<entt::entity>(entityToIgnore->entityID) });
+	}
+	else {
+		opt = Interface::engine->physicsManager.rayCast(ray, maxDistance, {} );
+	}
 
 	if (!opt) {
 		return {}; // returns null, no ray cast..
@@ -220,9 +227,7 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 	}
 
 	// yoinked from zhi wei
-	GameObject^ newGameObject = gcnew GameObject();
-	newGameObject->entityID = static_cast<unsigned>(prefabInstanceId);
-	newGameObject->transformReference = newGameObject->getComponent<Transform_^>();
+	GameObject^ newGameObject = gcnew GameObject(prefabInstanceId);
 
 	return newGameObject;
 }

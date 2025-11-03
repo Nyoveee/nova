@@ -42,9 +42,7 @@ void Script::callExit() {
 
 void Script::callOnCollisionEnter(unsigned otherEntityID) {
 	try { 
-		GameObject^ other = gcnew GameObject();
-		other->entityID = otherEntityID;
-		other->transformReference = other->getComponent<Transform_^>();
+		GameObject^ other = gcnew GameObject(otherEntityID);
 		onCollisionEnter(other); 
 	}
 	catch (const std::exception& e) {

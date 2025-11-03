@@ -1,9 +1,16 @@
 #pragma once
 #include "ComponentAccessor.hxx"
+
+#include <entt/entt.hpp>
+
 ref class Transform_;
 public ref class GameObject : ComponentAccessor
 {
-internal:
+public:
+	// Constructs a game object given an entity id..
+	GameObject(System::UInt32 p_entityID);
+	GameObject(entt::entity entity);
+
 	static GameObject^ GetReference(System::UInt32 p_entityID);
 
 public:
@@ -13,8 +20,10 @@ public:
 
 public:
 	virtual System::String^ ToString() override sealed;
+
 	GameObject^ GetParent();
-	
+	System::UInt32 GetId();
+
 public:
 	property Transform_^ transform{
 		Transform_^ get();

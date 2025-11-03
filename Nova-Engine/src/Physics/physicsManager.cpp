@@ -594,6 +594,9 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		bodySettings.mMassPropertiesOverride = massProperties;
 		bodySettings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
 	}
+	else if (rigidBody->motionType == JPH::EMotionType::Kinematic && rigidBody->isTrigger) {
+		bodySettings.mCollideKinematicVsNonDynamic = true;
+	}
 
 	JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
 

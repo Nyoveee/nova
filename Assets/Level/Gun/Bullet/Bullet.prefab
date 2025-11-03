@@ -16,7 +16,7 @@
             },
             "EntityData": {
                 "children": null,
-                "name": "BULLETasd",
+                "name": "Bullet",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
@@ -43,7 +43,15 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "fields": null,
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 2.0
+                                },
+                                "name": "lifeTime"
+                            }
+                        ],
                         "scriptId": 7831223623003160579
                     }
                 ]
@@ -92,7 +100,7 @@
                     "z": 0.10000000149011612
                 }
             },
-            "id": 4194342
+            "id": 7340077
         }
     ]
 }

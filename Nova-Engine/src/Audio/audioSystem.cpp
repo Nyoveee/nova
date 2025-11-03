@@ -173,11 +173,11 @@ void AudioSystem::updatePositionalAudio() {
 }
 
 void AudioSystem::loadAllSounds() {
-	Logger::info("Attempting to load all sounds");
+	Logger::debug("Attempting to load all sounds");
 
 	if (!fmodSystem)
 	{
-		Logger::info("Audio system is not initialized.");
+		Logger::debug("Audio system is not initialized.");
 		return;
 	}
 
@@ -200,7 +200,7 @@ void AudioSystem::loadAllSounds() {
 }
 
 void AudioSystem::unloadAllSounds() {
-	Logger::info("Unloading All Sounds");
+	Logger::debug("Unloading All Sounds");
 
 	currentBGM = nullptr;
 
@@ -219,7 +219,7 @@ void AudioSystem::unloadAllSounds() {
 
 	sounds.clear();
 
-	Logger::info("All Sounds Unloaded");
+	Logger::debug("All Sounds Unloaded");
 }
 
 void AudioSystem::stopAudioInstance(AudioInstance& audioInstance) {

@@ -1,11 +1,20 @@
 #include "GameObject.hxx"
 #include "ScriptLibrary/Extensions/ManagedTypes.hxx"
 #include <msclr/marshal_cppstd.h>
+
+// delegating ctor.
+GameObject::GameObject(entt::entity entity) :
+	GameObject { static_cast<unsigned>(entity) }
+{}
+
+GameObject::GameObject(System::UInt32 p_entityID) {
+	entityID = p_entityID;
+	transformReference = getComponent<Transform_^>();
+}
+
 GameObject^ GameObject::GetReference(System::UInt32 p_entityID)
 {
-	GameObject^ newGameObject = gcnew GameObject();
-	newGameObject->entityID = p_entityID;
-	newGameObject->transformReference = newGameObject->getComponent<Transform_^>();
+	GameObject^ newGameObject = gcnew GameObject(p_entityID);
 	return newGameObject;
 }
 
@@ -45,6 +54,10 @@ GameObject^ GameObject::GetParent()
 	if (entityData->parent == entt::null)
 		return nullptr;
 	return GetReference(static_cast<unsigned int>(entityData->parent));
+}
+
+System::UInt32 GameObject::GetId() {
+	return entityID;
 }
 
 Transform_^ GameObject::transform::get() { return transformReference; };

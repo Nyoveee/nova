@@ -77,6 +77,7 @@ bool Interface::SetTypedResourceIDFromScript(FieldData const& fieldData, Script^
 		value = gcnew Type{ { varantValue } };
 		
 		fieldInfo->SetValue(script, value);
+		return true;
 	}
 	catch (...) {}
 

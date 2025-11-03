@@ -52,7 +52,7 @@ void Interface::handleOnCollision(EntityID entityOne, EntityID entityTwo) {
 
 	if (gameObjectScripts->ContainsKey(entityTwo)) {
 		for each (System::UInt64 scriptID in gameObjectScripts[entityTwo]->Keys) {
-			gameObjectScripts[entityTwo][scriptID]->callOnCollisionEnter(entityTwo);
+			gameObjectScripts[entityTwo][scriptID]->callOnCollisionEnter(entityOne);
 		}
 	}
 }
@@ -208,10 +208,8 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 		if (fieldType == GameObject::typeid) {
 			GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
 			if (!gameObject) {
-				gameObject = gcnew GameObject();
+				gameObject = gcnew GameObject(std::get<entt::entity>(fieldData.data));
 			}
-			gameObject->entityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.data));
-			gameObject->transformReference = gameObject->getComponent<Transform_^>();
 			fieldInfos[i]->SetValue(script, gameObject);
 			return;
 		}
