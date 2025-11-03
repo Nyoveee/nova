@@ -35,7 +35,10 @@ internal:
 
 	static void handleOnCollision(EntityID entityOne, EntityID entityTwo);
 
+	// This function is called when a particular function name needs to be invoked.
 	static void executeEntityScriptFunction(EntityID entityID, ScriptID scriptId, std::string const& functionName);
+
+	static void submitGameObjectDeleteRequest(EntityID entityToBeDeleted);
 
 internal:
 	// Script Fields
@@ -80,6 +83,10 @@ private:
 	// Store all unique script type. To be used for instantiation.
 	// We map an Asset ID to the corresponding script type.
 	static System::Collections::Generic::Dictionary<ScriptID, Script^>^ availableScripts;
+
+	// Stores all the game object that is requested to be deleted. We delay object destruction till the end of the frame.
+	// (had bad experience with instant deletion..)
+	static System::Collections::Generic::Queue<EntityID> deleteGameObjectQueue;
 
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;

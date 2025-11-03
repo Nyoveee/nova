@@ -3,20 +3,21 @@
 // Editor will automatically rename and recompile this file.
 class BulletScript : Script
 {
-    public required float lifeTime = 2f;
+    public required float lifeTime = 10f;
 
     private float timeElapsed = 0;
 
-    // This function is first invoked when game starts.
+    // This function is first invoked when game starts. s
     protected override void init()
     {}
 
     // This function is invoked every fixed update.
     protected override void update()
     {
+        // 
         if(timeElapsed > lifeTime)
         {
-
+            ObjectAPI.Destroy(gameObject);
         }
         else
         {
@@ -24,4 +25,14 @@ class BulletScript : Script
         }
     }
 
+    protected override void onCollisionEnter(GameObject other)
+    {
+        Debug.Log("Collide!");
+        
+        if (other.tag == "Enemy" || other.tag == "Wall")
+        {
+            Debug.Log("Collide!");
+            ObjectAPI.Destroy(gameObject);
+        }
+    }
 }

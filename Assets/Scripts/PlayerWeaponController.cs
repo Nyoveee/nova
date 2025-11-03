@@ -13,7 +13,7 @@ class PlayerWeaponController : Script
 
     protected override void init()
     {
-        Input.MapKey(Key.MouseLeft, SpawnBullet);
+        MapKey(Key.MouseLeft, SpawnBullet);
     }
 
     // This function is invoked every fixed update.

@@ -76,16 +76,16 @@ class PlayerController : Script
         dashTimer = dashTimerCap;
 
         // Controls..
-        Input.MouseMoveCallback(CameraMovement);
+        MouseMoveCallback(CameraMovement);
 
-        Input.MapKey(Key.W, beginWalkingForward, endWalkingForward);
-        Input.MapKey(Key.A, beginWalkingLeft, endWalkingLeft);
-        Input.MapKey(Key.S, beginWalkingBackward, endWalkingBackward);
-        Input.MapKey(Key.D, beginWalkingRight, endWalkingRight);
+        MapKey(Key.W, beginWalkingForward, endWalkingForward);
+        MapKey(Key.A, beginWalkingLeft, endWalkingLeft);
+        MapKey(Key.S, beginWalkingBackward, endWalkingBackward);
+        MapKey(Key.D, beginWalkingRight, endWalkingRight);
 
-        Input.MapKey(Key.Space, jump);
+        MapKey(Key.Space, jump);
 
-        Input.MapKey(Key.LeftShift, dashInputHandler);
+        MapKey(Key.LeftShift, dashInputHandler);
     
     }
 

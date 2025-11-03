@@ -15,7 +15,6 @@ public:
 	virtual System::String^ ToString() override sealed;
 	GameObject^ GetParent();
 	
-	void Destroy();
 public:
 	property Transform_^ transform{
 		Transform_^ get();

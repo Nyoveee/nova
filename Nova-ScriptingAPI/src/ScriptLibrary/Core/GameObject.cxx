@@ -47,9 +47,5 @@ GameObject^ GameObject::GetParent()
 	return GetReference(static_cast<unsigned int>(entityData->parent));
 }
 
-void GameObject::Destroy() {
-	
-}
-
 Transform_^ GameObject::transform::get() { return transformReference; };
 System::String^ GameObject::tag::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->tag); }

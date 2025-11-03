@@ -8,7 +8,7 @@ class PathFinding : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        Input.MapKey(Key.MouseLeft, onMouseClick, onMouseRelease);
+        MapKey(Key.MouseLeft, onMouseClick, onMouseRelease);
     }
 
     // This function is invoked every fixed update.

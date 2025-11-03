@@ -32,39 +32,23 @@
 *******************************************************************************************/
 public ref class Time {
 public:
-	static float V_FixedDeltaTime() { return 1 / 60.f; } // Replace with config
-	static float V_DeltaTime()		{ return Interface::engine->getDeltaTime(); } // Replace with config
+	static float V_FixedDeltaTime(); 
+	static float V_DeltaTime();
 };
 
 public ref class Debug {
 public:
-	static void Log(IManagedComponent^ component) { Logger::info(Convert(component->ToString()));}
-	static void Log(System::String^ string)		{ Logger::info(Convert(string)); }
-	static void Log(Object^ object)               { 
-		if (object->GetType()->IsPrimitive) {
-			Logger::info(Convert(object->ToString()));
-			return;
-		}
-		Logger::info(Convert(object->GetType()->Name) + Convert(object->ToString())); 
-	}
-	static void LogWarning(IManagedComponent^ component) { Logger::warn(Convert(component->ToString())); }
-	static void LogWarning(System::String^ string) { Logger::warn(Convert(string)); }
-	static void LogWarning(Object^ object) {
-		if (object->GetType()->IsPrimitive) {
-			Logger::warn(Convert(object->ToString()));
-			return;
-		}
-		Logger::warn(Convert(object->GetType()->Name) + Convert(object->ToString()));
-	}
-	static void LogError(IManagedComponent^ component) { Logger::warn(Convert(component->ToString())); }
-	static void LogError(System::String^ string) { Logger::warn(Convert(string)); }
-	static void LogError(Object^ object) {
-		if (object->GetType()->IsPrimitive) {
-			Logger::warn(Convert(object->ToString()));
-			return;
-		}
-		Logger::warn(Convert(object->GetType()->Name) + Convert(object->ToString()));
-	}
+	static void Log(IManagedComponent^ component);
+	static void Log(System::String^ string);
+	static void Log(Object^ object);
+
+	static void LogWarning(IManagedComponent^ component);
+	static void LogWarning(System::String^ string);
+	static void LogWarning(Object^ object);
+
+	static void LogError(IManagedComponent^ component);
+	static void LogError(System::String^ string);
+	static void LogError(Object^ object);
 };
 
 // ======================================
@@ -72,63 +56,18 @@ public:
 // ======================================
 
 public ref class Input {
-public:
-	static void MapKey(Key key, EventCallback^ pressCallback) {
-		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key)) };
-		scriptObserverIds.Add(observerId);
-	}
-
-	static void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) { 
-		std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key)) };
-		scriptObserverIds.Add(observerId);
-	}
-
-	static void MouseMoveCallback(MouseEventCallback^ callback) {
-		std::size_t observerId{ Interface::engine->inputManager.subscribe<MousePosition>(CreateMouseCallback(callback)) };
-		mouseMoveObserverIds.Add(observerId);
-	}
-
-	static void ScrollCallback(ScrollEventCallback^ callback) {
-		std::size_t observerId{ Interface::engine->inputManager.subscribe<Scroll>(CreateScrollCallback(callback)) };
-		mouseScrollObserverIds.Add(observerId);
-	}
-
-#if 0
-	static float GetMouseAxis(MouseAxis axis) {
-		if (axis == MouseAxis::Horizontal) 
-			return Interface::engine->cameraSystem.getMouseAxisX();
-		return Interface::engine->cameraSystem.getMouseAxisY();
-	}
-
-	static float GetMouseAxisRaw(MouseAxis axis) {
-		float output{ GetMouseAxis(axis) };
-		if (output > 0) return 1;
-		if (output < 0) return -1;
-		return 0.f;
-	}
-
-	static float V_ScrollOffsetY()		{ return Interface::engine->inputManager.scrollOffsetY; }
-#endif
-	static Vector2 V_MousePosition()	{ return Vector2(Interface::engine->inputManager.mousePosition); }
+internal:
+	// This functions are called by the script's member function.. this is because each script needs to know 
+	// what it has subscribed to for proper destruction.
+	static std::size_t MapKey(Key key, EventCallback^ pressCallback);
+	static std::size_t MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback);
+	static std::size_t MouseMoveCallback(MouseEventCallback^ callback);
+	static std::size_t ScrollCallback(ScrollEventCallback^ callback);
+	
+	static Vector2 V_MousePosition();
 
 internal:
-	static void ClearAllKeyMapping() {
-		for each (std::size_t observerId in scriptObserverIds) {
-			Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
-		}
-
-		for each (std::size_t observerId in mouseMoveObserverIds) {
-			Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
-		}
-
-		for each (std::size_t observerId in mouseScrollObserverIds) {
-			Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
-		}
-
-		scriptObserverIds.Clear();
-		mouseMoveObserverIds.Clear();
-		mouseScrollObserverIds.Clear();
-	}
+	static void ClearAllKeyMapping();
 
 private:
 	static System::Collections::Generic::List<std::size_t> scriptObserverIds;
@@ -142,15 +81,9 @@ private:
 // ======================================
 public ref class AudioAPI {
 public:
-	static void PlaySound(GameObject^ gameObject, System::String^ string) {
-		Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
-	}
-	static void PlayBGM(GameObject^ gameObject, System::String^ string) {
-		Interface::engine->audioSystem.playBGM(Convert(gameObject), Convert(string));
-	}
-	static void StopSound(GameObject^ gameObject, System::String^ string) {
-		Interface::engine->audioSystem.stopSound(Convert(gameObject), Convert(string));
-	}
+	static void PlaySound(GameObject^ gameObject, System::String^ string);
+	static void PlayBGM(GameObject^ gameObject, System::String^ string);
+	static void StopSound(GameObject^ gameObject, System::String^ string);
 };
 
 // ======================================
@@ -158,35 +91,10 @@ public:
 // ======================================
 public ref class PhysicsAPI {
 public:
-	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance) {
-		return Raycast(Ray{ origin, directionVector }, maxDistance, {});
-	}
-
-	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, GameObject^ entityToIgnore) {
-		return Raycast(Ray{ origin, directionVector }, maxDistance, entityToIgnore);
-	}
-
-	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance) {
-		PhysicsRay ray{ p_ray->native() };
-		auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance);
-
-		if (!opt) {
-			return {}; // returns null, no ray cast..
-		}
-
-		return System::Nullable<RayCastResult>(RayCastResult{ opt.value() });
-	}
-
-	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore) {
-		PhysicsRay ray{ p_ray->native() };
-		auto opt = Interface::engine->physicsManager.rayCast(ray, maxDistance, { static_cast<entt::entity>(entityToIgnore->entityID) });
-
-		if (!opt) {
-			return {}; // returns null, no ray cast..
-		}
-
-		return System::Nullable<RayCastResult>(RayCastResult{ opt.value() });
-	}
+	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance);
+	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, GameObject^ entityToIgnore);
+	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance);
+	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore);
 };
 
 // ======================================
@@ -194,18 +102,12 @@ public:
 // ======================================
 public ref class CameraAPI {
 public:
-	static Ray getRayFromMouse() {
-		auto ray = Interface::engine->physicsManager.getRayFromMouse();
-		return Ray{ ray };
-	}
+	// Get a ray that points to the mouse from the camera origin..
+	// @TODO: Clarify mouse position when its locked.	
+	static Ray getRayFromMouse();
 
-	static void LockMouse() {
-		Interface::engine->gameLockMouse(true);
-	}
-
-	static void UnlockMouse() {
-		Interface::engine->gameLockMouse(false);
-	}
+	static void LockMouse();
+	static void UnlockMouse();
 };
 
 
@@ -214,23 +116,23 @@ public:
 // ======================================
 public ref class NavigationAPI {
 public:
-	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition) {
-		return Interface::engine->navigationSystem.setDestination(Convert(gameObject), targetPosition->native());
-	}
+	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition);
 };
+
 // ======================================
-// This class is responsible for math related functionality, espeically cause some require conversion to double for some reason
+// This class is responsible for math related functionality, especially cause some require conversion to double for some reason
 // ======================================
 public ref class Mathf {
 public:
 	// C# doesn't support cos/sin with floats without conversion
-	static float Cos(float radian) { return std::cos(radian); }
-	static float Sin(float radian) { return std::sin(radian); }
-	static float Atan2(float y, float x) { return std::tan(y / x); }
-	static float Clamp(float value, float min, float max) { return std::clamp(value, min, max); }
-	static float Interpolate(float a, float b, float t, float degree) { return Interpolation::Interpolation(a, b, t, degree); }
-	static float Min(float a, float b) { return std::min(a, b); }
-	static float Max(float a, float b) { return std::max(a, b); }
+	static float Cos(float radian);
+	static float Sin(float radian);
+	static float Atan2(float y, float x);
+	static float Clamp(float value, float min, float max);
+	static float Interpolate(float a, float b, float t, float degree);
+	static float Min(float a, float b);
+	static float Max(float a, float b);
+
 public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
@@ -245,4 +147,6 @@ public:
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent);
+
+	static void Destroy(GameObject^ gameObject);
 };

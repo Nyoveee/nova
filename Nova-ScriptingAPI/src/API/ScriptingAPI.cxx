@@ -82,6 +82,10 @@ void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId
 	}
 }
 
+void Interface::submitGameObjectDeleteRequest(EntityID entityToBeDeleted) {
+	deleteGameObjectQueue.Enqueue(entityToBeDeleted);
+}
+
 std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 {
 	using BindingFlags = System::Reflection::BindingFlags;
@@ -291,6 +295,40 @@ void Interface::update() {
 			Script^ script = gameObjectScripts[entityID][scriptID];
 			script->callUpdate();
 		}
+	}
+
+	// Check the delete game object queue to handle any deletion request at the end of the frame..
+	while (deleteGameObjectQueue.Count != 0) {
+		EntityID entityToRemove = deleteGameObjectQueue.Dequeue();
+
+		// shouldn't really happen but just in case..
+		if (!gameObjectScripts->ContainsKey(entityToRemove)) {
+			continue;
+		}
+
+		for each(Script^ script in gameObjectScripts[entityToRemove]->Values) {
+			// invokes the exit function before removing it..
+			script->callExit();
+
+			// unsubscribe from input manager..
+			for each (std::size_t observerId in script->scriptObserverIds) {
+				engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
+			}
+
+			for each (std::size_t observerId in script->mouseMoveObserverIds) {
+				engine->inputManager.unsubscribe<MousePosition>(ObserverID{ observerId });
+			}
+
+			for each (std::size_t observerId in script->mouseScrollObserverIds) {
+				engine->inputManager.unsubscribe<Scroll>(ObserverID{ observerId });
+			}
+		}
+
+		// removes it..
+		gameObjectScripts[entityToRemove]->Clear();
+
+		// remove from ECS registry..
+		engine->ecs.registry.destroy(static_cast<entt::entity>(entityToRemove));
 	}
 }
 
