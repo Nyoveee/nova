@@ -1159,6 +1159,21 @@ void Renderer::setDepthMode(CustomShader::DepthTestingMethod configuration) {
 	}
 }
 
+void Renderer::setCullMode(CustomShader::CullingConfig configuration) {
+	switch (configuration) {
+		using enum CustomShader::CullingConfig;
+	case Enable:
+		glEnable(GL_CULL_FACE);
+		break;
+	case Disable:
+		glDisable(GL_CULL_FACE);
+		break;
+	default:
+		assert(false && "Forget to handle other case.");
+		break;
+	}
+}
+
 void Renderer::printOpenGLDriverDetails() const {
 	GLubyte const* vendor = glGetString(GL_VENDOR);
 	GLubyte const* renderer = glGetString(GL_RENDERER);
@@ -1464,6 +1479,7 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 
 	setBlendMode(shaderData.blendingConfig);
 	setDepthMode(shaderData.depthTestingMethod);
+	setCullMode(shaderData.cullingConfig);
 
 	Shader const& shader = shaderOpt.value();
 

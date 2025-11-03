@@ -1,5 +1,6 @@
 {
     "blendingConfig": "AlphaBlending",
+    "cullingConfig": "Enable",
     "depthTestingMethod": "DepthTest",
     "fShaderCode": "\n    FragColor = vec4(color, 1.0); // ok\n",
     "pipeline": "Color",

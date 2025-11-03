@@ -43,18 +43,28 @@ bool ParseTags(std::string& data, CustomShader::ShaderParserData& shaderParserDa
 	if (count == 0) return true;
 	// Parse into shaderparserdata
 	std::string result{ taxRegexBegin->str() };
+
 	// Blending Config
 	std::regex blendingConfigRegex{ R"(Blending\s*:\s*([\w]+)\w*;)" };
 	if (!ParseEnum(blendingConfigRegex, result, shaderParserData.blendingConfig)) {
 		Logger::error("Unable To Parse Shader, Unknown type associated with Blending Config");
 		return false;
 	}
+
 	// Depth Testing Method
 	std::regex depthTestingMethodRegex{ R"(DepthTestingMethod\s*:\s*([\w]+)\w*;)" };
 	if (!ParseEnum(depthTestingMethodRegex, result, shaderParserData.depthTestingMethod)) {
 		Logger::error("Unable To Parse Shader, Unknown type associated with Depth Testing Method");
 		return false;
 	}
+
+	// Culling Method
+	std::regex cullingMethodRegex{ R"(Culling\s*:\s*([\w]+)\w*;)" };
+	if (!ParseEnum(cullingMethodRegex, result, shaderParserData.cullingConfig)) {
+		Logger::error("Unable To Parse Shader, Unknown type associated with Depth Testing Method");
+		return false;
+	}
+
 	return true;
 }
 bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderParserData) {

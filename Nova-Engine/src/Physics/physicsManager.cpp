@@ -265,16 +265,24 @@ void PhysicsManager::updatePhysics(float dt) {
 		JPH::Vec3 pos;
 		JPH::Quat rotation;
 
-		bodyInterface.GetPositionAndRotation(rigidbody.bodyId, pos, rotation);
-		transform.position = toGlmVec3(pos) - rigidbody.offset;
-		transform.rotation = toGlmQuat(rotation);
+		if (rigidbody.isRotatable) {
+			bodyInterface.GetPositionAndRotation(rigidbody.bodyId, pos, rotation);
+			transform.position = toGlmVec3(pos) - rigidbody.offset;
+			transform.rotation = toGlmQuat(rotation);
+		}
+		else {
+			pos = bodyInterface.GetPosition(rigidbody.bodyId);
+			transform.position = toGlmVec3(pos) - rigidbody.offset;
+		}
 
 		rigidbody.velocity = toGlmVec3(bodyInterface.GetLinearVelocity(rigidbody.bodyId));
 	}
 
+#if 0
 	for (auto bodyId : nonRotatableBodies) {
 		bodyInterface.SetAngularVelocity(bodyId, JPH::Vec3::sZero());
 	}
+#endif
 
 	// =============================================================
 	// 3. Handle collision request..

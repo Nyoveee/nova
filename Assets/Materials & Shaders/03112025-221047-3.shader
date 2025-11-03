@@ -3,6 +3,7 @@
 Tags{
     Blending : AlphaBlending;
     DepthTestingMethod : DepthTest;
+    Culling : Disable;
 }
 
 // Properties for material instances to configure..
@@ -16,7 +17,7 @@ Properties{
     
     NormalizedFloat dissolveThreshold;
     NormalizedFloat edgeWidth;
-    
+
     Color edgeColor;
 }
 
@@ -26,7 +27,7 @@ Vert{
     WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);
     gl_Position = calculateClipPosition(worldSpace.position);
 
-    // Pass attributes to fragment shader.. //
+    // Pass attributes to fragment shader.. //s
     vsOut.textureUnit = textureUnit;
     vsOut.fragWorldPos = worldSpace.position.xyz / worldSpace.position.w;
     vsOut.normal = worldSpace.normal;

@@ -156,7 +156,7 @@ class Enemy : Script
     // kills this gameobject..
     public void Die()
     {
-        ObjectAPI.Destroy(gameObject);
+        // ObjectAPI.Destroy(gameObject);
     }
     /**********************************************************************
         Enemy States

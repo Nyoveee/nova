@@ -329,6 +329,7 @@ void AssetManagerUI::displayCreateAssetContextMenu() {
 Tags{
     Blending : AlphaBlending;
     DepthTestingMethod : DepthTest;
+    Culling : Enable;
 }
 
 // Properties for material instances to configure..

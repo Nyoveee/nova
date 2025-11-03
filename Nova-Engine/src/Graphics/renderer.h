@@ -89,6 +89,7 @@ public:
 
 	ENGINE_DLL_API void setBlendMode(CustomShader::BlendingConfig configuration);
 	ENGINE_DLL_API void setDepthMode(CustomShader::DepthTestingMethod configuration);
+	ENGINE_DLL_API void setCullMode(CustomShader::CullingConfig configuration);
 
 	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
 	ENGINE_DLL_API void renderObjectIds();

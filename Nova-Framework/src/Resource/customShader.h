@@ -35,12 +35,18 @@ public:
 		NoDepthWriteTest
 	};
 
+	enum class CullingConfig {
+		Enable,
+		Disable
+	};
+
 	// this struct will be de/serialisation for the construction of this resource custom shader	.
 	struct ShaderParserData {
 		// Tags(Defaulted)
 		BlendingConfig blendingConfig = CustomShader::BlendingConfig::AdditiveBlending;
 		DepthTestingMethod depthTestingMethod = CustomShader::DepthTestingMethod::DepthTest;
-		
+		CullingConfig cullingConfig = CustomShader::CullingConfig::Enable;
+
 		// Properties(name,type)
 		std::unordered_map<ShaderVariableName, ShaderVariableType> uniforms;
 		
@@ -53,6 +59,7 @@ public:
 		REFLECTABLE(
 			blendingConfig,
 			depthTestingMethod,
+			cullingConfig,
 			uniforms,
 			vShaderCode,
 			fShaderCode,
