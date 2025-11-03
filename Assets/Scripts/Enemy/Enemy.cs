@@ -2,6 +2,8 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+using ScriptingAPI;
+
 class Enemy : Script
 {
     private delegate void CurrentState();
@@ -15,24 +17,30 @@ class Enemy : Script
     private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
     private GameObject? player = null;
     private float distance = 0f;
-    private bool b_HitPlayerThisAttack = false;
-    private bool b_IsSwinging = false;
+    private GameObject? hitbox = null;
+    /***********************************************************
+       Components
+    ***********************************************************/
+    private EnemyStats? enemyStats = null;
+    private Animator_? animator = null;
+    private Rigidbody_? rigidbody = null;
     /***********************************************************
         Inspector Variables
     ***********************************************************/
     [SerializableField]
-    private EnemyStats? enemyStats = null;
-    [SerializableField]
-    private Animator_? animator = null;
-    [SerializableField]
     private ParticleEmitter_ emitter = null;
     [SerializableField]
-    private Rigidbody_? rigidbody = null;
+    private Prefab? hitboxPrefab = null;
+    [SerializableField]
+    private GameObject? hitboxPosition = null;
 
     private Transform_? transform = null;
     // This function is first invoked when game starts.
     protected override void init()
     {
+        enemyStats = getScript<EnemyStats>();
+        animator = getComponent<Animator_>();
+        rigidbody = getComponent<Rigidbody_>();
         if (animator != null)
             animator.PlayAnimation("Enemy Idle (Base)");
         updateState.Add(EnemyState.Idle, Update_IdleState);
@@ -58,18 +66,6 @@ class Enemy : Script
     public bool IsEngagedInBattle()
     {
         return enemyState != EnemyState.Idle;
-    }
-    public void OnPlayerHit()
-    {
-        b_HitPlayerThisAttack = true;
-    }
-    public bool HasHitPlayerThisAttack()
-    {
-        return b_HitPlayerThisAttack;
-    }
-    public bool IsSwinging()
-    {
-        return b_IsSwinging;
     }
     /**********************************************************************
         Enemy States
@@ -142,15 +138,15 @@ class Enemy : Script
     ****************************************************************/
     public void Slash()
     {
-        AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
+
         emitter.emit(1000);
-        b_IsSwinging = false;
+        if (hitbox != null)
+            ObjectAPI.Destroy(hitbox);
     }
     public void EndAttack()
     {
         Debug.Log("end of attack....");
 
-        b_HitPlayerThisAttack = false;
         if (distance > enemyStats.attackRadius)
         {
             animator.PlayAnimation("Enemy Running");
@@ -159,6 +155,16 @@ class Enemy : Script
     }
     public void BeginSwing()
     {
-        b_IsSwinging = true;
+        AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
+        if (hitboxPrefab == null)
+            return;
+        hitbox = ObjectAPI.Instantiate(hitboxPrefab);
+        if(hitbox!= null && hitboxPosition!= null){
+            hitbox.transform.position = hitboxPosition.transform.position;
+            EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
+            if (enemyHitBox != null && enemyStats != null)
+                enemyHitBox.SetDamage(enemyStats.damage);
+        }
+           
     }
 }
