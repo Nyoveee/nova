@@ -193,3 +193,36 @@ void Animator_::PlayAnimation(System::String^ name) {
 void Text_::SetText(System::String^ text) {
 	nativeComponent()->text = Convert(text);
 }
+
+// =================================================================
+// Mesh Renderer & Skinned Mesh Renderer..
+// =================================================================
+void MeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ material) {
+	MeshRenderer* meshRenderer = nativeComponent();
+
+	if (!meshRenderer || !material) {
+		return;
+	}
+
+	if (index < 0 || index >= meshRenderer->materialIds.size()) {
+		Logger::warn("Invalid material index");
+		return;
+	}
+
+	meshRenderer->materialIds[index] = material->getId();
+}
+
+void SkinnedMeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ material) {
+	SkinnedMeshRenderer* meshRenderer = nativeComponent();
+
+	if (!meshRenderer || !material) {
+		return;
+	}
+
+	if (index < 0 || index >= meshRenderer->materialIds.size()) {
+		Logger::warn("Invalid material index");
+		return;
+	}
+
+	meshRenderer->materialIds[index] = material->getId();
+}

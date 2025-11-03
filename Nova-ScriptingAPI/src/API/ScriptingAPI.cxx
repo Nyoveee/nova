@@ -16,6 +16,10 @@
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
 {
+	if (!gameObjectScripts->ContainsKey(entityID)) {
+		return T(); // return null
+	}
+
 	// Go through the managed scripts
 	for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
 		if (gameObjectScripts[entityID][scriptID]->GetType() == T::typeid)
@@ -32,7 +36,6 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
 	availableScripts = gcnew System::Collections::Generic::Dictionary<ScriptID, Script^>();
 	assemblyLoadContext = nullptr;
-
 }
 
 void Interface::intializeAllScripts()
@@ -326,7 +329,7 @@ void Interface::update() {
 		gameObjectScripts[entityToRemove]->Clear();
 
 		// remove from ECS registry..
-		engine->ecs.registry.destroy(static_cast<entt::entity>(entityToRemove));
+		engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
 	}
 }
 

@@ -16,10 +16,16 @@
         },
         "10648761751132241929": {
             "animation": 4360496422163415045,
-            "animationEvents": null,
+            "animationEvents": [
+                {
+                    "functionName": "Die",
+                    "key": 67,
+                    "scriptId": 17619093725142188105
+                }
+            ],
             "id": 10648761751132241929,
             "name": "Enemy Death",
-            "toLoop": true,
+            "toLoop": false,
             "transitions": null
         },
         "14683987017256009733": {

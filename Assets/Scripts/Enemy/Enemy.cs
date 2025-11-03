@@ -2,54 +2,113 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+using ScriptingAPI;
+
 class Enemy : Script
 {
     private delegate void CurrentState();
-    private enum EnemyState
-    {
-        Idle,
-        Chasing,
-        Attacking
-    }
-    private EnemyState enemyState = EnemyState.Idle;
-    private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
-    private GameObject? player = null;
-    private float distance = 0f;
-    private bool b_HitPlayerThisAttack = false;
-    private bool b_IsSwinging = false;
+
     /***********************************************************
         Inspector Variables
     ***********************************************************/
     [SerializableField]
-    private EnemyStats? enemyStats = null;
-    [SerializableField]
-    private Animator_? animator = null;
-    [SerializableField]
     private ParticleEmitter_ emitter = null;
-    [SerializableField]
-    private Rigidbody_? rigidbody = null;
 
+    [SerializableField]
+    private float maximumHealth = 100f;
+
+    [SerializableField]
+    private float hurtDuration = 0.1f;
+
+    [SerializableField]
+    private Material defaultMaterial;
+
+    [SerializableField]
+    private Material hurtMaterial;
+
+    /***********************************************************
+        Components
+    ***********************************************************/
+
+    private EnemyStats? enemyStats = null;
+    private Animator_? animator = null;
+    private Rigidbody_? rigidbody = null;
     private Transform_? transform = null;
+    private SkinnedMeshRenderer_? renderer = null;
+
+    /***********************************************************
+        Runtime variables..
+    ***********************************************************/
+    private enum EnemyState
+    {
+        Idle,
+        Chasing,
+        Attacking,
+        Death
+    }
+
+    // State machine
+    private EnemyState enemyState = EnemyState.Idle;
+    private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
+
+    private GameObject? player = null;
+
+    private float distance = 0f;
+
+    private bool b_HitPlayerThisAttack = false;
+    private bool b_IsSwinging = false;
+
+    private float currentHealth;
+
+    private float hurtTimeElapsed = 0f;
+    private bool recentlyTookDamage = false;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
+        transform = getComponent<Transform_>();
+        rigidbody = getComponent<Rigidbody_>();
+        animator = getComponent<Animator_>();
+        renderer = getComponent<SkinnedMeshRenderer_>();
+        enemyStats = getScript<EnemyStats>();
+
         if (animator != null)
             animator.PlayAnimation("Enemy Idle (Base)");
+
+        // Populate state machine dispatcher..
         updateState.Add(EnemyState.Idle, Update_IdleState);
         updateState.Add(EnemyState.Chasing, Update_ChasingState);
         updateState.Add(EnemyState.Attacking, Update_AttackState);
-        player = GameObject.FindWithTag("Player");
-        rigidbody.SetVelocity(new Vector3( 0, 0, 0));
+        updateState.Add(EnemyState.Death, Update_Death);
 
-        transform = getComponent<Transform_>();
+        player = GameObject.FindWithTag("Player");
+        currentHealth = maximumHealth;
+
+        rigidbody.SetVelocity(new Vector3(0, 0, 0));
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {
+        // update take damage logic..
+        if(recentlyTookDamage)
+        {
+            if (hurtTimeElapsed > hurtDuration)
+            {
+                recentlyTookDamage = false;
+                renderer.changeMaterial(0, defaultMaterial);
+            }
+            else
+            {
+                hurtTimeElapsed += Time.V_FixedDeltaTime();
+            }
+        }
+
         Vector3 playerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
         Vector3 enemyPosition = new Vector3(gameObject.transform.position.x,0,gameObject.transform.position.z);
+
         distance = Vector3.Distance(playerPosition, enemyPosition);
+        
         updateState[enemyState]();
     }
     /**********************************************************************
@@ -70,6 +129,34 @@ class Enemy : Script
     public bool IsSwinging()
     {
         return b_IsSwinging;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        // blud already died let him die in peace dont take anymore damage..
+        if(recentlyTookDamage || enemyState == EnemyState.Death)
+        {
+            return;
+        }
+
+        recentlyTookDamage = true;
+        hurtTimeElapsed = 0f;
+
+        AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+        currentHealth -= damage;
+        renderer.changeMaterial(0, hurtMaterial);
+
+        if(currentHealth <= 0)
+        {
+            enemyState = EnemyState.Death;
+            animator.PlayAnimation("Enemy Death");
+        }
+    }
+
+    // kills this gameobject..
+    public void Die()
+    {
+        ObjectAPI.Destroy(gameObject);
     }
     /**********************************************************************
         Enemy States
@@ -129,6 +216,12 @@ class Enemy : Script
         }
         LookAtPlayer();
     }
+
+    private void Update_Death()
+    {
+
+    }
+
     private void LookAtPlayer()
     {
         Vector3 direction = player.transform.position - gameObject.transform.position;

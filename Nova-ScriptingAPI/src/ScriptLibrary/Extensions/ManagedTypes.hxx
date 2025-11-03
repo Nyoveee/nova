@@ -15,6 +15,20 @@
 // later in 2. with the managed type.
 // ===========================================================================================
 
+// ===========================================================================================
+// 3. Defining managed typed resource..
+// ===========================================================================================
+
+namespace ScriptingAPI {
+	ManagedResource(Prefab)
+		ManagedResource(Texture)
+		ManagedResource(Model)
+		ManagedResource(Material)
+}
+
+#define ALL_MANAGED_TYPED_RESOURCE_ID \
+	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material
+
 // ======================================
 // This struct is responsible for Vector2 Types
 // ======================================
@@ -211,6 +225,7 @@ ManagedComponentDeclaration(
 	ColorAlpha, colorTint
 )
 ManagedComponentEnd()
+
 // ======================================
 // Text Component
 // ======================================
@@ -220,16 +235,24 @@ ManagedComponentDeclaration(
 void SetText(System::String^ text);
 ManagedComponentEnd()
 
-// ===========================================================================================
-// 3. Defining managed typed resource..
-// ===========================================================================================
+// ======================================
+// MeshRenderer & SkinnedMeshRenderer Component
+// ======================================
+ManagedComponentDeclaration(
+	MeshRenderer
+)
 
-namespace ScriptingAPI {
-	ManagedResource(Prefab)
-	ManagedResource(Texture)
-	ManagedResource(Model)
-	ManagedResource(Material)
-}
+void changeMaterial(int index, ScriptingAPI::Material^ material);
 
-#define ALL_MANAGED_TYPED_RESOURCE_ID \
-	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material
+ManagedComponentEnd()
+
+ManagedComponentDeclaration(
+	SkinnedMeshRenderer
+)
+
+void changeMaterial(int index, ScriptingAPI::Material^ material);
+
+ManagedComponentEnd()
+
+
+

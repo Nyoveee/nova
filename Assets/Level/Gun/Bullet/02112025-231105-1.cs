@@ -5,6 +5,7 @@ class BulletScript : Script
 {
     // 
     public float lifeTime = 10f;
+    public float damage = 20f;
 
     private float timeElapsed = 0;
     private Rigidbody_? rigidbody;
@@ -13,7 +14,7 @@ class BulletScript : Script
     private bool hasCollided = false;
     private GameObject collidedEntity = null;
 
-    // This function is first invoked when game starts. s
+    // This function is first invoked when game starts.
     protected override void init()
     {
         transform = getComponent<Transform_>();
@@ -25,8 +26,11 @@ class BulletScript : Script
     {
         if (hasCollided)
         {
-            // as
-            Debug.Log("Collide with " + collidedEntity + ", id: " + collidedEntity.GetId() + "!");
+            Enemy enemyScript = collidedEntity.getScript<Enemy>();
+            if (enemyScript != null) {
+                enemyScript.TakeDamage(damage);
+            }
+
             ObjectAPI.Destroy(gameObject);
             return;
         }
@@ -45,7 +49,7 @@ class BulletScript : Script
 
             if (collidedEntity.tag == "Wall" || collidedEntity.tag == "Enemy")
             { 
-                // we delay object destruction by 1 frame.. since raycast cast forward..s
+                // we delay object destruction by 1 frame.. since raycast cast forward..
                 hasCollided = true;
             }
         }

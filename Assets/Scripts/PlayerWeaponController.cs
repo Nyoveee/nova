@@ -22,7 +22,8 @@ class PlayerWeaponController : Script
 
     private void SpawnBullet()
     {
-        GameObject bullet = ObjectAPI.Instantiate(bulletPrefab, gunHolder.position, null);
+        // Spawns a bullet that orients the same direction as the camera..
+        GameObject bullet = ObjectAPI.Instantiate(bulletPrefab, gunHolder.position, camera.rotation, null);
 
         if (bullet != null) {
             bullet.getComponent<Rigidbody_>().SetVelocity(camera.front * bulletSpeed);
