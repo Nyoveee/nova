@@ -41,6 +41,14 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 		if (ImGui::Selectable(entityData.name.c_str(), editor.isEntitySelected(entity))) {
 			editor.selectEntities({ entity });
 		}
+
+		// Check for double-click to focus on entity
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			Transform* transform = registry.try_get<Transform>(entity);
+			if (transform) {
+				editor.engine.cameraSystem.focusOnPosition(transform->position);
+			}
+		}
 	}
 	else {
 		// Display children recursively..
@@ -54,6 +62,14 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 			editor.selectEntities({ entity });
+		}
+
+		// Check for double-click to focus on entity
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && !ImGui::IsItemToggledOpen()) {
+			Transform* transform = registry.try_get<Transform>(entity);
+			if (transform) {
+				editor.engine.cameraSystem.focusOnPosition(transform->position);
+			}
 		}
 	}
 

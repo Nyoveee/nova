@@ -19,6 +19,7 @@
 #include "AssetManager/assetManager.h"
 #include "ECS/ECS.h"
 #include "InputManager/inputManager.h"
+#include "InputManager/inputEvent.h"
 #include "ResourceManager/resourceManager.h"
 #include "Navigation/navMeshGeneration.h"
 #include "Serialisation/serialisation.h"
@@ -149,6 +150,10 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 				engine.ecs.copyVectorEntities<ALL_COMPONENTS>(copiedEntityVec);
 			}
 		}
+	);
+
+	inputManager.subscribe<FocusSelectedEntity>(
+		std::bind(&Editor::handleFocusOnSelectedEntity, this, std::placeholders::_1)
 	);
 
 	inputManager.subscribe<EditorWantsToControlMouse>(
@@ -370,6 +375,26 @@ void Editor::handleEntitySelection() {
 	}
 
 	selectedEntities.push_back(hoveringEntity);
+	toOutline(selectedEntities, true);
+}
+
+void Editor::handleFocusOnSelectedEntity(FocusSelectedEntity) {
+	// Only focus if we have a selected entity
+	if (selectedEntities.empty()) {
+		return;
+	}
+
+	// Get the first selected entity's transform
+	entt::entity entity = selectedEntities[0];
+	entt::registry& registry = engine.ecs.registry;
+
+	Transform* transform = registry.try_get<Transform>(entity);
+	if (!transform) {
+		return;
+	}
+
+	// Focus the camera on the entity's position
+	engine.cameraSystem.focusOnPosition(transform->position);
 }
 
 void Editor::handleUIEntitySelection() {

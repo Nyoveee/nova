@@ -94,6 +94,10 @@ enum class PasteEntity {
 	Paste
 };
 
+enum class FocusSelectedEntity {
+	Sentinel
+};
+
 enum class EditorWantsToControlMouse {
 	Sentinel
 };
