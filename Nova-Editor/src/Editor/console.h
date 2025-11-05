@@ -4,7 +4,7 @@
 
 class Console {
 private:
-    bool autoScroll = true;
+    bool autoScroll = false;
     bool showInfo = true;
     bool showDebug = true;
     bool showWarnings = true;
