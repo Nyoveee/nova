@@ -43,7 +43,8 @@ public:
 	template<typename ...Args>
 	static void debug(std::string_view rt_fmt_str, Args&&... args);
 	
-	//static void log(LogLevel level, const std::string& message);
+	//For testing
+	//FRAMEWORK_DLL_API static void log(LogLevel level, const std::string& message);
 };
 
 #include "Logger.ipp"

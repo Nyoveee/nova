@@ -29,8 +29,6 @@ void Console::update() {
 
     const auto logEntries = Logger::getLogEntries();
 
-    //static int lastLogCount = 0; // For tracking new log entries
-
     for (const auto& entry : logEntries) {
         bool shouldShow = false;
         ImVec4 color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); // default white
@@ -70,19 +68,56 @@ void Console::update() {
         }
     }
 
+   // testAutoScroll();
+
     static bool previousAutoScroll = true; // remember previous frame state
     static int lastLogCount = 0;           // remember previous number of logs
 
     int currentLogCount = (int)logEntries.size();
 
-    if (autoScroll && (!previousAutoScroll || currentLogCount != lastLogCount)) {
+    //For this one, once the auto-scroll is on and you move up it stays at the place and it dosent move back down.
+    /*if (autoScroll && (!previousAutoScroll || currentLogCount != lastLogCount)) {
+        ImGui::SetScrollHereY(1.0f);
+    }*/
+
+    //This one forces it to go down as long as tge auto-scroll is on, if off then can move around freely
+    if (autoScroll ) {
         ImGui::SetScrollHereY(1.0f);
     }
 
     previousAutoScroll = autoScroll;
     lastLogCount = currentLogCount;
 
-
+  
     ImGui::EndChild();
     ImGui::End();
 }
+
+
+//void Console::testAutoScroll() {
+//    //// Test with rapid logging
+//    //for (int i = 0; i < 20; i++) {
+//    //    Logger::log(LogLevel::Info, "Test message " + std::to_string(i));
+//    //}
+//
+//    //// Test with different log levels
+//    //Logger::log(LogLevel::Warning, "This should trigger auto-scroll");
+//    //Logger::log(LogLevel::Error, "Error message test");
+//    //Logger::log(LogLevel::Debug, "Debug message");
+//    
+//    static bool hasRun = false; // ensures this runs only once
+//    if (hasRun) return;         // skip after first time
+//    hasRun = true;
+//
+//    // Test with rapid logging
+//    for (int i = 0; i < 20; i++) {
+//        Logger::log(LogLevel::Info, "Test message " + std::to_string(i));
+//    }
+//
+//    // Test with different log levels
+//    Logger::log(LogLevel::Warning, "This should trigger auto-scroll");
+//    Logger::log(LogLevel::Error, "Error message test");
+//    Logger::log(LogLevel::Debug, "Debug message");
+//}
+//
+//

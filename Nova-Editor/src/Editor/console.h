@@ -11,5 +11,6 @@ private:
     bool showErrors = true;
 
 public:
+    //void testAutoScroll();
     void update();
 };
