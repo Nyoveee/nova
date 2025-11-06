@@ -35,10 +35,8 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 	ImGui::PushID(static_cast<unsigned>(entity));
 
 	if (entityData.children.empty()) {
-		ImGui::Bullet();
-		ImGui::SameLine();
-
-		if (ImGui::Selectable(entityData.name.c_str(), editor.isEntitySelected(entity))) {
+		ImGui::Indent(27.5f);
+		if (ImGui::Selectable((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), editor.isEntitySelected(entity))) {
 			editor.selectEntities({ entity });
 		}
 
@@ -49,6 +47,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 				editor.engine.cameraSystem.focusOnPosition(transform->position);
 			}
 		}
+		ImGui::Unindent(27.5f);
 	}
 	else {
 		// Display children recursively..
@@ -58,7 +57,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
 
-		toDisplayTreeNode = ImGui::TreeNodeEx(entityData.name.c_str(), flags);
+		toDisplayTreeNode = ImGui::TreeNodeEx((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), flags);
 
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 			editor.selectEntities({ entity });
