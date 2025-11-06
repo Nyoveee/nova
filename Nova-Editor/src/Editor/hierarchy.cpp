@@ -33,7 +33,17 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 	bool toDisplayTreeNode = false;
 
 	ImGui::PushID(static_cast<unsigned>(entity));
-
+	auto hasHierarchyPrefab = [&entityData,&registry]() {
+		EntityData root{ const_cast<EntityData&>(entityData) };
+		while (root.parent != entt::null) {
+			if (root.prefabID != INVALID_RESOURCE_ID)
+				return true;
+			root = registry.get<EntityData>(root.parent);
+		
+		}
+		return root.prefabID != INVALID_RESOURCE_ID;
+	};
+	ImGui::PushStyleColor(ImGuiCol_Text, hasHierarchyPrefab() ? ImVec4(0, 1, 0, 1) : ImVec4(1, 1, 1, 1));
 	if (entityData.children.empty()) {
 		ImGui::Indent(27.5f);
 		if (ImGui::Selectable((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), editor.isEntitySelected(entity))) {
@@ -71,7 +81,7 @@ void Hierarchy::displayEntityHierarchy(entt::entity entity) {
 			}
 		}
 	}
-
+	ImGui::PopStyleColor();
 	// I want my widgets to be draggable, providing the entity id as the payload.
 	if (ImGui::BeginDragDropSource()) {
 		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity*));
