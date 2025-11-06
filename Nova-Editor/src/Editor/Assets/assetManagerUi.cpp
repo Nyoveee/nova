@@ -73,22 +73,19 @@ void AssetManagerUI::update() {
 
 void AssetManagerUI::displayLeftNavigationPanel() {
 	ImGui::BeginChild("(Left) Navigation Panel", ImVec2(200, 0), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
-	bool toShow = ImGui::TreeNodeEx("Content", ImGuiTreeNodeFlags_DefaultOpen);
-
+	ImGui::Text("Content");
+	
 	// Seperator has some inbuilt indentable so let's unindent it for a border effect.
 	ImGui::Unindent(20.f);
 	ImGui::Separator();
 	ImGui::Indent(20.f);
 
-	if (toShow) {
-		// Remove indentation temporarily
-		ImGui::Unindent(20.f);
+	// Remove indentation temporarily
+	ImGui::Unindent(20.f);
 
-		displayFolderTreeNode(ASSET_FOLDER);
+	displayFolderTreeNode(ASSET_FOLDER);
 
-		ImGui::Indent(20.f);
-		ImGui::TreePop();
-	}
+	ImGui::Indent(20.f);
 
 	ImGui::EndChild();
 }
@@ -163,13 +160,10 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 	if (selectedFolderId == folderId) {
 		flags |= ImGuiTreeNodeFlags_Selected;
 	}
-
 	if (folder.childDirectories.empty()) {
-		flags |= ImGuiTreeNodeFlags_Leaf;
-		ImGui::Unindent(20.f);
+		flags |= ImGuiTreeNodeFlags_Leaf;	
 	}
-
-	bool showTreeNode = ImGui::TreeNodeEx(folder.name.c_str(), flags);
+	bool showTreeNode = ImGui::TreeNodeEx((ICON_FA_FOLDER + std::string{ " " } + folder.name).c_str(), flags);
 
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 		selectedFolderId = folderId;
@@ -184,9 +178,6 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 		ImGui::TreePop();
 	}
 
-	if (folder.childDirectories.empty()) {
-		ImGui::Indent(20.f);
-	}
 }
 
 void AssetManagerUI::displayFolderContent(FolderID folderId) {
