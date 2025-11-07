@@ -128,3 +128,8 @@ public enum class Key
 	MouseLeft = GLFW_MOUSE_BUTTON_LEFT,
 	MouseRight = GLFW_MOUSE_BUTTON_RIGHT
 };
+
+public enum class MouseAxis {
+	Horizontal,
+	Vertical
+};

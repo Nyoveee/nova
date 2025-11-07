@@ -6,6 +6,10 @@
 #include "InputManager/inputManager.h"
 #include "Profiling.h"
 
+namespace {
+	constexpr float sensitivity = 0.1f;		// change this value to your liking
+}
+
 CameraSystem::CameraSystem(Engine& engine) :
 	engine					{ engine },
 	isMovingDown			{},
@@ -15,8 +19,6 @@ CameraSystem::CameraSystem(Engine& engine) :
 	isMovingLeft			{},
 	isMovingRight			{},
 	isSimulationActive		{},
-	lastMouseX				{},
-	lastMouseY				{},
 	editorCamera			{ engine.renderer.getEditorCamera() },
 	gameCamera				{ engine.renderer.getGameCamera() },
 	levelEditorCamera		{ { 0.f, 0.f, 0.f }, { 0.f, 0.f, -1.f }, -90.f, 0.f },
@@ -24,7 +26,9 @@ CameraSystem::CameraSystem(Engine& engine) :
 	isThereActiveGameCamera	{ false },
 	toResetMousePos			{ true },
 	cameraSpeedExponent		{ 2.f },
-	cameraSpeed				{ std::exp(cameraSpeedExponent) }
+	cameraSpeed				{ std::exp(cameraSpeedExponent) },
+	focusOffsetDistance		{ 5.0f },
+	focusHeightOffset		{ 2.0f }
 {
 	// Subscribe to the input manager that the camera system is interested in 
 	// any input related to CameraMovement
@@ -53,11 +57,7 @@ CameraSystem::CameraSystem(Engine& engine) :
 
 	engine.inputManager.subscribe<MousePosition>(
 		[&](MousePosition mousePos) {
-			if (toResetMousePos) {
-				setLastMouse(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
-				toResetMousePos = false;
-			}
-			else if (isInControl) {
+			if (isInControl) {
 				calculateEulerAngle(static_cast<float>(mousePos.xPos), static_cast<float>(mousePos.yPos));
 			}
 		}
@@ -161,11 +161,6 @@ void CameraSystem::setMovement(CameraMovement movement, bool toMove) {
 	}
 }
 
-void CameraSystem::setLastMouse(float mouseX, float mouseY) {
-	lastMouseX = mouseX;
-	lastMouseY = mouseY;
-}
-
 float CameraSystem::getCameraSpeed() const {
 	return cameraSpeed;
 }
@@ -174,19 +169,9 @@ CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() cons
     return levelEditorCamera;
 }
 
-void CameraSystem::calculateEulerAngle(float mouseX, float mouseY) {
-	constexpr float sensitivity = 0.1f;		// change this value to your liking
-	
-	float xOffset = mouseX - lastMouseX;
-	float yOffset = lastMouseY - mouseY; // reversed since y-coordinates go from bottom to top
-	lastMouseX = mouseX;
-	lastMouseY = mouseY;
-
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
-
-	levelEditorCamera.yaw += xOffset;
-	levelEditorCamera.pitch += yOffset;
+void CameraSystem::calculateEulerAngle(float xOffset, float yOffset) {
+	levelEditorCamera.yaw += xOffset * sensitivity;
+	levelEditorCamera.pitch += yOffset * sensitivity;
 
 	// make sure that when pitch is out of bounds, screen doesn't get flipped
 	levelEditorCamera.pitch = std::clamp(static_cast<float>(levelEditorCamera.pitch), -89.0f, 89.0f);
@@ -204,6 +189,29 @@ void CameraSystem::startSimulation() {
 void CameraSystem::endSimulation() {
 	isSimulationActive = false;
 
+	editorCamera.setPos(levelEditorCamera.position);
+	editorCamera.setFront(glm::normalize(levelEditorCamera.front));
+	editorCamera.recalculateViewMatrix();
+	editorCamera.recalculateProjectionMatrix();
+}
+
+void CameraSystem::focusOnPosition(glm::vec3 const& targetPosition) {
+	// Position camera behind and above the target using configurable offsets
+	glm::vec3 offset = glm::vec3(0.0f, focusHeightOffset, focusOffsetDistance);
+	levelEditorCamera.position = targetPosition + offset;
+
+	// Calculate direction from camera to target
+	glm::vec3 direction = glm::normalize(targetPosition - levelEditorCamera.position);
+	levelEditorCamera.front = direction;
+
+	// Calculate yaw and pitch from direction vector
+	// yaw: angle around y-axis (horizontal rotation)
+	levelEditorCamera.yaw = Degree{ glm::degrees(std::atan2(direction.z, direction.x)) };
+
+	// pitch: angle up/down
+	levelEditorCamera.pitch = Degree{ glm::degrees(std::asin(direction.y)) };
+
+	// Update the editor camera immediately
 	editorCamera.setPos(levelEditorCamera.position);
 	editorCamera.setFront(glm::normalize(levelEditorCamera.front));
 	editorCamera.recalculateViewMatrix();

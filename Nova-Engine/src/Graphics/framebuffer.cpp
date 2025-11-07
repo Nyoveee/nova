@@ -53,8 +53,8 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 
 		glTextureStorage2D(texture_id, 1, textureFormat, width, height);
 
-		glTextureParameteri(texture_id, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTextureParameteri(texture_id, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTextureParameteri(texture_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTextureParameteri(texture_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		GLuint colorAttachment = GL_COLOR_ATTACHMENT0 + i;
 		colorAttachments.push_back(colorAttachment);

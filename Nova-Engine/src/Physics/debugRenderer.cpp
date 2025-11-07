@@ -23,9 +23,8 @@ DebugRenderer::DebugRenderer(Renderer& renderer) :
 DebugRenderer::~DebugRenderer() {}
 
 void DebugRenderer::DrawLine(JPH::RVec3Arg from, JPH::RVec3Arg to, JPH::ColorArg color) {
-	(void) from;
-	(void) to;
 	(void) color;
+	renderer.submitLine(toGlmVec3(from), toGlmVec3(to));
 }
 
 void DebugRenderer::DrawTriangle(JPH::RVec3Arg vertice1, JPH::RVec3Arg vertice2, JPH::RVec3Arg vertice3, [[maybe_unused]] JPH::ColorArg color, [[maybe_unused]] ECastShadow castShadow) {

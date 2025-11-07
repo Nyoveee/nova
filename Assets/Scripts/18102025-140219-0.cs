@@ -9,7 +9,7 @@ class EmitParticles : Script
     protected override void init()
     {
         emitter = getComponent<ParticleEmitter_>();
-        Input.MapKey(Key.I, OnInputPressedI, null);
+        MapKey(Key.I, OnInputPressedI, null);
     }
     private void OnInputPressedI()
     {

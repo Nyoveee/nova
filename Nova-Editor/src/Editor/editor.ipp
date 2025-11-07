@@ -13,13 +13,29 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 		ImGui::PushID(static_cast<int>(static_cast<std::size_t>(id.value())));
 	}
 
+	// Uppercase search query..
+	// Case insensitive searchQuery..
+	uppercaseSearchQuery.clear();
+	std::transform(assetSearchQuery.begin(), assetSearchQuery.end(), std::back_inserter(uppercaseSearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
+
 	auto allResources = resourceManager.getAllResources<T>();
 
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
+		ImGui::InputText("Search", &assetSearchQuery);
+
 		for (auto&& resourceId : allResources) {
 			std::string const* assetName = assetManager.getName(resourceId);
 
 			if (!assetName) {
+				continue;
+			}
+
+			// Let's upper case our component name..
+			uppercaseAssetName.clear();
+			std::transform(assetName->begin(), assetName->end(), std::back_inserter(uppercaseAssetName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			// attempt to find asset..
+			if (uppercaseAssetName.find(uppercaseSearchQuery) == std::string::npos) {
 				continue;
 			}
 

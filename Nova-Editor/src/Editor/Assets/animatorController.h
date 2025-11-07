@@ -7,6 +7,8 @@
 #include "type_alias.h"
 #include "imgui_node_editor.h"
 
+#include "controller.h"
+
 class Editor;
 class Controller;
 class ResourceManager;
@@ -65,19 +67,24 @@ public:
 	void update();
 
 private:
-	void displayLeftPanel(Controller& controller);
+	void displayLeftPanel(Animator& animator, Controller& controller);
 	void displayRightPanel(Animator& animator, Controller& controller);
-	
-	void displayParameterWindow(Controller& controller);
-	void displaySelectedNodeProperties(Controller& controller);
+
+	void displaySelectedAnimationTimeline(Animator& animator, Controller& controller);
+
+	void displayParameterWindow(Animator& animator, Controller& controller);
+	void displaySelectedNodeProperties(Animator& animator, Controller& controller);
 
 	void handleDragAndDrop(Controller& controller);
 
 private:
-	void renderNodes(Controller& controller);
+	void renderNodes(Animator& animator, Controller& controller);
 	void renderNodeLinks(Controller& controller);
 	void handleNodeLinking(Controller& controller);
 	void handleDeletion(Controller& controller);
+
+	void createNewCondition(Controller& controller, Controller::Transition& transition);
+	void displayParameterComboBox(Controller& controller, Controller::Condition& condition);
 
 private:
 	Editor& editor;
@@ -105,4 +112,6 @@ private:
 	// static inline const ed::PinId  startPinId   = 1001;
 
 	bool isFirstFrame = true;
+
+	int selectedAnimationFrame;
 };

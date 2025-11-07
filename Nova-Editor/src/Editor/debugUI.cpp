@@ -24,6 +24,8 @@ DebugUI::DebugUI(Editor& editor) :
 void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
 
+	ImGui::Text("Hovering entity: %u", static_cast<unsigned int>(editor.hoveringEntity));
+
 	renderPerformanceSection();
 	renderPhysicsSection();
 	renderHDRSection();

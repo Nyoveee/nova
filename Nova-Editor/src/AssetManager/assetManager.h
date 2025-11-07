@@ -76,6 +76,10 @@ public:
 	template <ValidResource T>
 	ResourceID createResourceFile(AssetInfo<T> descriptor);
 
+	// certain resources are modified in editor runtime
+	// we want to serialise this back to either as resource or even as asset.
+	void serialiseResources();
+
 public:
 	// Getters..
 	std::unordered_map<FolderID, Folder> const& getDirectories()									const;

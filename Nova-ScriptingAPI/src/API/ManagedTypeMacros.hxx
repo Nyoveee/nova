@@ -28,9 +28,11 @@ NativeType native(ManagedType managedType) {
 // For managed structs -> to convert native types to managed types for interaction
 // =====================================================
 #define Declaration(Type, Name) Type Name;
-#define ConstructorDefinition(Type, Name) Name{native.Name}
+#define ConstructorDefinition(Type, Name) Name{ native.Name }
 #define ConstructorDefinition2(Type, Name) Name { Name }
+
 #define ListInitialization(Type, Name) ::native<ManagedToNative<Type>::Native>(Name)
+
 #define Parameter(Type, Name) Type Name
 
 #define ManagedStruct(ManagedType,NativeType,...)																					\
@@ -55,29 +57,30 @@ public value struct ManagedType : IManagedStruct {																					\
 		return result;																												\
 	}																																\
 	Call_Macro_Double(Declaration,__VA_ARGS__)																						\
+
+#define ManagedStructEnd(ManagedType,NativeType)																					\
 };																																	\
-																																	\
 template <typename T>																												\
-inline T native(ManagedType managedType) {																							\
+inline T native(ManagedType managedType){																							\
 	return managedType.native();																									\
 }																																	\
-																																	\
 template <>																															\
 struct ManagedToNative<ManagedType> {																								\
 	using Native = NativeType;																										\
 };																																	\
-
 // =====================================================
 // Managed component macro generator.
 // =====================================================
-#define PropertyDeclaration(Type, Name)					                \
-property Type Name														\
-{																		\
-	Type get()				{ return Type(componentReference->Name); }	\
-	void set(Type value)	{											\
-		using NativeType = decltype(componentReference->Name);			\
-		componentReference->Name = native<NativeType>(value);			\
-	}																	\
+#define PropertyDeclaration(Type, Name)														\
+property Type Name																			\
+{																							\
+	Type get()				{																\
+		return Type(static_cast<ManagedToNative<Type>::Native>(componentReference->Name));	\
+	}																						\
+	void set(Type value)	{																\
+		using NativeType = decltype(componentReference->Name);								\
+		componentReference->Name = native<ManagedToNative<Type>::Native>(value);			\
+	}																						\
 }
 
 #define ManagedComponentDeclaration(ComponentType, ...)												\
@@ -113,3 +116,17 @@ private:																							\
 public:																								\
 
 #define ManagedComponentEnd()																		};
+
+#define ManagedResource(Resource)																	\
+public ref class Resource : IManagedResourceID {													\
+public:																								\
+	Resource(TypedResourceID<::Resource> id) : IManagedResourceID(static_cast<std::size_t>(id)) {};	\
+																									\
+	virtual System::String^ ToString() override sealed {											\
+		return resourceID.ToString();																\
+	}																								\
+																									\
+	TypedResourceID<::Resource> getId() {															\
+		return { resourceID };																		\
+	};																								\
+};																									

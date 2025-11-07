@@ -52,41 +52,69 @@ namespace Serialiser {
 		}
 	}
 	
-	void serialiseGameConfig(const char* fileName, int gameWidth, int gameHeight) {
-		Json j;
+	void serialiseGameConfig(const char* fileName, GameConfig const& gameConfig) {
+		try {
+			// Load existing config to preserve other settings 
+			std::ofstream outputFile(fileName);
+			
+			if (!outputFile) {
+				return;
+			}
+			
+			Json config;
 
-		std::ofstream file(fileName);
+			// Update window settings in config
+			config["Window"]["gameWidth"] = gameConfig.gameWidth;
+			config["Window"]["gameHeight"] = gameConfig.gameHeight;
+			config["Window"]["windowName"] = gameConfig.gameName;
+			config["Game"]["scene"] = static_cast<std::size_t>(gameConfig.sceneStartUp);
 
-		if (!file.is_open())
-			return;
-
-		Json tempJ;
-
-		tempJ["windowName"] = "Nova Game";
-		tempJ["gameWidth"] = gameWidth;
-		tempJ["gameHeight"] = gameHeight;
-
-		j["Window"] = tempJ;
-		tempJ.clear();
-
-		file << std::setw(4) << j << std::endl;
-
+			outputFile << std::setw(4) << config << std::endl;
+		}
+		catch (const std::exception&) {}
 	}
 
-	void deserialiseGameConfig(const char* fileName, int& gameWidth, int& gameHeight, std::string& windowName) {
-		std::ifstream file(fileName);
+	GameConfig deserialiseGameConfig(const char* fileName) {
+		GameConfig gameConfig;
 
-		if (!file.is_open())
-			return;
+		try {
+			std::ifstream file(fileName);
 
-		Json j;
-		file >> j;
-		//j["Windows"]["windowName"];
-		gameWidth = j["Window"]["gameWidth"];
-		gameHeight = j["Window"]["gameHeight"];
-		std::string str = j["Window"]["windowName"].dump();
+			if (file.good()) {
+				// std::cout << "Game config file found: " << configPath << std::endl;
+				Json config = Json::parse(file);
 
-		windowName = str.substr(str.find_first_not_of('"'), str.find_last_not_of('"'));
+				if (config.contains("Window")) {
+					auto& windowConfig = config["Window"];
+
+					if (windowConfig.contains("gameWidth")) {
+						gameConfig.gameWidth = windowConfig["gameWidth"];
+						//  std::cout << "Loaded game width: " << gameWidth << std::endl;
+					}
+
+					if (windowConfig.contains("gameHeight")) {
+						gameConfig.gameHeight = windowConfig["gameHeight"];
+						//  std::cout << "Loaded game height: " << gameHeight << std::endl;
+					}
+
+					if (windowConfig.contains("windowName")) {
+						gameConfig.gameName = windowConfig["windowName"];
+						//  std::cout << "Loaded window name: " << windowName << std::endl;
+					}
+				}
+
+				if (config.contains("Game")) {
+					auto& gameJson = config["Game"];
+
+					if (gameJson.contains("scene")) {
+						gameConfig.sceneStartUp = static_cast<std::size_t>(gameJson["scene"]);
+					}
+				}
+			}
+		}
+		catch (const std::exception&) {}
+
+		return gameConfig;
 	}
 
 	template <typename ...Windows>
@@ -116,7 +144,10 @@ namespace Serialiser {
 		file >> j;
 	}
 
-	void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id) {
+	//void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id) {
+	//std::vector<entt::entity> deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id, entt::registry& prefabRegistry) {
+	void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id, entt::registry& prefabRegistry, std::vector<entt::entity>& entityVec) {
+	//entt::entity deserialisePrefab(ResourceFilePath fileName, entt::registry& registry, std::size_t id) {
 		std::ifstream file(fileName);
 		
 		if (!file.is_open())
@@ -125,23 +156,19 @@ namespace Serialiser {
 		Json j;
 		file >> j;
 
-		entt::entity highest = entt::null;
+		// entt::entity highest = entt::null;
 		entt::id_type highestID = 0;
+		// entt::entity rootEntity = entt::null;
 
-		//find the highest entity
-		for (auto&& [entity] : registry.view<entt::entity>().each()) {
-			if (static_cast<entt::id_type>(entity) > highestID) {
-				highest = entity;
-				highestID = static_cast<entt::id_type>(highest);
-			}
-		}
+
+
+		highestID = findLargestEntity(registry);
 
 		//vector to store the child enities
 		std::vector<entt::entity> childVec;
 
 		//deserialise recursively starting from the child
-		deserialisePrefabRecursive(j["Entities"], static_cast<int>(j["Entities"].size()) - 1, registry, highestID + 1, childVec, static_cast<int>(id));
-
+		deserialisePrefabRecursive(j["Entities"], static_cast<int>(j["Entities"].size()) - 1, registry, highestID + 1, childVec, static_cast<int>(id), entityVec, prefabRegistry);
 	}
 	void serialisePrefab(entt::registry& registry, entt::entity entity, std::optional<std::ofstream> opt, std::size_t id) {
 		std::ofstream& file = opt.value();
@@ -178,14 +205,18 @@ namespace Serialiser {
 		}
 
 	}
-	void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid) {
+	void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid, std::vector<entt::entity>& entityVec, entt::registry& prefabRegistry) {
+	//void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid, entt::entity& rootEntity, entt::registry& prefabRegistry) {
+	//entt::entity deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t resourceid) {
 		if (end < 0) {
 			return;
 		}
 
+
 		entt::id_type id = jsonVec[end]["id"] + highestID;
 		auto entity = registry.create(static_cast<entt::entity>(id));
 		deserialiseComponents<ALL_COMPONENTS>(registry, entity, jsonVec[end]);
+
 
 		EntityData* entityData = registry.try_get<EntityData>(entity);
 
@@ -200,11 +231,30 @@ namespace Serialiser {
 		}
 		if (end == 0) {
 			entityData->prefabID = TypedResourceID<Prefab>{ resourceid };
+			//rootEntity = entity;
+			/*rootEntity = entity;*/
 		}
 		else {
 			childVec.push_back(entity);
 		}
+		entityVec.push_back(entity);
 
-		deserialisePrefabRecursive(jsonVec, end-1, registry, highestID, childVec, resourceid);
+		deserialisePrefabRecursive(jsonVec, end-1, registry, highestID, childVec, resourceid, entityVec, prefabRegistry);
+	}
+
+	entt::id_type findLargestEntity(entt::registry& registry) {
+		entt::id_type highestID{};
+		entt::entity highest = entt::null;
+		if (registry.view<EntityData>().size() == 0) {
+			return highestID;
+		}
+
+		for (auto entity : registry.view<EntityData>()) {
+			if (static_cast<entt::id_type>(entity) > highestID) {
+				highest = entity;
+				highestID = static_cast<entt::id_type>(highest);
+			}
+		}
+		return highestID;
 	}
 };

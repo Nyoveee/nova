@@ -9,6 +9,7 @@
 enum class LogLevel {
 	Info,
 	Warning,
+	Debug,
 	Error
 };
 
@@ -39,6 +40,8 @@ public:
 	static void info(std::string_view rt_fmt_str, Args&&... args);
 	template<typename ...Args>
 	static void error(std::string_view rt_fmt_str, Args&&... args);
+	template<typename ...Args>
+	static void debug(std::string_view rt_fmt_str, Args&&... args);
 };
 
 #include "Logger.ipp"

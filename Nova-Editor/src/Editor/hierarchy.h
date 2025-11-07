@@ -16,6 +16,9 @@ private:
 	void createGameObject();
 	void displayEntityHierarchy(entt::entity entity);
 
+public:
+	bool isHovering = false;
+
 private:
 	ECS& ecs;
 	Editor& editor;

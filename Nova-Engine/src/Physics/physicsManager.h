@@ -25,6 +25,8 @@ class Engine;
 #include "export.h"
 #include "physics.h"
 
+struct Rigidbody;
+
 class PhysicsManager {
 public:
 	PhysicsManager(Engine& engine);
@@ -52,13 +54,21 @@ public:
 	// Nova Collision Listener submits all collision event here..
 	void submitCollision(entt::entity entityOne, entt::entity entityTwo);
 	
+public:
+	// These interfaces are invoked by C# scripting..
 	ENGINE_DLL_API PhysicsRay getRayFromMouse() const;
-	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance);
+	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<entt::entity> const& ignoredEntities = {});
+
+	ENGINE_DLL_API void addForce(Rigidbody const& rigidbody, glm::vec3 forceVector);
+	ENGINE_DLL_API void addImpulse(Rigidbody const& rigidbody, glm::vec3 forceVector);
+
+	ENGINE_DLL_API void setVelocity(Rigidbody& rigidbody, glm::vec3 velocity);
 
 private:
 	void createPrimitiveShapes();
-	void initialiseBodyComponent(entt::entity const& entityID);
+	void initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling);
 	bool hasRequiredPhysicsComponents(entt::entity const& entityID);
+
 
 private:
 	// we use a placeholder data member to invoke certain functions before the construction of the following Jolt data members.
@@ -102,8 +112,12 @@ private:
 	// We let this physics manager owns some basic primitive shapes.
 	JPH::Ref<JPH::Shape> box;
 	JPH::Ref<JPH::Shape> sphere;
+	JPH::Ref<JPH::Shape> capsule;
 
 	std::vector<JPH::BodyID> createdBodies;
+
+	// we keep track of bodies, manaully setting their angular velocity to 0.
+	std::vector<JPH::BodyID> nonRotatableBodies;
 
 	//on update transform 
 	std::stack<entt::entity> transformUpdateStack; //when transform is updated push the id on stack. updateTransformBodies read from stack and update transform

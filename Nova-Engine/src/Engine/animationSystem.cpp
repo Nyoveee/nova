@@ -68,6 +68,7 @@ void AnimationSystem::initialiseAllControllers() {
 		animator.timeElapsed = 0.f;
 		animator.currentNode = NO_CONTROLLER_NODE;
 		animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
+		animator.executedAnimationEvents.clear();
 
 		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
 
@@ -75,8 +76,8 @@ void AnimationSystem::initialiseAllControllers() {
 			continue;
 		}
 
+		animator.parameters = controllerPtr->data.parameters;
 		animator.currentNode = controllerPtr->getNodes().at(ENTRY_NODE).id;
-		// animator.currentAnimation = controllerPtr->getNodes().at(ENTRY_NODE).animation;
 	}
 }
 
@@ -84,6 +85,9 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 	// check transition in sequence..
 	for (auto&& transition : currentNode.transitions) {
 		// @TODO: Handle conditions..
+		if (!checkIfConditionFulfilled(animator, transition)) {
+			continue;
+		}
 
 		// We found a valid transition..
 		auto iterator = controller.data.nodes.find(transition.nextNode);
@@ -96,8 +100,60 @@ void AnimationSystem::handleTransition(Animator& animator, Controller::Node cons
 		animator.currentNode = transition.nextNode;
 		animator.timeElapsed = 0;
 		animator.currentAnimation = iterator->second.animation;
-		break;
+		animator.executedAnimationEvents.clear();
+		return;
 	}
+
+	// no valid transition found..
+	if (currentNode.toLoop) {
+		animator.timeElapsed = 0;
+		animator.executedAnimationEvents.clear();
+	}
+}
+
+void AnimationSystem::setParameter(Animator& animator, std::string name, Controller::ParameterTypes const& value){
+	auto&& iter = std::find_if(std::begin(animator.parameters), std::end(animator.parameters), [&](auto&& parameter) {return parameter.name == name; });
+	if (iter != std::end(animator.parameters)) {
+		std::visit(
+			[&](auto& param,auto const& setterValue) {
+				using ParameterType = std::decay_t<decltype(param)>;
+				using SetterType = std::decay_t<decltype(setterValue)>;
+				if constexpr (std::is_same_v<ParameterType, SetterType>)
+					param = setterValue;
+				else
+					Logger::warn("Attempting to set animator parameter of a different type");
+			}
+		, iter->value,value);
+	}
+	else
+	{
+		Logger::warn("Attempting to set animator parameter with invalid name");
+	}
+}
+
+void AnimationSystem::playAnimation(Animator& animator, std::string name) {
+	auto&& [controller, _] = resourceManager.getResource<Controller>(animator.controllerId);
+	
+	if (!controller) {
+		Logger::warn("Invalid controller.");
+		return;
+	}
+
+	// Attempt to find the animation..
+	auto iterator = std::ranges::find_if(controller->data.nodes, [&](auto const& pair) {
+		Controller::Node const& node = pair.second;
+		return node.name == name;
+	});
+
+	if (iterator == controller->data.nodes.end()) {
+		Logger::warn("Invalid animation name.");
+		return;
+	}
+
+	animator.currentNode = iterator->first;
+	animator.timeElapsed = 0;
+	animator.currentAnimation = iterator->second.animation;
+	animator.executedAnimationEvents.clear();
 }
 
 void AnimationSystem::updateAnimator(float dt) {
@@ -144,12 +200,22 @@ void AnimationSystem::updateAnimator(float dt) {
 		}
 
 		if (animator.timeElapsed >= animation->animations[0].durationInSeconds) {
-			animator.timeElapsed = 0;
+			animator.timeElapsed = animation->animations[0].durationInSeconds;
 			handleTransition(animator, currentNode, controller);
 		}
 		else {
 			// advance time..
 			animator.timeElapsed += dt;
+
+			// trigger animation event if possible..
+			int frameIndex = static_cast<int>(animator.timeElapsed * animation->animations[0].ticksPerSecond);
+
+			for (auto&& animationEvent : currentNode.animationEvents) {
+				if (frameIndex > animationEvent.key && !animator.executedAnimationEvents.count(animationEvent.key)) {
+					animator.executedAnimationEvents.insert(animationEvent.key);
+					engine.scriptingAPIManager.executeFunction(entityId, animationEvent.scriptId, animationEvent.functionName);
+				}
+			};
 		}
 	}
 }
@@ -194,4 +260,57 @@ AnimationChannel const* AnimationSystem::findAnimationChannel(std::string const&
 	}
 
 	return nullptr;
+}
+
+bool AnimationSystem::checkIfConditionFulfilled(Animator const& animator, Controller::Transition const& transition) {
+	// all conditions have to be fulfilled.
+	for (auto&& condition : transition.conditions) {
+		// find the value to compare with from animator..
+		auto iterator = std::ranges::find_if(animator.parameters, [&](auto&& parameter) {
+			return parameter.name == condition.name;
+		});
+
+		// if doesn't match (shouldn't really happen though, we fail immediately.)
+		if (iterator == animator.parameters.end()) {
+			return false;
+		}
+
+		Controller::Parameter const& animatorParameter = *iterator;
+
+		bool checkResult = std::visit([&](auto&& animatorValue) {
+			// animator's parameter should be the exact same type as condition.
+			using T = std::decay_t<decltype(animatorValue)>;
+			T const& testValue = std::get<T>(condition.value);
+
+			// we now run the respective checks..
+			// for boolean, its a simple check if its the same
+			if constexpr (std::same_as<T, bool>) {
+				return animatorValue == testValue;
+			}
+			else {
+				switch (condition.check)
+				{
+					using enum Controller::Condition::Check;
+				case Greater:
+					return animatorValue >= testValue;
+				case Lesser:
+					return animatorValue <= testValue;
+				case Equal:
+					return animatorValue == testValue;
+				case NotEqual:
+					return animatorValue != testValue;
+				default:
+					assert(false && "Unhandled check.");
+					return false;
+				}
+			}
+		}, animatorParameter.value);
+
+		// failed the check..
+		if (!checkResult) {
+			return false;
+		}
+	}
+
+	return true;
 }

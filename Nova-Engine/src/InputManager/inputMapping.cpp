@@ -29,6 +29,10 @@ void InputManager::mainKeyBindMapping() {
 	//
 	mapKeyBindInput(	GLFW_KEY_DELETE,			KeyType::Keyboard,		DeleteSelectedEntity::Sentinel		);
 	//
+	// 	Mapping focus selected entity in the level editor..
+	//
+	mapKeyBindInput(	GLFW_KEY_F,					KeyType::Keyboard,		FocusSelectedEntity::Sentinel		);
+	//
 	// 	Mapping editor control via right click in the level editor..
 	//
 	mapKeyBindInput(	GLFW_MOUSE_BUTTON_RIGHT,	KeyType::MouseClick,	ToggleEditorControl::Sentinel		);
@@ -43,7 +47,8 @@ void InputManager::mainKeyBindMapping() {
 	//
 	mapKeyBindInput(	GLFW_KEY_SPACE,				KeyType::Keyboard,		ToggleAnimate::Sentinel				);
 	//
-	//	Mapping controller controls..
+	//	Mapping editor mouse control request
 	//
-	mapKeyBindInput(	GLFW_KEY_SPACE,				KeyType::Keyboard,		ToCenterControllerView::Sentinel	);
+	mapKeyBindInput(	GLFW_KEY_ESCAPE,			KeyType::Keyboard,		EditorWantsToControlMouse::Sentinel	);
+
 }

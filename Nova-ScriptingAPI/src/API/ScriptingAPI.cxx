@@ -16,6 +16,10 @@
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
 {
+	if (!gameObjectScripts->ContainsKey(entityID)) {
+		return T(); // return null
+	}
+
 	// Go through the managed scripts
 	for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
 		if (gameObjectScripts[entityID][scriptID]->GetType() == T::typeid)
@@ -32,7 +36,6 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
 	availableScripts = gcnew System::Collections::Generic::Dictionary<ScriptID, Script^>();
 	assemblyLoadContext = nullptr;
-
 }
 
 void Interface::intializeAllScripts()
@@ -52,9 +55,38 @@ void Interface::handleOnCollision(EntityID entityOne, EntityID entityTwo) {
 
 	if (gameObjectScripts->ContainsKey(entityTwo)) {
 		for each (System::UInt64 scriptID in gameObjectScripts[entityTwo]->Keys) {
-			gameObjectScripts[entityTwo][scriptID]->callOnCollisionEnter(entityTwo);
+			gameObjectScripts[entityTwo][scriptID]->callOnCollisionEnter(entityOne);
 		}
 	}
+}
+
+void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId, std::string const& name) {
+	System::String^ functionName = msclr::interop::marshal_as<System::String^>(name);
+
+	if (!gameObjectScripts->ContainsKey(entityID)) {
+		Logger::warn("Attempt to invoke script function of unknown entity {}", entityID);
+		return;
+	}
+
+	if (!gameObjectScripts[entityID]->ContainsKey(scriptId)) {
+		Logger::warn("Attempt to invoke unknown script id {} of entity {}", scriptId, entityID);
+		return;
+	}
+
+	Script^ script = gameObjectScripts[entityID][scriptId];
+	System::Type^ scriptType = script->GetType();
+
+	try {
+		System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+		function->Invoke(script, nullptr);
+	}
+	catch (System::Exception^ ex) {
+		Logger::warn("Error when invoking function name {} of script id {} of entity {}", msclr::interop::marshal_as<std::string>(ex->ToString()), scriptId, entityID);
+	}
+}
+
+void Interface::submitGameObjectDeleteRequest(EntityID entityToBeDeleted) {
+	deleteGameObjectQueue.Enqueue(entityToBeDeleted);
 }
 
 std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
@@ -111,6 +143,19 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 			fieldDatas.push_back(field);
 			continue;
 		}
+
+		// Typed Resource ID
+		if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
+			if (ObtainTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(field, fieldInfos[i]->GetValue(script), fieldType)) {
+				fieldDatas.push_back(field);
+				continue;
+			}
+			else {
+				Logger::warn("Typed resource type in script currently not supported for script serialization.");
+				continue;
+			}
+		}
+
 		// Primitives
 		if (fieldType->IsPrimitive && ObtainPrimitiveDataFromScript<ALL_FIELD_PRIMITIVES>(field, fieldInfos[i]->GetValue(script))) {
 			fieldDatas.push_back(field);
@@ -139,6 +184,10 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 	gameObjectScripts[entityID][scriptId] = newScript;
 }
 
+void Interface::initializeScript(EntityID entityID, ScriptID scriptId) {
+	gameObjectScripts[entityID][scriptId]->callInit();
+}
+
 void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
 {
 	if (!gameObjectScripts->ContainsKey(entityID) || !gameObjectScripts[entityID]->ContainsKey(scriptID)) {
@@ -162,10 +211,8 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 		if (fieldType == GameObject::typeid) {
 			GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
 			if (!gameObject) {
-				gameObject = gcnew GameObject();
+				gameObject = gcnew GameObject(std::get<entt::entity>(fieldData.data));
 			}
-			gameObject->entityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.data));
-			gameObject->transformReference = gameObject->getComponent<Transform_^>();
 			fieldInfos[i]->SetValue(script, gameObject);
 			return;
 		}
@@ -201,6 +248,12 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 			}
 			fieldInfos[i]->SetValue(script, referencedScript);
 			return;
+		}
+		// Typed Resource ID
+		if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
+			if (!SetTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(fieldData, script, fieldInfos[i])) {
+				Logger::warn("Typed resource type in script currently not supported for script setting");
+			}
 		}
 		// Primitives
 		if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, script, fieldInfos[i]))
@@ -243,6 +296,40 @@ void Interface::update() {
 			Script^ script = gameObjectScripts[entityID][scriptID];
 			script->callUpdate();
 		}
+	}
+
+	// Check the delete game object queue to handle any deletion request at the end of the frame..
+	while (deleteGameObjectQueue.Count != 0) {
+		EntityID entityToRemove = deleteGameObjectQueue.Dequeue();
+
+		// shouldn't really happen but just in case..
+		if (!gameObjectScripts->ContainsKey(entityToRemove)) {
+			continue;
+		}
+
+		for each(Script^ script in gameObjectScripts[entityToRemove]->Values) {
+			// invokes the exit function before removing it..
+			script->callExit();
+
+			// unsubscribe from input manager..
+			for each (std::size_t observerId in script->scriptObserverIds) {
+				engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
+			}
+
+			for each (std::size_t observerId in script->mouseMoveObserverIds) {
+				engine->inputManager.unsubscribe<MousePosition>(ObserverID{ observerId });
+			}
+
+			for each (std::size_t observerId in script->mouseScrollObserverIds) {
+				engine->inputManager.unsubscribe<Scroll>(ObserverID{ observerId });
+			}
+		}
+
+		// removes it..
+		gameObjectScripts[entityToRemove]->Clear();
+
+		// remove from ECS registry..
+		engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
 	}
 }
 

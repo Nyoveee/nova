@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\API\ConversionUtils.hxx" />
+    <ClInclude Include="src\API\IManagedResourceID.hxx" />
     <ClInclude Include="src\API\IManagedStruct.h" />
     <ClInclude Include="src\API\ConversionUtils.h" />
     <ClInclude Include="src\ScriptLibrary\Core\ComponentAccessor.hxx" />
@@ -60,6 +61,7 @@
     <ClCompile Include="src\ScriptLibrary\Extensions\ManagedTypes.cxx" />
     <ClCompile Include="src\ScriptLibrary\Core\Script.cxx" />
     <ClCompile Include="src\Export\LibraryExport.cpp" />
+    <ClCompile Include="src\ScriptLibrary\Extensions\ScriptLibrary.cxx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -139,6 +141,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -175,6 +178,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)Library\Release\*.lib;Nova-Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>

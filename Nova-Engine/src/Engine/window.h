@@ -54,12 +54,13 @@ public:
 	ENGINE_DLL_API GLFWwindow* getGLFWwindow() const;
 	ENGINE_DLL_API void toggleFullScreen();
 	ENGINE_DLL_API float fps() const;
+	ENGINE_DLL_API float getDeltaTime() const;
 
 	ENGINE_DLL_API void setGameViewPort(GameViewPort gameViewPort);
 	ENGINE_DLL_API glm::vec2 getClipSpacePos() const;
 
-private:
-	void toEnableMouse(bool toEnable);
+public:
+	ENGINE_DLL_API void toEnableMouse(bool toEnable);
 
 public:
 	// GLFW function callbacks are in the global scope and therefore do not have private access to Input Manager.

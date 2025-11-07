@@ -6,6 +6,8 @@
 
 #include "IconsFontAwesome6.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 #include "imgui.h"
 #include "imgui_node_editor.h"
 #include "ImGui/misc/cpp/imgui_stdlib.h"
@@ -17,6 +19,7 @@
 #include "AssetManager/assetManager.h"
 #include "ECS/ECS.h"
 #include "InputManager/inputManager.h"
+#include "InputManager/inputEvent.h"
 #include "ResourceManager/resourceManager.h"
 #include "Navigation/navMeshGeneration.h"
 #include "Serialisation/serialisation.h"
@@ -32,6 +35,7 @@
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
 
+
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
@@ -45,6 +49,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager					{ inputManager },
 	gameViewPort					{ *this },
 	editorViewPort					{ *this },
+	uiViewPort						{ *this },
 	componentInspector				{ *this },
 	assetViewerUi					{ *this, assetManager, resourceManager },
 	assetManagerUi					{ *this, assetViewerUi },
@@ -53,6 +58,8 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	navBar							{ *this },
 	animationTimeLine				{ *this },
 	animatorController				{ *this },
+	gameConfigUI					{ *this },
+	editorConfigUI					{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false },
@@ -106,7 +113,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		},
 		[&](ToggleEditorControl) {
-			toggleViewPortControl(false);
+			if(isControllingInViewPort) toggleViewPortControl(false);
 		}
 	);
 
@@ -118,7 +125,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<DeleteSelectedEntity>(
 		[&](DeleteSelectedEntity) {
-			if (!editorViewPort.isHoveringOver || !editorViewPort.isActive) {
+			if ((!editorViewPort.isHoveringOver || !editorViewPort.isActive) && !navBar.hierarchyList.isHovering) {
 				return;
 			}
 
@@ -142,6 +149,16 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			if (!copiedEntityVec.empty() && !ImGui::IsAnyItemActive()) {
 				engine.ecs.copyVectorEntities<ALL_COMPONENTS>(copiedEntityVec);
 			}
+		}
+	);
+
+	inputManager.subscribe<FocusSelectedEntity>(
+		std::bind(&Editor::handleFocusOnSelectedEntity, this, std::placeholders::_1)
+	);
+
+	inputManager.subscribe<EditorWantsToControlMouse>(
+		[&](EditorWantsToControlMouse) {
+			engine.editorControlMouse(true);
 		}
 	);
 
@@ -192,9 +209,7 @@ bool Editor::hasAnyEntitySelected() const {
 }
 
 void Editor::selectEntities(std::vector<entt::entity> entities) {
-	toOutline(selectedEntities, false);
 	selectedEntities = std::move(entities);
-	toOutline(selectedEntities, true);
 }
 
 std::vector<entt::entity> const& Editor::getSelectedEntities() const {
@@ -214,8 +229,8 @@ void Editor::deleteEntity(entt::entity entity) {
 		return;
 	}
 
-	ImGuizmo::Enable(false); 
-	ImGuizmo::Enable(true);   
+	ImGuizmo::Enable(false);
+	ImGuizmo::Enable(true);
 
 	engine.ecs.deleteEntity(entity);
 }
@@ -230,17 +245,17 @@ void Editor::main(float dt) {
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
+	uiViewPort.update();
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
-	//navigationWindow.update();
-	//animationTimeLine.update();
-	//animatorController.update();
-	
-	handleEntityHovering();
-	updateMaterialMapping();
+	navigationWindow.update();
+	animationTimeLine.update();
+	animatorController.update();
+	gameConfigUI.update();
+	editorConfigUI.update();
 
-	// sandboxWindow();
+	handleEntityHovering();
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -255,78 +270,6 @@ void Editor::toggleViewPortControl(bool toControl) {
 		inputManager.broadcast<ToCameraControl>(ToCameraControl::Release);
 		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Enable);
 	}
-}
-
-void Editor::updateMaterialMapping() {
-#if 0
-	entt::registry& registry = engine.ecs.registry;
-
-	// Find all material names with the associated asset.
-	for (auto&& [entity, modelRenderer] : registry.view<MeshRenderer>().each()) {
-		auto [model, _] = resourceManager.getResource<Model>(modelRenderer.modelId);
-
-		if (!model) {
-			continue;
-		}
-
-		bool materialHasChanged = false;
-
-		// check if there is a match. if there is a mismatch, the material requirement
-		// of the mesh probably changed / changed mesh.
-		for (auto const& materialName : model->materialNames) {
-			auto iterator = modelRenderer.materials.find(materialName);
-
-			if (iterator == modelRenderer.materials.end()) {
-				materialHasChanged = true;
-				break;
-			}
-		}
-
-		if (!materialHasChanged) {
-			continue;
-		}
-
-		// lets reupdate our map.
-		modelRenderer.materials.clear();
-
-		for (auto const& materialName : model->materialNames) {
-			modelRenderer.materials[materialName];
-		}
-	}
-
-	// Find all material names with the associated asset.
-	for (auto&& [entity, skinnedModelRenderer] : registry.view<SkinnedMeshRenderer>().each()) {
-		auto [model, _] = resourceManager.getResource<Model>(skinnedModelRenderer.modelId);
-
-		if (!model) {
-			continue;
-		}
-
-		bool materialHasChanged = false;
-
-		// check if there is a match. if there is a mismatch, the material requirement
-		// of the mesh probably changed / changed mesh.
-		for (auto const& materialName : model->materialNames) {
-			auto iterator = skinnedModelRenderer.materials.find(materialName);
-
-			if (iterator == skinnedModelRenderer.materials.end()) {
-				materialHasChanged = true;
-				break;
-			}
-		}
-
-		if (!materialHasChanged) {
-			continue;
-		}
-
-		// lets reupdate our map.
-		skinnedModelRenderer.materials.clear();
-
-		for (auto const& materialName : model->materialNames) {
-			skinnedModelRenderer.materials[materialName];
-		}
-	}
-#endif
 }
 
 void Editor::handleEntityValidity() {
@@ -356,12 +299,11 @@ void Editor::handleEntityValidity() {
 	// deselect all entities.
 	if (foundInvalidSelectedEntity) {
 		selectEntities({}); // by selecting 0 entities haha
-		//ImGuizmo::
 	}
 }
 
 void Editor::handleEntityHovering() {
-	if (!isActive()) {
+	if (!isActive() || !editorViewPort.isActive) {
 		return;
 	}
 
@@ -410,6 +352,8 @@ void Editor::handleEntityHovering() {
 
 // handles object picker in game viewport
 void Editor::handleEntitySelection() {	
+	handleUIEntitySelection();
+
 	if (!editorViewPort.isHoveringOver) {
 		return;
 	}
@@ -420,11 +364,10 @@ void Editor::handleEntitySelection() {
 	}
 
 	// not actually trying to deselect anything, am using imguizmo controls.
-	if (ImGuizmo::IsUsing() || ImGuizmo::IsOver()) {
+	if (selectedEntities.size() && (ImGuizmo::IsUsing() || ImGuizmo::IsOver())) {
 		return;
 	}
 
-	toOutline(selectedEntities, false);
 	selectedEntities.clear();
 
 	if (hoveringEntity == entt::null) {
@@ -435,44 +378,62 @@ void Editor::handleEntitySelection() {
 	toOutline(selectedEntities, true);
 }
 
-// throw all your ooga booga testing code here code quality doesnt matter
-void Editor::sandboxWindow() {
-
-	ImGui::Begin("ooga booga sandbox area");
-
-	// if (ImGui::Button("SFX Audio Test"))
-	// {
-	// 	engine.audioSystem.playSFX( engine.audioSystem.getResourceId("SFX_AudioTest1"), 0.0f, 0.0f, 0.0f);
-	// }
-
-	// if (ImGui::Button("BGM Audio Test"))
-	// {
-	// 	engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest") );
-	// }
-
-	// if (ImGui::Button("BGM Audio Test 2"))
-	// {
-	// 	engine.audioSystem.playBGM( engine.audioSystem.getResourceId("BGM_AudioTest2") );	
-	// }
-
-	// if (ImGui::Button("Stop Audio Test"))
-	// {
-	// 	// Stops all audio channels that has the same string ID as "SFX_AudioTest1"
-	// 	engine.audioSystem.StopAudio( engine.audioSystem.getResourceId("SFX_AudioTest1") );
-	// }
-
-	static bool wireFrameMode = false;
-
-	if (ImGui::Button("Wireframe mode.")) {
-		wireFrameMode = !wireFrameMode;
-		engine.renderer.enableWireframeMode(wireFrameMode);
+void Editor::handleFocusOnSelectedEntity(FocusSelectedEntity) {
+	// Only focus if we have a selected entity
+	if (selectedEntities.empty()) {
+		return;
 	}
 
-	if (ImGui::Button("Navigation Debug")) {
-		engine.navigationSystem.NavigationDebug();
+	// Get the first selected entity's transform
+	entt::entity entity = selectedEntities[0];
+	entt::registry& registry = engine.ecs.registry;
+
+	Transform* transform = registry.try_get<Transform>(entity);
+	if (!transform) {
+		return;
 	}
 
-	ImGui::End();
+	// Focus the camera on the entity's position
+	engine.cameraSystem.focusOnPosition(transform->position);
+}
+
+void Editor::handleUIEntitySelection() {
+	if (!uiViewPort.isHoveringOver) {
+		return;
+	}
+
+	ImVec2 mouseRelativeToViewPort = ImGui::GetMousePos();
+
+	// Calculate the mouse position relative to the game's viewport.
+	mouseRelativeToViewPort -= uiViewPort.windowTopLeft;
+	mouseRelativeToViewPort /= ImVec2{ uiViewPort.windowDimension.x, uiViewPort.windowDimension.y };
+
+	// Flip y..
+	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+
+	if (
+			mouseRelativeToViewPort.x < 0.f
+		||	mouseRelativeToViewPort.x >= 1.f
+		||	mouseRelativeToViewPort.y < 0.f
+		||	mouseRelativeToViewPort.y >= 1.f
+	) {
+		return;
+	}
+
+	entt::entity selectedUIEntity = static_cast<entt::entity>(engine.renderer.getObjectUiId(glm::vec2{ mouseRelativeToViewPort.x, mouseRelativeToViewPort.y }));
+
+	// not actually trying to deselect anything, am using imguizmo controls.
+	if (selectedEntities.size() && (ImGuizmo::IsUsing() || ImGuizmo::IsOver())) {
+		return;
+	}
+
+	selectedEntities.clear();
+
+	if (selectedUIEntity == entt::null) {
+		return;
+	}
+
+	selectedEntities.push_back(selectedUIEntity);
 }
 
 void Editor::launchProfiler()
@@ -507,11 +468,15 @@ void Editor::startSimulation() {
 		return; // already in simulation mode.
 	}
 
+	engine.editorControlMouse(false);
 	engine.startSimulation();
 
+	// We serialise everything, resources to current scene when starting a simulation..
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+
+	assetManager.serialiseResources();
 
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
@@ -522,6 +487,7 @@ void Editor::stopSimulation() {
 		return; // already not in simulation mode.
 	}
 
+	engine.editorControlMouse(true);
 	engine.stopSimulation();
 	inSimulationMode = false;
 	isThereChangeInSimulationMode = true;

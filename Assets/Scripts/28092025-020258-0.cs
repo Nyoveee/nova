@@ -8,7 +8,7 @@ class PathFinding : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        Input.MapKey(Key.MouseLeft, onMouseClick, onMouseRelease);
+        MapKey(Key.MouseLeft, onMouseClick, onMouseRelease);
     }
 
     // This function is invoked every fixed update.
@@ -23,12 +23,12 @@ class PathFinding : Script
 
         if(result != null)
         {
-            Debug.Print("ray hit at " + result.Value.point + ", hitting entity " + result.Value.entity);
+            Debug.Log("ray hit at " + result.Value.point + ", hitting entity " + result.Value.entity);
             NavigationAPI.setDestination(gameObject, result.Value.point);
         }
         else
         {
-            Debug.Print("ray cast miss!");
+            Debug.Log("ray cast miss!");
         }
     }
 

@@ -5,20 +5,25 @@
 #include "Engine/window.h"
 #include "InputManager/inputManager.h"
 #include "ResourceManager/resourceManager.h"
+#include "Serialisation/serialisation.h"
 
-constexpr const char*	windowName		= "Nova Game";
 constexpr int			windowWidth		= 1200;
 constexpr int			windowHeight	= 900;
-constexpr int			gameWidth		= 1920;
-constexpr int			gameHeight		= 1080;
 
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	GameConfig gameConfig = Serialiser::deserialiseGameConfig("gameConfig.json");
+
 	InputManager	inputManager	{};
 	ResourceManager resourceManager	{};
-	Window			window			{ windowName, {windowWidth, windowHeight}, Window::Configuration::Restored, inputManager, Window::Viewport::ChangeDuringResize };
-	Engine			engine			{ window, inputManager, resourceManager, gameWidth, gameHeight };
+	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, Window::Configuration::FullScreen, inputManager, Window::Viewport::ChangeDuringResize};
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig };
+
+	// Start up scene
+	engine.ecs.sceneManager.loadScene(gameConfig.sceneStartUp);
+	engine.startSimulation();
+	engine.setupSimulation();
 
 	window.run(
 		// Fixed update loop

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
+    <ClCompile Include="src\AssetManager\prefab.cpp" />
     <ClCompile Include="src\Editor\Assets\animatorController.cpp" />
     <ClCompile Include="src\Editor\Assets\animationTimeline.cpp" />
     <ClCompile Include="src\Editor\Assets\assetViewerUi.cpp" />
@@ -17,6 +18,8 @@
     <ClCompile Include="src\Editor\ImGui\imgui_node_editor_api.cpp" />
     <ClCompile Include="src\Editor\ImGui\ImSequencer.cpp" />
     <ClCompile Include="src\Editor\gameViewPort.cpp" />
+    <ClCompile Include="src\Editor\Configuration\editorConfigUI.cpp" />
+    <ClCompile Include="src\Editor\Configuration\gameConfigUI.cpp" />
     <ClCompile Include="src\Editor\navigationWindow.cpp" />
     <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\Assets\assetManagerUi.cpp" />
@@ -54,8 +57,11 @@
     <ClCompile Include="src\Navigation\Recast_DebugUtils\RecastDump.cpp" />
     <ClCompile Include="src\Editor\themes.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\AssetManager\prefab.cpp" />
+    <ClCompile Include="src\Editor\uiViewPort.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\AssetManager\prefab.h" />
     <ClInclude Include="src\Editor\Assets\animatorController.h" />
     <ClInclude Include="src\Editor\Assets\animationTimeline.h" />
     <ClInclude Include="src\Editor\Assets\assetViewerUi.ipp" />
@@ -64,6 +70,8 @@
     <ClInclude Include="src\Editor\ComponentInspection\componentInspector.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
+    <ClInclude Include="src\Editor\Configuration\editorConfigUI.h" />
+    <ClInclude Include="src\Editor\Configuration\gameConfigUI.h" />
     <ClInclude Include="src\Editor\editor.ipp" />
     <ClInclude Include="src\Editor\ImGui\crude_json.h" />
     <ClInclude Include="src\Editor\ImGui\imgui_bezier_math.h" />
@@ -116,6 +124,9 @@
     <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDebugDraw.h" />
     <ClInclude Include="src\Navigation\Recast_DebugUtils\RecastDump.h" />
     <ClInclude Include="src\Editor\themes.h" />
+    <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayPropertiesOverride.h" />
+    <ClInclude Include="src\AssetManager\prefab.h" />
+    <ClInclude Include="src\Editor\uiViewPort.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Editor\ImGui\imgui_bezier_math.inl" />
@@ -169,12 +180,6 @@
     <ClInclude Include="src\Editor\themes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Editor\assetManagerUi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\componentInspector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Editor\gameViewPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -184,9 +189,6 @@
     <ClInclude Include="src\Editor\ImGui\IconsFontAwesome6.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Editor\displayComponent.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Editor\gizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -194,9 +196,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\controlOverlay.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\componentInspector.ipp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Navigation\Recast\Recast.h">
@@ -250,9 +249,6 @@
     <ClInclude Include="src\Editor\navBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Editor\assetViewerUi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Editor\navigationWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -260,12 +256,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\navBar.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Editor\gameConfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AssetManager\prefab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

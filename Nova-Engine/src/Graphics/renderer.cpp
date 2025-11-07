@@ -27,6 +27,7 @@ constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
 
 // we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
 constexpr int MAX_DEBUG_TRIANGLES = 10000;
+constexpr int MAX_DEBUG_LINES	  = 10000;
 constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
 
 // ok right?
@@ -42,17 +43,20 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
+	// blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
+	// PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
 	overlayShader				{ "System/Shader/squareOverlay.vert",		"System/Shader/overlay.frag" },
 	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
+	uiImageObjectIdShader		{ "System/Shader/texture2D.vert",			"System/Shader/objectId.frag" },
+	uiTextObjectIdShader		{ "System/Shader/text.vert",				"System/Shader/objectId.frag" },
 	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
 	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
 	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
 	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
+	texture2dShader				{ "System/Shader/texture2d.vert",			"System/Shader/image2D.frag"},
 	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
 	mainVAO						{},
 	positionsVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -60,7 +64,9 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	normalsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	tangentsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	skeletalVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
+	particleVBO                 { AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugPhysicsLineVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO       { AMOUNT_OF_MEMORY_FOR_DEBUG },
 	textVBO						{ AMOUNT_OF_MEMORY_FOR_DEBUG },
@@ -86,8 +92,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
 	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	uiMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8  } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
+	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
 	toGammaCorrect				{ true },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
@@ -183,11 +191,45 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	//fonts.push_back(Font::LoadFont("System/Font/calibri.ttf").value());
+	// ======================================================
+	// Particle VAO configuration
+	// ======================================================
+	glCreateVertexArrays(1, &particleVAO);
+	constexpr GLuint particleBindingIndex = 0;
+
+	// Bind this EBO to this VAO.
+	glVertexArrayElementBuffer(particleVAO, EBO.id());
+
+	// Associate binding index 0 with this vbo for particleVAO
+	glVertexArrayVertexBuffer(particleVAO, particleBindingIndex, particleVBO.id(), 0, sizeof(ParticleVertex));
+
+	// Associate Attribute Indexes with their properties
+	glVertexArrayAttribFormat(particleVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, localPos));
+	glVertexArrayAttribFormat(particleVAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, worldPos));
+	glVertexArrayAttribFormat(particleVAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, texCoord));
+	glVertexArrayAttribFormat(particleVAO, 3, 4, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, color));
+	glVertexArrayAttribFormat(particleVAO, 4, 1, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, rotation));
+
+	// Associate vertex attributes with binding index 0
+	glVertexArrayAttribBinding(particleVAO, 0, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 1, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 2, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 3, particleBindingIndex);
+	glVertexArrayAttribBinding(particleVAO, 4, particleBindingIndex);
+
+	// Enable Attributes
+	glEnableVertexArrayAttrib(particleVAO, 0);
+	glEnableVertexArrayAttrib(particleVAO, 1);
+	glEnableVertexArrayAttrib(particleVAO, 2);
+	glEnableVertexArrayAttrib(particleVAO, 3);
+	glEnableVertexArrayAttrib(particleVAO, 4);
+
 }
 
 Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &mainVAO);
+	glDeleteVertexArrays(1, &textVAO);
+	glDeleteVertexArrays(1, &particleVAO);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -205,6 +247,28 @@ GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
 		1, 1, 1,			// width, height and depth of pixels to be read
 		GL_RED_INTEGER,
 		GL_UNSIGNED_INT, 
+		sizeof(GLuint),		// size of pixels to be read
+		&objectId			// output parameter.
+	);
+
+	return objectId;
+}
+
+GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
+	GLuint objectId;
+
+	int xOffset = static_cast<int>(normalisedPosition.x * uiObjectIdFrameBuffer.getWidth());	// x offset
+	int yOffset = static_cast<int>(normalisedPosition.y * uiObjectIdFrameBuffer.getHeight());	// y offset
+
+	glGetTextureSubImage(
+		uiObjectIdFrameBuffer.textureIds()[0],
+		0,					// mipmap level (0 = base image)
+		xOffset,			// x offset
+		yOffset,			// y offset
+		0,					// z offset
+		1, 1, 1,			// width, height and depth of pixels to be read
+		GL_RED_INTEGER,
+		GL_UNSIGNED_INT,
 		sizeof(GLuint),		// size of pixels to be read
 		&objectId			// output parameter.
 	);
@@ -245,16 +309,27 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 			debugRenderParticleEmissionShape();
 		}
 
+		// after debug rendering.. bind main position VBO back to VAO..
+		glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
+
 		renderObjectIds();
 
+		// Main render function
+		render(gameMainFrameBuffer, gameCamera);
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
+
+		renderUiObjectIds();
+
+		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
 	// ===============================================
-	// Editor mode would also need to do the same work to render into the game's FBO..
-	[[fallthrough]];
 	case RenderConfig::Game:
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera);
+		renderUI();
+		overlayUIToBuffer(gameMainFrameBuffer);
 
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
@@ -271,6 +346,21 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void Renderer::renderUI()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, uiMainFrameBuffer.fboId());
+	glViewport(0, 0, uiMainFrameBuffer.getWidth(), uiMainFrameBuffer.getHeight());
+
+	glClearColor(0, 0, 0, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
+
+	// UI draw calls here
+	renderImages();
+	renderTexts();   
+}
+
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
@@ -282,28 +372,54 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
 
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
+
 	// We render individual game objects..
 	renderSkyBox();
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
-	renderTexts();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+
+	setBlendMode(CustomShader::BlendingConfig::Disabled);
 
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping(frameBuffers);
 }
 
 void Renderer::renderToDefaultFBO() {
+
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// === 2. Blend the UI FBO on top ===
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
+}
+
+void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+
+	overlayShader.use();
+	overlayShader.setImageUniform("overlay", 0);
+	glBindTextureUnit(0, getUIFrameBufferTexture());
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisable(GL_BLEND);
 }
 
 GLuint Renderer::getEditorFrameBufferTexture() const {
@@ -312,6 +428,11 @@ GLuint Renderer::getEditorFrameBufferTexture() const {
 
 GLuint Renderer::getGameFrameBufferTexture() const {
 	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
+}
+
+GLuint Renderer::getUIFrameBufferTexture() const
+{
+	return uiMainFrameBuffer.textureIds()[0];
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -342,13 +463,14 @@ Camera const& Renderer::getGameCamera() const {
 }
 
 void Renderer::recompileShaders() {
-	blinnPhongShader.compile();
-	PBRShader.compile();
-	skyboxShader.compile();
-	textShader.compile();
-	toneMappingShader.compile();
-	particleShader.compile();
-	skeletalAnimationShader.compile();
+	//blinnPhongShader.compile();
+	//PBRShader.compile();
+	skyboxShader.recompile();
+	textShader.recompile();
+	toneMappingShader.recompile();
+	particleShader.recompile();
+	skeletalAnimationShader.recompile();
+	texture2dShader.recompile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -369,29 +491,38 @@ void Renderer::debugRenderPhysicsCollider() {
 	glDisable(GL_STENCIL_TEST);
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
+	
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 0.2f });
+	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	// enable wireframe mode only for debug overlay.
-	if (!isOnWireframeMode) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-
-	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 1.f });
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
+
+	// disable wireframe mode, restoring to normal fill
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsLineVBO.id(), 0, sizeof(glm::vec3));
+
+	glDisable(GL_CULL_FACE);
+
+	debugShader.setVec4("color", { 1.f, 0.2f, 0.2f, 1.f });
+	glDrawArrays(GL_LINES, 0, numOfPhysicsDebugLines * 2);
+
+	numOfPhysicsDebugTriangles = 0;
+	numOfPhysicsDebugLines = 0;
 
 	glDisable(GL_DEPTH_TEST);
 	overlayShader.use();
-	numOfPhysicsDebugTriangles = 0;
 	
 	// ================================================
 	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
 	// (so post processing)
 	// ================================================
 
-	// disable wireframe mode, restoring to normal fill
-	if (!isOnWireframeMode) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
+
 
 	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
@@ -498,6 +629,16 @@ void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 
 	++numOfPhysicsDebugTriangles;
 }
 
+void Renderer::submitLine(glm::vec3 vertice1, glm::vec3 vertice2) {
+	if (numOfPhysicsDebugLines > MAX_DEBUG_LINES) {
+		std::cerr << "too much triangles!\n";
+		return;
+	}
+
+	debugPhysicsLineVBO.uploadData(std::vector<glm::vec3>{ { vertice1 }, { vertice2 } }, 2 * numOfPhysicsDebugLines * sizeof(glm::vec3));
+	++numOfPhysicsDebugLines;
+}
+
 void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3){
 	if (numOfNavMeshDebugTriangles > MAX_DEBUG_TRIANGLES) {
 		std::cerr << "too much triangles!\n";
@@ -514,6 +655,7 @@ void Renderer::prepareRendering() {
 	// Configure pre rendering settings
 	// =================================================================
 	glEnable(GL_DITHER);
+	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
 
 	// bind the VBOs to their respective binding index
 	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(),			0, sizeof(glm::vec3));
@@ -675,7 +817,7 @@ void Renderer::renderModels(Camera const& camera) {
 			}
 
 			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(camera, *material, transform);
+			CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
 
 			if (shader) {
 				// time to draw!
@@ -698,7 +840,8 @@ void Renderer::renderTexts()
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
 
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setDepthMode(CustomShader::DepthTestingMethod::NoDepthWriteTest);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 
@@ -777,6 +920,44 @@ void Renderer::renderTexts()
 	glDisable(GL_BLEND);
 }
 
+void Renderer::renderImages()
+{
+	texture2dShader.use();
+	texture2dShader.setMatrix("uiProjection", UIProjection);
+
+	texture2dShader.setInt("image", 0);
+
+	glBindVertexArray(textVAO);
+
+
+	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
+		// Get texture resource
+		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
+		if (!textureAsset) {
+			continue;
+		}
+
+		GLuint textureId = textureAsset->getTextureId();
+		if (textureId == 0) {
+			continue;
+		}
+
+		texture2dShader.setVec4("tintColor", image.colorTint);
+		texture2dShader.setMatrix("model", transform.modelMatrix);
+		texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureId);
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	}
+
+	glBindVertexArray(mainVAO);
+	glDisable(GL_BLEND);
+}
+
+
 void Renderer::renderSkinnedModels(Camera const& camera) {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 
@@ -808,7 +989,7 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 			}
 
 			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(camera, *material, transform);
+			CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
 
 			if (shader) {
 				// time to draw!
@@ -852,10 +1033,9 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
-#if 0
-	glBindVertexArray(particleVAO);
 
-	setBlendMode(Renderer::BlendingConfig::AlphaBlending);
+	glBindVertexArray(particleVAO);
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
 	particleShader.use();
 
 	// Disable writing to depth buffer for particles
@@ -878,7 +1058,7 @@ void Renderer::renderParticles()
 		std::vector<ParticleVertex> particleVertexes;
 		std::vector<unsigned int> indices;
 		int i{};
-		auto addParticleBatch = [&](std::vector<Particle> const &particles) {
+		auto renderParticleBatch = [&](std::vector<Particle> const &particles) {
 			for (Particle const &particle: particles) {
 				auto&& [texture, result] = resourceManager.getResource<Texture>(particle.texture);
 				if (!texture)
@@ -898,16 +1078,18 @@ void Renderer::renderParticles()
 					indices.push_back(squareIndices[j] + i * 4);
 				++i;
 			}
+			particleVBO.uploadData(particleVertexes);
+			EBO.uploadData(indices);
+			glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 		};
-		addParticleBatch(emitter.trailParticles);
-		addParticleBatch(emitter.particles);
-		mainVBO.uploadData(particleVertexes);
-		EBO.uploadData(indices);
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
+		renderParticleBatch(emitter.trailParticles);
+		renderParticleBatch(emitter.particles);
+		
+		
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
-#endif
+
 }
 
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {
@@ -970,6 +1152,21 @@ void Renderer::setDepthMode(CustomShader::DepthTestingMethod configuration) {
 	case NoDepthWriteTest:
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
+		break;
+	default:
+		assert(false && "Forget to handle other case.");
+		break;
+	}
+}
+
+void Renderer::setCullMode(CustomShader::CullingConfig configuration) {
+	switch (configuration) {
+		using enum CustomShader::CullingConfig;
+	case Enable:
+		glEnable(GL_CULL_FACE);
+		break;
+	case Disable:
+		glDisable(GL_CULL_FACE);
 		break;
 	default:
 		assert(false && "Forget to handle other case.");
@@ -1049,8 +1246,13 @@ void Renderer::renderObjectIds() {
 	constexpr GLfloat	initialDepth = 1.f;
 	constexpr GLint		initialStencilValue = 0;
 
+	glBindVertexArray(mainVAO);
+
 	glDisable(GL_BLEND);
 	glDisable(GL_DITHER);
+
+	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
@@ -1065,6 +1267,7 @@ void Renderer::renderObjectIds() {
 		}
 
 		objectIdShader.setMatrix("model", transform.modelMatrix);
+		objectIdShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
 		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 		
 		// Draw every mesh of a given model.
@@ -1090,6 +1293,7 @@ void Renderer::renderObjectIds() {
 		}
 
 		objectIdShader.setMatrix("model", transform.modelMatrix);
+		objectIdShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
 		objectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
 
 		// Draw every mesh of a given model.
@@ -1103,6 +1307,127 @@ void Renderer::renderObjectIds() {
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
+	}
+}
+
+void Renderer::renderUiObjectIds() {
+	// Clear object id framebuffer.
+
+	// For some reason, for framebuffers with integer color attachments
+	// we need to bind to a shader that writes to integer output
+	// even though clear operation does not use our shader at all
+	// seems to be a differing / conflicting implementation for NVIDIA GPUs..
+	uiImageObjectIdShader.use();
+
+	constexpr GLuint	nullEntity = entt::null;
+	constexpr GLfloat	initialDepth = 1.f;
+	constexpr GLint		initialStencilValue = 0;
+
+	glBindVertexArray(mainVAO);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_DITHER);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, uiObjectIdFrameBuffer.fboId());
+	glClearNamedFramebufferuiv(uiObjectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
+	glClearNamedFramebufferfi(uiObjectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
+
+	uiImageObjectIdShader.setMatrix("uiProjection", UIProjection);
+
+	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
+		// Get texture resource
+		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
+		if (!textureAsset) {
+			continue;
+		}
+
+		uiImageObjectIdShader.setMatrix("model", transform.modelMatrix);
+		uiImageObjectIdShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
+		uiImageObjectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
+	uiTextObjectIdShader.use();
+
+	struct Vertex {
+		GLfloat x, y;   // screen position
+		GLfloat s, t;   // texture coordinates
+	};
+
+	glBindVertexArray(textVAO);
+
+	uiTextObjectIdShader.setMatrix("projection", UIProjection);
+
+	// iterate through all characters
+	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
+		// Retrieves font asset from asset manager.
+		auto [font, _] = resourceManager.getResource<Font>(text.font);
+
+		if (!font) {
+			continue;
+		}
+
+		if (text.text.empty()) {
+			continue;
+		}
+
+		Font::Atlas const& atlas = font->getAtlas();
+		float fontScale = static_cast<float>(text.fontSize) / font->getFontSize();
+
+		float x = transform.position.x;
+		float y = transform.position.y;
+
+		std::vector<Vertex> vertices;
+		vertices.reserve(text.text.size() * 6); // 6 vertices per char, 4 floats per vertex
+
+		std::string::const_iterator c;
+		for (c = text.text.begin(); c != text.text.end(); c++)
+		{
+			const Font::Character& ch = font->getCharacters().at(*c);
+
+			float xpos = x + ch.bearing.x * fontScale;
+			float ypos = y - (ch.size.y - ch.bearing.y) * fontScale;
+
+			float w = ch.size.x * fontScale;
+			float h = ch.size.y * fontScale;
+
+			// advance cursors for next glyph 
+			x += ch.advance * fontScale;
+
+			// Skip invisible glyphs
+			if (w == 0 || h == 0)
+				continue;
+
+			float tx = ch.tx;                   // texture X offset in atlas
+			float ty = 0.f;                     // texture Y offset in atlas
+			float tw = static_cast<float>(ch.size.x) / atlas.width;
+			float th = static_cast<float>(ch.size.y) / atlas.height;
+
+			// 6 vertices per quad (2 triangles)
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos,     ypos,     tx,       ty + th });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+
+			vertices.push_back({ xpos,     ypos + h, tx,       ty });
+			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+			vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
+		}
+
+		// Bind font atlas texture once per string
+		glBindTexture(GL_TEXTURE_2D, atlas.textureId);
+
+		// Upload vertex data for all glyphs in this string
+		textVBO.uploadData(vertices, 0);
+
+		uiTextObjectIdShader.setUInt("objectId", static_cast<GLuint>(entity));
+
+		// Draw all characters in one batched call
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+
+		// Reset bindings
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 
@@ -1129,7 +1454,7 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& material, Transform const& transform) {
+CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale) {
 	// ===========================================================================
 	// Retrieve the underlying shader for this material, and verify it's state.
 	// ===========================================================================
@@ -1154,6 +1479,7 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 
 	setBlendMode(shaderData.blendingConfig);
 	setDepthMode(shaderData.depthTestingMethod);
+	setCullMode(shaderData.cullingConfig);
 
 	Shader const& shader = shaderOpt.value();
 
@@ -1165,9 +1491,12 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	case Pipeline::PBR:
 		shader.setVec3("cameraPos", camera.getPos());
 		shader.setMatrix("normalMatrix", transform.normalMatrix);
+
+		// both pipeline requires these to be set..
 		[[fallthrough]];
 	case Pipeline::Color:
 		shader.setMatrix("model", transform.modelMatrix);
+		shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
 		break;
 	default:
 		assert(false && "Unhandled pipeline.");
@@ -1291,4 +1620,9 @@ void Renderer::setToneMappingMethod(ToneMappingMethod method) {
 
 Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
+}
+
+ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
+{
+	return UIProjection;
 }

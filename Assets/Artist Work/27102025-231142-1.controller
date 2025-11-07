@@ -3,93 +3,52 @@
     "nodes": {
         "1000": {
             "animation": 18446744073709551615,
+            "animationEvents": null,
             "id": 1000,
             "name": "Entry Node",
             "toLoop": true,
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 3485249974091497493
+                    "nextNode": 3898358490745143297
                 }
             ]
         },
-        "10402779001732415503": {
-            "animation": 13846467012093624337,
-            "id": 10402779001732415503,
-            "name": "Standing React Large From Left_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "13861543515552825355": {
-            "animation": 10387702498273083403,
-            "id": 13861543515552825355,
-            "name": "Standing Melee Attack Downward_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "3485249974091399185": {
-            "animation": 10387702498273099795,
-            "id": 3485249974091399185,
-            "name": "Standing Run Forward_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "3485249974091497493": {
-            "animation": 12693545507486793753,
-            "id": 3485249974091497493,
-            "name": "Unarmed Idle_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "4061710726394429445": {
-            "animation": 5199555727542288407,
-            "id": 4061710726394429445,
-            "name": "Unarmed Idle Looking Ver. 1_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "4638171478698131469": {
-            "animation": 10964163250576506895,
-            "id": 4638171478698131469,
-            "name": "Standing Melee Combo Attack Ver. 3_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "5791092983304585217": {
-            "animation": 587869709114884109,
-            "id": 5791092983304585217,
-            "name": "Standing Melee Attack Horizontal_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "5791092983304585219": {
-            "animation": 11408956811444229,
-            "id": 5791092983304585219,
-            "name": "Standing Death Left 01_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "6367553735608172551": {
-            "animation": 8658320241362796551,
-            "id": 6367553735608172551,
-            "name": "Standing Jump_Skin",
-            "toLoop": true,
-            "transitions": null
-        },
-        "7520475240215068681": {
-            "animation": 10387702498273067017,
-            "id": 7520475240215068681,
+        "3898358490745143297": {
+            "animation": 1849141489944117257,
+            "animationEvents": [
+                {
+                    "functionName": "Event",
+                    "key": 31,
+                    "scriptId": 200674448099901461
+                }
+            ],
+            "id": 3898358490745143297,
             "name": "Standing Melee Attack Backhand_Skin",
             "toLoop": true,
-            "transitions": null
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 439593976924618755
+                }
+            ]
         },
-        "9826318249429106707": {
-            "animation": 13270006259790217237,
-            "id": 9826318249429106707,
-            "name": "Standing Walk Forward_Skin",
+        "439593976924618755": {
+            "animation": 8190209765281808409,
+            "animationEvents": null,
+            "id": 439593976924618755,
+            "name": "Unarmed Idle_Skin",
             "toLoop": true,
             "transitions": null
         }
     },
-    "parameters": null
+    "parameters": [
+        {
+            "name": "isWalking",
+            "value": {
+                "__variant_type": 2,
+                "__variant_value": true
+            }
+        }
+    ]
 }

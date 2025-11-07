@@ -124,6 +124,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
       <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +149,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ShowIncludes>false</ShowIncludes>
       <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -179,8 +181,10 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\ImGui\imgui_node_editor_api.cpp" />
     <ClCompile Include="src\Editor\ImGui\ImSequencer.cpp" />
     <ClCompile Include="src\Editor\gameViewPort.cpp" />
-    <ClCompile Include="src\Editor\gameConfig.cpp" />
+    <ClCompile Include="src\Editor\Configuration\editorConfigUI.cpp" />
+    <ClCompile Include="src\Editor\Configuration\gameConfigUI.cpp" />
     <ClCompile Include="src\Editor\navigationWindow.cpp" />
+    <ClCompile Include="src\Editor\uiViewPort.cpp" />
     <ClCompile Include="src\Navigation\navMeshGeneration.cpp" />
     <ClCompile Include="src\Editor\Assets\assetManagerUi.cpp" />
     <ClCompile Include="src\Editor\console.cpp" />
@@ -239,6 +243,9 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ComponentInspection\componentInspector.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\displayComponent.ipp" />
     <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
+    <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayPropertiesOverride.h" />
+    <ClInclude Include="src\Editor\Configuration\editorConfigUI.h" />
+    <ClInclude Include="src\Editor\Configuration\gameConfigUI.h" />
     <ClInclude Include="src\Editor\editor.ipp" />
     <ClInclude Include="src\Editor\ImGui\crude_json.h" />
     <ClInclude Include="src\Editor\ImGui\imgui_bezier_math.h" />
@@ -250,8 +257,8 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ImGui\imgui_node_editor_internal.h" />
     <ClInclude Include="src\Editor\ImGui\ImSequencer.h" />
     <ClInclude Include="src\Editor\gameViewPort.h" />
-    <ClInclude Include="src\Editor\gameConfig.h" />
     <ClInclude Include="src\Editor\navigationWindow.h" />
+    <ClInclude Include="src\Editor\uiViewPort.h" />
     <ClInclude Include="src\Navigation\navMeshGeneration.h" />
     <ClInclude Include="src\AssetManager\AssetDirectoryWatcher.h" />
     <ClInclude Include="src\AssetManager\assetFunctor.h" />

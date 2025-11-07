@@ -1,0 +1,92 @@
+{
+    "Entities": [
+        {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": -1.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 2.0,
+                    "y": 3.0,
+                    "z": 1.0
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "name": "EnemyHitBox",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": "EnemyHitBox"
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": true,
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Kinematic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "scriptId": 5935287345890557953
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -0.0,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": -0.037014007568359375,
+                    "y": 3.0357844829559326,
+                    "z": 1.4559911489486694
+                },
+                "localRotation": {
+                    "w": 0.0,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.6369426846504211,
+                    "y": 0.6369112730026245,
+                    "z": 0.6369426846504211
+                },
+                "position": {
+                    "x": -74.29924774169922,
+                    "y": -3.8587045669555664,
+                    "z": -2.2859060764312744
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 7340076
+        }
+    ]
+}

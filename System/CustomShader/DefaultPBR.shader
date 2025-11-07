@@ -2,6 +2,7 @@
 Tags{
     Blending : AlphaBlending;
     DepthTestingMethod : DepthTest;
+    Culling : Enable;
 }
 
 // Properties for material instances to configure..
@@ -18,6 +19,9 @@ Properties{
 
     bool toUseNormalMap;
     sampler2D normalMap;
+
+    bool toUseEmissiveMap;
+    sampler2D emissiveMap;
 }
 
 // Vertex shader..
@@ -70,8 +74,14 @@ Frag{
         _normal = normalize(fsIn.normal);
     }
 
+    vec3 emissiveColor = vec3(0);
+
+    if(toUseEmissiveMap) {
+        emissiveColor = vec3(texture(emissiveMap, fsIn.textureUnit));
+    }
+
     vec4 albedo = texture(albedoMap, fsIn.textureUnit);
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);
 
-    FragColor = vec4(pbrColor, 1.0);
+    FragColor = vec4(emissiveColor + pbrColor, 1.0);
 }

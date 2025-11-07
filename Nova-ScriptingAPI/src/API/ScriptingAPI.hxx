@@ -16,6 +16,7 @@ public ref class Interface
 public:
 	using ScriptID = System::UInt64;
 	using EntityID = System::UInt32;
+
 internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
 	static void loadAssembly();
@@ -25,6 +26,7 @@ internal:
 
 	// static void editorModeUpdate();
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
+	static void initializeScript(EntityID entityID, ScriptID scriptId);
 
 	static void removeEntity(EntityID entityID);
 	static void removeEntityScript(EntityID entityID, ScriptID scriptId);
@@ -32,6 +34,11 @@ internal:
 	static void intializeAllScripts();
 
 	static void handleOnCollision(EntityID entityOne, EntityID entityTwo);
+
+	// This function is called when a particular function name needs to be invoked.
+	static void executeEntityScriptFunction(EntityID entityID, ScriptID scriptId, std::string const& functionName);
+
+	static void submitGameObjectDeleteRequest(EntityID entityToBeDeleted);
 
 internal:
 	// Script Fields
@@ -54,6 +61,12 @@ internal:
 	template<typename Type, typename ...Types>
 	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
 
+	template <typename Type, typename ...Types>
+	static bool ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ object, System::Type^ originalType);
+
+	template <typename Type, typename ...Types>
+	static bool SetTypedResourceIDFromScript(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+
 private:
 	// static void updateReference(Script^ script);
 
@@ -70,6 +83,10 @@ private:
 	// Store all unique script type. To be used for instantiation.
 	// We map an Asset ID to the corresponding script type.
 	static System::Collections::Generic::Dictionary<ScriptID, Script^>^ availableScripts;
+
+	// Stores all the game object that is requested to be deleted. We delay object destruction till the end of the frame.
+	// (had bad experience with instant deletion..)
+	static System::Collections::Generic::Queue<EntityID> deleteGameObjectQueue;
 
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;

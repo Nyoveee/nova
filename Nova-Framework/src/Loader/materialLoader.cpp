@@ -5,8 +5,6 @@
 #include "Material.h"
 
 std::optional<ResourceConstructor> ResourceLoader<Material>::load(ResourceID id, ResourceFilePath const& resourceFilePath) {
-	Logger::info("Loading material resource file {}", resourceFilePath.string);
-
 	std::ifstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {

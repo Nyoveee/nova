@@ -7,5 +7,6 @@ Model::Model(ResourceID id, ResourceFilePath resourceFilePath, ModelData modelDa
 	materialNames			{ std::move(modelData.materialNames) },
 	skeleton				{ std::move(modelData.skeleton) },
 	animations				{ std::move(modelData.animations) },
-	maxDimension			{ modelData.maxDimension }
+	maxDimension			{ modelData.maxDimension },
+	scale					{ modelData.scale }
 {}

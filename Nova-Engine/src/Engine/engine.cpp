@@ -13,11 +13,11 @@
 #include "ECS/SceneManager.h"
 
 
-Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, int gameWidth, int gameHeight) :
+Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig) :
 	window					{ window },
 	resourceManager			{ resourceManager },
 	inputManager            { inputManager },
-	renderer				{ *this, gameWidth, gameHeight },
+	renderer				{ *this, gameConfig.gameWidth, gameConfig.gameHeight },
 	cameraSystem			{ *this },
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
@@ -27,10 +27,10 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	navigationSystem		{ *this }, 
 	particleSystem          { *this },
 	animationSystem			{ *this },
-	gameWidth				{ gameWidth },
-	gameHeight				{ gameHeight },
+	gameConfig				{ gameConfig },
 	inSimulationMode		{ false },
-	toDebugRenderPhysics	{ false }
+	toDebugRenderPhysics	{ false },
+	prefabManager			{ *this }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -40,16 +40,18 @@ Engine::~Engine() {
 		stopSimulation();
 		setupSimulationFunction.value()();
 	}
-
-	Serialiser::serialiseGameConfig("gameConfig.json", gameWidth, gameHeight);
 }
 
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
-	physicsManager.updateTransformBodies();
 	if (inSimulationMode) {
 		scriptingAPIManager.update();
+	}
+	
+	physicsManager.updateTransformBodies();
+
+	if (inSimulationMode) {
 		physicsManager.updatePhysics(dt);
 		navigationSystem.update(dt);
 	}
@@ -60,20 +62,18 @@ void Engine::update(float dt) {
 
 	//Note the order should be correct
 	audioSystem.update();
-	cameraSystem.update(dt);
 
 	if (!inSimulationMode) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt);
 	}
 
 	animationSystem.update(dt);
-	transformationSystem.update();
 	particleSystem.update(dt);
+	transformationSystem.update();
+	cameraSystem.update(dt);
 	renderer.update(dt);
 
 	resourceManager.update();
-	
-
 }
 
 void Engine::setupSimulation() {
@@ -145,13 +145,14 @@ void Engine::stopSimulation() {
 }
 
 int Engine::getGameWidth() const {
-	return gameWidth;
+	return gameConfig.gameWidth;
 }
 
 int Engine::getGameHeight() const {
-	return gameHeight;
+	return gameConfig.gameHeight;
 }
 
+#if 0
 void Engine::setGameWidth(int value) {
 	gameWidth = value;
 }
@@ -159,14 +160,34 @@ void Engine::setGameWidth(int value) {
 void Engine::setGameHeight(int value) {
 	gameHeight = value;
 }
+#endif
 
 bool Engine::isInSimulationMode() const {
 	return inSimulationMode;
+}
+
+void Engine::gameLockMouse(bool value) {
+	isGameLockingMouse = value;
+
+	if (!isEditorControllingMouse && isGameLockingMouse) {
+		window.toEnableMouse(false);
+	}
+	else {
+		window.toEnableMouse(true);
+	}
+}
+
+void Engine::editorControlMouse(bool value) {
+	isEditorControllingMouse = value;
+	gameLockMouse(isGameLockingMouse);
 }
 
 void Engine::SystemsOnLoad()
 {
 	this->navigationSystem.initNavMeshSystems();
 	this->physicsManager.systemInitialise();
-	
+}
+
+float Engine::getDeltaTime() const {
+	return window.getDeltaTime();
 }

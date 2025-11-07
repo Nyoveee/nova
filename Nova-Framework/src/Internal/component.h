@@ -21,6 +21,7 @@
 #include "vertex.h"
 #include "reflection.h"
 #include "navMesh.h"
+#include "controller.h"
 
 // Forward declaring..
 class Model;
@@ -36,8 +37,9 @@ class Material;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
+	Image
 
 using ScriptName   = std::string;
 
@@ -48,11 +50,17 @@ using ScriptName   = std::string;
 #define ALL_FIELD_PRIMITIVES \
 		bool, int, float, double
 #endif
+
+#define ALL_TYPED_RESOURCE_ID \
+	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>
+
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, entt::entity, PhysicsRay, PhysicsRayCastResult, \
+		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
+		ALL_TYPED_RESOURCE_ID,																		\
 		ALL_FIELD_PRIMITIVES
 #endif
+
 enum class InterpolationType : unsigned int {
 	Root,
 	Linear,
@@ -73,6 +81,7 @@ struct FieldData {
 
 struct EntityData {
 	std::string name													{};
+	std::string tag                                                     {};
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
@@ -80,6 +89,7 @@ struct EntityData {
 
 	REFLECTABLE(
 		name,
+		tag,
 		parent,
 		children,
 		prefabID,
@@ -91,33 +101,30 @@ struct Transform {
 	glm::vec3 position			{};
 	glm::vec3 scale				{ 1.0f, 1.0f, 1.0f };
 	glm::quat rotation			{ 1.0f, 0.f, 0.f, 0.f };
+	EulerAngles eulerAngles		{ rotation };	// this will be derieved from quartenions
 
-	glm::vec3 localPosition		{};
-	glm::vec3 localScale		{ 1.f, 1.f, 1.f };
-	glm::quat localRotation		{ 1.0f, 0.f, 0.f, 0.f };
+	glm::vec3	localPosition	{};
+	glm::vec3	localScale		{ 1.f, 1.f, 1.f };
+	glm::quat	localRotation	{ 1.0f, 0.f, 0.f, 0.f };
+	EulerAngles localEulerAngles{ localRotation };	// this will be derieved from quartenions
+
+	// ====== These data members are calculated by the systems and do not need to be serialised. =======
+	glm::vec3 up{};
+	glm::vec3 right{};
+	glm::vec3 front{};
+
+	glm::mat4x4 modelMatrix		{};	// model matrix represents the final matrix to change a object to world space.
+	glm::mat3x3 normalMatrix	{};	// normal matrix is used to transform normals.
+	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
 
 	glm::vec3 lastPosition		{ position };
 	glm::vec3 lastScale			{ scale };
 	glm::quat lastRotation		{ rotation };
-
-	// ====== These data members are calculated by the systems and do not need to be serialised. =======
-	glm::mat4x4 modelMatrix		{};				// model matrix represents the final matrix to change a object to world space.
-	glm::mat3x3 normalMatrix	{};				// normal matrix is used to transform normals.
-
-	EulerAngles eulerAngles		{ rotation };	// this will be derieved from quartenions
-	EulerAngles lastEulerAngles	{ rotation };		
-
-	glm::vec3 up				{};
-	glm::vec3 right				{};
-	glm::vec3 front				{};
-
-	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
+	EulerAngles lastEulerAngles	{ rotation };
 
 	glm::vec3 lastLocalPosition {};
 	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
 	glm::quat lastLocalRotation	{};
-
-	EulerAngles localEulerAngles	{ localRotation };	// this will be derieved from quartenions
 	EulerAngles lastLocalEulerAngles{ localRotation };
 
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
@@ -125,6 +132,16 @@ struct Transform {
 	bool worldHasChanged = true;
 	bool needsRecalculating = false;
 	
+	// ====== For every world + local transform changes, we store the result in some variable =======
+	// We then resolve everything in the end..
+	glm::vec3 newLocalFromWorldPosition;
+	glm::vec3 newLocalFromWorldScale;
+	glm::quat newLocalFromWorldRotation;
+
+	glm::vec3 newWorldFromLocalPosition;
+	glm::vec3 newWorldFromLocalScale;
+	glm::quat newWorldFromLocalRotation;
+
 	// Reflect these data members for level editor to display
 	REFLECTABLE(
 		position,
@@ -197,6 +214,13 @@ struct Animator {
 	float timeElapsed = 0;
 	ControllerNodeID currentNode = NO_CONTROLLER_NODE;
 	TypedResourceID<Model> currentAnimation;
+	
+	// this will be instantiated in runtime.
+	std::vector<Controller::Parameter> parameters;
+
+	// each animator component keeps track of already executed animation events keyframes..
+	// this container is reset everytime it changes animation..
+	std::unordered_set<int> executedAnimationEvents;
 };
 
 struct Rigidbody {
@@ -210,31 +234,65 @@ struct Rigidbody {
 	glm::vec3 initialVelocity		{};
 	float mass						{};
 
-	JPH::BodyID bodyId				{}; // default constructed body ID is invalid.
-
+	bool isRotatable				{ true };
+	bool isTrigger					{ false };
+	
 	REFLECTABLE(
 		motionType,
 		layer,
 		initialVelocity,
-		mass
+		mass,
+		isRotatable,
+		isTrigger
 	)
+
+	// RUNTIME PROPERTIES!
+	JPH::BodyID bodyId				{}; // default constructed body ID is invalid.
+	glm::vec3   velocity;
+
+	// when this rigidbody is instantiated, this offset property is set based on whatever collider's offset.
+	// runtime only and is not de/serialised.
+	glm::vec3 offset;
 };
 
 struct BoxCollider {
-	glm::vec3 scaleMultiplier	{ 1.f, 1.f, 1.f };
-	bool scaleWithTransform		= true;
+	glm::vec3 shapeScale	{ 1.f, 1.f, 1.f };
+	glm::vec3 offset		{ 0.f, 0.f, 0.f };
+
+	bool scaleWithTransform	= true;
 
 	REFLECTABLE(
-		scaleMultiplier,
+		shapeScale,
+		offset,
 		scaleWithTransform
 	)
 };
 
 struct SphereCollider {
-	float radius {1.f};
+	float		radius	{ 1.f };
+	glm::vec3	offset	{ 0.f, 0.f, 0.f };
 
 	REFLECTABLE(
-		radius
+		radius,
+		offset
+	)
+};
+
+struct CapsuleCollider {
+	float shapeScale = 1.f;
+	glm::vec3 offset{ 0.f, 0.f, 0.f };
+
+	REFLECTABLE(
+		shapeScale,
+		offset
+	)
+};
+
+struct MeshCollider {
+	bool isTrigger;
+
+	REFLECTABLE(
+		isTrigger
 	)
 };
 
@@ -243,6 +301,25 @@ struct SkyBox {
 	
 	REFLECTABLE(
 		cubeMapId
+	)
+};
+
+struct Image {
+	TypedResourceID<Texture>	texture		{ INVALID_RESOURCE_ID };
+	ColorA						colorTint	{ 1.f, 1.f, 1.f, 1.f };
+	
+	enum class AnchorMode {
+		Center,
+		BottomLeft,
+		BottomRight,
+		TopLeft,
+		TopRight
+	} anchorMode = AnchorMode::Center;
+
+	REFLECTABLE(
+		texture,
+		colorTint,
+		anchorMode
 	)
 };
 

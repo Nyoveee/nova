@@ -178,7 +178,7 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 				break;
 			}
 		}	
-		if(numOfFixedSteps != 0) inputManager.update();
+
 		// executes a normal update
 		updateFunc(static_cast<float>(deltaTime));
 
@@ -259,6 +259,10 @@ glm::vec2 Window::getClipSpacePos() const {
 	return mouseRelativeToViewPort * 2.f - 1.f;
 }
 
+float Window::getDeltaTime() const {
+	return static_cast<float>(deltaTime);
+}
+
 namespace {
 	void APIENTRY glDebugOutput(
 		GLenum source,
@@ -277,7 +281,7 @@ namespace {
 
 		bool isAnError = true;
 
-		if (id == 131169 || id == 131185 || id == 131218 || id == 131204 || id == 7) {
+		if (id == 131169 || id == 131185 || id == 131218 || id == 131204 || id == 7 || id == 1281 || id == 8) {
 			isAnError = false;
 			return;
 		}

@@ -4,23 +4,33 @@
 #include <entt/entt.hpp>
 #include <json/json.hpp>
 #include "export.h"
+#include "type_alias.h"
+#include "config.h"
+#include "resource.h"
 
 using Json = nlohmann::json;
 
 namespace Serialiser {
 	FRAMEWORK_DLL_API void serialiseScene(entt::registry& registry, const char* fileName);
 
-	FRAMEWORK_DLL_API void serialiseGameConfig(const char* fileName, int gamewidth, int gameHeight);
 	FRAMEWORK_DLL_API void deserialiseScene(entt::registry& registry, const char* fileName);
 
-	FRAMEWORK_DLL_API void deserialiseGameConfig(const char* fileName, int& gameWidth, int& gameHeight, std::string& windowName);
+	FRAMEWORK_DLL_API GameConfig deserialiseGameConfig(const char* fileName);
+	FRAMEWORK_DLL_API void serialiseGameConfig(const char* fileName, GameConfig const& config);
+
 	FRAMEWORK_DLL_API void serialiseEditorConfig(const char* fileName, bool consol, bool debugUi, bool hierarchy, bool componentInspector);
 	FRAMEWORK_DLL_API void deserialiseEditorConfig(const char* fileName);
 
-	FRAMEWORK_DLL_API void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id);
+	//FRAMEWORK_DLL_API void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id);
+	//FRAMEWORK_DLL_API entt::entity deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id, entt::registry& prefabRegistry);
+	FRAMEWORK_DLL_API void deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id, entt::registry& prefabRegistry, std::vector<entt::entity>& entityVec);
+	//FRAMEWORK_DLL_API entt::entity deserialisePrefab(ResourceFilePath fileName, entt::registry& registry, std::size_t id);
 	FRAMEWORK_DLL_API void serialisePrefab(entt::registry& registry, entt::entity entity, std::optional<std::ofstream> opt, std::size_t id);
 	FRAMEWORK_DLL_API void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<Json>& jsonVec, bool checkParent, std::size_t id);
-	FRAMEWORK_DLL_API void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t id);
+	//FRAMEWORK_DLL_API void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t id, entt::entity& rootEntity, entt::registry& prefabRegistry);
+	FRAMEWORK_DLL_API void deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t id, std::vector<entt::entity>& entityVec, entt::registry& prefabRegistry);
+	FRAMEWORK_DLL_API entt::id_type findLargestEntity(entt::registry& registry);
+	//FRAMEWORK_DLL_API entt::entity deserialisePrefabRecursive(std::vector<Json> jsonVec, int end, entt::registry& registry, entt::id_type highestID, std::vector<entt::entity>& childVec, std::size_t id);
 
 	template <typename ...Components>
 	Json serialiseComponents(entt::registry& registry, entt::entity entity);

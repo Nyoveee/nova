@@ -29,7 +29,7 @@ void Compiler::recompileAllSystemAssets() {
 			ResourceFilePath resourceFilePath = std::filesystem::path{ path }.replace_extension("");
 
 			Logger::info("Compiling.. {}", path.string());
-			int result = Compiler::compileAsset<T>(descriptor, resourceFilePath);
+			[[maybe_unused]] int result = Compiler::compileAsset<T>(descriptor, resourceFilePath);
 			
 			assert(result == 0 && "Ensure validity of your system resources.");
 		};

@@ -20,3 +20,19 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 		displayFontInfo(typedDescriptor);
 	}
 }
+
+template <typename T>
+void AssetViewerUI::recompileResourceWithUpdatedDescriptor(AssetInfo<T> const& assetInfo) {
+	// serialise immediately..
+	assetManager.serialiseDescriptor<T>(selectedResourceId);
+
+	// we make a copy of asset info, because the reference is getting invalidated..
+	AssetInfo<T> assetInfoCopy = assetInfo;
+
+	// we remove this old resource..
+	resourceManager.removeResource(selectedResourceId);
+	assetManager.removeResource(selectedResourceId);
+
+	// recompile.., will add to resource manager if compilation is successful.
+	assetManager.createResourceFile<T>(assetInfoCopy);
+}

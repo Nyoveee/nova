@@ -7,6 +7,7 @@
 
 InputManager::InputManager() :
 	mousePosition		{},
+	lastMousePosition	{},
 	currentObserverId	{ 0 }
 {
 	mainKeyBindMapping();
@@ -15,22 +16,32 @@ InputManager::InputManager() :
 void InputManager::handleMouseMovement(Window& window, double xPosIn, double yPosIn) {
 	(void) window;
 
-	mousePosition = { xPosIn,yPosIn };
-	broadcast(MousePosition{ xPosIn, yPosIn }, InputType::Press);
+	lastMousePosition = mousePosition;
+	mousePosition = { xPosIn, yPosIn };
+
+	glm::vec2 deltaMousePosition = lastMousePosition - glm::vec2{ xPosIn, yPosIn };
+
+	broadcast(MousePosition{ -deltaMousePosition.x, deltaMousePosition.y }, InputType::Press);
 }
 
 void InputManager::handleScroll(Window& window, double xOffset, double yOffset) {
 	(void) window;
 	(void) xOffset;
-	scrollOffsetY = static_cast<float>(yOffset);
+
 	broadcast(AdjustCameraSpeed{ yOffset });
+	broadcast(Scroll{ yOffset });
 }
 
 void InputManager::handleKeyboardInput(Window& window, int key, int scancode, int action, int mods) {
 	(void) window;
 	(void) scancode;
 
-	handleKeyInput({ key, KeyType::Keyboard }, action == GLFW_RELEASE ? InputType::Release : InputType::Press, getInputMod(mods));
+	if (action == GLFW_PRESS) {
+		handleKeyInput({ key, KeyType::Keyboard }, InputType::Press, getInputMod(mods));
+	}
+	else if (action == GLFW_RELEASE) {
+		handleKeyInput({ key, KeyType::Keyboard }, InputType::Release, getInputMod(mods));
+	}
 
 	// broadcast all ScriptingInputEvent regardless of registered key mapping.
 	broadcast(ScriptingInputEvents{ key }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
@@ -40,7 +51,12 @@ void InputManager::handleMouseInput(Window& window, int key, int action, int mod
 	(void) window;
 	(void) mods;
 
-	handleKeyInput({ key, KeyType::MouseClick }, action == GLFW_RELEASE ? InputType::Release : InputType::Press, getInputMod(mods));
+	if (action == GLFW_PRESS) {
+		handleKeyInput({ key, KeyType::MouseClick }, InputType::Press, getInputMod(mods));
+	}
+	else if (action == GLFW_RELEASE) {
+		handleKeyInput({ key, KeyType::MouseClick }, InputType::Release, getInputMod(mods));
+	}
 
 	// broadcast all ScriptingInputEvent regardless of registered key mapping.
 	broadcast(ScriptingInputEvents{ key }, action == GLFW_RELEASE ? InputType::Release : InputType::Press);
@@ -52,10 +68,6 @@ void InputManager::handleKeyInput(GLFWInput input, InputType inputType, InputMod
 			keyBind->broadcast(inputType);
 		}
 	}
-}
-void InputManager::update()
-{
-	scrollOffsetY = 0;
 }
 
 InputMod InputManager::getInputMod(int mod) const {

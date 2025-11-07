@@ -1,5 +1,7 @@
 #include "Engine/engine.h"
 #include "Engine/window.h"
+#include "Engine/prefabManager.h"
+#include "component.h"
 
 #include "editor.h"
 #include "editorViewPort.h"
@@ -99,13 +101,7 @@ void EditorViewPort::update(float dt) {
 				editor.selectEntities({});
 			}
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
-				AssetFilePath const* filePath = editor.assetManager.getFilepath(id);
-
-				if (filePath) {
-					Serialiser::deserialisePrefab(filePath->string.c_str(), engine.ecs.registry, id);
-				}
-
-				// deselect entity.
+				engine.prefabManager.instantiatePrefab<ALL_COMPONENTS>(id);
 				editor.selectEntities({});
 			}
 		}

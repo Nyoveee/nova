@@ -78,8 +78,22 @@ void ComponentInspector::update() {
 	
 	// Display entity metadata.
 	EntityData& entityData = registry.get<EntityData>(selectedEntity);
-	
-	ImGui::InputText("Name", &entityData.name);
+	if (ImGui::BeginTable("NameAndTagTable", 2, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+		ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 130.0f);
+		ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+
+		ImGui::TableNextRow();
+
+		ImGui::TableNextColumn();
+		ImGui::AlignTextToFramePadding();
+		ImGui::InputText("Name", &entityData.name);
+
+		ImGui::TableNextColumn();
+		ImGui::InputText("Tag", &entityData.tag);
+
+		ImGui::EndTable();
+	}
+
 	ImGui::NewLine();
 
 	if (ImGui::CollapsingHeader("Entity")) {

@@ -1,0 +1,86 @@
+{
+    "overridenUniforms": {
+        "albedoMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 7
+            }
+        },
+        "colorTint": {
+            "type": "Color",
+            "value": {
+                "__variant_type": 10,
+                "__variant_value": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                }
+            }
+        },
+        "emissiveMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 7
+            }
+        },
+        "metallic": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_type": 12,
+                "__variant_value": 1.0
+            }
+        },
+        "normalMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 7
+            }
+        },
+        "occulusion": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_type": 12,
+                "__variant_value": 0.0
+            }
+        },
+        "packedMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 7
+            }
+        },
+        "roughness": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_type": 12,
+                "__variant_value": 0.3070000112056732
+            }
+        },
+        "toUseEmissiveMap": {
+            "type": "bool",
+            "value": {
+                "__variant_type": 0,
+                "__variant_value": false
+            }
+        },
+        "toUseNormalMap": {
+            "type": "bool",
+            "value": {
+                "__variant_type": 0,
+                "__variant_value": false
+            }
+        },
+        "toUsePackedMap": {
+            "type": "bool",
+            "value": {
+                "__variant_type": 0,
+                "__variant_value": false
+            }
+        }
+    },
+    "selectedShader": 1
+}

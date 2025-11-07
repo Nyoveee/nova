@@ -53,10 +53,13 @@ public:
 
 	void renderMain(RenderConfig renderConfig);
 
+	void renderUI();
+
 	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
 	
 	void renderToDefaultFBO();
 
+	void overlayUIToBuffer(PairFrameBuffer& target);
 public:
 	// =============================================
 	// Public facing API.
@@ -65,13 +68,15 @@ public:
 	// get the main texture of the main frame buffer.
 	ENGINE_DLL_API GLuint getEditorFrameBufferTexture() const;
 	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
+	ENGINE_DLL_API GLuint getUIFrameBufferTexture() const;
 
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
-	// gets object id from color attachment 1 of the main framebuffer.
 	// parameter normalisedPosition expects value of range [0, 1], representing the spot in the color attachment from bottom left.
 	// retrieves the value in that position of the framebuffer.
 	ENGINE_DLL_API GLuint getObjectId(glm::vec2 normalisedPosition) const;
+
+	ENGINE_DLL_API GLuint getObjectUiId(glm::vec2 normalisedPosition) const;
 
 	ENGINE_DLL_API Camera& getEditorCamera();
 	ENGINE_DLL_API Camera const& getEditorCamera() const;
@@ -84,9 +89,11 @@ public:
 
 	ENGINE_DLL_API void setBlendMode(CustomShader::BlendingConfig configuration);
 	ENGINE_DLL_API void setDepthMode(CustomShader::DepthTestingMethod configuration);
+	ENGINE_DLL_API void setCullMode(CustomShader::CullingConfig configuration);
 
 	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
 	ENGINE_DLL_API void renderObjectIds();
+	ENGINE_DLL_API void renderUiObjectIds();
 
 	// HDR controls
 	ENGINE_DLL_API void setHDRExposure(float exposure);
@@ -96,6 +103,9 @@ public:
 	ENGINE_DLL_API void setToneMappingMethod(ToneMappingMethod method);
 	ENGINE_DLL_API ToneMappingMethod getToneMappingMethod() const;
 
+	// UI projection
+	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
@@ -103,6 +113,8 @@ public:
 
 	// submit triangles to be rendered at the end
 	void submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
+	void submitLine(glm::vec3 vertice1, glm::vec3 vertice2);
+
 	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 
 public:
@@ -128,6 +140,9 @@ private:
 	// render all Texts.
 	void renderTexts();
 
+	// render ui images.
+	void renderImages();
+
 	// renders a outline during object hovering and selection.
 	void renderOutline();
 
@@ -148,7 +163,7 @@ private:
 
 	// set up the material's chosen shader and supply the proper uniforms..
 	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
-	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform);
+	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale = 1.f);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
 	void renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType);
@@ -183,11 +198,14 @@ private:
 	// Skeletal animation, bones SSBO
 	BufferObject bonesSSBO;
 
-	// Particle VAO
+	// Particle VAO and VBO
 	GLuint particleVAO;
+	BufferObject particleVBO;
 
 	// Debug Physics VAO and it's corresponding VBO.
 	BufferObject debugPhysicsVBO;
+	BufferObject debugPhysicsLineVBO;
+
 	BufferObject debugNavMeshVBO;
 	BufferObject debugParticleShapeVBO;
 
@@ -201,16 +219,19 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
+	FrameBuffer uiMainFrameBuffer;
 	// contains all physics debug rendering..
 	FrameBuffer physicsDebugFrameBuffer;
 
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
-	
+	FrameBuffer uiObjectIdFrameBuffer;
+
 	glm::mat4 UIProjection;
 
 private:
 	int numOfPhysicsDebugTriangles;
+	int numOfPhysicsDebugLines;
 	int numOfNavMeshDebugTriangles;
 
 	bool isOnWireframeMode;
@@ -222,15 +243,20 @@ public:
 	Shader colorShader;
 	Shader gridShader;
 	Shader outlineShader;
-	Shader blinnPhongShader;
-	Shader PBRShader;
+	// Shader blinnPhongShader;
+	// Shader PBRShader;
 	Shader debugShader;
 	Shader overlayShader;
+
 	Shader objectIdShader;
+	Shader uiImageObjectIdShader;
+	Shader uiTextObjectIdShader;
+	
 	Shader skyboxShader;
 	Shader particleShader;
 	Shader skeletalAnimationShader;
 	Shader textShader;
+	Shader texture2dShader;
 
 	// HDR tone mapping shader
 	Shader toneMappingShader;

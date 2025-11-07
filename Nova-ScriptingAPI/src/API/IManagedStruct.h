@@ -6,3 +6,4 @@ interface struct IManagedStruct {
 	void AppendValueToFieldData(FieldData& fieldData);
 	void SetValueFromFieldData(FieldData const& fieldData);
 };
+

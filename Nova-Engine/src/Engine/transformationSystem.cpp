@@ -20,18 +20,19 @@ TransformationSystem::TransformationSystem(ECS& ecs) :
 void TransformationSystem::update() {
 	ZoneScoped;
 
+	// 
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
 		// Figure out if the entity requires updating it's world matrix due to world transform change.
 		if (
-				transform.worldHasChanged
-			||	transform.position		!= transform.lastPosition
-			||	transform.scale			!= transform.lastScale
-			||	transform.eulerAngles	!= transform.lastEulerAngles
-			||	!glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))
-		) {
+			transform.worldHasChanged
+			|| transform.position != transform.lastPosition
+			|| transform.scale != transform.lastScale
+			|| transform.eulerAngles != transform.lastEulerAngles
+			|| !glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))
+			) {
 			// Let's update the world matrix.
 			transform.worldHasChanged = true;
-			
+
 			// Quartenions changed, let's update our euler angles.
 			if (!glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))) {
 				transform.rotation = glm::normalize(transform.rotation);
@@ -50,13 +51,13 @@ void TransformationSystem::update() {
 																				transform.lastRotation });
 
 
-			transform.front				= transform.rotation * defaultFront;
-			transform.up				= transform.rotation * defaultUp;
-			transform.right				= transform.rotation * defaultRight;
-			transform.lastPosition		= transform.position;
-			transform.lastScale			= transform.scale;
-			transform.lastRotation		= transform.rotation;
-			transform.lastEulerAngles	= transform.eulerAngles;
+			transform.front = transform.rotation * defaultFront;
+			transform.up = transform.rotation * defaultUp;
+			transform.right = transform.rotation * defaultRight;
+			transform.lastPosition = transform.position;
+			transform.lastScale = transform.scale;
+			transform.lastRotation = transform.rotation;
+			transform.lastEulerAngles = transform.eulerAngles;
 
 			transform.modelMatrix = { 1 };
 			transform.modelMatrix = glm::translate(transform.modelMatrix, transform.position);
@@ -75,7 +76,7 @@ void TransformationSystem::update() {
 		if (entityData.parent == entt::null) {
 			continue;
 		}
-		
+
 		// We ignore local transformation changes if there is already a world change.
 		// Our world matrix has already been calculated.
 		if (transform.worldHasChanged) {
@@ -83,15 +84,15 @@ void TransformationSystem::update() {
 		}
 
 		if (
-				transform.localPosition		!= transform.lastLocalPosition
-			||	transform.localScale		!= transform.lastLocalScale
-			||	transform.localEulerAngles	!= transform.lastLocalEulerAngles		// Euler angles not consistent with quartenions anymore.
-			||	!glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))
-		) {
+			transform.localPosition != transform.lastLocalPosition
+			|| transform.localScale != transform.lastLocalScale
+			|| transform.localEulerAngles != transform.lastLocalEulerAngles		// Euler angles not consistent with quartenions anymore.
+			|| !glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))
+			) {
 			// World matrix needs recalculating because local matrix has been modified.
 			transform.needsRecalculating = true;
 
-			
+
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
 
@@ -108,15 +109,15 @@ void TransformationSystem::update() {
 
 			//Update events, try to save old data for more tweking
 			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
-																				transform.lastLocalPosition,  
+																				transform.lastLocalPosition,
 																				transform.lastLocalScale,
 																				transform.lastLocalRotation });
 
 			// We recalculate local matrix if there is a change in local transform.
-			transform.lastLocalPosition		= transform.localPosition;
-			transform.lastLocalScale		= transform.localScale;
-			transform.lastLocalRotation		= transform.localRotation;
-			transform.lastLocalEulerAngles	= transform.localEulerAngles;
+			transform.lastLocalPosition = transform.localPosition;
+			transform.lastLocalScale = transform.localScale;
+			transform.lastLocalRotation = transform.localRotation;
+			transform.lastLocalEulerAngles = transform.localEulerAngles;
 
 			transform.localMatrix = { 1 };
 			transform.localMatrix = glm::translate(transform.localMatrix, transform.localPosition);
@@ -139,9 +140,6 @@ void TransformationSystem::update() {
 			goto endOfLoop;
 		}
 
-
-
-
 		if (transform.worldHasChanged) {
 
 			//Update events, try to save old data for more tweking
@@ -159,7 +157,7 @@ void TransformationSystem::update() {
 		else {
 			// World transform has not changed. This means it can be prone to indirect change due to ancestor's transform change.
 			// In this case we want to calculate the new world transform due to any change in ancestor.
-			
+
 			// Either none of the ancestors has changed their transform or world transform has been recalculated.
 			if (!transform.needsRecalculating) {
 				continue;
@@ -181,6 +179,7 @@ void TransformationSystem::update() {
 	}
 
 }
+
 
 void TransformationSystem::setLocalTransformFromWorld(entt::entity entity) {
 	Transform& transform = registry.get<Transform>(entity);

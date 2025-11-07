@@ -869,7 +869,7 @@ namespace ImGui
 
         static char childNameStorage[64];
         snprintf(childNameStorage, sizeof(childNameStorage), "##%s_child_wrapper", idin);
-        const bool openChild = BeginChild(childNameStorage);
+		const bool openChild = BeginChild(childNameStorage, {}, ImGuiChildFlags_AutoResizeY);
 
         if (!openChild)
         {
@@ -1220,7 +1220,7 @@ namespace ImGui
     void NeoKeyframe(int32_t* value)
     {
         IM_ASSERT(inSequencer && "Not in active sequencer!");
-        auto& context = sequencerData[currentSequencer];
+        [[maybe_unused]] auto& context = sequencerData[currentSequencer];
         IM_ASSERT(!context.TimelineStack.empty() && "Not in timeline!");
 
         createKeyframe(value);

@@ -11,6 +11,11 @@ class PlaySound : Script
     protected override void update()
     {}
 
+    public void Event()
+    {
+        Debug.Log("aint no wayy");
+    }
+
     protected override void onCollisionEnter(GameObject other) {
         // Hi
         // bye! :D

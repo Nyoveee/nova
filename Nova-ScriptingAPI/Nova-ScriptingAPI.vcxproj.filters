@@ -60,6 +60,9 @@
     <ClInclude Include="src\API\ConversionUtils.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\API\IManagedResourceID.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\API\ScriptingAPI.cxx">
@@ -78,6 +81,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ScriptLibrary\Core\GameObject.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScriptLibrary\Extensions\ScriptLibrary.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

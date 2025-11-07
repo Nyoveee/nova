@@ -16,6 +16,7 @@
 
 #include "gameViewPort.h"
 #include "editorViewPort.h"
+#include "uiViewPort.h"
 #include "ComponentInspection/componentInspector.h"
 #include "Navigation/navMeshGeneration.h"
 #include "hierarchy.h"
@@ -25,6 +26,8 @@
 #include "navigationWindow.h"
 
 #include "type_concepts.h"
+#include "Configuration/editorConfigUI.h"
+#include "Configuration/gameConfigUI.h"
 
 using GLuint = unsigned int;
 
@@ -33,6 +36,8 @@ class Engine;
 class InputManager;
 class AssetManager;
 class ResourceManager;
+
+enum class FocusSelectedEntity;
 
 class Editor {
 public:
@@ -45,6 +50,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
+
 	void update(float dt, std::function<void(bool)> changeSimulationCallback);
 	
 	bool isEntitySelected(entt::entity entity);
@@ -79,11 +85,11 @@ public:
 private:
 	void main(float dt);
 	void toggleViewPortControl(bool toControl);
-	void updateMaterialMapping();
 	void handleEntityValidity();
 	void handleEntityHovering();
 	void handleEntitySelection();
-	void sandboxWindow();
+	void handleFocusOnSelectedEntity(FocusSelectedEntity);
+	void handleUIEntitySelection();
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
@@ -101,10 +107,13 @@ public:
 
 	GameViewPort gameViewPort;
 	EditorViewPort editorViewPort;
+	UIViewPort uiViewPort;
 	ComponentInspector componentInspector;
 	AssetViewerUI assetViewerUi;
 	AssetManagerUI assetManagerUi;
 	NavigationWindow navigationWindow;
+	GameConfigUI gameConfigUI;
+	EditorConfigUI editorConfigUI;
 	NavBar navBar;
 	AnimationTimeLine animationTimeLine;
 	AnimatorController animatorController;
@@ -118,6 +127,12 @@ private:
 	// This indicates whether the editor is in simulation mode.
 	bool inSimulationMode;
 	bool isThereChangeInSimulationMode;
+
+	std::string assetSearchQuery;
+	std::string uppercaseSearchQuery;
+	std::string uppercaseAssetName;
+
+
 };
 
 #include "editor.ipp"
