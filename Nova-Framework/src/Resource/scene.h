@@ -2,6 +2,18 @@
 
 #include "resource.h"
 
+#include <unordered_set>
+#include <entt/entt.hpp>
+
+struct Layer {
+	std::string name;
+	std::unordered_set<entt::entity> entities;
+
+	REFLECTABLE(
+		name
+	)
+};
+
 class Scene : public Resource {
 public:
 	FRAMEWORK_DLL_API Scene(ResourceID id, ResourceFilePath resourceFilePath) : Resource{ id, std::move(resourceFilePath) } {};

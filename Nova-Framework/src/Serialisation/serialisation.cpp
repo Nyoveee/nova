@@ -5,33 +5,37 @@
 #include <iomanip>
 
 namespace Serialiser {
-	void Serialiser::serialiseScene(entt::registry& registry, const char* fileName) {
-		//try {
-			Json js;
-			std::vector<Json> jsonVec;
+	void Serialiser::serialiseScene(entt::registry& registry, std::vector<Layer> const& layers, const char* fileName) {
 
-			for (auto&& [entity] : registry.view<entt::entity>().each()) {
-				Json componentsJson = serialiseComponents<ALL_COMPONENTS>(registry, entity);
-				jsonVec.push_back(componentsJson);
-			}
+		Json js;
+		std::vector<Json> jsonVec;
 
-			// save to output file
-			js["entities"] = jsonVec;
+		for (auto&& [entity] : registry.view<entt::entity>().each()) {
+			Json componentsJson = serialiseComponents<ALL_COMPONENTS>(registry, entity);
+			jsonVec.push_back(componentsJson);
+		}
 
-			std::ofstream file(fileName);
+		// save to output file
+		js["entities"] = jsonVec;
 
-			if (!file) {
-				return;
-			}
+		Json layerJson;
+		
+		for (auto&& layer : layers) {
+			layerJson.push_back(serializeToJson(layer));
+		}
 
-			file << std::setw(4) << js << std::endl;
-		//}
-		//catch (std::exception const& ex) {
-		//	Logger::error("Failed to serialise scene. {}", ex.what());
-		//}
+		js["layers"] = layerJson;
+
+		std::ofstream file(fileName);
+
+		if (!file) {
+			return;
+		}
+
+		file << std::setw(4) << js << std::endl;
 	}
 
-	void deserialiseScene(entt::registry& registry, const char* fileName) {
+	void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, const char* fileName) {
 		try {
 			std::ifstream file(fileName);
 
@@ -41,6 +45,19 @@ namespace Serialiser {
 			Json j;
 
 			file >> j;
+
+			layers.clear();
+
+			for (const auto& layerJsonElement : j["layers"]) {
+				Layer layer;
+				deserializeFromJson(layer, layerJsonElement);
+				layers.push_back(layer);
+			}
+
+			if (layers.empty()) {
+				Logger::warn("No layer deserialised. Empty constructing one because every scene requires one layer.");
+				layers.push_back({ "Default", {} });
+			}
 
 			for (const auto& en : j["entities"]) {
 				auto entity = registry.create(en["id"]);

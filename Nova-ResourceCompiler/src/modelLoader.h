@@ -17,7 +17,9 @@ public:
 
 private:
 	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, std::vector<MaterialName>& materialNames);
-	static void processNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex);
+	static void processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex);
+	static void processNodeHierarchy(aiScene const* scene, std::vector<Mesh>& meshes, aiNode const* node, glm::mat4x4 globalTransformationMatrix);
+
 	static void printBone(BoneIndex boneIndex, unsigned int padding);
 	
 	static Animation processAnimation(aiAnimation const* assimpAnimation);

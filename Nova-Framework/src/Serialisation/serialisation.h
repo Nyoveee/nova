@@ -8,12 +8,14 @@
 #include "config.h"
 #include "resource.h"
 
+class ECS;
+
 using Json = nlohmann::json;
 
 namespace Serialiser {
-	FRAMEWORK_DLL_API void serialiseScene(entt::registry& registry, const char* fileName);
+	FRAMEWORK_DLL_API void serialiseScene(entt::registry& registry, std::vector<Layer> const& layer, const char* fileName);
 
-	FRAMEWORK_DLL_API void deserialiseScene(entt::registry& registry, const char* fileName);
+	FRAMEWORK_DLL_API void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, const char* fileName);
 
 	FRAMEWORK_DLL_API GameConfig deserialiseGameConfig(const char* fileName);
 	FRAMEWORK_DLL_API void serialiseGameConfig(const char* fileName, GameConfig const& config);

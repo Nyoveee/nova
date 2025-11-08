@@ -132,7 +132,7 @@ private:
 	std::string uppercaseSearchQuery;
 	std::string uppercaseAssetName;
 
-
+	int imguiCounter = 0;
 };
 
 #include "editor.ipp"

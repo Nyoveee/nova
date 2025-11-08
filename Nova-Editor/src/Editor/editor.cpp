@@ -168,6 +168,8 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 }
 
 void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback) {
+	imguiCounter = 0;
+
 	ZoneScopedC(tracy::Color::Orange);
 
 	ImGui_ImplGlfw_NewFrame();
@@ -474,9 +476,11 @@ void Editor::startSimulation() {
 	// We serialise everything, resources to current scene when starting a simulation..
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
-	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+	Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
 
+#if 0
 	assetManager.serialiseResources();
+#endif
 
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
@@ -507,6 +511,6 @@ Editor::~Editor() {
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 
 	if (filePath && !isInSimulationMode()) {
-		Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
 	}
 }

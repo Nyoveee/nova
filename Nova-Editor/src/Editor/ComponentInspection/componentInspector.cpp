@@ -94,6 +94,36 @@ void ComponentInspector::update() {
 		ImGui::EndTable();
 	}
 
+	// Display a drop down list of all the available layers an entity can choose..
+	auto& layers = editor.engine.ecs.sceneManager.layers;
+
+	if (entityData.layerId < 0 || entityData.layerId >= layers.size()) {
+		Logger::warn("Entity {} had invalid layer. Resetting it..", entityData.name);
+		entityData.layerId = 0;
+	}
+
+	if (ImGui::BeginCombo("Render Layer", layers[entityData.layerId].name.c_str())) {
+		for (int layerId = 0; layerId < layers.size(); ++layerId) {
+			ImGui::PushID(layerId);
+
+			auto& layer = layers[layerId];
+
+			if (ImGui::Selectable(layer.name.c_str(), layerId == entityData.layerId)) {
+				// Remove itself from the old layer..
+				layers[entityData.layerId].entities.erase(selectedEntity);
+
+				entityData.layerId = layerId;
+				
+				// Add itself into the new layer..
+				layers[entityData.layerId].entities.insert(selectedEntity);
+
+			}
+
+			ImGui::PopID();
+		}
+		ImGui::EndCombo();
+	}
+
 	ImGui::NewLine();
 
 	if (ImGui::CollapsingHeader("Entity")) {
@@ -109,11 +139,9 @@ void ComponentInspector::update() {
 		}
 
 		ImGui::EndChild();
+
 		std::string prefabIdString = std::to_string(static_cast<std::size_t>(entityData.prefabID));
-		ImGui::Text("PrefabID: ");
-		ImGui::SameLine();
-		ImGui::Text(prefabIdString.c_str());
-		
+		ImGui::Text("PrefabID: %s", prefabIdString.c_str());
 	}
 
 	// Display the rest of the components via reflection.

@@ -42,6 +42,7 @@ class Material;
 	Image
 
 using ScriptName   = std::string;
+using LayerID	   = int;
 
 #include "physics.h"
 
@@ -84,6 +85,8 @@ struct EntityData {
 	std::string tag                                                     {};
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
+	LayerID layerId														{};
+
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 
@@ -92,6 +95,7 @@ struct EntityData {
 		tag,
 		parent,
 		children,
+		layerId,
 		prefabID,
 		overridenProperties
 	)
@@ -131,16 +135,6 @@ struct Transform {
 	// When first created set it to true.
 	bool worldHasChanged = true;
 	bool needsRecalculating = false;
-	
-	// ====== For every world + local transform changes, we store the result in some variable =======
-	// We then resolve everything in the end..
-	glm::vec3 newLocalFromWorldPosition;
-	glm::vec3 newLocalFromWorldScale;
-	glm::quat newLocalFromWorldRotation;
-
-	glm::vec3 newWorldFromLocalPosition;
-	glm::vec3 newWorldFromLocalScale;
-	glm::quat newWorldFromLocalRotation;
 
 	// Reflect these data members for level editor to display
 	REFLECTABLE(

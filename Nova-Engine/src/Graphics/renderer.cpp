@@ -354,11 +354,29 @@ void Renderer::renderUI()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setDepthMode(CustomShader::DepthTestingMethod::NoDepthWriteTest);
+	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+
+	glBindVertexArray(textVAO);
 
 	// UI draw calls here
-	renderImages();
-	renderTexts();   
+	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
+		for (auto const& entity : entities) {
+			Transform& transform = registry.get<Transform>(entity);
+			Image* image = registry.try_get<Image>(entity);
+			Text* text = registry.try_get<Text>(entity);
+
+			if (image) {
+				renderImage(transform, *image);
+			}
+
+			if (text) {
+				renderText(transform, *text);
+			}
+		}
+	}
+
+	glBindVertexArray(mainVAO);
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
@@ -799,37 +817,46 @@ void Renderer::renderModels(Camera const& camera) {
 	static const unsigned int isNotASkinnedMeshRenderer = 0;
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
 
-	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
-		// Retrieves model asset from asset manager.
-		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
+	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
+		for (auto const& entity : entities) {
+			MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
+			Transform const& transform = registry.get<Transform>(entity);
 
-		if (!model) {
-			// missing model.
-			continue;
-		}
-
-		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			Material const* material = obtainMaterial(meshRenderer, mesh);
-
-			if (!material) {
+			if (!meshRenderer) {
 				continue;
 			}
 
-			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+			// Retrieves model asset from asset manager.
+			auto [model, _] = resourceManager.getResource<Model>(meshRenderer->modelId);
 
-			if (shader) {
-				// time to draw!
-				renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+			if (!model) {
+				// missing model.
+				continue;
+			}
+
+			// Draw every mesh of a given model.
+			for (auto const& mesh : model->meshes) {
+				Material const* material = obtainMaterial(*meshRenderer, mesh);
+
+				if (!material) {
+					continue;
+				}
+
+				// Use the correct shader and configure it's required uniforms..
+				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+				if (shader) {
+					// time to draw!
+					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+				}
 			}
 		}
 	}
-
+		
 	glDisable(GL_CULL_FACE);
 }
 
-void Renderer::renderTexts()
+void Renderer::renderText(Transform const& transform, Text const& text)
 {
 	struct Vertex {
 		GLfloat x, y;   // screen position
@@ -840,121 +867,98 @@ void Renderer::renderTexts()
 	textShader.use();
 	textShader.setMatrix("projection", UIProjection);
 
-	setDepthMode(CustomShader::DepthTestingMethod::NoDepthWriteTest);
-
 	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray(textVAO);
 
-	// iterate through all characters
-	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
-		// Retrieves font asset from asset manager.
-		auto [font, _] = resourceManager.getResource<Font>(text.font);
+	// Retrieves font asset from asset manager.
+	auto [font, _] = resourceManager.getResource<Font>(text.font);
 
-		if (!font) {
-			continue;
-		}
-
-		if (text.text.empty()) {
-			continue;
-		}
-
-		textShader.setVec3("textColor", text.fontColor);
-
-		Font::Atlas const& atlas = font->getAtlas();
-		float fontScale = static_cast<float>(text.fontSize) / font->getFontSize();
-
-		float x = transform.position.x;
-		float y = transform.position.y;
-
-		std::vector<Vertex> vertices;
-		vertices.reserve(text.text.size() * 6); // 6 vertices per char, 4 floats per vertex
-
-		std::string::const_iterator c;
-		for (c = text.text.begin(); c != text.text.end(); c++)
-		{
-			const Font::Character& ch = font->getCharacters().at(*c);
-
-			float xpos = x + ch.bearing.x * fontScale;
-			float ypos = y - (ch.size.y - ch.bearing.y) * fontScale;
-
-			float w = ch.size.x * fontScale;
-			float h = ch.size.y * fontScale;
-
-			// advance cursors for next glyph 
-			x += ch.advance * fontScale;
-
-			// Skip invisible glyphs
-			if (w == 0 || h == 0)
-				continue;
-
-			float tx = ch.tx;                   // texture X offset in atlas
-			float ty = 0.f;                     // texture Y offset in atlas
-			float tw = static_cast<float>(ch.size.x) / atlas.width;
-			float th = static_cast<float>(ch.size.y) / atlas.height;
-
-			// 6 vertices per quad (2 triangles)
-			vertices.push_back({ xpos,     ypos + h, tx,       ty });
-			vertices.push_back({ xpos,     ypos,     tx,       ty + th });
-			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
-
-			vertices.push_back({ xpos,     ypos + h, tx,       ty });
-			vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
-			vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
-		}
-
-		// Bind font atlas texture once per string
-		glBindTexture(GL_TEXTURE_2D, atlas.textureId);
-
-		// Upload vertex data for all glyphs in this string
-		textVBO.uploadData(vertices, 0);
-
-		// Draw all characters in one batched call
-		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
-
-		// Reset bindings
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
+	if (!font) {
+		return;
 	}
 
-	glBindVertexArray(mainVAO);
-	glDisable(GL_BLEND);
+	if (text.text.empty()) {
+		return;
+	}
+
+	textShader.setVec3("textColor", text.fontColor);
+
+	Font::Atlas const& atlas = font->getAtlas();
+	float fontScale = static_cast<float>(text.fontSize) / font->getFontSize();
+
+	float x = transform.position.x;
+	float y = transform.position.y;
+
+	std::vector<Vertex> vertices;
+	vertices.reserve(text.text.size() * 6); // 6 vertices per char, 4 floats per vertex
+
+	std::string::const_iterator c;
+	for (c = text.text.begin(); c != text.text.end(); c++)
+	{
+		const Font::Character& ch = font->getCharacters().at(*c);
+
+		float xpos = x + ch.bearing.x * fontScale;
+		float ypos = y - (ch.size.y - ch.bearing.y) * fontScale;
+
+		float w = ch.size.x * fontScale;
+		float h = ch.size.y * fontScale;
+
+		// advance cursors for next glyph 
+		x += ch.advance * fontScale;
+
+		// Skip invisible glyphs
+		if (w == 0 || h == 0)
+			continue;
+
+		float tx = ch.tx;                   // texture X offset in atlas
+		float ty = 0.f;                     // texture Y offset in atlas
+		float tw = static_cast<float>(ch.size.x) / atlas.width;
+		float th = static_cast<float>(ch.size.y) / atlas.height;
+
+		// 6 vertices per quad (2 triangles)
+		vertices.push_back({ xpos,     ypos + h, tx,       ty });
+		vertices.push_back({ xpos,     ypos,     tx,       ty + th });
+		vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+
+		vertices.push_back({ xpos,     ypos + h, tx,       ty });
+		vertices.push_back({ xpos + w, ypos,     tx + tw,  ty + th });
+		vertices.push_back({ xpos + w, ypos + h, tx + tw,  ty });
+	}
+
+	// Bind font atlas texture once per string
+	glBindTexture(GL_TEXTURE_2D, atlas.textureId);
+
+	// Upload vertex data for all glyphs in this string
+	textVBO.uploadData(vertices, 0);
+
+	// Draw all characters in one batched call
+	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 }
 
-void Renderer::renderImages()
+void Renderer::renderImage(Transform const& transform, Image const& image)
 {
 	texture2dShader.use();
 	texture2dShader.setMatrix("uiProjection", UIProjection);
-
 	texture2dShader.setInt("image", 0);
 
-	glBindVertexArray(textVAO);
-
-
-	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
-		// Get texture resource
-		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
-		if (!textureAsset) {
-			continue;
-		}
-
-		GLuint textureId = textureAsset->getTextureId();
-		if (textureId == 0) {
-			continue;
-		}
-
-		texture2dShader.setVec4("tintColor", image.colorTint);
-		texture2dShader.setMatrix("model", transform.modelMatrix);
-		texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureId);
-
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
+	// Get texture resource
+	auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
+	if (!textureAsset) {
+		return;
 	}
 
-	glBindVertexArray(mainVAO);
-	glDisable(GL_BLEND);
+	GLuint textureId = textureAsset->getTextureId();
+	if (textureId == 0) {
+		return;
+	}
+
+	texture2dShader.setVec4("tintColor", image.colorTint);
+	texture2dShader.setMatrix("model", transform.modelMatrix);
+	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 
@@ -1115,7 +1119,7 @@ void Renderer::setBlendMode(CustomShader::BlendingConfig configuration) {
 		using enum CustomShader::BlendingConfig;
 	case AlphaBlending:
 		glEnable(GL_BLEND);
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		break;
 	case AdditiveBlending:
 		glEnable(GL_BLEND);
