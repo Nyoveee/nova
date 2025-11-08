@@ -22,6 +22,7 @@ public:
 	virtual System::String^ ToString() override sealed;
 
 	GameObject^ GetParent();
+	array<GameObject^>^ GetChildren();
 	System::UInt32 GetId();
 	void SetActive(bool active);
 
