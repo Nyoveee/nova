@@ -616,8 +616,12 @@ Editor::~Editor() {
 		entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
 		std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
 
-		for (auto pair : prefabMap) {
-			Serialiser::serialisePrefab(prefabRegistry, pair.second, assetManagerUi.createAssetFile(".prefab"), std::numeric_limits<std::size_t>::max());
+		for (auto& pair : prefabMap) {
+			auto descriptor = assetManager.getDescriptor(pair.first);
+			if (descriptor != nullptr) {
+				std::ofstream assetFile{ descriptor->filepath.string};
+				Serialiser::serialisePrefab(prefabRegistry, pair.second, assetFile, std::numeric_limits<std::size_t>::max());
+			}
 		}
 	}
 

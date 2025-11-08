@@ -171,7 +171,6 @@ namespace Serialiser {
 		Json j;
 		file >> j;
 
-		//entt::entity rootEntity = entt::null;
 		entt::entity rootEntity = j["RootEntity"];
 
 		entt::id_type highestID = findLargestEntity(registry);
@@ -180,12 +179,14 @@ namespace Serialiser {
 
 		//deserialisePrefabRecursive(j["Entities"],0, registry, highestID, static_cast<int>(id), rootEntity, prefabRegistry, entt::null, map);
 		deserialisePrefabRecursive(j["Entities"], rootEntity, prefabRegistry, highestID, map);
+		EntityData* entityData = prefabRegistry.try_get<EntityData>(j["RootEntity"]);
+		entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
 
 		//return rootEntity;
 		return j["RootEntity"];
 	}
-	void serialisePrefab(entt::registry& registry, entt::entity entity, std::optional<std::ofstream> opt, std::size_t id) {
-		std::ofstream& file = opt.value();
+	void serialisePrefab(entt::registry& registry, entt::entity entity, std::ofstream& file, std::size_t id) {
+		//std::ofstream& file = opt;
 
 		if (!file.is_open())
 			return;
