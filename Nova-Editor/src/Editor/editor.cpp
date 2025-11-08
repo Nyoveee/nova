@@ -243,7 +243,7 @@ void Editor::main(float dt) {
 	handleEntityValidity();
 
 	//
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
