@@ -3,75 +3,12 @@
         {
             "EntityData": {
                 "children": [
-                    6
-                ],
-                "name": "Parent",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 4
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": -4.939022064208984
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 5
-        },
-        {
-            "EntityData": {
-                "children": [
-                    7
+                    3
                 ],
                 "name": "Child",
                 "overridenProperties": null,
-                "parent": 1048579,
-                "prefabID": 4294967295,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
                 "tag": ""
             },
             "MeshRenderer": {
@@ -124,14 +61,14 @@
                     "z": 1.0
                 }
             },
-            "id": 6
+            "id": 2
         },
         {
             "EntityData": {
                 "children": null,
                 "name": "GrandChild",
                 "overridenProperties": null,
-                "parent": 1048578,
+                "parent": 2,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -185,8 +122,8 @@
                     "z": 1.0
                 }
             },
-            "id": 7
+            "id": 3
         }
     ],
-    "RootEntity": 5
+    "RootEntity": 2
 }

@@ -5,7 +5,8 @@
 
 PrefabManager::PrefabManager(Engine& engine) :
 	resourceManager { engine.resourceManager },
-	ecsRegistry		{ engine.ecs.registry }
+	ecsRegistry		{ engine.ecs.registry },
+	ecs				{ engine.ecs}
 {}
 
 //definition in .h

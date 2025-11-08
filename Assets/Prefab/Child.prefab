@@ -2,17 +2,14 @@
     "Entities": [
         {
             "EntityData": {
-                "children": null,
+                "children": [
+                    13
+                ],
                 "name": "Child",
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 3
+                "prefabID": 18446744073709551615,
+                "tag": ""
             },
             "Transform": {
                 "eulerAngles": {
@@ -44,7 +41,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -6.441563129425049
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -58,7 +55,63 @@
                     "z": 1.0
                 }
             },
-            "id": 0
+            "id": 12
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "Child",
+                "overridenProperties": null,
+                "parent": 12,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 13
         }
-    ]
+    ],
+    "RootEntity": 12
 }
