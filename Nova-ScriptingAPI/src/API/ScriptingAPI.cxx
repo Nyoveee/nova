@@ -418,7 +418,10 @@ void Interface::loadAssembly()
 		}
 
 		System::Type^ scriptType = classNameToScriptType[className];
-		availableScripts->Add(static_cast<std::size_t>(scriptId), safe_cast<Script^>(System::Activator::CreateInstance(scriptType)));
+
+		if (!scriptType->IsAbstract) {
+			availableScripts->Add(static_cast<std::size_t>(scriptId), safe_cast<Script^>(System::Activator::CreateInstance(scriptType)));
+		}
 	}
 }
 

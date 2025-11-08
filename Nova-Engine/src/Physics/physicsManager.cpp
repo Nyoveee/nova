@@ -574,7 +574,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 				rigidBody->layer = Rigidbody::Layer::NonMoving;
 				rigidBody->motionType = JPH::EMotionType::Static;
 
-				shape = new JPH::ScaledShape(result.Get(), toJPHVec3(transform->scale));
+				shape = new JPH::ScaledShape(result.Get(), JPH::Vec3(meshCollider->shapeScale, meshCollider->shapeScale, meshCollider->shapeScale));
 			}
 		}
 	}

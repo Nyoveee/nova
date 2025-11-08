@@ -95,7 +95,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 		skeletonOpt = std::move(skeleton);
 	}
 	else {
-		processNodeHierarchy(scene, meshes, scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
+		// processNodeHierarchy(scene, meshes, scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
 	}
 
 #if 0

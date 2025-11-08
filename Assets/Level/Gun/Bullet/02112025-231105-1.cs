@@ -1,6 +1,8 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using System;
+
 class BulletScript : Script
 {
     // 
@@ -39,7 +41,6 @@ class BulletScript : Script
         Vector3 movingDirection = rigidbody.GetVelocity();
         Vector3 position = transform.position;
 
-        // raycast normalises the directional vector.. so we multiply back   asas
         RayCastResult? result = PhysicsAPI.Raycast(position, movingDirection, movingDirection.Length() * Time.V_FixedDeltaTime(), gameObject);
 
         if (result.HasValue)

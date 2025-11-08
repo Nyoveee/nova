@@ -86,6 +86,7 @@ struct EntityData {
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
+	// bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
@@ -283,10 +284,10 @@ struct CapsuleCollider {
 };
 
 struct MeshCollider {
-	bool isTrigger;
+	float shapeScale;
 
 	REFLECTABLE(
-		isTrigger
+		shapeScale
 	)
 };
 

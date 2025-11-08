@@ -31,4 +31,8 @@ public:
 	bool hierarchyBool;
 	bool componentInspectorBool;
 	bool gameConfigBool;
+	bool animationBool;
+	bool navigationBool;
+	bool imGuiDemoBool;
+	bool animatorBool;
 };
