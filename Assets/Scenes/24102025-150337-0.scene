@@ -1,29 +1,39 @@
 {
     "entities": [
         {
+            "EntityData": {
+                "children": null,
+                "name": "GrandChild",
+                "overridenProperties": null,
+                "parent": 6,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
             "MeshRenderer": {
-                "materialIds": null,
-                "modelId": 1245008178564268053
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": 0.034906573593616486,
+                    "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
-                    "x": 0.034906573593616486,
+                    "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 3.148522138595581,
+                    "x": 3.2015652656555176,
                     "y": 0.0,
-                    "z": 1.1724348068237305
+                    "z": 0.0
                 },
                 "localRotation": {
-                    "w": 0.9998477101325989,
-                    "x": 0.01745240017771721,
+                    "w": 1.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -33,23 +43,399 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 11.46194076538086,
-                    "y": 0.45235079526901245,
-                    "z": -15.442509651184082
+                    "x": 5.7180023193359375,
+                    "y": 6.111072063446045,
+                    "z": -4.939022064208984
                 },
                 "rotation": {
-                    "w": 0.9998477101325989,
-                    "x": 0.01745240017771721,
+                    "w": 1.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 2.0,
+                    "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
                 }
             },
-            "id": 11
+            "id": 7
+        },
+        {
+            "EntityData": {
+                "children": [
+                    7
+                ],
+                "name": "Child",
+                "overridenProperties": null,
+                "parent": 5,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 2.51643705368042,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 2.51643705368042,
+                    "y": 6.111072063446045,
+                    "z": -4.939022064208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 6
+        },
+        {
+            "EntityData": {
+                "children": [
+                    6
+                ],
+                "name": "Parent",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 4
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 6.111072063446045,
+                    "z": -4.939022064208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "name": "GrandChild",
+                "overridenProperties": null,
+                "parent": 3,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 3.2015652656555176,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 5.7180023193359375,
+                    "y": 0.5653716325759888,
+                    "z": -4.939022064208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "children": [
+                    4
+                ],
+                "name": "Child",
+                "overridenProperties": null,
+                "parent": 2,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 2.51643705368042,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 2.51643705368042,
+                    "y": 0.5653716325759888,
+                    "z": -4.939022064208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 3
+        },
+        {
+            "EntityData": {
+                "children": [
+                    3
+                ],
+                "name": "Parent",
+                "overridenProperties": null,
+                "parent": 1,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 4
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": -4.939022064208984
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.5653716325759888,
+                    "z": -4.939022064208984
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": [
+                    2
+                ],
+                "name": "GrandParent",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 4
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.5653716325759888,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1
         },
         {
             "MeshRenderer": {
@@ -68,7 +454,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 4.164896488189697,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -79,12 +465,12 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 2.0,
+                    "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
                 },
                 "position": {
-                    "x": 5.164896488189697,
+                    "x": 1.0,
                     "y": 0.45235079526901245,
                     "z": -16.614944458007813
                 },
@@ -95,63 +481,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 2.0,
+                    "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
                 }
             },
-            "id": 9
-        },
-        {
-            "MeshRenderer": {
-                "materialIds": null,
-                "modelId": 1245008178564268053
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 4.164896488189697,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 2.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 5.164896488189697,
-                    "y": -3.248229503631592,
-                    "z": -16.614944458007813
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 2.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 21
+            "id": 8
         },
         {
             "MeshRenderer": {
@@ -221,7 +556,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
+                    "x": 4.164896488189697,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -232,12 +567,63 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
+                    "x": 2.0,
                     "y": 1.0,
                     "z": 1.0
                 },
                 "position": {
-                    "x": 1.0,
+                    "x": 5.164896488189697,
+                    "y": -3.248229503631592,
+                    "z": -16.614944458007813
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 2.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 21
+        },
+        {
+            "MeshRenderer": {
+                "materialIds": null,
+                "modelId": 1245008178564268053
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 4.164896488189697,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 2.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 5.164896488189697,
                     "y": 0.45235079526901245,
                     "z": -16.614944458007813
                 },
@@ -248,12 +634,63 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0,
+                    "x": 2.0,
                     "y": 1.0,
                     "z": 1.0
                 }
             },
-            "id": 8
+            "id": 9
+        },
+        {
+            "MeshRenderer": {
+                "materialIds": null,
+                "modelId": 1245008178564268053
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.034906573593616486,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.034906573593616486,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 3.148522138595581,
+                    "y": 0.0,
+                    "z": 1.1724348068237305
+                },
+                "localRotation": {
+                    "w": 0.9998477101325989,
+                    "x": 0.01745240017771721,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 11.46194076538086,
+                    "y": 0.45235079526901245,
+                    "z": -15.442509651184082
+                },
+                "rotation": {
+                    "w": 0.9998477101325989,
+                    "x": 0.01745240017771721,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 2.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 11
         }
     ]
 }

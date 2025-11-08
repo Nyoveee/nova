@@ -9,6 +9,16 @@ PrefabManager::PrefabManager(Engine& engine) :
 	ecs				{ engine.ecs}
 {}
 
+entt::registry& PrefabManager::getPrefabRegistry()
+{
+	return prefabRegistry;
+}
+
+std::unordered_map<ResourceID, entt::entity> PrefabManager::getPrefabMap()
+{
+	return prefabMap;
+}
+
 //definition in .h
 
 //template<typename ...Components>

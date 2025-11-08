@@ -180,6 +180,8 @@ namespace Serialiser {
 		j["Entities"] = jsonVec;
 		file << std::setw(4) << j << std::endl;
 
+		Logger::debug("Prefab Serialized");
+
 	}
 
 	void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<Json>& jsonVec, bool checkParent, std::size_t id) {

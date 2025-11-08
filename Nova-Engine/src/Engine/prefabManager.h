@@ -3,6 +3,7 @@
 #include <entt/entt.hpp>
 #include "resource.h"
 #include "Serialisation/serialisation.h"
+#include "export.h"
 
 class ECS;
 class Engine;
@@ -11,6 +12,10 @@ class ResourceManager;
 class PrefabManager {
 public:
 	PrefabManager(Engine& engine);
+	ENGINE_DLL_API entt::registry& getPrefabRegistry();
+	ENGINE_DLL_API std::unordered_map<ResourceID, entt::entity> getPrefabMap();
+
+public:
 
 	template<typename ...Components>
 	void instantiatePrefab(ResourceID id);
@@ -188,3 +193,13 @@ void PrefabManager::instantiatePrefabRecursive(entt::entity prefabEntity) {
 
 
 }
+
+//entt::registry& PrefabManager::getPrefabRegistry()
+//{
+//	return prefabRegistry;
+//}
+//
+//std::unordered_map<ResourceID, entt::entity> PrefabManager::getPrefabMap()
+//{
+//	return prefabMap;
+//}

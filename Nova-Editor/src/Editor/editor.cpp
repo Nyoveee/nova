@@ -22,6 +22,7 @@
 #include "ResourceManager/resourceManager.h"
 #include "Navigation/navMeshGeneration.h"
 #include "Serialisation/serialisation.h"
+#include "Engine/prefabManager.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -484,4 +485,13 @@ Editor::~Editor() {
 	if (filePath && !isInSimulationMode()) {
 		Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
 	}
+	if (!isInSimulationMode()) {
+		entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
+		std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
+
+		for (auto pair : prefabMap) {
+			Serialiser::serialisePrefab(prefabRegistry, pair.second, assetManagerUi.createAssetFile(".prefab"), std::numeric_limits<std::size_t>::max());
+		}
+	}
+
 }
