@@ -499,7 +499,7 @@ void AssetManager::removeResource(ResourceID id) {
 	assetToDescriptor.erase(iterator);
 }
 
-void AssetManager::deleteAsset(ResourceID id) {
+void AssetManager::deleteAsset([[maybe_unused]] ResourceID id) {
 	
 // 	std::filesystem::remove(resourcePath);
 

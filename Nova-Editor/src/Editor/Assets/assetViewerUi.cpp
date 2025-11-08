@@ -16,9 +16,11 @@
 #include "Editor/editor.h"
 
 #include "Serialisation/serialisation.h"
+#include "Editor/ComponentInspection/displayComponent.h"
 #include "Editor/ComponentInspection/PropertyDisplay/displayProperties.h"
 
 #include "systemResource.h"
+
 
 AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager) :
 	editor							{ editor },
@@ -150,6 +152,19 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	else if (resourceManager.isResource<Model>(id)) {
 		AssetInfo<Model>* modelDescriptorPtr = static_cast<AssetInfo<Model>*>(descriptorPtr);
 		copyOfScale = modelDescriptorPtr->scale;
+	}
+	else if (resourceManager.isResource<Prefab>(id)) {
+		auto&& prefabMap = editor.engine.prefabManager.getPrefabMap();
+		auto iterator = prefabMap.find(selectedResourceId);
+
+		if (iterator == prefabMap.end()) {
+			rootPrefabEntity = editor.engine.prefabManager.loadPrefab(selectedResourceId);
+		}
+		else {
+			rootPrefabEntity = iterator->second;
+		}
+
+		selectedPrefabEntity = rootPrefabEntity;
 	}
 }
 
@@ -530,6 +545,33 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 	}
 }
 
+void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descriptor) {
+	auto&& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
+
+	if (ImGui::TreeNode("Prefab Hierarchy")) {
+		ImGui::BeginChild("##Prefab", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
+		
+		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, 
+			[&](std::vector<entt::entity> entities) {
+				if (entities.empty()) {
+					return;
+				}
+
+				selectedPrefabEntity = entities[0];
+			},
+			[&](entt::entity entity) {
+				return selectedPrefabEntity == entity;
+			}
+		);
+
+		ImGui::EndChild();
+		ImGui::TreePop();
+	}
+
+	ImGui::Separator();
+	g_displayComponentFunctor(editor.componentInspector, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
+}
+
 void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {
 	Bone const& bone = skeleton.bones[boneIndex];
 
@@ -557,3 +599,5 @@ void AssetViewerUI::displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton cons
 		ImGui::TreePop();
 	}
 }
+
+#include "Editor/ComponentInspection/displayComponent.ipp"

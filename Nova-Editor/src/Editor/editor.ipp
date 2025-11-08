@@ -4,7 +4,7 @@
 #include "editor.h"
 
 template<typename T>
-void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback) {
+void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> const& onClickCallback) {
 	char const* selectedAssetName = "";
 
 	ImGui::PushID(++imguiCounter);

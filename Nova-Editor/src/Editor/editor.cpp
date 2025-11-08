@@ -23,6 +23,7 @@
 #include "ResourceManager/resourceManager.h"
 #include "Navigation/navMeshGeneration.h"
 #include "Serialisation/serialisation.h"
+#include "Engine/prefabManager.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -505,6 +506,100 @@ bool Editor::isInSimulationMode() const {
 	return inSimulationMode;
 }
 
+void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate) {
+	if (!registry.valid(entity)) {
+		return;
+	}
+
+	EntityData const& entityData = registry.get<EntityData>(entity);
+
+	bool toDisplayTreeNode = false;
+
+	ImGui::PushID(static_cast<unsigned>(entity));
+
+	auto hasHierarchyPrefab = [&entityData, &registry]() {
+		EntityData root{ const_cast<EntityData&>(entityData) };
+		while (root.parent != entt::null) {
+			if (root.prefabID != INVALID_RESOURCE_ID)
+				return true;
+			root = registry.get<EntityData>(root.parent);
+
+		}
+		return root.prefabID != INVALID_RESOURCE_ID;
+	};
+
+	ImGui::PushStyleColor(ImGuiCol_Text, hasHierarchyPrefab() ? ImVec4(0, 1, 0, 1) : ImVec4(1, 1, 1, 1));
+
+	if (entityData.children.empty()) {
+		ImGui::Indent(27.5f);
+		if (ImGui::Selectable((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), selectedPredicate(entity))) {
+			onClickFunction({ entity });
+		}
+
+		// Check for double-click to focus on entity
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			Transform* transform = registry.try_get<Transform>(entity);
+			if (transform) {
+				engine.cameraSystem.focusOnPosition(transform->position);
+			}
+		}
+		ImGui::Unindent(27.5f);
+	}
+	else {
+		// Display children recursively..
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
+
+		if (selectedPredicate(entity)) {
+			flags |= ImGuiTreeNodeFlags_Selected;
+		}
+
+		toDisplayTreeNode = ImGui::TreeNodeEx((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), flags);
+
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+			onClickFunction({ entity });
+		}
+
+		// Check for double-click to focus on entity
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && !ImGui::IsItemToggledOpen()) {
+			Transform* transform = registry.try_get<Transform>(entity);
+			if (transform) {
+				engine.cameraSystem.focusOnPosition(transform->position);
+			}
+		}
+	}
+	ImGui::PopStyleColor();
+	// I want my widgets to be draggable, providing the entity id as the payload.
+	if (ImGui::BeginDragDropSource()) {
+		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity*));
+
+		// Draw tooltip-style preview while dragging
+		ImGui::Text(entityData.name.c_str());
+
+		ImGui::EndDragDropSource();
+	}
+
+	// I want all my widgets to be a valid drop target.
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			entt::entity childEntity = *((entt::entity*)payload->Data);
+			engine.ecs.setEntityParent(childEntity, entity);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopID();
+
+	// recursively displays tree hierarchy..
+	if (toDisplayTreeNode) {
+		for (entt::entity child : entityData.children) {
+			displayEntityHierarchy(registry, child, onClickFunction, selectedPredicate);
+		}
+
+		ImGui::TreePop();
+	}
+}
+
 Editor::~Editor() {
 	
 	ImGui_ImplGlfw_Shutdown();
@@ -517,4 +612,13 @@ Editor::~Editor() {
 	if (filePath && !isInSimulationMode()) {
 		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
 	}
+	if (!isInSimulationMode()) {
+		entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
+		std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
+
+		for (auto pair : prefabMap) {
+			Serialiser::serialisePrefab(prefabRegistry, pair.second, assetManagerUi.createAssetFile(".prefab"), std::numeric_limits<std::size_t>::max());
+		}
+	}
+
 }

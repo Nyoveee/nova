@@ -25,6 +25,7 @@ private:
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 	void displayAnimationInfo(AssetInfo<Model>& descriptor);
 	void displayFontInfo(AssetInfo<Font>& descriptor);
+	void displayPrefabInfo(AssetInfo<Prefab>& descriptor);
 
 	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
@@ -52,6 +53,10 @@ private:
 
 	// Model
 	float copyOfScale = 1.f;
+
+	// Selected prefab entity
+	entt::entity rootPrefabEntity;
+	entt::entity selectedPrefabEntity;
 
 	// ---------------------------------------------------
 	bool toSerialiseSelectedDescriptor;

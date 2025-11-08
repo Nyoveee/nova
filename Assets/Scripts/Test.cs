@@ -4,6 +4,9 @@
 class Test : Script
 {
     public Transform_? transform;
+    public Transform_? transform1;
+    public Transform_? transform2;
+    public Transform_? transform3;
 
     private bool startMoving = false;
 
