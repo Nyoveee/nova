@@ -527,6 +527,10 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 	}
 }
 
+void AssetViewerUI::displayPrefabInfo(AssetInfo<Prefab>& descriptor) {
+
+}
+
 void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {
 	Bone const& bone = skeleton.bones[boneIndex];
 

@@ -19,6 +19,9 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 	else if constexpr (std::same_as <T, Font>) {
 		displayFontInfo(typedDescriptor);
 	}
+	else if constexpr (std::same_as<T, Prefab>) {
+		displayPrefabInfo(typedDescriptor);
+	}
 }
 
 template <typename T>
