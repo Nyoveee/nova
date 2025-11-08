@@ -36,11 +36,15 @@
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
 
-
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
 	"NotoSans-Medium.ttf";
+
+constexpr ImVec4 lightGreenColor = ImVec4(0.5f, 1.f, 0.5f, 1.f);
+constexpr ImVec4 grayColor		 = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
+constexpr ImVec4 whiteColor		 = ImVec4(1.f, 1.f, 1.f, 1.f);
+
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager) :
 	window							{ window },
@@ -516,19 +520,35 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 	bool toDisplayTreeNode = false;
 
 	ImGui::PushID(static_cast<unsigned>(entity));
-
-	auto hasHierarchyPrefab = [&entityData, &registry]() {
-		EntityData root{ const_cast<EntityData&>(entityData) };
-		while (root.parent != entt::null) {
-			if (root.prefabID != INVALID_RESOURCE_ID)
-				return true;
-			root = registry.get<EntityData>(root.parent);
-
+		
+	// We use IILE to conditionally initialise a variable :)
+	ImVec4 color = [&]() {
+		// If the current entity is disabled, render gray..
+		if (!entityData.isActive) {
+			return grayColor;
 		}
-		return root.prefabID != INVALID_RESOURCE_ID;
-	};
 
-	ImGui::PushStyleColor(ImGuiCol_Text, hasHierarchyPrefab() ? ImVec4(0, 1, 0, 1) : ImVec4(1, 1, 1, 1));
+		// Else, render green or white 
+		return [&]() {
+			EntityData const* root = &entityData;
+
+			while (root->parent != entt::null) {
+				if (root->prefabID != INVALID_RESOURCE_ID)
+					return lightGreenColor;
+				
+				root = registry.try_get<EntityData>(root->parent);
+			}
+
+			if (root->prefabID != INVALID_RESOURCE_ID) {
+				return lightGreenColor;
+			}
+			else {
+				return whiteColor;
+			}
+		}();
+	}();
+
+	ImGui::PushStyleColor(ImGuiCol_Text, color);
 
 	if (entityData.children.empty()) {
 		ImGui::Indent(27.5f);
@@ -567,7 +587,9 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 			}
 		}
 	}
+
 	ImGui::PopStyleColor();
+
 	// I want my widgets to be draggable, providing the entity id as the payload.
 	if (ImGui::BeginDragDropSource()) {
 		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity*));

@@ -6,7 +6,7 @@
 PrefabManager::PrefabManager(Engine& engine) :
 	resourceManager { engine.resourceManager },
 	ecsRegistry		{ engine.ecs.registry },
-	ecs				{ engine.ecs}
+	ecs				{ engine.ecs }
 {}
 
 entt::registry& PrefabManager::getPrefabRegistry()
@@ -21,6 +21,11 @@ std::unordered_map<ResourceID, entt::entity> PrefabManager::getPrefabMap()
 
 entt::entity PrefabManager::loadPrefab(ResourceID id) {
 	auto&& [resource, result] = resourceManager.getResource<Prefab>(id);
+
+	if (!resource) {
+		return entt::null;
+	}
+
 	const char* fileName = resource->getFilePath().string.c_str();
 
 	entt::entity entity = Serialiser::deserialisePrefab(fileName, ecsRegistry, static_cast<std::size_t>(id), prefabRegistry);

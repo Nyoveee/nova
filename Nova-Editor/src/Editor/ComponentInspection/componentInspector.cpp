@@ -38,11 +38,20 @@ void ComponentInspector::update() {
 	// Display entity metadata.
 	EntityData& entityData = registry.get<EntityData>(selectedEntity);
 	if (ImGui::BeginTable("NameAndTagTable", 3, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+		ImGui::TableSetupColumn("Active Checkbox", ImGuiTableColumnFlags_WidthFixed, 70.f);
 		ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("Tag", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("Active Checkbox", ImGuiTableColumnFlags_WidthFixed, 70.f);
 
 		ImGui::TableNextRow();
+
+		ImGui::TableNextColumn();
+
+		bool active = entityData.isActive;
+		ImGui::Checkbox("Active?", &active);
+
+		if (active != entityData.isActive) {
+			ecs.setActive(selectedEntity, active);
+		}
 
 		ImGui::TableNextColumn();
 		ImGui::AlignTextToFramePadding();
@@ -50,9 +59,6 @@ void ComponentInspector::update() {
 
 		ImGui::TableNextColumn();
 		ImGui::InputText("Tag", &entityData.tag);
-
-		ImGui::TableNextColumn();
-		ImGui::Checkbox("Active?", &entityData.isActive);
 
 		ImGui::EndTable();
 	}

@@ -17,10 +17,15 @@ entt::entity PrefabManager::instantiatePrefab(ResourceID id) {
 	entt::entity entity;
 	if (prefabMap.find(id) == prefabMap.end()) {
 		entity = loadPrefab(id);
+
+		if (entity == entt::null) {
+			return entt::null;
+		}
 	}
 	else {
 		entity = prefabMap[id];
 	}
+
 
 	entt::entity newPrefabInstanceId = instantiatePrefabRecursive<ALL_COMPONENTS>(entity);
 

@@ -9,14 +9,16 @@
                 },
                 "scaleWithTransform": true,
                 "shapeScale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
+                    "x": 0.30000001192092896,
+                    "y": 0.30000001192092896,
+                    "z": 1.5
                 }
             },
             "EntityData": {
                 "children": null,
-                "name": "Bullet V4",
+                "isActive": true,
+                "layerId": 0,
+                "name": "Bullet V5",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
@@ -26,7 +28,7 @@
                 "materialIds": [
                     6101841366088646657
                 ],
-                "modelId": 3
+                "modelId": 4
             },
             "Rigidbody": {
                 "initialVelocity": {
@@ -102,5 +104,6 @@
             },
             "id": 7340077
         }
-    ]
+    ],
+    "RootEntity": 7340077
 }

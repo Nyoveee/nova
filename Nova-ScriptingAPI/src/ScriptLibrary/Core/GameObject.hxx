@@ -23,6 +23,7 @@ public:
 
 	GameObject^ GetParent();
 	System::UInt32 GetId();
+	void SetActive(bool active);
 
 public:
 	property Transform_^ transform{

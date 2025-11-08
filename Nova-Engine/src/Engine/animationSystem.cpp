@@ -29,7 +29,11 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 	// We calculate the bone's final matrices here. This will be used
 	// by the vertex shader for skinning.
 	// =======================================================
-	for (auto&& [entityId, skinnedMeshRenderer] : registry.view<SkinnedMeshRenderer>().each()) {
+	for (auto&& [entityId, entityData, skinnedMeshRenderer] : registry.view<EntityData, SkinnedMeshRenderer>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		// retrieve skinned mesh..
 		auto&& [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
 		
@@ -164,7 +168,11 @@ void AnimationSystem::updateAnimator(float dt) {
 	// in the animation controller node graphs
 	// =======================================================
 
-	for (auto&& [entityId, animator] : registry.view<Animator>().each()) {
+	for (auto&& [entityId, entityData, animator] : registry.view<EntityData, Animator>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		// Get controller resource..
 		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
 

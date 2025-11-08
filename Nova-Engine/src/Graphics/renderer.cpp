@@ -363,8 +363,14 @@ void Renderer::renderUI()
 	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
 		for (auto const& entity : entities) {
 			Transform& transform = registry.get<Transform>(entity);
+			EntityData& entityData = registry.get<EntityData>(entity);
+
 			Image* image = registry.try_get<Image>(entity);
 			Text* text = registry.try_get<Text>(entity);
+			
+			if (!entityData.isActive) {
+				continue;
+			}
 
 			if (image) {
 				renderImage(transform, *image);
@@ -821,6 +827,11 @@ void Renderer::renderModels(Camera const& camera) {
 		for (auto const& entity : entities) {
 			MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
 			Transform const& transform = registry.get<Transform>(entity);
+			EntityData const& entityData = registry.get<EntityData>(entity);
+
+			if (!entityData.isActive) {
+				continue;
+			}
 
 			if (!meshRenderer) {
 				continue;
@@ -972,7 +983,11 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 	static const unsigned int isSkinnedMeshRenderer = 1;
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isSkinnedMeshRenderer);
 
-	for (auto&& [entity, transform, skinnedMeshRenderer] : registry.view<Transform, SkinnedMeshRenderer>().each()) {
+	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+		
 		// Retrieves model asset from asset manager.
 		auto [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
 
@@ -1261,7 +1276,11 @@ void Renderer::renderObjectIds() {
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 	
-	for (auto&& [entity, transform, meshRenderer] : registry.view<Transform, MeshRenderer>().each()) {
+	for (auto&& [entity, transform, entityData, meshRenderer] : registry.view<Transform, EntityData, MeshRenderer>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		// Retrieves model asset from asset manager.
 		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
 
@@ -1287,7 +1306,11 @@ void Renderer::renderObjectIds() {
 		}
 	}
 
-	for (auto&& [entity, transform, skinnedMeshRenderer] : registry.view<Transform, SkinnedMeshRenderer>().each()) {
+	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		// Retrieves model asset from asset manager.
 		auto [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
 
@@ -1338,7 +1361,11 @@ void Renderer::renderUiObjectIds() {
 
 	uiImageObjectIdShader.setMatrix("uiProjection", UIProjection);
 
-	for (auto&& [entity, transform, image] : registry.view<Transform, Image>().each()) {
+	for (auto&& [entity, transform, entityData, image] : registry.view<Transform, EntityData, Image>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		// Get texture resource
 		auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
 		if (!textureAsset) {
@@ -1364,7 +1391,11 @@ void Renderer::renderUiObjectIds() {
 	uiTextObjectIdShader.setMatrix("projection", UIProjection);
 
 	// iterate through all characters
-	for (auto&& [entity, transform, text] : registry.view<Transform, Text>().each()) {
+	for (auto&& [entity, transform, entityData, text] : registry.view<Transform, EntityData, Text>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		// Retrieves font asset from asset manager.
 		auto [font, _] = resourceManager.getResource<Font>(text.font);
 

@@ -16,7 +16,11 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 
 void ParticleSystem::update(float dt)
 {
-	for (auto&& [entity, transform, emitter] : engine.ecs.registry.view<Transform, ParticleEmitter>().each()) {
+	for (auto&& [entity, transform, entityData, emitter] : engine.ecs.registry.view<Transform, EntityData, ParticleEmitter>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		continuousGeneration(transform,emitter,dt);
 		burstGeneration(transform, emitter, dt);
 		trailGeneration(transform, emitter);

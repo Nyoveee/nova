@@ -293,6 +293,10 @@ void Interface::updateReference(Script^ script)
 void Interface::update() {
 	for each (System::UInt32 entityID in gameObjectScripts->Keys) {
 		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+			if (!engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)).isActive) {
+				continue;
+			};
+
 			Script^ script = gameObjectScripts[entityID][scriptID];
 			script->callUpdate();
 		}

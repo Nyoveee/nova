@@ -60,5 +60,9 @@ System::UInt32 GameObject::GetId() {
 	return entityID;
 }
 
+void GameObject::SetActive(bool active) {
+	Interface::engine->ecs.setActive(static_cast<entt::entity>(entityID), active);
+}
+
 Transform_^ GameObject::transform::get() { return transformReference; };
 System::String^ GameObject::tag::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->tag); }

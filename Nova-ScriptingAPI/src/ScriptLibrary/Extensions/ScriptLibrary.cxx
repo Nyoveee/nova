@@ -222,6 +222,10 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 		// Instantiate these scripts and call init..
 		for (auto&& scriptData : scripts->scriptDatas) {
 			Interface::addEntityScript(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId));
+
+			for (auto&& fieldData : scriptData.fields)
+				Interface::setScriptFieldData(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId), fieldData);
+
 			Interface::initializeScript(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId));
 		}
 	}
