@@ -3,7 +3,7 @@
         {
             "EntityData": {
                 "children": [
-                    2
+                    21
                 ],
                 "isActive": true,
                 "layerId": 0,
@@ -13,12 +13,6 @@
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 3
-            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
@@ -49,7 +43,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -8.89107608795166
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -63,18 +57,29 @@
                     "z": 1.0
                 }
             },
-            "id": 1
+            "id": 20
         },
         {
             "EntityData": {
                 "children": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Entity 2",
+                "name": "Cube 1",
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 20,
                 "prefabID": 4294967295,
                 "tag": ""
+            },
+            "Light": {
+                "color": {
+                    "b": 0.031034469604492188,
+                    "g": 0.031034469604492188,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 50.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "type": "PointLight"
             },
             "MeshRenderer": {
                 "materialIds": [
@@ -82,6 +87,43 @@
                 ],
                 "modelId": 4
             },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 3
+                                },
+                                "name": "transform"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 2
+                                },
+                                "name": "transform1"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 4
+                                },
+                                "name": "transform2"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 6
+                                },
+                                "name": "transform3"
+                            }
+                        ],
+                        "scriptId": 14083152290948579329
+                    }
+                ]
+            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
@@ -94,7 +136,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 3.21002197265625,
+                    "x": -4.008938789367676,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -110,9 +152,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 3.21002197265625,
+                    "x": -4.008938789367676,
                     "y": 0.0,
-                    "z": -8.89107608795166
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -126,8 +168,8 @@
                     "z": 1.0
                 }
             },
-            "id": 2
+            "id": 21
         }
     ],
-    "RootEntity": 1
+    "RootEntity": 20
 }

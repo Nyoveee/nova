@@ -25,7 +25,7 @@ namespace Serialiser {
 
 	//FRAMEWORK_DLL_API entt::entity deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id);
 	FRAMEWORK_DLL_API entt::entity deserialisePrefab(const char* fileName, entt::registry& registry, std::size_t id, entt::registry& prefabRegistry);
-	FRAMEWORK_DLL_API void serialisePrefab(entt::registry& registry, entt::entity entity, std::optional<std::ofstream> opt, std::size_t id);
+	FRAMEWORK_DLL_API void serialisePrefab(entt::registry& registry, entt::entity entity, std::ofstream& file, std::size_t id);
 	FRAMEWORK_DLL_API void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<Json>& jsonVec, bool checkParent, std::size_t id);
 	FRAMEWORK_DLL_API entt::id_type findLargestEntity(entt::registry& registry);
 

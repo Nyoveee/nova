@@ -41,7 +41,7 @@ constexpr const char* fontFileName =
 	"System\\Font\\"
 	"NotoSans-Medium.ttf";
 
-constexpr ImVec4 lightGreenColor = ImVec4(0.5f, 1.f, 0.5f, 1.f);
+constexpr ImVec4 prefabColor	 = ImVec4(0.5f, 1.f, 1.f, 1.f);
 constexpr ImVec4 grayColor		 = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
 constexpr ImVec4 whiteColor		 = ImVec4(1.f, 1.f, 1.f, 1.f);
 
@@ -534,13 +534,13 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 			while (root->parent != entt::null) {
 				if (root->prefabID != INVALID_RESOURCE_ID)
-					return lightGreenColor;
+					return prefabColor;
 				
 				root = registry.try_get<EntityData>(root->parent);
 			}
 
 			if (root->prefabID != INVALID_RESOURCE_ID) {
-				return lightGreenColor;
+				return prefabColor;
 			}
 			else {
 				return whiteColor;
@@ -552,7 +552,9 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 	if (entityData.children.empty()) {
 		ImGui::Indent(27.5f);
-		if (ImGui::Selectable((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), selectedPredicate(entity))) {
+		if (ImGui::Selectable((
+			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData.name).c_str(), selectedPredicate(entity))) {
 			onClickFunction({ entity });
 		}
 
@@ -573,7 +575,10 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
 
-		toDisplayTreeNode = ImGui::TreeNodeEx((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), flags);
+		toDisplayTreeNode = ImGui::TreeNodeEx((
+			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData.name).c_str(), flags
+		);
 
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 			onClickFunction({ entity });
@@ -638,8 +643,12 @@ Editor::~Editor() {
 		entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
 		std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
 
-		for (auto pair : prefabMap) {
-			Serialiser::serialisePrefab(prefabRegistry, pair.second, assetManagerUi.createAssetFile(".prefab"), std::numeric_limits<std::size_t>::max());
+		for (auto& pair : prefabMap) {
+			auto descriptor = assetManager.getDescriptor(pair.first);
+			if (descriptor != nullptr) {
+				std::ofstream assetFile{ descriptor->filepath.string};
+				Serialiser::serialisePrefab(prefabRegistry, pair.second, assetFile, std::numeric_limits<std::size_t>::max());
+			}
 		}
 	}
 
