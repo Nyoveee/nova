@@ -386,6 +386,10 @@ void Editor::handleFocusOnSelectedEntity(FocusSelectedEntity) {
 		return;
 	}
 
+	if (ImGui::IsAnyItemActive()) {
+		return;
+	}
+
 	// Get the first selected entity's transform
 	entt::entity entity = selectedEntities[0];
 	entt::registry& registry = engine.ecs.registry;

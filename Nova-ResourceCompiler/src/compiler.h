@@ -19,7 +19,7 @@ private:
 	static int compileFont			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, unsigned int fontSize);
 
 	static int compileModel			(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, float scale);
-	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, std::string className);
+	static int compileScriptAsset	(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, std::string className);
 	static int compileShaderAsset   (ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, Pipeline pipeline);
 	
 	// default compiling an asset just makes a copy of the original intermediary asset as resource.
