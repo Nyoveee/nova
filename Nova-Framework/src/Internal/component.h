@@ -86,7 +86,7 @@ struct EntityData {
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
-	// bool isActive														= true;
+	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
@@ -97,6 +97,7 @@ struct EntityData {
 		parent,
 		children,
 		layerId,
+		isActive,
 		prefabID,
 		overridenProperties
 	)

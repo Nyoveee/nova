@@ -9,20 +9,6 @@ namespace {
 		(void) entity;
 
 		[[maybe_unused]] Editor& editor = componentInspector.editor;
-		
-#if 0
-		PropertyReferences propertyReferences { 
-			entity,
-			componentInspector,
-			componentInspector.resourceManager,
-			componentInspector.assetManager,
-			componentInspector.audioSystem,
-			componentInspector.editor.engine.scriptingAPIManager,
-			componentInspector.editor.engine,
-			componentInspector.editor, 
-			componentInspector.editor.engine.ecs
-		};
-#endif
 
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;

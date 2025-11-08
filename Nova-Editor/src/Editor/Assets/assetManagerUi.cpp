@@ -268,6 +268,10 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 			handleThumbnailDoubleClick(resourceId);
 		}
 	);
+
+	if (ImGui::BeginPopupContextItem("[-] Delete?")) {
+	
+	}
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
