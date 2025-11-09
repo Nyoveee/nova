@@ -9,13 +9,11 @@ PrefabManager::PrefabManager(Engine& engine) :
 	ecs				{ engine.ecs}
 {}
 
-entt::registry& PrefabManager::getPrefabRegistry()
-{
+entt::registry& PrefabManager::getPrefabRegistry() {
 	return prefabRegistry;
 }
 
-std::unordered_map<ResourceID, entt::entity> PrefabManager::getPrefabMap()
-{
+std::unordered_map<ResourceID, entt::entity> PrefabManager::getPrefabMap() {
 	return prefabMap;
 }
 
@@ -44,9 +42,9 @@ void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<e
 							if (value != iterator->second) {
 								value = iterator->second;
 							}
-							if (value == iterator->second) {
-								std::cout<< "VALUE " << static_cast<std::size_t>(value) << std::endl;
-							}
+							//if (value == iterator->second) {
+							//	std::cout<< "VALUE " << static_cast<std::size_t>(value) << std::endl;
+							//}
 						}
 					}
 

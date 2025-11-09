@@ -96,31 +96,6 @@ entt::entity PrefabManager::instantiatePrefabRecursive(entt::entity prefabEntity
 	map[prefabEntity] = ecsEntity;
 
 	// asdsa
-	//auto scripts = ecsRegistry.try_get<Scripts>(ecsEntity);
-	//if (scripts != nullptr) {
-	//	for (ScriptData& scriptDatas : scripts->scriptDatas) {
-	//		for (FieldData fields : scriptDatas.fields) {
-	//			std::visit([&](auto&& value) {
-	//				using Type = std::decay_t<decltype(value)>;
-
-	//				if constexpr (std::same_as<Type, entt::entity>) {
-	//					auto iterator = map.find(value);
-	//					if (iterator != map.end()) {
-	//						if (value != iterator->second) {
-	//							value = iterator->second;
-	//						}
-	//						if (value == iterator->second) {
-	//							std::cout << "Same\n";
-	//						}
-	//					}
-	//				}
-
-	//			}, fields.data);
-	//		}
-
-	//	}
-	//}
-
 
 	std::vector<entt::entity> childVec;
 
