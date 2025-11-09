@@ -104,8 +104,6 @@ class GameUIManager : Script
         Transform_ fromUiContainer = gunToUiContainer[from.GetType()];
         Transform_ toUiContainer = gunToUiContainer[to.GetType()];
 
-        Debug.Log(Vector3.One());
-
         fromUiContainer.localScale = Vector3.One();
 
         foreach(GameObject child in fromUiContainer.gameObject.GetChildren())

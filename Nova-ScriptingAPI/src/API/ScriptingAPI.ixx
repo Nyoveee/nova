@@ -9,7 +9,7 @@ T* Interface::getNativeComponent(System::UInt32 entityID) {
 	entt::entity entity{ static_cast<entt::entity>(entityID) };
 	if (!(engine->ecs.registry.any_of<T>(entity)))
 		return nullptr;
-	return &(engine->ecs.registry.get<T>(entity));
+	return engine->ecs.registry.try_get<T>(entity);
 }
 
 template<typename Type, typename ...Types>

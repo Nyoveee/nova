@@ -20,6 +20,7 @@ public:
 	entt::entity instantiatePrefab(ResourceID id);
 	
 	ENGINE_DLL_API entt::entity loadPrefab(ResourceID id);
+	ENGINE_DLL_API void mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> map);
 
 private:
 

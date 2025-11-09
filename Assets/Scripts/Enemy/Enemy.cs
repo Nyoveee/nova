@@ -67,7 +67,7 @@ class Enemy : Script
 
     private float hurtTimeElapsed = 0f;
     private bool recentlyTookDamage = false;
-    private bool immuneToDamage = false;
+    private bool immuneToDamage = false;    
 
     private GameObject? hitbox = null;
 
@@ -161,7 +161,7 @@ class Enemy : Script
     // kills this gameobject..
     public void Die()
     {
-        // ObjectAPI.Destroy(gameObject);
+         ObjectAPI.Destroy(gameObject);
     }
     /**********************************************************************
         Enemy States
@@ -242,6 +242,7 @@ class Enemy : Script
     {
 
         emitter.emit(1000);
+
         if (hitbox != null)
             ObjectAPI.Destroy(hitbox);
     }
@@ -255,6 +256,8 @@ class Enemy : Script
     }
     public void BeginSwing()
     {
+        Debug.Log(gameObject);
+
         AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
         if (hitboxPrefab == null)
             return;

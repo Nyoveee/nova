@@ -91,6 +91,7 @@ void Input::ClearAllKeyMapping() {
 // Audio APIs..
 // ======================================
 void AudioAPI::PlaySound(GameObject^ gameObject, System::String^ string) {
+	Logger::info("{}", static_cast<unsigned>(gameObject->entityID));
 	Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
 }
 void AudioAPI::PlayBGM(GameObject^ gameObject, System::String^ string) {
