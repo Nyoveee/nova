@@ -4,7 +4,7 @@
 
 using ScriptingAPI;
 
-class Enemy : Script
+class Grunt : Script
 {
     private delegate void CurrentState();
 
@@ -35,7 +35,7 @@ class Enemy : Script
         Components
     ***********************************************************/
 
-    private EnemyStats? enemyStats = null;
+    private GruntStats? gruntStats = null;
     private Animator_? animator = null;
     private Rigidbody_? rigidbody = null;
     private Transform_? transform = null;
@@ -44,7 +44,7 @@ class Enemy : Script
     /***********************************************************
         Runtime variables..
     ***********************************************************/
-    private enum EnemyState
+    private enum GruntState
     {
         Idle,
         Chasing,
@@ -53,15 +53,12 @@ class Enemy : Script
     }
 
     // State machine
-    private EnemyState enemyState = EnemyState.Idle;
-    private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
+    private GruntState gruntState = GruntState.Idle;
+    private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
 
     private GameObject? player = null;
 
     private float distance = 0f;
-
-    private bool b_HitPlayerThisAttack = false;
-    private bool b_IsSwinging = false;
 
     private float currentHealth;
 
@@ -81,16 +78,16 @@ class Enemy : Script
         rigidbody = getComponent<Rigidbody_>();
         animator = getComponent<Animator_>();
         renderer = getComponent<SkinnedMeshRenderer_>();
-        enemyStats = getScript<EnemyStats>();
+        gruntStats = getScript<GruntStats>();
 
         if (animator != null)
             animator.PlayAnimation("Grunt Idle (Base)");
 
         // Populate state machine dispatcher..
-        updateState.Add(EnemyState.Idle, Update_IdleState);
-        updateState.Add(EnemyState.Chasing, Update_ChasingState);
-        updateState.Add(EnemyState.Attacking, Update_AttackState);
-        updateState.Add(EnemyState.Death, Update_Death);
+        updateState.Add(GruntState.Idle, Update_IdleState);
+        updateState.Add(GruntState.Chasing, Update_ChasingState);
+        updateState.Add(GruntState.Attacking, Update_AttackState);
+        updateState.Add(GruntState.Death, Update_Death);
 
         player = GameObject.FindWithTag("Player");
         currentHealth = maximumHealth;
@@ -120,20 +117,20 @@ class Enemy : Script
 
         distance = Vector3.Distance(playerPosition, enemyPosition);
         
-        updateState[enemyState]();
+        updateState[gruntState]();
     }
     /**********************************************************************
         Public Functions
     **********************************************************************/
     public bool IsEngagedInBattle()
     {
-        return enemyState != EnemyState.Idle;
+        return gruntState != GruntState.Idle;
     }
 
     public void TakeDamage(float damage)
     {
         // blud already died let him die in peace dont take anymore damage..
-        if(recentlyTookDamage || enemyState == EnemyState.Death)
+        if(recentlyTookDamage || gruntState == GruntState.Death)
         {
             return;
         }
@@ -147,7 +144,7 @@ class Enemy : Script
 
         if(currentHealth <= 0)
         {
-            enemyState = EnemyState.Death;
+            gruntState = GruntState.Death;
             animator.PlayAnimation("Grunt Death");
             rigidbody.SetVelocity(Vector3.Zero());
         }
@@ -163,40 +160,40 @@ class Enemy : Script
     **********************************************************************/
     private void Update_IdleState()
     {
-        if (player == null || enemyStats == null || animator == null)
+        if (player == null || gruntStats == null || animator == null)
         {
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        if(distance <= enemyStats.chasingRadius)
+        if(distance <= gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Running");
-            enemyState = EnemyState.Chasing;
+            gruntState = GruntState.Chasing;
         }
     }
     private void Update_ChasingState()
     {
         
-        if(player == null || enemyStats == null || animator == null)
+        if(player == null || gruntStats == null || animator == null)
         {
             Debug.LogWarning("Missing Reference Found");
             return;
         }
         animator.SetFloat("Range", distance);
-        if (distance > enemyStats.chasingRadius)
+        if (distance > gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Idle (Base)");
-            enemyState = EnemyState.Idle;
+            gruntState = GruntState.Idle;
             rigidbody.SetVelocity(new Vector3(0, rigidbody.GetVelocity().y, 0));
             return;
         }
         // Change State
-        if (distance <= enemyStats.attackRadius)
+        if (distance <= gruntStats.attackRadius)
         {
             if (animator != null)
                 animator.PlayAnimation("Grunt Attack");
             rigidbody.SetVelocity(Vector3.Zero());
-            enemyState = EnemyState.Attacking;
+            gruntState = GruntState.Attacking;
             return;
         }
         LookAtPlayer();
@@ -204,12 +201,12 @@ class Enemy : Script
         Vector3 direction = player.transform.position - gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
-        rigidbody.SetVelocity(direction * enemyStats.movementSpeed + new Vector3( 0,rigidbody.GetVelocity().y,0));
+        rigidbody.SetVelocity(direction * gruntStats.movementSpeed + new Vector3( 0,rigidbody.GetVelocity().y,0));
 
     }
     private void Update_AttackState()
     {
-        if (player == null || enemyStats == null)
+        if (player == null || gruntStats == null)
         {
             Debug.LogWarning("Missing Reference Found");
             return;
@@ -244,10 +241,10 @@ class Enemy : Script
     {
         Debug.Log("end of attack....");
 
-        if (distance > enemyStats.attackRadius)
+        if (distance > gruntStats.attackRadius)
         {
             animator.PlayAnimation("Grunt Running");
-            enemyState = EnemyState.Chasing;
+            gruntState = GruntState.Chasing;
         }
     }
     public void BeginSwing()
@@ -258,9 +255,9 @@ class Enemy : Script
         hitbox = ObjectAPI.Instantiate(hitboxPrefab);
         if(hitbox!= null && hitboxPosition!= null){
             hitbox.transform.position = hitboxPosition.transform.position;
-            EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
-            if (enemyHitBox != null && enemyStats != null)
-                enemyHitBox.SetDamage(enemyStats.damage);
+            GruntHitBox enemyHitBox = hitbox.getScript<GruntHitBox>();
+            if (enemyHitBox != null && gruntStats != null)
+                enemyHitBox.SetDamage(gruntStats.damage);
         }
            
     }

@@ -28,7 +28,7 @@ class BulletScript : Script
     {
         if (hasCollided)
         {
-            Enemy enemyScript = collidedEntity.getScript<Enemy>();
+            Grunt enemyScript = collidedEntity.getScript<Grunt>();
             if (enemyScript != null) {
                 enemyScript.TakeDamage(damage);
             }

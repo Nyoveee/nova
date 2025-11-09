@@ -16,7 +16,23 @@
         },
         "14930453553246748675": {
             "animation": 12641323120730849295,
-            "animationEvents": null,
+            "animationEvents": [
+                {
+                    "functionName": "BeginSwing",
+                    "key": 21,
+                    "scriptId": 15842916263221428229
+                },
+                {
+                    "functionName": "Slash",
+                    "key": 32,
+                    "scriptId": 15842916263221428229
+                },
+                {
+                    "functionName": "EndAttack",
+                    "key": 71,
+                    "scriptId": 15842916263221428229
+                }
+            ],
             "id": 14930453553246748675,
             "name": "Grunt Attack",
             "toLoop": true,
