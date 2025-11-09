@@ -141,6 +141,7 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.stopSimulation();
 
 		inSimulationMode = false;
+		gameLockMouse(false);
 	};
 }
 

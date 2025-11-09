@@ -67,6 +67,7 @@ class Enemy : Script
 
     private float hurtTimeElapsed = 0f;
     private bool recentlyTookDamage = false;
+    private bool immuneToDamage = false;
 
     private GameObject? hitbox = null;
 
@@ -104,9 +105,13 @@ class Enemy : Script
         // update take damage logic..
         if(recentlyTookDamage)
         {
+            // delay by 1 frame..
+            immuneToDamage = true;
+
             if (hurtTimeElapsed > hurtDuration)
             {
                 recentlyTookDamage = false;
+                immuneToDamage = false;
                 renderer.changeMaterial(0, defaultMaterial);
             }
             else
@@ -133,7 +138,7 @@ class Enemy : Script
     public void TakeDamage(float damage)
     {
         // blud already died let him die in peace dont take anymore damage..
-        if(recentlyTookDamage || enemyState == EnemyState.Death)
+        if(immuneToDamage || enemyState == EnemyState.Death)
         {
             return;
         }
