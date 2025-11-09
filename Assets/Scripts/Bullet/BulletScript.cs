@@ -28,15 +28,22 @@ class BulletScript : Script
     {
         if (hasCollided)
         {
-            Grunt enemyScript = collidedEntity.getScript<Grunt>();
-            if (enemyScript != null) {
-                enemyScript.TakeDamage(damage);
-            }
-
+            DamageEntity();
             ObjectAPI.Destroy(gameObject);
             return;
         }
+        CheckRaycast();
+       
+    }
+    private void DamageEntity()
+    {
+        Grunt gruntScript = collidedEntity.getScript<Grunt>();
+        if (gruntScript != null)
+            gruntScript.TakeDamage(damage);
 
+    }
+    private void CheckRaycast()
+    {
         // Raycast in front of the bullet from it's velocity..
         Vector3 movingDirection = rigidbody.GetVelocity();
         Vector3 position = transform.position;
@@ -49,12 +56,11 @@ class BulletScript : Script
             collidedEntity = new GameObject(collision.entity);
 
             if (collidedEntity.tag == "Wall" || collidedEntity.tag == "Enemy")
-            { 
+            {
                 // we delay object destruction by 1 frame.. since raycast cast forward..
                 hasCollided = true;
             }
         }
-
         if (timeElapsed > lifeTime)
         {
             ObjectAPI.Destroy(gameObject);

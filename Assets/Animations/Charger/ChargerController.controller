@@ -10,56 +10,47 @@
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 1446280444601171979
+                    "nextNode": 226139197566697479
                 }
             ]
         },
-        "11246113233759518735": {
-            "animation": 1335581613890240515,
-            "animationEvents": [
-                {
-                    "functionName": "StartCharging",
-                    "key": 0,
-                    "scriptId": 9668630707231932417
-                },
-                {
-                    "functionName": "EndCharge",
-                    "key": 1,
-                    "scriptId": 9668630707231932417
-                }
-            ],
-            "id": 11246113233759518735,
-            "name": "Charger_charge",
+        "12331814995938574341": {
+            "animation": 11488401616123985925,
+            "animationEvents": null,
+            "id": 12331814995938574341,
+            "name": "Charger_Death",
             "toLoop": true,
             "transitions": null
         },
-        "1446280444601171979": {
-            "animation": 17476482678386098183,
+        "226139197566697479": {
+            "animation": 6876715597696598023,
             "animationEvents": null,
-            "id": 1446280444601171979,
+            "id": 226139197566697479,
             "name": "Charger_Idle",
             "toLoop": true,
             "transitions": null
         },
-        "15281338499883581457": {
-            "animation": 3641424623103950859,
-            "animationEvents": [
-                {
-                    "functionName": "event",
-                    "key": 0,
-                    "scriptId": 9668630707231932417
-                }
-            ],
-            "id": 15281338499883581457,
-            "name": "Charger_stagger",
+        "6567207472904388617": {
+            "animation": 16100087634551390217,
+            "animationEvents": null,
+            "id": 6567207472904388617,
+            "name": "Charger_Stagger",
             "toLoop": true,
             "transitions": null
         },
-        "869819692297814029": {
-            "animation": 17476482678386114575,
+        "802599949870055425": {
+            "animation": 18405930643765084171,
             "animationEvents": null,
-            "id": 869819692297814029,
-            "name": "Charger_walk",
+            "id": 802599949870055425,
+            "name": "Charger_Walk",
+            "toLoop": true,
+            "transitions": null
+        },
+        "8296589729814577155": {
+            "animation": 1688568826965786627,
+            "animationEvents": null,
+            "id": 8296589729814577155,
+            "name": "Charger_Charge",
             "toLoop": true,
             "transitions": null
         }

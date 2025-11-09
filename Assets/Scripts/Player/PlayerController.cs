@@ -336,13 +336,13 @@ class PlayerController : Script
         if (other.tag != "EnemyHitBox")
             return;
 
-        GruntHitBox gruntHitBox = other.getScript<GruntHitBox>();
+        EnemyHitBox enemyHitBox = other.getScript<EnemyHitBox>();
 
-        if (gruntHitBox == null || gruntHitBox.HasHitPlayerThisAttack())
+        if (enemyHitBox == null || enemyHitBox.HasHitPlayerThisAttack())
             return;
-        currentHealth = Mathf.Max(0,currentHealth- gruntHitBox.GetDamage());
+        currentHealth = Mathf.Max(0,currentHealth- enemyHitBox.GetDamage());
         if(gameUIManager!= null)
             gameUIManager.ActivateDamageUI();
-        gruntHitBox.OnPlayerHit();
+        enemyHitBox.OnPlayerHit();
     }
 }

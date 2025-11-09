@@ -3,13 +3,13 @@
 // Editor will automatically rename and recompile this file.
 class ChargerStats : Script
 {
+    public float health = 100f;
+    public float movementSpeed = 10f;
     // Combat
     public int chargeDamage;
     public float chargeCooldown;
-    public float minimumChargeDistance;
     public float maxChargeTime;
     public float speedMultiplier;
-    public float movementSpeed;
     // Detection
     public float chasingRange;
     public float chargingRange;

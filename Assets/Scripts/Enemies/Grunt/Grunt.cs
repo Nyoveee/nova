@@ -20,27 +20,22 @@ class Grunt : Script
     private GameObject? hitboxPosition = null;
 
     [SerializableField]
-    private float maximumHealth = 100f;
-
-    [SerializableField]
     private float hurtDuration = 0.1f;
 
     [SerializableField]
-    private Material defaultMaterial;
+    private Material? defaultMaterial = null;
 
     [SerializableField]
-    private Material hurtMaterial;
+    private Material? hurtMaterial = null;
 
     /***********************************************************
         Components
     ***********************************************************/
-
     private GruntStats? gruntStats = null;
     private Animator_? animator = null;
     private Rigidbody_? rigidbody = null;
     private Transform_? transform = null;
     private SkinnedMeshRenderer_? renderer = null;
-
     /***********************************************************
         Runtime variables..
     ***********************************************************/
@@ -56,20 +51,17 @@ class Grunt : Script
     private GruntState gruntState = GruntState.Idle;
     private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
 
+    // Player Reference
     private GameObject? player = null;
+    private float distanceToPlayer = 0f;
 
-    private float distance = 0f;
-
-    private float currentHealth;
-
+    // Hurt
     private float hurtTimeElapsed = 0f;
     private bool recentlyTookDamage = false;
 
+    // Attack
     private GameObject? hitbox = null;
 
-    /***********************************************************
-        Inspector Variables
-    ***********************************************************/
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -79,7 +71,6 @@ class Grunt : Script
         animator = getComponent<Animator_>();
         renderer = getComponent<SkinnedMeshRenderer_>();
         gruntStats = getScript<GruntStats>();
-
         if (animator != null)
             animator.PlayAnimation("Grunt Idle (Base)");
 
@@ -90,7 +81,6 @@ class Grunt : Script
         updateState.Add(GruntState.Death, Update_Death);
 
         player = GameObject.FindWithTag("Player");
-        currentHealth = maximumHealth;
 
         rigidbody.SetVelocity(new Vector3(0, 0, 0));
     }
@@ -115,7 +105,7 @@ class Grunt : Script
         Vector3 playerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
         Vector3 enemyPosition = new Vector3(gameObject.transform.position.x,0,gameObject.transform.position.z);
 
-        distance = Vector3.Distance(playerPosition, enemyPosition);
+        distanceToPlayer = Vector3.Distance(playerPosition, enemyPosition);
         
         updateState[gruntState]();
     }
@@ -139,10 +129,10 @@ class Grunt : Script
         hurtTimeElapsed = 0f;
 
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        currentHealth -= damage;
+        gruntStats.health -= damage;
         renderer.changeMaterial(0, hurtMaterial);
 
-        if(currentHealth <= 0)
+        if(gruntStats.health <= 0)
         {
             gruntState = GruntState.Death;
             animator.PlayAnimation("Grunt Death");
@@ -165,7 +155,7 @@ class Grunt : Script
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        if(distance <= gruntStats.chasingRadius)
+        if(distanceToPlayer <= gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
@@ -179,8 +169,8 @@ class Grunt : Script
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        animator.SetFloat("Range", distance);
-        if (distance > gruntStats.chasingRadius)
+        animator.SetFloat("Range", distanceToPlayer);
+        if (distanceToPlayer > gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;
@@ -188,7 +178,7 @@ class Grunt : Script
             return;
         }
         // Change State
-        if (distance <= gruntStats.attackRadius)
+        if (distanceToPlayer <= gruntStats.attackRadius)
         {
             if (animator != null)
                 animator.PlayAnimation("Grunt Attack");
@@ -206,11 +196,6 @@ class Grunt : Script
     }
     private void Update_AttackState()
     {
-        if (player == null || gruntStats == null)
-        {
-            Debug.LogWarning("Missing Reference Found");
-            return;
-        }
         LookAtPlayer();
     }
 
@@ -221,6 +206,11 @@ class Grunt : Script
 
     private void LookAtPlayer()
     {
+        if (player == null || transform == null)
+        {
+            Debug.LogWarning("Missing Reference Found");
+            return;
+        }
         Vector3 direction = player.transform.position - gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
@@ -241,7 +231,7 @@ class Grunt : Script
     {
         Debug.Log("end of attack....");
 
-        if (distance > gruntStats.attackRadius)
+        if (distanceToPlayer > gruntStats.attackRadius)
         {
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
@@ -255,7 +245,7 @@ class Grunt : Script
         hitbox = ObjectAPI.Instantiate(hitboxPrefab);
         if(hitbox!= null && hitboxPosition!= null){
             hitbox.transform.position = hitboxPosition.transform.position;
-            GruntHitBox enemyHitBox = hitbox.getScript<GruntHitBox>();
+            EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
             if (enemyHitBox != null && gruntStats != null)
                 enemyHitBox.SetDamage(gruntStats.damage);
         }

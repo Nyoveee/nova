@@ -4,8 +4,8 @@
 class GruntStats : Script
 {
     public float health = 100f;
+    public float movementSpeed = 10f;
     public float attackRadius = 2f;
     public float chasingRadius = 20f;
     public float damage = 5f;
-    public float movementSpeed = 10f;
 }
