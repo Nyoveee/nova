@@ -9,7 +9,8 @@
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this, engine ,engine.resourceManager }
+	sceneManager	{ *this, engine ,engine.resourceManager },
+	prefabManager	{engine}
 {}
 
 ECS::~ECS() {}

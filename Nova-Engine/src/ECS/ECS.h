@@ -5,9 +5,10 @@
 
 #include "component.h"
 #include "SceneManager.h"
+#include "Engine/prefabManager.h"
 
 class Engine;
-
+class PrefabManager;
 // A ECS wrapper around the entt framework for ease of access from other classes.
 class ECS {
 public:
@@ -59,6 +60,9 @@ private:
 	// We make a copy of the registry when the engine stars simulation mode.
 	// We rollback to the original state when we end simulation mode.
 	entt::registry copiedRegistry;
+	PrefabManager prefabManager;
+
+	std::unordered_map<entt::entity, entt::entity> map;
 };
 
 template <typename ...Components>
@@ -105,6 +109,8 @@ template<typename ...Components>
 void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
 	for (auto en : entityVec) {
 		copyEntity<ALL_COMPONENTS>(en, entt::null);
+		prefabManager.mapSerializedField(en, map);
+		map.clear();
 	}
 	//for (auto en : entityVec) {
 	//	auto tempEntity = registry.create();
@@ -134,6 +140,8 @@ void ECS::copyEntity(entt::entity en, entt::entity parent) {
 			registry.emplace<Components>(tempEntity, *component);
 		}
 		}(), ...);
+
+	map[en] = tempEntity;
 
 	EntityData& entityData = registry.get<EntityData>(tempEntity);
 
