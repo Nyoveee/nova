@@ -1,0 +1,68 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "animationEvents": null,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 1446280444601171979
+                }
+            ]
+        },
+        "11246113233759518735": {
+            "animation": 1335581613890240515,
+            "animationEvents": [
+                {
+                    "functionName": "StartCharging",
+                    "key": 0,
+                    "scriptId": 9668630707231932417
+                },
+                {
+                    "functionName": "EndCharge",
+                    "key": 1,
+                    "scriptId": 9668630707231932417
+                }
+            ],
+            "id": 11246113233759518735,
+            "name": "Charger_charge",
+            "toLoop": true,
+            "transitions": null
+        },
+        "1446280444601171979": {
+            "animation": 17476482678386098183,
+            "animationEvents": null,
+            "id": 1446280444601171979,
+            "name": "Charger_Idle",
+            "toLoop": true,
+            "transitions": null
+        },
+        "15281338499883581457": {
+            "animation": 3641424623103950859,
+            "animationEvents": [
+                {
+                    "functionName": "event",
+                    "key": 0,
+                    "scriptId": 9668630707231932417
+                }
+            ],
+            "id": 15281338499883581457,
+            "name": "Charger_stagger",
+            "toLoop": true,
+            "transitions": null
+        },
+        "869819692297814029": {
+            "animation": 17476482678386114575,
+            "animationEvents": null,
+            "id": 869819692297814029,
+            "name": "Charger_walk",
+            "toLoop": true,
+            "transitions": null
+        }
+    },
+    "parameters": null
+}
