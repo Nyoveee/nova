@@ -171,6 +171,7 @@ ManagedComponentDeclaration(
 	Vector3,	eulerAngles,
 	Vector3,	localEulerAngles,
 	Vector3,	localPosition,
+	Vector3,	localScale,
 	Quartenion, rotation,
 	Quartenion, localRotation
 )

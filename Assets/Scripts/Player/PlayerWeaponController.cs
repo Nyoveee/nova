@@ -12,12 +12,14 @@ class PlayerWeaponController : Script
     // Inspector variables
     // ===========================================
     public required ParticleEmitter_ muzzle;     // for gun origin.
-
+    public required GameUIManager gameUIManager;
+    
     public required Sniper sniper;
     public required Shotgun shotgun;
 
     public float bulletSpeed;
     public float swapWeaponCooldown = 0.2f;
+
     // ===========================================
     // Runtime variables
     // ===========================================
@@ -34,6 +36,7 @@ class PlayerWeaponController : Script
         ScrollCallback(SwapWeaponHandler);
 
         currentlyHeldGun = sniper;
+        gameUIManager.SwapWeaponUI(shotgun, sniper);
     }
 
     // This function is invoked every fixed update.
@@ -100,6 +103,7 @@ class PlayerWeaponController : Script
         {
             to.gameObject.SetActive(true);
             AudioAPI.PlaySound(gameObject, "Holster SFX");
+            gameUIManager.SwapWeaponUI(from, to);
         };
     }
 }

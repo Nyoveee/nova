@@ -11,6 +11,9 @@ class GameUIManager : Script
     private float currentFadeTime;
     private Dictionary<ProgressBarType, Transform_> progressBars = new Dictionary<ProgressBarType, Transform_>();
     private Dictionary<ProgressBarType, float> progressMaxSize = new Dictionary<ProgressBarType, float>();
+
+    private Dictionary<Type, Transform_> gunToUiContainer = new Dictionary<Type, Transform_>();
+
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -25,7 +28,18 @@ class GameUIManager : Script
     [SerializableField]
     private float damageFadeTime = 2.0f;
 
-    
+    [SerializableField]
+    private Transform_ sniperContainerUi;
+    [SerializableField]
+    private Transform_ shotgunContainerUi;
+
+#if false
+    [SerializableField]
+    private ColorAlpha activeGunOverlayColor;
+    [SerializableField]
+    private ColorAlpha inactiveGunOverlayColor;
+#endif
+
     protected override void init()
     {
         if(dashBar != null && healthBar!= null)
@@ -35,7 +49,11 @@ class GameUIManager : Script
             progressMaxSize[ProgressBarType.DashBar] = dashBar.scale.x;
             progressMaxSize[ProgressBarType.HealthBar] = healthBar.scale.x;
         }
+
+        gunToUiContainer.Add(typeof(Sniper), sniperContainerUi);
+        gunToUiContainer.Add(typeof(Shotgun), shotgunContainerUi);
     }
+
     protected override void update()
     {
         if(image != null && image.colorTint.a > 0)
@@ -79,6 +97,33 @@ class GameUIManager : Script
         if(healthText!= null){
             healthText.SetText(health.ToString());
         }
-        
+    }
+
+    public void SwapWeaponUI(Gun from, Gun to)
+    {
+        Transform_ fromUiContainer = gunToUiContainer[from.GetType()];
+        Transform_ toUiContainer = gunToUiContainer[to.GetType()];
+
+        Debug.Log(Vector3.One());
+
+        fromUiContainer.localScale = Vector3.One();
+
+        foreach(GameObject child in fromUiContainer.gameObject.GetChildren())
+        {
+            Image_ overlayImage = child.getComponent<Image_>();
+
+            if (overlayImage != null)
+                overlayImage.colorTint = new ColorAlpha(125f / 255f, 125f / 255f, 125f / 255f, 0.5f);
+        }
+
+        toUiContainer.localScale = Vector3.One() * 1.3f;
+
+        foreach (GameObject child in toUiContainer.gameObject.GetChildren())
+        {
+            Image_ overlayImage = child.getComponent<Image_>();
+
+            if (overlayImage != null)
+                overlayImage.colorTint = new ColorAlpha(10f / 255f, 10f / 255f, 10f / 255f, 0.6f);
+        }
     }
 }

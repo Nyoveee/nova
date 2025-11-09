@@ -147,7 +147,7 @@ class PlayerController : Script
         Vector3 orientedFront = new Vector3(cameraObject.front.x, 0, cameraObject.front.z);
         Vector3 orientedRight = new Vector3(cameraObject.right.x, 0, cameraObject.right.z);
 
-        Vector3 directionVector = Vector3.One();
+        Vector3 directionVector = Vector3.Zero();
 
         orientedFront.Normalize();
         orientedRight.Normalize();
