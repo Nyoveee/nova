@@ -84,7 +84,7 @@ class Enemy : Script
         enemyStats = getScript<EnemyStats>();
 
         if (animator != null)
-            animator.PlayAnimation("Enemy Idle (Base)");
+            animator.PlayAnimation("Grunt Idle (Base)");
 
         // Populate state machine dispatcher..
         updateState.Add(EnemyState.Idle, Update_IdleState);
@@ -148,7 +148,7 @@ class Enemy : Script
         if(currentHealth <= 0)
         {
             enemyState = EnemyState.Death;
-            animator.PlayAnimation("Enemy Death");
+            animator.PlayAnimation("Grunt Death");
             rigidbody.SetVelocity(Vector3.Zero());
         }
     }
@@ -170,7 +170,7 @@ class Enemy : Script
         }
         if(distance <= enemyStats.chasingRadius)
         {
-            animator.PlayAnimation("Enemy Running");
+            animator.PlayAnimation("Grunt Running");
             enemyState = EnemyState.Chasing;
         }
     }
@@ -185,7 +185,7 @@ class Enemy : Script
         animator.SetFloat("Range", distance);
         if (distance > enemyStats.chasingRadius)
         {
-            animator.PlayAnimation("Enemy Idle (Base)");
+            animator.PlayAnimation("Grunt Idle (Base)");
             enemyState = EnemyState.Idle;
             rigidbody.SetVelocity(new Vector3(0, rigidbody.GetVelocity().y, 0));
             return;
@@ -194,7 +194,7 @@ class Enemy : Script
         if (distance <= enemyStats.attackRadius)
         {
             if (animator != null)
-                animator.PlayAnimation("Enemy Attack");
+                animator.PlayAnimation("Grunt Attack");
             rigidbody.SetVelocity(Vector3.Zero());
             enemyState = EnemyState.Attacking;
             return;
@@ -246,7 +246,7 @@ class Enemy : Script
 
         if (distance > enemyStats.attackRadius)
         {
-            animator.PlayAnimation("Enemy Running");
+            animator.PlayAnimation("Grunt Running");
             enemyState = EnemyState.Chasing;
         }
     }

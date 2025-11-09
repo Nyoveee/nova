@@ -10,41 +10,30 @@
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 12611064553060696079
+                    "nextNode": 5610605968421011457
                 }
             ]
         },
-        "12611064553060696079": {
-            "animation": 17990042554440073255,
+        "14833978005275803651": {
+            "animation": 13323486522853851177,
             "animationEvents": null,
-            "id": 12611064553060696079,
+            "id": 14833978005275803651,
+            "name": "Capoeira",
+            "toLoop": true,
+            "transitions": null
+        },
+        "5610605968421011457": {
+            "animation": 12643416590882406429,
+            "animationEvents": null,
+            "id": 5610605968421011457,
             "name": "Hip Hop Dancing",
             "toLoop": true,
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 1658310259297599509
+                    "nextNode": 14833978005275803651
                 }
             ]
-        },
-        "1658310259297599509": {
-            "animation": 17990042554440040483,
-            "animationEvents": [
-                {
-                    "functionName": "Die",
-                    "key": 10,
-                    "scriptId": 14083152290948579329
-                },
-                {
-                    "functionName": "event",
-                    "key": 50,
-                    "scriptId": 200674448099901461
-                }
-            ],
-            "id": 1658310259297599509,
-            "name": "Capoeira",
-            "toLoop": true,
-            "transitions": null
         }
     },
     "parameters": [
