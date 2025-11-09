@@ -6,27 +6,36 @@ using ScriptingAPI;
 
 class PlayerWeaponController : Script
 {
-    public required Prefab bulletPrefab;
-    public required Transform_ gunHolder;   // for gun origin.
-    public required Transform_ camera;      // for gun path
-    public required float bulletSpeed = 10f;
+    // ===========================================
+    // Inspector variables
+    // ===========================================
+    public required ParticleEmitter_ muzzle;     // for gun origin.
+
+    public required Sniper sniper;
+    public required Shotgun shotgun;
+
+    public float bulletSpeed;
+
+    // ===========================================
+    // Runtime variables
+    // ===========================================
+    private Gun currentlyHeldGun;
 
     protected override void init()
     {
-        MapKey(Key.MouseLeft, SpawnBullet);
+        MapKey(Key.MouseLeft, Fire);
+        currentlyHeldGun = sniper;
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {}
 
-    private void SpawnBullet()
+    private void Fire()
     {
-        // Spawns a bullet that orients the same direction as the camera..
-        GameObject bullet = ObjectAPI.Instantiate(bulletPrefab, gunHolder.position, camera.rotation, null);
-
-        if (bullet != null) {
-            bullet.getComponent<Rigidbody_>().SetVelocity(camera.front * bulletSpeed);
+        if(currentlyHeldGun.Fire())
+        {
+            muzzle.emit(30);
         }
     }
 }

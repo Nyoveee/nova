@@ -364,6 +364,7 @@ bool ScriptingAPIManager::startSimulation() {
 
 	// Call their init functions..
 	initalizeScripts();
+
 	return true;
 }
 

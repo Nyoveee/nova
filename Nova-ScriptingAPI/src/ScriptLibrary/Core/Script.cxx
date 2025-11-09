@@ -8,7 +8,7 @@
 void Script::callInit() {
 	try { 
 		// Set GameObject Details
-		gameObject = GameObject::GetReference(entityID);
+		_gameObject = GameObject::GetReference(entityID);
 		// Call Init Function
 		init(); 
 	}

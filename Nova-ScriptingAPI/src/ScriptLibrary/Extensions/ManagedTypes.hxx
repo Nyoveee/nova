@@ -56,6 +56,7 @@ static Vector2 Left();
 static Vector2 Right();
 static Vector2 One();
 static Vector2 Zero();
+static Vector2 Lerp(Vector2 a, Vector2 b, float interval);
 
 ManagedStructEnd(Vector2, glm::vec2)
 // ======================================
@@ -88,6 +89,7 @@ static Vector3 Left();
 static Vector3 Right();
 static Vector3 One();
 static Vector3 Zero();
+static Vector3 Lerp(Vector3 a, Vector3 b, float interval);
 
 ManagedStructEnd(Vector3, glm::vec3)
 // ======================================
@@ -168,6 +170,7 @@ ManagedComponentDeclaration(
 	Vector3,	up,
 	Vector3,	eulerAngles,
 	Vector3,	localEulerAngles,
+	Vector3,	localPosition,
 	Quartenion, rotation,
 	Quartenion, localRotation
 )

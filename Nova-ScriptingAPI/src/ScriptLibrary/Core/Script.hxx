@@ -47,7 +47,12 @@ protected:
 	}
 
 protected:
-	GameObject^ gameObject;
+	GameObject^ _gameObject;
+
+public:
+	property GameObject^ gameObject {
+		GameObject^ get() { return _gameObject; };
+	}
 
 internal:
 	// Each script is aware of what functions it subscribes to with the Input Manager. 
