@@ -25,7 +25,7 @@ private:
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
 	
 	// Update
-	void particleMovement(ParticleEmitter& emitter, float dt);
+	void particleMovement(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void particleOverLifeTime(ParticleEmitter& emitter);
 	// Particle Info
 	glm::vec3 determineParticleVelocity(ParticleEmitter& emitter, glm::vec3 nonRandomizedDirection);
