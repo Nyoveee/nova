@@ -196,7 +196,7 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 }
 
 GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent) {
-	entt::entity prefabInstanceId = Interface::engine->prefabManager.instantiatePrefab<ALL_COMPONENTS>(prefab->getId());
+ 	entt::entity prefabInstanceId = Interface::engine->prefabManager.instantiatePrefab<ALL_COMPONENTS>(prefab->getId());
 
 	// set parent, and local transform..
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(prefabInstanceId);
@@ -217,18 +217,25 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 		transform->rotation = localRotation->native();
 	}
 
+	// initialise animator..
+	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(prefabInstanceId);
+
+	if(animator)
+		Interface::engine->animationSystem.initialiseAnimator(*animator);
+
 	// initialise all scripts..
 	Scripts* scripts = Interface::engine->ecs.registry.try_get<Scripts>(prefabInstanceId);
 
 	if (scripts) {
 		// Instantiate these scripts and call init..
 		for (auto&& scriptData : scripts->scriptDatas) {
-			Interface::addEntityScript(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId));
+			Interface::ScriptID scriptId = static_cast<System::UInt64>(scriptData.scriptId);
+			Script^ script = Interface::delayedAddEntityScript(static_cast<System::UInt32>(prefabInstanceId), scriptId);
 
 			for (auto&& fieldData : scriptData.fields)
-				Interface::setScriptFieldData(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId), fieldData);
+				Interface::setFieldData(script, fieldData);
 
-			Interface::initializeScript(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId));
+			Interface::initializeScript(script);
 		}
 	}
 

@@ -25,7 +25,7 @@ class PlayerWeaponController : Script
     // ===========================================
     private Gun currentlyHeldGun;
 
-    private bool recentlySwappedWeapon = false;
+    private bool recentlySwappedWeapon = true;
     private float timeElapsed;
 
     private SetWeaponActive setWeaponActiveDelegate;
@@ -36,7 +36,7 @@ class PlayerWeaponController : Script
         ScrollCallback(SwapWeaponHandler);
 
         currentlyHeldGun = sniper;
-        gameUIManager.SwapWeaponUI(shotgun, sniper);
+        SwapWeapon(shotgun, sniper);
     }
 
     // This function is invoked every fixed update.

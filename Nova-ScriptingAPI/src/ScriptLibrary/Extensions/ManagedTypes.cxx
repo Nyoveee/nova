@@ -91,6 +91,10 @@ Vector3 Quartenion::operator*(Vector3 axis, Quartenion quaternion) {
 	return Vector3{ axis.native() * quaternion.native() };
 }
 
+Quartenion Quartenion::Identity() {
+	return Quartenion{ glm::identity<glm::quat>() };
+}
+
 // =================================================================
 // TRANSFORM
 // =================================================================

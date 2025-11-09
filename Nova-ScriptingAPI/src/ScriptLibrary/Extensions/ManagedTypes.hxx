@@ -116,6 +116,7 @@ ManagedStruct(
 
 static Vector3 operator*(Quartenion quaternion, Vector3 axis);
 static Vector3 operator*(Vector3 axis, Quartenion quaternion);
+static Quartenion Identity();
 
 ManagedStructEnd(Quartenion, glm::quat)
 

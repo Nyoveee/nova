@@ -7,14 +7,14 @@ namespace {
 
 	// displayComponent, like the function suggests, is responsible for displaying a component's properties in the inspector UI.
 	template <typename Component>
-	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component);
+	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component, entt::registry& registry);
 
 	// This functor allows the use of variadic template arguments to recursively invoke displayComponent, such
 	// that it displays all the listed components of a given entity.
 	template <typename T, typename... Components>
 	void displayIndividualComponent(ComponentInspector& componentInspector, entt::entity entity, entt::registry& registry) {
 		if (registry.all_of<T>(entity)) {
-			displayComponent<T>(componentInspector, entity, registry.get<T>(entity));
+			displayComponent<T>(componentInspector, entity, registry.get<T>(entity), registry);
 		}
 
 		if constexpr (sizeof...(Components) > 0) {

@@ -26,6 +26,12 @@ class Enemy : Script
     private float hurtDuration = 0.1f;
 
     [SerializableField]
+    private float spawningDuration = 1f;
+
+    [SerializableField]
+    private Material spawningMaterial;
+
+    [SerializableField]
     private Material defaultMaterial;
 
     [SerializableField]
@@ -46,6 +52,7 @@ class Enemy : Script
     ***********************************************************/
     private enum EnemyState
     {
+        Spawning,
         Idle,
         Chasing,
         Attacking,
@@ -65,6 +72,7 @@ class Enemy : Script
 
     private float currentHealth;
 
+    private float spawningTimeElapsed = 0f;
     private float hurtTimeElapsed = 0f;
     private bool recentlyTookDamage = false;
     private bool immuneToDamage = false;    
@@ -88,6 +96,7 @@ class Enemy : Script
             animator.PlayAnimation("Grunt Idle (Base)");
 
         // Populate state machine dispatcher..
+        updateState.Add(EnemyState.Spawning, Update_SpawningState);
         updateState.Add(EnemyState.Idle, Update_IdleState);
         updateState.Add(EnemyState.Chasing, Update_ChasingState);
         updateState.Add(EnemyState.Attacking, Update_AttackState);
@@ -97,6 +106,7 @@ class Enemy : Script
         currentHealth = maximumHealth;
 
         rigidbody.SetVelocity(new Vector3(0, 0, 0));
+        LookAtPlayer();
     }
 
     // This function is invoked every fixed update.
@@ -166,6 +176,18 @@ class Enemy : Script
     /**********************************************************************
         Enemy States
     **********************************************************************/
+    private void Update_SpawningState()
+    {
+        if(spawningTimeElapsed > spawningDuration)
+        {
+            enemyState = EnemyState.Idle;
+        }
+        else
+        {
+            spawningTimeElapsed += Time.V_FixedDeltaTime();
+        }
+    }
+
     private void Update_IdleState()
     {
         if (player == null || enemyStats == null || animator == null)

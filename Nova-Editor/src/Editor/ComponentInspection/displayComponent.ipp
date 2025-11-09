@@ -5,7 +5,7 @@ namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 
 	template<typename Component>
-	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
+	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component, entt::registry& registry) {
 		(void) entity;
 
 		[[maybe_unused]] Editor& editor = componentInspector.editor;
@@ -68,7 +68,7 @@ namespace {
 		end:
 			// prompted to delete component.
 			if (!toShowHeader) {
-				componentInspector.ecs.registry.erase<Component>(entity);
+				registry.erase<Component>(entity);
 			}
 		}
 	}
