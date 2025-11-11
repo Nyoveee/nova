@@ -5,10 +5,10 @@
 #include <msclr/marshal_cppstd.h>
 // C++/cli doesn't support friend class so this is a way to make sure scripts cannot access the init update exit functions of other scripts
 // These also includes exception handling for scripts
+
+
 void Script::callInit() {
 	try { 
-		// Set GameObject Details
-		_gameObject = GameObject::GetReference(entityID);
 		// Call Init Function
 		init(); 
 	}

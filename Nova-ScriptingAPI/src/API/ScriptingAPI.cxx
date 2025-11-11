@@ -188,7 +188,11 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 		gameObjectScripts[entityID] = gcnew Scripts();
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
+
 	newScript->entityID = entityID;
+	// Set GameObject Details
+	newScript->_gameObject = GameObject::GetReference(entityID);
+
 	gameObjectScripts[entityID][scriptId] = newScript;
 }
 
@@ -203,6 +207,8 @@ Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) 
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
 	newScript->entityID = entityID;
+	// Set GameObject Details
+	newScript->_gameObject = GameObject::GetReference(entityID);
 	createdGameObjectScripts[entityID][scriptId] = newScript;
 
 	return newScript;
@@ -227,8 +233,7 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 	setFieldData(script, fieldData);
 }
 
-void Interface::setFieldData(Script^ script, FieldData const& fieldData) {
-
+void Interface::setFieldData(Script^ script, FieldData const& fieldData) {;
 	using BindingFlags = System::Reflection::BindingFlags;
 
 	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);

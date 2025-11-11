@@ -46,7 +46,7 @@ protected:
 		mouseScrollObserverIds.Add(Input::ScrollCallback(callback));
 	}
 
-protected:
+internal:
 	GameObject^ _gameObject;
 
 public:

@@ -227,6 +227,7 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 	Scripts* scripts = Interface::engine->ecs.registry.try_get<Scripts>(prefabInstanceId);
 
 	if (scripts) {
+		System::Collections::Generic::List<Script^>^ list = gcnew System::Collections::Generic::List<Script^>();
 		// Instantiate these scripts and call init..
 		for (auto&& scriptData : scripts->scriptDatas) {
 			Interface::ScriptID scriptId = static_cast<System::UInt64>(scriptData.scriptId);
@@ -234,9 +235,10 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 
 			for (auto&& fieldData : scriptData.fields)
 				Interface::setFieldData(script, fieldData);
-
-			Interface::initializeScript(script);
+			list->Add(script);
 		}
+		for each (Script^ script in list)
+			Interface::initializeScript(script);
 	}
 
 	// yoinked from zhi wei
