@@ -29,6 +29,8 @@ entt::entity PrefabManager::instantiatePrefab(ResourceID id) {
 
 	entt::entity newPrefabInstanceId = instantiatePrefabRecursive<ALL_COMPONENTS>(entity);
 
+	mapSerializedField(newPrefabInstanceId, map);
+
 	map.clear();
 
 
@@ -43,20 +45,20 @@ entt::entity PrefabManager::instantiatePrefab(ResourceID id) {
 		}
 #endif
 
-	for (int i{}; i < entityVec.size(); i++) {
-		entt::entity prefabEntity = prefabRegistry.create(entityVec[i]);
+	//for (int i{}; i < entityVec.size(); i++) {
+	//	entt::entity prefabEntity = prefabRegistry.create(entityVec[i]);
 
-		([&]() {
-			auto* component = ecsRegistry.try_get<Components>(entityVec[i]);
-			if (component) {
-				prefabRegistry.emplace<Components>(prefabEntity, *component);
-			}
-			}(), ...);
+	//	([&]() {
+	//		auto* component = ecsRegistry.try_get<Components>(entityVec[i]);
+	//		if (component) {
+	//			prefabRegistry.emplace<Components>(prefabEntity, *component);
+	//		}
+	//		}(), ...);
 
-		if (i == entityVec.size() - 1) {
-			prefabMap[id] = prefabEntity;
-		}
-	}
+	//	if (i == entityVec.size() - 1) {
+	//		prefabMap[id] = prefabEntity;
+	//	}
+	//}
 
 #if 0
 	entt::entity prefabEntity = prefabRegistry.create(entity);
@@ -99,6 +101,32 @@ entt::entity PrefabManager::instantiatePrefabRecursive(entt::entity prefabEntity
 	map[prefabEntity] = ecsEntity;
 
 	// asdsa
+	//auto scripts = ecsRegistry.try_get<Scripts>(ecsEntity);
+	//if (scripts != nullptr) {
+	//	for (ScriptData& scriptDatas : scripts->scriptDatas) {
+	//		for (FieldData fields : scriptDatas.fields) {
+	//			std::visit([&](auto&& value) {
+	//				using Type = std::decay_t<decltype(value)>;
+
+	//				if constexpr (std::same_as<Type, entt::entity>) {
+	//					auto iterator = map.find(value);
+	//					if (iterator != map.end()) {
+	//						if (value != iterator->second) {
+	//							value = iterator->second;
+	//						}
+	//						if (value == iterator->second) {
+	//							std::cout << "Same\n";
+	//						}
+	//					}
+	//				}
+
+	//			}, fields.data);
+	//		}
+
+	//	}
+	//}
+
+
 	std::vector<entt::entity> childVec;
 
 	//check for child, if there child, call the function recurisively for each child

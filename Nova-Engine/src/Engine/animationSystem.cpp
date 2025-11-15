@@ -69,20 +69,24 @@ void AnimationSystem::initialiseAllControllers() {
 	entt::registry& registry = engine.ecs.registry;
 
 	for (auto&& [entityId, animator] : registry.view<Animator>().each()) {
-		animator.timeElapsed = 0.f;
-		animator.currentNode = NO_CONTROLLER_NODE;
-		animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
-		animator.executedAnimationEvents.clear();
-
-		auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
-
-		if (!controllerPtr) {
-			continue;
-		}
-
-		animator.parameters = controllerPtr->data.parameters;
-		animator.currentNode = controllerPtr->getNodes().at(ENTRY_NODE).id;
+		initialiseAnimator(animator);
 	}
+}
+
+void AnimationSystem::initialiseAnimator(Animator& animator) {
+	animator.timeElapsed = 0.f;
+	animator.currentNode = NO_CONTROLLER_NODE;
+	animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
+	animator.executedAnimationEvents.clear();
+
+	auto&& [controllerPtr, _] = resourceManager.getResource<Controller>(animator.controllerId);
+
+	if (!controllerPtr) {
+		return;
+	}
+
+	animator.parameters = controllerPtr->data.parameters;
+	animator.currentNode = controllerPtr->getNodes().at(ENTRY_NODE).id;
 }
 
 void AnimationSystem::handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller) {

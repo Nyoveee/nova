@@ -16,10 +16,6 @@
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
 {
-	if (!gameObjectScripts->ContainsKey(entityID)) {
-		return T(); // return null
-	}
-
 	// Go through the managed scripts
 	for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
 		System::Type^ inheritedType{ gameObjectScripts[entityID][scriptID]->GetType() };
@@ -30,7 +26,18 @@ T Interface::tryGetScriptReference(System::UInt32 entityID)
 		} while (inheritedType != nullptr);
 	}
 		
-	return T(); // return null
+	// not in managed scripts, perhaps in the created object script dictionary..
+	if (createdGameObjectScripts->ContainsKey(entityID)) {
+		// Go through the managed scripts
+		System::Type^ inheritedType{ createdGameObjectScripts[entityID][scriptID]->GetType() };
+		do {
+			if (inheritedType == T::typeid)
+				return safe_cast<T>(createdGameObjectScripts[entityID][scriptID]); // Casting from one reference type to another
+			inheritedType = inheritedType->BaseType;
+		} while (inheritedType != nullptr);
+	}
+
+	return T();
 }
 
 void Interface::init(Engine& p_engine, const char* p_runtimePath)
@@ -41,6 +48,7 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	// Instantiate the containers
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
 	availableScripts = gcnew System::Collections::Generic::Dictionary<ScriptID, Script^>();
+	createdGameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64, Script^>^>();
 	assemblyLoadContext = nullptr;
 }
 
@@ -186,12 +194,38 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 		gameObjectScripts[entityID] = gcnew Scripts();
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
+
 	newScript->entityID = entityID;
+	// Set GameObject Details
+	newScript->_gameObject = GameObject::GetReference(entityID);
+
 	gameObjectScripts[entityID][scriptId] = newScript;
+}
+
+Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) {
+	if (!availableScripts->ContainsKey(scriptId)) {
+		Logger::error("Failed to add invalid script {} for entity {}!", scriptId, entityID);
+		return nullptr;
+	}
+
+	if (!createdGameObjectScripts->ContainsKey(entityID))
+		createdGameObjectScripts[entityID] = gcnew Scripts();
+
+	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
+	newScript->entityID = entityID;
+	// Set GameObject Details
+	newScript->_gameObject = GameObject::GetReference(entityID);
+	createdGameObjectScripts[entityID][scriptId] = newScript;
+
+	return newScript;
 }
 
 void Interface::initializeScript(EntityID entityID, ScriptID scriptId) {
 	gameObjectScripts[entityID][scriptId]->callInit();
+}
+
+void Interface::initializeScript(Script^ script) {
+	script->callInit();
 }
 
 void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
@@ -202,8 +236,12 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 	}
 
 	Script^ script = gameObjectScripts[entityID][scriptID];
+	setFieldData(script, fieldData);
+}
 
+void Interface::setFieldData(Script^ script, FieldData const& fieldData) {;
 	using BindingFlags = System::Reflection::BindingFlags;
+
 	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
 	for (int i = 0; i < fieldInfos->Length; ++i) {
 		// Ignore private and protected members if it doesn't have the serializablefield attribute
@@ -307,6 +345,21 @@ void Interface::update() {
 			script->callUpdate();
 		}
 	}
+
+	// Check the create game object queue to handle any game object request at the end of the frame..
+	for each (System::Collections::Generic::KeyValuePair<EntityID, Scripts^>^ kvp1 in createdGameObjectScripts) {
+		for each (System::Collections::Generic::KeyValuePair<ScriptID, Script^>^ kvp2 in kvp1->Value) {
+			EntityID entityID = kvp1->Key;
+			ScriptID scriptID = kvp2->Key;
+
+			if (!gameObjectScripts->ContainsKey(entityID))
+				gameObjectScripts[entityID] = gcnew Scripts();
+
+			gameObjectScripts[entityID][scriptID] = kvp2->Value;
+		}
+	}
+
+	createdGameObjectScripts->Clear();
 
 	// Check the delete game object queue to handle any deletion request at the end of the frame..
 	while (deleteGameObjectQueue.Count != 0) {

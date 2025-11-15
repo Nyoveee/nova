@@ -99,7 +99,7 @@ public:																								\
 		return result;																				\
 	}																								\
 internal:																							\
-	ComponentType* nativeComponent() { return componentReference; }									\
+	ComponentType* nativeComponent() { return Interface::getNativeComponent<ComponentType>(entityID); }									\
 	bool NativeReferenceLost() override { return !componentReference; }                             \
 	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override {								\
 		entityID = p_entityID;																		\

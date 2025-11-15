@@ -91,6 +91,7 @@ void Input::ClearAllKeyMapping() {
 // Audio APIs..
 // ======================================
 void AudioAPI::PlaySound(GameObject^ gameObject, System::String^ string) {
+	Logger::info("{}", static_cast<unsigned>(gameObject->entityID));
 	Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
 }
 void AudioAPI::PlayBGM(GameObject^ gameObject, System::String^ string) {
@@ -174,6 +175,7 @@ float Mathf::Clamp(float value, float min, float max) { return std::clamp(value,
 float Mathf::Interpolate(float a, float b, float t, float degree) { return Interpolation::Interpolation(a, b, t, degree); }
 float Mathf::Min(float a, float b) { return std::min(a, b); }
 float Mathf::Max(float a, float b) { return std::max(a, b); }
+float Mathf::Pow(float base, float exponent) { return std::powf(base, exponent); }
 
 // ======================================
 // Game Object creation and deletion..
@@ -194,7 +196,7 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 }
 
 GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent) {
-	entt::entity prefabInstanceId = Interface::engine->prefabManager.instantiatePrefab<ALL_COMPONENTS>(prefab->getId());
+ 	entt::entity prefabInstanceId = Interface::engine->prefabManager.instantiatePrefab<ALL_COMPONENTS>(prefab->getId());
 
 	// set parent, and local transform..
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(prefabInstanceId);
@@ -215,19 +217,28 @@ GameObject^ ObjectAPI::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localP
 		transform->rotation = localRotation->native();
 	}
 
+	// initialise animator..
+	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(prefabInstanceId);
+
+	if(animator)
+		Interface::engine->animationSystem.initialiseAnimator(*animator);
+
 	// initialise all scripts..
 	Scripts* scripts = Interface::engine->ecs.registry.try_get<Scripts>(prefabInstanceId);
 
 	if (scripts) {
+		System::Collections::Generic::List<Script^>^ list = gcnew System::Collections::Generic::List<Script^>();
 		// Instantiate these scripts and call init..
 		for (auto&& scriptData : scripts->scriptDatas) {
-			Interface::addEntityScript(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId));
+			Interface::ScriptID scriptId = static_cast<System::UInt64>(scriptData.scriptId);
+			Script^ script = Interface::delayedAddEntityScript(static_cast<System::UInt32>(prefabInstanceId), scriptId);
 
 			for (auto&& fieldData : scriptData.fields)
-				Interface::setScriptFieldData(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId), fieldData);
-
-			Interface::initializeScript(static_cast<unsigned>(prefabInstanceId), static_cast<unsigned long long>(scriptData.scriptId));
+				Interface::setFieldData(script, fieldData);
+			list->Add(script);
 		}
+		for each (Script^ script in list)
+			Interface::initializeScript(script);
 	}
 
 	// yoinked from zhi wei

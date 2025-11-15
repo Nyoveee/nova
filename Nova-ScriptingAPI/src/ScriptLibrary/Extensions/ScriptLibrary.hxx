@@ -132,6 +132,7 @@ public:
 	static float Interpolate(float a, float b, float t, float degree);
 	static float Min(float a, float b);
 	static float Max(float a, float b);
+	static float Pow(float base, float exponent);
 
 public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);

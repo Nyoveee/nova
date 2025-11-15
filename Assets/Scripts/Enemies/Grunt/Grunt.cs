@@ -4,7 +4,7 @@
 
 using ScriptingAPI;
 
-class Grunt : Enemy
+class Enemy : Script
 {
     private delegate void CurrentState();
 
@@ -20,23 +20,39 @@ class Grunt : Enemy
     private GameObject? hitboxPosition = null;
 
     [SerializableField]
+    private float maximumHealth = 100f;
+
+    [SerializableField]
     private float hurtDuration = 0.1f;
 
     [SerializableField]
-    private Material? defaultMaterial = null;
+    private float spawningDuration = 1f;
 
     [SerializableField]
-    private Material? hurtMaterial = null;
+    private Material spawningMaterial;
+
+    [SerializableField]
+    private Material defaultMaterial;
+
+    [SerializableField]
+    private Material hurtMaterial;
 
     /***********************************************************
         Components
     ***********************************************************/
-    private GruntStats? gruntStats = null;
+
+    private EnemyStats? enemyStats = null;
+    private Animator_? animator = null;
+    private Rigidbody_? rigidbody = null;
+    private Transform_? transform = null;
+    private SkinnedMeshRenderer_? renderer = null;
+
     /***********************************************************
         Runtime variables..
     ***********************************************************/
-    private enum GruntState
+    private enum EnemyState
     {
+        Spawning,
         Idle,
         Chasing,
         Attacking,
@@ -44,33 +60,53 @@ class Grunt : Enemy
     }
 
     // State machine
-    private GruntState gruntState = GruntState.Idle;
-    private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
+    private EnemyState enemyState = EnemyState.Idle;
+    private Dictionary<EnemyState, CurrentState> updateState = new Dictionary<EnemyState, CurrentState>();
 
-    // Player Reference
     private GameObject? player = null;
 
-    // Hurt
+    private float distance = 0f;
+
+    private bool b_HitPlayerThisAttack = false;
+    private bool b_IsSwinging = false;
+
+    private float currentHealth;
+
+    private float spawningTimeElapsed = 0f;
     private float hurtTimeElapsed = 0f;
     private bool recentlyTookDamage = false;
+    private bool immuneToDamage = false;    
 
-    // Attack
     private GameObject? hitbox = null;
 
+    /***********************************************************
+        Inspector Variables
+    ***********************************************************/
 
     // This function is first invoked when game starts.
     protected override void init()
     {
-        base.init();
-        gruntStats = getScript<GruntStats>();
+        transform = getComponent<Transform_>();
+        rigidbody = getComponent<Rigidbody_>();
+        animator = getComponent<Animator_>();
+        renderer = getComponent<SkinnedMeshRenderer_>();
+        enemyStats = getScript<EnemyStats>();
+
         if (animator != null)
             animator.PlayAnimation("Grunt Idle (Base)");
 
         // Populate state machine dispatcher..
-        updateState.Add(GruntState.Idle, Update_IdleState);
-        updateState.Add(GruntState.Chasing, Update_ChasingState);
-        updateState.Add(GruntState.Attacking, Update_AttackState);
-        updateState.Add(GruntState.Death, Update_Death);
+        updateState.Add(EnemyState.Spawning, Update_SpawningState);
+        updateState.Add(EnemyState.Idle, Update_IdleState);
+        updateState.Add(EnemyState.Chasing, Update_ChasingState);
+        updateState.Add(EnemyState.Attacking, Update_AttackState);
+        updateState.Add(EnemyState.Death, Update_Death);
+
+        player = GameObject.FindWithTag("Player");
+        currentHealth = maximumHealth;
+
+        rigidbody.SetVelocity(new Vector3(0, 0, 0));
+        LookAtPlayer();
     }
 
     // This function is invoked every fixed update.
@@ -79,9 +115,13 @@ class Grunt : Enemy
         // update take damage logic..
         if(recentlyTookDamage)
         {
+            // delay by 1 frame..
+            immuneToDamage = true;
+
             if (hurtTimeElapsed > hurtDuration)
             {
                 recentlyTookDamage = false;
+                immuneToDamage = false;
                 renderer.changeMaterial(0, defaultMaterial);
             }
             else
@@ -93,16 +133,22 @@ class Grunt : Enemy
         Vector3 playerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
         Vector3 enemyPosition = new Vector3(gameObject.transform.position.x,0,gameObject.transform.position.z);
 
+        distance = Vector3.Distance(playerPosition, enemyPosition);
         
-        updateState[gruntState]();
+        updateState[enemyState]();
     }
     /**********************************************************************
-        Inherited Functions
-   **********************************************************************/
-    public override void TakeDamage(float damage)
+        Public Functions
+    **********************************************************************/
+    public bool IsEngagedInBattle()
+    {
+        return enemyState != EnemyState.Idle;
+    }
+
+    public void TakeDamage(float damage)
     {
         // blud already died let him die in peace dont take anymore damage..
-        if (recentlyTookDamage || gruntState == GruntState.Death)
+        if(immuneToDamage || enemyState == EnemyState.Death)
         {
             return;
         }
@@ -111,59 +157,73 @@ class Grunt : Enemy
         hurtTimeElapsed = 0f;
 
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        gruntStats.health -= damage;
+        currentHealth -= damage;
         renderer.changeMaterial(0, hurtMaterial);
 
-        if (gruntStats.health <= 0)
+        if(currentHealth <= 0)
         {
-            gruntState = GruntState.Death;
+            enemyState = EnemyState.Death;
             animator.PlayAnimation("Grunt Death");
             rigidbody.SetVelocity(Vector3.Zero());
         }
     }
-    public override bool IsEngagedInBattle()
+
+    // kills this gameobject..
+    public void Die()
     {
-        return gruntState != GruntState.Idle && gruntState != GruntState.Death;
+         ObjectAPI.Destroy(gameObject);
     }
     /**********************************************************************
         Enemy States
     **********************************************************************/
+    private void Update_SpawningState()
+    {
+        if(spawningTimeElapsed > spawningDuration)
+        {
+            enemyState = EnemyState.Idle;
+        }
+        else
+        {
+            spawningTimeElapsed += Time.V_FixedDeltaTime();
+        }
+    }
+
     private void Update_IdleState()
     {
-        if (player == null || gruntStats == null || animator == null)
+        if (player == null || enemyStats == null || animator == null)
         {
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius)
+        if(distance <= enemyStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Running");
-            gruntState = GruntState.Chasing;
+            enemyState = EnemyState.Chasing;
         }
     }
     private void Update_ChasingState()
     {
         
-        if(player == null || gruntStats == null || animator == null)
+        if(player == null || enemyStats == null || animator == null)
         {
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        animator.SetFloat("Range", GetDistanceFromPlayer());
-        if (GetDistanceFromPlayer() > gruntStats.chasingRadius)
+        animator.SetFloat("Range", distance);
+        if (distance > enemyStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Idle (Base)");
-            gruntState = GruntState.Idle;
+            enemyState = EnemyState.Idle;
             rigidbody.SetVelocity(new Vector3(0, rigidbody.GetVelocity().y, 0));
             return;
         }
         // Change State
-        if (GetDistanceFromPlayer() <= gruntStats.attackRadius)
+        if (distance <= enemyStats.attackRadius)
         {
             if (animator != null)
                 animator.PlayAnimation("Grunt Attack");
             rigidbody.SetVelocity(Vector3.Zero());
-            gruntState = GruntState.Attacking;
+            enemyState = EnemyState.Attacking;
             return;
         }
         LookAtPlayer();
@@ -171,11 +231,16 @@ class Grunt : Enemy
         Vector3 direction = player.transform.position - gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
-        rigidbody.SetVelocity(direction * gruntStats.movementSpeed + new Vector3( 0,rigidbody.GetVelocity().y,0));
+        rigidbody.SetVelocity(direction * enemyStats.movementSpeed + new Vector3( 0,rigidbody.GetVelocity().y,0));
 
     }
     private void Update_AttackState()
     {
+        if (player == null || enemyStats == null)
+        {
+            Debug.LogWarning("Missing Reference Found");
+            return;
+        }
         LookAtPlayer();
     }
 
@@ -184,7 +249,14 @@ class Grunt : Enemy
 
     }
 
-  
+    private void LookAtPlayer()
+    {
+        Vector3 direction = player.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+
+        transform.setFront(direction);
+    }
     /****************************************************************
         Animation Events
     ****************************************************************/
@@ -192,21 +264,22 @@ class Grunt : Enemy
     {
 
         emitter.emit(1000);
+
         if (hitbox != null)
             ObjectAPI.Destroy(hitbox);
     }
     public void EndAttack()
     {
-        Debug.Log("end of attack....");
-
-        if (GetDistanceFromPlayer() > gruntStats.attackRadius)
+        if (distance > enemyStats.attackRadius)
         {
             animator.PlayAnimation("Grunt Running");
-            gruntState = GruntState.Chasing;
+            enemyState = EnemyState.Chasing;
         }
     }
     public void BeginSwing()
     {
+        Debug.Log(gameObject);
+
         AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
         if (hitboxPrefab == null)
             return;
@@ -214,8 +287,8 @@ class Grunt : Enemy
         if(hitbox!= null && hitboxPosition!= null){
             hitbox.transform.position = hitboxPosition.transform.position;
             EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
-            if (enemyHitBox != null && gruntStats != null)
-                enemyHitBox.SetDamage(gruntStats.damage);
+            if (enemyHitBox != null && enemyStats != null)
+                enemyHitBox.SetDamage(enemyStats.damage);
         }
            
     }

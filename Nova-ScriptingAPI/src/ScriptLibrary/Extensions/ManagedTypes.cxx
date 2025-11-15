@@ -33,8 +33,13 @@ Vector2 Vector2::Up() { return Vector2{ 0.f,  1.f };}
 Vector2 Vector2::Down() { return Vector2{ 0.f, -1.f };}
 Vector2 Vector2::Left() { return Vector2{ -1.f,  0.f };}
 Vector2 Vector2::Right() { return Vector2{ 1.f,  0.f };}
-Vector2 Vector2::One() { return Vector2{ 0.f,  0.f };}
-Vector2 Vector2::Zero() { return Vector2{ 1.f,  1.f };}
+Vector2 Vector2::Zero() { return Vector2{ 0.f,  0.f };}
+Vector2 Vector2::One() { return Vector2{ 1.f,  1.f };}
+
+Vector2 Vector2::Lerp(Vector2 a, Vector2 b, float interval) {
+	return Vector2{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval) };
+}
+
 // =================================================================
 // VECTOR 3
 // =================================================================
@@ -67,9 +72,12 @@ Vector3 Vector3::Front(){ return Vector3{ 0.f,  0.f,  1.f };}
 Vector3 Vector3::Back(){ return  Vector3{ 0.f,  0.f,  -1.f };}
 Vector3 Vector3::Left(){ return Vector3{ -1.f,  0.f,  0.f };}
 Vector3 Vector3::Right(){ return Vector3{ 1.f,  0.f,  0.f };}
-Vector3 Vector3::One() { return Vector3{ 0.f,  0.f,  0.f };}
-Vector3 Vector3::Zero(){ return Vector3{ 1.f,  1.f,  1.f }; }
+Vector3 Vector3::Zero() { return Vector3{ 0.f,  0.f,  0.f };}
+Vector3 Vector3::One(){ return Vector3{ 1.f,  1.f,  1.f }; }
 
+Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
+	return Vector3{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval), std::lerp(a.z, b.z, interval) };
+}
 
 // =================================================================
 // QUATERNION
@@ -81,6 +89,10 @@ Vector3 Quartenion::operator*(Quartenion quaternion, Vector3 axis) {
 
 Vector3 Quartenion::operator*(Vector3 axis, Quartenion quaternion) {
 	return Vector3{ axis.native() * quaternion.native() };
+}
+
+Quartenion Quartenion::Identity() {
+	return Quartenion{ glm::identity<glm::quat>() };
 }
 
 // =================================================================
