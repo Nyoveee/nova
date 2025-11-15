@@ -333,16 +333,28 @@ class PlayerController : Script
     }
     protected override void onCollisionEnter(GameObject other)
     {
-        if (other.tag != "EnemyHitBox")
-            return;
+        if (other.tag == "EnemyHitBox")
+        {
+            EnemyHitBox enemyHitBox = other.getScript<EnemyHitBox>();
 
-        EnemyHitBox enemyHitBox = other.getScript<EnemyHitBox>();
-
-        if (enemyHitBox == null || enemyHitBox.HasHitPlayerThisAttack())
-            return;
-        currentHealth = Mathf.Max(0,currentHealth- enemyHitBox.GetDamage());
-        if(gameUIManager!= null)
-            gameUIManager.ActivateDamageUI();
-        enemyHitBox.OnPlayerHit();
+            if (enemyHitBox == null || enemyHitBox.HasHitPlayerThisAttack())
+                return;
+            currentHealth = Mathf.Max(0, currentHealth - enemyHitBox.GetDamage());
+            if (gameUIManager != null)
+                gameUIManager.ActivateDamageUI();
+            enemyHitBox.OnPlayerHit();
+        }
+        if(other.tag == "Charger")
+        {
+            Charger charger = other.getScript<Charger>();
+            ChargerStats chargerStats = other.getScript<ChargerStats>();
+            if (charger.IsCharging())
+            {
+                currentHealth = Mathf.Max(0, currentHealth - chargerStats.chargeDamage);
+                if (gameUIManager != null)
+                    gameUIManager.ActivateDamageUI();
+            }
+        }
+        
     }
 }

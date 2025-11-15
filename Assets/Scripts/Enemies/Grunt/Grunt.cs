@@ -4,7 +4,7 @@
 
 using ScriptingAPI;
 
-class Grunt : Script
+class Grunt : Enemy
 {
     private delegate void CurrentState();
 
@@ -32,10 +32,6 @@ class Grunt : Script
         Components
     ***********************************************************/
     private GruntStats? gruntStats = null;
-    private Animator_? animator = null;
-    private Rigidbody_? rigidbody = null;
-    private Transform_? transform = null;
-    private SkinnedMeshRenderer_? renderer = null;
     /***********************************************************
         Runtime variables..
     ***********************************************************/
@@ -53,7 +49,6 @@ class Grunt : Script
 
     // Player Reference
     private GameObject? player = null;
-    private float distanceToPlayer = 0f;
 
     // Hurt
     private float hurtTimeElapsed = 0f;
@@ -66,10 +61,7 @@ class Grunt : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        transform = getComponent<Transform_>();
-        rigidbody = getComponent<Rigidbody_>();
-        animator = getComponent<Animator_>();
-        renderer = getComponent<SkinnedMeshRenderer_>();
+        base.init();
         gruntStats = getScript<GruntStats>();
         if (animator != null)
             animator.PlayAnimation("Grunt Idle (Base)");
@@ -79,10 +71,6 @@ class Grunt : Script
         updateState.Add(GruntState.Chasing, Update_ChasingState);
         updateState.Add(GruntState.Attacking, Update_AttackState);
         updateState.Add(GruntState.Death, Update_Death);
-
-        player = GameObject.FindWithTag("Player");
-
-        rigidbody.SetVelocity(new Vector3(0, 0, 0));
     }
 
     // This function is invoked every fixed update.
@@ -105,22 +93,16 @@ class Grunt : Script
         Vector3 playerPosition = new Vector3(player.transform.position.x, 0, player.transform.position.z);
         Vector3 enemyPosition = new Vector3(gameObject.transform.position.x,0,gameObject.transform.position.z);
 
-        distanceToPlayer = Vector3.Distance(playerPosition, enemyPosition);
         
         updateState[gruntState]();
     }
     /**********************************************************************
-        Public Functions
-    **********************************************************************/
-    public bool IsEngagedInBattle()
-    {
-        return gruntState != GruntState.Idle;
-    }
-
-    public void TakeDamage(float damage)
+        Inherited Functions
+   **********************************************************************/
+    public override void TakeDamage(float damage)
     {
         // blud already died let him die in peace dont take anymore damage..
-        if(recentlyTookDamage || gruntState == GruntState.Death)
+        if (recentlyTookDamage || gruntState == GruntState.Death)
         {
             return;
         }
@@ -132,18 +114,16 @@ class Grunt : Script
         gruntStats.health -= damage;
         renderer.changeMaterial(0, hurtMaterial);
 
-        if(gruntStats.health <= 0)
+        if (gruntStats.health <= 0)
         {
             gruntState = GruntState.Death;
             animator.PlayAnimation("Grunt Death");
             rigidbody.SetVelocity(Vector3.Zero());
         }
     }
-
-    // kills this gameobject..
-    public void Die()
+    public override bool IsEngagedInBattle()
     {
-        // ObjectAPI.Destroy(gameObject);
+        return gruntState != GruntState.Idle && gruntState != GruntState.Death;
     }
     /**********************************************************************
         Enemy States
@@ -155,7 +135,7 @@ class Grunt : Script
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        if(distanceToPlayer <= gruntStats.chasingRadius)
+        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
@@ -169,8 +149,8 @@ class Grunt : Script
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        animator.SetFloat("Range", distanceToPlayer);
-        if (distanceToPlayer > gruntStats.chasingRadius)
+        animator.SetFloat("Range", GetDistanceFromPlayer());
+        if (GetDistanceFromPlayer() > gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;
@@ -178,7 +158,7 @@ class Grunt : Script
             return;
         }
         // Change State
-        if (distanceToPlayer <= gruntStats.attackRadius)
+        if (GetDistanceFromPlayer() <= gruntStats.attackRadius)
         {
             if (animator != null)
                 animator.PlayAnimation("Grunt Attack");
@@ -204,19 +184,7 @@ class Grunt : Script
 
     }
 
-    private void LookAtPlayer()
-    {
-        if (player == null || transform == null)
-        {
-            Debug.LogWarning("Missing Reference Found");
-            return;
-        }
-        Vector3 direction = player.transform.position - gameObject.transform.position;
-        direction.y = 0;
-        direction.Normalize();
-
-        transform.setFront(direction);
-    }
+  
     /****************************************************************
         Animation Events
     ****************************************************************/
@@ -231,7 +199,7 @@ class Grunt : Script
     {
         Debug.Log("end of attack....");
 
-        if (distanceToPlayer > gruntStats.attackRadius)
+        if (GetDistanceFromPlayer() > gruntStats.attackRadius)
         {
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;

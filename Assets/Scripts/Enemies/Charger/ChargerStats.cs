@@ -4,7 +4,10 @@
 class ChargerStats : Script
 {
     public float health = 100f;
+    public float damage = 20f;
+    // Movement
     public float movementSpeed = 10f;
+    public float timeBetweenChargeSteps = 0.26f;
     // Combat
     public int chargeDamage;
     public float chargeCooldown;
@@ -13,4 +16,5 @@ class ChargerStats : Script
     // Detection
     public float chasingRange;
     public float chargingRange;
+    public float attackRange;
 }

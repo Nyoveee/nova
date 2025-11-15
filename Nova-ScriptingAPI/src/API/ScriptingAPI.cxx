@@ -21,9 +21,15 @@ T Interface::tryGetScriptReference(System::UInt32 entityID)
 	}
 
 	// Go through the managed scripts
-	for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
-		if (gameObjectScripts[entityID][scriptID]->GetType() == T::typeid)
-			return safe_cast<T>(gameObjectScripts[entityID][scriptID]); // Casting from one reference type to another
+	for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+		System::Type^ inheritedType{ gameObjectScripts[entityID][scriptID]->GetType() };
+		do {
+			if (inheritedType == T::typeid)
+				return safe_cast<T>(gameObjectScripts[entityID][scriptID]); // Casting from one reference type to another
+			inheritedType = inheritedType->BaseType;
+		} while (inheritedType != nullptr);
+	}
+		
 	return T(); // return null
 }
 

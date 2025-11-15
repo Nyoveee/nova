@@ -37,9 +37,9 @@ class BulletScript : Script
     }
     private void DamageEntity()
     {
-        Grunt gruntScript = collidedEntity.getScript<Grunt>();
-        if (gruntScript != null)
-            gruntScript.TakeDamage(damage);
+        Enemy enemyScript = collidedEntity.getScript<Enemy>();
+        if (enemyScript != null)
+            enemyScript.TakeDamage(damage);
 
     }
     private void CheckRaycast()

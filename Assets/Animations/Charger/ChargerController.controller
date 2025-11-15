@@ -10,47 +10,83 @@
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 226139197566697479
+                    "nextNode": 5483669552575332355
                 }
             ]
         },
-        "12331814995938574341": {
-            "animation": 11488401616123985925,
-            "animationEvents": null,
-            "id": 12331814995938574341,
-            "name": "Charger_Death",
+        "13554120084823654411": {
+            "animation": 15509887387844050953,
+            "animationEvents": [
+                {
+                    "functionName": "EndStagger",
+                    "key": 22,
+                    "scriptId": 9501847987883769857
+                }
+            ],
+            "id": 13554120084823654411,
+            "name": "ChargerStagger",
             "toLoop": true,
             "transitions": null
         },
-        "226139197566697479": {
-            "animation": 6876715597696598023,
+        "14130580837126930439": {
+            "animation": 2251290084865327115,
             "animationEvents": null,
-            "id": 226139197566697479,
-            "name": "Charger_Idle",
+            "id": 14130580837126930439,
+            "name": "ChargerWalk",
             "toLoop": true,
             "transitions": null
         },
-        "6567207472904388617": {
-            "animation": 16100087634551390217,
-            "animationEvents": null,
-            "id": 6567207472904388617,
-            "name": "Charger_Stagger",
+        "1448444286451908621": {
+            "animation": 6862976103292698627,
+            "animationEvents": [
+                {
+                    "functionName": "EndDeathAnimation",
+                    "key": 93,
+                    "scriptId": 9501847987883769857
+                }
+            ],
+            "id": 1448444286451908621,
+            "name": "ChargerDeath",
+            "toLoop": false,
+            "transitions": null
+        },
+        "16233225301454651393": {
+            "animation": 12627583626326917121,
+            "animationEvents": [
+                {
+                    "functionName": "BeginSwing",
+                    "key": 14,
+                    "scriptId": 9501847987883769857
+                },
+                {
+                    "functionName": "EndSwing",
+                    "key": 20,
+                    "scriptId": 9501847987883769857
+                },
+                {
+                    "functionName": "EndAttack",
+                    "key": 35,
+                    "scriptId": 9501847987883769857
+                }
+            ],
+            "id": 16233225301454651393,
+            "name": "ChargerAttack",
             "toLoop": true,
             "transitions": null
         },
-        "802599949870055425": {
-            "animation": 18405930643765084171,
+        "5483669552575332355": {
+            "animation": 15509887387844050949,
             "animationEvents": null,
-            "id": 802599949870055425,
-            "name": "Charger_Walk",
+            "id": 5483669552575332355,
+            "name": "ChargerIdle",
             "toLoop": true,
             "transitions": null
         },
-        "8296589729814577155": {
-            "animation": 1688568826965786627,
+        "5483669552575643657": {
+            "animation": 15104853692451422209,
             "animationEvents": null,
-            "id": 8296589729814577155,
-            "name": "Charger_Charge",
+            "id": 5483669552575643657,
+            "name": "ChargerCharge",
             "toLoop": true,
             "transitions": null
         }
