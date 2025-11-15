@@ -139,6 +139,18 @@ class PlayerController : Script
         }
        
     }
+    /***********************************************************
+       Public Functions
+    ***********************************************************/
+    public void TakeDamage(float damage)
+    {
+        currentHealth = Mathf.Max(0, currentHealth - damage);
+        if (gameUIManager != null)
+            gameUIManager.ActivateDamageUI();
+    }
+    /***********************************************************
+       Movement
+    ***********************************************************/
     private void handleMovement()
     {
         // ==============================
@@ -331,6 +343,9 @@ class PlayerController : Script
         dashVector.Normalize();
         rigidbody.SetVelocity(dashVector * dashStrength);
     }
+    /***********************************************************
+        Collision Events
+    ***********************************************************/
     protected override void onCollisionEnter(GameObject other)
     {
         if (other.tag == "EnemyHitBox")
@@ -339,22 +354,8 @@ class PlayerController : Script
 
             if (enemyHitBox == null || enemyHitBox.HasHitPlayerThisAttack())
                 return;
-            currentHealth = Mathf.Max(0, currentHealth - enemyHitBox.GetDamage());
-            if (gameUIManager != null)
-                gameUIManager.ActivateDamageUI();
+            TakeDamage(enemyHitBox.GetDamage());
             enemyHitBox.OnPlayerHit();
         }
-        if(other.tag == "Charger")
-        {
-            Charger charger = other.getScript<Charger>();
-            ChargerStats chargerStats = other.getScript<ChargerStats>();
-            if (charger.IsCharging())
-            {
-                currentHealth = Mathf.Max(0, currentHealth - chargerStats.chargeDamage);
-                if (gameUIManager != null)
-                    gameUIManager.ActivateDamageUI();
-            }
-        }
-        
     }
 }

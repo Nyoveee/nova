@@ -16,26 +16,30 @@
 generic<typename T> where T : Script
 T Interface::tryGetScriptReference(System::UInt32 entityID)
 {
+	
 	// Go through the managed scripts
-	for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
-		System::Type^ inheritedType{ gameObjectScripts[entityID][scriptID]->GetType() };
-		do {
-			if (inheritedType == T::typeid)
-				return safe_cast<T>(gameObjectScripts[entityID][scriptID]); // Casting from one reference type to another
-			inheritedType = inheritedType->BaseType;
-		} while (inheritedType != nullptr);
+	if (gameObjectScripts->ContainsKey(entityID)) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+			System::Type^ inheritedType{ gameObjectScripts[entityID][scriptID]->GetType() };
+			do {
+				if (inheritedType == T::typeid)
+					return safe_cast<T>(gameObjectScripts[entityID][scriptID]); // Casting from one reference type to another
+				inheritedType = inheritedType->BaseType;
+			} while (inheritedType != nullptr);
+		}
 	}
-		
-	// not in managed scripts, perhaps in the created object script dictionary..
 	if (createdGameObjectScripts->ContainsKey(entityID)) {
-		// Go through the managed scripts
-		System::Type^ inheritedType{ createdGameObjectScripts[entityID][scriptID]->GetType() };
-		do {
-			if (inheritedType == T::typeid)
-				return safe_cast<T>(createdGameObjectScripts[entityID][scriptID]); // Casting from one reference type to another
-			inheritedType = inheritedType->BaseType;
-		} while (inheritedType != nullptr);
+		// not in managed scripts, perhaps in the created object script dictionary..
+		for each (System::UInt64 scriptID in createdGameObjectScripts[entityID]->Keys) {
+			System::Type^ inheritedType{ createdGameObjectScripts[entityID][scriptID]->GetType() };
+			do {
+				if (inheritedType == T::typeid)
+					return safe_cast<T>(createdGameObjectScripts[entityID][scriptID]); // Casting from one reference type to another
+				inheritedType = inheritedType->BaseType;
+			} while (inheritedType != nullptr);
+		}
 	}
+	
 
 	return T();
 }

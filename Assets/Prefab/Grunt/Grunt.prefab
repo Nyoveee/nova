@@ -33,12 +33,12 @@
             },
             "EntityData": {
                 "children": [
-                    28311657,
-                    6
+                    20,
+                    32
                 ],
                 "isActive": true,
                 "layerId": 0,
-                "name": "Enemy",
+                "name": "Grunt",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
@@ -67,62 +67,22 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 7.0
-                                },
-                                "name": "attackRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 50.0
-                                },
-                                "name": "chasingRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 15.0
-                                },
-                                "name": "movementSpeed"
-                            }
-                        ],
-                        "scriptId": 10701564697501106251
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 28311657
+                                    "__variant_value": 20
                                 },
                                 "name": "emitter"
                             },
                             {
                                 "data": {
                                     "__variant_type": 7,
-                                    "__variant_value": 12252922837257388033
+                                    "__variant_value": 6420286339970809859
                                 },
                                 "name": "hitboxPrefab"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 6
+                                    "__variant_value": 32
                                 },
                                 "name": "hitboxPosition"
                             },
@@ -150,7 +110,7 @@
                             {
                                 "data": {
                                     "__variant_type": 10,
-                                    "__variant_value": 14949259600096887057
+                                    "__variant_value": 9679203611999387651
                                 },
                                 "name": "spawningMaterial"
                             },
@@ -169,7 +129,47 @@
                                 "name": "hurtMaterial"
                             }
                         ],
-                        "scriptId": 17619093725142188105
+                        "scriptId": 15842916263221428229
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "movementSpeed"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 7.0
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "chasingRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 20.0
+                                },
+                                "name": "damage"
+                            }
+                        ],
+                        "scriptId": 278475951028994057
                     }
                 ]
             },
@@ -223,7 +223,7 @@
                     "z": 1.5701606273651123
                 }
             },
-            "id": 35651732
+            "id": 19
         },
         {
             "EntityData": {
@@ -232,7 +232,7 @@
                 "layerId": 0,
                 "name": "Emitter",
                 "overridenProperties": null,
-                "parent": 35651732,
+                "parent": 19,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -330,9 +330,9 @@
                     "z": -3.1415915489196777
                 },
                 "localPosition": {
-                    "x": -0.08779239654541016,
+                    "x": -0.08778858184814453,
                     "y": 2.7134017944335938,
-                    "z": 2.0236854553222656
+                    "z": 2.023684501647949
                 },
                 "localRotation": {
                     "w": -5.849740318808472e-07,
@@ -346,7 +346,7 @@
                     "z": 1.000047206878662
                 },
                 "position": {
-                    "x": 1.3237015008926392,
+                    "x": 1.3236953020095825,
                     "y": 33.53652572631836,
                     "z": 18.175491333007813
                 },
@@ -362,7 +362,7 @@
                     "z": 1.5701515674591064
                 }
             },
-            "id": 28311657
+            "id": 20
         },
         {
             "EntityData": {
@@ -371,7 +371,7 @@
                 "layerId": 0,
                 "name": "Hitbox Position",
                 "overridenProperties": null,
-                "parent": 35651732,
+                "parent": 19,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -387,9 +387,9 @@
                     "z": -3.1415927410125732
                 },
                 "localPosition": {
-                    "x": -0.00023174285888671875,
+                    "x": -0.00022649765014648438,
                     "y": 3.0094871520996094,
-                    "z": 1.4549236297607422
+                    "z": 1.4549217224121094
                 },
                 "localRotation": {
                     "w": 5.380827587941894e-07,
@@ -403,7 +403,7 @@
                     "z": 0.6369405388832092
                 },
                 "position": {
-                    "x": 0.8601958751678467,
+                    "x": 0.8601871728897095,
                     "y": 34.00140380859375,
                     "z": 18.95111846923828
                 },
@@ -419,8 +419,8 @@
                     "z": 1.0000993013381958
                 }
             },
-            "id": 6
+            "id": 32
         }
     ],
-    "RootEntity": 35651732
+    "RootEntity": 19
 }

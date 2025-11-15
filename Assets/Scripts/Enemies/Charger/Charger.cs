@@ -190,7 +190,7 @@ class Charger : Enemy
     }
     public void EndDeathAnimation()
     {
-        // ObjectAPI.Destroy(gameObject);
+        ObjectAPI.Destroy(gameObject);
     }
     /***********************************************************
         Collision Events
@@ -199,16 +199,19 @@ class Charger : Enemy
     {
         if(other.tag == "Player" && chargerState == ChargerState.Charging)
         {
+            PlayerController playerController = other.getScript<PlayerController>();
+            playerController.TakeDamage(chargerstats.chargeDamage);
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");
             rigidbody.SetVelocity(Vector3.Zero());
+            currentChargeCooldown = chargerstats.chargeCooldown;
         }
         if (other.tag == "Wall" && chargerState == ChargerState.Charging)
         {
             chargerState = ChargerState.Stagger;
             animator.PlayAnimation("ChargerStagger");
             rigidbody.SetVelocity(Vector3.Zero());
-            AudioAPI.PlaySound(gameObject,"Enemy Hurt SFX");
+            AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         }
     }
 }
