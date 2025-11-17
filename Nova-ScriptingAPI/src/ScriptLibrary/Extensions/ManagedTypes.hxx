@@ -97,6 +97,14 @@ ManagedStructEnd(Vector3, glm::vec3)
 // This struct is responsible for ColorA Types
 // ======================================
 ManagedStruct(
+	Colour, glm::vec3,
+	float, r,
+	float, g,
+	float, b
+)
+ManagedStructEnd(Colour, glm::vec3)
+
+ManagedStruct(
 	ColorAlpha, glm::vec4,
 	float, r,
 	float, g,
@@ -250,6 +258,14 @@ ManagedComponentDeclaration(
 
 void changeMaterial(int index, ScriptingAPI::Material^ material);
 
+// void setMaterialVector4(int index, System::String^ name, Vector4^ data);
+void setMaterialVector3(int index, System::String^ name, Vector3^ data);
+void setMaterialVector2(int index, System::String^ name, Vector2^ data);
+void setMaterialBool(int index, System::String^ name, bool data);
+void setMaterialInt(int index, System::String^ name, int data);
+void setMaterialUInt(int index, System::String^ name, unsigned data);
+void setMaterialFloat(int index, System::String^ name, float data);
+
 ManagedComponentEnd()
 
 ManagedComponentDeclaration(
@@ -258,7 +274,11 @@ ManagedComponentDeclaration(
 
 void changeMaterial(int index, ScriptingAPI::Material^ material);
 
+void setMaterialVector3(int index, System::String^ name, Vector3^ data);
+void setMaterialVector2(int index, System::String^ name, Vector2^ data);
+void setMaterialBool(int index, System::String^ name, bool data);
+void setMaterialInt(int index, System::String^ name, int data);
+void setMaterialUInt(int index, System::String^ name, unsigned data);
+void setMaterialFloat(int index, System::String^ name, float data);
+
 ManagedComponentEnd()
-
-
-

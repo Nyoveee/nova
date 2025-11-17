@@ -178,12 +178,12 @@ struct MeshRenderer {
 	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{};
 
-	bool toRenderOutline = false;
-
 	REFLECTABLE(
 		modelId,
 		materialIds
 	)
+
+	std::unordered_set<int>					isMaterialInstanced;
 };
 
 struct SkinnedMeshRenderer {
@@ -194,6 +194,8 @@ struct SkinnedMeshRenderer {
 		modelId,
 		materialIds
 	)
+
+	std::unordered_set<int>					isMaterialInstanced;
 
 	// owns all the bone's final matrices.
 	std::vector<glm::mat4x4> bonesFinalMatrices;

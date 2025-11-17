@@ -310,6 +310,7 @@ void Editor::handleEntityValidity() {
 }
 
 void Editor::handleEntityHovering() {
+#if false
 	if (!isActive() || !editorViewPort.isActive) {
 		return;
 	}
@@ -355,6 +356,7 @@ void Editor::handleEntityHovering() {
 	}
 
 	hoveringEntity = newHoveringEntity;
+#endif
 }
 
 // handles object picker in game viewport
@@ -462,7 +464,8 @@ void Editor::launchProfiler()
 	CloseHandle(pi.hThread);
 }
 
-void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline) const {
+void Editor::toOutline(std::vector<entt::entity> const&, bool) const {
+#if false
 	entt::registry& registry = engine.ecs.registry;
 
 	for (entt::entity entity : entities) {
@@ -472,6 +475,7 @@ void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline
 			meshRenderer->toRenderOutline = toOutline;
 		}
 	}
+#endif
 }
 
 void Editor::startSimulation() {

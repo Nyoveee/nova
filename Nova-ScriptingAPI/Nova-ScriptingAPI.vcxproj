@@ -62,6 +62,9 @@
     <ClCompile Include="src\ScriptLibrary\Extensions\ManagedTypes.cxx" />
     <ClCompile Include="src\ScriptLibrary\Core\Script.cxx" />
     <ClCompile Include="src\Export\LibraryExport.cpp" />
+    <ClInclude Include="src\ScriptLibrary\Extensions\ManagedTypes.ixx">
+      <FileType>Document</FileType>
+    </ClInclude>
     <ClCompile Include="src\ScriptLibrary\Extensions\ScriptLibrary.cxx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
