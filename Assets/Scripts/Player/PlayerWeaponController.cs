@@ -103,7 +103,8 @@ class PlayerWeaponController : Script
         {
             to.gameObject.SetActive(true);
             AudioAPI.PlaySound(gameObject, "Holster SFX");
-            gameUIManager.SwapWeaponUI(from, to);
+            if(gameUIManager!= null)
+                gameUIManager.SwapWeaponUI(from, to);
         };
     }
 }

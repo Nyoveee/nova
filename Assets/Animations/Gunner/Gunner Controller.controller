@@ -40,7 +40,13 @@
         },
         "7894661067087511567": {
             "animation": 17095576678437027841,
-            "animationEvents": null,
+            "animationEvents": [
+                {
+                    "functionName": "EndDeath",
+                    "key": 55,
+                    "scriptId": 13082807837807067137
+                }
+            ],
             "id": 7894661067087511567,
             "name": "Gunner_Die",
             "toLoop": true,
@@ -48,7 +54,13 @@
         },
         "977132039444693005": {
             "animation": 954675613941170183,
-            "animationEvents": null,
+            "animationEvents": [
+                {
+                    "functionName": "EndStagger",
+                    "key": 37,
+                    "scriptId": 13082807837807067137
+                }
+            ],
             "id": 977132039444693005,
             "name": "Gunner_Stagger",
             "toLoop": true,

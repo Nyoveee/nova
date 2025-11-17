@@ -3,6 +3,8 @@
 // Editor will automatically rename and recompile this file.
 public abstract class Enemy : Script
 {
+    [SerializableField]
+    private float hurtDuration = 0.1f;
     /***********************************************************
         Local Variables
     ***********************************************************/
