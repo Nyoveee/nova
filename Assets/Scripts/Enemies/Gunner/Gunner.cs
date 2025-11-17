@@ -15,7 +15,7 @@ class Gunner : Enemy
     [SerializableField]
     private Material hurtMaterial;
     /***********************************************************
-       Local Variables
+        Local Variables
     ***********************************************************/
     private delegate void CurrentState();
     private enum GunnerState
@@ -30,12 +30,13 @@ class Gunner : Enemy
     private Dictionary<GunnerState, CurrentState> updateState = new Dictionary<GunnerState, CurrentState>();
     private float currentHurtTime = 0f;
     /***********************************************************
-       Components
+        Components
     ***********************************************************/
     private GunnerStats? gunnerStats = null;
+    private GameGlobalReferenceManager gameGlobalReferenceManager = null;
     /**********************************************************************
-       Script Functions
-   **********************************************************************/
+        Script Functions
+    **********************************************************************/
     protected override void init()
     {
         base.init();
@@ -45,7 +46,8 @@ class Gunner : Enemy
         updateState.Add(GunnerState.Shoot, Update_Shoot);
         updateState.Add(GunnerState.Stagger, Update_Stagger);
         updateState.Add(GunnerState.Death, Update_Death);
-
+        gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
+        Debug.Log("Total Vantage Points:" + gameGlobalReferenceManager.vantagePoints.Length.ToString());
     }
 
     // This function is invoked every fixed update.
