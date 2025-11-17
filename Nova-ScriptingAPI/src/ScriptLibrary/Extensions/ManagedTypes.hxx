@@ -3,6 +3,18 @@
 #include "component.h"
 #include "API/ManagedTypeMacros.hxx"
 #include "API/IManagedResourceID.hxx"
+
+// ===========================================================================================
+// 0. Defining managed typed resource..
+// ===========================================================================================
+
+namespace ScriptingAPI {
+	ManagedResource(Prefab)
+	ManagedResource(Texture)
+	ManagedResource(Model)
+	ManagedResource(Material)
+}
+
 // ===========================================================================================
 // 1. Defining structs..
 // 
@@ -14,17 +26,6 @@
 // Providing association here also allows you to declare data members of Managed Components
 // later in 2. with the managed type.
 // ===========================================================================================
-
-// ===========================================================================================
-// 3. Defining managed typed resource..
-// ===========================================================================================
-
-namespace ScriptingAPI {
-	ManagedResource(Prefab)
-		ManagedResource(Texture)
-		ManagedResource(Model)
-		ManagedResource(Material)
-}
 
 #define ALL_MANAGED_TYPED_RESOURCE_ID \
 	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material

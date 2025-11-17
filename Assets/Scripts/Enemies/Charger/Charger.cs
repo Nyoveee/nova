@@ -176,12 +176,12 @@ class Charger : Enemy
     }
     public void BeginSwing()
     {
-        hitbox = ObjectAPI.Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.position,null);
+        hitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.position,null);
         hitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
     }
     public void EndSwing()
     {
-        ObjectAPI.Destroy(hitbox);
+        Destroy(hitbox);
     }
     public void EndAttack()
     {
@@ -190,7 +190,7 @@ class Charger : Enemy
     }
     public void EndDeathAnimation()
     {
-        ObjectAPI.Destroy(gameObject);
+        Destroy(gameObject);
     }
     /***********************************************************
         Collision Events

@@ -53,6 +53,9 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	gameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64,Script^>^>();
 	availableScripts = gcnew System::Collections::Generic::Dictionary<ScriptID, Script^>();
 	createdGameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64, Script^>^>();
+	timeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
+	executeTimeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
+
 	assemblyLoadContext = nullptr;
 }
 
@@ -312,6 +315,10 @@ void Interface::setFieldData(Script^ script, FieldData const& fieldData) {;
 	}
 }
 
+void Interface::addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate) {
+	timeoutDelegates->Add(timeoutDelegate);
+}
+
 #if 0
 void Interface::updateReference(Script^ script)
 {
@@ -350,9 +357,27 @@ void Interface::update() {
 		}
 	}
 
+	// Handle timeout delegates..
+	// Check if timeout expires..
+	for each (TimeoutDelegate^ delegate in timeoutDelegates) {
+		if (delegate->timeElapsed >= delegate->duration) {
+			executeTimeoutDelegates->Add(delegate);
+		}
+
+		delegate->timeElapsed += Time::V_FixedDeltaTime();
+	}
+
+	// Execute delegate, then remove from the list..
+	for each (TimeoutDelegate^ delegate in executeTimeoutDelegates) {
+		delegate->callback();
+		timeoutDelegates->Remove(delegate);
+	}
+
+	executeTimeoutDelegates->Clear();
+
 	// Check the create game object queue to handle any game object request at the end of the frame..
-	for each (System::Collections::Generic::KeyValuePair<EntityID, Scripts^>^ kvp1 in createdGameObjectScripts) {
-		for each (System::Collections::Generic::KeyValuePair<ScriptID, Script^>^ kvp2 in kvp1->Value) {
+	for each (System::Collections::Generic::KeyValuePair<EntityID, Scripts^> ^ kvp1 in createdGameObjectScripts) {
+		for each (System::Collections::Generic::KeyValuePair<ScriptID, Script^> ^ kvp2 in kvp1->Value) {
 			EntityID entityID = kvp1->Key;
 			ScriptID scriptID = kvp2->Key;
 
@@ -398,6 +423,7 @@ void Interface::update() {
 		// remove from ECS registry..
 		engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
 	}
+	
 }
 
 

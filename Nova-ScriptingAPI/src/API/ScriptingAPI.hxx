@@ -6,6 +6,8 @@
 #include <string>
 #include "Engine/engine.h"
 
+#include "TimeoutDelegate.hxx"
+
 class Engine;
 class ECS;
 ref class Script;
@@ -51,6 +53,8 @@ internal:
 	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
 	static void setFieldData(Script^ script, FieldData const& fieldData);
 
+	static void addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate);
+
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
@@ -94,6 +98,12 @@ private:
 
 	// We store created game object scripts in a separate dictionary first..
 	static System::Collections::Generic::Dictionary<EntityID, Scripts^>^ createdGameObjectScripts;
+
+	// We store set timeout request in a separate container..
+	static System::Collections::Generic::List<TimeoutDelegate^>^ timeoutDelegates;
+
+	// Temporary container to execute and remove it from the main container..
+	static System::Collections::Generic::List<TimeoutDelegate^>^ executeTimeoutDelegates;
 
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;
