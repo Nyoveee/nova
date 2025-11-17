@@ -1,0 +1,59 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "animationEvents": null,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 7318200314782007303
+                }
+            ]
+        },
+        "1553592791747919881": {
+            "animation": 2684057870851440649,
+            "animationEvents": null,
+            "id": 1553592791747919881,
+            "name": "Gunner_Walk",
+            "toLoop": true,
+            "transitions": null
+        },
+        "400671287141203979": {
+            "animation": 4413440127761711109,
+            "animationEvents": null,
+            "id": 400671287141203979,
+            "name": "Gunner_Jump",
+            "toLoop": true,
+            "transitions": null
+        },
+        "7318200314782007303": {
+            "animation": 7295743889278828547,
+            "animationEvents": null,
+            "id": 7318200314782007303,
+            "name": "Gunner_Idle",
+            "toLoop": true,
+            "transitions": null
+        },
+        "7894661067087511567": {
+            "animation": 17095576678437027841,
+            "animationEvents": null,
+            "id": 7894661067087511567,
+            "name": "Gunner_Die",
+            "toLoop": true,
+            "transitions": null
+        },
+        "977132039444693005": {
+            "animation": 954675613941170183,
+            "animationEvents": null,
+            "id": 977132039444693005,
+            "name": "Gunner_Stagger",
+            "toLoop": true,
+            "transitions": null
+        }
+    },
+    "parameters": null
+}
