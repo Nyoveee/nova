@@ -44,6 +44,7 @@ class Gunner : Enemy
     private float currentHurtTime = 0f;
     private float currentShootCooldown = 0f;
     GameObject? targetVantagePoint = null;
+    int gunShootIndex = 0;
     /***********************************************************
         Components
     ***********************************************************/
@@ -61,6 +62,7 @@ class Gunner : Enemy
         updateState.Add(GunnerState.Shoot, Update_Shoot);
         updateState.Add(GunnerState.Stagger, Update_Stagger);
         updateState.Add(GunnerState.Death, Update_Death);
+        currentShootCooldown = gunnerStats.maxShootCooldown;
         gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
     }
 
@@ -190,7 +192,10 @@ class Gunner : Enemy
         currentShootCooldown -= Time.V_FixedDeltaTime();
         if(currentShootCooldown < 0)
         {
+            AudioAPI.PlaySound(gameObject, "Gun1_LaserRifle_Switch_Select5");
             currentShootCooldown = gunnerStats.maxShootCooldown;
+            gunShootIndex = (gunShootIndex + 1) % 2;
+            AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
             // Cursed
             ShootProjectile(projectileSpawnPoint1);
             ShootProjectile(projectileSpawnPoint2);
