@@ -114,11 +114,11 @@ System::Nullable<RayCastResult> PhysicsAPI::Raycast(Vector3 origin, Vector3 dire
 
 System::Nullable<RayCastResult> PhysicsAPI::Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, array<System::String^>^ layermask)
 {
-	std::vector<uint16_t> layerIds;
+	std::vector<uint8_t> layerIds;
 
 	for each (System::String ^ layer in layermask) {
 		std::string layerName = Convert(layer);
-		layerIds.push_back(static_cast<uint16_t>(magic_enum::enum_cast<Rigidbody::Layer>(layerName.c_str()).value()));
+		layerIds.push_back(static_cast<uint8_t>(magic_enum::enum_cast<Rigidbody::Layer>(layerName.c_str()).value()));
 	}
 	auto opt = Interface::engine->physicsManager.rayCast(Ray{origin,directionVector}.native(), maxDistance, layerIds);
 	if (!opt)

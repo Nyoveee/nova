@@ -3,6 +3,7 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 
 class Gunner : Enemy
 {
@@ -77,12 +78,13 @@ class Gunner : Enemy
     /***********************************************************
        Helpers 
     ***********************************************************/
-    private bool HasLineOfSight(GameObject from,GameObject to)
+    private bool HasLineOfSightToPlayer(GameObject from)
     {
-        Vector3 direction = to.transform.position - from.transform.position;
+        Vector3 direction = player.transform.position - from.transform.position;
         direction.Normalize();
         string[] layerMask = { "Wall" };
-        RayCastResult? rayCastResult = PhysicsAPI.Raycast(from.transform.position, direction, 1000f, layerMask);
+        float distance = Vector3.Distance(from.transform.position, player.transform.position);
+        RayCastResult? rayCastResult = PhysicsAPI.Raycast(from.transform.position, direction, distance, layerMask);
         return rayCastResult == null;
     }
     private void GetVantagePoint()
@@ -91,7 +93,7 @@ class Gunner : Enemy
         float closestVantagePoint = Single.MaxValue;
         foreach (GameObject vantagePoint in gameGlobalReferenceManager.vantagePoints)
         {
-            if (!HasLineOfSight(vantagePoint, player))
+            if (!HasLineOfSightToPlayer(vantagePoint))
                 continue;
             float distance = Vector3.Distance(vantagePoint.transform.position, gameObject.transform.position);
             if (distance < closestVantagePoint)
@@ -108,8 +110,6 @@ class Gunner : Enemy
         Vector3 direction = player.transform.position - projectileSpawnLocation.transform.position;
         direction.Normalize();
         projectile.getScript<GunnerProjectile>().SetDirection(direction);
-
-    
     }
     /***********************************************************
        Inherited Functions
@@ -154,7 +154,7 @@ class Gunner : Enemy
     }
     private void Update_Walk()
     {
-        if(!HasLineOfSight(targetVantagePoint,player))
+        if(!HasLineOfSightToPlayer(targetVantagePoint))
             GetVantagePoint();
         if (targetVantagePoint == null)
         {
@@ -179,7 +179,7 @@ class Gunner : Enemy
     }
     private void Update_Shoot()
     {
-        if (!HasLineOfSight(targetVantagePoint, player))
+        if (!HasLineOfSightToPlayer(targetVantagePoint))
         {
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");

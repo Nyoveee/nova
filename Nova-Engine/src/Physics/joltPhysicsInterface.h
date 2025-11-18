@@ -8,6 +8,8 @@
 #include <Jolt/Core/JobSystemThreadPool.h>
 #include <Jolt/Physics/PhysicsSettings.h>
 
+#include <iostream>
+
 // Layer that objects can be in, determines which other objects it can collide with
 // Typically you at least want to have 1 layer for moving bodies and 1 layer for static bodies, but you can have more
 // layers if you want. E.g. you could have a layer for high detail collision (which is not used by the physics simulation
@@ -41,6 +43,7 @@ public:
 		// Create a mapping table from object to broad phase layer
 		mObjectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
 		mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
+		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
 	}
 
 	JPH::uint GetNumBroadPhaseLayers() const final {
@@ -66,7 +69,7 @@ public:
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
 
 private:
-	JPH::BroadPhaseLayer					mObjectToBroadPhase[Layers::NUM_LAYERS];
+	JPH::BroadPhaseLayer mObjectToBroadPhase[Layers::NUM_LAYERS];
 };
 
 /// Class that determines if an object layer can collide with a broadphase layer
@@ -110,15 +113,17 @@ public:
 };
 
 /// Class that determines if raycast layer 
-class RayCastLayerMaskFilterImpl : public JPH::ObjectLayerFilter
+class RayCastLayerMaskFilterImpl : public JPH::BroadPhaseLayerFilter
 {
 public:
-	RayCastLayerMaskFilterImpl(std::vector<uint16_t> const& layerMask) : layerMask{ layerMask } {}
+	RayCastLayerMaskFilterImpl(std::vector<uint8_t> const& layerMask) : layerMask{ layerMask } {}
 public:
-	bool ShouldCollide(JPH::ObjectLayer inLayer) const final {
-		uint16_t layer = static_cast<uint16_t>(inLayer);
+	bool ShouldCollide(JPH::BroadPhaseLayer inLayer) const final {
+		if (layerMask.empty())
+			return true;
+		uint8_t layer = static_cast<uint8_t>(inLayer);
 		return std::find(std::begin(layerMask), std::end(layerMask), layer) != std::end(layerMask);
 	}
 private:
-	std::vector<uint16_t> layerMask;
+	std::vector<uint8_t> layerMask;
 };

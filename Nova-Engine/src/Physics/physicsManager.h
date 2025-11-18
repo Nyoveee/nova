@@ -58,7 +58,7 @@ public:
 	// These interfaces are invoked by C# scripting..
 	ENGINE_DLL_API PhysicsRay getRayFromMouse() const;
 	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<entt::entity> const& ignoredEntities = {});
-	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<uint16_t> const& layerMask = {});
+	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<uint8_t> const& layerMask = {});
 
 	ENGINE_DLL_API void addForce(Rigidbody const& rigidbody, glm::vec3 forceVector);
 	ENGINE_DLL_API void addImpulse(Rigidbody const& rigidbody, glm::vec3 forceVector);
