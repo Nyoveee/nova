@@ -59,8 +59,8 @@ void AssetManagerUI::update() {
 			entt::entity entity = *((entt::entity*)payload->Data);
 			EntityData* entityData = editor.engine.ecs.registry.try_get<EntityData>(entity);
 			std::string fileName = entityData->name;
-
-			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, createAssetFile(".prefab", fileName), std::numeric_limits<std::size_t>::max());
+			std::optional<std::ofstream> opt = createAssetFile(".prefab");
+			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, opt.value(), std::numeric_limits<std::size_t>::max());
 		}
 
 		ImGui::EndDragDropTarget();
@@ -268,6 +268,11 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 			handleThumbnailDoubleClick(resourceId);
 		}
 	);
+
+	if (ImGui::BeginPopupContextItem("[-] Delete?")) {
+	
+		ImGui::EndPopup();
+	}
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {

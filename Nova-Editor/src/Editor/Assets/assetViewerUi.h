@@ -10,7 +10,7 @@ public:
 	AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager);
 	
 	void update();
-	void updateScriptFileName(AssetFilePath const& filepath, std::string const& newName, ResourceID id);
+	void updateScriptFileName(AssetFilePath const& filepath, ResourceID id);
 	
 	template <ValidResource T>
 	void displayAssetUI(BasicAssetInfo& descriptor);
@@ -25,6 +25,7 @@ private:
 	void displayModelInfo(AssetInfo<Model>& descriptor);
 	void displayAnimationInfo(AssetInfo<Model>& descriptor);
 	void displayFontInfo(AssetInfo<Font>& descriptor);
+	void displayPrefabInfo(AssetInfo<Prefab>& descriptor);
 
 	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
@@ -52,6 +53,10 @@ private:
 
 	// Model
 	float copyOfScale = 1.f;
+
+	// Selected prefab entity
+	entt::entity rootPrefabEntity;
+	entt::entity selectedPrefabEntity;
 
 	// ---------------------------------------------------
 	bool toSerialiseSelectedDescriptor;

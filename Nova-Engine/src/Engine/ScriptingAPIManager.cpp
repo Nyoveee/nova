@@ -353,6 +353,7 @@ bool ScriptingAPIManager::startSimulation() {
 			addEntityScript(static_cast<unsigned int>(entity), static_cast<std::size_t>(script.scriptId));
 		}
 	}
+
 	// All scripts loaded, set script fields(Which include scripts loaded already)
 	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 		for (auto&& script : scripts.scriptDatas) {
@@ -363,6 +364,7 @@ bool ScriptingAPIManager::startSimulation() {
 
 	// Call their init functions..
 	initalizeScripts();
+
 	return true;
 }
 

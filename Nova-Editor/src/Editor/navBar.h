@@ -40,7 +40,7 @@ public:
 	bool componentInspectorBool;
 	bool gameConfigBool;
 	bool animationBool;
-	bool animatorBool;
-	bool imGuiDemoBool;
 	bool navigationBool;
+	bool imGuiDemoBool;
+	bool animatorBool;
 };

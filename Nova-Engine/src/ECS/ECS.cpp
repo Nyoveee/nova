@@ -9,7 +9,8 @@
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this, engine ,engine.resourceManager }
+	sceneManager	{ *this, engine ,engine.resourceManager },
+	prefabManager	{engine}
 {}
 
 ECS::~ECS() {}
@@ -136,4 +137,25 @@ void ECS::deleteEntity(entt::entity entity) {
 
 	// 3. Delete the entity!
 	registry.destroy(entity);
+}
+
+void ECS::setActive(entt::entity entity, bool isActive) {
+	EntityData& entityData = registry.get<EntityData>(entity);
+	
+	// there is a change in active status..
+	if (entityData.isActive != isActive) {
+		entityData.isActive = isActive;
+
+		// destruction / construction of physics body when enabling or disabling..
+		if (isActive) {
+			engine.physicsManager.addBodiesToSystem(registry, entity);
+		}
+		else {
+			engine.physicsManager.removeBodiesFromSystem(registry, entity);
+		}
+	}
+
+	for (entt::entity child : entityData.children) {
+		setActive(child, isActive);
+	}
 }

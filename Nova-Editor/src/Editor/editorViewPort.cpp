@@ -91,7 +91,7 @@ void EditorViewPort::update(float dt) {
 				AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
 
 				if (filePath) {
-					Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+					Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
 				}
 
 				engine.ecs.sceneManager.loadScene(id);

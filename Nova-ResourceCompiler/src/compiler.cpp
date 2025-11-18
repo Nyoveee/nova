@@ -218,7 +218,7 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 }
 
 
-int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::string className) {
+int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, [[maybe_unused]] std::string className) {
 	std::ofstream resourceFile{ resourceFilePath.string };
 
 	if (!resourceFile) {
@@ -226,8 +226,11 @@ int Compiler::compileScriptAsset(ResourceFilePath const& resourceFilePath, std::
 		return -1;
 	}
 
+#if 0
 	// script literally only stores the	class name. class name is part of the descriptor.
 	resourceFile << className;
+#endif
+	resourceFile << std::filesystem::path{ intermediaryAssetFilepath }.stem().string();
 
 	return 0;
 }

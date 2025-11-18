@@ -23,6 +23,7 @@
 #include "ResourceManager/resourceManager.h"
 #include "Navigation/navMeshGeneration.h"
 #include "Serialisation/serialisation.h"
+#include "Engine/prefabManager.h"
 
 #include "editor.h"
 #include "themes.h"
@@ -35,11 +36,15 @@
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
 
-
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
 	"NotoSans-Medium.ttf";
+
+constexpr ImVec4 prefabColor	 = ImVec4(0.5f, 1.f, 1.f, 1.f);
+constexpr ImVec4 grayColor		 = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
+constexpr ImVec4 whiteColor		 = ImVec4(1.f, 1.f, 1.f, 1.f);
+
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager) :
 	window							{ window },
@@ -168,6 +173,8 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 }
 
 void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback) {
+	imguiCounter = 0;
+
 	ZoneScopedC(tracy::Color::Orange);
 
 	ImGui_ImplGlfw_NewFrame();
@@ -303,6 +310,7 @@ void Editor::handleEntityValidity() {
 }
 
 void Editor::handleEntityHovering() {
+#if false
 	if (!isActive() || !editorViewPort.isActive) {
 		return;
 	}
@@ -348,6 +356,7 @@ void Editor::handleEntityHovering() {
 	}
 
 	hoveringEntity = newHoveringEntity;
+#endif
 }
 
 // handles object picker in game viewport
@@ -381,6 +390,10 @@ void Editor::handleEntitySelection() {
 void Editor::handleFocusOnSelectedEntity(FocusSelectedEntity) {
 	// Only focus if we have a selected entity
 	if (selectedEntities.empty()) {
+		return;
+	}
+
+	if (ImGui::IsAnyItemActive()) {
 		return;
 	}
 
@@ -451,7 +464,8 @@ void Editor::launchProfiler()
 	CloseHandle(pi.hThread);
 }
 
-void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline) const {
+void Editor::toOutline(std::vector<entt::entity> const&, bool) const {
+#if false
 	entt::registry& registry = engine.ecs.registry;
 
 	for (entt::entity entity : entities) {
@@ -461,6 +475,7 @@ void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline
 			meshRenderer->toRenderOutline = toOutline;
 		}
 	}
+#endif
 }
 
 void Editor::startSimulation() {
@@ -474,9 +489,11 @@ void Editor::startSimulation() {
 	// We serialise everything, resources to current scene when starting a simulation..
 	ResourceID id = engine.ecs.sceneManager.getCurrentScene();
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
-	Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+	Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
 
+#if 0
 	assetManager.serialiseResources();
+#endif
 
 	inSimulationMode = true;
 	isThereChangeInSimulationMode = true;
@@ -497,6 +514,123 @@ bool Editor::isInSimulationMode() const {
 	return inSimulationMode;
 }
 
+void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate) {
+	if (!registry.valid(entity)) {
+		return;
+	}
+
+	EntityData const& entityData = registry.get<EntityData>(entity);
+
+	bool toDisplayTreeNode = false;
+
+	ImGui::PushID(static_cast<unsigned>(entity));
+		
+	// We use IILE to conditionally initialise a variable :)
+	ImVec4 color = [&]() {
+		// If the current entity is disabled, render gray..
+		if (!entityData.isActive) {
+			return grayColor;
+		}
+
+		// Else, render green or white 
+		return [&]() {
+			EntityData const* root = &entityData;
+
+			while (root->parent != entt::null) {
+				if (root->prefabID != INVALID_RESOURCE_ID)
+					return prefabColor;
+				
+				root = registry.try_get<EntityData>(root->parent);
+			}
+
+			if (root->prefabID != INVALID_RESOURCE_ID) {
+				return prefabColor;
+			}
+			else {
+				return whiteColor;
+			}
+		}();
+	}();
+
+	ImGui::PushStyleColor(ImGuiCol_Text, color);
+
+	if (entityData.children.empty()) {
+		ImGui::Indent(27.5f);
+		if (ImGui::Selectable((
+			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData.name).c_str(), selectedPredicate(entity))) {
+			onClickFunction({ entity });
+		}
+
+		// Check for double-click to focus on entity
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			Transform* transform = registry.try_get<Transform>(entity);
+			if (transform) {
+				engine.cameraSystem.focusOnPosition(transform->position);
+			}
+		}
+		ImGui::Unindent(27.5f);
+	}
+	else {
+		// Display children recursively..
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
+
+		if (selectedPredicate(entity)) {
+			flags |= ImGuiTreeNodeFlags_Selected;
+		}
+
+		toDisplayTreeNode = ImGui::TreeNodeEx((
+			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData.name).c_str(), flags
+		);
+
+		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
+			onClickFunction({ entity });
+		}
+
+		// Check for double-click to focus on entity
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && !ImGui::IsItemToggledOpen()) {
+			Transform* transform = registry.try_get<Transform>(entity);
+			if (transform) {
+				engine.cameraSystem.focusOnPosition(transform->position);
+			}
+		}
+	}
+
+	ImGui::PopStyleColor();
+
+	// I want my widgets to be draggable, providing the entity id as the payload.
+	if (ImGui::BeginDragDropSource()) {
+		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity*));
+
+		// Draw tooltip-style preview while dragging
+		ImGui::Text(entityData.name.c_str());
+
+		ImGui::EndDragDropSource();
+	}
+
+	// I want all my widgets to be a valid drop target.
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			entt::entity childEntity = *((entt::entity*)payload->Data);
+			engine.ecs.setEntityParent(childEntity, entity);
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopID();
+
+	// recursively displays tree hierarchy..
+	if (toDisplayTreeNode) {
+		for (entt::entity child : entityData.children) {
+			displayEntityHierarchy(registry, child, onClickFunction, selectedPredicate);
+		}
+
+		ImGui::TreePop();
+	}
+}
+
 Editor::~Editor() {
 	
 	ImGui_ImplGlfw_Shutdown();
@@ -507,6 +641,19 @@ Editor::~Editor() {
 	AssetFilePath const* filePath = assetManager.getFilepath(id);
 
 	if (filePath && !isInSimulationMode()) {
-		Serialiser::serialiseScene(engine.ecs.registry, filePath->string.c_str());
+		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
 	}
+	if (!isInSimulationMode()) {
+		entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
+		std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
+
+		for (auto& pair : prefabMap) {
+			auto descriptor = assetManager.getDescriptor(pair.first);
+			if (descriptor != nullptr) {
+				std::ofstream assetFile{ descriptor->filepath.string};
+				Serialiser::serialisePrefab(prefabRegistry, pair.second, assetFile, std::numeric_limits<std::size_t>::max());
+			}
+		}
+	}
+
 }

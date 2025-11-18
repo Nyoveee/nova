@@ -95,3 +95,11 @@ void ResourceManager::loadAllSystemResources() {
 		addResourceFile<Texture>(resourceFilePath, id);
 	}
 }
+
+void ResourceManager::removeAllResourceInstance() {
+	for (ResourceID id : createdResourceInstances) {
+		removeResource(id);
+	}
+
+	createdResourceInstances.clear();
+}

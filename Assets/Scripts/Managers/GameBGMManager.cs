@@ -39,10 +39,10 @@ class GameBGMManager : Script
         GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Enemy");
         foreach(GameObject gameObject in gameObjects)
         {
-            Enemy? enemy = gameObject.getScript<Enemy>();
-            if (enemy == null)
+            Grunt? grunt = gameObject.getScript<Grunt>();
+            if (grunt == null)
                 continue;
-            if (enemy.IsEngagedInBattle())
+            if (grunt.IsEngagedInBattle())
                 return true;
         }
         return false;

@@ -16,9 +16,11 @@
 #include "Editor/editor.h"
 
 #include "Serialisation/serialisation.h"
+#include "Editor/ComponentInspection/displayComponent.h"
 #include "Editor/ComponentInspection/PropertyDisplay/displayProperties.h"
 
 #include "systemResource.h"
+
 
 AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager) :
 	editor							{ editor },
@@ -67,7 +69,6 @@ void AssetViewerUI::update() {
 
 	ImGui::Text("Filepath: %s", selectedResourceStemCopy.c_str());
 
-#if 0
 	ImGui::InputText(selectedResourceExtension.empty() ? "##" : selectedResourceExtension.c_str(), &selectedResourceStemCopy);
 
 	if (ImGui::IsItemDeactivatedAfterEdit() && std::filesystem::path{ descriptorPtr->filepath }.stem() != selectedResourceStemCopy) {
@@ -75,8 +76,10 @@ void AssetViewerUI::update() {
 			// reset rename attempt.
 			selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
 		}
+		else {
+			toSerialiseSelectedDescriptor = true;
+		}
 	}
-#endif
 
 	auto displayResourceUIFunctor = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
@@ -85,10 +88,10 @@ void AssetViewerUI::update() {
 
 				if (toSerialiseSelectedDescriptor) {
 					if constexpr (std::same_as<T, ScriptAsset>) {
-						updateScriptFileName(descriptorPtr->filepath, selectedResourceName, selectedResourceId);
+						updateScriptFileName(descriptorPtr->filepath, id);
 					}
 
-					assetManager.serialiseDescriptor<T>(selectedResourceId);
+					assetManager.serialiseDescriptor<T>(id);
 				}
 			}
 		}(), ...);
@@ -99,8 +102,10 @@ void AssetViewerUI::update() {
 #endif
 }
 
-void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::string const& newName, [[maybe_unused]] ResourceID id) {
+void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, [[maybe_unused]] ResourceID id) {
 	std::ifstream inputScriptFile{ filepath };
+
+	std::string newName = std::filesystem::path{ filepath }.stem().string();
 
 	if (!inputScriptFile) {
 		Logger::error("Fail to read script file.");
@@ -111,8 +116,8 @@ void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, std::str
 	std::string scriptContents{ std::istreambuf_iterator<char>(inputScriptFile), std::istreambuf_iterator<char>() };
 
 	// i love regex. ask me if u need regex explaination.
-	std::regex classRegex(R"(class [\w\s]+\s?:)");
-	scriptContents = std::regex_replace(scriptContents, classRegex, "class " + newName + " :");
+	std::regex classRegex(R"(class [-\w\s]+\s?:?([\w\s]+)\{)");
+	scriptContents = std::regex_replace(scriptContents, classRegex, "class " + newName + " :$1{");
 	
 	std::ofstream outputScriptFile{ filepath };
 
@@ -136,7 +141,7 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	}
 
 	selectedResourceName = descriptorPtr->name;
-	selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.filename().string();
+	selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
 	selectedResourceExtension = std::filesystem::path{ descriptorPtr->filepath }.extension().string();
 
 	// save a copy of the current font size..
@@ -147,6 +152,19 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	else if (resourceManager.isResource<Model>(id)) {
 		AssetInfo<Model>* modelDescriptorPtr = static_cast<AssetInfo<Model>*>(descriptorPtr);
 		copyOfScale = modelDescriptorPtr->scale;
+	}
+	else if (resourceManager.isResource<Prefab>(id)) {
+		auto&& prefabMap = editor.engine.prefabManager.getPrefabMap();
+		auto iterator = prefabMap.find(selectedResourceId);
+
+		if (iterator == prefabMap.end()) {
+			rootPrefabEntity = editor.engine.prefabManager.loadPrefab(selectedResourceId);
+		}
+		else {
+			rootPrefabEntity = iterator->second;
+		}
+
+		selectedPrefabEntity = rootPrefabEntity;
 	}
 }
 
@@ -527,6 +545,33 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 	}
 }
 
+void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descriptor) {
+	auto&& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
+
+	if (ImGui::TreeNode("Prefab Hierarchy")) {
+		ImGui::BeginChild("##Prefab", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
+		
+		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, 
+			[&](std::vector<entt::entity> entities) {
+				if (entities.empty()) {
+					return;
+				}
+
+				selectedPrefabEntity = entities[0];
+			},
+			[&](entt::entity entity) {
+				return selectedPrefabEntity == entity;
+			}
+		);
+
+		ImGui::EndChild();
+		ImGui::TreePop();
+	}
+
+	ImGui::Separator();
+	g_displayComponentFunctor(editor.componentInspector, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
+}
+
 void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {
 	Bone const& bone = skeleton.bones[boneIndex];
 
@@ -554,3 +599,5 @@ void AssetViewerUI::displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton cons
 		ImGui::TreePop();
 	}
 }
+
+#include "Editor/ComponentInspection/displayComponent.ipp"

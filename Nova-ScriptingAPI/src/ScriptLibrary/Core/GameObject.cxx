@@ -56,8 +56,21 @@ GameObject^ GameObject::GetParent()
 	return GetReference(static_cast<unsigned int>(entityData->parent));
 }
 
+array<GameObject^>^ GameObject::GetChildren()
+{
+	System::Collections::Generic::List<GameObject^> children;
+	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(static_cast<entt::entity>(entityID));
+	for (entt::entity child : entityData->children)
+		children.Add(GetReference(static_cast<unsigned int>(child)));
+	return children.ToArray();
+}
+
 System::UInt32 GameObject::GetId() {
 	return entityID;
+}
+
+void GameObject::SetActive(bool active) {
+	Interface::engine->ecs.setActive(static_cast<entt::entity>(entityID), active);
 }
 
 Transform_^ GameObject::transform::get() { return transformReference; };

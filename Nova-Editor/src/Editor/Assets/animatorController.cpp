@@ -434,6 +434,8 @@ void AnimatorController::displayParameterWindow(Animator& animator, Controller& 
 			// =================================================================
 			const char* typeInText = "We live in a world full of lies.";
 
+			std::variant<int, bool> x = false;
+
 			std::visit([&](auto&& parameter) {
 				using ParameterType = std::decay_t<decltype(parameter)>;
 
@@ -452,7 +454,7 @@ void AnimatorController::displayParameterWindow(Animator& animator, Controller& 
 						static_assert(flag, "Not all types of variant accounted for." __FUNCSIG__);
 					}();
 				}
-			}, variant);
+			}, x);
 
 			ImGui::TableSetColumnIndex(0);
 			ImGui::Text(typeInText);
