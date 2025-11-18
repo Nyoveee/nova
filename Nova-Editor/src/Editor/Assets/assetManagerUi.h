@@ -23,6 +23,7 @@ public:
 
 public:
 	void update();
+	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
 private:
 	void displayLeftNavigationPanel();
@@ -50,7 +51,7 @@ private:
 
 	void dragAndDrop(const char* name, std::size_t id);
 	
-	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
+	//std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
 private:
 	Editor& editor;

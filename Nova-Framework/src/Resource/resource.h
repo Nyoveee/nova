@@ -10,11 +10,11 @@
 class Resource {
 public:
 	FRAMEWORK_DLL_API Resource(ResourceID id, ResourceFilePath filePath) : _id{ id }, filePath{ filePath } {};
-
+	
 	FRAMEWORK_DLL_API virtual ~Resource()							= 0 {};
-	FRAMEWORK_DLL_API Resource(Resource const& other)				= delete;
+	FRAMEWORK_DLL_API Resource(Resource const& other)				= default;
 	FRAMEWORK_DLL_API Resource(Resource&& other)					= default;
-	FRAMEWORK_DLL_API Resource& operator=(Resource const& other)	= delete;
+	FRAMEWORK_DLL_API Resource& operator=(Resource const& other)	= default;
 	FRAMEWORK_DLL_API Resource& operator=(Resource&& other)			= default;
 
 	FRAMEWORK_DLL_API ResourceID id() const { return _id; };

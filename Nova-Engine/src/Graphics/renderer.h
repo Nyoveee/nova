@@ -138,10 +138,10 @@ private:
 	void renderSkinnedModels(Camera const& camera);
 
 	// render all Texts.
-	void renderTexts();
+	void renderText(Transform const& transform, Text const& text);
 
 	// render ui images.
-	void renderImages();
+	void renderImage(Transform const& transform, Image const& image);
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();

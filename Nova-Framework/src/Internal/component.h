@@ -42,6 +42,7 @@ class Material;
 	Image
 
 using ScriptName   = std::string;
+using LayerID	   = int;
 
 #include "physics.h"
 
@@ -84,6 +85,9 @@ struct EntityData {
 	std::string tag                                                     {};
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
+	LayerID layerId														{};
+	bool isActive														= true;
+
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 
@@ -92,6 +96,8 @@ struct EntityData {
 		tag,
 		parent,
 		children,
+		layerId,
+		isActive,
 		prefabID,
 		overridenProperties
 	)
@@ -131,16 +137,6 @@ struct Transform {
 	// When first created set it to true.
 	bool worldHasChanged = true;
 	bool needsRecalculating = false;
-	
-	// ====== For every world + local transform changes, we store the result in some variable =======
-	// We then resolve everything in the end..
-	glm::vec3 newLocalFromWorldPosition;
-	glm::vec3 newLocalFromWorldScale;
-	glm::quat newLocalFromWorldRotation;
-
-	glm::vec3 newWorldFromLocalPosition;
-	glm::vec3 newWorldFromLocalScale;
-	glm::quat newWorldFromLocalRotation;
 
 	// Reflect these data members for level editor to display
 	REFLECTABLE(
@@ -182,12 +178,12 @@ struct MeshRenderer {
 	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{};
 
-	bool toRenderOutline = false;
-
 	REFLECTABLE(
 		modelId,
 		materialIds
 	)
+
+	std::unordered_set<int>					isMaterialInstanced;
 };
 
 struct SkinnedMeshRenderer {
@@ -198,6 +194,8 @@ struct SkinnedMeshRenderer {
 		modelId,
 		materialIds
 	)
+
+	std::unordered_set<int>					isMaterialInstanced;
 
 	// owns all the bone's final matrices.
 	std::vector<glm::mat4x4> bonesFinalMatrices;
@@ -289,10 +287,10 @@ struct CapsuleCollider {
 };
 
 struct MeshCollider {
-	bool isTrigger;
+	float shapeScale;
 
 	REFLECTABLE(
-		isTrigger
+		shapeScale
 	)
 };
 

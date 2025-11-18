@@ -50,7 +50,6 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
-
 	void update(float dt, std::function<void(bool)> changeSimulationCallback);
 	
 	bool isEntitySelected(entt::entity entity);
@@ -67,11 +66,13 @@ public:
 	void stopSimulation();
 	bool isInSimulationMode() const;
 
+	void displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate);
+
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
 	// first parameter is used to specific which asset id is selected.
 	template <typename T>
-	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback);
+	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> const& onClickCallback);
 	
 	template <IsEnum T>
 	void displayEnumDropDownList(T value, const char* labelName, std::function<void(T)> onClickCallback);
@@ -132,7 +133,7 @@ private:
 	std::string uppercaseSearchQuery;
 	std::string uppercaseAssetName;
 
-
+	int imguiCounter = 0;
 };
 
 #include "editor.ipp"

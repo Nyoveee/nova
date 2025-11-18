@@ -91,8 +91,11 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 		skeleton.bones = std::move(bones);
 
 		// start recursive processing..
-		processNodeHierarchy(skeleton, scene->mRootNode, NO_NODE);
+		processBoneNodeHierarchy(skeleton, scene->mRootNode, NO_NODE);
 		skeletonOpt = std::move(skeleton);
+	}
+	else {
+		// processNodeHierarchy(scene, meshes, scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
 	}
 
 #if 0
@@ -284,7 +287,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 	};
 }
 
-void ModelLoader::processNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex) {
+void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* node, ModelNodeIndex parentNodeIndex) {
 	// process node hierarchy..
 
 	// we verify if the current node is a bone...
@@ -342,7 +345,42 @@ void ModelLoader::processNodeHierarchy(Skeleton& skeleton, aiNode const* node, M
 	// recurse downwards.
 	for (unsigned int i = 0; i < node->mNumChildren; ++i) {
 		aiNode const* childNode = node->mChildren[i];
-		processNodeHierarchy(skeleton, childNode, modelNodeIndex);
+		processBoneNodeHierarchy(skeleton, childNode, modelNodeIndex);
+	}
+}
+
+void ModelLoader::processNodeHierarchy(aiScene const* scene, std::vector<Mesh>& meshes, aiNode const* node, glm::mat4x4 globalTransformationMatrix) {
+	// process all the node's meshes (if any)
+	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
+		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+	
+		auto iterator = std::ranges::find_if(meshes, [&](Mesh const& processedMesh) {
+			return processedMesh.name == mesh->mName.C_Str();
+		});
+		
+		if (iterator == meshes.end()) {
+			continue;
+		}
+
+		Logger::info("Flattening mesh {}..", iterator->name);
+
+		// transform vertices..
+		for (auto&& position : iterator->positions) {
+			position = globalTransformationMatrix * glm::vec4(position, 1);
+		}
+
+		glm::mat3x3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(globalTransformationMatrix)));
+
+		// transform normals..
+		for (auto&& normal : iterator->normals) {
+			normal = normalMatrix * normal;
+		}
+	}
+
+	// recurse downwards.
+	for (unsigned int i = 0; i < node->mNumChildren; ++i) {
+		aiNode const* childNode = node->mChildren[i];
+		processNodeHierarchy(scene, meshes, childNode, toGlmMat4(childNode->mTransformation) * globalTransformationMatrix);
 	}
 }
 

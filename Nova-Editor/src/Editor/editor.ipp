@@ -4,13 +4,14 @@
 #include "editor.h"
 
 template<typename T>
-void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> onClickCallback) {
+void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> const& onClickCallback) {
 	char const* selectedAssetName = "";
+
+	ImGui::PushID(++imguiCounter);
 
 	if (id) {
 		auto namePtr = assetManager.getName(id.value());
 		selectedAssetName = namePtr ? namePtr->c_str() : "No resource selected.";
-		ImGui::PushID(static_cast<int>(static_cast<std::size_t>(id.value())));
 	}
 
 	// Uppercase search query..
@@ -70,8 +71,9 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 			assetViewerUi.selectNewResourceId(id.value());
 		}
 
-		ImGui::PopID();
 	}
+	
+	ImGui::PopID();
 }
 
 template<IsEnum T>

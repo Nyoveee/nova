@@ -70,7 +70,11 @@ public:
 
 	bool renameFile(ResourceID id, std::string const& newFileStem);
 
+	// Removes this resource from the entry.. might be added back later from recompilation..
 	void removeResource(ResourceID id);
+
+	// Deletes the corresponding asset + resource file.
+	void deleteAsset(ResourceID id);
 
 	// creates the resource file given a descriptor via the compiler.
 	template <ValidResource T>

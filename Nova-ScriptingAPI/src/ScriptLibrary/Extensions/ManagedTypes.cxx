@@ -33,8 +33,13 @@ Vector2 Vector2::Up() { return Vector2{ 0.f,  1.f };}
 Vector2 Vector2::Down() { return Vector2{ 0.f, -1.f };}
 Vector2 Vector2::Left() { return Vector2{ -1.f,  0.f };}
 Vector2 Vector2::Right() { return Vector2{ 1.f,  0.f };}
-Vector2 Vector2::One() { return Vector2{ 0.f,  0.f };}
-Vector2 Vector2::Zero() { return Vector2{ 1.f,  1.f };}
+Vector2 Vector2::Zero() { return Vector2{ 0.f,  0.f };}
+Vector2 Vector2::One() { return Vector2{ 1.f,  1.f };}
+
+Vector2 Vector2::Lerp(Vector2 a, Vector2 b, float interval) {
+	return Vector2{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval) };
+}
+
 // =================================================================
 // VECTOR 3
 // =================================================================
@@ -67,9 +72,12 @@ Vector3 Vector3::Front(){ return Vector3{ 0.f,  0.f,  1.f };}
 Vector3 Vector3::Back(){ return  Vector3{ 0.f,  0.f,  -1.f };}
 Vector3 Vector3::Left(){ return Vector3{ -1.f,  0.f,  0.f };}
 Vector3 Vector3::Right(){ return Vector3{ 1.f,  0.f,  0.f };}
-Vector3 Vector3::One() { return Vector3{ 0.f,  0.f,  0.f };}
-Vector3 Vector3::Zero(){ return Vector3{ 1.f,  1.f,  1.f }; }
+Vector3 Vector3::Zero() { return Vector3{ 0.f,  0.f,  0.f };}
+Vector3 Vector3::One(){ return Vector3{ 1.f,  1.f,  1.f }; }
 
+Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
+	return Vector3{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval), std::lerp(a.z, b.z, interval) };
+}
 
 // =================================================================
 // QUATERNION
@@ -81,6 +89,10 @@ Vector3 Quartenion::operator*(Quartenion quaternion, Vector3 axis) {
 
 Vector3 Quartenion::operator*(Vector3 axis, Quartenion quaternion) {
 	return Vector3{ axis.native() * quaternion.native() };
+}
+
+Quartenion Quartenion::Identity() {
+	return Quartenion{ glm::identity<glm::quat>() };
 }
 
 // =================================================================
@@ -212,6 +224,66 @@ void MeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ material) 
 	meshRenderer->materialIds[index] = material->getId();
 }
 
+// private helper function.. (nullable)
+template <typename T>
+void SetUniformValue(int index, System::String^ name, std::vector<TypedResourceID<Material>>& materialIds, std::unordered_set<int>& isMaterialInstanced, T const& data) {
+	if (index < 0 || index >= materialIds.size()) {
+		return;
+	}
+
+	ResourceID materialId = materialIds[index];
+
+	if (!isMaterialInstanced.contains(index)) {
+		isMaterialInstanced.insert(index);
+
+		// We need to create a new material instance in memory..
+		materialId = Interface::engine->resourceManager.createResourceInstance<Material>(materialId);
+		materialIds[index] = TypedResourceID<Material>{ materialId };
+	}
+
+	auto&& [material, _] = Interface::engine->resourceManager.getResource<Material>(materialId);
+
+	if (!material) {
+		Logger::warn("Invalid material when setting material property..");
+		return;
+	}
+
+	std::string parameterName = Convert(name);
+	auto iterator = material->materialData.overridenUniforms.find(parameterName);
+
+	if (iterator == material->materialData.overridenUniforms.end()) {
+		Logger::warn("Invalid parameter name {} when setting material property", parameterName);
+		return;
+	}
+
+	auto&& [__, uniformData] = *iterator;
+	uniformData.value = data;
+}
+
+void MeshRenderer_::setMaterialFloat(int index, System::String^ name, float data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void MeshRenderer_::setMaterialVector2(int index, System::String^ name, Vector2^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void MeshRenderer_::setMaterialVector3(int index, System::String^ name, Vector3^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void MeshRenderer_::setMaterialBool(int index, System::String^ name, bool data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void MeshRenderer_::setMaterialInt(int index, System::String^ name, int data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void MeshRenderer_::setMaterialUInt(int index, System::String^ name, unsigned data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
 void SkinnedMeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ material) {
 	SkinnedMeshRenderer* meshRenderer = nativeComponent();
 
@@ -225,4 +297,28 @@ void SkinnedMeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ mat
 	}
 
 	meshRenderer->materialIds[index] = material->getId();
+}
+
+void SkinnedMeshRenderer_::setMaterialFloat(int index, System::String^ name, float data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void SkinnedMeshRenderer_::setMaterialVector2(int index, System::String^ name, Vector2^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void SkinnedMeshRenderer_::setMaterialVector3(int index, System::String^ name, Vector3^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void SkinnedMeshRenderer_::setMaterialBool(int index, System::String^ name, bool data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void SkinnedMeshRenderer_::setMaterialInt(int index, System::String^ name, int data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void SkinnedMeshRenderer_::setMaterialUInt(int index, System::String^ name, unsigned data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
 }

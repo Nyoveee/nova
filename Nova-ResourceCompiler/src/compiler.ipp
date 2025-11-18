@@ -21,7 +21,7 @@ int Compiler::compileAsset(AssetInfo<T> const& assetInfo, ResourceFilePath const
 		return compileTexture(resourceFilePath, assetInfo.filepath, AssetInfo<Texture>::Compression::BC6H);
 	}
 	else if constexpr (std::same_as<T, ScriptAsset>) {
-		return compileScriptAsset(resourceFilePath, assetInfo.name);
+		return compileScriptAsset(resourceFilePath, assetInfo.filepath, assetInfo.name);
 	}
 	else if constexpr (std::same_as<T, CustomShader>) {
 		return compileShaderAsset(resourceFilePath, assetInfo.filepath, assetInfo.pipeline);

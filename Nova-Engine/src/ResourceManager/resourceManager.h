@@ -65,6 +65,13 @@ public:
 	template <ValidResource T>
 	bool isResource(ResourceID id) const;
 
+	// Creates a copy of this resource instance in memory..
+	template <ValidResource T>
+	ResourceID createResourceInstance(ResourceID id);
+
+	// Removes all resource instances..
+	void removeAllResourceInstance();
+
 public:
 	ENGINE_DLL_API void update();
 	ENGINE_DLL_API bool doesResourceExist(ResourceID id) const;
@@ -96,7 +103,11 @@ private:
 	std::unordered_map<ResourceID, ResourceFilePath> resourceFilePaths;
 
 	// main container containing all LOADED resources. when an resource is loaded, it goes here.
+	// this also include resource instances..
 	std::unordered_map<ResourceID, std::unique_ptr<Resource>> loadedResources;
+
+	// stores all copies of resources instances. this is useful so that we can clear them at the end of simulation.
+	std::vector<ResourceID> createdResourceInstances;
 
 	// groups all assets based on their type.
 	std::unordered_map<ResourceTypeID, std::vector<ResourceID>> resourcesByType;

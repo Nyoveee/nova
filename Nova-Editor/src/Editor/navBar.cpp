@@ -10,25 +10,33 @@
 #include <format>
 
 NavBar::NavBar(Editor& editor) :
-	engine{ editor.engine },
-	debugUi{ editor },
+	engine{editor.engine},
+	debugUi{editor},
 	hierarchyList{editor},
 	componentInspector{editor},
 	consoleBool{true},
 	debugUiBool{true},
 	hierarchyBool{true},
 	componentInspectorBool{true},
-	gameConfigBool{true}
+	gameConfigBool{true},
+	animationBool{true},
+	animatorBool{true},
+	imGuiDemoBool{true},
+	navigationBool{true}
 {}
 
 void NavBar::update() {
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("Windows")) {
-			if (ImGui::Checkbox("console",&consoleBool)) {	}
-			if (ImGui::Checkbox("debugUi", &debugUiBool))	{	}
-			if (ImGui::Checkbox("hierarchy", &hierarchyBool)) {		}
-			if (ImGui::Checkbox("componentInspector", &componentInspectorBool)) {	}
-			if (ImGui::Checkbox("GameConfig", &gameConfigBool)) {	}
+			if (ImGui::MenuItem("console", nullptr ,&consoleBool)) {	}
+			if (ImGui::MenuItem("debugUi", nullptr ,&debugUiBool))	{	}
+			if (ImGui::MenuItem("hierarchy", nullptr, &hierarchyBool)) {		}
+			if (ImGui::MenuItem("componentInspector", nullptr, &componentInspectorBool)) {	}
+			if (ImGui::MenuItem("GameConfig", nullptr, &gameConfigBool)) {	}
+			if (ImGui::MenuItem("Animation", nullptr, &animationBool)) {}
+			if (ImGui::MenuItem("Animator", nullptr, &animatorBool)) {}
+			if (ImGui::MenuItem("ImGui Demo", nullptr, &imGuiDemoBool)) {}
+			if (ImGui::MenuItem("Navigation", nullptr, &navigationBool)) {}
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();

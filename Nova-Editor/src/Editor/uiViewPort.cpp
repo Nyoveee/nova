@@ -16,7 +16,7 @@ UIViewPort::UIViewPort(Editor& editor) :
 {}
 
 void UIViewPort::update() {
-	ImGui::Begin(ICON_FA_GAMEPAD " UIEditor");
+	ImGui::Begin(ICON_FA_GAMEPAD " UI");
 	isHoveringOver = ImGui::IsWindowHovered();
 	isActive = ImGui::IsWindowFocused();
 
@@ -64,6 +64,11 @@ void UIViewPort::update() {
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getUIFrameBufferTexture();
 	ImGui::GetWindowDrawList()->AddImage(textureId, uiWindowTopLeft, uiWindowBottomRight, { 0, 1 }, { 1, 0 });
+
+	ImU32 borderColor = IM_COL32(255, 0, 0, 255);
+	constexpr float borderThickness = 2.0f;
+
+	ImGui::GetWindowDrawList()->AddRect(uiWindowTopLeft, uiWindowBottomRight, borderColor, 0.0f, 0, borderThickness);
 
 	windowTopLeft = uiWindowTopLeft;
 	windowDimension = { viewportWidth, viewportHeight };

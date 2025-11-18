@@ -3,6 +3,18 @@
 #include "component.h"
 #include "API/ManagedTypeMacros.hxx"
 #include "API/IManagedResourceID.hxx"
+
+// ===========================================================================================
+// 0. Defining managed typed resource..
+// ===========================================================================================
+
+namespace ScriptingAPI {
+	ManagedResource(Prefab)
+	ManagedResource(Texture)
+	ManagedResource(Model)
+	ManagedResource(Material)
+}
+
 // ===========================================================================================
 // 1. Defining structs..
 // 
@@ -14,17 +26,6 @@
 // Providing association here also allows you to declare data members of Managed Components
 // later in 2. with the managed type.
 // ===========================================================================================
-
-// ===========================================================================================
-// 3. Defining managed typed resource..
-// ===========================================================================================
-
-namespace ScriptingAPI {
-	ManagedResource(Prefab)
-		ManagedResource(Texture)
-		ManagedResource(Model)
-		ManagedResource(Material)
-}
 
 #define ALL_MANAGED_TYPED_RESOURCE_ID \
 	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material
@@ -56,6 +57,7 @@ static Vector2 Left();
 static Vector2 Right();
 static Vector2 One();
 static Vector2 Zero();
+static Vector2 Lerp(Vector2 a, Vector2 b, float interval);
 
 ManagedStructEnd(Vector2, glm::vec2)
 // ======================================
@@ -88,11 +90,20 @@ static Vector3 Left();
 static Vector3 Right();
 static Vector3 One();
 static Vector3 Zero();
+static Vector3 Lerp(Vector3 a, Vector3 b, float interval);
 
 ManagedStructEnd(Vector3, glm::vec3)
 // ======================================
 // This struct is responsible for ColorA Types
 // ======================================
+ManagedStruct(
+	Colour, glm::vec3,
+	float, r,
+	float, g,
+	float, b
+)
+ManagedStructEnd(Colour, glm::vec3)
+
 ManagedStruct(
 	ColorAlpha, glm::vec4,
 	float, r,
@@ -114,6 +125,7 @@ ManagedStruct(
 
 static Vector3 operator*(Quartenion quaternion, Vector3 axis);
 static Vector3 operator*(Vector3 axis, Quartenion quaternion);
+static Quartenion Identity();
 
 ManagedStructEnd(Quartenion, glm::quat)
 
@@ -168,6 +180,8 @@ ManagedComponentDeclaration(
 	Vector3,	up,
 	Vector3,	eulerAngles,
 	Vector3,	localEulerAngles,
+	Vector3,	localPosition,
+	Vector3,	localScale,
 	Quartenion, rotation,
 	Quartenion, localRotation
 )
@@ -244,6 +258,14 @@ ManagedComponentDeclaration(
 
 void changeMaterial(int index, ScriptingAPI::Material^ material);
 
+// void setMaterialVector4(int index, System::String^ name, Vector4^ data);
+void setMaterialVector3(int index, System::String^ name, Vector3^ data);
+void setMaterialVector2(int index, System::String^ name, Vector2^ data);
+void setMaterialBool(int index, System::String^ name, bool data);
+void setMaterialInt(int index, System::String^ name, int data);
+void setMaterialUInt(int index, System::String^ name, unsigned data);
+void setMaterialFloat(int index, System::String^ name, float data);
+
 ManagedComponentEnd()
 
 ManagedComponentDeclaration(
@@ -252,7 +274,11 @@ ManagedComponentDeclaration(
 
 void changeMaterial(int index, ScriptingAPI::Material^ material);
 
+void setMaterialVector3(int index, System::String^ name, Vector3^ data);
+void setMaterialVector2(int index, System::String^ name, Vector2^ data);
+void setMaterialBool(int index, System::String^ name, bool data);
+void setMaterialInt(int index, System::String^ name, int data);
+void setMaterialUInt(int index, System::String^ name, unsigned data);
+void setMaterialFloat(int index, System::String^ name, float data);
+
 ManagedComponentEnd()
-
-
-

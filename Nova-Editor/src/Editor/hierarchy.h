@@ -14,7 +14,8 @@ public:
 
 private:
 	void createGameObject();
-	void displayEntityHierarchy(entt::entity entity);
+	void displayHierarchyWindow();
+	void displayLayerTable();
 
 public:
 	bool isHovering = false;

@@ -10,48 +10,7 @@
 
 #include "IconsFontAwesome6.h"
 
-namespace {
-	// ================================================================================
-	// I love C++ TEMPLATE META PROGRAMMING :D 
-	// ================================================================================
-
-	// displayComponent, like the function suggests, is responsible for displaying a component's properties in the inspector UI.
-	template <typename Component>
-	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component);
-
-	// This functor allows the use of variadic template arguments to recursively invoke displayComponent, such
-	// that it displays all the listed components of a given entity.
-	template <typename T, typename... Components>
-	void displayIndividualComponent(ComponentInspector& componentInspector, entt::entity entity) {
-		entt::registry& registry = componentInspector.ecs.registry;
-
-		if (registry.all_of<T>(entity)) {
-			displayComponent<T>(componentInspector, entity, registry.get<T>(entity));
-		}
-
-		if constexpr (sizeof...(Components) > 0) {
-			displayIndividualComponent<Components...>(componentInspector, entity);
-		}
-	}
-
-	// Using functors such that we can "store" types into our objects. (woah!)
-	template <typename... Components>
-	struct ComponentFunctor {
-		void operator()(ComponentInspector& componentInspector, entt::entity entity) const {
-			displayIndividualComponent<Components...>(componentInspector, entity);
-		}
-	};
-
-	// ================================================================================
-	// List all the components you want to show in the component inspector UI here!!
-	// Make sure you reflect the individual data members you want to show.
-	// ================================================================================
-	ComponentFunctor<
-		ALL_COMPONENTS
-	> 
-
-	g_displayComponentFunctor{};
-}
+#include "displayComponent.h"
 
 ComponentInspector::ComponentInspector(Editor& editor) :
 	editor			{ editor },
@@ -78,11 +37,21 @@ void ComponentInspector::update() {
 	
 	// Display entity metadata.
 	EntityData& entityData = registry.get<EntityData>(selectedEntity);
-	if (ImGui::BeginTable("NameAndTagTable", 2, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
-		ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 130.0f);
-		ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+	if (ImGui::BeginTable("NameAndTagTable", 3, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
+		ImGui::TableSetupColumn("Active Checkbox", ImGuiTableColumnFlags_WidthFixed, 70.f);
+		ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Tag", ImGuiTableColumnFlags_WidthStretch);
 
 		ImGui::TableNextRow();
+
+		ImGui::TableNextColumn();
+
+		bool active = entityData.isActive;
+		ImGui::Checkbox("Active?", &active);
+
+		if (active != entityData.isActive) {
+			ecs.setActive(selectedEntity, active);
+		}
 
 		ImGui::TableNextColumn();
 		ImGui::AlignTextToFramePadding();
@@ -92,6 +61,36 @@ void ComponentInspector::update() {
 		ImGui::InputText("Tag", &entityData.tag);
 
 		ImGui::EndTable();
+	}
+
+	// Display a drop down list of all the available layers an entity can choose..
+	auto& layers = editor.engine.ecs.sceneManager.layers;
+
+	if (entityData.layerId < 0 || entityData.layerId >= layers.size()) {
+		Logger::warn("Entity {} had invalid layer. Resetting it..", entityData.name);
+		entityData.layerId = 0;
+	}
+
+	if (ImGui::BeginCombo("Render Layer", layers[entityData.layerId].name.c_str())) {
+		for (int layerId = 0; layerId < layers.size(); ++layerId) {
+			ImGui::PushID(layerId);
+
+			auto& layer = layers[layerId];
+
+			if (ImGui::Selectable(layer.name.c_str(), layerId == entityData.layerId)) {
+				// Remove itself from the old layer..
+				layers[entityData.layerId].entities.erase(selectedEntity);
+
+				entityData.layerId = layerId;
+				
+				// Add itself into the new layer..
+				layers[entityData.layerId].entities.insert(selectedEntity);
+
+			}
+
+			ImGui::PopID();
+		}
+		ImGui::EndCombo();
 	}
 
 	ImGui::NewLine();
@@ -109,15 +108,21 @@ void ComponentInspector::update() {
 		}
 
 		ImGui::EndChild();
-		std::string prefabIdString = std::to_string(static_cast<std::size_t>(entityData.prefabID));
-		ImGui::Text("PrefabID: ");
-		ImGui::SameLine();
-		ImGui::Text(prefabIdString.c_str());
-		
+
+		BasicAssetInfo* assetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
+
+		if (assetInfo) {
+			ImGui::Text("Prefab: %s", assetInfo->name.c_str());
+			ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
+		}
+		else {
+			ImGui::Text("Not pointing to any prefab.");
+			ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
+		}
 	}
 
 	// Display the rest of the components via reflection.
-	g_displayComponentFunctor(*this, selectedEntity);
+	g_displayComponentFunctor(*this, selectedEntity, registry);
 
 	// Display add component button.
 	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);

@@ -1,0 +1,99 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "animationEvents": null,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 1671856250268041221
+                }
+            ]
+        },
+        "14930453553246748675": {
+            "animation": 12641323120730849295,
+            "animationEvents": [
+                {
+                    "functionName": "BeginSwing",
+                    "key": 21,
+                    "scriptId": 15842916263221428229
+                },
+                {
+                    "functionName": "Slash",
+                    "key": 31,
+                    "scriptId": 15842916263221428229
+                },
+                {
+                    "functionName": "EndAttack",
+                    "key": 71,
+                    "scriptId": 15842916263221428229
+                }
+            ],
+            "id": 14930453553246748675,
+            "name": "Grunt Attack",
+            "toLoop": true,
+            "transitions": null
+        },
+        "1671856250268041221": {
+            "animation": 1688568826965803029,
+            "animationEvents": null,
+            "id": 1671856250268041221,
+            "name": "Grunt Idle (Base)",
+            "toLoop": true,
+            "transitions": null
+        },
+        "1671856250268090377": {
+            "animation": 17253009139158237203,
+            "animationEvents": null,
+            "id": 1671856250268090377,
+            "name": "Grunt Forward",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 3977699259481686017
+                }
+            ]
+        },
+        "3977699259481686017": {
+            "animation": 12064862368427425815,
+            "animationEvents": null,
+            "id": 3977699259481686017,
+            "name": "Grunt Running",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 1671856250268090377
+                }
+            ]
+        },
+        "5707081516392038407": {
+            "animation": 8029637102303461393,
+            "animationEvents": [
+                {
+                    "functionName": "Die",
+                    "key": 67,
+                    "scriptId": 15842916263221428229
+                }
+            ],
+            "id": 5707081516392038407,
+            "name": "Grunt Death",
+            "toLoop": false,
+            "transitions": null
+        }
+    },
+    "parameters": [
+        {
+            "name": "Range",
+            "value": {
+                "__variant_type": 1,
+                "__variant_value": 0.0
+            }
+        }
+    ]
+}

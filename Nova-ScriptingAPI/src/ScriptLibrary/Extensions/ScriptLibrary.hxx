@@ -132,21 +132,11 @@ public:
 	static float Interpolate(float a, float b, float t, float degree);
 	static float Min(float a, float b);
 	static float Max(float a, float b);
+	static float Pow(float base, float exponent);
 
 public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
 };
 
-// ======================================
-// This class is responsible for providing game object creation related APIs.
-// ======================================
-public ref class ObjectAPI {
-public:
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent);
 
-	static void Destroy(GameObject^ gameObject);
-};

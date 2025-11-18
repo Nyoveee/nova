@@ -1,0 +1,55 @@
+{
+    "entryNode": 1000,
+    "nodes": {
+        "1000": {
+            "animation": 18446744073709551615,
+            "animationEvents": null,
+            "id": 1000,
+            "name": "Entry Node",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 5610605968421011457
+                }
+            ]
+        },
+        "14833978005275803651": {
+            "animation": 13323486522853851177,
+            "animationEvents": null,
+            "id": 14833978005275803651,
+            "name": "Capoeira",
+            "toLoop": true,
+            "transitions": null
+        },
+        "5610605968421011457": {
+            "animation": 12643416590882406429,
+            "animationEvents": null,
+            "id": 5610605968421011457,
+            "name": "Hip Hop Dancing",
+            "toLoop": true,
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 14833978005275803651
+                }
+            ]
+        }
+    },
+    "parameters": [
+        {
+            "name": "ASD",
+            "value": {
+                "__variant_type": 2,
+                "__variant_value": false
+            }
+        },
+        {
+            "name": "asdasd",
+            "value": {
+                "__variant_type": 0,
+                "__variant_value": 0
+            }
+        }
+    ]
+}

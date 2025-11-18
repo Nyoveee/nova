@@ -59,8 +59,8 @@ void AssetManagerUI::update() {
 			entt::entity entity = *((entt::entity*)payload->Data);
 			EntityData* entityData = editor.engine.ecs.registry.try_get<EntityData>(entity);
 			std::string fileName = entityData->name;
-
-			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, createAssetFile(".prefab", fileName), std::numeric_limits<std::size_t>::max());
+			std::optional<std::ofstream> opt = createAssetFile(".prefab");
+			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, opt.value(), std::numeric_limits<std::size_t>::max());
 		}
 
 		ImGui::EndDragDropTarget();
@@ -73,22 +73,19 @@ void AssetManagerUI::update() {
 
 void AssetManagerUI::displayLeftNavigationPanel() {
 	ImGui::BeginChild("(Left) Navigation Panel", ImVec2(200, 0), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
-	bool toShow = ImGui::TreeNodeEx("Content", ImGuiTreeNodeFlags_DefaultOpen);
-
+	ImGui::Text("Content");
+	
 	// Seperator has some inbuilt indentable so let's unindent it for a border effect.
 	ImGui::Unindent(20.f);
 	ImGui::Separator();
 	ImGui::Indent(20.f);
 
-	if (toShow) {
-		// Remove indentation temporarily
-		ImGui::Unindent(20.f);
+	// Remove indentation temporarily
+	ImGui::Unindent(20.f);
 
-		displayFolderTreeNode(ASSET_FOLDER);
+	displayFolderTreeNode(ASSET_FOLDER);
 
-		ImGui::Indent(20.f);
-		ImGui::TreePop();
-	}
+	ImGui::Indent(20.f);
 
 	ImGui::EndChild();
 }
@@ -163,13 +160,10 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 	if (selectedFolderId == folderId) {
 		flags |= ImGuiTreeNodeFlags_Selected;
 	}
-
 	if (folder.childDirectories.empty()) {
-		flags |= ImGuiTreeNodeFlags_Leaf;
-		ImGui::Unindent(20.f);
+		flags |= ImGuiTreeNodeFlags_Leaf;	
 	}
-
-	bool showTreeNode = ImGui::TreeNodeEx(folder.name.c_str(), flags);
+	bool showTreeNode = ImGui::TreeNodeEx((ICON_FA_FOLDER + std::string{ " " } + folder.name).c_str(), flags);
 
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 		selectedFolderId = folderId;
@@ -184,15 +178,12 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 		ImGui::TreePop();
 	}
 
-	if (folder.childDirectories.empty()) {
-		ImGui::Indent(20.f);
-	}
 }
 
 void AssetManagerUI::displayFolderContent(FolderID folderId) {
 	// This displays a table of asset content
 	// We need to calculate the number of columns based on a fixed size of the asset thumbnail.
-
+	
 	auto iterator = assetManager.getDirectories().find(folderId);
 	assert(iterator != assetManager.getDirectories().end() && "this should never happen. attempting to display invalid folder id.");
 
@@ -277,6 +268,11 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 			handleThumbnailDoubleClick(resourceId);
 		}
 	);
+
+	if (ImGui::BeginPopupContextItem("[-] Delete?")) {
+	
+		ImGui::EndPopup();
+	}
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {

@@ -30,6 +30,8 @@ public:
 public:
 	ENGINE_DLL_API void update(float dt);
 	ENGINE_DLL_API void initialiseAllControllers();
+	ENGINE_DLL_API void initialiseAnimator(Animator& animator);
+
 	ENGINE_DLL_API void setParameter(Animator& animator, std::string name, Controller::ParameterTypes const& value);
 	
 	ENGINE_DLL_API void playAnimation(Animator& animator, std::string name);
