@@ -4,7 +4,10 @@
 class GunnerStats : Script
 {
     public float health = 100f;
-    public float maxShootCooldown = 3f;
+    public float shootingRange = 100f;
+    // Movement
     public float movementSpeed = 3f;
-    public float attackRadius = 100f;
+    public float targetDistanceFromVantagePoint = 3f;
+    // Shooting
+    public float maxShootCooldown = 3f;
 }

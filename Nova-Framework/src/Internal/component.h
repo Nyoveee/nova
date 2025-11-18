@@ -224,7 +224,8 @@ struct Rigidbody {
 
 	enum class Layer {
 		NonMoving,
-		Moving
+		Moving,
+		Wall
 	} layer							= Layer::NonMoving;
 
 	glm::vec3 initialVelocity		{};

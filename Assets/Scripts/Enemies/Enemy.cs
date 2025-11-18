@@ -33,6 +33,19 @@ public abstract class Enemy : Script
 
         gameObject.transform.setFront(direction);
     }
+    protected void LookAtObject(GameObject @object)
+    {
+        if(@object == null)
+        {
+            Debug.LogWarning("Missing Reference Found");
+            return;
+        }
+        Vector3 direction = @object.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+
+        gameObject.transform.setFront(direction);
+    }
     protected float GetDistanceFromPlayer()
     {
         return player != null ? Vector3.Distance(player.transform.position, gameObject.transform.position) : 0f;

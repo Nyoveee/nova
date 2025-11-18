@@ -2,6 +2,7 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
+using System.Reflection.Metadata.Ecma335;
 
 class Gunner : Enemy
 {
@@ -14,6 +15,17 @@ class Gunner : Enemy
     private Material defaultMaterial;
     [SerializableField]
     private Material hurtMaterial;
+    [SerializableField]
+    private Prefab projectilePrefab;
+    // Cursed
+    [SerializableField]
+    private GameObject? projectileSpawnPoint1;
+    [SerializableField]
+    private GameObject? projectileSpawnPoint2;
+    [SerializableField]
+    private GameObject? projectileSpawnPoint3;
+    [SerializableField]
+    private GameObject? projectileSpawnPoint4;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -29,6 +41,8 @@ class Gunner : Enemy
     private GunnerState gunnerState = GunnerState.Idle;
     private Dictionary<GunnerState, CurrentState> updateState = new Dictionary<GunnerState, CurrentState>();
     private float currentHurtTime = 0f;
+    private float currentShootCooldown = 0f;
+    GameObject? targetVantagePoint = null;
     /***********************************************************
         Components
     ***********************************************************/
@@ -47,7 +61,6 @@ class Gunner : Enemy
         updateState.Add(GunnerState.Stagger, Update_Stagger);
         updateState.Add(GunnerState.Death, Update_Death);
         gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
-        Debug.Log("Total Vantage Points:" + gameGlobalReferenceManager.vantagePoints.Length.ToString());
     }
 
     // This function is invoked every fixed update.
@@ -60,6 +73,43 @@ class Gunner : Enemy
                 renderer.changeMaterial(0, defaultMaterial);
         }
         updateState[gunnerState]();
+    }
+    /***********************************************************
+       Helpers 
+    ***********************************************************/
+    private bool HasLineOfSight(GameObject from,GameObject to)
+    {
+        Vector3 direction = to.transform.position - from.transform.position;
+        direction.Normalize();
+        string[] layerMask = { "Wall" };
+        RayCastResult? rayCastResult = PhysicsAPI.Raycast(from.transform.position, direction, 1000f, layerMask);
+        return rayCastResult == null;
+    }
+    private void GetVantagePoint()
+    {
+        targetVantagePoint = null;
+        float closestVantagePoint = Single.MaxValue;
+        foreach (GameObject vantagePoint in gameGlobalReferenceManager.vantagePoints)
+        {
+            if (!HasLineOfSight(vantagePoint, player))
+                continue;
+            float distance = Vector3.Distance(vantagePoint.transform.position, gameObject.transform.position);
+            if (distance < closestVantagePoint)
+            {
+                targetVantagePoint = vantagePoint;
+                closestVantagePoint = distance;
+            }
+        }
+    }
+    private void ShootProjectile(GameObject projectileSpawnLocation)
+    {
+        GameObject projectile = ObjectAPI.Instantiate(projectilePrefab);
+        projectile.transform.position = projectileSpawnLocation.transform.position;
+        Vector3 direction = player.transform.position - projectileSpawnLocation.transform.position;
+        direction.Normalize();
+        projectile.getScript<GunnerProjectile>().SetDirection(direction);
+
+    
     }
     /***********************************************************
        Inherited Functions
@@ -91,15 +141,62 @@ class Gunner : Enemy
     **********************************************************************/
     private void Update_Idle()
     {
-
+        if(GetDistanceFromPlayer() <= gunnerStats.shootingRange)
+        {
+            GetVantagePoint();
+            // Walk towards vantage Point
+            if (targetVantagePoint != null)
+            {
+                gunnerState = GunnerState.Walk;
+                animator.PlayAnimation("Gunner_Walk");
+            }
+        }
     }
     private void Update_Walk()
     {
-
+        if(!HasLineOfSight(targetVantagePoint,player))
+            GetVantagePoint();
+        if (targetVantagePoint == null)
+        {
+            gunnerState = GunnerState.Idle;
+            animator.PlayAnimation("Gunner_Idle");
+            rigidbody.SetVelocity(Vector3.Zero());
+            return;
+        }
+        if(Vector3.Distance(targetVantagePoint.transform.position, gameObject.transform.position) <= gunnerStats.targetDistanceFromVantagePoint)
+        {
+            gunnerState = GunnerState.Shoot;
+            animator.PlayAnimation("Gunner_Idle");
+            rigidbody.SetVelocity(Vector3.Zero());
+            return;
+        }
+        LookAtObject(targetVantagePoint);
+        // Move toward Vantage Point
+        Vector3 direction = targetVantagePoint.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+        rigidbody.SetVelocity(direction * gunnerStats.movementSpeed + new Vector3(0, rigidbody.GetVelocity().y, 0));
     }
     private void Update_Shoot()
     {
-
+        if (!HasLineOfSight(targetVantagePoint, player))
+        {
+            gunnerState = GunnerState.Idle;
+            animator.PlayAnimation("Gunner_Idle");
+            rigidbody.SetVelocity(Vector3.Zero());
+            return;
+        }
+        LookAtPlayer();
+        currentShootCooldown -= Time.V_FixedDeltaTime();
+        if(currentShootCooldown < 0)
+        {
+            currentShootCooldown = gunnerStats.maxShootCooldown;
+            // Cursed
+            ShootProjectile(projectileSpawnPoint1);
+            ShootProjectile(projectileSpawnPoint2);
+            ShootProjectile(projectileSpawnPoint3);
+            ShootProjectile(projectileSpawnPoint4);
+        }
     }
     private void Update_Stagger()
     {
