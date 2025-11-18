@@ -14,6 +14,10 @@ NavBar::NavBar(Editor& editor) :
 	debugUi{editor},
 	hierarchyList{editor},
 	componentInspector{editor},
+	gameConfig{ editor },
+	animationWindow{ editor.animationTimeLine },
+	animatorWindow{ editor.animatorController },
+	navigationWindow{ editor.navigationWindow },
 	consoleBool{true},
 	debugUiBool{true},
 	hierarchyBool{true},
@@ -52,5 +56,20 @@ void NavBar::update() {
 	}
 	if (componentInspectorBool) {
 		componentInspector.update();
+	}
+	if (gameConfigBool) {
+		gameConfig.update();
+	}
+	if (animationBool) {
+		animationWindow.update();
+	}
+	if (animatorBool) {
+		animatorWindow.update();
+	}
+	if (imGuiDemoBool) {
+		ImGui::ShowDemoWindow();
+	}
+	if (navigationBool) {
+		navigationWindow.update();
 	}
 }
