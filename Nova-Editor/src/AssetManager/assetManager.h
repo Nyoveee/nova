@@ -53,10 +53,21 @@ public:
 	template <ValidResource T>
 	friend struct SerialiseDescriptorFunctor;
 
-	template <ValidResource T>
+	// the non templated version is able to call the correct templated function via serialisation functors.
+	// that way the call site does not have to know the original type of the resource to call this function.
 	void serialiseDescriptor(ResourceID id);
 
+	// use this version if you know what the type is.
+	template <ValidResource T>
+	void serializeDescriptor(ResourceID id);
+
+	// private function renamefile has the ability to move asset to a new folder.
+	// we provide a public facing function that does not allow that. if there is a need to move an asset, 
+	// use moveAssetToFolder.
 	bool renameFile(ResourceID id, std::string const& newFileStem);
+
+	// moves a given asset to another folder..
+	bool moveAssetToFolder(ResourceID resourceId, FolderID destinationFolder);
 
 	// Removes this resource from the entry.. might be added back later from recompilation..
 	void removeResource(ResourceID id);
@@ -89,6 +100,11 @@ private:
 	void onFolderModification(std::filesystem::path const& folderPath);
 
 	void onAssetDeletion(ResourceID id);
+
+	// renames a given asset file given a new file stem. (preserves extension)
+	// if there is a provided parent folder, rename file will move that asset to that new folder.
+	// calling function should provide the descriptor.
+	bool renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor, std::string const& newFileStem, FolderID parentFolder);
 
 private:
 	void processAssetFilePath(AssetFilePath const& path);

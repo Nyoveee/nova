@@ -285,20 +285,26 @@ void AssetManager::recordFolder(FolderID id, std::filesystem::path const& path) 
 	};
 }
 
-bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
-	auto iterator = assetToDescriptor.find(id);
-
-	if (iterator == assetToDescriptor.end()) {
-		Logger::error("Attempt to rename file failed. Unable to find corresponding descriptor.");
-		return false;
-	}
-
-	auto&& [_, descriptor] = *iterator;
-
+bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor, std::string const& newFileStem, FolderID parentFolder) {
 	// Determine the appropriate full new file path.
 	std::filesystem::path oldFullFilePath { descriptor->filepath };
-	std::filesystem::path parentPath = std::filesystem::path{ descriptor->filepath }.parent_path();
-	std::filesystem::path newFullFilePath = parentPath / newFileStem;
+
+	std::filesystem::path parentPath = [&]() {
+		if (parentFolder == NO_FOLDER) {
+			// no specified parent folder, we rename it based on it's current parent filepath..
+			return std::filesystem::path{ descriptor->filepath }.parent_path();
+		}
+		else {
+			// get the specified parent folder's filepath.
+			Folder const& folder = directories.at(parentFolder);
+			return AssetIO::assetDirectory / folder.relativePath;
+		}
+	}();
+	
+	// uses the original file name if newFileStem is empty.
+	std::filesystem::path newFullFilePath = newFileStem.empty()
+		? std::move(parentPath) / std::filesystem::path{ descriptor->filepath }.stem()
+		: std::move(parentPath) / newFileStem;
 
 	newFullFilePath.replace_extension(oldFullFilePath.extension());
 
@@ -500,6 +506,44 @@ void AssetManager::serialiseResources() {
 	serializeAllResources<CustomShader>();
 }
 
+bool AssetManager::moveAssetToFolder(ResourceID resourceId, FolderID destinationFolderId) {
+	auto iterator = assetToDescriptor.find(resourceId);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::error("Attempt to move file failed. Unable to find corresponding descriptor.");
+		return false;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+
+	// We attempt to actually move the underlying asset first.. (because it may fail)..
+	if (!renameFile(descriptor, descriptor->name, destinationFolderId)) {
+		return false;
+	}
+
+	// update the directories metadata..
+	// we first update the original folder..
+	auto originalFolderIterator = assetToDirectories.find(resourceId);
+	assert(originalFolderIterator != assetToDirectories.end() && "Since resourceId exist in asset to descriptor, it must be valid. Invariant broken.");
+	
+	auto&& [__, originalFolderId] = *originalFolderIterator;
+	
+	Folder& originalFolder = directories.at(originalFolderId);
+	originalFolder.assets.erase(resourceId);
+	
+	// update the map..
+	originalFolderId = destinationFolderId;
+
+	// filewatcher will update the new folder with this asset.
+#if false
+	// update the new folder..
+	Folder& destinationFolder = directories.at(destinationFolderId);
+	destinationFolder.assets.insert(resourceId);
+#endif
+
+	return true;
+}
+
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
 	return directories;
 }
@@ -512,6 +556,19 @@ FolderID AssetManager::getParentFolder(ResourceID id) const {
 	}
 
 	return iterator->second;
+}
+
+bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::error("Attempt to rename file failed. Unable to find corresponding descriptor.");
+		return false;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+
+	return renameFile(descriptor, newFileStem, NO_FOLDER);
 }
 
 void AssetManager::removeResource(ResourceID id) {
@@ -528,6 +585,7 @@ void AssetManager::removeResource(ResourceID id) {
 	serialiseDescriptorFunctors.erase(id);
 	resourceToType.erase(id);
 	assetToDescriptor.erase(iterator);
+	assetToDirectories.erase(id);
 }
 
 void AssetManager::deleteAsset([[maybe_unused]] ResourceID id) {
@@ -546,4 +604,15 @@ void AssetManager::deleteAsset([[maybe_unused]] ResourceID id) {
 	// Remove any record of this asset in memory..
 	removeResource(id);
 	resourceManager.removeResource(id);
+}
+
+void AssetManager::serialiseDescriptor(ResourceID id) {
+	auto iterator = serialiseDescriptorFunctors.find(id);
+	
+	if (iterator == serialiseDescriptorFunctors.end()) {
+		Logger::error("Failed to serialize descriptor for resource id {}!", static_cast<std::size_t>(id));
+		return;
+	}
+
+	iterator->second->operator()(id, *this);
 }

@@ -145,6 +145,8 @@ void AssetManagerUI::displayClickableFolderPath(FolderID folderId, bool toDispla
 		selectedFolderId = folderId;
 	}
 
+	handleAssetMoveToFolder(folderId);
+
 	ImGui::PopID();
 
 	if (toDisplayCaret) {
@@ -169,11 +171,14 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 	if (folder.childDirectories.empty()) {
 		flags |= ImGuiTreeNodeFlags_Leaf;	
 	}
+
 	bool showTreeNode = ImGui::TreeNodeEx((ICON_FA_FOLDER + std::string{ " " } + folder.name).c_str(), flags);
 
 	if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 		selectedFolderId = folderId;
 	}
+
+	handleAssetMoveToFolder(folderId);
 
 	if (showTreeNode) {
 		// display children recursively..
@@ -210,8 +215,9 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 		}
 
 		// Display all folder thumbnails..
-		for (FolderID childFolderId: folder.childDirectories) {
+		for (FolderID childFolderId : folder.childDirectories) {
 			displayFolderThumbnail(childFolderId);
+
 			++itemsToDisplay;
 		}
 
@@ -275,8 +281,9 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 			handleThumbnailDoubleClick(resourceId);
 		},
 
-		// callback to display context menu..
+		// callback to to perform additional logic after displaying context menu..
 		[&]() {
+			dragAndDrop(assetName->empty() ? "<no name>" : assetName->c_str(), static_cast<std::size_t>(resourceId));
 			displayAssetContextMenu(resourceId);
 		}
 	);
@@ -302,8 +309,17 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		// callback when the thumbnail gets double clicked.
 		[&]() {},
 
-		// callback to display context menu..
-		[&]() {}
+		// callback to run additional logic after thumbnail is rendered..
+		[&]() {
+			// Accept asset move request into this folder..
+			if (ImGui::BeginDragDropTarget()) {
+				if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
+					auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+					assetManager.moveAssetToFolder(static_cast<ResourceID>(id), folderId);
+				}
+				ImGui::EndDragDropTarget();
+			}
+		}
 	);
 }
 
@@ -453,7 +469,7 @@ Frag{
 }
 
 
-void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback, std::function<void()> contextMenuCallback) {
+void AssetManagerUI::displayThumbnail(std::size_t resourceOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback, std::function<void()> additionalLogicAfterThumbnail) {
 	if (!isAMatchWithSearchQuery(name)) {
 		return;
 	}
@@ -463,8 +479,7 @@ void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextur
 	ImVec2 padding = ImGui::GetStyle().WindowPadding;
 	constexpr float textHeight = 20.f;
 
-	//ImGui::PushID(imguiId);
-	ImGui::PushID(static_cast<int>(resourceIdOrFolderId));
+	ImGui::PushID(static_cast<int>(resourceOrFolderId));
 	ImGui::BeginChild("Thumbnail", ImVec2{ columnWidth, columnWidth + textHeight + 2 * padding.y }, ImGuiChildFlags_None, ImGuiWindowFlags_NoScrollbar);
 
 	ImVec2 buttonSize = ImVec2{ columnWidth - 2 * padding.x, columnWidth - 2 * padding.x };
@@ -486,8 +501,7 @@ void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextur
 		doubleClickCallback();
 	}
 
-	dragAndDrop(name, resourceIdOrFolderId);
-	contextMenuCallback();
+	additionalLogicAfterThumbnail();
 
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);
@@ -554,6 +568,17 @@ void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
 		ImGui::SetDragDropPayload("DRAGGING_ASSET_ITEM", &map, sizeof(map));
 		ImGui::Text("Dragging: %s", name);
 		ImGui::EndDragDropSource();
+	}
+}
+
+void AssetManagerUI::handleAssetMoveToFolder(FolderID folderId) {
+	// Accept asset move request into this folder..
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
+			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+			assetManager.moveAssetToFolder(static_cast<ResourceID>(id), folderId);
+		}
+		ImGui::EndDragDropTarget();
 	}
 }
 

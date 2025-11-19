@@ -101,7 +101,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     normal = normalize(normal);
 
     // ambient is the easiest.
-    vec3 finalColor = ambientFactor * albedoColor * occulusion;
+    vec3 finalColor = ambientFactor * albedoColor * (occulusion * 0.04);
 
     // Calculate diffuse and specular light for each light.
     for(int i = 0; i < pointLightCount; ++i) {

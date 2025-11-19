@@ -81,18 +81,19 @@ void AssetViewerUI::update() {
 		}
 	}
 
+	// If there is a name or filepath change, serialise the descriptor..
+	if (toSerialiseSelectedDescriptor) {
+		if (resourceManager.isResource<ScriptAsset>(selectedResourceId)) {
+			updateScriptFilePath(descriptorPtr->filepath, selectedResourceId);
+		}
+
+		assetManager.serialiseDescriptor(selectedResourceId);
+	}
+
 	auto displayResourceUIFunctor = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
 			if (resourceManager.isResource<T>(id)) {
 				displayAssetUI<T>(*descriptorPtr);
-
-				if (toSerialiseSelectedDescriptor) {
-					if constexpr (std::same_as<T, ScriptAsset>) {
-						updateScriptFileName(descriptorPtr->filepath, id);
-					}
-
-					assetManager.serialiseDescriptor<T>(id);
-				}
 			}
 		}(), ...);
 	};
@@ -102,7 +103,7 @@ void AssetViewerUI::update() {
 #endif
 }
 
-void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, [[maybe_unused]] ResourceID id) {
+void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_unused]] ResourceID id) {
 	std::ifstream inputScriptFile{ filepath };
 
 	std::string newName = std::filesystem::path{ filepath }.stem().string();
@@ -309,7 +310,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 				shader->customShaderData.pipeline = enumValue;
 				
 				// serialise immediately..
-				assetManager.serialiseDescriptor<CustomShader>(selectedResourceId);
+				assetManager.serializeDescriptor<CustomShader>(selectedResourceId);
 
 				// recompile..
 				shader->compile();

@@ -70,6 +70,7 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 		if (ImGui::Button(ICON_FA_ANCHOR_CIRCLE_XMARK)) {
 			assetViewerUi.selectNewResourceId(id.value());
 			assetManagerUi.displayAssetFolder(id.value());
+			ImGui::SetWindowFocus(ICON_FA_AUDIO_DESCRIPTION " Asset Viewer");
 		}
 
 	}
