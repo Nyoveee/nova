@@ -35,24 +35,52 @@ void Hierarchy::displayHierarchyWindow() {
 		createGameObject();
 	}
 
+	ImGui::InputText("Search", &searchQuery);
+
 	ImGui::BeginChild("Entities", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders);
+
+	// Uppercase search query..
+	uppercaseSearchQuery.clear();
+	std::transform(searchQuery.begin(), searchQuery.end(), std::back_inserter(uppercaseSearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
 
 	isHovering = ImGui::IsWindowHovered();
 
 	for (auto&& [entity, entityData] : registry.view<EntityData>().each()) {
-		// Any child entities will be displayed by the parent entity in a hierarchy. 
-		if (entityData.parent != entt::null) {
-			continue;
-		}
-
-		editor.displayEntityHierarchy(ecs.registry, entity, 
-			[&](std::vector<entt::entity> const& entities) {
-				editor.selectEntities(entities);
-			},
-			[&](entt::entity entity) {
-				return editor.isEntitySelected(entity);
+		// Search query is empty, display the entire hierarchy.
+		if (searchQuery.empty()) {
+			// Any child entities will be displayed by the parent entity in a hierarchy. 
+			if (entityData.parent != entt::null) {
+				continue;
 			}
-		);
+
+			editor.displayEntityHierarchy(ecs.registry, entity, true,
+				[&](std::vector<entt::entity> const& entities) {
+					editor.selectEntities(entities);
+				},
+				[&](entt::entity entity) {
+					return editor.isEntitySelected(entity);
+				}
+			);
+		}
+		else {
+			// Let's upper case our component name..
+			uppercaseEntityName.clear();
+			std::transform(entityData.name.begin(), entityData.name.end(), std::back_inserter(uppercaseEntityName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			// attempt to find entity..
+			if (uppercaseEntityName.find(uppercaseSearchQuery) == std::string::npos) {
+				continue;
+			}
+
+			editor.displayEntityHierarchy(ecs.registry, entity, false,
+				[&](std::vector<entt::entity> const& entities) {
+					editor.selectEntities(entities);
+				},
+				[&](entt::entity entity) {
+					return editor.isEntitySelected(entity);
+				}
+			);
+		}
 	}
 
 	ImGui::EndChild();

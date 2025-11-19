@@ -23,4 +23,8 @@ public:
 private:
 	ECS& ecs;
 	Editor& editor;
+
+	std::string searchQuery;
+	std::string uppercaseSearchQuery;
+	std::string uppercaseEntityName;
 };

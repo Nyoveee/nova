@@ -94,3 +94,4 @@ void Editor::displayEnumDropDownList(T value, const char* labelName, std::functi
 		ImGui::EndCombo();
 	}
 }
+

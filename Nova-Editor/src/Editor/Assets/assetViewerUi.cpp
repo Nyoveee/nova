@@ -552,7 +552,7 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 	if (ImGui::TreeNode("Prefab Hierarchy")) {
 		ImGui::BeginChild("##Prefab", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
 		
-		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, 
+		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, true,
 			[&](std::vector<entt::entity> entities) {
 				if (entities.empty()) {
 					return;

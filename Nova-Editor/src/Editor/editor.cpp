@@ -41,10 +41,6 @@ constexpr const char* fontFileName =
 	"System\\Font\\"
 	"NotoSans-Medium.ttf";
 
-constexpr ImVec4 prefabColor	 = ImVec4(0.5f, 1.f, 1.f, 1.f);
-constexpr ImVec4 grayColor		 = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
-constexpr ImVec4 whiteColor		 = ImVec4(1.f, 1.f, 1.f, 1.f);
-
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager) :
 	window							{ window },
@@ -495,7 +491,11 @@ bool Editor::isInSimulationMode() const {
 	return inSimulationMode;
 }
 
-void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate) {
+void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entity, bool toRecurse, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate) {
+	constexpr ImVec4 prefabColor = ImVec4(0.5f, 1.f, 1.f, 1.f);
+	constexpr ImVec4 grayColor = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
+	constexpr ImVec4 whiteColor = ImVec4(1.f, 1.f, 1.f, 1.f);
+
 	if (!registry.valid(entity)) {
 		return;
 	}
@@ -505,7 +505,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 	bool toDisplayTreeNode = false;
 
 	ImGui::PushID(static_cast<unsigned>(entity));
-		
+
 	// We use IILE to conditionally initialise a variable :)
 	ImVec4 color = [&]() {
 		// If the current entity is disabled, render gray..
@@ -520,7 +520,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 			while (root->parent != entt::null) {
 				if (root->prefabID != INVALID_RESOURCE_ID)
 					return prefabColor;
-				
+
 				root = registry.try_get<EntityData>(root->parent);
 			}
 
@@ -535,7 +535,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 	ImGui::PushStyleColor(ImGuiCol_Text, color);
 
-	if (entityData.children.empty()) {
+	if (!toRecurse || entityData.children.empty()) {
 		ImGui::Indent(27.5f);
 		if (ImGui::Selectable((
 			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
@@ -605,7 +605,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 	// recursively displays tree hierarchy..
 	if (toDisplayTreeNode) {
 		for (entt::entity child : entityData.children) {
-			displayEntityHierarchy(registry, child, onClickFunction, selectedPredicate);
+			displayEntityHierarchy(registry, child, toRecurse, onClickFunction, selectedPredicate);
 		}
 
 		ImGui::TreePop();
