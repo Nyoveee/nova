@@ -116,7 +116,7 @@ void ComponentInspector::update() {
 	}
 
 	// Display the rest of the components via reflection.
-	g_displayComponentFunctor(*this, selectedEntity, registry);
+	g_displayComponentFunctor(*this, selectedEntity, registry, true);
 
 	// Display add component button.
 	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);

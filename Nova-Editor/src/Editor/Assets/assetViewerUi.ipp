@@ -1,4 +1,5 @@
 #include "imgui.h"
+#include "assetViewerUi.h"
 
 template<ValidResource T>
 void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
@@ -23,6 +24,7 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 		displayPrefabInfo(typedDescriptor);
 	}
 }
+
 
 template <typename T>
 void AssetViewerUI::recompileResourceWithUpdatedDescriptor(AssetInfo<T> const& assetInfo) {

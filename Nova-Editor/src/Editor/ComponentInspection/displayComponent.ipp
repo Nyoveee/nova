@@ -5,7 +5,8 @@ namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 
 	template<typename Component>
-	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
+	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component, bool b, entt::registry& registry) {
+	//void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
 		(void) entity;
 
 		[[maybe_unused]] Editor& editor = componentInspector.editor;
@@ -48,6 +49,15 @@ namespace {
 				goto end;
 			}
 
+			if (b) {
+				EntityData* entityData = registry.try_get<EntityData>(entity);
+				if (entityData->prefabID == INVALID_RESOURCE_ID) {
+					b = false;
+				}
+			}
+
+			ImGui::BeginDisabled(b);
+			
 			ImGui::PushID(static_cast<int>(entity));
 			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
 			// Visits each of the component's data member and renders them.
@@ -60,10 +70,23 @@ namespace {
 					// Generalization
 					DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
 					ImGui::PopID();
+
+					//for (entt::entity en : registry.view<entt::entity>()) {
+					//	EntityData* enData = registry.try_get<EntityData>(en);
+					//	EntityData* entityData = registry.try_get<EntityData>(entity);
+					//	if (enData->prefabID == entityData->prefabID) {
+					//		auto* entityComponent = registry.try_get<Component>(entity);
+					//		auto* enComponent = registry.try_get<Component>(en);
+					//	}
+					//}
 				},
 			component);
+			
 			ImGui::PopID();
 			ImGui::PopID();
+
+			ImGui::EndDisabled();
+
 
 		end:
 			// prompted to delete component.

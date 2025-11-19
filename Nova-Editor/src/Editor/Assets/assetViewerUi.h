@@ -11,9 +11,13 @@ public:
 	
 	void update();
 	void updateScriptFileName(AssetFilePath const& filepath, ResourceID id);
+	void broadcast();
 	
 	template <ValidResource T>
 	void displayAssetUI(BasicAssetInfo& descriptor);
+
+	template<typename ...Components>
+	void updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity);
 
 public:
 	void selectNewResourceId(ResourceID id);

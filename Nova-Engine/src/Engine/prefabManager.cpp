@@ -42,15 +42,11 @@ void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<e
 							if (value != iterator->second) {
 								value = iterator->second;
 							}
-							//if (value == iterator->second) {
-							//	std::cout<< "VALUE " << static_cast<std::size_t>(value) << std::endl;
-							//}
 						}
 					}
 
 					}, fields.data);
 			}
-
 		}
 	}
 
