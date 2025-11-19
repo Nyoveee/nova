@@ -1,3 +1,5 @@
 #include "sequencer.h"
 
-//Sequencer::Sequencer() {}
+Sequencer::Sequencer(ResourceID id, ResourceFilePath filePath) :
+	Resource(id, std::move(filePath))
+{}

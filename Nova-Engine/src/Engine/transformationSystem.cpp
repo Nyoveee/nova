@@ -66,11 +66,6 @@ void TransformationSystem::update() {
 		}
 
 		// Figure out if the entity requires updating it's local matrix.
-		// Root entities have no use for local transforms.
-		if (entityData.parent == entt::null) {
-			continue;
-		}
-
 		if (
 			transform.localPosition != transform.lastLocalPosition
 			|| transform.localScale != transform.lastLocalScale
@@ -79,7 +74,6 @@ void TransformationSystem::update() {
 		) {
 			// World matrix needs recalculating because local matrix has been modified.
 			transform.needsRecalculating = true;
-
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
@@ -116,24 +110,18 @@ void TransformationSystem::update() {
 	// If entity has already modified world transform, we ignore any indirect world transformations due to ancestor change.
 	// At this point, we also know that all local matrixes are valid (for entities that did not directly edit their world transform).
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
-		// Root entities do not need to worry about hierarchy.
-		if (entityData.parent == entt::null) {
-			goto endOfLoop;
-		}
-
 		if (transform.needsRecalculating) {
 			// World transform has not changed. This means it can be prone to indirect change due to ancestor's transform change.
 			// In this case we want to calculate the new world transform due to any change in ancestor.
 
 			// Either none of the ancestors has changed their transform or world transform has been recalculated.
-			//Update events, try to save old data for more tweking
-
+			
+			// Update events, try to save old data for more tweking
 			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastPosition, transform.lastScale, transform.lastRotation });
 
 			// To recalculate our model matrix, we also need make sure the parent's world matrix is updated
 			// We recursively check its parent's model matrix, until we know its updated or we reach a root entity.
 			recalculateModelMatrix(entity);
-			transform.needsRecalculating = false;
 		}
 		else if (transform.worldHasChanged) {
 			//Update events, try to save old data for more tweking
@@ -147,6 +135,7 @@ void TransformationSystem::update() {
 		}
 
 	endOfLoop:
+		transform.needsRecalculating = false;
 		transform.worldHasChanged = false;
 	}
 
@@ -161,9 +150,14 @@ void TransformationSystem::setLocalTransformFromWorld(entt::entity entity) {
 }
 
 void TransformationSystem::setLocalTransformFromWorld(Transform& transform, EntityData& entityData) {
-	Transform& parentTransform = registry.get<Transform>(entityData.parent);
-	glm::mat4 inverseParentWorldMatrix = glm::inverse(parentTransform.modelMatrix);
-	transform.localMatrix = inverseParentWorldMatrix * transform.modelMatrix;
+	if (entityData.parent == entt::null) {
+		transform.localMatrix = transform.modelMatrix;
+	}
+	else {
+		Transform& parentTransform = registry.get<Transform>(entityData.parent);
+		glm::mat4 inverseParentWorldMatrix = glm::inverse(parentTransform.modelMatrix);
+		transform.localMatrix = inverseParentWorldMatrix * transform.modelMatrix;
+	}
 
 	auto [localPosition, localRotation, localScale] = Math::decomposeMatrix(transform.localMatrix);
 	transform.localPosition = localPosition;
@@ -193,7 +187,15 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 	// Attempts to get the most updated model matrix.
 	if (transform.needsRecalculating) {
 		EntityData& entityData = registry.get<EntityData>(entity);
-		transform.modelMatrix = getUpdatedModelMatrix(entityData.parent) * transform.localMatrix;
+
+		if (entityData.parent == entt::null) {
+			// parent to nothing..
+			transform.modelMatrix = transform.localMatrix;
+		}
+		else {
+			transform.modelMatrix = getUpdatedModelMatrix(entityData.parent) * transform.localMatrix;
+		}
+
 		transform.needsRecalculating = false;
 
 		// Let's set the appropriate new world transforms via matrix decomposition.
