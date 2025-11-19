@@ -20,16 +20,15 @@ TransformationSystem::TransformationSystem(ECS& ecs) :
 void TransformationSystem::update() {
 	ZoneScoped;
 
-	// 
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
 		// Figure out if the entity requires updating it's world matrix due to world transform change.
 		if (
-			transform.worldHasChanged
-			|| transform.position != transform.lastPosition
-			|| transform.scale != transform.lastScale
-			|| transform.eulerAngles != transform.lastEulerAngles
+				transform.worldHasChanged
+			||	transform.position			!= transform.lastPosition
+			||	transform.scale				!= transform.lastScale
+			||	transform.eulerAngles		!= transform.lastEulerAngles
 			|| !glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))
-			) {
+		) {
 			// Let's update the world matrix.
 			transform.worldHasChanged = true;
 
@@ -45,11 +44,7 @@ void TransformationSystem::update() {
 			}
 
 			//Update events, try to save old data for more tweking
-			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
-																				transform.lastPosition,
-																				transform.lastScale,
-																				transform.lastRotation });
-
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastPosition, transform.lastScale, transform.lastRotation });
 
 			transform.front = transform.rotation * defaultFront;
 			transform.up = transform.rotation * defaultUp;

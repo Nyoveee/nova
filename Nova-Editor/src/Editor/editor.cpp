@@ -63,8 +63,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	editorConfigUI					{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
-	inSimulationMode				{ false },
-	isThereChangeInSimulationMode	{ false }
+	inSimulationMode				{ false }
 {
 	// ======================================= 
 	// Preparing some ImGui config..
@@ -168,7 +167,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	}
 }
 
-void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback) {
+void Editor::update(float dt) {
 	imguiCounter = 0;
 
 	ZoneScopedC(tracy::Color::Orange);
@@ -183,12 +182,6 @@ void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback
 
 	main(dt);
 	assetManager.update();
-
-	// inform the engine if there is a change in simulation mode.
-	if (isThereChangeInSimulationMode) {
-		changeSimulationCallback(inSimulationMode);
-		isThereChangeInSimulationMode = false;
-	}
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -473,7 +466,6 @@ void Editor::startSimulation() {
 #endif
 
 	inSimulationMode = true;
-	isThereChangeInSimulationMode = true;
 }
 
 void Editor::stopSimulation() {
@@ -484,7 +476,6 @@ void Editor::stopSimulation() {
 	engine.editorControlMouse(true);
 	engine.stopSimulation();
 	inSimulationMode = false;
-	isThereChangeInSimulationMode = true;
 }
 
 bool Editor::isInSimulationMode() const {

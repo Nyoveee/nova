@@ -46,18 +46,17 @@ int main() {
 			engine.update(dt);
 			engine.render(RenderConfig::Editor);
 			
-			// this callback is invoked when the editor wants to change simulation mode.
-			editor.update(dt, [&](bool toStartSimulation) {
-				toStartSimulation ? engine.startSimulation() : engine.stopSimulation();
-			});
+			// we update the editor the simulation mode of the engine. this is because simulation may stop abruptly outside of
+			// the editor's control. during simulation setup, it may fail too.
+			if (!engine.isInSimulationMode() && editor.isInSimulationMode()) {
+				editor.stopSimulation();
+			}
+
+			editor.update(dt);
 
 			// every frame, check if there is a need to change simulation and initialise / clear systems.
 			// this will set the simulation mode of the engine accordingly.
 			engine.setupSimulation();
-
-			// we update the editor the simulation mode of the engine. this is because simulation may stop abruptly outside of
-			// the editor's control. during simulation setup, it may fail too.
-			engine.isInSimulationMode() ? editor.startSimulation() : editor.stopSimulation();
 		}
 	);
 }

@@ -437,7 +437,6 @@ struct NavMeshAgent
 	float agentHeight	= 0.f;
 };
 
-
 struct NavigationTestTarget
 {
 	float position;

@@ -50,7 +50,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
-	void update(float dt, std::function<void(bool)> changeSimulationCallback);
+	void update(float dt);
 	
 	bool isEntitySelected(entt::entity entity);
 	bool hasAnyEntitySelected() const;
@@ -131,7 +131,6 @@ private:
 
 	// This indicates whether the editor is in simulation mode.
 	bool inSimulationMode;
-	bool isThereChangeInSimulationMode;
 
 	std::string assetSearchQuery;
 	std::string uppercaseSearchQuery;
