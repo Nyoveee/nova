@@ -312,6 +312,7 @@ void AssetManager::serializeDescriptor(ResourceID id) {
 	// ============================
 	if constexpr (std::same_as<T, Texture>) {
 		descriptorFile << magic_enum::enum_name(assetInfo->compression) << '\n';
+		descriptorFile << magic_enum::enum_name(assetInfo->type) << '\n';
 	}
 	else if constexpr (std::same_as<T, CustomShader>) {
 		descriptorFile << magic_enum::enum_name(assetInfo->pipeline) << '\n';

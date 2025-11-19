@@ -357,17 +357,53 @@ void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 
 	constexpr auto listOfEnumValues = magic_enum::enum_entries<AssetInfo<Texture>::Compression>();
 
-	if (ImGui::BeginCombo("Compression", std::string{ magic_enum::enum_name<AssetInfo<Texture>::Compression>(textureInfo.compression) }.c_str())) {
-		for (auto&& [enumValue, enumInString] : listOfEnumValues) {
-			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == textureInfo.compression)) {
-				if (enumValue != textureInfo.compression) {
-					textureInfo.compression = enumValue;
-					recompileResourceWithUpdatedDescriptor<Texture>(textureInfo);
-				}
+	bool toRecompile = false;
+
+	editor.displayEnumDropDownList<AssetInfo<Texture>::TextureType>(textureInfo.type, "Texture Type", [&](auto textureType) {
+		if (textureType != textureInfo.type) {
+			textureInfo.type = textureType;
+			toRecompile = true;
+
+			switch (textureInfo.type)
+			{
+				using enum AssetInfo<Texture>::TextureType;
+				using enum AssetInfo<Texture>::Compression;
+			case sRGB:
+				textureInfo.compression = BC1_SRGB;
+				break;
+			case sRGBA:
+				textureInfo.compression = BC3_SRGB;
+				break;
+			case Linear:
+				textureInfo.compression = BC1_Linear;
+				break;
+			case NormalMap:
+				textureInfo.compression = BC5;
+				break;
+			case Custom:
+				toRecompile = false;
+				break;
 			}
 		}
+	});
 
-		ImGui::EndCombo();
+	if (textureInfo.type != AssetInfo<Texture>::TextureType::Custom) {
+		ImGui::BeginDisabled();
+	}
+
+	editor.displayEnumDropDownList<AssetInfo<Texture>::Compression>(textureInfo.compression, "Compression", [&](auto enumValue) {
+		if (enumValue != textureInfo.compression) {
+			textureInfo.compression = enumValue;
+			toRecompile = true;
+		}
+	});
+
+	if (textureInfo.type != AssetInfo<Texture>::TextureType::Custom) {
+		ImGui::EndDisabled();
+	}
+
+	if (toRecompile) {
+		recompileResourceWithUpdatedDescriptor<Texture>(textureInfo);
 	}
 }
 
