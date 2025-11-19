@@ -62,12 +62,9 @@ class Gunner : Enemy
     ***********************************************************/
     private bool HasLineOfSightToPlayer(GameObject from)
     {
-        Vector3 direction = player.transform.position - from.transform.position;
-        direction.Normalize();
         string[] layerMask = { "Wall" };
         float distance = Vector3.Distance(from.transform.position, player.transform.position);
-        RayCastResult? rayCastResult = PhysicsAPI.Raycast(from.transform.position, direction, distance, layerMask);
-        return rayCastResult == null;
+        return PhysicsAPI.Linecast(from.transform.position, player.transform.position, layerMask) == null;
     }
     private void GetVantagePoint()
     {

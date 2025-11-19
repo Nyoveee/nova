@@ -159,6 +159,19 @@ System::Nullable<RayCastResult> PhysicsAPI::Raycast(Ray^ p_ray, float maxDistanc
 	return System::Nullable<RayCastResult>(RayCastResult{ opt.value() });
 }
 
+System::Nullable<RayCastResult> PhysicsAPI::Linecast(Vector3 start, Vector3 end)
+{
+	return Linecast(start, end, {});
+}
+
+System::Nullable<RayCastResult> PhysicsAPI::Linecast(Vector3 start, Vector3 end, array<System::String^>^ layermask)
+{
+	float distance = Vector3::Distance(start, end);
+	Vector3 direction = Vector3::operator-(end, start);
+	direction.Normalize();
+	return Raycast(start,direction,distance,layermask);
+}
+
 
 // ======================================
 // Camera related APIs
