@@ -310,7 +310,6 @@ void Editor::handleEntityValidity() {
 }
 
 void Editor::handleEntityHovering() {
-#if false
 	if (!isActive() || !editorViewPort.isActive) {
 		return;
 	}
@@ -339,24 +338,7 @@ void Editor::handleEntityHovering() {
 	
 	// new entity hovered.
 	entt::registry& registry = engine.ecs.registry;
-	
-	// has component mesh renderer.
-	if (registry.all_of<MeshRenderer>(newHoveringEntity)) {
-		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(newHoveringEntity);
-		meshRenderer.toRenderOutline = true;
-	}
-
-	if (registry.all_of<MeshRenderer>(hoveringEntity)) {
-		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(hoveringEntity);
-
-		// dont render outline
-		if (!isEntitySelected(hoveringEntity)) {
-			meshRenderer.toRenderOutline = false;
-		}
-	}
-
 	hoveringEntity = newHoveringEntity;
-#endif
 }
 
 // handles object picker in game viewport

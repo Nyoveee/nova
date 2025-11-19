@@ -42,7 +42,7 @@ private:
 	void displayCreateAssetContextMenu();
 
 	//void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
-	void displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
+	void displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback, std::function<void()> contextMenuCallback);
 
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;
@@ -50,7 +50,9 @@ private:
 	void handleThumbnailDoubleClick(ResourceID resourceId);
 
 	void dragAndDrop(const char* name, std::size_t id);
-	
+
+	void displayAssetContextMenu(ResourceID id);
+
 	//std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
 private:

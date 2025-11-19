@@ -212,6 +212,7 @@ void AssetManagerUI::displayFolderContent(FolderID folderId) {
 		// Display all asset thumbnails..
 		for (ResourceID assetId : folder.assets) {
 			displayAssetThumbnail(assetId);
+			
 			++itemsToDisplay;
 		}
 
@@ -266,13 +267,14 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 		// callback when the thumbnail gets double clicked.
 		[&]() {
 			handleThumbnailDoubleClick(resourceId);
+		},
+
+		// callback to display context menu..
+		[&]() {
+			displayAssetContextMenu(resourceId);
 		}
 	);
 
-	if (ImGui::BeginPopupContextItem("[-] Delete?")) {
-	
-		ImGui::EndPopup();
-	}
 }
 
 void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
@@ -292,6 +294,9 @@ void AssetManagerUI::displayFolderThumbnail(FolderID folderId) {
 		},
 
 		// callback when the thumbnail gets double clicked.
+		[&]() {},
+
+		// callback to display context menu..
 		[&]() {}
 	);
 }
@@ -442,8 +447,7 @@ Frag{
 }
 
 
-//void AssetManagerUI::displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
-void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback) {
+void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback, std::function<void()> contextMenuCallback) {
 	if (!isAMatchWithSearchQuery(name)) {
 		return;
 	}
@@ -477,6 +481,7 @@ void AssetManagerUI::displayThumbnail(std::size_t resourceIdOrFolderId, ImTextur
 	}
 
 	dragAndDrop(name, resourceIdOrFolderId);
+	contextMenuCallback();
 
 	ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + columnWidth - 2 * padding.x);
 	ImGui::Text(name);
@@ -540,6 +545,16 @@ void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
 		ImGui::SetDragDropPayload("DRAGGING_ASSET_ITEM", &map, sizeof(map));
 		ImGui::Text("Dragging: %s", name);
 		ImGui::EndDragDropSource();
+	}
+}
+
+void AssetManagerUI::displayAssetContextMenu(ResourceID id) {
+	if (ImGui::BeginPopupContextItem("Asset Context Menu")) {
+		if (ImGui::MenuItem("[-] Delete asset (NO UNDO)")) {
+			assetManager.deleteAsset(id);
+		}
+
+		ImGui::EndPopup();
 	}
 }
 

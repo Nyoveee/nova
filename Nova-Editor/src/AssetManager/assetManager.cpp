@@ -500,7 +500,19 @@ void AssetManager::removeResource(ResourceID id) {
 }
 
 void AssetManager::deleteAsset([[maybe_unused]] ResourceID id) {
-	
-// 	std::filesystem::remove(resourcePath);
+	// via the descriptor, find the original asset filepath..
+	auto iterator = assetToDescriptor.find(id);
 
+	if (iterator == assetToDescriptor.end()) {
+		Logger::warn("Deleting an invalid resource?");
+		return;
+	}
+
+	// Delete the asset file..
+	auto&& [_, assetInfoPtr] = *iterator;
+ 	std::filesystem::remove(assetInfoPtr->filepath);
+
+	// Remove any record of this asset in memory..
+	removeResource(id);
+	resourceManager.removeResource(id);
 }
