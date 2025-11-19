@@ -6,6 +6,8 @@
 #include <string>
 #include "Engine/engine.h"
 
+#include "TimeoutDelegate.hxx"
+
 class Engine;
 class ECS;
 ref class Script;
@@ -26,7 +28,10 @@ internal:
 
 	// static void editorModeUpdate();
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
+	static Script^ delayedAddEntityScript(EntityID entityID, ScriptID scriptId);
+
 	static void initializeScript(EntityID entityID, ScriptID scriptId);
+	static void initializeScript(Script^ script);
 
 	static void removeEntity(EntityID entityID);
 	static void removeEntityScript(EntityID entityID, ScriptID scriptId);
@@ -46,6 +51,9 @@ internal:
 
 	// Set script field data..
 	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
+	static void setFieldData(Script^ script, FieldData const& fieldData);
+
+	static void addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate);
 
 internal:
 	template<typename T>
@@ -87,6 +95,15 @@ private:
 	// Stores all the game object that is requested to be deleted. We delay object destruction till the end of the frame.
 	// (had bad experience with instant deletion..)
 	static System::Collections::Generic::Queue<EntityID> deleteGameObjectQueue;
+
+	// We store created game object scripts in a separate dictionary first..
+	static System::Collections::Generic::Dictionary<EntityID, Scripts^>^ createdGameObjectScripts;
+
+	// We store set timeout request in a separate container..
+	static System::Collections::Generic::List<TimeoutDelegate^>^ timeoutDelegates;
+
+	// Temporary container to execute and remove it from the main container..
+	static System::Collections::Generic::List<TimeoutDelegate^>^ executeTimeoutDelegates;
 
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;

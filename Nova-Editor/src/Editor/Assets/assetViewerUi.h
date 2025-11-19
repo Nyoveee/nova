@@ -12,6 +12,7 @@ public:
 	void update();
 	void updateScriptFileName(AssetFilePath const& filepath, ResourceID id);
 	void broadcast();
+	void updateScriptFilePath(AssetFilePath const& filepath, ResourceID id);
 	
 	template <ValidResource T>
 	void displayAssetUI(BasicAssetInfo& descriptor);

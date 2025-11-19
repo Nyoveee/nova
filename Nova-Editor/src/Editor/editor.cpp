@@ -36,11 +36,15 @@
 #include <Windows.h>
 #include <tracyprofiler/tracy/Tracy.hpp>
 
-
 constexpr float baseFontSize = 15.0f;
 constexpr const char* fontFileName = 
 	"System\\Font\\"
 	"NotoSans-Medium.ttf";
+
+constexpr ImVec4 prefabColor	 = ImVec4(0.5f, 1.f, 1.f, 1.f);
+constexpr ImVec4 grayColor		 = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
+constexpr ImVec4 whiteColor		 = ImVec4(1.f, 1.f, 1.f, 1.f);
+
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager) :
 	window							{ window },
@@ -333,23 +337,6 @@ void Editor::handleEntityHovering() {
 	}
 	
 	// new entity hovered.
-	entt::registry& registry = engine.ecs.registry;
-	
-	// has component mesh renderer.
-	if (registry.all_of<MeshRenderer>(newHoveringEntity)) {
-		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(newHoveringEntity);
-		meshRenderer.toRenderOutline = true;
-	}
-
-	if (registry.all_of<MeshRenderer>(hoveringEntity)) {
-		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(hoveringEntity);
-
-		// dont render outline
-		if (!isEntitySelected(hoveringEntity)) {
-			meshRenderer.toRenderOutline = false;
-		}
-	}
-
 	hoveringEntity = newHoveringEntity;
 }
 
@@ -458,7 +445,8 @@ void Editor::launchProfiler()
 	CloseHandle(pi.hThread);
 }
 
-void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline) const {
+void Editor::toOutline(std::vector<entt::entity> const&, bool) const {
+#if false
 	entt::registry& registry = engine.ecs.registry;
 
 	for (entt::entity entity : entities) {
@@ -468,6 +456,7 @@ void Editor::toOutline(std::vector<entt::entity> const& entities, bool toOutline
 			meshRenderer->toRenderOutline = toOutline;
 		}
 	}
+#endif
 }
 
 void Editor::startSimulation() {
@@ -516,23 +505,41 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 	bool toDisplayTreeNode = false;
 
 	ImGui::PushID(static_cast<unsigned>(entity));
-
-	auto hasHierarchyPrefab = [&entityData, &registry]() {
-		EntityData root{ const_cast<EntityData&>(entityData) };
-		while (root.parent != entt::null) {
-			if (root.prefabID != INVALID_RESOURCE_ID)
-				return true;
-			root = registry.get<EntityData>(root.parent);
-
+		
+	// We use IILE to conditionally initialise a variable :)
+	ImVec4 color = [&]() {
+		// If the current entity is disabled, render gray..
+		if (!entityData.isActive) {
+			return grayColor;
 		}
-		return root.prefabID != INVALID_RESOURCE_ID;
-	};
 
-	ImGui::PushStyleColor(ImGuiCol_Text, hasHierarchyPrefab() ? ImVec4(0, 1, 0, 1) : ImVec4(1, 1, 1, 1));
+		// Else, render green or white 
+		return [&]() {
+			EntityData const* root = &entityData;
+
+			while (root->parent != entt::null) {
+				if (root->prefabID != INVALID_RESOURCE_ID)
+					return prefabColor;
+				
+				root = registry.try_get<EntityData>(root->parent);
+			}
+
+			if (root->prefabID != INVALID_RESOURCE_ID) {
+				return prefabColor;
+			}
+			else {
+				return whiteColor;
+			}
+		}();
+	}();
+
+	ImGui::PushStyleColor(ImGuiCol_Text, color);
 
 	if (entityData.children.empty()) {
 		ImGui::Indent(27.5f);
-		if (ImGui::Selectable((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), selectedPredicate(entity))) {
+		if (ImGui::Selectable((
+			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData.name).c_str(), selectedPredicate(entity))) {
 			onClickFunction({ entity });
 		}
 
@@ -553,7 +560,10 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
 
-		toDisplayTreeNode = ImGui::TreeNodeEx((ICON_FA_CUBE + std::string{ " " } + entityData.name).c_str(), flags);
+		toDisplayTreeNode = ImGui::TreeNodeEx((
+			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData.name).c_str(), flags
+		);
 
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
 			onClickFunction({ entity });
@@ -567,7 +577,9 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 			}
 		}
 	}
+
 	ImGui::PopStyleColor();
+
 	// I want my widgets to be draggable, providing the entity id as the payload.
 	if (ImGui::BeginDragDropSource()) {
 		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity*));
@@ -598,6 +610,20 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 		ImGui::TreePop();
 	}
+}
+
+void Editor::loadScene(ResourceID sceneId) {
+	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
+
+	if (filePath) {
+		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
+	}
+
+	engine.ecs.sceneManager.loadScene(sceneId);
+	editorViewPort.controlOverlay.clearNotification();
+
+	// deselect entity.
+	selectEntities({});
 }
 
 Editor::~Editor() {

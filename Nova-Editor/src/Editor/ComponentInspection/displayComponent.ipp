@@ -91,7 +91,7 @@ namespace {
 		end:
 			// prompted to delete component.
 			if (!toShowHeader) {
-				componentInspector.ecs.registry.erase<Component>(entity);
+				registry.erase<Component>(entity);
 			}
 		}
 	}

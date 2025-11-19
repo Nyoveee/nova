@@ -200,7 +200,10 @@ void PhysicsManager::simulationInitialise() {
 
 void PhysicsManager::systemInitialise()
 {
-	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
 
 		// due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
@@ -231,7 +234,11 @@ void PhysicsManager::updatePhysics(float dt) {
 	// 1. Update all physics body to the current object's transform.
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
 	// =============================================================
-	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
@@ -253,7 +260,11 @@ void PhysicsManager::updatePhysics(float dt) {
 	// @TODO: Don't update every frame! Only update when there is a change in transform.
 	// =============================================================
 
-	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}

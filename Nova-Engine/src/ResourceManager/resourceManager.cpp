@@ -12,6 +12,15 @@
 #include "customShader.h"
 
 ResourceManager::ResourceManager() {
+	reload();
+}
+
+void ResourceManager::reload() {
+	resourceFilePaths.clear();
+	loadedResources.clear();
+	createdResourceInstances.clear();
+	resourcesByType.clear();
+
 	try {
 		// ========================================
 		// 1. Load all system resources..
@@ -21,7 +30,7 @@ ResourceManager::ResourceManager() {
 		// ========================================
 		// 2. Check if the resource directory exist, and the respective sub assets folder exist.
 		// ========================================
-		
+
 		// Checking if the main resource directory exist.
 		if (!std::filesystem::exists(AssetIO::resourceDirectory)) {
 			std::filesystem::create_directory(AssetIO::resourceDirectory);
@@ -94,4 +103,12 @@ void ResourceManager::loadAllSystemResources() {
 	for (auto&& [id, resourceFilePath] : AssetIO::systemTextureResources) {
 		addResourceFile<Texture>(resourceFilePath, id);
 	}
+}
+
+void ResourceManager::removeAllResourceInstance() {
+	for (ResourceID id : createdResourceInstances) {
+		removeResource(id);
+	}
+
+	createdResourceInstances.clear();
 }

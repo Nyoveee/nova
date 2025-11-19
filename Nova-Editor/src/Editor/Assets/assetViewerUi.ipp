@@ -29,7 +29,7 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 template <typename T>
 void AssetViewerUI::recompileResourceWithUpdatedDescriptor(AssetInfo<T> const& assetInfo) {
 	// serialise immediately..
-	assetManager.serialiseDescriptor<T>(selectedResourceId);
+	assetManager.serialiseDescriptor(selectedResourceId);
 
 	// we make a copy of asset info, because the reference is getting invalidated..
 	AssetInfo<T> assetInfoCopy = assetInfo;

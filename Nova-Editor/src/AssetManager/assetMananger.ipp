@@ -214,7 +214,7 @@ void AssetManager::loadAllDescriptorFiles() {
 				continue;
 			}
 			else {
-				Logger::debug("Sucessfully parsed descriptor file.");
+				Logger::debug("Successfully parsed descriptor file.");
 				descriptor = opt.value();
 			}
 			
@@ -284,7 +284,7 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 }
 
 template<ValidResource T>
-void AssetManager::serialiseDescriptor(ResourceID id) {
+void AssetManager::serializeDescriptor(ResourceID id) {
 	std::ofstream descriptorFile{ AssetIO::getDescriptorFilename<T>(id) };
 
 	if (!descriptorFile) {

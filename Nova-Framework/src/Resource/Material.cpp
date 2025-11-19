@@ -4,6 +4,3 @@ Material::Material(ResourceID id, ResourceFilePath resourceFilePath, MaterialDat
 	: Resource		{ id, resourceFilePath }
 	, materialData	{ std::move(materialData) } 
 {}
-
-Material::~Material()
-{}

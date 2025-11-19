@@ -23,6 +23,10 @@ public:
 
 public:
 	void update();
+
+	// Displays the folder of this particular asset
+	void displayAssetFolder(ResourceID id);
+
 	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
 private:
@@ -41,8 +45,14 @@ private:
 	void displayFolderThumbnail(FolderID folderId);
 	void displayCreateAssetContextMenu();
 
-	//void displayThumbnail(int imguiId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
-	void displayThumbnail(std::size_t resourceIdOrFolderId, ImTextureID thumbnail, char const* name, std::function<void()> clickCallback, std::function<void()> doubleClickCallback);
+	void displayThumbnail(
+		std::size_t resourceIdOrFolderId,						// This function can be invoked to display either folder or asset. Pass the respective ids here.
+		ImTextureID thumbnail,									// Thumbnail preview..
+		char const* name,										// Name of the thumbnail..
+		std::function<void()> clickCallback,					// When the thumbnail is clicked, this callback is invoked.
+		std::function<void()> doubleClickCallback,				// When the thumbnail is double clicked, this callback is invoked.
+		std::function<void()> additionalLogicAfterThumbnail		// After rendering the thumbnail, this function is invoked. Good for context menu, drag and drop, etc..
+	);
 
 	// checks if a given name matches with the current search query.
 	bool isAMatchWithSearchQuery(std::string const& name) const;
@@ -50,7 +60,11 @@ private:
 	void handleThumbnailDoubleClick(ResourceID resourceId);
 
 	void dragAndDrop(const char* name, std::size_t id);
-	
+
+	void handleAssetMoveToFolder(FolderID folderId);
+
+	void displayAssetContextMenu(ResourceID id);
+
 	//std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
 private:
