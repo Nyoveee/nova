@@ -20,7 +20,7 @@ class GunnerProjectile : Script
         lifetime -= Time.V_FixedDeltaTime();
         if (lifetime <= 0)
         {
-            ObjectAPI.Destroy(gameObject);
+            Destroy(gameObject);
             return;
         }
     }
@@ -28,13 +28,13 @@ class GunnerProjectile : Script
     {
         if(other.tag == "Wall")
         {
-            ObjectAPI.Destroy(gameObject);
+            Destroy(gameObject);
         }
         if(other.tag == "Player")
         {
             PlayerController playerController = other.getScript<PlayerController>();
             playerController.TakeDamage(damage);
-            ObjectAPI.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 

@@ -107,7 +107,7 @@ class Gunner : Enemy
     }
     private void ShootProjectile(GameObject projectileSpawnLocation)
     {
-        GameObject projectile = ObjectAPI.Instantiate(projectilePrefab);
+        GameObject projectile = Instantiate(projectilePrefab);
         projectile.transform.position = projectileSpawnLocation.transform.position;
         Vector3 direction = player.transform.position - projectileSpawnLocation.transform.position;
         direction.Normalize();
@@ -218,6 +218,6 @@ class Gunner : Enemy
     }
     public void EndDeath()
     {
-        ObjectAPI.Destroy(gameObject);
+        Destroy(gameObject);
     }
 }
