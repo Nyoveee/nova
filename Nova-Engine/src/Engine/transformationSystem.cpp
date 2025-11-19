@@ -63,7 +63,6 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
-
 		}
 
 		// Figure out if the entity requires updating it's local matrix.
@@ -72,18 +71,12 @@ void TransformationSystem::update() {
 			continue;
 		}
 
-		// We ignore local transformation changes if there is already a world change.
-		// Our world matrix has already been calculated.
-		if (transform.worldHasChanged) {
-			continue;
-		}
-
 		if (
 			transform.localPosition != transform.lastLocalPosition
 			|| transform.localScale != transform.lastLocalScale
 			|| transform.localEulerAngles != transform.lastLocalEulerAngles		// Euler angles not consistent with quartenions anymore.
 			|| !glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))
-			) {
+		) {
 			// World matrix needs recalculating because local matrix has been modified.
 			transform.needsRecalculating = true;
 
@@ -103,10 +96,7 @@ void TransformationSystem::update() {
 			}
 
 			//Update events, try to save old data for more tweking
-			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
-																				transform.lastLocalPosition,
-																				transform.lastLocalScale,
-																				transform.lastLocalRotation });
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastLocalPosition, transform.lastLocalScale, transform.lastLocalRotation });
 
 			// We recalculate local matrix if there is a change in local transform.
 			transform.lastLocalPosition = transform.localPosition;
@@ -118,11 +108,7 @@ void TransformationSystem::update() {
 			transform.localMatrix = glm::translate(transform.localMatrix, transform.localPosition);
 			transform.localMatrix = transform.localMatrix * glm::mat4_cast(transform.localRotation);
 			transform.localMatrix = glm::scale(transform.localMatrix, transform.localScale);
-
-
 		}
-
-
 	}
 
 	// We will reupdate all world transforms that are affected indirectly due to ancenstor's change in world and local transform.
@@ -130,43 +116,34 @@ void TransformationSystem::update() {
 	// If entity has already modified world transform, we ignore any indirect world transformations due to ancestor change.
 	// At this point, we also know that all local matrixes are valid (for entities that did not directly edit their world transform).
 	for (auto&& [entity, entityData, transform] : registry.view<EntityData, Transform>().each()) {
-		// Root entities do not need to worry about hirerarchy.
+		// Root entities do not need to worry about hierarchy.
 		if (entityData.parent == entt::null) {
 			goto endOfLoop;
 		}
 
-		if (transform.worldHasChanged) {
+		if (transform.needsRecalculating) {
+			// World transform has not changed. This means it can be prone to indirect change due to ancestor's transform change.
+			// In this case we want to calculate the new world transform due to any change in ancestor.
 
+			// Either none of the ancestors has changed their transform or world transform has been recalculated.
 			//Update events, try to save old data for more tweking
-			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
-																				transform.lastLocalPosition,
-																				transform.lastLocalScale,
-																				transform.lastLocalRotation });
+
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastPosition, transform.lastScale, transform.lastRotation });
+
+			// To recalculate our model matrix, we also need make sure the parent's world matrix is updated
+			// We recursively check its parent's model matrix, until we know its updated or we reach a root entity.
+			recalculateModelMatrix(entity);
+			transform.needsRecalculating = false;
+		}
+		else if (transform.worldHasChanged) {
+			//Update events, try to save old data for more tweking
+			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastLocalPosition, transform.lastLocalScale, transform.lastLocalRotation });
 
 			// World transform has changed. This means it has been directly edited.
 			// If world transform is modified directly, we ignore all indirect modifications due to ancenstor's transform change.
 			// In this case we want to calculate the appropriate local transform corresponding to this world transform.
 			// This preserves the hierarchy effect for the future.
 			setLocalTransformFromWorld(transform, entityData);
-		}
-		else {
-			// World transform has not changed. This means it can be prone to indirect change due to ancestor's transform change.
-			// In this case we want to calculate the new world transform due to any change in ancestor.
-
-			// Either none of the ancestors has changed their transform or world transform has been recalculated.
-			if (!transform.needsRecalculating) {
-				continue;
-			}
-			//Update events, try to save old data for more tweking
-			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity,
-																				transform.lastPosition,
-																				transform.lastScale,
-																				transform.lastRotation });
-
-			// To recalculate our model matrix, we also need make sure the parent's world matrix is updated
-			// We recursively check its parent's model matrix, until we know its updated or we reach a root entity.
-			recalculateModelMatrix(entity);
-			transform.needsRecalculating = false;
 		}
 
 	endOfLoop:

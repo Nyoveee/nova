@@ -5,63 +5,6 @@
                 "children": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Entity 1",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Skybox",
                 "overridenProperties": null,
                 "parent": 4294967295,
@@ -119,36 +62,20 @@
         },
         {
             "EntityData": {
-                "children": [
-                    2
-                ],
+                "children": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Parent",
+                "name": "Entity 1",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 3
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": null,
-                        "scriptId": 3095451144282259457
-                    }
-                ]
-            },
             "Transform": {
                 "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": -0.13962680101394653,
-                    "z": 3.1415927410125732
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
@@ -177,79 +104,91 @@
                     "z": 0.0
                 },
                 "rotation": {
-                    "w": 0.06975670158863068,
-                    "x": 0.0,
-                    "y": -0.9975640773773193,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0000005960464478,
-                    "y": 1.0,
-                    "z": 1.0000005960464478
-                }
-            },
-            "id": 1048588
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "",
-                "overridenProperties": null,
-                "parent": 1048588,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": null,
-                "modelId": 4
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": 0.13962678611278534,
-                    "z": 3.1415927410125732
-                },
-                "localPosition": {
-                    "x": -3.2404916286468506,
-                    "y": 0.0,
-                    "z": -0.4554227888584137
-                },
-                "localRotation": {
-                    "w": 0.06975669413805008,
-                    "x": 0.0,
-                    "y": 0.9975640177726746,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.9999997019767761,
-                    "y": 1.0,
-                    "z": 0.9999997019767761
-                },
-                "position": {
-                    "x": 3.272340774536133,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0000005960464478,
+                    "x": 1.0,
                     "y": 1.0,
-                    "z": 1.0000005960464478
+                    "z": 1.0
                 }
             },
-            "id": 2097152
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "children": [
+                    1048580
+                ],
+                "isActive": true,
+                "layerId": 0,
+                "name": "Entity 1",
+                "overridenProperties": null,
+                "parent": 1048588,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 4
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "scriptId": 12085489221651742721
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -0.1396268606185913,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 8.940718743133402e-08,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.010911494493484497,
+                    "y": 0.0302734375,
+                    "z": -1.8290108442306519
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": -0.0,
+                    "y": 4.470359371566701e-08,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999975562095642,
+                    "y": 1.0,
+                    "z": 0.9999975562095642
+                },
+                "position": {
+                    "x": 0.2653554081916809,
+                    "y": 0.0302734375,
+                    "z": 1.8096938133239746
+                },
+                "rotation": {
+                    "w": -0.06975673139095306,
+                    "x": 0.0,
+                    "y": 0.9975640177726746,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999983906745911,
+                    "y": 1.0,
+                    "z": 0.9999983906745911
+                }
+            },
+            "id": 2
         },
         {
             "EntityData": {
@@ -324,9 +263,143 @@
                 "children": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Entity 1",
+                "name": "",
                 "overridenProperties": null,
                 "parent": 1048588,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": null,
+                "modelId": 4
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -1.4901154088420299e-08,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 0.13962678611278534,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": -3.2404916286468506,
+                    "y": 0.0,
+                    "z": -0.4554227888584137
+                },
+                "localRotation": {
+                    "w": 0.06975669413805008,
+                    "x": 0.0,
+                    "y": 0.9975640177726746,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999997019767761,
+                    "y": 1.0,
+                    "z": 0.9999997019767761
+                },
+                "position": {
+                    "x": 3.272340774536133,
+                    "y": 0.0,
+                    "z": -2.9802322387695313e-08
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -7.450577044210149e-09,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000004768371582,
+                    "y": 1.0,
+                    "z": 1.0000004768371582
+                }
+            },
+            "id": 2097152
+        },
+        {
+            "EntityData": {
+                "children": [
+                    2
+                ],
+                "isActive": true,
+                "layerId": 0,
+                "name": "Parent",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "scriptId": 3095451144282259457
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -0.13962677121162415,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": -0.06975668668746948,
+                    "x": 0.0,
+                    "y": 0.9975640177726746,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000008344650269,
+                    "y": 1.0,
+                    "z": 1.0000008344650269
+                }
+            },
+            "id": 1048588
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Entity 1",
+                "overridenProperties": null,
+                "parent": 2,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
@@ -336,51 +409,59 @@
                 ],
                 "modelId": 4
             },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "scriptId": 12085489221651742721
+                    }
+                ]
+            },
             "Transform": {
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -0.13962684571743011,
+                    "y": -0.1396268755197525,
                     "z": 3.1415927410125732
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": 5.960473714594627e-08,
+                    "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 3.0953330993652344,
-                    "y": 0.0,
-                    "z": -2.682209014892578e-07
+                    "x": 0.12476521730422974,
+                    "y": 2.289537191390991,
+                    "z": -0.8877475261688232
                 },
                 "localRotation": {
                     "w": 1.0,
-                    "x": -0.0,
-                    "y": 2.980236857297314e-08,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999984502792358,
+                    "x": 0.9999983906745911,
                     "y": 1.0,
-                    "z": 0.9999984502792358
+                    "z": 0.9999983906745911
                 },
                 "position": {
-                    "x": -3.065211772918701,
-                    "y": 0.0,
-                    "z": 0.430789053440094
+                    "x": 0.2653554379940033,
+                    "y": 2.319810628890991,
+                    "z": 2.7061643600463867
                 },
                 "rotation": {
-                    "w": -0.06975672394037247,
+                    "w": -0.06975673884153366,
                     "x": 0.0,
                     "y": 0.9975640177726746,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999992251396179,
+                    "x": 0.9999967217445374,
                     "y": 1.0,
-                    "z": 0.9999992251396179
+                    "z": 0.9999967217445374
                 }
             },
-            "id": 2
+            "id": 1048580
         }
     ],
     "layers": [
