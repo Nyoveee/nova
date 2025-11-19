@@ -3,6 +3,18 @@
 #include "component.h"
 #include "API/ManagedTypeMacros.hxx"
 #include "API/IManagedResourceID.hxx"
+
+// ===========================================================================================
+// 0. Defining managed typed resource..
+// ===========================================================================================
+
+namespace ScriptingAPI {
+	ManagedResource(Prefab)
+	ManagedResource(Texture)
+	ManagedResource(Model)
+	ManagedResource(Material)
+}
+
 // ===========================================================================================
 // 1. Defining structs..
 // 
@@ -14,17 +26,6 @@
 // Providing association here also allows you to declare data members of Managed Components
 // later in 2. with the managed type.
 // ===========================================================================================
-
-// ===========================================================================================
-// 3. Defining managed typed resource..
-// ===========================================================================================
-
-namespace ScriptingAPI {
-	ManagedResource(Prefab)
-		ManagedResource(Texture)
-		ManagedResource(Model)
-		ManagedResource(Material)
-}
 
 #define ALL_MANAGED_TYPED_RESOURCE_ID \
 	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material
@@ -99,6 +100,14 @@ ManagedStructEnd(Vector3, glm::vec3)
 // ======================================
 // This struct is responsible for ColorA Types
 // ======================================
+ManagedStruct(
+	Colour, glm::vec3,
+	float, r,
+	float, g,
+	float, b
+)
+ManagedStructEnd(Colour, glm::vec3)
+
 ManagedStruct(
 	ColorAlpha, glm::vec4,
 	float, r,
@@ -253,6 +262,14 @@ ManagedComponentDeclaration(
 
 void changeMaterial(int index, ScriptingAPI::Material^ material);
 
+// void setMaterialVector4(int index, System::String^ name, Vector4^ data);
+void setMaterialVector3(int index, System::String^ name, Vector3^ data);
+void setMaterialVector2(int index, System::String^ name, Vector2^ data);
+void setMaterialBool(int index, System::String^ name, bool data);
+void setMaterialInt(int index, System::String^ name, int data);
+void setMaterialUInt(int index, System::String^ name, unsigned data);
+void setMaterialFloat(int index, System::String^ name, float data);
+
 ManagedComponentEnd()
 
 ManagedComponentDeclaration(
@@ -261,7 +278,11 @@ ManagedComponentDeclaration(
 
 void changeMaterial(int index, ScriptingAPI::Material^ material);
 
+void setMaterialVector3(int index, System::String^ name, Vector3^ data);
+void setMaterialVector2(int index, System::String^ name, Vector2^ data);
+void setMaterialBool(int index, System::String^ name, bool data);
+void setMaterialInt(int index, System::String^ name, int data);
+void setMaterialUInt(int index, System::String^ name, unsigned data);
+void setMaterialFloat(int index, System::String^ name, float data);
+
 ManagedComponentEnd()
-
-
-

@@ -154,3 +154,24 @@ bool ResourceManager::isResource(ResourceID id) const {
 	auto findIterator = std::ranges::find(resourceIds, id);
 	return findIterator != resourceIds.end();
 }
+
+template<ValidResource T>
+ResourceID ResourceManager::createResourceInstance(ResourceID id) {
+	auto&& [resource, _] = getResource<T>(id);
+
+	if (!resource) {
+		return INVALID_RESOURCE_ID;
+	}
+
+	// Makes a copy of the resource. This resource has to implement copy constructor.
+	std::unique_ptr<Resource> resourceInstancePtr = std::make_unique<T>(*resource);
+
+	// Generate a new resource id..
+	ResourceID resourceInstanceId = AssetIO::generateResourceID();
+
+	auto&& [resourceIterator, __] = loadedResources.insert({ resourceInstanceId, std::move(resourceInstancePtr) });
+	assert(resourceIterator != loadedResources.end());
+
+	createdResourceInstances.push_back(resourceInstanceId);
+	return resourceInstanceId;
+}

@@ -153,7 +153,7 @@ class Grunt : Enemy
     // kills this gameobject..
     public void Die()
     {
-         ObjectAPI.Destroy(gameObject);
+         Destroy(gameObject);
     }
     /**********************************************************************
         Enemy States
@@ -239,7 +239,7 @@ class Grunt : Enemy
         emitter.emit(1000);
 
         if (hitbox != null)
-            ObjectAPI.Destroy(hitbox);
+            Destroy(hitbox);
     }
     public void EndAttack()
     {
@@ -254,7 +254,7 @@ class Grunt : Enemy
         AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
         if (hitboxPrefab == null)
             return;
-        hitbox = ObjectAPI.Instantiate(hitboxPrefab);
+        hitbox = Instantiate(hitboxPrefab);
         if(hitbox!= null && hitboxPosition!= null){
             hitbox.transform.position = hitboxPosition.transform.position;
             EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();

@@ -226,6 +226,66 @@ void MeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ material) 
 	meshRenderer->materialIds[index] = material->getId();
 }
 
+// private helper function.. (nullable)
+template <typename T>
+void SetUniformValue(int index, System::String^ name, std::vector<TypedResourceID<Material>>& materialIds, std::unordered_set<int>& isMaterialInstanced, T const& data) {
+	if (index < 0 || index >= materialIds.size()) {
+		return;
+	}
+
+	ResourceID materialId = materialIds[index];
+
+	if (!isMaterialInstanced.contains(index)) {
+		isMaterialInstanced.insert(index);
+
+		// We need to create a new material instance in memory..
+		materialId = Interface::engine->resourceManager.createResourceInstance<Material>(materialId);
+		materialIds[index] = TypedResourceID<Material>{ materialId };
+	}
+
+	auto&& [material, _] = Interface::engine->resourceManager.getResource<Material>(materialId);
+
+	if (!material) {
+		Logger::warn("Invalid material when setting material property..");
+		return;
+	}
+
+	std::string parameterName = Convert(name);
+	auto iterator = material->materialData.overridenUniforms.find(parameterName);
+
+	if (iterator == material->materialData.overridenUniforms.end()) {
+		Logger::warn("Invalid parameter name {} when setting material property", parameterName);
+		return;
+	}
+
+	auto&& [__, uniformData] = *iterator;
+	uniformData.value = data;
+}
+
+void MeshRenderer_::setMaterialFloat(int index, System::String^ name, float data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void MeshRenderer_::setMaterialVector2(int index, System::String^ name, Vector2^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void MeshRenderer_::setMaterialVector3(int index, System::String^ name, Vector3^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void MeshRenderer_::setMaterialBool(int index, System::String^ name, bool data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void MeshRenderer_::setMaterialInt(int index, System::String^ name, int data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void MeshRenderer_::setMaterialUInt(int index, System::String^ name, unsigned data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
 void SkinnedMeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ material) {
 	SkinnedMeshRenderer* meshRenderer = nativeComponent();
 
@@ -239,4 +299,28 @@ void SkinnedMeshRenderer_::changeMaterial(int index, ScriptingAPI::Material^ mat
 	}
 
 	meshRenderer->materialIds[index] = material->getId();
+}
+
+void SkinnedMeshRenderer_::setMaterialFloat(int index, System::String^ name, float data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void SkinnedMeshRenderer_::setMaterialVector2(int index, System::String^ name, Vector2^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void SkinnedMeshRenderer_::setMaterialVector3(int index, System::String^ name, Vector3^ data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data->native());
+}
+
+void SkinnedMeshRenderer_::setMaterialBool(int index, System::String^ name, bool data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void SkinnedMeshRenderer_::setMaterialInt(int index, System::String^ name, int data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+void SkinnedMeshRenderer_::setMaterialUInt(int index, System::String^ name, unsigned data) {
+	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
 }

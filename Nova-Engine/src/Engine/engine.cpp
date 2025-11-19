@@ -140,6 +140,8 @@ void Engine::stopSimulation() {
 		physicsManager.resetPhysicsState();
 		scriptingAPIManager.stopSimulation();
 
+		resourceManager.removeAllResourceInstance();
+
 		inSimulationMode = false;
 		gameLockMouse(false);
 	};
@@ -185,6 +187,7 @@ void Engine::editorControlMouse(bool value) {
 
 void Engine::SystemsOnLoad()
 {
+	resourceManager.removeAllResourceInstance();
 	this->navigationSystem.initNavMeshSystems();
 	this->physicsManager.systemInitialise();
 }

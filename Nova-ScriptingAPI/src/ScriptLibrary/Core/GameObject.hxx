@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ComponentAccessor.hxx"
 
 #include <entt/entt.hpp>
@@ -33,6 +34,7 @@ public:
 	property System::String^ tag {
 		System::String^ get();
 	}
+
 internal:
 	Transform_^ transformReference;
 };

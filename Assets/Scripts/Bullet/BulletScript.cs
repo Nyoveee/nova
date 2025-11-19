@@ -17,7 +17,7 @@ class BulletScript : Script
     {
         if (timeElapsed > lifeTime)
         {
-            ObjectAPI.Destroy(gameObject);
+            Destroy(gameObject);
         }
         else
         {

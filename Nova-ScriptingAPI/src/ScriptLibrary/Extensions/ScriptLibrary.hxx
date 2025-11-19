@@ -141,15 +141,4 @@ public:
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
 };
 
-// ======================================
-// This class is responsible for providing game object creation related APIs.
-// ======================================
-public ref class ObjectAPI {
-public:
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent);
 
-	static void Destroy(GameObject^ gameObject);
-};
