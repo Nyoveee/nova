@@ -24,22 +24,6 @@ class Editor;
 
 class AssetManager {
 public:
-	enum class QueryResult {
-		Success,		// if this enum is return, the pointer is valid
-
-		Invalid,		// is never recorded in asset manager
-		WrongType,		// asset exist and is loaded, but is not of type T. (most likely code error, this shouldn't happen)
-		Loading,		// exist but is not loaded, asset manager is attempting to load it now.
-		LoadingFailed	// there was an attempt to load the asset but it failed.
-	};
-
-	template <ValidResource T>
-	struct AssetQuery {
-		// Raw pointer representing non-owning, potentially null resource.
-		T* asset;
-		QueryResult result;
-	};
-
 	struct Descriptor {
 		DescriptorFilePath descriptorFilepath;
 		BasicAssetInfo descriptor;
@@ -55,6 +39,10 @@ public:
 	AssetManager& operator=(AssetManager&& other)		= delete;
 
 public:
+	// reload all recorded assets, descriptors, etc..
+	void reload();
+
+	// handle queued operations..
 	void update();
 
 	// as this function may be invoked from different threads, we need to control access to
@@ -87,6 +75,7 @@ public:
 public:
 	// Getters..
 	std::unordered_map<FolderID, Folder> const& getDirectories()									const;
+	FolderID									getParentFolder(ResourceID id)						const;
 	std::string const*							getName(ResourceID id)								const;
 	AssetFilePath const*						getFilepath(ResourceID id)							const;
 	BasicAssetInfo*								getDescriptor(ResourceID id);
@@ -158,6 +147,7 @@ private:
 
 	// Folder metadata (for tree traversal)
 	std::unordered_map<FolderID, Folder> directories;
+	std::unordered_map<ResourceID, FolderID> assetToDirectories;
 	std::unordered_map<std::string, FolderID> folderPathToId;
 	FolderID folderId;
 

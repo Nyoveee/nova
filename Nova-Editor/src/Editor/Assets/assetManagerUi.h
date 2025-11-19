@@ -23,6 +23,10 @@ public:
 
 public:
 	void update();
+
+	// Displays the folder of this particular asset
+	void displayAssetFolder(ResourceID id);
+
 	std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
 private:

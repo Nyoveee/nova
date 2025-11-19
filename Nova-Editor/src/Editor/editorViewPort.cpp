@@ -88,17 +88,7 @@ void EditorViewPort::update(float dt) {
 
 			// handling scene drop request..
 			if (editor.resourceManager.isResource<Scene>(id)) {
-				AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
-
-				if (filePath) {
-					Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
-				}
-
-				engine.ecs.sceneManager.loadScene(id);
-				controlOverlay.clearNotification();
-
-				// deselect entity.
-				editor.selectEntities({});
+				editor.loadScene(id);
 			}
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
 				engine.prefabManager.instantiatePrefab<ALL_COMPONENTS>(id);

@@ -68,6 +68,10 @@ public:
 
 	void displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate);
 
+	// editor does extra housekeeping when loading scenes (like selection of entities)
+	// most editor windows should use this function instead of the scene manager's load scene function.
+	void loadScene(ResourceID sceneId);
+
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
 	// first parameter is used to specific which asset id is selected.

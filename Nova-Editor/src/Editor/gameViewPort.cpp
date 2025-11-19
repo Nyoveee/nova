@@ -60,22 +60,23 @@ void GameViewPort::update([[maybe_unused]] float dt) {
 	ImTextureID textureId = engine.renderer.getGameFrameBufferTexture();
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
 
-	//engine.window.setGameViewPort({
-	//	static_cast<int>(gameWindowTopLeft.x),
-	//	static_cast<int>(gameWindowTopLeft.y),
-	//	static_cast<int>(viewportWidth),
-	//	static_cast<int>(viewportHeight)
-	//});
+	ImGui::Dummy(ImGui::GetContentRegionAvail());
 
-#if 0
-	// Calculate the mouse position relative to the game's viewport.
-	mouseRelativeToViewPort = ImGui::GetMousePos();
-	mouseRelativeToViewPort -= gameWindowTopLeft;
-	mouseRelativeToViewPort /= ImVec2{ viewportWidth, viewportHeight };
+	// Accept scene item payload..
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
+			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
 
-	// Flip y..
-	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
-#endif
+			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+
+			// handling scene drop request..
+			if (editor.resourceManager.isResource<Scene>(id)) {
+				editor.loadScene(id);
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
 
 	if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0)) {
 		if (editor.isInSimulationMode()) engine.editorControlMouse(false);

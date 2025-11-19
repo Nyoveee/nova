@@ -32,6 +32,49 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	hasInitialised		{},
 	folderId			{}
 {
+	reload();
+
+	// By now everything should be serialized, compile the entity scripts
+	engine.scriptingAPIManager.compileScriptAssembly();
+}
+
+AssetManager::~AssetManager() {
+#if 0
+	// let's serialise the asset meta data of all our stored info.
+	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
+		assert(serialiseFunctorPtr && "Should never be nullptr");
+
+		// serialise the descriptor file for this given asset id.
+		serialiseFunctorPtr->operator()(id, *this);
+	}
+#endif
+
+	// Asset manager serialises all of the resources that is modified directly in the end.
+	serialiseResources();
+}
+
+void AssetManager::submitCallback(std::function<void()> callback) {
+	std::lock_guard lock{ queueCallbackMutex };
+	callbacks.push(std::move(callback));
+}
+
+void AssetManager::reload() {
+	// ========================================
+	// 0. Clear all containers, reset all variables..
+	// ========================================
+	resourceManager.reload();
+
+	hasInitialised = false;
+	intermediaryAssetsToDescriptor.clear();
+	assetToDescriptor.clear();
+	directories.clear();
+	systemResourcesId.clear();
+	serialiseDescriptorFunctors.clear();
+	resourceToType.clear();
+	folderPathToId.clear();
+	assetToDirectories.clear();
+	callbacks = std::queue<std::function<void()>>{};
+
 	// record the root asset directory.
 	directories[ASSET_FOLDER] = Folder{
 		ASSET_FOLDER,
@@ -113,7 +156,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		try {
 			ResourceID id = std::stoull(std::filesystem::path{ resourcePath }.stem().string());
 			auto iterator = assetToDescriptor.find(id);
-			
+
 			if (iterator == assetToDescriptor.end()) {
 				Logger::debug("Found dangling resource file {} with no corresponding descriptor file, removing it..", resourcePath.string());
 				std::filesystem::remove(resourcePath);
@@ -137,30 +180,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	loadSystemResourceDescriptor<Material>(AssetIO::systemMaterialResources);
 	loadSystemResourceDescriptor<Texture>(AssetIO::systemTextureResources);
 
-	// By now everything should be serialized, compile the entity scripts
-	engine.scriptingAPIManager.compileScriptAssembly();
-
 	hasInitialised = true;
-}
-
-AssetManager::~AssetManager() {
-#if 0
-	// let's serialise the asset meta data of all our stored info.
-	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
-		assert(serialiseFunctorPtr && "Should never be nullptr");
-
-		// serialise the descriptor file for this given asset id.
-		serialiseFunctorPtr->operator()(id, *this);
-	}
-#endif
-
-	// Asset manager serialises all of the resources that is modified directly in the end.
-	serialiseResources();
-}
-
-void AssetManager::submitCallback(std::function<void()> callback) {
-	std::lock_guard lock{ queueCallbackMutex };
-	callbacks.push(std::move(callback));
 }
 
 void AssetManager::update() {
@@ -470,6 +490,7 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 	else {
 		auto&& [_, parentFolderId] = *folderIterator;
 		directories[parentFolderId].assets.insert(resourceId);
+		assetToDirectories[resourceId] = parentFolderId;
 	}
 }
 
@@ -481,6 +502,16 @@ void AssetManager::serialiseResources() {
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
 	return directories;
+}
+
+FolderID AssetManager::getParentFolder(ResourceID id) const {
+	auto iterator = assetToDirectories.find(id);
+	
+	if (iterator == assetToDirectories.end()) {
+		return NO_FOLDER;
+	}
+
+	return iterator->second;
 }
 
 void AssetManager::removeResource(ResourceID id) {

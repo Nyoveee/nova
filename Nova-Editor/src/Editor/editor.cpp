@@ -337,7 +337,6 @@ void Editor::handleEntityHovering() {
 	}
 	
 	// new entity hovered.
-	entt::registry& registry = engine.ecs.registry;
 	hoveringEntity = newHoveringEntity;
 }
 
@@ -611,6 +610,20 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 		ImGui::TreePop();
 	}
+}
+
+void Editor::loadScene(ResourceID sceneId) {
+	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
+
+	if (filePath) {
+		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
+	}
+
+	engine.ecs.sceneManager.loadScene(sceneId);
+	editorViewPort.controlOverlay.clearNotification();
+
+	// deselect entity.
+	selectEntities({});
 }
 
 Editor::~Editor() {

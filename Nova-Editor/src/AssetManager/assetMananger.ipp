@@ -214,7 +214,7 @@ void AssetManager::loadAllDescriptorFiles() {
 				continue;
 			}
 			else {
-				Logger::debug("Sucessfully parsed descriptor file.");
+				Logger::debug("Successfully parsed descriptor file.");
 				descriptor = opt.value();
 			}
 			

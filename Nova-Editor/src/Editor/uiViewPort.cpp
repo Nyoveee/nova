@@ -75,6 +75,23 @@ void UIViewPort::update() {
 
 	gizmo.update(uiWindowTopLeft.x, uiWindowTopLeft.y, viewportWidth, viewportHeight, true);
 	
+	ImGui::Dummy(ImGui::GetContentRegionAvail());
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
+			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
+
+			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+
+			// handling scene drop request..
+			if (editor.resourceManager.isResource<Scene>(id)) {
+				editor.loadScene(id);
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
 	ImGui::End();
 	
 }

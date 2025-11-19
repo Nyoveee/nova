@@ -94,6 +94,12 @@ void AssetManagerUI::displayRightContentPanel() {
 	ImGui::BeginChild("(Right) Content Browser");
 	ImGui::InputText("search", &searchQuery);
 	
+	ImGui::SameLine();
+
+	if (ImGui::Button("Reload")) {
+		assetManager.reload();
+	}
+
 	// ==== get upper case version of the search query. ===
 	allUpperCaseSearchQuery.clear();
 	allUpperCaseSearchQuery.reserve(searchQuery.size());
@@ -533,6 +539,9 @@ void AssetManagerUI::handleThumbnailDoubleClick(ResourceID resourceId) {
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 	}
+	else if (resourceManager.isResource<Scene>(resourceId)) {
+		editor.loadScene(resourceId);
+	}
 }
 
 void AssetManagerUI::dragAndDrop(const char* name, std::size_t id) {
@@ -556,6 +565,17 @@ void AssetManagerUI::displayAssetContextMenu(ResourceID id) {
 
 		ImGui::EndPopup();
 	}
+}
+
+void AssetManagerUI::displayAssetFolder(ResourceID id) {
+	// We need to find out what folder does this id belong to..
+	FolderID folderId = assetManager.getParentFolder(id);
+
+	if (folderId == NO_FOLDER) {
+		return;
+	}
+
+	selectedFolderId = folderId;
 }
 
 std::optional<std::ofstream> AssetManagerUI::createAssetFile(std::string const& extension, std::string filename, bool binary) {
