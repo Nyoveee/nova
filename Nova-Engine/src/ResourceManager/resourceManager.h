@@ -46,6 +46,8 @@ public:
 	ENGINE_DLL_API ResourceManager& operator=(ResourceManager const& other)		= delete;
 	ENGINE_DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
 
+public:
+
 	// main way all systems query for a specific resource.
 	template <ValidResource T>
 	ResourceQuery<T> getResource(ResourceID id);
@@ -73,6 +75,9 @@ public:
 	void removeAllResourceInstance();
 
 public:
+	// Reloads all resources..
+	ENGINE_DLL_API void reload();
+
 	ENGINE_DLL_API void update();
 	ENGINE_DLL_API bool doesResourceExist(ResourceID id) const;
 
@@ -112,8 +117,8 @@ private:
 	// groups all assets based on their type.
 	std::unordered_map<ResourceTypeID, std::vector<ResourceID>> resourcesByType;
 
-	// initialisationQueue represents the resources after the loading operation has been completed.
-	// this function will construct the aset type, and store it in resources, the main container containing all LOADED resources.
+	// initializationQueue represents the resources after the loading operation has been completed.
+	// this function will construct the asset type, and store it in resources, the main container containing all LOADED resources.
 	std::mutex initialisationQueueMutex;
 	std::queue<std::function<void()>> initialisationQueue;
 };

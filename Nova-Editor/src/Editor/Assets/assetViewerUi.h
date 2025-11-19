@@ -10,7 +10,7 @@ public:
 	AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager);
 	
 	void update();
-	void updateScriptFileName(AssetFilePath const& filepath, ResourceID id);
+	void updateScriptFilePath(AssetFilePath const& filepath, ResourceID id);
 	
 	template <ValidResource T>
 	void displayAssetUI(BasicAssetInfo& descriptor);
