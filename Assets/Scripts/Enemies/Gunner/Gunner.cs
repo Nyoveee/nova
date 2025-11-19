@@ -20,13 +20,7 @@ class Gunner : Enemy
     private Prefab projectilePrefab;
     // Cursed
     [SerializableField]
-    private GameObject? projectileSpawnPoint1;
-    [SerializableField]
-    private GameObject? projectileSpawnPoint2;
-    [SerializableField]
-    private GameObject? projectileSpawnPoint3;
-    [SerializableField]
-    private GameObject? projectileSpawnPoint4;
+    private GameObject? projectileSpawnPoint;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -42,7 +36,6 @@ class Gunner : Enemy
     private GunnerState gunnerState = GunnerState.Idle;
     private Dictionary<GunnerState, CurrentState> updateState = new Dictionary<GunnerState, CurrentState>();
     private float currentHurtTime = 0f;
-    private float currentShootCooldown = 0f;
     GameObject? targetVantagePoint = null;
     int gunShootIndex = 0;
     /***********************************************************
@@ -62,7 +55,6 @@ class Gunner : Enemy
         updateState.Add(GunnerState.Shoot, Update_Shoot);
         updateState.Add(GunnerState.Stagger, Update_Stagger);
         updateState.Add(GunnerState.Death, Update_Death);
-        currentShootCooldown = gunnerStats.maxShootCooldown;
         gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
     }
 
@@ -105,14 +97,6 @@ class Gunner : Enemy
             }
         }
     }
-    private void ShootProjectile(GameObject projectileSpawnLocation)
-    {
-        GameObject projectile = Instantiate(projectilePrefab);
-        projectile.transform.position = projectileSpawnLocation.transform.position;
-        Vector3 direction = player.transform.position - projectileSpawnLocation.transform.position;
-        direction.Normalize();
-        projectile.getScript<GunnerProjectile>().SetDirection(direction);
-    }
     /***********************************************************
        Inherited Functions
     ***********************************************************/
@@ -127,7 +111,7 @@ class Gunner : Enemy
         if (gunnerStats.health <= 0)
         {
             gunnerState = GunnerState.Death;
-            animator.PlayAnimation("Gunner_Die");
+            animator.PlayAnimation("Gunner_Death");
             return;
         }
         gunnerState = GunnerState.Stagger;
@@ -168,7 +152,7 @@ class Gunner : Enemy
         if(Vector3.Distance(targetVantagePoint.transform.position, gameObject.transform.position) <= gunnerStats.targetDistanceFromVantagePoint)
         {
             gunnerState = GunnerState.Shoot;
-            animator.PlayAnimation("Gunner_Idle");
+            animator.PlayAnimation("Gunner_Attack");
             rigidbody.SetVelocity(Vector3.Zero());
             return;
         }
@@ -189,19 +173,6 @@ class Gunner : Enemy
             return;
         }
         LookAtPlayer();
-        currentShootCooldown -= Time.V_FixedDeltaTime();
-        if(currentShootCooldown < 0)
-        {
-            AudioAPI.PlaySound(gameObject, "Gun1_LaserRifle_Switch_Select5");
-            currentShootCooldown = gunnerStats.maxShootCooldown;
-            gunShootIndex = (gunShootIndex + 1) % 2;
-            AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
-            // Cursed
-            ShootProjectile(projectileSpawnPoint1);
-            ShootProjectile(projectileSpawnPoint2);
-            ShootProjectile(projectileSpawnPoint3);
-            ShootProjectile(projectileSpawnPoint4);
-        }
     }
     private void Update_Stagger()
     {
@@ -211,6 +182,18 @@ class Gunner : Enemy
     /**********************************************************************
        Animation Events
     **********************************************************************/
+    public void Shoot()
+    {
+        AudioAPI.PlaySound(gameObject, "Gun1_LaserRifle_Switch_Select5");
+        gunShootIndex = (gunShootIndex + 1) % 2;
+        AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
+        // Shoot Projectile
+        GameObject projectile = Instantiate(projectilePrefab);
+        projectile.transform.position = projectileSpawnPoint.transform.position;
+        Vector3 direction = player.transform.position - projectileSpawnPoint.transform.position;
+        direction.Normalize();
+        projectile.getScript<GunnerProjectile>().SetDirection(direction);
+    }
     public void EndStagger()
     {
         gunnerState = GunnerState.Idle;

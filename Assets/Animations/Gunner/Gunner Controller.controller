@@ -10,59 +10,73 @@
             "transitions": [
                 {
                     "conditions": null,
-                    "nextNode": 7318200314782007303
+                    "nextNode": 9868178887971946501
                 }
             ]
         },
-        "1553592791747919881": {
-            "animation": 2684057870851440649,
-            "animationEvents": null,
-            "id": 1553592791747919881,
-            "name": "Gunner_Walk",
-            "toLoop": true,
-            "transitions": null
-        },
-        "400671287141203979": {
+        "1221267603423068175": {
             "animation": 4413440127761711109,
             "animationEvents": null,
-            "id": 400671287141203979,
+            "id": 1221267603423068175,
             "name": "Gunner_Jump",
             "toLoop": true,
             "transitions": null
         },
-        "7318200314782007303": {
-            "animation": 7295743889278828547,
-            "animationEvents": null,
-            "id": 7318200314782007303,
-            "name": "Gunner_Idle",
-            "toLoop": true,
-            "transitions": null
-        },
-        "7894661067087511567": {
-            "animation": 17095576678437027841,
+        "13903404154096713735": {
+            "animation": 7562335878756352001,
             "animationEvents": [
                 {
-                    "functionName": "EndDeath",
-                    "key": 55,
+                    "functionName": "Shoot",
+                    "key": 28,
                     "scriptId": 13082807837807067137
                 }
             ],
-            "id": 7894661067087511567,
-            "name": "Gunner_Die",
+            "id": 13903404154096713735,
+            "name": "Gunner_Attack",
             "toLoop": true,
             "transitions": null
         },
-        "977132039444693005": {
+        "16209247163311652875": {
+            "animation": 4680032117239234563,
+            "animationEvents": [
+                {
+                    "functionName": "EndDeath",
+                    "key": 77,
+                    "scriptId": 13082807837807067137
+                }
+            ],
+            "id": 16209247163311652875,
+            "name": "Gunner_Death",
+            "toLoop": false,
+            "transitions": null
+        },
+        "5832953621849931785": {
+            "animation": 2684057870851440649,
+            "animationEvents": null,
+            "id": 5832953621849931785,
+            "name": "Gunner_Walk",
+            "toLoop": true,
+            "transitions": null
+        },
+        "9291718135670767629": {
             "animation": 954675613941170183,
             "animationEvents": [
                 {
                     "functionName": "EndStagger",
-                    "key": 37,
+                    "key": 28,
                     "scriptId": 13082807837807067137
                 }
             ],
-            "id": 977132039444693005,
+            "id": 9291718135670767629,
             "name": "Gunner_Stagger",
+            "toLoop": false,
+            "transitions": null
+        },
+        "9868178887971946501": {
+            "animation": 7295743889278828547,
+            "animationEvents": null,
+            "id": 9868178887971946501,
+            "name": "Gunner_Idle",
             "toLoop": true,
             "transitions": null
         }

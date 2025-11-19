@@ -8,6 +8,4 @@ class GunnerStats : Script
     // Movement
     public float movementSpeed = 3f;
     public float targetDistanceFromVantagePoint = 3f;
-    // Shooting
-    public float maxShootCooldown = 3f;
 }
