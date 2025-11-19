@@ -13,12 +13,7 @@ class Gunner : Enemy
     [SerializableField]
     private float hurtDuration = 0.1f;
     [SerializableField]
-    private Material defaultMaterial;
-    [SerializableField]
-    private Material hurtMaterial;
-    [SerializableField]
     private Prefab projectilePrefab;
-    // Cursed
     [SerializableField]
     private GameObject? projectileSpawnPoint;
     /***********************************************************
@@ -35,7 +30,6 @@ class Gunner : Enemy
     }
     private GunnerState gunnerState = GunnerState.Idle;
     private Dictionary<GunnerState, CurrentState> updateState = new Dictionary<GunnerState, CurrentState>();
-    private float currentHurtTime = 0f;
     GameObject? targetVantagePoint = null;
     int gunShootIndex = 0;
     /***********************************************************
@@ -61,12 +55,6 @@ class Gunner : Enemy
     // This function is invoked every fixed update.
     protected override void update()
     {
-        if (currentHurtTime > 0)
-        {
-            currentHurtTime -= Time.V_FixedDeltaTime();
-            if (currentHurtTime <= 0)
-                renderer.changeMaterial(0, defaultMaterial);
-        }
         updateState[gunnerState]();
     }
     /***********************************************************
@@ -106,8 +94,12 @@ class Gunner : Enemy
             return;
         gunnerStats.health -= damage;
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        renderer.changeMaterial(0, hurtMaterial);
-        currentHurtTime = hurtDuration;
+        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+        Invoke(() =>
+        {
+            renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+        }, hurtDuration);
+
         if (gunnerStats.health <= 0)
         {
             gunnerState = GunnerState.Death;
@@ -116,7 +108,6 @@ class Gunner : Enemy
         }
         gunnerState = GunnerState.Stagger;
         animator.PlayAnimation("Gunner_Stagger");
-
     }
     public override bool IsEngagedInBattle()
     {

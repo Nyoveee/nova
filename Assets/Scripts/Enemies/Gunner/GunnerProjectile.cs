@@ -14,15 +14,16 @@ class GunnerProjectile : Script
     {
         this.direction = direction;
     }
+    protected override void init()
+    {
+        Invoke(() =>
+        {
+            Destroy(gameObject);
+        }, lifetime);
+    }
     protected override void update()
     {
         getComponent<Rigidbody_>().SetVelocity(direction * bulletSpeed);
-        lifetime -= Time.V_FixedDeltaTime();
-        if (lifetime <= 0)
-        {
-            Destroy(gameObject);
-            return;
-        }
     }
     protected override void onCollisionEnter(GameObject other)
     {
