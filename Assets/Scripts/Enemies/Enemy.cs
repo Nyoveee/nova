@@ -3,6 +3,8 @@
 // Editor will automatically rename and recompile this file.
 public abstract class Enemy : Script
 {
+    [SerializableField]
+    private float hurtDuration = 0.1f;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -26,6 +28,19 @@ public abstract class Enemy : Script
             return;
         }
         Vector3 direction = player.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+
+        gameObject.transform.setFront(direction);
+    }
+    protected void LookAtObject(GameObject @object)
+    {
+        if(@object == null)
+        {
+            Debug.LogWarning("Missing Reference Found");
+            return;
+        }
+        Vector3 direction = @object.transform.position - gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
 
