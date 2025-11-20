@@ -437,6 +437,18 @@ Frag{
 			}
 		}
 
+		if (ImGui::MenuItem("[+] Sequencer")) {
+			std::optional<std::ofstream> opt = createAssetFile(".sequencer");
+
+			if (!opt) {
+				Logger::error("Failed to create sequencer file.");
+			}
+			else {
+				Sequencer::Data data{};
+				Serialiser::serializeToJsonFile(data, opt.value());
+			}
+		}
+
 		if (ImGui::MenuItem("[+] Script")) {
 			static int counter = 0;
 			std::string className = "NewScript" + std::to_string(counter++);

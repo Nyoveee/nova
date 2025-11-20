@@ -134,7 +134,6 @@ void TransformationSystem::update() {
 			setLocalTransformFromWorld(transform, entityData);
 		}
 
-	endOfLoop:
 		transform.needsRecalculating = false;
 		transform.worldHasChanged = false;
 	}
