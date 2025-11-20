@@ -226,7 +226,8 @@ struct Rigidbody {
 
 	enum class Layer {
 		NonMoving,
-		Moving
+		Moving,
+		Wall
 	} layer							= Layer::NonMoving;
 
 	glm::vec3 initialVelocity		{};
@@ -435,7 +436,6 @@ struct NavMeshAgent
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
 };
-
 
 struct NavigationTestTarget
 {

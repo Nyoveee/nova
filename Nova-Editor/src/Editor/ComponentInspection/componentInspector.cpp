@@ -133,9 +133,16 @@ void ComponentInspector::update() {
 void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback)
 {
 	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
+	
 	if (ImGui::BeginCombo("Add new script", "##")) {
-		for (auto&& scriptID : allScripts) {
+		// Add a search bar..
+		ImGui::InputText("Search", &scriptSearchQuery);
 
+		// Case insensitive search query..
+		uppercaseScriptSearchQuery.clear();
+		std::transform(scriptSearchQuery.begin(), scriptSearchQuery.end(), std::back_inserter(uppercaseScriptSearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+		for (auto&& scriptID : allScripts) {
 			auto compareID = [&](ScriptData const& ownedScript) { return scriptID == ownedScript.scriptId; };
 
 			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
@@ -143,12 +150,22 @@ void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptDa
 
 			std::string const* namePtr = assetManager.getName(scriptID);
 
+			if (!namePtr) {
+				continue;
+			}
+
+			// Let's upper case our component name..
+			uppercaseScriptName.clear();
+			std::transform(namePtr->begin(), namePtr->end(), std::back_inserter(uppercaseScriptName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			if (uppercaseScriptName.find(uppercaseScriptSearchQuery) == std::string::npos) {
+				continue;
+			}
+
 			ImGui::PushID(static_cast<int>(static_cast<std::size_t>(scriptID)));
 
-			if (namePtr) {
-				if (ImGui::Selectable(namePtr->c_str()))
-					onClickCallback(scriptID);
-			}
+			if (ImGui::Selectable(namePtr->c_str()))
+				onClickCallback(scriptID);
 
 			ImGui::PopID();
 		}

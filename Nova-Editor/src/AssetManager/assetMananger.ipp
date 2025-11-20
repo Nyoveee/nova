@@ -214,7 +214,7 @@ void AssetManager::loadAllDescriptorFiles() {
 				continue;
 			}
 			else {
-				Logger::debug("Sucessfully parsed descriptor file.");
+				Logger::debug("Successfully parsed descriptor file.");
 				descriptor = opt.value();
 			}
 			
@@ -284,7 +284,7 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 }
 
 template<ValidResource T>
-void AssetManager::serialiseDescriptor(ResourceID id) {
+void AssetManager::serializeDescriptor(ResourceID id) {
 	std::ofstream descriptorFile{ AssetIO::getDescriptorFilename<T>(id) };
 
 	if (!descriptorFile) {
@@ -312,6 +312,7 @@ void AssetManager::serialiseDescriptor(ResourceID id) {
 	// ============================
 	if constexpr (std::same_as<T, Texture>) {
 		descriptorFile << magic_enum::enum_name(assetInfo->compression) << '\n';
+		descriptorFile << magic_enum::enum_name(assetInfo->type) << '\n';
 	}
 	else if constexpr (std::same_as<T, CustomShader>) {
 		descriptorFile << magic_enum::enum_name(assetInfo->pipeline) << '\n';

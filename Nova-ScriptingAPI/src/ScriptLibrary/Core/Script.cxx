@@ -17,6 +17,7 @@ void Script::callInit() {
 	}
 	catch (System::Exception^ e) {
 		Logger::error("Unable to call init(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Interface::engine->stopSimulation();
 	}
 }
 
@@ -27,6 +28,7 @@ void Script::callUpdate() {
 	}
 	catch (System::Exception^ e) {
 		Logger::error("Unable to call update(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Interface::engine->stopSimulation();
 	}
 }
 
@@ -37,6 +39,7 @@ void Script::callExit() {
 	}
 	catch (System::Exception^ e) {
 		Logger::error("Unable to call exit(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Interface::engine->stopSimulation();
 	}
 }
 
@@ -50,6 +53,7 @@ void Script::callOnCollisionEnter(unsigned otherEntityID) {
 	}
 	catch (System::Exception^ e) {
 		Logger::error("Unable to call on collision enter(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Interface::engine->stopSimulation();
 	}
 }
 

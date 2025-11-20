@@ -50,7 +50,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
-	void update(float dt, std::function<void(bool)> changeSimulationCallback);
+	void update(float dt);
 	
 	bool isEntitySelected(entt::entity entity);
 	bool hasAnyEntitySelected() const;
@@ -66,7 +66,11 @@ public:
 	void stopSimulation();
 	bool isInSimulationMode() const;
 
-	void displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate);
+	void displayEntityHierarchy(entt::registry& registry, entt::entity entity, bool toRecurse, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate);
+
+	// editor does extra housekeeping when loading scenes (like selection of entities)
+	// most editor windows should use this function instead of the scene manager's load scene function.
+	void loadScene(ResourceID sceneId);
 
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
@@ -127,7 +131,6 @@ private:
 
 	// This indicates whether the editor is in simulation mode.
 	bool inSimulationMode;
-	bool isThereChangeInSimulationMode;
 
 	std::string assetSearchQuery;
 	std::string uppercaseSearchQuery;

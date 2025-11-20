@@ -92,9 +92,13 @@ public:
 public ref class PhysicsAPI {
 public:
 	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance);
+	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, array<System::String^>^ layermask);
 	static System::Nullable<RayCastResult> Raycast(Vector3 origin, Vector3 directionVector, float maxDistance, GameObject^ entityToIgnore);
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance);
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore);
+	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end);
+	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end, array<System::String^>^ layermask);
+
 };
 
 // ======================================
