@@ -7,6 +7,7 @@
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
 #include "Interpolation.h"
+#include "RandomRange.h"
 
 #include <numbers>
 
@@ -142,5 +143,12 @@ public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
 };
-
+// ======================================
+// This class is responsible for random functionality
+// ======================================
+public ref class Random {
+public:
+	static float Range(float minInclusive, float maxInclusive);
+	static int Range(int minInclusive, int maxExclusive);
+};
 

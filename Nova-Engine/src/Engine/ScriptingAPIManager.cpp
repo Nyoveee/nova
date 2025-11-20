@@ -130,6 +130,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		setScriptFieldData		                = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
 		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
 		executeFunction_						= GetFunctionPtr<ExecuteFunctionPtr>("Interface", "executeEntityScriptFunction");
+		getHierarchyModifiedScripts_            = GetFunctionPtr<GetHierarchyModifiedScriptsFunctionPtr>("Interface", "GetHierarchyModifiedScripts");
 
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
@@ -301,30 +302,32 @@ void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 
 	// we attempt to recompile the script assembly
 	if (compileScriptAssembly()) {
-
-		// update the field data of all entities with affected scripts..
-		for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
-			for (auto&& script : scripts.scriptDatas) {
-				// only get script field data if this script itself has been modified.
-				if (!modifiedScripts.count(script.scriptId))
-					continue;
-				std::vector<FieldData> temp{ script.fields };
-				script.fields.clear();
-				for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
-					bool b_IsExistingField{ false };
-					for (FieldData const& oldFields : temp) {
-						if (oldFields.name != newFields.name)
-							continue;
-						script.fields.push_back(oldFields);
-						b_IsExistingField = true;
-						break;
+		for (ResourceID modifiedScriptID : modifiedScripts) {
+			// We include Inheritted Scripts to modify
+			std::unordered_set<ResourceID> hierarchyModifiedScripts{ getHierarchyModifiedScripts_(static_cast<std::size_t>(modifiedScriptID)) };
+			// update the field data of all entities with affected scripts..
+			for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+				for (auto&& script : scripts.scriptDatas) {
+					// only get script field data if this script itself has been modified.
+					if (!hierarchyModifiedScripts.count(script.scriptId))
+						continue;
+					std::vector<FieldData> temp{ script.fields };
+					script.fields.clear();
+					for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
+						bool b_IsExistingField{ false };
+						for (FieldData const& oldFields : temp) {
+							if (oldFields.name != newFields.name)
+								continue;
+							script.fields.push_back(oldFields);
+							b_IsExistingField = true;
+							break;
+						}
+						if (!b_IsExistingField)
+							script.fields.push_back(newFields);
 					}
-					if (!b_IsExistingField)
-						script.fields.push_back(newFields);
 				}
 			}
 		}
-
 		modifiedScripts.clear();
 	}
 
@@ -385,7 +388,6 @@ void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId) 
 	if (engine.resourceManager.isResource<ScriptAsset>(resourceId)) {
 		compileState = CompileState::ToBeCompiled;
 		timeSinceSave = 0.f;
-
 		modifiedScripts.insert(resourceId);
 	}
 }
