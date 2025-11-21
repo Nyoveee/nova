@@ -25,18 +25,19 @@
 struct FieldData;
 
 // More readable function pointer syntax because C lmaoo
-using UpdateFunctionPtr				= void (*)(void);
-using AddScriptFunctionPtr			= void (*)(unsigned int, std::size_t);
-using RemoveScriptFunctionPtr		= void (*)(unsigned int, std::size_t);
-using RemoveEntityFunctionPtr       = void (*)(unsigned int);
-using LoadScriptsFunctionPtr		= void (*)(void);
-using UnloadScriptsFunctionPtr		= void (*)(void);
-using IntializeScriptsFunctionPtr	= void (*)(void);
-using GetScriptFieldsFunctionPtr    = std::vector<FieldData> (*)(std::size_t);
-using SetScriptFieldFunctionPtr		= void (*)(unsigned int, unsigned long long, FieldData const& fieldData);
+using UpdateFunctionPtr				         = void (*)(void);
+using AddScriptFunctionPtr			         = void (*)(unsigned int, std::size_t);
+using RemoveScriptFunctionPtr		         = void (*)(unsigned int, std::size_t);
+using RemoveEntityFunctionPtr                = void (*)(unsigned int);
+using LoadScriptsFunctionPtr		         = void (*)(void);
+using UnloadScriptsFunctionPtr	 	         = void (*)(void);
+using IntializeScriptsFunctionPtr	         = void (*)(void);
+using GetScriptFieldsFunctionPtr             = std::vector<FieldData> (*)(std::size_t);
+using SetScriptFieldFunctionPtr		         = void (*)(unsigned int, unsigned long long, FieldData const& fieldData);
 
-using handleOnCollisionFunctionPtr  = void (*)(unsigned int, unsigned int);
-using ExecuteFunctionPtr			= void (*)(unsigned int, unsigned long long, std::string const&);
+using handleOnCollisionFunctionPtr		     = void (*)(unsigned int, unsigned int);
+using ExecuteFunctionPtr			         = void (*)(unsigned int, unsigned long long, std::string const&);
+using GetHierarchyModifiedScriptsFunctionPtr = std::unordered_set<ResourceID>(*)(std::size_t);
 class Engine;
 
 class ScriptingAPIManager {
@@ -122,18 +123,18 @@ private:
 
 private:
 	// Function pointers to interact directly with ScriptingAPI
-	UpdateFunctionPtr				update_;
-	AddScriptFunctionPtr			addEntityScript;
-	RemoveScriptFunctionPtr			removeEntityScript_;
-	RemoveEntityFunctionPtr			removeEntity_;
-	LoadScriptsFunctionPtr			loadAssembly;
-	UnloadScriptsFunctionPtr		unloadAssembly;
-	IntializeScriptsFunctionPtr		initalizeScripts;
-	GetScriptFieldsFunctionPtr		getScriptFieldDatas_;
-	SetScriptFieldFunctionPtr		setScriptFieldData;
-	handleOnCollisionFunctionPtr	handleOnCollision_;
-	ExecuteFunctionPtr				executeFunction_;
-
+	UpdateFunctionPtr						 update_;
+	AddScriptFunctionPtr					 addEntityScript;
+	RemoveScriptFunctionPtr					 removeEntityScript_;
+	RemoveEntityFunctionPtr					 removeEntity_;
+	LoadScriptsFunctionPtr					 loadAssembly;
+	UnloadScriptsFunctionPtr				 unloadAssembly;
+	IntializeScriptsFunctionPtr				 initalizeScripts;
+	GetScriptFieldsFunctionPtr				 getScriptFieldDatas_;
+	SetScriptFieldFunctionPtr				 setScriptFieldData;
+	handleOnCollisionFunctionPtr			 handleOnCollision_;
+	ExecuteFunctionPtr				         executeFunction_;
+	GetHierarchyModifiedScriptsFunctionPtr   getHierarchyModifiedScripts_;
 private:
 	CompileState compileState;
 	float timeSinceSave;
