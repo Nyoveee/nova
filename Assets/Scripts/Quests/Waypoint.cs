@@ -10,9 +10,9 @@ public class Waypoint : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        if (other.tag == "Player")
+        if (waypointQuest != null && other.tag == "Player")
         {
-            waypointQuest.SetQuestState(Quest.QuestState.Fail);
+            waypointQuest.SetQuestState(Quest.QuestState.Success);
         }
     }
 

@@ -7,7 +7,7 @@ public class QuestManager : Script
     //public required Quest[] quests;
     // Two quests for testing purposes when without a serializable way to hold many
     [SerializableField]
-    public required WaypointQuest? currentQuest;
+    public required Quest? currentQuest;
 
     private int questIndex;
 
