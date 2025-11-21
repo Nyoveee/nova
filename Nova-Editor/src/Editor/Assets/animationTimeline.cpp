@@ -48,8 +48,6 @@ void AnimationTimeLine::update() {
 	ImGui::SliderFloat("Duration (in seconds)", &sequencer->data.totalDuration, 0.f, 100.f);
 
 	if (ImGui::BeginNeoSequencer("Sequencer", &currentFrame, &startFrame, &endFrame, {})) {
-		ImGui::Button("[+]");
-
 		if (ImGui::BeginNeoTimelineEx("Position", nullptr)) {
 			ImGui::EndNeoTimeLine();
 		}

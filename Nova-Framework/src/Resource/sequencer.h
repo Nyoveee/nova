@@ -22,7 +22,7 @@ public:
 	struct Data {
 		std::vector<Keyframe> keyframes {};
 		float totalDuration				= 0.f;
-		int fps							= 30;
+		int fps							= 60;
 
 		REFLECTABLE(
 			keyframes,
