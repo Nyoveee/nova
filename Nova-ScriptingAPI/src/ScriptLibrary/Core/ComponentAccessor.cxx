@@ -55,38 +55,7 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 	transform->localPosition = localPosition->native();
 	transform->localRotation = localRotation->native();
 
-
-	// initialise animator..
-	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(prefabInstanceId);
-
-	if (animator)
-		Interface::engine->animationSystem.initialiseAnimator(*animator);
-
-	// initialise sequence..
-	Sequence* sequence = Interface::engine->ecs.registry.try_get<Sequence>(prefabInstanceId);
-
-	if (sequence)
-		Interface::engine->animationSystem.initialiseSequence(*sequence);
-
-	// initialise audio..
-	
-	// initialise all scripts..
-	Scripts* scripts = Interface::engine->ecs.registry.try_get<Scripts>(prefabInstanceId);
-
-	if (scripts) {
-		System::Collections::Generic::List<Script^>^ list = gcnew System::Collections::Generic::List<Script^>();
-		// Instantiate these scripts and call init..
-		for (auto&& scriptData : scripts->scriptDatas) {
-			Interface::ScriptID scriptId = static_cast<System::UInt64>(scriptData.scriptId);
-			Script^ script = Interface::delayedAddEntityScript(static_cast<System::UInt32>(prefabInstanceId), scriptId);
-
-			for (auto&& fieldData : scriptData.fields)
-				Interface::setFieldData(script, fieldData);
-			list->Add(script);
-		}
-		for each (Script ^ script in list)
-			Interface::initializeScript(script);
-	}
+	Interface::recursivelyInitialiseEntity(prefabInstanceId);
 
 	// yoinked from zhi wei
 	GameObject^ newGameObject = gcnew GameObject(prefabInstanceId);

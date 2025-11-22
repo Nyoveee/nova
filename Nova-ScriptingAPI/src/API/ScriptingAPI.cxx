@@ -111,6 +111,48 @@ void Interface::submitGameObjectDeleteRequest(EntityID entityToBeDeleted) {
 	deleteGameObjectQueue.Enqueue(entityToBeDeleted);
 }
 
+void Interface::recursivelyInitialiseEntity(entt::entity entity) {
+	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(entity);
+
+	engine->transformationSystem.recalculateModelMatrix(entity);
+
+	// initialise animator..
+	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(entity);
+
+	if (animator)
+		Interface::engine->animationSystem.initialiseAnimator(*animator);
+
+	// initialise sequence..
+	Sequence* sequence = Interface::engine->ecs.registry.try_get<Sequence>(entity);
+
+	if (sequence)
+		Interface::engine->animationSystem.initialiseSequence(*sequence);
+
+	// initialise audio..
+
+	// initialise all scripts..
+	::Scripts* scripts = Interface::engine->ecs.registry.try_get<::Scripts>(entity);
+
+	if (scripts) {
+		System::Collections::Generic::List<Script^>^ list = gcnew System::Collections::Generic::List<Script^>();
+		// Instantiate these scripts and call init..
+		for (auto&& scriptData : scripts->scriptDatas) {
+			Interface::ScriptID scriptId = static_cast<System::UInt64>(scriptData.scriptId);
+			Script^ script = Interface::delayedAddEntityScript(static_cast<System::UInt32>(entity), scriptId);
+
+			for (auto&& fieldData : scriptData.fields)
+				Interface::setFieldData(script, fieldData);
+			list->Add(script);
+		}
+		for each (Script ^ script in list)
+			Interface::initializeScript(script);
+	}
+
+	for (auto&& child : entityData->children) {
+		recursivelyInitialiseEntity(child);	
+	}
+}
+
 std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 {
 	using BindingFlags = System::Reflection::BindingFlags;

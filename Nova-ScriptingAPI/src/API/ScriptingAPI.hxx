@@ -44,6 +44,7 @@ internal:
 
 	static void submitGameObjectDeleteRequest(EntityID entityToBeDeleted);
 
+	static void recursivelyInitialiseEntity(entt::entity entity);
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);

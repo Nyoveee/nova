@@ -2,10 +2,13 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include "export.h"
+
 #include <entt/entt.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
+
 class ECS;
 struct Transform;
 struct EntityData;
@@ -28,6 +31,9 @@ public:
 	// just a more convenient public facing function that doesnt require additional parameters.
 	void setLocalTransformFromWorld(entt::entity entity);
 
+	// Recalculate model matrix due to changes in ancestor's world transform.
+	ENGINE_DLL_API void recalculateModelMatrix(entt::entity entity);
+
 private:
 	// Sets the local matrix and position, scale and rotation based on the world matrix of the entity.
 	void setLocalTransformFromWorld(Transform& transform, EntityData& entityData);
@@ -37,9 +43,6 @@ private:
 	// Gets the most updated model matrix of a given entity.
 	// Recalculates the model matrix if required.
 	glm::mat4x4 const& getUpdatedModelMatrix(entt::entity entity);
-	
-	// Recalculate model matrix due to changes in ancestor's world transform.
-	void recalculateModelMatrix(entt::entity entity);
 
 private:
 	entt::registry& registry;

@@ -585,21 +585,21 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 				rigidBody->layer = Rigidbody::Layer::NonMoving;
 				rigidBody->motionType = JPH::EMotionType::Static;
 
-				glm::vec3 scale = meshCollider->shapeScale * transform->scale;
+				glm::vec3 shapeScale = meshCollider->shapeScale * transform->scale;
 
 				bool anyComponentZero = false;
 				for (int i = 0; i < 3; ++i) {
-					if (scale[i] == 0.0f) {
+					if (shapeScale[i] == 0.0f) {
 						anyComponentZero = true;
 						break;
 					}
 				}
 
 				if (anyComponentZero) {
-					scale = glm::vec3{ 1.f, 1.f, 1.f };
+					shapeScale = glm::vec3{ 1.f, 1.f, 1.f };
 				}
 
-				shape = new JPH::ScaledShape(result.Get(), toJPHVec3(scale));
+				shape = new JPH::ScaledShape(result.Get(), toJPHVec3(shapeScale));
 			}
 		}
 	}
