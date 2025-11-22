@@ -176,7 +176,6 @@ class Grunt : Enemy
     {
         if (GetDistanceFromPlayer() > gruntStats.attackRadius)
         {
-            Debug.Log("Called");
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
         }

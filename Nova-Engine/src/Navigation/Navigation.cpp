@@ -349,3 +349,10 @@ void NavigationSystem::stopAgent(entt::entity entityID)
 	NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);
 	crowdManager[agent->agentName]->resetMoveTarget(agent->agentIndex);
 }
+
+void NavigationSystem::refreshAgentPosition(entt::entity entityID)
+{
+	auto&& [transform, agent] = engine.ecs.registry.try_get<Transform, NavMeshAgent>(entityID);
+	crowdManager[agent->agentName]->setTargetPosition(agent->agentIndex, transform->position.x, transform->position.y, transform->position.z);
+}
+

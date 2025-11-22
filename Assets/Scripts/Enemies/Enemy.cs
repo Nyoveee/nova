@@ -17,9 +17,9 @@ public abstract class Enemy : Script
     [SerializableField]
     protected Animator_? animator = null;
     [SerializableField]
-    protected Rigidbody_? rigidbody = null;
-    [SerializableField]
     protected SkinnedMeshRenderer_? renderer = null;
+    [SerializableField]
+    protected NavMeshAgent_? navMeshAgent = null;
     /***********************************************************
         Local Variables
     ***********************************************************/

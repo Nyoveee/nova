@@ -40,29 +40,31 @@ namespace {
 			if constexpr (!std::same_as<Component, Transform>) {
 				toDisplay = ImGui::CollapsingHeader(name, &toShowHeader);
 				if constexpr(!NonComponentDisablingTypes<Component>) {
-					ImGui::SameLine();
 					// Active State
 					size_t componentID{ typeid(Component).hash_code() };
 					EntityData* const entityData{ componentInspector.ecs.registry.try_get<EntityData>(entity) };
-					std::unordered_set<size_t>& inactiveComponents{ entityData->inactiveComponents };
-					bool b_InSet{ inactiveComponents.count(componentID) != 0 };
-					bool b_Active{ !b_InSet };
-					// Display Checkbox
-					ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.5f);
-					ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
-					ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.28f, 0.28f, 0.28f, 1.0f));
-					ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.32f, 0.32f, 0.32f, 1.0f));
-					ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.1f, 0.1f));
-					ImGui::Checkbox("##", &b_Active);
-					ImGui::PopStyleVar();
-					ImGui::PopStyleColor();
-					ImGui::PopStyleColor();
-					ImGui::PopStyleColor();
-					// Update if checkbox is clicked
-					if (!b_InSet && !b_Active)
-						inactiveComponents.insert(componentID);
-					else if (b_InSet && b_Active)
-						inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
+					if (entityData) {
+						std::unordered_set<size_t>& inactiveComponents{ entityData->inactiveComponents };
+						bool b_InSet{ inactiveComponents.count(componentID) != 0 };
+						bool b_Active{ !b_InSet };
+						// Display Checkbox
+						ImGui::SameLine();
+						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.5f);
+						ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
+						ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.28f, 0.28f, 0.28f, 1.0f));
+						ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.32f, 0.32f, 0.32f, 1.0f));
+						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.1f, 0.1f));
+						ImGui::Checkbox("##", &b_Active);
+						ImGui::PopStyleVar();
+						ImGui::PopStyleColor();
+						ImGui::PopStyleColor();
+						ImGui::PopStyleColor();
+						// Update if checkbox is clicked
+						if (!b_InSet && !b_Active)
+							inactiveComponents.insert(componentID);
+						else if (b_InSet && b_Active)
+							inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
+					}
 				}
 				
 			}

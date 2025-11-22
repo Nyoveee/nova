@@ -35,6 +35,7 @@ public:
 	// this recursively disables or enables an entity hierarchy..
 	ENGINE_DLL_API void setActive(entt::entity entity, bool isActive);
 
+	ENGINE_DLL_API void setComponentActive(entt::entity entity, std::size_t componentID, bool isActive);
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
 	template <typename ...Components>

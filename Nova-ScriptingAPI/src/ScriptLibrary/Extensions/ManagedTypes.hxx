@@ -286,3 +286,10 @@ void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
 
 ManagedComponentEnd()
+// ======================================
+// NavMeshAgent Component
+// ======================================
+ManagedComponentDeclaration(
+	NavMeshAgent
+)
+ManagedComponentEnd()

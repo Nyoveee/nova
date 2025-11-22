@@ -123,13 +123,8 @@ public:																															\
 				Logger::warn("{} does not support enabling/disabling", #ComponentType);											\
 				return;																											\
 			}																													\
-			EntityData& entityData{ Interface::engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };		\
-			std::unordered_set<size_t>& inactiveComponents{ entityData.inactiveComponents };									\
 			size_t componentID{ typeid(ComponentType).hash_code() };															\
-			if (b_Enable && !get())																								\
-				inactiveComponents.insert(componentID);																			\
-			else if(!b_Enable && get())																							\
-				inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));	\
+			Interface::engine->ecs.setComponentActive(static_cast<entt::entity>(entityID), componentID, b_Enable);				\
 			return;																												\
 		};																														\
 	}																															\

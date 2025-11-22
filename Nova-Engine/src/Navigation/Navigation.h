@@ -53,11 +53,12 @@ public:
 
 //--------------------For C# scripting API-------------------------------------------------------------//
 public:
-	//Start navigation for a particular agent. Returns bool when unable to set destination to targetPosition.
+	// Start navigation for a particular agent. Returns bool when unable to set destination to targetPosition.
 	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
+	// Stop Navigation for a particular agent.
 	ENGINE_DLL_API void stopAgent(entt::entity entityID);
-
-
+	// resets the position of the agent back to the transform 
+	ENGINE_DLL_API void refreshAgentPosition(entt::entity entityID);
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;

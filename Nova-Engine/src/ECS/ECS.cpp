@@ -159,3 +159,18 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 		setActive(child, isActive);
 	}
 }
+
+void ECS::setComponentActive(entt::entity entity, std::size_t componentID, bool isActive)
+{
+	EntityData& entityData{ registry.get<EntityData>(entity) };		
+	std::unordered_set<size_t>& inactiveComponents{ entityData.inactiveComponents };									
+	if (isActive && inactiveComponents.count(componentID)) {
+		inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
+		if (componentID == typeid(NavMeshAgent).hash_code())
+			engine.navigationSystem.refreshAgentPosition(entity);
+	}
+	else if (!isActive && !inactiveComponents.count(componentID))
+		inactiveComponents.insert(componentID);
+		
+	
+}

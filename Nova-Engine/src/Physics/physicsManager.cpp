@@ -201,10 +201,6 @@ void PhysicsManager::simulationInitialise() {
 void PhysicsManager::systemInitialise()
 {
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Rigidbody).hash_code())) {
-			continue;
-		}
-
 		// due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
 		if (rigidbody.bodyId == JPH::BodyID{} && hasRequiredPhysicsComponents(entityId))
@@ -238,7 +234,6 @@ void PhysicsManager::updatePhysics(float dt) {
 		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Rigidbody).hash_code())) {
 			continue;
 		}
-
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
