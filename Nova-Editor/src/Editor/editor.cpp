@@ -162,6 +162,17 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		}
 	);
 
+	inputManager.subscribe<ToEnableCursor>(
+		[&](ToEnableCursor toEnable) {
+			if (toEnable == ToEnableCursor::Enable) {
+				io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+			}
+			else {
+				io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+			}
+		}
+	);
+
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
@@ -528,12 +539,19 @@ void Editor::toOutline(std::vector<entt::entity> const&, bool) const {
 #endif
 }
 
+void Editor::toControlMouse(bool toControl) {
+	// legacy reasons..
+	engine.editorControlMouse(toControl);
+}
+
 void Editor::startSimulation() {
 	if (inSimulationMode) {
 		return; // already in simulation mode.
 	}
 
-	engine.editorControlMouse(false);
+	// editor doesn't need to control the mouse anymore..
+	toControlMouse(false);
+
 	engine.startSimulation();
 
 	// We serialise everything, resources to current scene when starting a simulation..
@@ -553,7 +571,7 @@ void Editor::stopSimulation() {
 		return; // already not in simulation mode.
 	}
 
-	engine.editorControlMouse(true);
+	toControlMouse(true);
 	engine.stopSimulation();
 	inSimulationMode = false;
 }

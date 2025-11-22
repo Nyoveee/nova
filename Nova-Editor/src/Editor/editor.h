@@ -101,6 +101,7 @@ private:
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
+	void toControlMouse(bool toControl);
 public:
 	// so that all editors have access to engine interface.
 	Engine& engine;
