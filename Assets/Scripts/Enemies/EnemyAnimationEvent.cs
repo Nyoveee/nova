@@ -21,7 +21,7 @@ class EnemyAnimationEvent : Script
     [SerializableField]
     private string triggerMethod8;
     protected override void init(){ enemyScript = gameObject.GetParent().getScript<Enemy>();}
-    public void TriggerEvent1(){ CallMethod(triggerMethod1);}
+    public void TriggerEvent1() { CallMethod(triggerMethod1); }
     public void TriggerEvent2() { CallMethod(triggerMethod2); }
     public void TriggerEvent3() { CallMethod(triggerMethod3); }
     public void TriggerEvent4() { CallMethod(triggerMethod4); }

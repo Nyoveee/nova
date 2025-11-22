@@ -63,7 +63,6 @@ class Grunt : Enemy
         updateState.Add(GruntState.Attacking, Update_AttackState);
         updateState.Add(GruntState.Death, Update_Death);
 
-        rigidbody.SetVelocity(new Vector3(0, 0, 0));
         LookAtPlayer();
 
         Invoke(() =>
@@ -92,7 +91,7 @@ class Grunt : Enemy
         {
             return;
         }
-
+        SpawnIchor();
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         gruntStats.health -= damage;
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
@@ -106,15 +105,11 @@ class Grunt : Enemy
         {
             gruntState = GruntState.Death;
             animator.PlayAnimation("Grunt Death");
-            rigidbody.SetVelocity(Vector3.Zero());
+            NavigationAPI.stopAgent(gameObject);
         }
     }
 
     // kills this gameobject..
-    public void Die()
-    {
-         Destroy(gameObject);
-    }
     /**********************************************************************
         Enemy States
     **********************************************************************/
@@ -140,24 +135,20 @@ class Grunt : Enemy
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;
-            rigidbody.SetVelocity(new Vector3(0, rigidbody.GetVelocity().y, 0));
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
         // Change State
         if (GetDistanceFromPlayer() <= gruntStats.attackRadius)
         {
-            if (animator != null)
-                animator.PlayAnimation("Grunt Attack");
-            rigidbody.SetVelocity(Vector3.Zero());
+            animator.PlayAnimation("Grunt Attack");
             gruntState = GruntState.Attacking;
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
         LookAtPlayer();
         // Move Enemy 
-        Vector3 direction = player.transform.position - gameObject.transform.position;
-        direction.y = 0;
-        direction.Normalize();
-        rigidbody.SetVelocity(direction * gruntStats.movementSpeed + new Vector3( 0,rigidbody.GetVelocity().y,0));
+        NavigationAPI.setDestination(gameObject, player.transform.position);
     }
     private void Update_AttackState()
     {
@@ -185,6 +176,7 @@ class Grunt : Enemy
     {
         if (GetDistanceFromPlayer() > gruntStats.attackRadius)
         {
+            Debug.Log("Called");
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
         }
@@ -201,5 +193,9 @@ class Grunt : Enemy
             if (enemyHitBox != null && gruntStats != null)
                 enemyHitBox.SetDamage(gruntStats.damage);
         }
+    }
+    public void EndDeath()
+    {
+        Destroy(gameObject);
     }
 }

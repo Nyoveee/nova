@@ -40,7 +40,7 @@ public abstract class Enemy : Script
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        Vector3 direction = player.transform.position - gameObject.transform.position;
+        Vector3 direction = player.transform.position - renderer.gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
 
