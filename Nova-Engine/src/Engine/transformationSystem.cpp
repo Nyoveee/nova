@@ -26,8 +26,8 @@ void TransformationSystem::update() {
 				transform.worldHasChanged
 			||	transform.position			!= transform.lastPosition
 			||	transform.scale				!= transform.lastScale
-			||	transform.eulerAngles		!= transform.lastEulerAngles
-			|| !glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))
+			||	!glm::all(glm::epsilonEqual(glm::vec3{ transform.eulerAngles }, glm::vec3{ transform.lastEulerAngles }, 1e-4f))
+			||  !glm::all(glm::epsilonEqual(transform.rotation, transform.lastRotation, 1e-4f))
 		) {
 			// Let's update the world matrix.
 			transform.worldHasChanged = true;
@@ -38,7 +38,7 @@ void TransformationSystem::update() {
 				transform.eulerAngles = transform.rotation;
 			}
 			// Euler angles changed, let's update our quartenions.
-			else if (transform.eulerAngles != transform.lastEulerAngles) {
+			else if (!glm::all(glm::epsilonEqual(glm::vec3{ transform.eulerAngles }, glm::vec3{ transform.lastEulerAngles }, 1e-4f))) {
 				transform.rotation = transform.eulerAngles;
 				transform.rotation = glm::normalize(transform.rotation);
 			}
@@ -67,10 +67,10 @@ void TransformationSystem::update() {
 
 		// Figure out if the entity requires updating it's local matrix.
 		if (
-			transform.localPosition != transform.lastLocalPosition
-			|| transform.localScale != transform.lastLocalScale
-			|| transform.localEulerAngles != transform.lastLocalEulerAngles		// Euler angles not consistent with quartenions anymore.
-			|| !glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))
+				transform.localPosition != transform.lastLocalPosition
+			||	transform.localScale != transform.lastLocalScale
+			||	!glm::all(glm::epsilonEqual(glm::vec3{ transform.localEulerAngles }, glm::vec3{ transform.lastLocalEulerAngles }, 1e-4f))		// Euler angles not consistent with quartenions anymore.
+			||	!glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))
 		) {
 			// World matrix needs recalculating because local matrix has been modified.
 			transform.needsRecalculating = true;
@@ -84,7 +84,7 @@ void TransformationSystem::update() {
 				transform.localEulerAngles = transform.localRotation;
 			}
 			// Euler angles changed, let's update our quartenions.
-			else if (!glm::all(glm::epsilonEqual(transform.localRotation, glm::quat{ transform.localEulerAngles }, 1e-4f))) {
+			else if (!glm::all(glm::epsilonEqual(glm::vec3{ transform.localEulerAngles }, glm::vec3{ transform.lastLocalEulerAngles }, 1e-4f))) {
 				transform.localRotation = transform.localEulerAngles;
 				transform.localRotation = glm::normalize(transform.localRotation);
 			}

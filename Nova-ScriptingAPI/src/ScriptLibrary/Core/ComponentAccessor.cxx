@@ -20,17 +20,29 @@ T ComponentAccessor::getScript() { return Interface::tryGetScriptReference<T>(en
 // ======================================
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab) {
-	return Instantiate(prefab, nullptr);
+	constexpr glm::vec3 zeroPos = { 0.f, 0.f, 0.f };
+	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
+
+	return Instantiate(prefab, gcnew Vector3{ zeroPos }, gcnew Quartenion{ identityQuat }, nullptr);
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent) {
 	constexpr glm::vec3 zeroPos = { 0.f, 0.f, 0.f };
-	return Instantiate(prefab, gcnew Vector3{ zeroPos }, parent);
+	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
+
+	return Instantiate(prefab, gcnew Vector3{ zeroPos }, gcnew Quartenion{ identityQuat }, parent);
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent) {
 	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
+
 	return Instantiate(prefab, localPosition, gcnew Quartenion{ identityQuat }, parent);
+}
+
+GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition) {
+	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
+
+	return Instantiate(prefab, localPosition, gcnew Quartenion{ identityQuat }, nullptr);
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent) {
@@ -91,6 +103,10 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 	GameObject^ newGameObject = gcnew GameObject(prefabInstanceId);
 
 	return newGameObject;
+}
+
+GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation) {
+	return Instantiate(prefab, localPosition, localRotation, nullptr);
 }
 
 void ComponentAccessor::Destroy(GameObject^ gameObject) {

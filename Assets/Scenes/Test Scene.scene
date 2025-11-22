@@ -5,6 +5,427 @@
                 "children": null,
                 "isActive": true,
                 "layerId": 0,
+                "name": "Hitbox Position",
+                "overridenProperties": null,
+                "parent": 39846057,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 2.7137057781219482,
+                    "y": -0.5237641334533691,
+                    "z": -2.9173312187194824
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.0761655175883789e-06,
+                    "z": -3.1415927410125732
+                },
+                "localPosition": {
+                    "x": -0.00022649765014648438,
+                    "y": 3.0094871520996094,
+                    "z": 1.4549217224121094
+                },
+                "localRotation": {
+                    "w": 5.380827587941894e-07,
+                    "x": -1.260601432268027e-12,
+                    "y": 1.0,
+                    "z": 2.677389993738233e-12
+                },
+                "localScale": {
+                    "x": 0.6369405388832092,
+                    "y": 0.6369109153747559,
+                    "z": 0.6369405388832092
+                },
+                "position": {
+                    "x": 0.7795629501342773,
+                    "y": 2.367081880569458,
+                    "z": 2.2277932167053223
+                },
+                "rotation": {
+                    "w": -0.2743546664714813,
+                    "x": -0.050993677228689194,
+                    "y": 0.9441061019897461,
+                    "z": 0.17547893524169922
+                },
+                "scale": {
+                    "x": 0.6369457840919495,
+                    "y": 0.6369112133979797,
+                    "z": 0.6369464993476868
+                }
+            },
+            "id": 39846059
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Emitter",
+                "overridenProperties": null,
+                "parent": 39846057,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "ParticleEmitter": {
+                "angularVelocity": 0.0,
+                "burstAmount": 1000,
+                "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "endColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "interpolationType": "Linear",
+                    "selected": true
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 0.20000000298023224,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 10000,
+                "particleColorSelection": {
+                    "color": {
+                        "a": 1.0,
+                        "b": 0.6235294342041016,
+                        "g": 0.19607843458652496,
+                        "r": 0.4156862795352936
+                    },
+                    "randomizedColor": false
+                },
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 15.0,
+                        "distance": 2.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        }
+                    },
+                    "emissionShape": "Edge",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    }
+                },
+                "particleRate": 0.0,
+                "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Linear",
+                    "selected": true
+                },
+                "startSize": 0.10000000149011612,
+                "startSpeed": 0.0,
+                "texture": 10337573581668909239,
+                "trails": {
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
+                    "trailColor": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 0
+                }
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 1.1429071426391602,
+                    "y": -0.5237651467323303,
+                    "z": -2.9173295497894287
+                },
+                "localEulerAngles": {
+                    "x": 1.5707948207855225,
+                    "y": -5.872290103070554e-07,
+                    "z": -3.1415915489196777
+                },
+                "localPosition": {
+                    "x": -0.08778858184814453,
+                    "y": 2.7134017944335938,
+                    "z": 2.023684501647949
+                },
+                "localRotation": {
+                    "w": -5.849740318808472e-07,
+                    "x": -1.6973986305401922e-07,
+                    "y": 0.7071062922477722,
+                    "z": 0.7071073651313782
+                },
+                "localScale": {
+                    "x": 1.000000238418579,
+                    "y": 0.9998269081115723,
+                    "z": 1.000047206878662
+                },
+                "position": {
+                    "x": 1.010461449623108,
+                    "y": 1.901366949081421,
+                    "z": 2.613314151763916
+                },
+                "rotation": {
+                    "w": -0.23005683720111847,
+                    "x": 0.15794026851654053,
+                    "y": 0.5435007214546204,
+                    "z": 0.791666567325592
+                },
+                "scale": {
+                    "x": 1.0000087022781372,
+                    "y": 0.9998363852500916,
+                    "z": 1.0000478029251099
+                }
+            },
+            "id": 39846058
+        },
+        {
+            "Animator": {
+                "controllerId": 1112108074662379533
+            },
+            "AudioComponent": {
+                "data": {
+                    "Enemy Hurt SFX": {
+                        "audioId": 13583868459018207259,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    },
+                    "enemyattack_sfx": {
+                        "audioId": 14736789963625054229,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    }
+                }
+            },
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 5.5,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.5,
+                    "y": 6.0,
+                    "z": 1.0
+                }
+            },
+            "EntityData": {
+                "children": [
+                    39846058,
+                    39846059
+                ],
+                "isActive": true,
+                "layerId": 0,
+                "name": "Grunt",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 6595610066090704897,
+                "tag": "Enemy"
+            },
+            "PositionalAudio": {
+                "innerRadius": 10.0,
+                "maxRadius": 40.0,
+                "toggleSphere": false
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": false,
+                "isTrigger": false,
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 39846058
+                                },
+                                "name": "emitter"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 6420286339970809859
+                                },
+                                "name": "hitboxPrefab"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 39846059
+                                },
+                                "name": "hitboxPosition"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "maximumHealth"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 0.10000000149011612
+                                },
+                                "name": "hurtDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "spawningDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 10,
+                                    "__variant_value": 9679203611999387651
+                                },
+                                "name": "spawningMaterial"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 10,
+                                    "__variant_value": 14949259600096887057
+                                },
+                                "name": "defaultMaterial"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 10,
+                                    "__variant_value": 17831563361614004495
+                                },
+                                "name": "hurtMaterial"
+                            }
+                        ],
+                        "scriptId": 15842916263221428229
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "movementSpeed"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 7.0
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "chasingRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 20.0
+                                },
+                                "name": "damage"
+                            }
+                        ],
+                        "scriptId": 278475951028994057
+                    }
+                ]
+            },
+            "SkinnedMeshRenderer": {
+                "materialIds": [
+                    6202046481197531139
+                ],
+                "modelId": 1688568826965803029
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.42788687348365784,
+                    "y": 0.5237649083137512,
+                    "z": 0.2242618203163147
+                },
+                "localEulerAngles": {
+                    "x": 0.42788687348365784,
+                    "y": 0.5237652063369751,
+                    "z": 0.2242618203163147
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 0.9441060423851013,
+                    "x": 0.17547890543937683,
+                    "y": 0.2743551731109619,
+                    "z": 0.05099377781152725
+                },
+                "localScale": {
+                    "x": 1.000008225440979,
+                    "y": 1.0000004768371582,
+                    "z": 1.000009298324585
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 0.9441059827804565,
+                    "x": 0.17547889053821564,
+                    "y": 0.2743551433086395,
+                    "z": 0.050993770360946655
+                },
+                "scale": {
+                    "x": 1.000008225440979,
+                    "y": 1.0000004768371582,
+                    "z": 1.000009298324585
+                }
+            },
+            "id": 39846057
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
                 "name": "Entity 1",
                 "overridenProperties": null,
                 "parent": 2,
@@ -23,7 +444,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.4026392698287964,
+                    "y": 0.40263935923576355,
                     "z": 0.0
                 },
                 "localEulerAngles": {
@@ -48,20 +469,20 @@
                     "z": 0.9999977946281433
                 },
                 "position": {
-                    "x": -0.8085358142852783,
-                    "y": 3.5733845233917236,
-                    "z": -20.685678482055664
+                    "x": -0.8085596561431885,
+                    "y": 3.5733842849731445,
+                    "z": -20.685762405395508
                 },
                 "rotation": {
                     "w": 0.9798035621643066,
                     "x": 0.0,
-                    "y": 0.19996248185634613,
+                    "y": 0.1999625265598297,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999957084655762,
-                    "y": 1.0,
-                    "z": 0.9999957084655762
+                    "x": 1.000002145767212,
+                    "y": 0.9999998807907104,
+                    "z": 1.000002145767212
                 }
             },
             "id": 1048580
@@ -120,9 +541,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 1.0000064373016357,
+                    "y": 0.9999998807907104,
+                    "z": 1.0000063180923462
                 },
                 "position": {
                     "x": 2.473517894744873,
@@ -136,9 +557,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 1.0000064373016357,
+                    "y": 0.9999998807907104,
+                    "z": 1.0000063180923462
                 }
             },
             "id": 1048588
@@ -161,7 +582,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": 0.13962678611278534,
+                    "y": 1.4249300956726074,
                     "z": 3.1415927410125732
                 },
                 "localEulerAngles": {
@@ -186,20 +607,20 @@
                     "z": 0.9999997019767761
                 },
                 "position": {
-                    "x": -0.7669737339019775,
+                    "x": 1.9978798627853394,
                     "y": 1.2535738945007324,
-                    "z": -8.195631980895996
+                    "z": -10.977819442749023
                 },
                 "rotation": {
-                    "w": 0.06975669413805008,
+                    "w": 0.6537010073661804,
                     "x": 0.0,
-                    "y": 0.9975640177726746,
+                    "y": 0.7567529678344727,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999996423721313,
+                    "x": 1.0000066757202148,
                     "y": 1.0,
-                    "z": 0.9999996423721313
+                    "z": 1.0000066757202148
                 }
             },
             "id": 2097152
@@ -300,45 +721,45 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.4026392698287964,
+                    "y": 0.40263932943344116,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": 0.4026392698287964,
+                    "y": 0.4026394486427307,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.010911941528320313,
+                    "x": -0.010913848876953125,
                     "y": 0.0302734375,
-                    "z": -4.946666717529297
+                    "z": -4.946667671203613
                 },
                 "localRotation": {
-                    "w": 0.9798035621643066,
+                    "w": 0.9798036217689514,
                     "x": 0.0,
-                    "y": 0.19996248185634613,
+                    "y": 0.1999625563621521,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999979138374329,
+                    "x": 0.9999980330467224,
                     "y": 1.0,
-                    "z": 0.9999979138374329
+                    "z": 0.9999980330467224
                 },
                 "position": {
-                    "x": 2.4626059532165527,
+                    "x": 2.46260404586792,
                     "y": 1.2838473320007324,
-                    "z": -12.68687629699707
+                    "z": -12.686908721923828
                 },
                 "rotation": {
                     "w": 0.9798035621643066,
                     "x": 0.0,
-                    "y": 0.19996248185634613,
+                    "y": 0.19996251165866852,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999979138374329,
-                    "y": 1.0,
-                    "z": 0.9999979138374329
+                    "x": 1.0000044107437134,
+                    "y": 0.9999998807907104,
+                    "z": 1.0000044107437134
                 }
             },
             "id": 2
@@ -459,6 +880,484 @@
                 }
             },
             "id": 39846051
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "AttackHitBoxPosition",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.06822501122951508,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.06822500377893448,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -1.1444206237792969,
+                    "y": 3.357419967651367,
+                    "z": 5.225118160247803
+                },
+                "localRotation": {
+                    "w": 0.9994182586669922,
+                    "x": 0.0,
+                    "y": -0.03410588577389717,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999961256980896,
+                    "y": 1.0,
+                    "z": 0.9999961256980896
+                },
+                "position": {
+                    "x": -1.1444206237792969,
+                    "y": 3.357419967651367,
+                    "z": 5.225118160247803
+                },
+                "rotation": {
+                    "w": 0.9994182586669922,
+                    "x": 0.0,
+                    "y": -0.03410588949918747,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999960660934448,
+                    "y": 1.0,
+                    "z": 0.9999960660934448
+                }
+            },
+            "id": 39846053
+        },
+        {
+            "Animator": {
+                "controllerId": 1112108074662379533
+            },
+            "AudioComponent": {
+                "data": {
+                    "Enemy Hurt SFX": {
+                        "audioId": 13583868459018207259,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    },
+                    "enemyattack_sfx": {
+                        "audioId": 14736789963625054229,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    }
+                }
+            },
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 5.5,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.5,
+                    "y": 6.0,
+                    "z": 1.0
+                }
+            },
+            "EntityData": {
+                "children": [
+                    39846055,
+                    39846056
+                ],
+                "isActive": true,
+                "layerId": 0,
+                "name": "Grunt",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 6595610066090704897,
+                "tag": "Enemy"
+            },
+            "PositionalAudio": {
+                "innerRadius": 10.0,
+                "maxRadius": 40.0,
+                "toggleSphere": false
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": false,
+                "isTrigger": false,
+                "layer": "Moving",
+                "mass": 0.0,
+                "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 39846055
+                                },
+                                "name": "emitter"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 6420286339970809859
+                                },
+                                "name": "hitboxPrefab"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 39846056
+                                },
+                                "name": "hitboxPosition"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "maximumHealth"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 0.10000000149011612
+                                },
+                                "name": "hurtDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "spawningDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 10,
+                                    "__variant_value": 9679203611999387651
+                                },
+                                "name": "spawningMaterial"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 10,
+                                    "__variant_value": 14949259600096887057
+                                },
+                                "name": "defaultMaterial"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 10,
+                                    "__variant_value": 17831563361614004495
+                                },
+                                "name": "hurtMaterial"
+                            }
+                        ],
+                        "scriptId": 15842916263221428229
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "health"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "movementSpeed"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 7.0
+                                },
+                                "name": "attackRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "chasingRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 20.0
+                                },
+                                "name": "damage"
+                            }
+                        ],
+                        "scriptId": 278475951028994057
+                    }
+                ]
+            },
+            "SkinnedMeshRenderer": {
+                "materialIds": [
+                    6202046481197531139
+                ],
+                "modelId": 1688568826965803029
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -0.23299367725849152,
+                    "y": 0.3708122968673706,
+                    "z": 0.298799991607666
+                },
+                "localEulerAngles": {
+                    "x": -0.23299367725849152,
+                    "y": 0.3708125650882721,
+                    "z": 0.2988000214099884
+                },
+                "localPosition": {
+                    "x": 9.659114837646484,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 0.9621359705924988,
+                    "x": -0.14022183418273926,
+                    "y": 0.16405250132083893,
+                    "z": 0.16649076342582703
+                },
+                "localScale": {
+                    "x": 1.0000288486480713,
+                    "y": 1.0000027418136597,
+                    "z": 1.0000284910202026
+                },
+                "position": {
+                    "x": 9.659114837646484,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 0.962135910987854,
+                    "x": -0.14022181928157806,
+                    "y": 0.16405248641967773,
+                    "z": 0.16649074852466583
+                },
+                "scale": {
+                    "x": 1.0000288486480713,
+                    "y": 1.0000027418136597,
+                    "z": 1.0000284910202026
+                }
+            },
+            "id": 39846054
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Emitter",
+                "overridenProperties": null,
+                "parent": 39846054,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "ParticleEmitter": {
+                "angularVelocity": 0.0,
+                "burstAmount": 1000,
+                "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "endColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "interpolationType": "Linear",
+                    "selected": true
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 0.20000000298023224,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 10000,
+                "particleColorSelection": {
+                    "color": {
+                        "a": 1.0,
+                        "b": 0.6235294342041016,
+                        "g": 0.19607843458652496,
+                        "r": 0.4156862795352936
+                    },
+                    "randomizedColor": false
+                },
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 15.0,
+                        "distance": 2.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        }
+                    },
+                    "emissionShape": "Edge",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    }
+                },
+                "particleRate": 0.0,
+                "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Linear",
+                    "selected": true
+                },
+                "startSize": 0.10000000149011612,
+                "startSpeed": 0.0,
+                "texture": 10337573581668909239,
+                "trails": {
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
+                    "trailColor": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 0
+                }
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 1.8037883043289185,
+                    "y": -0.3708134591579437,
+                    "z": -2.8427915573120117
+                },
+                "localEulerAngles": {
+                    "x": 1.5707948207855225,
+                    "y": -5.872290103070554e-07,
+                    "z": -3.1415915489196777
+                },
+                "localPosition": {
+                    "x": -0.08778858184814453,
+                    "y": 2.7134017944335938,
+                    "z": 2.023684501647949
+                },
+                "localRotation": {
+                    "w": -5.849740318808472e-07,
+                    "x": -1.6973986305401922e-07,
+                    "y": 0.7071062922477722,
+                    "z": 0.7071073651313782
+                },
+                "localScale": {
+                    "x": 1.000000238418579,
+                    "y": 0.9998269081115723,
+                    "z": 1.000047206878662
+                },
+                "position": {
+                    "x": 9.131141662597656,
+                    "y": 3.0887980461120605,
+                    "z": 1.2831206321716309
+                },
+                "rotation": {
+                    "w": -0.2337300330400467,
+                    "x": -0.0017239918233826756,
+                    "y": 0.7794841527938843,
+                    "z": 0.581181526184082
+                },
+                "scale": {
+                    "x": 1.00002920627594,
+                    "y": 0.9998554587364197,
+                    "z": 1.0000500679016113
+                }
+            },
+            "id": 39846055
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Hitbox Position",
+                "overridenProperties": null,
+                "parent": 39846054,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -2.9085991382598877,
+                    "y": -0.37081149220466614,
+                    "z": -2.842792272567749
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.0761655175883789e-06,
+                    "z": -3.1415927410125732
+                },
+                "localPosition": {
+                    "x": -0.00022649765014648438,
+                    "y": 3.0094871520996094,
+                    "z": 1.4549217224121094
+                },
+                "localRotation": {
+                    "w": 5.380827587941894e-07,
+                    "x": -1.260601432268027e-12,
+                    "y": 1.0,
+                    "z": 2.677389993738233e-12
+                },
+                "localScale": {
+                    "x": 0.6369405388832092,
+                    "y": 0.6369109153747559,
+                    "z": 0.6369405388832092
+                },
+                "position": {
+                    "x": 8.947662353515625,
+                    "y": 3.196310043334961,
+                    "z": 0.671875536441803
+                },
+                "rotation": {
+                    "w": -0.16405197978019714,
+                    "x": -0.166490837931633,
+                    "y": 0.9621359705924988,
+                    "z": -0.1402217298746109
+                },
+                "scale": {
+                    "x": 0.6369588971138,
+                    "y": 0.6369126439094543,
+                    "z": 0.636958658695221
+                }
+            },
+            "id": 39846056
         }
     ],
     "layers": [
