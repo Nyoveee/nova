@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <numeric>
 #include "vertex.h"
 
 #include "modelLoader.h"
@@ -62,28 +63,22 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 
 	bones.clear();
 	boneNameToIndex.clear();
+	materialNames.clear();
+	maxDimension = 0.f;
 
 	std::vector<Mesh> meshes;
-	std::vector<MaterialName> materialNames;
-
 	meshes.reserve(scene->mNumMeshes);
-
-	// This records the max width (or height or length) of a model in an attempts to normalize it.
-	float maxDimension = 0;
-
-	// Iterate through all the meshes in a scene..
-	for (unsigned i = 0; i < scene->mNumMeshes; ++i) {
-		meshes.push_back(processMesh(scene->mMeshes[i], scene, maxDimension, materialNames));
-	}
+	
+	// We process the node hierarchy, and load meshes accordingly..
+	processNodeHierarchy(scene, meshes, scene->mRootNode, glm::mat4{ 1.f });
 
 	// Process animation data..
 	std::vector<Animation> animations;
+	std::optional<Skeleton> skeletonOpt;
 
 	for (unsigned i = 0; i < scene->mNumAnimations; ++i) {
 		animations.push_back(processAnimation(scene->mAnimations[i]));
 	}
-
-	std::optional<Skeleton> skeletonOpt;
 
 	// Process node hierarchy.. (if this model has bones..)
 	if (bones.size()) {
@@ -93,9 +88,6 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 		// start recursive processing..
 		processBoneNodeHierarchy(skeleton, scene->mRootNode, NO_NODE);
 		skeletonOpt = std::move(skeleton);
-	}
-	else {
-		// processNodeHierarchy(scene, meshes, scene->mRootNode, toGlmMat4(scene->mRootNode->mTransformation));
 	}
 
 #if 0
@@ -114,14 +106,10 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 	}
 #endif
 
-#if 0
-	printBone(rootBone, 0);
-#endif
-
 	return {{ std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension * scale, scale }};
 }
 
-Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& maxDimension, std::vector<MaterialName>& materialNames) {
+Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix) {
 	// ==================================== 
 	// Getting vertex attributes..
 	// 1. position
@@ -142,10 +130,12 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 	std::vector<glm::vec3> tangents;
 	tangents.reserve(mesh->mNumVertices);
 
+	glm::mat3x3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(globalTransformationMatrix)));
+
 	// Getting vertex attributes..
 	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
 		// 1. Position
-		glm::vec3 position = toGlmVec3(mesh->mVertices[i]);
+		glm::vec3 position = glm::vec3{ globalTransformationMatrix * glm::vec4{ toGlmVec3(mesh->mVertices[i]), 1.f } };
 
 		if (position.x > maxDimension || position.y > maxDimension || position.z > maxDimension) {
 			maxDimension = std::max(std::max(position.x, position.y), position.z);
@@ -169,7 +159,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 		glm::vec3 normal;
 
 		if (mesh->mNormals) {
-			normal = toGlmVec3(mesh->mNormals[i]);
+			normal = normalMatrix * toGlmVec3(mesh->mNormals[i]);
 		}
 		else {
 			normal = glm::vec3{ 0.0f, 0.0f, 0.f };
@@ -235,13 +225,12 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 	// 
 	// Bones are not unique to each mesh. We need to find the corresponding bone index, or generate a new one if it doesn't exist.
 	// ==================================== 
-	
 	std::vector<VertexWeight> vertexWeights;
 
 	// it is a skinned mesh.
 	if (mesh->mNumBones) {
-		bones.reserve(bones.size() + mesh->mNumBones);
 		vertexWeights.resize(mesh->mNumVertices);
+		bones.reserve(bones.size() + mesh->mNumBones);
 
 		BoneIndex boneIndex;
 
@@ -256,22 +245,23 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, float& m
 			if (auto iterator = boneNameToIndex.find(boneName); iterator != boneNameToIndex.end()) {
 				boneIndex = iterator->second;
 			}
-			// bone doesnt exist, we use a new index.
+			// bone doesn't exist, we use a new index.
 			else {
 				boneIndex = static_cast<BoneIndex>(bones.size());
 				bones.push_back({ boneName, std::move(offsetMatrix) });
 				boneNameToIndex.insert({ boneName, boneIndex });
 			}
 
-			// we retrieve vertex weight..
 			for (unsigned int j = 0; j < bone->mNumWeights; ++j) {
 				auto aiVertexWeight = bone->mWeights[j];
-				
-				if (!vertexWeights[aiVertexWeight.mVertexId].addBone(boneIndex, aiVertexWeight.mWeight)) {
-					Logger::warn("Failed to add bone, too many bones.");
-				}
+				vertexWeights[aiVertexWeight.mVertexId].addBone(boneIndex, aiVertexWeight.mWeight);
 			}
 		}
+	}
+
+	// Re-normalize bone weights if need be.
+	for (auto&& vertexWeight : vertexWeights) {
+		vertexWeight.normalizeAndSetBoneWeight();
 	}
 
 	return { 
@@ -349,32 +339,11 @@ void ModelLoader::processBoneNodeHierarchy(Skeleton& skeleton, aiNode const* nod
 	}
 }
 
-void ModelLoader::processNodeHierarchy(aiScene const* scene, std::vector<Mesh>& meshes, aiNode const* node, glm::mat4x4 globalTransformationMatrix) {
+void ModelLoader::processNodeHierarchy(aiScene const* scene, std::vector<Mesh>& meshes, aiNode const* node, glm::mat4x4 const& globalTransformationMatrix) {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-	
-		auto iterator = std::ranges::find_if(meshes, [&](Mesh const& processedMesh) {
-			return processedMesh.name == mesh->mName.C_Str();
-		});
-		
-		if (iterator == meshes.end()) {
-			continue;
-		}
-
-		Logger::info("Flattening mesh {}..", iterator->name);
-
-		// transform vertices..
-		for (auto&& position : iterator->positions) {
-			position = globalTransformationMatrix * glm::vec4(position, 1);
-		}
-
-		glm::mat3x3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(globalTransformationMatrix)));
-
-		// transform normals..
-		for (auto&& normal : iterator->normals) {
-			normal = normalMatrix * normal;
-		}
+		meshes.push_back(processMesh(mesh, scene, globalTransformationMatrix));
 	}
 
 	// recurse downwards.
@@ -422,6 +391,15 @@ void ModelLoader::printBone([[maybe_unused]] BoneIndex boneIndex, [[maybe_unused
 		printBone(boneChildrenIndex, padding);
 	}
 #endif
+}
+
+void ModelLoader::printMatrix(glm::mat4x4 const matrix) {
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			std::cout << std::left << std::setw(6) << std::fixed << std::setprecision(2) << matrix[j][i] << " "; // Column-major access
+		}
+		std::cout << std::endl;
+	}
 }
 
 Animation ModelLoader::processAnimation(aiAnimation const* animation) {

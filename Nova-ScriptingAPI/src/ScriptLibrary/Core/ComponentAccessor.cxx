@@ -55,6 +55,7 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 	transform->localPosition = localPosition->native();
 	transform->localRotation = localRotation->native();
 
+
 	// initialise animator..
 	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(prefabInstanceId);
 
