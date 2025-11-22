@@ -49,14 +49,14 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 	}
 
 	if (parent && static_cast<entt::entity>(parent->entityID) != entt::null) {
-		Interface::engine->ecs.setEntityParent(prefabInstanceId, static_cast<entt::entity>(parent->entityID));
+		Interface::engine->ecs.setEntityParent(prefabInstanceId, static_cast<entt::entity>(parent->entityID), false);
 	}
 
 	transform->localPosition = localPosition->native();
 	transform->localRotation = localRotation->native();
 
 	Interface::recursivelyInitialiseEntity(prefabInstanceId);
-
+	
 	// yoinked from zhi wei
 	GameObject^ newGameObject = gcnew GameObject(prefabInstanceId);
 

@@ -130,14 +130,14 @@ struct Transform {
 	EulerAngles lastEulerAngles	{ rotation };
 
 	glm::vec3 lastLocalPosition {};
-	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
+	glm::vec3 lastLocalScale	{ localScale };
 	glm::quat lastLocalRotation	{};
 	EulerAngles lastLocalEulerAngles{ localRotation };
 
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
 	// When first created set it to true.
 	bool worldHasChanged = true;
-	bool needsRecalculating = false;
+	bool needsRecalculating = true;
 
 	// Reflect these data members for level editor to display
 	REFLECTABLE(

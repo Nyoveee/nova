@@ -7,7 +7,7 @@ class test2 : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        transform = getComponent<Transform_>();
+        Debug.Log("sup squad");
     }
 
     // This function is invoked every fixed update.

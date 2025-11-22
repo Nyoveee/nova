@@ -15,7 +15,7 @@ ECS::ECS(Engine& engine) :
 
 ECS::~ECS() {}
 
-void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity) {
+void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform) {
 	EntityData& childEntityData = registry.get<EntityData>(childEntity);
 	EntityData& newParentEntityData = registry.get<EntityData>(newParentEntity);
 
@@ -58,7 +58,8 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 	newParentEntityData.children.push_back(childEntity);
 
 	// 4. Properly set the local transform of the entity.
-	engine.transformationSystem.setLocalTransformFromWorld(childEntity);
+	if(recalculateLocalTransform) 
+		engine.transformationSystem.setLocalTransformFromWorld(childEntity);
 }
 
 void ECS::removeEntityParent(entt::entity childEntity) {

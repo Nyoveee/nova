@@ -33,6 +33,8 @@ public:
 
 	// Recalculate model matrix due to changes in ancestor's world transform.
 	ENGINE_DLL_API void recalculateModelMatrix(entt::entity entity);
+	ENGINE_DLL_API void updateWorldMatrix(Transform& transform);
+	ENGINE_DLL_API void updateLocalMatrix(Transform& transform);
 
 private:
 	// Sets the local matrix and position, scale and rotation based on the world matrix of the entity.

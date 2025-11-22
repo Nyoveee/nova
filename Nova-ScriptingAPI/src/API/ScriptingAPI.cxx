@@ -112,8 +112,10 @@ void Interface::submitGameObjectDeleteRequest(EntityID entityToBeDeleted) {
 }
 
 void Interface::recursivelyInitialiseEntity(entt::entity entity) {
-	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(entity);
+	Transform& transform = Interface::engine->ecs.registry.get<Transform>(entity);
+	EntityData& entityData = Interface::engine->ecs.registry.get<EntityData>(entity);
 
+	engine->transformationSystem.updateLocalMatrix(transform);
 	engine->transformationSystem.recalculateModelMatrix(entity);
 
 	// initialise animator..
@@ -148,7 +150,7 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 			Interface::initializeScript(script);
 	}
 
-	for (auto&& child : entityData->children) {
+	for (auto&& child : entityData.children) {
 		recursivelyInitialiseEntity(child);	
 	}
 }
