@@ -569,6 +569,59 @@ int dtCrowd::addAgent(const float* pos, const dtCrowdAgentParams* params)
 	return idx;
 }
 
+
+int dtCrowd::addAgent(int agentIndex ,const float* pos, const dtCrowdAgentParams* params)
+{
+	// Set to a slot that is not in use, navigation System hold record of what is being used
+	int idx = agentIndex;
+	if(idx < 0 || idx >= m_maxAgents || m_agents[idx].active == true)
+	{
+	 return -1;
+	}
+
+
+	dtCrowdAgent* ag = &m_agents[idx];
+
+	updateAgentParameters(idx, params);
+
+	// Find nearest position on navmesh and place the agent there.
+	float nearest[3];
+	dtPolyRef ref = 0;
+	dtVcopy(nearest, pos);
+	dtStatus status = m_navquery->findNearestPoly(pos, m_agentPlacementHalfExtents, &m_filters[ag->params.queryFilterType], &ref, nearest);
+	if (dtStatusFailed(status))
+	{
+		dtVcopy(nearest, pos);
+		ref = 0;
+	}
+
+	ag->corridor.reset(ref, nearest);
+	ag->boundary.reset();
+	ag->partial = false;
+
+	ag->topologyOptTime = 0;
+	ag->targetReplanTime = 0;
+	ag->nneis = 0;
+
+	dtVset(ag->dvel, 0, 0, 0);
+	dtVset(ag->nvel, 0, 0, 0);
+	dtVset(ag->vel, 0, 0, 0);
+	dtVcopy(ag->npos, nearest);
+
+	ag->desiredSpeed = 0;
+
+	if (ref)
+		ag->state = DT_CROWDAGENT_STATE_WALKING;
+	else
+		ag->state = DT_CROWDAGENT_STATE_INVALID;
+
+	ag->targetState = DT_CROWDAGENT_TARGET_NONE;
+
+	ag->active = true;
+
+	return idx;
+}
+
 /// @par
 ///
 /// The agent is deactivated and will no longer be processed.  Its #dtCrowdAgent object

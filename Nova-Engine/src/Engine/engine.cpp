@@ -193,6 +193,14 @@ void Engine::SystemsOnLoad()
 	this->physicsManager.systemInitialise();
 }
 
+
+void Engine::SystemsUnload()
+{
+	this->navigationSystem.unloadNavMeshSystems();
+
+}
+
+
 float Engine::getDeltaTime() const {
 	return window.getDeltaTime();
 }

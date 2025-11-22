@@ -423,6 +423,10 @@ struct NavMeshAgent
 	float collisionDetectionRange	= 0.f; // higher the value the earlier it attempts to steers
 	float separationWeight			= 0.f;
 
+	bool setActive					= true; //is agent requiring the services of the navigation system? 
+											//it can be disabled at certain points in time to allow other movements types to take control
+	
+
 	REFLECTABLE
 	(
 		agentName,
@@ -432,7 +436,8 @@ struct NavMeshAgent
 		separationWeight
 	)
 	//Runtime variables
-	int agentIndex		= 0;
+	int   agentIndex		= -1; // -1 means its unsued //query the mapper to find the correct dtCrowd ID. 
+								  //NOTE this no longer maps directly to dtCrowd object, use GetDTCrowdIndex to find actuall index
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
 };

@@ -2,7 +2,6 @@
 #include "Engine/engine.h"
 #include "Logger.h"
 #include "ResourceManager/resourceManager.h"
-#include "component.h"
 #include <numbers>
 #include <glm/gtx/fast_trigonometry.hpp>
 #include "Profiling.h"
@@ -34,7 +33,13 @@ NavigationSystem::NavigationSystem(Engine& engine) :
 	resourceManager	{ engine.resourceManager },
 	registry		{ engine.ecs.registry },
 	navMeshId		{ INVALID_RESOURCE_ID }
-{}
+{
+
+	registry.on_construct<NavMeshAgent>().connect<&NavigationSystem::AddAgentsToSystem>(*this);
+	registry.on_destroy<NavMeshAgent>().connect<&NavigationSystem::RemoveAgentsFromSystem>(*this);
+
+
+}
 
 NavigationSystem::~NavigationSystem()
 {
@@ -60,7 +65,7 @@ void NavigationSystem::update(float const& dt)
 		}
 	}
 
-	//then get all new data an feedback into the transform
+	//then get all new data and feed back into the transform
 	for (auto&& [entity, transform, agent] : registry.view<Transform, NavMeshAgent>().each())
 	{
 		auto iterator = crowdManager.find(agent.agentName);
@@ -72,11 +77,17 @@ void NavigationSystem::update(float const& dt)
 
 		dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(agent.agentIndex);
 
+		//dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(agent.agentName,agent.agentIndex));
+
 		if (dtAgent) {
 			transform.position.x = dtAgent->npos[0];
 			transform.position.y = dtAgent->npos[1];
 			transform.position.z = dtAgent->npos[2];
 
+			if (transform.position.x != dtAgent->npos[0] || transform.position.y != dtAgent->npos[1] || transform.position.z != dtAgent->npos[2])
+			{
+				continue;
+			}
 
 			constexpr float EPS_SQ = 1e-6f;
 
@@ -205,11 +216,50 @@ void NavigationSystem::NavigationDebug()
 #endif
 }
 
+ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::entity entityID)
+{
+
+	if (hasSystemInit = false)
+	{
+		return;
+	}
+
+	//get component
+	auto&& [transform, navMeshAgent] = registry.try_get<Transform, NavMeshAgent>(entityID);
+
+	if (navMeshAgent == nullptr || transform == nullptr )
+	{
+		Logger::error("Sum Ting Wong, Agent Attempted to be added to system without and Agent");
+		return;
+	}
+
+	
+	//check if a valid navmesh exist in this scene
+	if (sceneNavMeshes.find(navMeshAgent->agentName) == sceneNavMeshes.end())
+	{
+		Logger::warn("Agent found in scene without a valid Navmesh");
+		return;
+	}
+
+
+	return;
+}
+
+ENGINE_DLL_API void NavigationSystem::RemoveAgentsFromSystem(entt::registry&, entt::entity entityID)
+{
+
+
+	return;
+}
+
 void NavigationSystem::initNavMeshSystems()
 {
-	sceneNavMeshes.clear();
-	crowdManager.clear();
-	queryManager.clear();
+	
+	//sceneNavMeshes.clear(); ----> Moved to Unload
+	//crowdManager.clear();
+	//queryManager.clear();
+
+	unloadNavMeshSystems();
 
 	//find all navmesh surfaces in this scene, set them to the system
 	for (auto&& [entity, navMeshSurface] : registry.view<NavMeshSurface>().each())
@@ -234,13 +284,25 @@ void NavigationSystem::initNavMeshSystems()
 			//Init crowd and query Manager
 			auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(navMeshSurface.navMeshId);
 			queryManager[navMeshSurface.label]->init(navMeshAsset->navMesh, 2048); 
-			crowdManager[navMeshSurface.label]->init(100 , navMeshAsset->buildRadius , navMeshAsset->navMesh);
+			crowdManager[navMeshSurface.label]->init(agentLimit, navMeshAsset->buildRadius , navMeshAsset->navMesh);
+			agentList[navMeshSurface.label].resize(agentLimit);
+
+			for (int i = 0; i < agentList[navMeshSurface.label].size(); i++)
+			{
+				agentList[navMeshSurface.label][i] = i; //assign a dtCrowd agent ID to each slot at the start
+			}
+
+			lastIndex[navMeshSurface.label] = 0;
 		}
 
 
 	}
 
-	//for each active agent... register to its respective dt crowd, if automated is requested, initialises agent parameters
+	//check system init to be true
+	hasSystemInit = true;
+
+
+	//for each active agent... register to its respective dt crowd
 	for (auto&& [entity, transform ,agent] : registry.view<Transform,NavMeshAgent>().each())
 	{
 
@@ -250,26 +312,32 @@ void NavigationSystem::initNavMeshSystems()
 			Logger::warn("Agent found in scene without a valid Navmesh");
 			continue;
 		}
-		agent.agentIndex = -1;
 
 		auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(sceneNavMeshes[agent.agentName]);
 
 		float pos[3] = { transform.position.x, transform.position.y, transform.position.z };
 
-		dtCrowdAgentParams params{};
-		params.radius = navMeshAsset->buildRadius;
-		params.height = navMeshAsset->buildHeight;
-		params.maxSpeed = agent.agentMaxSpeed;
-		params.maxAcceleration = agent.agentMaxAcceleration;
-		params.collisionQueryRange = navMeshAsset->buildRadius * 12.f;
-		// pathOptimizationRange - choose a sensible default scaled from radius as in original code
-		params.pathOptimizationRange = navMeshAsset->buildRadius * 30.f;
-		params.obstacleAvoidanceType = 0; //default settings see dtCrowd init, its already set there currently we have on type only see how it goes first
-		params.updateFlags = UpdateFlags::DT_CROWD_ANTICIPATE_TURNS | UpdateFlags::DT_CROWD_SEPARATION | UpdateFlags::DT_CROWD_OPTIMIZE_VIS; //use for now
-		params.separationWeight = agent.separationWeight;
+		//dtCrowdAgentParams params{};
+		//params.radius = navMeshAsset->buildRadius;
+		//params.height = navMeshAsset->buildHeight;
+		//params.maxSpeed = agent.agentMaxSpeed;
+		//params.maxAcceleration = agent.agentMaxAcceleration;
+		//params.collisionQueryRange = navMeshAsset->buildRadius * 12.f;
+		//// pathOptimizationRange - choose a sensible default scaled from radius as in original code
+		//params.pathOptimizationRange = navMeshAsset->buildRadius * 30.f;
+		//params.obstacleAvoidanceType = 0; //default settings see dtCrowd init, its already set there currently we have on type only see how it goes first
+		//params.updateFlags = UpdateFlags::DT_CROWD_ANTICIPATE_TURNS | UpdateFlags::DT_CROWD_SEPARATION | UpdateFlags::DT_CROWD_OPTIMIZE_VIS; //use for now
+		//params.separationWeight = agent.separationWeight;
 
 
-		//Impt here, using index to access data
+		dtCrowdAgentParams params =  ConfigureDTParams(*navMeshAsset, agent);
+
+		////get unused index
+		//agent.agentIndex = AddAgent(agent.agentName, agent);
+		//int dtCrowdIndex = GetDTCrowdIndex(agent.agentName, agent.agentIndex);
+
+		 //Impt here, using index to access data
+		 //crowdManager[agent.agentName].get()->addAgent(dtCrowdIndex,pos, &params);
 		 agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
 		 if (agent.agentIndex < 0)
 		 {
@@ -277,6 +345,15 @@ void NavigationSystem::initNavMeshSystems()
 		 }
 
 	}
+
+}
+
+ENGINE_DLL_API void NavigationSystem::unloadNavMeshSystems()
+{
+	sceneNavMeshes.clear();
+	crowdManager.clear();
+	queryManager.clear();
+	hasSystemInit = false;
 
 }
 
@@ -302,6 +379,7 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 	}
 
 	float position[3] = { targetPosition.x,targetPosition.y,targetPosition.z };
+
 //--------------------Path finding-----------------------------------------------------//
 
 	//Finds the cloest point y from target position, but considers it too far if it strays from x and z position.
@@ -328,10 +406,10 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 			return false;
 		}
 
-
+		//int dtCrowdIndex = GetDTCrowdIndex(agent->agentName, agent->agentIndex);
 		if (crowdManager[agent->agentName]->requestMoveTarget(agent->agentIndex, nearestRef, clamped))
 		{
-			return false;
+			return true;
 		}
 
 		return true;
@@ -340,5 +418,58 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 
 
 	return false;
+}
+
+int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent)
+{
+	//Failed insert
+	if (lastIndex[agentName] + 1 > agentLimit)
+	{
+		return -1;
+	}
+
+	//check if an active index exist, return it instead
+	if (agentToIndexMap[agentName].find(agent.agentIndex) != agentToIndexMap[agentName].end())
+	{
+		return agentToIndexMap[agentName][agent.agentIndex]; 
+	}
+
+
+
+	//access the agent list and find the last value. 
+	int lastArrIndex = lastIndex[agentName];
+
+	//agentList[agentName][lastArrIndex] = agent;
+	//agentList[agentName][lastArrIndex]; //use the int stored in agentList as the dtCrowdIndex for this agent
+
+	agentToIndexMap[agentName].emplace(lastArrIndex, lastArrIndex); //assign this agent an mapped id pointing to this index in agentList as Id sport index can change but ID stay with obj
+
+	lastIndex[agentName]++; //increase list last elements
+	return lastArrIndex;
+}
+
+int NavigationSystem::GetDTCrowdIndex(std::string const& agentName, int agentID)
+{
+
+	//get from mapper the mapped location
+	int index = agentToIndexMap[agentName][agentID];
+	return agentList[agentName][index];
+}
+
+dtCrowdAgentParams NavigationSystem::ConfigureDTParams(NavMesh const& navMesh, NavMeshAgent const& navMeshAgent)
+{
+	dtCrowdAgentParams params{};
+	params.radius = navMesh.buildRadius;
+	params.height = navMesh.buildHeight;
+	params.maxSpeed = navMeshAgent.agentMaxSpeed;
+	params.maxAcceleration = navMeshAgent.agentMaxAcceleration;
+	params.collisionQueryRange = navMesh.buildRadius * 12.f;
+	// pathOptimizationRange - choose a sensible default scaled from radius as in original code
+	params.pathOptimizationRange = navMesh.buildRadius * 30.f;
+	params.obstacleAvoidanceType = 0; //default settings see dtCrowd init, its already set there currently we have on type only see how it goes first
+	params.updateFlags = UpdateFlags::DT_CROWD_ANTICIPATE_TURNS | UpdateFlags::DT_CROWD_SEPARATION | UpdateFlags::DT_CROWD_OPTIMIZE_VIS; //use for now
+	params.separationWeight = navMeshAgent.separationWeight;
+
+	return params;
 }
 

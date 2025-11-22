@@ -1,6 +1,66 @@
 {
     "entities": [
         {
+            "CameraComponent": {
+                "camStatus": true
+            },
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Camera",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.7028700709342957,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.7028700709342957,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.3589906692504883,
+                    "y": 13.369682312011719,
+                    "z": -15.83733081817627
+                },
+                "localRotation": {
+                    "w": 0.938879668712616,
+                    "x": 0.3442454934120178,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0000015497207642,
+                    "z": 1.0000015497207642
+                },
+                "position": {
+                    "x": 0.3589906692504883,
+                    "y": 13.369682312011719,
+                    "z": -15.83733081817627
+                },
+                "rotation": {
+                    "w": 0.938879668712616,
+                    "x": 0.3442454934120178,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0000015497207642,
+                    "z": 1.0000015497207642
+                }
+            },
+            "id": 1048578
+        },
+        {
             "EntityData": {
                 "children": null,
                 "isActive": true,
@@ -18,11 +78,19 @@
                 "modelId": 3
             },
             "NavMeshAgent": {
-                "agentMaxAcceleration": 0.0,
-                "agentMaxSpeed": 0.0,
-                "agentName": "",
-                "agentRotationSpeed": 0.0,
+                "agentMaxAcceleration": 14.0,
+                "agentMaxSpeed": 7.0,
+                "agentName": "Humanoid",
+                "agentRotationSpeed": 350.0,
                 "separationWeight": 0.0
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": null,
+                        "scriptId": 6226393992465055745
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
@@ -37,8 +105,8 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": 1.86595618724823,
+                    "z": -7.49379825592041
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -52,9 +120,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 7.551652908325195,
-                    "y": 1.418221354484558,
-                    "z": 7.5525360107421875
+                    "x": 0.0,
+                    "y": 1.86595618724823,
+                    "z": -7.49379825592041
                 },
                 "rotation": {
                     "w": 1.0,
@@ -71,6 +139,19 @@
             "id": 1048599
         },
         {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                }
+            },
             "EntityData": {
                 "children": null,
                 "isActive": true,
@@ -86,6 +167,18 @@
                     5
                 ],
                 "modelId": 3
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
             },
             "Transform": {
                 "eulerAngles": {
@@ -168,7 +261,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 9.430991172790527,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -184,8 +277,8 @@
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 9.306544303894043,
-                    "z": 2.475855827331543
+                    "y": 9.430991172790527,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -393,9 +486,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -0.017071306705474854,
+                    "x": 0.0,
                     "y": 0.0,
-                    "z": 0.23787212371826172
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
