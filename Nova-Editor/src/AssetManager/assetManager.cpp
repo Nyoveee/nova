@@ -240,6 +240,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".prefab") {
 		return initialiseResourceFile.template operator()<Prefab> ();
 	}
+	else if (fileExtension == ".sequencer") {
+		return initialiseResourceFile.template operator()<Sequencer>();
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return INVALID_RESOURCE_ID;
@@ -504,6 +507,7 @@ void AssetManager::serialiseResources() {
 	serializeAllResources<Controller>();
 	serializeAllResources<Material>();
 	serializeAllResources<CustomShader>();
+	serializeAllResources<Sequencer>();
 }
 
 bool AssetManager::moveAssetToFolder(ResourceID resourceId, FolderID destinationFolderId) {

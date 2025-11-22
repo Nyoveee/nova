@@ -30,6 +30,7 @@ class CubeMap;
 class ScriptAsset;
 class Audio;
 class Material;
+class Sequencer;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -39,7 +40,7 @@ class Material;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
-	Image
+	Image, Sequence
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -219,6 +220,14 @@ struct Animator {
 	// each animator component keeps track of already executed animation events keyframes..
 	// this container is reset everytime it changes animation..
 	std::unordered_set<int> executedAnimationEvents;
+};
+
+struct Sequence {
+	TypedResourceID<Sequencer> sequencerId;
+
+	REFLECTABLE(
+		sequencerId
+	)
 };
 
 struct Rigidbody {

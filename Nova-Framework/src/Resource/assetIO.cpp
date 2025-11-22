@@ -34,7 +34,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 	DescriptorSubDirectory(Controller),
 	DescriptorSubDirectory(CustomShader),
 	DescriptorSubDirectory(Material),
-	DescriptorSubDirectory(Prefab)
+	DescriptorSubDirectory(Prefab),
+	DescriptorSubDirectory(Sequencer)
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subResourceDirectories{
@@ -49,7 +50,9 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 	ResourceSubDirectory(Controller),
 	ResourceSubDirectory(CustomShader),
 	ResourceSubDirectory(Material),
-	ResourceSubDirectory(Prefab)
+	ResourceSubDirectory(Prefab),
+	ResourceSubDirectory(Sequencer)
+
 };
 
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAssetCacheDirectories{
@@ -64,7 +67,8 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAsse
 	AssetCacheSubDirectory(Controller),
 	AssetCacheSubDirectory(CustomShader),
 	AssetCacheSubDirectory(Material),
-	AssetCacheSubDirectory(Prefab)
+	AssetCacheSubDirectory(Prefab),
+	AssetCacheSubDirectory(Sequencer)
 };
 
 std::filesystem::path const AssetIO::assetDirectory				= std::filesystem::current_path() / "Assets";
