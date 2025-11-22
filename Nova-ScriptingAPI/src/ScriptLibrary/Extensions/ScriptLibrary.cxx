@@ -197,6 +197,11 @@ bool NavigationAPI::setDestination(GameObject^ gameObject, Vector3^ targetPositi
 	return Interface::engine->navigationSystem.setDestination(Convert(gameObject), targetPosition->native());
 }
 
+void NavigationAPI::stopAgent(GameObject^ gameObject)
+{
+	Interface::engine->navigationSystem.stopAgent(Convert(gameObject));
+}
+
 // ======================================
 // Math related API.. hehe? :D
 // ======================================

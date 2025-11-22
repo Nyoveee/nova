@@ -5,19 +5,25 @@ using ScriptingAPI;
 using System.Runtime.CompilerServices;
 public abstract class Enemy : Script
 {
+    /***********************************************************
+        Inspector Variables
+    ***********************************************************/
     [SerializableField]
     protected float hurtDuration = 0.1f;
     [SerializableField]
     private Prefab ichorPrefab;
     [SerializableField]
     private GameObject ichorSpawnPoint;
+    [SerializableField]
+    protected Animator_? animator = null;
+    [SerializableField]
+    protected Rigidbody_? rigidbody = null;
+    [SerializableField]
+    protected SkinnedMeshRenderer_? renderer = null;
     /***********************************************************
         Local Variables
     ***********************************************************/
     protected GameObject? player = null;
-    protected Animator_? animator = null;
-    protected Rigidbody_? rigidbody = null;
-    protected SkinnedMeshRenderer_? renderer = null;
     private EnemyStats? enemyStats = null;
     /***********************************************************
         Enemy Types must inherited from this
@@ -62,14 +68,17 @@ public abstract class Enemy : Script
         GameObject ichor = Instantiate(ichorPrefab);    
         ichor.transform.position = ichorSpawnPoint.transform.position;
     }
+    protected void MoveToNavMeshPosition(Vector3 position)
+    {
+        RayCastResult? result = PhysicsAPI.Raycast(position, -Vector3.Up(), 1000f);
+        if (result != null)
+            NavigationAPI.setDestination(gameObject, result.Value.point);
+    }
     /***********************************************************
         Script Functions
     ***********************************************************/
     protected override void init()
     {
-        rigidbody = getComponent<Rigidbody_>();
-        animator = getComponent<Animator_>();
-        renderer = getComponent<SkinnedMeshRenderer_>();
         enemyStats = getScript<EnemyStats>();
         player = GameObject.FindWithTag("Player");
     }

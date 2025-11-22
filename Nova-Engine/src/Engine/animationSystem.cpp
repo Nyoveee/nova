@@ -30,7 +30,7 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 	// by the vertex shader for skinning.
 	// =======================================================
 	for (auto&& [entityId, entityData, skinnedMeshRenderer] : registry.view<EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(SkinnedMeshRenderer).hash_code())) {
 			continue;
 		}
 
@@ -173,7 +173,7 @@ void AnimationSystem::updateAnimator(float dt) {
 	// =======================================================
 
 	for (auto&& [entityId, entityData, animator] : registry.view<EntityData, Animator>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Animator).hash_code())) {
 			continue;
 		}
 

@@ -57,8 +57,8 @@ using LayerID	   = int;
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
-		ALL_TYPED_RESOURCE_ID,																		\
+		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult, std::string,	\
+		ALL_TYPED_RESOURCE_ID,																						\
 		ALL_FIELD_PRIMITIVES
 #endif
 
@@ -72,7 +72,6 @@ enum class InterpolationType : unsigned int {
 struct FieldData {
 	std::string name;
 	std::variant<ALL_FIELD_TYPES> data;
-
 	REFLECTABLE(
 		name,
 		data
@@ -90,7 +89,7 @@ struct EntityData {
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
-
+	std::unordered_set<size_t> inactiveComponents                       {};
 	REFLECTABLE(
 		name,
 		tag,
@@ -99,7 +98,8 @@ struct EntityData {
 		layerId,
 		isActive,
 		prefabID,
-		overridenProperties
+		overridenProperties,
+		inactiveComponents
 	)
 };
 

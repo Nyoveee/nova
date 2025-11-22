@@ -341,7 +341,6 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		assert(false && "Forget to account for a case.");
 		break;
 	}
-
 	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -372,11 +371,11 @@ void Renderer::renderUI()
 				continue;
 			}
 
-			if (image) {
+			if (image && !entityData.inactiveComponents.count(typeid(Image).hash_code())) {
 				renderImage(transform, *image);
 			}
 
-			if (text) {
+			if (text && !entityData.inactiveComponents.count(typeid(Text).hash_code())) {
 				renderText(transform, *text);
 			}
 		}
@@ -711,7 +710,9 @@ void Renderer::prepareRendering() {
 	unsigned int numOfDirLights = 0;
 	unsigned int numOfSpotLights = 0;
 
-	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
+	for (auto&& [entity, entityData, transform, light] : registry.view<EntityData, Transform,  Light>().each()) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Light).hash_code()))
+			continue;
 		switch (light.type)
 		{
 		case Light::Type::PointLight:
@@ -796,11 +797,11 @@ void Renderer::renderSkyBox() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	glDisable(GL_DEPTH_TEST);
 
-	for (auto&& [entityId, skyBox] : registry.view<SkyBox>().each()) {
+	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData,SkyBox>().each()) {
 		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
 
 		// skybox not loaded..
-		if (!asset) {
+		if (!asset || !entityData.isActive || entityData.inactiveComponents.count(typeid(SkyBox).hash_code())) {
 			continue;
 		}
 
@@ -829,7 +830,7 @@ void Renderer::renderModels(Camera const& camera) {
 			Transform const& transform = registry.get<Transform>(entity);
 			EntityData const& entityData = registry.get<EntityData>(entity);
 
-			if (!entityData.isActive) {
+			if (!entityData.isActive || entityData.inactiveComponents.count(typeid(MeshRenderer).hash_code())) {
 				continue;
 			}
 
@@ -984,7 +985,7 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isSkinnedMeshRenderer);
 
 	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(SkinnedMeshRenderer).hash_code())) {
 			continue;
 		}
 		
@@ -1277,7 +1278,7 @@ void Renderer::renderObjectIds() {
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 	
 	for (auto&& [entity, transform, entityData, meshRenderer] : registry.view<Transform, EntityData, MeshRenderer>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(MeshRenderer).hash_code())) {
 			continue;
 		}
 
@@ -1307,7 +1308,7 @@ void Renderer::renderObjectIds() {
 	}
 
 	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(SkinnedMeshRenderer).hash_code())) {
 			continue;
 		}
 
@@ -1362,7 +1363,7 @@ void Renderer::renderUiObjectIds() {
 	uiImageObjectIdShader.setMatrix("uiProjection", UIProjection);
 
 	for (auto&& [entity, transform, entityData, image] : registry.view<Transform, EntityData, Image>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Image).hash_code())) {
 			continue;
 		}
 
@@ -1392,7 +1393,7 @@ void Renderer::renderUiObjectIds() {
 
 	// iterate through all characters
 	for (auto&& [entity, transform, entityData, text] : registry.view<Transform, EntityData, Text>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Text).hash_code())) {
 			continue;
 		}
 

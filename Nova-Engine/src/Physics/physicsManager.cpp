@@ -201,7 +201,7 @@ void PhysicsManager::simulationInitialise() {
 void PhysicsManager::systemInitialise()
 {
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Rigidbody).hash_code())) {
 			continue;
 		}
 
@@ -235,7 +235,7 @@ void PhysicsManager::updatePhysics(float dt) {
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
 	// =============================================================
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Rigidbody).hash_code())) {
 			continue;
 		}
 
@@ -261,7 +261,7 @@ void PhysicsManager::updatePhysics(float dt) {
 	// =============================================================
 
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Rigidbody).hash_code())) {
 			continue;
 		}
 

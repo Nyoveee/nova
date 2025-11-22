@@ -120,44 +120,42 @@ class Gunner : Enemy
             {
                 gunnerState = GunnerState.Walk;
                 animator.PlayAnimation("Gunner_Walk");
+                MoveToNavMeshPosition(targetVantagePoint.transform.position);
             }
         }
     }
     private void Update_Walk()
     {
-        if(!HasLineOfSightToPlayer(targetVantagePoint))
-            GetVantagePoint();
-        if (targetVantagePoint == null)
+        if (!HasLineOfSightToPlayer(targetVantagePoint))
         {
-            gunnerState = GunnerState.Idle;
-            animator.PlayAnimation("Gunner_Idle");
-            rigidbody.SetVelocity(Vector3.Zero());
-            return;
+            GetVantagePoint();
+            if (targetVantagePoint == null)
+            {
+                gunnerState = GunnerState.Idle;
+                animator.PlayAnimation("Gunner_Idle");
+                NavigationAPI.stopAgent(gameObject);
+                return;
+            }
+            MoveToNavMeshPosition(targetVantagePoint.transform.position);
         }
         if(Vector3.Distance(targetVantagePoint.transform.position, gameObject.transform.position) <= gunnerStats.targetDistanceFromVantagePoint)
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
-            rigidbody.SetVelocity(Vector3.Zero());
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
         LookAtObject(targetVantagePoint);
-        // Move toward Vantage Point
-        Vector3 direction = targetVantagePoint.transform.position - gameObject.transform.position;
-        direction.y = 0;
-        direction.Normalize();
-        rigidbody.SetVelocity(direction * gunnerStats.movementSpeed + new Vector3(0, rigidbody.GetVelocity().y, 0));
     }
     private void Update_Shoot()
     {
+        LookAtPlayer();
         if (!HasLineOfSightToPlayer(targetVantagePoint))
         {
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");
-            rigidbody.SetVelocity(Vector3.Zero());
             return;
         }
-        LookAtPlayer();
     }
     private void Update_Stagger()
     {

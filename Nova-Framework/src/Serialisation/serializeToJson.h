@@ -104,7 +104,13 @@ inline Json serializeToJson(DataMemberType const& dataMember) {
 
 	return json;
 }
-
+template <isUnorderedSet DataMemberType>
+inline Json serializeToJson(DataMemberType const& dataMember) {
+	Json jsonArray;
+	for (auto&& element : dataMember) 
+		jsonArray.push_back(serializeToJson(element));
+	return jsonArray;
+}
 /***************************************************************************************
 	Recursive reflection, also entry point.
 ****************************************************************************************/

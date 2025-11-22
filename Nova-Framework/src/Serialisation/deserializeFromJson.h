@@ -133,7 +133,16 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 		dataMember.insert(std::move(pair));
 	}
 }
-
+// unordered_set
+template <isUnorderedSet DataMemberType>
+inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
+	dataMember.clear();
+	for (Json const& elementJson : json) {
+		typename DataMemberType::value_type elementType;
+		deserializeFromJson(elementType, elementJson);
+		dataMember.insert(elementType);
+	}
+}
 /***************************************************************************************
 	Recursive reflection, also entry point.
 ****************************************************************************************/

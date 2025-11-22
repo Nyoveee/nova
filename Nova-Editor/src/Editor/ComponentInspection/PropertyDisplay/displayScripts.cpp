@@ -8,9 +8,8 @@
 
 void displayScriptFields(ScriptData& scriptData, Editor& editor) {
 	entt::registry& registry = editor.engine.ecs.registry;
-
+	std::size_t id{};
 	for (FieldData& fieldData : scriptData.fields) {
-	
 		// Set the field data
 		std::visit([&](auto&& dataMember) {
 			using FieldType = std::decay_t<decltype(dataMember)>;
@@ -39,8 +38,10 @@ void displayScriptFields(ScriptData& scriptData, Editor& editor) {
 			}
 			else
 			{
+				ImGui::PushID(id++);
 				// Generalization
 				DisplayProperty<FieldType>(editor, dataMemberName, dataMember);
+				ImGui::PopID();
 			}
 		}, fieldData.data);
 	}

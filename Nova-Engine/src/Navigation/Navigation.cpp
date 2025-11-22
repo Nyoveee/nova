@@ -61,8 +61,12 @@ void NavigationSystem::update(float const& dt)
 	}
 
 	//then get all new data an feedback into the transform
-	for (auto&& [entity, transform, agent] : registry.view<Transform, NavMeshAgent>().each())
+	for (auto&& [entity,entityData, transform, agent] : registry.view<EntityData, Transform, NavMeshAgent>().each())
 	{
+		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(NavMeshAgent).hash_code())) {
+			stopAgent(entity);
+			continue;
+		}
 		auto iterator = crowdManager.find(agent.agentName);
 
 		if (iterator == crowdManager.end()) {
@@ -324,10 +328,8 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 		//Too far in the X and Z direction!
 		if ( (distanceX*distanceX + distanceZ * distanceZ )> (horizontalTolerance * horizontalTolerance))
 		{
-
 			return false;
 		}
-
 
 		if (crowdManager[agent->agentName]->requestMoveTarget(agent->agentIndex, nearestRef, clamped))
 		{
@@ -342,3 +344,8 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 	return false;
 }
 
+void NavigationSystem::stopAgent(entt::entity entityID)
+{
+	NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);
+	crowdManager[agent->agentName]->resetMoveTarget(agent->agentIndex);
+}
