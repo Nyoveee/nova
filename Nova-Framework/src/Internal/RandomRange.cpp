@@ -1,11 +1,11 @@
 #include "RandomRange.h"
 #include <cstdlib>
-float RandomRange::Float(float min, float max)
+float RandomRange::Float(float minInclusive, float maxInclusive)
 {
-    return static_cast<float>(rand()) / RAND_MAX * (max - min) + min;
+    return static_cast<float>(rand()) / RAND_MAX * (maxInclusive - minInclusive) + minInclusive;
 }
 
-int RandomRange::Int(int min, int max)
+int RandomRange::Int(int minInclusive, int maxExclusive)
 {
-    return rand() % (max - min + 1) + min;
+    return rand() % (maxExclusive - minInclusive) + minInclusive;
 }

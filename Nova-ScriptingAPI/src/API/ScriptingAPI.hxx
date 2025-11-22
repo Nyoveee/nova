@@ -26,7 +26,6 @@ internal:
 
 	static void update();
 
-	// static void editorModeUpdate();
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
 	static Script^ delayedAddEntityScript(EntityID entityID, ScriptID scriptId);
 
@@ -74,10 +73,8 @@ internal:
 
 	template <typename Type, typename ...Types>
 	static bool SetTypedResourceIDFromScript(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo);
-
-private:
-	// static void updateReference(Script^ script);
-
+internal:
+	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
 internal:
 	static Engine* engine;
 
@@ -91,6 +88,7 @@ private:
 	// Store all unique script type. To be used for instantiation.
 	// We map an Asset ID to the corresponding script type.
 	static System::Collections::Generic::Dictionary<ScriptID, Script^>^ availableScripts;
+	static System::Collections::Generic::Dictionary<ScriptID, System::Type^>^ abstractScriptTypes;
 
 	// Stores all the game object that is requested to be deleted. We delay object destruction till the end of the frame.
 	// (had bad experience with instant deletion..)

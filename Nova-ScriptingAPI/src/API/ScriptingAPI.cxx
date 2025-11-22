@@ -55,6 +55,7 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	createdGameObjectScripts = gcnew System::Collections::Generic::Dictionary<System::UInt32, System::Collections::Generic::Dictionary<System::UInt64, Script^>^>();
 	timeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
 	executeTimeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
+	abstractScriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
 
 	assemblyLoadContext = nullptr;
 }
@@ -121,72 +122,73 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 	}
 
 	Script^ script = availableScripts[scriptID];
+	System::Type^ type = script->GetType();
+	do {
+		array<System::Reflection::FieldInfo^>^ fieldInfos = type->GetFields(BindingFlags::DeclaredOnly | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
+		for (int i = 0; i < fieldInfos->Length; ++i) {
+			// Ignore the base class
+			if (fieldInfos[i]->DeclaringType == Script::typeid)
+				continue;
+			System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
+			FieldData field{};
 
-	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
-	
+			// Private and Protected members will only be added if they have the serializablefield attribute
+			if (!fieldInfos[i]->IsPublic && fieldInfos[i]->GetCustomAttributes(SerializableField::typeid, true)->Length == 0)
+				continue;
 
-	for (int i = 0; i < fieldInfos->Length; ++i) {
-		// Ignore the base class
-		if (fieldInfos[i]->DeclaringType == Script::typeid)
-			continue;
-		System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
-		FieldData field{};
-
-		// Private and Protected members will only be added if they have the serializablefield attribute
-		if (!fieldInfos[i]->IsPublic && fieldInfos[i]->GetCustomAttributes(SerializableField::typeid,true)->Length == 0)
-			continue;
-
-		field.name = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
-		// GameObject
-		if (fieldType == GameObject::typeid) {
-			GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
-			field.data = entt::entity(gameObject ? gameObject->entityID : entt::null);
-			fieldDatas.push_back(field);
-			continue;
-		}
-		// Struct
-		if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
-			managedStruct->AppendValueToFieldData(field);
-			fieldDatas.push_back(field);
-			continue;
-		}
-		// Component
-		if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
-			IManagedComponent^ managedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
-			field.data = entt::entity(managedComponent ? managedComponent->entityID : entt::null);
-			fieldDatas.push_back(field);
-			continue;
-		}
-		// Scripts
-		if (fieldType->IsSubclassOf(Script::typeid)) {
-			Script^ managedScripts = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
-			field.data = entt::entity(managedScripts ? managedScripts->entityID : entt::null);
-			fieldDatas.push_back(field);
-			continue;
-		}
-
-		// Typed Resource ID
-		if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
-			if (ObtainTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(field, fieldInfos[i]->GetValue(script), fieldType)) {
+			field.name = msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name);
+			// GameObject
+			if (fieldType == GameObject::typeid) {
+				GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
+				field.data = entt::entity(gameObject ? gameObject->entityID : entt::null);
 				fieldDatas.push_back(field);
 				continue;
 			}
-			else {
-				Logger::warn("Typed resource type in script currently not supported for script serialization.");
+			// Struct
+			if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
+				managedStruct->AppendValueToFieldData(field);
+				fieldDatas.push_back(field);
 				continue;
 			}
-		}
+			// Component
+			if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
+				IManagedComponent^ managedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
+				field.data = entt::entity(managedComponent ? managedComponent->entityID : entt::null);
+				fieldDatas.push_back(field);
+				continue;
+			}
+			// Scripts
+			if (fieldType->IsSubclassOf(Script::typeid)) {
+				Script^ managedScripts = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
+				field.data = entt::entity(managedScripts ? managedScripts->entityID : entt::null);
+				fieldDatas.push_back(field);
+				continue;
+			}
 
-		// Primitives
-		if (fieldType->IsPrimitive && ObtainPrimitiveDataFromScript<ALL_FIELD_PRIMITIVES>(field, fieldInfos[i]->GetValue(script))) {
-			fieldDatas.push_back(field);
-			continue;
+			// Typed Resource ID
+			if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
+				if (ObtainTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(field, fieldInfos[i]->GetValue(script), fieldType)) {
+					fieldDatas.push_back(field);
+					continue;
+				}
+				else {
+					Logger::warn("Typed resource type in script currently not supported for script serialization.");
+					continue;
+				}
+			}
+
+			// Primitives
+			if (fieldType->IsPrimitive && ObtainPrimitiveDataFromScript<ALL_FIELD_PRIMITIVES>(field, fieldInfos[i]->GetValue(script))) {
+				fieldDatas.push_back(field);
+				continue;
+			}
+			if (fieldType->IsPrimitive) {
+				Logger::warn("Primitive type in script currently not supported for script serialization {}",
+					msclr::interop::marshal_as<std::string>(fieldType->ToString()));
+			}
 		}
-		if (fieldType->IsPrimitive) {
-			Logger::warn("Primitive type in script currently not supported for script serialization {}",
-				msclr::interop::marshal_as<std::string>(fieldType->ToString()));
-		}
-	}
+		type = type->BaseType;
+	} while (type != nullptr);
 	return fieldDatas;
 }
 
@@ -249,101 +251,106 @@ void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldDa
 void Interface::setFieldData(Script^ script, FieldData const& fieldData) {;
 	using BindingFlags = System::Reflection::BindingFlags;
 
-	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
-	for (int i = 0; i < fieldInfos->Length; ++i) {
-		// Ignore private and protected members if it doesn't have the serializablefield attribute
-		if (!fieldInfos[i]->IsPublic && fieldInfos[i]->GetCustomAttributes(SerializableField::typeid, true)->Length == 0)
-			continue;
-		// Field names are always unique
-		if (msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name) != fieldData.name)
-			continue;
-		System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
-		// GameObject
-		if (fieldType == GameObject::typeid) {
-			GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
-			if (!gameObject) {
-				gameObject = gcnew GameObject(std::get<entt::entity>(fieldData.data));
+	System::Type^ type = script->GetType();
+	do {
+		array<System::Reflection::FieldInfo^>^ fieldInfos = type->GetFields(BindingFlags::DeclaredOnly | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
+		for (int i = 0; i < fieldInfos->Length; ++i) {
+			// Ignore private and protected members if it doesn't have the serializablefield attribute
+			if (!fieldInfos[i]->IsPublic && fieldInfos[i]->GetCustomAttributes(SerializableField::typeid, true)->Length == 0)
+				continue;
+			// Field names are always unique
+			if (msclr::interop::marshal_as<std::string>(fieldInfos[i]->Name) != fieldData.name)
+				continue;
+			System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
+			// GameObject
+			if (fieldType == GameObject::typeid) {
+				GameObject^ gameObject = safe_cast<GameObject^>(fieldInfos[i]->GetValue(script));
+				if (!gameObject) {
+					gameObject = gcnew GameObject(std::get<entt::entity>(fieldData.data));
+				}
+				fieldInfos[i]->SetValue(script, gameObject);
+				return;
 			}
-			fieldInfos[i]->SetValue(script, gameObject);
-			return;
-		}
-		// Struct
-		if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
-			// Set the value of the copy
-			managedStruct->SetValueFromFieldData(fieldData);
-			fieldInfos[i]->SetValue(script, managedStruct);
-			return;
-		}
-		// Component
-		if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
-			IManagedComponent^ referencedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
-			if (!referencedComponent)
-				referencedComponent = safe_cast<IManagedComponent^>(System::Activator::CreateInstance(fieldType));
-			if (referencedComponent->LoadDetailsFromEntity(static_cast<unsigned int>(std::get<entt::entity>(fieldData.data))))
-				fieldInfos[i]->SetValue(script, referencedComponent);
-			return;
-		}
-		// Script
-		if (fieldType->IsSubclassOf(Script::typeid)) {
-			// The entity the script is going to reference
-			Script^ referencedScript;
-			unsigned int referencedEntityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.data));
-			// Find the script from the referenced entity
-			if (static_cast<entt::entity>(referencedEntityID) != entt::null && gameObjectScripts->ContainsKey(referencedEntityID)) {
-				for each (System::UInt64 scriptId in gameObjectScripts[referencedEntityID]->Keys) {
-					if (gameObjectScripts[referencedEntityID][scriptId]->GetType() == fieldType) {
-						referencedScript = gameObjectScripts[referencedEntityID][scriptId];
-						break;
+			// Struct
+			if (IManagedStruct^ managedStruct = dynamic_cast<IManagedStruct^>(fieldInfos[i]->GetValue(script))) {
+				// Set the value of the copy
+				managedStruct->SetValueFromFieldData(fieldData);
+				fieldInfos[i]->SetValue(script, managedStruct);
+				return;
+			}
+			// Component
+			if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
+				IManagedComponent^ referencedComponent = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
+				if (!referencedComponent)
+					referencedComponent = safe_cast<IManagedComponent^>(System::Activator::CreateInstance(fieldType));
+				if (referencedComponent->LoadDetailsFromEntity(static_cast<unsigned int>(std::get<entt::entity>(fieldData.data))))
+					fieldInfos[i]->SetValue(script, referencedComponent);
+				return;
+			}
+			// Script
+			if (fieldType->IsSubclassOf(Script::typeid)) {
+				// The entity the script is going to reference
+				Script^ referencedScript;
+				unsigned int referencedEntityID = static_cast<unsigned int>(std::get<entt::entity>(fieldData.data));
+				// Find the script from the referenced entity
+				if (static_cast<entt::entity>(referencedEntityID) != entt::null && gameObjectScripts->ContainsKey(referencedEntityID)) {
+					for each (System::UInt64 scriptId in gameObjectScripts[referencedEntityID]->Keys) {
+						System::Type^ scriptType = gameObjectScripts[referencedEntityID][scriptId]->GetType();
+
+						if (scriptType == fieldType || scriptType->IsSubclassOf(fieldType)) {
+							referencedScript = gameObjectScripts[referencedEntityID][scriptId];
+							break;
+						}
 					}
 				}
+				fieldInfos[i]->SetValue(script, referencedScript);
+				return;
 			}
-			fieldInfos[i]->SetValue(script, referencedScript);
-			return;
-		}
-		// Typed Resource ID
-		if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
-			if (!SetTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(fieldData, script, fieldInfos[i])) {
-				Logger::warn("Typed resource type in script currently not supported for script setting");
+			// Typed Resource ID
+			if (fieldType->IsSubclassOf(IManagedResourceID::typeid)) {
+				if (!SetTypedResourceIDFromScript<ALL_MANAGED_TYPED_RESOURCE_ID>(fieldData, script, fieldInfos[i])) {
+					Logger::warn("Typed resource type in script currently not supported for script setting");
+				}
 			}
+			// Primitives
+			if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, script, fieldInfos[i]))
+				return;
+			if (fieldType->IsPrimitive)
+				Logger::warn("Unknown primitive type used in setting fields currently not supported for script serialization");
+			break;
 		}
-		// Primitives
-		if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, script, fieldInfos[i]))
-			return;
-		if (fieldType->IsPrimitive)
-			Logger::warn("Unknown primitive type used in setting fields currently not supported for script serialization");
-		break;
-	}
+		type = type->BaseType;
+	} while (type != nullptr);
+	
 }
 
 void Interface::addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate) {
 	timeoutDelegates->Add(timeoutDelegate);
 }
 
-#if 0
-void Interface::updateReference(Script^ script)
+std::unordered_set<ResourceID> Interface::GetHierarchyModifiedScripts(ScriptID scriptId)
 {
-	using BindingFlags = System::Reflection::BindingFlags;
-	array<System::Reflection::FieldInfo^>^ fieldInfos = script->GetType()->GetFields(BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
-
-	for (int i = 0; i < fieldInfos->Length; ++i) {
-		System::Type^ fieldType = fieldInfos[i]->GetModifiedFieldType()->UnderlyingSystemType;
-
-		// If Native component doesn't exist, this shouldn't exist anymore
-		if (fieldType->IsSubclassOf(IManagedComponent::typeid)) {
-			IManagedComponent^ componentReference = safe_cast<IManagedComponent^>(fieldInfos[i]->GetValue(script));
-			if (componentReference && componentReference->NativeReferenceLost())
-				fieldInfos[i]->SetValue(script, nullptr);
-		}
-
-		// If Script doesn't exist, this reference shouldn't exist anymore
-		if (fieldType->IsSubclassOf(Script::typeid)) {
-			Script^ scriptReference = safe_cast<Script^>(fieldInfos[i]->GetValue(script));
-			if (scriptReference && !engine->ecs.registry.valid(static_cast<entt::entity>(scriptReference->entityID)))
-				fieldInfos[i]->SetValue(script, nullptr);
-		}
+	std::unordered_set<ResourceID> results{};
+	System::Type^ baseType;
+	if (availableScripts->ContainsKey(scriptId)) {
+		baseType = availableScripts[scriptId]->GetType();
+		results.insert(scriptId);
 	}
+	else if (abstractScriptTypes->ContainsKey(scriptId))
+		baseType = abstractScriptTypes[scriptId];
+	for each (ScriptID id in availableScripts->Keys) {
+		System::Type^ type{ availableScripts[id]->GetType() };
+		do {
+			if (type == baseType) {
+				results.insert(id);
+				break;
+			}
+			type = type->BaseType;
+		} while (type != nullptr);
+		
+	}
+	return results;
 }
-#endif
 
 void Interface::update() {
 	try {
@@ -520,6 +527,10 @@ void Interface::loadAssembly()
 		if (!scriptType->IsAbstract) {
 			availableScripts->Add(static_cast<std::size_t>(scriptId), safe_cast<Script^>(System::Activator::CreateInstance(scriptType)));
 		}
+		else
+		{
+			abstractScriptTypes->Add(static_cast<std::size_t>(scriptId), scriptType);
+		}
 	}
 }
 
@@ -533,6 +544,8 @@ void Interface::unloadAssembly()
 		gameObjectScripts->Clear();
 	if (availableScripts)
 		availableScripts->Clear();
+	if (abstractScriptTypes)
+		abstractScriptTypes->Clear();
 
 	// Clear all input mapping..
 	Input::ClearAllKeyMapping();
