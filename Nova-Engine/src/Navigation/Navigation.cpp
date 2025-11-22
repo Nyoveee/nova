@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include "ResourceManager/resourceManager.h"
 #include <numbers>
+#include <algorithm>
 #include <glm/gtx/fast_trigonometry.hpp>
 #include "Profiling.h"
 
@@ -75,9 +76,9 @@ void NavigationSystem::update(float const& dt)
 			return;
 		}
 
-		dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(agent.agentIndex);
+		//dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(agent.agentIndex);
 
-		//dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(agent.agentName,agent.agentIndex));
+		dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(agent.agentName,agent.agentIndex));
 
 		if (dtAgent) {
 			transform.position.x = dtAgent->npos[0];
@@ -219,7 +220,7 @@ void NavigationSystem::NavigationDebug()
 ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::entity entityID)
 {
 
-	if (hasSystemInit = false)
+	if (hasSystemInit == false)
 	{
 		return;
 	}
@@ -229,7 +230,7 @@ ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::e
 
 	if (navMeshAgent == nullptr || transform == nullptr )
 	{
-		Logger::error("Sum Ting Wong, Agent Attempted to be added to system without and Agent");
+		Logger::error("Sum Ting Wong, Agent Attempted to be added to system without an Agent");
 		return;
 	}
 
@@ -241,15 +242,59 @@ ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::e
 		return;
 	}
 
+	auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(sceneNavMeshes[navMeshAgent->agentName]);
 
-	return;
+	float pos[3] = { transform->position.x, transform->position.y, transform->position.z };
+
+	dtCrowdAgentParams params = ConfigureDTParams(*navMeshAsset, *navMeshAgent);
+
+	//get unused index
+	navMeshAgent->agentIndex = AddAgent(navMeshAgent->agentName, *navMeshAgent);
+	int dtCrowdIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+
+	//Impt here, using index to access data
+	crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
+	//agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
+	if (navMeshAgent->agentIndex < 0)
+	{
+		Logger::warn("Failed to add NavMeshAgent to crowd");
+	}
+
+
+
+
 }
 
 ENGINE_DLL_API void NavigationSystem::RemoveAgentsFromSystem(entt::registry&, entt::entity entityID)
 {
+	//get component
+	auto&& [transform, navMeshAgent] = registry.try_get<Transform, NavMeshAgent>(entityID);
 
+	//set to remove agen from respective dtcrowd
+	if (navMeshAgent == nullptr)
+	{
 
-	return;
+		Logger::error("Sum Ting Wong, Agent deleted without navmash component!");
+		return;
+	}
+
+	int mapperindex = agentToIndexMap[navMeshAgent->agentName][navMeshAgent->agentIndex];
+	int dtCrowdIndex = agentList[navMeshAgent->agentName][mapperindex]; //GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+
+	//remove from dtcrowdsManager
+	crowdManager[navMeshAgent->agentName]->removeAgent(dtCrowdIndex);
+
+	//swap current and last
+	std::swap(agentList[navMeshAgent->agentName][mapperindex], agentList[navMeshAgent->agentName][lastIndex[navMeshAgent->agentName]]);
+
+	//update mapper position, last pos mapped index to new index
+	agentToIndexMap[navMeshAgent->agentName][lastIndex[navMeshAgent->agentName]] = mapperindex;
+
+	//remove current mapper index, current now longer exist
+	agentToIndexMap[navMeshAgent->agentName].erase(mapperindex);
+
+	//reduce last index by one
+	lastIndex[navMeshAgent->agentName]--;
 }
 
 void NavigationSystem::initNavMeshSystems()
@@ -333,12 +378,12 @@ void NavigationSystem::initNavMeshSystems()
 		dtCrowdAgentParams params =  ConfigureDTParams(*navMeshAsset, agent);
 
 		////get unused index
-		//agent.agentIndex = AddAgent(agent.agentName, agent);
-		//int dtCrowdIndex = GetDTCrowdIndex(agent.agentName, agent.agentIndex);
+		agent.agentIndex = AddAgent(agent.agentName, agent);
+		int dtCrowdIndex = GetDTCrowdIndex(agent.agentName, agent.agentIndex);
 
 		 //Impt here, using index to access data
-		 //crowdManager[agent.agentName].get()->addAgent(dtCrowdIndex,pos, &params);
-		 agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
+		 crowdManager[agent.agentName].get()->addAgent(dtCrowdIndex,pos, &params);
+		 //agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
 		 if (agent.agentIndex < 0)
 		 {
 			 Logger::warn("Failed to add NavMeshAgent to crowd");
@@ -353,6 +398,9 @@ ENGINE_DLL_API void NavigationSystem::unloadNavMeshSystems()
 	sceneNavMeshes.clear();
 	crowdManager.clear();
 	queryManager.clear();
+	agentToIndexMap.clear();
+	agentList.clear();
+
 	hasSystemInit = false;
 
 }
@@ -406,8 +454,8 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 			return false;
 		}
 
-		//int dtCrowdIndex = GetDTCrowdIndex(agent->agentName, agent->agentIndex);
-		if (crowdManager[agent->agentName]->requestMoveTarget(agent->agentIndex, nearestRef, clamped))
+		int dtCrowdIndex = GetDTCrowdIndex(agent->agentName, agent->agentIndex);
+		if (crowdManager[agent->agentName]->requestMoveTarget(dtCrowdIndex, nearestRef, clamped))
 		{
 			return true;
 		}

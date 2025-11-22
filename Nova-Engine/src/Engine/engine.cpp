@@ -141,7 +141,7 @@ void Engine::stopSimulation() {
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		physicsManager.resetPhysicsState();
 		scriptingAPIManager.stopSimulation();
-
+		navigationSystem.unloadNavMeshSystems();
 		resourceManager.removeAllResourceInstance();
 
 		gameLockMouse(false);
