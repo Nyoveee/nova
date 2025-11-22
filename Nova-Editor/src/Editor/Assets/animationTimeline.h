@@ -13,7 +13,7 @@ public:
 	AnimationTimeLine(Editor& editor);
 	
 public:
-	void update();
+	void update(float dt);
 
 private:
 	void displayMainPanel(Sequence& sequence, Sequencer& sequencer);
@@ -32,4 +32,6 @@ private:
 	float viewDuration;
 	int currentFrame;
 	entt::entity selectedEntity;
+
+	bool isPlaying;
 };

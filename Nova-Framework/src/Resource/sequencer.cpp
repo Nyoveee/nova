@@ -54,7 +54,7 @@ void Sequencer::setInterpolatedTransform(int currentFrame, Transform& transform)
 
 	// Find the 2 in between keyframes..
 	for (int i = 0; i < data.keyframes.size() - 1; ++i) {
-		if (currentFrame < data.keyframes[i + 1].frame) {
+		if (currentFrame <= data.keyframes[i + 1].frame) {
 			previousFrameIndex = i;
 			nextFrameIndex = i + 1;
 			break;

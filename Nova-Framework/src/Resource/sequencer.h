@@ -59,12 +59,6 @@ public:
 	//@TODO: Template-ify and support many components..
 	FRAMEWORK_DLL_API void setInterpolatedTransform(int currentFrame, Transform& transform);
 
-#if false
-	FRAMEWORK_DLL_API glm::vec3 getInterpolatedPosition();
-	FRAMEWORK_DLL_API glm::vec3 getInterpolatedScale();
-	FRAMEWORK_DLL_API glm::quat getInterpolatedRotation();
-#endif
-
 public:
 	Data data;
 };

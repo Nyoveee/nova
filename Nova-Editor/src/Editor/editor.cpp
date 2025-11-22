@@ -246,7 +246,7 @@ void Editor::main(float dt) {
 	navBar.update();
 	assetViewerUi.update();
 	navigationWindow.update();
-	animationTimeLine.update();
+	animationTimeLine.update(dt);
 	animatorController.update();
 	gameConfigUI.update();
 	editorConfigUI.update();
