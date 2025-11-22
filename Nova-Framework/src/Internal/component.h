@@ -309,7 +309,7 @@ struct CapsuleCollider {
 };
 
 struct MeshCollider {
-	float shapeScale;
+	float shapeScale = 1.f;
 
 	REFLECTABLE(
 		shapeScale

@@ -51,7 +51,9 @@ class Grunt : Enemy
     protected override void init()
     {
         base.init();
-        gameObject.transform.rotation = Quartenion.Identity();
+        Quartenion rot = Quartenion.Identity();
+        gameObject.transform.rotation = rot;
+
         gruntStats = getScript<GruntStats>();
 
         animator.PlayAnimation("Grunt Idle (Base)");
@@ -75,7 +77,7 @@ class Grunt : Enemy
     // This function is invoked every fixed update.
     protected override void update()
     {   
-        updateState[gruntState]();
+         updateState[gruntState]();
     }
     /**********************************************************************
         Inheritted Functions

@@ -1,5 +1,6 @@
 #include "ComponentAccessor.hxx"
 #include "API/ScriptingAPI.hxx"
+
 // Generics behave just like a normal function, this definition is compiled through clr at compile time
 // Specializations are created at runtime
 // https://learn.microsoft.com/en-us/cpp/extensions/overview-of-generics-in-visual-cpp?view=msvc-170
@@ -20,29 +21,19 @@ T ComponentAccessor::getScript() { return Interface::tryGetScriptReference<T>(en
 // ======================================
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab) {
-	constexpr glm::vec3 zeroPos = { 0.f, 0.f, 0.f };
-	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
-
-	return Instantiate(prefab, gcnew Vector3{ zeroPos }, gcnew Quartenion{ identityQuat }, nullptr);
+	return Instantiate(prefab, Vector3::Zero(), Quartenion::Identity(), nullptr);
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent) {
-	constexpr glm::vec3 zeroPos = { 0.f, 0.f, 0.f };
-	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
-
-	return Instantiate(prefab, gcnew Vector3{ zeroPos }, gcnew Quartenion{ identityQuat }, parent);
+	return Instantiate(prefab, Vector3::Zero(), Quartenion::Identity(), parent);
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent) {
-	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
-
-	return Instantiate(prefab, localPosition, gcnew Quartenion{ identityQuat }, parent);
+	return Instantiate(prefab, localPosition, Quartenion::Identity(), parent);
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition) {
-	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
-
-	return Instantiate(prefab, localPosition, gcnew Quartenion{ identityQuat }, nullptr);
+	return Instantiate(prefab, localPosition, Quartenion::Identity(), nullptr);
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent) {
@@ -59,13 +50,10 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 
 	if (parent && static_cast<entt::entity>(parent->entityID) != entt::null) {
 		Interface::engine->ecs.setEntityParent(prefabInstanceId, static_cast<entt::entity>(parent->entityID));
-		transform->localPosition = localPosition->native();
-		transform->localRotation = localRotation->native();
 	}
-	else {
-		transform->position = localPosition->native();
-		transform->rotation = localRotation->native();
-	}
+
+	transform->localPosition = localPosition->native();
+	transform->localRotation = localRotation->native();
 
 	// initialise animator..
 	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(prefabInstanceId);
