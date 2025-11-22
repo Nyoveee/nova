@@ -295,7 +295,9 @@ void Interface::setFieldData(Script^ script, FieldData const& fieldData) {;
 				// Find the script from the referenced entity
 				if (static_cast<entt::entity>(referencedEntityID) != entt::null && gameObjectScripts->ContainsKey(referencedEntityID)) {
 					for each (System::UInt64 scriptId in gameObjectScripts[referencedEntityID]->Keys) {
-						if (gameObjectScripts[referencedEntityID][scriptId]->GetType() == fieldType) {
+						System::Type^ scriptType = gameObjectScripts[referencedEntityID][scriptId]->GetType();
+
+						if (scriptType == fieldType || scriptType->IsSubclassOf(fieldType)) {
 							referencedScript = gameObjectScripts[referencedEntityID][scriptId];
 							break;
 						}

@@ -5,6 +5,7 @@
 
 #include "resource.h"
 #include "type_alias.h"
+#include "animationEvent.h"
 
 class Model;
 class ScriptAsset;

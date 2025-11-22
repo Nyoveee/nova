@@ -30,7 +30,8 @@ AnimatorController::AnimatorController(Editor& editor) :
 	editor				{ editor },
 	resourceManager		{ editor.resourceManager },
 	assetManager		{ editor.assetManager },
-	context				{ nullptr }
+	context				{ nullptr },
+	selectedEntity		{ entt::null }
 {
 	context = ed::CreateEditor(nullptr);
 
@@ -73,7 +74,7 @@ void AnimatorController::update() {
 		return;
 	}
 
-	entt::entity selectedEntity = editor.getSelectedEntities()[0];
+	selectedEntity = editor.getSelectedEntities()[0];
 
 	Animator* animator = editor.engine.ecs.registry.try_get<Animator>(selectedEntity);
 
@@ -340,7 +341,7 @@ void AnimatorController::displaySelectedAnimationTimeline(Animator& animator, Co
 			}
 
 			ImGui::TableSetColumnIndex(1);
-			editor.displayAssetDropDownList<ScriptAsset>(scriptId, "##script", [&](ResourceID newScriptId) {
+			editor.displayEntityScriptDropDownList(scriptId, "##script", selectedEntity, [&](ResourceID newScriptId) {
 				scriptId = TypedResourceID<ScriptAsset>{ newScriptId };
 			});
 

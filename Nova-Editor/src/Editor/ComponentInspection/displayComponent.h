@@ -7,26 +7,26 @@ namespace {
 
 	// displayComponent, like the function suggests, is responsible for displaying a component's properties in the inspector UI.
 	template <typename Component>
-	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component, entt::registry& registry);
+	void displayComponent(Editor& editor, entt::entity entity, Component& component, entt::registry& registry);
 
 	// This functor allows the use of variadic template arguments to recursively invoke displayComponent, such
 	// that it displays all the listed components of a given entity.
 	template <typename T, typename... Components>
-	void displayIndividualComponent(ComponentInspector& componentInspector, entt::entity entity, entt::registry& registry) {
+	void displayIndividualComponent(Editor& editor, entt::entity entity, entt::registry& registry) {
 		if (registry.all_of<T>(entity)) {
-			displayComponent<T>(componentInspector, entity, registry.get<T>(entity), registry);
+			displayComponent<T>(editor, entity, registry.get<T>(entity), registry);
 		}
 
 		if constexpr (sizeof...(Components) > 0) {
-			displayIndividualComponent<Components...>(componentInspector, entity, registry);
+			displayIndividualComponent<Components...>(editor, entity, registry);
 		}
 	}
 
 	// Using functors such that we can "store" types into our objects. (woah!)
 	template <typename... Components>
 	struct ComponentFunctor {
-		void operator()(ComponentInspector& componentInspector, entt::entity entity, entt::registry& registry) const {
-			displayIndividualComponent<Components...>(componentInspector, entity, registry);
+		void operator()(Editor& editor, entt::entity entity, entt::registry& registry) const {
+			displayIndividualComponent<Components...>(editor, entity, registry);
 		}
 	};
 
