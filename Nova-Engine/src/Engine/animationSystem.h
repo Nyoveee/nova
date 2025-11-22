@@ -18,6 +18,8 @@ using BoneIndex = unsigned short;
 
 struct SkinnedMeshRenderer;
 
+struct Sequence;
+
 class AnimationSystem {
 public:
 	ENGINE_DLL_API AnimationSystem(Engine& p_engine);
@@ -29,8 +31,9 @@ public:
 
 public:
 	ENGINE_DLL_API void update(float dt);
-	ENGINE_DLL_API void initialiseAllControllers();
+	ENGINE_DLL_API void initialise();
 	ENGINE_DLL_API void initialiseAnimator(Animator& animator);
+	ENGINE_DLL_API void initialiseSequence(Sequence& sequence);
 
 	ENGINE_DLL_API void setParameter(Animator& animator, std::string name, Controller::ParameterTypes const& value);
 	
@@ -40,7 +43,11 @@ private:
 	ENGINE_DLL_API void handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller);
 
 private:
+	ENGINE_DLL_API void updateSequencer(Sequence& sequence, Sequencer& sequencer, float dt);
+	ENGINE_DLL_API void animateSequencer(float dt);
+
 	ENGINE_DLL_API void updateAnimator(float dt);
+	ENGINE_DLL_API void calculateBoneMatrixes();
 
 	ENGINE_DLL_API void calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4 const& globalTransformationMatrix, Skeleton const& skeleton, SkinnedMeshRenderer& skinnedMeshRenderer, Animation const* animation, float timeInSeconds);
 	ENGINE_DLL_API AnimationChannel const* findAnimationChannel(std::string const& nodeName, Animation const& animation);
@@ -50,6 +57,7 @@ private:
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
+	entt::registry& registry;
 
 	bool toAdvanceAnimation;
 };

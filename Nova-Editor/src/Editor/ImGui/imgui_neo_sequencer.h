@@ -27,6 +27,8 @@ enum ImGuiNeoSequencerFlags_
     ImGuiNeoSequencerFlags_Selection_EnableDragging = 1 << 5,
     ImGuiNeoSequencerFlags_Selection_EnableDeletion = 1 << 6,
 
+	// my own flag because this library author sucks.
+	ImGuiNeoSequencerFlags_Selection_DisplayTimeInsteadOfFrames = 1 << 7
 };
 
 // Flags for ImGui::BeginNeoTimeline()

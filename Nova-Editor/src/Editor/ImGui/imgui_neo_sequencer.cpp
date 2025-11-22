@@ -473,7 +473,7 @@ namespace ImGui
     static void
     processAndRenderZoom(ImGuiNeoSequencerInternalData& context, const ImVec2& cursor, bool allowEditingLength,
                          FrameIndexType* start,
-                         FrameIndexType* end)
+                         FrameIndexType* end, bool toShowTimeInsteadOfFrame)
     {
         const auto& imStyle = GetStyle();
         ImGuiWindow* window = GetCurrentWindow();
@@ -655,7 +655,20 @@ namespace ImGui
 
             char overlayTextBuffer[128];
 
-            snprintf(overlayTextBuffer, sizeof(overlayTextBuffer), "%i - %i", viewStart, viewEnd);
+			if (!toShowTimeInsteadOfFrame) {
+				snprintf(overlayTextBuffer, sizeof(overlayTextBuffer), "%i - %i", viewStart, viewEnd);
+			}
+			else {
+				unsigned int startFrames = viewStart;
+				unsigned int startSeconds = startFrames / 60U;
+				unsigned int startRemainingFrames = startFrames % 60U;
+				
+				unsigned int endFrames = viewEnd;
+				unsigned int endSeconds = endFrames / 60U;
+				unsigned int endRemainingFrames = endFrames % 60U;
+
+				snprintf(overlayTextBuffer, sizeof(overlayTextBuffer), "%u:%02u - %u:%02u", startSeconds, startRemainingFrames, endSeconds, endRemainingFrames);
+			}
 
             const auto overlaySize = CalcTextSize(overlayTextBuffer);
 
@@ -705,7 +718,8 @@ namespace ImGui
                     break;
                 }
             }
-        } else
+        } 
+		else
         {
             switch (context.StateOfSelection)
             {
@@ -949,11 +963,11 @@ namespace ImGui
         RenderNeoSequencerTopBarOverlay(context.Zoom, context.ValuesWidth, context.StartFrame, context.EndFrame,
                                         context.OffsetFrame,
                                         context.TopBarStartCursor, context.TopBarSize, drawList,
-                                        style.TopBarShowFrameLines, style.TopBarShowFrameTexts, style.MaxSizePerTick);
+                                        style.TopBarShowFrameLines, style.TopBarShowFrameTexts, style.MaxSizePerTick, flags & ImGuiNeoSequencerFlags_Selection_DisplayTimeInsteadOfFrames);
 
         if (showZoom)
             processAndRenderZoom(context, context.TopLeftCursor, flags & ImGuiNeoSequencerFlags_AllowLengthChanging,
-                                 startFrame, endFrame);
+                                 startFrame, endFrame, flags & ImGuiNeoSequencerFlags_Selection_DisplayTimeInsteadOfFrames);
 
         if (context.Size.y < context.FilledHeight)
             context.Size.y = context.FilledHeight;
@@ -989,7 +1003,7 @@ namespace ImGui
         IM_ASSERT(context.TimelineStack.empty() && "Missmatch in timeline Begin / End");
 
         if (context.SelectionEnabled)
-            processSelection(context);
+             processSelection(context);
 
         context.LastSelectedTimeline = context.SelectedTimeline;
         context.IsSelectionRightClicked = false;

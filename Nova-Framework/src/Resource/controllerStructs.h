@@ -36,21 +36,6 @@ struct Transition {
 	)
 };
 
-struct AnimationEvent {
-	int key;
-	TypedResourceID<ScriptAsset> scriptId;
-	std::string functionName;
-
-	REFLECTABLE(
-		key,
-		scriptId,
-		functionName
-	)
-
-	// editor runtime.. stores a copy of the key for temporary editing..
-	int copyKey = -1;
-};
-
 struct Node {
 	ControllerNodeID		id			= NO_CONTROLLER_NODE;
 	TypedResourceID<Model>	animation	{ INVALID_RESOURCE_ID };

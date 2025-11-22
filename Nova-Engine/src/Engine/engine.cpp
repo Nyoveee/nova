@@ -102,7 +102,7 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		animationSystem.initialiseAllControllers();
+		animationSystem.initialise();
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 		physicsManager.simulationInitialise();

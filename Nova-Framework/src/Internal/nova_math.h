@@ -20,4 +20,8 @@ namespace Math {
 	FRAMEWORK_DLL_API DecomposedMatrix decomposeMatrix(glm::mat4 const& m);
 	FRAMEWORK_DLL_API glm::mat4 composeMatrix(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale);
 	FRAMEWORK_DLL_API std::size_t getGUID();
+
+	// smooth's the interval using a sine curve.
+	FRAMEWORK_DLL_API float smoothstep(float interval);
+	FRAMEWORK_DLL_API float sinestep(float interval);
 }

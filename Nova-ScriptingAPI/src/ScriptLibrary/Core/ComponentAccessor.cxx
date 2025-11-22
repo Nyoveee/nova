@@ -61,6 +61,14 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 	if (animator)
 		Interface::engine->animationSystem.initialiseAnimator(*animator);
 
+	// initialise sequence..
+	Sequence* sequence = Interface::engine->ecs.registry.try_get<Sequence>(prefabInstanceId);
+
+	if (sequence)
+		Interface::engine->animationSystem.initialiseSequence(*sequence);
+
+	// initialise audio..
+	
 	// initialise all scripts..
 	Scripts* scripts = Interface::engine->ecs.registry.try_get<Scripts>(prefabInstanceId);
 

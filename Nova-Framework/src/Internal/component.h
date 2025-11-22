@@ -224,10 +224,21 @@ struct Animator {
 
 struct Sequence {
 	TypedResourceID<Sequencer> sequencerId;
+	bool toLoop;
 
 	REFLECTABLE(
-		sequencerId
+		sequencerId,
+		toLoop
 	)
+
+	float timeElapsed = 0.f;
+	float lastTimeElapsed = 0.f;
+	
+	int currentFrame = 0;
+
+	// each animator component keeps track of already executed animation events keyframes..
+	// this container is reset everytime it loops..
+	std::unordered_set<int> executedAnimationEvents;
 };
 
 struct Rigidbody {
