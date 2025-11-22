@@ -24,7 +24,7 @@
         },
         {
             "frame": 107,
-            "lerpType": "Smooth",
+            "lerpType": "CatmullRom",
             "localPosition": {
                 "x": 115.88054656982422,
                 "y": 34.61982727050781,
@@ -41,11 +41,11 @@
                 "y": 1.0,
                 "z": 1.0000988245010376
             },
-            "power": 1.5
+            "power": 1.0
         },
         {
             "frame": 210,
-            "lerpType": "Linear",
+            "lerpType": "CatmullRom",
             "localPosition": {
                 "x": 101.61676788330078,
                 "y": 34.61982727050781,
@@ -66,7 +66,7 @@
         },
         {
             "frame": 322,
-            "lerpType": "Smooth",
+            "lerpType": "CatmullRom",
             "localPosition": {
                 "x": 40.196197509765625,
                 "y": 39.45684051513672,
@@ -87,7 +87,7 @@
         },
         {
             "frame": 416,
-            "lerpType": "Linear",
+            "lerpType": "CatmullRom",
             "localPosition": {
                 "x": 38.20674514770508,
                 "y": 43.17535400390625,
@@ -104,11 +104,11 @@
                 "y": 0.9999997019767761,
                 "z": 1.000144362449646
             },
-            "power": 1.5499999523162842
+            "power": 1.0
         },
         {
             "frame": 563,
-            "lerpType": "Smooth",
+            "lerpType": "CatmullRom",
             "localPosition": {
                 "x": -9.274432182312012,
                 "y": 31.129657745361328,
@@ -125,7 +125,7 @@
                 "y": 1.0,
                 "z": 1.0002474784851074
             },
-            "power": 0.699999988079071
+            "power": 1.0
         }
     ],
     "lastFrame": 563

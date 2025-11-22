@@ -16,9 +16,9 @@ public:
 
 		enum class LerpType {
 			Linear,
-			Smooth
-			//Sine
-		} lerpType = LerpType::Smooth;
+			Smooth,
+			CatmullRom
+		} lerpType = LerpType::CatmullRom;
 
 		float power = 1.f;
 

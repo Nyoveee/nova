@@ -2,7 +2,10 @@
 #include "component.h"
 #include "nova_math.h"
 #include "Logger.h"
+
 #include <ranges>
+
+#include <glm/gtx/spline.hpp> // For glm::catmullRom
 
 Sequencer::Sequencer(ResourceID id, ResourceFilePath filePath, Data data) :
 	Resource		{ id, std::move(filePath) },
@@ -52,11 +55,30 @@ void Sequencer::setInterpolatedTransform(int currentFrame, Transform& transform)
 	int previousFrameIndex = -1;
 	int nextFrameIndex = -1;
 
+	// for catmull rom spline..
+	int twoFrameBeforeIndex = -1;
+	int twoFrameAfterIndex = -1;
+
 	// Find the 2 in between keyframes..
 	for (int i = 0; i < data.keyframes.size() - 1; ++i) {
 		if (currentFrame <= data.keyframes[i + 1].frame) {
 			previousFrameIndex = i;
 			nextFrameIndex = i + 1;
+
+			if (i == 0) {
+				twoFrameBeforeIndex = previousFrameIndex;
+			}
+			else {
+				twoFrameBeforeIndex = previousFrameIndex - 1;
+			}
+			
+			if (nextFrameIndex == data.keyframes.size() - 1) {
+				twoFrameAfterIndex = nextFrameIndex;
+			}
+			else {
+				twoFrameAfterIndex = nextFrameIndex + 1;
+			}
+
 			break;
 		}
 	}
@@ -67,7 +89,10 @@ void Sequencer::setInterpolatedTransform(int currentFrame, Transform& transform)
 
 	Keyframe const& previousKeyframe = data.keyframes[previousFrameIndex];
 	Keyframe const& nextKeyframe = data.keyframes[nextFrameIndex];
-	
+
+	Keyframe const& twoFrameBeforeKeyframe = data.keyframes[twoFrameBeforeIndex];
+	Keyframe const& twoFrameAfterKeyframe = data.keyframes[twoFrameAfterIndex];
+
 	// Get lerp factor..
 	int frameDifference = nextKeyframe.frame - previousKeyframe.frame;
 	assert(frameDifference > 0 && "Keyframes are not ordered.");
@@ -82,19 +107,23 @@ void Sequencer::setInterpolatedTransform(int currentFrame, Transform& transform)
 	switch (nextKeyframe.lerpType)
 	{
 	case Keyframe::LerpType::Linear:
-		lerpFactor = std::powf(lerpFactor, nextKeyframe.power);
+		transform.localPosition = glm::mix  (previousKeyframe.localPosition,	nextKeyframe.localPosition, std::powf(lerpFactor, nextKeyframe.power));
+		transform.localScale	= glm::mix  (previousKeyframe.localScale,		nextKeyframe.localScale,	std::powf(lerpFactor, nextKeyframe.power));
+		transform.localRotation = glm::slerp(previousKeyframe.localRotation,	nextKeyframe.localRotation, std::powf(lerpFactor, nextKeyframe.power));
 		break;
+
 	case Keyframe::LerpType::Smooth:
-		lerpFactor = std::powf(Math::smoothstep(lerpFactor), nextKeyframe.power);
+		transform.localPosition = glm::mix  (previousKeyframe.localPosition,	nextKeyframe.localPosition, std::powf(Math::smoothstep(lerpFactor), nextKeyframe.power));
+		transform.localScale	= glm::mix  (previousKeyframe.localScale,		nextKeyframe.localScale,	std::powf(Math::smoothstep(lerpFactor), nextKeyframe.power));
+		transform.localRotation = glm::slerp(previousKeyframe.localRotation,	nextKeyframe.localRotation, std::powf(Math::smoothstep(lerpFactor), nextKeyframe.power));
 		break;
-	//case Keyframe::LerpType::Sine:
-		//lerpFactor = std::powf(Math::sinestep(lerpFactor), nextKeyframe.power);
-		//break;
+	case Keyframe::LerpType::CatmullRom:
+		transform.localPosition = glm::catmullRom  (twoFrameBeforeKeyframe.localPosition,	previousKeyframe.localPosition, nextKeyframe.localPosition, twoFrameAfterKeyframe.localPosition, lerpFactor);
+		transform.localScale	= glm::catmullRom  (twoFrameBeforeKeyframe.localScale,		previousKeyframe.localScale,	nextKeyframe.localScale,	twoFrameAfterKeyframe.localScale,	 lerpFactor);
+		transform.localRotation = glm::slerp	   (previousKeyframe.localRotation,	nextKeyframe.localRotation, Math::smoothstep(lerpFactor));
+		break;
 	}
-	
-	transform.localPosition = glm::mix  (previousKeyframe.localPosition,	nextKeyframe.localPosition, lerpFactor);
-	transform.localScale	= glm::mix  (previousKeyframe.localScale,		nextKeyframe.localScale,	lerpFactor);
-	transform.localRotation = glm::slerp(previousKeyframe.localRotation,	nextKeyframe.localRotation, lerpFactor);
+
 }
 
 #if false
