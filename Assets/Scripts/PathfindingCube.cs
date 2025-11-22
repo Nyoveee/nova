@@ -13,8 +13,21 @@ class PathfindingCube : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-    
-    
+        //if (isCubeControllable == false)
+        //{
+        //    return;
+        //}
+
+
+        //Ray ray = CameraAPI.getRayFromMouse();
+        //RayCastResult? result = PhysicsAPI.Raycast(ray, 1000f);
+
+        //if (result != null)
+        //{
+        //    Debug.Log("ray hit at " + result.Value.point + ", hitting entity " + result.Value.entity);
+        //    NavigationAPI.setDestination(gameObject, result.Value.point);
+        //}
+
     }
 
 }

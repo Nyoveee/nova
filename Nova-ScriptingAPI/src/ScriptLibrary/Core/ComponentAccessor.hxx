@@ -7,7 +7,7 @@ ref class Script;
 ref class GameObject;
 
 value struct Vector3;
-value struct Quartenion;
+value struct Quaternion;
 
 namespace ScriptingAPI {
 	ref class Prefab;
@@ -27,7 +27,7 @@ public:
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent);
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation, GameObject^ parent);
 
 	static void Destroy(GameObject^ gameObject);
 

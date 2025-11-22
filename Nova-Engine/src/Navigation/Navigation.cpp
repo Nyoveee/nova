@@ -36,7 +36,7 @@ NavigationSystem::NavigationSystem(Engine& engine) :
 	navMeshId		{ INVALID_RESOURCE_ID }
 {
 
-	registry.on_construct<NavMeshAgent>().connect<&NavigationSystem::AddAgentsToSystem>(*this);
+	//registry.on_construct<NavMeshAgent>().connect<&NavigationSystem::AddAgentsToSystem>(*this);
 	registry.on_destroy<NavMeshAgent>().connect<&NavigationSystem::RemoveAgentsFromSystem>(*this);
 
 
@@ -220,45 +220,45 @@ void NavigationSystem::NavigationDebug()
 ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::entity entityID)
 {
 
-	if (hasSystemInit == false)
-	{
-		return;
-	}
+	//if (hasSystemInit == false)
+	//{
+	//	return;
+	//}
 
-	//get component
-	auto&& [transform, navMeshAgent] = registry.try_get<Transform, NavMeshAgent>(entityID);
+	////get component
+	//auto&& [transform, navMeshAgent] = registry.try_get<Transform, NavMeshAgent>(entityID);
 
-	if (navMeshAgent == nullptr || transform == nullptr )
-	{
-		Logger::error("Sum Ting Wong, Agent Attempted to be added to system without an Agent");
-		return;
-	}
+	//if (navMeshAgent == nullptr || transform == nullptr )
+	//{
+	//	Logger::error("Sum Ting Wong, Agent Attempted to be added to system without an Agent");
+	//	return;
+	//}
 
-	
-	//check if a valid navmesh exist in this scene
-	if (sceneNavMeshes.find(navMeshAgent->agentName) == sceneNavMeshes.end())
-	{
-		Logger::warn("Agent found in scene without a valid Navmesh");
-		return;
-	}
+	//
+	////check if a valid navmesh exist in this scene
+	//if (sceneNavMeshes.find(navMeshAgent->agentName) == sceneNavMeshes.end())
+	//{
+	//	Logger::warn("Agent found in scene without a valid Navmesh");
+	//	return;
+	//}
 
-	auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(sceneNavMeshes[navMeshAgent->agentName]);
+	//auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(sceneNavMeshes[navMeshAgent->agentName]);
 
-	float pos[3] = { transform->position.x, transform->position.y, transform->position.z };
+	//float pos[3] = { transform->position.x, transform->position.y, transform->position.z };
 
-	dtCrowdAgentParams params = ConfigureDTParams(*navMeshAsset, *navMeshAgent);
+	//dtCrowdAgentParams params = ConfigureDTParams(*navMeshAsset, *navMeshAgent);
 
-	//get unused index
-	navMeshAgent->agentIndex = AddAgent(navMeshAgent->agentName, *navMeshAgent);
-	int dtCrowdIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+	////get unused index
+	//navMeshAgent->agentIndex = AddAgent(navMeshAgent->agentName, *navMeshAgent);
+	//int dtCrowdIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
 
-	//Impt here, using index to access data
-	crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
-	//agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
-	if (navMeshAgent->agentIndex < 0)
-	{
-		Logger::warn("Failed to add NavMeshAgent to crowd");
-	}
+	////Impt here, using index to access data
+	//crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
+	////agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
+	//if (navMeshAgent->agentIndex < 0)
+	//{
+	//	Logger::warn("Failed to add NavMeshAgent to crowd");
+	//}
 
 
 
@@ -267,6 +267,12 @@ ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::e
 
 ENGINE_DLL_API void NavigationSystem::RemoveAgentsFromSystem(entt::registry&, entt::entity entityID)
 {
+	if (hasSystemInit == false)
+	{
+		return;
+	}
+
+
 	//get component
 	auto&& [transform, navMeshAgent] = registry.try_get<Transform, NavMeshAgent>(entityID);
 
@@ -295,6 +301,49 @@ ENGINE_DLL_API void NavigationSystem::RemoveAgentsFromSystem(entt::registry&, en
 
 	//reduce last index by one
 	lastIndex[navMeshAgent->agentName]--;
+}
+
+ENGINE_DLL_API void NavigationSystem::InstantiateAgentsToSystem(entt::entity entityID, Transform const* const transform, NavMeshAgent* const navMeshAgent)
+{
+	if (hasSystemInit == false)
+	{
+		return;
+	}
+
+	//get component
+	//auto&& [transform, navMeshAgent] = registry.try_get<Transform, NavMeshAgent>(entityID);
+	//Assumed to be checked already
+	if (navMeshAgent == nullptr || transform == nullptr)
+	{
+		Logger::error("Sum Ting Wong, Agent Attempted to be added to system without an Agent");
+		return;
+	}
+
+
+	//check if a valid navmesh exist in this scene
+	if (sceneNavMeshes.find(navMeshAgent->agentName) == sceneNavMeshes.end())
+	{
+		Logger::warn("Agent found in scene without a valid Navmesh");
+		return;
+	}
+
+	auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(sceneNavMeshes[navMeshAgent->agentName]);
+
+	float pos[3] = { transform->position.x, transform->position.y, transform->position.z };
+
+	dtCrowdAgentParams params = ConfigureDTParams(*navMeshAsset, *navMeshAgent);
+
+	//get unused index
+	navMeshAgent->agentIndex = AddAgent(navMeshAgent->agentName, *navMeshAgent);
+	int dtCrowdIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+
+	//Impt here, using index to access data
+	crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
+	//agent.agentIndex = crowdManager[agent.agentName].get()->addAgent(pos, &params);
+	if (navMeshAgent->agentIndex < 0)
+	{
+		Logger::warn("Failed to add NavMeshAgent to crowd");
+	}
 }
 
 void NavigationSystem::initNavMeshSystems()

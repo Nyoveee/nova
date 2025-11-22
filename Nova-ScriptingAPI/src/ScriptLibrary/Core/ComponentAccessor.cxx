@@ -30,10 +30,10 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, GameObj
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent) {
 	constexpr glm::quat identityQuat{ 1.0f, 0.0f, 0.0f, 0.0f };
-	return Instantiate(prefab, localPosition, gcnew Quartenion{ identityQuat }, parent);
+	return Instantiate(prefab, localPosition, gcnew Quaternion{ identityQuat }, parent);
 }
 
-GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent) {
+GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation, GameObject^ parent) {
 	entt::entity prefabInstanceId = Interface::engine->prefabManager.instantiatePrefab<ALL_COMPONENTS>(prefab->getId());
 
 	// set parent, and local transform..
@@ -54,6 +54,12 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 		transform->position = localPosition->native();
 		transform->rotation = localRotation->native();
 	}
+
+	//if have NavMeshAgent, init navmeshagent
+	NavMeshAgent* agent = Interface::engine->ecs.registry.try_get<NavMeshAgent>(prefabInstanceId);
+
+	if (agent)
+	Interface::engine->navigationSystem.InstantiateAgentsToSystem(prefabInstanceId, transform , agent);
 
 	// initialise animator..
 	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(prefabInstanceId);

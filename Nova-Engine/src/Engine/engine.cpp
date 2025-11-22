@@ -136,12 +136,13 @@ void Engine::stopSimulation() {
 	setupSimulationFunction = [&]() {
 		audioSystem.unloadAllSounds();
 		cameraSystem.endSimulation();
+		navigationSystem.unloadNavMeshSystems();
 
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
 		physicsManager.resetPhysicsState();
 		scriptingAPIManager.stopSimulation();
-		navigationSystem.unloadNavMeshSystems();
+
 		resourceManager.removeAllResourceInstance();
 
 		gameLockMouse(false);

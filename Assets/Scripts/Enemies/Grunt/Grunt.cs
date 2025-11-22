@@ -51,7 +51,7 @@ class Grunt : Enemy
     protected override void init()
     {
         base.init();
-        gameObject.transform.rotation = Quartenion.Identity();
+        gameObject.transform.rotation = Quaternion.Identity();
         gruntStats = getScript<GruntStats>();
 
         animator.PlayAnimation("Grunt Idle (Base)");

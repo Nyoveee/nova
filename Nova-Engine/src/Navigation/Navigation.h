@@ -55,6 +55,7 @@ public:
 	ENGINE_DLL_API void		  AddAgentsToSystem(entt::registry&, entt::entity entityID);
 	ENGINE_DLL_API void		  RemoveAgentsFromSystem(entt::registry&, entt::entity entityID);
 
+	ENGINE_DLL_API void		  InstantiateAgentsToSystem(entt::entity entityID, Transform const*const enttTransform, NavMeshAgent *const navMeshAgent);
 
 //--------------------For C# scripting API-------------------------------------------------------------//
 public:
