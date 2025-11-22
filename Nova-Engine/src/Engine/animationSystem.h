@@ -43,7 +43,7 @@ private:
 	ENGINE_DLL_API void handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller);
 
 private:
-	ENGINE_DLL_API void updateSequencer(Sequence& sequence, Sequencer& sequencer, float dt);
+	ENGINE_DLL_API void updateSequencer(entt::entity entityId, Sequence& sequence, Sequencer& sequencer, float dt);
 	ENGINE_DLL_API void animateSequencer(float dt);
 
 	ENGINE_DLL_API void updateAnimator(float dt);

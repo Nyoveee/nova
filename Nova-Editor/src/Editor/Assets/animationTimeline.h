@@ -23,6 +23,7 @@ private:
 	void displayTopToolbar(Sequencer& sequencer);
 
 	void displayKeyframes(Sequence& sequence, Sequencer& sequencer);
+	void displayAnimationEvents(Sequence& sequence, Sequencer& sequencer);
 
 private:
 	Editor& editor;

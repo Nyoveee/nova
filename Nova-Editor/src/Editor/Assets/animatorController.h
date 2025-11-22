@@ -91,6 +91,8 @@ private:
 	ResourceManager& resourceManager;
 	AssetManager& assetManager;
 
+	entt::entity selectedEntity;
+
 	ax::NodeEditor::EditorContext* context;
 
 	// stores the name of parameter temporarily for editing..

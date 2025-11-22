@@ -87,6 +87,14 @@ void AnimationTimeLine::displayMainPanel(Sequence& sequence, Sequencer& sequence
 
 	if (ImGui::BeginNeoSequencer("Sequencer", &currentFrame, &startFrame, &endFrame, {}, ImGuiNeoSequencerFlags_Selection_DisplayTimeInsteadOfFrames)) {
 		if (ImGui::BeginNeoTimelineEx("Event", nullptr, ImGuiNeoTimelineFlags_Group)) {
+			for (auto&& animationEvent : sequencer.data.animationEvents) {
+				int frame = animationEvent.key;
+
+				ImGui::PushID(frame);
+				ImGui::NeoKeyframe(&frame);
+				ImGui::PopID();
+			}
+
 			ImGui::EndNeoTimeLine();
 		}
 	
@@ -105,7 +113,19 @@ void AnimationTimeLine::displayMainPanel(Sequence& sequence, Sequencer& sequence
 		ImGui::EndNeoSequencer();
 	}
 
-	displayKeyframes(sequence, sequencer);
+	if (ImGui::BeginTabBar("Sequencer Tab Bar")) {
+		if (ImGui::BeginTabItem("Keyframes")) {
+			displayKeyframes(sequence, sequencer);
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Animation Events")) {
+			displayAnimationEvents(sequence, sequencer);
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
 }
 
 void AnimationTimeLine::displayTopPanel(Sequencer& sequencer) {
@@ -149,7 +169,7 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 		ImGui::TableSetupColumn("Add Keyframe", ImGuiTableColumnFlags_WidthFixed, padding + toolbarButtonSize);
 		ImGui::TableSetupColumn("Add Animation event", ImGuiTableColumnFlags_WidthFixed, toolbarButtonSize);
 		ImGui::TableSetupColumn("Current Frame", ImGuiTableColumnFlags_WidthFixed, toolbarInputSize + padding);
-		ImGui::TableSetupColumn("View Sldier", ImGuiTableColumnFlags_WidthFixed, viewSliderSize + 2 * padding);
+		ImGui::TableSetupColumn("View Slider", ImGuiTableColumnFlags_WidthFixed, viewSliderSize + 2 * padding);
 
 		ImGui::TableNextRow();
 
@@ -197,7 +217,10 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 
 		ImGui::TableNextColumn();
 		if (ImGui::Button((std::string{ "+" } + ICON_FA_BOOKMARK).c_str())) {
-
+			// current frame do not already have an animation event..
+			if (std::ranges::find_if(sequencer.data.animationEvents, [&](auto&& element) { return element.key == currentFrame; }) == sequencer.data.animationEvents.end()) {
+				sequencer.data.animationEvents.push_back({ currentFrame, TypedResourceID<ScriptAsset>{ INVALID_RESOURCE_ID }, "event", -1 });
+			}
 		}
 
 		ImGui::TableNextColumn();
@@ -327,6 +350,67 @@ void AnimationTimeLine::displayKeyframes(Sequence& sequence, Sequencer& sequence
 				if (sequencer.data.keyframes.size()) {
 					sequencer.data.lastFrame = sequencer.data.keyframes.back().frame;
 				}
+			}
+			else {
+				++it;
+			}
+
+			ImGui::PopID();
+		}
+
+		ImGui::EndTable();
+	}
+}
+
+void AnimationTimeLine::displayAnimationEvents([[maybe_unused]] Sequence& sequence, Sequencer& sequencer) {
+	if (ImGui::BeginTable("Animation Event Table", 4)) {
+		ImGui::TableSetupColumn("Frame", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Script", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Delete", ImGuiTableColumnFlags_WidthFixed, 40.0f);
+
+		// Populate table rows
+		int imguiCounter = 0;
+		
+		for (auto it = sequencer.data.animationEvents.begin(); it != sequencer.data.animationEvents.end();) {
+			auto&& animationEvent = *it;
+			auto&& [key, scriptId, name, copyKey] = animationEvent;
+
+			ImGui::PushID(imguiCounter++);
+
+			ImGui::TableNextRow();		// Start a new row
+			
+			ImGui::TableSetColumnIndex(0);
+			
+			if (copyKey == -1) {
+				copyKey = key;
+			}
+
+			ImGui::DragInt("Key", &copyKey);
+
+			// Verify if key is valid..
+			if (
+					copyKey < 0 || copyKey > sequencer.data.lastFrame
+				||  std::ranges::find_if(sequencer.data.animationEvents, [&](auto&& event) { return event.key == copyKey; }) != sequencer.data.animationEvents.end()
+			) {
+				copyKey = key;
+			}
+			else {
+				key = copyKey;
+			}
+
+			ImGui::TableSetColumnIndex(1);
+			editor.displayEntityScriptDropDownList(scriptId, "##script", selectedEntity, [&](ResourceID newScriptId) {
+				scriptId = TypedResourceID<ScriptAsset>{ newScriptId };
+			});
+
+			ImGui::TableSetColumnIndex(2);
+			ImGui::InputText("Function name", &animationEvent.functionName);
+
+			ImGui::TableSetColumnIndex(3);
+	
+			if (ImGui::Button("[-]")) {
+				it = sequencer.data.animationEvents.erase(it);
 			}
 			else {
 				++it;

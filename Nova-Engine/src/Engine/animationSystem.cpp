@@ -131,11 +131,18 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 	animator.executedAnimationEvents.clear();
 }
 
-void AnimationSystem::updateSequencer(Sequence& sequence, Sequencer& sequencer, float dt) {
+void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence, Sequencer& sequencer, float dt) {
 	if (sequence.currentFrame < sequencer.data.lastFrame) {
 		sequence.timeElapsed += dt;
 		sequence.currentFrame = static_cast<int>(sequence.timeElapsed * FPS);
 	}
+
+	for (auto&& animationEvent : sequencer.data.animationEvents) {
+		if (sequence.currentFrame > animationEvent.key && !sequence.executedAnimationEvents.count(animationEvent.key)) {
+			sequence.executedAnimationEvents.insert(animationEvent.key);
+			engine.scriptingAPIManager.executeFunction(entityId, animationEvent.scriptId, animationEvent.functionName);
+		}
+	};
 
 	if (sequence.currentFrame >= sequencer.data.lastFrame) {
 		sequence.currentFrame = sequencer.data.lastFrame;
@@ -143,6 +150,7 @@ void AnimationSystem::updateSequencer(Sequence& sequence, Sequencer& sequencer, 
 		if (sequence.toLoop) {
 			sequence.currentFrame = 0;
 			sequence.timeElapsed = 0.f;
+			sequence.executedAnimationEvents.clear();
 		}
 	}
 }
@@ -160,7 +168,7 @@ void AnimationSystem::animateSequencer(float dt) {
 		}
 
 		if (engine.isInSimulationMode()) {
-			updateSequencer(sequence, *sequencer, dt);
+			updateSequencer(entityId, sequence, *sequencer, dt);
 		}
 
 		if (sequence.timeElapsed == sequence.lastTimeElapsed) {
