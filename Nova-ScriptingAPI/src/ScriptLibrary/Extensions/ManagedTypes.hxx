@@ -121,10 +121,10 @@ ManagedStructEnd(ColorAlpha, glm::vec4)
 // ======================================
 ManagedStruct(
 	Quaternion, glm::quat,
+	float, w,
 	float, x,
 	float, y,
-	float, z,
-	float, w
+	float, z
 )
 
 static Vector3 operator*(Quaternion quaternion, Vector3 axis);

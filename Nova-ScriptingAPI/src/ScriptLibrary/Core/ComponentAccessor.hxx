@@ -27,7 +27,9 @@ public:
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab);
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, GameObject^ parent);
 	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, GameObject^ parent);
-	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation, GameObject^ parent);
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation, GameObject^ parent);
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quartenion^ localRotation);
+	static GameObject^ Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition);
 
 	static void Destroy(GameObject^ gameObject);
 

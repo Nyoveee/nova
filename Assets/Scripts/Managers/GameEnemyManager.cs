@@ -51,6 +51,6 @@ class GameEnemyManager : Script
         float zOffset = (float)(random.NextDouble() - 0.5) * spawningArea.scale.z;
 
         Vector3 spawnPosition = new Vector3(spawningArea.position.x + xOffset, spawningArea.position.y, spawningArea.position.z + zOffset);
-        Instantiate(enemyPrefab, spawnPosition, null);
+        Instantiate(enemyPrefab, spawnPosition);
     }
 }

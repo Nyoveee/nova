@@ -93,6 +93,12 @@ void ComponentInspector::update() {
 		ImGui::EndCombo();
 	}
 
+	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
+
+	if (prefabAssetInfo) {
+		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", nullptr);
+	}
+
 	ImGui::NewLine();
 
 	if (ImGui::CollapsingHeader("Entity")) {
@@ -109,20 +115,11 @@ void ComponentInspector::update() {
 
 		ImGui::EndChild();
 
-		BasicAssetInfo* assetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
-
-		if (assetInfo) {
-			ImGui::Text("Prefab: %s", assetInfo->name.c_str());
-			ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
-		}
-		else {
-			ImGui::Text("Not pointing to any prefab.");
-			ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
-		}
+		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
 	}
 
 	// Display the rest of the components via reflection.
-	g_displayComponentFunctor(*this, selectedEntity, registry);
+	g_displayComponentFunctor(editor, selectedEntity, registry);
 
 	// Display add component button.
 	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);

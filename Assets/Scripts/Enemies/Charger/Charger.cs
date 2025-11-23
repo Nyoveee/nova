@@ -2,8 +2,6 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
-using System.Runtime.CompilerServices;
-
 class Charger : Enemy
 {
     /***********************************************************
@@ -13,8 +11,6 @@ class Charger : Enemy
     private Prefab chargerAttackHitBoxPrefab;
     [SerializableField]
     private Transform_? attackHitBoxTransform;
-    [SerializableField]
-    private float hurtDuration = 0.1f;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -163,7 +159,7 @@ class Charger : Enemy
     }
     public void BeginSwing()
     {
-        hitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.position,null);
+        hitbox = Instantiate(chargerAttackHitBoxPrefab, attackHitBoxTransform.position);
         hitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
     }
     public void EndSwing()

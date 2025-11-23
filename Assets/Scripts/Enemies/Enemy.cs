@@ -1,10 +1,16 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+using System.Runtime.CompilerServices;
 public abstract class Enemy : Script
 {
     [SerializableField]
-    private float hurtDuration = 0.1f;
+    protected float hurtDuration = 0.1f;
+    [SerializableField]
+    private Prefab ichorPrefab;
+    [SerializableField]
+    private GameObject ichorSpawnPoint;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -12,6 +18,7 @@ public abstract class Enemy : Script
     protected Animator_? animator = null;
     protected Rigidbody_? rigidbody = null;
     protected SkinnedMeshRenderer_? renderer = null;
+    private EnemyStats? enemyStats = null;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
@@ -24,7 +31,7 @@ public abstract class Enemy : Script
     {
         if (player == null)
         {
-            Debug.LogWarning("Missing Reference Found");
+            // Debug.LogWarning("Missing Reference Found");
             return;
         }
         Vector3 direction = player.transform.position - gameObject.transform.position;
@@ -50,6 +57,11 @@ public abstract class Enemy : Script
     {
         return player != null ? Vector3.Distance(player.transform.position, gameObject.transform.position) : 0f;
     }
+    protected void SpawnIchor()
+    {
+        GameObject ichor = Instantiate(ichorPrefab);    
+        ichor.transform.position = ichorSpawnPoint.transform.position;
+    }
     /***********************************************************
         Script Functions
     ***********************************************************/
@@ -58,7 +70,8 @@ public abstract class Enemy : Script
         rigidbody = getComponent<Rigidbody_>();
         animator = getComponent<Animator_>();
         renderer = getComponent<SkinnedMeshRenderer_>();
+        enemyStats = getScript<EnemyStats>();
         player = GameObject.FindWithTag("Player");
-
     }
+   
 }

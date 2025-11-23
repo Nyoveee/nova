@@ -246,7 +246,7 @@ void Editor::main(float dt) {
 	navBar.update();
 	assetViewerUi.update();
 	navigationWindow.update();
-	animationTimeLine.update();
+	animationTimeLine.update(dt);
 	animatorController.update();
 	gameConfigUI.update();
 	editorConfigUI.update();
@@ -417,6 +417,86 @@ void Editor::handleUIEntitySelection() {
 	}
 
 	selectedEntities.push_back(selectedUIEntity);
+}
+
+void Editor::displayEntityScriptDropDownList(ResourceID id, const char* labelName, entt::entity entity, std::function<void(ResourceID)> const& onClickCallback) {
+	char const* selectedAssetName = "";
+
+	ImGui::PushID(++imguiCounter);
+
+	auto namePtr = assetManager.getName(id);
+	selectedAssetName = namePtr ? namePtr->c_str() : "No resource selected.";
+
+	// Uppercase search query..
+	// Case insensitive searchQuery..
+	uppercaseSearchQuery.clear();
+	std::transform(assetSearchQuery.begin(), assetSearchQuery.end(), std::back_inserter(uppercaseSearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+	// get all scripts of the entity..
+	Scripts* scripts = engine.ecs.registry.try_get<Scripts>(entity);
+
+	if (!scripts) {
+		ImGui::BeginDisabled();
+		if (ImGui::BeginCombo(labelName, "No script component.")) { ImGui::EndCombo(); }
+		ImGui::EndDisabled();
+
+		ImGui::PopID();
+		return;
+	}
+
+	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
+		ImGui::InputText("Search", &assetSearchQuery);
+
+		for (auto&& scriptData : scripts->scriptDatas) {
+			std::string const* assetName = assetManager.getName(scriptData.scriptId);
+
+			if (!assetName) {
+				continue;
+			}
+
+			// Let's upper case our component name..
+			uppercaseAssetName.clear();
+			std::transform(assetName->begin(), assetName->end(), std::back_inserter(uppercaseAssetName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			// attempt to find asset..
+			if (uppercaseAssetName.find(uppercaseSearchQuery) == std::string::npos) {
+				continue;
+			}
+
+			ImGui::PushID(static_cast<int>(static_cast<std::size_t>(scriptData.scriptId)));
+
+			if (ImGui::Selectable(assetName->empty() ? "<no name>" : assetName->c_str(), id == scriptData.scriptId)) {
+				onClickCallback(scriptData.scriptId);
+			}
+
+			ImGui::PopID();
+		}
+
+		ImGui::EndCombo();
+	}
+
+#if false
+	// handle drag and drop..
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
+			auto&& [draggedId, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
+
+			if (resourceManager.isResource<T>(draggedId)) {
+				onClickCallback(draggedId);
+			}
+		}
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button(ICON_FA_ANCHOR_CIRCLE_XMARK)) {
+		assetViewerUi.selectNewResourceId(id.value());
+		assetManagerUi.displayAssetFolder(id.value());
+		ImGui::SetWindowFocus(ICON_FA_AUDIO_DESCRIPTION " Asset Viewer");
+	}
+#endif
+
+	ImGui::PopID();
 }
 
 void Editor::launchProfiler()

@@ -75,7 +75,7 @@ class Grunt : Enemy
     // This function is invoked every fixed update.
     protected override void update()
     {   
-        updateState[gruntState]();
+         updateState[gruntState]();
     }
     /**********************************************************************
         Inheritted Functions
@@ -101,7 +101,7 @@ class Grunt : Enemy
         {
             renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
             renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        }, gruntStats.hurtDuration);
+        }, hurtDuration);
         if(gruntStats.health <= 0)
         {
             gruntState = GruntState.Death;

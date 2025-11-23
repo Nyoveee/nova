@@ -2,16 +2,12 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 
 class Gunner : Enemy
 {
     /***********************************************************
         Inspector Variables
     ***********************************************************/
-    [SerializableField]
-    private float hurtDuration = 0.1f;
     [SerializableField]
     private Prefab projectilePrefab;
     [SerializableField]
@@ -89,6 +85,7 @@ class Gunner : Enemy
     {
         if (gunnerState == GunnerState.Death)
             return;
+        SpawnIchor();
         gunnerStats.health -= damage;
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));

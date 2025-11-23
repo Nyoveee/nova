@@ -606,7 +606,7 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 	}
 
 	ImGui::Separator();
-	g_displayComponentFunctor(editor.componentInspector, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
+	g_displayComponentFunctor(editor, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
 }
 
 void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {

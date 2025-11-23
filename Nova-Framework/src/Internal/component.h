@@ -130,14 +130,14 @@ struct Transform {
 	EulerAngles lastEulerAngles	{ rotation };
 
 	glm::vec3 lastLocalPosition {};
-	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
+	glm::vec3 lastLocalScale	{ localScale };
 	glm::quat lastLocalRotation	{};
 	EulerAngles lastLocalEulerAngles{ localRotation };
 
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
 	// When first created set it to true.
 	bool worldHasChanged = true;
-	bool needsRecalculating = false;
+	bool needsRecalculating = true;
 
 	// Reflect these data members for level editor to display
 	REFLECTABLE(
@@ -224,10 +224,21 @@ struct Animator {
 
 struct Sequence {
 	TypedResourceID<Sequencer> sequencerId;
+	bool toLoop;
 
 	REFLECTABLE(
-		sequencerId
+		sequencerId,
+		toLoop
 	)
+
+	float timeElapsed = 0.f;
+	float lastTimeElapsed = 0.f;
+	
+	int currentFrame = 0;
+
+	// each animator component keeps track of already executed animation events keyframes..
+	// this container is reset everytime it loops..
+	std::unordered_set<int> executedAnimationEvents;
 };
 
 struct Rigidbody {
@@ -236,7 +247,8 @@ struct Rigidbody {
 	enum class Layer {
 		NonMoving,
 		Moving,
-		Wall
+		Wall,
+		Item
 	} layer							= Layer::NonMoving;
 
 	glm::vec3 initialVelocity		{};
@@ -297,7 +309,7 @@ struct CapsuleCollider {
 };
 
 struct MeshCollider {
-	float shapeScale;
+	float shapeScale = 1.f;
 
 	REFLECTABLE(
 		shapeScale
