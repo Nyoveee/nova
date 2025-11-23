@@ -66,7 +66,7 @@ public abstract class Enemy : Script
     protected void SpawnIchor()
     {
         GameObject ichor = Instantiate(ichorPrefab);    
-        ichor.transform.position = ichorSpawnPoint.transform.position;
+        ichor.transform.localPosition = ichorSpawnPoint.transform.position;
     }
     protected void MoveToNavMeshPosition(Vector3 position)
     {

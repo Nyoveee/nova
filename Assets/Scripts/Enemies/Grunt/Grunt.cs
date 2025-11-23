@@ -187,7 +187,7 @@ class Grunt : Enemy
             return;
         hitbox = Instantiate(hitboxPrefab);
         if(hitbox!= null && hitboxPosition!= null){
-            hitbox.transform.position = hitboxPosition.transform.position;
+            hitbox.transform.localPosition = hitboxPosition.transform.position;
             EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
             if (enemyHitBox != null && gruntStats != null)
                 enemyHitBox.SetDamage(gruntStats.damage);
