@@ -33,7 +33,7 @@ namespace ImGui {
     void
     RenderNeoSequencerTopBarOverlay(float zoom, float valuesWidth,uint32_t startFrame, uint32_t endFrame, uint32_t offsetFrame, const ImVec2 &cursor, const ImVec2 &size,
                                     ImDrawList *drawList, bool drawFrameLines,
-                                    bool drawFrameText, float maxPixelsPerTick) {
+                                    bool drawFrameText, float maxPixelsPerTick, bool showTimeInsteadOfFrame) {
         if(!drawList) drawList = ImGui::GetWindowDrawList();
 
         const auto & style = GetStyle();
@@ -82,10 +82,12 @@ namespace ImGui {
                 drawList->AddLine(p1,p2, IM_COL32_WHITE, 1.0f);
 
                 if(drawFrameText && secondaryFrame) {
-                    char text[10];
-                    const auto printRes = snprintf(text, sizeof(text), "%i", viewStart + i);
-                    if(printRes > 0) {
-                        drawList->AddText(NULL, 0, {p1.x + 2.0f, barArea.Min.y }, IM_COL32_WHITE,text);
+                    if (!showTimeInsteadOfFrame) {
+                        char text[10];
+                        const auto printRes = snprintf(text, sizeof(text), "%i", viewStart + i);
+                        if (printRes > 0) {
+                            drawList->AddText(NULL, 0, { p1.x + 2.0f, barArea.Min.y }, IM_COL32_WHITE, text);
+                        }
                     }
                 }
             }

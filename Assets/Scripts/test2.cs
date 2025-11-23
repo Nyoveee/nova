@@ -13,7 +13,7 @@ class test2 : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        transform.localPosition = new Vector3(transform.localPosition.x + 1 * Time.V_FixedDeltaTime(), transform.localPosition.y, transform.localPosition.z);
+        transform.position = new Vector3(transform.position.x + 1 * Time.V_FixedDeltaTime(), transform.position.y, transform.position.z);
     }
 
 }

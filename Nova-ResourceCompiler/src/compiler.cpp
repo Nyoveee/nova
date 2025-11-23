@@ -339,6 +339,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	else if (resourceType == "Prefab") {
 		return compileAsset.template operator()<Prefab>();
 	}
+	else if (resourceType == "Sequencer") {
+		return compileAsset.template operator()<Sequencer>();
+	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);
 		return -1;

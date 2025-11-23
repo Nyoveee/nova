@@ -102,7 +102,7 @@
                 "localPosition": {
                     "x": 268.40875244140625,
                     "y": 149.74005126953125,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -118,7 +118,7 @@
                 "position": {
                     "x": 268.40875244140625,
                     "y": 149.74005126953125,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -324,7 +324,7 @@
                 "position": {
                     "x": 270.28070068359375,
                     "y": 135.78688049316406,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -448,9 +448,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.003216385841369629,
-                    "y": 3.2901763916015625e-05,
-                    "z": 0.0
+                    "x": 0.003216356039047241,
+                    "y": 3.2961368560791016e-05,
+                    "z": 99.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -465,8 +465,8 @@
                 },
                 "position": {
                     "x": 270.28070068359375,
-                    "y": 93.5908432006836,
-                    "z": -99.0
+                    "y": 93.59085083007813,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -494,7 +494,41 @@
                 "tag": ""
             },
             "Scripts": {
-                "scriptDatas": null
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 41943210
+                                },
+                                "name": "spawningArea"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 6595610066090704897
+                                },
+                                "name": "enemyPrefab"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 2.0
+                                },
+                                "name": "minSpawnInterval"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 5.0
+                                },
+                                "name": "maxSpawnInterval"
+                            }
+                        ],
+                        "scriptId": 5348420824132075521
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
@@ -1058,56 +1092,56 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 1.0
                                 },
                                 "name": "cooldown"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.20000000298023224
                                 },
                                 "name": "recoilDuration"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 100.0
                                 },
                                 "name": "range"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.10000000149011612
                                 },
                                 "name": "scatterRange"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 10.0
                                 },
                                 "name": "damage"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 12,
                                     "__variant_value": 10
                                 },
                                 "name": "numOfPellets"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 12,
                                     "__variant_value": 5
                                 },
                                 "name": "currentAmmo"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 12,
                                     "__variant_value": 10
                                 },
                                 "name": "maxAmmo"
@@ -1198,42 +1232,42 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 1.0
                                 },
                                 "name": "cooldown"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.15000000596046448
                                 },
                                 "name": "recoilDuration"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 1000.0
                                 },
                                 "name": "range"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 40.0
                                 },
                                 "name": "damage"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 12,
                                     "__variant_value": 5
                                 },
                                 "name": "currentAmmo"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 12,
                                     "__variant_value": 10
                                 },
                                 "name": "maxAmmo"
@@ -1680,7 +1714,7 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 2.0
                                 },
                                 "name": "damageFadeTime"
@@ -1917,9 +1951,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.003216385841369629,
-                    "y": 3.2901763916015625e-05,
-                    "z": 0.0
+                    "x": 0.003216356039047241,
+                    "y": 3.2961368560791016e-05,
+                    "z": 99.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -1934,8 +1968,8 @@
                 },
                 "position": {
                     "x": 270.28070068359375,
-                    "y": 93.5908432006836,
-                    "z": -99.0
+                    "y": 93.59085083007813,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2242,9 +2276,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.003216385841369629,
+                    "x": 0.003216356039047241,
                     "y": -0.13952183723449707,
-                    "z": 0.0
+                    "z": 99.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2260,7 +2294,7 @@
                 "position": {
                     "x": 270.28070068359375,
                     "y": 135.78701782226563,
-                    "z": -99.0
+                    "z": 99.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2798,70 +2832,70 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.0010000000474974513
                                 },
                                 "name": "cameraSensitivity"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 20.0
                                 },
                                 "name": "maximumMoveSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 5.0
                                 },
                                 "name": "accelerationStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 15.0
                                 },
                                 "name": "jumpStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 12,
                                     "__variant_value": 1
                                 },
                                 "name": "maxJumpCount"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.25
                                 },
                                 "name": "dashDuration"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 12,
                                     "__variant_value": 3
                                 },
                                 "name": "dashCount"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 3.0
                                 },
                                 "name": "dashCooldown"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 75.0
                                 },
                                 "name": "dashStrength"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 100.0
                                 },
                                 "name": "maxHealth"
@@ -2915,14 +2949,14 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 2000.0
                                 },
                                 "name": "bulletSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 0.20000000298023224
                                 },
                                 "name": "swapWeaponCooldown"
@@ -3013,7 +3047,7 @@
                 "localPosition": {
                     "x": 66.74075317382813,
                     "y": 73.13577270507813,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -3029,7 +3063,7 @@
                 "position": {
                     "x": 66.74075317382813,
                     "y": 73.13577270507813,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -3230,7 +3264,7 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 13,
                                     "__variant_value": 6.0
                                 },
                                 "name": "transitionTime"

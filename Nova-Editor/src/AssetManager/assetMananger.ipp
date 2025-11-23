@@ -133,8 +133,8 @@ void AssetManager::serializeAllResources() {
 		auto&& [__, descriptor] = *iterator;
 
 		std::ofstream outputFile = [&]() -> std::ofstream {
-			// Controller and material wants to overwrite the original asset file..
-			if constexpr (std::same_as<T, Controller> || std::same_as<T, Material>) {
+			// Controller, material and sequencer wants to overwrite the original asset file..
+			if constexpr (std::same_as<T, Controller> || std::same_as<T, Material> || std::same_as<T, Sequencer>) {
 				return std::ofstream{ descriptor->filepath };
 			}
 			// Custom shader wants to overwrite the resource file..
@@ -156,6 +156,10 @@ void AssetManager::serializeAllResources() {
 		if constexpr (std::same_as<T, Controller>) {
 			Serialiser::serializeToJsonFile(resource->data, outputFile);
 			Logger::debug("Serialised controller: {}", static_cast<std::size_t>(resourceId));
+		}
+		else if constexpr (std::same_as<T, Sequencer>) {
+			Serialiser::serializeToJsonFile(resource->data, outputFile);
+			Logger::debug("Serialised sequencer: {}", static_cast<std::size_t>(resourceId));
 		}
 		else if constexpr (std::same_as<T, Material>) {
 			Serialiser::serializeToJsonFile(resource->materialData, outputFile);
