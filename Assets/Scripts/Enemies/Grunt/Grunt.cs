@@ -18,7 +18,6 @@ class Grunt : Enemy
     private Prefab? hitboxPrefab = null;
     [SerializableField]
     private GameObject? hitboxPosition = null;
-
     [SerializableField]
     private float spawningDuration = 1f;
     /***********************************************************
@@ -86,27 +85,30 @@ class Grunt : Enemy
 
     public override void TakeDamage(float damage)
     {
-        // blud already died let him die in peace dont take anymore damage..
-        if(gruntState == GruntState.Death)
+
+        gruntStats.health -= damage;
+        if (gruntStats.health <= 0)
         {
+            gruntState = GruntState.Death;
+            animator.PlayAnimation("Grunt Death");
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
-        SpawnIchor();
+        if (!WasRecentlyDamaged())
+            SpawnIchor();
+        // blud already died let him die in peace dont take anymore damage..
+        if (gruntState == GruntState.Death || WasRecentlyDamaged())
+            return;
+        TriggerRecentlyDamageCountdown();
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        gruntStats.health -= damage;
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
         renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
         Invoke(() =>
         {
             renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
             renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        }, hurtDuration);
-        if(gruntStats.health <= 0)
-        {
-            gruntState = GruntState.Death;
-            animator.PlayAnimation("Grunt Death");
-            NavigationAPI.stopAgent(gameObject);
-        }
+        }, gruntStats.hurtDuration);
+        
     }
 
     // kills this gameobject..

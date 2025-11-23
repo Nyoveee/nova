@@ -83,23 +83,23 @@ class Gunner : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage)
     {
-        if (gunnerState == GunnerState.Death)
-            return;
-        SpawnIchor();
         gunnerStats.health -= damage;
+        if (gunnerStats.health <= 0)
+        {
+            gunnerState = GunnerState.Death;
+            animator.PlayAnimation("Gunner_Death");
+        }
+        if (!WasRecentlyDamaged())
+            SpawnIchor();
+        if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
+            return;
+        TriggerRecentlyDamageCountdown();
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
         Invoke(() =>
         {
             renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-        }, hurtDuration);
-
-        if (gunnerStats.health <= 0)
-        {
-            gunnerState = GunnerState.Death;
-            animator.PlayAnimation("Gunner_Death");
-            return;
-        }
+        }, gunnerStats.hurtDuration);
         gunnerState = GunnerState.Stagger;
         animator.PlayAnimation("Gunner_Stagger");
     }

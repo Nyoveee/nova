@@ -77,18 +77,8 @@ class Charger : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage)
     {
-        if (chargerState == ChargerState.Death)
-            return;
-        SpawnIchor();
         chargerstats.health -= damage;
-        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
-        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
-        Invoke(() =>
-        {
-            renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-            renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        }, hurtDuration);
-        if(chargerstats.health <= 0)
+        if (chargerstats.health <= 0)
         {
             chargerState = ChargerState.Death;
             animator.PlayAnimation("ChargerDeath");
@@ -96,6 +86,20 @@ class Charger : Enemy
             NavigationAPI.stopAgent(gameObject);
             chargingRigidbody.SetVelocity(Vector3.Zero());
         }
+        if (!WasRecentlyDamaged())
+            SpawnIchor();
+        if (chargerState == ChargerState.Death || WasRecentlyDamaged())
+            return;
+        TriggerRecentlyDamageCountdown();
+       
+        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
+        Invoke(() =>
+        {
+            renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+            renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
+        }, chargerstats.hurtDuration);
+        
     }
     public override bool IsEngagedInBattle()
     {

@@ -8,8 +8,7 @@ public abstract class Enemy : Script
     /***********************************************************
         Inspector Variables
     ***********************************************************/
-    [SerializableField]
-    protected float hurtDuration = 0.1f;
+
     [SerializableField]
     private Prefab ichorPrefab;
     [SerializableField]
@@ -25,6 +24,7 @@ public abstract class Enemy : Script
     ***********************************************************/
     protected GameObject? player = null;
     private EnemyStats? enemyStats = null;
+    private bool wasRecentlyDamaged = false;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
@@ -65,8 +65,11 @@ public abstract class Enemy : Script
     }
     protected void SpawnIchor()
     {
-        GameObject ichor = Instantiate(ichorPrefab);    
-        ichor.transform.localPosition = ichorSpawnPoint.transform.position;
+        for (int i = 0; i < enemyStats.ichorSpawnAmount; ++i)
+        {
+            GameObject ichor = Instantiate(ichorPrefab);
+            ichor.transform.localPosition = ichorSpawnPoint.transform.position;
+        }
     }
     protected void MoveToNavMeshPosition(Vector3 position)
     {
@@ -74,6 +77,21 @@ public abstract class Enemy : Script
         if (result != null)
             NavigationAPI.setDestination(gameObject, result.Value.point);
     }
+    protected bool WasRecentlyDamaged()
+    {
+        return wasRecentlyDamaged;
+    }
+    protected void TriggerRecentlyDamageCountdown()
+    {
+        wasRecentlyDamaged = true;
+        Invoke(() =>
+        {
+            wasRecentlyDamaged = false;
+        }, enemyStats.hurtDuration);
+    }
+    /***********************************************************
+       Script Functions
+    ***********************************************************/
     /***********************************************************
         Script Functions
     ***********************************************************/
