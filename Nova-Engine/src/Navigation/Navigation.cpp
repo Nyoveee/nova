@@ -284,20 +284,24 @@ ENGINE_DLL_API void NavigationSystem::RemoveAgentsFromSystem(entt::registry&, en
 		return;
 	}
 
-	int mapperindex = agentToIndexMap[navMeshAgent->agentName][navMeshAgent->agentIndex];
+	int lastElement  = lastIndex[navMeshAgent->agentName]-1;
+	int mapperindex  = agentToIndexMap[navMeshAgent->agentName][navMeshAgent->agentIndex];
+	int agentIDofLastElement = indexToAgentMap[navMeshAgent->agentName][lastElement];
 	int dtCrowdIndex = agentList[navMeshAgent->agentName][mapperindex]; //GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
 
 	//remove from dtcrowdsManager
 	crowdManager[navMeshAgent->agentName]->removeAgent(dtCrowdIndex);
 
 	//swap current and last
-	std::swap(agentList[navMeshAgent->agentName][mapperindex], agentList[navMeshAgent->agentName][lastIndex[navMeshAgent->agentName]]);
+	std::swap(agentList[navMeshAgent->agentName][mapperindex], agentList[navMeshAgent->agentName][lastElement]);
 
-	//update mapper position, last pos mapped index to new index
-	agentToIndexMap[navMeshAgent->agentName][lastIndex[navMeshAgent->agentName]] = mapperindex;
+	//update mapper position, last pos mapped index to new index, current mappedIndex now 
+	agentToIndexMap[navMeshAgent->agentName][agentIDofLastElement] = mapperindex;
+	indexToAgentMap[navMeshAgent->agentName][mapperindex] = agentIDofLastElement; //current occupied index is now held by agentID corresponding to last element
 
-	//remove current mapper index, current now longer exist
-	agentToIndexMap[navMeshAgent->agentName].erase(mapperindex);
+	//remove current mapper index, current now longer exist, and remove its corresponding map in indextoAgentMap
+	agentToIndexMap[navMeshAgent->agentName].erase(navMeshAgent->agentIndex);
+	indexToAgentMap[navMeshAgent->agentName].erase(lastElement); //remove id map to that last element cause position has switched corresponding to
 
 	//reduce last index by one
 	lastIndex[navMeshAgent->agentName]--;
@@ -539,10 +543,14 @@ int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent
 	//agentList[agentName][lastArrIndex] = agent;
 	//agentList[agentName][lastArrIndex]; //use the int stored in agentList as the dtCrowdIndex for this agent
 
-	agentToIndexMap[agentName].emplace(lastArrIndex, lastArrIndex); //assign this agent an mapped id pointing to this index in agentList as Id sport index can change but ID stay with obj
+	//recycle unused index, as id
+	int unusedDTindex = agentList[agentName][lastArrIndex];
+
+	agentToIndexMap[agentName].emplace(unusedDTindex, lastArrIndex); //assign this agent an mapped id pointing to this index in agentList as Id sport index can change but ID stay with obj
+	indexToAgentMap[agentName].emplace(lastArrIndex, unusedDTindex); //assign the inverse so when removing last element we know what lastlement id is point too
 
 	lastIndex[agentName]++; //increase list last elements
-	return lastArrIndex;
+	return unusedDTindex;
 }
 
 int NavigationSystem::GetDTCrowdIndex(std::string const& agentName, int agentID)

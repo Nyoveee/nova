@@ -97,6 +97,7 @@ private:
 
 	std::unordered_map<std::string, std::unordered_map<AgentID, ArrayIndex>> agentToIndexMap; // takes a NavmeshAgent agentID and map it to a index in agentList. Age
 
+	std::unordered_map<std::string, std::unordered_map<ArrayIndex, AgentID>> indexToAgentMap; // takes a holds the inverse copy of agentList index so that the last elements know which is tied to fro removale
 	//std::unordered_map<std::string, std::unordered_map<ArrayIndex, AgentID>> indexToAgentMap; //man
 
 
