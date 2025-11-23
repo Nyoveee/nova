@@ -50,6 +50,7 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 	}
 
 	transform->localPosition = localPosition->native();
+	transform->localRotation = localRotation->native();
 
 	Interface::recursivelyInitialiseEntity(prefabInstanceId);
 	
