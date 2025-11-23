@@ -72,6 +72,8 @@ public:
 	// most editor windows should use this function instead of the scene manager's load scene function.
 	void loadScene(ResourceID sceneId);
 
+	void unpackPrefab(EntityData& entityData);
+
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
 	// first parameter is used to specific which asset id is selected.

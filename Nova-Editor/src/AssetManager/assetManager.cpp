@@ -302,7 +302,7 @@ bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor,
 			Folder const& folder = directories.at(parentFolder);
 			return AssetIO::assetDirectory / folder.relativePath;
 		}
-	}();
+	}().lexically_normal();
 	
 	// uses the original file name if newFileStem is empty.
 	std::filesystem::path newFullFilePath = newFileStem.empty()
@@ -334,8 +334,13 @@ bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor,
 		nodeHandle.key() = newFullFilePath;
 		intermediaryAssetsToDescriptor.insert(std::move(nodeHandle));
 	}
+	else {
+		std::cout << "sum tin wong\n;";
+	}
 
 	descriptor->filepath = newFullFilePath;
+	serialiseDescriptor(descriptor->id);
+
 	Logger::debug("Asset filepath rename successful.");
 
 	return true;
@@ -388,7 +393,12 @@ ResourceID AssetManager::getResourceID(AssetFilePath const& assetFilePath) const
 }
 
 void AssetManager::onAssetAddition(AssetFilePath const& assetFilePath) {
-	processAssetFilePath(assetFilePath);
+	auto iterator = intermediaryAssetsToDescriptor.find(assetFilePath);
+
+	// !! new intermediary asset.
+	if (iterator == std::end(intermediaryAssetsToDescriptor)) {
+		processAssetFilePath(assetFilePath);
+	}
 }
 
 void AssetManager::onAssetModification(ResourceID id, AssetFilePath const& assetFilePath) {
@@ -538,12 +548,9 @@ bool AssetManager::moveAssetToFolder(ResourceID resourceId, FolderID destination
 	// update the map..
 	originalFolderId = destinationFolderId;
 
-	// filewatcher will update the new folder with this asset.
-#if false
 	// update the new folder..
 	Folder& destinationFolder = directories.at(destinationFolderId);
 	destinationFolder.assets.insert(resourceId);
-#endif
 
 	return true;
 }

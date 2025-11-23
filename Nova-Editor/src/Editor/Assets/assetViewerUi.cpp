@@ -76,9 +76,6 @@ void AssetViewerUI::update() {
 			// reset rename attempt.
 			selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
 		}
-		else {
-			toSerialiseSelectedDescriptor = true;
-		}
 	}
 
 	// If there is a name or filepath change, serialise the descriptor..

@@ -715,6 +715,15 @@ void Editor::loadScene(ResourceID sceneId) {
 	selectEntities({});
 }
 
+void Editor::unpackPrefab(EntityData& entityData) {
+	entityData.prefabID = TypedResourceID<Prefab>{ INVALID_RESOURCE_ID };
+
+	for (entt::entity child : entityData.children) {
+		EntityData& childEntityData = engine.ecs.registry.get<EntityData>(child);
+		unpackPrefab(childEntityData);
+	}
+}
+
 Editor::~Editor() {
 	
 	ImGui_ImplGlfw_Shutdown();
