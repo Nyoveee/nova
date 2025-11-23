@@ -41,10 +41,6 @@ constexpr const char* fontFileName =
 	"System\\Font\\"
 	"NotoSans-Medium.ttf";
 
-constexpr ImVec4 prefabColor	 = ImVec4(0.5f, 1.f, 1.f, 1.f);
-constexpr ImVec4 grayColor		 = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
-constexpr ImVec4 whiteColor		 = ImVec4(1.f, 1.f, 1.f, 1.f);
-
 
 Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, AssetManager& assetManager, ResourceManager& resourceManager) :
 	window							{ window },
@@ -67,8 +63,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	editorConfigUI					{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
-	inSimulationMode				{ false },
-	isThereChangeInSimulationMode	{ false }
+	inSimulationMode				{ false }
 {
 	// ======================================= 
 	// Preparing some ImGui config..
@@ -172,7 +167,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	}
 }
 
-void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback) {
+void Editor::update(float dt) {
 	imguiCounter = 0;
 
 	ZoneScopedC(tracy::Color::Orange);
@@ -187,12 +182,6 @@ void Editor::update(float dt, std::function<void(bool)> changeSimulationCallback
 
 	main(dt);
 	assetManager.update();
-
-	// inform the engine if there is a change in simulation mode.
-	if (isThereChangeInSimulationMode) {
-		changeSimulationCallback(inSimulationMode);
-		isThereChangeInSimulationMode = false;
-	}
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -310,7 +299,6 @@ void Editor::handleEntityValidity() {
 }
 
 void Editor::handleEntityHovering() {
-#if false
 	if (!isActive() || !editorViewPort.isActive) {
 		return;
 	}
@@ -338,25 +326,7 @@ void Editor::handleEntityHovering() {
 	}
 	
 	// new entity hovered.
-	entt::registry& registry = engine.ecs.registry;
-	
-	// has component mesh renderer.
-	if (registry.all_of<MeshRenderer>(newHoveringEntity)) {
-		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(newHoveringEntity);
-		meshRenderer.toRenderOutline = true;
-	}
-
-	if (registry.all_of<MeshRenderer>(hoveringEntity)) {
-		MeshRenderer& meshRenderer = registry.get<MeshRenderer>(hoveringEntity);
-
-		// dont render outline
-		if (!isEntitySelected(hoveringEntity)) {
-			meshRenderer.toRenderOutline = false;
-		}
-	}
-
 	hoveringEntity = newHoveringEntity;
-#endif
 }
 
 // handles object picker in game viewport
@@ -496,7 +466,6 @@ void Editor::startSimulation() {
 #endif
 
 	inSimulationMode = true;
-	isThereChangeInSimulationMode = true;
 }
 
 void Editor::stopSimulation() {
@@ -507,14 +476,17 @@ void Editor::stopSimulation() {
 	engine.editorControlMouse(true);
 	engine.stopSimulation();
 	inSimulationMode = false;
-	isThereChangeInSimulationMode = true;
 }
 
 bool Editor::isInSimulationMode() const {
 	return inSimulationMode;
 }
 
-void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate) {
+void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entity, bool toRecurse, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate) {
+	constexpr ImVec4 prefabColor = ImVec4(0.5f, 1.f, 1.f, 1.f);
+	constexpr ImVec4 grayColor = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
+	constexpr ImVec4 whiteColor = ImVec4(1.f, 1.f, 1.f, 1.f);
+
 	if (!registry.valid(entity)) {
 		return;
 	}
@@ -524,7 +496,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 	bool toDisplayTreeNode = false;
 
 	ImGui::PushID(static_cast<unsigned>(entity));
-		
+
 	// We use IILE to conditionally initialise a variable :)
 	ImVec4 color = [&]() {
 		// If the current entity is disabled, render gray..
@@ -539,7 +511,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 			while (root->parent != entt::null) {
 				if (root->prefabID != INVALID_RESOURCE_ID)
 					return prefabColor;
-				
+
 				root = registry.try_get<EntityData>(root->parent);
 			}
 
@@ -554,7 +526,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 	ImGui::PushStyleColor(ImGuiCol_Text, color);
 
-	if (entityData.children.empty()) {
+	if (!toRecurse || entityData.children.empty()) {
 		ImGui::Indent(27.5f);
 		if (ImGui::Selectable((
 			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
@@ -624,11 +596,25 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 	// recursively displays tree hierarchy..
 	if (toDisplayTreeNode) {
 		for (entt::entity child : entityData.children) {
-			displayEntityHierarchy(registry, child, onClickFunction, selectedPredicate);
+			displayEntityHierarchy(registry, child, toRecurse, onClickFunction, selectedPredicate);
 		}
 
 		ImGui::TreePop();
 	}
+}
+
+void Editor::loadScene(ResourceID sceneId) {
+	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
+
+	if (filePath) {
+		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
+	}
+
+	engine.ecs.sceneManager.loadScene(sceneId);
+	editorViewPort.controlOverlay.clearNotification();
+
+	// deselect entity.
+	selectEntities({});
 }
 
 Editor::~Editor() {

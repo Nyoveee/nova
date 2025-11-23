@@ -15,14 +15,6 @@ class Charger : Enemy
     private Transform_? attackHitBoxTransform;
     [SerializableField]
     private float hurtDuration = 0.1f;
-    [SerializableField]
-    private Material? defaultMaterial = null;
-    [SerializableField]
-    private Material? defaultMaterial2 = null;
-    [SerializableField]
-    private Material? hurtMaterial = null;
-    [SerializableField]
-    private Material? hurtMaterial2 = null;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -31,7 +23,6 @@ class Charger : Enemy
     private float currentChargeTime = 0f;
     private float currentChargeCooldown = 0f;
     private float currentFootStepTime = 0f;
-    private float currentHurtTime = 0f;
     private GameObject? hitbox;
     private int footStepIndex = 0;
     // State machine
@@ -61,15 +52,6 @@ class Charger : Enemy
         updateState.Add(ChargerState.Death, Update_Death);
     }
     protected override void update() {
-        if(currentHurtTime > 0)
-        {
-            currentHurtTime -= Time.V_FixedDeltaTime();
-            if(currentHurtTime <= 0)
-            {
-                renderer.changeMaterial(0, defaultMaterial);
-                renderer.changeMaterial(1, defaultMaterial2);
-            }
-        }
         updateState[chargerState](); 
     }
     /***********************************************************
@@ -84,9 +66,13 @@ class Charger : Enemy
         if (chargerState == ChargerState.Death)
             return;
         chargerstats.health -= damage;
-        currentHurtTime = hurtDuration;
-        renderer.changeMaterial(0, hurtMaterial);
-        renderer.changeMaterial(1, hurtMaterial2);
+        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
+        Invoke(() =>
+        {
+            renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+            renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
+        }, hurtDuration);
         if(chargerstats.health <= 0)
         {
             chargerState = ChargerState.Death;
@@ -149,13 +135,14 @@ class Charger : Enemy
             chargerState = ChargerState.Walk;
             animator.PlayAnimation("ChargerWalk");
             currentChargeCooldown = chargerstats.chargeCooldown;
+            return;
         }
         // FootSteps
         currentFootStepTime -= Time.V_FixedDeltaTime();
         if(currentFootStepTime <= 0)
         {
             currentFootStepTime = chargerstats.timeBetweenChargeSteps;
-            footStepIndex = (footStepIndex + 1)%2;
+            footStepIndex = (footStepIndex + 1) % 2;
             AudioAPI.PlaySound(gameObject, footStepIndex == 0 ? "sfx_enemyChargeStep_01mono" : "sfx_enemyChargeStep_02mono");
         }
     }

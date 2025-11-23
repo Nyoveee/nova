@@ -82,23 +82,11 @@ void EditorViewPort::update(float dt) {
 	// Accept scene item payload..
 	if (ImGui::BeginDragDropTarget()) {
 		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("DRAGGING_ASSET_ITEM")) {
-			std::pair<int, const char*> sceneData = *((std::pair<int, const char*>*)payload->Data);
-
 			auto&& [id, name] = *((std::pair<std::size_t, const char*>*)payload->Data);
 
 			// handling scene drop request..
 			if (editor.resourceManager.isResource<Scene>(id)) {
-				AssetFilePath const* filePath = editor.assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
-
-				if (filePath) {
-					Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
-				}
-
-				engine.ecs.sceneManager.loadScene(id);
-				controlOverlay.clearNotification();
-
-				// deselect entity.
-				editor.selectEntities({});
+				editor.loadScene(id);
 			}
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
 				engine.prefabManager.instantiatePrefab<ALL_COMPONENTS>(id);

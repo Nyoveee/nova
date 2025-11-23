@@ -687,6 +687,23 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 
 	return std::nullopt;
 }
+std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, float maxDistance, std::vector<uint8_t> const& layerMask) {
+	auto&& narrowPhaseQuery = physicsSystem.GetNarrowPhaseQuery();
+	JPH::RayCastResult rayCastResult;
+	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
+	RayCastLayerMaskFilterImpl layerMaskFilter(layerMask);
+	// Object Layer
+	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult, layerMaskFilter)) {
+		JPH::BodyID bodyId = rayCastResult.mBodyID;
+
+		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
+		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
+
+		return PhysicsRayCastResult{ entity, collisionPoint };
+	}
+
+	return std::nullopt;
+}
 
 void PhysicsManager::addForce(Rigidbody const& rigidbody, glm::vec3 forceVector) {
 	// attempts to retrieve the underlying body id..

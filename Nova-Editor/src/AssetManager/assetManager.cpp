@@ -32,6 +32,49 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	hasInitialised		{},
 	folderId			{}
 {
+	reload();
+
+	// By now everything should be serialized, compile the entity scripts
+	engine.scriptingAPIManager.compileScriptAssembly();
+}
+
+AssetManager::~AssetManager() {
+#if 0
+	// let's serialise the asset meta data of all our stored info.
+	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
+		assert(serialiseFunctorPtr && "Should never be nullptr");
+
+		// serialise the descriptor file for this given asset id.
+		serialiseFunctorPtr->operator()(id, *this);
+	}
+#endif
+
+	// Asset manager serialises all of the resources that is modified directly in the end.
+	serialiseResources();
+}
+
+void AssetManager::submitCallback(std::function<void()> callback) {
+	std::lock_guard lock{ queueCallbackMutex };
+	callbacks.push(std::move(callback));
+}
+
+void AssetManager::reload() {
+	// ========================================
+	// 0. Clear all containers, reset all variables..
+	// ========================================
+	resourceManager.reload();
+
+	hasInitialised = false;
+	intermediaryAssetsToDescriptor.clear();
+	assetToDescriptor.clear();
+	directories.clear();
+	systemResourcesId.clear();
+	serialiseDescriptorFunctors.clear();
+	resourceToType.clear();
+	folderPathToId.clear();
+	assetToDirectories.clear();
+	callbacks = std::queue<std::function<void()>>{};
+
 	// record the root asset directory.
 	directories[ASSET_FOLDER] = Folder{
 		ASSET_FOLDER,
@@ -113,7 +156,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 		try {
 			ResourceID id = std::stoull(std::filesystem::path{ resourcePath }.stem().string());
 			auto iterator = assetToDescriptor.find(id);
-			
+
 			if (iterator == assetToDescriptor.end()) {
 				Logger::debug("Found dangling resource file {} with no corresponding descriptor file, removing it..", resourcePath.string());
 				std::filesystem::remove(resourcePath);
@@ -137,30 +180,7 @@ AssetManager::AssetManager(ResourceManager& resourceManager, Engine& engine) :
 	loadSystemResourceDescriptor<Material>(AssetIO::systemMaterialResources);
 	loadSystemResourceDescriptor<Texture>(AssetIO::systemTextureResources);
 
-	// By now everything should be serialized, compile the entity scripts
-	engine.scriptingAPIManager.compileScriptAssembly();
-
 	hasInitialised = true;
-}
-
-AssetManager::~AssetManager() {
-#if 0
-	// let's serialise the asset meta data of all our stored info.
-	for (auto&& [id, serialiseFunctorPtr] : serialiseDescriptorFunctors) {
-		assert(serialiseFunctorPtr && "Should never be nullptr");
-
-		// serialise the descriptor file for this given asset id.
-		serialiseFunctorPtr->operator()(id, *this);
-	}
-#endif
-
-	// Asset manager serialises all of the resources that is modified directly in the end.
-	serialiseResources();
-}
-
-void AssetManager::submitCallback(std::function<void()> callback) {
-	std::lock_guard lock{ queueCallbackMutex };
-	callbacks.push(std::move(callback));
 }
 
 void AssetManager::update() {
@@ -220,6 +240,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".prefab") {
 		return initialiseResourceFile.template operator()<Prefab> ();
 	}
+	else if (fileExtension == ".sequencer") {
+		return initialiseResourceFile.template operator()<Sequencer>();
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return INVALID_RESOURCE_ID;
@@ -265,20 +288,26 @@ void AssetManager::recordFolder(FolderID id, std::filesystem::path const& path) 
 	};
 }
 
-bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
-	auto iterator = assetToDescriptor.find(id);
-
-	if (iterator == assetToDescriptor.end()) {
-		Logger::error("Attempt to rename file failed. Unable to find corresponding descriptor.");
-		return false;
-	}
-
-	auto&& [_, descriptor] = *iterator;
-
+bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor, std::string const& newFileStem, FolderID parentFolder) {
 	// Determine the appropriate full new file path.
 	std::filesystem::path oldFullFilePath { descriptor->filepath };
-	std::filesystem::path parentPath = std::filesystem::path{ descriptor->filepath }.parent_path();
-	std::filesystem::path newFullFilePath = parentPath / newFileStem;
+
+	std::filesystem::path parentPath = [&]() {
+		if (parentFolder == NO_FOLDER) {
+			// no specified parent folder, we rename it based on it's current parent filepath..
+			return std::filesystem::path{ descriptor->filepath }.parent_path();
+		}
+		else {
+			// get the specified parent folder's filepath.
+			Folder const& folder = directories.at(parentFolder);
+			return AssetIO::assetDirectory / folder.relativePath;
+		}
+	}();
+	
+	// uses the original file name if newFileStem is empty.
+	std::filesystem::path newFullFilePath = newFileStem.empty()
+		? std::move(parentPath) / std::filesystem::path{ descriptor->filepath }.stem()
+		: std::move(parentPath) / newFileStem;
 
 	newFullFilePath.replace_extension(oldFullFilePath.extension());
 
@@ -470,6 +499,7 @@ void AssetManager::processAssetFilePath(AssetFilePath const& assetPath) {
 	else {
 		auto&& [_, parentFolderId] = *folderIterator;
 		directories[parentFolderId].assets.insert(resourceId);
+		assetToDirectories[resourceId] = parentFolderId;
 	}
 }
 
@@ -477,10 +507,72 @@ void AssetManager::serialiseResources() {
 	serializeAllResources<Controller>();
 	serializeAllResources<Material>();
 	serializeAllResources<CustomShader>();
+	serializeAllResources<Sequencer>();
+}
+
+bool AssetManager::moveAssetToFolder(ResourceID resourceId, FolderID destinationFolderId) {
+	auto iterator = assetToDescriptor.find(resourceId);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::error("Attempt to move file failed. Unable to find corresponding descriptor.");
+		return false;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+
+	// We attempt to actually move the underlying asset first.. (because it may fail)..
+	if (!renameFile(descriptor, descriptor->name, destinationFolderId)) {
+		return false;
+	}
+
+	// update the directories metadata..
+	// we first update the original folder..
+	auto originalFolderIterator = assetToDirectories.find(resourceId);
+	assert(originalFolderIterator != assetToDirectories.end() && "Since resourceId exist in asset to descriptor, it must be valid. Invariant broken.");
+	
+	auto&& [__, originalFolderId] = *originalFolderIterator;
+	
+	Folder& originalFolder = directories.at(originalFolderId);
+	originalFolder.assets.erase(resourceId);
+	
+	// update the map..
+	originalFolderId = destinationFolderId;
+
+	// filewatcher will update the new folder with this asset.
+#if false
+	// update the new folder..
+	Folder& destinationFolder = directories.at(destinationFolderId);
+	destinationFolder.assets.insert(resourceId);
+#endif
+
+	return true;
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {
 	return directories;
+}
+
+FolderID AssetManager::getParentFolder(ResourceID id) const {
+	auto iterator = assetToDirectories.find(id);
+	
+	if (iterator == assetToDirectories.end()) {
+		return NO_FOLDER;
+	}
+
+	return iterator->second;
+}
+
+bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
+	auto iterator = assetToDescriptor.find(id);
+
+	if (iterator == assetToDescriptor.end()) {
+		Logger::error("Attempt to rename file failed. Unable to find corresponding descriptor.");
+		return false;
+	}
+
+	auto&& [_, descriptor] = *iterator;
+
+	return renameFile(descriptor, newFileStem, NO_FOLDER);
 }
 
 void AssetManager::removeResource(ResourceID id) {
@@ -497,10 +589,34 @@ void AssetManager::removeResource(ResourceID id) {
 	serialiseDescriptorFunctors.erase(id);
 	resourceToType.erase(id);
 	assetToDescriptor.erase(iterator);
+	assetToDirectories.erase(id);
 }
 
 void AssetManager::deleteAsset([[maybe_unused]] ResourceID id) {
-	
-// 	std::filesystem::remove(resourcePath);
+	// via the descriptor, find the original asset filepath..
+	auto iterator = assetToDescriptor.find(id);
 
+	if (iterator == assetToDescriptor.end()) {
+		Logger::warn("Deleting an invalid resource?");
+		return;
+	}
+
+	// Delete the asset file..
+	auto&& [_, assetInfoPtr] = *iterator;
+ 	std::filesystem::remove(assetInfoPtr->filepath);
+
+	// Remove any record of this asset in memory..
+	removeResource(id);
+	resourceManager.removeResource(id);
+}
+
+void AssetManager::serialiseDescriptor(ResourceID id) {
+	auto iterator = serialiseDescriptorFunctors.find(id);
+	
+	if (iterator == serialiseDescriptorFunctors.end()) {
+		Logger::error("Failed to serialize descriptor for resource id {}!", static_cast<std::size_t>(id));
+		return;
+	}
+
+	iterator->second->operator()(id, *this);
 }

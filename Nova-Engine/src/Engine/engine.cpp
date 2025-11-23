@@ -127,6 +127,8 @@ void Engine::startSimulation() {
 }
 
 void Engine::stopSimulation() {
+	inSimulationMode = false;
+
 	if (setupSimulationFunction) {
 		return; // already prompted for simulation change.
 	}
@@ -142,7 +144,6 @@ void Engine::stopSimulation() {
 
 		resourceManager.removeAllResourceInstance();
 
-		inSimulationMode = false;
 		gameLockMouse(false);
 	};
 }

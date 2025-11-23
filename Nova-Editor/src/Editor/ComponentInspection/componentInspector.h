@@ -39,9 +39,13 @@ public:
 
 public:
 	std::string componentSearchQuery;
-
 	std::string uppercaseSearchQuery;
 	std::string uppercaseTypeName;
+
+private:
+	std::string scriptSearchQuery;
+	std::string uppercaseScriptSearchQuery;
+	std::string uppercaseScriptName;
 };
 
 #include "componentInspector.ipp"

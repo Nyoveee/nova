@@ -8,4 +8,5 @@ class GruntStats : Script
     public float attackRadius = 2f;
     public float chasingRadius = 20f;
     public float damage = 5f;
+    public float hurtDuration = 0.1f;
 }

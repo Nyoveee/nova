@@ -30,6 +30,7 @@ class CubeMap;
 class ScriptAsset;
 class Audio;
 class Material;
+class Sequencer;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -39,7 +40,7 @@ class Material;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
-	Image
+	Image, Sequence
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -221,12 +222,21 @@ struct Animator {
 	std::unordered_set<int> executedAnimationEvents;
 };
 
+struct Sequence {
+	TypedResourceID<Sequencer> sequencerId;
+
+	REFLECTABLE(
+		sequencerId
+	)
+};
+
 struct Rigidbody {
 	JPH::EMotionType motionType		= JPH::EMotionType::Static;
 
 	enum class Layer {
 		NonMoving,
-		Moving
+		Moving,
+		Wall
 	} layer							= Layer::NonMoving;
 
 	glm::vec3 initialVelocity		{};
@@ -435,7 +445,6 @@ struct NavMeshAgent
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
 };
-
 
 struct NavigationTestTarget
 {
