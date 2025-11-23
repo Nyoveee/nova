@@ -174,7 +174,13 @@ void ECS::setComponentActive(entt::entity entity, size_t componentID, bool isAct
 		inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
 		if (componentID == typeid(NavMeshAgent).hash_code())
 			engine.navigationSystem.refreshAgentPosition(entity);
+		if (componentID == typeid(Rigidbody).hash_code())
+			engine.physicsManager.addBodiesToSystem(engine.ecs.registry, entity);
 	}
-	else if (!isActive && !inactiveComponents.count(componentID))
+	else if (!isActive && !inactiveComponents.count(componentID)) {
+	
 		inactiveComponents.insert(componentID);
+		if (componentID == typeid(Rigidbody).hash_code())
+			engine.physicsManager.removeBodiesFromSystem(engine.ecs.registry, entity);
+	}
 }

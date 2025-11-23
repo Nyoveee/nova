@@ -80,18 +80,20 @@ class Charger : Enemy
         chargerstats.health -= damage;
         if (chargerstats.health <= 0)
         {
+            if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                SpawnIchor();
             chargerState = ChargerState.Death;
             animator.PlayAnimation("ChargerDeath");
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
             NavigationAPI.stopAgent(gameObject);
-            chargingRigidbody.SetVelocity(Vector3.Zero());
+            chargingRigidbody.enable = false;
+            navMeshRigidbody.enable = false;
+            navMeshAgent.enable = false;
         }
-        if (!WasRecentlyDamaged())
-            SpawnIchor();
         if (chargerState == ChargerState.Death || WasRecentlyDamaged())
             return;
         TriggerRecentlyDamageCountdown();
-       
+        SpawnIchor();
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
         renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
         Invoke(() =>

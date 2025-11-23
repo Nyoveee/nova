@@ -12,6 +12,8 @@ class Gunner : Enemy
     private Prefab projectilePrefab;
     [SerializableField]
     private GameObject? projectileSpawnPoint;
+    [SerializableField]
+    private Rigidbody_? rigidbody;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -86,13 +88,16 @@ class Gunner : Enemy
         gunnerStats.health -= damage;
         if (gunnerStats.health <= 0)
         {
+            if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+                SpawnIchor();
             gunnerState = GunnerState.Death;
             animator.PlayAnimation("Gunner_Death");
-        }
-        if (!WasRecentlyDamaged())
-            SpawnIchor();
+            NavigationAPI.stopAgent(gameObject);
+            rigidbody.enable = false;
+        }   
         if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
             return;
+        SpawnIchor();
         TriggerRecentlyDamageCountdown();
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));

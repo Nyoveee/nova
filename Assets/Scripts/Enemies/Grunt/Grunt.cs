@@ -20,6 +20,8 @@ class Grunt : Enemy
     private GameObject? hitboxPosition = null;
     [SerializableField]
     private float spawningDuration = 1f;
+    [SerializableField]
+    private Rigidbody_? rigidbody;
     /***********************************************************
         Components
     ***********************************************************/
@@ -89,16 +91,17 @@ class Grunt : Enemy
         gruntStats.health -= damage;
         if (gruntStats.health <= 0)
         {
+            if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+                SpawnIchor();
             gruntState = GruntState.Death;
             animator.PlayAnimation("Grunt Death");
             NavigationAPI.stopAgent(gameObject);
-            return;
+            rigidbody.enable = false;
         }
-        if (!WasRecentlyDamaged())
-            SpawnIchor();
         // blud already died let him die in peace dont take anymore damage..
         if (gruntState == GruntState.Death || WasRecentlyDamaged())
             return;
+        SpawnIchor();
         TriggerRecentlyDamageCountdown();
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));

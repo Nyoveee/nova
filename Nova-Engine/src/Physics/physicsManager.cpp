@@ -186,15 +186,15 @@ PhysicsManager::~PhysicsManager() {
 
 void PhysicsManager::simulationInitialise() {
 
-	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+	for (auto&& [entityId, entityData, transform, rigidbody] : registry.view<EntityData, Transform, Rigidbody>().each()) {
 		if (rigidbody.bodyId == JPH::BodyID{}) {
 			continue;
 		}
-
-		bodyInterface.ActivateBody(rigidbody.bodyId);
 		bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(rigidbody.initialVelocity));
 		rigidbody.velocity = rigidbody.initialVelocity;
 		bodyInterface.SetIsSensor(rigidbody.bodyId, rigidbody.isTrigger);
+		bodyInterface.ActivateBody(rigidbody.bodyId);
+		
 	}
 }
 
@@ -231,9 +231,6 @@ void PhysicsManager::updatePhysics(float dt) {
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
 	// =============================================================
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<Rigidbody>(entityId)) {
-			continue;
-		}
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
@@ -256,10 +253,6 @@ void PhysicsManager::updatePhysics(float dt) {
 	// =============================================================
 
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<Rigidbody>(entityId)) {
-			continue;
-		}
-
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
