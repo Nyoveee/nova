@@ -510,6 +510,54 @@ void Editor::displayEntityScriptDropDownList(ResourceID id, const char* labelNam
 	ImGui::PopID();
 }
 
+void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity selectedEntity, std::function<void(entt::entity)> const& onClickCallback) {
+	entt::registry& registry = engine.ecs.registry;
+
+	ImGui::PushID(++imguiCounter);
+
+	EntityData* selectedEntityData = registry.try_get<EntityData>(selectedEntity);
+	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<invalid entity>";
+
+	// Uppercase search query..
+	// Case insensitive searchQuery..
+	uppercaseEntitySearchQuery.clear();
+	std::transform(entitySearchQuery.begin(), entitySearchQuery.end(), std::back_inserter(uppercaseEntitySearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+	if (ImGui::BeginCombo(labelName, selectedEntityName)) {
+		ImGui::InputText("Search", &entitySearchQuery);
+
+		for (auto&& [entityId, entityData] : registry.view<EntityData>().each()) {
+			// Let's upper case our entity name..
+			uppercaseEntityName.clear();
+			std::transform(entityData.name.begin(), entityData.name.end(), std::back_inserter(uppercaseEntityName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			// attempt to find entity..
+			if (uppercaseEntityName.find(uppercaseEntitySearchQuery) == std::string::npos) {
+				continue;
+			}
+
+			ImGui::PushID(static_cast<int>(entityId));
+
+			if (ImGui::Selectable(entityData.name.empty() ? "<no name>" : entityData.name.c_str(), selectedEntity == entityId)) {
+				onClickCallback(entityId);
+			}
+
+			ImGui::PopID();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			onClickCallback(*((entt::entity*)payload->Data));
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopID();
+}
+
 void Editor::launchProfiler()
 {
 	// Launch the profiler server connecting to the engine client

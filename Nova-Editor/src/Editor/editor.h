@@ -86,6 +86,9 @@ public:
 	template <IsEnum T>
 	void displayEnumDropDownList(T value, const char* labelName, std::function<void(T)> onClickCallback);
 
+	// display all entities
+	void displayAllEntitiesDropDownList(const char* labelName, entt::entity entity, std::function<void(entt::entity)> const& onClickCallback);
+
 	void launchProfiler();
 
 public:
@@ -141,6 +144,10 @@ private:
 	std::string assetSearchQuery;
 	std::string uppercaseSearchQuery;
 	std::string uppercaseAssetName;
+
+	std::string entitySearchQuery;
+	std::string uppercaseEntitySearchQuery;
+	std::string uppercaseEntityName;
 
 	int imguiCounter = 0;
 };

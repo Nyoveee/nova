@@ -20,6 +20,8 @@
 #include <variant>
 #include <unordered_set>
 
+#include "serializedField.h"
+
 #include "Physics/physicsManager.h"
 
 struct FieldData;
@@ -105,6 +107,7 @@ private:
 	std::string buildTPAList(const std::string& directory);
 	std::string getDotNetRuntimeDirectory();
 
+	bool hasFieldChanged(serialized_field_type const& oldField, serialized_field_type const& newField);
 
 private:
 	Engine& engine;

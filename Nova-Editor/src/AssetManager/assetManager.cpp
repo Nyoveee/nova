@@ -335,7 +335,7 @@ bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor,
 		intermediaryAssetsToDescriptor.insert(std::move(nodeHandle));
 	}
 	else {
-		std::cout << "sum tin wong\n;";
+		assert(false && "Intermediary filepath not recorded. Invariant broken.");
 	}
 
 	descriptor->filepath = newFullFilePath;
