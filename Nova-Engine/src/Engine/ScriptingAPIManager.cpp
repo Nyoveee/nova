@@ -199,6 +199,26 @@ std::string ScriptingAPIManager::getDotNetRuntimeDirectory()
 	return PATH.string() + "\\" + std::get<2>(latestVersion).string();
 }
 
+bool ScriptingAPIManager::hasFieldChanged(serialized_field_type const& oldField, serialized_field_type const& newField) {
+	if (std::holds_alternative<serialized_field_list>(oldField) && std::holds_alternative<serialized_field_list>(newField)) {
+		auto const& oldList = std::get<serialized_field_list>(oldField);
+		auto const& newList = std::get<serialized_field_list>(newField);
+
+		// underlying list is different.
+		if (oldList.getIndex() != newList.getIndex()) {
+			return true;
+		}
+
+		// underlying list is the same, but itself may be a list..
+		auto oldListElementField = default_construct_serialized_field_type(oldList.getIndex());
+		auto newListElementField = default_construct_serialized_field_type(newList.getIndex());
+
+		return hasFieldChanged(oldListElementField, newListElementField);
+	}
+
+	return oldField.index() != newField.index();
+}
+
 bool ScriptingAPIManager::compileScriptAssembly()
 {
 	compileState = CompileState::CompilationFailed;
@@ -303,25 +323,40 @@ void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 	// we attempt to recompile the script assembly
 	if (compileScriptAssembly()) {
 		for (ResourceID modifiedScriptID : modifiedScripts) {
+
 			// We include Inheritted Scripts to modify
 			std::unordered_set<ResourceID> hierarchyModifiedScripts{ getHierarchyModifiedScripts_(static_cast<std::size_t>(modifiedScriptID)) };
+
 			// update the field data of all entities with affected scripts..
 			for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 				for (auto&& script : scripts.scriptDatas) {
+
 					// only get script field data if this script itself has been modified.
 					if (!hierarchyModifiedScripts.count(script.scriptId))
 						continue;
-					std::vector<FieldData> temp{ script.fields };
+
+					std::vector<FieldData> oldFieldData{ script.fields };
 					script.fields.clear();
+
 					for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
 						bool b_IsExistingField{ false };
-						for (FieldData const& oldFields : temp) {
+
+						for (FieldData const& oldFields : oldFieldData) {
 							if (oldFields.name != newFields.name)
 								continue;
-							script.fields.push_back(oldFields);
-							b_IsExistingField = true;
-							break;
+							
+							if (!hasFieldChanged(oldFields.data, newFields.data)) {
+								// We already have an old field containing data, let's reuse it.
+								script.fields.push_back(oldFields);
+								b_IsExistingField = true;
+								break;
+							}
+							else {
+								// The type of the old field has changed, let's override it.
+								break;
+							}
 						}
+
 						if (!b_IsExistingField)
 							script.fields.push_back(newFields);
 					}

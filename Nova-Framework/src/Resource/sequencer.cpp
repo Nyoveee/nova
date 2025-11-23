@@ -33,7 +33,7 @@ void Sequencer::recordKeyframe(int currentFrame, Transform const& transform) {
 	
 	Keyframe newKeyframe{
 		.frame			= currentFrame,
-		.lerpType		= Keyframe::LerpType::Smooth,
+		.lerpType		= Keyframe::LerpType::CatmullRom,
 		.power			= 1.f,
 		.localPosition	= transform.localPosition,
 		.localScale		= transform.localScale,

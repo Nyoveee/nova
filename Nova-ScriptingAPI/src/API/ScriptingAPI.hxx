@@ -48,9 +48,17 @@ internal:
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);
+	
+	// process each individual script field data.. and get info from it..
+	static bool getScriptFieldData(System::Object^ object, System::Type^ fieldType, serialized_field_type& fieldData);
 
 	// Set script field data..
 	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
+
+	// process each individual script field data.. and set to it..
+	static void processSetScriptFieldData(Object^% object, System::Type^ fieldType, serialized_field_type const& field);
+
+	// Used when instantiating a new script..
 	static void setFieldData(Script^ script, FieldData const& fieldData);
 
 	static void addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate);
@@ -64,16 +72,16 @@ internal:
 
 	// Setting/Getting of primitive data for fields through fielddata
 	template<typename Type, typename ...Types>
-	static bool ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ object);
+	static bool ObtainPrimitiveDataFromScript(serialized_field_type& fieldData, Object^ object);
 
 	template<typename Type, typename ...Types>
-	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+	static bool SetScriptPrimitiveFromNativeData(serialized_field_type const& fieldData, Object^% object);
 
 	template <typename Type, typename ...Types>
-	static bool ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ object, System::Type^ originalType);
+	static bool ObtainTypedResourceIDFromScript(serialized_field_type& fieldData, Object^ object, System::Type^ originalType);
 
 	template <typename Type, typename ...Types>
-	static bool SetTypedResourceIDFromScript(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+	static bool SetTypedResourceIDFromScript(serialized_field_type const& fieldData, Object^% object);
 internal:
 	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
 internal:

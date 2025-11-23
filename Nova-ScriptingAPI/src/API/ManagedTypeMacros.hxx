@@ -40,11 +40,11 @@ public value struct ManagedType : IManagedStruct {																					\
 	ManagedType(NativeType native) : Call_MacroComma_Double(ConstructorDefinition, __VA_ARGS__) {}									\
 	ManagedType(Call_MacroComma_Double(Parameter,__VA_ARGS__)) : Call_MacroComma_Double(ConstructorDefinition2, __VA_ARGS__) {}     \
 	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}										\
-	virtual void AppendValueToFieldData(FieldData& fieldData) sealed{															    \
-		fieldData.data = native();																									\
+	virtual void AppendValueToFieldData(serialized_field_type& fieldData) sealed{															    \
+		fieldData = native();																									\
 	}																																\
-	virtual void SetValueFromFieldData(FieldData const& fieldData) sealed{                                                          \
-		*this = ManagedType(std::get<NativeType>(fieldData.data));																	\
+	virtual void SetValueFromFieldData(serialized_field_type const& fieldData) sealed{                                                          \
+		*this = ManagedType(std::get<NativeType>(fieldData));																	\
 	}                                                                                                                               \
 	virtual System::String^ ToString() override sealed{																				\
 		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();													\
@@ -120,6 +120,7 @@ public:																								\
 #define ManagedResource(Resource)																	\
 public ref class Resource : IManagedResourceID {													\
 public:																								\
+	Resource()								 : IManagedResourceID()								{};	\
 	Resource(TypedResourceID<::Resource> id) : IManagedResourceID(static_cast<std::size_t>(id)) {};	\
 																									\
 	virtual System::String^ ToString() override sealed {											\

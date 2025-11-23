@@ -85,7 +85,6 @@ void ComponentInspector::update() {
 				
 				// Add itself into the new layer..
 				layers[entityData.layerId].entities.insert(selectedEntity);
-
 			}
 
 			ImGui::PopID();
@@ -97,6 +96,12 @@ void ComponentInspector::update() {
 
 	if (prefabAssetInfo) {
 		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", nullptr);
+		
+		ImGui::SameLine();
+
+		if (ImGui::Button(ICON_FA_BOX_OPEN)) {
+			editor.unpackPrefab(entityData);
+		}
 	}
 
 	ImGui::NewLine();

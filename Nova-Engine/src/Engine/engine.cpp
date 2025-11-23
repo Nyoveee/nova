@@ -174,11 +174,14 @@ bool Engine::isInSimulationMode() const {
 void Engine::gameLockMouse(bool value) {
 	isGameLockingMouse = value;
 
+	// legacy reason, please don't mind the extremely confusing booleans..
 	if (!isEditorControllingMouse && isGameLockingMouse) {
 		window.toEnableMouse(false);
+		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Disable);
 	}
 	else {
 		window.toEnableMouse(true);
+		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Enable);
 	}
 }
 

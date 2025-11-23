@@ -13,11 +13,11 @@ T* Interface::getNativeComponent(System::UInt32 entityID) {
 }
 
 template<typename Type, typename ...Types>
-bool Interface::ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ object)
+bool Interface::ObtainPrimitiveDataFromScript(serialized_field_type& fieldData, Object^ object)
 {
 	try {
 		Type^ value = safe_cast<Type^>(object);
-		fieldData.data = safe_cast<Type>(*value);
+		fieldData = safe_cast<Type>(*value);
 		return true;
 	}
 	catch(...){}
@@ -28,22 +28,22 @@ bool Interface::ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ obje
 }
 
 template<typename Type, typename ...Types>
-bool Interface::SetScriptPrimitiveFromNativeData(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo)
+bool Interface::SetScriptPrimitiveFromNativeData(serialized_field_type const& fieldData, Object^% object)
 {
-	if (std::holds_alternative<Type>(fieldData.data)) {
-		Type value = std::get<Type>(fieldData.data);
+	if (std::holds_alternative<Type>(fieldData)) {
+		Type value = std::get<Type>(fieldData);
 		Type^ managedValue = safe_cast<Type^>(value);
-		fieldInfo->SetValue(script, managedValue);
+		object = managedValue;
 		return true;
 	}
 	if constexpr (sizeof...(Types) > 0)
-		return SetScriptPrimitiveFromNativeData<Types...>(fieldData, script, fieldInfo);
+		return SetScriptPrimitiveFromNativeData<Types...>(fieldData, object);
 	else
 		return false;
 }
 
 template<typename Type, typename ...Types>
-bool Interface::ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ object, System::Type^ originalType) {
+bool Interface::ObtainTypedResourceIDFromScript(serialized_field_type& fieldData, Object^ object, System::Type^ originalType) {
 		if (originalType == Type::typeid) {
 		try {
 			Type^ value = safe_cast<Type^>(object);
@@ -53,7 +53,7 @@ bool Interface::ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ ob
 				object = gcnew Type{ { INVALID_RESOURCE_ID } };
 				value = safe_cast<Type^>(object);
 			}
-			fieldData.data = value->getId();
+			fieldData = value->getId();
 			return true;
 		}
 		catch (System::Exception^) {}
@@ -66,23 +66,23 @@ bool Interface::ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ ob
 }
 
 template<typename Type, typename ...Types>
-bool Interface::SetTypedResourceIDFromScript(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo) {
+bool Interface::SetTypedResourceIDFromScript(serialized_field_type const& fieldData, Object^% object) {
 	try {
 		// this step is just to check if the field info is of this Type..
-		Type^ value = safe_cast<Type^>(fieldInfo->GetValue(script));
+		Type^ value = safe_cast<Type^>(object);
 			
 		using variantType = decltype(value->getId());
-		variantType const& varantValue = std::get<variantType>(fieldData.data);
+		variantType const& varantValue = std::get<variantType>(fieldData);
 
 		value = gcnew Type{ { varantValue } };
 		
-		fieldInfo->SetValue(script, value);
+		object = value;
 		return true;
 	}
 	catch (...) {}
 
 	if constexpr (sizeof...(Types) > 0)
-		return SetTypedResourceIDFromScript<Types...>(fieldData, script, fieldInfo);
+		return SetTypedResourceIDFromScript<Types...>(fieldData, object);
 	else 
 		return false;
 }

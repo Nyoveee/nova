@@ -162,6 +162,17 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		}
 	);
 
+	inputManager.subscribe<ToEnableCursor>(
+		[&](ToEnableCursor toEnable) {
+			if (toEnable == ToEnableCursor::Enable) {
+				io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+			}
+			else {
+				io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+			}
+		}
+	);
+
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
@@ -499,6 +510,54 @@ void Editor::displayEntityScriptDropDownList(ResourceID id, const char* labelNam
 	ImGui::PopID();
 }
 
+void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity selectedEntity, std::function<void(entt::entity)> const& onClickCallback) {
+	entt::registry& registry = engine.ecs.registry;
+
+	ImGui::PushID(++imguiCounter);
+
+	EntityData* selectedEntityData = registry.try_get<EntityData>(selectedEntity);
+	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<invalid entity>";
+
+	// Uppercase search query..
+	// Case insensitive searchQuery..
+	uppercaseEntitySearchQuery.clear();
+	std::transform(entitySearchQuery.begin(), entitySearchQuery.end(), std::back_inserter(uppercaseEntitySearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+	if (ImGui::BeginCombo(labelName, selectedEntityName)) {
+		ImGui::InputText("Search", &entitySearchQuery);
+
+		for (auto&& [entityId, entityData] : registry.view<EntityData>().each()) {
+			// Let's upper case our entity name..
+			uppercaseEntityName.clear();
+			std::transform(entityData.name.begin(), entityData.name.end(), std::back_inserter(uppercaseEntityName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			// attempt to find entity..
+			if (uppercaseEntityName.find(uppercaseEntitySearchQuery) == std::string::npos) {
+				continue;
+			}
+
+			ImGui::PushID(static_cast<int>(entityId));
+
+			if (ImGui::Selectable(entityData.name.empty() ? "<no name>" : entityData.name.c_str(), selectedEntity == entityId)) {
+				onClickCallback(entityId);
+			}
+
+			ImGui::PopID();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+			onClickCallback(*((entt::entity*)payload->Data));
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopID();
+}
+
 void Editor::launchProfiler()
 {
 	// Launch the profiler server connecting to the engine client
@@ -528,12 +587,19 @@ void Editor::toOutline(std::vector<entt::entity> const&, bool) const {
 #endif
 }
 
+void Editor::toControlMouse(bool toControl) {
+	// legacy reasons..
+	engine.editorControlMouse(toControl);
+}
+
 void Editor::startSimulation() {
 	if (inSimulationMode) {
 		return; // already in simulation mode.
 	}
 
-	engine.editorControlMouse(false);
+	// editor doesn't need to control the mouse anymore..
+	toControlMouse(false);
+
 	engine.startSimulation();
 
 	// We serialise everything, resources to current scene when starting a simulation..
@@ -553,7 +619,7 @@ void Editor::stopSimulation() {
 		return; // already not in simulation mode.
 	}
 
-	engine.editorControlMouse(true);
+	toControlMouse(true);
 	engine.stopSimulation();
 	inSimulationMode = false;
 }
@@ -695,6 +761,15 @@ void Editor::loadScene(ResourceID sceneId) {
 
 	// deselect entity.
 	selectEntities({});
+}
+
+void Editor::unpackPrefab(EntityData& entityData) {
+	entityData.prefabID = TypedResourceID<Prefab>{ INVALID_RESOURCE_ID };
+
+	for (entt::entity child : entityData.children) {
+		EntityData& childEntityData = engine.ecs.registry.get<EntityData>(child);
+		unpackPrefab(childEntityData);
+	}
 }
 
 Editor::~Editor() {
