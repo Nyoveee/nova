@@ -37,14 +37,17 @@ constexpr int MAX_NUMBER_OF_BONES = 255;
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine						{ engine },
+	gameWidth					{ gameWidth },
+	gameHeight					{ gameHeight },
 	resourceManager				{ engine.resourceManager },
 	registry					{ engine.ecs.registry },
 	basicShader					{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
 	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	// blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	// PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
+	bloomBrightShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomBright.frag" },
+	bloomBlurShader				{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomBlur.frag" },
+	bloomFinalShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
@@ -90,12 +93,13 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	hdrExposure					{ 0.25f },
 	toneMappingMethod			{ ToneMappingMethod::None },
 
-	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
-	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
+	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA16F } },
+	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA16F } },
 	uiMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8  } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
+	bloomWorkingFrameBuffer		{ gameWidth / 2, gameHeight / 2, { GL_RGBA16F } },
 	toGammaCorrect				{ true },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
@@ -400,15 +404,24 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 
 	// We render individual game objects..
 	renderSkyBox();
+
+	// enable the drawing to the bloom color attachment.
+	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(2);
+
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
+
+	// disable the drawing to the bloom color attachment.
+	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
 	setBlendMode(CustomShader::BlendingConfig::Disabled);
+
+	renderBloom(frameBuffers);
 
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping(frameBuffers);
@@ -431,6 +444,40 @@ void Renderer::renderToDefaultFBO() {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisable(GL_BLEND);
+}
+
+void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
+	// =======================================================
+	// 1. Blur the bright spots into a separate working FBO.
+	// We retrieve the bright spots from the 2nd color attachment of the main frame buffer.
+	// We also need to downscale our viewport..
+	// =======================================================
+	glViewport(0, 0, gameWidth / 2, gameHeight / 2);
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomWorkingFrameBuffer.fboId());
+	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	bloomBlurShader.use();
+
+	// bind to bloom bright color attachment..
+	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().textureIds()[1]);
+	bloomBlurShader.setImageUniform("image", 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glViewport(0, 0, gameWidth, gameHeight);
+
+	// =======================================================
+	// 2. Combine pass: add blurred bright image with the main scene
+	// =======================================================
+	frameBuffers.swapFrameBuffer();
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	bloomFinalShader.use();
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);	// original scene
+	glBindTextureUnit(1, bloomWorkingFrameBuffer.textureIds()[0]);				// blurred bright
+	bloomFinalShader.setImageUniform("scene", 0);
+	bloomFinalShader.setImageUniform("bloomBlur", 1);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void Renderer::overlayUIToBuffer(PairFrameBuffer& target)

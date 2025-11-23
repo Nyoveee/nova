@@ -83,5 +83,5 @@ Frag{
     vec4 albedo = texture(albedoMap, fsIn.textureUnit);
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);
 
-    FragColor = vec4(emissiveColor + pbrColor, 1.0);
+    return vec4(emissiveColor + pbrColor, 1.0);
 }

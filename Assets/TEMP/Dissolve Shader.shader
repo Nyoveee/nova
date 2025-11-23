@@ -49,9 +49,9 @@ Frag{
     else if (dissolve > dissolveThreshold - edgeWidth)
     {
         // Burning edge effect
-        FragColor = vec4(edgeColor, 1.0);
+        return vec4(edgeColor, 1.0);
     }
     else {
-        FragColor = vec4(pbrColor, 1.0);
+        return vec4(pbrColor, 1.0);
     }
 }

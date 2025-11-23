@@ -59,6 +59,8 @@ public:
 	
 	void renderToDefaultFBO();
 
+	void renderBloom(PairFrameBuffer& frameBuffers);
+
 	void overlayUIToBuffer(PairFrameBuffer& target);
 public:
 	// =============================================
@@ -219,8 +221,10 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
-	FrameBuffer uiMainFrameBuffer;
+	FrameBuffer bloomWorkingFrameBuffer;
+
 	// contains all physics debug rendering..
+	FrameBuffer uiMainFrameBuffer;
 	FrameBuffer physicsDebugFrameBuffer;
 
 	// contains objectIds for object picking.
@@ -234,6 +238,8 @@ private:
 	int numOfPhysicsDebugLines;
 	int numOfNavMeshDebugTriangles;
 
+	int gameWidth;
+	int gameHeight;
 	bool isOnWireframeMode;
 
 public:
@@ -243,8 +249,6 @@ public:
 	Shader colorShader;
 	Shader gridShader;
 	Shader outlineShader;
-	// Shader blinnPhongShader;
-	// Shader PBRShader;
 	Shader debugShader;
 	Shader overlayShader;
 
@@ -260,6 +264,10 @@ public:
 
 	// HDR tone mapping shader
 	Shader toneMappingShader;
+
+	Shader bloomBrightShader;
+	Shader bloomBlurShader;
+	Shader bloomFinalShader;
 
 	// HDR parameters
 	float hdrExposure;

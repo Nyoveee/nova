@@ -70,7 +70,9 @@ layout(std430, binding = 2) buffer SpotLights {
 };
 
 uniform vec3 cameraPos;
-out vec4 FragColor;
+
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;  
 
 in VS_OUT {
     vec2 textureUnit;
@@ -226,4 +228,14 @@ vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor
     diffuseBrdf *= 1.0 - metallic;
 
     return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
+}
+
+void renderBloomBrightColors() {
+    // check whether fragment output is higher than threshold, if so output as brightness color
+    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+
+    if(brightness > 1.0)
+        BrightColor = vec4(FragColor.rgb, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
