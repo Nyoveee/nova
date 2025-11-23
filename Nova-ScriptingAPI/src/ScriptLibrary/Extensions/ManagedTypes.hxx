@@ -1,9 +1,9 @@
 #pragma once
 
 #include "component.h"
+#include "ECS/ECS.h"
 #include "API/ManagedTypeMacros.hxx"
 #include "API/IManagedResourceID.hxx"
-
 // ===========================================================================================
 // 0. Defining managed typed resource..
 // ===========================================================================================

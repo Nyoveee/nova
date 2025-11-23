@@ -371,11 +371,11 @@ void Renderer::renderUI()
 				continue;
 			}
 
-			if (image && !entityData.inactiveComponents.count(typeid(Image).hash_code())) {
+			if (image && engine.ecs.isComponentActive<Image>(entity)) {
 				renderImage(transform, *image);
 			}
 
-			if (text && !entityData.inactiveComponents.count(typeid(Text).hash_code())) {
+			if (text && engine.ecs.isComponentActive<Text>(entity)) {
 				renderText(transform, *text);
 			}
 		}
@@ -711,7 +711,7 @@ void Renderer::prepareRendering() {
 	unsigned int numOfSpotLights = 0;
 
 	for (auto&& [entity, entityData, transform, light] : registry.view<EntityData, Transform,  Light>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Light).hash_code()))
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity))
 			continue;
 		switch (light.type)
 		{
@@ -801,7 +801,7 @@ void Renderer::renderSkyBox() {
 		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
 
 		// skybox not loaded..
-		if (!asset || !entityData.isActive || entityData.inactiveComponents.count(typeid(SkyBox).hash_code())) {
+		if (!asset || !entityData.isActive || !engine.ecs.isComponentActive<SkyBox>(entityId)) {
 			continue;
 		}
 
@@ -830,7 +830,7 @@ void Renderer::renderModels(Camera const& camera) {
 			Transform const& transform = registry.get<Transform>(entity);
 			EntityData const& entityData = registry.get<EntityData>(entity);
 
-			if (!entityData.isActive || entityData.inactiveComponents.count(typeid(MeshRenderer).hash_code())) {
+			if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
 				continue;
 			}
 
@@ -985,7 +985,7 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isSkinnedMeshRenderer);
 
 	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(SkinnedMeshRenderer).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) {
 			continue;
 		}
 		
@@ -1278,7 +1278,7 @@ void Renderer::renderObjectIds() {
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 	
 	for (auto&& [entity, transform, entityData, meshRenderer] : registry.view<Transform, EntityData, MeshRenderer>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(MeshRenderer).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
 			continue;
 		}
 
@@ -1308,7 +1308,7 @@ void Renderer::renderObjectIds() {
 	}
 
 	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(SkinnedMeshRenderer).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) {
 			continue;
 		}
 
@@ -1363,7 +1363,7 @@ void Renderer::renderUiObjectIds() {
 	uiImageObjectIdShader.setMatrix("uiProjection", UIProjection);
 
 	for (auto&& [entity, transform, entityData, image] : registry.view<Transform, EntityData, Image>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Image).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Image>(entity)) {
 			continue;
 		}
 
@@ -1393,7 +1393,7 @@ void Renderer::renderUiObjectIds() {
 
 	// iterate through all characters
 	for (auto&& [entity, transform, entityData, text] : registry.view<Transform, EntityData, Text>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Text).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Text>(entity)) {
 			continue;
 		}
 

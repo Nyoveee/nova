@@ -63,7 +63,7 @@ void NavigationSystem::update(float const& dt)
 	//then get all new data an feedback into the transform
 	for (auto&& [entity,entityData, transform, agent] : registry.view<EntityData, Transform, NavMeshAgent>().each())
 	{
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(NavMeshAgent).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<NavMeshAgent>(entity)) {
 			stopAgent(entity);
 			continue;
 		}

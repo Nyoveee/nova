@@ -231,7 +231,7 @@ void PhysicsManager::updatePhysics(float dt) {
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
 	// =============================================================
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Rigidbody).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Rigidbody>(entityId)) {
 			continue;
 		}
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
@@ -256,7 +256,7 @@ void PhysicsManager::updatePhysics(float dt) {
 	// =============================================================
 
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Rigidbody).hash_code())) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Rigidbody>(entityId)) {
 			continue;
 		}
 

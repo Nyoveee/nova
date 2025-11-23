@@ -114,17 +114,15 @@ public:																															\
 	}																															\
 	property bool enable{																										\
 		bool get(){																												\
-			EntityData& entityData{ Interface::engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };		\
 			return NonComponentDisablingTypes<ComponentType>																	\
-				|| !entityData.inactiveComponents.count(typeid(ComponentType).hash_code());										\
+				|| Interface::engine->ecs.isComponentActive<ComponentType>(static_cast<entt::entity>(entityID));				\
 		};																														\
 		void set(bool b_Enable){																								\
 			if constexpr (NonComponentDisablingTypes<ComponentType>) {															\
 				Logger::warn("{} does not support enabling/disabling", #ComponentType);											\
 				return;																											\
 			}																													\
-			size_t componentID{ typeid(ComponentType).hash_code() };															\
-			Interface::engine->ecs.setComponentActive(static_cast<entt::entity>(entityID), componentID, b_Enable);				\
+			Interface::engine->ecs.setComponentActive<ComponentType>(static_cast<entt::entity>(entityID), b_Enable);			\
 			return;																												\
 		};																														\
 	}																															\

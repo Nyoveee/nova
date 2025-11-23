@@ -45,8 +45,7 @@ namespace {
 					EntityData* const entityData{ componentInspector.ecs.registry.try_get<EntityData>(entity) };
 					if (entityData) {
 						std::unordered_set<size_t>& inactiveComponents{ entityData->inactiveComponents };
-						bool b_InSet{ inactiveComponents.count(componentID) != 0 };
-						bool b_Active{ !b_InSet };
+						bool b_Active{ componentInspector.ecs.isComponentActive<Component>(entity)};
 						// Display Checkbox
 						ImGui::SameLine();
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.5f);
@@ -54,16 +53,12 @@ namespace {
 						ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.28f, 0.28f, 0.28f, 1.0f));
 						ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.32f, 0.32f, 0.32f, 1.0f));
 						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.1f, 0.1f));
-						ImGui::Checkbox("##", &b_Active);
+						if (ImGui::Checkbox("##", &b_Active))
+							componentInspector.ecs.setComponentActive<Component>(entity, b_Active);
 						ImGui::PopStyleVar();
 						ImGui::PopStyleColor();
 						ImGui::PopStyleColor();
 						ImGui::PopStyleColor();
-						// Update if checkbox is clicked
-						if (!b_InSet && !b_Active)
-							inactiveComponents.insert(componentID);
-						else if (b_InSet && b_Active)
-							inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
 					}
 				}
 				
