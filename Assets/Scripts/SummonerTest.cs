@@ -31,6 +31,8 @@ class SummonerTest : Script
         MapKey(Key.LeftShift, ShiftDown, ShiftUp);
         MapKey(Key.MouseLeft, OnMouseClick);
         MapKey(Key.Delete, DeleteEnt);
+        MapKey(Key.S, SetStateActive);
+        MapKey(Key.D, SetStateInactive);
     }
 
     // This function is invoked every fixed update.
@@ -57,18 +59,22 @@ class SummonerTest : Script
             //Debug.Log("ray hit at " + result.Value.point + ", hitting entity " + result.Value.entity);
             GameObject cube = Instantiate(cubePrefab, result.Value.point, Quaternion.Identity(), null);
 
-            //GameObject[] children = cube.GetChildren();
+            GameObject[] children = cube.GetChildren();
 
-            //for(int i = 0; i < children.Length; i++)
-            //{
-            //    if (children[i].getScript<PathfindingCube>() != null)
-            //    {
-            //        children[i].getScript<PathfindingCube>().cubeIndex = cubeList.Count;
-            //        cubeList.Add(children[i].getScript<PathfindingCube>());
-            //    }
-            //}
-            cube.getScript<PathfindingCube>().cubeIndex = slot;
-            cubeList[slot] = cube.getScript<PathfindingCube>();
+            for (int i = 0; i < children.Length; i++)
+            {
+                if (children[i].getScript<PathfindingCube>() != null)
+                {
+                    //children[i].getScript<PathfindingCube>().cubeIndex = cubeList.Count;
+                    //cubeList.Add(children[i].getScript<PathfindingCube>());
+
+                    children[i].getScript<PathfindingCube>().cubeIndex = slot;
+                    cubeList[slot] = children[i].getScript<PathfindingCube>();
+                    break;
+                }
+            }
+            //cube.getScript<PathfindingCube>().cubeIndex = slot;
+            //cubeList[slot] = cube.getScript<PathfindingCube>();
 
 
         }
@@ -99,6 +105,21 @@ class SummonerTest : Script
         }
     }
 
+    public void SetStateInactive()
+    {
+        if (array[slot] == true)
+        {
+            cubeList[slot].gameObject.SetActive(false);
+        }
+    }
+
+    public void SetStateActive()
+    {
+        if (array[slot] == true)
+        {
+            cubeList[slot].gameObject.SetActive(true);
+        }
+    }
 
     public void SetOne()
     {

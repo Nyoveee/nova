@@ -447,6 +447,8 @@ struct NavMeshAgent
 	bool setActive					= true; //is agent requiring the services of the navigation system? 
 											//it can be disabled at certain points in time to allow other movements types to take control
 	
+	bool updateRotation				= true; //should agent update rotation. 
+	bool updatePosition             = true; //should agent update position. 
 
 	REFLECTABLE
 	(
@@ -458,7 +460,7 @@ struct NavMeshAgent
 	)
 	//Runtime variables
 	int   agentIndex		= -1; // -1 means its unsued //query the mapper to find the correct dtCrowd ID. 
-								  //NOTE this no longer maps directly to dtCrowd object, use GetDTCrowdIndex to find actuall index
+								  //NOTE this no longer maps directly to dtCrowd object, use GetDTCrowdIndex to find actual index
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
 };

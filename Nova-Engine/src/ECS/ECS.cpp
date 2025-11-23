@@ -150,9 +150,12 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 		// destruction / construction of physics body when enabling or disabling..
 		if (isActive) {
 			engine.physicsManager.addBodiesToSystem(registry, entity);
+			engine.navigationSystem.SetAgentActive(entity);
+		
 		}
 		else {
 			engine.physicsManager.removeBodiesFromSystem(registry, entity);
+			engine.navigationSystem.SetAgentInactive(entity);
 		}
 	}
 

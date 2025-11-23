@@ -13,6 +13,7 @@ class PathfindingCube : Script
     protected override void init()
     {
       MapKey(Key.MouseLeft, OnMouseClick);
+     // MapKey(Key.S, OnMouseClick);
 
     }
 
@@ -55,7 +56,7 @@ class PathfindingCube : Script
             NavigationAPI.setDestination(gameObject, result.Value.point);
         }
 
-
     }
+
 
 }

@@ -118,6 +118,12 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 	engine->transformationSystem.updateLocalMatrix(transform);
 	engine->transformationSystem.recalculateModelMatrix(entity);
 
+	// initialise navmesh...
+	NavMeshAgent* navMeshAgent = Interface::engine->ecs.registry.try_get<NavMeshAgent>(entity);
+
+	if (navMeshAgent)
+		Interface::engine->navigationSystem.InstantiateAgentsToSystem(entity, &transform, navMeshAgent);
+
 	// initialise animator..
 	Animator* animator = Interface::engine->ecs.registry.try_get<Animator>(entity);
 

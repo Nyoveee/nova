@@ -69,6 +69,12 @@ void NavigationSystem::update(float const& dt)
 	//then get all new data and feed back into the transform
 	for (auto&& [entity, transform, agent] : registry.view<Transform, NavMeshAgent>().each())
 	{
+
+		//agent is not active
+		if (agent.setActive == false)
+		{
+			continue;
+		}
 		auto iterator = crowdManager.find(agent.agentName);
 
 		if (iterator == crowdManager.end()) {
@@ -81,9 +87,14 @@ void NavigationSystem::update(float const& dt)
 		dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(agent.agentName,agent.agentIndex));
 
 		if (dtAgent) {
-			transform.position.x = dtAgent->npos[0];
-			transform.position.y = dtAgent->npos[1];
-			transform.position.z = dtAgent->npos[2];
+
+
+			if (agent.updatePosition)
+			{
+				transform.position.x = dtAgent->npos[0];
+				transform.position.y = dtAgent->npos[1];
+				transform.position.z = dtAgent->npos[2];
+			}
 
 			if (transform.position.x != dtAgent->npos[0] || transform.position.y != dtAgent->npos[1] || transform.position.z != dtAgent->npos[2])
 			{
@@ -97,51 +108,15 @@ void NavigationSystem::update(float const& dt)
 				continue;
 			}
 
-			////get current facing direction of the agent
-			//float currentYaw = transform.eulerAngles.angles.y;
-
-			////glm::vec3 agentFacingDir = glm::normalize(glm::vec3(dtAgent->nvel[0], 0.0f, dtAgent->nvel[2]));
-			//auto wrapPi = [](float a) {
-			//	while (a > glm::pi<float>()) a -= 2.0f * glm::two_pi<float>();
-			//	while (a <= -glm::pi<float>()) a += 2.0f * glm::two_pi<float>();
-			//	return a;
-			//};
-
-
-			//float desiredYaw = std::atan2(dtAgent->vel[0], dtAgent->vel[2]);
-
-			////glm::quat targetRotation = glm::angleAxis(desiredYaw, glm::vec3(0.f,1.f,0.f) );
-
-			////shortest angular difference
-			//float diff = wrapPi(desiredYaw - currentYaw);
-			//
-			//float frameRotation = glm::radians(agent.agentRotationSpeed) * dt; //get the rotation possible this frame
-
-
-			////if the difference it too large this frame, use framerotation, else use difference to cover
-			//if (std::fabs(diff) > frameRotation)
-			//{
-			//	diff = (diff > 0.0f) ? frameRotation : -frameRotation;
-			//}
-
-			//currentYaw += diff;
-
-			//glm::quat yawQuat = glm::angleAxis(currentYaw, glm::vec3(0.0f, 1.0f, 0.0f));
-			//transform.rotation = yawQuat;
-
-			//glm::vec3 desiredFront{ dtAgent->vel[0],dtAgent->vel[1],dtAgent->vel[2] };
-			//glm::vec3 currentFront{ transform.front };
-
-			//glm::quat rotationQuat = glm::rotation(currentFront, desiredFront);
-
-			//transform.rotation = transform.rotation * rotationQuat;
-
 
 			//----Working code
-			float desiredYaw = std::atan2(dtAgent->vel[0], dtAgent->vel[2]);
+			if (agent.updateRotation)
+			{
+				float desiredYaw = std::atan2(dtAgent->vel[0], dtAgent->vel[2]);
 
-			glm::quat yawQuat = glm::angleAxis(desiredYaw, glm::vec3(0.0f, 1.0f, 0.0f));
-			transform.rotation = yawQuat;
+				glm::quat yawQuat = glm::angleAxis(desiredYaw, glm::vec3(0.0f, 1.0f, 0.0f));
+				transform.rotation = yawQuat;
+			}
 
 
 			//----Testing Code
@@ -347,6 +322,49 @@ ENGINE_DLL_API void NavigationSystem::InstantiateAgentsToSystem(entt::entity ent
 	if (navMeshAgent->agentIndex < 0)
 	{
 		Logger::warn("Failed to add NavMeshAgent to crowd");
+	}
+}
+
+ENGINE_DLL_API void NavigationSystem::SetAgentActive(entt::entity entityID)
+{
+	auto&& navMeshAgent = registry.try_get<NavMeshAgent>(entityID);
+
+	if (navMeshAgent == nullptr || navMeshAgent->agentIndex < 0)
+	{
+
+		return;
+	}
+
+	if (!navMeshAgent->setActive)
+	{
+
+		navMeshAgent->setActive = true;
+		int dtIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+        crowdManager[navMeshAgent->agentName]->getEditableAgent(dtIndex)->active = true;
+		crowdManager[navMeshAgent->agentName]->resetMoveTarget(dtIndex);
+
+	}
+
+}
+
+ENGINE_DLL_API void NavigationSystem::SetAgentInactive(entt::entity entityID)
+{
+	auto&& navMeshAgent = registry.try_get<NavMeshAgent>(entityID);
+
+	if (navMeshAgent == nullptr || navMeshAgent->agentIndex < 0)
+	{
+
+		return;
+	}
+
+	if (navMeshAgent->setActive)
+	{
+
+		navMeshAgent->setActive = false;
+		int dtIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+		crowdManager[navMeshAgent->agentName]->getEditableAgent(dtIndex)->active = false;
+		crowdManager[navMeshAgent->agentName]->resetMoveTarget(dtIndex);
+
 	}
 }
 

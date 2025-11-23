@@ -54,13 +54,23 @@ public:
 	ENGINE_DLL_API void		  NavigationDebug();
 	ENGINE_DLL_API void		  AddAgentsToSystem(entt::registry&, entt::entity entityID);
 	ENGINE_DLL_API void		  RemoveAgentsFromSystem(entt::registry&, entt::entity entityID);
-
 	ENGINE_DLL_API void		  InstantiateAgentsToSystem(entt::entity entityID, Transform const*const enttTransform, NavMeshAgent *const navMeshAgent);
+	ENGINE_DLL_API void		  SetAgentActive(entt::entity entityID);
+	ENGINE_DLL_API void		  SetAgentInactive(entt::entity entityID);
+	ENGINE_DLL_API void		  SetAgentActive(NavMeshAgent& navMeshAgent);
+	ENGINE_DLL_API void		  SetAgentInactive(NavMeshAgent& navMeshAgent);
 
 //--------------------For C# scripting API-------------------------------------------------------------//
 public:
 	//Start navigation for a particular agent. Returns bool false when unable to set destination to targetPosition.
 	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
+
+	//ENGINE_DLL_API void setAgentInactive(entt::entity entityID);
+
+	//ENGINE_DLL_API void setAgentActive(entt::entity entityID);
+
+	//ENGINE_DLL_API bool warp(entt::entity entityID,  glm::vec3 targetPosition);
+
 
 
 //--------------------Helper functions-------------------------------------------------------------//
