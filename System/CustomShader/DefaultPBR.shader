@@ -22,6 +22,7 @@ Properties{
 
     bool toUseEmissiveMap;
     sampler2D emissiveMap;
+    float emissiveStrength;
 }
 
 // Vertex shader..
@@ -67,7 +68,7 @@ Frag{
         bc5Channels = bc5Channels * 2.0 - 1.0; 
 
         // We calculate the z portion of the normal..
-        vec3 sampledNormal = vec3(bc5Channels, 1 - bc5Channels.x * bc5Channels.x - bc5Channels.y * bc5Channels.y);
+        vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));
         _normal = normalize(fsIn.TBN * sampledNormal);
     }
     else {
@@ -77,7 +78,7 @@ Frag{
     vec3 emissiveColor = vec3(0);
 
     if(toUseEmissiveMap) {
-        emissiveColor = vec3(texture(emissiveMap, fsIn.textureUnit));
+        emissiveColor = emissiveStrength * vec3(texture(emissiveMap, fsIn.textureUnit));
     }
 
     vec4 albedo = texture(albedoMap, fsIn.textureUnit);

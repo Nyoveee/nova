@@ -15,6 +15,7 @@
 #include "component.h"
 #include "vertex.h"
 #include "font.h"
+#include "bloomFrameBuffer.h"
 
 #include "model.h"
 #include "cubemap.h"
@@ -121,6 +122,8 @@ public:
 
 public:
 	bool toGammaCorrect;
+	float bloomFilterRadius = 0.005f;
+	float bloomCompositePercentage = 0.04f;
 
 private:
 	// =============================================
@@ -221,7 +224,7 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
-	FrameBuffer bloomWorkingFrameBuffer;
+	BloomFrameBuffer bloomFrameBuffer;
 
 	// contains all physics debug rendering..
 	FrameBuffer uiMainFrameBuffer;
@@ -240,6 +243,9 @@ private:
 
 	int gameWidth;
 	int gameHeight;
+
+	glm::vec2 gameSize { gameWidth, gameHeight };
+
 	bool isOnWireframeMode;
 
 public:
@@ -265,8 +271,8 @@ public:
 	// HDR tone mapping shader
 	Shader toneMappingShader;
 
-	Shader bloomBrightShader;
-	Shader bloomBlurShader;
+	Shader bloomDownSampleShader;
+	Shader bloomUpSampleShader;
 	Shader bloomFinalShader;
 
 	// HDR parameters

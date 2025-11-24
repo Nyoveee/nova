@@ -189,39 +189,49 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 	}
 
 	auto updateMaterialProperty = [&](std::unordered_map<std::string, std::string> const& shaderUniforms) {
-		material->materialData.overridenUniforms.clear();
+		std::unordered_map<std::string, OverriddenUniformData> newShaderUniforms;
+		std::unordered_map<std::string, OverriddenUniformData>& oldShaderUniforms = material->materialData.overridenUniforms;
 
-		for (auto&& [identifer, type] : shaderUniforms) {
+		for (auto&& [identifier, type] : shaderUniforms) {
+			auto iterator = oldShaderUniforms.find(identifier);
+
+			if (iterator != oldShaderUniforms.end() && iterator->second.type == type) {
+				// use the old value..
+				newShaderUniforms.insert(*iterator);
+				continue;
+			}
+
 			// thank you zhi wei for writing all of the if cases. :)
 			if (type == "bool")
-				material->materialData.overridenUniforms.insert({ identifer, { type, bool{} } });
+				newShaderUniforms.insert({ identifier, { type, bool{} } });
 			if (type == "int")
-				material->materialData.overridenUniforms.insert({ identifer, { type, int{} } });
+				newShaderUniforms.insert({ identifier, { type, int{} } });
 			if (type == "uint")
-				material->materialData.overridenUniforms.insert({ identifer, { type, unsigned{} } });
+				newShaderUniforms.insert({ identifier, { type, unsigned{} } });
 			if (type == "float")
-				material->materialData.overridenUniforms.insert({ identifer, { type, float{} } });
+				newShaderUniforms.insert({ identifier, { type, float{} } });
 			if (type == "vec2")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec2{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::vec2{} } });
 			if (type == "vec3")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec3{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::vec3{} } });
 			if (type == "vec4")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec4{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::vec4{} } });
 			if (type == "mat3")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::mat3{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::mat3{} } });
 			if (type == "mat4")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::mat4{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::mat4{} } });
 			if (type == "sampler2D")
-				material->materialData.overridenUniforms.insert({ identifer, { type, TypedResourceID<Texture>{ NONE_TEXTURE_ID } } });
+				newShaderUniforms.insert({ identifier, { type, TypedResourceID<Texture>{ NONE_TEXTURE_ID } } });
 
 			// custom glsl types..
 			if (type == "Color")
-				material->materialData.overridenUniforms.insert({ identifer, { type, Color{ 1.f, 1.f, 1.f } } });
+				newShaderUniforms.insert({ identifier, { type, Color{ 1.f, 1.f, 1.f } } });
 			if (type == "ColorA")
-				material->materialData.overridenUniforms.insert({ identifer, { type, ColorA{ 1.f, 1.f, 1.f, 1.f } } });
+				newShaderUniforms.insert({ identifier, { type, ColorA{ 1.f, 1.f, 1.f, 1.f } } });
 			if (type == "NormalizedFloat")
-				material->materialData.overridenUniforms.insert({ identifer, { type, NormalizedFloat{} } });
+				newShaderUniforms.insert({ identifier, { type, NormalizedFloat{} } });
 		}
+		oldShaderUniforms = std::move(newShaderUniforms);
 	};
 
 	editor.displayAssetDropDownList<CustomShader>(shaderId, "Shader", [&](ResourceID id) {

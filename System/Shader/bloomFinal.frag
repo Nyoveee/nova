@@ -6,6 +6,7 @@ out vec4 FragColor;
 
 uniform sampler2D scene;
 uniform sampler2D bloomBlur;
+uniform float compositePercentage;
 
 void main()
 {             
@@ -13,7 +14,7 @@ void main()
     vec3 originalSceneColor = originalScene.rgb;     
  
     vec3 bloomColor = texture(bloomBlur, textureCoords).rgb;
-    originalSceneColor += bloomColor * 1.5; // additive blending
+    originalSceneColor += compositePercentage * bloomColor; // additive blending
 
     FragColor = vec4(originalSceneColor, originalScene.a);
 }  

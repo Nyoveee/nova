@@ -45,8 +45,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	bloomBrightShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomBright.frag" },
-	bloomBlurShader				{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomBlur.frag" },
+	bloomDownSampleShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomDownSample.frag" },
+	bloomUpSampleShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomUpSample.frag" },
 	bloomFinalShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
@@ -93,13 +93,13 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	hdrExposure					{ 0.25f },
 	toneMappingMethod			{ ToneMappingMethod::None },
 
-	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA16F } },
-	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA16F } },
+	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
+	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
 	uiMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8  } },
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
-	bloomWorkingFrameBuffer		{ gameWidth / 2, gameHeight / 2, { GL_RGBA16F } },
+	bloomFrameBuffer			{ gameWidth, gameHeight, 5 },
 	toGammaCorrect				{ true },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
@@ -405,15 +405,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	// We render individual game objects..
 	renderSkyBox();
 
-	// enable the drawing to the bloom color attachment.
-	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(2);
-
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
-
-	// disable the drawing to the bloom color attachment.
-	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -448,35 +442,87 @@ void Renderer::renderToDefaultFBO() {
 
 void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 	// =======================================================
-	// 1. Blur the bright spots into a separate working FBO.
-	// We retrieve the bright spots from the 2nd color attachment of the main frame buffer.
-	// We also need to downscale our viewport..
+	// 1. We need to progressively down sample our HDR framebuffer.
 	// =======================================================
-	glViewport(0, 0, gameWidth / 2, gameHeight / 2);
-	glBindFramebuffer(GL_FRAMEBUFFER, bloomWorkingFrameBuffer.fboId());
-	glClearColor(0.f, 0.f, 0.f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomFrameBuffer.fboId());
 
-	bloomBlurShader.use();
+	auto&& mipChain = bloomFrameBuffer.getMipChain();
 
-	// bind to bloom bright color attachment..
-	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().textureIds()[1]);
-	bloomBlurShader.setImageUniform("image", 0);
+	bloomDownSampleShader.use();
+	bloomDownSampleShader.setVec2("srcResolution", gameSize);
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glViewport(0, 0, gameWidth, gameHeight);
+	// We bind with the original scene..
+	bloomDownSampleShader.setImageUniform("srcTexture", 0);
+	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().textureIds()[0]);
+
+	// Progressively down sample through the mip chain
+	for (auto&& mip : mipChain) {
+		// update viewport to the mip map's size..
+		glViewport(0, 0, mip.isize.x, mip.isize.y);
+
+		// we bind this mipmap as our bloom framebuffer's new color attachment. (we do this every loop)
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.id, 0);
+
+		// Render screen-filled quad of resolution of current mip
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		// Set current mip resolution as srcResolution for next iteration
+		bloomDownSampleShader.setVec2("srcResolution", mip.size);
+
+		// Set current mip as texture input for next iteration
+		glBindTextureUnit(0, mip.id);
+	}
 
 	// =======================================================
-	// 2. Combine pass: add blurred bright image with the main scene
+	// 2. We do the reverse, progressively upsample our downsampled scene with blur filter.
+	// =======================================================
+	bloomUpSampleShader.use();
+	bloomUpSampleShader.setFloat("filterRadius", bloomFilterRadius);
+	bloomUpSampleShader.setImageUniform("srcTexture", 0);
+
+	// Enable additive blending
+	// setBlendMode(CustomShader::BlendingConfig::AdditiveBlending);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glBlendEquation(GL_FUNC_ADD);
+
+	for (std::size_t i = mipChain.size() - 1; i > 0; i--) {
+		auto&& mip		= mipChain[i];
+		auto&& nextMip	= mipChain[i - 1];
+
+		// Read from the smaller mip map size..
+		glBindTextureUnit(0, mip.id);
+
+		// Set framebuffer render target (we write to this texture)
+		glViewport(0, 0, nextMip.isize.x, nextMip.isize.y);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, nextMip.id, 0);
+
+		// Render screen-filled quad of resolution of current mip
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
+	// Disable additive blending
+	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // Restore if this was default
+	glDisable(GL_BLEND);
+
+	// =======================================================
+	// 3. We composite the original scene with this blurred, down and then upsampled bloom buffer.
 	// =======================================================
 	frameBuffers.swapFrameBuffer();
+
+	glViewport(0, 0, gameWidth, gameHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
 	bloomFinalShader.use();
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);	// original scene
-	glBindTextureUnit(1, bloomWorkingFrameBuffer.textureIds()[0]);				// blurred bright
+	glBindTextureUnit(1, bloomFrameBuffer.getMipChain()[0].id);					// blurred bright
+
 	bloomFinalShader.setImageUniform("scene", 0);
 	bloomFinalShader.setImageUniform("bloomBlur", 1);
+	bloomFinalShader.setFloat("compositePercentage", bloomCompositePercentage);
+	
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
@@ -534,14 +580,15 @@ Camera const& Renderer::getGameCamera() const {
 }
 
 void Renderer::recompileShaders() {
-	//blinnPhongShader.compile();
-	//PBRShader.compile();
 	skyboxShader.recompile();
 	textShader.recompile();
 	toneMappingShader.recompile();
 	particleShader.recompile();
 	skeletalAnimationShader.recompile();
 	texture2dShader.recompile();
+	bloomDownSampleShader.recompile();
+	bloomUpSampleShader.recompile();
+	bloomFinalShader.recompile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
