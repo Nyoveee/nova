@@ -26,8 +26,8 @@ constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
 
 // we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
-constexpr int MAX_DEBUG_TRIANGLES = 10000;
-constexpr int MAX_DEBUG_LINES	  = 10000;
+constexpr int MAX_DEBUG_TRIANGLES = 100000;
+constexpr int MAX_DEBUG_LINES	  = 100000;
 constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
 
 // ok right?
