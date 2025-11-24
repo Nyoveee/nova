@@ -425,9 +425,7 @@ void Interface::setFieldData(Script^ script, FieldData const& fieldData) {
 	using BindingFlags = System::Reflection::BindingFlags;
 
 	System::Type^ type = script->GetType();
-#if false
 	do {
-#endif
 		array<System::Reflection::FieldInfo^>^ fieldInfos = type->GetFields(BindingFlags::DeclaredOnly | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
 		for (int i = 0; i < fieldInfos->Length; ++i) {
 			// Ignore private and protected members if it doesn't have the serializablefield attribute
@@ -464,11 +462,8 @@ void Interface::setFieldData(Script^ script, FieldData const& fieldData) {
 			}
 			return;
 		}
-#if false
-			break;
 		type = type->BaseType;
 	} while (type != nullptr);
-#endif
 }
 
 

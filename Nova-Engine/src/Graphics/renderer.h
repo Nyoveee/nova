@@ -21,7 +21,8 @@
 #include "cubemap.h"
 
 #include "Detour/Detour/DetourNavMesh.h"
-#include "customShader.h"
+
+#include "materialConfig.h"
 
 class Engine;
 class ResourceManager;
@@ -90,9 +91,9 @@ public:
 	// most probably for ease of development.
 	ENGINE_DLL_API void recompileShaders();
 
-	ENGINE_DLL_API void setBlendMode(CustomShader::BlendingConfig configuration);
-	ENGINE_DLL_API void setDepthMode(CustomShader::DepthTestingMethod configuration);
-	ENGINE_DLL_API void setCullMode(CustomShader::CullingConfig configuration);
+	ENGINE_DLL_API void setBlendMode(BlendingConfig configuration);
+	ENGINE_DLL_API void setDepthMode(DepthTestingMethod configuration);
+	ENGINE_DLL_API void setCullMode(CullingConfig configuration);
 
 	ENGINE_DLL_API void renderNavMesh(dtNavMesh const& navMesh);
 	ENGINE_DLL_API void renderObjectIds();

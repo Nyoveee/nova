@@ -4,6 +4,7 @@
 #include "systemResource.h"
 #include <glm/glm.hpp>
 #include "reflection.h"
+#include "materialConfig.h"
 
 class CustomShader;
 
@@ -23,15 +24,19 @@ struct OverriddenUniformData {
 	)
 };
 
-class CustomShader;
-
 struct MaterialData {
 	TypedResourceID<CustomShader> selectedShader								{ DEFAULT_PBR_SHADER_ID };
 	std::unordered_map<std::string, OverriddenUniformData> overridenUniforms	{ };
+	BlendingConfig blendingConfig												= BlendingConfig::Disabled;
+	DepthTestingMethod depthTestingMethod										= DepthTestingMethod::DepthTest;
+	CullingConfig cullingConfig													= CullingConfig::Enable;
 
 	REFLECTABLE(
 		selectedShader,
-		overridenUniforms
+		overridenUniforms,
+		blendingConfig,
+		depthTestingMethod,
+		cullingConfig
 	)
 };
 // ================================================================================================================================
