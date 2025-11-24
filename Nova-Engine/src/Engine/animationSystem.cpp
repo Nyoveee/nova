@@ -6,22 +6,17 @@
 #undef max
 #undef min
 
+constexpr int FPS = 60;
+
 AnimationSystem::AnimationSystem(Engine& p_engine) : 
 	engine				{ p_engine },
 	resourceManager		{ p_engine.resourceManager },
+	registry			{ p_engine.ecs.registry },
 	toAdvanceAnimation	{ true }
-{
-	// InputManager& inputManager = p_engine.inputManager;
-
-	//inputManager.subscribe<ToggleAnimate>([&](auto) {
-	//	toAdvanceAnimation = !toAdvanceAnimation;
-	//});
-}
+{}
 
 void AnimationSystem::update([[maybe_unused]] float dt) {
-	entt::registry& registry = engine.ecs.registry;
-
-	if (engine.isInSimulationMode() && toAdvanceAnimation) {
+	if (engine.isInSimulationMode()) {
 		updateAnimator(dt);
 	}
 
@@ -63,13 +58,17 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 		ModelNodeIndex rootNode = skeleton.rootNode;
 		calculateFinalMatrix(rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
 	}
+	animateSequencer(dt);
+	calculateBoneMatrixes();
 }
 
-void AnimationSystem::initialiseAllControllers() {
-	entt::registry& registry = engine.ecs.registry;
-
+void AnimationSystem::initialise() {
 	for (auto&& [entityId, animator] : registry.view<Animator>().each()) {
 		initialiseAnimator(animator);
+	}
+
+	for (auto&& [entityId, sequence] : registry.view<Sequence>().each()) {
+		initialiseSequence(sequence);
 	}
 }
 
@@ -87,6 +86,12 @@ void AnimationSystem::initialiseAnimator(Animator& animator) {
 
 	animator.parameters = controllerPtr->data.parameters;
 	animator.currentNode = controllerPtr->getNodes().at(ENTRY_NODE).id;
+}
+
+void AnimationSystem::initialiseSequence(Sequence& sequence) {
+	sequence.timeElapsed = 0.f;
+	sequence.lastTimeElapsed = 0.f;
+	sequence.executedAnimationEvents.clear();
 }
 
 void AnimationSystem::handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller) {
@@ -164,9 +169,58 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 	animator.executedAnimationEvents.clear();
 }
 
-void AnimationSystem::updateAnimator(float dt) {
-	entt::registry& registry = engine.ecs.registry;
+void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence, Sequencer& sequencer, float dt) {
+	if (sequence.currentFrame < sequencer.data.lastFrame) {
+		sequence.timeElapsed += dt;
+		sequence.currentFrame = static_cast<int>(sequence.timeElapsed * FPS);
+	}
 
+	for (auto&& animationEvent : sequencer.data.animationEvents) {
+		if (sequence.currentFrame > animationEvent.key && !sequence.executedAnimationEvents.count(animationEvent.key)) {
+			sequence.executedAnimationEvents.insert(animationEvent.key);
+			engine.scriptingAPIManager.executeFunction(entityId, animationEvent.scriptId, animationEvent.functionName);
+		}
+	};
+
+	if (sequence.currentFrame >= sequencer.data.lastFrame) {
+		sequence.currentFrame = sequencer.data.lastFrame;
+
+		if (sequence.toLoop) {
+			sequence.currentFrame = 0;
+			sequence.timeElapsed = 0.f;
+			sequence.executedAnimationEvents.clear();
+		}
+	}
+}
+
+void AnimationSystem::animateSequencer(float dt) {
+	for (auto&& [entityId, entityData, transform, sequence] : registry.view<EntityData, Transform, Sequence>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
+		auto&& [sequencer, _] = resourceManager.getResource<Sequencer>(sequence.sequencerId);
+
+		if (!sequencer) {
+			continue;
+		}
+
+		if (engine.isInSimulationMode()) {
+			updateSequencer(entityId, sequence, *sequencer, dt);
+		}
+
+		if (sequence.timeElapsed == sequence.lastTimeElapsed) {
+			continue;
+		}
+
+		sequence.lastTimeElapsed = sequence.timeElapsed;
+
+		// We do actually lerping here..
+		sequencer->setInterpolatedTransform(sequence.currentFrame, transform);
+	}
+}
+
+void AnimationSystem::updateAnimator(float dt) {
 	// =======================================================
 	// We first update all our animator components, handling it's state
 	// in the animation controller node graphs
@@ -232,6 +286,47 @@ void AnimationSystem::updateAnimator(float dt) {
 	}
 }
 
+void AnimationSystem::calculateBoneMatrixes() {
+	// =======================================================
+	// We calculate the bone's final matrices here. This will be used
+	// by the vertex shader for skinning.
+	// =======================================================
+	for (auto&& [entityId, entityData, skinnedMeshRenderer] : registry.view<EntityData, SkinnedMeshRenderer>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
+		// retrieve skinned mesh..
+		auto&& [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
+
+		if (!model || !model->skeleton) {
+			continue;
+		}
+
+		Skeleton const& skeleton = model->skeleton.value();
+
+		skinnedMeshRenderer.bonesFinalMatrices.resize(skeleton.bones.size());
+
+		// retrieve animation...
+		Animator* animator = registry.try_get<Animator>(entityId);
+		Animation const* currentAnimation = nullptr;
+		float timeInTicks = 0.f;
+
+		if (animator) {
+			auto&& [animation, __] = resourceManager.getResource<Model>(animator->currentAnimation);
+
+			if (animation && animation->animations.size()) {
+				currentAnimation = &animation->animations[0];
+				timeInTicks = std::min(animator->timeElapsed * currentAnimation->ticksPerSecond, currentAnimation->durationInTicks - 0.01f);
+			}
+		}
+
+		// we find the root node first, and recursively calculate the final transformation matrix down...
+		ModelNodeIndex rootNode = skeleton.rootNode;
+		calculateFinalMatrix(rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
+	}
+}
+
 // different transformation names
 // -> offset matrix			: maps from model space to local bone space.
 // -> transformation		: maps from local bone space to parent bone space. (chained w/ all parent node that is not a bone)
@@ -256,6 +351,7 @@ void AnimationSystem::calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4
 	if (node.isBone) {
 		glm::mat4x4 finalTransformation = globalTransformation * skeleton.bones[node.boneIndex].offsetMatrix;
 		skinnedMeshRenderer.bonesFinalMatrices[node.boneIndex] = finalTransformation;
+		//skinnedMeshRenderer.bonesFinalMatrices[node.boneIndex] = glm::mat4{1.f};
 	}
 		
 	// recurse downwards..

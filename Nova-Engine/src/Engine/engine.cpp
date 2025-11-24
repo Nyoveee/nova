@@ -102,7 +102,7 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		animationSystem.initialiseAllControllers();
+		animationSystem.initialise();
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 		physicsManager.simulationInitialise();
@@ -136,6 +136,7 @@ void Engine::stopSimulation() {
 	setupSimulationFunction = [&]() {
 		audioSystem.unloadAllSounds();
 		cameraSystem.endSimulation();
+		navigationSystem.unloadNavMeshSystems();
 
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
@@ -192,6 +193,14 @@ void Engine::SystemsOnLoad()
 	this->navigationSystem.initNavMeshSystems();
 	this->physicsManager.systemInitialise();
 }
+
+
+void Engine::SystemsUnload()
+{
+	this->navigationSystem.unloadNavMeshSystems();
+
+}
+
 
 float Engine::getDeltaTime() const {
 	return window.getDeltaTime();

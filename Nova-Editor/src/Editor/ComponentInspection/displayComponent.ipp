@@ -5,11 +5,7 @@ namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 
 	template<typename Component>
-	void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component, entt::registry& registry) {
-		(void) entity;
-
-		[[maybe_unused]] Editor& editor = componentInspector.editor;
-
+	void displayComponent([[maybe_unused]] Editor& editor, [[maybe_unused]] entt::entity entity, Component& component, entt::registry& registry) {
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
 		}

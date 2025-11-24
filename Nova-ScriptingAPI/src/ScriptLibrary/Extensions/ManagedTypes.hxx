@@ -120,18 +120,18 @@ ManagedStructEnd(ColorAlpha, glm::vec4)
 // This struct is responsible for Quartenion Types
 // ======================================
 ManagedStruct(
-	Quartenion, glm::quat,
+	Quaternion, glm::quat,
+	float, w,
 	float, x,
 	float, y,
-	float, z,
-	float, w
+	float, z
 )
 
-static Vector3 operator*(Quartenion quaternion, Vector3 axis);
-static Vector3 operator*(Vector3 axis, Quartenion quaternion);
-static Quartenion Identity();
+static Vector3 operator*(Quaternion quaternion, Vector3 axis);
+static Vector3 operator*(Vector3 axis, Quaternion quaternion);
+static Quaternion Identity();
 
-ManagedStructEnd(Quartenion, glm::quat)
+ManagedStructEnd(Quaternion, glm::quat)
 
 // ======================================
 // This struct is responsible for Ray Types
@@ -186,14 +186,14 @@ ManagedComponentDeclaration(
 	Vector3,	localEulerAngles,
 	Vector3,	localPosition,
 	Vector3,	localScale,
-	Quartenion, rotation,
-	Quartenion, localRotation
+	Quaternion, rotation,
+	Quaternion, localRotation
 )
 
 void rotate(Vector3 axis, float angle);
-void rotate(Quartenion quartenion);
+void rotate(Quaternion quartenion);
 
-Quartenion LookAt(Transform_^ target);
+Quaternion LookAt(Transform_^ target);
 void setFront(Vector3 frontAxis);
 
 ManagedComponentEnd()

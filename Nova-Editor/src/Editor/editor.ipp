@@ -21,6 +21,10 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 
 	auto allResources = resourceManager.getAllResources<T>();
 
+	if (!onClickCallback) {
+		ImGui::BeginDisabled();
+	}
+
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
 		ImGui::InputText("Search", &assetSearchQuery);
 
@@ -62,6 +66,10 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 				onClickCallback(draggedId);
 			}
 		}
+	}
+
+	if (!onClickCallback) {
+		ImGui::EndDisabled();
 	}
 
 	if (id) {

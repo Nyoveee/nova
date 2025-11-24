@@ -37,7 +37,7 @@ public abstract class Enemy : Script
     {
         if (player == null)
         {
-            Debug.LogWarning("Missing Reference Found");
+            // Debug.LogWarning("Missing Reference Found");
             return;
         }
         Vector3 direction = player.transform.position - renderer.gameObject.transform.position;

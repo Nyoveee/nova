@@ -233,7 +233,7 @@ struct EulerAngles {
 	EulerAngles(glm::quat quartenion);
 
 	constexpr operator glm::quat() const;
-	constexpr explicit operator glm::vec3() const;
+	constexpr operator glm::vec3() const;
 	constexpr friend bool operator==(EulerAngles const& lhs, EulerAngles const& rhs);
 
 public:
