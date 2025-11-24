@@ -25,6 +25,7 @@ public abstract class Enemy : Script
     protected GameObject? player = null;
     private EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
+    private float ichorSpawnPositionVariance = 1.5f;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
@@ -36,10 +37,7 @@ public abstract class Enemy : Script
     protected void LookAtPlayer()
     {
         if (player == null)
-        {
-            // Debug.LogWarning("Missing Reference Found");
             return;
-        }
         Vector3 direction = player.transform.position - renderer.gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
@@ -65,10 +63,11 @@ public abstract class Enemy : Script
     }
     protected void SpawnIchor()
     {
-        for (int i = 0; i < enemyStats.ichorSpawnAmount; ++i)
-        {
-            GameObject ichor = Instantiate(ichorPrefab);
-            ichor.transform.localPosition = ichorSpawnPoint.transform.position;
+        for (int i = 0; i < enemyStats.ichorSpawnAmount; ++i){
+            Vector3 direction = new Vector3(0, Random.Range(-1f,1f), 0);
+            direction.Normalize();
+            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            GameObject ichor = Instantiate(ichorPrefab, ichorSpawnPoint.transform.position + direction * spawnDistance);
         }
     }
     protected void MoveToNavMeshPosition(Vector3 position)

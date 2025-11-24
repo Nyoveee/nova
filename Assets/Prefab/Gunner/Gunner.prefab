@@ -27,10 +27,10 @@
             },
             "EntityData": {
                 "children": [
-                    44,
-                    45,
-                    46,
-                    1048623
+                    1048642,
+                    1048643,
+                    1048644,
+                    1048645
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -86,6 +86,13 @@
                                     "__variant_value": 6
                                 },
                                 "name": "ichorSpawnAmount"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 14,
+                                    "__variant_value": 0.20000000298023224
+                                },
+                                "name": "hurtDuration"
                             }
                         ],
                         "scriptId": 977132039435386883
@@ -102,56 +109,49 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048623
+                                    "__variant_value": 1048645
                                 },
                                 "name": "projectileSpawnPoint"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 0.10000000149011612
+                                    "__variant_type": 4,
+                                    "__variant_value": 1048643
                                 },
-                                "name": "hurtDuration"
+                                "name": "rigidbody"
                             },
                             {
                                 "data": {
                                     "__variant_type": 8,
-                                    "__variant_value": 1594749718151135245
+                                    "__variant_value": 14493050257245634575
                                 },
                                 "name": "ichorPrefab"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 44
+                                    "__variant_value": 1048642
                                 },
                                 "name": "ichorSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 46
+                                    "__variant_value": 1048644
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 45
-                                },
-                                "name": "rigidbody"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 46
+                                    "__variant_value": 1048644
                                 },
                                 "name": "renderer"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 43
+                                    "__variant_value": 1048641
                                 },
                                 "name": "navMeshAgent"
                             }
@@ -174,7 +174,7 @@
                 "localPosition": {
                     "x": 0.0,
                     "y": 1.260258436203003,
-                    "z": 0.0
+                    "z": -14.291841506958008
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -190,7 +190,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 1.260258436203003,
-                    "z": 0.0
+                    "z": -14.291841506958008
                 },
                 "rotation": {
                     "w": 1.0,
@@ -204,7 +204,7 @@
                     "z": 1.0
                 }
             },
-            "id": 43
+            "id": 1048641
         },
         {
             "EntityData": {
@@ -214,7 +214,7 @@
                 "layerId": 0,
                 "name": "Ichor Spawn Point",
                 "overridenProperties": null,
-                "parent": 43,
+                "parent": 1048641,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -231,7 +231,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 2.6546406745910645,
+                    "y": 2.6524269580841064,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -247,8 +247,8 @@
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 3.9148991107940674,
-                    "z": 0.0
+                    "y": 3.9126853942871094,
+                    "z": -14.291841506958008
                 },
                 "rotation": {
                     "w": 1.0,
@@ -262,7 +262,7 @@
                     "z": 1.0
                 }
             },
-            "id": 44
+            "id": 1048642
         },
         {
             "BoxCollider": {
@@ -285,7 +285,7 @@
                 "layerId": 0,
                 "name": "Gunner Collider",
                 "overridenProperties": null,
-                "parent": 43,
+                "parent": 1048641,
                 "prefabID": 4294967295,
                 "tag": "EnemyCollider"
             },
@@ -308,7 +308,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 43
+                                    "__variant_value": 1048641
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -347,7 +347,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 1.2599999904632568,
-                    "z": 0.0
+                    "z": -14.291841506958008
                 },
                 "rotation": {
                     "w": 1.0,
@@ -361,7 +361,7 @@
                     "z": 1.0
                 }
             },
-            "id": 45
+            "id": 1048643
         },
         {
             "Animator": {
@@ -374,7 +374,7 @@
                 "layerId": 0,
                 "name": "Gunner Model",
                 "overridenProperties": null,
-                "parent": 43,
+                "parent": 1048641,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -479,7 +479,7 @@
                 "position": {
                     "x": 0.0,
                     "y": 1.260258436203003,
-                    "z": 0.0
+                    "z": -14.291841506958008
                 },
                 "rotation": {
                     "w": 1.0,
@@ -493,7 +493,7 @@
                     "z": 1.0
                 }
             },
-            "id": 46
+            "id": 1048644
         },
         {
             "EntityData": {
@@ -503,7 +503,7 @@
                 "layerId": 0,
                 "name": "Projectile Spawn Point",
                 "overridenProperties": null,
-                "parent": 43,
+                "parent": 1048641,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -521,7 +521,7 @@
                 "localPosition": {
                     "x": -0.12934407591819763,
                     "y": 3.582148790359497,
-                    "z": 3.6173274517059326
+                    "z": 3.6173276901245117
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -537,7 +537,7 @@
                 "position": {
                     "x": -0.12934407591819763,
                     "y": 4.8424072265625,
-                    "z": 3.6173274517059326
+                    "z": -10.674513816833496
                 },
                 "rotation": {
                     "w": 1.0,
@@ -551,8 +551,8 @@
                     "z": 1.0
                 }
             },
-            "id": 1048623
+            "id": 1048645
         }
     ],
-    "RootEntity": 43
+    "RootEntity": 1048641
 }
