@@ -25,7 +25,7 @@ private:
 
 	static Animation processAnimation(aiAnimation const* assimpAnimation);
 
-	static BoneIndex findParentBone(aiNode const* parentNode);		
+	static BoneIndex findParentBone(aiNode const* parentNode);
 
 private:
 	inline static float maxDimension;

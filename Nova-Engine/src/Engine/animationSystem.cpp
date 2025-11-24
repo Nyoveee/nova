@@ -350,7 +350,7 @@ void AnimationSystem::calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4
 	// calculate final transformation, if it is a bone.
 	if (node.isBone) {
 		glm::mat4x4 finalTransformation = globalTransformation * skeleton.bones[node.boneIndex].offsetMatrix;
-		skinnedMeshRenderer.bonesFinalMatrices[node.boneIndex] = finalTransformation;
+		 skinnedMeshRenderer.bonesFinalMatrices[node.boneIndex] = finalTransformation;
 		//skinnedMeshRenderer.bonesFinalMatrices[node.boneIndex] = glm::mat4{1.f};
 	}
 		

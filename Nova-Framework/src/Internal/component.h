@@ -70,6 +70,7 @@ struct EntityData {
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 	std::unordered_set<ComponentID> inactiveComponents                  {};
+
 	REFLECTABLE(
 		name,
 		tag,

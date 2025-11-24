@@ -6,6 +6,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/mat3x3.hpp>
 #include <entt/entt.hpp>
+#include <string>
 
 #include "type_alias.h"
 #include "reflection.h"
@@ -33,8 +34,8 @@ class Sequencer;
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
-		ALL_TYPED_RESOURCE_ID,																		\
+		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	std::string,	\
+		ALL_TYPED_RESOURCE_ID,																						\
 		ALL_FIELD_PRIMITIVES
 #endif
 

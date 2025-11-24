@@ -271,13 +271,14 @@ bool Interface::getScriptFieldData(System::Object^ fieldValue, System::Type^ fie
 			return false;
 		}
 	}
+
 	// Strings
 	if (fieldType->Equals(System::String::typeid)) {
-		System::String^ string = safe_cast<System::String^>(fieldInfos[i]->GetValue(script));
-		field.data = string ? Convert(string): "";
-		fieldDatas.push_back(field);
+		System::String^ string = safe_cast<System::String^>(fieldValue);
+		fieldData = string ? Convert(string): "";
 		return true;
 	}
+
 	// Primitives
 	if (fieldType->IsPrimitive && ObtainPrimitiveDataFromScript<ALL_FIELD_PRIMITIVES>(fieldData, fieldValue)) {
 		return true;
@@ -403,13 +404,15 @@ void Interface::processSetScriptFieldData(Object^% object, System::Type^ fieldTy
 			Logger::warn("Typed resource type in script currently not supported for script setting");
 		}
 	}
-			// Strings
-			if (fieldType->Equals(System::String::typeid)) {
-				System::String^ string{ safe_cast<System::String^>(fieldInfos[i]->GetValue(script)) };
-				string = msclr::interop::marshal_as<System::String^>(std::get<std::string>(fieldData.data));
-				fieldInfos[i]->SetValue(script, string);
-				return;
-			}
+
+	// Strings
+	if (fieldType->Equals(System::String::typeid)) {
+		System::String^ string{ safe_cast<System::String^>(object) };
+		string = msclr::interop::marshal_as<System::String^>(std::get<std::string>(fieldData));
+		object = string;
+		return;
+	}
+
 	// Primitives
 	if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, object))
 		return;
