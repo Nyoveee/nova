@@ -37,14 +37,17 @@ constexpr int MAX_NUMBER_OF_BONES = 255;
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine						{ engine },
+	gameWidth					{ gameWidth },
+	gameHeight					{ gameHeight },
 	resourceManager				{ engine.resourceManager },
 	registry					{ engine.ecs.registry },
 	basicShader					{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
 	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	// blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	// PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
+	bloomDownSampleShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomDownSample.frag" },
+	bloomUpSampleShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomUpSample.frag" },
+	bloomFinalShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
@@ -96,6 +99,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
+	bloomFrameBuffer			{ gameWidth, gameHeight, 5 },
 	toGammaCorrect				{ true },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
@@ -399,6 +403,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 
 	// We render individual game objects..
 	renderSkyBox();
+
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
@@ -408,6 +413,8 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glDisable(GL_CULL_FACE);
 
 	setBlendMode(CustomShader::BlendingConfig::Disabled);
+
+	renderBloom(frameBuffers);
 
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping(frameBuffers);
@@ -430,6 +437,92 @@ void Renderer::renderToDefaultFBO() {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisable(GL_BLEND);
+}
+
+void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
+	// =======================================================
+	// 1. We need to progressively down sample our HDR framebuffer.
+	// =======================================================
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomFrameBuffer.fboId());
+
+	auto&& mipChain = bloomFrameBuffer.getMipChain();
+
+	bloomDownSampleShader.use();
+	bloomDownSampleShader.setVec2("srcResolution", gameSize);
+
+	// We bind with the original scene..
+	bloomDownSampleShader.setImageUniform("srcTexture", 0);
+	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().textureIds()[0]);
+
+	// Progressively down sample through the mip chain
+	for (auto&& mip : mipChain) {
+		// update viewport to the mip map's size..
+		glViewport(0, 0, mip.isize.x, mip.isize.y);
+
+		// we bind this mipmap as our bloom framebuffer's new color attachment. (we do this every loop)
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.id, 0);
+
+		// Render screen-filled quad of resolution of current mip
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		// Set current mip resolution as srcResolution for next iteration
+		bloomDownSampleShader.setVec2("srcResolution", mip.size);
+
+		// Set current mip as texture input for next iteration
+		glBindTextureUnit(0, mip.id);
+	}
+
+	// =======================================================
+	// 2. We do the reverse, progressively upsample our downsampled scene with blur filter.
+	// =======================================================
+	bloomUpSampleShader.use();
+	bloomUpSampleShader.setFloat("filterRadius", bloomFilterRadius);
+	bloomUpSampleShader.setImageUniform("srcTexture", 0);
+
+	// Enable additive blending
+	// setBlendMode(CustomShader::BlendingConfig::AdditiveBlending);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glBlendEquation(GL_FUNC_ADD);
+
+	for (std::size_t i = mipChain.size() - 1; i > 0; i--) {
+		auto&& mip		= mipChain[i];
+		auto&& nextMip	= mipChain[i - 1];
+
+		// Read from the smaller mip map size..
+		glBindTextureUnit(0, mip.id);
+
+		// Set framebuffer render target (we write to this texture)
+		glViewport(0, 0, nextMip.isize.x, nextMip.isize.y);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, nextMip.id, 0);
+
+		// Render screen-filled quad of resolution of current mip
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
+	// Disable additive blending
+	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // Restore if this was default
+	glDisable(GL_BLEND);
+
+	// =======================================================
+	// 3. We composite the original scene with this blurred, down and then upsampled bloom buffer.
+	// =======================================================
+	frameBuffers.swapFrameBuffer();
+
+	glViewport(0, 0, gameWidth, gameHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	bloomFinalShader.use();
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);	// original scene
+	glBindTextureUnit(1, bloomFrameBuffer.getMipChain()[0].id);					// blurred bright
+
+	bloomFinalShader.setImageUniform("scene", 0);
+	bloomFinalShader.setImageUniform("bloomBlur", 1);
+	bloomFinalShader.setFloat("compositePercentage", bloomCompositePercentage);
+	
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
@@ -486,14 +579,15 @@ Camera const& Renderer::getGameCamera() const {
 }
 
 void Renderer::recompileShaders() {
-	//blinnPhongShader.compile();
-	//PBRShader.compile();
 	skyboxShader.recompile();
 	textShader.recompile();
 	toneMappingShader.recompile();
 	particleShader.recompile();
 	skeletalAnimationShader.recompile();
 	texture2dShader.recompile();
+	bloomDownSampleShader.recompile();
+	bloomUpSampleShader.recompile();
+	bloomFinalShader.recompile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {

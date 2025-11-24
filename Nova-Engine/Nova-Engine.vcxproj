@@ -179,6 +179,7 @@
     <ClInclude Include="src\ECS\Events.h" />
     <ClInclude Include="src\Engine\prefabManager.h" />
     <ClInclude Include="src\Engine\prefabManager.ipp" />
+    <ClInclude Include="src\Graphics\bloomFrameBuffer.h" />
     <ClInclude Include="src\Graphics\DebugShapes.h" />
     <ClInclude Include="src\Engine\particleSystem.h" />
     <ClInclude Include="src\ECS\SceneManager.h" />
@@ -213,6 +214,7 @@
   <ItemGroup>
     <ClCompile Include="src\Engine\animationSystem.cpp" />
     <ClCompile Include="src\Engine\prefabManager.cpp" />
+    <ClCompile Include="src\Graphics\bloomFrameBuffer.cpp" />
     <ClCompile Include="src\Graphics\DebugShapes.cpp" />
     <ClCompile Include="src\Engine\particleSystem.cpp" />
     <ClCompile Include="src\ECS\SceneManager.cpp" />

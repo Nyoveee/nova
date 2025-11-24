@@ -117,7 +117,6 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 	// 3. normal
 	// 4. tangent
 	// ==================================== 
-	
 	std::vector<glm::vec3> positions;
 	positions.reserve(mesh->mNumVertices);
 	
@@ -134,8 +133,15 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 
 	// Getting vertex attributes..
 	for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
+		glm::vec3 position;
+
 		// 1. Position
-		glm::vec3 position = glm::vec3{ globalTransformationMatrix * glm::vec4{ toGlmVec3(mesh->mVertices[i]), 1.f } };
+		if (mesh->mNumBones) {
+			position = glm::vec3{ glm::vec4{ toGlmVec3(mesh->mVertices[i]), 1.f } };
+		}
+		else {
+			position = glm::vec3{ globalTransformationMatrix * glm::vec4{ toGlmVec3(mesh->mVertices[i]), 1.f } };
+		}
 
 		if (position.x > maxDimension || position.y > maxDimension || position.z > maxDimension) {
 			maxDimension = std::max(std::max(position.x, position.y), position.z);
@@ -159,7 +165,12 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 		glm::vec3 normal;
 
 		if (mesh->mNormals) {
-			normal = normalMatrix * toGlmVec3(mesh->mNormals[i]);
+			if (mesh->mNumBones) {
+				normal = toGlmVec3(mesh->mNormals[i]);
+			}
+			else {
+				normal = normalMatrix * toGlmVec3(mesh->mNormals[i]);
+			}
 		}
 		else {
 			normal = glm::vec3{ 0.0f, 0.0f, 0.f };
@@ -171,7 +182,12 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 		glm::vec3 tangent;
 
 		if (mesh->mTangents) {
-			tangent = toGlmVec3(mesh->mTangents[i]);
+			if (mesh->mNumBones) {
+				normal = toGlmVec3(mesh->mTangents[i]);
+			}
+			else {
+				normal = normalMatrix * toGlmVec3(mesh->mTangents[i]);
+			}
 		}
 		else {
 			tangent = glm::vec3{ 0.0f, 0.0f, 0.f };

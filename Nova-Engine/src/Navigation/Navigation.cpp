@@ -189,7 +189,7 @@ void NavigationSystem::NavigationDebug()
 #endif
 }
 
-ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::entity entityID)
+ENGINE_DLL_API void NavigationSystem::AddAgentsToSystem(entt::registry&, entt::entity)
 {
 
 	//if (hasSystemInit == false)
@@ -279,7 +279,7 @@ ENGINE_DLL_API void NavigationSystem::RemoveAgentsFromSystem(entt::registry&, en
 	lastIndex[navMeshAgent->agentName]--;
 }
 
-ENGINE_DLL_API void NavigationSystem::InstantiateAgentsToSystem(entt::entity entityID, Transform const* const transform, NavMeshAgent* const navMeshAgent)
+void NavigationSystem::InstantiateAgentsToSystem(entt::entity, Transform const* const transform, NavMeshAgent* const navMeshAgent)
 {
 	if (hasSystemInit == false)
 	{
@@ -322,7 +322,7 @@ ENGINE_DLL_API void NavigationSystem::InstantiateAgentsToSystem(entt::entity ent
 	}
 }
 
-ENGINE_DLL_API void NavigationSystem::SetAgentActive(entt::entity entityID)
+void NavigationSystem::SetAgentActive(entt::entity entityID)
 {
 	auto&& [transform, navMeshAgent] = engine.ecs.registry.try_get<Transform, NavMeshAgent>(entityID);
 

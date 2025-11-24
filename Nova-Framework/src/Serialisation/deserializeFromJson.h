@@ -166,6 +166,12 @@ inline void deserializeFromJson<NormalizedFloat>(NormalizedFloat& dataMember, Js
 	dataMember = value;
 }
 
+// serialize field list is literally just a vector..
+template<>
+inline void deserializeFromJson<serialized_field_list>(serialized_field_list& dataMember, Json const& json) {
+	deserializeFromJson(static_cast<std::vector<serialized_field_type>&>(dataMember), json);
+}
+
 template<>
 inline void deserializeFromJson<entt::entity>(entt::entity& dataMember, Json const& json) {
 	unsigned int entityNum = json;

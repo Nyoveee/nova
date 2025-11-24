@@ -72,6 +72,8 @@ public:
 	// most editor windows should use this function instead of the scene manager's load scene function.
 	void loadScene(ResourceID sceneId);
 
+	void unpackPrefab(EntityData& entityData);
+
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
 	// first parameter is used to specific which asset id is selected.
@@ -83,6 +85,9 @@ public:
 
 	template <IsEnum T>
 	void displayEnumDropDownList(T value, const char* labelName, std::function<void(T)> onClickCallback);
+
+	// display all entities
+	void displayAllEntitiesDropDownList(const char* labelName, entt::entity entity, std::function<void(entt::entity)> const& onClickCallback);
 
 	void launchProfiler();
 
@@ -101,6 +106,7 @@ private:
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
+	void toControlMouse(bool toControl);
 public:
 	// so that all editors have access to engine interface.
 	Engine& engine;
@@ -138,6 +144,10 @@ private:
 	std::string assetSearchQuery;
 	std::string uppercaseSearchQuery;
 	std::string uppercaseAssetName;
+
+	std::string entitySearchQuery;
+	std::string uppercaseEntitySearchQuery;
+	std::string uppercaseEntityName;
 
 	int imguiCounter = 0;
 };

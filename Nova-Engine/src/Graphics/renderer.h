@@ -15,6 +15,7 @@
 #include "component.h"
 #include "vertex.h"
 #include "font.h"
+#include "bloomFrameBuffer.h"
 
 #include "model.h"
 #include "cubemap.h"
@@ -58,6 +59,8 @@ public:
 	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
 	
 	void renderToDefaultFBO();
+
+	void renderBloom(PairFrameBuffer& frameBuffers);
 
 	void overlayUIToBuffer(PairFrameBuffer& target);
 public:
@@ -119,6 +122,8 @@ public:
 
 public:
 	bool toGammaCorrect;
+	float bloomFilterRadius = 0.005f;
+	float bloomCompositePercentage = 0.04f;
 
 private:
 	// =============================================
@@ -219,8 +224,10 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
-	FrameBuffer uiMainFrameBuffer;
+	BloomFrameBuffer bloomFrameBuffer;
+
 	// contains all physics debug rendering..
+	FrameBuffer uiMainFrameBuffer;
 	FrameBuffer physicsDebugFrameBuffer;
 
 	// contains objectIds for object picking.
@@ -234,6 +241,11 @@ private:
 	int numOfPhysicsDebugLines;
 	int numOfNavMeshDebugTriangles;
 
+	int gameWidth;
+	int gameHeight;
+
+	glm::vec2 gameSize { gameWidth, gameHeight };
+
 	bool isOnWireframeMode;
 
 public:
@@ -243,8 +255,6 @@ public:
 	Shader colorShader;
 	Shader gridShader;
 	Shader outlineShader;
-	// Shader blinnPhongShader;
-	// Shader PBRShader;
 	Shader debugShader;
 	Shader overlayShader;
 
@@ -260,6 +270,10 @@ public:
 
 	// HDR tone mapping shader
 	Shader toneMappingShader;
+
+	Shader bloomDownSampleShader;
+	Shader bloomUpSampleShader;
+	Shader bloomFinalShader;
 
 	// HDR parameters
 	float hdrExposure;

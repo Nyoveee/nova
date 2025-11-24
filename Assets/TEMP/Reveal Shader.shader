@@ -34,12 +34,7 @@ Vert{
 
 // Fragment shader..
 Frag{
-    if(fsIn.textureUnit.x > reveal) {
-        discard;
-        return;
-    }
-
     vec4 albedo = texture(albedoMap, fsIn.textureUnit);
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, fsIn.normal, roughness, metallic, occulusion);
-    FragColor = vec4(pbrColor, 1.0);
+    return vec4(pbrColor, 1.0);
 }

@@ -6,24 +6,22 @@ using ScriptingAPI;
 class Test : Script
 {
     private Transform_ transform;
-    public Prefab prefab;
+    public Transform_ prefab;
+
+    public List<Prefab> prefabs;
+    public List<Transform_> gameObjects;
+    public List<int> transforms;
+    public GameObject gameObject;
+
     // This function is first invoked when game starts.
     protected override void init()
     {
-
+        Debug.Log("ok");
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {
 
-    }
-
-    public void foo()
-    {
-        //Debug.Log("hey");
-        
-        //GameObject instance = Instantiate(prefab, new Vector3(-5, 0, 0), gameObject);
-        //Debug.Log(instance.transform.position);
     }
 }

@@ -23,7 +23,7 @@
 #include "navMesh.h"
 #include "controller.h"
 
-// Forward declaring..
+class Prefab;
 class Model;
 class Texture;
 class CubeMap;
@@ -46,23 +46,8 @@ using ScriptName   = std::string;
 using LayerID	   = int;
 using ComponentID  = size_t;
 
-#include "physics.h"
 
-// ======= C# Field Information =======
-#ifndef ALL_FIELD_PRIMITIVES
-#define ALL_FIELD_PRIMITIVES \
-		bool, int, float, double
-#endif
-
-#define ALL_TYPED_RESOURCE_ID \
-	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>
-
-#ifndef ALL_FIELD_TYPES
-#define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult, std::string,	\
-		ALL_TYPED_RESOURCE_ID,																						\
-		ALL_FIELD_PRIMITIVES
-#endif
+#include "serializedField.h"
 
 enum class InterpolationType : unsigned int {
 	Root,
@@ -71,14 +56,7 @@ enum class InterpolationType : unsigned int {
 	Cubic
 };
 
-struct FieldData {
-	std::string name;
-	std::variant<ALL_FIELD_TYPES> data;
-	REFLECTABLE(
-		name,
-		data
-	)
-};
+
 // ===================================
 
 struct EntityData {
@@ -92,6 +70,7 @@ struct EntityData {
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 	std::unordered_set<ComponentID> inactiveComponents                  {};
+
 	REFLECTABLE(
 		name,
 		tag,
