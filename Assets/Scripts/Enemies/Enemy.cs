@@ -61,4 +61,10 @@ public abstract class Enemy : Script
         player = GameObject.FindWithTag("Player");
 
     }
+
+    // Do I add a spawn function here?
+    protected void SpawnEnemy()
+    {
+
+    }
 }
