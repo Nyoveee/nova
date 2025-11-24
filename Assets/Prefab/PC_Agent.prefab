@@ -5,6 +5,7 @@
                 "children": [
                     39846052
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Header",
@@ -62,6 +63,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "AgentCube",
@@ -84,27 +86,7 @@
                 "separationWeight": 0.0
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": -1
-                                },
-                                "name": "cubeIndex"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 11,
-                                    "__variant_value": false
-                                },
-                                "name": "isCubeControllable"
-                            }
-                        ],
-                        "scriptId": 13648211907957112833
-                    }
-                ]
+                "scriptDatas": null
             },
             "Transform": {
                 "eulerAngles": {

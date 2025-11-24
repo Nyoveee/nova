@@ -69,10 +69,9 @@ void NavigationSystem::update(float const& dt)
 	//then get all new data an feedback into the transform
 	for (auto&& [entity,entityData, transform, agent] : registry.view<EntityData, Transform, NavMeshAgent>().each())
 	{
-		if (!entityData.isActive || !engine.ecs.isComponentActive<NavMeshAgent>(entity)) {
-			stopAgent(entity);
+		if (!entityData.isActive || !engine.ecs.isComponentActive<NavMeshAgent>(entity))
 			continue;
-		}
+
 		auto iterator = crowdManager.find(agent.agentName);
 
 		if (iterator == crowdManager.end()) {
@@ -325,23 +324,15 @@ ENGINE_DLL_API void NavigationSystem::InstantiateAgentsToSystem(entt::entity ent
 
 ENGINE_DLL_API void NavigationSystem::SetAgentActive(entt::entity entityID)
 {
-	auto&& navMeshAgent = registry.try_get<NavMeshAgent>(entityID);
+	auto&& [transform, navMeshAgent] = engine.ecs.registry.try_get<Transform, NavMeshAgent>(entityID);
 
 	if (navMeshAgent == nullptr || navMeshAgent->agentIndex < 0)
-	{
-
 		return;
-	}
-
-	if (!navMeshAgent->setActive)
-	{
-
-		navMeshAgent->setActive = true;
-		int dtIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
-        crowdManager[navMeshAgent->agentName]->getEditableAgent(dtIndex)->active = true;
-		crowdManager[navMeshAgent->agentName]->resetMoveTarget(dtIndex);
-
-	}
+	int dtIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+    crowdManager[navMeshAgent->agentName]->getEditableAgent(dtIndex)->active = true;
+	
+	// Set Target Position to current transform so it wouldn't teleport back
+	crowdManager[navMeshAgent->agentName]->setTargetPosition(navMeshAgent->agentIndex, transform->position.x, transform->position.y, transform->position.z);
 
 }
 
@@ -350,20 +341,10 @@ ENGINE_DLL_API void NavigationSystem::SetAgentInactive(entt::entity entityID)
 	auto&& navMeshAgent = registry.try_get<NavMeshAgent>(entityID);
 
 	if (navMeshAgent == nullptr || navMeshAgent->agentIndex < 0)
-	{
-
 		return;
-	}
-
-	if (navMeshAgent->setActive)
-	{
-
-		navMeshAgent->setActive = false;
-		int dtIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
-		crowdManager[navMeshAgent->agentName]->getEditableAgent(dtIndex)->active = false;
-		crowdManager[navMeshAgent->agentName]->resetMoveTarget(dtIndex);
-
-	}
+	int dtIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+	crowdManager[navMeshAgent->agentName]->getEditableAgent(dtIndex)->active = false;
+	crowdManager[navMeshAgent->agentName]->resetMoveTarget(dtIndex);
 }
 
 void NavigationSystem::initNavMeshSystems()
@@ -540,12 +521,6 @@ void NavigationSystem::stopAgent(entt::entity entityID)
 {
 	NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);
 	crowdManager[agent->agentName]->resetMoveTarget(agent->agentIndex);
-}
-
-void NavigationSystem::refreshAgentPosition(entt::entity entityID)
-{
-	auto&& [transform, agent] = engine.ecs.registry.try_get<Transform, NavMeshAgent>(entityID);
-	crowdManager[agent->agentName]->setTargetPosition(agent->agentIndex, transform->position.x, transform->position.y, transform->position.z);
 }
 int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent)
 {

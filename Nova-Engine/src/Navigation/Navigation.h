@@ -57,8 +57,6 @@ public:
 	ENGINE_DLL_API void		  InstantiateAgentsToSystem(entt::entity entityID, Transform const*const enttTransform, NavMeshAgent *const navMeshAgent);
 	ENGINE_DLL_API void		  SetAgentActive(entt::entity entityID);
 	ENGINE_DLL_API void		  SetAgentInactive(entt::entity entityID);
-	ENGINE_DLL_API void		  SetAgentActive(NavMeshAgent& navMeshAgent);
-	ENGINE_DLL_API void		  SetAgentInactive(NavMeshAgent& navMeshAgent);
 
 //--------------------For C# scripting API-------------------------------------------------------------//
 public:
@@ -66,10 +64,7 @@ public:
 	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
 	// Stop Navigation for a particular agent.
 	ENGINE_DLL_API void stopAgent(entt::entity entityID);
-	// resets the position of the agent back to the transform 
-	ENGINE_DLL_API void refreshAgentPosition(entt::entity entityID);
-	//Start navigation for a particular agent. Returns bool false when unable to set destination to targetPosition.
-	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
+
 //--------------------Helper functions-------------------------------------------------------------//
 private:
 	int AddAgent(std::string const&  agentName, NavMeshAgent& agent);

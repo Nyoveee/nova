@@ -191,7 +191,7 @@ class Charger : Enemy
     }
     public void BeginSwing()
     {
-        hitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.localPosition,null);
+        hitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.localPosition);
         hitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
     }
     public void EndSwing()

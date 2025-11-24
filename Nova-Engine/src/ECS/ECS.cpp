@@ -164,26 +164,27 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 	}
 }
 
-bool ECS::isComponentActive(entt::entity entity, size_t componentID)
+bool ECS::isComponentActive(entt::entity entity, ComponentID componentID)
 {
 	EntityData& entityData{ registry.get<EntityData>(entity) };
 	return !entityData.inactiveComponents.count(componentID);
 }
 
-void ECS::setComponentActive(entt::entity entity, size_t componentID, bool isActive)
+void ECS::setComponentActive(entt::entity entity, ComponentID componentID, bool isActive)
 {
 	EntityData& entityData{ registry.get<EntityData>(entity) };
-	std::unordered_set<size_t>& inactiveComponents{ entityData.inactiveComponents };
+	std::unordered_set<ComponentID>& inactiveComponents{ entityData.inactiveComponents };
 	if (isActive && inactiveComponents.count(componentID)) {
 		inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
 		if (componentID == typeid(NavMeshAgent).hash_code())
-			engine.navigationSystem.refreshAgentPosition(entity);
+			engine.navigationSystem.SetAgentActive(entity);
 		if (componentID == typeid(Rigidbody).hash_code())
 			engine.physicsManager.addBodiesToSystem(engine.ecs.registry, entity);
 	}
 	else if (!isActive && !inactiveComponents.count(componentID)) {
-	
 		inactiveComponents.insert(componentID);
+		if (componentID == typeid(NavMeshAgent).hash_code())
+			engine.navigationSystem.SetAgentInactive(entity);
 		if (componentID == typeid(Rigidbody).hash_code())
 			engine.physicsManager.removeBodiesFromSystem(engine.ecs.registry, entity);
 	}

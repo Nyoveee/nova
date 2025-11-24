@@ -44,6 +44,7 @@ class Sequencer;
 
 using ScriptName   = std::string;
 using LayerID	   = int;
+using ComponentID  = size_t;
 
 #include "physics.h"
 
@@ -90,7 +91,7 @@ struct EntityData {
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
-	std::unordered_set<size_t> inactiveComponents                       {};
+	std::unordered_set<ComponentID> inactiveComponents                  {};
 	REFLECTABLE(
 		name,
 		tag,
@@ -443,9 +444,6 @@ struct NavMeshAgent
 	float agentRotationSpeed		= 0.f;
 	float collisionDetectionRange	= 0.f; // higher the value the earlier it attempts to steers
 	float separationWeight			= 0.f;
-
-	bool setActive					= true; //is agent requiring the services of the navigation system? 
-											//it can be disabled at certain points in time to allow other movements types to take control
 	
 	bool updateRotation				= true; //should agent update rotation. 
 	bool updatePosition             = true; //should agent update position. 

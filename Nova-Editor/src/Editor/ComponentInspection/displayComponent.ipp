@@ -37,11 +37,9 @@ namespace {
 				toDisplay = ImGui::CollapsingHeader(name, &toShowHeader);
 				if constexpr(!NonComponentDisablingTypes<Component>) {
 					// Active State
-					size_t componentID{ typeid(Component).hash_code() };
-					EntityData* const entityData{ componentInspector.ecs.registry.try_get<EntityData>(entity) };
+					EntityData* const entityData{ editor.engine.ecs.registry.try_get<EntityData>(entity) };
 					if (entityData) {
-						std::unordered_set<size_t>& inactiveComponents{ entityData->inactiveComponents };
-						bool b_Active{ componentInspector.ecs.isComponentActive<Component>(entity)};
+						bool b_Active{ editor.engine.ecs.isComponentActive<Component>(entity)};
 						// Display Checkbox
 						ImGui::SameLine();
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.5f);
@@ -50,7 +48,7 @@ namespace {
 						ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.32f, 0.32f, 0.32f, 1.0f));
 						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.1f, 0.1f));
 						if (ImGui::Checkbox("##", &b_Active))
-							componentInspector.ecs.setComponentActive<Component>(entity, b_Active);
+							editor.engine.ecs.setComponentActive<Component>(entity, b_Active);
 						ImGui::PopStyleVar();
 						ImGui::PopStyleColor();
 						ImGui::PopStyleColor();

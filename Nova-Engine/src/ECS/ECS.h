@@ -52,11 +52,11 @@ public:
 
 	template<typename Component>
 	bool isComponentActive(entt::entity entity);
-	ENGINE_DLL_API bool isComponentActive(entt::entity entity, size_t componentID);
+	ENGINE_DLL_API bool isComponentActive(entt::entity entity, ComponentID componentID);
 
 	template<typename Component>
 	void setComponentActive(entt::entity entity, bool isActive);
-	ENGINE_DLL_API void setComponentActive(entt::entity entity, size_t componentID, bool isActive);
+	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
 
 	
 public:
