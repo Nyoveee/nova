@@ -58,15 +58,17 @@
                 "modelId": 4
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "isRotatable": false,
+                "isRotatable": true,
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 1.0,
+                "motionQuality": "Discrete",
                 "motionType": "Dynamic"
             },
             "Scripts": {

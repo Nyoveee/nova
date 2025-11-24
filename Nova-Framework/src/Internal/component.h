@@ -231,8 +231,14 @@ struct Rigidbody {
 		Item
 	} layer							= Layer::NonMoving;
 
+	enum class MotionQuality {
+		Discrete,
+		Continuous
+	} motionQuality					= MotionQuality::Discrete;
+
 	glm::vec3 initialVelocity		{};
-	float mass						{};
+	float mass						{ 10.f };
+	float gravityMultiplier			{ 1.f };
 
 	bool isRotatable				{ true };
 	bool isTrigger					{ false };
@@ -240,8 +246,10 @@ struct Rigidbody {
 	REFLECTABLE(
 		motionType,
 		layer,
+		motionQuality,
 		initialVelocity,
 		mass,
+		gravityMultiplier,
 		isRotatable,
 		isTrigger
 	)

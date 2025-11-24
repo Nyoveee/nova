@@ -212,12 +212,16 @@ ManagedComponentEnd()
 ManagedComponentDeclaration(
 	Rigidbody
 )
+
 void AddForce(Vector3 forceVector);
 void AddImpulse(Vector3 forceVector);
 
 void AddVelocity(Vector3 velocity);
 void SetVelocity(Vector3 velocity);
 Vector3 GetVelocity();
+
+void SetGravityFactor(float factor);
+float GetGravityFactor();
 
 ManagedComponentEnd()
 

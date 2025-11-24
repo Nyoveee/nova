@@ -92,6 +92,8 @@ public:
 
 	GameConfig				gameConfig;
 
+	float					deltaTimeMultiplier;
+
 private:
 	// Editor mouse control represents whether the editor has control over the mouse
 	// The editor has the final authority over mouse control
