@@ -57,21 +57,13 @@ public:
 	ENGINE_DLL_API void		  InstantiateAgentsToSystem(entt::entity entityID, Transform const*const enttTransform, NavMeshAgent *const navMeshAgent);
 	ENGINE_DLL_API void		  SetAgentActive(entt::entity entityID);
 	ENGINE_DLL_API void		  SetAgentInactive(entt::entity entityID);
-	ENGINE_DLL_API void		  SetAgentActive(NavMeshAgent& navMeshAgent);
-	ENGINE_DLL_API void		  SetAgentInactive(NavMeshAgent& navMeshAgent);
 
 //--------------------For C# scripting API-------------------------------------------------------------//
 public:
-	//Start navigation for a particular agent. Returns bool false when unable to set destination to targetPosition.
+	// Start navigation for a particular agent. Returns bool when unable to set destination to targetPosition.
 	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
-
-	//ENGINE_DLL_API void setAgentInactive(entt::entity entityID);
-
-	//ENGINE_DLL_API void setAgentActive(entt::entity entityID);
-
-	//ENGINE_DLL_API bool warp(entt::entity entityID,  glm::vec3 targetPosition);
-
-
+	// Stop Navigation for a particular agent.
+	ENGINE_DLL_API void stopAgent(entt::entity entityID);
 
 //--------------------Helper functions-------------------------------------------------------------//
 private:
@@ -82,9 +74,6 @@ private:
 
 	//Helper function to configure navMeshParams
 	dtCrowdAgentParams ConfigureDTParams(NavMesh const& navMesh, NavMeshAgent const& navMeshAgent);
-
-
-
 private:
 	using AgentID = int;
 	using dtCrowdID = int;
@@ -110,17 +99,10 @@ private:
 	std::unordered_map<std::string, std::unordered_map<ArrayIndex, AgentID>> indexToAgentMap; // takes a holds the inverse copy of agentList index so that the last elements know which is tied to fro removale
 	//std::unordered_map<std::string, std::unordered_map<ArrayIndex, AgentID>> indexToAgentMap; //man
 
-
-
-
 	const int  agentLimit = 1000;
 
 	int lastAvailable = 0;
 	bool hasSystemInit = false; //check if system has init before adding any other agent
-
-
-
-
 
 	ResourceID navMeshId;
 };

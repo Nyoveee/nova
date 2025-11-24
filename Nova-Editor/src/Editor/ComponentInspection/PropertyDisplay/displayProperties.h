@@ -16,29 +16,10 @@
 template <class...>
 struct False : std::bool_constant<false> {};
 
-/***************************************************************************************
-	Reference for display properties
-****************************************************************************************/
-#if 0
-struct PropertyReferences {
-	entt::entity entity;
-	ComponentInspector& componentInspector;
-	ResourceManager& resourceManager;
-	AssetManager& assetManager;
-	AudioSystem& audioSystem;
-	ScriptingAPIManager& scriptingAPIManager;
-	Engine& engine;
-	Editor& editor;
-	ECS& ecs;
-};
-#endif
 
 /***************************************************************************************
 	Property Sub Infos
 ****************************************************************************************/
-#if 0
-void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
-#endif
 void displayScriptFields(ScriptData& scriptData, Editor& editor);
 
 /***************************************************************************************

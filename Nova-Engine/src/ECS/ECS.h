@@ -6,7 +6,6 @@
 #include "component.h"
 #include "SceneManager.h"
 #include "Engine/prefabManager.h"
-
 class Engine;
 class PrefabManager;
 // A ECS wrapper around the entt framework for ease of access from other classes.
@@ -51,6 +50,15 @@ public:
 	template<typename ...Components>
 	void copyEntity(entt::entity en, entt::entity parent);
 
+	template<typename Component>
+	bool isComponentActive(entt::entity entity);
+	ENGINE_DLL_API bool isComponentActive(entt::entity entity, ComponentID componentID);
+
+	template<typename Component>
+	void setComponentActive(entt::entity entity, bool isActive);
+	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
+
+	
 public:
 	// public!
 	entt::registry registry;
@@ -172,3 +180,8 @@ void ECS::copyEntity(entt::entity en, entt::entity parent) {
 		p.children.push_back(tempEntity);
 	}
 }
+// Eseentially a proxy function since engine.h can't be included in this file
+template<typename Component>
+bool ECS::isComponentActive(entt::entity entity) { return isComponentActive(entity, typeid(Component).hash_code()); }
+template<typename Component>
+void ECS::setComponentActive(entt::entity entity, bool isActive) { setComponentActive(entity, typeid(Component).hash_code(), isActive);}

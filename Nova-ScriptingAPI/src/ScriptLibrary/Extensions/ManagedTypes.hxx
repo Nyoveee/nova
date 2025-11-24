@@ -1,9 +1,9 @@
 #pragma once
 
 #include "component.h"
+#include "ECS/ECS.h"
 #include "API/ManagedTypeMacros.hxx"
 #include "API/IManagedResourceID.hxx"
-
 // ===========================================================================================
 // 0. Defining managed typed resource..
 // ===========================================================================================
@@ -285,4 +285,11 @@ void setMaterialInt(int index, System::String^ name, int data);
 void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
 
+ManagedComponentEnd()
+// ======================================
+// NavMeshAgent Component
+// ======================================
+ManagedComponentDeclaration(
+	NavMeshAgent
+)
 ManagedComponentEnd()

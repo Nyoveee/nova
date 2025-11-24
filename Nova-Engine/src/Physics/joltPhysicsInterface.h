@@ -86,9 +86,9 @@ public:
 		{
 		case Layers::WALL:
 		case Layers::NON_MOVING:
-			return inLayer2 == BroadPhaseLayers::MOVING; // Non moving only collides with moving
+			return inLayer2 == BroadPhaseLayers::MOVING || inLayer2 == BroadPhaseLayers::ITEM; // Non moving only collides with moving
 		case Layers::MOVING:
-			return true;								 // Moving collides with everything
+			return inLayer2 != BroadPhaseLayers::ITEM;	 // Moving collides with everything except item
 		case Layers::ITEM:
 			return inLayer2 == BroadPhaseLayers::NON_MOVING;
 		default:
@@ -108,9 +108,9 @@ public:
 		{
 		case Layers::WALL:
 		case Layers::NON_MOVING:
-			return inObject2 == Layers::MOVING; // Non moving only collides with moving
+			return inObject2 == Layers::MOVING || inObject2 == Layers::ITEM; // Non moving only collides with moving
 		case Layers::MOVING:
-			return true; // Moving collides with everything
+			return inObject2 != Layers::ITEM;   // Moving collides with everything except item
 		case Layers::ITEM:
 			return inObject2 == Layers::NON_MOVING;
 		default:

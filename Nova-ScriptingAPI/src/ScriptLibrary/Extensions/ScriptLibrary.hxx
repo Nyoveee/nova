@@ -122,6 +122,7 @@ public:
 public ref class NavigationAPI {
 public:
 	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition);
+	static void stopAgent(GameObject^ gameObject);
 };
 
 // ======================================

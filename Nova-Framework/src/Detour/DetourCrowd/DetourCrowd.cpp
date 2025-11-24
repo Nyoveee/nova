@@ -711,11 +711,29 @@ bool dtCrowd::resetMoveTarget(const int idx)
 	ag->targetRef = 0;
 	dtVset(ag->targetPos, 0,0,0);
 	dtVset(ag->dvel, 0,0,0);
+	dtVset(ag->vel, 0, 0, 0);
 	ag->targetPathqRef = DT_PATHQ_INVALID;
 	ag->targetReplan = false;
 	ag->targetState = DT_CROWDAGENT_TARGET_NONE;
 	
 	return true;
+}
+
+void dtCrowd::setTargetPosition(const int idx, float x, float y, float z)
+{
+	
+	dtCrowdAgent* ag = &m_agents[idx];
+	float nearest[3];
+	dtPolyRef ref = 0;
+	float pos[3] = { x, y, z };
+	dtVcopy(nearest, pos);
+	dtStatus status = m_navquery->findNearestPoly(pos, m_agentPlacementHalfExtents, &m_filters[ag->params.queryFilterType], &ref, nearest);
+	if (dtStatusFailed(status))
+	{
+		dtVcopy(nearest, pos);
+		ref = 0;
+	}
+	dtVcopy(ag->npos, nearest);
 }
 
 int dtCrowd::getActiveAgents(dtCrowdAgent** agents, const int maxAgents)

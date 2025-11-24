@@ -20,6 +20,44 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 		updateAnimator(dt);
 	}
 
+	// =======================================================
+	// We calculate the bone's final matrices here. This will be used
+	// by the vertex shader for skinning.
+	// =======================================================
+	for (auto&& [entityId, entityData, skinnedMeshRenderer] : registry.view<EntityData, SkinnedMeshRenderer>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entityId)) {
+			continue;
+		}
+
+		// retrieve skinned mesh..
+		auto&& [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
+		
+		if (!model || !model->skeleton) {
+			continue;
+		}
+
+		Skeleton const& skeleton = model->skeleton.value();
+
+		skinnedMeshRenderer.bonesFinalMatrices.resize(skeleton.bones.size());
+
+		// retrieve animation...
+		Animator* animator = registry.try_get<Animator>(entityId);
+		Animation const* currentAnimation = nullptr;
+		float timeInTicks = 0.f;
+
+		if (animator) {
+			auto&& [animation, __] = resourceManager.getResource<Model>(animator->currentAnimation);
+
+			if (animation && animation->animations.size()) {
+				currentAnimation = &animation->animations[0];
+				timeInTicks = std::min(animator->timeElapsed * currentAnimation->ticksPerSecond, currentAnimation->durationInTicks - 0.01f);
+			}
+		}
+
+		// we find the root node first, and recursively calculate the final transformation matrix down...
+		ModelNodeIndex rootNode = skeleton.rootNode;
+		calculateFinalMatrix(rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
+	}
 	animateSequencer(dt);
 	calculateBoneMatrixes();
 }
@@ -189,7 +227,7 @@ void AnimationSystem::updateAnimator(float dt) {
 	// =======================================================
 
 	for (auto&& [entityId, entityData, animator] : registry.view<EntityData, Animator>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Animator>(entityId)) {
 			continue;
 		}
 

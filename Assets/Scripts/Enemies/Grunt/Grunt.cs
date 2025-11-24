@@ -18,9 +18,10 @@ class Grunt : Enemy
     private Prefab? hitboxPrefab = null;
     [SerializableField]
     private GameObject? hitboxPosition = null;
-
     [SerializableField]
     private float spawningDuration = 1f;
+    [SerializableField]
+    private Rigidbody_? rigidbody;
     /***********************************************************
         Components
     ***********************************************************/
@@ -63,7 +64,6 @@ class Grunt : Enemy
         updateState.Add(GruntState.Attacking, Update_AttackState);
         updateState.Add(GruntState.Death, Update_Death);
 
-        rigidbody.SetVelocity(new Vector3(0, 0, 0));
         LookAtPlayer();
 
         Invoke(() =>
@@ -87,34 +87,34 @@ class Grunt : Enemy
 
     public override void TakeDamage(float damage)
     {
-        // blud already died let him die in peace dont take anymore damage..
-        if(gruntState == GruntState.Death)
-        {
-            return;
-        }
 
-        AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         gruntStats.health -= damage;
+        if (gruntStats.health <= 0)
+        {
+            if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+                SpawnIchor();
+            gruntState = GruntState.Death;
+            animator.PlayAnimation("Grunt Death");
+            NavigationAPI.stopAgent(gameObject);
+            rigidbody.enable = false;
+        }
+        // blud already died let him die in peace dont take anymore damage..
+        if (gruntState == GruntState.Death || WasRecentlyDamaged())
+            return;
+        SpawnIchor();
+        TriggerRecentlyDamageCountdown();
+        AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
         renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
         Invoke(() =>
         {
             renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
             renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        }, hurtDuration);
-        if(gruntStats.health <= 0)
-        {
-            gruntState = GruntState.Death;
-            animator.PlayAnimation("Grunt Death");
-            rigidbody.SetVelocity(Vector3.Zero());
-        }
+        }, gruntStats.hurtDuration);
+        
     }
 
     // kills this gameobject..
-    public void Die()
-    {
-         Destroy(gameObject);
-    }
     /**********************************************************************
         Enemy States
     **********************************************************************/
@@ -140,24 +140,20 @@ class Grunt : Enemy
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;
-            rigidbody.SetVelocity(new Vector3(0, rigidbody.GetVelocity().y, 0));
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
         // Change State
         if (GetDistanceFromPlayer() <= gruntStats.attackRadius)
         {
-            if (animator != null)
-                animator.PlayAnimation("Grunt Attack");
-            rigidbody.SetVelocity(Vector3.Zero());
+            animator.PlayAnimation("Grunt Attack");
             gruntState = GruntState.Attacking;
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
         LookAtPlayer();
         // Move Enemy 
-        Vector3 direction = player.transform.position - gameObject.transform.position;
-        direction.y = 0;
-        direction.Normalize();
-        rigidbody.SetVelocity(direction * gruntStats.movementSpeed + new Vector3( 0,rigidbody.GetVelocity().y,0));
+        NavigationAPI.setDestination(gameObject, player.transform.position);
     }
     private void Update_AttackState()
     {
@@ -196,10 +192,14 @@ class Grunt : Enemy
             return;
         hitbox = Instantiate(hitboxPrefab);
         if(hitbox!= null && hitboxPosition!= null){
-            hitbox.transform.position = hitboxPosition.transform.position;
+            hitbox.transform.localPosition = hitboxPosition.transform.position;
             EnemyHitBox enemyHitBox = hitbox.getScript<EnemyHitBox>();
             if (enemyHitBox != null && gruntStats != null)
                 enemyHitBox.SetDamage(gruntStats.damage);
         }
+    }
+    public void EndDeath()
+    {
+        Destroy(gameObject);
     }
 }

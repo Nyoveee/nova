@@ -3,6 +3,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Ichor",
@@ -48,7 +49,7 @@
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 1.0,
+                        "b": 0.0,
                         "g": 1.0,
                         "r": 1.0
                     },
@@ -87,7 +88,7 @@
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 1.0,
+                    "distancePerEmission": 0.10000000149011612,
                     "selected": true,
                     "trailColor": {
                         "a": 1.0,
@@ -95,8 +96,8 @@
                         "g": 1.0,
                         "r": 1.0
                     },
-                    "trailSize": 0.800000011920929,
-                    "trailTexture": 5149426810937966671
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Rigidbody": {
@@ -117,15 +118,15 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 14,
                                     "__variant_value": 10.0
                                 },
                                 "name": "ichorLifeTime"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 300.0
+                                    "__variant_type": 14,
+                                    "__variant_value": 100.0
                                 },
                                 "name": "initialForce"
                             }
@@ -140,7 +141,7 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "radius": 0.6000000238418579
+                "radius": 0.6499999761581421
             },
             "Transform": {
                 "eulerAngles": {
@@ -154,9 +155,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.6123056411743164,
-                    "y": 4.930394649505615,
-                    "z": -18.636425018310547
+                    "x": 0.0,
+                    "y": 2.810981035232544,
+                    "z": 4.601292133331299
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -170,9 +171,9 @@
                     "z": 0.4000000059604645
                 },
                 "position": {
-                    "x": -0.6123056411743164,
-                    "y": 4.930394649505615,
-                    "z": -18.636425018310547
+                    "x": 0.0,
+                    "y": 2.810981035232544,
+                    "z": 4.601292133331299
                 },
                 "rotation": {
                     "w": 1.0,
@@ -186,8 +187,8 @@
                     "z": 0.4000000059604645
                 }
             },
-            "id": 1048605
+            "id": 29
         }
     ],
-    "RootEntity": 1048605
+    "RootEntity": 29
 }

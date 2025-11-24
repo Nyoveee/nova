@@ -315,7 +315,9 @@ public:
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	/// @return True if the request was successfully reseted.
 	FRAMEWORK_DLL_API bool resetMoveTarget(const int idx);
-
+	/// Sets the specified agent position 
+	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
+	FRAMEWORK_DLL_API void setTargetPosition(const int idx,float x, float y, float z);
 	/// Gets the active agents int the agent pool.
 	///  @param[out]	agents		An array of agent pointers. [(#dtCrowdAgent *) * maxAgents]
 	///  @param[in]		maxAgents	The size of the crowd agent array.
