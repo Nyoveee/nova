@@ -5,42 +5,38 @@ using ScriptingAPI;
 
 class EnemySpawn : Script
 {
+    private Transform_ enemyTransform;
     public Vector3 StartPos; 
     public Vector3 EndPos;
-    private float m_SpawnTime;
-    private float duration = 2.0f;
+    private float timeElapsed = 0f;
+    private float duration = 2f;
 
     [SerializableField]
     private Prefab enemyPrefab;
 
-
     protected override void init()
     {
-        base.init();
-        m_SpawnTime = Time.V_FixedDeltaTime();
+        enemyTransform = Instantiate(enemyPrefab).transform;
     }
 
     protected override void update()
     {
-        Time.V_FixedDeltaTime();
-    }
+        float ratio = timeElapsed / duration;
 
-    // Lerp need duration
-    // Script for animation
-    void LerpSpawn()
-    {
-        float ratio =  (Time.V_FixedDeltaTime() - m_SpawnTime) / duration;
+        // ratio = Mathf.Clamp(ratio, 0, 1);
 
-        ratio = Mathf.Clamp(ratio, 0, 1);
-
-        if (ratio < 0)
+        if (ratio < 1)
         {
-            Transform_ transform;
-            transform.localPosition = Vector3.Lerp(StartPos, EndPos, ratio);
+            enemyTransform.position = Vector3.Lerp(StartPos, EndPos, ratio);
         }
         else
         {
             return;
         }
+
+        timeElapsed += Time.V_FixedDeltaTime();
     }
+
+    // Lerp need duration
+    // Script for animation
 }
