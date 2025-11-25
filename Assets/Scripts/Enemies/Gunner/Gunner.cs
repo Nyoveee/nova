@@ -2,8 +2,6 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
 
 class Gunner : Enemy
 {
@@ -11,11 +9,11 @@ class Gunner : Enemy
         Inspector Variables
     ***********************************************************/
     [SerializableField]
-    private float hurtDuration = 0.1f;
-    [SerializableField]
     private Prefab projectilePrefab;
     [SerializableField]
     private GameObject? projectileSpawnPoint;
+    [SerializableField]
+    private Rigidbody_? rigidbody;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -87,22 +85,26 @@ class Gunner : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage)
     {
-        if (gunnerState == GunnerState.Death)
-            return;
         gunnerStats.health -= damage;
+        if (gunnerStats.health <= 0)
+        {
+            if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+                SpawnIchor();
+            gunnerState = GunnerState.Death;
+            animator.PlayAnimation("Gunner_Death");
+            NavigationAPI.stopAgent(gameObject);
+            rigidbody.enable = false;
+        }   
+        if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
+            return;
+        SpawnIchor();
+        TriggerRecentlyDamageCountdown();
         AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
         Invoke(() =>
         {
             renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-        }, hurtDuration);
-
-        if (gunnerStats.health <= 0)
-        {
-            gunnerState = GunnerState.Death;
-            animator.PlayAnimation("Gunner_Death");
-            return;
-        }
+        }, gunnerStats.hurtDuration);
         gunnerState = GunnerState.Stagger;
         animator.PlayAnimation("Gunner_Stagger");
     }
@@ -123,44 +125,42 @@ class Gunner : Enemy
             {
                 gunnerState = GunnerState.Walk;
                 animator.PlayAnimation("Gunner_Walk");
+                MoveToNavMeshPosition(targetVantagePoint.transform.position);
             }
         }
     }
     private void Update_Walk()
     {
-        if(!HasLineOfSightToPlayer(targetVantagePoint))
-            GetVantagePoint();
-        if (targetVantagePoint == null)
+        if (!HasLineOfSightToPlayer(targetVantagePoint))
         {
-            gunnerState = GunnerState.Idle;
-            animator.PlayAnimation("Gunner_Idle");
-            rigidbody.SetVelocity(Vector3.Zero());
-            return;
+            GetVantagePoint();
+            if (targetVantagePoint == null)
+            {
+                gunnerState = GunnerState.Idle;
+                animator.PlayAnimation("Gunner_Idle");
+                NavigationAPI.stopAgent(gameObject);
+                return;
+            }
+            MoveToNavMeshPosition(targetVantagePoint.transform.position);
         }
         if(Vector3.Distance(targetVantagePoint.transform.position, gameObject.transform.position) <= gunnerStats.targetDistanceFromVantagePoint)
         {
             gunnerState = GunnerState.Shoot;
             animator.PlayAnimation("Gunner_Attack");
-            rigidbody.SetVelocity(Vector3.Zero());
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
         LookAtObject(targetVantagePoint);
-        // Move toward Vantage Point
-        Vector3 direction = targetVantagePoint.transform.position - gameObject.transform.position;
-        direction.y = 0;
-        direction.Normalize();
-        rigidbody.SetVelocity(direction * gunnerStats.movementSpeed + new Vector3(0, rigidbody.GetVelocity().y, 0));
     }
     private void Update_Shoot()
     {
+        LookAtPlayer();
         if (!HasLineOfSightToPlayer(targetVantagePoint))
         {
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");
-            rigidbody.SetVelocity(Vector3.Zero());
             return;
         }
-        LookAtPlayer();
     }
     private void Update_Stagger()
     {
@@ -177,7 +177,7 @@ class Gunner : Enemy
         AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
         // Shoot Projectile
         GameObject projectile = Instantiate(projectilePrefab);
-        projectile.transform.position = projectileSpawnPoint.transform.position;
+        projectile.transform.localPosition = projectileSpawnPoint.transform.position;
         Vector3 direction = player.transform.position - projectileSpawnPoint.transform.position;
         direction.Normalize();
         projectile.getScript<GunnerProjectile>().SetDirection(direction);

@@ -85,16 +85,16 @@ Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
 // QUATERNION
 // =================================================================
 
-Vector3 Quartenion::operator*(Quartenion quaternion, Vector3 axis) {
+Vector3 Quaternion::operator*(Quaternion quaternion, Vector3 axis) {
 	return Vector3{ quaternion.native() * axis.native() };
 }
 
-Vector3 Quartenion::operator*(Vector3 axis, Quartenion quaternion) {
+Vector3 Quaternion::operator*(Vector3 axis, Quaternion quaternion) {
 	return Vector3{ axis.native() * quaternion.native() };
 }
 
-Quartenion Quartenion::Identity() {
-	return Quartenion{ glm::identity<glm::quat>() };
+Quaternion Quaternion::Identity() {
+	return Quaternion{ glm::identity<glm::quat>() };
 }
 
 // =================================================================
@@ -109,15 +109,15 @@ void Transform_::rotate(Vector3 axis, float degrees) {
 	}
 }
 
-void Transform_::rotate(Quartenion quartenion) {
+void Transform_::rotate(Quaternion quartenion) {
 	nativeComponent()->rotation = quartenion.native() * nativeComponent()->rotation;
 }
 
-Quartenion Transform_::LookAt(Transform_^ target) {
+Quaternion Transform_::LookAt(Transform_^ target) {
 	Vector3 direction = position - target->position;
 	direction.Normalize();
-	
-	return Quartenion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
+
+	return Quaternion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
 }
 
 void Transform_::setFront(Vector3 frontAxis) {
@@ -180,6 +180,14 @@ Vector3 Rigidbody_::GetVelocity() {
 	}
 
 	return Vector3{};
+}
+
+void Rigidbody_::SetGravityFactor(float factor) {
+	Interface::engine->physicsManager.setGravityFactor(*nativeComponent(), factor);
+}
+
+float Rigidbody_::GetGravityFactor() {
+	return nativeComponent()->gravityMultiplier;
 }
 
 // =================================================================

@@ -2,8 +2,6 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
-using System.Runtime.CompilerServices;
-
 class Charger : Enemy
 {
     /***********************************************************
@@ -14,7 +12,9 @@ class Charger : Enemy
     [SerializableField]
     private Transform_? attackHitBoxTransform;
     [SerializableField]
-    private float hurtDuration = 0.1f;
+    private Rigidbody_? chargingRigidbody;
+    [SerializableField]
+    private Rigidbody_? navMeshRigidbody;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -50,36 +50,58 @@ class Charger : Enemy
         updateState.Add(ChargerState.Attack, Update_Attack);
         updateState.Add(ChargerState.Stagger, Update_Stagger);
         updateState.Add(ChargerState.Death, Update_Death);
+        ActivateNavMeshAgent();
     }
     protected override void update() {
         updateState[chargerState](); 
     }
     /***********************************************************
-       Public Functions
+        Helper Functions
     ***********************************************************/
-    public bool IsCharging() { return chargerState == ChargerState.Charging; }
+    private void ActivateRigidbody()
+    {
+        navMeshAgent.enable = false;
+        chargingRigidbody.enable = true;
+        navMeshRigidbody.enable = false;
+        NavigationAPI.stopAgent(gameObject);
+    }
+    private void ActivateNavMeshAgent()
+    {
+        navMeshAgent.enable = true;
+        chargingRigidbody.enable = false;
+        navMeshRigidbody.enable = true;
+        chargingRigidbody.SetVelocity(Vector3.Zero());
+    }
     /***********************************************************
         Inherited Functions
     ***********************************************************/
     public override void TakeDamage(float damage)
     {
-        if (chargerState == ChargerState.Death)
-            return;
         chargerstats.health -= damage;
+        if (chargerstats.health <= 0)
+        {
+            if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                SpawnIchor();
+            chargerState = ChargerState.Death;
+            animator.PlayAnimation("ChargerDeath");
+            AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+            NavigationAPI.stopAgent(gameObject);
+            chargingRigidbody.enable = false;
+            navMeshRigidbody.enable = false;
+            navMeshAgent.enable = false;
+        }
+        if (chargerState == ChargerState.Death || WasRecentlyDamaged())
+            return;
+        TriggerRecentlyDamageCountdown();
+        SpawnIchor();
         renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
         renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
         Invoke(() =>
         {
             renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
             renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        }, hurtDuration);
-        if(chargerstats.health <= 0)
-        {
-            chargerState = ChargerState.Death;
-            animator.PlayAnimation("ChargerDeath");
-            rigidbody.SetVelocity(Vector3.Zero());
-            AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        }
+        }, chargerstats.hurtDuration);
+        
     }
     public override bool IsEngagedInBattle()
     {
@@ -102,31 +124,35 @@ class Charger : Enemy
         {
             chargerState = ChargerState.Idle;
             animator.PlayAnimation("ChargerIdle");
-            rigidbody.SetVelocity(Vector3.Zero());
+            NavigationAPI.stopAgent(gameObject);
             return;
         }
         LookAtPlayer();
-        Vector3 direction = player.transform.position - gameObject.transform.position;
-        direction.y = 0;
-        direction.Normalize();
-        currentChargeCooldown -= Time.V_FixedDeltaTime();
         if (GetDistanceFromPlayer() > chargerstats.attackRange && GetDistanceFromPlayer() < chargerstats.chargingRange && currentChargeCooldown <=0 )
         {
             chargerState = ChargerState.Charging;
             animator.PlayAnimation("ChargerCharge");
             currentChargeTime = chargerstats.maxChargeTime;
-            rigidbody.SetVelocity(direction * chargerstats.movementSpeed * chargerstats.speedMultiplier + new Vector3(0, rigidbody.GetVelocity().y, 0));
+            ActivateRigidbody();
+            // Set Velocity
+            Vector3 direction = player.transform.position - gameObject.transform.position;
+            direction.y = 0;
+            direction.Normalize();
+            currentChargeCooldown -= Time.V_FixedDeltaTime();
+            Debug.Log(direction * chargerstats.movementSpeed * chargerstats.speedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
+            chargingRigidbody.SetVelocity(direction * chargerstats.movementSpeed * chargerstats.speedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
             return;
         }
         if(GetDistanceFromPlayer() < chargerstats.attackRange)
         {
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");
-            rigidbody.SetVelocity(Vector3.Zero());
+            ActivateRigidbody();
+            chargingRigidbody.SetVelocity(Vector3.Zero());
             return;
         }
         // Move Enemy 
-        rigidbody.SetVelocity(direction * chargerstats.movementSpeed + new Vector3(0, rigidbody.GetVelocity().y, 0));
+        MoveToNavMeshPosition(player.transform.position);
     }
     private void Update_Charging() {
         currentChargeTime -= Time.V_FixedDeltaTime();
@@ -135,6 +161,7 @@ class Charger : Enemy
             chargerState = ChargerState.Walk;
             animator.PlayAnimation("ChargerWalk");
             currentChargeCooldown = chargerstats.chargeCooldown;
+            ActivateNavMeshAgent();
             return;
         }
         // FootSteps
@@ -160,10 +187,11 @@ class Charger : Enemy
         chargerState = ChargerState.Walk;
         animator.PlayAnimation("ChargerWalk");
         currentChargeCooldown = chargerstats.chargeCooldown;
+        ActivateNavMeshAgent();
     }
     public void BeginSwing()
     {
-        hitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.position,null);
+        hitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.localPosition);
         hitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
     }
     public void EndSwing()
@@ -174,6 +202,7 @@ class Charger : Enemy
     {
         chargerState = ChargerState.Walk;
         animator.PlayAnimation("ChargerWalk");
+        ActivateNavMeshAgent();
     }
     public void EndDeathAnimation()
     {
@@ -190,15 +219,15 @@ class Charger : Enemy
             playerController.TakeDamage(chargerstats.chargeDamage);
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");
-            rigidbody.SetVelocity(Vector3.Zero());
             currentChargeCooldown = chargerstats.chargeCooldown;
+            chargingRigidbody.SetVelocity(Vector3.Zero());
         }
         if (other.tag == "Wall" && chargerState == ChargerState.Charging)
         {
             chargerState = ChargerState.Stagger;
             animator.PlayAnimation("ChargerStagger");
-            rigidbody.SetVelocity(Vector3.Zero());
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+            chargingRigidbody.SetVelocity(Vector3.Zero());
         }
     }
 }

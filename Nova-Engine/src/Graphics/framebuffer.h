@@ -23,6 +23,11 @@ public:
 
 	void swap(FrameBuffer& rhs);
 
+	// sets a following number of color attachment as active.
+	void setColorAttachmentActive(int number) const;
+
+	void clear();
+
 public:
 	GLuint						fboId()			const;
 	std::vector<GLuint> const&	textureIds()	const;
@@ -37,4 +42,6 @@ private:
 
 	int width;
 	int height;
+
+	std::vector<GLuint> colorAttachments;
 };

@@ -10,8 +10,7 @@ PairFrameBuffer::PairFrameBuffer(int width, int height, std::vector<TextureInter
 void PairFrameBuffer::clearFrameBuffers() {
 	// Clear both main framebuffers.
 	for (auto&& framebuffer : frameBuffers) {
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.fboId());
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		framebuffer.clear();
 	}
 
 	// We choose 1 as the active index because we last bind to the last element of the array above^

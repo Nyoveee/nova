@@ -88,7 +88,7 @@ void DebugUI::renderPhysicsSection() {
 }
 
 void DebugUI::renderHDRSection() {
-	ImGui::SeparatorText("HDR");
+	ImGui::SeparatorText("Rendering..");
 
 	float exposure = renderer.getHDRExposure();
 	if (ImGui::SliderFloat("Exposure", &exposure, 0.1f, 5.0f, "%.2f")) {
@@ -101,6 +101,9 @@ void DebugUI::renderHDRSection() {
 	editor.displayEnumDropDownList<Renderer::ToneMappingMethod>(currentMethod, "Tone Mapping Method", [&](auto enumValue) {
 		renderer.setToneMappingMethod(enumValue);
 	});
+
+	ImGui::SliderFloat("Bloom Filter Radius", &renderer.bloomFilterRadius, 0.0001f, 0.1f);
+	ImGui::SliderFloat("Bloom Composite Percentage", &renderer.bloomCompositePercentage, 0.f, 1.0f);
 }
 
 void DebugUI::renderGammaCorrectionSection() {

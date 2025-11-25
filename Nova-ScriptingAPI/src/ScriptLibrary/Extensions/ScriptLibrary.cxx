@@ -3,8 +3,11 @@
 // ======================================
 // Time..
 // ======================================
-float Time::V_FixedDeltaTime() { return 1 / 60.f; } // Replace with config
-float Time::V_DeltaTime() { return Interface::engine->getDeltaTime(); } // Replace with config
+float Time::V_FixedDeltaTime()			{ return (1 / 60.f) * Interface::engine->deltaTimeMultiplier; } // Replace with config
+float Time::V_DeltaTime()				{ return Interface::engine->getDeltaTime() * Interface::engine->deltaTimeMultiplier; }
+
+float Time::V_FixedDeltaTime_Unscaled() { return 1 / 60.f; }
+float Time::V_DeltaTime_Unscaled()		{ return Interface::engine->getDeltaTime(); }
 
 // ======================================
 // Debug and logging..
@@ -197,6 +200,11 @@ bool NavigationAPI::setDestination(GameObject^ gameObject, Vector3^ targetPositi
 	return Interface::engine->navigationSystem.setDestination(Convert(gameObject), targetPosition->native());
 }
 
+void NavigationAPI::stopAgent(GameObject^ gameObject)
+{
+	Interface::engine->navigationSystem.stopAgent(Convert(gameObject));
+}
+
 // ======================================
 // Math related API.. hehe? :D
 // ======================================
@@ -208,3 +216,15 @@ float Mathf::Interpolate(float a, float b, float t, float degree) { return Inter
 float Mathf::Min(float a, float b) { return std::min(a, b); }
 float Mathf::Max(float a, float b) { return std::max(a, b); }
 float Mathf::Pow(float base, float exponent) { return std::powf(base, exponent); }
+// ======================================
+// Random Related API
+// ======================================
+float Random::Range(float minInclusive, float maxInclusive)
+{
+	return RandomRange::Float(minInclusive,maxInclusive);
+}
+
+int Random::Range(int minInclusive, int maxExclusive)
+{
+	return RandomRange::Int(minInclusive,maxExclusive);
+}

@@ -133,7 +133,16 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 		dataMember.insert(std::move(pair));
 	}
 }
-
+// unordered_set
+template <isUnorderedSet DataMemberType>
+inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
+	dataMember.clear();
+	for (Json const& elementJson : json) {
+		typename DataMemberType::value_type elementType;
+		deserializeFromJson(elementType, elementJson);
+		dataMember.insert(elementType);
+	}
+}
 /***************************************************************************************
 	Recursive reflection, also entry point.
 ****************************************************************************************/
@@ -144,7 +153,9 @@ inline void deserializeFromJson(T& dataMember, Json const& json) {
 		constexpr const char* dataMemberName = fieldData.name();
 		using DataMemberType = std::decay_t<decltype(dataMember)>;
 
-		deserializeFromJson(dataMember, json[dataMemberName]);
+		if (json.contains(dataMemberName)) {
+			deserializeFromJson(dataMember, json[dataMemberName]);
+		}
 	}, dataMember);
 }
 
@@ -155,6 +166,12 @@ template<>
 inline void deserializeFromJson<NormalizedFloat>(NormalizedFloat& dataMember, Json const& json) {
 	float value = json;
 	dataMember = value;
+}
+
+// serialize field list is literally just a vector..
+template<>
+inline void deserializeFromJson<serialized_field_list>(serialized_field_list& dataMember, Json const& json) {
+	deserializeFromJson(static_cast<std::vector<serialized_field_type>&>(dataMember), json);
 }
 
 template<>

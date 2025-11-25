@@ -82,13 +82,23 @@ namespace ImGui {
                 drawList->AddLine(p1,p2, IM_COL32_WHITE, 1.0f);
 
                 if(drawFrameText && secondaryFrame) {
+					char text[10];
+
+					int printResult;
+
                     if (!showTimeInsteadOfFrame) {
-                        char text[10];
-                        const auto printRes = snprintf(text, sizeof(text), "%i", viewStart + i);
-                        if (printRes > 0) {
-                            drawList->AddText(NULL, 0, { p1.x + 2.0f, barArea.Min.y }, IM_COL32_WHITE, text);
-                        }
+						printResult = snprintf(text, sizeof(text), "%i", viewStart + i);
                     }
+					else {
+						unsigned int frames = viewStart + i;
+						unsigned int seconds = frames / 60U;
+						unsigned int remainingFrames = frames % 60U;
+						printResult = snprintf(text, sizeof(text), "%u:%02u", seconds, remainingFrames);
+					}
+
+					if (printResult > 0) {
+						drawList->AddText(NULL, 0, { p1.x + 2.0f, barArea.Min.y }, IM_COL32_WHITE, text);
+					}
                 }
             }
         }

@@ -16,6 +16,10 @@ GameConfigUI::GameConfigUI(Editor& editor) :
 	gameConfig	{ editor.engine.gameConfig }
 {}
 
+GameConfigUI::~GameConfigUI() {
+	Serialiser::serialiseGameConfig("gameConfig.json", gameConfig);
+}
+
 void GameConfigUI::update() {
   
     ImGui::Begin("Game Configuration");
@@ -37,6 +41,16 @@ void GameConfigUI::update() {
 		editor.displayAssetDropDownList<Scene>(gameConfig.sceneStartUp, "##startUp", [&](ResourceID scene) {
 			gameConfig.sceneStartUp = scene;
 		});
+
+		float gravity = gameConfig.gravityStrength;
+
+		ImGui::Text("Gravity");
+		ImGui::DragFloat("##Gravity", &gravity);
+	
+		if (gravity != gameConfig.gravityStrength) {
+			gameConfig.gravityStrength = gravity;
+			editor.engine.physicsManager.setGravity(gravity);
+		}
 	}
 
     ImGui::Separator();
@@ -45,13 +59,6 @@ void GameConfigUI::update() {
     if (ImGui::Button("Save")) {
 		Serialiser::serialiseGameConfig("gameConfig.json", gameConfig);
     }
-
-    //if (ImGui::Button("Reset")) {
-    //    windowName = "Nova Game";
-    //    gameWidth = 1920;
-    //    gameHeight = 1080;
-    //    saveConfig();
-    //}
 
     ImGui::End();
 }

@@ -5,6 +5,9 @@ using System.Net.Http.Headers;
 
 class PathFinding : Script
 {
+    //GameObject cube1;
+
+
     // This function is first invoked when game starts.
     protected override void init()
     {

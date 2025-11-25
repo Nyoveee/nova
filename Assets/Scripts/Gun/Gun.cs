@@ -31,16 +31,16 @@ public abstract class Gun : Script
 
         GameObject collidedEntity = new GameObject(result.Value.entity);
 
-        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "Enemy")
+        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "EnemyCollider" && collidedEntity.tag != "Enemy")
         {
             return false;
         }
 
-        Enemy enemyScript = collidedEntity.getScript<Enemy>();
+        EnemyCollider enemyColliderScript = collidedEntity.getScript<EnemyCollider>();
 
-        if (enemyScript != null)
+        if (enemyColliderScript != null)
         {
-            enemyScript.TakeDamage(damage);
+            enemyColliderScript.OnColliderShot(damage);
             return true;
         }
 

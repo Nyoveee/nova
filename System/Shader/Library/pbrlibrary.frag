@@ -130,7 +130,7 @@ float ggxDistribution(float nDotH, float roughness)
 {
     float alpha2 = roughness * roughness * roughness * roughness;
     float d = (nDotH * nDotH) * (alpha2 - 1.0f) + 1.0f;
-    return alpha2 / (PI * d * d);
+    return alpha2 / max(PI * d * d, 0.001f);
 }
 
 // The Smith Masking-Shadowing Function describes the probability that microfacets with 

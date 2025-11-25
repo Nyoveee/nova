@@ -18,7 +18,8 @@ namespace Layers {
 	static constexpr JPH::ObjectLayer NON_MOVING = 0;
 	static constexpr JPH::ObjectLayer MOVING = 1;
 	static constexpr JPH::ObjectLayer WALL = 2;
-	static constexpr JPH::ObjectLayer NUM_LAYERS = 3;
+	static constexpr JPH::ObjectLayer ITEM = 3;
+	static constexpr JPH::ObjectLayer NUM_LAYERS = 4;
 };
 
 // Each broadphase layer results in a separate bounding volume tree in the broad phase. You at least want to have
@@ -31,7 +32,8 @@ namespace BroadPhaseLayers
 	static constexpr JPH::BroadPhaseLayer NON_MOVING(0);
 	static constexpr JPH::BroadPhaseLayer MOVING(1);
 	static constexpr JPH::BroadPhaseLayer WALL(2);
-	static constexpr JPH::uint NUM_LAYERS(3);
+	static constexpr JPH::BroadPhaseLayer ITEM(3);
+	static constexpr JPH::uint NUM_LAYERS(4);
 };
 
 // BroadPhaseLayerInterface implementation
@@ -44,6 +46,7 @@ public:
 		mObjectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
 		mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
 		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
+		mObjectToBroadPhase[Layers::ITEM] = BroadPhaseLayers::ITEM;
 	}
 
 	JPH::uint GetNumBroadPhaseLayers() const final {
@@ -63,6 +66,7 @@ public:
 		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
 		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
 		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::WALL:        return "WALL";
+		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ITEM:        return "ITEM";
 		default:														JPH_ASSERT(false); return "INVALID";
 		}
 	}
@@ -82,9 +86,11 @@ public:
 		{
 		case Layers::WALL:
 		case Layers::NON_MOVING:
-			return inLayer2 == BroadPhaseLayers::MOVING; // Non moving only collides with moving
+			return inLayer2 == BroadPhaseLayers::MOVING || inLayer2 == BroadPhaseLayers::ITEM; // Non moving only collides with moving
 		case Layers::MOVING:
-			return true;								 // Moving collides with everything
+			return inLayer2 != BroadPhaseLayers::ITEM;	 // Moving collides with everything except item
+		case Layers::ITEM:
+			return inLayer2 == BroadPhaseLayers::NON_MOVING;
 		default:
 			JPH_ASSERT(false);
 			return false;
@@ -102,9 +108,11 @@ public:
 		{
 		case Layers::WALL:
 		case Layers::NON_MOVING:
-			return inObject2 == Layers::MOVING; // Non moving only collides with moving
+			return inObject2 == Layers::MOVING || inObject2 == Layers::ITEM; // Non moving only collides with moving
 		case Layers::MOVING:
-			return true; // Moving collides with everything
+			return inObject2 != Layers::ITEM;   // Moving collides with everything except item
+		case Layers::ITEM:
+			return inObject2 == Layers::NON_MOVING;
 		default:
 			JPH_ASSERT(false);
 			return false;

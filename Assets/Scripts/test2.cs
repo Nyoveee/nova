@@ -7,13 +7,21 @@ class test2 : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        transform = getComponent<Transform_>();
+        Debug.Log("sup squad");
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {
-        transform.position = new Vector3(transform.position.x + 1 * Time.V_FixedDeltaTime(), transform.position.y, transform.position.z);
     }
 
+    public void Somewhere()
+    {
+        Debug.Log("animation event 1");
+    }
+
+    public void SomewhereAgain()
+    {
+        Debug.Log("animation event 2");
+    }
 }

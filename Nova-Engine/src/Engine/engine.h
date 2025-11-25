@@ -49,6 +49,7 @@ public:
 	ENGINE_DLL_API bool isInSimulationMode() const;
 	
 	ENGINE_DLL_API void SystemsOnLoad(); //on scene load, some system might want to reload/unload/init stuff
+	ENGINE_DLL_API void SystemsUnload(); //before entity construction step may need to stop certain system, some system might want to reload/unload/init stuff
 
 	ENGINE_DLL_API float getDeltaTime() const;
 
@@ -90,6 +91,8 @@ public:
 	bool                    toDebugRenderParticleEmissionShape;
 
 	GameConfig				gameConfig;
+
+	float					deltaTimeMultiplier;
 
 private:
 	// Editor mouse control represents whether the editor has control over the mouse

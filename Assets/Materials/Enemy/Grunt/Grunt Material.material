@@ -1,4 +1,7 @@
 {
+    "blendingConfig": "Disabled",
+    "cullingConfig": "Enable",
+    "depthTestingMethod": "DepthTest",
     "overridenUniforms": {
         "albedoMap": {
             "type": "sampler2D",
@@ -23,6 +26,13 @@
             "value": {
                 "__variant_type": 9,
                 "__variant_value": 6178077127716159493
+            }
+        },
+        "emissiveStrength": {
+            "type": "float",
+            "value": {
+                "__variant_type": 3,
+                "__variant_value": 10.0
             }
         },
         "metallic": {
@@ -78,7 +88,7 @@
             "type": "bool",
             "value": {
                 "__variant_type": 0,
-                "__variant_value": false
+                "__variant_value": true
             }
         }
     },

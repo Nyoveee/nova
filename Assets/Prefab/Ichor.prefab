@@ -3,6 +3,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Ichor",
@@ -13,7 +14,7 @@
             },
             "MeshRenderer": {
                 "materialIds": [
-                    5
+                    16833312378621526017
                 ],
                 "modelId": 4
             },
@@ -48,7 +49,7 @@
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 1.0,
+                        "b": 0.0,
                         "g": 1.0,
                         "r": 1.0
                     },
@@ -87,7 +88,7 @@
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.009999999776482582,
+                    "distancePerEmission": 0.10000000149011612,
                     "selected": true,
                     "trailColor": {
                         "a": 1.0,
@@ -95,8 +96,8 @@
                         "g": 1.0,
                         "r": 1.0
                     },
-                    "trailSize": 0.800000011920929,
-                    "trailTexture": 5149426810937966671
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Rigidbody": {
@@ -107,9 +108,39 @@
                 },
                 "isRotatable": true,
                 "isTrigger": false,
-                "layer": "Moving",
+                "layer": "Item",
                 "mass": 0.0,
                 "motionType": "Dynamic"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 14,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "ichorLifeTime"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 14,
+                                    "__variant_value": 2.0
+                                },
+                                "name": "expandedSizeMultiplier"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 14,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "expandTime"
+                            }
+                        ],
+                        "scriptId": 3870070279982465025
+                    }
+                ]
             },
             "SphereCollider": {
                 "offset": {
@@ -117,7 +148,7 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "radius": 0.6000000238418579
+                "radius": 0.32499998807907104
             },
             "Transform": {
                 "eulerAngles": {
@@ -132,8 +163,8 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": 2.810981035232544,
+                    "z": 4.601292133331299
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -142,14 +173,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.20000000298023224,
+                    "y": 0.20000000298023224,
+                    "z": 0.20000000298023224
                 },
                 "position": {
-                    "x": -4.657610893249512,
-                    "y": 6.841850280761719,
-                    "z": -10.927204132080078
+                    "x": 0.0,
+                    "y": 2.810981035232544,
+                    "z": 4.601292133331299
                 },
                 "rotation": {
                     "w": 1.0,
@@ -158,13 +189,13 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.4000000059604645,
-                    "y": 0.4000000059604645,
-                    "z": 0.4000000059604645
+                    "x": 0.20000000298023224,
+                    "y": 0.20000000298023224,
+                    "z": 0.20000000298023224
                 }
             },
-            "id": 29
+            "id": 1048646
         }
     ],
-    "RootEntity": 29
+    "RootEntity": 1048646
 }

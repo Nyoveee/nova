@@ -7,6 +7,7 @@
 #include "API/ScriptingAPI.hxx"
 #include "InputManager/inputManager.h"
 #include "Interpolation.h"
+#include "RandomRange.h"
 
 #include <numbers>
 
@@ -34,6 +35,14 @@ public ref class Time {
 public:
 	static float V_FixedDeltaTime(); 
 	static float V_DeltaTime();
+
+	static float V_FixedDeltaTime_Unscaled();
+	static float V_DeltaTime_Unscaled();
+
+	static property float timeScale {
+		float get() { return Interface::engine->deltaTimeMultiplier; };
+		void set(float value) { Interface::engine->deltaTimeMultiplier = value; };
+	};
 };
 
 public ref class Debug {
@@ -121,6 +130,7 @@ public:
 public ref class NavigationAPI {
 public:
 	static bool setDestination(GameObject^ gameObject, Vector3^ targetPosition);
+	static void stopAgent(GameObject^ gameObject);
 };
 
 // ======================================
@@ -142,5 +152,12 @@ public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
 };
-
+// ======================================
+// This class is responsible for random functionality
+// ======================================
+public ref class Random {
+public:
+	static float Range(float minInclusive, float maxInclusive);
+	static int Range(int minInclusive, int maxExclusive);
+};
 
