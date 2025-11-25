@@ -163,7 +163,7 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 	auto&& [_, folder] = *iterator;
 
 	// Display children recursively..
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_DrawLinesToNodes;
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DrawLinesToNodes;
 
 	if (selectedFolderId == folderId) {
 		flags |= ImGuiTreeNodeFlags_Selected;

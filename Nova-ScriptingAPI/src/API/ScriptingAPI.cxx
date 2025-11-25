@@ -545,7 +545,8 @@ void Interface::update() {
 		// Check the delete game object queue to handle any deletion request at the end of the frame..
 		while (deleteGameObjectQueue.Count != 0) {
 			EntityID entityToRemove = deleteGameObjectQueue.Dequeue();
-
+			// remove from ECS registry..
+			engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
 			// shouldn't really happen but just in case..
 			if (!gameObjectScripts->ContainsKey(entityToRemove)) {
 				continue;
@@ -571,9 +572,6 @@ void Interface::update() {
 
 			// removes it..
 			gameObjectScripts[entityToRemove]->Clear();
-
-			// remove from ECS registry..
-			engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
 		}
 	}
 	catch (System::Exception^ exception) {
