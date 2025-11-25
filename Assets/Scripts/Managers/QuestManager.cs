@@ -4,20 +4,20 @@
 
 public class QuestManager : Script
 {
-    //public required Quest[] quests;
-    // Two quests for testing purposes when without a serializable way to hold many
     [SerializableField]
-    public required Quest? currentQuest;
+    private Quest[]? quests;
+
+    private Quest? currentQuest;
 
     private int questIndex;
 
     protected override void init()
     {
-        //if (quests != null && quests.Length > 0)
-        //{
-        //    //currentQuest = quests[0];
-        //    questIndex = 0;
-        //}
+        if (quests != null && quests.Length > 0)
+        {
+            currentQuest = quests[0];
+            questIndex = 0;
+        }
 
         if (currentQuest != null)
         {
@@ -47,12 +47,10 @@ public class QuestManager : Script
 
     private void MoveToNextQuest()
     {
-        // Unsure how to handle several different types of quests right now
         ++questIndex;
         if (questIndex == 0)
         {
-
-            //currentQuest = quests[questIndex];
+            currentQuest = quests[questIndex];
         }
         else
         {
