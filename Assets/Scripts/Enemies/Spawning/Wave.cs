@@ -41,7 +41,6 @@ public class Wave : Script
             enemyCount++;
             // TEMP TILL SPAWN PODS EXIST
             GameObject enem = Instantiate(fixedEnemyPrefabs[i], fixedEnemyPos[i].position, gameObject);
-            enem.getScript<Enemy>().StartPod(this);
             RegisterSpawn(enem);
         }
 
