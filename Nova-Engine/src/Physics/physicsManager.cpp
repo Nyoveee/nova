@@ -681,6 +681,7 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 	JPH::RayCastResult rayCastResult;
 	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
 	RayCastLayerMaskFilterImpl layerMaskFilter(layerMask);
+
 	// Object Layer
 	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult, layerMaskFilter)) {
 		JPH::BodyID bodyId = rayCastResult.mBodyID;

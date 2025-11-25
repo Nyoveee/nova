@@ -1,23 +1,26 @@
 {
     "entities": [
         {
-            "Canvas": {
-                "placeholder": ""
-            },
             "EntityData": {
-                "children": [
-                    38797470,
-                    1048602,
-                    1048580
-                ],
+                "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
-                "name": "Pause Menu UI",
+                "layerId": 1,
+                "name": "Title",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "tag": ""
+            },
+            "Text": {
+                "font": 5724840809338667009,
+                "fontColor": {
+                    "b": 0.6901960968971252,
+                    "g": 0.6901960968971252,
+                    "r": 0.7333333492279053
+                },
+                "fontSize": 100,
+                "text": "Pause Menu"
             },
             "Transform": {
                 "eulerAngles": {
@@ -63,7 +66,7 @@
                     "z": 1.0
                 }
             },
-            "id": 0
+            "id": 42991787
         },
         {
             "EntityData": {
@@ -71,9 +74,9 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 1,
-                "name": "Quit Word",
+                "name": "MM Word",
                 "overridenProperties": null,
-                "parent": 38797470,
+                "parent": 1048580,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
@@ -85,7 +88,7 @@
                     "r": 0.0
                 },
                 "fontSize": 50,
-                "text": "Quit Game"
+                "text": "Main Menu"
             },
             "Transform": {
                 "eulerAngles": {
@@ -99,8 +102,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.36620497703552246,
-                    "y": -0.12638378143310547,
+                    "x": -0.39412617683410645,
+                    "y": -0.21365976333618164,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -115,8 +118,78 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 837.1312866210938,
-                    "y": 320.3708190917969,
+                    "x": -0.39412617683410645,
+                    "y": -0.21365976333618164,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.0033333334140479565,
+                    "y": 0.009999999776482582,
+                    "z": 1.0
+                }
+            },
+            "id": 1048584
+        },
+        {
+            "EntityData": {
+                "children": [
+                    1048584
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "MM Box",
+                "overridenProperties": null,
+                "parent": 0,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.6901960968971252,
+                    "g": 0.6901960968971252,
+                    "r": 0.7333333492279053
+                },
+                "texture": 7
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "rotation": {
@@ -131,7 +204,145 @@
                     "z": 1.0
                 }
             },
-            "id": 1048587
+            "id": 1048580
+        },
+        {
+            "EntityData": {
+                "children": [
+                    39846050
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Resume Box",
+                "overridenProperties": null,
+                "parent": 0,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.6888942122459412,
+                    "g": 0.6888942122459412,
+                    "r": 0.7344827651977539
+                },
+                "texture": 7
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1048602
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 1,
+                "name": "Resume Word",
+                "overridenProperties": null,
+                "parent": 1048602,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Text": {
+                "font": 5724840809338667009,
+                "fontColor": {
+                    "b": 0.01034480333328247,
+                    "g": 0.01034480333328247,
+                    "r": 0.01034480333328247
+                },
+                "fontSize": 50,
+                "text": "Resume"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.2626194953918457,
+                    "y": -0.19426774978637695,
+                    "z": 1.9999998807907104
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.004971999675035477,
+                    "y": 0.01491599902510643,
+                    "z": 1.4915999174118042
+                },
+                "position": {
+                    "x": -0.2626194953918457,
+                    "y": -0.19426774978637695,
+                    "z": 1.9999998807907104
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.004971999675035477,
+                    "y": 0.01491599902510643,
+                    "z": 1.4915999174118042
+                }
+            },
+            "id": 39846050
         },
         {
             "Button": {
@@ -263,217 +474,9 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 1,
-                "name": "Resume Word",
+                "name": "Quit Word",
                 "overridenProperties": null,
-                "parent": 1048602,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
-                    "b": 0.01034480333328247,
-                    "g": 0.01034480333328247,
-                    "r": 0.01034480333328247
-                },
-                "fontSize": 50,
-                "text": "Resume"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.2626194953918457,
-                    "y": -0.19426774978637695,
-                    "z": 1.9999998807907104
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.004971999675035477,
-                    "y": 0.01491599902510643,
-                    "z": 1.4915999174118042
-                },
-                "position": {
-                    "x": -0.2626194953918457,
-                    "y": -0.19426774978637695,
-                    "z": 1.9999998807907104
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.004971999675035477,
-                    "y": 0.01491599902510643,
-                    "z": 1.4915999174118042
-                }
-            },
-            "id": 39846050
-        },
-        {
-            "EntityData": {
-                "children": [
-                    39846050
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Resume Box",
-                "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.6888942122459412,
-                    "g": 0.6888942122459412,
-                    "r": 0.7344827651977539
-                },
-                "texture": 7
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048602
-        },
-        {
-            "EntityData": {
-                "children": [
-                    1048584
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "MM Box",
-                "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.6901960968971252,
-                    "g": 0.6901960968971252,
-                    "r": 0.7333333492279053
-                },
-                "texture": 7
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048580
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 1,
-                "name": "MM Word",
-                "overridenProperties": null,
-                "parent": 1048580,
+                "parent": 38797470,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
@@ -485,7 +488,7 @@
                     "r": 0.0
                 },
                 "fontSize": 50,
-                "text": "Main Menu"
+                "text": "Quit Game"
             },
             "Transform": {
                 "eulerAngles": {
@@ -499,8 +502,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.39412617683410645,
-                    "y": -0.21365976333618164,
+                    "x": -0.36620497703552246,
+                    "y": -0.12638378143310547,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -515,8 +518,8 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -0.39412617683410645,
-                    "y": -0.21365976333618164,
+                    "x": 837.1312866210938,
+                    "y": 320.3708190917969,
                     "z": 0.0
                 },
                 "rotation": {
@@ -526,35 +529,32 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.009999999776482582,
+                    "x": 1.0,
+                    "y": 1.0,
                     "z": 1.0
                 }
             },
-            "id": 1048584
+            "id": 1048587
         },
         {
+            "Canvas": {
+                "placeholder": ""
+            },
             "EntityData": {
-                "children": null,
+                "children": [
+                    38797470,
+                    1048602,
+                    1048580
+                ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 1,
-                "name": "Title",
+                "layerId": 0,
+                "name": "Pause Menu UI",
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
-                    "b": 0.6901960968971252,
-                    "g": 0.6901960968971252,
-                    "r": 0.7333333492279053
-                },
-                "fontSize": 100,
-                "text": "Pause Menu"
-            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
@@ -599,7 +599,7 @@
                     "z": 1.0
                 }
             },
-            "id": 42991787
+            "id": 0
         }
     ],
     "layers": [
