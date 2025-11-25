@@ -61,7 +61,7 @@ void NavBar::update() {
 		gameConfig.update();
 	}
 	if (animationBool) {
-		animationWindow.update();
+		//animationWindow.update();
 	}
 	if (animatorBool) {
 		animatorWindow.update();
