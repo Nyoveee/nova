@@ -541,6 +541,10 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 	glDisable(GL_BLEND);
 }
 
+void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
+	selectedEntities = entities;
+}
+
 GLuint Renderer::getEditorFrameBufferTexture() const {
 	return editorMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
 }
@@ -735,23 +739,7 @@ void Renderer::debugRenderParticleEmissionShape()
 		}
 	}
 
-	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
-		glm::mat4 model = glm::identity<glm::mat4>();
-		model = glm::translate(model, transform.position);
-		debugShader.setMatrix("model", model);
-
-		switch (light.type) {
-		case Light::Type::PointLight:
-		case Light::Type::Spotlight:
-			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light.radius));
-			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
-			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light.radius));
-			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
-			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light.radius));
-			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
-			break;
-		}
-	}
+	renderDebugSelectedObjects();
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
@@ -1772,7 +1760,33 @@ Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
 }
 
-ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
-{
+glm::mat4 const& Renderer::getUIProjection() const {
 	return UIProjection;
+}
+
+void Renderer::renderDebugSelectedObjects() {
+	for (entt::entity entity : selectedEntities) {
+		Transform const& transform = registry.get<Transform>(entity);
+
+		Light const* light = registry.try_get<Light>(entity);
+
+		if (light) {
+			// Debug render light outline..
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, transform.position);
+			debugShader.setMatrix("model", model);
+
+			switch (light->type) {
+			case Light::Type::PointLight:
+			case Light::Type::Spotlight:
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				break;
+			}
+		}
+	}
 }

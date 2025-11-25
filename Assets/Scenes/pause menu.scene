@@ -5,7 +5,7 @@
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 1,
+                "layerId": 0,
                 "name": "Title",
                 "overridenProperties": null,
                 "parent": 4294967295,
@@ -417,7 +417,15 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "fields": null,
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 9049060322233778177
+                                },
+                                "name": "nextScene"
+                            }
+                        ],
                         "scriptId": 1986501316973068289
                     }
                 ]
@@ -604,13 +612,10 @@
     ],
     "layers": [
         {
-            "name": "Box Layer"
-        },
-        {
-            "name": "Text Layer"
-        },
-        {
             "name": "Default"
+        },
+        {
+            "name": "Text"
         }
     ]
 }
