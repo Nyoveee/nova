@@ -39,8 +39,8 @@ class Sequencer;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
-	Image, Sequence
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
+	Image, Sequence, Button, Canvas
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -65,6 +65,7 @@ struct EntityData {
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
+
 	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
@@ -646,5 +647,27 @@ struct Text {
 		text,
 		fontSize,
 		fontColor
+	)
+};
+
+struct Canvas {
+	std::string placeholder;
+
+	REFLECTABLE
+	(
+		placeholder
+	)
+};
+
+struct Button {
+	entt::entity referencedEntity;
+	TypedResourceID<ScriptAsset> script;
+	std::string functionName;
+
+	REFLECTABLE
+	(
+		referencedEntity,
+		script,
+		functionName
 	)
 };
