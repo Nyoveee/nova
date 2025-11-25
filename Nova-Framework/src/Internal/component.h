@@ -40,12 +40,11 @@ class Sequencer;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
-	Image, Sequence, Button, Canvas
+	Image, Sequence, Button, Canvas, NavMeshOffLinks
 
 using ScriptName   = std::string;
 using LayerID	   = int;
 using ComponentID  = size_t;
-
 
 #include "serializedField.h"
 
@@ -423,6 +422,28 @@ struct NavMeshSurface
 	)
 };
 
+
+struct NavMeshOffLinks
+{
+	std::string agentName;
+	glm::vec3 startPoint{};
+	glm::vec3 endPoint{};
+	float radius = 0.5f;
+	bool isBiDirectional = true;
+
+
+	REFLECTABLE
+	(
+		agentName,
+		startPoint,
+		endPoint,
+		radius,
+		isBiDirectional
+	)
+
+
+};
+
 struct NavMeshAgent
 {
 	//User Variables
@@ -435,6 +456,10 @@ struct NavMeshAgent
 	
 	bool updateRotation				= true; //should agent update rotation. 
 	bool updatePosition             = true; //should agent update position. 
+	bool autoTraverseOffMeshLink	= true;
+
+	bool isOnOffMeshLink			= false;
+
 
 	REFLECTABLE
 	(
@@ -449,6 +474,7 @@ struct NavMeshAgent
 								  //NOTE this no longer maps directly to dtCrowd object, use GetDTCrowdIndex to find actual index
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
+	navMeshOfflinkData currentData;
 };
 
 struct NavigationTestTarget

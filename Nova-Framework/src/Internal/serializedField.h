@@ -11,6 +11,7 @@
 #include "type_alias.h"
 #include "reflection.h"
 #include "physics.h"
+#include "AdditionalNavigationTypes.h"
 
 class Prefab;
 class Model;
@@ -34,8 +35,8 @@ class Sequencer;
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	std::string,	\
-		ALL_TYPED_RESOURCE_ID,																						\
+		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	std::string, navMeshOfflinkData,	\
+		ALL_TYPED_RESOURCE_ID,																											\
 		ALL_FIELD_PRIMITIVES
 #endif
 

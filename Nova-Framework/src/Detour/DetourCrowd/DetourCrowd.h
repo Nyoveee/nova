@@ -25,6 +25,7 @@
 #include "DetourPathCorridor.h"
 #include "DetourProximityGrid.h"
 #include "DetourPathQueue.h"
+#include "AdditionalNavigationTypes.h"
 
 #pragma warning( push )
 #pragma warning( disable: 26495 )
@@ -99,6 +100,9 @@ struct dtCrowdAgentParams
 	/// The index of the query filter used by this agent.
 	unsigned char queryFilterType;
 
+	/// My funct, to disable offmesh movement
+	bool autoTraverseOffMeshLink;
+
 	/// User defined data attached to the agent.
 	void* userData;
 };
@@ -172,6 +176,11 @@ struct dtCrowdAgent
 	dtPathQueueRef targetPathqRef;		///< Path finder ref.
 	bool targetReplan;					///< Flag indicating that the current path is being replanned.
 	float targetReplanTime;				/// <Time since the agent's target was replanned.
+
+	//my code
+	navMeshOfflinkData currentOffMeshData;
+	dtPolyRef offMeshPolyref[2];
+
 };
 
 struct dtCrowdAgentAnimation
