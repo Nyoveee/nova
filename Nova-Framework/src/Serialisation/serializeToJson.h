@@ -105,6 +105,18 @@ inline Json serializeToJson(DataMemberType const& dataMember) {
 	return json;
 }
 
+//struct
+template <isStruct DataMemberType>
+inline Json serializeToJson(DataMemberType const& dataMember) {
+	Json json;
+
+	json["prefabEntity"] = serializeToJson(dataMember.prefabEntity);
+	json["prefabID"] = serializeToJson(dataMember.prefabID);
+
+	return json;
+}
+
+
 /***************************************************************************************
 	Recursive reflection, also entry point.
 ****************************************************************************************/

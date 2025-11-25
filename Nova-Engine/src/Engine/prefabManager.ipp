@@ -100,12 +100,14 @@ entt::entity PrefabManager::instantiatePrefabRecursive(entt::entity prefabEntity
 	//maps the newly created ecsEntity with the prefabEntity, this is use to identify the ecsEntity child after the recursive call
 	map[prefabEntity] = ecsEntity;
 
+	EntityData* entityData = ecsRegistry.try_get<EntityData>(ecsEntity);
+	entityData->prefabMetaData.prefabEntity = prefabEntity;
+
 	// asdsa
 
 	std::vector<entt::entity> childVec;
 
 	//check for child, if there child, call the function recurisively for each child
-	EntityData* entityData = ecsRegistry.try_get<EntityData>(ecsEntity);
 	if (entityData->children.size()) {
 		for ([[maybe_unused]] entt::entity child : entityData->children) {
 			instantiatePrefabRecursive<ALL_COMPONENTS>(child);

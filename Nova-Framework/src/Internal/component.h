@@ -23,7 +23,7 @@
 #include "navMesh.h"
 #include "controller.h"
 
-// Forward declaring..
+// Forward declaring.
 class Model;
 class Texture;
 class CubeMap;
@@ -78,6 +78,11 @@ struct FieldData {
 		data
 	)
 };
+
+struct PrefabMetaData {
+	entt::entity prefabEntity;
+	ResourceID prefabID;
+};
 // ===================================
 
 struct EntityData {
@@ -89,7 +94,9 @@ struct EntityData {
 	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
+	PrefabMetaData prefabMetaData										{};
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
+	std::unordered_map<size_t, bool> overridenComponents				{};
 
 	REFLECTABLE(
 		name,
@@ -99,7 +106,9 @@ struct EntityData {
 		layerId,
 		isActive,
 		prefabID,
-		overridenProperties
+		prefabMetaData,
+		overridenProperties,
+		overridenComponents
 	)
 };
 

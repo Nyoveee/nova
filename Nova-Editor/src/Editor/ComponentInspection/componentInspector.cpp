@@ -127,6 +127,7 @@ void ComponentInspector::update() {
 	// Display add component button.
 	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);
 
+
 	ImGui::End();
 }
 

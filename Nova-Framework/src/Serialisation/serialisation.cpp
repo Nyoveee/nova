@@ -238,14 +238,12 @@ namespace Serialiser {
 			}
 		}
 		
-
-		//entt::id_type id = jsonVec[index]["id"] + highestID;
-		//auto entity = prefabRegistry.create(static_cast<entt::entity>(id));
 		auto entity = prefabRegistry.create(static_cast<entt::entity>(jsonVec[index]["id"]));
 		deserialiseComponents<ALL_COMPONENTS>(prefabRegistry, entity, jsonVec[index]);
 
 		EntityData* entityData = prefabRegistry.try_get<EntityData>(entity);
 
+		entityData->prefabMetaData.prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
 		entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
 
 		if (entityData->children.size()) {

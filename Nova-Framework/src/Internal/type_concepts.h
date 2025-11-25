@@ -73,6 +73,12 @@ concept ExplicitlyCastable = requires(From f) {
 	static_cast<To>(f);
 };
 
+template<typename T>
+concept isStruct = requires (T t){
+	t.prefabEntity;
+	t.prefabID;
+};
+
 // Old school type traits.
 // Check if its std::array
 template <typename T>

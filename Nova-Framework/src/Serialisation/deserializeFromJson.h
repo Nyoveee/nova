@@ -134,6 +134,13 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 	}
 }
 
+//struct
+template <isStruct DataMemberType>
+inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
+	dataMember.prefabEntity = json["prefabEntity"];
+	dataMember.prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(json["prefabID"]) };
+}
+
 /***************************************************************************************
 	Recursive reflection, also entry point.
 ****************************************************************************************/

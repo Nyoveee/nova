@@ -101,7 +101,7 @@ void AssetViewerUI::update() {
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
 
 	if (ImGui::Button("BroadCast")) {
-		broadcast();
+		editor.engine.prefabManager.prefabBroadcast();
 	}
 
 	ImGui::End();
@@ -137,35 +137,35 @@ void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_
 	Logger::info("Successfully updated script name.");
 }
 
-void AssetViewerUI::broadcast() {
-	entt::registry& ecsRegistry = editor.engine.ecs.registry;
-	entt::registry& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
-	std::unordered_map<ResourceID, entt::entity> prefabMap = editor.engine.prefabManager.getPrefabMap();
-	entt::entity prefabEntity = prefabMap[selectedResourceId];
-
-	// find entities with the same prefabID
-	for (entt::entity en : ecsRegistry.view<entt::entity>()) {
-		EntityData* entityData = ecsRegistry.try_get<EntityData>(en);
-		EntityData* prefabData = prefabRegistry.try_get<EntityData>(prefabEntity);
-		if ((entityData->prefabID == selectedResourceId) && (entityData->name == prefabData->name)) {
-			updateComponents<ALL_COMPONENTS>(ecsRegistry, prefabRegistry, en, prefabEntity);
-		}
-	}
-}
-template<typename ...Components>
-void AssetViewerUI::updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity) {
-
-	([&]() {
-		if (!std::is_same<EntityData, Components>::value) {
-			auto* component = prefabRegistry.try_get<Components>(prefabEntity);
-
-			if (component) {
-				auto* entityComponent = ecsRegistry.try_get<Components>(entity);
-				*entityComponent = *component;
-			}
-		}
-	}(), ...);
-}
+//void AssetViewerUI::broadcast() {
+//	entt::registry& ecsRegistry = editor.engine.ecs.registry;
+//	entt::registry& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
+//	std::unordered_map<ResourceID, entt::entity> prefabMap = editor.engine.prefabManager.getPrefabMap();
+//	entt::entity prefabEntity = prefabMap[selectedResourceId];
+//
+//	// find entities with the same prefabID
+//	for (entt::entity en : ecsRegistry.view<entt::entity>()) {
+//		EntityData* entityData = ecsRegistry.try_get<EntityData>(en);
+//		EntityData* prefabData = prefabRegistry.try_get<EntityData>(prefabEntity);
+//		if ((entityData->prefabID == selectedResourceId) && (entityData->name == prefabData->name)) {
+//			updateComponents<ALL_COMPONENTS>(ecsRegistry, prefabRegistry, en, prefabEntity);
+//		}
+//	}
+//}
+//template<typename ...Components>
+//void AssetViewerUI::updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity) {
+//
+//	([&]() {
+//		if (!std::is_same<EntityData, Components>::value) {
+//			auto* component = prefabRegistry.try_get<Components>(prefabEntity);
+//
+//			if (component) {
+//				auto* entityComponent = ecsRegistry.try_get<Components>(entity);
+//				*entityComponent = *component;
+//			}
+//		}
+//	}(), ...);
+//}
 
 void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	selectedResourceId = id;
