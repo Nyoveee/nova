@@ -13,7 +13,7 @@ EditorViewPort::EditorViewPort(Editor& editor) :
 	editor					{ editor },
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
-	controlOverlay			{ editor },
+	controlOverlay			{ editor, gizmo },
 	isHoveringOver			{ false }
 {}
 

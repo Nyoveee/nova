@@ -11,7 +11,6 @@ UIViewPort::UIViewPort(Editor& editor) :
 	editor					{ editor },
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
-	controlOverlay			{ editor },
 	isHoveringOver			{ false }
 {}
 

@@ -6,12 +6,13 @@
 #undef max
 
 class Editor;
+class Gizmo;
 
 constexpr float FOREVER = std::numeric_limits<float>::max();
 
 class ControlOverlay {
 public:
-	ControlOverlay(Editor& editor);
+	ControlOverlay(Editor& editor, Gizmo& gizmo);
 
 public:
 	void update(float dt, float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight);
@@ -25,6 +26,7 @@ private:
 
 private:
 	Editor& editor;
+	Gizmo& gizmo;
 
 	std::string notificationText;
 	float notificationDuration;
