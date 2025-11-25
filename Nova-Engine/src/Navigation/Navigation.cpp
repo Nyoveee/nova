@@ -663,7 +663,7 @@ void NavigationSystem::CompleteOffLinkData(NavMeshAgent& navMeshAgent)
 	navMeshAgent.isOnOffMeshLink = false;
 	navMeshAgent.updatePosition = true;
 
-	dtPolyRef savedTargeteRef = agent->targetRef;
+	[[maybe_unused]] dtPolyRef savedTargeteRef = agent->targetRef;
 
 	float savedTargetPos[3]{ agent->targetPos[0], agent->targetPos[1],agent->targetPos[2] };
 

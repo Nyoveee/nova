@@ -734,6 +734,24 @@ void Renderer::debugRenderParticleEmissionShape()
 			break;
 		}
 	}
+
+	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
+		glm::mat4 model = glm::identity<glm::mat4>();
+		model = glm::translate(model, transform.position);
+		debugShader.setMatrix("model", model);
+
+		switch (light.type) {
+		case Light::Type::PointLight:
+		case Light::Type::Spotlight:
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light.radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			break;
+		}
+	}
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
@@ -817,7 +835,8 @@ void Renderer::prepareRendering() {
 			pointLightData[numOfPtLights++] = {
 				transform.position,
 				glm::vec3{ light.color } * light.intensity,
-				light.attenuation
+				light.attenuation,
+				light.radius
 			};
 			break;
 
@@ -830,7 +849,7 @@ void Renderer::prepareRendering() {
 			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
 			directionalLightData[numOfDirLights++] = {
 				glm::normalize(forward),
-				glm::vec3{ light.color } *light.intensity
+				glm::vec3{ light.color } * light.intensity
 			};
 			break;
 		}
@@ -848,7 +867,8 @@ void Renderer::prepareRendering() {
 				glm::vec3{ light.color } *light.intensity,
 				light.attenuation,
 				light.cutOffAngle,
-				light.outerCutOffAngle
+				light.outerCutOffAngle,
+				light.radius
 			};
 			break;
 		}
