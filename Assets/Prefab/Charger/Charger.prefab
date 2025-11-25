@@ -38,7 +38,9 @@
                     1048631,
                     1048632,
                     1048633,
-                    1048634
+                    1048634,
+                    2,
+                    28
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -62,15 +64,17 @@
                 "toggleSphere": false
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "isRotatable": false,
+                "isRotatable": true,
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Dynamic"
             },
             "Scripts": {
@@ -86,10 +90,24 @@
                             },
                             {
                                 "data": {
+                                    "__variant_type": 8,
+                                    "__variant_value": 16070990181531303937
+                                },
+                                "name": "stompHitBoxPrefab"
+                            },
+                            {
+                                "data": {
                                     "__variant_type": 4,
                                     "__variant_value": 1048632
                                 },
                                 "name": "attackHitBoxTransform"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 2
+                                },
+                                "name": "stompHitBoxTransform"
                             },
                             {
                                 "data": {
@@ -104,6 +122,13 @@
                                     "__variant_value": 1048634
                                 },
                                 "name": "navMeshRigidbody"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 28
+                                },
+                                "name": "emitter"
                             },
                             {
                                 "data": {
@@ -161,6 +186,13 @@
                             },
                             {
                                 "data": {
+                                    "__variant_type": 14,
+                                    "__variant_value": 30.0
+                                },
+                                "name": "chargingRange"
+                            },
+                            {
+                                "data": {
                                     "__variant_type": 13,
                                     "__variant_value": 20
                                 },
@@ -183,9 +215,30 @@
                             {
                                 "data": {
                                     "__variant_type": 14,
-                                    "__variant_value": 3.5
+                                    "__variant_value": 2.5
                                 },
-                                "name": "speedMultiplier"
+                                "name": "chargeSpeedMultiplier"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 30
+                                },
+                                "name": "stompDamage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 14,
+                                    "__variant_value": 20.0
+                                },
+                                "name": "stompCooldown"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 14,
+                                    "__variant_value": 0.10000000149011612
+                                },
+                                "name": "stompHitboxDuration"
                             },
                             {
                                 "data": {
@@ -193,13 +246,6 @@
                                     "__variant_value": 60.0
                                 },
                                 "name": "chasingRange"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 30.0
-                                },
-                                "name": "chargingRange"
                             },
                             {
                                 "data": {
@@ -356,7 +402,7 @@
                             {
                                 "data": {
                                     "__variant_type": 7,
-                                    "__variant_value": ""
+                                    "__variant_value": "EndStompAnimation"
                                 },
                                 "name": "triggerMethod6"
                             },
@@ -574,6 +620,7 @@
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -583,6 +630,7 @@
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Kinematic"
             },
             "Scripts": {
@@ -646,6 +694,204 @@
                 }
             },
             "id": 1048634
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "StompHitboxPosition",
+                "overridenProperties": null,
+                "parent": 1048630,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.8345268368721008,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -14.779820442199707,
+                    "y": 1.5019009113311768,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Emitter",
+                "overridenProperties": null,
+                "parent": 1048630,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "ParticleEmitter": {
+                "angularVelocity": 0.0,
+                "burstAmount": 30,
+                "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "endColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "interpolationType": "Linear",
+                    "selected": false
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": true,
+                "maxParticles": 1000,
+                "particleColorSelection": {
+                    "color": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "randomizedColor": false
+                },
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        }
+                    },
+                    "emissionShape": "Hemisphere",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    }
+                },
+                "particleRate": 0.0,
+                "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Linear",
+                    "selected": false
+                },
+                "startSize": 0.10000000149011612,
+                "startSpeed": 5.0,
+                "texture": 5391556884225917121,
+                "trails": {
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
+                    "trailColor": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 0
+                }
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.000179290771484375,
+                    "y": 0.8346258997917175,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": -14.779999732971191,
+                    "y": 1.5019999742507935,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 28
         }
     ],
     "RootEntity": 1048630
