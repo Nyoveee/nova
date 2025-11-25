@@ -105,27 +105,20 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		animationSystem.initialise();
-
-		ecs.makeRegistryCopy<ALL_COMPONENTS>();
-		physicsManager.simulationInitialise();
-		audioSystem.loadAllSounds();
-		cameraSystem.startSimulation();
-		navigationSystem.initNavMeshSystems();
-
 		if (scriptingAPIManager.hasCompilationFailed()) {
 			Logger::error("Script compilation failed. Please update them.");
 			stopSimulation();
 			return;
 		}
-		else if (!scriptingAPIManager.startSimulation()) {
-			stopSimulation();
-			return;
-		}
 
-		// We set simulation mode to true to indicate that the change of simulation is successful.
-		// Don't set simulation mode to true if set up falied.
 		inSimulationMode = true;
+
+		ecs.recordOriginalScene();
+
+		cameraSystem.startSimulation();
+
+		// Load all systems that needs to be done per scene.
+		SystemsOnLoad();
 	};
 }
 
@@ -137,16 +130,15 @@ void Engine::stopSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		audioSystem.unloadAllSounds();
-		cameraSystem.endSimulation();
-		navigationSystem.unloadNavMeshSystems();
+		SystemsUnload();
 
-		//Serialiser::serialiseEditorConfig("editorConfig.json");
-		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		cameraSystem.endSimulation();
+
+		// Manual rollback registry. Scene reverted.
+		ecs.restoreOriginalScene();
+
 		physicsManager.resetPhysicsState();
 		scriptingAPIManager.stopSimulation();
-
-		resourceManager.removeAllResourceInstance();
 
 		gameLockMouse(false);
 	};
@@ -193,18 +185,39 @@ void Engine::editorControlMouse(bool value) {
 	gameLockMouse(isGameLockingMouse);
 }
 
-void Engine::SystemsOnLoad()
-{
-	resourceManager.removeAllResourceInstance();
-	this->navigationSystem.initNavMeshSystems();
-	this->physicsManager.systemInitialise();
+void Engine::SystemsOnLoad() {
+	if (!inSimulationMode) {
+		return;
+	}
+
+	// Initialise the animator and sequencer components..
+	animationSystem.initialise();
+
+	// Init nav mesh system.
+	navigationSystem.initNavMeshSystems();
+
+	// Create all the bodies, then run simulation setup..
+	physicsManager.resetPhysicsState();
+	physicsManager.simulationInitialise();
+
+	// Load all sounds..
+	audioSystem.loadAllSounds();
+
+	if (!scriptingAPIManager.startSimulation()) {
+		stopSimulation();
+	}
 }
 
 
-void Engine::SystemsUnload()
-{
-	this->navigationSystem.unloadNavMeshSystems();
+void Engine::SystemsUnload() {
+	// Remove all created resource instances..
+	resourceManager.removeAllResourceInstance();
 
+	// Unload all sounds
+	audioSystem.unloadAllSounds();
+
+	// Unload navmesh..
+	navigationSystem.unloadNavMeshSystems();
 }
 
 

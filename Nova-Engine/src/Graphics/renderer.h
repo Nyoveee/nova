@@ -64,6 +64,7 @@ public:
 	void renderBloom(PairFrameBuffer& frameBuffers);
 
 	void overlayUIToBuffer(PairFrameBuffer& target);
+
 public:
 	// =============================================
 	// Public facing API.
@@ -109,6 +110,11 @@ public:
 
 	// UI projection
 	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
+
+public:
+	// Editor rendering..
+	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
+	ENGINE_DLL_API void renderDebugSelectedObjects();
 
 public:
 	// =============================================
@@ -248,6 +254,8 @@ private:
 	glm::vec2 gameSize { gameWidth, gameHeight };
 
 	bool isOnWireframeMode;
+
+	std::vector<entt::entity> selectedEntities;
 
 public:
 	Shader basicShader;

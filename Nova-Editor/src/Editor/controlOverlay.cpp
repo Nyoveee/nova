@@ -20,8 +20,9 @@ namespace {
 	}
 }
 
-ControlOverlay::ControlOverlay(Editor& editor) :
-	editor { editor }
+ControlOverlay::ControlOverlay(Editor& editor, Gizmo& gizmo) :
+	editor	{ editor },
+	gizmo	{ gizmo }
 {}
 
 void ControlOverlay::update(float dt, float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
@@ -50,7 +51,7 @@ void ControlOverlay::clearNotification() {
 }
 
 void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
-	constexpr float overlayWidth	= 70.f;
+	constexpr float overlayWidth	= 120.f;
 	constexpr float overlayHeight	= 25.f;
 	constexpr float topPadding		= 10.f;
 	constexpr float buttonSize		= 25.f;
@@ -77,7 +78,7 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 		ImGui::BeginDisabled();
 	}
 
-	if (ImGui::BeginTable("##buttons", 2, ImGuiTableFlags_SizingStretchProp)) {
+	if (ImGui::BeginTable("##buttons", 3, ImGuiTableFlags_SizingStretchProp)) {
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 
@@ -94,9 +95,6 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 
 		ImGui::TableNextColumn();
 
-		// aint no way imgui has no way to center buttons
-		columnWidth = ImGui::GetColumnWidth();
-
 		// Compute horizontal offset to center the button
 		offset = (columnWidth - buttonSize) * 0.5f;
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
@@ -111,6 +109,21 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 
 		if (!editor.isInSimulationMode()) {
 			ImGui::EndDisabled();
+		}
+
+		ImGui::TableNextColumn();
+
+		// Compute horizontal offset to center the button
+		offset = (columnWidth - buttonSize) * 0.5f;
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
+
+		if (ImGui::Button(gizmo.mode == ImGuizmo::MODE::WORLD ? ICON_FA_GLOBE : ICON_FA_LOCATION_DOT, ImVec2{ buttonSize, buttonSize })) {
+			if (gizmo.mode == ImGuizmo::MODE::WORLD) {
+				gizmo.mode = ImGuizmo::MODE::LOCAL;
+			}
+			else {
+				gizmo.mode = ImGuizmo::MODE::WORLD;
+			}
 		}
 
 		ImGui::EndTable();

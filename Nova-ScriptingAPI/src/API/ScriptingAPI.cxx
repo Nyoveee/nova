@@ -111,6 +111,10 @@ void Interface::submitGameObjectDeleteRequest(EntityID entityToBeDeleted) {
 	deleteGameObjectQueue.Enqueue(entityToBeDeleted);
 }
 
+void Interface::changeSceneRequest(ScriptingAPI::Scene^ newScene) {
+	newSceneToChangeTo = newScene;
+}
+
 void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 	Transform& transform = Interface::engine->ecs.registry.get<Transform>(entity);
 	EntityData& entityData = Interface::engine->ecs.registry.get<EntityData>(entity);
@@ -573,6 +577,26 @@ void Interface::update() {
 			// removes it..
 			gameObjectScripts[entityToRemove]->Clear();
 		}
+
+		// Handle change scene request.
+		if (newSceneToChangeTo) {
+			if (!engine->resourceManager.isResource<Scene>(newSceneToChangeTo->getId())) {
+				Logger::error("Change scene failed. Invalid Scene ID.");
+				newSceneToChangeTo = nullptr;
+				return;
+			}
+
+			// We clear everything..
+			clearAllRuntime();
+			
+			// We change scene in ECS..
+			engine->ecs.sceneManager.loadScene(newSceneToChangeTo->getId());
+
+			// We re-initialise	all scripts with new entity..
+
+			newSceneToChangeTo = nullptr;
+		}
+
 	}
 	catch (System::Exception^ exception) {
 		Logger::error("{}", Convert(exception->ToString()));		
@@ -681,21 +705,14 @@ void Interface::unloadAssembly()
 	if (!assemblyLoadContext)
 		return;
 
-	// Clear existing scripts
-	if (gameObjectScripts)	
-		gameObjectScripts->Clear();
+	clearAllRuntime();
+
+	// non runtime containers..
 	if (availableScripts)
 		availableScripts->Clear();
+
 	if (abstractScriptTypes)
 		abstractScriptTypes->Clear();
-	if (timeoutDelegates)
-		timeoutDelegates->Clear();
-	if (executeTimeoutDelegates)
-		executeTimeoutDelegates->Clear();
-	deleteGameObjectQueue.Clear();
-	
-	// Clear all input mapping..
-	Input::ClearAllKeyMapping();
 
 	// Unload the assembly
 	assemblyLoadContext->Unload();
@@ -705,4 +722,22 @@ void Interface::unloadAssembly()
 	System::GC::Collect();
 	// Wait from assembly to finish unloading
 	System::GC::WaitForPendingFinalizers();
+}
+
+void Interface::clearAllRuntime() {
+	// Clear existing scripts
+	if (gameObjectScripts)
+		gameObjectScripts->Clear();
+
+	if (timeoutDelegates)
+		timeoutDelegates->Clear();
+	if (executeTimeoutDelegates)
+		executeTimeoutDelegates->Clear();
+	if (createdGameObjectScripts)
+		createdGameObjectScripts->Clear();
+
+	deleteGameObjectQueue.Clear();
+
+	// Clear all input mapping..
+	Input::ClearAllKeyMapping();
 }

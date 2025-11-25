@@ -183,6 +183,14 @@ bool ECS::isParentCanvas(entt::entity entity) {
 	return isParentCanvas(entityData.parent);
 }
 
+void ECS::recordOriginalScene() {
+	originalScene = sceneManager.getCurrentScene();
+}
+
+void ECS::restoreOriginalScene() {
+	sceneManager.loadScene(originalScene);
+}
+
 bool ECS::isComponentActive(entt::entity entity, ComponentID componentID)
 {
 	EntityData& entityData{ registry.get<EntityData>(entity) };
