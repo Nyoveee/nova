@@ -10,21 +10,33 @@ class Charger : Enemy
     [SerializableField]
     private Prefab chargerAttackHitBoxPrefab;
     [SerializableField]
+    private Prefab stompHitBoxPrefab;
+    [SerializableField]
     private Transform_? attackHitBoxTransform;
+    [SerializableField]
+    private Transform_? stompHitBoxTransform;
     [SerializableField]
     private Rigidbody_? chargingRigidbody;
     [SerializableField]
     private Rigidbody_? navMeshRigidbody;
+    [SerializableField]
+    private ParticleEmitter_? emitter;
+
     /***********************************************************
         Local Variables
     ***********************************************************/
     private delegate void CurrentState();
     private ChargerStats? chargerstats = null;
+    // Charge
     private float currentChargeTime = 0f;
     private float currentChargeCooldown = 0f;
     private float currentFootStepTime = 0f;
-    private GameObject? hitbox;
     private int footStepIndex = 0;
+    // Attack
+    private GameObject? attackHitbox;
+    // Stomp
+    private float currentStompCooldown = 0f;
+    private GameObject? stompHitbox;
     // State machine
     private enum ChargerState
     {
@@ -33,6 +45,7 @@ class Charger : Enemy
         Charging,
         Attack,
         Stagger,
+        Stomp,
         Death
     }
     private ChargerState chargerState = ChargerState.Idle;
@@ -49,6 +62,7 @@ class Charger : Enemy
         updateState.Add(ChargerState.Charging, Update_Charging);
         updateState.Add(ChargerState.Attack, Update_Attack);
         updateState.Add(ChargerState.Stagger, Update_Stagger);
+        updateState.Add(ChargerState.Stomp, Update_Stomp);
         updateState.Add(ChargerState.Death, Update_Death);
         ActivateNavMeshAgent();
     }
@@ -128,6 +142,8 @@ class Charger : Enemy
             return;
         }
         LookAtPlayer();
+        currentChargeCooldown -= Time.V_FixedDeltaTime();
+        currentStompCooldown -= Time.V_FixedDeltaTime();
         if (GetDistanceFromPlayer() > chargerstats.attackRange && GetDistanceFromPlayer() < chargerstats.chargingRange && currentChargeCooldown <=0 )
         {
             chargerState = ChargerState.Charging;
@@ -138,9 +154,14 @@ class Charger : Enemy
             Vector3 direction = player.transform.position - gameObject.transform.position;
             direction.y = 0;
             direction.Normalize();
-            currentChargeCooldown -= Time.V_FixedDeltaTime();
-            Debug.Log(direction * chargerstats.movementSpeed * chargerstats.speedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
             chargingRigidbody.SetVelocity(direction * chargerstats.movementSpeed * chargerstats.speedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
+            return;
+        }
+        if(GetDistanceFromPlayer() <= chargerstats.attackRange && currentStompCooldown <= 0)
+        {
+            chargerState = ChargerState.Stomp;
+            animator.PlayAnimation("ChargerJump");
+            ActivateRigidbody();
             return;
         }
         if(GetDistanceFromPlayer() < chargerstats.attackRange)
@@ -178,6 +199,7 @@ class Charger : Enemy
         currentChargeCooldown -= Time.V_FixedDeltaTime();
     }
     private void Update_Stagger() { }
+    private void Update_Stomp() { }
     private void Update_Death() { }
     /***********************************************************
         Animation Events
@@ -191,12 +213,12 @@ class Charger : Enemy
     }
     public void BeginSwing()
     {
-        hitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.localPosition);
-        hitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
+        attackHitbox = Instantiate(chargerAttackHitBoxPrefab,attackHitBoxTransform.localPosition);
+        attackHitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.damage);
     }
     public void EndSwing()
     {
-        Destroy(hitbox);
+        Destroy(attackHitbox);
     }
     public void EndAttack()
     {
@@ -207,6 +229,20 @@ class Charger : Enemy
     public void EndDeathAnimation()
     {
         Destroy(gameObject);
+    }
+    public void EndStompAnimation()
+    {
+        stompHitbox = Instantiate(stompHitBoxPrefab);
+        emitter.emit(30);
+        stompHitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.stompDamage);
+        Invoke(() =>
+        {
+            Destroy(stompHitbox);
+            chargerState = ChargerState.Walk;
+            animator.PlayAnimation("ChargerWalk");
+            ActivateNavMeshAgent();
+            currentStompCooldown = chargerstats.stompCooldown;
+        }, chargerstats.stompHitboxDuration);
     }
     /***********************************************************
         Collision Events

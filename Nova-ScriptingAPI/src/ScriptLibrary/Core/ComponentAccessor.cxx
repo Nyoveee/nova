@@ -74,9 +74,9 @@ void ComponentAccessor::Destroy(GameObject^ gameObject) {
 		Logger::error("Attempting to delete GameObject that doesn't exist");
 		return;
 	}
-	for each (GameObject^ child in gameObject->GetChildren())
-		Destroy(child);
 	Interface::submitGameObjectDeleteRequest(gameObject->entityID);
+	for each (GameObject ^ child in gameObject->GetChildren())
+		Destroy(child);
 }
 
 void ComponentAccessor::Invoke(Callback^ callback, float duration) {
