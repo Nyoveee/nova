@@ -32,6 +32,7 @@ class Charger : Enemy
     private float currentChargeCooldown = 0f;
     private float currentFootStepTime = 0f;
     private int footStepIndex = 0;
+    Vector3 chargeDirection;
     // Attack
     private GameObject? attackHitbox;
     // Stomp
@@ -151,10 +152,9 @@ class Charger : Enemy
             currentChargeTime = chargerstats.maxChargeTime;
             ActivateRigidbody();
             // Set Velocity
-            Vector3 direction = player.transform.position - gameObject.transform.position;
-            direction.y = 0;
-            direction.Normalize();
-            chargingRigidbody.SetVelocity(direction * chargerstats.movementSpeed * chargerstats.speedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
+            chargeDirection = player.transform.position - gameObject.transform.position;
+            chargeDirection.y = 0;
+            chargeDirection.Normalize();
             return;
         }
         if(GetDistanceFromPlayer() <= chargerstats.attackRange && currentStompCooldown <= 0)
@@ -193,6 +193,7 @@ class Charger : Enemy
             footStepIndex = (footStepIndex + 1) % 2;
             AudioAPI.PlaySound(gameObject, footStepIndex == 0 ? "sfx_enemyChargeStep_01mono" : "sfx_enemyChargeStep_02mono");
         }
+        chargingRigidbody.SetVelocity(chargeDirection * chargerstats.movementSpeed * chargerstats.chargeSpeedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
     }
     private void Update_Attack()
     {

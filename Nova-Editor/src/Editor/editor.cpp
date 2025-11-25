@@ -516,7 +516,7 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 	ImGui::PushID(++imguiCounter);
 
 	EntityData* selectedEntityData = registry.try_get<EntityData>(selectedEntity);
-	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<invalid entity>";
+	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<None>";
 
 	// Uppercase search query..
 	// Case insensitive searchQuery..
@@ -525,6 +525,14 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 
 	if (ImGui::BeginCombo(labelName, selectedEntityName)) {
 		ImGui::InputText("Search", &entitySearchQuery);
+
+		ImGui::PushID(-1);
+
+		if (ImGui::Selectable("<None>", false)) {
+			onClickCallback(entt::null);
+		}
+
+		ImGui::PopID();
 
 		for (auto&& [entityId, entityData] : registry.view<EntityData>().each()) {
 			// Let's upper case our entity name..

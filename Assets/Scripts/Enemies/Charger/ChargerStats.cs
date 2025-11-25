@@ -11,7 +11,7 @@ class ChargerStats : EnemyStats
     public int chargeDamage;
     public float chargeCooldown;
     public float maxChargeTime;
-    public float speedMultiplier;
+    public float chargeSpeedMultiplier;
     // Stomping
     public int stompDamage = 20;
     public float stompCooldown = 20f;

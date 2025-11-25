@@ -40,6 +40,9 @@ public:
 
 public:
 	static bool operator==(GameObject^ lhs, GameObject^ rhs) {
+		if (!lhs && !rhs) return true;
+		if (!lhs) return rhs->entityID == entt::null;
+		if (!rhs) return lhs->entityID == entt::null;
 		return lhs->entityID == rhs->entityID;
 	}
 

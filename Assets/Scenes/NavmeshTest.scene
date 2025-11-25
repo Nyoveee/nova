@@ -17,9 +17,287 @@
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
+                "isActive": false,
+                "layerId": 0,
+                "name": "Wall2",
+                "overridenProperties": null,
+                "parent": 1048576,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    11437129206001614851
+                ],
+                "modelId": 3
+            },
+            "Rigidbody": {
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -3.846489667892456,
+                    "y": 0.8936164975166321,
+                    "z": -5.673592567443848
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 3.0942206382751465,
+                    "y": 2.0,
+                    "z": 2.5589311122894287
+                },
+                "position": {
+                    "x": -3.846489667892456,
+                    "y": 0.8936164975166321,
+                    "z": -5.673592567443848
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 3.0942206382751465,
+                    "y": 2.0,
+                    "z": 2.5589311122894287
+                }
+            },
+            "id": 1048584
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Wall",
+                "name": "NavMeshSurface_Humanoid",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "NavMeshSurface": {
+                "label": "Humanoid",
+                "navMeshId": 2189198408433270785
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1048580
+        },
+        {
+            "CameraComponent": {
+                "camStatus": true
+            },
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Camera",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.7028700709342957,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.7028700709342957,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.3589906692504883,
+                    "y": 13.369682312011719,
+                    "z": -15.83733081817627
+                },
+                "localRotation": {
+                    "w": 0.938879668712616,
+                    "x": 0.3442454934120178,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0000015497207642,
+                    "z": 1.0000015497207642
+                },
+                "position": {
+                    "x": 0.3589906692504883,
+                    "y": 13.369682312011719,
+                    "z": -15.83733081817627
+                },
+                "rotation": {
+                    "w": 0.938879668712616,
+                    "x": 0.3442454934120178,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0000015497207642,
+                    "z": 1.0000015497207642
+                }
+            },
+            "id": 1048578
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Entity 1",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    364950360440684545
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 8.0,
+                    "y": 2.085773229598999,
+                    "z": -7.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                },
+                "position": {
+                    "x": 8.0,
+                    "y": 2.085773229598999,
+                    "z": -7.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                }
+            },
+            "id": 1048577
+        },
+        {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Floor",
                 "overridenProperties": null,
                 "parent": 1048576,
                 "prefabID": 18446744073709551615,
@@ -32,6 +310,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -41,6 +320,7 @@
                 "isTrigger": false,
                 "layer": "NonMoving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Static"
             },
             "Transform": {
@@ -56,71 +336,6 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 1.9184836149215698,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 4.436241149902344,
-                    "y": 1.0,
-                    "z": 5.183363914489746
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 1.9184836149215698,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 4.436241149902344,
-                    "y": 1.0,
-                    "z": 5.183363914489746
-                }
-            },
-            "id": 1048585
-        },
-        {
-            "EntityData": {
-                "children": [
-                    39846051,
-                    1048585,
-                    1048584
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Objects",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Scripts": {
-                "scriptDatas": null
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -131,9 +346,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
+                    "x": 10.0,
                     "y": 1.0,
-                    "z": 1.0
+                    "z": 10.0
                 },
                 "position": {
                     "x": 0.0,
@@ -147,12 +362,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0,
+                    "x": 10.0,
                     "y": 1.0,
-                    "z": 1.0
+                    "z": 10.0
                 }
             },
-            "id": 1048576
+            "id": 39846051
         },
         {
             "EntityData": {
@@ -224,6 +439,71 @@
             "id": 1048588
         },
         {
+            "EntityData": {
+                "children": [
+                    39846051,
+                    1048585,
+                    1048584
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Objects",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Scripts": {
+                "scriptDatas": null
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1048576
+        },
+        {
             "BoxCollider": {
                 "offset": {
                     "x": 0.0,
@@ -232,9 +512,9 @@
                 },
                 "scaleWithTransform": true,
                 "shapeScale": {
-                    "x": 10.0,
+                    "x": 1.0,
                     "y": 1.0,
-                    "z": 10.0
+                    "z": 1.0
                 }
             },
             "EntityData": {
@@ -242,7 +522,7 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Floor",
+                "name": "Wall",
                 "overridenProperties": null,
                 "parent": 1048576,
                 "prefabID": 18446744073709551615,
@@ -255,6 +535,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -264,6 +545,7 @@
                 "isTrigger": false,
                 "layer": "NonMoving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Static"
             },
             "Transform": {
@@ -279,7 +561,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 1.9184836149215698,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -289,13 +571,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 10.0,
+                    "x": 4.436241149902344,
                     "y": 1.0,
-                    "z": 10.0
+                    "z": 5.183363914489746
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 1.9184836149215698,
                     "z": 0.0
                 },
                 "rotation": {
@@ -305,288 +587,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 10.0,
+                    "x": 4.436241149902344,
                     "y": 1.0,
-                    "z": 10.0
+                    "z": 5.183363914489746
                 }
             },
-            "id": 39846051
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Entity 1",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    364950360440684545
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 8.0,
-                    "y": 2.085773229598999,
-                    "z": -7.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
-                },
-                "position": {
-                    "x": 8.0,
-                    "y": 2.085773229598999,
-                    "z": -7.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
-                }
-            },
-            "id": 1048577
-        },
-        {
-            "CameraComponent": {
-                "camStatus": true
-            },
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Camera",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.7028700709342957,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.7028700709342957,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.3589906692504883,
-                    "y": 13.369682312011719,
-                    "z": -15.83733081817627
-                },
-                "localRotation": {
-                    "w": 0.938879668712616,
-                    "x": 0.3442454934120178,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0000015497207642,
-                    "z": 1.0000015497207642
-                },
-                "position": {
-                    "x": 0.3589906692504883,
-                    "y": 13.369682312011719,
-                    "z": -15.83733081817627
-                },
-                "rotation": {
-                    "w": 0.938879668712616,
-                    "x": 0.3442454934120178,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0000015497207642,
-                    "z": 1.0000015497207642
-                }
-            },
-            "id": 1048578
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "NavMeshSurface_Humanoid",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "NavMeshSurface": {
-                "label": "Humanoid",
-                "navMeshId": 2189198408433270785
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048580
-        },
-        {
-            "BoxCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": false,
-                "layerId": 0,
-                "name": "Wall2",
-                "overridenProperties": null,
-                "parent": 1048576,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    11437129206001614851
-                ],
-                "modelId": 3
-            },
-            "Rigidbody": {
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -3.846489667892456,
-                    "y": 0.8936164975166321,
-                    "z": -5.673592567443848
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 3.0942206382751465,
-                    "y": 2.0,
-                    "z": 2.5589311122894287
-                },
-                "position": {
-                    "x": -3.846489667892456,
-                    "y": 0.8936164975166321,
-                    "z": -5.673592567443848
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 3.0942206382751465,
-                    "y": 2.0,
-                    "z": 2.5589311122894287
-                }
-            },
-            "id": 1048584
+            "id": 1048585
         }
     ],
     "layers": [
