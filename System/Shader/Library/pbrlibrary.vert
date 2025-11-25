@@ -56,6 +56,9 @@ out VS_OUT {
 
 // This function calculates the TBN matrix given normal and tangent.
 mat3 calculateTBN(vec3 N, vec3 T) {
+    N = normalize(N);
+    T = normalize(T);
+    
     // these vectors are now in world space.
     vec3 B = cross(N, T);
 

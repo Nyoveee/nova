@@ -117,6 +117,13 @@ inline Json serializeToJson(DataMemberType const& dataMember) {
 }
 
 
+template <isUnorderedSet DataMemberType>
+inline Json serializeToJson(DataMemberType const& dataMember) {
+	Json jsonArray;
+	for (auto&& element : dataMember) 
+		jsonArray.push_back(serializeToJson(element));
+	return jsonArray;
+}
 /***************************************************************************************
 	Recursive reflection, also entry point.
 ****************************************************************************************/
@@ -141,6 +148,12 @@ inline Json serializeToJson(T const& dataMember) {
 template<>
 inline Json serializeToJson<NormalizedFloat>(NormalizedFloat const& dataMember) {
 	return static_cast<float>(dataMember);
+}
+
+// serialize field list is literally just a vector..
+template<>
+inline Json serializeToJson<serialized_field_list>(serialized_field_list const& dataMember) {
+	return serializeToJson(static_cast<std::vector<serialized_field_type> const&>(dataMember));
 }
 
 template<>

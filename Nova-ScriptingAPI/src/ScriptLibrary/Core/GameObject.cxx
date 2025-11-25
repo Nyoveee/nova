@@ -7,6 +7,8 @@ GameObject::GameObject(entt::entity entity) :
 	GameObject { static_cast<unsigned>(entity) }
 {}
 
+GameObject::GameObject() {}
+
 GameObject::GameObject(System::UInt32 p_entityID) {
 	entityID = p_entityID;
 	transformReference = getComponent<Transform_^>();
@@ -60,6 +62,8 @@ array<GameObject^>^ GameObject::GetChildren()
 {
 	System::Collections::Generic::List<GameObject^> children;
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(static_cast<entt::entity>(entityID));
+	if (!entityData)
+		return nullptr;
 	for (entt::entity child : entityData->children)
 		children.Add(GetReference(static_cast<unsigned int>(child)));
 	return children.ToArray();
@@ -72,6 +76,11 @@ System::UInt32 GameObject::GetId() {
 void GameObject::SetActive(bool active) {
 	Interface::engine->ecs.setActive(static_cast<entt::entity>(entityID), active);
 }
+
+bool GameObject::IsActive() {
+	return Interface::engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)).isActive;
+}
+
 
 Transform_^ GameObject::transform::get() { return transformReference; };
 System::String^ GameObject::tag::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->tag); }

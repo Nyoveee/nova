@@ -24,12 +24,14 @@
 #include "controller.h"
 
 // Forward declaring.
+class Prefab;
 class Model;
 class Texture;
 class CubeMap;
 class ScriptAsset;
 class Audio;
 class Material;
+class Sequencer;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -38,29 +40,14 @@ class Material;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
-	Image
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
+	Image, Sequence, Button, Canvas, NavMeshOffLinks
 
 using ScriptName   = std::string;
 using LayerID	   = int;
+using ComponentID  = size_t;
 
-#include "physics.h"
-
-// ======= C# Field Information =======
-#ifndef ALL_FIELD_PRIMITIVES
-#define ALL_FIELD_PRIMITIVES \
-		bool, int, float, double
-#endif
-
-#define ALL_TYPED_RESOURCE_ID \
-	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>
-
-#ifndef ALL_FIELD_TYPES
-#define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
-		ALL_TYPED_RESOURCE_ID,																		\
-		ALL_FIELD_PRIMITIVES
-#endif
+#include "serializedField.h"
 
 enum class InterpolationType : unsigned int {
 	Root,
@@ -69,15 +56,12 @@ enum class InterpolationType : unsigned int {
 	Cubic
 };
 
-struct FieldData {
-	std::string name;
-	std::variant<ALL_FIELD_TYPES> data;
 
-	REFLECTABLE(
-		name,
-		data
-	)
-};
+// 	REFLECTABLE(
+// 		name,
+// 		data
+// 	)
+// };
 
 struct PrefabMetaData {
 	entt::entity prefabEntity;
@@ -91,12 +75,14 @@ struct EntityData {
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
+
 	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
 	PrefabMetaData prefabMetaData										{};
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 	std::unordered_map<size_t, bool> overridenComponents				{};
+	std::unordered_set<ComponentID> inactiveComponents                  {};
 
 	REFLECTABLE(
 		name,
@@ -109,6 +95,8 @@ struct EntityData {
 		prefabMetaData,
 		overridenProperties,
 		overridenComponents
+		overridenProperties,
+		inactiveComponents
 	)
 };
 
@@ -138,14 +126,14 @@ struct Transform {
 	EulerAngles lastEulerAngles	{ rotation };
 
 	glm::vec3 lastLocalPosition {};
-	glm::vec3 lastLocalScale	{ 1.f, 1.f, 1.f };
+	glm::vec3 lastLocalScale	{ localScale };
 	glm::quat lastLocalRotation	{};
 	EulerAngles lastLocalEulerAngles{ localRotation };
 
 	// Dirty bit indicating whether we need to recalculate the model view matrix.
 	// When first created set it to true.
 	bool worldHasChanged = true;
-	bool needsRecalculating = false;
+	bool needsRecalculating = true;
 
 	// Reflect these data members for level editor to display
 	REFLECTABLE(
@@ -230,16 +218,43 @@ struct Animator {
 	std::unordered_set<int> executedAnimationEvents;
 };
 
+struct Sequence {
+	TypedResourceID<Sequencer> sequencerId;
+	bool toLoop;
+
+	REFLECTABLE(
+		sequencerId,
+		toLoop
+	)
+
+	float timeElapsed = 0.f;
+	float lastTimeElapsed = 0.f;
+	
+	int currentFrame = 0;
+
+	// each animator component keeps track of already executed animation events keyframes..
+	// this container is reset everytime it loops..
+	std::unordered_set<int> executedAnimationEvents;
+};
+
 struct Rigidbody {
 	JPH::EMotionType motionType		= JPH::EMotionType::Static;
 
 	enum class Layer {
 		NonMoving,
-		Moving
+		Moving,
+		Wall,
+		Item
 	} layer							= Layer::NonMoving;
 
+	enum class MotionQuality {
+		Discrete,
+		Continuous
+	} motionQuality					= MotionQuality::Discrete;
+
 	glm::vec3 initialVelocity		{};
-	float mass						{};
+	float mass						{ 10.f };
+	float gravityMultiplier			{ 1.f };
 
 	bool isRotatable				{ true };
 	bool isTrigger					{ false };
@@ -247,8 +262,10 @@ struct Rigidbody {
 	REFLECTABLE(
 		motionType,
 		layer,
+		motionQuality,
 		initialVelocity,
 		mass,
+		gravityMultiplier,
 		isRotatable,
 		isTrigger
 	)
@@ -296,7 +313,7 @@ struct CapsuleCollider {
 };
 
 struct MeshCollider {
-	float shapeScale;
+	float shapeScale = 1.f;
 
 	REFLECTABLE(
 		shapeScale
@@ -421,6 +438,28 @@ struct NavMeshSurface
 	)
 };
 
+
+struct NavMeshOffLinks
+{
+	std::string agentName;
+	glm::vec3 startPoint{};
+	glm::vec3 endPoint{};
+	float radius = 0.5f;
+	bool isBiDirectional = true;
+
+
+	REFLECTABLE
+	(
+		agentName,
+		startPoint,
+		endPoint,
+		radius,
+		isBiDirectional
+	)
+
+
+};
+
 struct NavMeshAgent
 {
 	//User Variables
@@ -430,6 +469,13 @@ struct NavMeshAgent
 	float agentRotationSpeed		= 0.f;
 	float collisionDetectionRange	= 0.f; // higher the value the earlier it attempts to steers
 	float separationWeight			= 0.f;
+	
+	bool updateRotation				= true; //should agent update rotation. 
+	bool updatePosition             = true; //should agent update position. 
+	bool autoTraverseOffMeshLink	= true;
+
+	bool isOnOffMeshLink			= false;
+
 
 	REFLECTABLE
 	(
@@ -440,11 +486,12 @@ struct NavMeshAgent
 		separationWeight
 	)
 	//Runtime variables
-	int agentIndex		= 0;
+	int   agentIndex		= -1; // -1 means its unsued //query the mapper to find the correct dtCrowd ID. 
+								  //NOTE this no longer maps directly to dtCrowd object, use GetDTCrowdIndex to find actual index
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
+	navMeshOfflinkData currentData;
 };
-
 
 struct NavigationTestTarget
 {
@@ -634,7 +681,7 @@ struct Text {
 	TypedResourceID<Font> font;
 	int fontSize = 13;
 	std::string text;
-	Color fontColor = Color{ 0.f, 0.f, 0.f };
+	Color fontColor = Color{ 1.f, 1.f, 1.f };
 
 	REFLECTABLE
 	(
@@ -643,4 +690,81 @@ struct Text {
 		fontSize,
 		fontColor
 	)
+};
+
+struct Canvas {
+	std::string placeholder;
+
+	REFLECTABLE
+	(
+		placeholder
+	)
+};
+
+struct EntityScript {
+	entt::entity entity;
+	TypedResourceID<ScriptAsset> script;
+	
+	REFLECTABLE(
+		entity,
+		script
+	)
+};
+
+struct Button {
+	bool isInteractable;
+	EntityScript reference;
+
+	ColorA normalColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA highlightedColor = ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA pressedColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA disabledColor	= ColorA{ 1.f, 1.f, 1.f, 1.f };
+
+	std::string onClickReleasedFunction;
+	std::string onPressFunction;
+	std::string onHoverFunction;
+
+	float fadeDuration = 0.1f;
+	float colorMultiplier = 1.f;
+
+	glm::vec3 offset		= glm::vec3{ 0.f, 0.f, 0.f };
+	glm::vec3 padding		= glm::vec3{ 0.f, 0.f, 0.f };
+
+	REFLECTABLE
+	(
+		isInteractable,
+		reference,
+		normalColor,
+		highlightedColor,
+		pressedColor,
+		disabledColor,
+		onClickReleasedFunction,
+		onPressFunction,
+		onHoverFunction,
+		fadeDuration,
+		colorMultiplier,
+		offset,
+		padding
+	)
+
+	enum class State {
+		Normal,
+		Hovered,
+		Pressed,
+		Disabled
+	} state;
+
+	float timeElapsed = 0.f;
+
+	ColorA finalColor = normalColor;
+
+	void enableButton() {
+		isInteractable = true;
+		state = Button::State::Normal;
+	}
+
+	void disableButton() {
+		isInteractable = false;
+		state = Button::State::Disabled;
+	}
 };

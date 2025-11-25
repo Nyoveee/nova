@@ -16,29 +16,10 @@
 template <class...>
 struct False : std::bool_constant<false> {};
 
-/***************************************************************************************
-	Reference for display properties
-****************************************************************************************/
-#if 0
-struct PropertyReferences {
-	entt::entity entity;
-	ComponentInspector& componentInspector;
-	ResourceManager& resourceManager;
-	AssetManager& assetManager;
-	AudioSystem& audioSystem;
-	ScriptingAPIManager& scriptingAPIManager;
-	Engine& engine;
-	Editor& editor;
-	ECS& ecs;
-};
-#endif
 
 /***************************************************************************************
 	Property Sub Infos
 ****************************************************************************************/
-#if 0
-void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
-#endif
 void displayScriptFields(ScriptData& scriptData, Editor& editor);
 
 /***************************************************************************************
@@ -331,7 +312,8 @@ template<>
 inline void DisplayProperty<glm::vec2>(Editor&, const char* dataMemberName, glm::vec2& dataMember) {
 	if (ImGui::BeginTable("MyTable", 3, ImGuiTableFlags_NoPadOuterX | ImGuiTableFlags_NoPadInnerX)) {
 		ImGui::TableSetupColumn("Fixed Column", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-		ImGui::TableSetupColumn("Stretch Column", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Stretch Column 1", ImGuiTableColumnFlags_WidthStretch);
+		ImGui::TableSetupColumn("Stretch Column 2", ImGuiTableColumnFlags_WidthStretch);
 
 		ImGui::TableNextRow();
 
@@ -350,8 +332,10 @@ inline void DisplayProperty<glm::vec2>(Editor&, const char* dataMemberName, glm:
 }
 
 template<>
-inline void DisplayProperty<entt::entity>(Editor&, const char* dataMemberName, entt::entity& dataMember) {
-	ImGui::Text("%s: %u", dataMemberName, dataMember);
+inline void DisplayProperty<entt::entity>(Editor& editor, const char* dataMemberName, entt::entity& dataMember) {
+	editor.displayAllEntitiesDropDownList(dataMemberName, dataMember, [&](entt::entity newEntity) {
+		dataMember = newEntity;
+	});
 }
 
 /***************************************************************************************
@@ -563,5 +547,60 @@ inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& edit
 		editor.displayAssetDropDownList<Material>(id, label.c_str(), [&](ResourceID resourceId) {
 			id = TypedResourceID<Material>{ resourceId };
 		});
+	}
+}
+
+template<>
+inline void DisplayProperty<EntityScript>(Editor& editor, const char*, EntityScript& dataMember) {
+	DisplayProperty<entt::entity>(editor, "entity", dataMember.entity);
+	editor.displayEntityScriptDropDownList(static_cast<ResourceID>(dataMember.script), "script", dataMember.entity, [&](ResourceID selectedScript) {
+		dataMember.script = TypedResourceID<ScriptAsset>{ selectedScript };
+	});
+}
+
+template<>
+inline void DisplayProperty<serialized_field_type>(Editor& editor, const char* dataMemberName, serialized_field_type& dataMember) {
+	// Set the field data	
+	std::visit([&](auto&& dataMember) {
+		using FieldType = std::decay_t<decltype(dataMember)>;
+
+		// Generalization
+		DisplayProperty<FieldType>(editor, dataMemberName, dataMember);
+		
+	}, dataMember);
+}
+
+// serialize field list is literally just a vector..
+template<>
+inline void DisplayProperty<serialized_field_list>(Editor& editor, const char* dataMemberName, serialized_field_list& dataMember) {
+	if (ImGui::TreeNodeEx(dataMemberName, ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::BeginChild(dataMemberName, {}, ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
+
+		int elementCount = 0;
+		for (auto&& element : dataMember) {
+			std::string elementCountString = '[' + std::to_string(elementCount++) + ']';
+
+			ImGui::PushID(elementCount);
+			DisplayProperty<serialized_field_type>(editor, elementCountString.c_str(), element);
+			ImGui::PopID();
+		}
+
+		int size = static_cast<int>(dataMember.size());
+
+		ImGui::Separator();
+
+		ImGui::SetNextItemWidth(150.f);
+		ImGui::InputInt("Count", &size);
+
+		if (
+			size != static_cast<int>(dataMember.size())
+			&& size >= 0
+			) {
+			dataMember.resize(size);
+		}
+
+		ImGui::EndChild();
+
+		ImGui::TreePop();
 	}
 }

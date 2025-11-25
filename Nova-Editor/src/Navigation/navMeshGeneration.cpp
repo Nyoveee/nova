@@ -104,7 +104,8 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 
 			for (glm::vec3 const& localPosition : meshData.positions)
 			{
-				glm::vec4 worldPos = transform.modelMatrix * glm::vec4(localPosition, 1.0f);
+				glm::vec4 worldPos = model->scale * transform.modelMatrix * glm::vec4(localPosition, 1.0f);
+
 				vertexSoup.push_back(worldPos.x);
 				vertexSoup.push_back(worldPos.y);
 				vertexSoup.push_back(worldPos.z);
@@ -347,6 +348,9 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 		}
 	}
 
+
+	NavMeshOffLinkCollections offLinksCollections = BuildNavMeshOffLinks(buildSettings.agentName);
+
 	dtNavMeshCreateParams params;
 	memset(&params, 0, sizeof(params));
 	params.verts = m_pmesh->verts;
@@ -361,13 +365,13 @@ void NavMeshGeneration::BuildNavMesh(std::string const& filename) {
 	params.detailVertsCount = m_dmesh->nverts;
 	params.detailTris = m_dmesh->tris;
 	params.detailTriCount = m_dmesh->ntris;
-	params.offMeshConVerts = 0;
-	params.offMeshConRad = 0;
-	params.offMeshConDir = 0;
-	params.offMeshConAreas = 0;
-	params.offMeshConFlags = 0;
-	params.offMeshConUserID = 0;
-	params.offMeshConCount = 0;
+	params.offMeshConVerts = offLinksCollections.offMeshVerts.data();
+	params.offMeshConRad = offLinksCollections.offMeshRadius.data();
+	params.offMeshConDir = offLinksCollections.direction.data();
+	params.offMeshConAreas = offLinksCollections.area.data();
+	params.offMeshConFlags = offLinksCollections.flag.data();
+	params.offMeshConUserID = offLinksCollections.id.data();
+	params.offMeshConCount = offLinksCollections.count;
 	params.walkableHeight = buildSettings.agentHeight;
 	params.walkableRadius = buildSettings.agentRadius;
 	params.walkableClimb = buildSettings.agentMaxClimb;
@@ -435,6 +439,53 @@ void NavMeshGeneration::AddNavMeshSurface(std::string const& filename)
 		ecs.registry.emplace<EntityData>(entity, EntityData{ "NavMeshSurface_" + buildSettings.agentName });
 		ecs.registry.emplace<NavMeshSurface>(entity, NavMeshSurface{ buildSettings.agentName, TypedResourceID<NavMesh>{resourceName} });
 	}
+}
+
+NavMeshOffLinkCollections NavMeshGeneration::BuildNavMeshOffLinks(std::string agentName)
+{
+	int counter = 0;
+
+	//store all the navmesh offlink in a contiguous array and bass to detour
+	NavMeshOffLinkCollections navmeshOffLinksCollections;
+	for (auto&& [entity, navMeshOffLink] : ecs.registry.view<NavMeshOffLinks>().each())
+	{
+		if (navMeshOffLink.agentName != agentName)
+		{
+			continue;
+		}
+
+		//Some goofy ahh format required by detour, the endpoints of the connection. [(ax, ay, az, bx, by, bz)]
+		navmeshOffLinksCollections.offMeshVerts.push_back(navMeshOffLink.startPoint.x);
+		navmeshOffLinksCollections.offMeshVerts.push_back(navMeshOffLink.startPoint.y);
+		navmeshOffLinksCollections.offMeshVerts.push_back(navMeshOffLink.startPoint.z);
+		navmeshOffLinksCollections.offMeshVerts.push_back(navMeshOffLink.endPoint.x);
+		navmeshOffLinksCollections.offMeshVerts.push_back(navMeshOffLink.endPoint.y);
+		navmeshOffLinksCollections.offMeshVerts.push_back(navMeshOffLink.endPoint.z);
+
+		navmeshOffLinksCollections.offMeshRadius.push_back(navMeshOffLink.radius);
+		
+		if (navMeshOffLink.isBiDirectional)
+		{
+			navmeshOffLinksCollections.direction.push_back(1);
+
+		}
+		else
+		{
+			navmeshOffLinksCollections.direction.push_back(0);
+		}
+
+		navmeshOffLinksCollections.area.push_back(RC_WALKABLE_AREA);
+
+		navmeshOffLinksCollections.flag.push_back(1);
+		navmeshOffLinksCollections.id.push_back(counter);
+
+
+		counter++;
+	}
+
+	navmeshOffLinksCollections.count = counter;
+
+	return navmeshOffLinksCollections;
 }
 
 void NavMeshGeneration::PrependAdditionalData(unsigned char** navData, int* dataSize)

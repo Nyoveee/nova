@@ -163,7 +163,7 @@ void AssetManagerUI::displayFolderTreeNode(FolderID folderId) {
 	auto&& [_, folder] = *iterator;
 
 	// Display children recursively..
-	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_DrawLinesToNodes;
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DrawLinesToNodes;
 
 	if (selectedFolderId == folderId) {
 		flags |= ImGuiTreeNodeFlags_Selected;
@@ -433,6 +433,18 @@ Frag{
 			}
 			else {
 				Controller::Data data{};
+				Serialiser::serializeToJsonFile(data, opt.value());
+			}
+		}
+
+		if (ImGui::MenuItem("[+] Sequencer")) {
+			std::optional<std::ofstream> opt = createAssetFile(".sequencer");
+
+			if (!opt) {
+				Logger::error("Failed to create sequencer file.");
+			}
+			else {
+				Sequencer::Data data{};
 				Serialiser::serializeToJsonFile(data, opt.value());
 			}
 		}

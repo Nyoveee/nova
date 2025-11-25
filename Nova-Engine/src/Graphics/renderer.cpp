@@ -20,14 +20,16 @@
 
 #undef max
 
+constexpr ColorA whiteColor{ 1.f, 1.f, 1.f, 1.f };
+
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 
 // 100 MB should be nothing right?
 constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
 
 // we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
-constexpr int MAX_DEBUG_TRIANGLES = 10000;
-constexpr int MAX_DEBUG_LINES	  = 10000;
+constexpr int MAX_DEBUG_TRIANGLES = 100000;
+constexpr int MAX_DEBUG_LINES	  = 100000;
 constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
 
 // ok right?
@@ -37,14 +39,17 @@ constexpr int MAX_NUMBER_OF_BONES = 255;
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine						{ engine },
+	gameWidth					{ gameWidth },
+	gameHeight					{ gameHeight },
 	resourceManager				{ engine.resourceManager },
 	registry					{ engine.ecs.registry },
 	basicShader					{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
 	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
 	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
 	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	// blinnPhongShader			{ "System/Shader/blinnPhong.vert",			"System/Shader/blinnPhong.frag" },
-	// PBRShader					{ "System/Shader/PBR.vert",					"System/Shader/PBR.frag" },
+	bloomDownSampleShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomDownSample.frag" },
+	bloomUpSampleShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomUpSample.frag" },
+	bloomFinalShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
@@ -96,6 +101,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	physicsDebugFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
+	bloomFrameBuffer			{ gameWidth, gameHeight, 5 },
 	toGammaCorrect				{ true },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
@@ -341,7 +347,6 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		assert(false && "Forget to account for a case.");
 		break;
 	}
-
 	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -354,8 +359,8 @@ void Renderer::renderUI()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	setDepthMode(CustomShader::DepthTestingMethod::NoDepthWriteTest);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setDepthMode(DepthTestingMethod::NoDepthWriteTest);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	glBindVertexArray(textVAO);
 
@@ -367,16 +372,17 @@ void Renderer::renderUI()
 
 			Image* image = registry.try_get<Image>(entity);
 			Text* text = registry.try_get<Text>(entity);
-			
+			Button* button = registry.try_get<Button>(entity);
+
 			if (!entityData.isActive) {
 				continue;
 			}
 
-			if (image) {
-				renderImage(transform, *image);
+			if (image && engine.ecs.isComponentActive<Image>(entity)) {
+				renderImage(transform, *image, button ? button->finalColor : whiteColor);
 			}
 
-			if (text) {
+			if (text && engine.ecs.isComponentActive<Text>(entity)) {
 				renderText(transform, *text);
 			}
 		}
@@ -396,10 +402,11 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
 
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setBlendMode(BlendingConfig::Disabled);
 
 	// We render individual game objects..
 	renderSkyBox();
+
 	renderModels(camera);
 	renderSkinnedModels(camera);
 	renderParticles();
@@ -408,7 +415,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setBlendMode(BlendingConfig::Disabled);
+
+	renderBloom(frameBuffers);
 
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping(frameBuffers);
@@ -433,10 +442,96 @@ void Renderer::renderToDefaultFBO() {
 	glDisable(GL_BLEND);
 }
 
+void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
+	// =======================================================
+	// 1. We need to progressively down sample our HDR framebuffer.
+	// =======================================================
+	glBindFramebuffer(GL_FRAMEBUFFER, bloomFrameBuffer.fboId());
+
+	auto&& mipChain = bloomFrameBuffer.getMipChain();
+
+	bloomDownSampleShader.use();
+	bloomDownSampleShader.setVec2("srcResolution", gameSize);
+
+	// We bind with the original scene..
+	bloomDownSampleShader.setImageUniform("srcTexture", 0);
+	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().textureIds()[0]);
+
+	// Progressively down sample through the mip chain
+	for (auto&& mip : mipChain) {
+		// update viewport to the mip map's size..
+		glViewport(0, 0, mip.isize.x, mip.isize.y);
+
+		// we bind this mipmap as our bloom framebuffer's new color attachment. (we do this every loop)
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mip.id, 0);
+
+		// Render screen-filled quad of resolution of current mip
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		// Set current mip resolution as srcResolution for next iteration
+		bloomDownSampleShader.setVec2("srcResolution", mip.size);
+
+		// Set current mip as texture input for next iteration
+		glBindTextureUnit(0, mip.id);
+	}
+
+	// =======================================================
+	// 2. We do the reverse, progressively upsample our downsampled scene with blur filter.
+	// =======================================================
+	bloomUpSampleShader.use();
+	bloomUpSampleShader.setFloat("filterRadius", bloomFilterRadius);
+	bloomUpSampleShader.setImageUniform("srcTexture", 0);
+
+	// Enable additive blending
+	// setBlendMode(CustomShader::BlendingConfig::AdditiveBlending);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glBlendEquation(GL_FUNC_ADD);
+
+	for (std::size_t i = mipChain.size() - 1; i > 0; i--) {
+		auto&& mip		= mipChain[i];
+		auto&& nextMip	= mipChain[i - 1];
+
+		// Read from the smaller mip map size..
+		glBindTextureUnit(0, mip.id);
+
+		// Set framebuffer render target (we write to this texture)
+		glViewport(0, 0, nextMip.isize.x, nextMip.isize.y);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, nextMip.id, 0);
+
+		// Render screen-filled quad of resolution of current mip
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
+	// Disable additive blending
+	//glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // Restore if this was default
+	glDisable(GL_BLEND);
+
+	// =======================================================
+	// 3. We composite the original scene with this blurred, down and then upsampled bloom buffer.
+	// =======================================================
+	frameBuffers.swapFrameBuffer();
+
+	glViewport(0, 0, gameWidth, gameHeight);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	bloomFinalShader.use();
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);	// original scene
+	glBindTextureUnit(1, bloomFrameBuffer.getMipChain()[0].id);					// blurred bright
+
+	bloomFinalShader.setImageUniform("scene", 0);
+	bloomFinalShader.setImageUniform("bloomBlur", 1);
+	bloomFinalShader.setFloat("compositePercentage", bloomCompositePercentage);
+	
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
@@ -487,14 +582,15 @@ Camera const& Renderer::getGameCamera() const {
 }
 
 void Renderer::recompileShaders() {
-	//blinnPhongShader.compile();
-	//PBRShader.compile();
 	skyboxShader.recompile();
 	textShader.recompile();
 	toneMappingShader.recompile();
 	particleShader.recompile();
 	skeletalAnimationShader.recompile();
 	texture2dShader.recompile();
+	bloomDownSampleShader.recompile();
+	bloomUpSampleShader.recompile();
+	bloomFinalShader.recompile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -546,9 +642,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	// (so post processing)
 	// ================================================
 
-
-
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
 	
 	// set image uniform accordingly..
@@ -570,15 +664,14 @@ void Renderer::debugRenderNavMesh() {
 	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 	glEnable(GL_DEPTH_TEST);
 
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 0.8f, 0.8f, 0.5f });
 	glDrawArrays(GL_TRIANGLES, 0, numOfNavMeshDebugTriangles * 3);
 
-	glDisable(GL_DEPTH_TEST);
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setBlendMode(BlendingConfig::Disabled);
 	numOfNavMeshDebugTriangles = 0;
 }
 
@@ -593,7 +686,7 @@ void Renderer::debugRenderParticleEmissionShape()
 	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	
 	glEnable(GL_DEPTH_TEST);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
 		glm::mat4 model = glm::identity<glm::mat4>();
@@ -679,7 +772,7 @@ void Renderer::prepareRendering() {
 	// Configure pre rendering settings
 	// =================================================================
 	glEnable(GL_DITHER);
-	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+	setDepthMode(DepthTestingMethod::DepthTest);
 
 	// bind the VBOs to their respective binding index
 	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(),			0, sizeof(glm::vec3));
@@ -711,7 +804,9 @@ void Renderer::prepareRendering() {
 	unsigned int numOfDirLights = 0;
 	unsigned int numOfSpotLights = 0;
 
-	for (auto&& [entity, transform, light] : registry.view<Transform, Light>().each()) {
+	for (auto&& [entity, entityData, transform, light] : registry.view<EntityData, Transform,  Light>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity))
+			continue;
 		switch (light.type)
 		{
 		case Light::Type::PointLight:
@@ -796,11 +891,11 @@ void Renderer::renderSkyBox() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 	glDisable(GL_DEPTH_TEST);
 
-	for (auto&& [entityId, skyBox] : registry.view<SkyBox>().each()) {
+	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData,SkyBox>().each()) {
 		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
 
 		// skybox not loaded..
-		if (!asset) {
+		if (!asset || !entityData.isActive || !engine.ecs.isComponentActive<SkyBox>(entityId)) {
 			continue;
 		}
 
@@ -829,7 +924,7 @@ void Renderer::renderModels(Camera const& camera) {
 			Transform const& transform = registry.get<Transform>(entity);
 			EntityData const& entityData = registry.get<EntityData>(entity);
 
-			if (!entityData.isActive) {
+			if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
 				continue;
 			}
 
@@ -945,7 +1040,7 @@ void Renderer::renderText(Transform const& transform, Text const& text)
 	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 }
 
-void Renderer::renderImage(Transform const& transform, Image const& image)
+void Renderer::renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier)
 {
 	texture2dShader.use();
 	texture2dShader.setMatrix("uiProjection", UIProjection);
@@ -962,7 +1057,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image)
 		return;
 	}
 
-	texture2dShader.setVec4("tintColor", image.colorTint);
+	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
 
@@ -984,7 +1079,7 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isSkinnedMeshRenderer);
 
 	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) {
 			continue;
 		}
 		
@@ -1054,7 +1149,7 @@ void Renderer::renderParticles()
 {
 
 	glBindVertexArray(particleVAO);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 	particleShader.use();
 
 	// Disable writing to depth buffer for particles
@@ -1129,9 +1224,9 @@ Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshR
 	return material;
 }
 
-void Renderer::setBlendMode(CustomShader::BlendingConfig configuration) {
+void Renderer::setBlendMode(BlendingConfig configuration) {
 	switch (configuration) {
-		using enum CustomShader::BlendingConfig;
+		using enum BlendingConfig;
 	case AlphaBlending:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1157,9 +1252,9 @@ void Renderer::setBlendMode(CustomShader::BlendingConfig configuration) {
 	}
 }
 
-void Renderer::setDepthMode(CustomShader::DepthTestingMethod configuration) {
+void Renderer::setDepthMode(DepthTestingMethod configuration) {
 	switch (configuration) {
-		using enum CustomShader::DepthTestingMethod;
+		using enum DepthTestingMethod;
 	case DepthTest:
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -1178,9 +1273,9 @@ void Renderer::setDepthMode(CustomShader::DepthTestingMethod configuration) {
 	}
 }
 
-void Renderer::setCullMode(CustomShader::CullingConfig configuration) {
+void Renderer::setCullMode(CullingConfig configuration) {
 	switch (configuration) {
-		using enum CustomShader::CullingConfig;
+		using enum CullingConfig;
 	case Enable:
 		glEnable(GL_CULL_FACE);
 		break;
@@ -1270,14 +1365,14 @@ void Renderer::renderObjectIds() {
 	glDisable(GL_BLEND);
 	glDisable(GL_DITHER);
 
-	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+	setDepthMode(DepthTestingMethod::DepthTest);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 	
 	for (auto&& [entity, transform, entityData, meshRenderer] : registry.view<Transform, EntityData, MeshRenderer>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
 			continue;
 		}
 
@@ -1307,7 +1402,7 @@ void Renderer::renderObjectIds() {
 	}
 
 	for (auto&& [entity, transform, entityData, skinnedMeshRenderer] : registry.view<Transform, EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) {
 			continue;
 		}
 
@@ -1362,7 +1457,7 @@ void Renderer::renderUiObjectIds() {
 	uiImageObjectIdShader.setMatrix("uiProjection", UIProjection);
 
 	for (auto&& [entity, transform, entityData, image] : registry.view<Transform, EntityData, Image>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Image>(entity)) {
 			continue;
 		}
 
@@ -1392,7 +1487,7 @@ void Renderer::renderUiObjectIds() {
 
 	// iterate through all characters
 	for (auto&& [entity, transform, entityData, text] : registry.view<Transform, EntityData, Text>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Text>(entity)) {
 			continue;
 		}
 
@@ -1512,9 +1607,9 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// Set rendering fixed pipeline configuration.
 	// ===========================================================================
 
-	setBlendMode(shaderData.blendingConfig);
-	setDepthMode(shaderData.depthTestingMethod);
-	setCullMode(shaderData.cullingConfig);
+	setBlendMode(material.materialData.blendingConfig);
+	setDepthMode(material.materialData.depthTestingMethod);
+	setCullMode(material.materialData.cullingConfig);
 
 	Shader const& shader = shaderOpt.value();
 

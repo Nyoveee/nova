@@ -85,12 +85,23 @@ void ComponentInspector::update() {
 				
 				// Add itself into the new layer..
 				layers[entityData.layerId].entities.insert(selectedEntity);
-
 			}
 
 			ImGui::PopID();
 		}
 		ImGui::EndCombo();
+	}
+
+	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
+
+	if (prefabAssetInfo) {
+		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", nullptr);
+		
+		ImGui::SameLine();
+
+		if (ImGui::Button(ICON_FA_BOX_OPEN)) {
+			editor.unpackPrefab(entityData);
+		}
 	}
 
 	ImGui::NewLine();
@@ -109,20 +120,12 @@ void ComponentInspector::update() {
 
 		ImGui::EndChild();
 
-		BasicAssetInfo* assetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
-
-		if (assetInfo) {
-			ImGui::Text("Prefab: %s", assetInfo->name.c_str());
-			ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
-		}
-		else {
-			ImGui::Text("Not pointing to any prefab.");
-			ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
-		}
+		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
 	}
 
 	// Display the rest of the components via reflection.
-	g_displayComponentFunctor(*this, selectedEntity, registry, true);
+	//g_displayComponentFunctor(*this, selectedEntity, registry, true);
+	g_displayComponentFunctor(editor, selectedEntity, registry, true);
 
 	// Display add component button.
 	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);
@@ -134,9 +137,16 @@ void ComponentInspector::update() {
 void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptData> const& ownedScripts, std::function<void(ResourceID)> onClickCallback)
 {
 	std::vector<ResourceID> const& allScripts{ resourceManager.getAllResources<ScriptAsset>() };
+	
 	if (ImGui::BeginCombo("Add new script", "##")) {
-		for (auto&& scriptID : allScripts) {
+		// Add a search bar..
+		ImGui::InputText("Search", &scriptSearchQuery);
 
+		// Case insensitive search query..
+		uppercaseScriptSearchQuery.clear();
+		std::transform(scriptSearchQuery.begin(), scriptSearchQuery.end(), std::back_inserter(uppercaseScriptSearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+		for (auto&& scriptID : allScripts) {
 			auto compareID = [&](ScriptData const& ownedScript) { return scriptID == ownedScript.scriptId; };
 
 			if (std::find_if(std::begin(ownedScripts), std::end(ownedScripts), compareID) != std::end(ownedScripts))
@@ -144,12 +154,22 @@ void ComponentInspector::displayAvailableScriptDropDownList(std::vector<ScriptDa
 
 			std::string const* namePtr = assetManager.getName(scriptID);
 
+			if (!namePtr) {
+				continue;
+			}
+
+			// Let's upper case our component name..
+			uppercaseScriptName.clear();
+			std::transform(namePtr->begin(), namePtr->end(), std::back_inserter(uppercaseScriptName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			if (uppercaseScriptName.find(uppercaseScriptSearchQuery) == std::string::npos) {
+				continue;
+			}
+
 			ImGui::PushID(static_cast<int>(static_cast<std::size_t>(scriptID)));
 
-			if (namePtr) {
-				if (ImGui::Selectable(namePtr->c_str()))
-					onClickCallback(scriptID);
-			}
+			if (ImGui::Selectable(namePtr->c_str()))
+				onClickCallback(scriptID);
 
 			ImGui::PopID();
 		}

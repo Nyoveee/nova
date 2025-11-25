@@ -70,66 +70,23 @@ namespace Serialiser {
 	}
 	
 	void serialiseGameConfig(const char* fileName, GameConfig const& gameConfig) {
-		try {
-			// Load existing config to preserve other settings 
-			std::ofstream outputFile(fileName);
-			
-			if (!outputFile) {
-				return;
-			}
-			
-			Json config;
-
-			// Update window settings in config
-			config["Window"]["gameWidth"] = gameConfig.gameWidth;
-			config["Window"]["gameHeight"] = gameConfig.gameHeight;
-			config["Window"]["windowName"] = gameConfig.gameName;
-			config["Game"]["scene"] = static_cast<std::size_t>(gameConfig.sceneStartUp);
-
-			outputFile << std::setw(4) << config << std::endl;
+		std::ofstream outputFile{ fileName };
+		
+		if (!outputFile) {
+			return;
 		}
-		catch (const std::exception&) {}
+		
+		serializeToJsonFile(gameConfig, outputFile);
 	}
 
 	GameConfig deserialiseGameConfig(const char* fileName) {
 		GameConfig gameConfig;
 
-		try {
-			std::ifstream file(fileName);
+		std::ifstream jsonFile{ fileName };
 
-			if (file.good()) {
-				// std::cout << "Game config file found: " << configPath << std::endl;
-				Json config = Json::parse(file);
-
-				if (config.contains("Window")) {
-					auto& windowConfig = config["Window"];
-
-					if (windowConfig.contains("gameWidth")) {
-						gameConfig.gameWidth = windowConfig["gameWidth"];
-						//  std::cout << "Loaded game width: " << gameWidth << std::endl;
-					}
-
-					if (windowConfig.contains("gameHeight")) {
-						gameConfig.gameHeight = windowConfig["gameHeight"];
-						//  std::cout << "Loaded game height: " << gameHeight << std::endl;
-					}
-
-					if (windowConfig.contains("windowName")) {
-						gameConfig.gameName = windowConfig["windowName"];
-						//  std::cout << "Loaded window name: " << windowName << std::endl;
-					}
-				}
-
-				if (config.contains("Game")) {
-					auto& gameJson = config["Game"];
-
-					if (gameJson.contains("scene")) {
-						gameConfig.sceneStartUp = static_cast<std::size_t>(gameJson["scene"]);
-					}
-				}
-			}
+		if (jsonFile) {
+			deserializeFromJsonFile(gameConfig, jsonFile);
 		}
-		catch (const std::exception&) {}
 
 		return gameConfig;
 	}

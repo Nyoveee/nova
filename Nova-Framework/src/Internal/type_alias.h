@@ -59,6 +59,10 @@ struct Color {
 	constexpr float b() const;
 
 	constexpr operator glm::vec3() const;
+
+public:
+	constexpr friend Color operator*(Color const& lhs, Color const& rhs);
+
 private:
 	glm::vec3 color;
 };
@@ -76,6 +80,10 @@ struct ColorA {
 	constexpr operator glm::vec4() const;
 	constexpr explicit operator glm::vec3() const;
 	constexpr explicit operator Color() const;
+
+public:
+	constexpr friend ColorA operator*(ColorA const& lhs, ColorA const& rhs);
+
 private:
 	glm::vec4 color;
 };
@@ -233,7 +241,7 @@ struct EulerAngles {
 	EulerAngles(glm::quat quartenion);
 
 	constexpr operator glm::quat() const;
-	constexpr explicit operator glm::vec3() const;
+	constexpr operator glm::vec3() const;
 	constexpr friend bool operator==(EulerAngles const& lhs, EulerAngles const& rhs);
 
 public:

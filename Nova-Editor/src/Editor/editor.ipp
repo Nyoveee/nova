@@ -21,6 +21,10 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 
 	auto allResources = resourceManager.getAllResources<T>();
 
+	if (!onClickCallback) {
+		ImGui::BeginDisabled();
+	}
+
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
 		ImGui::InputText("Search", &assetSearchQuery);
 
@@ -64,6 +68,10 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 		}
 	}
 
+	if (!onClickCallback) {
+		ImGui::EndDisabled();
+	}
+
 	if (id) {
 		ImGui::SameLine();
 
@@ -94,3 +102,4 @@ void Editor::displayEnumDropDownList(T value, const char* labelName, std::functi
 		ImGui::EndCombo();
 	}
 }
+

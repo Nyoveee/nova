@@ -27,10 +27,12 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	navigationSystem		{ *this }, 
 	particleSystem          { *this },
 	animationSystem			{ *this },
+	uiSystem				{ *this },
 	gameConfig				{ gameConfig },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
-	prefabManager			{ *this }
+	prefabManager			{ *this },
+	deltaTimeMultiplier		{ 1.f }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -52,8 +54,8 @@ void Engine::fixedUpdate(float dt) {
 	physicsManager.updateTransformBodies();
 
 	if (inSimulationMode) {
-		physicsManager.updatePhysics(dt);
-		navigationSystem.update(dt);
+		physicsManager.updatePhysics(dt * deltaTimeMultiplier);
+		navigationSystem.update(dt * deltaTimeMultiplier);
 	}
 }
 
@@ -64,14 +66,15 @@ void Engine::update(float dt) {
 	audioSystem.update();
 
 	if (!inSimulationMode) {
-		scriptingAPIManager.checkIfRecompilationNeeded(dt);
+		scriptingAPIManager.checkIfRecompilationNeeded(dt); // real time checking if scripts need to recompile.
 	}
 
-	animationSystem.update(dt);
-	particleSystem.update(dt);
+	animationSystem.update(dt * deltaTimeMultiplier);
+	particleSystem.update(dt * deltaTimeMultiplier);
 	transformationSystem.update();
-	cameraSystem.update(dt);
-	renderer.update(dt);
+	cameraSystem.update(dt); // dt is only used in editor.
+	uiSystem.update(dt);
+	renderer.update(dt * deltaTimeMultiplier);
 
 	resourceManager.update();
 }
@@ -102,7 +105,7 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		animationSystem.initialiseAllControllers();
+		animationSystem.initialise();
 
 		ecs.makeRegistryCopy<ALL_COMPONENTS>();
 		physicsManager.simulationInitialise();
@@ -127,6 +130,8 @@ void Engine::startSimulation() {
 }
 
 void Engine::stopSimulation() {
+	inSimulationMode = false;
+
 	if (setupSimulationFunction) {
 		return; // already prompted for simulation change.
 	}
@@ -134,6 +139,7 @@ void Engine::stopSimulation() {
 	setupSimulationFunction = [&]() {
 		audioSystem.unloadAllSounds();
 		cameraSystem.endSimulation();
+		navigationSystem.unloadNavMeshSystems();
 
 		//Serialiser::serialiseEditorConfig("editorConfig.json");
 		ecs.rollbackRegistry<ALL_COMPONENTS>();
@@ -142,7 +148,6 @@ void Engine::stopSimulation() {
 
 		resourceManager.removeAllResourceInstance();
 
-		inSimulationMode = false;
 		gameLockMouse(false);
 	};
 }
@@ -172,11 +177,14 @@ bool Engine::isInSimulationMode() const {
 void Engine::gameLockMouse(bool value) {
 	isGameLockingMouse = value;
 
+	// legacy reason, please don't mind the extremely confusing booleans..
 	if (!isEditorControllingMouse && isGameLockingMouse) {
 		window.toEnableMouse(false);
+		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Disable);
 	}
 	else {
 		window.toEnableMouse(true);
+		inputManager.broadcast<ToEnableCursor>(ToEnableCursor::Enable);
 	}
 }
 
@@ -190,6 +198,14 @@ void Engine::SystemsOnLoad()
 	resourceManager.removeAllResourceInstance();
 	prefabManager.prefabBroadcast();
 }
+
+
+void Engine::SystemsUnload()
+{
+	this->navigationSystem.unloadNavMeshSystems();
+
+}
+
 
 float Engine::getDeltaTime() const {
 	return window.getDeltaTime();

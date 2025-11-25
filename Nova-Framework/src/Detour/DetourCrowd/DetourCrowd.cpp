@@ -569,6 +569,59 @@ int dtCrowd::addAgent(const float* pos, const dtCrowdAgentParams* params)
 	return idx;
 }
 
+
+int dtCrowd::addAgent(int agentIndex ,const float* pos, const dtCrowdAgentParams* params)
+{
+	// Set to a slot that is not in use, navigation System hold record of what is being used
+	int idx = agentIndex;
+	if(idx < 0 || idx >= m_maxAgents || m_agents[idx].active == true)
+	{
+	 return -1;
+	}
+
+
+	dtCrowdAgent* ag = &m_agents[idx];
+
+	updateAgentParameters(idx, params);
+
+	// Find nearest position on navmesh and place the agent there.
+	float nearest[3];
+	dtPolyRef ref = 0;
+	dtVcopy(nearest, pos);
+	dtStatus status = m_navquery->findNearestPoly(pos, m_agentPlacementHalfExtents, &m_filters[ag->params.queryFilterType], &ref, nearest);
+	if (dtStatusFailed(status))
+	{
+		dtVcopy(nearest, pos);
+		ref = 0;
+	}
+
+	ag->corridor.reset(ref, nearest);
+	ag->boundary.reset();
+	ag->partial = false;
+
+	ag->topologyOptTime = 0;
+	ag->targetReplanTime = 0;
+	ag->nneis = 0;
+
+	dtVset(ag->dvel, 0, 0, 0);
+	dtVset(ag->nvel, 0, 0, 0);
+	dtVset(ag->vel, 0, 0, 0);
+	dtVcopy(ag->npos, nearest);
+
+	ag->desiredSpeed = 0;
+
+	if (ref)
+		ag->state = DT_CROWDAGENT_STATE_WALKING;
+	else
+		ag->state = DT_CROWDAGENT_STATE_INVALID;
+
+	ag->targetState = DT_CROWDAGENT_TARGET_NONE;
+
+	ag->active = true;
+
+	return idx;
+}
+
 /// @par
 ///
 /// The agent is deactivated and will no longer be processed.  Its #dtCrowdAgent object
@@ -658,11 +711,29 @@ bool dtCrowd::resetMoveTarget(const int idx)
 	ag->targetRef = 0;
 	dtVset(ag->targetPos, 0,0,0);
 	dtVset(ag->dvel, 0,0,0);
+	dtVset(ag->vel, 0, 0, 0);
 	ag->targetPathqRef = DT_PATHQ_INVALID;
 	ag->targetReplan = false;
 	ag->targetState = DT_CROWDAGENT_TARGET_NONE;
 	
 	return true;
+}
+
+void dtCrowd::setTargetPosition(const int idx, float x, float y, float z)
+{
+	
+	dtCrowdAgent* ag = &m_agents[idx];
+	float nearest[3];
+	dtPolyRef ref = 0;
+	float pos[3] = { x, y, z };
+	dtVcopy(nearest, pos);
+	dtStatus status = m_navquery->findNearestPoly(pos, m_agentPlacementHalfExtents, &m_filters[ag->params.queryFilterType], &ref, nearest);
+	if (dtStatusFailed(status))
+	{
+		dtVcopy(nearest, pos);
+		ref = 0;
+	}
+	dtVcopy(ag->npos, nearest);
 }
 
 int dtCrowd::getActiveAgents(dtCrowdAgent** agents, const int maxAgents)
@@ -1149,15 +1220,53 @@ void dtCrowd::update(const float dt, dtCrowdAgentDebugInfo* debug)
 			continue;
 		
 		// Check 
-		const float triggerRadius = ag->params.radius*2.25f;
+		const float triggerRadius = ag->params.radius*2.25f; //what the helly is this magic number
 		if (overOffmeshConnection(ag, triggerRadius))
 		{
+
+
+
 			// Prepare to off-mesh connection.
-			const int idx = (int)(ag - m_agents);
-			dtCrowdAgentAnimation* anim = &m_agentAnims[idx];
-			
 			// Adjust the path over the off-mesh connection.
 			dtPolyRef refs[2];
+
+			//prevent auto traversal
+			if (ag->params.autoTraverseOffMeshLink == false)
+			{
+				ag->state = DT_CROWDAGENT_STATE_OFFMESH;
+
+				/*float startPos[3];
+				float endPos[3];*/
+
+
+				//if (ag->corridor.moveOverOffmeshConnection(ag->cornerPolys[ag->ncorners - 1], refs,
+				//	startPos, endPos, m_navquery))
+
+				////Init the navMeshOfflink Object here
+				//ag->currentOffMeshData.startNode[0] = startPos[0];
+				//ag->currentOffMeshData.startNode[1] = startPos[1];
+				//ag->currentOffMeshData.startNode[2] = startPos[2];
+
+				//ag->currentOffMeshData.endNode[0] = endPos[0];
+				//ag->currentOffMeshData.endNode[1] = endPos[1];
+				//ag->currentOffMeshData.endNode[2] = endPos[2];
+				//ag->offMeshPolyref[0] = refs[0];
+				//ag->offMeshPolyref[1] = refs[1];
+
+				//ag->currentOffMeshData.valid = true;
+
+
+				//ag->ncorners = 0;
+				//ag->nneis = 0;
+				
+				continue;
+			}
+
+
+			//Detour Animations
+			const int idx = (int)(ag - m_agents);
+			dtCrowdAgentAnimation* anim = &m_agentAnims[idx];
+
 			if (ag->corridor.moveOverOffmeshConnection(ag->cornerPolys[ag->ncorners-1], refs,
 													   anim->startPos, anim->endPos, m_navquery))
 			{
@@ -1176,6 +1285,10 @@ void dtCrowd::update(const float dt, dtCrowdAgentDebugInfo* debug)
 			{
 				// Path validity check will ensure that bad/blocked connections will be replanned.
 			}
+		}
+		else
+		{
+			ag->currentOffMeshData.valid = false;
 		}
 	}
 		

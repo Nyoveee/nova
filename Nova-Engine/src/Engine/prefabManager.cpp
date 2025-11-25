@@ -32,7 +32,7 @@ entt::entity PrefabManager::loadPrefab(ResourceID id) {
 	return entity;
 }
 
-void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> map) {
+void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> entityMap) {
 
 	auto* scripts = ecsRegistry.try_get<Scripts>(entity);
 	if (scripts != nullptr) {
@@ -42,8 +42,8 @@ void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<e
 					using Type = std::decay_t<decltype(value)>;
 
 					if constexpr (std::same_as<Type, entt::entity>) {
-						auto iterator = map.find(value);
-						if (iterator != map.end()) {
+						auto iterator = entityMap.find(value);
+						if (iterator != entityMap.end()) {
 							if (value != iterator->second) {
 								value = iterator->second;
 							}

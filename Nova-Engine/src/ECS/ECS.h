@@ -24,7 +24,7 @@ public:
 public:
 	// Set newParentEntity as the new parent for childEntity.
 	// You can pass entt::null as the new parent and this makes the child entity a root entity with no parent.
-	ENGINE_DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity);
+	ENGINE_DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform = true);
 	ENGINE_DLL_API void removeEntityParent(entt::entity childEntity);
 
 	// Finds out if a given entity is a descendant of parent (direct and indirect children).
@@ -35,6 +35,8 @@ public:
 
 	// this recursively disables or enables an entity hierarchy..
 	ENGINE_DLL_API void setActive(entt::entity entity, bool isActive);
+
+	ENGINE_DLL_API bool isParentCanvas(entt::entity entity);
 
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
@@ -53,10 +55,26 @@ public:
 	//void copyEntity(entt::entity en);
 	entt::entity copyEntity(entt::entity en);
 
+	template<typename Component>
+	bool isComponentActive(entt::entity entity);
+	ENGINE_DLL_API bool isComponentActive(entt::entity entity, ComponentID componentID);
+
+	template<typename Component>
+	void setComponentActive(entt::entity entity, bool isActive);
+	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
+
+private:
+#if false
+	ENGINE_DLL_API void onCanvasCreation(entt::registry&, entt::entity entityID);
+	ENGINE_DLL_API void onCanvasDestruction(entt::registry&, entt::entity entityID);
+#endif
+
 public:
 	// public!
 	entt::registry registry;
 	entt::dispatcher systemEventDispatcher; //note we probably only need one just giga dump all events in here lol. 
+
+	entt::entity canvasUi;
 	SceneManager sceneManager;
 
 private:
@@ -162,7 +180,7 @@ entt::entity ECS::copyEntity(entt::entity en) {
 		if (component) {
 			registry.emplace<Components>(tempEntity, *component);
 		}
-		}(), ...);
+	}(), ...);
 
 	map[en] = tempEntity;
 
@@ -193,3 +211,8 @@ entt::entity ECS::copyEntity(entt::entity en) {
 	}
 #endif
 }
+// Eseentially a proxy function since engine.h can't be included in this file
+template<typename Component>
+bool ECS::isComponentActive(entt::entity entity) { return isComponentActive(entity, typeid(Component).hash_code()); }
+template<typename Component>
+void ECS::setComponentActive(entt::entity entity, bool isActive) { setComponentActive(entity, typeid(Component).hash_code(), isActive);}

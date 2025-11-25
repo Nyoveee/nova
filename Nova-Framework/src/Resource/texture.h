@@ -26,6 +26,14 @@ private:
 
 template <>
 struct AssetInfo<Texture> : public BasicAssetInfo {
+	enum class TextureType {
+		sRGB,
+		sRGBA,
+		Linear,
+		NormalMap,
+		Custom
+	} type;
+
 	enum class Compression {
 		Uncompressed_Linear,
 		Uncompressed_SRGB,

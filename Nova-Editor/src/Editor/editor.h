@@ -50,7 +50,7 @@ public:
 	Editor& operator=(Editor&& other)		= delete;
 
 public:
-	void update(float dt, std::function<void(bool)> changeSimulationCallback);
+	void update(float dt);
 	
 	bool isEntitySelected(entt::entity entity);
 	bool hasAnyEntitySelected() const;
@@ -66,11 +66,13 @@ public:
 	void stopSimulation();
 	bool isInSimulationMode() const;
 
-	void displayEntityHierarchy(entt::registry& registry, entt::entity entity, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate);
+	void displayEntityHierarchy(entt::registry& registry, entt::entity entity, bool toRecurse, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate);
 
 	// editor does extra housekeeping when loading scenes (like selection of entities)
 	// most editor windows should use this function instead of the scene manager's load scene function.
 	void loadScene(ResourceID sceneId);
+
+	void unpackPrefab(EntityData& entityData);
 
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
@@ -78,8 +80,14 @@ public:
 	template <typename T>
 	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> const& onClickCallback);
 	
+	// similar to asset dropdown list, but only displays scripts the current entity has.
+	void displayEntityScriptDropDownList(ResourceID id, const char* labelName, entt::entity entity, std::function<void(ResourceID)> const& onClickCallback);
+
 	template <IsEnum T>
 	void displayEnumDropDownList(T value, const char* labelName, std::function<void(T)> onClickCallback);
+
+	// display all entities
+	void displayAllEntitiesDropDownList(const char* labelName, entt::entity entity, std::function<void(entt::entity)> const& onClickCallback);
 
 	void launchProfiler();
 
@@ -98,6 +106,7 @@ private:
 
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
+	void toControlMouse(bool toControl);
 public:
 	// so that all editors have access to engine interface.
 	Engine& engine;
@@ -131,11 +140,14 @@ private:
 
 	// This indicates whether the editor is in simulation mode.
 	bool inSimulationMode;
-	bool isThereChangeInSimulationMode;
 
 	std::string assetSearchQuery;
 	std::string uppercaseSearchQuery;
 	std::string uppercaseAssetName;
+
+	std::string entitySearchQuery;
+	std::string uppercaseEntitySearchQuery;
+	std::string uppercaseEntityName;
 
 	int imguiCounter = 0;
 };

@@ -6,9 +6,10 @@
 #include "RecursiveMacros.hxx"
 #include "ScriptingAPI.hxx"
 #include "ScriptLibrary/Core/GameObject.hxx"
+#include "Logger.h"
 
 #include <type_traits>
-
+#include <unordered_set>
 // This default function template returns the managed type as it is
 // This is used for primitives like ints, floats, etc, where you can return the managed type as native type directly.
 // Managed structs will definite an explicit specialisation of this function template
@@ -40,11 +41,11 @@ public value struct ManagedType : IManagedStruct {																					\
 	ManagedType(NativeType native) : Call_MacroComma_Double(ConstructorDefinition, __VA_ARGS__) {}									\
 	ManagedType(Call_MacroComma_Double(Parameter,__VA_ARGS__)) : Call_MacroComma_Double(ConstructorDefinition2, __VA_ARGS__) {}     \
 	NativeType native() { return {Call_MacroComma_Double(ListInitialization , __VA_ARGS__)};}										\
-	virtual void AppendValueToFieldData(FieldData& fieldData) sealed{															    \
-		fieldData.data = native();																									\
+	virtual void AppendValueToFieldData(serialized_field_type& fieldData) sealed{															    \
+		fieldData = native();																									\
 	}																																\
-	virtual void SetValueFromFieldData(FieldData const& fieldData) sealed{                                                          \
-		*this = ManagedType(std::get<NativeType>(fieldData.data));																	\
+	virtual void SetValueFromFieldData(serialized_field_type const& fieldData) sealed{                                                          \
+		*this = ManagedType(std::get<NativeType>(fieldData));																	\
 	}                                                                                                                               \
 	virtual System::String^ ToString() override sealed{																				\
 		array<System::Reflection::FieldInfo^>^ fieldInfos = GetType()->GetFields();													\
@@ -83,43 +84,58 @@ property Type Name																			\
 	}																						\
 }
 
-#define ManagedComponentDeclaration(ComponentType, ...)												\
-public ref class ComponentType##_ : IManagedComponent {												\
-public:																								\
-	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__)											    \
-	virtual System::String^ ToString() override sealed{												\
-		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties();		\
-		System::String^ result = #ComponentType + "_{";												\
-		for (int i = 0; i < propertyInfos->Length; ++i) {											\
-			result += propertyInfos[i]->Name;														\
-			result += propertyInfos[i]->GetValue(this)->ToString();									\
-			if (i != propertyInfos->Length - 1) result += ", ";										\
-		}																							\
-		result += "}";																				\
-		return result;																				\
-	}																								\
-internal:																							\
-	ComponentType* nativeComponent() { return Interface::getNativeComponent<ComponentType>(entityID); }									\
-	bool NativeReferenceLost() override { return !componentReference; }                             \
-	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override {								\
-		entityID = p_entityID;																		\
-		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID)))			\
-			return true;																			\
-		return false;																				\
-	}																								\
-public:																								\
-	property GameObject^ gameObject {																\
-		GameObject^ get() { return GameObject::GetReference(entityID); };							\
-	}																								\
-private:																							\
-	ComponentType* componentReference;																\
-public:																								\
+#define ManagedComponentDeclaration(ComponentType, ...)																			\
+public ref class ComponentType##_ : IManagedComponent {																			\
+public:																															\
+	Call_Macro_Double(PropertyDeclaration, __VA_ARGS__)																			\
+	virtual System::String^ ToString() override sealed{																			\
+		array<System::Reflection::PropertyInfo^>^ propertyInfos = GetType()->GetProperties();									\
+		System::String^ result = #ComponentType + "_{";																			\
+		for (int i = 0; i < propertyInfos->Length; ++i) {																		\
+			result += propertyInfos[i]->Name;																					\
+			result += propertyInfos[i]->GetValue(this)->ToString();																\
+			if (i != propertyInfos->Length - 1) result += ", ";																	\
+		}																														\
+		result += "}";																											\
+		return result;																											\
+	}																															\
+internal:																														\
+	ComponentType* nativeComponent() { return Interface::getNativeComponent<ComponentType>(entityID); }							\
+	bool NativeReferenceLost() override { return !componentReference; }															\
+	bool LoadDetailsFromEntity(System::UInt32 p_entityID) override {															\
+		entityID = p_entityID;																									\
+		if ((componentReference = Interface::getNativeComponent<ComponentType>(entityID)))										\
+			return true;																										\
+		return false;																											\
+	}																															\
+public:																															\
+	property GameObject^ gameObject {																							\
+		GameObject^ get() { return GameObject::GetReference(entityID); };														\
+	}																															\
+	property bool enable{																										\
+		bool get(){																												\
+			return NonComponentDisablingTypes<ComponentType>																	\
+				|| Interface::engine->ecs.isComponentActive<ComponentType>(static_cast<entt::entity>(entityID));				\
+		};																														\
+		void set(bool b_Enable){																								\
+			if constexpr (NonComponentDisablingTypes<ComponentType>) {															\
+				Logger::warn("{} does not support enabling/disabling", #ComponentType);											\
+				return;																											\
+			}																													\
+			Interface::engine->ecs.setComponentActive<ComponentType>(static_cast<entt::entity>(entityID), b_Enable);			\
+			return;																												\
+		};																														\
+	}																															\
+private:																														\
+	ComponentType* componentReference;																							\
+public:																															\
 
 #define ManagedComponentEnd()																		};
 
 #define ManagedResource(Resource)																	\
 public ref class Resource : IManagedResourceID {													\
 public:																								\
+	Resource()								 : IManagedResourceID()								{};	\
 	Resource(TypedResourceID<::Resource> id) : IManagedResourceID(static_cast<std::size_t>(id)) {};	\
 																									\
 	virtual System::String^ ToString() override sealed {											\
