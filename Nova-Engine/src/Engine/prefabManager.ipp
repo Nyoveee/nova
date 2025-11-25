@@ -95,7 +95,7 @@ entt::entity PrefabManager::instantiatePrefabRecursive(entt::entity prefabEntity
 		if (component) {
 			ecsRegistry.emplace<Components>(ecsEntity, *component);
 		}
-		}(), ...);
+	}(), ...);
 
 	//maps the newly created ecsEntity with the prefabEntity, this is use to identify the ecsEntity child after the recursive call
 	map[prefabEntity] = ecsEntity;

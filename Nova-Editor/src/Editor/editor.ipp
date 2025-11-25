@@ -21,6 +21,10 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 
 	auto allResources = resourceManager.getAllResources<T>();
 
+	if (!onClickCallback) {
+		ImGui::BeginDisabled();
+	}
+
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
 		ImGui::InputText("Search", &assetSearchQuery);
 
@@ -64,11 +68,17 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 		}
 	}
 
+	if (!onClickCallback) {
+		ImGui::EndDisabled();
+	}
+
 	if (id) {
 		ImGui::SameLine();
 
 		if (ImGui::Button(ICON_FA_ANCHOR_CIRCLE_XMARK)) {
 			assetViewerUi.selectNewResourceId(id.value());
+			assetManagerUi.displayAssetFolder(id.value());
+			ImGui::SetWindowFocus(ICON_FA_AUDIO_DESCRIPTION " Asset Viewer");
 		}
 
 	}
@@ -92,3 +102,4 @@ void Editor::displayEnumDropDownList(T value, const char* labelName, std::functi
 		ImGui::EndCombo();
 	}
 }
+

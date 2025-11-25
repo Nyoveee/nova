@@ -26,7 +26,6 @@ internal:
 
 	static void update();
 
-	// static void editorModeUpdate();
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
 	static Script^ delayedAddEntityScript(EntityID entityID, ScriptID scriptId);
 
@@ -45,12 +44,21 @@ internal:
 
 	static void submitGameObjectDeleteRequest(EntityID entityToBeDeleted);
 
+	static void recursivelyInitialiseEntity(entt::entity entity);
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);
+	
+	// process each individual script field data.. and get info from it..
+	static bool getScriptFieldData(System::Object^ object, System::Type^ fieldType, serialized_field_type& fieldData);
 
 	// Set script field data..
 	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
+
+	// process each individual script field data.. and set to it..
+	static void processSetScriptFieldData(Object^% object, System::Type^ fieldType, serialized_field_type const& field);
+
+	// Used when instantiating a new script..
 	static void setFieldData(Script^ script, FieldData const& fieldData);
 
 	static void addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate);
@@ -64,40 +72,39 @@ internal:
 
 	// Setting/Getting of primitive data for fields through fielddata
 	template<typename Type, typename ...Types>
-	static bool ObtainPrimitiveDataFromScript(FieldData& fieldData, Object^ object);
+	static bool ObtainPrimitiveDataFromScript(serialized_field_type& fieldData, Object^ object);
 
 	template<typename Type, typename ...Types>
-	static bool SetScriptPrimitiveFromNativeData(FieldData const& fieldData,Script^ script, System::Reflection::FieldInfo^ fieldInfo);
+	static bool SetScriptPrimitiveFromNativeData(serialized_field_type const& fieldData, Object^% object);
 
 	template <typename Type, typename ...Types>
-	static bool ObtainTypedResourceIDFromScript(FieldData& fieldData, Object^ object, System::Type^ originalType);
+	static bool ObtainTypedResourceIDFromScript(serialized_field_type& fieldData, Object^ object, System::Type^ originalType);
 
 	template <typename Type, typename ...Types>
-	static bool SetTypedResourceIDFromScript(FieldData const& fieldData, Script^ script, System::Reflection::FieldInfo^ fieldInfo);
-
-private:
-	// static void updateReference(Script^ script);
-
+	static bool SetTypedResourceIDFromScript(serialized_field_type const& fieldData, Object^% object);
+internal:
+	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
 internal:
 	static Engine* engine;
 
 private:
-	using Scripts = System::Collections::Generic::Dictionary<ScriptID, Script^>;
+	using ScriptDictionary = System::Collections::Generic::Dictionary<ScriptID, Script^>;
 	using Components = System::Collections::Generic::List<IManagedComponent^>;
 
 	// Stores all of the loaded scripts of a given game object.
-	static System::Collections::Generic::Dictionary<EntityID, Scripts^>^ gameObjectScripts;
+	static System::Collections::Generic::Dictionary<EntityID, ScriptDictionary^>^ gameObjectScripts;
 	
 	// Store all unique script type. To be used for instantiation.
 	// We map an Asset ID to the corresponding script type.
 	static System::Collections::Generic::Dictionary<ScriptID, Script^>^ availableScripts;
+	static System::Collections::Generic::Dictionary<ScriptID, System::Type^>^ abstractScriptTypes;
 
 	// Stores all the game object that is requested to be deleted. We delay object destruction till the end of the frame.
 	// (had bad experience with instant deletion..)
 	static System::Collections::Generic::Queue<EntityID> deleteGameObjectQueue;
 
 	// We store created game object scripts in a separate dictionary first..
-	static System::Collections::Generic::Dictionary<EntityID, Scripts^>^ createdGameObjectScripts;
+	static System::Collections::Generic::Dictionary<EntityID, ScriptDictionary^>^ createdGameObjectScripts;
 
 	// We store set timeout request in a separate container..
 	static System::Collections::Generic::List<TimeoutDelegate^>^ timeoutDelegates;

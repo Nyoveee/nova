@@ -282,6 +282,13 @@ public:
 	/// @return The index of the agent in the agent pool. Or -1 if the agent could not be added.
 	FRAMEWORK_DLL_API int addAgent(const float* pos, const dtCrowdAgentParams* params);
 
+	/// Adds a new agent to the crowd. MY OVERLOAD :D 
+	///  @param[in]		agentIndex edit to a specific index
+	///  @param[in]		pos		The requested position of the agent. [(x, y, z)]
+	///  @param[in]		params	The configuration of the agent.
+	/// @return The index of the agent in the agent pool. Or -1 if the agent could not be added.
+	FRAMEWORK_DLL_API int addAgent(int agentIndex,const float* pos, const dtCrowdAgentParams* params);	
+
 	/// Updates the specified agent's configuration.
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	///  @param[in]		params	The new agent configuration.
@@ -308,7 +315,9 @@ public:
 	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
 	/// @return True if the request was successfully reseted.
 	FRAMEWORK_DLL_API bool resetMoveTarget(const int idx);
-
+	/// Sets the specified agent position 
+	///  @param[in]		idx		The agent index. [Limits: 0 <= value < #getAgentCount()]
+	FRAMEWORK_DLL_API void setTargetPosition(const int idx,float x, float y, float z);
 	/// Gets the active agents int the agent pool.
 	///  @param[out]	agents		An array of agent pointers. [(#dtCrowdAgent *) * maxAgents]
 	///  @param[in]		maxAgents	The size of the crowd agent array.

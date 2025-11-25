@@ -21,5 +21,5 @@ Vert{
 
 // Fragment shader..
 Frag{
-	FragColor = vec4(color, 1.0);
+	return vec4(color, 1.0);
 }

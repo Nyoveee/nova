@@ -3,6 +3,12 @@
 #include <limits>
 #include <vector>
 
+#include <ranges>
+#include <algorithm>
+#include <numeric>
+
+#include "Logger.h"
+
 #undef max
 
 using BoneIndex			= unsigned short;
@@ -78,17 +84,39 @@ struct VertexWeight {
 		weights
 	)
 
-	bool addBone(BoneIndex boneIndex, float weight) {
-		if (numOfBones >= MAX_BONE_INFLUENCE) {
-			return false;
+	// when we add vertex weight, we add to a temporary copy.
+	void addBone(BoneIndex boneIndex, float weight) {
+		temporaryBoneWeights.push_back({ boneIndex, weight });
+	}
+
+	// this will trim the bone weights in the temporary vector to 4 and normalize if needed.
+	void normalizeAndSetBoneWeight() {
+		if (temporaryBoneWeights.size() > 4) {
+			Logger::warn("Too many vertex weight, re-normalising..");
+			std::ranges::sort(temporaryBoneWeights, [&](auto&& lhs, auto&& rhs) {
+				return lhs.second > rhs.second;
+			});
+
+			temporaryBoneWeights.resize(4);
+
+			// get the new sum.. then normalise..
+			float totalSum = std::accumulate(temporaryBoneWeights.begin(), temporaryBoneWeights.end(), 0.f, [&](float sum, auto&& boneToVertexWeight) {
+				return sum += boneToVertexWeight.second;
+			});
+
+			std::for_each(temporaryBoneWeights.begin(), temporaryBoneWeights.end(), [&](auto&& boneToVertexWeight) {
+				boneToVertexWeight.second /= totalSum;
+			});
 		}
 
-		boneIndices[numOfBones] = boneIndex;
-		weights[numOfBones] = weight;
-
-		++numOfBones;
-		return true;
+		for (auto&& [index, weight] : temporaryBoneWeights) {
+			boneIndices[numOfBones] = index;
+			weights[numOfBones] = weight;
+			++numOfBones;
+		}
 	}
+
+	std::vector<std::pair<int, float>> temporaryBoneWeights;
 };
 
 /*

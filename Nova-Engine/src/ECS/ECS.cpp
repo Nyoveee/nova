@@ -1,10 +1,10 @@
 #include <ranges>
 #include <iostream>
 
-#include "Engine/engine.h"
 #include "ECS/ECS.h"
 #include "component.h"
 #include "Logger.h"
+#include "Engine/engine.h"
 
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
@@ -15,7 +15,7 @@ ECS::ECS(Engine& engine) :
 
 ECS::~ECS() {}
 
-void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity) {
+void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform) {
 	EntityData& childEntityData = registry.get<EntityData>(childEntity);
 	EntityData& newParentEntityData = registry.get<EntityData>(newParentEntity);
 
@@ -58,7 +58,8 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 	newParentEntityData.children.push_back(childEntity);
 
 	// 4. Properly set the local transform of the entity.
-	engine.transformationSystem.setLocalTransformFromWorld(childEntity);
+	if(recalculateLocalTransform) 
+		engine.transformationSystem.setLocalTransformFromWorld(childEntity);
 }
 
 void ECS::removeEntityParent(entt::entity childEntity) {
@@ -149,13 +150,42 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 		// destruction / construction of physics body when enabling or disabling..
 		if (isActive) {
 			engine.physicsManager.addBodiesToSystem(registry, entity);
+			engine.navigationSystem.SetAgentActive(entity);
+		
 		}
 		else {
 			engine.physicsManager.removeBodiesFromSystem(registry, entity);
+			engine.navigationSystem.SetAgentInactive(entity);
 		}
 	}
 
 	for (entt::entity child : entityData.children) {
 		setActive(child, isActive);
+	}
+}
+
+bool ECS::isComponentActive(entt::entity entity, ComponentID componentID)
+{
+	EntityData& entityData{ registry.get<EntityData>(entity) };
+	return !entityData.inactiveComponents.count(componentID);
+}
+
+void ECS::setComponentActive(entt::entity entity, ComponentID componentID, bool isActive)
+{
+	EntityData& entityData{ registry.get<EntityData>(entity) };
+	std::unordered_set<ComponentID>& inactiveComponents{ entityData.inactiveComponents };
+	if (isActive && inactiveComponents.count(componentID)) {
+		inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
+		if (componentID == typeid(NavMeshAgent).hash_code())
+			engine.navigationSystem.SetAgentActive(entity);
+		if (componentID == typeid(Rigidbody).hash_code())
+			engine.physicsManager.addBodiesToSystem(engine.ecs.registry, entity);
+	}
+	else if (!isActive && !inactiveComponents.count(componentID)) {
+		inactiveComponents.insert(componentID);
+		if (componentID == typeid(NavMeshAgent).hash_code())
+			engine.navigationSystem.SetAgentInactive(entity);
+		if (componentID == typeid(Rigidbody).hash_code())
+			engine.physicsManager.removeBodiesFromSystem(engine.ecs.registry, entity);
 	}
 }

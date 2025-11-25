@@ -30,7 +30,8 @@ AnimatorController::AnimatorController(Editor& editor) :
 	editor				{ editor },
 	resourceManager		{ editor.resourceManager },
 	assetManager		{ editor.assetManager },
-	context				{ nullptr }
+	context				{ nullptr },
+	selectedEntity		{ entt::null }
 {
 	context = ed::CreateEditor(nullptr);
 
@@ -73,7 +74,7 @@ void AnimatorController::update() {
 		return;
 	}
 
-	entt::entity selectedEntity = editor.getSelectedEntities()[0];
+	selectedEntity = editor.getSelectedEntities()[0];
 
 	Animator* animator = editor.engine.ecs.registry.try_get<Animator>(selectedEntity);
 
@@ -167,15 +168,24 @@ void AnimatorController::displayLeftPanel(Animator& animator, Controller& contro
 void AnimatorController::displayRightPanel(Animator& animator, Controller& controller) {
 	ImGui::BeginChild("Right Panel");
 
-	if (ImGui::Button("Center all node position")) {
+	editor.displayAssetDropDownList<Model>(std::nullopt, "Add animation", [&](ResourceID animationId) {
+		auto namePtr = assetManager.getName(animationId);
 
-		for (auto&& [nodeId, _] : controller.data.nodes) {
-			ed::NodeId edNodeId = static_cast<std::size_t>(nodeId);
-			ed::SetNodePosition(edNodeId, { 0.f, 0.f });
+		if (!namePtr) {
+			return;
 		}
 
-		ed::NavigateToContent(0.0f);
-	}
+		ControllerNodeID nodeId = Math::getGUID();
+
+		controller.data.nodes.insert({ nodeId, Controller::Node {
+			nodeId,
+			animationId,
+			{},
+			true,
+			*namePtr
+		} });
+	});
+
 
 	if (ImGui::BeginTabBar("TabBar")) {
 		if (ImGui::BeginTabItem("Inspector")) {
@@ -188,6 +198,15 @@ void AnimatorController::displayRightPanel(Animator& animator, Controller& contr
 		int imguiCounter = 0;
 
 		if (ImGui::BeginTabItem("Debug")) {
+			if (ImGui::Button("Center all node position")) {
+				for (auto&& [nodeId, _] : controller.data.nodes) {
+					ed::NodeId edNodeId = static_cast<std::size_t>(nodeId);
+					ed::SetNodePosition(edNodeId, { 0.f, 0.f });
+				}
+
+				ed::NavigateToContent(0.0f);
+			}
+
 			for (auto&& [nodeId, node] : controller.data.nodes) {
 				ed::NodeId edNodeId = static_cast<std::size_t>(nodeId);
 				auto pos = ed::GetNodePosition(edNodeId);
@@ -340,7 +359,7 @@ void AnimatorController::displaySelectedAnimationTimeline(Animator& animator, Co
 			}
 
 			ImGui::TableSetColumnIndex(1);
-			editor.displayAssetDropDownList<ScriptAsset>(scriptId, "##script", [&](ResourceID newScriptId) {
+			editor.displayEntityScriptDropDownList(scriptId, "##script", selectedEntity, [&](ResourceID newScriptId) {
 				scriptId = TypedResourceID<ScriptAsset>{ newScriptId };
 			});
 

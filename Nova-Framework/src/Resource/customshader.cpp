@@ -11,8 +11,8 @@
 #include "Material.h"
 
 CustomShader::CustomShader(ResourceID id, ResourceFilePath resourceFilePath, ShaderParserData shaderData)
-	: Resource{ id, resourceFilePath }
-	, customShaderData{ shaderData } 
+	: Resource			{ id, resourceFilePath }
+	, customShaderData	{ shaderData } 
 {
 	compile();
 }
@@ -105,7 +105,9 @@ void CustomShader::compile()
 	fShaderLibraryStream << "\n// !! ==========================================";
 	fShaderLibraryStream << "\n// Custom Shader Fragment Code";
 	fShaderLibraryStream << "\n// !! ==========================================\n\n";
-	fShaderLibraryStream << "void main(){" << customShaderData.fShaderCode << "}";
+	fShaderLibraryStream << "vec4 __internal__main__(){" << customShaderData.fShaderCode << "}\n\n";
+	fShaderLibraryStream << "void main(){ FragColor = __internal__main__(); }";
+
 	std::string fragmentCode = fShaderLibraryStream.str();
 
 	shader = Shader{ std::move(vertexCode), std::move(fragmentCode) };

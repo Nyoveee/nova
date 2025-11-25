@@ -64,7 +64,7 @@ void InputManager::handleMouseInput(Window& window, int key, int action, int mod
 
 void InputManager::handleKeyInput(GLFWInput input, InputType inputType, InputMod mod) {
 	for (std::unique_ptr<IKeyBind> const& keyBind : mappedKeyBinds[input]) {
-		if (mod == keyBind->mod) {
+		if (keyBind->mod == InputMod::None || mod == keyBind->mod) {
 			keyBind->broadcast(inputType);
 		}
 	}

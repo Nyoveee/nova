@@ -58,11 +58,15 @@ public:
 	// These interfaces are invoked by C# scripting..
 	ENGINE_DLL_API PhysicsRay getRayFromMouse() const;
 	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<entt::entity> const& ignoredEntities = {});
+	ENGINE_DLL_API std::optional<PhysicsRayCastResult> rayCast(PhysicsRay ray, float maxDistance, std::vector<uint8_t> const& layerMask = {});
 
 	ENGINE_DLL_API void addForce(Rigidbody const& rigidbody, glm::vec3 forceVector);
 	ENGINE_DLL_API void addImpulse(Rigidbody const& rigidbody, glm::vec3 forceVector);
 
 	ENGINE_DLL_API void setVelocity(Rigidbody& rigidbody, glm::vec3 velocity);
+	ENGINE_DLL_API void setGravity(float value);
+
+	ENGINE_DLL_API void setGravityFactor(Rigidbody& rigidbody, float value);
 
 private:
 	void createPrimitiveShapes();
@@ -107,6 +111,8 @@ private:
 
 	entt::registry& registry;
 	Engine& engine;
+
+	float gravityStrength = 60.f;
 
 private:
 	// We let this physics manager owns some basic primitive shapes.

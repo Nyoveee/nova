@@ -1,0 +1,171 @@
+{
+    "Entities": [
+        {
+            "EntityData": {
+                "children": [
+                    2
+                ],
+                "isActive": true,
+                "layerId": 0,
+                "name": "Parent",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Rigidbody": {
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionType": "Static"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": 8130809783635705857
+                                },
+                                "name": "prefab"
+                            }
+                        ],
+                        "scriptId": 3095451144282259457
+                    }
+                ]
+            },
+            "Sequence": {
+                "sequencerId": 8070310254468890625,
+                "toLoop": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.3581669330596924,
+                    "y": 1.2535737752914429,
+                    "z": -8.086732864379883
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999999403953552,
+                    "y": 0.9999999403953552,
+                    "z": 0.9999999403953552
+                },
+                "position": {
+                    "x": -0.3581669330596924,
+                    "y": 1.2535737752914429,
+                    "z": -8.086732864379883
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999999403953552,
+                    "y": 0.9999999403953552,
+                    "z": 0.9999999403953552
+                }
+            },
+            "id": 1048588
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Entity 1",
+                "overridenProperties": null,
+                "parent": 39846053,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 4
+            },
+            "Scripts": {
+                "scriptDatas": null
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.43946573138237,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 8.940715190419724e-08,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.12476873397827148,
+                    "y": 2.289536476135254,
+                    "z": -8.640954971313477
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 5.96047655676557e-08,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999979734420776,
+                    "y": 1.0,
+                    "z": 0.9999978542327881
+                },
+                "position": {
+                    "x": -5.877804756164551,
+                    "y": 3.5738654136657715,
+                    "z": -24.70574951171875
+                },
+                "rotation": {
+                    "w": 0.9759557247161865,
+                    "x": 0.0,
+                    "y": 0.2179689258337021,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0545860528945923,
+                    "y": 0.9999999403953552,
+                    "z": 1.0423897504806519
+                }
+            },
+            "id": 2
+        }
+    ],
+    "RootEntity": 1048588
+}

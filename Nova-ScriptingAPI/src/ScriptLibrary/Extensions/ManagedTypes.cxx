@@ -35,6 +35,7 @@ Vector2 Vector2::Left() { return Vector2{ -1.f,  0.f };}
 Vector2 Vector2::Right() { return Vector2{ 1.f,  0.f };}
 Vector2 Vector2::Zero() { return Vector2{ 0.f,  0.f };}
 Vector2 Vector2::One() { return Vector2{ 1.f,  1.f };}
+float Vector2::Dot(Vector2 a, Vector2 b) { return a.x * b.x + a.y * b.y; }
 
 Vector2 Vector2::Lerp(Vector2 a, Vector2 b, float interval) {
 	return Vector2{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval) };
@@ -74,6 +75,7 @@ Vector3 Vector3::Left(){ return Vector3{ -1.f,  0.f,  0.f };}
 Vector3 Vector3::Right(){ return Vector3{ 1.f,  0.f,  0.f };}
 Vector3 Vector3::Zero() { return Vector3{ 0.f,  0.f,  0.f };}
 Vector3 Vector3::One(){ return Vector3{ 1.f,  1.f,  1.f }; }
+float Vector3::Dot(Vector3 a, Vector3 b){ return a.x * b.x + a.y * b.y + a.z * b.z; }
 
 Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
 	return Vector3{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval), std::lerp(a.z, b.z, interval) };
@@ -83,16 +85,16 @@ Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
 // QUATERNION
 // =================================================================
 
-Vector3 Quartenion::operator*(Quartenion quaternion, Vector3 axis) {
+Vector3 Quaternion::operator*(Quaternion quaternion, Vector3 axis) {
 	return Vector3{ quaternion.native() * axis.native() };
 }
 
-Vector3 Quartenion::operator*(Vector3 axis, Quartenion quaternion) {
+Vector3 Quaternion::operator*(Vector3 axis, Quaternion quaternion) {
 	return Vector3{ axis.native() * quaternion.native() };
 }
 
-Quartenion Quartenion::Identity() {
-	return Quartenion{ glm::identity<glm::quat>() };
+Quaternion Quaternion::Identity() {
+	return Quaternion{ glm::identity<glm::quat>() };
 }
 
 // =================================================================
@@ -107,15 +109,15 @@ void Transform_::rotate(Vector3 axis, float degrees) {
 	}
 }
 
-void Transform_::rotate(Quartenion quartenion) {
+void Transform_::rotate(Quaternion quartenion) {
 	nativeComponent()->rotation = quartenion.native() * nativeComponent()->rotation;
 }
 
-Quartenion Transform_::LookAt(Transform_^ target) {
+Quaternion Transform_::LookAt(Transform_^ target) {
 	Vector3 direction = position - target->position;
 	direction.Normalize();
-	
-	return Quartenion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
+
+	return Quaternion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
 }
 
 void Transform_::setFront(Vector3 frontAxis) {
@@ -178,6 +180,14 @@ Vector3 Rigidbody_::GetVelocity() {
 	}
 
 	return Vector3{};
+}
+
+void Rigidbody_::SetGravityFactor(float factor) {
+	Interface::engine->physicsManager.setGravityFactor(*nativeComponent(), factor);
+}
+
+float Rigidbody_::GetGravityFactor() {
+	return nativeComponent()->gravityMultiplier;
 }
 
 // =================================================================

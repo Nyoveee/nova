@@ -9,6 +9,7 @@ public ref class GameObject : ComponentAccessor
 {
 public:
 	// Constructs a game object given an entity id..
+	GameObject();
 	GameObject(System::UInt32 p_entityID);
 	GameObject(entt::entity entity);
 
@@ -25,7 +26,9 @@ public:
 	GameObject^ GetParent();
 	array<GameObject^>^ GetChildren();
 	System::UInt32 GetId();
+
 	void SetActive(bool active);
+	bool IsActive();
 
 public:
 	property Transform_^ transform{
@@ -33,6 +36,11 @@ public:
 	}
 	property System::String^ tag {
 		System::String^ get();
+	}
+
+public:
+	static bool operator==(GameObject^ lhs, GameObject^ rhs) {
+		return lhs->entityID == rhs->entityID;
 	}
 
 internal:

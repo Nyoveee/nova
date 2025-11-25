@@ -11,7 +11,6 @@ template <ValidResource T>
 std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath const& descriptorFilepath, std::filesystem::path const& rootDirectory) {
 	try {
 		std::ifstream descriptorFile{ descriptorFilepath };
-		descriptorFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 		// Attempt to read corresponding metafile.
 		if (!descriptorFile) {
@@ -45,6 +44,19 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 			else {
 				assetInfo.compression = compressionValueOpt.value();
 			}
+
+			std::string textureType;
+			std::getline(descriptorFile, textureType);
+
+			auto textureTypeOpt = magic_enum::enum_cast<AssetInfo<Texture>::TextureType>(textureType);
+
+			if (!textureTypeOpt) {
+				assetInfo.type = AssetInfo<Texture>::TextureType::sRGB;
+			}
+			else {
+				assetInfo.type = textureTypeOpt.value();
+			}
+
 		}
 		else if constexpr (std::same_as<T, CustomShader>) {
 			std::string pipelineString;
@@ -120,6 +132,7 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 	// ============================
 	if constexpr (std::same_as<T, Texture>) {
 		descriptorFile << magic_enum::enum_name(AssetInfo<Texture>::Compression::BC1_SRGB) << '\n';
+		descriptorFile << magic_enum::enum_name(AssetInfo<Texture>::TextureType::sRGB) << '\n';
 	}
 	else if constexpr (std::same_as<T, CustomShader>) {
 		descriptorFile << magic_enum::enum_name(Pipeline::PBR) << '\n';

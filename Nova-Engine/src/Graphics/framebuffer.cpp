@@ -44,7 +44,6 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 	glCreateFramebuffers(1, &FBO_id);
 
 	unsigned int i = 0;
-	std::vector<GLuint> colorAttachments;
 
 	// Create texture for each color attachments
 	for (TextureInternalFormat textureFormat : colorAttachmentProperties) {
@@ -60,11 +59,6 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 		colorAttachments.push_back(colorAttachment);
 		glNamedFramebufferTexture(FBO_id, colorAttachment, texture_id, 0);
 		++i;
-	}
-
-	// link respective color attachments to draw buffers in a multi render target framebuffer..
-	if (colorAttachments.size() > 1) {
-		glNamedFramebufferDrawBuffers(FBO_id, static_cast<GLsizei>(colorAttachments.size()), colorAttachments.data());
 	}
 
 	// Generating renderbuffer object for depth / stencil testing
@@ -115,6 +109,11 @@ void FrameBuffer::swap(FrameBuffer& rhs) {
 	std::swap(height,		rhs.height);
 }
 
+void FrameBuffer::setColorAttachmentActive(int number) const {
+	// link respective color attachments to draw buffers in a multi render target framebuffer..
+	glNamedFramebufferDrawBuffers(FBO_id, static_cast<GLsizei>(number), colorAttachments.data());
+}
+
 GLuint FrameBuffer::fboId() const {
 	return FBO_id;
 }
@@ -133,4 +132,22 @@ int FrameBuffer::getWidth() const {
 
 int FrameBuffer::getHeight() const {
 	return height;
+}
+
+void FrameBuffer::clear() {
+	// https://stackoverflow.com/questions/44756898/opengl-different-clear-color-for-individual-color-attachments
+	constexpr float defaultColor[4] = { 0.1f, 0.1f, 0.1f, 1.f };
+	constexpr float color[4] = { 0.f, 0.f, 0.f, 1.f };
+
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO_id);
+	
+	glClearTexImage(textureIds().front(), 0, GL_RGBA, GL_FLOAT, defaultColor);
+
+	for (int i = 1; i < textureIds().size(); ++i) {
+		GLuint textureId = textureIds()[i];
+		glClearTexImage(textureId, 0, GL_RGBA, GL_FLOAT, color);
+	}
+
+	// Clear depth to 1.0, stencil to 0
+	glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0); 
 }

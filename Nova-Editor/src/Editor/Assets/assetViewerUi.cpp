@@ -76,23 +76,21 @@ void AssetViewerUI::update() {
 			// reset rename attempt.
 			selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
 		}
-		else {
-			toSerialiseSelectedDescriptor = true;
+	}
+
+	// If there is a name or filepath change, serialise the descriptor..
+	if (toSerialiseSelectedDescriptor) {
+		if (resourceManager.isResource<ScriptAsset>(selectedResourceId)) {
+			updateScriptFilePath(descriptorPtr->filepath, selectedResourceId);
 		}
+
+		assetManager.serialiseDescriptor(selectedResourceId);
 	}
 
 	auto displayResourceUIFunctor = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
 			if (resourceManager.isResource<T>(id)) {
 				displayAssetUI<T>(*descriptorPtr);
-
-				if (toSerialiseSelectedDescriptor) {
-					if constexpr (std::same_as<T, ScriptAsset>) {
-						updateScriptFileName(descriptorPtr->filepath, id);
-					}
-
-					assetManager.serialiseDescriptor<T>(id);
-				}
 			}
 		}(), ...);
 	};
@@ -102,7 +100,7 @@ void AssetViewerUI::update() {
 #endif
 }
 
-void AssetViewerUI::updateScriptFileName(AssetFilePath const& filepath, [[maybe_unused]] ResourceID id) {
+void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_unused]] ResourceID id) {
 	std::ifstream inputScriptFile{ filepath };
 
 	std::string newName = std::filesystem::path{ filepath }.stem().string();
@@ -191,39 +189,49 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 	}
 
 	auto updateMaterialProperty = [&](std::unordered_map<std::string, std::string> const& shaderUniforms) {
-		material->materialData.overridenUniforms.clear();
+		std::unordered_map<std::string, OverriddenUniformData> newShaderUniforms;
+		std::unordered_map<std::string, OverriddenUniformData>& oldShaderUniforms = material->materialData.overridenUniforms;
 
-		for (auto&& [identifer, type] : shaderUniforms) {
+		for (auto&& [identifier, type] : shaderUniforms) {
+			auto iterator = oldShaderUniforms.find(identifier);
+
+			if (iterator != oldShaderUniforms.end() && iterator->second.type == type) {
+				// use the old value..
+				newShaderUniforms.insert(*iterator);
+				continue;
+			}
+
 			// thank you zhi wei for writing all of the if cases. :)
 			if (type == "bool")
-				material->materialData.overridenUniforms.insert({ identifer, { type, bool{} } });
+				newShaderUniforms.insert({ identifier, { type, bool{} } });
 			if (type == "int")
-				material->materialData.overridenUniforms.insert({ identifer, { type, int{} } });
+				newShaderUniforms.insert({ identifier, { type, int{} } });
 			if (type == "uint")
-				material->materialData.overridenUniforms.insert({ identifer, { type, unsigned{} } });
+				newShaderUniforms.insert({ identifier, { type, unsigned{} } });
 			if (type == "float")
-				material->materialData.overridenUniforms.insert({ identifer, { type, float{} } });
+				newShaderUniforms.insert({ identifier, { type, float{} } });
 			if (type == "vec2")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec2{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::vec2{} } });
 			if (type == "vec3")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec3{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::vec3{} } });
 			if (type == "vec4")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::vec4{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::vec4{} } });
 			if (type == "mat3")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::mat3{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::mat3{} } });
 			if (type == "mat4")
-				material->materialData.overridenUniforms.insert({ identifer, { type, glm::mat4{} } });
+				newShaderUniforms.insert({ identifier, { type, glm::mat4{} } });
 			if (type == "sampler2D")
-				material->materialData.overridenUniforms.insert({ identifer, { type, TypedResourceID<Texture>{ NONE_TEXTURE_ID } } });
+				newShaderUniforms.insert({ identifier, { type, TypedResourceID<Texture>{ NONE_TEXTURE_ID } } });
 
 			// custom glsl types..
 			if (type == "Color")
-				material->materialData.overridenUniforms.insert({ identifer, { type, Color{ 1.f, 1.f, 1.f } } });
+				newShaderUniforms.insert({ identifier, { type, Color{ 1.f, 1.f, 1.f } } });
 			if (type == "ColorA")
-				material->materialData.overridenUniforms.insert({ identifer, { type, ColorA{ 1.f, 1.f, 1.f, 1.f } } });
+				newShaderUniforms.insert({ identifier, { type, ColorA{ 1.f, 1.f, 1.f, 1.f } } });
 			if (type == "NormalizedFloat")
-				material->materialData.overridenUniforms.insert({ identifer, { type, NormalizedFloat{} } });
+				newShaderUniforms.insert({ identifier, { type, NormalizedFloat{} } });
 		}
+		oldShaderUniforms = std::move(newShaderUniforms);
 	};
 
 	editor.displayAssetDropDownList<CustomShader>(shaderId, "Shader", [&](ResourceID id) {
@@ -258,11 +266,27 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 
 		return;
 	}
+	
+	ImGui::SeparatorText("Config");
 
+	editor.displayEnumDropDownList<BlendingConfig>(material->materialData.blendingConfig, "Blending", [&](auto config) {
+		material->materialData.blendingConfig = config;
+	});
+
+	editor.displayEnumDropDownList<DepthTestingMethod>(material->materialData.depthTestingMethod, "Depth Testing", [&](auto config) {
+		material->materialData.depthTestingMethod = config;
+	});
+
+	editor.displayEnumDropDownList<CullingConfig>(material->materialData.cullingConfig, "Culling", [&](auto config) {
+		material->materialData.cullingConfig = config;
+	});
+
+	ImGui::SeparatorText("Properties");
+	
 	if (ImGui::Button("Update Material Properties From Shader")) {
 		updateMaterialProperty(customShader->customShaderData.uniforms);
 	}
-	
+
 	int imguiCounter = 0;
 
 	// Display the current material values..
@@ -309,7 +333,7 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 				shader->customShaderData.pipeline = enumValue;
 				
 				// serialise immediately..
-				assetManager.serialiseDescriptor<CustomShader>(selectedResourceId);
+				assetManager.serializeDescriptor<CustomShader>(selectedResourceId);
 
 				// recompile..
 				shader->compile();
@@ -356,17 +380,53 @@ void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 
 	constexpr auto listOfEnumValues = magic_enum::enum_entries<AssetInfo<Texture>::Compression>();
 
-	if (ImGui::BeginCombo("Compression", std::string{ magic_enum::enum_name<AssetInfo<Texture>::Compression>(textureInfo.compression) }.c_str())) {
-		for (auto&& [enumValue, enumInString] : listOfEnumValues) {
-			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == textureInfo.compression)) {
-				if (enumValue != textureInfo.compression) {
-					textureInfo.compression = enumValue;
-					recompileResourceWithUpdatedDescriptor<Texture>(textureInfo);
-				}
+	bool toRecompile = false;
+
+	editor.displayEnumDropDownList<AssetInfo<Texture>::TextureType>(textureInfo.type, "Texture Type", [&](auto textureType) {
+		if (textureType != textureInfo.type) {
+			textureInfo.type = textureType;
+			toRecompile = true;
+
+			switch (textureInfo.type)
+			{
+				using enum AssetInfo<Texture>::TextureType;
+				using enum AssetInfo<Texture>::Compression;
+			case sRGB:
+				textureInfo.compression = BC1_SRGB;
+				break;
+			case sRGBA:
+				textureInfo.compression = BC3_SRGB;
+				break;
+			case Linear:
+				textureInfo.compression = BC1_Linear;
+				break;
+			case NormalMap:
+				textureInfo.compression = BC5;
+				break;
+			case Custom:
+				toRecompile = false;
+				break;
 			}
 		}
+	});
 
-		ImGui::EndCombo();
+	if (textureInfo.type != AssetInfo<Texture>::TextureType::Custom) {
+		ImGui::BeginDisabled();
+	}
+
+	editor.displayEnumDropDownList<AssetInfo<Texture>::Compression>(textureInfo.compression, "Compression", [&](auto enumValue) {
+		if (enumValue != textureInfo.compression) {
+			textureInfo.compression = enumValue;
+			toRecompile = true;
+		}
+	});
+
+	if (textureInfo.type != AssetInfo<Texture>::TextureType::Custom) {
+		ImGui::EndDisabled();
+	}
+
+	if (toRecompile) {
+		recompileResourceWithUpdatedDescriptor<Texture>(textureInfo);
 	}
 }
 
@@ -551,7 +611,7 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 	if (ImGui::TreeNode("Prefab Hierarchy")) {
 		ImGui::BeginChild("##Prefab", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
 		
-		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, 
+		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, true,
 			[&](std::vector<entt::entity> entities) {
 				if (entities.empty()) {
 					return;
@@ -569,7 +629,7 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 	}
 
 	ImGui::Separator();
-	g_displayComponentFunctor(editor.componentInspector, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
+	g_displayComponentFunctor(editor, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
 }
 
 void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {
