@@ -18,6 +18,7 @@
 #include "Engine/particleSystem.h"
 #include "Engine/animationSystem.h"
 #include "Engine/prefabManager.h"
+#include "Engine/uiSystem.h"
 
 #define _CRTDBG_MAP_ALLOC
 
@@ -80,6 +81,7 @@ public:
 	ParticleSystem          particleSystem;
 	AnimationSystem			animationSystem;
 	PrefabManager			prefabManager;
+	UISystem				uiSystem;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;
@@ -91,6 +93,8 @@ public:
 	bool                    toDebugRenderParticleEmissionShape;
 
 	GameConfig				gameConfig;
+
+	float					deltaTimeMultiplier;
 
 private:
 	// Editor mouse control represents whether the editor has control over the mouse

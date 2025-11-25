@@ -98,12 +98,12 @@ void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId
 	Script^ script = gameObjectScripts[entityID][scriptId];
 	System::Type^ scriptType = script->GetType();
 
-	try {
-		System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+	System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+	if (function) {
 		function->Invoke(script, nullptr);
 	}
-	catch (System::Exception^ ex) {
-		Logger::warn("Error when invoking function name {} of script id {} of entity {}", msclr::interop::marshal_as<std::string>(ex->ToString()), scriptId, entityID);
+	else {
+		Logger::warn("Error when invoking function name {} of script id {} of entity {}", name, scriptId, entityID);
 	}
 }
 
@@ -272,6 +272,13 @@ bool Interface::getScriptFieldData(System::Object^ fieldValue, System::Type^ fie
 		}
 	}
 
+	// Strings
+	if (fieldType->Equals(System::String::typeid)) {
+		System::String^ string = safe_cast<System::String^>(fieldValue);
+		fieldData = string ? Convert(string): "";
+		return true;
+	}
+
 	// Primitives
 	if (fieldType->IsPrimitive && ObtainPrimitiveDataFromScript<ALL_FIELD_PRIMITIVES>(fieldData, fieldValue)) {
 		return true;
@@ -294,7 +301,7 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 	}
 
 	if (!gameObjectScripts->ContainsKey(entityID))
-		gameObjectScripts[entityID] = gcnew Scripts();
+		gameObjectScripts[entityID] = gcnew ScriptDictionary();
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
 
@@ -312,7 +319,7 @@ Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) 
 	}
 
 	if (!createdGameObjectScripts->ContainsKey(entityID))
-		createdGameObjectScripts[entityID] = gcnew Scripts();
+		createdGameObjectScripts[entityID] = gcnew ScriptDictionary();
 
 	Script^ newScript = safe_cast<Script^>(System::Activator::CreateInstance(availableScripts[scriptId]->GetType()));
 	newScript->entityID = entityID;
@@ -397,6 +404,15 @@ void Interface::processSetScriptFieldData(Object^% object, System::Type^ fieldTy
 			Logger::warn("Typed resource type in script currently not supported for script setting");
 		}
 	}
+
+	// Strings
+	if (fieldType->Equals(System::String::typeid)) {
+		System::String^ string{ safe_cast<System::String^>(object) };
+		string = msclr::interop::marshal_as<System::String^>(std::get<std::string>(fieldData));
+		object = string;
+		return;
+	}
+
 	// Primitives
 	if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, object))
 		return;
@@ -409,9 +425,7 @@ void Interface::setFieldData(Script^ script, FieldData const& fieldData) {
 	using BindingFlags = System::Reflection::BindingFlags;
 
 	System::Type^ type = script->GetType();
-#if false
 	do {
-#endif
 		array<System::Reflection::FieldInfo^>^ fieldInfos = type->GetFields(BindingFlags::DeclaredOnly | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
 		for (int i = 0; i < fieldInfos->Length; ++i) {
 			// Ignore private and protected members if it doesn't have the serializablefield attribute
@@ -448,11 +462,8 @@ void Interface::setFieldData(Script^ script, FieldData const& fieldData) {
 			}
 			return;
 		}
-#if false
-			break;
 		type = type->BaseType;
 	} while (type != nullptr);
-#endif
 }
 
 
@@ -488,7 +499,8 @@ void Interface::update() {
 	try {
 		for each (System::UInt32 entityID in gameObjectScripts->Keys) {
 			for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
-				if (!engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)).isActive) {
+				EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
+				if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Scripts).hash_code())) {
 					continue;
 				};
 
@@ -516,13 +528,13 @@ void Interface::update() {
 		executeTimeoutDelegates->Clear();
 
 		// Check the create game object queue to handle any game object request at the end of the frame..
-		for each (System::Collections::Generic::KeyValuePair<EntityID, Scripts^> ^ kvp1 in createdGameObjectScripts) {
+		for each (System::Collections::Generic::KeyValuePair<EntityID, ScriptDictionary^> ^ kvp1 in createdGameObjectScripts) {
 			for each (System::Collections::Generic::KeyValuePair<ScriptID, Script^> ^ kvp2 in kvp1->Value) {
 				EntityID entityID = kvp1->Key;
 				ScriptID scriptID = kvp2->Key;
 
 				if (!gameObjectScripts->ContainsKey(entityID))
-					gameObjectScripts[entityID] = gcnew Scripts();
+					gameObjectScripts[entityID] = gcnew ScriptDictionary();
 
 				gameObjectScripts[entityID][scriptID] = kvp2->Value;
 			}
@@ -533,7 +545,8 @@ void Interface::update() {
 		// Check the delete game object queue to handle any deletion request at the end of the frame..
 		while (deleteGameObjectQueue.Count != 0) {
 			EntityID entityToRemove = deleteGameObjectQueue.Dequeue();
-
+			// remove from ECS registry..
+			engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
 			// shouldn't really happen but just in case..
 			if (!gameObjectScripts->ContainsKey(entityToRemove)) {
 				continue;
@@ -559,9 +572,6 @@ void Interface::update() {
 
 			// removes it..
 			gameObjectScripts[entityToRemove]->Clear();
-
-			// remove from ECS registry..
-			engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
 		}
 	}
 	catch (System::Exception^ exception) {
@@ -678,7 +688,12 @@ void Interface::unloadAssembly()
 		availableScripts->Clear();
 	if (abstractScriptTypes)
 		abstractScriptTypes->Clear();
-
+	if (timeoutDelegates)
+		timeoutDelegates->Clear();
+	if (executeTimeoutDelegates)
+		executeTimeoutDelegates->Clear();
+	deleteGameObjectQueue.Clear();
+	
 	// Clear all input mapping..
 	Input::ClearAllKeyMapping();
 

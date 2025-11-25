@@ -8,6 +8,7 @@ Tags{
 // Properties for material instances to configure..
 Properties{
     Color color;
+    float intensity;
 }
 
 // Vertex shader..
@@ -20,5 +21,5 @@ Vert{
 
 // Fragment shader..
 Frag{
-    FragColor = vec4(color, 1.0); // ok
+    return vec4(intensity * color, 1.0); // ok
 }

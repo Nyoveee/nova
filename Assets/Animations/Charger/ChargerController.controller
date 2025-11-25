@@ -7,15 +7,20 @@
             "id": 1000,
             "name": "Entry Node",
             "toLoop": true,
-            "transitions": null
+            "transitions": [
+                {
+                    "conditions": null,
+                    "nextNode": 5483669552575332355
+                }
+            ]
         },
         "13554120084823654411": {
             "animation": 15509887387844050953,
             "animationEvents": [
                 {
-                    "functionName": "EndStagger",
+                    "functionName": "TriggerEvent1",
                     "key": 22,
-                    "scriptId": 9501847987883769857
+                    "scriptId": 16372493856992313355
                 }
             ],
             "id": 13554120084823654411,
@@ -35,9 +40,9 @@
             "animation": 6862976103292698627,
             "animationEvents": [
                 {
-                    "functionName": "EndDeathAnimation",
+                    "functionName": "TriggerEvent5",
                     "key": 93,
-                    "scriptId": 9501847987883769857
+                    "scriptId": 16372493856992313355
                 }
             ],
             "id": 1448444286451908621,
@@ -49,23 +54,37 @@
             "animation": 12627583626326917121,
             "animationEvents": [
                 {
-                    "functionName": "BeginSwing",
+                    "functionName": "TriggerEvent2",
                     "key": 14,
-                    "scriptId": 9501847987883769857
+                    "scriptId": 16372493856992313355
                 },
                 {
-                    "functionName": "EndSwing",
+                    "functionName": "TriggerEvent3",
                     "key": 20,
-                    "scriptId": 9501847987883769857
+                    "scriptId": 16372493856992313355
                 },
                 {
-                    "functionName": "EndAttack",
+                    "functionName": "TriggerEvent4",
                     "key": 35,
-                    "scriptId": 9501847987883769857
+                    "scriptId": 16372493856992313355
                 }
             ],
             "id": 16233225301454651393,
             "name": "ChargerAttack",
+            "toLoop": true,
+            "transitions": null
+        },
+        "3325363430777339905": {
+            "animation": 13204044378630356999,
+            "animationEvents": [
+                {
+                    "functionName": "TriggerEvent6",
+                    "key": 19,
+                    "scriptId": 16372493856992313355
+                }
+            ],
+            "id": 3325363430777339905,
+            "name": "ChargerJump",
             "toLoop": true,
             "transitions": null
         },

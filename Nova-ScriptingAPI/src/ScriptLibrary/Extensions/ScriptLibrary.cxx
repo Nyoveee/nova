@@ -3,8 +3,11 @@
 // ======================================
 // Time..
 // ======================================
-float Time::V_FixedDeltaTime() { return 1 / 60.f; } // Replace with config
-float Time::V_DeltaTime() { return Interface::engine->getDeltaTime(); } // Replace with config
+float Time::V_FixedDeltaTime()			{ return (1 / 60.f) * Interface::engine->deltaTimeMultiplier; } // Replace with config
+float Time::V_DeltaTime()				{ return Interface::engine->getDeltaTime() * Interface::engine->deltaTimeMultiplier; }
+
+float Time::V_FixedDeltaTime_Unscaled() { return 1 / 60.f; }
+float Time::V_DeltaTime_Unscaled()		{ return Interface::engine->getDeltaTime(); }
 
 // ======================================
 // Debug and logging..
@@ -195,6 +198,11 @@ void CameraAPI::UnlockMouse() {
 // ======================================
 bool NavigationAPI::setDestination(GameObject^ gameObject, Vector3^ targetPosition) {
 	return Interface::engine->navigationSystem.setDestination(Convert(gameObject), targetPosition->native());
+}
+
+void NavigationAPI::stopAgent(GameObject^ gameObject)
+{
+	Interface::engine->navigationSystem.stopAgent(Convert(gameObject));
 }
 
 // ======================================

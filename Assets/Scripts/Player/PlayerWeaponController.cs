@@ -69,11 +69,6 @@ class PlayerWeaponController : Script
         if(currentlyHeldGun.Fire())
         {
             muzzle.emit(30);
-
-            Invoke(() =>
-            {
-                Debug.Log("Hi chat.");
-            }, 2f);
         }
     }
 

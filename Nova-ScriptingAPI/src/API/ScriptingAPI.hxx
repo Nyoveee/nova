@@ -88,11 +88,11 @@ internal:
 	static Engine* engine;
 
 private:
-	using Scripts = System::Collections::Generic::Dictionary<ScriptID, Script^>;
+	using ScriptDictionary = System::Collections::Generic::Dictionary<ScriptID, Script^>;
 	using Components = System::Collections::Generic::List<IManagedComponent^>;
 
 	// Stores all of the loaded scripts of a given game object.
-	static System::Collections::Generic::Dictionary<EntityID, Scripts^>^ gameObjectScripts;
+	static System::Collections::Generic::Dictionary<EntityID, ScriptDictionary^>^ gameObjectScripts;
 	
 	// Store all unique script type. To be used for instantiation.
 	// We map an Asset ID to the corresponding script type.
@@ -104,7 +104,7 @@ private:
 	static System::Collections::Generic::Queue<EntityID> deleteGameObjectQueue;
 
 	// We store created game object scripts in a separate dictionary first..
-	static System::Collections::Generic::Dictionary<EntityID, Scripts^>^ createdGameObjectScripts;
+	static System::Collections::Generic::Dictionary<EntityID, ScriptDictionary^>^ createdGameObjectScripts;
 
 	// We store set timeout request in a separate container..
 	static System::Collections::Generic::List<TimeoutDelegate^>^ timeoutDelegates;

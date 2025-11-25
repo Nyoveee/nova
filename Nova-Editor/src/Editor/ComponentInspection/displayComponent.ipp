@@ -29,9 +29,33 @@ namespace {
 			bool toDisplay;
 			bool toShowHeader = true;
 
-			// show the close button only for components that are not transform.
+			ImGui::PushID(static_cast<int>(entity));
+			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
+
+			// show the close button and active checkbox only for components that are not transform.
 			if constexpr (!std::same_as<Component, Transform>) {
 				toDisplay = ImGui::CollapsingHeader(name, &toShowHeader);
+				if constexpr(!NonComponentDisablingTypes<Component>) {
+					// Active State
+					EntityData* const entityData{ editor.engine.ecs.registry.try_get<EntityData>(entity) };
+					if (entityData) {
+						bool b_Active{ editor.engine.ecs.isComponentActive<Component>(entity)};
+						// Display Checkbox
+						ImGui::SameLine();
+						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6.5f);
+						ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
+						ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.28f, 0.28f, 0.28f, 1.0f));
+						ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.32f, 0.32f, 0.32f, 1.0f));
+						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.1f, 0.1f));
+						if (ImGui::Checkbox("##", &b_Active))
+							editor.engine.ecs.setComponentActive<Component>(entity, b_Active);
+						ImGui::PopStyleVar();
+						ImGui::PopStyleColor();
+						ImGui::PopStyleColor();
+						ImGui::PopStyleColor();
+					}
+				}
+				
 			}
 			else {
 				(void) toShowHeader;
@@ -44,8 +68,7 @@ namespace {
 				goto end;
 			}
 
-			ImGui::PushID(static_cast<int>(entity));
-			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
+			
 			// Visits each of the component's data member and renders them.
 			reflection::visit(
 				[&](auto fieldData) {
@@ -58,14 +81,16 @@ namespace {
 					ImGui::PopID();
 				},
 			component);
-			ImGui::PopID();
-			ImGui::PopID();
+		
 
 		end:
 			// prompted to delete component.
-			if (!toShowHeader) {
+			if (!toShowHeader) 
 				registry.erase<Component>(entity);
-			}
+		
+			ImGui::PopID();
+			ImGui::PopID();
 		}
+
 	}
 }

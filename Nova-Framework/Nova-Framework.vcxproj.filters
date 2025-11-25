@@ -270,6 +270,9 @@
     <ClInclude Include="src\Internal\animationEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Internal\AdditionalNavigationTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Internal\serializedField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -462,6 +465,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Loader\sequencerLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Internal\materialConfig.h">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

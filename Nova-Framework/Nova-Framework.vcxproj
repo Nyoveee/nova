@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Internal\AdditionalNavigationTypes.h" />
     <ClInclude Include="src\Internal\animationEvent.h" />
     <ClInclude Include="src\Internal\config.h" />
     <ClInclude Include="src\Internal\Interpolation.h" />
@@ -222,6 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Internal\Interpolation.cpp" />
+    <ClCompile Include="src\Internal\materialConfig.h" />
     <ClCompile Include="src\Internal\RandomRange.cpp" />
     <ClCompile Include="src\Detour\DetourCrowd\DetourCrowd.cpp" />
     <ClCompile Include="src\Detour\DetourCrowd\DetourLocalBoundary.cpp" />

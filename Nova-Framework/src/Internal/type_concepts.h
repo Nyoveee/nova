@@ -6,6 +6,8 @@
 
 #include "type_alias.h"
 #include "physics.h"
+#include "component.h"
+#include "AdditionalNavigationTypes.h"
 
 template<class T>
 concept IsTypedResourceID = requires(T x) {
@@ -18,14 +20,23 @@ concept IsEnum = std::is_enum_v<T> && !requires(T x) {
 };
 
 template<class T>
-concept IsFundamental = std::is_fundamental_v<T> || requires(T x) {
-	{ T{ x } } -> std::same_as<std::string>;
-};
+concept IsFundamental = std::is_fundamental_v<T> || requires(T x) { { T{ x } } -> std::same_as<std::string>; };
 
 template<class T>
 concept NonSerializableTypes = requires(T x) { { T{ x } } -> std::same_as<PhysicsRay>; }
-                            || requires(T x) { { T{ x } } -> std::same_as<PhysicsRayCastResult>; };
+                            || requires(T x) { { T{ x } } -> std::same_as<PhysicsRayCastResult>; }
+							|| requires(T x) { { T{ x } } -> std::same_as<navMeshOfflinkData>; };
 
+template<class T>
+concept NonComponentDisablingTypes = requires(T x) { { T{ x } } -> std::same_as<BoxCollider>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<SphereCollider>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<CapsuleCollider>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<MeshCollider>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<NavMeshModifier>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<NavMeshSurface>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<AudioComponent>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<PositionalAudio>; }
+								  || requires(T x) { { T{ x } } -> std::same_as<CameraComponent>; };
 template<typename T>
 concept isVector = requires {
 	typename T::value_type; // Check if it has a value_type member alias

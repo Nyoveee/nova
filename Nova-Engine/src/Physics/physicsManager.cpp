@@ -99,9 +99,6 @@ constexpr unsigned int maxBodyPairs = 1024;
 // Note: This value is low because this is a simple test. For a real project use something in the order of 10240.
 constexpr unsigned int maxContactConstraints = 1024;
 
-// GRAVITY!
-const	  JPH::Vec3	   gravityStrength = JPH::Vec3(0.0f, -15.0f, 0.0f);
-
 PhysicsManager::PhysicsManager(Engine& engine) :
 	// we use a placeholder to invoke a function before constructing the rest of the data member.
 	placeholder		{ [&](){ 
@@ -175,8 +172,7 @@ PhysicsManager::PhysicsManager(Engine& engine) :
 	// Registering one is entirely optional.
 	physicsSystem.SetContactListener(&contactListener);
 
-	physicsSystem.SetGravity(gravityStrength);
-
+	setGravity(gravityStrength);
 }
 
 PhysicsManager::~PhysicsManager() {
@@ -185,26 +181,21 @@ PhysicsManager::~PhysicsManager() {
 }
 
 void PhysicsManager::simulationInitialise() {
-
-	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each()) {
+	for (auto&& [entityId, entityData, transform, rigidbody] : registry.view<EntityData, Transform, Rigidbody>().each()) {
 		if (rigidbody.bodyId == JPH::BodyID{}) {
 			continue;
 		}
 
-		bodyInterface.ActivateBody(rigidbody.bodyId);
 		bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(rigidbody.initialVelocity));
 		rigidbody.velocity = rigidbody.initialVelocity;
 		bodyInterface.SetIsSensor(rigidbody.bodyId, rigidbody.isTrigger);
+		bodyInterface.ActivateBody(rigidbody.bodyId);
+		bodyInterface.SetGravityFactor(rigidbody.bodyId, rigidbody.gravityMultiplier);
 	}
 }
 
-void PhysicsManager::systemInitialise()
-{
+void PhysicsManager::systemInitialise() {
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive) {
-			continue;
-		}
-
 		// due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
 		if (rigidbody.bodyId == JPH::BodyID{} && hasRequiredPhysicsComponents(entityId))
@@ -235,10 +226,6 @@ void PhysicsManager::updatePhysics(float dt) {
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
 	// =============================================================
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive) {
-			continue;
-		}
-
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
@@ -261,10 +248,6 @@ void PhysicsManager::updatePhysics(float dt) {
 	// =============================================================
 
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
-		if (!entityData.isActive) {
-			continue;
-		}
-
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
@@ -359,6 +342,7 @@ void PhysicsManager::updateTransformBodies()
 		bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
 	}
 
+#if false
 	if (engine.isInSimulationMode()) {
 		return;
 	}
@@ -409,6 +393,7 @@ void PhysicsManager::updateTransformBodies()
 
 		bodyInterface.SetIsSensor(rigidbody.bodyId, rigidbody.isTrigger);
 	}
+#endif
 }
 
 void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
@@ -475,7 +460,7 @@ void PhysicsManager::createPrimitiveShapes() {
 	capsule = capsuleSettings.Create().Get();
 }
 
-void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling)
+void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool)
 {
 	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider, capsuleCollider, meshCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, 
 		BoxCollider, 
@@ -488,57 +473,44 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 	JPH::ScaledShape* shape = nullptr;
 	glm::vec3 scale;
 
-	if (automateColliderScaling)
+	//if have model use model scale, else init without model
+	if (meshRenderer != nullptr)
 	{
-		//if have model use model scale, else init without model
-		if (meshRenderer != nullptr)
-		{
-			auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
 
-			if (!model || model->maxDimension == 0)	{
-				scale = transform->scale;
-			}
-			else {
-				scale = glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
-			}
-		}
-		else
-		{
+		if (!model || model->maxDimension == 0)	{
 			scale = transform->scale;
 		}
+		else {
+			scale = transform->scale * glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
+		}
+	}
+	else
+	{
+		scale = transform->scale;
 	}
 
 	// Alright here we go have to list down all the possible collider type cause we dk which one is it. :P, 
 	// we only support one type of collider per entt now i think
 	if (boxCollider != nullptr)
 	{
-		if (automateColliderScaling)
-		{
-			shape = new JPH::ScaledShape(box, box->MakeScaleValid(toJPHVec3(boxCollider->shapeScale)));
-		}
-		else
-		{
-			shape = new JPH::ScaledShape(box, toJPHVec3(boxCollider->shapeScale));
-		}
+		auto vecScale = boxCollider->shapeScale * scale;
+		auto jphScale = toJPHVec3(vecScale);
+		auto validSCALE = box->MakeScaleValid(jphScale);
+		shape = new JPH::ScaledShape(box, validSCALE);
 
 		rigidBody->offset = boxCollider->offset;
 	}
 
 	else if (sphereCollider != nullptr)
 	{
-		if (automateColliderScaling)
-		{
-			shape = new JPH::ScaledShape(sphere, sphere->MakeScaleValid(toJPHVec3(glm::vec3(sphereCollider->radius))));
-		}
-		else
-		{
-			shape = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
-		}
+		shape = new JPH::ScaledShape(sphere, sphere->MakeScaleValid(toJPHVec3(glm::vec3(sphereCollider->radius * scale))));
 		
 		rigidBody->offset = sphereCollider->offset;
 	}
 	else if (capsuleCollider != nullptr) {
-		shape = new JPH::ScaledShape(capsule, JPH::Vec3(capsuleCollider->shapeScale, capsuleCollider->shapeScale, capsuleCollider->shapeScale));
+		shape = new JPH::ScaledShape(capsule, capsule->MakeScaleValid(toJPHVec3(glm::vec3{ capsuleCollider->shapeScale * scale })));
+
 		rigidBody->offset = capsuleCollider->offset;
 	}
 	else if (meshRenderer && meshCollider) {
@@ -638,10 +610,13 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		activationType //should always be inactive unless its simulation step
 	);
 
-
 	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityID));
 	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody->initialVelocity));
 	bodyInterface.SetIsSensor(bodyId, rigidBody->isTrigger);
+
+	if (rigidBody->motionQuality == Rigidbody::MotionQuality::Continuous) {
+		bodyInterface.SetMotionQuality(bodyId, JPH::EMotionQuality::LinearCast);
+	}
 
 	createdBodies.push_back(bodyId);
 
@@ -706,6 +681,7 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 	JPH::RayCastResult rayCastResult;
 	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
 	RayCastLayerMaskFilterImpl layerMaskFilter(layerMask);
+
 	// Object Layer
 	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult, layerMaskFilter)) {
 		JPH::BodyID bodyId = rayCastResult.mBodyID;
@@ -745,4 +721,14 @@ void PhysicsManager::setVelocity(Rigidbody& rigidbody, glm::vec3 velocity) {
 
 	bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(velocity));
 	rigidbody.velocity = velocity;
+}
+
+void PhysicsManager::setGravity(float value) {
+	gravityStrength = value;
+	physicsSystem.SetGravity(JPH::Vec3{ 0.f, -gravityStrength, 0.f });
+}
+
+void PhysicsManager::setGravityFactor(Rigidbody& rigidbody, float value) {
+	bodyInterface.SetGravityFactor(rigidbody.bodyId, rigidbody.gravityMultiplier);
+	rigidbody.gravityMultiplier = value;
 }

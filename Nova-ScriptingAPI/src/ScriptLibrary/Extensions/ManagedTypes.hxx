@@ -1,9 +1,9 @@
 #pragma once
 
 #include "component.h"
+#include "ECS/ECS.h"
 #include "API/ManagedTypeMacros.hxx"
 #include "API/IManagedResourceID.hxx"
-
 // ===========================================================================================
 // 0. Defining managed typed resource..
 // ===========================================================================================
@@ -154,6 +154,29 @@ ManagedStruct(
 
 ManagedStructEnd(RayCastResult, PhysicsRayCastResult)
 
+
+// ======================================
+// NavMesh OffLink Data
+// ======================================
+ManagedStruct(
+	NavMeshOfflinkData, navMeshOfflinkData,
+	bool,    valid,
+	Vector3, startNode,
+	Vector3, endNode
+)
+
+ManagedStructEnd(NavMeshOfflinkData, navMeshOfflinkData)
+
+// ======================================
+// NavMesh Path TO DO: Later do bah, seems complicated :P
+// ======================================
+
+//ManagedStruct(
+//	NavmeshPath, navMeshPath,
+//)
+//
+//ManagedStructEnd(NavmeshPath, navMeshPath)
+
 // ===========================================================================================
 // 2. Defining managed component types..
 // 
@@ -212,12 +235,16 @@ ManagedComponentEnd()
 ManagedComponentDeclaration(
 	Rigidbody
 )
+
 void AddForce(Vector3 forceVector);
 void AddImpulse(Vector3 forceVector);
 
 void AddVelocity(Vector3 velocity);
 void SetVelocity(Vector3 velocity);
 Vector3 GetVelocity();
+
+void SetGravityFactor(float factor);
+float GetGravityFactor();
 
 ManagedComponentEnd()
 
@@ -284,5 +311,31 @@ void setMaterialBool(int index, System::String^ name, bool data);
 void setMaterialInt(int index, System::String^ name, int data);
 void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
+
+ManagedComponentEnd()
+// ======================================
+// NavMeshAgent Component
+// ======================================
+ManagedComponentDeclaration(
+	NavMeshAgent
+)
+
+//Warp to the nearest polygon given a point is that close by
+bool Warp(Vector3^ newPosition);
+
+bool getIsUpdateRotation();
+void setIsUpdateRotation(bool setValue);
+
+bool getIsUpdatePosition();
+void setIsUpdatePosition(bool setValue);
+
+bool getAutomateNavMeshOfflinksState();
+void setAutomateNavMeshOfflinksState(bool setValue);
+
+void CompleteOffMeshLink();
+
+bool isOnOffMeshLinks();
+
+NavMeshOfflinkData getOffLinkData();
 
 ManagedComponentEnd()

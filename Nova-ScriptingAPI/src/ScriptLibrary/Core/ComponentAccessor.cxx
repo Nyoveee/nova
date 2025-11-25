@@ -70,7 +70,16 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 }
 
 void ComponentAccessor::Destroy(GameObject^ gameObject) {
+	if (!gameObject || !Interface::engine->ecs.registry.valid(static_cast<entt::entity>(gameObject->entityID))) {
+		Logger::error("Attempting to delete GameObject that doesn't exist");
+		return;
+	}
+	
+	for each (GameObject ^ child in gameObject->GetChildren())
+		Destroy(child);
+
 	Interface::submitGameObjectDeleteRequest(gameObject->entityID);
+	gameObject = nullptr;
 }
 
 void ComponentAccessor::Invoke(Callback^ callback, float duration) {

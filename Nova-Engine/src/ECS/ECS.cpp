@@ -1,19 +1,25 @@
 #include <ranges>
 #include <iostream>
 
-#include "Engine/engine.h"
 #include "ECS/ECS.h"
 #include "component.h"
 #include "Logger.h"
+#include "Engine/engine.h"
 
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this, engine ,engine.resourceManager },
-	prefabManager	{engine}
+	sceneManager	{ *this, engine, engine.resourceManager },
+	prefabManager	{ engine },
+	canvasUi		{ entt::null }
 {}
 
-ECS::~ECS() {}
+ECS::~ECS() {
+#if false
+	registry.on_construct<Canvas>().connect<&ECS::onCanvasCreation>(*this);
+	registry.on_destroy<Canvas>().connect<&ECS::onCanvasDestruction>(*this);
+#endif
+}
 
 void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform) {
 	EntityData& childEntityData = registry.get<EntityData>(childEntity);
@@ -163,3 +169,62 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 		setActive(child, isActive);
 	}
 }
+
+bool ECS::isParentCanvas(entt::entity entity) {
+	if (entity == entt::null) {
+		return false;
+	}
+
+	if (registry.any_of<Canvas>(entity)) {
+		return true;
+	}
+
+	EntityData& entityData = registry.get<EntityData>(entity);
+	return isParentCanvas(entityData.parent);
+}
+
+bool ECS::isComponentActive(entt::entity entity, ComponentID componentID)
+{
+	EntityData& entityData{ registry.get<EntityData>(entity) };
+	return !entityData.inactiveComponents.count(componentID);
+}
+
+void ECS::setComponentActive(entt::entity entity, ComponentID componentID, bool isActive)
+{
+	EntityData& entityData{ registry.get<EntityData>(entity) };
+	std::unordered_set<ComponentID>& inactiveComponents{ entityData.inactiveComponents };
+	if (isActive && inactiveComponents.count(componentID)) {
+		inactiveComponents.erase(std::find(std::begin(inactiveComponents), std::end(inactiveComponents), componentID));
+		if (componentID == typeid(NavMeshAgent).hash_code())
+			engine.navigationSystem.SetAgentActive(entity);
+		if (componentID == typeid(Rigidbody).hash_code())
+			engine.physicsManager.addBodiesToSystem(engine.ecs.registry, entity);
+	}
+	else if (!isActive && !inactiveComponents.count(componentID)) {
+		inactiveComponents.insert(componentID);
+		if (componentID == typeid(NavMeshAgent).hash_code())
+			engine.navigationSystem.SetAgentInactive(entity);
+		if (componentID == typeid(Rigidbody).hash_code())
+			engine.physicsManager.removeBodiesFromSystem(engine.ecs.registry, entity);
+	}
+}
+
+#if false
+void ECS::onCanvasCreation(entt::registry&, entt::entity entityID) {
+	if (canvasUi != entt::null) {
+		Logger::error("Scene already contains an entity with the Canvas component! Removing another canvas component from entity {}", static_cast<unsigned>(entityID));
+		registry.remove<Canvas>(entityID);
+		return;
+	}
+
+	canvasUi = entityID;
+}
+
+void ECS::onCanvasDestruction(entt::registry&, entt::entity entityID) {
+	if (canvasUi != entityID) {
+		return;
+	}
+	
+	canvasUi = entt::null;
+}
+#endif

@@ -3,6 +3,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gunner Projectile",
@@ -85,7 +86,7 @@
                 },
                 "startSize": 0.10000000149011612,
                 "startSpeed": 0.5,
-                "texture": 10337573581668892835,
+                "texture": 779870865798480017,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
                     "selected": false,
@@ -100,6 +101,7 @@
                 }
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -109,6 +111,7 @@
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Kinematic"
             },
             "Scripts": {
@@ -117,22 +120,22 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 3.0
+                                    "__variant_type": 14,
+                                    "__variant_value": 3
                                 },
                                 "name": "damage"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 20.0
+                                    "__variant_type": 14,
+                                    "__variant_value": 20
                                 },
                                 "name": "bulletSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 20.0
+                                    "__variant_type": 14,
+                                    "__variant_value": 20
                                 },
                                 "name": "lifetime"
                             }

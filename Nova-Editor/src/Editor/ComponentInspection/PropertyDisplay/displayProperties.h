@@ -16,29 +16,10 @@
 template <class...>
 struct False : std::bool_constant<false> {};
 
-/***************************************************************************************
-	Reference for display properties
-****************************************************************************************/
-#if 0
-struct PropertyReferences {
-	entt::entity entity;
-	ComponentInspector& componentInspector;
-	ResourceManager& resourceManager;
-	AssetManager& assetManager;
-	AudioSystem& audioSystem;
-	ScriptingAPIManager& scriptingAPIManager;
-	Engine& engine;
-	Editor& editor;
-	ECS& ecs;
-};
-#endif
 
 /***************************************************************************************
 	Property Sub Infos
 ****************************************************************************************/
-#if 0
-void displayMaterialUI(Material& material, ComponentInspector& componentInspector);
-#endif
 void displayScriptFields(ScriptData& scriptData, Editor& editor);
 
 /***************************************************************************************
@@ -351,8 +332,10 @@ inline void DisplayProperty<glm::vec2>(Editor&, const char* dataMemberName, glm:
 }
 
 template<>
-inline void DisplayProperty<entt::entity>(Editor&, const char* dataMemberName, entt::entity& dataMember) {
-	ImGui::Text("%s: %u", dataMemberName, dataMember);
+inline void DisplayProperty<entt::entity>(Editor& editor, const char* dataMemberName, entt::entity& dataMember) {
+	editor.displayAllEntitiesDropDownList(dataMemberName, dataMember, [&](entt::entity newEntity) {
+		dataMember = newEntity;
+	});
 }
 
 /***************************************************************************************
@@ -568,23 +551,22 @@ inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& edit
 }
 
 template<>
+inline void DisplayProperty<EntityScript>(Editor& editor, const char*, EntityScript& dataMember) {
+	DisplayProperty<entt::entity>(editor, "entity", dataMember.entity);
+	editor.displayEntityScriptDropDownList(static_cast<ResourceID>(dataMember.script), "script", dataMember.entity, [&](ResourceID selectedScript) {
+		dataMember.script = TypedResourceID<ScriptAsset>{ selectedScript };
+	});
+}
+
+template<>
 inline void DisplayProperty<serialized_field_type>(Editor& editor, const char* dataMemberName, serialized_field_type& dataMember) {
 	// Set the field data	
 	std::visit([&](auto&& dataMember) {
 		using FieldType = std::decay_t<decltype(dataMember)>;
 
-		// Specializations
-		if constexpr (std::is_same_v<FieldType, entt::entity>) {
-			editor.displayAllEntitiesDropDownList(dataMemberName, dataMember, [&](entt::entity newEntity) {
-				dataMember = newEntity;
-			});
-			return;
-		}
-		else
-		{
-			// Generalization
-			DisplayProperty<FieldType>(editor, dataMemberName, dataMember);
-		}
+		// Generalization
+		DisplayProperty<FieldType>(editor, dataMemberName, dataMember);
+		
 	}, dataMember);
 }
 

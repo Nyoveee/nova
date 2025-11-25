@@ -6,7 +6,6 @@
 #include "component.h"
 #include "SceneManager.h"
 #include "Engine/prefabManager.h"
-
 class Engine;
 class PrefabManager;
 // A ECS wrapper around the entt framework for ease of access from other classes.
@@ -35,6 +34,8 @@ public:
 	// this recursively disables or enables an entity hierarchy..
 	ENGINE_DLL_API void setActive(entt::entity entity, bool isActive);
 
+	ENGINE_DLL_API bool isParentCanvas(entt::entity entity);
+
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
 	template <typename ...Components>
@@ -51,10 +52,26 @@ public:
 	template<typename ...Components>
 	void copyEntity(entt::entity en, entt::entity parent);
 
+	template<typename Component>
+	bool isComponentActive(entt::entity entity);
+	ENGINE_DLL_API bool isComponentActive(entt::entity entity, ComponentID componentID);
+
+	template<typename Component>
+	void setComponentActive(entt::entity entity, bool isActive);
+	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
+
+private:
+#if false
+	ENGINE_DLL_API void onCanvasCreation(entt::registry&, entt::entity entityID);
+	ENGINE_DLL_API void onCanvasDestruction(entt::registry&, entt::entity entityID);
+#endif
+
 public:
 	// public!
 	entt::registry registry;
 	entt::dispatcher systemEventDispatcher; //note we probably only need one just giga dump all events in here lol. 
+
+	entt::entity canvasUi;
 	SceneManager sceneManager;
 
 private:
@@ -115,22 +132,6 @@ void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
 		prefabManager.mapSerializedField(en, map);
 		map.clear();
 	}
-	//for (auto en : entityVec) {
-	//	auto tempEntity = registry.create();
-	//	([&]() {
-	//		Components* component = registry.try_get<Components>(en);
-	//		if (component) {
-	//			registry.emplace<Components>(tempEntity, *component);
-	//		}
-	//		}(), ...);
-
-	//	EntityData* ed = registry.try_get<EntityData>(en);
-	//	if (ed->parent != entt::null) {
-	//		EntityData* parent = registry.try_get<EntityData>(ed->parent);
-	//		parent->children.push_back(tempEntity);
-
-	//	}
-	//}
 }
 
 template<typename ...Components>
@@ -142,7 +143,7 @@ void ECS::copyEntity(entt::entity en, entt::entity parent) {
 		if (component) {
 			registry.emplace<Components>(tempEntity, *component);
 		}
-		}(), ...);
+	}(), ...);
 
 	map[en] = tempEntity;
 
@@ -172,3 +173,8 @@ void ECS::copyEntity(entt::entity en, entt::entity parent) {
 		p.children.push_back(tempEntity);
 	}
 }
+// Eseentially a proxy function since engine.h can't be included in this file
+template<typename Component>
+bool ECS::isComponentActive(entt::entity entity) { return isComponentActive(entity, typeid(Component).hash_code()); }
+template<typename Component>
+void ECS::setComponentActive(entt::entity entity, bool isActive) { setComponentActive(entity, typeid(Component).hash_code(), isActive);}

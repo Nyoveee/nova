@@ -3,6 +3,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Checkpoint 1",
@@ -63,6 +64,7 @@
                     39846051,
                     3
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "QuestLocations",
@@ -120,6 +122,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "WaypointQuest",
@@ -207,6 +210,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "AttackHitBoxPosition",
@@ -218,12 +222,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.06822503358125687,
+                    "y": -0.06822504848241806,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.06822502613067627,
+                    "y": -0.06822505593299866,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -234,13 +238,13 @@
                 "localRotation": {
                     "w": 0.9994182586669922,
                     "x": 0.0,
-                    "y": -0.034105896949768066,
+                    "y": -0.03410591557621956,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999961256980896,
+                    "x": 0.9999956488609314,
                     "y": 1.0,
-                    "z": 0.9999961256980896
+                    "z": 0.9999956488609314
                 },
                 "position": {
                     "x": -1.1444206237792969,
@@ -250,13 +254,13 @@
                 "rotation": {
                     "w": 0.9994182586669922,
                     "x": 0.0,
-                    "y": -0.034105900675058365,
+                    "y": -0.03410591185092926,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999960660934448,
+                    "x": 0.9999957084655762,
                     "y": 1.0,
-                    "z": 0.9999960660934448
+                    "z": 0.9999957084655762
                 }
             },
             "id": 39846056
@@ -303,6 +307,7 @@
                 "children": [
                     40894643
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Player",
@@ -318,156 +323,21 @@
                 "modelId": 4
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "isRotatable": false,
+                "isRotatable": true,
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 1.0,
+                "motionQuality": "Discrete",
                 "motionType": "Dynamic"
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 0.0010000000474974513
-                                },
-                                "name": "cameraSensitivity"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "maximumMoveSpeed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "accelerationStrength"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 15.0
-                                },
-                                "name": "jumpStrength"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 1
-                                },
-                                "name": "maxJumpCount"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 0.25
-                                },
-                                "name": "dashDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 3
-                                },
-                                "name": "dashCount"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 3.0
-                                },
-                                "name": "dashCooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 75.0
-                                },
-                                "name": "dashStrength"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "maxHealth"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894643
-                                },
-                                "name": "cameraObject"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 25
-                                },
-                                "name": "gameUIManager"
-                            }
-                        ],
-                        "scriptId": 4613568823969579021
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894649
-                                },
-                                "name": "muzzle"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 25
-                                },
-                                "name": "gameUIManager"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894645
-                                },
-                                "name": "sniper"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894647
-                                },
-                                "name": "shotgun"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 2000.0
-                                },
-                                "name": "bulletSpeed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 0.20000000298023224
-                                },
-                                "name": "swapWeaponCooldown"
-                            }
-                        ],
-                        "scriptId": 4613568823969579023
-                    }
-                ]
+                "scriptDatas": null
             },
             "Transform": {
                 "eulerAngles": {
@@ -531,6 +401,7 @@
             },
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Floor",
@@ -546,6 +417,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -555,6 +427,7 @@
                 "isTrigger": false,
                 "layer": "NonMoving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Static"
             },
             "Transform": {
@@ -610,6 +483,7 @@
                     40894633,
                     2097167
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Environment",
@@ -680,6 +554,7 @@
             },
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Wall",
@@ -695,6 +570,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -704,6 +580,7 @@
                 "isTrigger": false,
                 "layer": "NonMoving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Static"
             },
             "Transform": {
@@ -755,6 +632,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Directional Light",
@@ -823,6 +701,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Muzzle",
@@ -925,20 +804,20 @@
                     "z": -3.1415090560913086
                 },
                 "localPosition": {
-                    "x": -0.007302284240722656,
-                    "y": 0.7915778160095215,
+                    "x": -0.0073032379150390625,
+                    "y": 0.7915773391723633,
                     "z": 1.263458251953125
                 },
                 "localRotation": {
                     "w": 0.6610255837440491,
                     "x": -3.906498022843152e-06,
                     "y": 0.7503634095191956,
-                    "z": -3.5344860407349188e-06
+                    "z": -3.5344862681085942e-06
                 },
                 "localScale": {
                     "x": 1.000037670135498,
                     "y": 1.0001285076141357,
-                    "z": 0.9999738335609436
+                    "z": 0.9999744892120361
                 },
                 "position": {
                     "x": 17.508508682250977,
@@ -954,7 +833,7 @@
                 "scale": {
                     "x": 0.9999940991401672,
                     "y": 1.0000545978546143,
-                    "z": 0.9999884963035583
+                    "z": 0.9999889731407166
                 }
             },
             "id": 40894649
@@ -962,6 +841,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": false,
                 "layerId": 0,
                 "name": "Shotgun",
@@ -989,46 +869,46 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -0.004345439374446869,
+                    "x": -0.004345437046140432,
                     "y": -1.5694153308868408,
-                    "z": 0.004402426071465015
+                    "z": 0.004402422346174717
                 },
                 "localEulerAngles": {
-                    "x": -0.004333156161010265,
+                    "x": -0.0043331533670425415,
                     "y": -1.569331407546997,
-                    "z": 0.004390141926705837
+                    "z": 0.004390139598399401
                 },
                 "localPosition": {
-                    "x": -0.3924427032470703,
-                    "y": 0.0002880096435546875,
-                    "z": 0.04941749572753906
+                    "x": -0.39245033264160156,
+                    "y": 0.0002899169921875,
+                    "z": 0.049417972564697266
                 },
                 "localRotation": {
                     "w": 0.7076143026351929,
-                    "x": 1.7932476112036966e-05,
+                    "x": 1.7932492482941598e-05,
                     "y": -0.7065988779067993,
-                    "z": 2.236142427136656e-05
+                    "z": 2.2361437004292384e-05
                 },
                 "localScale": {
-                    "x": 1.0002866983413696,
-                    "y": 0.9999353885650635,
-                    "z": 0.9998440742492676
+                    "x": 1.0002871751785278,
+                    "y": 0.9999356269836426,
+                    "z": 0.9998443126678467
                 },
                 "position": {
-                    "x": 17.123489379882813,
-                    "y": 7.602165699005127,
-                    "z": 1.6685866117477417
+                    "x": 17.12347412109375,
+                    "y": 7.602167129516602,
+                    "z": 1.6685869693756104
                 },
                 "rotation": {
                     "w": 0.7076137661933899,
-                    "x": 1.7928745364770293e-05,
+                    "x": 1.7928758097696118e-05,
                     "y": -0.7065994739532471,
-                    "z": 2.23651895794319e-05
+                    "z": 2.2365198674378917e-05
                 },
                 "scale": {
-                    "x": 1.0002473592758179,
-                    "y": 0.9998989701271057,
-                    "z": 0.999992311000824
+                    "x": 1.0002477169036865,
+                    "y": 0.99989914894104,
+                    "z": 0.9999924898147583
                 }
             },
             "id": 40894648
@@ -1047,6 +927,7 @@
                 "children": [
                     40894648
                 ],
+                "inactiveComponents": null,
                 "isActive": false,
                 "layerId": 0,
                 "name": "Shotgun Holder",
@@ -1056,76 +937,7 @@
                 "tag": ""
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894643
-                                },
-                                "name": "camera"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "cooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 0.20000000298023224
-                                },
-                                "name": "recoilDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "range"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 0.10000000149011612
-                                },
-                                "name": "scatterRange"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 10
-                                },
-                                "name": "numOfPellets"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 5
-                                },
-                                "name": "currentAmmo"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 10
-                                },
-                                "name": "maxAmmo"
-                            }
-                        ],
-                        "scriptId": 3313031286721937411
-                    }
-                ]
+                "scriptDatas": null
             },
             "Transform": {
                 "eulerAngles": {
@@ -1134,20 +946,20 @@
                     "z": 2.920535688288872e-11
                 },
                 "localEulerAngles": {
-                    "x": -1.7431020168934275e-11,
+                    "x": -1.74310184342108e-11,
                     "y": 1.7051486091157475e-13,
-                    "z": 8.639458072556838e-12
+                    "z": 8.639459807280314e-12
                 },
                 "localPosition": {
-                    "x": 0.00017547607421875,
+                    "x": 0.0001678466796875,
                     "y": 0.00011873245239257813,
                     "z": 0.00020599365234375
                 },
                 "localRotation": {
                     "w": 1.0,
-                    "x": -8.715510084467137e-12,
+                    "x": -8.7155092171054e-12,
                     "y": 8.525743045578738e-14,
-                    "z": 4.319729036278419e-12
+                    "z": 4.319729903640157e-12
                 },
                 "localScale": {
                     "x": 1.0001327991485596,
@@ -1155,14 +967,14 @@
                     "z": 1.0000052452087402
                 },
                 "position": {
-                    "x": 17.5159912109375,
+                    "x": 17.515981674194336,
                     "y": 7.601877689361572,
                     "z": 1.6191717386245728
                 },
                 "rotation": {
                     "w": 1.0,
                     "x": -1.7800424328973108e-11,
-                    "y": -8.462245659757173e-07,
+                    "y": -8.462243954454607e-07,
                     "z": 1.4602662828933077e-11
                 },
                 "scale": {
@@ -1180,6 +992,7 @@
                     40894647,
                     40894649
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gun Holder",
@@ -1195,8 +1008,8 @@
                     "z": 2.056589620824667e-11
                 },
                 "localEulerAngles": {
-                    "x": -5.756324236716459e-12,
-                    "y": -6.076451199987787e-07,
+                    "x": -5.756325104078197e-12,
+                    "y": -6.076448926251032e-07,
                     "z": 2.595441396524567e-11
                 },
                 "localPosition": {
@@ -1206,8 +1019,8 @@
                 },
                 "localRotation": {
                     "w": 1.0,
-                    "x": -2.8781582152304086e-12,
-                    "y": -3.0382255999938934e-07,
+                    "x": -2.8781586489112776e-12,
+                    "y": -3.038224463125516e-07,
                     "z": 1.2977206115261097e-11
                 },
                 "localScale": {
@@ -1223,7 +1036,7 @@
                 "rotation": {
                     "w": 1.0,
                     "x": -9.08490990769728e-12,
-                    "y": -8.462245659757173e-07,
+                    "y": -8.462244522888795e-07,
                     "z": 1.0282940297867693e-11
                 },
                 "scale": {
@@ -1242,6 +1055,7 @@
                 "children": [
                     40894644
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Camera",
@@ -1299,6 +1113,7 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Sniper Mesh",
@@ -1317,45 +1132,45 @@
             "Transform": {
                 "eulerAngles": {
                     "x": -3.141170024871826,
-                    "y": -1.5547385215759277,
+                    "y": -1.554734706878662,
                     "z": 3.141200304031372
                 },
                 "localEulerAngles": {
-                    "x": 4.769535007653758e-05,
-                    "y": 1.423039436340332,
-                    "z": 2.880512511183042e-05
+                    "x": 4.769425868289545e-05,
+                    "y": 1.4230386018753052,
+                    "z": 2.880402098526247e-05
                 },
                 "localPosition": {
-                    "x": -8.392333984375e-05,
-                    "y": -0.00011444091796875,
-                    "z": 0.000232696533203125
+                    "x": -8.58306884765625e-05,
+                    "y": -0.00011539459228515625,
+                    "z": 0.00023245811462402344
                 },
                 "localRotation": {
                     "w": 0.7573705911636353,
-                    "x": 8.656865247758105e-06,
-                    "y": 0.6529853343963623,
-                    "z": -4.664104835683247e-06
+                    "x": 8.656795216666069e-06,
+                    "y": 0.6529852747917175,
+                    "z": -4.664184871217003e-06
                 },
                 "localScale": {
-                    "x": 1.000148892402649,
+                    "x": 1.0001485347747803,
                     "y": 0.9999200701713562,
-                    "z": 1.000028133392334
+                    "z": 1.0000282526016235
                 },
                 "position": {
-                    "x": 17.515695571899414,
-                    "y": 7.602100849151611,
-                    "z": 1.6189625263214111
+                    "x": 17.515687942504883,
+                    "y": 7.602100372314453,
+                    "z": 1.6189621686935425
                 },
                 "rotation": {
-                    "w": -0.70140540599823,
-                    "x": -8.32775913295336e-06,
+                    "w": -0.7014053463935852,
+                    "x": -8.327484465553425e-06,
                     "y": 0.7127625942230225,
-                    "z": -1.2955390047864057e-05
+                    "z": -1.2955611055076588e-05
                 },
                 "scale": {
-                    "x": 1.000106930732727,
+                    "x": 1.0001094341278076,
                     "y": 0.9999200701713562,
-                    "z": 1.0000345706939697
+                    "z": 1.0000330209732056
                 }
             },
             "id": 40894646
@@ -1374,6 +1189,7 @@
                 "children": [
                     40894646
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Sniper Holder",
@@ -1383,105 +1199,50 @@
                 "tag": ""
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894643
-                                },
-                                "name": "camera"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "cooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 0.15000000596046448
-                                },
-                                "name": "recoilDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 1000.0
-                                },
-                                "name": "range"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 40.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 5
-                                },
-                                "name": "currentAmmo"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": 10
-                                },
-                                "name": "maxAmmo"
-                            }
-                        ],
-                        "scriptId": 16782251036674424897
-                    }
-                ]
+                "scriptDatas": null
             },
             "Transform": {
                 "eulerAngles": {
                     "x": -3.1415903568267822,
-                    "y": -0.1316957324743271,
+                    "y": -0.1316957175731659,
                     "z": -3.1415820121765137
                 },
                 "localEulerAngles": {
                     "x": -3.1415903568267822,
-                    "y": -0.13169744610786438,
+                    "y": -0.131697416305542,
                     "z": -3.1415820121765137
                 },
                 "localPosition": {
-                    "x": -0.0001735687255859375,
+                    "x": -0.0001811981201171875,
                     "y": 0.0004563331604003906,
                     "z": 0.0002384185791015625
                 },
                 "localRotation": {
-                    "w": -0.06580114364624023,
-                    "x": -5.3705171012552455e-06,
+                    "w": -0.06580112874507904,
+                    "x": -5.370516191760544e-06,
                     "y": 0.9978327751159668,
-                    "z": -1.4757906683371402e-06
+                    "z": -1.4757898725292762e-06
                 },
                 "localScale": {
-                    "x": 0.999990701675415,
+                    "x": 0.999991238117218,
                     "y": 1.0000739097595215,
-                    "z": 1.0000027418136597
+                    "z": 1.0000032186508179
                 },
                 "position": {
-                    "x": 17.515642166137695,
+                    "x": 17.51563262939453,
                     "y": 7.60221529006958,
                     "z": 1.6192041635513306
                 },
                 "rotation": {
-                    "w": -0.06580028682947159,
-                    "x": -5.3705371101386845e-06,
+                    "w": -0.06580027937889099,
+                    "x": -5.370536200643983e-06,
                     "y": 0.9978328347206116,
-                    "z": -1.475793624194921e-06
+                    "z": -1.4757927147002192e-06
                 },
                 "scale": {
-                    "x": 1.0000051259994507,
+                    "x": 1.0000057220458984,
                     "y": 1.0,
-                    "z": 0.9999592900276184
+                    "z": 0.9999597668647766
                 }
             },
             "id": 40894645
@@ -1502,6 +1263,7 @@
             },
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Waypoint1",
@@ -1517,15 +1279,17 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "isRotatable": false,
-                "isTrigger": true,
+                "isRotatable": true,
+                "isTrigger": false,
                 "layer": "NonMoving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Static"
             },
             "Scripts": {
@@ -1587,6 +1351,7 @@
                 "children": [
                     1
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "QuestManager",

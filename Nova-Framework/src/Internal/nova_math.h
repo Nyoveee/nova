@@ -24,4 +24,6 @@ namespace Math {
 	// smooth's the interval using a sine curve.
 	FRAMEWORK_DLL_API float smoothstep(float interval);
 	FRAMEWORK_DLL_API float sinestep(float interval);
+
+	FRAMEWORK_DLL_API bool isPointInRect(glm::vec2 point, glm::vec2 center, glm::vec2 scale);
 }

@@ -4,6 +4,8 @@
 #include "export.h"
 #include "shader.h"
 
+#include "materialConfig.h"
+
 #include <optional>
 #include <glm/glm.hpp>
 #include <unordered_map>
@@ -21,31 +23,12 @@ enum class Pipeline {
 class CustomShader: public Resource
 {
 public:
-	enum class BlendingConfig {
-		AlphaBlending,
-		AdditiveBlending,
-		PureAdditiveBlending,
-		PremultipliedAlpha,
-		Disabled
-	};
-
-	enum class DepthTestingMethod {
-		DepthTest,
-		NoDepthWrite,
-		NoDepthWriteTest
-	};
-
-	enum class CullingConfig {
-		Enable,
-		Disable
-	};
-
 	// this struct will be de/serialisation for the construction of this resource custom shader	.
 	struct ShaderParserData {
-		// Tags(Defaulted)
-		BlendingConfig blendingConfig = CustomShader::BlendingConfig::AdditiveBlending;
-		DepthTestingMethod depthTestingMethod = CustomShader::DepthTestingMethod::DepthTest;
-		CullingConfig cullingConfig = CustomShader::CullingConfig::Enable;
+		// Tags (Defaulted)
+		BlendingConfig blendingConfig			= BlendingConfig::AdditiveBlending;
+		DepthTestingMethod depthTestingMethod	= DepthTestingMethod::DepthTest;
+		CullingConfig cullingConfig				= CullingConfig::Enable;
 
 		// Properties(name,type)
 		std::unordered_map<ShaderVariableName, ShaderVariableType> uniforms;

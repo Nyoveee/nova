@@ -71,6 +71,19 @@ struct BuildSettings
 	float tileSize;
 };
 
+struct NavMeshOffLinkCollections
+{
+	int count = 0;
+	std::vector<float> offMeshVerts;
+	std::vector<float> offMeshRadius;
+	std::vector<unsigned char> direction;
+	std::vector<unsigned char> area;
+	std::vector<unsigned short> flag;
+	std::vector<unsigned int> id;
+
+
+};
+
 
 class NavMeshGeneration {
 public:
@@ -81,6 +94,7 @@ public:
 	void ResetBuildSetting();
 	void BuildNavMesh(std::string const& filename);
 	void AddNavMeshSurface(std::string const& filename);
+	NavMeshOffLinkCollections BuildNavMeshOffLinks(std::string agentName);
 	void PrependAdditionalData(unsigned char ** navData, int* dataSize); //inject additional data to the front of the memory block
 
 private:
@@ -90,6 +104,8 @@ private:
 
 private:
 	BuildSettings buildSettings;
+
+
 };
 
 

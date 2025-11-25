@@ -39,7 +39,5 @@ Frag{
     }
 
     vec3 pbrColor = PBRCaculation(color, fsIn.normal, roughness, metallic, occulusion);
-    FragColor = vec4(pbrColor, 1.0);
-
-
+    return vec4(pbrColor, 1.0);
 }

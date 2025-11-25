@@ -17,7 +17,7 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 void ParticleSystem::update(float dt)
 {
 	for (auto&& [entity, transform, entityData, emitter] : engine.ecs.registry.view<Transform, EntityData, ParticleEmitter>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<ParticleEmitter>(entity)) {
 			continue;
 		}
 
