@@ -40,12 +40,13 @@ class Sequencer;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
-	Image, Sequence
+	Image, Sequence, NavMeshOffLinks
 
 using ScriptName   = std::string;
 using LayerID	   = int;
 
 #include "physics.h"
+#include "AdditionalNavigationTypes.h"
 
 // ======= C# Field Information =======
 #ifndef ALL_FIELD_PRIMITIVES
@@ -58,7 +59,7 @@ using LayerID	   = int;
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	\
+		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,navMeshOfflinkData,	\
 		ALL_TYPED_RESOURCE_ID,																		\
 		ALL_FIELD_PRIMITIVES
 #endif
@@ -434,6 +435,28 @@ struct NavMeshSurface
 	)
 };
 
+
+struct NavMeshOffLinks
+{
+	std::string agentName;
+	glm::vec3 startPoint{};
+	glm::vec3 endPoint{};
+	float radius = 0.5f;
+	bool isBiDirectional = true;
+
+
+	REFLECTABLE
+	(
+		agentName,
+		startPoint,
+		endPoint,
+		radius,
+		isBiDirectional
+	)
+
+
+};
+
 struct NavMeshAgent
 {
 	//User Variables
@@ -449,6 +472,10 @@ struct NavMeshAgent
 	
 	bool updateRotation				= true; //should agent update rotation. 
 	bool updatePosition             = true; //should agent update position. 
+	bool autoTraverseOffMeshLink	= true;
+
+	bool isOnOffMeshLink			= false;
+
 
 	REFLECTABLE
 	(
@@ -463,6 +490,7 @@ struct NavMeshAgent
 								  //NOTE this no longer maps directly to dtCrowd object, use GetDTCrowdIndex to find actual index
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
+	navMeshOfflinkData currentData;
 };
 
 struct NavigationTestTarget

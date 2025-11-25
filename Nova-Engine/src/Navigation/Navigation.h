@@ -10,6 +10,7 @@
 #include "Detour/Detour/DetourNavMesh.h"
 #include "Detour/Detour/DetourNavMeshQuery.h"
 #include "Detour/DetourCrowd/DetourCrowd.h"
+#include "AdditionalNavigationTypes.h"
 #include "navMesh.h"
 
 
@@ -33,6 +34,7 @@ struct dtQueryDeleter {
 	}
 };
 
+struct navMeshOfflinkData;
 
 class NavigationSystem
 {
@@ -59,19 +61,28 @@ public:
 	ENGINE_DLL_API void		  SetAgentInactive(entt::entity entityID);
 	ENGINE_DLL_API void		  SetAgentActive(NavMeshAgent& navMeshAgent);
 	ENGINE_DLL_API void		  SetAgentInactive(NavMeshAgent& navMeshAgent);
+	ENGINE_DLL_API void		  SetAgentAutoOffMeshTraversalParams(NavMeshAgent& navMeshAgent, bool state);
 
 //--------------------For C# scripting API-------------------------------------------------------------//
 public:
+	//--------- IN Script Library -----//
 	//Start navigation for a particular agent. Returns bool false when unable to set destination to targetPosition.
 	ENGINE_DLL_API bool setDestination(entt::entity entityID, glm::vec3 targetPosition );
+
+
+	//--------- IN Managed Types -----//
+
+	//Warp the agent to this point, moves the transform as well, so it will turn
+	ENGINE_DLL_API bool warp(NavMeshAgent& navMeshAgent,  glm::vec3 targetPosition);
+
+	//return navMeshOfflinkData.valid == false if navMeshOffLink does not exist, rmb to check if navmeshofflink is taken. isOnOffMeshLinks() on C# side
+	ENGINE_DLL_API navMeshOfflinkData getNavmeshOfflinkData(NavMeshAgent& navMeshAgent);
+
+	ENGINE_DLL_API void CompleteOffLinkData(NavMeshAgent& navMeshAgent);
 
 	//ENGINE_DLL_API void setAgentInactive(entt::entity entityID);
 
 	//ENGINE_DLL_API void setAgentActive(entt::entity entityID);
-
-	//ENGINE_DLL_API bool warp(entt::entity entityID,  glm::vec3 targetPosition);
-
-
 
 //--------------------Helper functions-------------------------------------------------------------//
 private:
@@ -123,6 +134,12 @@ private:
 
 
 	ResourceID navMeshId;
+};
+
+
+struct navMeshPath
+{
+	std::vector<glm::vec3> hello;
 };
 
 

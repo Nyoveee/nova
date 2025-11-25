@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <glm/gtx/fast_trigonometry.hpp>
 #include "Profiling.h"
+#include "../Detour/Detour/DetourCommon.h"
 
 #undef min
 #undef max
@@ -87,6 +88,26 @@ void NavigationSystem::update(float const& dt)
 		dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(agent.agentName,agent.agentIndex));
 
 		if (dtAgent) {
+
+
+			//Additional Code to wrap dt update for crowdagent states
+			if (dtAgent->state == DT_CROWDAGENT_STATE_OFFMESH)
+			{
+				agent.isOnOffMeshLink = true;
+
+				//if autotraverse code is disabled use user defined code to traverse instead, await command to continue. See CompleteOffMeshLink()
+				if(agent.autoTraverseOffMeshLink == false)
+				{
+					agent.updatePosition = false;
+					continue;
+				}
+
+			}
+			else if (dtAgent->state == DT_CROWDAGENT_STATE_WALKING)
+			{
+				agent.isOnOffMeshLink = false;
+			}
+
 
 
 			if (agent.updatePosition)
@@ -259,6 +280,12 @@ ENGINE_DLL_API void NavigationSystem::RemoveAgentsFromSystem(entt::registry&, en
 		return;
 	}
 
+
+	if (navMeshAgent->agentIndex == -1)
+	{
+		return;
+	}
+
 	int lastElement  = lastIndex[navMeshAgent->agentName]-1;
 	int mapperindex  = agentToIndexMap[navMeshAgent->agentName][navMeshAgent->agentIndex];
 	int agentIDofLastElement = indexToAgentMap[navMeshAgent->agentName][lastElement];
@@ -366,6 +393,16 @@ ENGINE_DLL_API void NavigationSystem::SetAgentInactive(entt::entity entityID)
 		crowdManager[navMeshAgent->agentName]->resetMoveTarget(dtIndex);
 
 	}
+}
+
+ENGINE_DLL_API void NavigationSystem::SetAgentAutoOffMeshTraversalParams(NavMeshAgent& navMeshAgent, bool state)
+{
+
+	navMeshAgent.autoTraverseOffMeshLink = state;
+
+
+	int dtAgentIndex = GetDTCrowdIndex(navMeshAgent.agentName, navMeshAgent.agentIndex);
+	crowdManager[navMeshAgent.agentName]->getEditableAgent(dtAgentIndex)->params.autoTraverseOffMeshLink = state;
 }
 
 void NavigationSystem::initNavMeshSystems()
@@ -521,7 +558,6 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 		//Too far in the X and Z direction!
 		if ( (distanceX*distanceX + distanceZ * distanceZ )> (horizontalTolerance * horizontalTolerance))
 		{
-
 			return false;
 		}
 
@@ -531,12 +567,144 @@ bool NavigationSystem::setDestination(entt::entity entityID, glm::vec3 targetPos
 			return true;
 		}
 
+		return false;
+	}
+
+
+	return false;
+}
+
+ENGINE_DLL_API bool NavigationSystem::warp(NavMeshAgent& navMeshAgent, glm::vec3 targetPosition)
+{
+	//try get 
+	dtQueryFilter const* filter = crowdManager[navMeshAgent.agentName]->getFilter(0); // configure include/exclude flags or costs if needed
+	float const* halfExtents = crowdManager[navMeshAgent.agentName]->getQueryHalfExtents();
+	dtPolyRef nearestRef = 0;
+	float nearestPt[3];
+
+	float position[3] = { targetPosition.x,targetPosition.y,targetPosition.z };
+
+	if (dtStatusSucceed(queryManager[navMeshAgent.agentName]->findNearestPoly(position, halfExtents, filter, &nearestRef, nearestPt)) && nearestRef)
+	{
+
+		float clamped[3]; //true closest point
+		queryManager[navMeshAgent.agentName]->closestPointOnPoly(nearestRef, position, clamped, nullptr);
+
+		//have some tolerance
+		float horizontalTolerance = 0.01f; // fallback tolerance
+
+		//distance check
+		const float distanceX = clamped[0] - targetPosition.x;
+		const float distanceZ = clamped[2] - targetPosition.z;
+
+		//Too far in the X and Z direction!
+		if ((distanceX * distanceX + distanceZ * distanceZ) > (horizontalTolerance * horizontalTolerance))
+		{
+			return false;
+		}
+
+
+		int dtCrowdIndex = GetDTCrowdIndex(navMeshAgent.agentName, navMeshAgent.agentIndex);
+
+		//get editable agent. 
+		dtCrowdAgent* dtAgent = crowdManager[navMeshAgent.agentName]->getEditableAgent(dtCrowdIndex);
+
+		crowdManager[navMeshAgent.agentName]->resetMoveTarget(dtCrowdIndex);
+
+		dtAgent->npos[0] = clamped[0];
+		dtAgent->npos[1] = clamped[1];
+		dtAgent->npos[2] = clamped[2];
+
+		dtAgent->nvel[0] = 0.f;
+		dtAgent->nvel[1] = 0.f;
+		dtAgent->nvel[2] = 0.f;
+
+		dtAgent->dvel[0] = 0.f;
+		dtAgent->dvel[1] = 0.f;
+		dtAgent->dvel[2] = 0.f;
+
+		dtAgent->corridor.reset(nearestRef, clamped);
+
 		return true;
 	}
 
 
 
 	return false;
+}
+
+ENGINE_DLL_API navMeshOfflinkData NavigationSystem::getNavmeshOfflinkData(NavMeshAgent& navMeshAgent)
+{
+	//get editable agent
+	int dtIndex = GetDTCrowdIndex(navMeshAgent.agentName,navMeshAgent.agentIndex);
+
+	dtCrowdAgent* agent = crowdManager[navMeshAgent.agentName]->getEditableAgent(dtIndex);
+
+	if (agent->state != DT_CROWDAGENT_STATE_OFFMESH)
+	{
+		
+		Logger::warn("Agent Request for Navmesh offlink data without a valid offlink");
+
+		return navMeshOfflinkData{ false,glm::vec3{} , glm::vec3{} };
+	}
+
+
+
+	float startPos[3], endPos[3];
+	dtPolyRef refs[2];
+	if(agent->corridor.moveOverOffmeshConnection(agent->cornerPolys[agent->ncorners - 1], refs, startPos, endPos, const_cast<dtNavMeshQuery*>(crowdManager[navMeshAgent.agentName]->getNavMeshQuery()) )); //Trust me it's safe :)
+	{
+	
+		glm::vec3 startPosGLM;
+		startPosGLM.x = startPos[0];
+		startPosGLM.y = startPos[1];
+		startPosGLM.z = startPos[2];
+
+		glm::vec3 endPosGLM;
+		endPosGLM.x = endPos[0];
+		endPosGLM.y = endPos[1];
+		endPosGLM.z = endPos[2];
+
+		agent->currentOffMeshData = navMeshOfflinkData{ true,startPosGLM ,endPosGLM };
+		return  navMeshOfflinkData{ true,startPosGLM ,endPosGLM };
+	
+	
+	}
+
+	return navMeshOfflinkData{ false,glm::vec3{} , glm::vec3{} };
+
+
+}
+
+ENGINE_DLL_API void NavigationSystem::CompleteOffLinkData(NavMeshAgent& navMeshAgent)
+{
+	//get editable agent
+	int dtIndex = GetDTCrowdIndex(navMeshAgent.agentName, navMeshAgent.agentIndex);
+
+	dtCrowdAgent* agent = crowdManager[navMeshAgent.agentName]->getEditableAgent(dtIndex);
+
+	navMeshAgent.isOnOffMeshLink = false;
+	navMeshAgent.updatePosition = true;
+
+	dtPolyRef savedTargeteRef = agent->targetRef;
+
+	float savedTargetPos[3]{ agent->targetPos[0], agent->targetPos[1],agent->targetPos[2] };
+
+	float endPos[3];
+	agent->state = DT_CROWDAGENT_STATE_WALKING;
+	agent->ncorners = 0;
+	agent->nneis = 0;
+
+	////Set to final position
+	endPos[0] =agent->currentOffMeshData.endNode[0];
+	endPos[1] =agent->currentOffMeshData.endNode[1];
+	endPos[2] =agent->currentOffMeshData.endNode[2];
+	//agent->corridor.reset(agent->offMeshPolyref[1], endPos);
+	dtVcopy(agent->npos, endPos);
+	dtVset(agent->dvel, 0, 0, 0);
+	//crowdManager[navMeshAgent.agentName]->requestMoveTarget(dtIndex,savedTargeteRef,savedTargetPos);
+
+
 }
 
 int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent)
@@ -552,8 +720,6 @@ int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent
 	{
 		return agentToIndexMap[agentName][agent.agentIndex]; 
 	}
-
-
 
 	//access the agent list and find the last value. 
 	int lastArrIndex = lastIndex[agentName];
@@ -592,6 +758,7 @@ dtCrowdAgentParams NavigationSystem::ConfigureDTParams(NavMesh const& navMesh, N
 	params.obstacleAvoidanceType = 0; //default settings see dtCrowd init, its already set there currently we have on type only see how it goes first
 	params.updateFlags = UpdateFlags::DT_CROWD_ANTICIPATE_TURNS | UpdateFlags::DT_CROWD_SEPARATION | UpdateFlags::DT_CROWD_OPTIMIZE_VIS; //use for now
 	params.separationWeight = navMeshAgent.separationWeight;
+	params.autoTraverseOffMeshLink =  navMeshAgent.autoTraverseOffMeshLink;
 
 	return params;
 }

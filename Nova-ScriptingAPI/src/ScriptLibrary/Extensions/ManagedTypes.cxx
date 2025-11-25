@@ -324,3 +324,88 @@ void SkinnedMeshRenderer_::setMaterialInt(int index, System::String^ name, int d
 void SkinnedMeshRenderer_::setMaterialUInt(int index, System::String^ name, unsigned data) {
 	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
 }
+
+
+// =================================================================
+// Navmesh Agent
+// =================================================================
+
+bool NavMeshAgent_::Warp(Vector3^ newPosition)
+{
+	NavMeshAgent* agent = nativeComponent();
+	
+	return Interface::engine->navigationSystem.warp(*agent, newPosition->native());
+
+}
+
+bool  NavMeshAgent_::getIsUpdateRotation()
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	return agent->updateRotation;
+}
+
+
+void  NavMeshAgent_::setIsUpdateRotation(bool setState)
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	agent->updateRotation = setState;
+}
+
+
+bool  NavMeshAgent_::getIsUpdatePosition()
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	return agent->updatePosition;
+}
+
+void  NavMeshAgent_::setIsUpdatePosition(bool setState)
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	agent->updatePosition = setState;
+}
+
+bool NavMeshAgent_::getAutomateNavMeshOfflinksState()
+{
+	return nativeComponent()->autoTraverseOffMeshLink;
+}
+
+void NavMeshAgent_::setAutomateNavMeshOfflinksState(bool value)
+{
+	Interface::engine->navigationSystem.SetAgentAutoOffMeshTraversalParams(*nativeComponent(),value);
+}
+
+bool NavMeshAgent_::isOnOffMeshLinks()
+{
+	return nativeComponent()->isOnOffMeshLink;
+}
+NavMeshOfflinkData NavMeshAgent_::getOffLinkData()
+{
+	navMeshOfflinkData type = Interface::engine->navigationSystem.getNavmeshOfflinkData(*nativeComponent());
+
+	NavMeshOfflinkData returnOfflinkdata;
+
+	returnOfflinkdata.valid = type.valid;
+
+	//returnOfflinkdata.startNode.x =  type.startNode.x;
+	//returnOfflinkdata.startNode.y =  type.startNode.y;
+	//returnOfflinkdata.startNode.z =  type.startNode.z;
+
+	//returnOfflinkdata.endNode.x = type.endNode.x;
+	//returnOfflinkdata.endNode.y = type.endNode.y;
+	//returnOfflinkdata.endNode.z = type.endNode.z;
+
+	returnOfflinkdata.startNode = Vector3{ type.startNode };
+	returnOfflinkdata.endNode = Vector3{ type.endNode };
+
+	return returnOfflinkdata;
+}
+
+void  NavMeshAgent_::CompleteOffMeshLink()
+{
+	Interface::engine->navigationSystem.CompleteOffLinkData(*nativeComponent());
+
+}

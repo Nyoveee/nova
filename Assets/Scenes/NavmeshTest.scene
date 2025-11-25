@@ -30,6 +30,9 @@
                 ],
                 "modelId": 3
             },
+            "NavMeshModifier": {
+                "Area_Type": "Exclude"
+            },
             "Rigidbody": {
                 "initialVelocity": {
                     "x": 0.0,
@@ -239,8 +242,8 @@
                 },
                 "localPosition": {
                     "x": 8.0,
-                    "y": 2.085773229598999,
-                    "z": -7.0
+                    "y": 1.25,
+                    "z": -1.600000023841858
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -255,8 +258,8 @@
                 },
                 "position": {
                     "x": 8.0,
-                    "y": 2.085773229598999,
-                    "z": -7.0
+                    "y": 1.25,
+                    "z": -1.600000023841858
                 },
                 "rotation": {
                     "w": 1.0,
@@ -449,7 +452,7 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 7,
+                                    "__variant_type": 8,
                                     "__variant_value": 17393992937450881025
                                 },
                                 "name": "cubePrefab"
@@ -514,9 +517,9 @@
                 },
                 "scaleWithTransform": true,
                 "shapeScale": {
-                    "x": 1.0,
+                    "x": 4.5,
                     "y": 1.0,
-                    "z": 1.0
+                    "z": 5.183000087738037
                 }
             },
             "EntityData": {
@@ -560,7 +563,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 1.9184836149215698,
+                    "y": 1.9663493633270264,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -576,7 +579,7 @@
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 1.9184836149215698,
+                    "y": 1.9663493633270264,
                     "z": 0.0
                 },
                 "rotation": {
@@ -592,6 +595,141 @@
                 }
             },
             "id": 1048585
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Offlink",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "NavMeshOffLinks": {
+                "agentName": "Humanoid",
+                "endPoint": {
+                    "x": 3.200000047683716,
+                    "y": 3.0,
+                    "z": -1.600000023841858
+                },
+                "isBiDirectional": true,
+                "radius": 2.0,
+                "startPoint": {
+                    "x": 8.0,
+                    "y": 1.25,
+                    "z": -1.600000023841858
+                }
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 4.315522193908691,
+                    "y": 2.941741704940796,
+                    "z": -1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 4.315522193908691,
+                    "y": 2.941741704940796,
+                    "z": -1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 40894629
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Entity 1",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    364950360440684545
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 3.200000047683716,
+                    "y": 3.0100483894348145,
+                    "z": -1.600000023841858
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                },
+                "position": {
+                    "x": 3.200000047683716,
+                    "y": 3.0100483894348145,
+                    "z": -1.600000023841858
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                }
+            },
+            "id": 40894630
         }
     ],
     "layers": [
