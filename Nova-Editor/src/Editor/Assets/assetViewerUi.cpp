@@ -266,11 +266,27 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 
 		return;
 	}
+	
+	ImGui::SeparatorText("Config");
 
+	editor.displayEnumDropDownList<BlendingConfig>(material->materialData.blendingConfig, "Blending", [&](auto config) {
+		material->materialData.blendingConfig = config;
+	});
+
+	editor.displayEnumDropDownList<DepthTestingMethod>(material->materialData.depthTestingMethod, "Depth Testing", [&](auto config) {
+		material->materialData.depthTestingMethod = config;
+	});
+
+	editor.displayEnumDropDownList<CullingConfig>(material->materialData.cullingConfig, "Culling", [&](auto config) {
+		material->materialData.cullingConfig = config;
+	});
+
+	ImGui::SeparatorText("Properties");
+	
 	if (ImGui::Button("Update Material Properties From Shader")) {
 		updateMaterialProperty(customShader->customShaderData.uniforms);
 	}
-	
+
 	int imguiCounter = 0;
 
 	// Display the current material values..

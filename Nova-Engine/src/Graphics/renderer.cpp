@@ -26,8 +26,8 @@ constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
 
 // we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
-constexpr int MAX_DEBUG_TRIANGLES = 10000;
-constexpr int MAX_DEBUG_LINES	  = 10000;
+constexpr int MAX_DEBUG_TRIANGLES = 100000;
+constexpr int MAX_DEBUG_LINES	  = 100000;
 constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
 
 // ok right?
@@ -357,8 +357,8 @@ void Renderer::renderUI()
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	setDepthMode(CustomShader::DepthTestingMethod::NoDepthWriteTest);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setDepthMode(DepthTestingMethod::NoDepthWriteTest);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	glBindVertexArray(textVAO);
 
@@ -399,7 +399,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
 
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setBlendMode(BlendingConfig::Disabled);
 
 	// We render individual game objects..
 	renderSkyBox();
@@ -412,7 +412,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setBlendMode(BlendingConfig::Disabled);
 
 	renderBloom(frameBuffers);
 
@@ -528,7 +528,7 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
@@ -639,9 +639,7 @@ void Renderer::debugRenderPhysicsCollider() {
 	// (so post processing)
 	// ================================================
 
-
-
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());
 	
 	// set image uniform accordingly..
@@ -663,15 +661,14 @@ void Renderer::debugRenderNavMesh() {
 	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 
 	glDisable(GL_STENCIL_TEST);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 	glEnable(GL_DEPTH_TEST);
 
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f, 0.8f, 0.8f, 0.5f });
 	glDrawArrays(GL_TRIANGLES, 0, numOfNavMeshDebugTriangles * 3);
 
-	glDisable(GL_DEPTH_TEST);
-	setBlendMode(CustomShader::BlendingConfig::Disabled);
+	setBlendMode(BlendingConfig::Disabled);
 	numOfNavMeshDebugTriangles = 0;
 }
 
@@ -686,7 +683,7 @@ void Renderer::debugRenderParticleEmissionShape()
 	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
 	
 	glEnable(GL_DEPTH_TEST);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 
 	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
 		glm::mat4 model = glm::identity<glm::mat4>();
@@ -772,7 +769,7 @@ void Renderer::prepareRendering() {
 	// Configure pre rendering settings
 	// =================================================================
 	glEnable(GL_DITHER);
-	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+	setDepthMode(DepthTestingMethod::DepthTest);
 
 	// bind the VBOs to their respective binding index
 	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(),			0, sizeof(glm::vec3));
@@ -1149,7 +1146,7 @@ void Renderer::renderParticles()
 {
 
 	glBindVertexArray(particleVAO);
-	setBlendMode(CustomShader::BlendingConfig::AlphaBlending);
+	setBlendMode(BlendingConfig::AlphaBlending);
 	particleShader.use();
 
 	// Disable writing to depth buffer for particles
@@ -1224,9 +1221,9 @@ Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshR
 	return material;
 }
 
-void Renderer::setBlendMode(CustomShader::BlendingConfig configuration) {
+void Renderer::setBlendMode(BlendingConfig configuration) {
 	switch (configuration) {
-		using enum CustomShader::BlendingConfig;
+		using enum BlendingConfig;
 	case AlphaBlending:
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1252,9 +1249,9 @@ void Renderer::setBlendMode(CustomShader::BlendingConfig configuration) {
 	}
 }
 
-void Renderer::setDepthMode(CustomShader::DepthTestingMethod configuration) {
+void Renderer::setDepthMode(DepthTestingMethod configuration) {
 	switch (configuration) {
-		using enum CustomShader::DepthTestingMethod;
+		using enum DepthTestingMethod;
 	case DepthTest:
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
@@ -1273,9 +1270,9 @@ void Renderer::setDepthMode(CustomShader::DepthTestingMethod configuration) {
 	}
 }
 
-void Renderer::setCullMode(CustomShader::CullingConfig configuration) {
+void Renderer::setCullMode(CullingConfig configuration) {
 	switch (configuration) {
-		using enum CustomShader::CullingConfig;
+		using enum CullingConfig;
 	case Enable:
 		glEnable(GL_CULL_FACE);
 		break;
@@ -1365,7 +1362,7 @@ void Renderer::renderObjectIds() {
 	glDisable(GL_BLEND);
 	glDisable(GL_DITHER);
 
-	setDepthMode(CustomShader::DepthTestingMethod::DepthTest);
+	setDepthMode(DepthTestingMethod::DepthTest);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, objectIdFrameBuffer.fboId());
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
@@ -1607,9 +1604,9 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// Set rendering fixed pipeline configuration.
 	// ===========================================================================
 
-	setBlendMode(shaderData.blendingConfig);
-	setDepthMode(shaderData.depthTestingMethod);
-	setCullMode(shaderData.cullingConfig);
+	setBlendMode(material.materialData.blendingConfig);
+	setDepthMode(material.materialData.depthTestingMethod);
+	setCullMode(material.materialData.cullingConfig);
 
 	Shader const& shader = shaderOpt.value();
 

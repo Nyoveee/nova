@@ -116,7 +116,7 @@ void Transform_::rotate(Quaternion quartenion) {
 Quaternion Transform_::LookAt(Transform_^ target) {
 	Vector3 direction = position - target->position;
 	direction.Normalize();
-	
+
 	return Quaternion{ glm::quatLookAt(direction.native(), glm::vec3{0,1,0}) };
 }
 
@@ -180,6 +180,14 @@ Vector3 Rigidbody_::GetVelocity() {
 	}
 
 	return Vector3{};
+}
+
+void Rigidbody_::SetGravityFactor(float factor) {
+	Interface::engine->physicsManager.setGravityFactor(*nativeComponent(), factor);
+}
+
+float Rigidbody_::GetGravityFactor() {
+	return nativeComponent()->gravityMultiplier;
 }
 
 // =================================================================

@@ -35,6 +35,14 @@ public ref class Time {
 public:
 	static float V_FixedDeltaTime(); 
 	static float V_DeltaTime();
+
+	static float V_FixedDeltaTime_Unscaled();
+	static float V_DeltaTime_Unscaled();
+
+	static property float timeScale {
+		float get() { return Interface::engine->deltaTimeMultiplier; };
+		void set(float value) { Interface::engine->deltaTimeMultiplier = value; };
+	};
 };
 
 public ref class Debug {

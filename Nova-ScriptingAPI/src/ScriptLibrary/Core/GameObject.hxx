@@ -38,6 +38,11 @@ public:
 		System::String^ get();
 	}
 
+public:
+	static bool operator==(GameObject^ lhs, GameObject^ rhs) {
+		return lhs->entityID == rhs->entityID;
+	}
+
 internal:
 	Transform_^ transformReference;
 };
