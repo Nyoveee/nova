@@ -40,6 +40,11 @@ public:
 
 public:
 	static bool operator==(GameObject^ lhs, GameObject^ rhs) {
+		// zhi wei can overwrite this this is temp.
+		if (!lhs || !rhs) {
+			return false;
+		}
+
 		return lhs->entityID == rhs->entityID;
 	}
 

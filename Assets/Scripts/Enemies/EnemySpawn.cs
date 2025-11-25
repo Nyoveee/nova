@@ -6,28 +6,30 @@ using ScriptingAPI;
 class EnemySpawn : Script
 {
     private Transform_ enemyTransform;
-    public Vector3 StartPos; 
-    public Vector3 EndPos;
+    private Transform_ spawnerTransform;
+    public float yOffset;
+    public float duration;
     private float timeElapsed = 0f;
-    private float duration = 2f;
+    
 
     [SerializableField]
     private Prefab enemyPrefab;
 
     protected override void init()
     {
+        spawnerTransform = getComponent<Transform_>();
         enemyTransform = Instantiate(enemyPrefab).transform;
     }
 
     protected override void update()
     {
         float ratio = timeElapsed / duration;
-
-        // ratio = Mathf.Clamp(ratio, 0, 1);
+        Vector3 EndPos = spawnerTransform.position;
+        EndPos.y += yOffset;
 
         if (ratio < 1)
         {
-            enemyTransform.position = Vector3.Lerp(StartPos, EndPos, ratio);
+            enemyTransform.position = Vector3.Lerp(spawnerTransform.position, EndPos, ratio);
         }
         else
         {
@@ -35,6 +37,8 @@ class EnemySpawn : Script
         }
 
         timeElapsed += Time.V_FixedDeltaTime();
+
+        //Debug.Log("balls");
     }
 
     // Lerp need duration
