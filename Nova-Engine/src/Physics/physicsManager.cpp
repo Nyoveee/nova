@@ -460,7 +460,7 @@ void PhysicsManager::createPrimitiveShapes() {
 	capsule = capsuleSettings.Create().Get();
 }
 
-void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling)
+void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool)
 {
 	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider, capsuleCollider, meshCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, 
 		BoxCollider, 

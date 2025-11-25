@@ -12,7 +12,7 @@ enum class CameraMovement {
 	Descent
 };
 
-// This event tells the editor that there is an attempt to select a game object.
+// This event tells the ui system / editor that there is an attempt to select a game object.
 enum class ToSelectGameObject {
 	Sentinel
 };

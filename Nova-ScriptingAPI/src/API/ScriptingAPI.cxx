@@ -98,12 +98,12 @@ void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId
 	Script^ script = gameObjectScripts[entityID][scriptId];
 	System::Type^ scriptType = script->GetType();
 
-	try {
-		System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+	System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+	if (function) {
 		function->Invoke(script, nullptr);
 	}
-	catch (System::Exception^ ex) {
-		Logger::warn("Error when invoking function name {} of script id {} of entity {}", msclr::interop::marshal_as<std::string>(ex->ToString()), scriptId, entityID);
+	else {
+		Logger::warn("Error when invoking function name {} of script id {} of entity {}", name, scriptId, entityID);
 	}
 }
 

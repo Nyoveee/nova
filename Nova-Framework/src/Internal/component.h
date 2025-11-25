@@ -639,7 +639,7 @@ struct Text {
 	TypedResourceID<Font> font;
 	int fontSize = 13;
 	std::string text;
-	Color fontColor = Color{ 0.f, 0.f, 0.f };
+	Color fontColor = Color{ 1.f, 1.f, 1.f };
 
 	REFLECTABLE
 	(
@@ -659,15 +659,70 @@ struct Canvas {
 	)
 };
 
-struct Button {
-	entt::entity referencedEntity;
+struct EntityScript {
+	entt::entity entity;
 	TypedResourceID<ScriptAsset> script;
-	std::string functionName;
+	
+	REFLECTABLE(
+		entity,
+		script
+	)
+};
+
+struct Button {
+	bool isInteractable;
+	EntityScript reference;
+
+	ColorA normalColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA highlightedColor = ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA pressedColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA disabledColor	= ColorA{ 1.f, 1.f, 1.f, 1.f };
+
+	std::string onClickReleasedFunction;
+	std::string onPressFunction;
+	std::string onHoverFunction;
+
+	float fadeDuration = 0.1f;
+	float colorMultiplier = 1.f;
+
+	glm::vec3 offset		= glm::vec3{ 0.f, 0.f, 0.f };
+	glm::vec3 padding		= glm::vec3{ 0.f, 0.f, 0.f };
 
 	REFLECTABLE
 	(
-		referencedEntity,
-		script,
-		functionName
+		isInteractable,
+		reference,
+		normalColor,
+		highlightedColor,
+		pressedColor,
+		disabledColor,
+		onClickReleasedFunction,
+		onPressFunction,
+		onHoverFunction,
+		fadeDuration,
+		colorMultiplier,
+		offset,
+		padding
 	)
+
+	enum class State {
+		Normal,
+		Hovered,
+		Pressed,
+		Disabled
+	} state;
+
+	float timeElapsed = 0.f;
+
+	ColorA finalColor = normalColor;
+
+	void enableButton() {
+		isInteractable = true;
+		state = Button::State::Normal;
+	}
+
+	void disableButton() {
+		isInteractable = false;
+		state = Button::State::Disabled;
+	}
 };

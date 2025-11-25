@@ -27,6 +27,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	navigationSystem		{ *this }, 
 	particleSystem          { *this },
 	animationSystem			{ *this },
+	uiSystem				{ *this },
 	gameConfig				{ gameConfig },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
@@ -72,6 +73,7 @@ void Engine::update(float dt) {
 	particleSystem.update(dt * deltaTimeMultiplier);
 	transformationSystem.update();
 	cameraSystem.update(dt); // dt is only used in editor.
+	uiSystem.update(dt);
 	renderer.update(dt * deltaTimeMultiplier);
 
 	resourceManager.update();

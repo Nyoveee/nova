@@ -39,13 +39,14 @@ constexpr bool vsync = false;
 constexpr float fixedFps = 60.f;
 constexpr int maxNumOfSteps = 4;
 
-Window::Window(const char* name, Dimension dimension, Configuration config, InputManager& inputManager, Viewport viewportConfig) :
+Window::Window(const char* name, Dimension dimension, GameConfig gameConfig, Configuration config, InputManager& inputManager, Viewport viewportConfig) :
 	inputManager		{ inputManager },
 	glfwWindow			{},
 	deltaTime			{},
 	currentFps			{},
 	windowWidth			{ dimension.width },
 	windowHeight		{ dimension.height },
+	gameConfig			{ gameConfig },
 	imGuiContext		{},
 	isFullScreen		{}
 {
@@ -150,6 +151,8 @@ Window::Window(const char* name, Dimension dimension, Configuration config, Inpu
 			toEnableMouse(toEnable == ToEnableCursor::Enable);
 		}
 	);
+
+	// setGameViewPort(GameViewPort{ 0.f, 0.f, dimension});
 }
 
 Window::~Window() {
@@ -244,7 +247,7 @@ void Window::setGameViewPort(GameViewPort p_gameViewPort) {
 	gameViewPort = p_gameViewPort;
 }
 
-glm::vec2 Window::getClipSpacePos() const {
+glm::vec2 Window::getNormalizedViewportPos() const {
 	double xPos, yPos;
 	glfwGetCursorPos(glfwWindow, &xPos, &yPos);
 
@@ -255,8 +258,16 @@ glm::vec2 Window::getClipSpacePos() const {
 
 	// Flip y..
 	mouseRelativeToViewPort.y = 1 - mouseRelativeToViewPort.y;
+	return mouseRelativeToViewPort;
+}
 
-	return mouseRelativeToViewPort * 2.f - 1.f;
+glm::vec2 Window::getClipSpacePos() const {
+	return getNormalizedViewportPos() * 2.f - 1.f;
+}
+
+glm::vec2 Window::getUISpacePos() const {
+	glm::vec2 normalisedMousePos = getNormalizedViewportPos();
+	return { normalisedMousePos.x * 1920.f, normalisedMousePos.y * 1080.f };
 }
 
 float Window::getDeltaTime() const {

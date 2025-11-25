@@ -147,7 +147,7 @@ private:
 	void renderText(Transform const& transform, Text const& text);
 
 	// render ui images.
-	void renderImage(Transform const& transform, Image const& image);
+	void renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier);
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();

@@ -20,6 +20,8 @@
 
 #undef max
 
+constexpr ColorA whiteColor{ 1.f, 1.f, 1.f, 1.f };
+
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 
 // 100 MB should be nothing right?
@@ -370,13 +372,14 @@ void Renderer::renderUI()
 
 			Image* image = registry.try_get<Image>(entity);
 			Text* text = registry.try_get<Text>(entity);
-			
+			Button* button = registry.try_get<Button>(entity);
+
 			if (!entityData.isActive) {
 				continue;
 			}
 
 			if (image && engine.ecs.isComponentActive<Image>(entity)) {
-				renderImage(transform, *image);
+				renderImage(transform, *image, button ? button->finalColor : whiteColor);
 			}
 
 			if (text && engine.ecs.isComponentActive<Text>(entity)) {
@@ -1037,7 +1040,7 @@ void Renderer::renderText(Transform const& transform, Text const& text)
 	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 }
 
-void Renderer::renderImage(Transform const& transform, Image const& image)
+void Renderer::renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier)
 {
 	texture2dShader.use();
 	texture2dShader.setMatrix("uiProjection", UIProjection);
@@ -1054,7 +1057,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image)
 		return;
 	}
 
-	texture2dShader.setVec4("tintColor", image.colorTint);
+	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
 
