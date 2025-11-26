@@ -107,7 +107,6 @@ public:
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end, array<System::String^>^ layermask);
-
 };
 
 // ======================================
@@ -147,7 +146,8 @@ public:
 	static float Min(float a, float b);
 	static float Max(float a, float b);
 	static float Pow(float base, float exponent);
-
+	static float Sqrt(float f);
+	static float abs(float f);
 public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;

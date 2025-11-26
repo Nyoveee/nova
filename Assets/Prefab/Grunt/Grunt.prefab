@@ -57,7 +57,7 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
+                                    "__variant_type": 9,
                                     "__variant_value": 13123964764219588615
                                 },
                                 "name": "hitboxPrefab"
@@ -71,7 +71,7 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 1.0
                                 },
                                 "name": "spawningDuration"
@@ -85,7 +85,7 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
+                                    "__variant_type": 9,
                                     "__variant_value": 14493050257245634575
                                 },
                                 "name": "ichorPrefab"
@@ -125,52 +125,59 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 7.0
                                 },
                                 "name": "attackRadius"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 50.0
                                 },
                                 "name": "chasingRadius"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 20.0
                                 },
                                 "name": "damage"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 100.0
                                 },
                                 "name": "health"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 10.0
                                 },
                                 "name": "movementSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 14,
                                     "__variant_value": 6
                                 },
                                 "name": "ichorSpawnAmount"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 0.10000000149011612
                                 },
                                 "name": "hurtDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 0.20000000298023224
+                                },
+                                "name": "jumpDuration"
                             }
                         ],
                         "scriptId": 278475951028994057
@@ -452,12 +459,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.872227575309807e-07,
+                    "y": -5.872152541996911e-07,
                     "z": -3.1415915489196777
                 },
                 "localEulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.872227006875619e-07,
+                    "y": -5.872152541996911e-07,
                     "z": -3.1415915489196777
                 },
                 "localPosition": {
@@ -466,15 +473,15 @@
                     "z": 2.0236854553222656
                 },
                 "localRotation": {
-                    "w": -5.849726107953757e-07,
-                    "x": -1.6974296102034714e-07,
+                    "w": -5.849706781191344e-07,
+                    "x": -1.697462863603505e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "localScale": {
-                    "x": 1.0000369548797607,
-                    "y": 0.9998452663421631,
-                    "z": 1.000065565109253
+                    "x": 1.000077486038208,
+                    "y": 0.9998655319213867,
+                    "z": 1.0000858306884766
                 },
                 "position": {
                     "x": 36.71729278564453,
@@ -482,15 +489,15 @@
                     "z": -44.74260330200195
                 },
                 "rotation": {
-                    "w": -5.849726107953757e-07,
-                    "x": -1.6974296102034714e-07,
+                    "w": -5.849706781191344e-07,
+                    "x": -1.697462863603505e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "scale": {
-                    "x": 1.0000367164611816,
-                    "y": 0.9998451471328735,
-                    "z": 1.0000654458999634
+                    "x": 1.000077247619629,
+                    "y": 0.9998654127120972,
+                    "z": 1.000085711479187
                 }
             },
             "id": 1048637

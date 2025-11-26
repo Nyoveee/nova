@@ -18,7 +18,8 @@ class GunnerProjectile : Script
     {
         Invoke(() =>
         {
-            Destroy(gameObject);
+            if(gameObject!=null)
+                Destroy(gameObject);
         }, lifetime);
     }
     protected override void update()
@@ -29,13 +30,15 @@ class GunnerProjectile : Script
     {
         if(other.tag == "Wall")
         {
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
         }
         if(other.tag == "Player")
         {
             PlayerController playerController = other.getScript<PlayerController>();
             playerController.TakeDamage(damage);
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
         }
     }
 

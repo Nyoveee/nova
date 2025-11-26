@@ -142,7 +142,7 @@ class Charger : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAtPlayer();
+        LookAt(player);
         currentChargeCooldown -= Time.V_FixedDeltaTime();
         currentStompCooldown -= Time.V_FixedDeltaTime();
         if (GetDistanceFromPlayer() > chargerstats.attackRange && GetDistanceFromPlayer() < chargerstats.chargingRange && currentChargeCooldown <=0 )
@@ -160,7 +160,7 @@ class Charger : Enemy
         if(GetDistanceFromPlayer() <= chargerstats.attackRange && currentStompCooldown <= 0)
         {
             chargerState = ChargerState.Stomp;
-            animator.PlayAnimation("ChargerJump");
+            animator.PlayAnimation("ChargerStomp");
             ActivateRigidbody();
             return;
         }

@@ -64,7 +64,7 @@ class Grunt : Enemy
         updateState.Add(GruntState.Attacking, Update_AttackState);
         updateState.Add(GruntState.Death, Update_Death);
 
-        LookAtPlayer();
+        LookAt(player);
 
         Invoke(() =>
         {
@@ -151,7 +151,7 @@ class Grunt : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAtPlayer();
+        LookAt(player);
         // Move Enemy 
         MoveToNavMeshPosition(player.transform.position);
     }
@@ -162,7 +162,7 @@ class Grunt : Enemy
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        LookAtPlayer();
+        LookAt(player);
     }
 
     private void Update_Death(){}

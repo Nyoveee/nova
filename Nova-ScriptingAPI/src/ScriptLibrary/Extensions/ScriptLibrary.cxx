@@ -98,7 +98,6 @@ void Input::ClearAllKeyMapping() {
 // Audio APIs..
 // ======================================
 void AudioAPI::PlaySound(GameObject^ gameObject, System::String^ string) {
-	Logger::info("{}", static_cast<unsigned>(gameObject->entityID));
 	Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
 }
 void AudioAPI::PlayBGM(GameObject^ gameObject, System::String^ string) {
@@ -216,6 +215,8 @@ float Mathf::Interpolate(float a, float b, float t, float degree) { return Inter
 float Mathf::Min(float a, float b) { return std::min(a, b); }
 float Mathf::Max(float a, float b) { return std::max(a, b); }
 float Mathf::Pow(float base, float exponent) { return std::powf(base, exponent); }
+float Mathf::Sqrt(float f){ return std::sqrt(f); }
+float Mathf::abs(float f){ return std::abs(f); }
 // ======================================
 // Random Related API
 // ======================================

@@ -628,7 +628,7 @@ navMeshOfflinkData NavigationSystem::getNavmeshOfflinkData(NavMeshAgent& navMesh
 
 	float startPos[3], endPos[3];
 	dtPolyRef refs[2];
-	if(agent->corridor.moveOverOffmeshConnection(agent->cornerPolys[agent->ncorners - 1], refs, startPos, endPos, const_cast<dtNavMeshQuery*>(crowdManager[navMeshAgent.agentName]->getNavMeshQuery()) )); //Trust me it's safe :)
+	if(agent->corridor.moveOverOffmeshConnection(agent->cornerPolys[agent->ncorners - 1], refs, startPos, endPos, const_cast<dtNavMeshQuery*>(crowdManager[navMeshAgent.agentName]->getNavMeshQuery()))) //Trust me it's safe :)
 	{
 	
 		glm::vec3 startPosGLM;
@@ -643,8 +643,6 @@ navMeshOfflinkData NavigationSystem::getNavmeshOfflinkData(NavMeshAgent& navMesh
 
 		agent->currentOffMeshData = navMeshOfflinkData{ true,startPosGLM ,endPosGLM };
 		return  navMeshOfflinkData{ true,startPosGLM ,endPosGLM };
-	
-	
 	}
 
 	return navMeshOfflinkData{ false,glm::vec3{} , glm::vec3{} };
