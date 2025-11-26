@@ -10,6 +10,8 @@ class EnemySpawn : Script
     public float yOffset;
     public float duration;
     private float timeElapsed = 0f;
+    //private Vector3 StartPos;
+    private Vector3 EndPos;
     
 
     [SerializableField]
@@ -24,11 +26,16 @@ class EnemySpawn : Script
     protected override void update()
     {
         float ratio = timeElapsed / duration;
-        Vector3 EndPos = spawnerTransform.position;
+        //StartPos = spawnerTransform.position;
+        //StartPos.y -= yOffset;
+
+        // testing gravity/rigid body
+        EndPos = spawnerTransform.position;
         EndPos.y += yOffset;
 
         if (ratio < 1)
         {
+            //enemyTransform.position = Vector3.Lerp(StartPos, spawnerTransform.position, ratio);
             enemyTransform.position = Vector3.Lerp(spawnerTransform.position, EndPos, ratio);
         }
         else
@@ -38,9 +45,13 @@ class EnemySpawn : Script
 
         timeElapsed += Time.V_FixedDeltaTime();
 
-        //Debug.Log("balls");
     }
 
+    protected override void exit()
+    {
+         enemyTransform.gameObject.getComponent<Rigidbody_>().enable = true;
+        // Aaron might need to add something here to register the spawned enemy as an entity afterwards.
+    }
     // Lerp need duration
     // Script for animation
 }
