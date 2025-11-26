@@ -11,7 +11,6 @@ UIViewPort::UIViewPort(Editor& editor) :
 	editor					{ editor },
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
-	controlOverlay			{ editor },
 	isHoveringOver			{ false }
 {}
 
@@ -63,12 +62,14 @@ void UIViewPort::update() {
 
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getUIFrameBufferTexture();
-	ImGui::GetWindowDrawList()->AddImage(textureId, uiWindowTopLeft, uiWindowBottomRight, { 0, 1 }, { 1, 0 });
 
-	ImU32 borderColor = IM_COL32(255, 0, 0, 255);
+	ImU32 borderColor = IM_COL32(150, 150, 150, 255);
+	ImU32 fillColor   = IM_COL32(20, 20, 20, 255);
 	constexpr float borderThickness = 2.0f;
 
 	ImGui::GetWindowDrawList()->AddRect(uiWindowTopLeft, uiWindowBottomRight, borderColor, 0.0f, 0, borderThickness);
+	ImGui::GetWindowDrawList()->AddRectFilled(uiWindowTopLeft, uiWindowBottomRight, fillColor, 0.0f, 0);
+	ImGui::GetWindowDrawList()->AddImage(textureId, uiWindowTopLeft, uiWindowBottomRight, { 0, 1 }, { 1, 0 });
 
 	windowTopLeft = uiWindowTopLeft;
 	windowDimension = { viewportWidth, viewportHeight };

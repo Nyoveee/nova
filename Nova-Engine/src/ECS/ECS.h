@@ -36,6 +36,9 @@ public:
 
 	ENGINE_DLL_API bool isParentCanvas(entt::entity entity);
 
+	ENGINE_DLL_API void recordOriginalScene();
+	ENGINE_DLL_API void restoreOriginalScene();
+
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
 	template <typename ...Components>
@@ -73,6 +76,7 @@ public:
 
 	entt::entity canvasUi;
 	SceneManager sceneManager;
+	ResourceID originalScene;	// we store the original scene when starting simulation..
 
 private:
 	Engine& engine;
@@ -103,6 +107,8 @@ void ECS::makeRegistryCopy() {
 			}
 		}(), ...);
 	}
+
+	originalScene = sceneManager.getCurrentScene();
 }
 
 template <typename ...Components>
@@ -123,6 +129,8 @@ void ECS::rollbackRegistry() {
 			}
 		}(), ...);
 	}
+
+	sceneManager.currentScene = originalScene;
 }
 
 template<typename ...Components>

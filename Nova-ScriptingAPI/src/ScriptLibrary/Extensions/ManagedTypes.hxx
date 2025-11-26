@@ -13,7 +13,12 @@ namespace ScriptingAPI {
 	ManagedResource(Texture)
 	ManagedResource(Model)
 	ManagedResource(Material)
+	ManagedResource(Scene)
 }
+
+
+#define ALL_MANAGED_TYPED_RESOURCE_ID \
+	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material, ScriptingAPI::Scene
 
 // ===========================================================================================
 // 1. Defining structs..
@@ -27,8 +32,6 @@ namespace ScriptingAPI {
 // later in 2. with the managed type.
 // ===========================================================================================
 
-#define ALL_MANAGED_TYPED_RESOURCE_ID \
-	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material
 
 // ======================================
 // This struct is responsible for Vector2 Types

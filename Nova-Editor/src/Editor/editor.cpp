@@ -246,9 +246,6 @@ void Editor::deleteEntity(entt::entity entity) {
 void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
-
-	//
-	//ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
@@ -263,6 +260,8 @@ void Editor::main(float dt) {
 	editorConfigUI.update();
 
 	handleEntityHovering();
+
+	engine.renderer.submitSelectedObjects(selectedEntities);
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -758,6 +757,10 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 }
 
 void Editor::loadScene(ResourceID sceneId) {
+	if (engine.isInSimulationMode()) {
+		return;
+	}
+
 	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
 
 	if (filePath) {
