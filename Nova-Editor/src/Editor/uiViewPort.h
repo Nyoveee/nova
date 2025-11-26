@@ -5,7 +5,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "gizmo.h"
-#include "controlOverlay.h"
 
 class Engine;
 class Editor;
@@ -20,7 +19,6 @@ public:
 public:
 	bool isHoveringOver;
 	bool isActive;
-	ControlOverlay controlOverlay;
 
 	ImVec2 windowTopLeft;
 	ImVec2 windowDimension;

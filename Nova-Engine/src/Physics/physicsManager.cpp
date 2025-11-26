@@ -460,7 +460,7 @@ void PhysicsManager::createPrimitiveShapes() {
 	capsule = capsuleSettings.Create().Get();
 }
 
-void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling)
+void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool)
 {
 	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider, capsuleCollider, meshCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, 
 		BoxCollider, 
@@ -681,6 +681,7 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 	JPH::RayCastResult rayCastResult;
 	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
 	RayCastLayerMaskFilterImpl layerMaskFilter(layerMask);
+
 	// Object Layer
 	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult, layerMaskFilter)) {
 		JPH::BodyID bodyId = rayCastResult.mBodyID;

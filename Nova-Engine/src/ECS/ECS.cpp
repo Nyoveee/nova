@@ -9,11 +9,17 @@
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this, engine ,engine.resourceManager },
-	prefabManager	{engine}
+	sceneManager	{ *this, engine, engine.resourceManager },
+	prefabManager	{ engine },
+	canvasUi		{ entt::null }
 {}
 
-ECS::~ECS() {}
+ECS::~ECS() {
+#if false
+	registry.on_construct<Canvas>().connect<&ECS::onCanvasCreation>(*this);
+	registry.on_destroy<Canvas>().connect<&ECS::onCanvasDestruction>(*this);
+#endif
+}
 
 void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform) {
 	EntityData& childEntityData = registry.get<EntityData>(childEntity);
@@ -164,6 +170,27 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 	}
 }
 
+bool ECS::isParentCanvas(entt::entity entity) {
+	if (entity == entt::null) {
+		return false;
+	}
+
+	if (registry.any_of<Canvas>(entity)) {
+		return true;
+	}
+
+	EntityData& entityData = registry.get<EntityData>(entity);
+	return isParentCanvas(entityData.parent);
+}
+
+void ECS::recordOriginalScene() {
+	originalScene = sceneManager.getCurrentScene();
+}
+
+void ECS::restoreOriginalScene() {
+	sceneManager.loadScene(originalScene);
+}
+
 bool ECS::isComponentActive(entt::entity entity, ComponentID componentID)
 {
 	EntityData& entityData{ registry.get<EntityData>(entity) };
@@ -189,3 +216,23 @@ void ECS::setComponentActive(entt::entity entity, ComponentID componentID, bool 
 			engine.physicsManager.removeBodiesFromSystem(engine.ecs.registry, entity);
 	}
 }
+
+#if false
+void ECS::onCanvasCreation(entt::registry&, entt::entity entityID) {
+	if (canvasUi != entt::null) {
+		Logger::error("Scene already contains an entity with the Canvas component! Removing another canvas component from entity {}", static_cast<unsigned>(entityID));
+		registry.remove<Canvas>(entityID);
+		return;
+	}
+
+	canvasUi = entityID;
+}
+
+void ECS::onCanvasDestruction(entt::registry&, entt::entity entityID) {
+	if (canvasUi != entityID) {
+		return;
+	}
+	
+	canvasUi = entt::null;
+}
+#endif

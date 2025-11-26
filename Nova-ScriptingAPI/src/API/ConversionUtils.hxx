@@ -29,6 +29,11 @@ inline std::function<void(T)> Convert(EventCallback^ callback, Key key) {
 	callbackWrapper = callback;
 
 	auto pressCallbackFunction = [callbackWrapper, keyValue](T inputEvent) {
+		// Don't broadcast input event if engine is paused.s
+		if (Interface::engine->isPaused) {
+			return;
+		}
+
 		if (callbackWrapper && static_cast<int>(inputEvent) == keyValue)
 			callbackWrapper.operator->()(); // Bit of a weird syntax, first get the object of type InputCallback^, then call the function 
 	};
@@ -43,6 +48,11 @@ inline std::function<void(MousePosition)> CreateMouseCallback(MouseEventCallback
 															// ok buddy :)
 
 	auto callbackFunction = [callbackWrapper](MousePosition mousePosition) {
+		// Don't broadcast input event if engine is paused.s
+		if (Interface::engine->isPaused) {
+			return;
+		}
+
 		if (callbackWrapper)
 			callbackWrapper.operator->()(static_cast<float>(mousePosition.xPos), static_cast<float>(mousePosition.yPos)); 
 			// Bit of a weird syntax, first get the object of type InputCallback^, then call the function 
@@ -59,6 +69,11 @@ inline std::function<void(Scroll)> CreateScrollCallback(ScrollEventCallback^ cal
 	gcroot<ScrollEventCallback^> callbackWrapper = callback;
 
 	auto callbackFunction = [callbackWrapper](Scroll scroll) {
+		// Don't broadcast input event if engine is paused.s
+		if (Interface::engine->isPaused) {
+			return;
+		}
+
 		if (callbackWrapper)
 			callbackWrapper.operator->()(static_cast<float>(scroll.value));
 	};

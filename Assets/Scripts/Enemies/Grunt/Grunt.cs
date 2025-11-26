@@ -153,7 +153,7 @@ class Grunt : Enemy
         }
         LookAtPlayer();
         // Move Enemy 
-        NavigationAPI.setDestination(gameObject, player.transform.position);
+        MoveToNavMeshPosition(player.transform.position);
     }
     private void Update_AttackState()
     {

@@ -228,3 +228,11 @@ int Random::Range(int minInclusive, int maxExclusive)
 {
 	return RandomRange::Int(minInclusive,maxExclusive);
 }
+
+// ======================================
+// Scene related API
+// ======================================
+void SceneAPI::ChangeScene(ScriptingAPI::Scene^ sceneId) {
+	// We want to delay our change scene request.
+	Interface::changeSceneRequest(sceneId);
+}

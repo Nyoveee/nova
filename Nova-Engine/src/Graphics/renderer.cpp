@@ -20,6 +20,8 @@
 
 #undef max
 
+constexpr ColorA whiteColor{ 1.f, 1.f, 1.f, 1.f };
+
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 
 // 100 MB should be nothing right?
@@ -370,13 +372,14 @@ void Renderer::renderUI()
 
 			Image* image = registry.try_get<Image>(entity);
 			Text* text = registry.try_get<Text>(entity);
-			
+			Button* button = registry.try_get<Button>(entity);
+
 			if (!entityData.isActive) {
 				continue;
 			}
 
 			if (image && engine.ecs.isComponentActive<Image>(entity)) {
-				renderImage(transform, *image);
+				renderImage(transform, *image, button ? button->finalColor : whiteColor);
 			}
 
 			if (text && engine.ecs.isComponentActive<Text>(entity)) {
@@ -536,6 +539,10 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisable(GL_BLEND);
+}
+
+void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
+	selectedEntities = entities;
 }
 
 GLuint Renderer::getEditorFrameBufferTexture() const {
@@ -731,6 +738,8 @@ void Renderer::debugRenderParticleEmissionShape()
 			break;
 		}
 	}
+
+	renderDebugSelectedObjects();
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
@@ -814,7 +823,8 @@ void Renderer::prepareRendering() {
 			pointLightData[numOfPtLights++] = {
 				transform.position,
 				glm::vec3{ light.color } * light.intensity,
-				light.attenuation
+				light.attenuation,
+				light.radius
 			};
 			break;
 
@@ -827,7 +837,7 @@ void Renderer::prepareRendering() {
 			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
 			directionalLightData[numOfDirLights++] = {
 				glm::normalize(forward),
-				glm::vec3{ light.color } *light.intensity
+				glm::vec3{ light.color } * light.intensity
 			};
 			break;
 		}
@@ -845,7 +855,8 @@ void Renderer::prepareRendering() {
 				glm::vec3{ light.color } *light.intensity,
 				light.attenuation,
 				light.cutOffAngle,
-				light.outerCutOffAngle
+				light.outerCutOffAngle,
+				light.radius
 			};
 			break;
 		}
@@ -1037,7 +1048,7 @@ void Renderer::renderText(Transform const& transform, Text const& text)
 	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 }
 
-void Renderer::renderImage(Transform const& transform, Image const& image)
+void Renderer::renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier)
 {
 	texture2dShader.use();
 	texture2dShader.setMatrix("uiProjection", UIProjection);
@@ -1054,7 +1065,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image)
 		return;
 	}
 
-	texture2dShader.setVec4("tintColor", image.colorTint);
+	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
 
@@ -1749,7 +1760,33 @@ Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
 }
 
-ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
-{
+glm::mat4 const& Renderer::getUIProjection() const {
 	return UIProjection;
+}
+
+void Renderer::renderDebugSelectedObjects() {
+	for (entt::entity entity : selectedEntities) {
+		Transform const& transform = registry.get<Transform>(entity);
+
+		Light const* light = registry.try_get<Light>(entity);
+
+		if (light) {
+			// Debug render light outline..
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, transform.position);
+			debugShader.setMatrix("model", model);
+
+			switch (light->type) {
+			case Light::Type::PointLight:
+			case Light::Type::Spotlight:
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				break;
+			}
+		}
+	}
 }

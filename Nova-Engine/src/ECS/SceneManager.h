@@ -28,9 +28,10 @@ public:
 	std::vector<Layer> layers;
 
 private:
+	friend ECS;
+
 	ECS& ecs;
 	Engine& engine;
 	ResourceManager& resourceManager;
 	ResourceID currentScene;
-
 };

@@ -13,6 +13,10 @@ class ECS;
 ref class Script;
 ref class IManagedComponent;
 
+namespace ScriptingAPI {
+	ref class Scene;
+}
+
 public ref class Interface
 {
 public:
@@ -23,6 +27,8 @@ internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
 	static void loadAssembly();
 	static void unloadAssembly();
+
+	static void clearAllRuntime();
 
 	static void update();
 
@@ -44,7 +50,10 @@ internal:
 
 	static void submitGameObjectDeleteRequest(EntityID entityToBeDeleted);
 
+	static void changeSceneRequest(ScriptingAPI::Scene^ newScene);
+
 	static void recursivelyInitialiseEntity(entt::entity entity);
+
 internal:
 	// Script Fields
 	static std::vector<FieldData> getScriptFieldDatas(ScriptID scriptID);
@@ -82,8 +91,10 @@ internal:
 
 	template <typename Type, typename ...Types>
 	static bool SetTypedResourceIDFromScript(serialized_field_type const& fieldData, Object^% object);
+
 internal:
 	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
+
 internal:
 	static Engine* engine;
 
@@ -111,6 +122,9 @@ private:
 
 	// Temporary container to execute and remove it from the main container..
 	static System::Collections::Generic::List<TimeoutDelegate^>^ executeTimeoutDelegates;
+
+	// We delay change scene request, by storing it in a variable first.
+	static ScriptingAPI::Scene^ newSceneToChangeTo;
 
 	// Assembly information
 	static System::Runtime::Loader::AssemblyLoadContext^ assemblyLoadContext;
