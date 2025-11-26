@@ -169,3 +169,14 @@ public ref class SceneAPI {
 public:
 	static void ChangeScene(ScriptingAPI::Scene^ sceneId);
 };
+
+// ======================================
+// This class for providing system control
+// ======================================
+public ref class Systems {
+public:
+	static property bool Pause {
+		bool get() { return Interface::engine->isPaused; };
+		void set(bool value) { Interface::engine->isPaused = value; };
+	};
+};

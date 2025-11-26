@@ -32,7 +32,8 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
 	prefabManager			{ *this },
-	deltaTimeMultiplier		{ 1.f }
+	deltaTimeMultiplier		{ 1.f },
+	isPaused				{ false }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -51,6 +52,10 @@ void Engine::fixedUpdate(float dt) {
 		scriptingAPIManager.update();
 	}
 	
+	if (isPaused) {
+		return;
+	}
+
 	physicsManager.updateTransformBodies();
 
 	if (inSimulationMode) {
@@ -62,18 +67,22 @@ void Engine::fixedUpdate(float dt) {
 void Engine::update(float dt) {
 	ZoneScoped;
 
-	//Note the order should be correct
+	// Note the order should be correct
 	audioSystem.update();
 
 	if (!inSimulationMode) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt); // real time checking if scripts need to recompile.
 	}
 
-	animationSystem.update(dt * deltaTimeMultiplier);
-	particleSystem.update(dt * deltaTimeMultiplier);
+	if (!isPaused) {
+		animationSystem.update(dt * deltaTimeMultiplier);
+		particleSystem.update(dt * deltaTimeMultiplier);
+	}
+
 	transformationSystem.update();
 	cameraSystem.update(dt); // dt is only used in editor.
 	uiSystem.update(dt);
+	
 	renderer.update(dt * deltaTimeMultiplier);
 
 	resourceManager.update();
@@ -141,6 +150,7 @@ void Engine::stopSimulation() {
 		scriptingAPIManager.stopSimulation();
 
 		gameLockMouse(false);
+		isPaused = false;
 	};
 }
 
@@ -206,6 +216,10 @@ void Engine::SystemsOnLoad() {
 	if (!scriptingAPIManager.startSimulation()) {
 		stopSimulation();
 	}
+
+	// unpause all systems when loaded.. and clear accumulated dt
+	isPaused = false;
+	window.clearAccumulatedTime();
 }
 
 

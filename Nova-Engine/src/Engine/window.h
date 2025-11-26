@@ -70,8 +70,9 @@ public:
 	// scaled normalized viewport based on UI projection size.
 	ENGINE_DLL_API glm::vec2 getUISpacePos() const;
 
-public:
 	ENGINE_DLL_API void toEnableMouse(bool toEnable);
+
+	ENGINE_DLL_API void clearAccumulatedTime();
 
 public:
 	// GLFW function callbacks are in the global scope and therefore do not have private access to Input Manager.
@@ -87,6 +88,7 @@ private:
 
 	double			deltaTime;
 	double			currentFps;
+	double			accumulatedTime;
 
 	// Starting position & dimension of the game view port.
 	GameViewPort 	gameViewPort;

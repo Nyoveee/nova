@@ -103,8 +103,8 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 			ImGui::BeginDisabled();
 		}
 
-		if (ImGui::Button(ICON_FA_PAUSE, ImVec2{ buttonSize, buttonSize })) {
-			// not implemented. @TODO: implement pause.
+		if (ImGui::Button(editor.engine.isPaused ? ICON_FA_FORWARD_STEP : ICON_FA_PAUSE, ImVec2{ buttonSize, buttonSize })) {
+			editor.engine.isPaused = !editor.engine.isPaused;
 		}
 
 		if (!editor.isInSimulationMode()) {
