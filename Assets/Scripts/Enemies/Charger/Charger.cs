@@ -47,6 +47,7 @@ class Charger : Enemy
         Attack,
         Stagger,
         Stomp,
+        Jump,
         Death
     }
     private ChargerState chargerState = ChargerState.Idle;
@@ -64,6 +65,7 @@ class Charger : Enemy
         updateState.Add(ChargerState.Attack, Update_Attack);
         updateState.Add(ChargerState.Stagger, Update_Stagger);
         updateState.Add(ChargerState.Stomp, Update_Stomp);
+        updateState.Add(ChargerState.Jump, Update_Jump);
         updateState.Add(ChargerState.Death, Update_Death);
         ActivateNavMeshAgent();
     }
@@ -100,10 +102,9 @@ class Charger : Enemy
             chargerState = ChargerState.Death;
             animator.PlayAnimation("ChargerDeath");
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-            NavigationAPI.stopAgent(gameObject);
             chargingRigidbody.enable = false;
             navMeshRigidbody.enable = false;
-            navMeshAgent.enable = false;
+            NavigationAPI.stopAgent(gameObject);
         }
         if (chargerState == ChargerState.Death || WasRecentlyDamaged())
             return;
@@ -145,6 +146,15 @@ class Charger : Enemy
         LookAt(player);
         currentChargeCooldown -= Time.V_FixedDeltaTime();
         currentStompCooldown -= Time.V_FixedDeltaTime();
+        if (IsOnNavMeshOfflink())
+        {
+            NavigationAPI.stopAgent(gameObject);
+            LookAt(GetTargetJumpPosition());
+            chargerState = ChargerState.Jump;
+            navMeshAgent.enable = false;
+            animator.PlayAnimation("ChargerJump");
+            return;
+        }
         if (GetDistanceFromPlayer() > chargerstats.attackRange && GetDistanceFromPlayer() < chargerstats.chargingRange && currentChargeCooldown <=0 )
         {
             chargerState = ChargerState.Charging;
@@ -199,9 +209,27 @@ class Charger : Enemy
     {
         currentChargeCooldown -= Time.V_FixedDeltaTime();
     }
+    private void Update_Jump()
+    {
+        if (IsJumpFinished())
+        {
+            chargerState = ChargerState.Idle;
+            animator.PlayAnimation("ChargerIdle");
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+    }
     private void Update_Stagger() { }
     private void Update_Stomp() { }
-    private void Update_Death() { }
+    private void Update_Death()
+    {
+        if (IsCurrentlyJumping() && IsJumpFinished())
+        {
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+            
+    }
     /***********************************************************
         Animation Events
     ***********************************************************/

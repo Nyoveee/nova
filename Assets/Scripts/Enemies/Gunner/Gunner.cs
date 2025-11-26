@@ -134,7 +134,6 @@ class Gunner : Enemy
                 gunnerState = GunnerState.Walk;
                 animator.PlayAnimation("Gunner_Walk");
                 MoveToNavMeshPosition(targetVantagePoint.transform.position);
-                navMeshAgent.enable = true;
             }
         }
     }
@@ -190,11 +189,16 @@ class Gunner : Enemy
             gunnerState = GunnerState.Idle;
             animator.PlayAnimation("Gunner_Idle");
             navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
         }
     }
     private void Update_Death(){
-        if (IsJumpFinished())
+        if (IsCurrentlyJumping() && IsJumpFinished())
+        {
             navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+            
     }
     /**********************************************************************
        Animation Events

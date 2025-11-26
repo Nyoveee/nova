@@ -37,6 +37,8 @@ class Grunt : Enemy
         Idle,
         Chasing,
         Attacking,
+        PreJump,
+        Jump,
         Death
     }
     // State machine
@@ -63,6 +65,8 @@ class Grunt : Enemy
         updateState.Add(GruntState.Chasing, Update_ChasingState);
         updateState.Add(GruntState.Attacking, Update_AttackState);
         updateState.Add(GruntState.Death, Update_Death);
+        updateState.Add(GruntState.PreJump, Update_PreJump);
+        updateState.Add(GruntState.Jump, Update_Jump);
 
         LookAt(player);
 
@@ -136,6 +140,14 @@ class Grunt : Enemy
     private void Update_ChasingState()
     {
         animator.SetFloat("Range", GetDistanceFromPlayer());
+        if (IsOnNavMeshOfflink())
+        {
+            gruntState = GruntState.PreJump;
+            animator.PlayAnimation("Grunt Jump");
+            NavigationAPI.stopAgent(gameObject);
+            LookAt(GetTargetJumpPosition());
+            return;
+        }
         if (GetDistanceFromPlayer() > gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Idle (Base)");
@@ -164,8 +176,24 @@ class Grunt : Enemy
         }
         LookAt(player);
     }
-
-    private void Update_Death(){}
+    private void Update_PreJump() { }
+    private void Update_Jump()
+    {
+        if (IsJumpFinished())
+        {
+            gruntState = GruntState.Idle;
+            animator.PlayAnimation("Gunner_Idle");
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+    }
+    private void Update_Death(){
+        if (IsCurrentlyJumping() && IsJumpFinished())
+        {
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+    }
     /****************************************************************
         Animation Events
     ****************************************************************/
@@ -201,5 +229,10 @@ class Grunt : Enemy
     public void EndDeath()
     {
         Destroy(gameObject);
+    }
+    public void BeginJump()
+    {
+        gruntState = GruntState.Jump;
+        navMeshAgent.enable = false;
     }
 }
