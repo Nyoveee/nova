@@ -4,6 +4,7 @@
 
 using ScriptingAPI;
 using System;
+using System.Diagnostics;
 
 public class Wave : Script
 {
@@ -19,6 +20,7 @@ public class Wave : Script
     private int enemyCount;
     private ArenaManager? arenaManager;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
+    private bool waveStarted = false;
 
     protected override void init()
     {
@@ -28,6 +30,7 @@ public class Wave : Script
 
     public void StartWave()
     {
+        waveStarted = true;
         spawnedEnemies.Clear();
 
         // Unsure how to do this rn
@@ -53,6 +56,11 @@ public class Wave : Script
         }
 
         Debug.Log("Enemies: " + enemyCount);
+        if (enemyCount == 0)
+        {
+            Debug.LogWarning("Wave object " + gameObject.ToString() + " started with no enemies");
+            arenaManager.OnWaveCompleted();
+        }
     }
 
     public void RegisterSpawn(GameObject enemy)
@@ -69,10 +77,14 @@ public class Wave : Script
         }
 
         spawnedEnemies.Clear();
+        waveStarted = false;
     }
 
     protected override void update()
     {
+        if (!waveStarted)
+            return;
+
         // Check if enemies are destroyed
         for (int i = spawnedEnemies.Count - 1; i >= 0; i--)
         {
@@ -81,8 +93,10 @@ public class Wave : Script
                 spawnedEnemies.RemoveAt(i);
                 enemyCount--;
                 Debug.Log("ENEMY REMOVED");
+
                 if (enemyCount <= 0)
                 {
+                    EndWave();
                     arenaManager.OnWaveCompleted();
                 }
             }

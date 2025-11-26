@@ -32,8 +32,7 @@ public class QuestManager : Script
 
         if (currentQuest != null)
         {
-            currentQuest.OnQuestStateChanged += HandleQuestStateChanged;
-            currentQuest.OnEnter();
+            StartCurrentQuest();
         }
     }
 
@@ -68,11 +67,17 @@ public class QuestManager : Script
         if (questIndex < quests.Count)
         {
             currentQuest = quests[questIndex];
-            currentQuest.OnEnter();
+            StartCurrentQuest();
         }
         else
         {
             Debug.Log("Player Won/Quests are done");
         }
+    }
+
+    private void StartCurrentQuest()
+    {
+        currentQuest.OnQuestStateChanged += HandleQuestStateChanged;
+        currentQuest.OnEnter();
     }
 }
