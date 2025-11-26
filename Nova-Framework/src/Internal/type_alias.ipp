@@ -39,6 +39,10 @@ constexpr float Color::r() const										{ return color.r; };
 constexpr float Color::g() const										{ return color.g; };
 constexpr float Color::b() const										{ return color.b; };
 
+constexpr Color operator*(Color const& lhs, Color const& rhs) {
+	return lhs.color * rhs.color;
+}
+
 constexpr ColorA::ColorA()										: color	{} {}
 constexpr ColorA::ColorA(glm::vec4 color)						: color	{ color } {}
 constexpr float ColorA::r() const										{ return color.r; };
@@ -50,6 +54,9 @@ constexpr ColorA::operator glm::vec4() const							{ return color; }
 constexpr ColorA::operator glm::vec3() const							{ return Color{ color.r, color.g, color.g }; }
 constexpr ColorA::operator Color() const								{ return Color{ color.r, color.g, color.g }; }
 
+constexpr ColorA operator*(ColorA const& lhs, ColorA const& rhs) {
+	return lhs.color * rhs.color;
+}
 // ========================================
 // Normalized float
 // ========================================

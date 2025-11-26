@@ -108,6 +108,7 @@ struct alignas(16) PointLightData {
 	alignas(16) glm::vec3 lightPos;		// this will represent light position for point light
 	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
 	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
+	float radius;						// Light sphere of influence..
 };
 
 struct alignas(16) DirectionalLightData{
@@ -122,6 +123,7 @@ struct alignas(16) SpotLightData {
 	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
 	float cutOffAngle;					// Inner cutoff angle which shows full brightness
 	float outerCutOffAngle;				// Outer cutoff angle where the light will dim from inner to outer range
+	float radius;						// Light sphere of influence..
 };
 
 #pragma warning( pop )

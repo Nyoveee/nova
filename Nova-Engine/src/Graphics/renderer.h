@@ -64,6 +64,7 @@ public:
 	void renderBloom(PairFrameBuffer& frameBuffers);
 
 	void overlayUIToBuffer(PairFrameBuffer& target);
+
 public:
 	// =============================================
 	// Public facing API.
@@ -111,6 +112,11 @@ public:
 	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
 
 public:
+	// Editor rendering..
+	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
+	ENGINE_DLL_API void renderDebugSelectedObjects();
+
+public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
 	// =============================================
@@ -147,7 +153,7 @@ private:
 	void renderText(Transform const& transform, Text const& text);
 
 	// render ui images.
-	void renderImage(Transform const& transform, Image const& image);
+	void renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier);
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();
@@ -248,6 +254,8 @@ private:
 	glm::vec2 gameSize { gameWidth, gameHeight };
 
 	bool isOnWireframeMode;
+
+	std::vector<entt::entity> selectedEntities;
 
 public:
 	Shader basicShader;

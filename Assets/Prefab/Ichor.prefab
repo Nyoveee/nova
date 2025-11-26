@@ -101,6 +101,7 @@
                 }
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -110,6 +111,7 @@
                 "isTrigger": false,
                 "layer": "Item",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Dynamic"
             },
             "Scripts": {
@@ -118,22 +120,22 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 10.0
+                                    "__variant_type": 15,
+                                    "__variant_value": 10
                                 },
                                 "name": "ichorLifeTime"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 2.0
+                                    "__variant_type": 15,
+                                    "__variant_value": 1
                                 },
                                 "name": "expandedSizeMultiplier"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 1.0
+                                    "__variant_type": 15,
+                                    "__variant_value": 1
                                 },
                                 "name": "expandTime"
                             }

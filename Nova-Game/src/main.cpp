@@ -17,7 +17,7 @@ int main() {
 
 	InputManager	inputManager	{};
 	ResourceManager resourceManager	{};
-	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, Window::Configuration::FullScreen, inputManager, Window::Viewport::ChangeDuringResize};
+	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, gameConfig, Window::Configuration::FullScreen, inputManager, Window::Viewport::ChangeDuringResize};
 	Engine			engine			{ window, inputManager, resourceManager, gameConfig };
 
 	// Start up scene

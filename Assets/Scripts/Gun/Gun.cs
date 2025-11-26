@@ -3,16 +3,18 @@
 // Editor will automatically rename and recompile this file.
 
 using System;
-using static System.Net.Mime.MediaTypeNames;
 
 public abstract class Gun : Script
 {
     public int currentAmmo;
     public int maxAmmo;
-    
+
+    private GameObject player;
+
     protected override void init()
     {
         maxAmmo = currentAmmo;
+        player = GameObject.FindWithTag("Player");
     }
 
     public abstract bool Fire();
@@ -22,7 +24,7 @@ public abstract class Gun : Script
     public bool RayCastFire(Vector3 position, Vector3 direction, float range, float damage)
     {
         // Raycast..
-        RayCastResult? result = PhysicsAPI.Raycast(position, direction, range, gameObject);
+        RayCastResult? result = PhysicsAPI.Raycast(position, direction, range, player);
 
         if (result == null)
         {

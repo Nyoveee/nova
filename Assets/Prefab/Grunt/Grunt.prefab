@@ -71,7 +71,7 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 1.0
                                 },
                                 "name": "spawningDuration"
@@ -125,35 +125,35 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 7.0
                                 },
                                 "name": "attackRadius"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 50.0
                                 },
                                 "name": "chasingRadius"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 20.0
                                 },
                                 "name": "damage"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 100.0
                                 },
                                 "name": "health"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 10.0
                                 },
                                 "name": "movementSpeed"
@@ -167,7 +167,7 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 0.10000000149011612
                                 },
                                 "name": "hurtDuration"
@@ -452,12 +452,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.872277597518405e-07,
+                    "y": -5.872227575309807e-07,
                     "z": -3.1415915489196777
                 },
                 "localEulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.872277029084216e-07,
+                    "y": -5.872227006875619e-07,
                     "z": -3.1415915489196777
                 },
                 "localPosition": {
@@ -466,15 +466,15 @@
                     "z": 2.0236854553222656
                 },
                 "localRotation": {
-                    "w": -5.849739750374283e-07,
-                    "x": -1.6974081518128514e-07,
+                    "w": -5.849726107953757e-07,
+                    "x": -1.6974296102034714e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "localScale": {
-                    "x": 1.0000112056732178,
-                    "y": 0.9998323917388916,
-                    "z": 1.0000526905059814
+                    "x": 1.0000369548797607,
+                    "y": 0.9998452663421631,
+                    "z": 1.000065565109253
                 },
                 "position": {
                     "x": 36.71729278564453,
@@ -482,15 +482,15 @@
                     "z": -44.74260330200195
                 },
                 "rotation": {
-                    "w": -5.849739750374283e-07,
-                    "x": -1.6974075833786628e-07,
+                    "w": -5.849726107953757e-07,
+                    "x": -1.6974296102034714e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "scale": {
-                    "x": 1.0000109672546387,
-                    "y": 0.999832272529602,
-                    "z": 1.000052571296692
+                    "x": 1.0000367164611816,
+                    "y": 0.9998451471328735,
+                    "z": 1.0000654458999634
                 }
             },
             "id": 1048637
@@ -579,6 +579,7 @@
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -588,6 +589,7 @@
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Kinematic"
             },
             "Scripts": {

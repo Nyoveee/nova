@@ -34,6 +34,11 @@ public:
 	// this recursively disables or enables an entity hierarchy..
 	ENGINE_DLL_API void setActive(entt::entity entity, bool isActive);
 
+	ENGINE_DLL_API bool isParentCanvas(entt::entity entity);
+
+	ENGINE_DLL_API void recordOriginalScene();
+	ENGINE_DLL_API void restoreOriginalScene();
+
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
 	template <typename ...Components>
@@ -58,12 +63,20 @@ public:
 	void setComponentActive(entt::entity entity, bool isActive);
 	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
 
-	
+private:
+#if false
+	ENGINE_DLL_API void onCanvasCreation(entt::registry&, entt::entity entityID);
+	ENGINE_DLL_API void onCanvasDestruction(entt::registry&, entt::entity entityID);
+#endif
+
 public:
 	// public!
 	entt::registry registry;
 	entt::dispatcher systemEventDispatcher; //note we probably only need one just giga dump all events in here lol. 
+
+	entt::entity canvasUi;
 	SceneManager sceneManager;
+	ResourceID originalScene;	// we store the original scene when starting simulation..
 
 private:
 	Engine& engine;
@@ -94,6 +107,8 @@ void ECS::makeRegistryCopy() {
 			}
 		}(), ...);
 	}
+
+	originalScene = sceneManager.getCurrentScene();
 }
 
 template <typename ...Components>
@@ -114,6 +129,8 @@ void ECS::rollbackRegistry() {
 			}
 		}(), ...);
 	}
+
+	sceneManager.currentScene = originalScene;
 }
 
 template<typename ...Components>
@@ -123,22 +140,6 @@ void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
 		prefabManager.mapSerializedField(en, map);
 		map.clear();
 	}
-	//for (auto en : entityVec) {
-	//	auto tempEntity = registry.create();
-	//	([&]() {
-	//		Components* component = registry.try_get<Components>(en);
-	//		if (component) {
-	//			registry.emplace<Components>(tempEntity, *component);
-	//		}
-	//		}(), ...);
-
-	//	EntityData* ed = registry.try_get<EntityData>(en);
-	//	if (ed->parent != entt::null) {
-	//		EntityData* parent = registry.try_get<EntityData>(ed->parent);
-	//		parent->children.push_back(tempEntity);
-
-	//	}
-	//}
 }
 
 template<typename ...Components>
@@ -150,7 +151,7 @@ void ECS::copyEntity(entt::entity en, entt::entity parent) {
 		if (component) {
 			registry.emplace<Components>(tempEntity, *component);
 		}
-		}(), ...);
+	}(), ...);
 
 	map[en] = tempEntity;
 

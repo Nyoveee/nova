@@ -23,7 +23,7 @@ int main() {
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
-	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
+	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
 	
 	ResourceManager resourceManager {};
 	Engine			engine			{ window, inputManager, resourceManager, gameConfig };

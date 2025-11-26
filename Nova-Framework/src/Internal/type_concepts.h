@@ -7,6 +7,8 @@
 #include "type_alias.h"
 #include "physics.h"
 #include "component.h"
+#include "AdditionalNavigationTypes.h"
+
 template<class T>
 concept IsTypedResourceID = requires(T x) {
 	{ TypedResourceID{ x } } -> std::same_as<T>;
@@ -22,7 +24,8 @@ concept IsFundamental = std::is_fundamental_v<T> || requires(T x) { { T{ x } } -
 
 template<class T>
 concept NonSerializableTypes = requires(T x) { { T{ x } } -> std::same_as<PhysicsRay>; }
-                            || requires(T x) { { T{ x } } -> std::same_as<PhysicsRayCastResult>; };
+                            || requires(T x) { { T{ x } } -> std::same_as<PhysicsRayCastResult>; }
+							|| requires(T x) { { T{ x } } -> std::same_as<navMeshOfflinkData>; };
 
 template<class T>
 concept NonComponentDisablingTypes = requires(T x) { { T{ x } } -> std::same_as<BoxCollider>; }

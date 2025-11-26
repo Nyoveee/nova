@@ -6,13 +6,17 @@ class ChargerStats : EnemyStats
     public float damage = 20f;
     // Movement
     public float timeBetweenChargeSteps = 0.26f;
-    // Combat
+    // Charging
+    public float chargingRange;
     public int chargeDamage;
     public float chargeCooldown;
     public float maxChargeTime;
-    public float speedMultiplier;
+    public float chargeSpeedMultiplier;
+    // Stomping
+    public int stompDamage = 20;
+    public float stompCooldown = 20f;
+    public float stompHitboxDuration = 0.1f;
     // Detection
     public float chasingRange;
-    public float chargingRange;
     public float attackRange;
 }

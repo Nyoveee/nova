@@ -54,28 +54,28 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 100.0
                                 },
                                 "name": "shootingRange"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 3.5
                                 },
                                 "name": "targetDistanceFromVantagePoint"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 100.0
                                 },
                                 "name": "health"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 10.0
                                 },
                                 "name": "movementSpeed"
@@ -89,7 +89,7 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 15,
                                     "__variant_value": 0.20000000298023224
                                 },
                                 "name": "hurtDuration"
@@ -290,6 +290,7 @@
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -299,6 +300,7 @@
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Kinematic"
             },
             "Scripts": {

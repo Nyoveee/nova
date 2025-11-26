@@ -26,15 +26,17 @@
                 "tag": "EnemyHitBox"
             },
             "Rigidbody": {
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "isRotatable": true,
-                "isTrigger": true,
+                "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
+                "motionQuality": "Discrete",
                 "motionType": "Kinematic"
             },
             "Scripts": {

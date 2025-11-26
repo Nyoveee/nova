@@ -17,8 +17,7 @@ class SummonerTest : Script
     public Prefab cubePrefab;
     
     bool isShiftDown = false;
-    private int slot = -1;
-    private int index = -1;
+    private int slot = 0;
     // This function is first invoked when game starts.
     protected override void init()
     {
