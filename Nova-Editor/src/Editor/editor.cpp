@@ -173,6 +173,17 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		}
 	);
 
+	inputManager.subscribe<ScriptCompilationStatus>(
+		[&](ScriptCompilationStatus status) {
+			if (status == ScriptCompilationStatus::Failure) {
+				editorViewPort.controlOverlay.setNotification("Script compilation has failed!", FOREVER);
+			}
+			else {
+				editorViewPort.controlOverlay.clearNotification();
+			}
+		}
+	);
+
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}

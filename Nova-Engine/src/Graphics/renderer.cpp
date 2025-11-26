@@ -314,6 +314,8 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		if (engine.toDebugRenderParticleEmissionShape) {
 			debugRenderParticleEmissionShape();
 		}
+		
+		renderDebugSelectedObjects();
 
 		// after debug rendering.. bind main position VBO back to VAO..
 		glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
@@ -738,8 +740,6 @@ void Renderer::debugRenderParticleEmissionShape()
 			break;
 		}
 	}
-
-	renderDebugSelectedObjects();
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
@@ -1053,6 +1053,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.use();
 	texture2dShader.setMatrix("uiProjection", UIProjection);
 	texture2dShader.setInt("image", 0);
+	texture2dShader.setBool("toFlip", image.toFlip);
 
 	// Get texture resource
 	auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
@@ -1765,17 +1766,23 @@ glm::mat4 const& Renderer::getUIProjection() const {
 }
 
 void Renderer::renderDebugSelectedObjects() {
-	for (entt::entity entity : selectedEntities) {
-		Transform const& transform = registry.get<Transform>(entity);
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
+	glBindVertexArray(mainVAO);
+	glEnable(GL_DEPTH_TEST);
 
-		Light const* light = registry.try_get<Light>(entity);
+	for (entt::entity entity : selectedEntities) {
+		Transform const& transform				= registry.get<Transform>(entity);
+		Light const* light						= registry.try_get<Light>(entity);
+		NavMeshOffLinks const* navMeshOffLinks  = registry.try_get<NavMeshOffLinks>(entity);
 
 		if (light) {
-			// Debug render light outline..
 			glm::mat4 model = glm::identity<glm::mat4>();
 			model = glm::translate(model, transform.position);
 			debugShader.setMatrix("model", model);
 
+			// Debug render light outline..
 			switch (light->type) {
 			case Light::Type::PointLight:
 			case Light::Type::Spotlight:
@@ -1787,6 +1794,22 @@ void Renderer::renderDebugSelectedObjects() {
 				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 				break;
 			}
+		}
+
+		if (navMeshOffLinks) {
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, navMeshOffLinks->startPoint);
+			debugShader.setMatrix("model", model);
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			model = glm::translate(model, navMeshOffLinks->endPoint);
+			debugShader.setMatrix("model", model);
+
+			// same radius, same mesh.
+			// debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 		}
 	}
 }

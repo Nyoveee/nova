@@ -77,6 +77,10 @@ std::size_t Input::ScrollCallback(ScrollEventCallback^ callback) {
 
 Vector2 Input::V_MousePosition() { return Vector2(Interface::engine->inputManager.mousePosition); }
 
+Vector2 Input::GetUIMousePosition() {
+	return Vector2{ Interface::engine->getUIMousePosition() };
+}
+
 void Input::ClearAllKeyMapping() {
 	for each (std::size_t observerId in scriptObserverIds) {
 		Interface::engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });

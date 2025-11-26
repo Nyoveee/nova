@@ -1,5 +1,7 @@
 #include "ScriptingAPIManager.h"
 
+#include "InputManager/inputManager.h"
+
 #include "ResourceManager/resourceManager.h"
 #include "scriptAsset.h"
 #include "Profiling.h"
@@ -362,8 +364,13 @@ void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 					}
 				}
 			}
+
+			engine.inputManager.broadcast<ScriptCompilationStatus>(ScriptCompilationStatus::Success);
 		}
 		modifiedScripts.clear();
+	}
+	else {
+		engine.inputManager.broadcast<ScriptCompilationStatus>(ScriptCompilationStatus::Failure);
 	}
 
 	timeSinceSave = 0;

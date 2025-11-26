@@ -19,8 +19,9 @@ void Sequencer::recordKeyframe(int currentFrame, Transform const& transform) {
 		Keyframe const& keyframe = *it;
 
 		if (keyframe.frame == currentFrame) {
-			Logger::warn("Attempting to record keyframe that already exist.");
-			return;
+			// We remove this keyframe..
+			it = data.keyframes.erase(it);
+			break;
 		}
 		else if (keyframe.frame < currentFrame) {
 			++it;

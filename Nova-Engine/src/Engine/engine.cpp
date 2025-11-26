@@ -196,6 +196,10 @@ void Engine::editorControlMouse(bool value) {
 	gameLockMouse(isGameLockingMouse);
 }
 
+glm::vec2 Engine::getUIMousePosition() const {
+	return window.getUISpacePos();
+}
+
 void Engine::SystemsOnLoad() {
 	if (!inSimulationMode) {
 		return;

@@ -125,7 +125,7 @@ inline void DisplayProperty<double>(Editor&, const char* dataMemberName, double&
 
 template<>
 inline void DisplayProperty<float>(Editor&, const char* dataMemberName, float& dataMember) {
-	ImGui::InputFloat(dataMemberName, &dataMember);
+	ImGui::DragFloat(dataMemberName, &dataMember);
 }
 
 template<>
@@ -214,13 +214,13 @@ inline void DisplayProperty<EulerAngles>(Editor&, const char* dataMemberName, Eu
 		ImGui::Text((std::string{ dataMemberName } + "\n(degrees)").c_str());
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("pitch", &eulerAngles.x);
+		ImGui::DragFloat("pitch", &eulerAngles.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("yaw", &eulerAngles.y);
+		ImGui::DragFloat("yaw", &eulerAngles.y);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("roll", &eulerAngles.z);
+		ImGui::DragFloat("roll", &eulerAngles.z);
 
 		ImGui::EndTable();
 	}
@@ -267,16 +267,16 @@ inline void DisplayProperty<glm::vec4>(Editor&, const char* dataMemberName, glm:
 
 		ImGui::BeginDisabled();
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("x", &dataMember.x);
+		ImGui::DragFloat("x", &dataMember.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("y", &dataMember.y);
+		ImGui::DragFloat("y", &dataMember.y);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("z", &dataMember.z);
+		ImGui::DragFloat("z", &dataMember.z);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("w", &dataMember.w);
+		ImGui::DragFloat("w", &dataMember.w);
 		ImGui::EndDisabled();
 
 		ImGui::EndTable();
@@ -296,13 +296,13 @@ inline void DisplayProperty<glm::vec3>(Editor&, const char* dataMemberName, glm:
 		ImGui::Text(dataMemberName);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("x", &dataMember.x);
+		ImGui::DragFloat("x", &dataMember.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("y", &dataMember.y);
+		ImGui::DragFloat("y", &dataMember.y);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("z", &dataMember.z);
+		ImGui::DragFloat("z", &dataMember.z);
 
 		ImGui::EndTable();
 	}
@@ -322,10 +322,10 @@ inline void DisplayProperty<glm::vec2>(Editor&, const char* dataMemberName, glm:
 		ImGui::Text(dataMemberName);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("x", &dataMember.x);
+		ImGui::DragFloat("x", &dataMember.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("y", &dataMember.y);
+		ImGui::DragFloat("y", &dataMember.y);
 
 		ImGui::EndTable();
 	}

@@ -65,6 +65,9 @@ public:
 // ======================================
 
 public ref class Input {
+public:
+	static Vector2 GetUIMousePosition();
+
 internal:
 	// This functions are called by the script's member function.. this is because each script needs to know 
 	// what it has subscribed to for proper destruction.

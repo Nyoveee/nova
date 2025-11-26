@@ -22,6 +22,7 @@
 #include "reflection.h"
 #include "navMesh.h"
 #include "controller.h"
+#include "systemResource.h"
 
 class Prefab;
 class Model;
@@ -160,7 +161,7 @@ struct Light {
 };
 
 struct MeshRenderer {
-	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
+	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{};
 
 	REFLECTABLE(
@@ -208,17 +209,23 @@ struct Animator {
 
 struct Sequence {
 	TypedResourceID<Sequencer> sequencerId;
-	bool toLoop;
+
+	float speedMultiplier = 1.f;
+	bool toLoop = false;
+	bool startPlaying = false;
 
 	REFLECTABLE(
 		sequencerId,
-		toLoop
+		speedMultiplier,
+		toLoop,
+		startPlaying
 	)
 
 	float timeElapsed = 0.f;
 	float lastTimeElapsed = 0.f;
 	
 	int currentFrame = 0;
+	bool isPlaying = false;
 
 	// each animator component keeps track of already executed animation events keyframes..
 	// this container is reset everytime it loops..
@@ -317,7 +324,7 @@ struct SkyBox {
 };
 
 struct Image {
-	TypedResourceID<Texture>	texture		{ INVALID_RESOURCE_ID };
+	TypedResourceID<Texture>	texture		{ NONE_TEXTURE_ID };
 	ColorA						colorTint	{ 1.f, 1.f, 1.f, 1.f };
 	
 	enum class AnchorMode {
@@ -328,10 +335,13 @@ struct Image {
 		TopRight
 	} anchorMode = AnchorMode::Center;
 
+	bool toFlip = false;
+
 	REFLECTABLE(
 		texture,
 		colorTint,
-		anchorMode
+		anchorMode,
+		toFlip
 	)
 };
 
