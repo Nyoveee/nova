@@ -198,7 +198,7 @@ void Animator_::SetBool(System::String^ name, bool value){
 	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
-void Animator_::SetFloat(System::String^ name, float value){
+void Animator_::SetFloat(System::String^ name, float value) {
 	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
@@ -412,7 +412,7 @@ NavMeshOfflinkData NavMeshAgent_::getOffLinkData()
 	return returnOfflinkdata;
 }
 
-void  NavMeshAgent_::CompleteOffMeshLink()
+void NavMeshAgent_::CompleteOffMeshLink()
 {
 	Interface::engine->navigationSystem.CompleteOffLinkData(*nativeComponent());
 

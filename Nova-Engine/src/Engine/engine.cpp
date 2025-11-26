@@ -32,6 +32,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
 	prefabManager			{ *this },
+	dataManager				{ *this },
 	deltaTimeMultiplier		{ 1.f },
 	isPaused				{ false }
 {
