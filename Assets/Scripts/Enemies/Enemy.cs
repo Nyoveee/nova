@@ -3,7 +3,6 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 using System.Runtime.CompilerServices;
-using WinRT;
 public abstract class Enemy : Script
 {
     /***********************************************************
@@ -36,6 +35,21 @@ public abstract class Enemy : Script
     ***********************************************************/
     public abstract void TakeDamage(float damage);
     public abstract bool IsEngagedInBattle();
+    /***********************************************************
+       Public Functions
+    ***********************************************************/
+    public void Explode()
+    {
+        Destroy(gameObject);
+        for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
+        {
+            Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
+            direction.Normalize();
+            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            GameObject ichor = Instantiate(ichorPrefab);
+            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+        }
+    }
     /***********************************************************
         Shared Functions
     ***********************************************************/
