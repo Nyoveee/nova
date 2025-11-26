@@ -30,7 +30,7 @@ namespace {
 		}
 
 		if constexpr (sizeof...(Components) > 0) {
-			displayIndividualComponent<Components...>(editor, entity, registry);
+			displayIndividualComponent<Components...>(editor, entity, registry, b);
 		}
 	}
 

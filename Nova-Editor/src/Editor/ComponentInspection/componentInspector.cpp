@@ -92,9 +92,12 @@ void ComponentInspector::update() {
 		ImGui::EndCombo();
 	}
 
+
 	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
 
 	if (prefabAssetInfo) {
+		ImGui::Separator();
+
 		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", nullptr);
 		
 		ImGui::SameLine();
@@ -102,6 +105,9 @@ void ComponentInspector::update() {
 		if (ImGui::Button(ICON_FA_BOX_OPEN)) {
 			editor.unpackPrefab(entityData);
 		}
+	}
+	if (ImGui::Button("Update Prefab")) {
+		editor.engine.prefabManager.updatePrefab(selectedEntity);
 	}
 
 	ImGui::NewLine();

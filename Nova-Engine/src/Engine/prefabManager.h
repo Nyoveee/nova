@@ -20,12 +20,15 @@ public:
 	entt::entity instantiatePrefab(ResourceID id);
 
 	template<typename ...Components>
-	void updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity);
+	void updateComponents(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity entity, entt::entity prefabEntity);
 	
 	ENGINE_DLL_API entt::entity loadPrefab(ResourceID id);
 	ENGINE_DLL_API void mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> map);
 	ENGINE_DLL_API void broadcast(entt::entity prefabEntity);
 	ENGINE_DLL_API void prefabBroadcast(); 
+	//ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance);
+	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance);
+	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
 
 private:
 

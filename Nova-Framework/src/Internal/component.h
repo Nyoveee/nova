@@ -94,8 +94,7 @@ struct EntityData {
 		prefabID,
 		prefabMetaData,
 		overridenProperties,
-		overridenComponents
-		overridenProperties,
+		overridenComponents,
 		inactiveComponents
 	)
 };
