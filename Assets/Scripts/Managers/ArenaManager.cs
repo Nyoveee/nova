@@ -11,17 +11,13 @@ public class ArenaManager : Script
     //private List<Door::States> arenaCompletionDoorStates = new List<Door::States::Open>
 
     private int currentWave = 0;
+    private ArenaQuest arenaQuest;
 
-    protected override void init()
-    {
-        // TEMP MAKE IT SOMETHING ELSE
-        StartArena();
-    }
-
-    public void StartArena()
+    public void StartArena(ArenaQuest quest)
     {
         currentWave = 0;
         waves[currentWave].StartWave();
+        arenaQuest = quest;
     }
 
     public void OnWaveCompleted()
@@ -46,5 +42,6 @@ public class ArenaManager : Script
     public void ArenaCompleted()
     {
         Debug.Log("Arena Completed!");
+        arenaQuest.SetQuestState(Quest.QuestState.Success);
     }
 }

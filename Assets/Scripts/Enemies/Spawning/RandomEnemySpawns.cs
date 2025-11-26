@@ -18,6 +18,11 @@ public class RandomEnemySpawns : Script
     private Wave wave;
     public int SpawnEnemies()
     {
+        if (possibleEnemyPrefabs == null ||  possibleEnemyPrefabs.Count == 0) {
+            Debug.LogWarning("Random enemy spawn called with no supplied prefabs.");
+            return 0;
+        }
+
         Transform_ transform = gameObject.transform;
         Vector3 spawnMin = transform.position - transform.scale * 0.5f;
         Vector3 spawnMax = transform.position + transform.scale * 0.5f;

@@ -4,8 +4,7 @@
 
 public class QuestManager : Script
 {
-    [SerializableField]
-    private Quest[]? quests;
+    private List<Quest> quests = new List<Quest>();
 
     private Quest? currentQuest;
 
@@ -13,7 +12,19 @@ public class QuestManager : Script
 
     protected override void init()
     {
-        if (quests != null && quests.Length > 0)
+        GameObject[] children = gameObject.GetChildren();
+        foreach (var child in children)
+        {
+            Quest quest = child.getScript<Quest>();
+            if (quest != null) {
+                quests.Add(quest);
+            }
+            else {
+                Debug.LogWarning("Quest child of object " + gameObject.ToString() + " does not have quest script");
+            }
+        }
+
+        if (quests != null && quests.Count > 0)
         {
             currentQuest = quests[0];
             questIndex = 0;
@@ -34,6 +45,12 @@ public class QuestManager : Script
 
     private void HandleQuestStateChanged(Quest.QuestState oldState, Quest.QuestState newState)
     {
+        if (newState == oldState)
+        {
+            Debug.Log("Quest new/old states same");
+            return;
+        }
+
         if (newState == Quest.QuestState.Success)
         {
             currentQuest!.OnSuccess();
@@ -48,13 +65,14 @@ public class QuestManager : Script
     private void MoveToNextQuest()
     {
         ++questIndex;
-        if (questIndex == 0)
+        if (questIndex < quests.Count)
         {
             currentQuest = quests[questIndex];
+            currentQuest.OnEnter();
         }
         else
         {
-            Debug.Log("Win i guess?");
+            Debug.Log("Player Won/Quests are done");
         }
     }
 }
