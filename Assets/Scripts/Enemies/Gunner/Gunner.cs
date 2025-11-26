@@ -179,7 +179,7 @@ class Gunner : Enemy
         }
     }
     private void Update_Stagger(){
-        if (IsJumpFinished())
+        if (IsCurrentlyJumping() && IsJumpFinished())
             navMeshAgent.CompleteOffMeshLink();
     }
     private void Update_PreJump() { }
