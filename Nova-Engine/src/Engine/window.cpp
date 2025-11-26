@@ -44,6 +44,7 @@ Window::Window(const char* name, Dimension dimension, GameConfig gameConfig, Con
 	glfwWindow			{},
 	deltaTime			{},
 	currentFps			{},
+	accumulatedTime		{},
 	windowWidth			{ dimension.width },
 	windowHeight		{ dimension.height },
 	gameConfig			{ gameConfig },
@@ -162,7 +163,6 @@ Window::~Window() {
 
 void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(float)> updateFunc) {
 	double const fixedDeltaTime = 1. / fixedFps;
-	double accumulatedTime = 0.;
 	double before = 0;
 
 	while (!glfwWindowShouldClose(glfwWindow)) {
@@ -237,6 +237,10 @@ void Window::toggleFullScreen()
 
 void Window::toEnableMouse(bool toEnable) {
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, toEnable ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+}
+
+void Window::clearAccumulatedTime() {
+	accumulatedTime = 0.;
 }
 
 float Window::fps() const {

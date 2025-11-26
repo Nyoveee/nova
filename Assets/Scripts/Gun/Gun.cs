@@ -3,7 +3,6 @@
 // Editor will automatically rename and recompile this file.
 
 using System;
-using static System.Net.Mime.MediaTypeNames;
 
 public abstract class Gun : Script
 {
@@ -11,6 +10,7 @@ public abstract class Gun : Script
     public int maxAmmo;
 
     private GameObject player;
+
     protected override void init()
     {
         maxAmmo = currentAmmo;

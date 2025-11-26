@@ -152,6 +152,7 @@ public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
 	static float Deg2Rad = (std::numbers::pi_v<float> *2) / 360.f;
 };
+
 // ======================================
 // This class is responsible for random functionality
 // ======================================
@@ -161,3 +162,21 @@ public:
 	static int Range(int minInclusive, int maxExclusive);
 };
 
+// ======================================
+// This class is responsible for scene management
+// ======================================
+public ref class SceneAPI {
+public:
+	static void ChangeScene(ScriptingAPI::Scene^ sceneId);
+};
+
+// ======================================
+// This class for providing system control
+// ======================================
+public ref class Systems {
+public:
+	static property bool Pause {
+		bool get() { return Interface::engine->isPaused; };
+		void set(bool value) { Interface::engine->isPaused = value; };
+	};
+};
