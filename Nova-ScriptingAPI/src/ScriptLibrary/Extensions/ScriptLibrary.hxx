@@ -65,6 +65,9 @@ public:
 // ======================================
 
 public ref class Input {
+public:
+	static Vector2 GetUIMousePosition();
+
 internal:
 	// This functions are called by the script's member function.. this is because each script needs to know 
 	// what it has subscribed to for proper destruction.
@@ -107,7 +110,6 @@ public:
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end, array<System::String^>^ layermask);
-
 };
 
 // ======================================
@@ -147,6 +149,9 @@ public:
 	static float Min(float a, float b);
 	static float Max(float a, float b);
 	static float Pow(float base, float exponent);
+	static float Sqrt(float f);
+	static float Abs(float value);
+	static float SmoothLerp(float a, float b, float t);
 
 public:
 	static float Rad2Deg = 360.f/(std::numbers::pi_v<float> * 2);
@@ -179,4 +184,23 @@ public:
 		bool get() { return Interface::engine->isPaused; };
 		void set(bool value) { Interface::engine->isPaused = value; };
 	};
+};
+
+public ref class PlayerPrefs {
+public:
+	static float			GetFloat(System::String^ key);
+	static int				GetInt(System::String^ key);
+	static System::String^  GetString(System::String^ key);
+
+	static float			GetFloat(System::String^ key, float defaultValue);
+	static int				GetInt(System::String^ key, int defaultValue);
+	static System::String^	GetString(System::String^ key, System::String^ defaultValue);
+
+	static void				SetFloat(System::String^ key, float value);
+	static void				SetInt(System::String^ key, int value);
+	static void				SetString(System::String^ key, System::String^ value);
+
+	static void				Save();
+	static void				DeleteKey(System::String^ key);
+	static void				DeleteAll();
 };

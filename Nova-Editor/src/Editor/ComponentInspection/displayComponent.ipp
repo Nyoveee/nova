@@ -5,7 +5,13 @@ namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 
 	template<typename Component>
-	void displayComponent([[maybe_unused]] Editor& editor, [[maybe_unused]] entt::entity entity, Component& component, entt::registry& registry) {
+	// void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component, bool disable, entt::registry& registry) {
+	// //void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
+	// 	(void) entity;
+
+	// 	[[maybe_unused]] Editor& editor = componentInspector.editor;
+
+	void displayComponent([[maybe_unused]] Editor& editor, [[maybe_unused]] entt::entity entity, Component& component, entt::registry& registry, bool disable) {
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
 		}
@@ -69,6 +75,21 @@ namespace {
 			}
 
 			
+			if (disable) {
+				EntityData* entityData = registry.try_get<EntityData>(entity);
+				if (entityData->prefabID == INVALID_RESOURCE_ID) {
+					disable = false;
+				}
+				else {
+					ImGui::Checkbox("Override?", &entityData->overridenComponents[Family::id<Component>()]);
+					disable = !entityData->overridenComponents[Family::id<Component>()];
+				}
+			}
+
+			ImGui::BeginDisabled(disable);
+			
+			ImGui::PushID(static_cast<int>(entity));
+			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
 			// Visits each of the component's data member and renders them.
 			reflection::visit(
 				[&](auto fieldData) {
@@ -81,7 +102,13 @@ namespace {
 					ImGui::PopID();
 				},
 			component);
+			
+			ImGui::PopID();
+			ImGui::PopID();
 		
+
+			ImGui::EndDisabled();
+
 
 		end:
 			// prompted to delete component.

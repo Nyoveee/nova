@@ -92,15 +92,22 @@ void ComponentInspector::update() {
 		ImGui::EndCombo();
 	}
 
+
 	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
 
 	if (prefabAssetInfo) {
+		ImGui::Separator();
+
 		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", nullptr);
 		
 		ImGui::SameLine();
 
 		if (ImGui::Button(ICON_FA_BOX_OPEN)) {
 			editor.unpackPrefab(entityData);
+		}
+
+		if (ImGui::Button("Update Prefab")) {
+			editor.engine.prefabManager.updatePrefab(selectedEntity);
 		}
 	}
 
@@ -124,10 +131,12 @@ void ComponentInspector::update() {
 	}
 
 	// Display the rest of the components via reflection.
-	g_displayComponentFunctor(editor, selectedEntity, registry);
+	//g_displayComponentFunctor(*this, selectedEntity, registry, true);
+	g_displayComponentFunctor(editor, selectedEntity, registry, true);
 
 	// Display add component button.
 	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);
+
 
 	ImGui::End();
 }

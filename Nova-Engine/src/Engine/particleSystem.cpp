@@ -16,16 +16,15 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 
 void ParticleSystem::update(float dt)
 {
-	for (auto&& [entity, transform, entityData, emitter] : engine.ecs.registry.view<Transform, EntityData, ParticleEmitter>().each()) {
+	for (auto&& [entity, transform, entityData, emitter] : engine.ecs.registry.view<Transform, EntityData, ParticleEmitter>().each()){ 
+		particleMovement(transform, emitter, dt);
+		particleOverLifeTime(emitter);
 		if (!entityData.isActive || !engine.ecs.isComponentActive<ParticleEmitter>(entity)) {
 			continue;
 		}
-
 		continuousGeneration(transform, emitter, dt);
 		burstGeneration(transform, emitter, dt);
 		trailGeneration(transform, emitter);
-		particleMovement(transform, emitter, dt);
-		particleOverLifeTime(emitter);
 	}
 }
 
@@ -76,8 +75,15 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 			newParticle.texture = emitter.trails.trailTexture;
 			newParticle.position = startPosition + direction * (distancePerEmission * index);
 			newParticle.startSize = newParticle.currentSize = emitter.trails.trailSize;
-			newParticle.startColor = newParticle.currentColor = emitter.trails.trailColor;
+			glm::vec4 color = emitter.trails.trailColor;
+			glm::vec3 colorOffsetMin = emitter.trails.trailColorOffsetMin;
+			glm::vec3 colorOffsetMax = emitter.trails.trailColorOffsetMax;
+			ColorA startColor = color + glm::vec4(glm::vec3(RandomRange::Vec3(colorOffsetMin, colorOffsetMax)), 0);
+			startColor = glm::vec4(startColor.r(), startColor.g(), startColor.b(), 0) * emitter.trails.trailEmissiveMultiplier
+				+ glm::vec4(0, 0, 0, startColor.a());
+			newParticle.startColor = newParticle.currentColor = startColor;
 			newParticle.currentLifeTime = emitter.lifeTime;
+			newParticle.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
 			emitter.trailParticles.push_back(newParticle);
 			// Update the loop
 			++index;
@@ -100,14 +106,14 @@ void ParticleSystem::particleMovement(Transform const& transform, ParticleEmitte
 			rotation = glm::mat4_cast(transform.rotation) * rotation;
 			glm::vec4 rotatedForce = rotation * glm::vec4{ emitter.force, 0 };
 			particle.velocity += glm::vec3{ rotatedForce.x, rotatedForce.y,rotatedForce.z } *dt;
-			particle.rotation += emitter.angularVelocity * dt;
+			particle.rotation += particle.angularVelocity * dt;
 			return false;
-			});
+		});
 		// Remove once end of lifetime
 		if (it != std::end(particles)) {
 			particles.erase(it, std::end(particles));
 		}
-		};
+	};
 	updateParticleMovement(emitter.particles);
 	updateParticleMovement(emitter.trailParticles);
 }
@@ -151,13 +157,19 @@ glm::vec3 ParticleSystem::determineParticleVelocity(ParticleEmitter& emitter, gl
 
 void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
 {
-	// To Do, Make this affected by rotation
 	Particle newParticle{};
 	newParticle.startSize = newParticle.currentSize = emitter.startSize;
 	newParticle.currentLifeTime = emitter.lifeTime;
 	newParticle.startColor = newParticle.currentColor = emitter.particleColorSelection.color;
-	if (emitter.particleColorSelection.randomizedColor)
-		newParticle.startColor = newParticle.currentColor = ColorA(RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1), RandomRange::Float(0, 1));
+	newParticle.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
+	glm::vec4 color = emitter.particleColorSelection.color;
+	glm::vec3 colorOffsetMin = emitter.particleColorSelection.colorOffsetMin;
+	glm::vec3 colorOffsetMax = emitter.particleColorSelection.colorOffsetMax;
+	ColorA startColor = color + glm::vec4(glm::vec3(RandomRange::Vec3(colorOffsetMin, colorOffsetMax)), 0);
+	startColor = glm::vec4(startColor.r(),startColor.g(),startColor.b(),0) * emitter.particleColorSelection.emissiveMultiplier 
+		+ glm::vec4(0,0,0,startColor.a());
+	newParticle.startColor = newParticle.currentColor = startColor;
+	// Spawn Based on the shape
 	switch (emitter.particleEmissionTypeSelection.emissionShape) {
 	case ParticleEmissionTypeSelection::EmissionShape::Sphere:
 	{

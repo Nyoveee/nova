@@ -101,3 +101,10 @@ enum class FocusSelectedEntity {
 enum class EditorWantsToControlMouse {
 	Sentinel
 };
+
+// This is to inform the editor the compilation status of the script.
+// This is manually broadcasted. Not linked by input.
+enum class ScriptCompilationStatus {
+	Success,
+	Failure
+};
