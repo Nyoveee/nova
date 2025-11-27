@@ -10,7 +10,6 @@ class PlayerController : Script
     // ==================================
     // Parameters to be tweaked
     // ==================================
-    public float cameraSensitivity      = 0.03f;
     
     // Move speed
     public float maximumMoveSpeed       = 5f;
@@ -30,7 +29,7 @@ class PlayerController : Script
     public float maxHealth              = 100f;
 
     [SerializableField]
-    private Transform_? cameraObject = null;
+    private Transform_? playerOrientation = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
     [SerializableField]
     private GameUIManager? gameUIManager = null;
 
@@ -76,8 +75,7 @@ class PlayerController : Script
         dashTimerCap = dashCooldown * dashCount;
         dashTimer = dashTimerCap;
 
-        // Controls..
-        MouseMoveCallback(CameraMovement);
+
 
         MapKey(Key.W, beginWalkingForward, endWalkingForward);
         MapKey(Key.A, beginWalkingLeft, endWalkingLeft);
@@ -139,6 +137,10 @@ class PlayerController : Script
         }
        
     }
+
+
+
+
     /***********************************************************
        Public Functions
     ***********************************************************/
@@ -156,8 +158,8 @@ class PlayerController : Script
         // ==============================
         // Handles WASD movement, we calculate the oriented directional vector from input..
         // ==============================
-        Vector3 orientedFront = new Vector3(cameraObject.front.x, 0, cameraObject.front.z);
-        Vector3 orientedRight = new Vector3(cameraObject.right.x, 0, cameraObject.right.z);
+        Vector3 orientedFront = new Vector3(playerOrientation.front.x, 0, playerOrientation.front.z);
+        Vector3 orientedRight = new Vector3(playerOrientation.right.x, 0, playerOrientation.right.z);
 
         Vector3 directionVector = Vector3.Zero();
 
@@ -244,22 +246,22 @@ class PlayerController : Script
         dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
-    private void CameraMovement(float deltaMouseX, float deltaMouseY)
-    {
-        // We rotate our parent in the y axis..
-        // transform.rotate(Vector3.Up, deltaMouseX * cameraSensitivity);
-        //transform.rotate(Vector3.Front, deltaMouseY * cameraSensitivity);
+    //private void CameraMovement(float deltaMouseX, float deltaMouseY)
+    //{
+    //    // We rotate our parent in the y axis..
+    //    // transform.rotate(Vector3.Up, deltaMouseX * cameraSensitivity);
+    //    //transform.rotate(Vector3.Front, deltaMouseY * cameraSensitivity);
 
-        // x is pitch, y is yaw
-        Vector3 euler = cameraObject.localEulerAngles;
+    //    // x is pitch, y is yaw
+    //    Vector3 euler = cameraObject.localEulerAngles;
 
-        euler.x -= cameraSensitivity * deltaMouseY;
-        euler.y -= cameraSensitivity * deltaMouseX;
-        euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
-        // euler.y = Mathf.Clamp(euler.y, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
+    //    euler.x -= cameraSensitivity * deltaMouseY;
+    //    euler.y -= cameraSensitivity * deltaMouseX;
+    //    euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
+    //    // euler.y = Mathf.Clamp(euler.y, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
 
-        cameraObject.localEulerAngles = euler;  
-    }
+    //    cameraObject.localEulerAngles = euler;  
+    //}
 
     // ============ INPUT CALLBACK ==========
     private void beginWalkingForward()
@@ -324,20 +326,20 @@ class PlayerController : Script
         // Determine dashing vector..
         if (isMovingBackward)
         {
-            dashVector = new Vector3(-cameraObject.front.x, 0, -cameraObject.front.z);
+            dashVector = new Vector3(-playerOrientation.front.x, 0, -playerOrientation.front.z);
         }
         else if (isMovingLeft && !isMovingRight)
         {
-            dashVector = new Vector3(-cameraObject.right.x, 0, -cameraObject.right.z);
+            dashVector = new Vector3(-playerOrientation.right.x, 0, -playerOrientation.right.z);
         }
         else if (isMovingRight && !isMovingLeft)
         {
-            dashVector = new Vector3(cameraObject.right.x, 0, cameraObject.right.z);
+            dashVector = new Vector3(playerOrientation.right.x, 0, playerOrientation.right.z);
         }
         else
         {
             // Default forward..
-            dashVector = new Vector3(cameraObject.front.x, 0, cameraObject.front.z);
+            dashVector = new Vector3(playerOrientation.front.x, 0, playerOrientation.front.z);
         } 
 
         dashVector.Normalize();
