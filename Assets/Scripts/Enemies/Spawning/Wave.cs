@@ -7,43 +7,38 @@ using System;
 
 public class Wave : Script
 {
-    // Prefab pod;
-
-    [SerializableField]
-    private List<Transform_>? fixedEnemyPos;
-    [SerializableField]
-    private List<Prefab>? fixedEnemyPrefabs;
+    [SerializableField] 
+    private List<FixedSpawnPod> fixedSpawns;
     [SerializableField]
     private List<RandomEnemySpawns>? randomSpawns;
 
-    private int enemyCount;
     private ArenaManager? arenaManager;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
+
+    private int enemyCount;
     private bool waveStarted = false;
 
     protected override void init()
     {
         arenaManager = gameObject.GetParent().getScript<ArenaManager>();
-        enemyCount = 0;
+
+        // Turns pods inactive initially if they were not already
+        foreach (FixedSpawnPod pod in fixedSpawns)
+        {
+            pod.gameObject.SetActive(false);
+        }
     }
 
     public void StartWave()
     {
         waveStarted = true;
         spawnedEnemies.Clear();
+        enemyCount = 0;
 
-        // Unsure how to do make this better rn
-        if (fixedEnemyPos.Count != fixedEnemyPrefabs.Count)
-        {
-            Debug.LogError("Enemy positions dont match number of prefabs");
-        }
-
-        for (int i = 0; i < fixedEnemyPrefabs.Count; i++)
+        foreach (FixedSpawnPod pod in fixedSpawns)
         {
             enemyCount++;
-            // TEMP TILL SPAWN PODS EXIST
-            GameObject enem = Instantiate(fixedEnemyPrefabs[i], fixedEnemyPos[i].position, gameObject);
-            RegisterSpawn(enem);
+            pod.Spawn();
         }
 
         if (randomSpawns != null)

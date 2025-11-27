@@ -9,8 +9,6 @@ public class ArenaManager : Script
     private List<Wave> waves;
     //[SerializableField]
     //private List<Door> doors;
-    //[SerializableField]
-    //private List<Door::States> arenaCompletionDoorStates = new List<Door::States::Open>
 
     private int currentWave = 0;
     private ArenaQuest arenaQuest;
@@ -26,6 +24,7 @@ public class ArenaManager : Script
             Debug.LogWarning("Arena " + gameObject.ToString() + " is missing waves");
             ArenaCompleted();
         }
+        //MapKey(Key.K, OnWaveCompleted);
     }
 
     public void OnWaveCompleted()

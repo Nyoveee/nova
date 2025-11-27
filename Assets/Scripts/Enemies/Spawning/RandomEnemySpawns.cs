@@ -10,12 +10,10 @@ public class RandomEnemySpawns : Script
     private int enemyCount = 3;
     [SerializableField]
     private List<Prefab> possibleEnemyPrefabs;
-    [SerializableField]
-    private Prefab spawnPod;
+    
+    [SerializableField] private Prefab randomPodPrefab;
+    [SerializableField] private Wave wave;
 
-    // THIS SHOULD BE THE ENEMY SPAWN POD CLASS HANDLING IT
-    [SerializableField]
-    private Wave wave;
     public int SpawnEnemies()
     {
         if (possibleEnemyPrefabs == null ||  possibleEnemyPrefabs.Count == 0) {
@@ -24,8 +22,8 @@ public class RandomEnemySpawns : Script
         }
 
         Transform_ transform = gameObject.transform;
-        Vector3 spawnMin = transform.position - transform.scale * 0.5f;
-        Vector3 spawnMax = transform.position + transform.scale * 0.5f;
+        Vector3 spawnMin = transform.scale * 0.5f;
+        Vector3 spawnMax = transform.scale * 0.5f;
 
         for (int i = 0; i < enemyCount; i++)
         {
@@ -34,10 +32,14 @@ public class RandomEnemySpawns : Script
                             transform.position.y,
                             Random.Range(spawnMin.z, spawnMax.z));
 
-            // TODO: ENEMIES CAN SPAWN WITHIN EACH OTHER AT THE MOMENT ALSO DOESNT CARE ABOUT PLAYER
+            // TODO: ENEMIES CAN SPAWN WITHIN EACH OTHER AT THE MOMENT 
             Prefab enemyPrefab = possibleEnemyPrefabs[Random.Range(0, possibleEnemyPrefabs.Count)];
-            GameObject enemy = Instantiate(enemyPrefab, pos);
-            wave.RegisterSpawn(enemy);
+
+            GameObject podGO = Instantiate(randomPodPrefab, pos, gameObject);
+
+            RandomSpawnPod pod = podGO.getScript<RandomSpawnPod>();
+            if (pod != null) 
+                pod.InitValues(wave, enemyPrefab);
         }
         return enemyCount;
     }
