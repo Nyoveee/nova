@@ -15,10 +15,14 @@ public class ArenaQuest : Quest
 	{
 		Debug.Log("Arena success");
 	}
-	public override void OnFail()
+	public override void OnFail(Transform_ playerTransform)
     {
         Debug.Log("Arena failed");
 		arenaManager.ResetArena();
+		if (playerTransform != null && playerCheckpoint != null)
+		{
+			playerTransform.position = playerCheckpoint.position;
+		}
     }
 
     public override void UpdateQuest()

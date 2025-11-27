@@ -2,13 +2,13 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+
 public class QuestManager : Script
 {
     private List<Quest> quests = new List<Quest>();
-
     private Quest? currentQuest;
-
     private int questIndex;
+    private PlayerController? player;
 
     protected override void init()
     {
@@ -34,6 +34,16 @@ public class QuestManager : Script
         {
             StartCurrentQuest();
         }
+
+        GameObject playerGO = GameObject.FindWithTag("Player");
+        if (playerGO != null)
+        {
+            player = playerGO.getScript<PlayerController>();
+            if (player != null)
+            {
+                player.OnPlayerDeath += HandlePlayerDeath;
+            }
+        }
     }
 
     protected override void update()
@@ -42,27 +52,28 @@ public class QuestManager : Script
             currentQuest?.UpdateQuest();
     }
 
-    private void HandleQuestStateChanged(Quest.QuestState oldState, Quest.QuestState newState)
+    private void HandleQuestStateChanged(object sender, Quest.QuestStateChangedEventArgs e)
     {
-        if (newState == oldState)
+        if (e.NewState == e.OldState)
         {
             Debug.Log("Quest new/old states same");
             return;
         }
 
-        if (newState == Quest.QuestState.Success)
+        if (e.NewState == Quest.QuestState.Success)
         {
-            currentQuest!.OnSuccess();
+            currentQuest.OnSuccess();
             MoveToNextQuest();
         }
-        else if (newState == Quest.QuestState.Fail)
+        else if (e.NewState == Quest.QuestState.Fail)
         {
-            currentQuest!.OnFail();
+            currentQuest.OnFail(player.gameObject.transform);
         }
     }
 
     private void MoveToNextQuest()
     {
+        currentQuest.OnQuestStateChanged -= HandleQuestStateChanged;
         ++questIndex;
         if (questIndex < quests.Count)
         {
@@ -79,5 +90,14 @@ public class QuestManager : Script
     {
         currentQuest.OnQuestStateChanged += HandleQuestStateChanged;
         currentQuest.OnEnter();
+    }
+
+    // Automatically fails current quest
+    private void HandlePlayerDeath(object sender, EventArgs e)
+    {
+        if (currentQuest != null)
+        {
+            currentQuest.SetQuestState(Quest.QuestState.Fail);
+        }
     }
 }

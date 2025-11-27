@@ -4,7 +4,6 @@
 
 using ScriptingAPI;
 using System;
-using System.Diagnostics;
 
 public class Wave : Script
 {
@@ -33,10 +32,10 @@ public class Wave : Script
         waveStarted = true;
         spawnedEnemies.Clear();
 
-        // Unsure how to do this rn
+        // Unsure how to do make this better rn
         if (fixedEnemyPos.Count != fixedEnemyPrefabs.Count)
         {
-            Debug.LogError("Positions dont match number of prefabs");
+            Debug.LogError("Enemy positions dont match number of prefabs");
         }
 
         for (int i = 0; i < fixedEnemyPrefabs.Count; i++)
