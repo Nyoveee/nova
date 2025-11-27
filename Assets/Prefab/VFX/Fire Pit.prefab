@@ -1,19 +1,85 @@
 {
-    "entities": [
+    "Entities": [
         {
             "EntityData": {
-                "children": null,
+                "children": [
+                    5,
+                    6
+                ],
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Light",
+                "name": "Fire Pit",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
+                    "prefabID": 15879420075206066177
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Fire",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 15879420075206066177
                 },
                 "tag": ""
             },
@@ -31,9 +97,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -45,13 +111,13 @@
                 },
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
-                "maxParticles": 1000,
+                "maxParticles": 250,
                 "minAngularVelocityOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
+                        "b": 0.003921568859368563,
+                        "g": 0.4431372582912445,
                         "r": 1.0
                     },
                     "colorOffsetMax": {
@@ -64,7 +130,7 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 1.0
+                    "emissiveMultiplier": 10.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -83,21 +149,21 @@
                             "z": -5.0
                         }
                     },
-                    "emissionShape": "Point",
+                    "emissionShape": "Circle",
                     "radiusEmitter": {
                         "radius": 5.0
                     }
                 },
-                "particleRate": 100.0,
+                "particleRate": 250.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
                     "selected": false
                 },
-                "startSize": 0.10000000149011612,
-                "startSpeed": 1.0,
-                "texture": 10359651775100698783,
+                "startSize": 15.0,
+                "startSpeed": 30.0,
+                "texture": 5391556884225917121,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
                     "selected": false,
@@ -134,9 +200,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 83.26358795166016,
+                    "y": -47.85767364501953,
+                    "z": -2.436652660369873
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -150,9 +216,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 83.26358795166016,
+                    "y": -47.85767364501953,
+                    "z": -2.436652660369873
                 },
                 "rotation": {
                     "w": 1.0,
@@ -166,7 +232,7 @@
                     "z": 1.0
                 }
             },
-            "id": 4194334
+            "id": 5
         },
         {
             "EntityData": {
@@ -174,149 +240,14 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Skybox",
+                "name": "Rising Smoke",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "parent": 4,
+                "prefabID": 4294967295,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "SkyBox": {
-                "cubeMapId": 10390737114601406469
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 2097174
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Floor",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 2.0329222679138184,
-                    "y": -9.054488182067871,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 56.326412200927734,
-                    "y": 1.0,
-                    "z": 27.887022018432617
-                },
-                "position": {
-                    "x": 2.0329222679138184,
-                    "y": -9.054488182067871,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 56.326412200927734,
-                    "y": 1.0,
-                    "z": 27.887022018432617
-                }
-            },
-            "id": 2097173
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Emitter",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
+                    "prefabID": 15879420075206066177
                 },
                 "tag": ""
             },
@@ -331,7 +262,7 @@
                         "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "force": {
                     "x": 0.0,
@@ -339,7 +270,7 @@
                     "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 1.0,
+                "lifeTime": 4.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -347,20 +278,20 @@
                     "z": 0.03200000151991844
                 },
                 "looping": true,
-                "maxAngularVelocityOffset": 10.0,
-                "maxParticles": 1000,
-                "minAngularVelocityOffset": -10.0,
+                "maxAngularVelocityOffset": 0.0,
+                "maxParticles": 80,
+                "minAngularVelocityOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
-                        "a": 1.0,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
+                        "a": 0.1568627506494522,
+                        "b": 0.501960813999176,
+                        "g": 0.501960813999176,
+                        "r": 0.501960813999176
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
-                        "y": 3.0,
-                        "z": 3.0
+                        "y": 0.0,
+                        "z": 0.0
                     },
                     "colorOffsetMin": {
                         "x": 0.0,
@@ -371,7 +302,7 @@
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
-                        "arc": 30.0,
+                        "arc": 0.0,
                         "distance": 5.0
                     },
                     "cubeEmitter": {
@@ -386,24 +317,24 @@
                             "z": -5.0
                         }
                     },
-                    "emissionShape": "Point",
+                    "emissionShape": "Cone",
                     "radiusEmitter": {
-                        "radius": 5.0
+                        "radius": 35.0
                     }
                 },
-                "particleRate": 100.0,
+                "particleRate": 20.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
                     "selected": false
                 },
-                "startSize": 0.10000000149011612,
-                "startSpeed": 1.0,
-                "texture": 779870865798480017,
+                "startSize": 15.0,
+                "startSpeed": 10.0,
+                "texture": 8273860645742952571,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -422,7 +353,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -437,9 +368,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 84.8303451538086,
+                    "y": -45.91120529174805,
+                    "z": -1.8387532234191895
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -453,9 +384,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 84.8303451538086,
+                    "y": -45.91120529174805,
+                    "z": -1.8387532234191895
                 },
                 "rotation": {
                     "w": 1.0,
@@ -469,12 +400,8 @@
                     "z": 1.0
                 }
             },
-            "id": 2097167
+            "id": 6
         }
     ],
-    "layers": [
-        {
-            "name": "Default"
-        }
-    ]
+    "RootEntity": 4
 }
