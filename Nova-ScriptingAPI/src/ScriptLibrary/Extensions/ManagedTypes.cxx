@@ -97,6 +97,10 @@ Quaternion Quaternion::Identity() {
 	return Quaternion{ glm::identity<glm::quat>() };
 }
 
+Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {
+	return Quaternion{ glm::slerp(a.native(), b.native(), t) };
+}
+
 // =================================================================
 // TRANSFORM
 // =================================================================
@@ -198,7 +202,7 @@ void Animator_::SetBool(System::String^ name, bool value){
 	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
-void Animator_::SetFloat(System::String^ name, float value){
+void Animator_::SetFloat(System::String^ name, float value) {
 	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
@@ -412,8 +416,29 @@ NavMeshOfflinkData NavMeshAgent_::getOffLinkData()
 	return returnOfflinkdata;
 }
 
-void  NavMeshAgent_::CompleteOffMeshLink()
+void NavMeshAgent_::CompleteOffMeshLink()
 {
 	Interface::engine->navigationSystem.CompleteOffLinkData(*nativeComponent());
 
+}
+
+// =================================================================
+// Sequencer Agent
+// =================================================================
+
+bool Sequence_::isPlaying() {
+	return nativeComponent()->isPlaying;
+}
+
+void Sequence_::resume() {
+	nativeComponent()->isPlaying = true;
+}
+
+void Sequence_::pause() {
+	nativeComponent()->isPlaying = false;
+}
+
+void Sequence_::play() {
+	nativeComponent()->timeElapsed = 0.f;
+	nativeComponent()->isPlaying = true;
 }

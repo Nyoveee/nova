@@ -7,29 +7,45 @@ class ButtonScript : Script
 {
     public Scene nextScene;
 
+    private bool isDragging = false;
+    private Vector2 mouseInitialPosition;
+
+    private Vector3 initialPosition;
+
     // This function is first invoked when game starts.
     protected override void init()
-    {}
+    {
+        initialPosition = gameObject.transform.position;
+    }
 
     // This function is invoked every fixed update.
     protected override void update()
-    {}
+    {
+        if (isDragging) { 
+            // calculate distance from initial click
+            Vector2 difference = Input.GetUIMousePosition() - mouseInitialPosition;
+
+            gameObject.transform.position = new Vector3(initialPosition.x + difference.x, initialPosition.y, 0f);
+        }
+    }
 
     public void onHover()
     {
-        Debug.Log("Hover");
+        // AudioAPI.PlaySound(gameObject, "metal_pipe");
     }
 
     public void onPressed()
     {
-        Debug.Log("Pressed");
-
+        isDragging = true;
+        mouseInitialPosition = Input.GetUIMousePosition();
     }
 
     public void onReleased()
     {
-        Debug.Log("Released");
+        isDragging = false;
+        initialPosition = gameObject.transform.position;
 
-        SceneAPI.ChangeScene(nextScene);
+        //Debug.Log("Released");
+        //SceneAPI.ChangeScene(nextScene);
     }
 }

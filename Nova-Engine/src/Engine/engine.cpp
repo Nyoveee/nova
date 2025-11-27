@@ -32,6 +32,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
 	prefabManager			{ *this },
+	dataManager				{ *this },
 	deltaTimeMultiplier		{ 1.f },
 	isPaused				{ false }
 {
@@ -193,6 +194,10 @@ void Engine::gameLockMouse(bool value) {
 void Engine::editorControlMouse(bool value) {
 	isEditorControllingMouse = value;
 	gameLockMouse(isGameLockingMouse);
+}
+
+glm::vec2 Engine::getUIMousePosition() const {
+	return window.getUISpacePos();
 }
 
 void Engine::SystemsOnLoad() {

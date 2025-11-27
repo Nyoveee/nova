@@ -177,6 +177,8 @@
   <ItemGroup>
     <ClInclude Include="src\Engine\animationSystem.h" />
     <ClInclude Include="src\ECS\Events.h" />
+    <ClInclude Include="src\Engine\dataManager.h" />
+    <ClInclude Include="src\Engine\dataManager.ipp" />
     <ClInclude Include="src\Engine\prefabManager.h" />
     <ClInclude Include="src\Engine\prefabManager.ipp" />
     <ClInclude Include="src\Engine\uiSystem.h" />
@@ -214,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\animationSystem.cpp" />
+    <ClCompile Include="src\Engine\dataManager.cpp" />
     <ClCompile Include="src\Engine\prefabManager.cpp" />
     <ClCompile Include="src\Engine\uiSystem.cpp" />
     <ClCompile Include="src\Graphics\bloomFrameBuffer.cpp" />

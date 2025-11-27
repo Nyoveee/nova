@@ -195,6 +195,11 @@
                 "tag": ""
             },
             "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
                 "color": {
                     "b": 0.6206896305084229,
                     "g": 0.9424494504928589,
@@ -203,6 +208,7 @@
                 "cutOffAngle": 0.21816615760326385,
                 "intensity": 100.0,
                 "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
                 "type": "PointLight"
             },
             "Transform": {
@@ -419,6 +425,11 @@
                 "tag": ""
             },
             "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
                 "color": {
                     "b": 1.0,
                     "g": 1.0,
@@ -427,6 +438,7 @@
                 "cutOffAngle": 0.21816615760326385,
                 "intensity": 1.0,
                 "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
                 "type": "Directional"
             },
             "SkyBox": {
@@ -624,6 +636,11 @@
                 "tag": ""
             },
             "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
                 "color": {
                     "b": 0.6468489170074463,
                     "g": 1.0,
@@ -632,6 +649,7 @@
                 "cutOffAngle": 0.21816615760326385,
                 "intensity": 100.0,
                 "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
                 "type": "PointLight"
             },
             "Transform": {

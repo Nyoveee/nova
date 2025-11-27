@@ -54,6 +54,8 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 
 		glTextureParameteri(texture_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTextureParameteri(texture_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(texture_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(texture_id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		GLuint colorAttachment = GL_COLOR_ATTACHMENT0 + i;
 		colorAttachments.push_back(colorAttachment);

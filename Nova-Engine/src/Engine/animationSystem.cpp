@@ -20,44 +20,6 @@ void AnimationSystem::update([[maybe_unused]] float dt) {
 		updateAnimator(dt);
 	}
 
-	// =======================================================
-	// We calculate the bone's final matrices here. This will be used
-	// by the vertex shader for skinning.
-	// =======================================================
-	for (auto&& [entityId, entityData, skinnedMeshRenderer] : registry.view<EntityData, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entityId)) {
-			continue;
-		}
-
-		// retrieve skinned mesh..
-		auto&& [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
-		
-		if (!model || !model->skeleton) {
-			continue;
-		}
-
-		Skeleton const& skeleton = model->skeleton.value();
-
-		skinnedMeshRenderer.bonesFinalMatrices.resize(skeleton.bones.size());
-
-		// retrieve animation...
-		Animator* animator = registry.try_get<Animator>(entityId);
-		Animation const* currentAnimation = nullptr;
-		float timeInTicks = 0.f;
-
-		if (animator) {
-			auto&& [animation, __] = resourceManager.getResource<Model>(animator->currentAnimation);
-
-			if (animation && animation->animations.size()) {
-				currentAnimation = &animation->animations[0];
-				timeInTicks = std::min(animator->timeElapsed * currentAnimation->ticksPerSecond, currentAnimation->durationInTicks - 0.01f);
-			}
-		}
-
-		// we find the root node first, and recursively calculate the final transformation matrix down...
-		ModelNodeIndex rootNode = skeleton.rootNode;
-		calculateFinalMatrix(rootNode, skeleton.nodes[rootNode].transformationMatrix, skeleton, skinnedMeshRenderer, currentAnimation, timeInTicks);
-	}
 	animateSequencer(dt);
 	calculateBoneMatrixes();
 }
@@ -92,6 +54,8 @@ void AnimationSystem::initialiseSequence(Sequence& sequence) {
 	sequence.timeElapsed = 0.f;
 	sequence.lastTimeElapsed = 0.f;
 	sequence.executedAnimationEvents.clear();
+
+	sequence.isPlaying = sequence.startPlaying;
 }
 
 void AnimationSystem::handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller) {
@@ -171,7 +135,7 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 
 void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence, Sequencer& sequencer, float dt) {
 	if (sequence.currentFrame < sequencer.data.lastFrame) {
-		sequence.timeElapsed += dt;
+		sequence.timeElapsed += dt * sequence.speedMultiplier;
 		sequence.currentFrame = static_cast<int>(sequence.timeElapsed * FPS);
 	}
 
@@ -195,7 +159,7 @@ void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence,
 
 void AnimationSystem::animateSequencer(float dt) {
 	for (auto&& [entityId, entityData, transform, sequence] : registry.view<EntityData, Transform, Sequence>().each()) {
-		if (!entityData.isActive) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Sequence>(entityId) || !sequence.isPlaying) {
 			continue;
 		}
 
