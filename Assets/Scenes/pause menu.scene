@@ -35,7 +35,7 @@
                 },
                 "localPosition": {
                     "x": -0.2913997173309326,
-                    "y": -0.1984829306602478,
+                    "y": -0.19848310947418213,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -51,7 +51,7 @@
                 },
                 "position": {
                     "x": 872.580078125,
-                    "y": 70.1517105102539,
+                    "y": 70.15169525146484,
                     "z": 0.0
                 },
                 "rotation": {
@@ -473,6 +473,52 @@
             "id": 39846050
         },
         {
+            "Button": {
+                "colorMultiplier": 1.0,
+                "disabledColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "fadeDuration": 0.10000000149011612,
+                "highlightedColor": {
+                    "a": 1.0,
+                    "b": 0.6627451181411743,
+                    "g": 0.9215686321258545,
+                    "r": 1.0
+                },
+                "isInteractable": true,
+                "normalColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onHoverFunction": "onHover",
+                "onPressFunction": "onPressed",
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "pressedColor": {
+                    "a": 1.0,
+                    "b": 0.5058823823928833,
+                    "g": 0.5058823823928833,
+                    "r": 0.5058823823928833
+                },
+                "reference": {
+                    "entity": 1048602,
+                    "script": 1986501316973068289
+                }
+            },
             "EntityData": {
                 "children": [
                     39846050
@@ -495,6 +541,22 @@
                     "r": 0.7344827651977539
                 },
                 "texture": 7
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 13,
+                                    "__variant_value": 10862084634423558145
+                                },
+                                "name": "nextScene"
+                            }
+                        ],
+                        "scriptId": 1986501316973068289
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
