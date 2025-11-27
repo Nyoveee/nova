@@ -28,7 +28,7 @@ public:
 	ENGINE_DLL_API void mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> map);
 	ENGINE_DLL_API void broadcast(entt::entity prefabEntity);
 	ENGINE_DLL_API void prefabBroadcast(); 
-	//ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance);
+	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance);
 	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance);
 	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
 	ENGINE_DLL_API void convertToPrefab(entt::entity entity, ResourceID id);

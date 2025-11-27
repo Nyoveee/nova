@@ -135,6 +135,22 @@ void PrefabManager::prefabBroadcast() {
 	}
 }
 
+entt::entity PrefabManager::getParent(entt::entity prefabInstance) {
+	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
+	if (entityData->parent == entt::null) {
+		return prefabInstance;
+	}
+
+	entt::entity parent = entityData->parent;
+	while (entityData->parent != entt::null) {
+		parent = entityData->parent;
+		entityData = ecsRegistry.try_get<EntityData>(parent);
+		
+		
+	}
+	return parent;
+}
+
 
 void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 	//get the root prefab
@@ -148,7 +164,10 @@ void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 		return;
 	}
 
-	updateFromPrefabInstance(iterator->second);
+
+
+	//updateFromPrefabInstance(iterator->second);
+	updateFromPrefabInstance(getParent(prefabInstance));
 }
 
 void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
@@ -194,12 +213,19 @@ void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry&
 				}
 			}
 
-			if (&toRegistry == &prefabRegistry) {
+			//If toRegistry is prefabRegistry or the toRegistry does not contain the component
+			auto* entityComponent = toRegistry.try_get<Components>(toEntity);
+			if (&toRegistry == &prefabRegistry || entityComponent == nullptr) {
 				overrideCheck = true;
 			}
 
 			if (component && overrideCheck) {
 				auto* entityComponent = toRegistry.try_get<Components>(toEntity);
+				if (entityComponent == nullptr) {
+					toRegistry.emplace_or_replace<Components>(toEntity, Components{});
+				}
+				entityComponent = toRegistry.try_get<Components>(toEntity);
+				
 				*entityComponent = *component;
 			}
 		}
