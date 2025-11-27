@@ -133,6 +133,14 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 		dataMember.insert(std::move(pair));
 	}
 }
+
+//struct
+template <isStruct DataMemberType>
+inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
+	dataMember.prefabEntity = json["prefabEntity"];
+	dataMember.prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(json["prefabID"]) };
+}
+
 // unordered_set
 template <isUnorderedSet DataMemberType>
 inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
