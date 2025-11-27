@@ -188,7 +188,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
 
-	
+#if false
 	//check if there is a prefab in the scene, if there is, update the prefabManager
 	// entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
 	std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
@@ -203,6 +203,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		}
 	}
+#endif
 }
 
 void Editor::update(float dt) {

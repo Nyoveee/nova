@@ -6,22 +6,18 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Ichor",
-                "overridenComponents": null,
+                "name": "Fog",
+                "overridenComponents": {
+                    "3548010661223935717": true
+                },
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 12217905615932260355
+                    "prefabEntity": 1048628,
+                    "prefabID": 1691832203641815041
                 },
                 "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    16833312378621526017
-                ],
-                "modelId": 4
             },
             "ParticleEmitter": {
                 "burstAmount": 30,
@@ -29,20 +25,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 0.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.501960813999176,
+                        "g": 0.501960813999176,
+                        "r": 0.501960813999176
                     },
                     "interpolationType": "Linear",
                     "selected": true
                 },
                 "force": {
-                    "x": 7.006492321624085e-43,
+                    "x": 0.0,
                     "y": 0.0,
-                    "z": 1.975830834697992e-43
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 1.0,
+                "lifeTime": 20.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -51,14 +47,14 @@
                 },
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
-                "maxParticles": 1000,
+                "maxParticles": 100,
                 "minAngularVelocityOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "a": 0.003921568859368563,
+                        "b": 0.501960813999176,
+                        "g": 0.501960813999176,
+                        "r": 0.501960813999176
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
@@ -74,42 +70,42 @@
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
-                        "arc": 30.0,
-                        "distance": 5.0
+                        "arc": 0.0,
+                        "distance": 10.0
                     },
                     "cubeEmitter": {
                         "max": {
-                            "x": 5.0,
+                            "x": 10.0,
                             "y": 5.0,
-                            "z": 5.0
+                            "z": 10.0
                         },
                         "min": {
-                            "x": -5.0,
+                            "x": -10.0,
                             "y": -5.0,
-                            "z": -5.0
+                            "z": -10.0
                         }
                     },
-                    "emissionShape": "Point",
+                    "emissionShape": "Circle",
                     "radiusEmitter": {
-                        "radius": 5.0
+                        "radius": 100.0
                     }
                 },
-                "particleRate": 100.0,
+                "particleRate": 10.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
                     "selected": false
                 },
-                "startSize": 1.0,
-                "startSpeed": 1.0,
-                "texture": 0,
+                "startSize": 25.0,
+                "startSpeed": 0.5,
+                "texture": 8273860645742952571,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
-                        "b": 0.0,
+                        "b": 1.0,
                         "g": 1.0,
                         "r": 1.0
                     },
@@ -125,60 +121,8 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
-            },
-            "Rigidbody": {
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "Item",
-                "mass": 0.0,
-                "motionQuality": "Discrete",
-                "motionType": "Dynamic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "ichorLifeTime"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.5
-                                },
-                                "name": "expandedSizeMultiplier"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "expandTime"
-                            }
-                        ],
-                        "scriptId": 3870070279982465025
-                    }
-                ]
-            },
-            "SphereCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 0.32499998807907104
             },
             "Transform": {
                 "eulerAngles": {
@@ -203,9 +147,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "position": {
                     "x": 0.0,
@@ -219,13 +163,13 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 1048597
+            "id": 40894644
         }
     ],
-    "RootEntity": 1048597
+    "RootEntity": 40894644
 }
