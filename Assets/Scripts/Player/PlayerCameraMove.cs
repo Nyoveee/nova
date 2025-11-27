@@ -3,24 +3,24 @@
 // Editor will automatically rename and recompile this file.
 class PlayerCameraMove : Script
 {
-    [SerializableField]
-    private Transform_? playerCameraPos = null; //Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
+    //[SerializableField]
+    //private Transform_? playerCameraPos = null; //Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
 
-    // This function is first invoked when game starts.
-    protected override void init()
-    {}
+    //// This function is first invoked when game starts.
+    //protected override void init()
+    //{}
 
-    // This function is invoked every fixed update.
-    protected override void update()
-    {
-        //Invoke(MoveToOrientation, 0);
+    //// This function is invoked every fixed update.
+    //protected override void update()
+    //{
+    //    //Invoke(MoveToOrientation, 0);
+    //    gameObject.transform.position = playerCameraPos.position;
 
+    //}
 
-    }
-
-    private void MoveToOrientation()
-    {
-        gameObject.transform.position = playerCameraPos.position;
-    }
+    //private void MoveToOrientation()
+    //{
+    //    gameObject.transform.position = playerCameraPos.position;
+    //}
 
 }

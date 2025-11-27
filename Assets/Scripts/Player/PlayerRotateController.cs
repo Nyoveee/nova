@@ -29,25 +29,26 @@ class PlayerRotateController : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-
         UpdateCamera();
-        Invoke(MoveToOrientation,0);
+        //MoveToOrientation();
+        Invoke(MoveToOrientation, 0);
+        //UpdateCamera();
+        //Invoke(MoveToOrientation,0);
 
     }
 
     protected override void fixedUpdate()
-    { 
-    
-    
-    
-    
+    {
+
+
+
+
     }
 
-
+     
 
     private void MoveToOrientation()
     {
-        // gameObject.transform.position = playerOrientation.position;
         gameObject.transform.position = playerCameraPos.position;
     }
 
@@ -56,16 +57,16 @@ class PlayerRotateController : Script
     //    // We rotate our parent in the y axis..
 
     //    // x is pitch, y is yaw
-    //    Vector3 euler = gameObject.transform.eulerAngles;
+    //    Vector3 euler = gameObject.transform.localEulerAngles;
 
-    //    euler.x -= cameraSensitivity * deltaMouseY * Time.V_FixedDeltaTime();
-    //    euler.y -= cameraSensitivity * deltaMouseX * Time.V_FixedDeltaTime();
+    //    euler.x -= cameraSensitivity * deltaMouseY * Time.V_DeltaTime();
+    //    euler.y -= cameraSensitivity * deltaMouseX * Time.V_DeltaTime();
     //    euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
 
 
-    //    playerOrientation.eulerAngles = new Vector3(0, euler.y, 0);
+    //    playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
 
-    //    gameObject.transform.eulerAngles = euler;
+    //    gameObject.transform.localEulerAngles = euler;
 
     //}
 
@@ -73,10 +74,9 @@ class PlayerRotateController : Script
     {
         Vector3 euler = gameObject.transform.eulerAngles;
 
-        euler.x -= cameraSensitivity * accumulateDifferenceY * Time.V_FixedDeltaTime();
-        euler.y -= cameraSensitivity * accumulateDifferenceX * Time.V_FixedDeltaTime();
+        euler.x -= cameraSensitivity * accumulateDifferenceY * Time.V_DeltaTime();
+        euler.y -= cameraSensitivity * accumulateDifferenceX * Time.V_DeltaTime();
         euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
-
         playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
 
         gameObject.transform.eulerAngles = euler;

@@ -89,17 +89,19 @@ class PlayerController : Script
     }
 
     // This function is invoked every fixed update.
-    protected override void update()
+    protected override void fixedUpdate()
     {
         // ===================================
         // Check if its grounded..
         // ===================================
         var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 1f, gameObject);
-        if (result != null) { 
+        if (result != null)
+        {
             isGrounded = true;
 
             // this branch is only executed once, per landing..
-            if (wasInMidAir) {
+            if (wasInMidAir)
+            {
                 wasInMidAir = false;
                 // @TODO: play landing sound..
                 jumpCount = 0;
@@ -129,15 +131,71 @@ class PlayerController : Script
         // ===================================
         // UI
         // ===================================
-        if(gameUIManager != null)
+        if (gameUIManager != null)
         {
             gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, dashTimer, dashTimerCap);
             gameUIManager.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
             gameUIManager.SetHealthText((int)currentHealth);
         }
-       
+
     }
 
+    protected override void update() 
+    {
+
+        //// ==============================
+        //// Handles WASD movement, we calculate the oriented directional vector from input..
+        //// ==============================
+        //Vector3 orientedFront = new Vector3(playerOrientation.front.x, 0, playerOrientation.front.z);
+        //Vector3 orientedRight = new Vector3(playerOrientation.right.x, 0, playerOrientation.right.z);
+
+        //Vector3 directionVector = Vector3.Zero();
+
+        //orientedFront.Normalize();
+        //orientedRight.Normalize();
+
+        //// We accumulate all directional input command..
+        //bool isMoving = false;
+
+        //if (isMovingForward)
+        //{
+        //    directionVector += orientedFront;
+        //    isMoving = true;
+        //}
+        //if (isMovingBackward)
+        //{
+        //    directionVector -= orientedFront;
+        //    isMoving = true;
+
+        //}
+        //if (isMovingLeft)
+        //{
+        //    directionVector -= orientedRight;
+        //    isMoving = true;
+
+        //}
+        //if (isMovingRight)
+        //{
+        //    directionVector += orientedRight;
+        //    isMoving = true;
+        //}
+
+        //if (isMoving)
+        //{
+        //    directionVector.Normalize();
+        //    Vector3 movingVector = directionVector * maximumMoveSpeed * Time.V_DeltaTime();
+
+        //    transform.position += movingVector;
+
+        //}
+        //// Stop user from moving if grounded, in the case where user has not pressed any key..
+        //else if (isGrounded)
+        //{
+        //   // rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
+        //}
+
+
+    }
 
 
 
