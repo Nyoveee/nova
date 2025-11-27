@@ -97,9 +97,12 @@ void AssetViewerUI::update() {
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
 
-	if (ImGui::Button("BroadCast")) {
-		editor.engine.prefabManager.prefabBroadcast();
+	if (selectedResourceExtension == ".prefab") {
+		if (ImGui::Button("BroadCast")) {
+			editor.engine.prefabManager.prefabBroadcast();
+		}
 	}
+
 
 	ImGui::End();
 #endif

@@ -151,6 +151,17 @@ void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 	updateFromPrefabInstance(iterator->second);
 }
 
+void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
+	EntityData* entityData = ecsRegistry.try_get<EntityData>(entity);
+	entityData->prefabMetaData.prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+	entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+
+	for (entt::entity child : entityData->children) {
+		convertToPrefab(child, id);
+	}
+
+}
+
 void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
 
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);

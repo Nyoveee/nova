@@ -29,6 +29,7 @@ public:
 	//ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance);
 	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance);
 	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
+	ENGINE_DLL_API void convertToPrefab(entt::entity entity, ResourceID id);
 
 private:
 
