@@ -21,6 +21,8 @@ class Charger : Enemy
     private Rigidbody_? navMeshRigidbody;
     [SerializableField]
     private ParticleEmitter_? emitter;
+    [SerializableField]
+    private GameObject? chargeLines;
 
     /***********************************************************
         Local Variables
@@ -104,6 +106,7 @@ class Charger : Enemy
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
             chargingRigidbody.enable = false;
             navMeshRigidbody.enable = false;
+            chargeLines.SetActive(false);
             NavigationAPI.stopAgent(gameObject);
         }
         if (chargerState == ChargerState.Death || WasRecentlyDamaged())
@@ -161,6 +164,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerCharge");
             currentChargeTime = chargerstats.maxChargeTime;
             ActivateRigidbody();
+            chargeLines.SetActive(true);
             // Set Velocity
             chargeDirection = player.transform.position - gameObject.transform.position;
             chargeDirection.y = 0;
@@ -193,6 +197,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerWalk");
             currentChargeCooldown = chargerstats.chargeCooldown;
             ActivateNavMeshAgent();
+            chargeLines.SetActive(false);
             return;
         }
         // FootSteps
@@ -286,6 +291,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerAttack");
             currentChargeCooldown = chargerstats.chargeCooldown;
             chargingRigidbody.SetVelocity(Vector3.Zero());
+            chargeLines.SetActive(false);
         }
         if (other.tag == "Wall" && chargerState == ChargerState.Charging)
         {
@@ -293,6 +299,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerStagger");
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
             chargingRigidbody.SetVelocity(Vector3.Zero());
+            chargeLines.SetActive(false);
         }
     }
 }

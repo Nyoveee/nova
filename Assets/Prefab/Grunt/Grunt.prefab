@@ -382,8 +382,7 @@
                 "tag": ""
             },
             "ParticleEmitter": {
-                "angularVelocity": 0.0,
-                "burstAmount": 1000,
+                "burstAmount": 30,
                 "burstRate": 0.0,
                 "colorOverLifetime": {
                     "endColor": {
@@ -393,14 +392,15 @@
                         "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 0.0,
+                    "x": 7.006492321624085e-43,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": 1.975830834697992e-43
                 },
-                "lifeTime": 0.20000000298023224,
+                "initialAngularVelocity": 0.0,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -408,20 +408,32 @@
                     "z": 0.03200000151991844
                 },
                 "looping": true,
-                "maxParticles": 10000,
+                "maxAngularVelocityOffset": 0.0,
+                "maxParticles": 1000,
+                "minAngularVelocityOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.6235294342041016,
-                        "g": 0.19607843458652496,
-                        "r": 0.4156862795352936
+                        "b": 0.9172413945198059,
+                        "g": 0.07907254993915558,
+                        "r": 0.5241690874099731
                     },
-                    "randomizedColor": false
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
-                        "arc": 15.0,
-                        "distance": 2.0
+                        "arc": 30.0,
+                        "distance": 5.0
                     },
                     "cubeEmitter": {
                         "max": {
@@ -445,11 +457,11 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 0.10000000149011612,
                 "startSpeed": 0.0,
-                "texture": 10337573581668909239,
+                "texture": 16344311177990914191,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
                     "selected": false,
@@ -459,6 +471,17 @@
                         "g": 1.0,
                         "r": 1.0
                     },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
                     "trailTexture": 0
                 }
@@ -466,12 +489,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.872062729395111e-07,
+                    "y": -5.871904704690678e-07,
                     "z": -3.1415915489196777
                 },
                 "localEulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.872061024092545e-07,
+                    "y": -5.871904704690678e-07,
                     "z": -3.1415915489196777
                 },
                 "localPosition": {
@@ -480,15 +503,15 @@
                     "z": 2.0236892700195313
                 },
                 "localRotation": {
-                    "w": -5.849678359481914e-07,
-                    "x": -1.6974998118257645e-07,
+                    "w": -5.849635158483579e-07,
+                    "x": -1.6975674554942088e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "localScale": {
-                    "x": 1.0001161098480225,
-                    "y": 0.999884843826294,
-                    "z": 1.0001051425933838
+                    "x": 1.0001957416534424,
+                    "y": 0.9999246597290039,
+                    "z": 1.0001449584960938
                 },
                 "position": {
                     "x": 46.31636428833008,
@@ -496,15 +519,15 @@
                     "z": 66.86579895019531
                 },
                 "rotation": {
-                    "w": -5.849678927916102e-07,
-                    "x": -1.6974995276086702e-07,
+                    "w": -5.849635158483579e-07,
+                    "x": -1.6975671712771145e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "scale": {
-                    "x": 1.0001158714294434,
-                    "y": 0.9998847246170044,
-                    "z": 1.0001050233840942
+                    "x": 1.0001955032348633,
+                    "y": 0.9999245405197144,
+                    "z": 1.0001448392868042
                 }
             },
             "id": 1048637

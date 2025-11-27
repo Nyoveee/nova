@@ -16,16 +16,15 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 
 void ParticleSystem::update(float dt)
 {
-	for (auto&& [entity, transform, entityData, emitter] : engine.ecs.registry.view<Transform, EntityData, ParticleEmitter>().each()) {
+	for (auto&& [entity, transform, entityData, emitter] : engine.ecs.registry.view<Transform, EntityData, ParticleEmitter>().each()){ 
+		particleMovement(transform, emitter, dt);
+		particleOverLifeTime(emitter);
 		if (!entityData.isActive || !engine.ecs.isComponentActive<ParticleEmitter>(entity)) {
 			continue;
 		}
-
 		continuousGeneration(transform, emitter, dt);
 		burstGeneration(transform, emitter, dt);
 		trailGeneration(transform, emitter);
-		particleMovement(transform, emitter, dt);
-		particleOverLifeTime(emitter);
 	}
 }
 

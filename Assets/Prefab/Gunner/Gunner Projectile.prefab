@@ -55,7 +55,17 @@
                         "g": 1.0,
                         "r": 1.0
                     },
-                    "randomizedColor": false
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -98,6 +108,17 @@
                         "g": 1.0,
                         "r": 1.0
                     },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
                     "trailTexture": 0
                 }
