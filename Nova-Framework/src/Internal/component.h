@@ -225,7 +225,7 @@ struct Sequence {
 	float lastTimeElapsed = 0.f;
 	
 	int currentFrame = 0;
-	bool isPlaying = false;
+	bool isPlaying = true;
 
 	// each animator component keeps track of already executed animation events keyframes..
 	// this container is reset everytime it loops..

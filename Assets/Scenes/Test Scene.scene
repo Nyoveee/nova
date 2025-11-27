@@ -2,264 +2,603 @@
     "entities": [
         {
             "EntityData": {
-                "children": [
-                    1048600,
-                    1048591,
-                    3145794,
-                    1048590
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Lights",
-                "overridenProperties": null,
-                "parent": 2097196,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 2097212
-        },
-        {
-            "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Hitbox Position",
+                "name": "Door Indicator Light",
                 "overridenProperties": null,
-                "parent": 2097196,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": 0.14318861067295074,
-                    "z": -3.1415927410125732
-                },
-                "localEulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": 0.14318859577178955,
-                    "z": -3.1415927410125732
-                },
-                "localPosition": {
-                    "x": 30.28323745727539,
-                    "y": -19.76523208618164,
-                    "z": -11.610944747924805
-                },
-                "localRotation": {
-                    "w": 0.07153311371803284,
-                    "x": -1.44889460672315e-12,
-                    "y": 0.9974383115768433,
-                    "z": 2.580359970832946e-12
-                },
-                "localScale": {
-                    "x": 0.6369433999061584,
-                    "y": 0.6369109153747559,
-                    "z": 0.6369433999061584
-                },
-                "position": {
-                    "x": 30.28323745727539,
-                    "y": -19.76523208618164,
-                    "z": -11.610944747924805
-                },
-                "rotation": {
-                    "w": 0.07153312861919403,
-                    "x": -1.4488944983029328e-12,
-                    "y": 0.9974383115768433,
-                    "z": 2.580359970832946e-12
-                },
-                "scale": {
-                    "x": 0.6369431614875793,
-                    "y": 0.6369109153747559,
-                    "z": 0.6369431614875793
-                }
-            },
-            "id": 40894643
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Particle Emitter",
-                "overridenProperties": null,
-                "parent": 40894630,
+                "parent": 2097212,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "ParticleEmitter": {
-                "angularVelocity": 0.20000000298023224,
-                "burstAmount": 100,
-                "burstRate": 0.0,
-                "colorOverLifetime": {
-                    "endColor": {
-                        "a": 0.0,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
-                    },
-                    "interpolationType": "Linear",
-                    "selected": true
-                },
-                "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "lifeTime": 15.0,
-                "lightIntensity": 0.0,
-                "lightattenuation": {
+            "Light": {
+                "attenuation": {
                     "x": 1.0,
                     "y": 0.09000000357627869,
                     "z": 0.03200000151991844
                 },
-                "looping": true,
-                "maxParticles": 500,
-                "particleColorSelection": {
-                    "color": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "randomizedColor": false
+                "color": {
+                    "b": 0.03793102502822876,
+                    "g": 0.21707487106323242,
+                    "r": 1.0
                 },
-                "particleEmissionTypeSelection": {
-                    "coneEmitter": {
-                        "arc": 30.0,
-                        "distance": 5.0
-                    },
-                    "cubeEmitter": {
-                        "max": {
-                            "x": 30.0,
-                            "y": 20.0,
-                            "z": 30.0
-                        },
-                        "min": {
-                            "x": -30.0,
-                            "y": -20.0,
-                            "z": -30.0
-                        }
-                    },
-                    "emissionShape": "Cube",
-                    "radiusEmitter": {
-                        "radius": 30.0
-                    }
-                },
-                "particleRate": 20.0,
-                "randomizedDirection": true,
-                "sizeOverLifetime": {
-                    "endSize": 0.0,
-                    "interpolationType": "Linear",
-                    "selected": true
-                },
-                "startSize": 0.5,
-                "startSpeed": 0.009999999776482582,
-                "texture": 11156164407260069997,
-                "trails": {
-                    "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
-                    "trailColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
-                }
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 100.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "PointLight"
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": 1.002608060836792,
-                    "y": -1.1345295906066895,
-                    "z": -0.21051904559135437
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
                 },
                 "localEulerAngles": {
-                    "x": -3.1415841579437256,
-                    "y": 0.12165996432304382,
-                    "z": 3.141570806503296
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
                 },
                 "localPosition": {
-                    "x": -29.537784576416016,
-                    "y": -1.430511474609375e-06,
-                    "z": -3.61153507232666
+                    "x": 14.875218391418457,
+                    "y": -7.257074356079102,
+                    "z": 19.58238983154297
                 },
                 "localRotation": {
-                    "w": 0.06079249083995819,
-                    "x": 1.2822592907468788e-05,
-                    "y": 0.9981505274772644,
-                    "z": -5.548386980080977e-06
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.19464018940925598,
-                    "y": 0.1946573257446289,
-                    "z": 0.19464769959449768
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "position": {
-                    "x": 114.01634979248047,
-                    "y": -22.038105010986328,
-                    "z": 186.78102111816406
+                    "x": 14.875218391418457,
+                    "y": -7.257074356079102,
+                    "z": 19.58238983154297
                 },
                 "rotation": {
-                    "w": 0.7626388072967529,
-                    "x": 0.35354849696159363,
-                    "y": -0.5111875534057617,
-                    "z": 0.17908863723278046
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "scale": {
-                    "x": 1.000006079673767,
-                    "y": 1.0000132322311401,
-                    "z": 0.9999911189079285
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 1048584
+            "id": 1048600
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Vault Light",
+                "overridenProperties": null,
+                "parent": 2097212,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 0.051724135875701904,
+                    "g": 1.0,
+                    "r": 0.398335337638855
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 500.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "PointLight"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 84.1902084350586,
+                    "y": -53.30445861816406,
+                    "z": -4.255979537963867
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 84.1902084350586,
+                    "y": -53.30445861816406,
+                    "z": -4.255979537963867
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1048591
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Entity 2",
+                "overridenProperties": null,
+                "parent": 2097212,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 0.1564328372478485,
+                    "g": 0.808806836605072,
+                    "r": 0.9862068891525269
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 500.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 100.0,
+                "type": "PointLight"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 81.79615783691406,
+                    "y": 15.718467712402344,
+                    "z": -4.255979537963867
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 81.79615783691406,
+                    "y": 15.718467712402344,
+                    "z": -4.255979537963867
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 3145794
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Directional Right Light",
+                "overridenProperties": null,
+                "parent": 40894628,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 0.20000000298023224,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "Directional"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": -1.5707964897155762
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": -1.5707964897155762
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7071068286895752
+                },
+                "localScale": {
+                    "x": 0.9999997019767761,
+                    "y": 1.0000088214874268,
+                    "z": 1.0000067949295044
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7071068286895752
+                },
+                "scale": {
+                    "x": 0.9999997615814209,
+                    "y": 1.0000089406967163,
+                    "z": 1.0000067949295044
+                }
+            },
+            "id": 1048589
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Directional Left Light",
+                "overridenProperties": null,
+                "parent": 40894628,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 0.20000000298023224,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "Directional"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 1.5707964897155762
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 1.5707964897155762
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7071068286895752
+                },
+                "localScale": {
+                    "x": 0.9999997019767761,
+                    "y": 1.0000088214874268,
+                    "z": 1.0000067949295044
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.7071068286895752
+                },
+                "scale": {
+                    "x": 0.9999997615814209,
+                    "y": 1.0000089406967163,
+                    "z": 1.0000067949295044
+                }
+            },
+            "id": 1048588
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Directional Back Light",
+                "overridenProperties": null,
+                "parent": 40894628,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 0.20000000298023224,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "Directional"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999997019767761,
+                    "y": 1.0000134706497192,
+                    "z": 1.000002145767212
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999997615814209,
+                    "y": 1.0000134706497192,
+                    "z": 1.0000022649765015
+                }
+            },
+            "id": 1048587
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Directional Forward Light",
+                "overridenProperties": null,
+                "parent": 40894628,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 0.20000000298023224,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "Directional"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999997019767761,
+                    "y": 1.0000134706497192,
+                    "z": 1.000002145767212
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999997615814209,
+                    "y": 1.0000134706497192,
+                    "z": 1.0000022649765015
+                }
+            },
+            "id": 2097207
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Directional Bottom Light",
+                "overridenProperties": null,
+                "parent": 40894628,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 0.30000001192092896,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "Directional"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -1.5707964897155762,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": -1.5707964897155762,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.7071068286895752,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0000040531158447,
+                    "y": 1.0000088214874268,
+                    "z": 1.000002145767212
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.7071068286895752,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0000040531158447,
+                    "y": 1.0000089406967163,
+                    "z": 1.0000022649765015
+                }
+            },
+            "id": 1048577
         },
         {
             "BoxCollider": {
@@ -282,7 +621,7 @@
                 "layerId": 0,
                 "name": "Teleporter Source",
                 "overridenProperties": null,
-                "parent": 1048609,
+                "parent": 40894637,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -329,7 +668,7 @@
                 },
                 "localPosition": {
                     "x": 17.648208618164063,
-                    "y": -50.74086380004883,
+                    "y": -50.740867614746094,
                     "z": -50.00563049316406
                 },
                 "localRotation": {
@@ -344,9 +683,9 @@
                     "z": 53.541900634765625
                 },
                 "position": {
-                    "x": -129.01849365234375,
-                    "y": -69.12320709228516,
-                    "z": -39.84787368774414
+                    "x": -76.50881958007813,
+                    "y": -79.78693389892578,
+                    "z": 95.87077331542969
                 },
                 "rotation": {
                     "w": 1.0,
@@ -360,7 +699,7 @@
                     "z": 53.541900634765625
                 }
             },
-            "id": 1048607
+            "id": 40894639
         },
         {
             "EntityData": {
@@ -372,7 +711,7 @@
                 "layerId": 0,
                 "name": "Teleporter Destination",
                 "overridenProperties": null,
-                "parent": 1048609,
+                "parent": 40894637,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -394,9 +733,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 20.1900634765625,
-                    "y": -1.8591899871826172,
-                    "z": 8.574165344238281
+                    "x": 36.704402923583984,
+                    "y": -5.466863632202148,
+                    "z": -44.4488525390625
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -410,9 +749,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -126.47663879394531,
-                    "y": -20.241533279418945,
-                    "z": 18.731922149658203
+                    "x": -57.4526252746582,
+                    "y": -34.51293182373047,
+                    "z": 101.42755126953125
                 },
                 "rotation": {
                     "w": 1.0,
@@ -426,13 +765,13 @@
                     "z": 1.0
                 }
             },
-            "id": 1048605
+            "id": 40894638
         },
         {
             "EntityData": {
                 "children": [
-                    1048605,
-                    1048607
+                    40894638,
+                    40894639
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -455,9 +794,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -146.6667022705078,
-                    "y": -18.382343292236328,
-                    "z": 10.157756805419922
+                    "x": -94.15702819824219,
+                    "y": -29.04606819152832,
+                    "z": 145.87640380859375
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -471,9 +810,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -146.6667022705078,
-                    "y": -18.382343292236328,
-                    "z": 10.157756805419922
+                    "x": -94.15702819824219,
+                    "y": -29.04606819152832,
+                    "z": 145.87640380859375
                 },
                 "rotation": {
                     "w": 1.0,
@@ -487,73 +826,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048609
-        },
-        {
-            "EntityData": {
-                "children": [
-                    39846051,
-                    2,
-                    1048577,
-                    2097207,
-                    1048587,
-                    1048588,
-                    1048589
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Environment",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 40894628
+            "id": 40894637
         },
         {
             "EntityData": {
@@ -561,217 +834,829 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Model",
-                "overridenProperties": null,
-                "parent": 2097196,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "MeshCollider": {
-                "shapeScale": 0.03500000014901161
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    1548438291167281161,
-                    1548438291167281161,
-                    1548438291167281161,
-                    1548438291167281161,
-                    7889506566508740647,
-                    7889506566508740647,
-                    2693214613529362437,
-                    7889506566508740647,
-                    7889506566508740647,
-                    7889506566508740647,
-                    7889506566508740647,
-                    1548438291167281161,
-                    7889506566508740647
-                ],
-                "modelId": 15334581273078857729
-            },
-            "Rigidbody": {
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "NonMoving",
-                "mass": 0.0,
-                "motionQuality": "Discrete",
-                "motionType": "Static"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 0
-        },
-        {
-            "EntityData": {
-                "children": [
-                    0,
-                    40894637,
-                    1048609,
-                    40894643,
-                    2097212
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Level",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 2097196
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Skybox",
+                "name": "Directional Top Light",
                 "overridenProperties": null,
                 "parent": 40894628,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "SkyBox": {
-                "cubeMapId": 10390737114601406469
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 0.27181926369667053,
+                    "g": 0.4379310607910156,
+                    "r": 0.30160483717918396
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 0.20000000298023224,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "Directional"
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -2.629310369491577,
-                    "y": -9.091861841170612e-08,
-                    "z": -5.112897127901306e-08
+                    "x": 1.5707964897155762,
+                    "y": -0.0,
+                    "z": 0.0
                 },
                 "localEulerAngles": {
-                    "x": -2.629310369491577,
-                    "y": -9.091861841170612e-08,
-                    "z": -5.112897127901306e-08
+                    "x": 1.5707964897155762,
+                    "y": -0.0,
+                    "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.12476730346679688,
-                    "y": 2.2894954681396484,
-                    "z": -8.640952110290527
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "localRotation": {
-                    "w": -0.25334954261779785,
-                    "x": 0.9673748016357422,
-                    "y": -1.3213343308393632e-08,
-                    "z": 5.0452939603928826e-08
+                    "w": 0.7071067094802856,
+                    "x": 0.7071068286895752,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999979734420776,
-                    "y": 1.0000098943710327,
-                    "z": 1.0000098943710327
+                    "x": 1.0000040531158447,
+                    "y": 1.0000088214874268,
+                    "z": 1.000002145767212
                 },
                 "position": {
-                    "x": 0.12476730346679688,
-                    "y": 2.2894954681396484,
-                    "z": -8.640952110290527
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
-                    "w": -0.25334954261779785,
-                    "x": 0.9673748016357422,
-                    "y": -1.3213343308393632e-08,
-                    "z": 5.0452939603928826e-08
+                    "w": 0.7071067094802856,
+                    "x": 0.7071068286895752,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999979734420776,
-                    "y": 1.0000098943710327,
-                    "z": 1.0000098943710327
+                    "x": 1.0000040531158447,
+                    "y": 1.0000089406967163,
+                    "z": 1.0000022649765015
                 }
             },
-            "id": 39846051
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Entity 2",
+                "overridenProperties": null,
+                "parent": 2097212,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 0.03793102502822876,
+                    "g": 0.21707487106323242,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 0.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "PointLight"
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    6
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.32702142000198364,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 0.32702142000198364,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 10.011911392211914,
+                    "y": -8.32335090637207,
+                    "z": 20.276958465576172
+                },
+                "localRotation": {
+                    "w": 0.9866619110107422,
+                    "x": 0.0,
+                    "y": 0.16278308629989624,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999992251396179,
+                    "y": 0.5518667101860046,
+                    "z": 2.3193647861480713
+                },
+                "position": {
+                    "x": 10.011911392211914,
+                    "y": -8.32335090637207,
+                    "z": 20.276958465576172
+                },
+                "rotation": {
+                    "w": 0.9866619110107422,
+                    "x": 0.0,
+                    "y": 0.16278308629989624,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999992251396179,
+                    "y": 0.5518667101860046,
+                    "z": 2.3193647861480713
+                }
+            },
+            "id": 1048590
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Muzzle",
+                "overridenProperties": null,
+                "parent": 40894631,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "ParticleEmitter": {
+                "angularVelocity": 0.0,
+                "burstAmount": 30,
+                "burstRate": 50.0,
+                "colorOverLifetime": {
+                    "endColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "interpolationType": "Linear",
+                    "selected": false
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 0.25,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "looping": false,
+                "maxParticles": 30,
+                "particleColorSelection": {
+                    "color": {
+                        "a": 1.0,
+                        "b": 0.5724138021469116,
+                        "g": 0.5724138021469116,
+                        "r": 0.5724138021469116
+                    },
+                    "randomizedColor": false
+                },
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        },
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        }
+                    },
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    }
+                },
+                "particleRate": 10.0,
+                "randomizedDirection": false,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Linear",
+                    "selected": true
+                },
+                "startSize": 0.20000000298023224,
+                "startSpeed": 1.0,
+                "texture": 10337573581668909239,
+                "trails": {
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
+                    "trailColor": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 0
+                }
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 2.732987642288208,
+                    "y": -0.4589047431945801,
+                    "z": -2.2055108547210693
+                },
+                "localEulerAngles": {
+                    "x": -3.1414918899536133,
+                    "y": 1.4443703889846802,
+                    "z": -3.1414544582366943
+                },
+                "localPosition": {
+                    "x": -0.0072174072265625,
+                    "y": 0.7915534973144531,
+                    "z": 1.2636241912841797
+                },
+                "localRotation": {
+                    "w": 0.6610257625579834,
+                    "x": -2.0372861399664544e-05,
+                    "y": 0.7503631711006165,
+                    "z": 9.192971447191667e-06
+                },
+                "localScale": {
+                    "x": 1.0000337362289429,
+                    "y": 1.0001299381256104,
+                    "z": 0.999974250793457
+                },
+                "position": {
+                    "x": 53.11416244506836,
+                    "y": -6.935197830200195,
+                    "z": 48.20804214477539
+                },
+                "rotation": {
+                    "w": -0.28789353370666504,
+                    "x": -0.388995885848999,
+                    "y": 0.8718066811561584,
+                    "z": 0.07584688067436218
+                },
+                "scale": {
+                    "x": 1.000027060508728,
+                    "y": 1.0000693798065186,
+                    "z": 1.0000461339950562
+                }
+            },
+            "id": 40894636
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": false,
+                "layerId": 0,
+                "name": "Shotgun",
+                "overridenProperties": null,
+                "parent": 40894634,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    7348256552826060801,
+                    5
+                ],
+                "modelId": 15744109750307192841
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.3880259096622467,
+                    "y": 0.34367284178733826,
+                    "z": 0.8834418058395386
+                },
+                "localEulerAngles": {
+                    "x": -0.004551514983177185,
+                    "y": -1.569331407546997,
+                    "z": 0.0046098558232188225
+                },
+                "localPosition": {
+                    "x": -0.39246368408203125,
+                    "y": 0.0002841949462890625,
+                    "z": 0.049350738525390625
+                },
+                "localRotation": {
+                    "w": 0.7076144218444824,
+                    "x": 1.8379156244918704e-05,
+                    "y": -0.7065988779067993,
+                    "z": 2.3069984308676794e-05
+                },
+                "localScale": {
+                    "x": 1.0002955198287964,
+                    "y": 0.999936580657959,
+                    "z": 0.9998407363891602
+                },
+                "position": {
+                    "x": 53.07876968383789,
+                    "y": -8.36106014251709,
+                    "z": 48.66952133178711
+                },
+                "rotation": {
+                    "w": 0.8880853652954102,
+                    "x": 0.09999950975179672,
+                    "y": 0.23288680613040924,
+                    "z": 0.3834947645664215
+                },
+                "scale": {
+                    "x": 1.000312328338623,
+                    "y": 0.9999161958694458,
+                    "z": 1.0000617504119873
+                }
+            },
+            "id": 40894635
+        },
+        {
+            "AudioComponent": {
+                "data": {
+                    "Shotgun Fire SFX": {
+                        "audioId": 14160329211321647151,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    }
+                }
+            },
+            "EntityData": {
+                "children": [
+                    40894635
+                ],
+                "inactiveComponents": null,
+                "isActive": false,
+                "layerId": 0,
+                "name": "Shotgun Holder",
+                "overridenProperties": null,
+                "parent": 40894631,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 40894630
+                                },
+                                "name": "camera"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "cooldown"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.20000000298023224
+                                },
+                                "name": "recoilDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "range"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.10000000149011612
+                                },
+                                "name": "scatterRange"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 10
+                                },
+                                "name": "numOfPellets"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 5
+                                },
+                                "name": "currentAmmo"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 10
+                                },
+                                "name": "maxAmmo"
+                            }
+                        ],
+                        "scriptId": 3313031286721937411
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 2.326594591140747,
+                    "y": 1.0593394041061401,
+                    "z": -3.1415908336639404
+                },
+                "localEulerAngles": {
+                    "x": 1.564572471579595e-07,
+                    "y": 3.1289837920667196e-07,
+                    "z": 1.4897384659207091e-08
+                },
+                "localPosition": {
+                    "x": 0.0002288818359375,
+                    "y": 9.5367431640625e-05,
+                    "z": 0.0005340576171875
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 4.65648426484222e-08,
+                    "y": 2.160496137548762e-07,
+                    "z": 5.9598246338055105e-08
+                },
+                "localScale": {
+                    "x": 1.0001477003097534,
+                    "y": 1.000040054321289,
+                    "z": 1.0000245571136475
+                },
+                "position": {
+                    "x": 52.857295989990234,
+                    "y": -8.397174835205078,
+                    "z": 48.343666076660156
+                },
+                "rotation": {
+                    "w": 0.4638751149177551,
+                    "x": -0.20023754239082336,
+                    "y": 0.7923094034194946,
+                    "z": 0.3420097529888153
+                },
+                "scale": {
+                    "x": 1.0002210140228271,
+                    "y": 0.999979555606842,
+                    "z": 1.000016689300537
+                }
+            },
+            "id": 40894634
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Sniper Mesh",
+                "overridenProperties": null,
+                "parent": 40894632,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    11017643513640124435,
+                    17358711788977782805
+                ],
+                "modelId": 5829496742909313055
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.38567787408828735,
+                    "y": 0.32748132944107056,
+                    "z": 0.8764148950576782
+                },
+                "localEulerAngles": {
+                    "x": -5.273548231343739e-05,
+                    "y": 1.4230386018753052,
+                    "z": -3.621724681579508e-05
+                },
+                "localPosition": {
+                    "x": -0.0279693603515625,
+                    "y": -0.000133514404296875,
+                    "z": -0.7562013268470764
+                },
+                "localRotation": {
+                    "w": 0.7573708295822144,
+                    "x": -1.0191696674155537e-05,
+                    "y": 0.652985155582428,
+                    "z": 4.501481726038037e-06
+                },
+                "localScale": {
+                    "x": 1.0001444816589355,
+                    "y": 0.999919056892395,
+                    "z": 1.0000190734863281
+                },
+                "position": {
+                    "x": 53.241397857666016,
+                    "y": -7.854095458984375,
+                    "z": 47.982784271240234
+                },
+                "rotation": {
+                    "w": 0.890098512172699,
+                    "x": 0.10333061963319778,
+                    "y": 0.22510336339473724,
+                    "z": 0.382591187953949
+                },
+                "scale": {
+                    "x": 1.0001474618911743,
+                    "y": 0.9999343156814575,
+                    "z": 1.000090479850769
+                }
+            },
+            "id": 40894633
+        },
+        {
+            "AudioComponent": {
+                "data": {
+                    "Sniper Fire SFX": {
+                        "audioId": 3207574917556600883,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    }
+                }
+            },
+            "EntityData": {
+                "children": [
+                    40894633
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Sniper Holder",
+                "overridenProperties": null,
+                "parent": 40894631,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 40894630
+                                },
+                                "name": "camera"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "cooldown"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.15000000596046448
+                                },
+                                "name": "recoilDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1000.0
+                                },
+                                "name": "range"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 40.0
+                                },
+                                "name": "damage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 5
+                                },
+                                "name": "currentAmmo"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 10
+                                },
+                                "name": "maxAmmo"
+                            }
+                        ],
+                        "scriptId": 16782251036674424897
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.6725075244903564,
+                    "y": -0.9620804190635681,
+                    "z": 0.16785532236099243
+                },
+                "localEulerAngles": {
+                    "x": 3.141568183898926,
+                    "y": -0.13169609010219574,
+                    "z": -3.141547918319702
+                },
+                "localPosition": {
+                    "x": -9.1552734375e-05,
+                    "y": 0.000431060791015625,
+                    "z": 0.00064849853515625
+                },
+                "localRotation": {
+                    "w": -0.0658004954457283,
+                    "x": -2.3511960534960963e-05,
+                    "y": 0.9978328347206116,
+                    "z": 1.227292523253709e-05
+                },
+                "localScale": {
+                    "x": 1.0000009536743164,
+                    "y": 1.0000758171081543,
+                    "z": 1.0000077486038208
+                },
+                "position": {
+                    "x": 52.85730743408203,
+                    "y": -8.39686393737793,
+                    "z": 48.34402847290039
+                },
+                "rotation": {
+                    "w": 0.8211243152618408,
+                    "x": 0.32809406518936157,
+                    "y": -0.4107300043106079,
+                    "z": 0.22228367626667023
+                },
+                "scale": {
+                    "x": 1.000072956085205,
+                    "y": 1.0000152587890625,
+                    "z": 1.000001311302185
+                }
+            },
+            "id": 40894632
+        },
+        {
+            "EntityData": {
+                "children": [
+                    40894632,
+                    40894634,
+                    40894636
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Gun Holder",
+                "overridenProperties": null,
+                "parent": 40894630,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 2.3265938758850098,
+                    "y": 1.0593395233154297,
+                    "z": -3.1415913105010986
+                },
+                "localEulerAngles": {
+                    "x": 2.0095937713904277e-07,
+                    "y": 2.8707495403068606e-07,
+                    "z": 1.913962144328707e-08
+                },
+                "localPosition": {
+                    "x": -0.21431446075439453,
+                    "y": -0.22224807739257813,
+                    "z": 0.24644923210144043
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 6.22021119056626e-08,
+                    "y": 1.2439900842764473e-07,
+                    "z": -1.9137598172846992e-08
+                },
+                "localScale": {
+                    "x": 0.19465312361717224,
+                    "y": 0.19464299082756042,
+                    "z": 0.19464804232120514
+                },
+                "position": {
+                    "x": 52.85715103149414,
+                    "y": -8.397625923156738,
+                    "z": 48.34402084350586
+                },
+                "rotation": {
+                    "w": 0.4638752341270447,
+                    "x": -0.20023752748966217,
+                    "y": 0.7923092842102051,
+                    "z": 0.3420098125934601
+                },
+                "scale": {
+                    "x": 1.0000734329223633,
+                    "y": 0.999939501285553,
+                    "z": 0.9999921917915344
+                }
+            },
+            "id": 40894631
+        },
+        {
+            "CameraComponent": {
+                "camStatus": true
+            },
+            "EntityData": {
+                "children": [
+                    40894631,
+                    1048584
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Camera",
+                "overridenProperties": null,
+                "parent": 40894629,
+                "prefabID": 4294967295,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 2.3265933990478516,
+                    "y": 1.0593398809432983,
+                    "z": -3.141591787338257
+                },
+                "localEulerAngles": {
+                    "x": -0.8150061964988708,
+                    "y": -1.1809918880462646,
+                    "z": 6.74459442961961e-06
+                },
+                "localPosition": {
+                    "x": 4.1961669921875e-05,
+                    "y": 2.4061708450317383,
+                    "z": 3.814697265625e-06
+                },
+                "localRotation": {
+                    "w": 0.7626453042030334,
+                    "x": -0.32920604944229126,
+                    "y": -0.5111812353134155,
+                    "z": -0.22065630555152893
+                },
+                "localScale": {
+                    "x": 5.137592792510986,
+                    "y": 5.137233257293701,
+                    "z": 5.137377738952637
+                },
+                "position": {
+                    "x": 50.83639907836914,
+                    "y": -8.535921096801758,
+                    "z": 48.21554946899414
+                },
+                "rotation": {
+                    "w": 0.463875412940979,
+                    "x": -0.20023752748966217,
+                    "y": 0.7923092246055603,
+                    "z": 0.34200993180274963
+                },
+                "scale": {
+                    "x": 5.137720108032227,
+                    "y": 5.137300968170166,
+                    "z": 5.137436866760254
+                }
+            },
+            "id": 40894630
         },
         {
             "AudioComponent": {
@@ -1028,797 +1913,92 @@
             "id": 40894629
         },
         {
-            "CameraComponent": {
-                "camStatus": true
-            },
-            "EntityData": {
-                "children": [
-                    40894631,
-                    1048584
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Camera",
-                "overridenProperties": null,
-                "parent": 40894629,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 2.326594114303589,
-                    "y": 1.0593408346176147,
-                    "z": -3.1415908336639404
-                },
-                "localEulerAngles": {
-                    "x": -0.8150055408477783,
-                    "y": -1.180992841720581,
-                    "z": 5.881935521756532e-06
-                },
-                "localPosition": {
-                    "x": 4.1961669921875e-05,
-                    "y": 2.4061717987060547,
-                    "z": 3.814697265625e-06
-                },
-                "localRotation": {
-                    "w": 0.7626451253890991,
-                    "x": -0.32920581102371216,
-                    "y": -0.5111817121505737,
-                    "z": -0.2206566333770752
-                },
-                "localScale": {
-                    "x": 5.137591361999512,
-                    "y": 5.137232780456543,
-                    "z": 5.137376308441162
-                },
-                "position": {
-                    "x": 50.83639907836914,
-                    "y": -8.535920143127441,
-                    "z": 48.21554946899414
-                },
-                "rotation": {
-                    "w": 0.4638758897781372,
-                    "x": -0.20023788511753082,
-                    "y": 0.7923089265823364,
-                    "z": 0.34200969338417053
-                },
-                "scale": {
-                    "x": 5.13771915435791,
-                    "y": 5.137300491333008,
-                    "z": 5.1374359130859375
-                }
-            },
-            "id": 40894630
-        },
-        {
-            "EntityData": {
-                "children": [
-                    40894632,
-                    40894634,
-                    40894636
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Gun Holder",
-                "overridenProperties": null,
-                "parent": 40894630,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 2.326594591140747,
-                    "y": 1.0593408346176147,
-                    "z": -3.1415905952453613
-                },
-                "localEulerAngles": {
-                    "x": 2.0574252346250432e-07,
-                    "y": 2.2009135136613622e-07,
-                    "z": -5.741575392903542e-08
-                },
-                "localPosition": {
-                    "x": -0.21431446075439453,
-                    "y": -0.22224855422973633,
-                    "z": 0.2464503049850464
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 1.0047968856952139e-07,
-                    "y": 1.4353747701534303e-07,
-                    "z": 9.56979651078882e-09
-                },
-                "localScale": {
-                    "x": 0.19465313851833344,
-                    "y": 0.19464297592639923,
-                    "z": 0.19464802742004395
-                },
-                "position": {
-                    "x": 52.857154846191406,
-                    "y": -8.397626876831055,
-                    "z": 48.34402847290039
-                },
-                "rotation": {
-                    "w": 0.46387577056884766,
-                    "x": -0.20023787021636963,
-                    "y": 0.7923089861869812,
-                    "z": 0.342009574174881
-                },
-                "scale": {
-                    "x": 1.0000733137130737,
-                    "y": 0.9999395608901978,
-                    "z": 0.9999918937683105
-                }
-            },
-            "id": 40894631
-        },
-        {
-            "AudioComponent": {
-                "data": {
-                    "Sniper Fire SFX": {
-                        "audioId": 3207574917556600883,
-                        "stopAudio": false,
-                        "volume": 1.0
-                    }
-                }
-            },
-            "EntityData": {
-                "children": [
-                    40894633
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Sniper Holder",
-                "overridenProperties": null,
-                "parent": 40894631,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894630
-                                },
-                                "name": "camera"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "cooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 0.15000000596046448
-                                },
-                                "name": "recoilDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1000.0
-                                },
-                                "name": "range"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 40.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 5
-                                },
-                                "name": "currentAmmo"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 10
-                                },
-                                "name": "maxAmmo"
-                            }
-                        ],
-                        "scriptId": 16782251036674424897
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.6725048422813416,
-                    "y": -0.9620843529701233,
-                    "z": 0.16786208748817444
-                },
-                "localEulerAngles": {
-                    "x": 3.1415717601776123,
-                    "y": -0.13169606029987335,
-                    "z": -3.141552209854126
-                },
-                "localPosition": {
-                    "x": -8.392333984375e-05,
-                    "y": 0.0004253387451171875,
-                    "z": 0.0006465911865234375
-                },
-                "localRotation": {
-                    "w": -0.06580047309398651,
-                    "x": -2.148854582628701e-05,
-                    "y": 0.9978328347206116,
-                    "z": 1.0727374501584563e-05
-                },
-                "localScale": {
-                    "x": 1.0000008344650269,
-                    "y": 1.0000758171081543,
-                    "z": 1.0000075101852417
-                },
-                "position": {
-                    "x": 52.8573112487793,
-                    "y": -8.396862030029297,
-                    "z": 48.34403610229492
-                },
-                "rotation": {
-                    "w": 0.8211231231689453,
-                    "x": 0.32809409499168396,
-                    "y": -0.41073092818260193,
-                    "z": 0.22228628396987915
-                },
-                "scale": {
-                    "x": 1.0000728368759155,
-                    "y": 1.000015377998352,
-                    "z": 1.0000009536743164
-                }
-            },
-            "id": 40894632
-        },
-        {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Sniper Mesh",
-                "overridenProperties": null,
-                "parent": 40894632,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    11017643513640124435,
-                    17358711788977782805
-                ],
-                "modelId": 5829496742909313055
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.385678768157959,
-                    "y": 0.32747891545295715,
-                    "z": 0.8764193654060364
-                },
-                "localEulerAngles": {
-                    "x": -4.065905886818655e-05,
-                    "y": 1.4230386018753052,
-                    "z": -2.8552853109431453e-05
-                },
-                "localPosition": {
-                    "x": -0.02796173095703125,
-                    "y": -0.0001316070556640625,
-                    "z": -0.756199300289154
-                },
-                "localRotation": {
-                    "w": 0.7573707103729248,
-                    "x": -8.145492756739259e-06,
-                    "y": 0.652985155582428,
-                    "z": 3.5028031106776325e-06
-                },
-                "localScale": {
-                    "x": 1.000144600868225,
-                    "y": 0.9999191164970398,
-                    "z": 1.0000190734863281
-                },
-                "position": {
-                    "x": 53.24140167236328,
-                    "y": -7.85408878326416,
-                    "z": 47.98279571533203
-                },
-                "rotation": {
-                    "w": 0.8900977373123169,
-                    "x": 0.1033310666680336,
-                    "y": 0.22510267794132233,
-                    "z": 0.38259321451187134
-                },
-                "scale": {
-                    "x": 1.0001471042633057,
-                    "y": 0.9999343752861023,
-                    "z": 1.0000903606414795
-                }
-            },
-            "id": 40894633
-        },
-        {
-            "AudioComponent": {
-                "data": {
-                    "Shotgun Fire SFX": {
-                        "audioId": 14160329211321647151,
-                        "stopAudio": false,
-                        "volume": 1.0
-                    }
-                }
-            },
-            "EntityData": {
-                "children": [
-                    40894635
-                ],
-                "inactiveComponents": null,
-                "isActive": false,
-                "layerId": 0,
-                "name": "Shotgun Holder",
-                "overridenProperties": null,
-                "parent": 40894631,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 40894630
-                                },
-                                "name": "camera"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "cooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 0.20000000298023224
-                                },
-                                "name": "recoilDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "range"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 0.10000000149011612
-                                },
-                                "name": "scatterRange"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 10
-                                },
-                                "name": "numOfPellets"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 5
-                                },
-                                "name": "currentAmmo"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 10
-                                },
-                                "name": "maxAmmo"
-                            }
-                        ],
-                        "scriptId": 3313031286721937411
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 2.326594829559326,
-                    "y": 1.0593410730361938,
-                    "z": -3.1415903568267822
-                },
-                "localEulerAngles": {
-                    "x": 6.332912505513377e-08,
-                    "y": 2.8310046218393836e-07,
-                    "z": -3.199136268394742e-12
-                },
-                "localPosition": {
-                    "x": 0.00023651123046875,
-                    "y": 9.1552734375e-05,
-                    "z": 0.0005340576171875
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 7.822862357897975e-08,
-                    "y": 1.5644918960333598e-07,
-                    "z": 7.44867989510567e-09
-                },
-                "localScale": {
-                    "x": 1.0001475811004639,
-                    "y": 1.000040054321289,
-                    "z": 1.0000245571136475
-                },
-                "position": {
-                    "x": 52.8572998046875,
-                    "y": -8.397171020507813,
-                    "z": 48.34367752075195
-                },
-                "rotation": {
-                    "w": 0.4638756513595581,
-                    "x": -0.20023788511753082,
-                    "y": 0.7923091053962708,
-                    "z": 0.3420094847679138
-                },
-                "scale": {
-                    "x": 1.0002208948135376,
-                    "y": 0.9999794960021973,
-                    "z": 1.000016450881958
-                }
-            },
-            "id": 40894634
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": false,
-                "layerId": 0,
-                "name": "Shotgun",
-                "overridenProperties": null,
-                "parent": 40894634,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    7348256552826060801,
-                    5
-                ],
-                "modelId": 15744109750307192841
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.3880244195461273,
-                    "y": 0.3436722755432129,
-                    "z": 0.8834416270256042
-                },
-                "localEulerAngles": {
-                    "x": -0.004540672060102224,
-                    "y": -1.5694591999053955,
-                    "z": 0.004598826635628939
-                },
-                "localPosition": {
-                    "x": -0.3924713134765625,
-                    "y": 0.0002880096435546875,
-                    "z": 0.04935455322265625
-                },
-                "localRotation": {
-                    "w": 0.7076143026351929,
-                    "x": 1.830017390602734e-05,
-                    "y": -0.7065988779067993,
-                    "z": 2.2951540813664906e-05
-                },
-                "localScale": {
-                    "x": 1.0002955198287964,
-                    "y": 0.999936580657959,
-                    "z": 0.9998407959938049
-                },
-                "position": {
-                    "x": 53.078773498535156,
-                    "y": -8.361056327819824,
-                    "z": 48.66953659057617
-                },
-                "rotation": {
-                    "w": 0.8880856037139893,
-                    "x": 0.09999898076057434,
-                    "y": 0.23288610577583313,
-                    "z": 0.3834948241710663
-                },
-                "scale": {
-                    "x": 1.0003118515014648,
-                    "y": 0.9999159574508667,
-                    "z": 1.0000617504119873
-                }
-            },
-            "id": 40894635
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Muzzle",
-                "overridenProperties": null,
-                "parent": 40894631,
-                "prefabID": 4294967295,
-                "tag": ""
-            },
-            "ParticleEmitter": {
-                "angularVelocity": 0.0,
-                "burstAmount": 30,
-                "burstRate": 50.0,
-                "colorOverLifetime": {
-                    "endColor": {
-                        "a": 0.0,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
-                    },
-                    "interpolationType": "Linear",
-                    "selected": false
-                },
-                "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "lifeTime": 0.25,
-                "lightIntensity": 0.0,
-                "lightattenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "looping": false,
-                "maxParticles": 30,
-                "particleColorSelection": {
-                    "color": {
-                        "a": 1.0,
-                        "b": 0.5724138021469116,
-                        "g": 0.5724138021469116,
-                        "r": 0.5724138021469116
-                    },
-                    "randomizedColor": false
-                },
-                "particleEmissionTypeSelection": {
-                    "coneEmitter": {
-                        "arc": 30.0,
-                        "distance": 5.0
-                    },
-                    "cubeEmitter": {
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        },
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        }
-                    },
-                    "emissionShape": "Point",
-                    "radiusEmitter": {
-                        "radius": 5.0
-                    }
-                },
-                "particleRate": 10.0,
-                "randomizedDirection": false,
-                "sizeOverLifetime": {
-                    "endSize": 0.0,
-                    "interpolationType": "Linear",
-                    "selected": true
-                },
-                "startSize": 0.20000000298023224,
-                "startSpeed": 1.0,
-                "texture": 10337573581668909239,
-                "trails": {
-                    "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
-                    "trailColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
-                }
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 2.7329938411712646,
-                    "y": -0.45890456438064575,
-                    "z": -2.205512285232544
-                },
-                "localEulerAngles": {
-                    "x": -3.141493797302246,
-                    "y": 1.4443694353103638,
-                    "z": -3.141461133956909
-                },
-                "localPosition": {
-                    "x": -0.0072174072265625,
-                    "y": 0.7915477752685547,
-                    "z": 1.2636222839355469
-                },
-                "localRotation": {
-                    "w": 0.6610258221626282,
-                    "x": -1.853118919825647e-05,
-                    "y": 0.7503631711006165,
-                    "z": 7.852460839785635e-06
-                },
-                "localScale": {
-                    "x": 1.0000334978103638,
-                    "y": 1.0001299381256104,
-                    "z": 0.9999740719795227
-                },
-                "position": {
-                    "x": 53.114166259765625,
-                    "y": -6.935194969177246,
-                    "z": 48.20804977416992
-                },
-                "rotation": {
-                    "w": -0.28789207339286804,
-                    "x": -0.3889961838722229,
-                    "y": 0.8718072175979614,
-                    "z": 0.07584439218044281
-                },
-                "scale": {
-                    "x": 1.0000267028808594,
-                    "y": 1.000069499015808,
-                    "z": 1.0000460147857666
-                }
-            },
-            "id": 40894636
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Entity 2",
-                "overridenProperties": null,
-                "parent": 2097212,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 0.03793102502822876,
-                    "g": 0.21707487106323242,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 0.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "PointLight"
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    6
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": 0.32702142000198364,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": 0.32702142000198364,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 10.011911392211914,
-                    "y": -8.32335090637207,
-                    "z": 20.276958465576172
-                },
-                "localRotation": {
-                    "w": 0.9866619110107422,
-                    "x": 0.0,
-                    "y": 0.16278308629989624,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.9999992251396179,
-                    "y": 0.5518667101860046,
-                    "z": 2.3193647861480713
-                },
-                "position": {
-                    "x": 10.011911392211914,
-                    "y": -8.32335090637207,
-                    "z": 20.276958465576172
-                },
-                "rotation": {
-                    "w": 0.9866619110107422,
-                    "x": 0.0,
-                    "y": 0.16278308629989624,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999992251396179,
-                    "y": 0.5518667101860046,
-                    "z": 2.3193647861480713
-                }
-            },
-            "id": 1048590
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Directional Top Light",
+                "name": "Skybox",
                 "overridenProperties": null,
                 "parent": 40894628,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 0.27181926369667053,
-                    "g": 0.4379310607910156,
-                    "r": 0.30160483717918396
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 0.20000000298023224,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "Directional"
+            "SkyBox": {
+                "cubeMapId": 10390737114601406469
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": 1.5707964897155762,
-                    "y": -0.0,
+                    "x": -2.629310369491577,
+                    "y": -9.091861841170612e-08,
+                    "z": -5.112897127901306e-08
+                },
+                "localEulerAngles": {
+                    "x": -2.629310369491577,
+                    "y": -9.091861841170612e-08,
+                    "z": -5.112897127901306e-08
+                },
+                "localPosition": {
+                    "x": 0.12476730346679688,
+                    "y": 2.2894954681396484,
+                    "z": -8.640952110290527
+                },
+                "localRotation": {
+                    "w": -0.25334954261779785,
+                    "x": 0.9673748016357422,
+                    "y": -1.3213343308393632e-08,
+                    "z": 5.0452939603928826e-08
+                },
+                "localScale": {
+                    "x": 0.9999979734420776,
+                    "y": 1.0000098943710327,
+                    "z": 1.0000098943710327
+                },
+                "position": {
+                    "x": 0.12476730346679688,
+                    "y": 2.2894954681396484,
+                    "z": -8.640952110290527
+                },
+                "rotation": {
+                    "w": -0.25334954261779785,
+                    "x": 0.9673748016357422,
+                    "y": -1.3213343308393632e-08,
+                    "z": 5.0452939603928826e-08
+                },
+                "scale": {
+                    "x": 0.9999979734420776,
+                    "y": 1.0000098943710327,
+                    "z": 1.0000098943710327
+                }
+            },
+            "id": 39846051
+        },
+        {
+            "EntityData": {
+                "children": [
+                    0,
+                    40894637,
+                    1048609,
+                    40894643,
+                    2097212
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Level",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
-                    "x": 1.5707964897155762,
+                    "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
@@ -1828,15 +2008,15 @@
                     "z": 0.0
                 },
                 "localRotation": {
-                    "w": 0.7071067094802856,
-                    "x": 0.7071068286895752,
+                    "w": 1.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0000040531158447,
-                    "y": 1.0000090599060059,
-                    "z": 1.000002384185791
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "position": {
                     "x": 0.0,
@@ -1844,24 +2024,183 @@
                     "z": 0.0
                 },
                 "rotation": {
-                    "w": 0.7071067094802856,
-                    "x": 0.7071068286895752,
+                    "w": 1.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0000040531158447,
-                    "y": 1.0000091791152954,
-                    "z": 1.0000025033950806
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 2
+            "id": 2097196
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Model",
+                "overridenProperties": null,
+                "parent": 2097196,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03500000014901161
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1548438291167281161,
+                    1548438291167281161,
+                    1548438291167281161,
+                    1548438291167281161,
+                    7889506566508740647,
+                    7889506566508740647,
+                    2693214613529362437,
+                    7889506566508740647,
+                    7889506566508740647,
+                    7889506566508740647,
+                    7889506566508740647,
+                    1548438291167281161,
+                    7889506566508740647
+                ],
+                "modelId": 15334581273078857729
+            },
+            "Rigidbody": {
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 0.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 0
         },
         {
             "EntityData": {
                 "children": [
-                    40894638,
-                    40894639
+                    39846051,
+                    2,
+                    1048577,
+                    2097207,
+                    1048587,
+                    1048588,
+                    1048589
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Environment",
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 40894628
+        },
+        {
+            "EntityData": {
+                "children": [
+                    1048605,
+                    1048607
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -1884,9 +2223,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -94.15702819824219,
-                    "y": -29.04606819152832,
-                    "z": 145.87640380859375
+                    "x": -146.6667022705078,
+                    "y": -18.382343292236328,
+                    "z": 10.157756805419922
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -1900,9 +2239,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -94.15702819824219,
-                    "y": -29.04606819152832,
-                    "z": 145.87640380859375
+                    "x": -146.6667022705078,
+                    "y": -18.382343292236328,
+                    "z": 10.157756805419922
                 },
                 "rotation": {
                     "w": 1.0,
@@ -1916,7 +2255,7 @@
                     "z": 1.0
                 }
             },
-            "id": 40894637
+            "id": 1048609
         },
         {
             "EntityData": {
@@ -1928,7 +2267,7 @@
                 "layerId": 0,
                 "name": "Teleporter Destination",
                 "overridenProperties": null,
-                "parent": 40894637,
+                "parent": 1048609,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -1950,9 +2289,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 36.704402923583984,
-                    "y": -5.466863632202148,
-                    "z": -44.4488525390625
+                    "x": 20.1900634765625,
+                    "y": -1.8591899871826172,
+                    "z": 8.574165344238281
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -1966,9 +2305,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -57.4526252746582,
-                    "y": -34.51293182373047,
-                    "z": 101.42755126953125
+                    "x": -126.47663879394531,
+                    "y": -20.241533279418945,
+                    "z": 18.731922149658203
                 },
                 "rotation": {
                     "w": 1.0,
@@ -1982,7 +2321,7 @@
                     "z": 1.0
                 }
             },
-            "id": 40894638
+            "id": 1048605
         },
         {
             "BoxCollider": {
@@ -2005,7 +2344,7 @@
                 "layerId": 0,
                 "name": "Teleporter Source",
                 "overridenProperties": null,
-                "parent": 40894637,
+                "parent": 1048609,
                 "prefabID": 4294967295,
                 "tag": ""
             },
@@ -2052,7 +2391,7 @@
                 },
                 "localPosition": {
                     "x": 17.648208618164063,
-                    "y": -50.740867614746094,
+                    "y": -50.74086380004883,
                     "z": -50.00563049316406
                 },
                 "localRotation": {
@@ -2067,9 +2406,9 @@
                     "z": 53.541900634765625
                 },
                 "position": {
-                    "x": -76.50881958007813,
-                    "y": -79.78693389892578,
-                    "z": 95.87077331542969
+                    "x": -129.01849365234375,
+                    "y": -69.12320709228516,
+                    "z": -39.84787368774414
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2083,7 +2422,7 @@
                     "z": 53.541900634765625
                 }
             },
-            "id": 40894639
+            "id": 1048607
         },
         {
             "EntityData": {
@@ -2091,74 +2430,139 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Directional Bottom Light",
+                "name": "Particle Emitter",
                 "overridenProperties": null,
-                "parent": 40894628,
+                "parent": 40894630,
                 "prefabID": 18446744073709551615,
                 "tag": ""
             },
-            "Light": {
-                "attenuation": {
+            "ParticleEmitter": {
+                "angularVelocity": 0.20000000298023224,
+                "burstAmount": 100,
+                "burstRate": 0.0,
+                "colorOverLifetime": {
+                    "endColor": {
+                        "a": 0.0,
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
+                    },
+                    "interpolationType": "Linear",
+                    "selected": true
+                },
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 15.0,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
                     "x": 1.0,
                     "y": 0.09000000357627869,
                     "z": 0.03200000151991844
                 },
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
+                "looping": true,
+                "maxParticles": 500,
+                "particleColorSelection": {
+                    "color": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "randomizedColor": false
                 },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 0.30000001192092896,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "Directional"
+                "particleEmissionTypeSelection": {
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    },
+                    "cubeEmitter": {
+                        "max": {
+                            "x": 30.0,
+                            "y": 20.0,
+                            "z": 30.0
+                        },
+                        "min": {
+                            "x": -30.0,
+                            "y": -20.0,
+                            "z": -30.0
+                        }
+                    },
+                    "emissionShape": "Cube",
+                    "radiusEmitter": {
+                        "radius": 30.0
+                    }
+                },
+                "particleRate": 20.0,
+                "randomizedDirection": true,
+                "sizeOverLifetime": {
+                    "endSize": 0.0,
+                    "interpolationType": "Linear",
+                    "selected": true
+                },
+                "startSize": 0.5,
+                "startSpeed": 0.009999999776482582,
+                "texture": 11156164407260069997,
+                "trails": {
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
+                    "trailColor": {
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
+                    },
+                    "trailSize": 0.10000000149011612,
+                    "trailTexture": 0
+                }
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -1.5707964897155762,
-                    "y": -0.0,
-                    "z": 0.0
+                    "x": 1.0026062726974487,
+                    "y": -1.134530782699585,
+                    "z": -0.2105153650045395
                 },
                 "localEulerAngles": {
-                    "x": -1.5707964897155762,
-                    "y": -0.0,
-                    "z": 0.0
+                    "x": -3.14158296585083,
+                    "y": 0.1216600090265274,
+                    "z": 3.1415674686431885
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -29.537784576416016,
+                    "y": -9.5367431640625e-07,
+                    "z": -3.611534595489502
                 },
                 "localRotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.7071068286895752,
-                    "y": 0.0,
-                    "z": 0.0
+                    "w": 0.06079251691699028,
+                    "x": 1.444758709112648e-05,
+                    "y": 0.9981505274772644,
+                    "z": -6.269798632274615e-06
                 },
                 "localScale": {
-                    "x": 1.0000040531158447,
-                    "y": 1.0000090599060059,
-                    "z": 1.000002384185791
+                    "x": 0.1946401745080948,
+                    "y": 0.1946573406457901,
+                    "z": 0.1946476697921753
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 114.01656341552734,
+                    "y": -22.03816032409668,
+                    "z": 186.7809295654297
                 },
                 "rotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.7071068286895752,
-                    "y": 0.0,
-                    "z": 0.0
+                    "w": 0.7626385688781738,
+                    "x": 0.353548526763916,
+                    "y": -0.5111874938011169,
+                    "z": 0.17908985912799835
                 },
                 "scale": {
-                    "x": 1.0000040531158447,
-                    "y": 1.0000091791152954,
-                    "z": 1.0000025033950806
+                    "x": 1.000006079673767,
+                    "y": 1.0000133514404297,
+                    "z": 0.9999911785125732
                 }
             },
-            "id": 1048577
+            "id": 1048584
         },
         {
             "EntityData": {
@@ -2166,328 +2570,74 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Directional Forward Light",
+                "name": "Hitbox Position",
                 "overridenProperties": null,
-                "parent": 40894628,
-                "prefabID": 18446744073709551615,
+                "parent": 2097196,
+                "prefabID": 4294967295,
                 "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 0.20000000298023224,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "Directional"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": 1.570451021194458,
-                    "z": 3.1415927410125732
-                },
-                "localEulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": 1.570451021194458,
-                    "z": 3.1415927410125732
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.7071068286895752,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.9999998211860657,
-                    "y": 1.0000134706497192,
-                    "z": 1.000002384185791
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.7071068286895752,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999998807907104,
-                    "y": 1.0000134706497192,
-                    "z": 1.0000025033950806
-                }
-            },
-            "id": 2097207
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Directional Back Light",
-                "overridenProperties": null,
-                "parent": 40894628,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 0.20000000298023224,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "Directional"
             },
             "Transform": {
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -1.570451021194458,
-                    "z": 3.1415927410125732
+                    "y": 0.14318856596946716,
+                    "z": -3.1415927410125732
                 },
                 "localEulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -1.570451021194458,
-                    "z": 3.1415927410125732
+                    "y": 0.14318853616714478,
+                    "z": -3.1415927410125732
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 30.28323745727539,
+                    "y": -19.76523208618164,
+                    "z": -11.610944747924805
                 },
                 "localRotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.7071068286895752,
-                    "z": 0.0
+                    "w": 0.07153308391571045,
+                    "x": -1.4488947151433673e-12,
+                    "y": 0.9974383115768433,
+                    "z": 2.580359970832946e-12
                 },
                 "localScale": {
-                    "x": 0.9999998211860657,
-                    "y": 1.0000134706497192,
-                    "z": 1.000002384185791
+                    "x": 0.6369438767433167,
+                    "y": 0.6369109153747559,
+                    "z": 0.6369438767433167
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 30.28323745727539,
+                    "y": -19.76523208618164,
+                    "z": -11.610944747924805
                 },
                 "rotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.7071068286895752,
-                    "z": 0.0
+                    "w": 0.07153309881687164,
+                    "x": -1.4488947151433673e-12,
+                    "y": 0.9974383115768433,
+                    "z": 2.580359970832946e-12
                 },
                 "scale": {
-                    "x": 0.9999998807907104,
-                    "y": 1.0000134706497192,
-                    "z": 1.0000025033950806
+                    "x": 0.6369436383247375,
+                    "y": 0.6369109153747559,
+                    "z": 0.6369436383247375
                 }
             },
-            "id": 1048587
+            "id": 40894643
         },
         {
             "EntityData": {
-                "children": null,
+                "children": [
+                    1048600,
+                    1048591,
+                    3145794,
+                    1048590
+                ],
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Directional Left Light",
+                "name": "Lights",
                 "overridenProperties": null,
-                "parent": 40894628,
+                "parent": 2097196,
                 "prefabID": 18446744073709551615,
                 "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 0.20000000298023224,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "Directional"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 1.5707964897155762
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 1.5707964897155762
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.7071068286895752
-                },
-                "localScale": {
-                    "x": 0.9999998211860657,
-                    "y": 1.0000090599060059,
-                    "z": 1.0000067949295044
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.7071068286895752
-                },
-                "scale": {
-                    "x": 0.9999998807907104,
-                    "y": 1.0000091791152954,
-                    "z": 1.0000067949295044
-                }
-            },
-            "id": 1048588
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Directional Right Light",
-                "overridenProperties": null,
-                "parent": 40894628,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 0.20000000298023224,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "Directional"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": -1.5707964897155762
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": -1.5707964897155762
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.7071068286895752
-                },
-                "localScale": {
-                    "x": 0.9999998211860657,
-                    "y": 1.0000090599060059,
-                    "z": 1.0000067949295044
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.7071068286895752
-                },
-                "scale": {
-                    "x": 0.9999998807907104,
-                    "y": 1.0000091791152954,
-                    "z": 1.0000067949295044
-                }
-            },
-            "id": 1048589
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Entity 2",
-                "overridenProperties": null,
-                "parent": 2097212,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 0.1564328372478485,
-                    "g": 0.808806836605072,
-                    "r": 0.9862068891525269
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 500.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 100.0,
-                "type": "PointLight"
             },
             "Transform": {
                 "eulerAngles": {
@@ -2501,9 +2651,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 81.79615783691406,
-                    "y": 15.718467712402344,
-                    "z": -4.255979537963867
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2517,9 +2667,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 81.79615783691406,
-                    "y": 15.718467712402344,
-                    "z": -4.255979537963867
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2533,157 +2683,7 @@
                     "z": 1.0
                 }
             },
-            "id": 3145794
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Vault Light",
-                "overridenProperties": null,
-                "parent": 2097212,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 0.051724135875701904,
-                    "g": 1.0,
-                    "r": 0.398335337638855
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 500.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 84.1902084350586,
-                    "y": -53.30445861816406,
-                    "z": -4.255979537963867
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 84.1902084350586,
-                    "y": -53.30445861816406,
-                    "z": -4.255979537963867
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048591
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Door Indicator Light",
-                "overridenProperties": null,
-                "parent": 2097212,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 0.03793102502822876,
-                    "g": 0.21707487106323242,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 100.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 50.0,
-                "type": "PointLight"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 14.875218391418457,
-                    "y": -7.257074356079102,
-                    "z": 19.58238983154297
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 14.875218391418457,
-                    "y": -7.257074356079102,
-                    "z": 19.58238983154297
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048600
+            "id": 2097212
         }
     ],
     "layers": [
