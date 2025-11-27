@@ -135,9 +135,9 @@ namespace Serialiser {
 		std::unordered_map<entt::entity, entt::entity> map;
 
 		//deserialisePrefabRecursive(j["Entities"],0, registry, highestID, static_cast<int>(id), rootEntity, prefabRegistry, entt::null, map);
-		deserialisePrefabRecursive(j["Entities"], rootEntity, prefabRegistry, highestID, map);
-		EntityData* entityData = prefabRegistry.try_get<EntityData>(j["RootEntity"]);
-		entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+		deserialisePrefabRecursive(j["Entities"], rootEntity, prefabRegistry, highestID, map, id);
+		//EntityData* entityData = prefabRegistry.try_get<EntityData>(j["RootEntity"]);
+		//entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
 
 		//return rootEntity;
 		return j["RootEntity"];
@@ -183,7 +183,7 @@ namespace Serialiser {
 	}
 
 	template<typename ...Components>
-	void deserialisePrefabRecursive(std::vector<Json> jsonVec, entt::entity& rootEntity, entt::registry& prefabRegistry, entt::id_type highestID, std::unordered_map<entt::entity, entt::entity>& map) {
+	void deserialisePrefabRecursive(std::vector<Json> jsonVec, entt::entity& rootEntity, entt::registry& prefabRegistry, entt::id_type highestID, std::unordered_map<entt::entity, entt::entity>& map, std::size_t id) {
 	//void deserialisePrefabRecursive(std::vector<Json> jsonVec, int index, entt::registry& registry, entt::id_type highestID, std::size_t resourceid, entt::entity& rootEntity, entt::registry& prefabRegistry, entt::entity child, std::unordered_map<entt::entity, entt::entity>& map) {
 
 		//find the entity in the json since it is unordered
@@ -195,17 +195,17 @@ namespace Serialiser {
 			}
 		}
 		
-
-		//entt::id_type id = jsonVec[index]["id"] + highestID;
-		//auto entity = prefabRegistry.create(static_cast<entt::entity>(id));
 		auto entity = prefabRegistry.create(static_cast<entt::entity>(jsonVec[index]["id"]));
 		deserialiseComponents<ALL_COMPONENTS>(prefabRegistry, entity, jsonVec[index]);
 
 		EntityData* entityData = prefabRegistry.try_get<EntityData>(entity);
 
+		entityData->prefabMetaData.prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+		entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+
 		if (entityData->children.size()) {
 			for (entt::entity child : entityData->children) {
-				deserialisePrefabRecursive<ALL_COMPONENTS>(jsonVec, child, prefabRegistry, highestID, map);
+				deserialisePrefabRecursive<ALL_COMPONENTS>(jsonVec, child, prefabRegistry, highestID, map, id);
 			}
 		}
 

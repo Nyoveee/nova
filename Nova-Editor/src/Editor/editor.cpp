@@ -187,6 +187,22 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
+
+	
+	//check if there is a prefab in the scene, if there is, update the prefabManager
+	// entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
+	std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
+
+	entt::registry& registry = engine.ecs.registry;
+	for (entt::entity entity : registry.view<entt::entity>()) {
+		EntityData* entityData = registry.try_get<EntityData>(entity);
+		if (entityData->prefabID != INVALID_RESOURCE_ID) {
+
+			if (prefabMap.find(entityData->prefabID) == prefabMap.end()) {
+				engine.prefabManager.loadPrefab(entityData->prefabID);
+			}
+		}
+	}
 }
 
 void Editor::update(float dt) {
@@ -780,6 +796,8 @@ void Editor::loadScene(ResourceID sceneId) {
 
 	engine.ecs.sceneManager.loadScene(sceneId);
 	editorViewPort.controlOverlay.clearNotification();
+
+	engine.prefabManager.prefabBroadcast();
 
 	// deselect entity.
 	selectEntities({});

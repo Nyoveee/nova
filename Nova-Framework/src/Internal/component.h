@@ -24,6 +24,7 @@
 #include "controller.h"
 #include "systemResource.h"
 
+// Forward declaring.
 class Prefab;
 class Model;
 class Texture;
@@ -57,6 +58,16 @@ enum class InterpolationType : unsigned int {
 };
 
 
+// 	REFLECTABLE(
+// 		name,
+// 		data
+// 	)
+// };
+
+struct PrefabMetaData {
+	entt::entity prefabEntity;
+	ResourceID prefabID;
+};
 // ===================================
 
 struct EntityData {
@@ -69,7 +80,9 @@ struct EntityData {
 	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
+	PrefabMetaData prefabMetaData										{};
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
+	std::unordered_map<size_t, bool> overridenComponents				{};
 	std::unordered_set<ComponentID> inactiveComponents                  {};
 
 	REFLECTABLE(
@@ -80,7 +93,9 @@ struct EntityData {
 		layerId,
 		isActive,
 		prefabID,
+		prefabMetaData,
 		overridenProperties,
+		overridenComponents,
 		inactiveComponents
 	)
 };
