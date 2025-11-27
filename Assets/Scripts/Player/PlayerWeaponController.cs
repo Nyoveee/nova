@@ -45,7 +45,7 @@ class PlayerWeaponController : Script
         if (recentlySwappedWeapon)
         {
             if (timeElapsed < swapWeaponCooldown) {
-                timeElapsed += Time.V_FixedDeltaTime();
+                timeElapsed += Time.V_DeltaTime();
             }
             else
             {

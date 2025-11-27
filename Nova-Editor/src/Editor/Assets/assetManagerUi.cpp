@@ -462,14 +462,18 @@ Frag{
 				std::ofstream& scriptFile = opt.value();
 
 				std::string sampleScript =
-					"// Make sure the class name matches the asset name.\n"
+					"// Make sure the class name matches the filepath, without space!!.\n"
 					"// If you want to change class name, change the asset name in the editor!\n"
 					"// Editor will automatically rename and recompile this file.\n"
 					"class " + className + " : Script\n{\n"
 					"    // This function is first invoked when game starts.\n"
 					"    protected override void init()\n    {}\n\n"
-					"    // This function is invoked every fixed update.\n"
+					"    // This function is invoked every update.\n"
 					"    protected override void update()\n    {}\n\n"
+					"    // This function is invoked every update.\n"
+					"    protected override void fixedUpdate()\n    {}\n\n"
+					"    // This function is invoked when destroyed.\n"
+					"    protected override void exit()\n    {}\n\n"
 					"}";
 
 				scriptFile << sampleScript;

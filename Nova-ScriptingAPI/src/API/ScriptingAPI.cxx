@@ -502,7 +502,7 @@ std::unordered_set<ResourceID> Interface::GetHierarchyModifiedScripts(ScriptID s
 void Interface::update() {
 	try {
 		// only execute scripts and logic if engine is not paused.
-		if (!Interface::engine->isPaused) {
+		if (!engine->isPaused) {
 			for each (System::UInt32 entityID in gameObjectScripts->Keys) {
 				for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
 					EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
@@ -606,6 +606,29 @@ void Interface::update() {
 	}
 }
 
+void Interface::fixedUpdate() {
+	if (engine->isPaused) {
+		return;
+	}
+
+	try {
+		for each (System::UInt32 entityID in gameObjectScripts->Keys) {
+			for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+				EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
+				if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Scripts).hash_code())) {
+					continue;
+				};
+
+				Script^ script = gameObjectScripts[entityID][scriptID];
+				script->callFixedUpdate();
+			}
+		}
+	}
+	catch (System::Exception^ exception) {
+		Logger::error("{}", Convert(exception->ToString()));
+		Interface::engine->stopSimulation();
+	}
+}
 
 void Interface::removeEntity(EntityID entityID)
 {

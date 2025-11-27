@@ -300,6 +300,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		// Main render function
 		render(editorMainFrameBuffer, editorCamera);
 
+		debugShader.setMatrix("model", glm::mat4{ 1.f });
 		// ===============================================
 		// Debug rendering + object ids for editor..
 		// ===============================================
@@ -1773,13 +1774,17 @@ void Renderer::renderDebugSelectedObjects() {
 	glEnable(GL_DEPTH_TEST);
 
 	for (entt::entity entity : selectedEntities) {
-		Transform const& transform				= registry.get<Transform>(entity);
+		Transform const* transform				= registry.try_get<Transform>(entity);
 		Light const* light						= registry.try_get<Light>(entity);
 		NavMeshOffLinks const* navMeshOffLinks  = registry.try_get<NavMeshOffLinks>(entity);
 
+		if (!transform) {
+			return;
+		}
+
 		if (light) {
 			glm::mat4 model = glm::identity<glm::mat4>();
-			model = glm::translate(model, transform.position);
+			model = glm::translate(model, transform->position);
 			debugShader.setMatrix("model", model);
 
 			// Debug render light outline..
