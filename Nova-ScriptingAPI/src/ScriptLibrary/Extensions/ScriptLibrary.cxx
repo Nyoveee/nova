@@ -103,7 +103,6 @@ void Input::ClearAllKeyMapping() {
 // Audio APIs..
 // ======================================
 void AudioAPI::PlaySound(GameObject^ gameObject, System::String^ string) {
-	Logger::info("{}", static_cast<unsigned>(gameObject->entityID));
 	Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(string));
 }
 void AudioAPI::PlayBGM(GameObject^ gameObject, System::String^ string) {
@@ -223,6 +222,7 @@ float Mathf::Max		(float a, float b)							{ return std::max(a, b); }
 float Mathf::Pow		(float base, float exponent)				{ return std::powf(base, exponent); }
 float Mathf::Abs		(float value)								{ return std::abs(value); }
 float Mathf::SmoothLerp	(float a, float b, float t)					{ return Interpolation::Interpolation(a, b, Math::smoothstep(t), 1); }
+float Mathf::Sqrt		(float f)									{ return std::sqrt(f); }
 
 // ======================================
 // Random Related API

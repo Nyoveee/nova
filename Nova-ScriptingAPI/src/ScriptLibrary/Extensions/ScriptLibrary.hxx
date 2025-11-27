@@ -110,7 +110,6 @@ public:
 	static System::Nullable<RayCastResult> Raycast(Ray^ p_ray, float maxDistance, GameObject^ entityToIgnore);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end);
 	static System::Nullable<RayCastResult> Linecast(Vector3 start, Vector3 end, array<System::String^>^ layermask);
-
 };
 
 // ======================================
@@ -150,6 +149,7 @@ public:
 	static float Min(float a, float b);
 	static float Max(float a, float b);
 	static float Pow(float base, float exponent);
+	static float Sqrt(float f);
 	static float Abs(float value);
 	static float SmoothLerp(float a, float b, float t);
 

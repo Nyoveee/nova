@@ -13,7 +13,7 @@ class Gunner : Enemy
     [SerializableField]
     private GameObject? projectileSpawnPoint;
     [SerializableField]
-    private Rigidbody_? rigidbody;
+    private Rigidbody_? rigidBody;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -24,12 +24,15 @@ class Gunner : Enemy
         Walk,
         Shoot,
         Stagger,
+        PreJump,
+        Jump,
         Death
     }
     private GunnerState gunnerState = GunnerState.Idle;
     private Dictionary<GunnerState, CurrentState> updateState = new Dictionary<GunnerState, CurrentState>();
     GameObject? targetVantagePoint = null;
     int gunShootIndex = 0;
+    NavMeshOfflinkData offlinkData;
     /***********************************************************
         Components
     ***********************************************************/
@@ -46,6 +49,8 @@ class Gunner : Enemy
         updateState.Add(GunnerState.Walk, Update_Walk);
         updateState.Add(GunnerState.Shoot, Update_Shoot);
         updateState.Add(GunnerState.Stagger, Update_Stagger);
+        updateState.Add(GunnerState.PreJump, Update_PreJump);
+        updateState.Add(GunnerState.Jump, Update_Jump);
         updateState.Add(GunnerState.Death, Update_Death);
         gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
     }
@@ -93,7 +98,7 @@ class Gunner : Enemy
             gunnerState = GunnerState.Death;
             animator.PlayAnimation("Gunner_Death");
             NavigationAPI.stopAgent(gameObject);
-            rigidbody.enable = false;
+            rigidBody.enable = false;
         }   
         if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
             return;
@@ -105,6 +110,9 @@ class Gunner : Enemy
         {
             renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
         }, gunnerStats.hurtDuration);
+        // Don't stagger if it's in the middle of a jump
+        if (IsCurrentlyJumping())
+            return;
         gunnerState = GunnerState.Stagger;
         animator.PlayAnimation("Gunner_Stagger");
     }
@@ -143,6 +151,14 @@ class Gunner : Enemy
             }
             MoveToNavMeshPosition(targetVantagePoint.transform.position);
         }
+        if (IsOnNavMeshOfflink())
+        {
+            gunnerState = GunnerState.PreJump;
+            animator.PlayAnimation("Gunner_Jump");
+            NavigationAPI.stopAgent(gameObject);
+            LookAt(GetTargetJumpPosition());
+            return;
+        }
         if(Vector3.Distance(targetVantagePoint.transform.position, gameObject.transform.position) <= gunnerStats.targetDistanceFromVantagePoint)
         {
             gunnerState = GunnerState.Shoot;
@@ -150,11 +166,11 @@ class Gunner : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAtObject(targetVantagePoint);
+        LookAt(targetVantagePoint);
     }
     private void Update_Shoot()
     {
-        LookAtPlayer();
+        LookAt(player);
         if (!HasLineOfSightToPlayer(targetVantagePoint))
         {
             gunnerState = GunnerState.Idle;
@@ -162,11 +178,28 @@ class Gunner : Enemy
             return;
         }
     }
-    private void Update_Stagger()
-    {
-
+    private void Update_Stagger(){
+        if (IsCurrentlyJumping() && IsJumpFinished())
+            navMeshAgent.CompleteOffMeshLink();
     }
-    private void Update_Death(){}
+    private void Update_PreJump() { }
+    private void Update_Jump()
+    {
+        if (IsJumpFinished()){
+            gunnerState = GunnerState.Idle;
+            animator.PlayAnimation("Gunner_Idle");
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+    }
+    private void Update_Death(){
+        if (IsCurrentlyJumping() && IsJumpFinished())
+        {
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+            
+    }
     /**********************************************************************
        Animation Events
     **********************************************************************/
@@ -184,11 +217,17 @@ class Gunner : Enemy
     }
     public void EndStagger()
     {
+      
         gunnerState = GunnerState.Idle;
         animator.PlayAnimation("Gunner_Idle");
     }
     public void EndDeath()
     {
         Destroy(gameObject);
+    }
+    public void BeginJump()
+    {
+        gunnerState = GunnerState.Jump;
+        navMeshAgent.enable = false;
     }
 }

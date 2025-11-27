@@ -492,13 +492,12 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const
 
 template<>
 inline void DisplayProperty<ParticleColorSelection>(Editor& editor, const char* dataMemberName, ParticleColorSelection& dataMember) {
-	DisplayProperty<bool>(editor, "Randomized Color", dataMember.randomizedColor);
-
-	if (!dataMember.randomizedColor) {
-		ImGui::BeginChild("", ImVec2(0, 75), ImGuiChildFlags_Border);
-		DisplayProperty<ColorA>(editor, dataMemberName, dataMember.color);
-		ImGui::EndChild();
-	}
+	ImGui::BeginChild("Particle Color", ImVec2(0, 200), ImGuiChildFlags_Border);
+	DisplayProperty<ColorA>(editor, "Color", dataMember.color);
+	DisplayProperty<glm::vec3>(editor, "Color Offset Min", dataMember.colorOffsetMin);
+	DisplayProperty<glm::vec3>(editor, "Color Offset Max", dataMember.colorOffsetMax);
+	DisplayProperty<float>(editor, "Emissive Multiplier", dataMember.emissiveMultiplier);
+	ImGui::EndChild();
 }
 
 template<>
@@ -528,11 +527,14 @@ template<>
 inline void DisplayProperty<Trails>(Editor& editor, const char* dataMemberName, Trails& dataMember) {
 	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
 	if (dataMember.selected) {
-		ImGui::BeginChild("", ImVec2(0, 175), ImGuiChildFlags_Border);
+		ImGui::BeginChild("", ImVec2(0, 300), ImGuiChildFlags_Border);
 		DisplayProperty<TypedResourceID<Texture>>(editor, "Trail Texture", dataMember.trailTexture);
 		DisplayProperty<float>(editor, "Distance Per Emission", dataMember.distancePerEmission);
 		DisplayProperty<float>(editor, "Trail Size", dataMember.trailSize);
 		DisplayProperty<ColorA>(editor, "Trail Color", dataMember.trailColor);
+		DisplayProperty<glm::vec3>(editor, "Color Offset Min", dataMember.trailColorOffsetMin);
+		DisplayProperty<glm::vec3>(editor, "Color Offset Max", dataMember.trailColorOffsetMax);
+		DisplayProperty<float>(editor, "Trail Color Emissive Multiplier", dataMember.trailEmissiveMultiplier);
 		ImGui::EndChild();
 	}
 }

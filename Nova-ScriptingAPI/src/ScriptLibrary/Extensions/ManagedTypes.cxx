@@ -402,14 +402,6 @@ NavMeshOfflinkData NavMeshAgent_::getOffLinkData()
 
 	returnOfflinkdata.valid = type.valid;
 
-	//returnOfflinkdata.startNode.x =  type.startNode.x;
-	//returnOfflinkdata.startNode.y =  type.startNode.y;
-	//returnOfflinkdata.startNode.z =  type.startNode.z;
-
-	//returnOfflinkdata.endNode.x = type.endNode.x;
-	//returnOfflinkdata.endNode.y = type.endNode.y;
-	//returnOfflinkdata.endNode.z = type.endNode.z;
-
 	returnOfflinkdata.startNode = Vector3{ type.startNode };
 	returnOfflinkdata.endNode = Vector3{ type.endNode };
 

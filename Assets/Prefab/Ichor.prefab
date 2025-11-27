@@ -7,9 +7,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Ichor",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 14493050257245634575
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -19,7 +24,6 @@
                 "modelId": 4
             },
             "ParticleEmitter": {
-                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
                 "colorOverLifetime": {
@@ -33,10 +37,11 @@
                     "selected": true
                 },
                 "force": {
-                    "x": 0.0,
+                    "x": 7.006492321624085e-43,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": 1.975830834697992e-43
                 },
+                "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
@@ -45,15 +50,27 @@
                     "z": 0.03200000151991844
                 },
                 "looping": true,
+                "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "minAngularVelocityOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.0,
+                        "b": 1.0,
                         "g": 1.0,
                         "r": 1.0
                     },
-                    "randomizedColor": false
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -82,7 +99,7 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
@@ -96,6 +113,17 @@
                         "g": 1.0,
                         "r": 1.0
                     },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
                     "trailTexture": 5391556884225917121
                 }
@@ -164,9 +192,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 2.810981035232544,
-                    "z": 4.601292133331299
+                    "x": -10.011033058166504,
+                    "y": 0.6084867715835571,
+                    "z": 5.462618827819824
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -180,9 +208,9 @@
                     "z": 0.20000000298023224
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 2.810981035232544,
-                    "z": 4.601292133331299
+                    "x": -10.011033058166504,
+                    "y": 0.6084867715835571,
+                    "z": 5.462618827819824
                 },
                 "rotation": {
                     "w": 1.0,
@@ -196,8 +224,8 @@
                     "z": 0.20000000298023224
                 }
             },
-            "id": 1048646
+            "id": 1048597
         }
     ],
-    "RootEntity": 1048646
+    "RootEntity": 1048597
 }
