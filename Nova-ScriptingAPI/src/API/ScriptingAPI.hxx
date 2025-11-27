@@ -31,6 +31,7 @@ internal:
 	static void clearAllRuntime();
 
 	static void update();
+	static void fixedUpdate();
 
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
 	static Script^ delayedAddEntityScript(EntityID entityID, ScriptID scriptId);

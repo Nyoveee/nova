@@ -32,6 +32,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
 	prefabManager			{ *this },
+	dataManager				{ *this },
 	deltaTimeMultiplier		{ 1.f },
 	isPaused				{ false }
 {
@@ -48,10 +49,6 @@ Engine::~Engine() {
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
-	if (inSimulationMode) {
-		scriptingAPIManager.update();
-	}
-	
 	if (isPaused) {
 		return;
 	}
@@ -59,6 +56,7 @@ void Engine::fixedUpdate(float dt) {
 	physicsManager.updateTransformBodies();
 
 	if (inSimulationMode) {
+		scriptingAPIManager.fixedUpdate();
 		physicsManager.updatePhysics(dt * deltaTimeMultiplier);
 		navigationSystem.update(dt * deltaTimeMultiplier);
 	}
@@ -72,6 +70,9 @@ void Engine::update(float dt) {
 
 	if (!inSimulationMode) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt); // real time checking if scripts need to recompile.
+	}
+	else {
+		scriptingAPIManager.update();
 	}
 
 	if (!isPaused) {
@@ -193,6 +194,10 @@ void Engine::gameLockMouse(bool value) {
 void Engine::editorControlMouse(bool value) {
 	isEditorControllingMouse = value;
 	gameLockMouse(isGameLockingMouse);
+}
+
+glm::vec2 Engine::getUIMousePosition() const {
+	return window.getUISpacePos();
 }
 
 void Engine::SystemsOnLoad() {

@@ -16,10 +16,16 @@
         },
         "1221267603423068175": {
             "animation": 4413440127761711109,
-            "animationEvents": null,
+            "animationEvents": [
+                {
+                    "functionName": "TriggerEvent4",
+                    "key": 10,
+                    "scriptId": 16372493856992313355
+                }
+            ],
             "id": 1221267603423068175,
             "name": "Gunner_Jump",
-            "toLoop": true,
+            "toLoop": false,
             "transitions": null
         },
         "13903404154096713735": {

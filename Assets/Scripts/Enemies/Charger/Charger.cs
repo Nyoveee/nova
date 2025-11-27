@@ -21,6 +21,8 @@ class Charger : Enemy
     private Rigidbody_? navMeshRigidbody;
     [SerializableField]
     private ParticleEmitter_? emitter;
+    [SerializableField]
+    private GameObject? chargeLines;
 
     /***********************************************************
         Local Variables
@@ -47,6 +49,7 @@ class Charger : Enemy
         Attack,
         Stagger,
         Stomp,
+        Jump,
         Death
     }
     private ChargerState chargerState = ChargerState.Idle;
@@ -64,6 +67,7 @@ class Charger : Enemy
         updateState.Add(ChargerState.Attack, Update_Attack);
         updateState.Add(ChargerState.Stagger, Update_Stagger);
         updateState.Add(ChargerState.Stomp, Update_Stomp);
+        updateState.Add(ChargerState.Jump, Update_Jump);
         updateState.Add(ChargerState.Death, Update_Death);
         ActivateNavMeshAgent();
     }
@@ -100,10 +104,10 @@ class Charger : Enemy
             chargerState = ChargerState.Death;
             animator.PlayAnimation("ChargerDeath");
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-            NavigationAPI.stopAgent(gameObject);
             chargingRigidbody.enable = false;
             navMeshRigidbody.enable = false;
-            navMeshAgent.enable = false;
+            chargeLines.SetActive(false);
+            NavigationAPI.stopAgent(gameObject);
         }
         if (chargerState == ChargerState.Death || WasRecentlyDamaged())
             return;
@@ -142,15 +146,25 @@ class Charger : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAtPlayer();
+        LookAt(player);
         currentChargeCooldown -= Time.V_FixedDeltaTime();
         currentStompCooldown -= Time.V_FixedDeltaTime();
+        if (IsOnNavMeshOfflink())
+        {
+            NavigationAPI.stopAgent(gameObject);
+            LookAt(GetTargetJumpPosition());
+            chargerState = ChargerState.Jump;
+            navMeshAgent.enable = false;
+            animator.PlayAnimation("ChargerJump");
+            return;
+        }
         if (GetDistanceFromPlayer() > chargerstats.attackRange && GetDistanceFromPlayer() < chargerstats.chargingRange && currentChargeCooldown <=0 )
         {
             chargerState = ChargerState.Charging;
             animator.PlayAnimation("ChargerCharge");
             currentChargeTime = chargerstats.maxChargeTime;
             ActivateRigidbody();
+            chargeLines.SetActive(true);
             // Set Velocity
             chargeDirection = player.transform.position - gameObject.transform.position;
             chargeDirection.y = 0;
@@ -160,7 +174,7 @@ class Charger : Enemy
         if(GetDistanceFromPlayer() <= chargerstats.attackRange && currentStompCooldown <= 0)
         {
             chargerState = ChargerState.Stomp;
-            animator.PlayAnimation("ChargerJump");
+            animator.PlayAnimation("ChargerStomp");
             ActivateRigidbody();
             return;
         }
@@ -183,6 +197,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerWalk");
             currentChargeCooldown = chargerstats.chargeCooldown;
             ActivateNavMeshAgent();
+            chargeLines.SetActive(false);
             return;
         }
         // FootSteps
@@ -199,9 +214,27 @@ class Charger : Enemy
     {
         currentChargeCooldown -= Time.V_FixedDeltaTime();
     }
+    private void Update_Jump()
+    {
+        if (IsJumpFinished())
+        {
+            chargerState = ChargerState.Idle;
+            animator.PlayAnimation("ChargerIdle");
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+    }
     private void Update_Stagger() { }
     private void Update_Stomp() { }
-    private void Update_Death() { }
+    private void Update_Death()
+    {
+        if (IsCurrentlyJumping() && IsJumpFinished())
+        {
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+            
+    }
     /***********************************************************
         Animation Events
     ***********************************************************/
@@ -258,6 +291,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerAttack");
             currentChargeCooldown = chargerstats.chargeCooldown;
             chargingRigidbody.SetVelocity(Vector3.Zero());
+            chargeLines.SetActive(false);
         }
         if (other.tag == "Wall" && chargerState == ChargerState.Charging)
         {
@@ -265,6 +299,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerStagger");
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
             chargingRigidbody.SetVelocity(Vector3.Zero());
+            chargeLines.SetActive(false);
         }
     }
 }

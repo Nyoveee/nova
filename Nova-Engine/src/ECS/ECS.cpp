@@ -113,36 +113,25 @@ void ECS::deleteEntity(entt::entity entity) {
 	EntityData* entityData = registry.try_get<EntityData>(entity);
 	
 	if (entityData) {
-		// =======================
-		// 1. Update it's children' parent.
-		// Set the children's new parent to the current's entity parent, if any.
-		// =======================
-		entt::entity parent = entityData->parent;
-
 		for (entt::entity child : entityData->children) {
-			EntityData& childEntityData = registry.get<EntityData>(child);
-			childEntityData.parent = parent;
+			// a separate function is used to recursively delete children, because no invariant needs to be maintained.
+			deleteEntityRecursively(child);
 		}
 
 		// =======================
-		// 2. Update parent's children array.
+		// Update parent's children array.
 		// =======================
-		if (parent != entt::null) {
+		if (entityData->parent != entt::null) {
 			// Remove this entity from list of children
-			EntityData& parentEntityData = registry.get<EntityData>(parent);
+			EntityData& parentEntityData = registry.get<EntityData>(entityData->parent);
 
 			auto iterator = std::ranges::find(parentEntityData.children, entity);
 			assert(iterator != parentEntityData.children.end() && "Invariant broken.");
 			parentEntityData.children.erase(iterator);
-
-			// Inherit grandchildren as the new children.
-			for (entt::entity child : entityData->children) {
-				parentEntityData.children.push_back(child);
-			}
 		}
 	}
 
-	// 3. Delete the entity!
+	// Delete the entity!
 	registry.destroy(entity);
 }
 
@@ -215,6 +204,18 @@ void ECS::setComponentActive(entt::entity entity, ComponentID componentID, bool 
 		if (componentID == typeid(Rigidbody).hash_code())
 			engine.physicsManager.removeBodiesFromSystem(engine.ecs.registry, entity);
 	}
+}
+
+void ECS::deleteEntityRecursively(entt::entity entity) {
+	EntityData* entityData = registry.try_get<EntityData>(entity);
+
+	if (entityData) {
+		for (entt::entity child : entityData->children) {
+			deleteEntityRecursively(child);
+		}
+	}
+
+	registry.destroy(entity);
 }
 
 #if false
