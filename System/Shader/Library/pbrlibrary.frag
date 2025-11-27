@@ -144,7 +144,7 @@ float geomSmith(float nDotL, float roughness)
 {
     float k = (roughness + 1.0f) * (roughness + 1.0f) / 8.0f;
     float denom = nDotL * (1.0f - k) + k;
-    return 1.0f / denom;
+    return 1.0f / max(denom, 0.0001f);
 }
 
 // Schlick approximation for Fresnel reflection that defines the probability of light
@@ -242,10 +242,10 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, float roughness,
 vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic)
 {
     vec3 h = normalize(v + l);
-    float nDotH = dot(n, h);
-    float lDotH = dot(l, h);
+    float nDotH = max(dot(n, h), 0.0f);
+    float lDotH = max(dot(l, h), 0.0f);
     float nDotL = max(dot(n, l), 0.0f);
-    float nDotV = dot(n, v);
+    float nDotV = max(dot(n, v), 0.0f);
 
     vec3 fresnel = schlickFresnel(lDotH, baseColor, metallic);
     vec3 specBrdf = 0.25f * ggxDistribution(nDotH, roughness) * fresnel * geomSmith(nDotL, roughness) * geomSmith(nDotV, roughness);
