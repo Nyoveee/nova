@@ -154,6 +154,11 @@ void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
 
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
+
+	if (!entityData) {
+		return;
+	}
+
 	updateComponents<ALL_COMPONENTS>(prefabRegistry, ecsRegistry, entityData->prefabMetaData.prefabEntity, prefabInstance);
 
 	for (entt::entity child : entityData->children) {
