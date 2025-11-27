@@ -1,5 +1,11 @@
 {
-    "animationEvents": null,
+    "animationEvents": [
+        {
+            "functionName": "HelloWorld",
+            "key": 0,
+            "scriptId": 3095451144282259457
+        }
+    ],
     "keyframes": [
         {
             "frame": 0,
@@ -126,7 +132,28 @@
                 "z": 1.0002474784851074
             },
             "power": 1.0
+        },
+        {
+            "frame": 900,
+            "lerpType": "CatmullRom",
+            "localPosition": {
+                "x": 66.0344467163086,
+                "y": 21.512714385986328,
+                "z": 10.450687408447266
+            },
+            "localRotation": {
+                "w": -0.0017735017463564873,
+                "x": -0.42702898383140564,
+                "y": 0.9005942940711975,
+                "z": -0.08107581734657288
+            },
+            "localScale": {
+                "x": 1.000293254852295,
+                "y": 1.0,
+                "z": 1.0003429651260376
+            },
+            "power": 1.0
         }
     ],
-    "lastFrame": 563
+    "lastFrame": 900
 }
