@@ -1,10 +1,12 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 using static System.Net.Mime.MediaTypeNames;
 
 class UltimateProjectile : Script
 {
+    public Prefab ultimateExplosion;
     public float lifetime = 3f;
 
     // This function is first invoked when game starts.
@@ -30,7 +32,10 @@ class UltimateProjectile : Script
         if (other.tag == "Wall")
         {
             if (gameObject != null)
+            {
+                Instantiate(ultimateExplosion, gameObject.transform.position);
                 Destroy(gameObject);
+            }
         }
     }
 

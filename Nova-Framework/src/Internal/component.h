@@ -268,7 +268,9 @@ struct Rigidbody {
 
 	bool isRotatable				{ true };
 	bool isTrigger					{ false };
-	
+	bool dynamicCollider			{ false };
+	bool toScaleWithTransform		{ true };
+
 	REFLECTABLE(
 		motionType,
 		layer,
@@ -277,7 +279,9 @@ struct Rigidbody {
 		mass,
 		gravityMultiplier,
 		isRotatable,
-		isTrigger
+		isTrigger,
+		dynamicCollider,
+		toScaleWithTransform
 	)
 
 	// RUNTIME PROPERTIES!

@@ -53,12 +53,13 @@ void Engine::fixedUpdate(float dt) {
 		return;
 	}
 
-	physicsManager.updateTransformBodies();
-
 	if (inSimulationMode) {
 		scriptingAPIManager.fixedUpdate();
 		physicsManager.updatePhysics(dt * deltaTimeMultiplier);
 		navigationSystem.update(dt * deltaTimeMultiplier);
+	}
+	else {
+		physicsManager.updateTransformBodies();
 	}
 }
 

@@ -1,20 +1,25 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 class UltimateExplosion : Script
 {
     // ======================================
     // Serialised fields.
     // ======================================
-    public MeshRenderer_ material;
     public float fadeInDuration = 1f;
     public float explosionDuration = 1f;
     public float fadeOutDuration = 2f;
+
+    public float dissolveOffsetDuration = 0.2f;
 
     public float initialScale = 1f;
     public float explosionInitialScale = 20f;
     public float explosionFinalScale = 25f;
     public float finalScale = 30f;
+
+    public float lightIntensity = 100f;
 
     public float angularVelocity = 100f;
 
@@ -23,6 +28,8 @@ class UltimateExplosion : Script
     // ======================================
     private float timeElapsed = 0f;
     private Transform_ transform;
+    private MeshRenderer_ material;
+    private Light_ light;
 
     private Vector3 initialScaleVector;
     private Vector3 explosionInitialScaleVector;
@@ -33,29 +40,51 @@ class UltimateExplosion : Script
     protected override void init()
     {
         transform = gameObject.transform;
+        transform.scale = Vector3.One();
+        material = getComponent<MeshRenderer_>();
+        light = getComponent<Light_>();
+
+        initialScaleVector          = new Vector3(initialScale, initialScale, initialScale);
+        explosionInitialScaleVector = new Vector3(explosionInitialScale, explosionInitialScale, explosionInitialScale);
+        explosionFinalScaleVector   = new Vector3(explosionFinalScale, explosionFinalScale, explosionFinalScale);
+        finalScaleVector            = new Vector3(finalScale, finalScale, finalScale);
+
+        Debug.Log(gameObject.GetId());
     }
 
     // This function is invoked every update.
     protected override void update()
     {
+        // Debug.Log(transform.scale);
+
         // Handle fade in lerp..
         if (timeElapsed < fadeInDuration)
         {
-
+            float interval = timeElapsed / fadeInDuration;
+            transform.scale = Vector3.Lerp(initialScaleVector, explosionInitialScaleVector, Mathf.Pow(interval, 0.2f));
+            light.intensity = Mathf.Interpolate(0f, lightIntensity, interval, 1f);
         }
         // Handle explosion stay in...
         else if (timeElapsed < fadeInDuration + explosionDuration) 
         { 
             float relativeTimeElapsed = timeElapsed - fadeInDuration;
-
             float interval = relativeTimeElapsed / explosionDuration;
+            transform.scale = Vector3.Lerp(explosionInitialScaleVector, explosionFinalScaleVector, interval);
         }
         // Handle fade out lerp..
         else if(timeElapsed < fadeInDuration + explosionDuration + fadeOutDuration)
         {
             float relativeTimeElapsed = timeElapsed - fadeInDuration - explosionDuration;
-            
+
             float interval = relativeTimeElapsed / fadeOutDuration;
+
+            transform.scale = Vector3.Lerp(explosionFinalScaleVector, finalScaleVector, Mathf.Pow(interval, 3f));
+
+            if (relativeTimeElapsed > dissolveOffsetDuration) {
+                float dissolveInterval = (relativeTimeElapsed - dissolveOffsetDuration) / (fadeOutDuration - dissolveOffsetDuration);
+                material.setMaterialFloat(0, "dissolveThreshold", 1f - dissolveInterval);
+                light.intensity = Mathf.Interpolate(lightIntensity, 0f, dissolveInterval, 1f);
+            }
         }
         else
         {

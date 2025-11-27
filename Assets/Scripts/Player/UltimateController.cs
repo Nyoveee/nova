@@ -24,7 +24,7 @@ class UltimateController : Script
 
     private void CastUltimate()
     {
-        GameObject projectile = Instantiate(ultimate, gameObject.transform.position);
+        GameObject projectile = Instantiate(ultimate, camera.position);
 
         projectile.getComponent<Rigidbody_>().SetVelocity(camera.front * projectileSpeed);
     }
