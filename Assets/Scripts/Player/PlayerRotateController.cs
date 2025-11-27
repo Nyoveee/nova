@@ -35,6 +35,15 @@ class PlayerRotateController : Script
 
     }
 
+    protected override void fixedUpdate()
+    { 
+    
+    
+    
+    
+    }
+
+
 
     private void MoveToOrientation()
     {
