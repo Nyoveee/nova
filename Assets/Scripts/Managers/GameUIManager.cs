@@ -58,7 +58,7 @@ class GameUIManager : Script
     {
         if(image != null && image.colorTint.a > 0)
         {
-            currentFadeTime = Mathf.Max(currentFadeTime - Time.V_FixedDeltaTime(), 0);
+            currentFadeTime = Mathf.Max(currentFadeTime - Time.V_DeltaTime(), 0);
             ColorAlpha colora = image.colorTint;
             if(damageFadeTime <= 0)
             {

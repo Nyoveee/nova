@@ -45,7 +45,7 @@ class PathfindingCube : Script
             float yOffset = jumpHeightMax * 4f * (t - t * t);
             gameObject.transform.position = horizontalPos + Vector3.Up() * yOffset;
 
-            timeElapsed += Time.V_FixedDeltaTime();
+            timeElapsed += Time.V_DeltaTime();
             //timeElapsed += 0.00000000001f;
 
             if (timeElapsed >= jumpDuration)

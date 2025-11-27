@@ -30,7 +30,7 @@ class SpinningCat : Script
         { 
             if(transform!= null)
             {
-                transform.rotate(transform.up, angle * Time.V_FixedDeltaTime());
+                transform.rotate(transform.up, angle * Time.V_DeltaTime());
             }
            
 
@@ -53,7 +53,7 @@ class SpinningCat : Script
             // countdown before next spin.
         }
 
-        timeElapsed += Time.V_FixedDeltaTime();
+        timeElapsed += Time.V_DeltaTime();
     }
 
     private void startSpinning()

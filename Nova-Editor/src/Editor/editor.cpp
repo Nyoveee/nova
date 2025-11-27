@@ -263,9 +263,6 @@ void Editor::deleteEntity(entt::entity entity) {
 		return;
 	}
 
-	ImGuizmo::Enable(false);
-	ImGuizmo::Enable(true);
-
 	engine.ecs.deleteEntity(entity);
 }
 
