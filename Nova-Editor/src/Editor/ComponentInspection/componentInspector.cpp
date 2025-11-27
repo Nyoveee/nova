@@ -105,9 +105,10 @@ void ComponentInspector::update() {
 		if (ImGui::Button(ICON_FA_BOX_OPEN)) {
 			editor.unpackPrefab(entityData);
 		}
-	}
-	if (ImGui::Button("Update Prefab")) {
-		editor.engine.prefabManager.updatePrefab(selectedEntity);
+
+		if (ImGui::Button("Update Prefab")) {
+			editor.engine.prefabManager.updatePrefab(selectedEntity);
+		}
 	}
 
 	ImGui::NewLine();

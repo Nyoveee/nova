@@ -491,7 +491,7 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const
 }
 
 template<>
-inline void DisplayProperty<ParticleColorSelection>(Editor& editor, const char* dataMemberName, ParticleColorSelection& dataMember) {
+inline void DisplayProperty<ParticleColorSelection>(Editor& editor, const char*, ParticleColorSelection& dataMember) {
 	ImGui::BeginChild("Particle Color", ImVec2(0, 200), ImGuiChildFlags_Border);
 	DisplayProperty<ColorA>(editor, "Color", dataMember.color);
 	DisplayProperty<glm::vec3>(editor, "Color Offset Min", dataMember.colorOffsetMin);

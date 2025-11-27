@@ -134,14 +134,10 @@ namespace Serialiser {
 
 		std::unordered_map<entt::entity, entt::entity> map;
 
-		//deserialisePrefabRecursive(j["Entities"],0, registry, highestID, static_cast<int>(id), rootEntity, prefabRegistry, entt::null, map);
 		deserialisePrefabRecursive(j["Entities"], rootEntity, prefabRegistry, highestID, map, id);
-		//EntityData* entityData = prefabRegistry.try_get<EntityData>(j["RootEntity"]);
-		//entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
-
-		//return rootEntity;
 		return j["RootEntity"];
 	}
+
 	void serialisePrefab(entt::registry& registry, entt::entity entity, std::ofstream& file, std::size_t id) {
 		//std::ofstream& file = opt;
 

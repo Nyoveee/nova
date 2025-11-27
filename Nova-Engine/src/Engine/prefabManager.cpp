@@ -13,7 +13,7 @@ entt::registry& PrefabManager::getPrefabRegistry() {
 	return prefabRegistry;
 }
 
-std::unordered_map<ResourceID, entt::entity> PrefabManager::getPrefabMap() {
+std::unordered_map<ResourceID, entt::entity> const& PrefabManager::getPrefabMap() const {
 	return prefabMap;
 }
 
