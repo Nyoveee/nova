@@ -14,7 +14,7 @@
             },
             "MeshRenderer": {
                 "materialIds": [
-                    5
+                    13343189797087805441
                 ],
                 "modelId": 4
             },
@@ -25,15 +25,15 @@
                     "endColor": {
                         "a": 0.0,
                         "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
+                        "g": 0.6470588445663452,
+                        "r": 1.0
                     },
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "force": {
                     "x": 7.006492321624085e-43,
-                    "y": 1.2146234386454401e+33,
+                    "y": 0.0,
                     "z": 1.975830834697992e-43
                 },
                 "initialAngularVelocity": 0.0,
@@ -51,18 +51,18 @@
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
+                        "b": 0.0,
+                        "g": 0.6470588445663452,
                         "r": 1.0
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": 0.20000000298023224,
                         "z": 0.0
                     },
                     "colorOffsetMin": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": -0.20000000298023224,
                         "z": 0.0
                     },
                     "emissiveMultiplier": 1.0
@@ -94,18 +94,18 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
-                "startSize": 0.10000000149011612,
-                "startSpeed": 0.5,
+                "startSize": 0.5,
+                "startSpeed": 5.0,
                 "texture": 779870865798480017,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
+                        "b": 0.0,
+                        "g": 0.6470588445663452,
                         "r": 1.0
                     },
                     "trailColorOffsetMax": {
@@ -118,9 +118,9 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "trailEmissiveMultiplier": 1.0,
+                    "trailEmissiveMultiplier": 3.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Rigidbody": {

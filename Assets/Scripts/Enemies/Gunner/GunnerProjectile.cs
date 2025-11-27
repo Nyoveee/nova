@@ -3,12 +3,18 @@
 // Editor will automatically rename and recompile this file.
 class GunnerProjectile : Script
 {
+    /***********************************************************
+       Inspector Variables
+    ***********************************************************/
     [SerializableField]
     private float damage;
     [SerializableField]
     private float bulletSpeed;
     [SerializableField]
     private float lifetime;
+    /***********************************************************
+       Local Variables
+    ***********************************************************/
     private Vector3 direction;
     public void SetDirection(Vector3 direction)
     {

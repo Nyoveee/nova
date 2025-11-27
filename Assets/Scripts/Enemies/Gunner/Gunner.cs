@@ -210,7 +210,7 @@ class Gunner : Enemy
         AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
         // Shoot Projectile
         GameObject projectile = Instantiate(projectilePrefab);
-        projectile.transform.localPosition = projectileSpawnPoint.transform.position;
+        projectile.transform.position = projectileSpawnPoint.transform.position;
         Vector3 direction = player.transform.position - projectileSpawnPoint.transform.position;
         direction.Normalize();
         projectile.getScript<GunnerProjectile>().SetDirection(direction);
