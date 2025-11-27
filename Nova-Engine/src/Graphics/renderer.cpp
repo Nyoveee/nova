@@ -1804,7 +1804,7 @@ void Renderer::renderDebugSelectedObjects() {
 			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 
-			model = glm::translate(model, navMeshOffLinks->endPoint);
+			model = glm::translate(glm::identity<glm::mat4>(), navMeshOffLinks->endPoint);
 			debugShader.setMatrix("model", model);
 
 			// same radius, same mesh.
