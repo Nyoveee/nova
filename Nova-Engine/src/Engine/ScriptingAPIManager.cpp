@@ -121,6 +121,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
 		update_							        = GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
+		fixedUpdate_							= GetFunctionPtr<FixedUpdateFunctionPtr>("Interface", "fixedUpdate");
 		loadAssembly                            = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "loadAssembly");
 		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unloadAssembly");
 		addEntityScript						    = GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addEntityScript");
@@ -306,6 +307,12 @@ void ScriptingAPIManager::update() {
 	ZoneScoped;
 
 	update_();
+}
+
+void ScriptingAPIManager::fixedUpdate() {
+	ZoneScoped;
+
+	fixedUpdate_();
 }
 
 void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {

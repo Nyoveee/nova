@@ -49,10 +49,6 @@ Engine::~Engine() {
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
-	if (inSimulationMode) {
-		scriptingAPIManager.update();
-	}
-	
 	if (isPaused) {
 		return;
 	}
@@ -60,6 +56,7 @@ void Engine::fixedUpdate(float dt) {
 	physicsManager.updateTransformBodies();
 
 	if (inSimulationMode) {
+		scriptingAPIManager.fixedUpdate();
 		physicsManager.updatePhysics(dt * deltaTimeMultiplier);
 		navigationSystem.update(dt * deltaTimeMultiplier);
 	}
@@ -73,6 +70,9 @@ void Engine::update(float dt) {
 
 	if (!inSimulationMode) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt); // real time checking if scripts need to recompile.
+	}
+	else {
+		scriptingAPIManager.update();
 	}
 
 	if (!isPaused) {

@@ -67,6 +67,8 @@ public:
 	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
 
 private:
+	ENGINE_DLL_API void deleteEntityRecursively(entt::entity entity);
+
 #if false
 	ENGINE_DLL_API void onCanvasCreation(entt::registry&, entt::entity entityID);
 	ENGINE_DLL_API void onCanvasDestruction(entt::registry&, entt::entity entityID);

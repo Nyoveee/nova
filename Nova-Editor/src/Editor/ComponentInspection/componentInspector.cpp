@@ -110,6 +110,10 @@ void ComponentInspector::update() {
 			editor.engine.prefabManager.updatePrefab(selectedEntity);
 		}
 	}
+	else if (entityData.prefabID != TypedResourceID<Prefab>{ INVALID_RESOURCE_ID }) {
+		Logger::warn("Entity {} has invalid prefab id, relegating him back to a normal entity..", entityData.name);
+		editor.unpackPrefab(entityData);
+	}
 
 	ImGui::NewLine();
 
