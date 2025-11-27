@@ -13,7 +13,7 @@ entt::registry& PrefabManager::getPrefabRegistry() {
 	return prefabRegistry;
 }
 
-std::unordered_map<ResourceID, entt::entity> PrefabManager::getPrefabMap() {
+std::unordered_map<ResourceID, entt::entity> const& PrefabManager::getPrefabMap() const {
 	return prefabMap;
 }
 
@@ -165,6 +165,11 @@ void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
 void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
 
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
+
+	if (!entityData) {
+		return;
+	}
+
 	updateComponents<ALL_COMPONENTS>(prefabRegistry, ecsRegistry, entityData->prefabMetaData.prefabEntity, prefabInstance);
 
 	for (entt::entity child : entityData->children) {

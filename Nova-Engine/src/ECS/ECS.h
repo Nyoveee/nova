@@ -38,6 +38,9 @@ public:
 
 	ENGINE_DLL_API bool isParentCanvas(entt::entity entity);
 
+	ENGINE_DLL_API void recordOriginalScene();
+	ENGINE_DLL_API void restoreOriginalScene();
+
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
 	template <typename ...Components>
@@ -64,6 +67,8 @@ public:
 	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
 
 private:
+	ENGINE_DLL_API void deleteEntityRecursively(entt::entity entity);
+
 #if false
 	ENGINE_DLL_API void onCanvasCreation(entt::registry&, entt::entity entityID);
 	ENGINE_DLL_API void onCanvasDestruction(entt::registry&, entt::entity entityID);
@@ -76,6 +81,7 @@ public:
 
 	entt::entity canvasUi;
 	SceneManager sceneManager;
+	ResourceID originalScene;	// we store the original scene when starting simulation..
 
 private:
 	Engine& engine;
@@ -106,6 +112,8 @@ void ECS::makeRegistryCopy() {
 			}
 		}(), ...);
 	}
+
+	originalScene = sceneManager.getCurrentScene();
 }
 
 template <typename ...Components>
@@ -126,6 +134,8 @@ void ECS::rollbackRegistry() {
 			}
 		}(), ...);
 	}
+
+	sceneManager.currentScene = originalScene;
 }
 
 template<typename ...Components>
@@ -166,8 +176,8 @@ entt::entity ECS::copyEntity(entt::entity en) {
 		entityData->children = childVec;
 
 		//for each child, assign the parent to the current ecsEntity
-		for (entt::entity en : childVec) {
-			EntityData* childData = registry.try_get<EntityData>(en);
+		for (entt::entity childEn : childVec) {
+			EntityData* childData = registry.try_get<EntityData>(childEn);
 			childData->parent = tempEntity;
 		}
 	}

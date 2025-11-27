@@ -1,5 +1,7 @@
 #include "ScriptingAPIManager.h"
 
+#include "InputManager/inputManager.h"
+
 #include "ResourceManager/resourceManager.h"
 #include "scriptAsset.h"
 #include "Profiling.h"
@@ -119,6 +121,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 
 		InitFunctionPtr initScriptAPIFuncPtr	= GetFunctionPtr<InitFunctionPtr>("Interface", "init");
 		update_							        = GetFunctionPtr<UpdateFunctionPtr>("Interface", "update");
+		fixedUpdate_							= GetFunctionPtr<FixedUpdateFunctionPtr>("Interface", "fixedUpdate");
 		loadAssembly                            = GetFunctionPtr<LoadScriptsFunctionPtr>("Interface", "loadAssembly");
 		unloadAssembly                          = GetFunctionPtr<UnloadScriptsFunctionPtr>("Interface", "unloadAssembly");
 		addEntityScript						    = GetFunctionPtr<AddScriptFunctionPtr>("Interface", "addEntityScript");
@@ -306,6 +309,12 @@ void ScriptingAPIManager::update() {
 	update_();
 }
 
+void ScriptingAPIManager::fixedUpdate() {
+	ZoneScoped;
+
+	fixedUpdate_();
+}
+
 void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 	ZoneScoped;
 
@@ -362,8 +371,13 @@ void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 					}
 				}
 			}
+
+			engine.inputManager.broadcast<ScriptCompilationStatus>(ScriptCompilationStatus::Success);
 		}
 		modifiedScripts.clear();
+	}
+	else {
+		engine.inputManager.broadcast<ScriptCompilationStatus>(ScriptCompilationStatus::Failure);
 	}
 
 	timeSinceSave = 0;

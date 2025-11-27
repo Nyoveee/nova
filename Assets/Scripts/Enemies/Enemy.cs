@@ -26,32 +26,64 @@ public abstract class Enemy : Script
     private EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
     private float ichorSpawnPositionVariance = 1.5f;
+    // Jump
+    private float currentJumpDuration = 0f;
+    private NavMeshOfflinkData offlinkData;
+    private float verticalMaxJumpHeight;
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
     public abstract void TakeDamage(float damage);
     public abstract bool IsEngagedInBattle();
     /***********************************************************
+       Public Functions
+    ***********************************************************/
+    public void Explode()
+    {
+        Destroy(gameObject);
+        for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
+        {
+            Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
+            direction.Normalize();
+            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            GameObject ichor = Instantiate(ichorPrefab);
+            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+        }
+    }
+    /***********************************************************
         Shared Functions
     ***********************************************************/
-    protected void LookAtPlayer()
+    protected Vector3 GetTargetJumpPosition()
     {
-        if (player == null)
+        return offlinkData.endNode;
+    }
+    protected bool IsCurrentlyJumping()
+    {
+        return offlinkData.valid && navMeshAgent.isOnOffMeshLinks();
+    }
+    protected bool IsJumpFinished()
+    {
+        float t = currentJumpDuration / enemyStats.jumpDuration;
+        Vector3 horizontalPos = Vector3.Lerp(offlinkData.startNode, offlinkData.endNode, t);
+        float yOffset = verticalMaxJumpHeight * 4f * (t - t * t);
+        gameObject.transform.position = horizontalPos + Vector3.Up() * yOffset;
+        currentJumpDuration += Time.V_DeltaTime();
+        return currentJumpDuration >= enemyStats.jumpDuration;
+    }
+
+    protected void LookAt(GameObject @object)
+    {
+        if (@object == null)
             return;
-        Vector3 direction = player.transform.position - renderer.gameObject.transform.position;
+        Vector3 direction = @object.transform.position - renderer.gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
 
         gameObject.transform.setFront(direction);
     }
-    protected void LookAtObject(GameObject @object)
+    protected void LookAt(Vector3 position)
     {
-        if(@object == null)
-        {
-            Debug.LogWarning("Missing Reference Found");
-            return;
-        }
-        Vector3 direction = @object.transform.position - gameObject.transform.position;
+        Vector3 direction = position - renderer.gameObject.transform.position;
         direction.y = 0;
         direction.Normalize();
 
@@ -67,7 +99,8 @@ public abstract class Enemy : Script
             Vector3 direction = new Vector3(0, Random.Range(-1f,1f), 0);
             direction.Normalize();
             float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
-            GameObject ichor = Instantiate(ichorPrefab, ichorSpawnPoint.transform.position + direction * spawnDistance);
+            GameObject ichor = Instantiate(ichorPrefab);
+            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
         }
     }
     protected void MoveToNavMeshPosition(Vector3 position)
@@ -88,16 +121,26 @@ public abstract class Enemy : Script
             wasRecentlyDamaged = false;
         }, enemyStats.hurtDuration);
     }
+    protected bool IsOnNavMeshOfflink() {
+        if (!navMeshAgent.isOnOffMeshLinks())
+            return false;
+        offlinkData = navMeshAgent.getOffLinkData();
+        if (offlinkData.valid){
+            verticalMaxJumpHeight = MathF.Abs(offlinkData.endNode.y - offlinkData.startNode.y);
+            verticalMaxJumpHeight = 0.25f + 0.5f * verticalMaxJumpHeight; // 0.25f adds small curve
+            currentJumpDuration = 0f;
+        }
+        
+        return offlinkData.valid;
+    }
     /***********************************************************
        Script Functions
-    ***********************************************************/
-    /***********************************************************
-        Script Functions
     ***********************************************************/
     protected override void init()
     {
         enemyStats = getScript<EnemyStats>();
         player = GameObject.FindWithTag("Player");
+        navMeshAgent.setAutomateNavMeshOfflinksState(false);
     }
-   
+
 }

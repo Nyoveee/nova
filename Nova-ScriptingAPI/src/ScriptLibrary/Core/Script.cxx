@@ -32,6 +32,17 @@ void Script::callUpdate() {
 	}
 }
 
+void Script::callFixedUpdate() {
+	try { fixedUpdate(); }
+	catch (const std::exception& e) {
+		Logger::error("Unable to call fixed update(): {}", e.what());
+	}
+	catch (System::Exception^ e) {
+		Logger::error("Unable to call fixed update(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Interface::engine->stopSimulation();
+	}
+}
+
 void Script::callExit() {
 	try { exit(); }
 	catch (const std::exception& e) {

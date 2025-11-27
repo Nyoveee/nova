@@ -22,6 +22,7 @@
 #include "reflection.h"
 #include "navMesh.h"
 #include "controller.h"
+#include "systemResource.h"
 
 // Forward declaring.
 class Prefab;
@@ -157,22 +158,26 @@ struct Light {
 	Color color				= Color{ 1.f, 1.f, 1.f };
 	float intensity			= 1.f;
 	Type type				= Light::Type::PointLight;
+
 	glm::vec3 attenuation	= glm::vec3{ 1.f, 0.09f, 0.032f };
 	Radian cutOffAngle		= glm::radians(12.5f);
 	Radian outerCutOffAngle = glm::radians(17.5f);
-	
+	float radius			= 50.f;
+
 	REFLECTABLE(
 		type,
 		color,
 		intensity,
 		cutOffAngle,
-		outerCutOffAngle
+		outerCutOffAngle,
+		attenuation,
+		radius
 	)
 };
 
 struct MeshRenderer {
-	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
-	std::vector<TypedResourceID<Material>>	materialIds	{};
+	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
+	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
 	REFLECTABLE(
 		modelId,
@@ -219,17 +224,23 @@ struct Animator {
 
 struct Sequence {
 	TypedResourceID<Sequencer> sequencerId;
-	bool toLoop;
+
+	float speedMultiplier = 1.f;
+	bool toLoop = false;
+	bool startPlaying = false;
 
 	REFLECTABLE(
 		sequencerId,
-		toLoop
+		speedMultiplier,
+		toLoop,
+		startPlaying
 	)
 
 	float timeElapsed = 0.f;
 	float lastTimeElapsed = 0.f;
 	
 	int currentFrame = 0;
+	bool isPlaying = true;
 
 	// each animator component keeps track of already executed animation events keyframes..
 	// this container is reset everytime it loops..
@@ -328,7 +339,7 @@ struct SkyBox {
 };
 
 struct Image {
-	TypedResourceID<Texture>	texture		{ INVALID_RESOURCE_ID };
+	TypedResourceID<Texture>	texture		{ NONE_TEXTURE_ID };
 	ColorA						colorTint	{ 1.f, 1.f, 1.f, 1.f };
 	
 	enum class AnchorMode {
@@ -339,10 +350,13 @@ struct Image {
 		TopRight
 	} anchorMode = AnchorMode::Center;
 
+	bool toFlip = false;
+
 	REFLECTABLE(
 		texture,
 		colorTint,
-		anchorMode
+		anchorMode,
+		toFlip
 	)
 };
 
@@ -515,6 +529,7 @@ struct Particle {
 	// Movement
 	glm::vec3 direction;
 	float rotation;
+	float angularVelocity;
 	// Size
 	float startSize;
 	float currentSize;
@@ -573,12 +588,15 @@ struct ParticleEmissionTypeSelection {
 };
 
 struct ParticleColorSelection {
-	bool randomizedColor = false;
 	ColorA color{ 1.f, 1.f, 1.f,1.f };
-
+	glm::vec3 colorOffsetMin{};
+	glm::vec3 colorOffsetMax{};
+	float emissiveMultiplier = 1.f;
 	REFLECTABLE(
-		randomizedColor,
-		color
+		color,
+		colorOffsetMin,
+		colorOffsetMax,
+		emissiveMultiplier
 	)
 };
 
@@ -611,12 +629,18 @@ struct Trails {
 	float distancePerEmission{0.1f};
 	float trailSize{ 0.1f };
 	ColorA trailColor{ ColorA{1.f,1.f,1.f,1.f} };
+	glm::vec3 trailColorOffsetMin{};
+	glm::vec3 trailColorOffsetMax{};
+	float trailEmissiveMultiplier{ 1.f };
 	REFLECTABLE(
 		selected,
 		trailTexture,
 		distancePerEmission,
 		trailSize,
-		trailColor
+		trailColor,
+		trailColorOffsetMin,
+		trailColorOffsetMax,
+		trailEmissiveMultiplier
 	)
 };
 
@@ -627,28 +651,34 @@ struct ParticleEmitter
 	float currentBurstTime{};
 	glm::vec3 prevPosition;
 	bool b_firstPositionUpdate{ true };
-
 	// Rendering
 	std::vector<Particle> particles;
 	std::vector<Particle> trailParticles;
-	// Editor stuff
+
+	// Categories
 	TypedResourceID<Texture> texture;
 	ParticleEmissionTypeSelection particleEmissionTypeSelection;
 	ParticleColorSelection particleColorSelection;
 	SizeOverLifetime sizeOverLifetime;
 	ColorOverLifetime colorOverLifetime;
 	Trails trails;
+	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
 	float startSize = 1;
 	float startSpeed = 1;
-	float angularVelocity{};
 	glm::vec3 force;
+	// Velocity
+	float initialAngularVelocity{};
+	float minAngularVelocityOffset{};
+	float maxAngularVelocityOffset{};
+	// Particle spawning info
 	float lifeTime = 1;
 	int maxParticles = 1000;
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
+	// Light
 	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 
@@ -657,7 +687,9 @@ struct ParticleEmitter
 		texture,
 		startSize,
 		startSpeed,
-		angularVelocity,
+		initialAngularVelocity,
+		minAngularVelocityOffset,
+		maxAngularVelocityOffset,
 		force,
 		lifeTime,
 		maxParticles,

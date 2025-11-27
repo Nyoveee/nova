@@ -235,6 +235,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AssetManager\prefab.h" />
+    <ClInclude Include="src\Editor\Assets\animationTimeline.ipp" />
     <ClInclude Include="src\Editor\Assets\animatorController.h" />
     <ClInclude Include="src\Editor\Assets\animationTimeline.h" />
     <ClInclude Include="src\Editor\Assets\assetViewerUi.ipp" />

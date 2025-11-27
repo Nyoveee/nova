@@ -13,7 +13,12 @@ namespace ScriptingAPI {
 	ManagedResource(Texture)
 	ManagedResource(Model)
 	ManagedResource(Material)
+	ManagedResource(Scene)
 }
+
+
+#define ALL_MANAGED_TYPED_RESOURCE_ID \
+	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material, ScriptingAPI::Scene
 
 // ===========================================================================================
 // 1. Defining structs..
@@ -27,8 +32,6 @@ namespace ScriptingAPI {
 // later in 2. with the managed type.
 // ===========================================================================================
 
-#define ALL_MANAGED_TYPED_RESOURCE_ID \
-	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material
 
 // ======================================
 // This struct is responsible for Vector2 Types
@@ -130,6 +133,7 @@ ManagedStruct(
 static Vector3 operator*(Quaternion quaternion, Vector3 axis);
 static Vector3 operator*(Vector3 axis, Quaternion quaternion);
 static Quaternion Identity();
+static Quaternion Slerp(Quaternion a, Quaternion b, float t);
 
 ManagedStructEnd(Quaternion, glm::quat)
 
@@ -313,6 +317,7 @@ void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
 
 ManagedComponentEnd()
+
 // ======================================
 // NavMeshAgent Component
 // ======================================
@@ -339,3 +344,30 @@ bool isOnOffMeshLinks();
 NavMeshOfflinkData getOffLinkData();
 
 ManagedComponentEnd()
+
+// ======================================
+// Sequence Component
+// ======================================
+ManagedComponentDeclaration(
+	Sequence,
+	float, speedMultiplier,
+	bool, toLoop
+)
+
+bool isPlaying();
+
+void resume();
+void play();
+void pause();
+
+ManagedComponentEnd()
+
+ManagedComponentDeclaration(
+	Light,
+	float, intensity,
+	float, radius
+)
+
+ManagedComponentEnd()
+
+

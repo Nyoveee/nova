@@ -29,6 +29,9 @@ class PlayerController : Script
     // Health
     public float maxHealth              = 100f;
 
+    // Empty death event
+    public event EventHandler OnPlayerDeath;
+
     [SerializableField]
     private Transform_? cameraObject = null;
     [SerializableField]
@@ -87,7 +90,6 @@ class PlayerController : Script
         MapKey(Key.Space, jump);
 
         MapKey(Key.LeftShift, dashInputHandler);
-    
     }
 
     // This function is invoked every fixed update.
@@ -96,7 +98,7 @@ class PlayerController : Script
         // ===================================
         // Check if its grounded..
         // ===================================
-        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 0.5f, gameObject);
+        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 1f, gameObject);
         if (result != null) { 
             isGrounded = true;
 
@@ -125,7 +127,7 @@ class PlayerController : Script
         // ===================================
         else
         {
-            dashTimer = Mathf.Clamp(dashTimer + Time.V_FixedDeltaTime(), 0f, dashTimerCap);
+            dashTimer = Mathf.Clamp(dashTimer + Time.V_DeltaTime(), 0f, dashTimerCap);
             handleMovement();
         }
         // ===================================
@@ -145,8 +147,15 @@ class PlayerController : Script
     public void TakeDamage(float damage)
     {
         currentHealth = Mathf.Max(0, currentHealth - damage);
+        //Debug.Log("Player health: " + currentHealth);
         if (gameUIManager != null)
             gameUIManager.ActivateDamageUI();
+
+        // Placeholder for a player death 
+        if (currentHealth <= 0f)
+        {
+            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+        }
     }
     /***********************************************************
        Movement
@@ -241,7 +250,7 @@ class PlayerController : Script
 
         // constantly apply velocity.
         rigidbody.SetVelocity(dashVector * dashStrength);
-        dashTimeElapsed += Time.V_FixedDeltaTime();
+        dashTimeElapsed += Time.V_DeltaTime();
     }
 
     private void CameraMovement(float deltaMouseX, float deltaMouseY)

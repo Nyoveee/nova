@@ -21,6 +21,7 @@ class ScriptAsset;
 class Audio;
 class Material;
 class Sequencer;
+class Scene;
 
 // ============================
 // Here we list all the possible types our serialized field can have..
@@ -31,7 +32,7 @@ class Sequencer;
 #endif
 
 #define ALL_TYPED_RESOURCE_ID \
-	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>
+	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>, TypedResourceID<Scene>
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \

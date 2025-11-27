@@ -300,6 +300,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		// Main render function
 		render(editorMainFrameBuffer, editorCamera);
 
+		debugShader.setMatrix("model", glm::mat4{ 1.f });
 		// ===============================================
 		// Debug rendering + object ids for editor..
 		// ===============================================
@@ -314,6 +315,8 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		if (engine.toDebugRenderParticleEmissionShape) {
 			debugRenderParticleEmissionShape();
 		}
+		
+		renderDebugSelectedObjects();
 
 		// after debug rendering.. bind main position VBO back to VAO..
 		glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
@@ -539,6 +542,10 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisable(GL_BLEND);
+}
+
+void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
+	selectedEntities = entities;
 }
 
 GLuint Renderer::getEditorFrameBufferTexture() const {
@@ -817,7 +824,8 @@ void Renderer::prepareRendering() {
 			pointLightData[numOfPtLights++] = {
 				transform.position,
 				glm::vec3{ light.color } * light.intensity,
-				light.attenuation
+				light.attenuation,
+				light.radius
 			};
 			break;
 
@@ -830,7 +838,7 @@ void Renderer::prepareRendering() {
 			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
 			directionalLightData[numOfDirLights++] = {
 				glm::normalize(forward),
-				glm::vec3{ light.color } *light.intensity
+				glm::vec3{ light.color } * light.intensity
 			};
 			break;
 		}
@@ -848,7 +856,8 @@ void Renderer::prepareRendering() {
 				glm::vec3{ light.color } *light.intensity,
 				light.attenuation,
 				light.cutOffAngle,
-				light.outerCutOffAngle
+				light.outerCutOffAngle,
+				light.radius
 			};
 			break;
 		}
@@ -1045,6 +1054,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.use();
 	texture2dShader.setMatrix("uiProjection", UIProjection);
 	texture2dShader.setInt("image", 0);
+	texture2dShader.setBool("toFlip", image.toFlip);
 
 	// Get texture resource
 	auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
@@ -1752,7 +1762,59 @@ Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
 }
 
-ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
-{
+glm::mat4 const& Renderer::getUIProjection() const {
 	return UIProjection;
+}
+
+void Renderer::renderDebugSelectedObjects() {
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
+	glBindVertexArray(mainVAO);
+	glEnable(GL_DEPTH_TEST);
+
+	for (entt::entity entity : selectedEntities) {
+		Transform const* transform				= registry.try_get<Transform>(entity);
+		Light const* light						= registry.try_get<Light>(entity);
+		NavMeshOffLinks const* navMeshOffLinks  = registry.try_get<NavMeshOffLinks>(entity);
+
+		if (!transform) {
+			return;
+		}
+
+		if (light) {
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, transform->position);
+			debugShader.setMatrix("model", model);
+
+			// Debug render light outline..
+			switch (light->type) {
+			case Light::Type::PointLight:
+			case Light::Type::Spotlight:
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				break;
+			}
+		}
+
+		if (navMeshOffLinks) {
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, navMeshOffLinks->startPoint);
+			debugShader.setMatrix("model", model);
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			model = glm::translate(glm::identity<glm::mat4>(), navMeshOffLinks->endPoint);
+			debugShader.setMatrix("model", model);
+
+			// same radius, same mesh.
+			// debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+		}
+	}
 }

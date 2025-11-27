@@ -173,13 +173,24 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		}
 	);
 
+	inputManager.subscribe<ScriptCompilationStatus>(
+		[&](ScriptCompilationStatus status) {
+			if (status == ScriptCompilationStatus::Failure) {
+				editorViewPort.controlOverlay.setNotification("Script compilation has failed!", FOREVER);
+			}
+			else {
+				editorViewPort.controlOverlay.clearNotification();
+			}
+		}
+	);
+
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
 
-	
+#if false
 	//check if there is a prefab in the scene, if there is, update the prefabManager
-	entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
+	// entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
 	std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
 
 	entt::registry& registry = engine.ecs.registry;
@@ -192,6 +203,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 			}
 		}
 	}
+#endif
 }
 
 void Editor::update(float dt) {
@@ -252,9 +264,6 @@ void Editor::deleteEntity(entt::entity entity) {
 		return;
 	}
 
-	ImGuizmo::Enable(false);
-	ImGuizmo::Enable(true);
-
 	engine.ecs.deleteEntity(entity);
 }
 
@@ -262,9 +271,6 @@ void Editor::deleteEntity(entt::entity entity) {
 void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
-
-	//
-	//ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
@@ -279,6 +285,8 @@ void Editor::main(float dt) {
 	editorConfigUI.update();
 
 	handleEntityHovering();
+
+	engine.renderer.submitSelectedObjects(selectedEntities);
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -774,6 +782,10 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 }
 
 void Editor::loadScene(ResourceID sceneId) {
+	if (engine.isInSimulationMode()) {
+		return;
+	}
+
 	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
 
 	if (filePath) {
@@ -782,6 +794,8 @@ void Editor::loadScene(ResourceID sceneId) {
 
 	engine.ecs.sceneManager.loadScene(sceneId);
 	editorViewPort.controlOverlay.clearNotification();
+
+	engine.prefabManager.prefabBroadcast();
 
 	// deselect entity.
 	selectEntities({});

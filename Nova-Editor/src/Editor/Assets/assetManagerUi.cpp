@@ -408,7 +408,7 @@ Frag{
 // ======================================================
 // Uncomment this section of the code if you want to use the Color pipeline.
 #if 0
-	FragColor = vec4(color, 1.0);
+	return vec4(color, 1.0);
 #endif
 
 // ======================================================
@@ -416,7 +416,7 @@ Frag{
 #if 1
     vec4 albedo = texture(albedoMap, fsIn.textureUnit);
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, fsIn.normal, roughness, metallic, occulusion);
-    FragColor = vec4(pbrColor, 1.0);
+    return vec4(pbrColor, 1.0);
 #endif
 })";
 #pragma endregion sampleShaderCode
@@ -475,14 +475,18 @@ Frag{
 				std::ofstream& scriptFile = opt.value();
 
 				std::string sampleScript =
-					"// Make sure the class name matches the asset name.\n"
+					"// Make sure the class name matches the filepath, without space!!.\n"
 					"// If you want to change class name, change the asset name in the editor!\n"
 					"// Editor will automatically rename and recompile this file.\n"
 					"class " + className + " : Script\n{\n"
 					"    // This function is first invoked when game starts.\n"
 					"    protected override void init()\n    {}\n\n"
-					"    // This function is invoked every fixed update.\n"
+					"    // This function is invoked every update.\n"
 					"    protected override void update()\n    {}\n\n"
+					"    // This function is invoked every update.\n"
+					"    protected override void fixedUpdate()\n    {}\n\n"
+					"    // This function is invoked when destroyed.\n"
+					"    protected override void exit()\n    {}\n\n"
 					"}";
 
 				scriptFile << sampleScript;
