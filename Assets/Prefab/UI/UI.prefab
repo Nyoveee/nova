@@ -6,25 +6,25 @@
             },
             "EntityData": {
                 "children": [
-                    11,
-                    12,
-                    15,
-                    30,
-                    31,
-                    1048598,
-                    40894630,
-                    17
+                    40894645,
+                    40894646,
+                    40894649,
+                    40894652,
+                    40894653,
+                    40894654,
+                    40894655,
+                    5
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "UI",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 4,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -83,21 +83,21 @@
                     "z": 1.0
                 }
             },
-            "id": 4
+            "id": 40894644
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Health Text",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 40894644,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 11,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -156,24 +156,24 @@
                     "z": 1.0
                 }
             },
-            "id": 11
+            "id": 40894645
         },
         {
             "EntityData": {
                 "children": [
-                    14,
-                    9
+                    40894647,
+                    40894648
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Health Container",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 40894644,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 12,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -222,21 +222,21 @@
                     "z": 1.0
                 }
             },
-            "id": 12
+            "id": 40894646
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 1,
+                "layerId": 2,
                 "name": "Health Bar",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 12,
+                "parent": 40894646,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 14,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -296,21 +296,21 @@
                     "z": 0.800000011920929
                 }
             },
-            "id": 14
+            "id": 40894647
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Health Bg",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 12,
+                "parent": 40894646,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 9,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -370,24 +370,24 @@
                     "z": 0.800000011920929
                 }
             },
-            "id": 9
+            "id": 40894648
         },
         {
             "EntityData": {
                 "children": [
-                    21,
-                    8
+                    40894650,
+                    40894651
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Dash Container",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 40894644,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 15,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -436,21 +436,21 @@
                     "z": 1.0
                 }
             },
-            "id": 15
+            "id": 40894649
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 1,
+                "layerId": 2,
                 "name": "Dash Bar",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 15,
+                "parent": 40894649,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 21,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -479,7 +479,7 @@
                 },
                 "localPosition": {
                     "x": 0.003216356039047241,
-                    "y": 3.629922866821289e-05,
+                    "y": 3.844499588012695e-05,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -495,7 +495,7 @@
                 },
                 "position": {
                     "x": 270.28070068359375,
-                    "y": 93.59117889404297,
+                    "y": 93.59139251708984,
                     "z": 0.0
                 },
                 "rotation": {
@@ -510,21 +510,21 @@
                     "z": 0.800000011920929
                 }
             },
-            "id": 21
+            "id": 40894650
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Dash Bg",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 15,
+                "parent": 40894649,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 8,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -553,7 +553,7 @@
                 },
                 "localPosition": {
                     "x": 0.003216356039047241,
-                    "y": 3.629922866821289e-05,
+                    "y": 3.844499588012695e-05,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -569,7 +569,7 @@
                 },
                 "position": {
                     "x": 270.28070068359375,
-                    "y": 93.59117889404297,
+                    "y": 93.59139251708984,
                     "z": 0.0
                 },
                 "rotation": {
@@ -584,7 +584,7 @@
                     "z": 0.800000011920929
                 }
             },
-            "id": 8
+            "id": 40894651
         },
         {
             "EntityData": {
@@ -595,10 +595,10 @@
                 "name": "UI Crosshair",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 40894644,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 30,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -628,7 +628,7 @@
                 "localPosition": {
                     "x": 957.0046997070313,
                     "y": 540.0,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -644,7 +644,7 @@
                 "position": {
                     "x": 957.0046997070313,
                     "y": 540.0,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -658,7 +658,7 @@
                     "z": 1.0
                 }
             },
-            "id": 30
+            "id": 40894652
         },
         {
             "EntityData": {
@@ -669,10 +669,10 @@
                 "name": "UI Base Crosshair",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 40894644,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 31,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -702,7 +702,7 @@
                 "localPosition": {
                     "x": 957.0046997070313,
                     "y": 538.4093017578125,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "localRotation": {
                     "w": -2.7136005883221515e-05,
@@ -718,7 +718,7 @@
                 "position": {
                     "x": 957.0046997070313,
                     "y": 538.4093017578125,
-                    "z": -99.0
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": -2.7136005883221515e-05,
@@ -732,21 +732,21 @@
                     "z": 1.0
                 }
             },
-            "id": 31
+            "id": 40894653
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 2,
+                "layerId": 0,
                 "name": "Damaged Background",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 40894644,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 1048598,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -806,24 +806,24 @@
                     "z": 1.017461895942688
                 }
             },
-            "id": 1048598
+            "id": 40894654
         },
         {
             "EntityData": {
                 "children": [
-                    1048592,
-                    18
+                    40894656,
+                    40894658
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Gun UI Container",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 40894644,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 40894630,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -872,23 +872,23 @@
                     "z": 1.0
                 }
             },
-            "id": 40894630
+            "id": 40894655
         },
         {
             "EntityData": {
                 "children": [
-                    1
+                    40894657
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Sniper UI Container",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 40894630,
+                "parent": 40894655,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 1048592,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -937,21 +937,23 @@
                     "z": 1.0
                 }
             },
-            "id": 1048592
+            "id": 40894656
         },
         {
             "EntityData": {
-                "children": null,
+                "children": [
+                    40894661
+                ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 2,
                 "name": "Sniper UI Overlay",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048592,
+                "parent": 40894656,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 1,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -1011,23 +1013,97 @@
                     "z": 1.1904569864273071
                 }
             },
-            "id": 1
+            "id": 40894657
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 2,
+                "name": "Sniper Icon",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 40894657,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 17,
+                    "prefabID": 3701238081757200385
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "texture": 16002072770587590661,
+                "toFlip": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.046126365661621094,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0000004768371582,
+                    "y": 1.000000238418579,
+                    "z": 1.000000238418579
+                },
+                "position": {
+                    "x": 1736.90478515625,
+                    "y": 363.67291259765625,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 400.00018310546875,
+                    "y": 150.00003051757813,
+                    "z": 1.1904572248458862
+                }
+            },
+            "id": 40894661
         },
         {
             "EntityData": {
                 "children": [
-                    5
+                    40894659
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Shotgun UI Container",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 40894630,
+                "parent": 40894655,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 18,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -1076,23 +1152,23 @@
                     "z": 1.0
                 }
             },
-            "id": 18
+            "id": 40894658
         },
         {
             "EntityData": {
                 "children": [
-                    7
+                    40894660
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Shotgun UI Overlay",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 18,
+                "parent": 40894658,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 5,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -1152,21 +1228,21 @@
                     "z": 1.2899999618530273
                 }
             },
-            "id": 5
+            "id": 40894659
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 2,
                 "name": "Shotgun Icon",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 5,
+                "parent": 40894659,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 7,
                     "prefabID": 3701238081757200385
                 },
                 "tag": ""
@@ -1194,7 +1270,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.621246337890625e-05,
+                    "x": 2.956390380859375e-05,
                     "y": 2.384185791015625e-07,
                     "z": 0.0
                 },
@@ -1210,7 +1286,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 1736.9111328125,
+                    "x": 1736.9163818359375,
                     "y": 171.77059936523438,
                     "z": 0.0
                 },
@@ -1226,22 +1302,154 @@
                     "z": 1.2899999618530273
                 }
             },
-            "id": 7
+            "id": 40894660
+        },
+        {
+            "EntityData": {
+                "children": [
+                    10,
+                    14
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 1,
+                "name": "Quest Container",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 40894644,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 302.201171875,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 960.0,
+                    "y": 302.201171875,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "children": [
+                    9,
+                    15
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 1,
+                "name": "Mission Objective Container",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 5,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -352.188720703125,
+                    "y": 86.95513916015625,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 607.811279296875,
+                    "y": 389.15631103515625,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 10
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
-                "name": "Sniper Icon",
+                "layerId": 1,
+                "name": "Mission Objective Background",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 10,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 3701238081757200385
+                    "prefabID": 0
                 },
                 "tag": ""
             },
@@ -1249,11 +1457,11 @@
                 "anchorMode": "Center",
                 "colorTint": {
                     "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
+                    "b": 0.0,
+                    "g": 0.0,
+                    "r": 0.0
                 },
-                "texture": 16002072770587590661,
+                "texture": 7,
                 "toFlip": false
             },
             "Transform": {
@@ -1268,8 +1476,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1736.90478515625,
-                    "y": 363.67291259765625,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -1279,13 +1487,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 400.00018310546875,
-                    "y": 150.00003051757813,
-                    "z": 1.1904572248458862
+                    "x": 300.0,
+                    "y": 75.0,
+                    "z": 1.0
                 },
                 "position": {
-                    "x": 1736.90478515625,
-                    "y": 363.67291259765625,
+                    "x": 607.811279296875,
+                    "y": 389.15631103515625,
                     "z": 0.0
                 },
                 "rotation": {
@@ -1295,13 +1503,299 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 400.00018310546875,
-                    "y": 150.00003051757813,
-                    "z": 1.1904572248458862
+                    "x": 300.0,
+                    "y": 75.0,
+                    "z": 1.0
                 }
             },
-            "id": 17
+            "id": 9
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 2,
+                "name": "Mission Objective Text",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 10,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Text": {
+                "font": 5724840809338667009,
+                "fontColor": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "fontSize": 36,
+                "text": "Mission Objective"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -138.60476684570313,
+                    "y": -11.8504638671875,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 469.2065124511719,
+                    "y": 377.30584716796875,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 15
+        },
+        {
+            "EntityData": {
+                "children": [
+                    6,
+                    7
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 1,
+                "name": "Quest Information Container",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 5,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 960.0,
+                    "y": 302.201171875,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 14
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 1,
+                "name": "Quest Background",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 14,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "texture": 7,
+                "toFlip": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1000.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 960.0,
+                    "y": 302.201171875,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1000.0,
+                    "y": 100.0,
+                    "z": 1.0
+                }
+            },
+            "id": 6
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 2,
+                "name": "Quest Text",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 14,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Text": {
+                "font": 11657576889657032705,
+                "fontColor": {
+                    "b": 0.0,
+                    "g": 0.0,
+                    "r": 0.0
+                },
+                "fontSize": 48,
+                "text": "Hi"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -474.88604736328125,
+                    "y": -13.63311767578125,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 485.11395263671875,
+                    "y": 288.56805419921875,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 7
         }
     ],
-    "RootEntity": 4
+    "RootEntity": 40894644
 }
