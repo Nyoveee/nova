@@ -29,6 +29,9 @@ class PlayerController : Script
     // Health
     public float maxHealth              = 100f;
 
+    // Empty death event
+    public event EventHandler OnPlayerDeath;
+
     [SerializableField]
     private Transform_? cameraObject = null;
     [SerializableField]
@@ -87,7 +90,6 @@ class PlayerController : Script
         MapKey(Key.Space, jump);
 
         MapKey(Key.LeftShift, dashInputHandler);
-    
     }
 
     // This function is invoked every fixed update.
@@ -145,8 +147,15 @@ class PlayerController : Script
     public void TakeDamage(float damage)
     {
         currentHealth = Mathf.Max(0, currentHealth - damage);
+        //Debug.Log("Player health: " + currentHealth);
         if (gameUIManager != null)
             gameUIManager.ActivateDamageUI();
+
+        // Placeholder for a player death 
+        if (currentHealth <= 0f)
+        {
+            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+        }
     }
     /***********************************************************
        Movement
