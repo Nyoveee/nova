@@ -37,15 +37,18 @@
                 "children": [
                     1048647
                 ],
-                "inactiveComponents": [
-                    9059764703561530457
-                ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Player",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": "Player"
             },
             "MeshRenderer": {
@@ -266,9 +269,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Camera",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048646,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": ""
             },
             "Transform": {
@@ -328,9 +336,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gun Holder",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048647,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": ""
             },
             "Transform": {
@@ -397,9 +410,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Sniper Holder",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048648,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -513,9 +531,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Sniper Mesh",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048649,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -589,9 +612,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Shotgun Holder",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048648,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -719,9 +747,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Shotgun",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048651,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -794,15 +827,19 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Muzzle",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048648,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 9143055376644308993
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
-                "angularVelocity": 0.0,
                 "burstAmount": 30,
-                "burstRate": 50.0,
+                "burstRate": 0.0,
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
@@ -814,27 +851,40 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
-                "lifeTime": 0.25,
+                "initialAngularVelocity": 0.0,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
                     "y": 0.09000000357627869,
                     "z": 0.03200000151991844
                 },
-                "looping": false,
-                "maxParticles": 30,
+                "looping": true,
+                "maxAngularVelocityOffset": 0.0,
+                "maxParticles": 1000,
+                "minAngularVelocityOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.5724138021469116,
-                        "g": 0.5724138021469116,
-                        "r": 0.5724138021469116
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
                     },
-                    "randomizedColor": false
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -858,12 +908,12 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 10.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 0.20000000298023224,
                 "startSpeed": 1.0,
@@ -877,6 +927,17 @@
                         "g": 1.0,
                         "r": 1.0
                     },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
                     "trailTexture": 0
                 }

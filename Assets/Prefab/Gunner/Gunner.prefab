@@ -36,9 +36,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gunner",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 7579611416932171781
+                },
                 "tag": "Enemy"
             },
             "NavMeshAgent": {
@@ -54,35 +59,35 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 15,
+                                    "__variant_type": 16,
                                     "__variant_value": 100.0
                                 },
                                 "name": "shootingRange"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 15,
+                                    "__variant_type": 16,
                                     "__variant_value": 3.5
                                 },
                                 "name": "targetDistanceFromVantagePoint"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 15,
+                                    "__variant_type": 16,
                                     "__variant_value": 100.0
                                 },
                                 "name": "health"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 15,
+                                    "__variant_type": 16,
                                     "__variant_value": 10.0
                                 },
                                 "name": "movementSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
+                                    "__variant_type": 15,
                                     "__variant_value": 6
                                 },
                                 "name": "ichorSpawnAmount"
@@ -90,9 +95,23 @@
                             {
                                 "data": {
                                     "__variant_type": 15,
+                                    "__variant_value": 20
+                                },
+                                "name": "ichorExplodeSpawnAmount"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
                                     "__variant_value": 0.20000000298023224
                                 },
                                 "name": "hurtDuration"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "jumpDuration"
                             }
                         ],
                         "scriptId": 977132039435386883
@@ -101,8 +120,8 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 8,
-                                    "__variant_value": 3900592727364812809
+                                    "__variant_type": 9,
+                                    "__variant_value": 16421558470677561431
                                 },
                                 "name": "projectilePrefab"
                             },
@@ -118,11 +137,11 @@
                                     "__variant_type": 4,
                                     "__variant_value": 1048643
                                 },
-                                "name": "rigidbody"
+                                "name": "rigidBody"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 8,
+                                    "__variant_type": 9,
                                     "__variant_value": 14493050257245634575
                                 },
                                 "name": "ichorPrefab"
@@ -157,6 +176,18 @@
                             }
                         ],
                         "scriptId": 13082807837807067137
+                    },
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 1048641
+                                },
+                                "name": "enemyGameObject"
+                            }
+                        ],
+                        "scriptId": 12135503810755952677
                     }
                 ]
             },
@@ -172,9 +203,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 1.260258436203003,
-                    "z": -14.291841506958008
+                    "x": 12.20724868774414,
+                    "y": 1.2595694065093994,
+                    "z": -49.88798904418945
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -188,9 +219,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 1.260258436203003,
-                    "z": -14.291841506958008
+                    "x": 12.20724868774414,
+                    "y": 1.2595694065093994,
+                    "z": -49.88798904418945
                 },
                 "rotation": {
                     "w": 1.0,
@@ -213,9 +244,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Ichor Spawn Point",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048641,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 7579611416932171781
+                },
                 "tag": ""
             },
             "Transform": {
@@ -246,9 +282,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 3.9126853942871094,
-                    "z": -14.291841506958008
+                    "x": 12.20724868774414,
+                    "y": 3.911996364593506,
+                    "z": -49.88798904418945
                 },
                 "rotation": {
                     "w": 1.0,
@@ -271,7 +307,7 @@
                     "y": 2.200000047683716,
                     "z": 0.0
                 },
-                "scaleWithTransform": true,
+                "scaleWithTransform": false,
                 "shapeScale": {
                     "x": 2.0,
                     "y": 2.200000047683716,
@@ -284,9 +320,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gunner Collider",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048641,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 7579611416932171781
+                },
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
@@ -332,7 +373,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": -0.00025844573974609375,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -347,9 +388,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 1.2599999904632568,
-                    "z": -14.291841506958008
+                    "x": 12.20724868774414,
+                    "y": 1.2595694065093994,
+                    "z": -49.88798904418945
                 },
                 "rotation": {
                     "w": 1.0,
@@ -375,9 +416,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gunner Model",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048641,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 7579611416932171781
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -408,7 +454,7 @@
                             {
                                 "data": {
                                     "__variant_type": 7,
-                                    "__variant_value": ""
+                                    "__variant_value": "BeginJump"
                                 },
                                 "name": "triggerMethod4"
                             },
@@ -479,9 +525,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 1.260258436203003,
-                    "z": -14.291841506958008
+                    "x": 12.20724868774414,
+                    "y": 1.2595694065093994,
+                    "z": -49.88798904418945
                 },
                 "rotation": {
                     "w": 1.0,
@@ -504,9 +550,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Projectile Spawn Point",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 1048641,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 7579611416932171781
+                },
                 "tag": ""
             },
             "Transform": {
@@ -521,9 +572,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.12934407591819763,
+                    "x": -0.12934398651123047,
                     "y": 3.582148790359497,
-                    "z": 3.6173276901245117
+                    "z": 3.617328643798828
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -537,9 +588,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -0.12934407591819763,
-                    "y": 4.8424072265625,
-                    "z": -10.674513816833496
+                    "x": 12.07790470123291,
+                    "y": 4.8417181968688965,
+                    "z": -46.270660400390625
                 },
                 "rotation": {
                     "w": 1.0,

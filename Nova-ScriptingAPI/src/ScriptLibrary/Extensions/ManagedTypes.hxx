@@ -133,6 +133,7 @@ ManagedStruct(
 static Vector3 operator*(Quaternion quaternion, Vector3 axis);
 static Vector3 operator*(Vector3 axis, Quaternion quaternion);
 static Quaternion Identity();
+static Quaternion Slerp(Quaternion a, Quaternion b, float t);
 
 ManagedStructEnd(Quaternion, glm::quat)
 
@@ -316,6 +317,7 @@ void setMaterialUInt(int index, System::String^ name, unsigned data);
 void setMaterialFloat(int index, System::String^ name, float data);
 
 ManagedComponentEnd()
+
 // ======================================
 // NavMeshAgent Component
 // ======================================
@@ -342,3 +344,30 @@ bool isOnOffMeshLinks();
 NavMeshOfflinkData getOffLinkData();
 
 ManagedComponentEnd()
+
+// ======================================
+// Sequence Component
+// ======================================
+ManagedComponentDeclaration(
+	Sequence,
+	float, speedMultiplier,
+	bool, toLoop
+)
+
+bool isPlaying();
+
+void resume();
+void play();
+void pause();
+
+ManagedComponentEnd()
+
+ManagedComponentDeclaration(
+	Light,
+	float, intensity,
+	float, radius
+)
+
+ManagedComponentEnd()
+
+

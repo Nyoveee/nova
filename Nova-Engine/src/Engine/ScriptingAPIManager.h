@@ -28,6 +28,7 @@ struct FieldData;
 
 // More readable function pointer syntax because C lmaoo
 using UpdateFunctionPtr				         = void (*)(void);
+using FixedUpdateFunctionPtr				 = void (*)(void);
 using AddScriptFunctionPtr			         = void (*)(unsigned int, std::size_t);
 using RemoveScriptFunctionPtr		         = void (*)(unsigned int, std::size_t);
 using RemoveEntityFunctionPtr                = void (*)(unsigned int);
@@ -73,6 +74,7 @@ public:
 
 	// Update
 	ENGINE_DLL_API void update();
+	ENGINE_DLL_API void fixedUpdate();
 	ENGINE_DLL_API void checkIfRecompilationNeeded(float dt);
 
 	// Serializable Field Reference
@@ -127,6 +129,7 @@ private:
 private:
 	// Function pointers to interact directly with ScriptingAPI
 	UpdateFunctionPtr						 update_;
+	FixedUpdateFunctionPtr					 fixedUpdate_;
 	AddScriptFunctionPtr					 addEntityScript;
 	RemoveScriptFunctionPtr					 removeEntityScript_;
 	RemoveEntityFunctionPtr					 removeEntity_;
