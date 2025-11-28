@@ -7,12 +7,22 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Vantage Point",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 8977477721741262849
+                },
                 "tag": "Vantage Point"
             },
             "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
                 "color": {
                     "b": 0.0,
                     "g": 1.0,
@@ -21,6 +31,7 @@
                 "cutOffAngle": 0.9666505455970764,
                 "intensity": 20.0,
                 "outerCutOffAngle": 0.7411017417907715,
+                "radius": 50.0,
                 "type": "PointLight"
             },
             "MeshRenderer": {

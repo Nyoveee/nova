@@ -9,11 +9,7 @@ public class Wave : Script
 {
     public Prefab fixedSpawnPod;
 
-    [SerializableField] 
-    private List<SpawnPodLocation> fixedSpawns;
-
-    [SerializableField]
-    private List<RandomEnemySpawns>? randomSpawns;
+    private List<SpawnPodLocation> allPodsLocation = new List<SpawnPodLocation>();
 
     [SerializableField]
     private ArenaManager arenaManager;
@@ -22,12 +18,16 @@ public class Wave : Script
     private int enemyCount;
     private bool waveStarted = false;
 
+    private bool hasInited = false;
     protected override void init()
     {
-        // we can't just init here because order of operations of init is not defined.
-        // we utilise serialised fields to ensure that the field is set.
-
-        // arenaManager = gameObject.GetParent().getScript<ArenaManager>();
+        // we can't just init here normally because order of operations of init is not defined.
+        if (hasInited)
+        {
+            return;
+        }
+           
+        hasInited = true; 
 
 #if false
         // Turns pods inactive initially if they were not already
@@ -36,15 +36,29 @@ public class Wave : Script
             pod.gameObject.SetActive(false);
         }
 #endif
+        // i like the idea of using children as source of truth
+        GameObject[] children = gameObject.GetChildren();
+
+        foreach (GameObject child in children) {
+            SpawnPodLocation spawnPod = child.getScript<SpawnPodLocation>();
+
+            if (spawnPod != null)
+            {
+                allPodsLocation.Add(spawnPod);
+            }
+        }
     }
 
     public void StartWave()
     {
+        // force init if not done.
+        init();
+
         waveStarted = true;
         spawnedEnemies.Clear();
         enemyCount = 0;
 
-        foreach (SpawnPodLocation pod in fixedSpawns)
+        foreach (SpawnPodLocation pod in allPodsLocation)
         {
             GameObject createdPod = Instantiate(fixedSpawnPod, pod.gameObject.transform.position);
             FixedSpawnPod podScript = createdPod.getScript<FixedSpawnPod>();
@@ -52,6 +66,7 @@ public class Wave : Script
             if (podScript != null)
             {
                 podScript.Spawn(pod.enemy, this);
+                ++enemyCount;
             }
             else
             {
@@ -59,6 +74,7 @@ public class Wave : Script
             }
         }
 
+#if false
         if (randomSpawns != null)
         {
             foreach (RandomEnemySpawns randSpawns in randomSpawns)
@@ -68,6 +84,8 @@ public class Wave : Script
         }
 
         Debug.Log("Enemies: " + enemyCount);
+#endif
+
         if (enemyCount == 0)
         {
             Debug.LogWarning("Wave object " + gameObject.ToString() + " started with no enemies");

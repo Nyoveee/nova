@@ -89,7 +89,7 @@ void EditorViewPort::update(float dt) {
 				editor.loadScene(id);
 			}
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
-				engine.prefabManager.instantiatePrefab<ALL_COMPONENTS>(id);
+				engine.prefabManager.instantiatePrefab(id);
 				editor.selectEntities({});
 			}
 		}

@@ -118,36 +118,45 @@ namespace Serialiser {
 		file >> j;
 	}
 
-	entt::entity deserialisePrefab(const char* fileName, entt::registry& registry, [[maybe_unused]] std::size_t id, entt::registry& prefabRegistry) {
-	//entt::entity deserialisePrefab(ResourceFilePath fileName, entt::registry& registry, std::size_t id) {
-		std::ifstream file(fileName);
+	PrefabEntityID deserialisePrefab(const char* filepath, ResourceID prefabResourceId, entt::registry& prefabRegistry) {
+		std::ifstream file(filepath);
 		
-		if (!file.is_open())
+		if (!file) {
 			return entt::null;
+		}
 
-		Json j;
-		file >> j;
+		Json jsonFile;
+		file >> jsonFile;
 
-		entt::entity rootEntity = j["RootEntity"];
+		PrefabFileEntityID fileRootEntity = jsonFile["RootEntity"];
+		PrefabEntityID prefabEntityId = deserialisePrefabRecursive(jsonFile["Entities"], fileRootEntity, prefabRegistry, prefabResourceId);
+		
+		if (prefabEntityId == entt::null) {
+			Logger::error("Failed to deserialise {}! Please check the prefab file. Prefab not loaded.", filepath);
+			return entt::null;
+		}
 
-		entt::id_type highestID = findLargestEntity(registry);
+		// Remember to update entity data for our root entity!
+		// At this point, we have strong guarantee that entity data exist.
+		EntityData& entityData = prefabRegistry.get<EntityData>(prefabEntityId);
 
-		std::unordered_map<entt::entity, entt::entity> map;
+		// Finally, we update prefab entity's prefab metadata..
+		entityData.prefabMetaData.prefabID = { prefabResourceId };
+		entityData.prefabID = { prefabResourceId };
 
-		deserialisePrefabRecursive(j["Entities"], rootEntity, prefabRegistry, highestID, map, id);
-		return j["RootEntity"];
+		return prefabEntityId;
 	}
 
-	void serialisePrefab(entt::registry& registry, entt::entity entity, std::ofstream& file, std::size_t id) {
-		//std::ofstream& file = opt;
-
-		if (!file.is_open())
+	void serialisePrefab(entt::registry& registry, entt::entity entity, std::ofstream& file) {
+		if (!file) {
 			return;
+		}
+
 		std::vector<Json> jsonVec;
 
 		Json j;
 		j["RootEntity"] = entity;
-		serialisePrefabRecursive(registry, entity, jsonVec, true, id);
+		serialisePrefabRecursive(registry, entity, jsonVec, true);
 		j["Entities"] = jsonVec;
 		file << std::setw(4) << j << std::endl;
 
@@ -155,104 +164,95 @@ namespace Serialiser {
 
 	}
 
-	void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<Json>& jsonVec, bool checkParent, std::size_t id) {
-		Json j = serialiseComponents<ALL_COMPONENTS>(registry, entity);
+	void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<Json>& jsonVec, bool checkParent) {
+		Json json = serialiseComponents<ALL_COMPONENTS>(registry, entity);
 
 		EntityData* entityData = registry.try_get<EntityData>(entity);
-		entt::entity temp = entt::null;
 
-		j["EntityData"]["prefabID"] = id;
+		if (!entityData) {
+			Logger::error("Failed to serialise entity {}.", static_cast<unsigned>(entity));
+			return;
+		}
 
 		//set the parent of the root entity to entt::null
 		if (checkParent) {
-			j["EntityData"]["parent"] = temp;
+			json["EntityData"]["parent"] = static_cast<unsigned>(entt::null);
 			checkParent = false;
-
 		}
 
-		jsonVec.push_back(j);
+		jsonVec.push_back(json);
 
 		for (entt::entity child : entityData->children) {
-			serialisePrefabRecursive(registry, child, jsonVec, checkParent, static_cast<std::size_t>(temp));
+			serialisePrefabRecursive(registry, child, jsonVec, checkParent);
 		}
-
 	}
 
-	template<typename ...Components>
-	void deserialisePrefabRecursive(std::vector<Json> jsonVec, entt::entity& rootEntity, entt::registry& prefabRegistry, entt::id_type highestID, std::unordered_map<entt::entity, entt::entity>& map, std::size_t id) {
-	//void deserialisePrefabRecursive(std::vector<Json> jsonVec, int index, entt::registry& registry, entt::id_type highestID, std::size_t resourceid, entt::entity& rootEntity, entt::registry& prefabRegistry, entt::entity child, std::unordered_map<entt::entity, entt::entity>& map) {
+	PrefabEntityID deserialisePrefabRecursive(std::vector<Json> const& jsonVectorOfEntities, PrefabFileEntityID prefabFileEntityID, entt::registry& prefabRegistry, ResourceID prefabResourceId) {
+		// In the vector of entities, let's find our json..
+		for (auto const& jsonEntity : jsonVectorOfEntities) {
+			PrefabFileEntityID fileEntityId = static_cast<entt::entity>(static_cast<unsigned>(jsonEntity["id"]));
 
-		//find the entity in the json since it is unordered
-		int index{};
-		for (int i{}; i < jsonVec.size(); i++) {
-			if (jsonVec[i]["id"] == static_cast<std::size_t>(rootEntity)) {
-				index = i;
-				break;
+			if (fileEntityId != prefabFileEntityID) {
+				continue;
 			}
-		}
-		
-		auto entity = prefabRegistry.create(static_cast<entt::entity>(jsonVec[index]["id"]));
-		deserialiseComponents<ALL_COMPONENTS>(prefabRegistry, entity, jsonVec[index]);
 
-		EntityData* entityData = prefabRegistry.try_get<EntityData>(entity);
+			// We found our prefab entity data, let's deserialise it..
+			PrefabEntityID prefabEntityId = prefabRegistry.create();
+			deserialiseComponents<ALL_COMPONENTS>(prefabRegistry, prefabEntityId, jsonEntity);
 
-		entityData->prefabMetaData.prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
-		entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+			// We have successfully deserialised it. Let's deserialise it's children..
+			// NOTE!! These ids in EntityData are in the domain of prefab file, let's deserialise it first..
+			EntityData* entityData = prefabRegistry.try_get<EntityData>(prefabEntityId);
 
-		if (entityData->children.size()) {
-			for (entt::entity child : entityData->children) {
-				deserialisePrefabRecursive<ALL_COMPONENTS>(jsonVec, child, prefabRegistry, highestID, map, id);
+			if (!entityData) {
+				Logger::warn("Missing / Failed to deserialise entity data for prefab file entity id {}", static_cast<unsigned>(fileEntityId));
+				return entt::null;
 			}
+
+			// We store the mapped entity ids of the children for this prefab entity..
+			std::vector<PrefabEntityID> prefabEntityChildrens;
+
+			for (PrefabFileEntityID childPrefabFileEntityId : entityData->children) {
+				// we recursively deserialise it's children..
+				PrefabEntityID childPrefabEntityId = deserialisePrefabRecursive(jsonVectorOfEntities, childPrefabFileEntityId, prefabRegistry, prefabResourceId);
+
+				if (childPrefabEntityId != entt::null) {
+					prefabEntityChildrens.push_back(childPrefabEntityId);
+				}
+
+				// we update the fully deserialised child prefab entity with the parent's prefab entity id
+				EntityData* childEntityData = prefabRegistry.try_get<EntityData>(childPrefabEntityId);
+
+				if (!childEntityData) {
+					Logger::warn("Missing / Failed to deserialise entity data for prefab file entity id {}", static_cast<unsigned>(childPrefabFileEntityId));
+					return entt::null;
+				}
+
+				childEntityData->parent = prefabEntityId;
+			}
+
+			// Finally, we update prefab entity's prefab metadata..
+			entityData->prefabMetaData.prefabID = { prefabResourceId };
+			entityData->prefabID = { prefabResourceId };
+
+			// As well as the mapped prefab children!
+			entityData->children = std::move(prefabEntityChildrens);
+			return prefabEntityId;
 		}
 
-		//if (child != entt::null) {
-		//	for (int i{}; i < jsonVec.size(); i++) {
-		//		if (jsonVec[i]["id"] == static_cast<std::size_t>(child)) {
-		//			index = i;
-		//			break;
-		//		}
-		//	}
-		//}
-
-		//entt::id_type id = jsonVec[index]["id"] + highestID;
-		//auto entity = registry.create(static_cast<entt::entity>(id));
-		//deserialiseComponents<ALL_COMPONENTS>(registry, entity, jsonVec[index]);
-
-		//map[child] = entity;
-
-		//EntityData* entityData = registry.try_get<EntityData>(entity);
-
-		//std::vector<entt::entity> entityVec;
-
-		//if (entityData->children.size()) {
-		//	for (entt::entity children : entityData->children) {
-		//		deserialisePrefabRecursive(jsonVec, index, registry, highestID, resourceid, rootEntity, prefabRegistry, children, map);
-
-		//		entityVec.push_back(map[children]);
-		//	}
-		//	entityData->children = entityVec;
-
-		//	for (entt::entity en : entityVec) {
-		//		EntityData* childData = registry.try_get<EntityData>(en);
-		//		childData->parent = entity;
-		//	}			
-		//}
-
+		Logger::warn("Entity ID in prefab file does not correspond to any list of entity saved in the file!");
+		return entt::null;
 	}
 
 	entt::id_type findLargestEntity(entt::registry& registry) {
-		entt::id_type highestID{};
 		entt::entity highest = entt::null;
-		if (registry.view<EntityData>().size() == 0) {
-			return highestID;
-		}
 
-		for (auto entity : registry.view<EntityData>()) {
-			if (static_cast<entt::id_type>(entity) > highestID) {
+		for (entt::entity entity : registry.view<EntityData>()) {
+			if (static_cast<entt::id_type>(entity) > static_cast<entt::id_type>(highest)) {
 				highest = entity;
-				highestID = static_cast<entt::id_type>(highest);
 			}
 		}
-		return highestID;
+
+		return static_cast<entt::id_type>(highest);
 	}
 };

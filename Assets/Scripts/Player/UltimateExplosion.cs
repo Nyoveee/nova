@@ -123,7 +123,6 @@ class UltimateExplosion : Script
         if (other.tag == "EnemyCollider")
         {
             EnemyCollider enemyCollider = other.getScript<EnemyCollider>();
-            Debug.Log(enemyCollider);
 
             if (enemyCollider != null)
             {
