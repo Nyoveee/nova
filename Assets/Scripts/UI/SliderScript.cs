@@ -6,8 +6,8 @@ using ScriptingAPI;
 class SliderScript : Script
 {
     // Slider boundaries
-    public float minX = 599f;   // Left boundary
-    public float maxX = 1299f;  // Right boundary
+    public float minX = 599f;   // left boundary
+    public float maxX = 1299f;  // right boundary
 
     // Slider value settings
     public float minValue = 0f;
@@ -45,7 +45,7 @@ class SliderScript : Script
             {
                 //mouse is too far away, stop dragging
                 isDragging = false;
-                Debug.Log("Stopped dragging - mouse too far away");
+                Debug.Log("Stopped dragging mouse too far away");
                 return;
             }
 
