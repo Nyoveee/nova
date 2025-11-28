@@ -1,208 +1,6 @@
 {
     "entities": [
         {
-            "EntityData": {
-                "children": [
-                    40894627,
-                    2097178
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Slider Background",
-                "overridenProperties": null,
-                "parent": 41943221,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.7308918237686157,
-                    "g": 0.7308918237686157,
-                    "r": 0.8758620619773865
-                },
-                "texture": 7
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 945.9696655273438,
-                    "y": 542.1585083007813,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 700.0,
-                    "y": 88.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 945.9696655273438,
-                    "y": 542.1585083007813,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 700.0,
-                    "y": 88.0,
-                    "z": 1.0
-                }
-            },
-            "id": 39846050
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Slider fill",
-                "overridenProperties": null,
-                "parent": 39846050,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "BottomLeft",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.2680142819881439,
-                    "g": 0.2680142819881439,
-                    "r": 0.6758620738983154
-                },
-                "texture": 7
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.4979974031448364,
-                    "y": -0.5028347969055176,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 0.9999998807907104,
-                    "z": 0.9999980330467224
-                },
-                "position": {
-                    "x": 597.3713989257813,
-                    "y": 497.9090576171875,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 700.0,
-                    "y": 87.99999237060547,
-                    "z": 0.9999980926513672
-                }
-            },
-            "id": 40894627
-        },
-        {
-            "Canvas": {
-                "placeholder": ""
-            },
-            "EntityData": {
-                "children": [
-                    39846050
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Setting UI",
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 41943221
-        },
-        {
             "Button": {
                 "colorMultiplier": 1.0,
                 "disabledColor": {
@@ -255,9 +53,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Settings Knob",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 39846050,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Image": {
@@ -268,7 +71,8 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "texture": 7
+                "texture": 7,
+                "toFlip": false
             },
             "Scripts": {
                 "scriptDatas": [
@@ -319,8 +123,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.004628777503967285,
-                    "y": -0.0490565299987793,
+                    "x": -0.48257768154144287,
+                    "y": -0.036792755126953125,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -332,11 +136,11 @@
                 "localScale": {
                     "x": 0.0357142835855484,
                     "y": 1.3636362552642822,
-                    "z": 0.9999982714653015
+                    "z": 1.0
                 },
                 "position": {
-                    "x": 949.209716796875,
-                    "y": 537.841552734375,
+                    "x": 618.9579467773438,
+                    "y": 542.15869140625,
                     "z": 0.0
                 },
                 "rotation": {
@@ -348,10 +152,229 @@
                 "scale": {
                     "x": 24.999998092651367,
                     "y": 119.99999237060547,
-                    "z": 0.9999983310699463
+                    "z": 0.9999999403953552
                 }
             },
             "id": 2097178
+        },
+        {
+            "Canvas": {
+                "placeholder": ""
+            },
+            "EntityData": {
+                "children": [
+                    39846050
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Setting UI",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 41943221
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Slider fill",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 39846050,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "BottomLeft",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.2680142819881439,
+                    "g": 0.2680142819881439,
+                    "r": 0.6758620738983154
+                },
+                "texture": 7,
+                "toFlip": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.4979955554008484,
+                    "y": -0.5028538703918457,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 0.9999998807907104,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 608.1654052734375,
+                    "y": 501.1452941894531,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 700.0,
+                    "y": 87.99999237060547,
+                    "z": 0.9999999403953552
+                }
+            },
+            "id": 40894627
+        },
+        {
+            "EntityData": {
+                "children": [
+                    40894627,
+                    2097178
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Slider Background",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 41943221,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.7308918237686157,
+                    "g": 0.7308918237686157,
+                    "r": 0.8758620619773865
+                },
+                "texture": 7,
+                "toFlip": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 956.7623291015625,
+                    "y": 545.3964233398438,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 700.0,
+                    "y": 88.0,
+                    "z": 0.9999999403953552
+                },
+                "position": {
+                    "x": 956.7623291015625,
+                    "y": 545.3964233398438,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 700.0,
+                    "y": 88.0,
+                    "z": 0.9999999403953552
+                }
+            },
+            "id": 39846050
         }
     ],
     "layers": [
