@@ -51,7 +51,7 @@
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 1,
                 "name": "Settings Knob",
                 "overridenComponents": null,
                 "overridenProperties": null,
@@ -230,7 +230,7 @@
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
+                "layerId": 2,
                 "name": "Slider fill",
                 "overridenComponents": null,
                 "overridenProperties": null,
@@ -378,6 +378,12 @@
         }
     ],
     "layers": [
+        {
+            "name": "Knob"
+        },
+        {
+            "name": "Fill"
+        },
         {
             "name": "Default"
         }
