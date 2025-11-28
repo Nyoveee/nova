@@ -298,38 +298,41 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	// ===============================================
 	case RenderConfig::Editor:
 		// Main render function
-		render(editorMainFrameBuffer, editorCamera);
+		if (isEditorScreenShown) {
+			render(editorMainFrameBuffer, editorCamera);
 
-		debugShader.setMatrix("model", glm::mat4{ 1.f });
-		// ===============================================
-		// Debug rendering + object ids for editor..
-		// ===============================================
-		if (engine.toDebugRenderPhysics) {
-			debugRenderPhysicsCollider();
+			debugShader.setMatrix("model", glm::mat4{ 1.f });
+			// ===============================================
+			// Debug rendering + object ids for editor..
+			// ===============================================
+			if (engine.toDebugRenderPhysics) {
+				debugRenderPhysicsCollider();
+			}
+
+			if (engine.toDebugRenderNavMesh) {
+				debugRenderNavMesh();
+			}
+
+			if (engine.toDebugRenderParticleEmissionShape) {
+				debugRenderParticleEmissionShape();
+			}
+
+			renderDebugSelectedObjects();
+
+			// after debug rendering.. bind main position VBO back to VAO..
+			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
+
+			renderObjectIds();
 		}
+		if(isGameScreenShown)
+		{
+			// Main render function
+			render(gameMainFrameBuffer, gameCamera);
+			renderUI();
+			overlayUIToBuffer(gameMainFrameBuffer);
 
-		if (engine.toDebugRenderNavMesh) {
-			debugRenderNavMesh();
+			renderUiObjectIds();
 		}
-
-		if (engine.toDebugRenderParticleEmissionShape) {
-			debugRenderParticleEmissionShape();
-		}
-		
-		renderDebugSelectedObjects();
-
-		// after debug rendering.. bind main position VBO back to VAO..
-		glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
-
-		renderObjectIds();
-
-		// Main render function
-		render(gameMainFrameBuffer, gameCamera);
-		renderUI();
-		overlayUIToBuffer(gameMainFrameBuffer);
-
-		renderUiObjectIds();
-
 		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.

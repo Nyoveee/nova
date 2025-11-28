@@ -18,10 +18,10 @@ EditorViewPort::EditorViewPort(Editor& editor) :
 {}
 
 void EditorViewPort::update(float dt) {
-	ImGui::Begin(ICON_FA_GAMEPAD " Editor");
+	engine.renderer.isEditorScreenShown = ImGui::Begin(ICON_FA_GAMEPAD " Editor");
 	isHoveringOver = ImGui::IsWindowHovered();
 	isActive = ImGui::IsWindowFocused();
-
+	
 	// Get ImGui window's top left and bottom right.
 	ImVec2 gameWindowTopLeft = ImGui::GetWindowContentRegionMin() + ImGui::GetWindowPos();
 	ImVec2 gameWindowBottomRight = ImGui::GetWindowContentRegionMax() + ImGui::GetWindowPos();
