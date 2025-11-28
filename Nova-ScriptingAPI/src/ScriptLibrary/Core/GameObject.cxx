@@ -62,6 +62,8 @@ array<GameObject^>^ GameObject::GetChildren()
 {
 	System::Collections::Generic::List<GameObject^> children;
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(static_cast<entt::entity>(entityID));
+	if (!entityData)
+		return nullptr;
 	for (entt::entity child : entityData->children)
 		children.Add(GetReference(static_cast<unsigned int>(child)));
 	return children.ToArray();

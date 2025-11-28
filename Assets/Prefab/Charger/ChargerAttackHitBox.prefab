@@ -20,22 +20,31 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "ChargerAttackHitBox",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 6206435736578506755
+                },
                 "tag": "EnemyHitBox"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "isRotatable": true,
-                "isTrigger": true,
+                "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
-                "motionType": "Kinematic"
+                "motionQuality": "Discrete",
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [

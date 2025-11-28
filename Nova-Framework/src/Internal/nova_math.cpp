@@ -51,5 +51,20 @@ namespace Math {
 		return (std::sin(sine_input) + 1.0f) / 2.0f;
 	}
 
+	bool isPointInRect(glm::vec2 point, glm::vec2 center, glm::vec2 scale) {
+		// Calculate half dimensions
+		scale /= 2.f;
+
+		// Calculate the min and max bounds of the rectangle (bottom-left and top-right corners)
+		glm::vec2 minBounds = glm::vec2(center.x - scale.x, center.y - scale.y);
+		glm::vec2 maxBounds = glm::vec2(center.x + scale.x, center.y + scale.y);
+
+		// Check if the point's coordinates are within the min and max bounds
+		bool withinX = point.x >= minBounds.x && point.x <= maxBounds.x;
+		bool withinY = point.y >= minBounds.y && point.y <= maxBounds.y;
+
+		// The point is inside the rectangle if it is within both X and Y bounds
+		return withinX && withinY;
+	}
 }
 

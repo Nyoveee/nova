@@ -22,7 +22,9 @@
 #include "reflection.h"
 #include "navMesh.h"
 #include "controller.h"
+#include "systemResource.h"
 
+// Forward declaring.
 class Prefab;
 class Model;
 class Texture;
@@ -39,13 +41,12 @@ class Sequencer;
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
-	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator,\
-	Image, Sequence
+	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
+	Image, Sequence, Button, Canvas, NavMeshOffLinks
 
 using ScriptName   = std::string;
 using LayerID	   = int;
 using ComponentID  = size_t;
-
 
 #include "serializedField.h"
 
@@ -57,6 +58,16 @@ enum class InterpolationType : unsigned int {
 };
 
 
+// 	REFLECTABLE(
+// 		name,
+// 		data
+// 	)
+// };
+
+struct PrefabMetaData {
+	entt::entity prefabEntity;
+	ResourceID prefabID;
+};
 // ===================================
 
 struct EntityData {
@@ -65,10 +76,13 @@ struct EntityData {
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
+
 	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
+	PrefabMetaData prefabMetaData										{};
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
+	std::unordered_map<size_t, bool> overridenComponents				{};
 	std::unordered_set<ComponentID> inactiveComponents                  {};
 
 	REFLECTABLE(
@@ -79,7 +93,9 @@ struct EntityData {
 		layerId,
 		isActive,
 		prefabID,
+		prefabMetaData,
 		overridenProperties,
+		overridenComponents,
 		inactiveComponents
 	)
 };
@@ -142,22 +158,26 @@ struct Light {
 	Color color				= Color{ 1.f, 1.f, 1.f };
 	float intensity			= 1.f;
 	Type type				= Light::Type::PointLight;
+
 	glm::vec3 attenuation	= glm::vec3{ 1.f, 0.09f, 0.032f };
 	Radian cutOffAngle		= glm::radians(12.5f);
 	Radian outerCutOffAngle = glm::radians(17.5f);
-	
+	float radius			= 50.f;
+
 	REFLECTABLE(
 		type,
 		color,
 		intensity,
 		cutOffAngle,
-		outerCutOffAngle
+		outerCutOffAngle,
+		attenuation,
+		radius
 	)
 };
 
 struct MeshRenderer {
-	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
-	std::vector<TypedResourceID<Material>>	materialIds	{};
+	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
+	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
 	REFLECTABLE(
 		modelId,
@@ -204,17 +224,23 @@ struct Animator {
 
 struct Sequence {
 	TypedResourceID<Sequencer> sequencerId;
-	bool toLoop;
+
+	float speedMultiplier = 1.f;
+	bool toLoop = false;
+	bool startPlaying = false;
 
 	REFLECTABLE(
 		sequencerId,
-		toLoop
+		speedMultiplier,
+		toLoop,
+		startPlaying
 	)
 
 	float timeElapsed = 0.f;
 	float lastTimeElapsed = 0.f;
 	
 	int currentFrame = 0;
+	bool isPlaying = true;
 
 	// each animator component keeps track of already executed animation events keyframes..
 	// this container is reset everytime it loops..
@@ -242,7 +268,9 @@ struct Rigidbody {
 
 	bool isRotatable				{ true };
 	bool isTrigger					{ false };
-	
+	bool dynamicCollider			{ false };
+	bool toScaleWithTransform		{ true };
+
 	REFLECTABLE(
 		motionType,
 		layer,
@@ -251,7 +279,9 @@ struct Rigidbody {
 		mass,
 		gravityMultiplier,
 		isRotatable,
-		isTrigger
+		isTrigger,
+		dynamicCollider,
+		toScaleWithTransform
 	)
 
 	// RUNTIME PROPERTIES!
@@ -313,7 +343,7 @@ struct SkyBox {
 };
 
 struct Image {
-	TypedResourceID<Texture>	texture		{ INVALID_RESOURCE_ID };
+	TypedResourceID<Texture>	texture		{ NONE_TEXTURE_ID };
 	ColorA						colorTint	{ 1.f, 1.f, 1.f, 1.f };
 	
 	enum class AnchorMode {
@@ -324,10 +354,13 @@ struct Image {
 		TopRight
 	} anchorMode = AnchorMode::Center;
 
+	bool toFlip = false;
+
 	REFLECTABLE(
 		texture,
 		colorTint,
-		anchorMode
+		anchorMode,
+		toFlip
 	)
 };
 
@@ -422,6 +455,28 @@ struct NavMeshSurface
 	)
 };
 
+
+struct NavMeshOffLinks
+{
+	std::string agentName;
+	glm::vec3 startPoint{};
+	glm::vec3 endPoint{};
+	float radius = 0.5f;
+	bool isBiDirectional = true;
+
+
+	REFLECTABLE
+	(
+		agentName,
+		startPoint,
+		endPoint,
+		radius,
+		isBiDirectional
+	)
+
+
+};
+
 struct NavMeshAgent
 {
 	//User Variables
@@ -434,6 +489,10 @@ struct NavMeshAgent
 	
 	bool updateRotation				= true; //should agent update rotation. 
 	bool updatePosition             = true; //should agent update position. 
+	bool autoTraverseOffMeshLink	= true;
+
+	bool isOnOffMeshLink			= false;
+
 
 	REFLECTABLE
 	(
@@ -448,6 +507,7 @@ struct NavMeshAgent
 								  //NOTE this no longer maps directly to dtCrowd object, use GetDTCrowdIndex to find actual index
 	float agentRadius	= 0.f;
 	float agentHeight	= 0.f;
+	navMeshOfflinkData currentData;
 };
 
 struct NavigationTestTarget
@@ -473,6 +533,7 @@ struct Particle {
 	// Movement
 	glm::vec3 direction;
 	float rotation;
+	float angularVelocity;
 	// Size
 	float startSize;
 	float currentSize;
@@ -531,12 +592,15 @@ struct ParticleEmissionTypeSelection {
 };
 
 struct ParticleColorSelection {
-	bool randomizedColor = false;
 	ColorA color{ 1.f, 1.f, 1.f,1.f };
-
+	glm::vec3 colorOffsetMin{};
+	glm::vec3 colorOffsetMax{};
+	float emissiveMultiplier = 1.f;
 	REFLECTABLE(
-		randomizedColor,
-		color
+		color,
+		colorOffsetMin,
+		colorOffsetMax,
+		emissiveMultiplier
 	)
 };
 
@@ -569,12 +633,18 @@ struct Trails {
 	float distancePerEmission{0.1f};
 	float trailSize{ 0.1f };
 	ColorA trailColor{ ColorA{1.f,1.f,1.f,1.f} };
+	glm::vec3 trailColorOffsetMin{};
+	glm::vec3 trailColorOffsetMax{};
+	float trailEmissiveMultiplier{ 1.f };
 	REFLECTABLE(
 		selected,
 		trailTexture,
 		distancePerEmission,
 		trailSize,
-		trailColor
+		trailColor,
+		trailColorOffsetMin,
+		trailColorOffsetMax,
+		trailEmissiveMultiplier
 	)
 };
 
@@ -585,28 +655,38 @@ struct ParticleEmitter
 	float currentBurstTime{};
 	glm::vec3 prevPosition;
 	bool b_firstPositionUpdate{ true };
-
 	// Rendering
 	std::vector<Particle> particles;
 	std::vector<Particle> trailParticles;
-	// Editor stuff
+
+	// Categories
 	TypedResourceID<Texture> texture;
 	ParticleEmissionTypeSelection particleEmissionTypeSelection;
 	ParticleColorSelection particleColorSelection;
 	SizeOverLifetime sizeOverLifetime;
 	ColorOverLifetime colorOverLifetime;
 	Trails trails;
+	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
-	float startSize = 1;
+	
+	float startSize = 1.f;
+	float minStartSizeOffset = 0.f;
+	float maxStartSizeOffset = 0.f;
+
 	float startSpeed = 1;
-	float angularVelocity{};
 	glm::vec3 force;
+	// Velocity
+	float initialAngularVelocity{};
+	float minAngularVelocityOffset{};
+	float maxAngularVelocityOffset{};
+	// Particle spawning info
 	float lifeTime = 1;
 	int maxParticles = 1000;
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
+	// Light
 	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
 
@@ -614,8 +694,12 @@ struct ParticleEmitter
 	(
 		texture,
 		startSize,
+		minStartSizeOffset,
+		maxStartSizeOffset,
 		startSpeed,
-		angularVelocity,
+		initialAngularVelocity,
+		minAngularVelocityOffset,
+		maxAngularVelocityOffset,
 		force,
 		lifeTime,
 		maxParticles,
@@ -638,7 +722,7 @@ struct Text {
 	TypedResourceID<Font> font;
 	int fontSize = 13;
 	std::string text;
-	Color fontColor = Color{ 0.f, 0.f, 0.f };
+	Color fontColor = Color{ 1.f, 1.f, 1.f };
 
 	REFLECTABLE
 	(
@@ -647,4 +731,81 @@ struct Text {
 		fontSize,
 		fontColor
 	)
+};
+
+struct Canvas {
+	std::string placeholder;
+
+	REFLECTABLE
+	(
+		placeholder
+	)
+};
+
+struct EntityScript {
+	entt::entity entity;
+	TypedResourceID<ScriptAsset> script;
+	
+	REFLECTABLE(
+		entity,
+		script
+	)
+};
+
+struct Button {
+	bool isInteractable;
+	EntityScript reference;
+
+	ColorA normalColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA highlightedColor = ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA pressedColor		= ColorA{ 1.f, 1.f, 1.f, 1.f };
+	ColorA disabledColor	= ColorA{ 1.f, 1.f, 1.f, 1.f };
+
+	std::string onClickReleasedFunction;
+	std::string onPressFunction;
+	std::string onHoverFunction;
+
+	float fadeDuration = 0.1f;
+	float colorMultiplier = 1.f;
+
+	glm::vec3 offset		= glm::vec3{ 0.f, 0.f, 0.f };
+	glm::vec3 padding		= glm::vec3{ 0.f, 0.f, 0.f };
+
+	REFLECTABLE
+	(
+		isInteractable,
+		reference,
+		normalColor,
+		highlightedColor,
+		pressedColor,
+		disabledColor,
+		onClickReleasedFunction,
+		onPressFunction,
+		onHoverFunction,
+		fadeDuration,
+		colorMultiplier,
+		offset,
+		padding
+	)
+
+	enum class State {
+		Normal,
+		Hovered,
+		Pressed,
+		Disabled
+	} state;
+
+	float timeElapsed = 0.f;
+
+	ColorA finalColor = normalColor;
+
+	void enableButton() {
+		isInteractable = true;
+		state = Button::State::Normal;
+	}
+
+	void disableButton() {
+		isInteractable = false;
+		state = Button::State::Disabled;
+	}
 };

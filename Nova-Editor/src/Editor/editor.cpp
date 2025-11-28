@@ -173,9 +173,37 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		}
 	);
 
+	inputManager.subscribe<ScriptCompilationStatus>(
+		[&](ScriptCompilationStatus status) {
+			if (status == ScriptCompilationStatus::Failure) {
+				editorViewPort.controlOverlay.setNotification("Script compilation has failed!", FOREVER);
+			}
+			else {
+				editorViewPort.controlOverlay.clearNotification();
+			}
+		}
+	);
+
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
+
+#if false
+	//check if there is a prefab in the scene, if there is, update the prefabManager
+	// entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
+	std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
+
+	entt::registry& registry = engine.ecs.registry;
+	for (entt::entity entity : registry.view<entt::entity>()) {
+		EntityData* entityData = registry.try_get<EntityData>(entity);
+		if (entityData->prefabID != INVALID_RESOURCE_ID) {
+
+			if (prefabMap.find(entityData->prefabID) == prefabMap.end()) {
+				engine.prefabManager.loadPrefab(entityData->prefabID);
+			}
+		}
+	}
+#endif
 }
 
 void Editor::update(float dt) {
@@ -236,9 +264,6 @@ void Editor::deleteEntity(entt::entity entity) {
 		return;
 	}
 
-	ImGuizmo::Enable(false);
-	ImGuizmo::Enable(true);
-
 	engine.ecs.deleteEntity(entity);
 }
 
@@ -246,9 +271,6 @@ void Editor::deleteEntity(entt::entity entity) {
 void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
-
-	//
-	//ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
@@ -263,6 +285,8 @@ void Editor::main(float dt) {
 	editorConfigUI.update();
 
 	handleEntityHovering();
+
+	engine.renderer.submitSelectedObjects(selectedEntities);
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -516,7 +540,7 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 	ImGui::PushID(++imguiCounter);
 
 	EntityData* selectedEntityData = registry.try_get<EntityData>(selectedEntity);
-	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<invalid entity>";
+	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<None>";
 
 	// Uppercase search query..
 	// Case insensitive searchQuery..
@@ -525,6 +549,14 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 
 	if (ImGui::BeginCombo(labelName, selectedEntityName)) {
 		ImGui::InputText("Search", &entitySearchQuery);
+
+		ImGui::PushID(-1);
+
+		if (ImGui::Selectable("<None>", false)) {
+			onClickCallback(entt::null);
+		}
+
+		ImGui::PopID();
 
 		for (auto&& [entityId, entityData] : registry.view<EntityData>().each()) {
 			// Let's upper case our entity name..
@@ -750,6 +782,10 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 }
 
 void Editor::loadScene(ResourceID sceneId) {
+	if (engine.isInSimulationMode()) {
+		return;
+	}
+
 	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
 
 	if (filePath) {
@@ -758,6 +794,8 @@ void Editor::loadScene(ResourceID sceneId) {
 
 	engine.ecs.sceneManager.loadScene(sceneId);
 	editorViewPort.controlOverlay.clearNotification();
+
+	// engine.prefabManager.prefabBroadcast();
 
 	// deselect entity.
 	selectEntities({});

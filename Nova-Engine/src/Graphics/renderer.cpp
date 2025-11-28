@@ -16,9 +16,12 @@
 #include "Profiling.h"
 #include "Logger.h"
 
+#include "RandomRange.h"
 #include "systemResource.h"
 
 #undef max
+
+constexpr ColorA whiteColor{ 1.f, 1.f, 1.f, 1.f };
 
 constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 
@@ -48,6 +51,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	bloomDownSampleShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomDownSample.frag" },
 	bloomUpSampleShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomUpSample.frag" },
 	bloomFinalShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
+	postprocessingShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/postprocessing.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
@@ -90,8 +94,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
-	hdrExposure					{ 0.25f },
-	toneMappingMethod			{ ToneMappingMethod::None },
+	hdrExposure					{ 0.9f },
+	toneMappingMethod			{ ToneMappingMethod::ACES },
 
 	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
 	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
@@ -101,8 +105,11 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
 	bloomFrameBuffer			{ gameWidth, gameHeight, 5 },
 	toGammaCorrect				{ true },
+	toPostProcess				{ false },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
+	randomiseChromaticAberrationoffset();
+
 	printOpenGLDriverDetails();
 
 	glLineWidth(2.f);
@@ -298,6 +305,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		// Main render function
 		render(editorMainFrameBuffer, editorCamera);
 
+		debugShader.setMatrix("model", glm::mat4{ 1.f });
 		// ===============================================
 		// Debug rendering + object ids for editor..
 		// ===============================================
@@ -312,6 +320,8 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		if (engine.toDebugRenderParticleEmissionShape) {
 			debugRenderParticleEmissionShape();
 		}
+		
+		renderDebugSelectedObjects();
 
 		// after debug rendering.. bind main position VBO back to VAO..
 		glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
@@ -370,13 +380,14 @@ void Renderer::renderUI()
 
 			Image* image = registry.try_get<Image>(entity);
 			Text* text = registry.try_get<Text>(entity);
-			
+			Button* button = registry.try_get<Button>(entity);
+
 			if (!entityData.isActive) {
 				continue;
 			}
 
 			if (image && engine.ecs.isComponentActive<Image>(entity)) {
-				renderImage(transform, *image);
+				renderImage(transform, *image, button ? button->finalColor : whiteColor);
 			}
 
 			if (text && engine.ecs.isComponentActive<Text>(entity)) {
@@ -415,6 +426,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	setBlendMode(BlendingConfig::Disabled);
 
 	renderBloom(frameBuffers);
+
+	if(toPostProcess)
+		renderPostProcessing(frameBuffers);
 
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping(frameBuffers);
@@ -538,6 +552,10 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 	glDisable(GL_BLEND);
 }
 
+void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
+	selectedEntities = entities;
+}
+
 GLuint Renderer::getEditorFrameBufferTexture() const {
 	return editorMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
 }
@@ -588,6 +606,7 @@ void Renderer::recompileShaders() {
 	bloomDownSampleShader.recompile();
 	bloomUpSampleShader.recompile();
 	bloomFinalShader.recompile();
+	postprocessingShader.recompile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -814,7 +833,8 @@ void Renderer::prepareRendering() {
 			pointLightData[numOfPtLights++] = {
 				transform.position,
 				glm::vec3{ light.color } * light.intensity,
-				light.attenuation
+				light.attenuation,
+				light.radius
 			};
 			break;
 
@@ -827,7 +847,7 @@ void Renderer::prepareRendering() {
 			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
 			directionalLightData[numOfDirLights++] = {
 				glm::normalize(forward),
-				glm::vec3{ light.color } *light.intensity
+				glm::vec3{ light.color } * light.intensity
 			};
 			break;
 		}
@@ -845,7 +865,8 @@ void Renderer::prepareRendering() {
 				glm::vec3{ light.color } *light.intensity,
 				light.attenuation,
 				light.cutOffAngle,
-				light.outerCutOffAngle
+				light.outerCutOffAngle,
+				light.radius
 			};
 			break;
 		}
@@ -1037,11 +1058,12 @@ void Renderer::renderText(Transform const& transform, Text const& text)
 	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
 }
 
-void Renderer::renderImage(Transform const& transform, Image const& image)
+void Renderer::renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier)
 {
 	texture2dShader.use();
 	texture2dShader.setMatrix("uiProjection", UIProjection);
 	texture2dShader.setInt("image", 0);
+	texture2dShader.setBool("toFlip", image.toFlip);
 
 	// Get texture resource
 	auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
@@ -1054,7 +1076,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image)
 		return;
 	}
 
-	texture2dShader.setVec4("tintColor", image.colorTint);
+	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
 
@@ -1581,6 +1603,27 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
+void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
+	ZoneScoped;
+
+	frameBuffers.swapFrameBuffer();
+
+	// Bind the post-processing framebuffer for LDR output
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	// Set up tone mapping shader
+	postprocessingShader.use();
+
+	// Bind the HDR texture from main framebuffer
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	postprocessingShader.setImageUniform("scene", 0);
+
+	postprocessingShader.setVec3("offset", chromaticAberration);
+
+	// Render fullscreen triangle (more efficient than quad)
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale) {
 	// ===========================================================================
 	// Retrieve the underlying shader for this material, and verify it's state.
@@ -1749,7 +1792,63 @@ Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 	return toneMappingMethod;
 }
 
-ENGINE_DLL_API const glm::mat4& Renderer::getUIProjection() const
-{
+glm::mat4 const& Renderer::getUIProjection() const {
 	return UIProjection;
+}
+
+void Renderer::randomiseChromaticAberrationoffset() {
+	chromaticAberration = RandomRange::Vec3(glm::vec3{ -0.01f, -0.01f, -0.01f }, glm::vec3{ 0.01f, 0.01f, 0.01f });
+}
+
+void Renderer::renderDebugSelectedObjects() {
+	debugShader.use();
+	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
+	glBindVertexArray(mainVAO);
+	glEnable(GL_DEPTH_TEST);
+
+	for (entt::entity entity : selectedEntities) {
+		Transform const* transform				= registry.try_get<Transform>(entity);
+		Light const* light						= registry.try_get<Light>(entity);
+		NavMeshOffLinks const* navMeshOffLinks  = registry.try_get<NavMeshOffLinks>(entity);
+
+		if (!transform) {
+			return;
+		}
+
+		if (light) {
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, transform->position);
+			debugShader.setMatrix("model", model);
+
+			// Debug render light outline..
+			switch (light->type) {
+			case Light::Type::PointLight:
+			case Light::Type::Spotlight:
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+				break;
+			}
+		}
+
+		if (navMeshOffLinks) {
+			glm::mat4 model = glm::identity<glm::mat4>();
+			model = glm::translate(model, navMeshOffLinks->startPoint);
+			debugShader.setMatrix("model", model);
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			model = glm::translate(glm::identity<glm::mat4>(), navMeshOffLinks->endPoint);
+			debugShader.setMatrix("model", model);
+
+			// same radius, same mesh.
+			// debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+		}
+	}
 }

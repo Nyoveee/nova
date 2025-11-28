@@ -343,7 +343,7 @@ void AnimatorController::displaySelectedAnimationTimeline(Animator& animator, Co
 				copyKey = key;
 			}
 
-			ImGui::InputInt("Key", &copyKey);
+			ImGui::DragInt("Key", &copyKey);
 
 			if (ImGui::IsItemDeactivatedAfterEdit()) {
 				// Verify if key is valid..

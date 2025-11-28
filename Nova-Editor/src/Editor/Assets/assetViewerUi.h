@@ -10,10 +10,15 @@ public:
 	AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager);
 	
 	void update();
+	void updateScriptFileName(AssetFilePath const& filepath, ResourceID id);
+	//void broadcast();
 	void updateScriptFilePath(AssetFilePath const& filepath, ResourceID id);
 	
 	template <ValidResource T>
 	void displayAssetUI(BasicAssetInfo& descriptor);
+
+	//template<typename ...Components>
+	//void updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity);
 
 public:
 	void selectNewResourceId(ResourceID id);

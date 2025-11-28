@@ -12,15 +12,26 @@ class ResourceManager;
 class PrefabManager {
 public:
 	PrefabManager(Engine& engine);
+
 	ENGINE_DLL_API entt::registry& getPrefabRegistry();
-	ENGINE_DLL_API std::unordered_map<ResourceID, entt::entity> getPrefabMap();
+	ENGINE_DLL_API std::unordered_map<ResourceID, entt::entity> const& getPrefabMap() const;
 
 public:
 	template<typename ...Components>
 	entt::entity instantiatePrefab(ResourceID id);
+
+	template<typename ...Components>
+	void updateComponents(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity entity, entt::entity prefabEntity);
 	
 	ENGINE_DLL_API entt::entity loadPrefab(ResourceID id);
+
 	ENGINE_DLL_API void mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> map);
+	ENGINE_DLL_API void broadcast(entt::entity prefabEntity);
+	ENGINE_DLL_API void prefabBroadcast(); 
+	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance);
+	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance);
+	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
+	ENGINE_DLL_API void convertToPrefab(entt::entity entity, ResourceID id);
 
 private:
 

@@ -18,6 +18,8 @@
 #include "Engine/particleSystem.h"
 #include "Engine/animationSystem.h"
 #include "Engine/prefabManager.h"
+#include "Engine/uiSystem.h"
+#include "Engine/dataManager.h"
 
 #define _CRTDBG_MAP_ALLOC
 
@@ -63,6 +65,8 @@ public:
 	ENGINE_DLL_API void editorControlMouse(bool value);
 	ENGINE_DLL_API void gameLockMouse(bool value);
 
+	ENGINE_DLL_API glm::vec2 getUIMousePosition() const;
+
 public:
 	// allow all systems to have references of each other via the engine.
 	Window&					window;
@@ -80,6 +84,8 @@ public:
 	ParticleSystem          particleSystem;
 	AnimationSystem			animationSystem;
 	PrefabManager			prefabManager;
+	UISystem				uiSystem;
+	DataManager				dataManager;
 
 	// allows direct modification to render debug info for physics.
 	bool					toDebugRenderPhysics;
@@ -94,6 +100,7 @@ public:
 
 	float					deltaTimeMultiplier;
 
+	bool					isPaused;
 private:
 	// Editor mouse control represents whether the editor has control over the mouse
 	// The editor has the final authority over mouse control

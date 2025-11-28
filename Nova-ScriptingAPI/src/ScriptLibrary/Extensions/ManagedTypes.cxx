@@ -97,6 +97,10 @@ Quaternion Quaternion::Identity() {
 	return Quaternion{ glm::identity<glm::quat>() };
 }
 
+Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {
+	return Quaternion{ glm::slerp(a.native(), b.native(), t) };
+}
+
 // =================================================================
 // TRANSFORM
 // =================================================================
@@ -198,7 +202,7 @@ void Animator_::SetBool(System::String^ name, bool value){
 	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
-void Animator_::SetFloat(System::String^ name, float value){
+void Animator_::SetFloat(System::String^ name, float value) {
 	Interface::engine->animationSystem.setParameter(*nativeComponent(), Convert(name), value);
 }
 
@@ -331,4 +335,102 @@ void SkinnedMeshRenderer_::setMaterialInt(int index, System::String^ name, int d
 
 void SkinnedMeshRenderer_::setMaterialUInt(int index, System::String^ name, unsigned data) {
 	SetUniformValue(index, name, nativeComponent()->materialIds, nativeComponent()->isMaterialInstanced, data);
+}
+
+
+// =================================================================
+// Navmesh Agent
+// =================================================================
+
+bool NavMeshAgent_::Warp(Vector3^ newPosition)
+{
+	NavMeshAgent* agent = nativeComponent();
+	
+	return Interface::engine->navigationSystem.warp(*agent, newPosition->native());
+
+}
+
+bool  NavMeshAgent_::getIsUpdateRotation()
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	return agent->updateRotation;
+}
+
+
+void  NavMeshAgent_::setIsUpdateRotation(bool setState)
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	agent->updateRotation = setState;
+}
+
+
+bool  NavMeshAgent_::getIsUpdatePosition()
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	return agent->updatePosition;
+}
+
+void  NavMeshAgent_::setIsUpdatePosition(bool setState)
+{
+	NavMeshAgent* agent = nativeComponent();
+
+	agent->updatePosition = setState;
+}
+
+bool NavMeshAgent_::getAutomateNavMeshOfflinksState()
+{
+	return nativeComponent()->autoTraverseOffMeshLink;
+}
+
+void NavMeshAgent_::setAutomateNavMeshOfflinksState(bool value)
+{
+	Interface::engine->navigationSystem.SetAgentAutoOffMeshTraversalParams(*nativeComponent(),value);
+}
+
+bool NavMeshAgent_::isOnOffMeshLinks()
+{
+	return nativeComponent()->isOnOffMeshLink;
+}
+NavMeshOfflinkData NavMeshAgent_::getOffLinkData()
+{
+	navMeshOfflinkData type = Interface::engine->navigationSystem.getNavmeshOfflinkData(*nativeComponent());
+
+	NavMeshOfflinkData returnOfflinkdata;
+
+	returnOfflinkdata.valid = type.valid;
+
+	returnOfflinkdata.startNode = Vector3{ type.startNode };
+	returnOfflinkdata.endNode = Vector3{ type.endNode };
+
+	return returnOfflinkdata;
+}
+
+void NavMeshAgent_::CompleteOffMeshLink()
+{
+	Interface::engine->navigationSystem.CompleteOffLinkData(*nativeComponent());
+
+}
+
+// =================================================================
+// Sequencer Agent
+// =================================================================
+
+bool Sequence_::isPlaying() {
+	return nativeComponent()->isPlaying;
+}
+
+void Sequence_::resume() {
+	nativeComponent()->isPlaying = true;
+}
+
+void Sequence_::pause() {
+	nativeComponent()->isPlaying = false;
+}
+
+void Sequence_::play() {
+	Interface::engine->animationSystem.resetSequence(*nativeComponent());
+	nativeComponent()->isPlaying = true;
 }

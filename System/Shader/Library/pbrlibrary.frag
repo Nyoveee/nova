@@ -38,6 +38,7 @@ struct PointLight {
     vec3 position;
     vec3 color;
     vec3 attenuation;
+    float radius;
 };
 
 struct DirectionalLight {
@@ -52,6 +53,7 @@ struct SpotLight {
     vec3 attenuation;
 	float cutOffAngle;
 	float outerCutOffAngle;
+    float radius;
 };
 
 layout(std430, binding = 0) buffer PointLights {
@@ -130,7 +132,7 @@ float ggxDistribution(float nDotH, float roughness)
 {
     float alpha2 = roughness * roughness * roughness * roughness;
     float d = (nDotH * nDotH) * (alpha2 - 1.0f) + 1.0f;
-    return alpha2 / max(PI * d * d, 0.001f);
+    return alpha2 / max(PI * d * d, 0.0001f);
 }
 
 // The Smith Masking-Shadowing Function describes the probability that microfacets with 
@@ -142,7 +144,7 @@ float geomSmith(float nDotL, float roughness)
 {
     float k = (roughness + 1.0f) * (roughness + 1.0f) / 8.0f;
     float denom = nDotL * (1.0f - k) + k;
-    return 1.0f / denom;
+    return 1.0f / max(denom, 0.0001f);
 }
 
 // Schlick approximation for Fresnel reflection that defines the probability of light
@@ -158,6 +160,31 @@ vec3 schlickFresnel(float lDotH, vec3 baseColor, float metallic)
     return f0 + (1.0f - f0) * pow(1.0f - lDotH, 5);
 }
 
+// Calculates light attenuation.
+float calculateAttenuation(float distance, vec3 attenutationFactor, float radius) {
+    // Normalize distance by the radius for clamping purposes
+    float normalized_distance = distance / radius; 
+
+    // Calculate a factor that goes from 1.0 at d=0 to 0.0 at d=AttenuationRadius
+    // The pow(..., 4.0) term helps control the curve, making the cutoff smoother/faster than a simple linear or quadratic function
+    float factor_clamped = clamp(1.0 - pow(normalized_distance, 4.0), 0.0, 1.0);
+
+    // Smooth the factor (square it)
+    float smooth_factor = factor_clamped * factor_clamped;
+
+    // Apply inverse square attenuation with a small divisor to prevent division by zero near the light source
+    // attenutationFactor represents the constants in the attenuation calculation. 
+    // attenutationFactor.x is Kc, constant, attenutationFactor.y is Kl, linear and attenutationFactor.z is Kq, quadratic.
+    // https://learnopengl.com/Lighting/Light-casters
+    float inverse_square_attenuation = 1.0 / (attenutationFactor.x + attenutationFactor.y * distance + attenutationFactor.z * (distance * distance)); 
+
+    // Combine both to get the final attenuation
+    float attenuation = smooth_factor * inverse_square_attenuation;
+
+
+    return attenuation;
+}
+
 // Calculates the incoming light directional vector & light color for point light.
 vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, PointLight light) 
 {  
@@ -165,7 +192,7 @@ vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, float roughness
     float dist = length(l);
     l = normalize(l);
     vec3 lightIntensity = light.color;
-    lightIntensity *= 1.0 / (dist * dist); 
+    lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
     vec3 v = normalize(cameraPos - position);
     return BRDFCalculation(n, v, l, lightIntensity, baseColor, roughness, metallic);
@@ -200,7 +227,7 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, float roughness,
     }
     spotIntensity = clamp(spotIntensity, 0.0, 1.0);
     vec3 lightIntensity = light.color;
-    lightIntensity *= 1.0 / (dist * dist); 
+    lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
     vec3 v = normalize(cameraPos - position);
     return BRDFCalculation(n, v, l, lightIntensity * spotIntensity, baseColor, roughness, metallic);
@@ -215,10 +242,10 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, float roughness,
 vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic)
 {
     vec3 h = normalize(v + l);
-    float nDotH = dot(n, h);
-    float lDotH = dot(l, h);
+    float nDotH = max(dot(n, h), 0.0f);
+    float lDotH = max(dot(l, h), 0.0f);
     float nDotL = max(dot(n, l), 0.0f);
-    float nDotV = dot(n, v);
+    float nDotV = max(dot(n, v), 0.0f);
 
     vec3 fresnel = schlickFresnel(lDotH, baseColor, metallic);
     vec3 specBrdf = 0.25f * ggxDistribution(nDotH, roughness) * fresnel * geomSmith(nDotL, roughness) * geomSmith(nDotV, roughness);

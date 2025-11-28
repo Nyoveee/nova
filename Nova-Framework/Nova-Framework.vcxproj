@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Internal\AdditionalNavigationTypes.h" />
     <ClInclude Include="src\Internal\animationEvent.h" />
     <ClInclude Include="src\Internal\config.h" />
     <ClInclude Include="src\Internal\Interpolation.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="src\Resource\scene.h" />
     <ClInclude Include="src\Resource\scriptAsset.h" />
     <ClInclude Include="src\Resource\sequencer.h" />
+    <ClInclude Include="src\Resource\sequencer.ipp" />
     <ClInclude Include="src\Resource\systemResource.h" />
     <ClInclude Include="src\Resource\texture.h" />
     <ClInclude Include="src\Serialisation\deserializeFromBinary.h" />

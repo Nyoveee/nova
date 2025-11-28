@@ -5,7 +5,6 @@
 #include "ResourceManager/resourceManager.h"
 
 #include "IconsFontAwesome6.h"
-#include "imgui_neo_sequencer.h"
 
 #include "Editor/ComponentInspection/PropertyDisplay/displayProperties.h"
 
@@ -20,7 +19,8 @@ AnimationTimeLine::AnimationTimeLine(Editor& editor) :
 	registry				{ editor.engine.ecs.registry },
 	currentFrame			{ },
 	selectedEntity			{ entt::null },
-	isPlaying				{ false }
+	isPlaying				{ false },
+	editMode				{ EditMode::Transform }
 {}
 
 void AnimationTimeLine::update(float dt) {
@@ -98,24 +98,26 @@ void AnimationTimeLine::displayMainPanel(Sequence& sequence, Sequencer& sequence
 			ImGui::EndNeoTimeLine();
 		}
 	
-		if (ImGui::BeginNeoTimelineEx("Transform", nullptr)) {
-			for (auto&& keyframes : sequencer.data.keyframes) {
-				int frame = keyframes.frame;
+		int counter = 0;
 
-				ImGui::PushID(frame);
-				ImGui::NeoKeyframe(&frame);
-				ImGui::PopID();
-			}
+		ImGui::PushID(++counter);
+		displayTimeline("Position", sequencer.data.positionKeyframes);
+		ImGui::PopID();
 
-			ImGui::EndNeoTimeLine();
-		}
+		ImGui::PushID(++counter);
+		displayTimeline("Rotation", sequencer.data.rotationKeyframes);
+		ImGui::PopID();
+
+		ImGui::PushID(++counter);
+		displayTimeline("Scale", sequencer.data.scaleKeyframes);
+		ImGui::PopID();
 
 		ImGui::EndNeoSequencer();
 	}
 
 	if (ImGui::BeginTabBar("Sequencer Tab Bar")) {
 		if (ImGui::BeginTabItem("Keyframes")) {
-			displayKeyframes(sequence, sequencer);
+			displayAllKeyframes(sequence, sequencer);
 			ImGui::EndTabItem();
 		}
 
@@ -145,10 +147,11 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 	constexpr float toolbarInputSize = 45.f;
 	constexpr float viewSliderSize = 200.f;
 	constexpr float padding = 50.f;
-	
+	constexpr float editModeDropDownList = 200.f;
+
 	// I want to center the top toolbar. Therefore, I need to calculate the total width of the table.
 	// Its defined by the sizes of my buttons, paddings and input fields.
-	float windowWidth = 7 * toolbarButtonSize + 4 * padding + toolbarInputSize + viewSliderSize;
+	float windowWidth = 7 * toolbarButtonSize + 5 * padding + 2 * toolbarInputSize + viewSliderSize + editModeDropDownList;
 	float offsetX = (ImGui::GetContentRegionAvail().x - windowWidth) / 2.f;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
 
@@ -159,7 +162,7 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 	ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(0, 0));
 
 	// Display the whole controls button overlay..
-	if (ImGui::BeginTable("Control", 9)) {
+	if (ImGui::BeginTable("Control", 11)) {
 		// Set up frame columns..
 		ImGui::TableSetupColumn("Start Frame", ImGuiTableColumnFlags_WidthFixed, toolbarButtonSize);
 		ImGui::TableSetupColumn("Prev Frame", ImGuiTableColumnFlags_WidthFixed, toolbarButtonSize);
@@ -170,22 +173,29 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 		ImGui::TableSetupColumn("Add Animation event", ImGuiTableColumnFlags_WidthFixed, toolbarButtonSize);
 		ImGui::TableSetupColumn("Current Frame", ImGuiTableColumnFlags_WidthFixed, toolbarInputSize + padding);
 		ImGui::TableSetupColumn("View Slider", ImGuiTableColumnFlags_WidthFixed, viewSliderSize + 2 * padding);
+		ImGui::TableSetupColumn("Last Frame", ImGuiTableColumnFlags_WidthFixed, toolbarInputSize + padding);
+		ImGui::TableSetupColumn("Edit Mode", ImGuiTableColumnFlags_WidthFixed, editModeDropDownList);
 
 		ImGui::TableNextRow();
 
 		ImGui::TableNextColumn();
-		if (ImGui::Button(ICON_FA_BACKWARD_FAST) && sequencer.data.keyframes.size()) {
-			currentFrame = sequencer.data.keyframes.front().frame;
+		if (ImGui::Button(ICON_FA_BACKWARD_FAST)) {
+#if false
+			if(sequencer.data.keyframes.size())
+				currentFrame = sequencer.data.keyframes.front().frame;
+#endif
 		}
 
 		ImGui::TableNextColumn();
 		if (ImGui::Button(ICON_FA_BACKWARD_STEP)) {
+#if false
 			for (auto reverseIt = sequencer.data.keyframes.rbegin(); reverseIt != sequencer.data.keyframes.rend(); ++reverseIt) {
 				if (reverseIt->frame < currentFrame) {
 					currentFrame = reverseIt->frame;
 					break;
 				}
 			}
+#endif
 		}
 
 		ImGui::TableNextColumn();
@@ -195,24 +205,47 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 
 		ImGui::TableNextColumn();
 		if (ImGui::Button(ICON_FA_FORWARD_STEP)) {
+#if false
 			for (auto&& keyframe : sequencer.data.keyframes) {
 				if (keyframe.frame > currentFrame) {
 					currentFrame = keyframe.frame;
 					break;
 				}
 			}
+#endif
 		}
 
 		ImGui::TableNextColumn();
-		if (ImGui::Button(ICON_FA_FORWARD_FAST) && sequencer.data.keyframes.size()) {
-			currentFrame = sequencer.data.keyframes.back().frame;
+		if (ImGui::Button(ICON_FA_FORWARD_FAST)) {
+#if false
+			if(sequencer.data.keyframes.size())
+				currentFrame = sequencer.data.keyframes.back().frame;
+#endif
 		}
 
 		ImGui::TableNextColumn();
 		
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + padding);
 		if (ImGui::Button((std::string{ "+" } + ICON_FA_DIAMOND).c_str())) {
-			sequencer.recordKeyframe(currentFrame, registry.get<Transform>(selectedEntity));
+			Transform const& transform = registry.get<Transform>(selectedEntity);
+
+			switch (editMode)
+			{
+			case AnimationTimeLine::EditMode::Transform:
+				sequencer.recordKeyframe<glm::vec3>(currentFrame, transform.localPosition, sequencer.data.positionKeyframes);
+				sequencer.recordKeyframe<glm::quat>(currentFrame, transform.localRotation, sequencer.data.rotationKeyframes);
+				sequencer.recordKeyframe<glm::vec3>(currentFrame, transform.localScale, sequencer.data.scaleKeyframes);
+				break;
+			case AnimationTimeLine::EditMode::Position:
+				sequencer.recordKeyframe<glm::vec3>(currentFrame, transform.localPosition, sequencer.data.positionKeyframes);
+				break;
+			case AnimationTimeLine::EditMode::Rotation:
+				sequencer.recordKeyframe<glm::quat>(currentFrame, transform.localRotation, sequencer.data.rotationKeyframes);
+				break;
+			case AnimationTimeLine::EditMode::Scale:
+				sequencer.recordKeyframe<glm::vec3>(currentFrame, transform.localScale, sequencer.data.scaleKeyframes);
+				break;
+			}
 		}
 
 		ImGui::TableNextColumn();
@@ -224,26 +257,7 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 		}
 
 		ImGui::TableNextColumn();
-#if false
-		// stupid imgui requres the manual calculation of cursor position
-		// cursor position is the main way to control drawing..
-		// 1. Calculate the position for right alignment
-		float column_width = ImGui::GetColumnWidth();
-		float cursor_x = ImGui::GetCursorPosX();
-		float item_spacing_x = ImGui::GetStyle().ItemSpacing.x;
 
-		// Calculate the new X position so the widget sits at the right edge, accounting for spacing
-		float new_cursor_x = cursor_x + (column_width - toolbarInputSize - item_spacing_x);
-
-		// Ensure the cursor position doesn't overlap with items to the left
-		if (new_cursor_x > ImGui::GetCursorPosX()) {
-			ImGui::SetCursorPosX(new_cursor_x);
-		}
-		else {
-			// If overlap would occur (e.g. column is very narrow), just align left or handle as appropriate
-		}
-
-#endif
 		// offset..
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + padding);
 		ImGui::SetNextItemWidth(toolbarInputSize);
@@ -260,6 +274,13 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 		ImGui::SetNextItemWidth(viewSliderSize);
 		ImGui::DragFloat("##View (in seconds)", &viewDuration, 1.f, lastFrameInSeconds, HUNDRED_SECONDS);
 
+		ImGui::TableNextColumn();
+		ImGui::SetNextItemWidth(toolbarInputSize);
+		ImGui::InputInt("##Last Frame", &sequencer.data.lastFrame, 0, 0);
+
+		ImGui::TableNextColumn();
+		editor.displayEnumDropDownList<EditMode>(editMode, "##Edit Mode", [&](EditMode newMode) { editMode = newMode; });
+
 		ImGui::EndTable();
 	}
 
@@ -270,95 +291,24 @@ void AnimationTimeLine::displayTopToolbar(Sequencer& sequencer) {
 	ImGui::PopStyleVar();
 }
 
-void AnimationTimeLine::displayKeyframes(Sequence& sequence, Sequencer& sequencer) {
-	if (ImGui::BeginTable("Sequencer Keyframes Table", 4)) {
-		ImGui::TableSetupColumn("Keyframe", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("Lerp Type", ImGuiTableColumnFlags_WidthStretch);
-		ImGui::TableSetupColumn("Power", ImGuiTableColumnFlags_WidthFixed, 90.0f);
-		ImGui::TableSetupColumn("Delete", ImGuiTableColumnFlags_WidthFixed, 40.0f);
-
-		// Populate table rows
-		int imguiCounter = -1;
-
-		for (auto it = sequencer.data.keyframes.begin(); it != sequencer.data.keyframes.end();) {
-			auto&& keyframe = *it;
-
-			ImGui::PushID(imguiCounter++);
-
-			ImGui::TableNextRow();		// Start a new row
-
-			ImGui::TableNextColumn();
-
-			if (keyframe.copyFrame == -1) {
-				keyframe.copyFrame = keyframe.frame;
-			}
-
-			ImGui::DragInt(std::string{ "Frame " + std::to_string(imguiCounter) }.c_str(), &keyframe.copyFrame, 1.f, 0, sequencer.data.lastFrame);
-
-			if (keyframe.copyFrame != keyframe.frame) {
-				// Verify if key is valid.. 
-				if (
-						keyframe.copyFrame < 0 || keyframe.copyFrame > sequencer.data.lastFrame
-					||	std::ranges::find_if(sequencer.data.keyframes, [&](auto&& element) { return element.frame == keyframe.copyFrame; }) != sequencer.data.keyframes.end()
-				) {
-					// invalid..
-					keyframe.copyFrame = keyframe.frame;
-				}
-				else {
-					keyframe.frame = keyframe.copyFrame;
-				}
-			}
-
-			// we have to sort the whole keyframe array again in case of order change..
-			if (ImGui::IsItemDeactivatedAfterEdit()) {
-				std::ranges::sort(sequencer.data.keyframes, [&](auto&& lhs, auto&& rhs) {
-					return lhs.frame < rhs.frame;
-				});
-			}
-
-			ImGui::TableNextColumn();
-
-			// lerp and power will not affect the 1st frame.
-			if (imguiCounter == 0) {
-				ImGui::BeginDisabled();
-			}
-
-			editor.displayEnumDropDownList<Sequencer::Keyframe::LerpType>(keyframe.lerpType, "Type", [&](auto value) {
-				keyframe.lerpType = value;
-				// force reanimate..
-				sequence.lastTimeElapsed = -1.f;
-			});
-
-			ImGui::TableNextColumn();
-
-			ImGui::InputFloat("Pow", &keyframe.power);
-
-			if (ImGui::IsItemDeactivatedAfterEdit()) {
-				// force reanimate..
-				sequence.lastTimeElapsed = -1.f;
-			}
-
-			ImGui::TableNextColumn();
-
-			if (imguiCounter == 0) {
-				ImGui::EndDisabled();
-			}
-
-			if (ImGui::Button("[-]")) {
-				it = sequencer.data.keyframes.erase(it);
-
-				if (sequencer.data.keyframes.size()) {
-					sequencer.data.lastFrame = sequencer.data.keyframes.back().frame;
-				}
-			}
-			else {
-				++it;
-			}
-
-			ImGui::PopID();
+void AnimationTimeLine::displayAllKeyframes(Sequence& sequence, Sequencer& sequencer) {
+	if (ImGui::BeginTabBar("Key frames tab bar")) {
+		if (ImGui::BeginTabItem("Position")) {
+			displayKeyframes<glm::vec3>(sequence, sequencer, sequencer.data.positionKeyframes, "Position Table");
+			ImGui::EndTabItem();
 		}
 
-		ImGui::EndTable();
+		if (ImGui::BeginTabItem("Rotation")) {
+			displayKeyframes<glm::quat>(sequence, sequencer, sequencer.data.rotationKeyframes, "Rotation Table");
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Scale")) {
+			displayKeyframes<glm::vec3>(sequence, sequencer, sequencer.data.scaleKeyframes, "Scale Table");
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
 	}
 }
 
@@ -421,4 +371,8 @@ void AnimationTimeLine::displayAnimationEvents([[maybe_unused]] Sequence& sequen
 
 		ImGui::EndTable();
 	}
+}
+
+void AnimationTimeLine::displayLerpEnumDropDownList(typename Sequencer::LerpType value, const char* labelName, std::function<void(typename Sequencer::LerpType)> onClickCallback) {
+	editor.displayEnumDropDownList(value, labelName, onClickCallback);
 }

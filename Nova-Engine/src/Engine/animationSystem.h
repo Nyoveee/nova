@@ -39,6 +39,8 @@ public:
 	
 	ENGINE_DLL_API void playAnimation(Animator& animator, std::string name);
 
+	ENGINE_DLL_API void resetSequence(Sequence& sequence);
+
 private:
 	ENGINE_DLL_API void handleTransition(Animator& animator, Controller::Node const& currentNode, Controller const& controller);
 

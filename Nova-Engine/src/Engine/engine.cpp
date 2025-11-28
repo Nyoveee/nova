@@ -27,11 +27,14 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	navigationSystem		{ *this }, 
 	particleSystem          { *this },
 	animationSystem			{ *this },
+	uiSystem				{ *this },
 	gameConfig				{ gameConfig },
 	inSimulationMode		{ false },
 	toDebugRenderPhysics	{ false },
 	prefabManager			{ *this },
-	deltaTimeMultiplier		{ 1.f }
+	dataManager				{ *this },
+	deltaTimeMultiplier		{ 1.f },
+	isPaused				{ false }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
 }
@@ -46,32 +49,42 @@ Engine::~Engine() {
 void Engine::fixedUpdate(float dt) {
 	ZoneScoped;
 
-	if (inSimulationMode) {
-		scriptingAPIManager.update();
+	if (isPaused) {
+		return;
 	}
-	
-	physicsManager.updateTransformBodies();
 
 	if (inSimulationMode) {
+		scriptingAPIManager.fixedUpdate();
 		physicsManager.updatePhysics(dt * deltaTimeMultiplier);
 		navigationSystem.update(dt * deltaTimeMultiplier);
+	}
+	else {
+		physicsManager.updateTransformBodies();
 	}
 }
 
 void Engine::update(float dt) {
 	ZoneScoped;
 
-	//Note the order should be correct
+	// Note the order should be correct
 	audioSystem.update();
 
 	if (!inSimulationMode) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt); // real time checking if scripts need to recompile.
 	}
+	else {
+		scriptingAPIManager.update();
+	}
 
-	animationSystem.update(dt * deltaTimeMultiplier);
-	particleSystem.update(dt * deltaTimeMultiplier);
+	if (!isPaused) {
+		animationSystem.update(dt * deltaTimeMultiplier);
+		particleSystem.update(dt * deltaTimeMultiplier);
+	}
+
 	transformationSystem.update();
 	cameraSystem.update(dt); // dt is only used in editor.
+	uiSystem.update(dt);
+	
 	renderer.update(dt * deltaTimeMultiplier);
 
 	resourceManager.update();
@@ -103,27 +116,20 @@ void Engine::startSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		animationSystem.initialise();
-
-		ecs.makeRegistryCopy<ALL_COMPONENTS>();
-		physicsManager.simulationInitialise();
-		audioSystem.loadAllSounds();
-		cameraSystem.startSimulation();
-		navigationSystem.initNavMeshSystems();
-
 		if (scriptingAPIManager.hasCompilationFailed()) {
 			Logger::error("Script compilation failed. Please update them.");
 			stopSimulation();
 			return;
 		}
-		else if (!scriptingAPIManager.startSimulation()) {
-			stopSimulation();
-			return;
-		}
 
-		// We set simulation mode to true to indicate that the change of simulation is successful.
-		// Don't set simulation mode to true if set up falied.
 		inSimulationMode = true;
+
+		ecs.recordOriginalScene();
+
+		cameraSystem.startSimulation();
+
+		// Load all systems that needs to be done per scene.
+		SystemsOnLoad();
 	};
 }
 
@@ -135,18 +141,18 @@ void Engine::stopSimulation() {
 	}
 
 	setupSimulationFunction = [&]() {
-		audioSystem.unloadAllSounds();
-		cameraSystem.endSimulation();
-		navigationSystem.unloadNavMeshSystems();
+		SystemsUnload();
 
-		//Serialiser::serialiseEditorConfig("editorConfig.json");
-		ecs.rollbackRegistry<ALL_COMPONENTS>();
+		cameraSystem.endSimulation();
+
+		// Manual rollback registry. Scene reverted.
+		ecs.restoreOriginalScene();
+
 		physicsManager.resetPhysicsState();
 		scriptingAPIManager.stopSimulation();
 
-		resourceManager.removeAllResourceInstance();
-
 		gameLockMouse(false);
+		isPaused = false;
 	};
 }
 
@@ -191,18 +197,51 @@ void Engine::editorControlMouse(bool value) {
 	gameLockMouse(isGameLockingMouse);
 }
 
-void Engine::SystemsOnLoad()
-{
-	resourceManager.removeAllResourceInstance();
-	this->navigationSystem.initNavMeshSystems();
-	this->physicsManager.systemInitialise();
+glm::vec2 Engine::getUIMousePosition() const {
+	return window.getUISpacePos();
+}
+
+void Engine::SystemsOnLoad() {
+	if (!inSimulationMode) {
+		return;
+	}
+
+	// Initialise the animator and sequencer components..
+	animationSystem.initialise();
+
+	// Init nav mesh system.
+	navigationSystem.initNavMeshSystems();
+
+	// Create all the bodies, then run simulation setup..
+	physicsManager.resetPhysicsState();
+	physicsManager.simulationInitialise();
+
+	// Load all sounds..
+	audioSystem.loadAllSounds();
+
+	if (!scriptingAPIManager.startSimulation()) {
+		stopSimulation();
+	}
+
+	// unpause all systems when loaded.. and clear accumulated dt
+	isPaused = false;
+	window.clearAccumulatedTime();
 }
 
 
-void Engine::SystemsUnload()
-{
-	this->navigationSystem.unloadNavMeshSystems();
+void Engine::SystemsUnload() {
+	// Remove all created resource instances..
+	resourceManager.removeAllResourceInstance();
 
+	// Unload all sounds
+	audioSystem.unloadAllSounds();
+
+	// Unload navmesh..
+	navigationSystem.unloadNavMeshSystems();
+
+	renderer.hdrExposure = 0.9f;
+
+	deltaTimeMultiplier = 1.f;
 }
 
 

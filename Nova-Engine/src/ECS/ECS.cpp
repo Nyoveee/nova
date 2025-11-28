@@ -9,11 +9,17 @@
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this, engine ,engine.resourceManager },
-	prefabManager	{engine}
+	sceneManager	{ *this, engine, engine.resourceManager },
+	prefabManager	{ engine },
+	canvasUi		{ entt::null }
 {}
 
-ECS::~ECS() {}
+ECS::~ECS() {
+#if false
+	registry.on_construct<Canvas>().connect<&ECS::onCanvasCreation>(*this);
+	registry.on_destroy<Canvas>().connect<&ECS::onCanvasDestruction>(*this);
+#endif
+}
 
 void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform) {
 	EntityData& childEntityData = registry.get<EntityData>(childEntity);
@@ -107,36 +113,25 @@ void ECS::deleteEntity(entt::entity entity) {
 	EntityData* entityData = registry.try_get<EntityData>(entity);
 	
 	if (entityData) {
-		// =======================
-		// 1. Update it's children' parent.
-		// Set the children's new parent to the current's entity parent, if any.
-		// =======================
-		entt::entity parent = entityData->parent;
-
 		for (entt::entity child : entityData->children) {
-			EntityData& childEntityData = registry.get<EntityData>(child);
-			childEntityData.parent = parent;
+			// a separate function is used to recursively delete children, because no invariant needs to be maintained.
+			deleteEntityRecursively(child);
 		}
 
 		// =======================
-		// 2. Update parent's children array.
+		// Update parent's children array.
 		// =======================
-		if (parent != entt::null) {
+		if (entityData->parent != entt::null) {
 			// Remove this entity from list of children
-			EntityData& parentEntityData = registry.get<EntityData>(parent);
+			EntityData& parentEntityData = registry.get<EntityData>(entityData->parent);
 
 			auto iterator = std::ranges::find(parentEntityData.children, entity);
 			assert(iterator != parentEntityData.children.end() && "Invariant broken.");
 			parentEntityData.children.erase(iterator);
-
-			// Inherit grandchildren as the new children.
-			for (entt::entity child : entityData->children) {
-				parentEntityData.children.push_back(child);
-			}
 		}
 	}
 
-	// 3. Delete the entity!
+	// Delete the entity!
 	registry.destroy(entity);
 }
 
@@ -164,6 +159,27 @@ void ECS::setActive(entt::entity entity, bool isActive) {
 	}
 }
 
+bool ECS::isParentCanvas(entt::entity entity) {
+	if (entity == entt::null) {
+		return false;
+	}
+
+	if (registry.any_of<Canvas>(entity)) {
+		return true;
+	}
+
+	EntityData& entityData = registry.get<EntityData>(entity);
+	return isParentCanvas(entityData.parent);
+}
+
+void ECS::recordOriginalScene() {
+	originalScene = sceneManager.getCurrentScene();
+}
+
+void ECS::restoreOriginalScene() {
+	sceneManager.loadScene(originalScene);
+}
+
 bool ECS::isComponentActive(entt::entity entity, ComponentID componentID)
 {
 	EntityData& entityData{ registry.get<EntityData>(entity) };
@@ -189,3 +205,35 @@ void ECS::setComponentActive(entt::entity entity, ComponentID componentID, bool 
 			engine.physicsManager.removeBodiesFromSystem(engine.ecs.registry, entity);
 	}
 }
+
+void ECS::deleteEntityRecursively(entt::entity entity) {
+	EntityData* entityData = registry.try_get<EntityData>(entity);
+
+	if (entityData) {
+		for (entt::entity child : entityData->children) {
+			deleteEntityRecursively(child);
+		}
+	}
+
+	registry.destroy(entity);
+}
+
+#if false
+void ECS::onCanvasCreation(entt::registry&, entt::entity entityID) {
+	if (canvasUi != entt::null) {
+		Logger::error("Scene already contains an entity with the Canvas component! Removing another canvas component from entity {}", static_cast<unsigned>(entityID));
+		registry.remove<Canvas>(entityID);
+		return;
+	}
+
+	canvasUi = entityID;
+}
+
+void ECS::onCanvasDestruction(entt::registry&, entt::entity entityID) {
+	if (canvasUi != entityID) {
+		return;
+	}
+	
+	canvasUi = entt::null;
+}
+#endif

@@ -64,6 +64,7 @@ public:
 	void renderBloom(PairFrameBuffer& frameBuffers);
 
 	void overlayUIToBuffer(PairFrameBuffer& target);
+
 public:
 	// =============================================
 	// Public facing API.
@@ -109,6 +110,12 @@ public:
 
 	// UI projection
 	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
+	ENGINE_DLL_API void randomiseChromaticAberrationoffset();
+
+public:
+	// Editor rendering..
+	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
+	ENGINE_DLL_API void renderDebugSelectedObjects();
 
 public:
 	// =============================================
@@ -123,9 +130,12 @@ public:
 
 public:
 	bool toGammaCorrect;
+	bool toPostProcess;
+
 	float bloomFilterRadius = 0.005f;
 	float bloomCompositePercentage = 0.04f;
 
+	glm::vec3 chromaticAberration;
 private:
 	// =============================================
 	// Private internal helper functions.
@@ -147,7 +157,7 @@ private:
 	void renderText(Transform const& transform, Text const& text);
 
 	// render ui images.
-	void renderImage(Transform const& transform, Image const& image);
+	void renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier);
 
 	// renders a outline during object hovering and selection.
 	void renderOutline();
@@ -163,6 +173,8 @@ private:
 
 	// render debug shapes in particle emitter
 	void debugRenderParticleEmissionShape();
+
+	void renderPostProcessing(PairFrameBuffer& frameBuffers);
 
 	// HDR post-processing functions
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
@@ -249,6 +261,8 @@ private:
 
 	bool isOnWireframeMode;
 
+	std::vector<entt::entity> selectedEntities;
+
 public:
 	Shader basicShader;
 	Shader standardShader;
@@ -275,6 +289,8 @@ public:
 	Shader bloomDownSampleShader;
 	Shader bloomUpSampleShader;
 	Shader bloomFinalShader;
+
+	Shader postprocessingShader;
 
 	// HDR parameters
 	float hdrExposure;

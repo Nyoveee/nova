@@ -1,10 +1,12 @@
 #include "DebugShapes.h"
 #include "type_alias.h"
 #include <numbers>
+
 namespace{
 	constexpr float PI = 2 * std::numbers::pi_v<float>;
 	constexpr float PI2 = 2 * std::numbers::pi_v<float>;
 }
+
 std::vector<glm::vec3> DebugShapes::SphereAxisXY(float radius)
 {
 	std::vector<glm::vec3> result;
@@ -19,7 +21,7 @@ std::vector<glm::vec3> DebugShapes::SphereAxisXZ([[maybe_unused]] float radius)
 {
 	std::vector<glm::vec3> result;
 	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
-		result.push_back(glm::vec3{ std::cos(i),0.f,std::sin(i) });
+		result.push_back(glm::vec3{ std::cos(i),0.f,std::sin(i) } * radius);
 	return result;
 }
 

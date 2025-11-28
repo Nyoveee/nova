@@ -3,12 +3,18 @@
         {
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "AgentCube",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 16530515669484486659
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -25,27 +31,7 @@
                 "separationWeight": 0.0
             },
             "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 12,
-                                    "__variant_value": -1
-                                },
-                                "name": "cubeIndex"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 11,
-                                    "__variant_value": false
-                                },
-                                "name": "isCubeControllable"
-                            }
-                        ],
-                        "scriptId": 13648211907957112833
-                    }
-                ]
+                "scriptDatas": null
             },
             "Transform": {
                 "eulerAngles": {

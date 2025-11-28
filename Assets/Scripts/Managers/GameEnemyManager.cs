@@ -34,7 +34,7 @@ class GameEnemyManager : Script
             timeElapsed -= nextSpawnInterval;
         }
 
-        timeElapsed += Time.V_FixedDeltaTime();
+        timeElapsed += Time.V_DeltaTime();
     }
 
     private float GetNextSpawnInterval()

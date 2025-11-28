@@ -37,6 +37,8 @@ class Grunt : Enemy
         Idle,
         Chasing,
         Attacking,
+        PreJump,
+        Jump,
         Death
     }
     // State machine
@@ -58,18 +60,17 @@ class Grunt : Enemy
         animator.PlayAnimation("Grunt Idle (Base)");
 
         // Populate state machine dispatcher..
-        updateState.Add(GruntState.Spawning, Update_SpawningState);
         updateState.Add(GruntState.Idle, Update_IdleState);
         updateState.Add(GruntState.Chasing, Update_ChasingState);
         updateState.Add(GruntState.Attacking, Update_AttackState);
         updateState.Add(GruntState.Death, Update_Death);
+        updateState.Add(GruntState.PreJump, Update_PreJump);
+        updateState.Add(GruntState.Jump, Update_Jump);
 
-        LookAtPlayer();
+        // spawning afk...
+        updateState.Add(GruntState.Spawning, () => { });
 
-        Invoke(() =>
-        {
-            gruntState = GruntState.Idle;
-        }, spawningDuration);
+        LookAt(player);
     }
 
     // This function is invoked every fixed update.
@@ -118,8 +119,6 @@ class Grunt : Enemy
     /**********************************************************************
         Enemy States
     **********************************************************************/
-    private void Update_SpawningState(){ }
-
     private void Update_IdleState()
     {
         if (player == null || gruntStats == null || animator == null)
@@ -136,6 +135,14 @@ class Grunt : Enemy
     private void Update_ChasingState()
     {
         animator.SetFloat("Range", GetDistanceFromPlayer());
+        if (IsOnNavMeshOfflink())
+        {
+            gruntState = GruntState.PreJump;
+            animator.PlayAnimation("Grunt Jump");
+            NavigationAPI.stopAgent(gameObject);
+            LookAt(GetTargetJumpPosition());
+            return;
+        }
         if (GetDistanceFromPlayer() > gruntStats.chasingRadius)
         {
             animator.PlayAnimation("Grunt Idle (Base)");
@@ -151,9 +158,9 @@ class Grunt : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAtPlayer();
+        LookAt(player);
         // Move Enemy 
-        NavigationAPI.setDestination(gameObject, player.transform.position);
+        MoveToNavMeshPosition(player.transform.position);
     }
     private void Update_AttackState()
     {
@@ -162,10 +169,26 @@ class Grunt : Enemy
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        LookAtPlayer();
+        LookAt(player);
     }
-
-    private void Update_Death(){}
+    private void Update_PreJump() { }
+    private void Update_Jump()
+    {
+        if (IsJumpFinished())
+        {
+            gruntState = GruntState.Idle;
+            animator.PlayAnimation("Gunner_Idle");
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+    }
+    private void Update_Death(){
+        if (IsCurrentlyJumping() && IsJumpFinished())
+        {
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+    }
     /****************************************************************
         Animation Events
     ****************************************************************/
@@ -201,5 +224,21 @@ class Grunt : Enemy
     public void EndDeath()
     {
         Destroy(gameObject);
+    }
+    public void BeginJump()
+    {
+        gruntState = GruntState.Jump;
+        navMeshAgent.enable = false;
+    }
+
+    // ------------
+    public override void SetSpawningDuration(float seconds)
+    {
+        gruntState = GruntState.Spawning;
+
+        Invoke(() =>
+        {
+            gruntState = GruntState.Idle;
+        }, seconds);
     }
 }

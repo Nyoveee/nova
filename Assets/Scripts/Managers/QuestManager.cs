@@ -2,27 +2,47 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+
 public class QuestManager : Script
 {
-    //public required Quest[] quests;
-    // Two quests for testing purposes when without a serializable way to hold many
-    [SerializableField]
-    public required Quest? currentQuest;
-
+    private List<Quest> quests = new List<Quest>();
+    private Quest? currentQuest;
     private int questIndex;
+    private PlayerController? player;
 
     protected override void init()
     {
-        //if (quests != null && quests.Length > 0)
-        //{
-        //    //currentQuest = quests[0];
-        //    questIndex = 0;
-        //}
+        GameObject[] children = gameObject.GetChildren();
+        foreach (var child in children)
+        {
+            Quest quest = child.getScript<Quest>();
+            if (quest != null) {
+                quests.Add(quest);
+            }
+            else {
+                Debug.LogWarning("Quest child of object " + gameObject.ToString() + " does not have quest script");
+            }
+        }
+
+        if (quests != null && quests.Count > 0)
+        {
+            currentQuest = quests[0];
+            questIndex = 0;
+        }
 
         if (currentQuest != null)
         {
-            currentQuest.OnQuestStateChanged += HandleQuestStateChanged;
-            currentQuest.OnEnter();
+            StartCurrentQuest();
+        }
+
+        GameObject playerGO = GameObject.FindWithTag("Player");
+        if (playerGO != null)
+        {
+            player = playerGO.getScript<PlayerController>();
+            if (player != null)
+            {
+                player.OnPlayerDeath += HandlePlayerDeath;
+            }
         }
     }
 
@@ -32,31 +52,52 @@ public class QuestManager : Script
             currentQuest?.UpdateQuest();
     }
 
-    private void HandleQuestStateChanged(Quest.QuestState oldState, Quest.QuestState newState)
+    private void HandleQuestStateChanged(object sender, Quest.QuestStateChangedEventArgs e)
     {
-        if (newState == Quest.QuestState.Success)
+        if (e.NewState == e.OldState)
         {
-            currentQuest!.OnSuccess();
+            Debug.Log("Quest new/old states same");
+            return;
+        }
+
+        if (e.NewState == Quest.QuestState.Success)
+        {
+            currentQuest.OnSuccess();
             MoveToNextQuest();
         }
-        else if (newState == Quest.QuestState.Fail)
+        else if (e.NewState == Quest.QuestState.Fail)
         {
-            currentQuest!.OnFail();
+            currentQuest.OnFail(player.gameObject.transform);
         }
     }
 
     private void MoveToNextQuest()
     {
-        // Unsure how to handle several different types of quests right now
+        currentQuest.OnQuestStateChanged -= HandleQuestStateChanged;
         ++questIndex;
-        if (questIndex == 0)
+        if (questIndex < quests.Count)
         {
-
-            //currentQuest = quests[questIndex];
+            currentQuest = quests[questIndex];
+            StartCurrentQuest();
         }
         else
         {
-            Debug.Log("Win i guess?");
+            Debug.Log("Player Won/Quests are done");
+        }
+    }
+
+    private void StartCurrentQuest()
+    {
+        currentQuest.OnQuestStateChanged += HandleQuestStateChanged;
+        currentQuest.OnEnter();
+    }
+
+    // Automatically fails current quest
+    private void HandlePlayerDeath(object sender, EventArgs e)
+    {
+        if (currentQuest != null)
+        {
+            currentQuest.SetQuestState(Quest.QuestState.Fail);
         }
     }
 }

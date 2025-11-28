@@ -7,19 +7,23 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gunner Projectile",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 16421558470677561431
+                },
                 "tag": ""
             },
             "MeshRenderer": {
                 "materialIds": [
-                    5
+                    13343189797087805441
                 ],
                 "modelId": 4
             },
             "ParticleEmitter": {
-                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
                 "colorOverLifetime": {
@@ -33,10 +37,11 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
+                "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
@@ -45,15 +50,29 @@
                     "z": 0.03200000151991844
                 },
                 "looping": true,
+                "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.0470588244497776,
-                        "g": 0.0,
+                        "b": 1.0,
+                        "g": 1.0,
                         "r": 1.0
                     },
-                    "randomizedColor": false
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -84,8 +103,8 @@
                     "interpolationType": "Linear",
                     "selected": false
                 },
-                "startSize": 0.10000000149011612,
-                "startSpeed": 0.5,
+                "startSize": 0.5,
+                "startSpeed": 1.0,
                 "texture": 779870865798480017,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -96,11 +115,24 @@
                         "g": 1.0,
                         "r": 1.0
                     },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
                     "trailTexture": 0
                 }
             },
             "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
@@ -110,7 +142,9 @@
                 "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
-                "motionType": "Kinematic"
+                "motionQuality": "Discrete",
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -118,21 +152,21 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 16,
                                     "__variant_value": 3.0
                                 },
                                 "name": "damage"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 16,
                                     "__variant_value": 20.0
                                 },
                                 "name": "bulletSpeed"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 14,
+                                    "__variant_type": 16,
                                     "__variant_value": 20.0
                                 },
                                 "name": "lifetime"
@@ -153,7 +187,7 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
@@ -173,14 +207,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 0.25,
+                    "y": 0.25,
+                    "z": 0.25
                 },
                 "position": {
-                    "x": -1.0571825504302979,
-                    "y": 7.287747859954834,
-                    "z": -19.986373901367188
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -194,8 +228,8 @@
                     "z": 0.25
                 }
             },
-            "id": 24117337
+            "id": 5242965
         }
     ],
-    "RootEntity": 24117337
+    "RootEntity": 5242965
 }

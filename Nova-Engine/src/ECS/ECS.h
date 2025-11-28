@@ -6,6 +6,8 @@
 #include "component.h"
 #include "SceneManager.h"
 #include "Engine/prefabManager.h"
+#include "Serialisation/serialisation.h"
+
 class Engine;
 class PrefabManager;
 // A ECS wrapper around the entt framework for ease of access from other classes.
@@ -34,6 +36,11 @@ public:
 	// this recursively disables or enables an entity hierarchy..
 	ENGINE_DLL_API void setActive(entt::entity entity, bool isActive);
 
+	ENGINE_DLL_API bool isParentCanvas(entt::entity entity);
+
+	ENGINE_DLL_API void recordOriginalScene();
+	ENGINE_DLL_API void restoreOriginalScene();
+
 public:
 	// This makes a copy of the registry. We need to indicate the components to copy.
 	template <typename ...Components>
@@ -48,7 +55,8 @@ public:
 	void copyVectorEntities(std::vector<entt::entity> const& entityVec);
 
 	template<typename ...Components>
-	void copyEntity(entt::entity en, entt::entity parent);
+	//void copyEntity(entt::entity en);
+	entt::entity copyEntity(entt::entity en);
 
 	template<typename Component>
 	bool isComponentActive(entt::entity entity);
@@ -58,12 +66,22 @@ public:
 	void setComponentActive(entt::entity entity, bool isActive);
 	ENGINE_DLL_API void setComponentActive(entt::entity entity, ComponentID componentID, bool isActive);
 
-	
+private:
+	ENGINE_DLL_API void deleteEntityRecursively(entt::entity entity);
+
+#if false
+	ENGINE_DLL_API void onCanvasCreation(entt::registry&, entt::entity entityID);
+	ENGINE_DLL_API void onCanvasDestruction(entt::registry&, entt::entity entityID);
+#endif
+
 public:
 	// public!
 	entt::registry registry;
 	entt::dispatcher systemEventDispatcher; //note we probably only need one just giga dump all events in here lol. 
+
+	entt::entity canvasUi;
 	SceneManager sceneManager;
+	ResourceID originalScene;	// we store the original scene when starting simulation..
 
 private:
 	Engine& engine;
@@ -94,6 +112,8 @@ void ECS::makeRegistryCopy() {
 			}
 		}(), ...);
 	}
+
+	originalScene = sceneManager.getCurrentScene();
 }
 
 template <typename ...Components>
@@ -114,43 +134,63 @@ void ECS::rollbackRegistry() {
 			}
 		}(), ...);
 	}
+
+	sceneManager.currentScene = originalScene;
 }
 
 template<typename ...Components>
 void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
 	for (auto en : entityVec) {
-		copyEntity<ALL_COMPONENTS>(en, entt::null);
-		prefabManager.mapSerializedField(en, map);
+		entt::entity rootEntity = copyEntity<ALL_COMPONENTS>(en);
+		prefabManager.mapSerializedField(rootEntity, map);
 		map.clear();
 	}
-	//for (auto en : entityVec) {
-	//	auto tempEntity = registry.create();
-	//	([&]() {
-	//		Components* component = registry.try_get<Components>(en);
-	//		if (component) {
-	//			registry.emplace<Components>(tempEntity, *component);
-	//		}
-	//		}(), ...);
-
-	//	EntityData* ed = registry.try_get<EntityData>(en);
-	//	if (ed->parent != entt::null) {
-	//		EntityData* parent = registry.try_get<EntityData>(ed->parent);
-	//		parent->children.push_back(tempEntity);
-
-	//	}
-	//}
 }
 
 template<typename ...Components>
-void ECS::copyEntity(entt::entity en, entt::entity parent) {
+//void ECS::copyEntity(entt::entity en) {
+entt::entity ECS::copyEntity(entt::entity en) {
 	//create new entity
-	auto tempEntity = registry.create();
+	entt::id_type highestID = Serialiser::findLargestEntity(registry);
+	auto tempEntity = registry.create(static_cast<entt::entity>(highestID + 1));
+
 	([&]() {
 		Components* component = registry.try_get<Components>(en);
 		if (component) {
 			registry.emplace<Components>(tempEntity, *component);
 		}
 		}(), ...);
+
+	map[en] = tempEntity;
+
+	std::vector<entt::entity> childVec;
+
+	EntityData* entityData = registry.try_get<EntityData>(tempEntity);
+	if (entityData->children.size()) {
+		for ([[maybe_unused]] entt::entity child : entityData->children) {
+			copyEntity<ALL_COMPONENTS>(child);
+
+			childVec.push_back(map[child]);
+		}
+
+		entityData->children = childVec;
+
+		//for each child, assign the parent to the current ecsEntity
+		for (entt::entity childEn : childVec) {
+			EntityData* childData = registry.try_get<EntityData>(childEn);
+			childData->parent = tempEntity;
+		}
+	}
+	return tempEntity;
+
+#if 0
+	auto tempEntity = registry.create();
+	([&]() {
+		Components* component = registry.try_get<Components>(en);
+		if (component) {
+			registry.emplace<Components>(tempEntity, *component);
+		}
+	}(), ...);
 
 	map[en] = tempEntity;
 
@@ -179,6 +219,7 @@ void ECS::copyEntity(entt::entity en, entt::entity parent) {
 		EntityData& p = registry.get<EntityData>(ed->parent);
 		p.children.push_back(tempEntity);
 	}
+#endif
 }
 // Eseentially a proxy function since engine.h can't be included in this file
 template<typename Component>
