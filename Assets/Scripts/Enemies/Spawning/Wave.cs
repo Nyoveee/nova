@@ -7,40 +7,74 @@ using System;
 
 public class Wave : Script
 {
-    [SerializableField] 
-    private List<FixedSpawnPod> fixedSpawns;
-    [SerializableField]
-    private List<RandomEnemySpawns>? randomSpawns;
+    public Prefab fixedSpawnPod;
 
-    private ArenaManager? arenaManager;
+    private List<SpawnPodLocation> allPodsLocation = new List<SpawnPodLocation>();
+
+    [SerializableField]
+    private ArenaManager arenaManager;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     private int enemyCount;
     private bool waveStarted = false;
 
+    private bool hasInited = false;
     protected override void init()
     {
-        arenaManager = gameObject.GetParent().getScript<ArenaManager>();
+        // we can't just init here normally because order of operations of init is not defined.
+        if (hasInited)
+        {
+            return;
+        }
+           
+        hasInited = true; 
 
+#if false
         // Turns pods inactive initially if they were not already
-        foreach (FixedSpawnPod pod in fixedSpawns)
+        foreach (SpawnPodLocation pod in fixedSpawns)
         {
             pod.gameObject.SetActive(false);
+        }
+#endif
+        // i like the idea of using children as source of truth
+        GameObject[] children = gameObject.GetChildren();
+
+        foreach (GameObject child in children) {
+            SpawnPodLocation spawnPod = child.getScript<SpawnPodLocation>();
+
+            if (spawnPod != null)
+            {
+                allPodsLocation.Add(spawnPod);
+            }
         }
     }
 
     public void StartWave()
     {
+        // force init if not done.
+        init();
+
         waveStarted = true;
         spawnedEnemies.Clear();
         enemyCount = 0;
 
-        foreach (FixedSpawnPod pod in fixedSpawns)
+        foreach (SpawnPodLocation pod in allPodsLocation)
         {
-            enemyCount++;
-            pod.Spawn();
+            GameObject createdPod = Instantiate(fixedSpawnPod, pod.gameObject.transform.position);
+            FixedSpawnPod podScript = createdPod.getScript<FixedSpawnPod>();
+
+            if (podScript != null)
+            {
+                podScript.Spawn(pod.enemy, this);
+                ++enemyCount;
+            }
+            else
+            {
+                Debug.LogWarning("Pod prefab does not contain pod script!");
+            }
         }
 
+#if false
         if (randomSpawns != null)
         {
             foreach (RandomEnemySpawns randSpawns in randomSpawns)
@@ -50,6 +84,8 @@ public class Wave : Script
         }
 
         Debug.Log("Enemies: " + enemyCount);
+#endif
+
         if (enemyCount == 0)
         {
             Debug.LogWarning("Wave object " + gameObject.ToString() + " started with no enemies");

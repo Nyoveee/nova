@@ -17,11 +17,11 @@
             },
             "EntityData": {
                 "children": [
-                    1048636,
-                    1048637,
-                    1048638,
-                    1048639,
-                    1048640
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -30,7 +30,7 @@
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 9308993673842245635
@@ -240,7 +240,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048635
+            "id": 1
         },
         {
             "Animator": {
@@ -254,8 +254,8 @@
                 "name": "Grunt Model",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048635,
-                "prefabID": 4294967295,
+                "parent": 1,
+                "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 9308993673842245635
@@ -377,7 +377,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048636
+            "id": 2
         },
         {
             "EntityData": {
@@ -388,8 +388,8 @@
                 "name": "Emitter",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048635,
-                "prefabID": 4294967295,
+                "parent": 1,
+                "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 9308993673842245635
@@ -410,9 +410,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 7.006492321624085e-43,
-                    "y": 0.0,
-                    "z": 1.975830834697992e-43
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -425,13 +425,15 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.9172413945198059,
-                        "g": 0.07907254993915558,
-                        "r": 0.5241690874099731
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
@@ -462,12 +464,12 @@
                             "z": -5.0
                         }
                     },
-                    "emissionShape": "Edge",
+                    "emissionShape": "Point",
                     "radiusEmitter": {
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -475,7 +477,7 @@
                     "selected": false
                 },
                 "startSize": 0.10000000149011612,
-                "startSpeed": 0.0,
+                "startSpeed": 1.0,
                 "texture": 16344311177990914191,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -545,7 +547,7 @@
                     "z": 1.0001448392868042
                 }
             },
-            "id": 1048637
+            "id": 3
         },
         {
             "EntityData": {
@@ -556,8 +558,8 @@
                 "name": "Hitbox Position",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048635,
-                "prefabID": 4294967295,
+                "parent": 1,
+                "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 9308993673842245635
@@ -608,7 +610,7 @@
                     "z": 0.6369405388832092
                 }
             },
-            "id": 1048638
+            "id": 4
         },
         {
             "BoxCollider": {
@@ -632,8 +634,8 @@
                 "name": "Grunt Collider",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048635,
-                "prefabID": 4294967295,
+                "parent": 1,
+                "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 9308993673842245635
@@ -641,6 +643,7 @@
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -652,7 +655,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -714,7 +718,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048639
+            "id": 5
         },
         {
             "EntityData": {
@@ -725,8 +729,8 @@
                 "name": "Ichor Spawn Point",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048635,
-                "prefabID": 4294967295,
+                "parent": 1,
+                "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 9308993673842245635
@@ -777,8 +781,8 @@
                     "z": 1.0
                 }
             },
-            "id": 1048640
+            "id": 6
         }
     ],
-    "RootEntity": 1048635
+    "RootEntity": 1
 }

@@ -2,6 +2,7 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
+using System;
 
 public abstract class SpawnPod : Script
 {
@@ -12,14 +13,12 @@ public abstract class SpawnPod : Script
     protected bool animating = false;
     protected float timeElapsed = 0f;
     protected Vector3 EndPos;
+    protected Vector3 StartPos;
 
     [SerializableField]
     protected float yOffset = 5f;
     [SerializableField]
     protected float duration = 2f;
-
-    [SerializableField]
-    protected Wave wave;
 
     protected override void init()
     {
@@ -35,7 +34,7 @@ public abstract class SpawnPod : Script
 
         if (ratio < 1)
         {
-            enemyTransform.position = Vector3.Lerp(podTransform.position, EndPos, ratio);
+            enemyTransform.position = Vector3.Lerp(StartPos, EndPos, Mathf.Pow(ratio, 0.15f));
         }
         else
         {
@@ -47,8 +46,7 @@ public abstract class SpawnPod : Script
             OnAnimationFinished();
         }
 
-        timeElapsed += Time.V_FixedDeltaTime();
-
+        timeElapsed += Time.V_DeltaTime();
     }
 
     protected override void exit()
@@ -67,9 +65,13 @@ public abstract class SpawnPod : Script
         timeElapsed = 0f;
         animating = true;
 
-        // testing gravity/rigid body
         EndPos = podTransform.position;
-        EndPos.y += yOffset;
+        StartPos = EndPos - new Vector3(0, yOffset, 0);
+
+        enemyTrans.position = StartPos;
+
+        Enemy enemyScript = enemyTrans.gameObject.getScript<Enemy>();
+        enemyScript?.SetSpawningDuration(duration);
     }
 
     // overridden by subclasses

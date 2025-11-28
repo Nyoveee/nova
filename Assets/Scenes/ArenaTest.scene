@@ -7,9 +7,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "WaveEnemyTracker",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 41943223,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Transform": {
@@ -65,15 +70,19 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Muzzle",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 42991812,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
-                "angularVelocity": 0.0,
                 "burstAmount": 30,
-                "burstRate": 50.0,
+                "burstRate": 0.0,
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
@@ -85,27 +94,42 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 7.538985738067516e-43,
+                    "y": 2.9121316647991457e+20,
+                    "z": 3.29305139116332e-43
                 },
-                "lifeTime": 0.25,
+                "initialAngularVelocity": 0.0,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
                     "y": 0.09000000357627869,
                     "z": 0.03200000151991844
                 },
-                "looping": false,
-                "maxParticles": 30,
+                "looping": true,
+                "maxAngularVelocityOffset": 0.0,
+                "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.5724138021469116,
-                        "g": 0.5724138021469116,
-                        "r": 0.5724138021469116
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
                     },
-                    "randomizedColor": false
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -129,12 +153,12 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 10.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 0.20000000298023224,
                 "startSpeed": 1.0,
@@ -148,15 +172,26 @@
                         "g": 1.0,
                         "r": 1.0
                     },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
                     "trailTexture": 0
                 }
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": 4.172753688180819e-05,
-                    "y": -1.322710633277893,
-                    "z": -4.290500146453269e-05
+                    "x": 4.172739863861352e-05,
+                    "y": -1.322710394859314,
+                    "z": -4.290499782655388e-05
                 },
                 "localEulerAngles": {
                     "x": -3.141509532928467,
@@ -164,15 +199,15 @@
                     "z": -3.1415090560913086
                 },
                 "localPosition": {
-                    "x": -0.007286548614501953,
-                    "y": 0.7915422916412354,
-                    "z": 1.2636604309082031
+                    "x": -0.00728607177734375,
+                    "y": 0.7915425896644592,
+                    "z": 1.2636642456054688
                 },
                 "localRotation": {
                     "w": 0.6610257029533386,
-                    "x": -3.907854079443496e-06,
+                    "x": -3.907901373167988e-06,
                     "y": 0.750363290309906,
-                    "z": -3.5328596368344733e-06
+                    "z": -3.532804157657665e-06
                 },
                 "localScale": {
                     "x": 1.0000337362289429,
@@ -180,20 +215,20 @@
                     "z": 0.9999752044677734
                 },
                 "position": {
-                    "x": 0.3252445459365845,
-                    "y": -0.894049882888794,
+                    "x": 0.3252429962158203,
+                    "y": -0.8940504193305969,
                     "z": 51.94109344482422
                 },
                 "rotation": {
                     "w": 0.7891606092453003,
-                    "x": 3.288995685579721e-06,
+                    "x": 3.2889390695345355e-06,
                     "y": -0.6141868829727173,
-                    "z": -4.115235242352355e-06
+                    "z": -4.115277533855988e-06
                 },
                 "scale": {
-                    "x": 1.000027060508728,
+                    "x": 1.0000276565551758,
                     "y": 1.0000559091567993,
-                    "z": 1.0000255107879639
+                    "z": 1.0000264644622803
                 }
             },
             "id": 42991817
@@ -205,9 +240,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Shotgun",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 42991815,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -234,41 +274,41 @@
                     "z": 3.1415419578552246
                 },
                 "localEulerAngles": {
-                    "x": -0.004268329590559006,
+                    "x": -0.004266245756298304,
                     "y": -1.569331407546997,
-                    "z": 0.0043253181502223015
+                    "z": 0.004323233384639025
                 },
                 "localPosition": {
-                    "x": -0.3924241065979004,
-                    "y": 0.00026917457580566406,
-                    "z": 0.049320220947265625
+                    "x": -0.392423152923584,
+                    "y": 0.0002690553665161133,
+                    "z": 0.04931640625
                 },
                 "localRotation": {
                     "w": 0.7076143026351929,
-                    "x": 1.796656579244882e-05,
+                    "x": 1.796765354811214e-05,
                     "y": -0.7065988779067993,
-                    "z": 2.2328631530399434e-05
+                    "z": 2.232759834441822e-05
                 },
                 "localScale": {
-                    "x": 1.0002843141555786,
-                    "y": 0.9999356269836426,
-                    "z": 0.9998378753662109
+                    "x": 1.0002844333648682,
+                    "y": 0.9999355673789978,
+                    "z": 0.9998376965522766
                 },
                 "position": {
-                    "x": 0.8547326326370239,
-                    "y": -1.6851725578308105,
-                    "z": 53.099205017089844
+                    "x": 0.8547316789627075,
+                    "y": -1.685173511505127,
+                    "z": 53.09920883178711
                 },
                 "rotation": {
                     "w": 0.6622745394706726,
-                    "x": 2.1199883121880703e-05,
+                    "x": 2.119881537510082e-05,
                     "y": 0.7492612600326538,
-                    "z": -1.928634628711734e-05
+                    "z": -1.928733581735287e-05
                 },
                 "scale": {
-                    "x": 1.0002939701080322,
-                    "y": 0.9999014139175415,
-                    "z": 1.0000308752059937
+                    "x": 1.0002951622009277,
+                    "y": 0.9999013543128967,
+                    "z": 1.0000323057174683
                 }
             },
             "id": 42991816
@@ -291,9 +331,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Shotgun Holder",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 42991812,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -302,45 +347,45 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -0.12165946513414383,
+                    "y": -0.12165945023298264,
                     "z": 3.1415927410125732
                 },
                 "localEulerAngles": {
-                    "x": -2.434297555198306e-11,
-                    "y": 1.154746200882073e-07,
-                    "z": 8.886629279669656e-12
+                    "x": -2.4342847182445837e-11,
+                    "y": 9.312458360000164e-08,
+                    "z": 8.886834844401559e-12
                 },
                 "localPosition": {
-                    "x": 0.00018644332885742188,
-                    "y": 9.1552734375e-05,
-                    "z": 0.000522613525390625
+                    "x": 0.000186920166015625,
+                    "y": 9.167194366455078e-05,
+                    "z": 0.00052642822265625
                 },
                 "localRotation": {
                     "w": 1.0,
-                    "x": -1.2171455683607224e-11,
-                    "y": 5.2149687235214515e-08,
-                    "z": 4.443367548900845e-12
+                    "x": -1.2171388896753399e-11,
+                    "y": 4.283728927134689e-08,
+                    "z": 4.443468162862452e-12
                 },
                 "localScale": {
-                    "x": 1.0001417398452759,
+                    "x": 1.0001424551010132,
                     "y": 1.00003981590271,
-                    "z": 1.0000172853469849
+                    "z": 1.0000178813934326
                 },
                 "position": {
-                    "x": 0.4711189270019531,
-                    "y": -1.6854419708251953,
+                    "x": 0.47111743688583374,
+                    "y": -1.6854426860809326,
                     "z": 53.19579315185547
                 },
                 "rotation": {
-                    "w": -0.0607922188937664,
-                    "x": 1.3471028112443939e-11,
+                    "w": -0.06079220399260521,
+                    "x": 1.3471150410448995e-11,
                     "y": 0.9981505274772644,
-                    "z": 1.94584036383727e-11
+                    "z": 1.9458247513259863e-11
                 },
                 "scale": {
-                    "x": 1.0001927614212036,
-                    "y": 0.9999658465385437,
-                    "z": 1.0000094175338745
+                    "x": 1.0001943111419678,
+                    "y": 0.9999657869338989,
+                    "z": 1.0000104904174805
                 }
             },
             "id": 42991815
@@ -352,9 +397,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Sniper Mesh",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 42991813,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -371,41 +421,41 @@
                     "z": 3.1415321826934814
                 },
                 "localEulerAngles": {
-                    "x": 4.82295363326557e-05,
-                    "y": 1.4230406284332275,
-                    "z": 2.933373616542667e-05
+                    "x": 4.824878851650283e-05,
+                    "y": 1.4230401515960693,
+                    "z": 2.9352991987252608e-05
                 },
                 "localPosition": {
-                    "x": -6.29425048828125e-05,
-                    "y": -7.390975952148438e-05,
-                    "z": 0.000392913818359375
+                    "x": -6.4849853515625e-05,
+                    "y": -7.37905502319336e-05,
+                    "z": 0.000400543212890625
                 },
                 "localRotation": {
-                    "w": 0.7573704719543457,
-                    "x": 8.687060471856967e-06,
-                    "y": 0.6529854536056519,
-                    "z": -4.63784135718015e-06
+                    "w": 0.7573703527450562,
+                    "x": 8.68807273946004e-06,
+                    "y": 0.6529855728149414,
+                    "z": -4.636824542103568e-06
                 },
                 "localScale": {
                     "x": 1.0001451969146729,
                     "y": 0.9999194145202637,
-                    "z": 1.0000214576721191
+                    "z": 1.0000215768814087
                 },
                 "position": {
-                    "x": 0.47148633003234863,
-                    "y": -1.6851792335510254,
-                    "z": 53.19599914550781
+                    "x": 0.47148579359054565,
+                    "y": -1.685179591178894,
+                    "z": 53.196006774902344
                 },
                 "rotation": {
-                    "w": 0.6688038110733032,
-                    "x": 1.2456664990168065e-05,
-                    "y": 0.7434389591217041,
-                    "z": -9.07947378436802e-06
+                    "w": 0.6688037514686584,
+                    "x": 1.2457731827453244e-05,
+                    "y": 0.7434390187263489,
+                    "z": -9.078657058125827e-06
                 },
                 "scale": {
-                    "x": 1.0001437664031982,
+                    "x": 1.0001442432403564,
                     "y": 0.999921441078186,
-                    "z": 1.0000667572021484
+                    "z": 1.0000678300857544
                 }
             },
             "id": 42991814
@@ -428,9 +478,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Sniper Holder",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 42991812,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -438,46 +493,46 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": 9.218488798978797e-07,
-                    "y": 0.2533561885356903,
-                    "z": -1.087158943846589e-05
+                    "x": 9.216767011821503e-07,
+                    "y": 0.2533561587333679,
+                    "z": -1.0871629456232768e-05
                 },
                 "localEulerAngles": {
                     "x": -3.1415903568267822,
-                    "y": -0.131696879863739,
+                    "y": -0.13169682025909424,
                     "z": -3.1415820121765137
                 },
                 "localPosition": {
                     "x": -0.00016450881958007813,
-                    "y": 0.00042831897735595703,
+                    "y": 0.0004286766052246094,
                     "z": 0.000667572021484375
                 },
                 "localRotation": {
-                    "w": -0.06580086052417755,
-                    "x": -5.370829967432655e-06,
+                    "w": -0.06580084562301636,
+                    "x": -5.37084270035848e-06,
                     "y": 0.9978327751159668,
-                    "z": -1.4731919009136618e-06
+                    "z": -1.473109364269476e-06
                 },
                 "localScale": {
-                    "x": 0.9999960660934448,
+                    "x": 0.9999961256980896,
                     "y": 1.0000760555267334,
-                    "z": 1.0000040531158447
+                    "z": 1.0000039339065552
                 },
                 "position": {
-                    "x": 0.47144973278045654,
-                    "y": -1.685105323791504,
+                    "x": 0.47144821286201477,
+                    "y": -1.685105800628662,
                     "z": 53.19560623168945
                 },
                 "rotation": {
-                    "w": 0.9919870495796204,
-                    "x": 1.1439456102380063e-06,
-                    "y": 0.12633956968784332,
-                    "z": -5.450475782708963e-06
+                    "w": 0.9919871687889099,
+                    "x": 1.1438622777859564e-06,
+                    "y": 0.12633953988552094,
+                    "z": -5.4504830586665776e-06
                 },
                 "scale": {
-                    "x": 1.0000463724136353,
+                    "x": 1.0000473260879517,
                     "y": 1.0000020265579224,
-                    "z": 0.9999975562095642
+                    "z": 0.9999979138374329
                 }
             },
             "id": 42991813
@@ -493,53 +548,58 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Gun Holder",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 42991811,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Transform": {
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -0.12165932357311249,
+                    "y": -0.12165934592485428,
                     "z": 3.1415927410125732
                 },
                 "localEulerAngles": {
-                    "x": -3.725762753870043e-12,
-                    "y": -2.5836754957708763e-07,
-                    "z": 2.1026926727563122e-11
+                    "x": -3.725579740543328e-12,
+                    "y": -2.6315180434721697e-07,
+                    "z": 2.102694927896831e-11
                 },
                 "localPosition": {
-                    "x": -0.13096606731414795,
-                    "y": -0.2118719220161438,
+                    "x": -0.1309659481048584,
+                    "y": -0.2118718922138214,
                     "z": 0.3151206970214844
                 },
                 "localRotation": {
                     "w": 1.0,
-                    "x": -1.8628341057203013e-12,
-                    "y": -1.315760016495915e-07,
-                    "z": 1.0513468567951989e-11
+                    "x": -1.862742815897378e-12,
+                    "y": -1.3875282434128167e-07,
+                    "z": 1.0513478976292845e-11
                 },
                 "localScale": {
-                    "x": 0.1946531981229782,
-                    "y": 0.19464293122291565,
-                    "z": 0.19464828073978424
+                    "x": 0.19465331733226776,
+                    "y": 0.19464291632175446,
+                    "z": 0.1946483552455902
                 },
                 "position": {
-                    "x": 0.4713669717311859,
-                    "y": -1.6855335235595703,
-                    "z": 53.196285247802734
+                    "x": 0.47136640548706055,
+                    "y": -1.6855343580245972,
+                    "z": 53.1962890625
                 },
                 "rotation": {
-                    "w": -0.060792166739702225,
-                    "x": 8.295950731929125e-12,
+                    "w": -0.06079215928912163,
+                    "x": 8.295975018057788e-12,
                     "y": 0.9981505274772644,
-                    "z": 7.579579325289743e-12
+                    "z": 7.579496058562896e-12
                 },
                 "scale": {
-                    "x": 1.0000510215759277,
-                    "y": 0.9999260306358337,
-                    "z": 0.9999921321868896
+                    "x": 1.0000518560409546,
+                    "y": 0.999925971031189,
+                    "z": 0.9999926090240479
                 }
             },
             "id": 42991812
@@ -556,9 +616,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Camera",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 42991810,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Transform": {
@@ -568,41 +633,41 @@
                     "z": -3.1415927410125732
                 },
                 "localEulerAngles": {
-                    "x": -1.2414098395086004e-11,
-                    "y": -9.80379581960733e-07,
-                    "z": -5.387303884246686e-12
+                    "x": -1.2414115742320764e-11,
+                    "y": -9.803793545870576e-07,
+                    "z": -5.387266154011083e-12
                 },
                 "localPosition": {
                     "x": 4.100799560546875e-05,
-                    "y": 3.7431423664093018,
+                    "y": 3.7431414127349854,
                     "z": 3.814697265625e-06
                 },
                 "localRotation": {
                     "w": 1.0,
-                    "x": -6.20705440171343e-12,
+                    "x": -6.207063509011679e-12,
                     "y": -4.872891850027372e-07,
-                    "z": -2.6936456537507425e-12
+                    "z": -2.6936265717925068e-12
                 },
                 "localScale": {
-                    "x": 5.137477397918701,
+                    "x": 5.137478351593018,
                     "y": 5.137232780456543,
-                    "z": 5.137303829193115
+                    "z": 5.137304306030273
                 },
                 "position": {
                     "x": -4.116886339033954e-05,
-                    "y": -0.5970981121063232,
+                    "y": -0.5970990657806396,
                     "z": 54.884891510009766
                 },
                 "rotation": {
                     "w": -0.060792285948991776,
-                    "x": -2.311319538539358e-12,
+                    "x": -2.3113000229002534e-12,
                     "y": 0.9981504678726196,
-                    "z": 6.359327994753805e-12
+                    "z": 6.359335801009447e-12
                 },
                 "scale": {
-                    "x": 5.1376051902771,
+                    "x": 5.137606143951416,
                     "y": 5.137232780456543,
-                    "z": 5.137432098388672
+                    "z": 5.13743257522583
                 }
             },
             "id": 42991811
@@ -653,9 +718,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Player",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 10099665675755765761,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": "Player"
             },
             "MeshRenderer": {
@@ -665,6 +735,7 @@
                 "modelId": 4
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -676,7 +747,8 @@
                 "layer": "Moving",
                 "mass": 1.0,
                 "motionQuality": "Discrete",
-                "motionType": "Dynamic"
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": null
@@ -734,9 +806,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Light",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Light": {
@@ -811,9 +888,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Arena",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -872,9 +954,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "NavMeshSurface_Humanoid",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "NavMeshSurface": {
@@ -934,9 +1021,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "GruntSpawn",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 41943223,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Transform": {
@@ -1005,9 +1097,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Floor",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -1017,6 +1114,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -1028,7 +1126,8 @@
                 "layer": "Wall",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -1087,9 +1186,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Wave 1",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 41943224,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -1148,9 +1252,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "RandomizedEnemies",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 41943223,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -1215,9 +1324,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Game Global Reference Manager",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": "Game Global Reference Manager"
             },
             "Scripts": {

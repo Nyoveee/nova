@@ -60,7 +60,6 @@ class Grunt : Enemy
         animator.PlayAnimation("Grunt Idle (Base)");
 
         // Populate state machine dispatcher..
-        updateState.Add(GruntState.Spawning, Update_SpawningState);
         updateState.Add(GruntState.Idle, Update_IdleState);
         updateState.Add(GruntState.Chasing, Update_ChasingState);
         updateState.Add(GruntState.Attacking, Update_AttackState);
@@ -68,12 +67,10 @@ class Grunt : Enemy
         updateState.Add(GruntState.PreJump, Update_PreJump);
         updateState.Add(GruntState.Jump, Update_Jump);
 
-        LookAt(player);
+        // spawning afk...
+        updateState.Add(GruntState.Spawning, () => { });
 
-        Invoke(() =>
-        {
-            gruntState = GruntState.Idle;
-        }, spawningDuration);
+        LookAt(player);
     }
 
     // This function is invoked every fixed update.
@@ -170,8 +167,6 @@ class Grunt : Enemy
     /**********************************************************************
         Enemy States
     **********************************************************************/
-    private void Update_SpawningState(){ }
-
     private void Update_IdleState()
     {
         if (player == null || gruntStats == null || animator == null)
@@ -283,5 +278,16 @@ class Grunt : Enemy
     {
         gruntState = GruntState.Jump;
         navMeshAgent.enable = false;
+    }
+
+    // ------------
+    public override void SetSpawningDuration(float seconds)
+    {
+        gruntState = GruntState.Spawning;
+
+        Invoke(() =>
+        {
+            gruntState = GruntState.Idle;
+        }, seconds);
     }
 }

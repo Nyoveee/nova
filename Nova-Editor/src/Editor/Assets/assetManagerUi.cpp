@@ -60,7 +60,21 @@ void AssetManagerUI::update() {
 			EntityData* entityData = editor.engine.ecs.registry.try_get<EntityData>(entity);
 			std::string fileName = entityData->name;
 			std::optional<std::ofstream> opt = createAssetFile(".prefab");
-			Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, opt.value(), std::numeric_limits<std::size_t>::max());
+
+			if (opt != std::nullopt) {
+				Serialiser::serialisePrefab(editor.engine.ecs.registry, entity, opt.value());
+			}
+
+
+			//std::unordered_map<FolderID, Folder> directories = assetManager.getDirectories();
+			//Folder folder = directories[selectedFolderId];
+
+			//ResourceID id;
+			//for (auto iterator = folder.assets.begin(); iterator != folder.assets.end(); iterator++) {
+			//	id = *iterator;
+			//}
+			
+			//editor.engine.prefabManager.convertToPrefab(entity, id);
 		}
 
 		ImGui::EndDragDropTarget();

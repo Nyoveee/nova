@@ -17,7 +17,7 @@ std::unordered_map<ResourceID, entt::entity> const& PrefabManager::getPrefabMap(
 	return prefabMap;
 }
 
-entt::entity PrefabManager::loadPrefab(ResourceID id) {
+PrefabEntityID PrefabManager::loadPrefab(ResourceID id) {
 	auto&& [resource, result] = resourceManager.getResource<Prefab>(id);
 
 	if (!resource) {
@@ -26,15 +26,52 @@ entt::entity PrefabManager::loadPrefab(ResourceID id) {
 
 	const char* fileName = resource->getFilePath().string.c_str();
 
-	entt::entity entity = Serialiser::deserialisePrefab(fileName, ecsRegistry, static_cast<std::size_t>(id), prefabRegistry);
-	prefabMap[id] = entity;
+	PrefabEntityID prefabEntityId = Serialiser::deserialisePrefab(fileName, TypedResourceID<Prefab>{ id }, prefabRegistry);
 
-	return entity;
+	if (prefabEntityId != entt::null) {
+		prefabMap[id] = prefabEntityId;
+	}
+
+	return prefabEntityId;
 }
 
-void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> entityMap) {
+entt::entity PrefabManager::instantiatePrefab(ResourceID id) {
+	// if id is not present in prefabMap, call deserialise function to update the prefabRegistry
+	PrefabEntityID prefabEntityId = entt::null;
 
-	auto* scripts = ecsRegistry.try_get<Scripts>(entity);
+	if (prefabMap.find(id) == prefabMap.end()) {
+		prefabEntityId = loadPrefab(id);
+
+		if (prefabEntityId == entt::null) {
+			return entt::null;
+		}
+	}
+	else {
+		prefabEntityId = prefabMap.at(id);
+	}
+	
+	// Locating a prefab entity based of invalid resource id.
+	if (prefabEntityId == entt::null) {
+		Logger::error("Attempting to instantiate a prefab with potentially invalid resource id or corrupted prefab file.");
+		return entt::null;
+	}
+
+	entt::entity newPrefabInstanceId = instantiatePrefabRecursive<ALL_COMPONENTS>(prefabEntityId);
+
+	if (newPrefabInstanceId != entt::null) {
+		// Strong guarantee.
+		ecsRegistry.get<EntityData>(newPrefabInstanceId).parent = entt::null;
+		mapSerializedField(newPrefabInstanceId, prefabEntityIdToInstanceId);
+	}
+
+	prefabEntityIdToInstanceId.clear();
+
+	return newPrefabInstanceId;
+}
+
+void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<PrefabEntityID, entt::entity> const& entityMapping) {
+	Scripts* scripts = ecsRegistry.try_get<Scripts>(entity);
+
 	if (scripts != nullptr) {
 		for (ScriptData& scriptDatas : scripts->scriptDatas) {
 			for (FieldData& fields : scriptDatas.fields) {
@@ -42,22 +79,26 @@ void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<e
 					using Type = std::decay_t<decltype(value)>;
 
 					if constexpr (std::same_as<Type, entt::entity>) {
-						auto iterator = entityMap.find(value);
-						if (iterator != entityMap.end()) {
-							if (value != iterator->second) {
-								value = iterator->second;
-							}
+						auto iterator = entityMapping.find(value);
+
+						if (iterator != entityMapping.end()) {
+							value = iterator->second;
 						}
 					}
 
-					}, fields.data);
+				}, fields.data);
 			}
 		}
 	}
 
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(entity);
+
+	if (!entityData) {
+		return;
+	}
+
 	for (entt::entity child : entityData->children) {
-		mapSerializedField(child, map);
+		mapSerializedField(child, entityMapping);
 	}
 
 }
@@ -135,6 +176,22 @@ void PrefabManager::prefabBroadcast() {
 	}
 }
 
+entt::entity PrefabManager::getParent(entt::entity prefabInstance) {
+	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
+	if (entityData->parent == entt::null) {
+		return prefabInstance;
+	}
+
+	entt::entity parent = entityData->parent;
+	while (entityData->parent != entt::null) {
+		parent = entityData->parent;
+		entityData = ecsRegistry.try_get<EntityData>(parent);
+		
+		
+	}
+	return parent;
+}
+
 
 void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 	//get the root prefab
@@ -148,7 +205,21 @@ void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 		return;
 	}
 
-	updateFromPrefabInstance(iterator->second);
+
+
+	//updateFromPrefabInstance(iterator->second);
+	updateFromPrefabInstance(getParent(prefabInstance));
+}
+
+void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
+	EntityData* entityData = ecsRegistry.try_get<EntityData>(entity);
+	entityData->prefabMetaData.prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+	entityData->prefabID = TypedResourceID<Prefab>{ static_cast<std::size_t>(id) };
+
+	for (entt::entity child : entityData->children) {
+		convertToPrefab(child, id);
+	}
+
 }
 
 void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
@@ -183,13 +254,20 @@ void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry&
 				}
 			}
 
-			if (&toRegistry == &prefabRegistry) {
+			//If toRegistry is prefabRegistry or the toRegistry does not contain the component
+			auto* entityComponent = toRegistry.try_get<Components>(toEntity);
+			if (&toRegistry == &prefabRegistry || entityComponent == nullptr) {
 				overrideCheck = true;
 			}
 
 			if (component && overrideCheck) {
-				auto* entityComponent = toRegistry.try_get<Components>(toEntity);
-				*entityComponent = *component;
+				auto* newEntityComponent = toRegistry.try_get<Components>(toEntity);
+				if (newEntityComponent == nullptr) {
+					toRegistry.emplace_or_replace<Components>(toEntity, Components{});
+				}
+				newEntityComponent = toRegistry.try_get<Components>(toEntity);
+				
+				*newEntityComponent = *component;
 			}
 		}
 		}(), ...);

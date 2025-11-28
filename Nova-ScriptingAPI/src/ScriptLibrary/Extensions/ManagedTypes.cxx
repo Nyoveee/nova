@@ -479,7 +479,7 @@ void Sequence_::pause() {
 }
 
 void Sequence_::play() {
-	nativeComponent()->timeElapsed = 0.f;
+	Interface::engine->animationSystem.resetSequence(*nativeComponent());
 	nativeComponent()->isPlaying = true;
 }
 

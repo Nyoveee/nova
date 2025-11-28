@@ -317,4 +317,42 @@ public:
 	std::string string;
 };
 
+// ========================================
+// Entity IDs
+// (The different type of entity ids were way too confusing to keep track)
+// 
+// - Entity ID that lives in the prefab file.
+// - Entity ID that lives in the prefab registry.
+// 
+// We use entt::entity to refer to entity id in our main ECS registry.
+// ========================================
+
+#if false
+struct PrefabFileEntityID {
+	constexpr PrefabFileEntityID();
+	constexpr PrefabFileEntityID(unsigned id);
+
+	constexpr operator unsigned() const;
+
+	constexpr friend bool operator==(PrefabFileEntityID const& lhs, PrefabFileEntityID const& rhs);
+	friend struct std::hash<PrefabFileEntityID>;
+
+public:
+	unsigned id;
+};
+
+struct PrefabRegistryEntityID {
+	constexpr PrefabRegistryEntityID();
+	constexpr PrefabRegistryEntityID(unsigned id);
+
+	constexpr operator unsigned() const;
+
+	constexpr friend bool operator==(PrefabRegistryEntityID const& lhs, PrefabRegistryEntityID  const& rhs);
+	friend struct std::hash<PrefabRegistryEntityID>;
+
+public:
+	unsigned id;
+};
+#endif
+
 #include "type_alias.ipp"

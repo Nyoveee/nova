@@ -355,7 +355,7 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 		}
 	}
 
-	ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || editor.engine.isInSimulationMode());
+	//ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || editor.engine.isInSimulationMode());
 
 	// Adding Scripts
 	editor.componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
@@ -388,7 +388,7 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 	if (it != std::end(scriptDatas)) {
 		scriptDatas.erase(it);
 	}
-	ImGui::EndDisabled();
+	//ImGui::EndDisabled();
 }
 
 template<>

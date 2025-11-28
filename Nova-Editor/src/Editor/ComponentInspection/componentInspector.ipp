@@ -5,7 +5,7 @@
 #include "Editor/ImGui/misc/cpp/imgui_stdlib.h"
 
 template<typename ...Components>
-void ComponentInspector::displayComponentDropDownList(entt::entity entity) {
+void ComponentInspector::displayComponentDropDownList(entt::entity entity, entt::registry& registry) {
 	if (ImGui::BeginCombo("##", "Add Component")) {
 		// Add a search bar..
 		ImGui::InputText("Search", &componentSearchQuery);
@@ -22,7 +22,7 @@ void ComponentInspector::displayComponentDropDownList(entt::entity entity) {
 			// ignore EntityData or Transform.. this component should be hidden and not be allowed to add directly.
 			if constexpr (!std::same_as<Components, EntityData> && !std::same_as<Components, Transform>) {
 				// if entity already has this component, don't display option..
-				if (ecs.registry.all_of<Components>(entity)) {
+				if (registry.all_of<Components>(entity)) {
 					return;
 				}
 
@@ -43,7 +43,7 @@ void ComponentInspector::displayComponentDropDownList(entt::entity entity) {
 #endif
 				if (uppercaseTypeName.find(uppercaseSearchQuery) != std::string::npos) {
 					if (ImGui::Selectable(name)) {
-						ecs.registry.emplace_or_replace<Components>(entity, Components{});
+						registry.emplace_or_replace<Components>(entity, Components{});
 					}
 				}
 			}

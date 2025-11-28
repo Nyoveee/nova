@@ -170,6 +170,12 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 		// executes fixed update based on accumulated time.
 		int numOfFixedSteps = 0;
 		accumulatedTime += deltaTime;
+		
+		double after = glfwGetTime();
+		deltaTime = after - before;
+		before = glfwGetTime();
+
+		currentFps = 1 / deltaTime;
 
 		while (accumulatedTime >= fixedDeltaTime) {
 			accumulatedTime -= fixedDeltaTime;
@@ -185,13 +191,7 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 		// executes a normal update
 		updateFunc(static_cast<float>(deltaTime));
 
-		double after = glfwGetTime();
-		deltaTime = after - before;
 
-		currentFps = 1 / deltaTime;
-
-		// account for vsync duration in delta time calculation
-		before = glfwGetTime();
 		{
 			ZoneScopedNC("glfwSwapBuffers", tracy::Color::AliceBlue);
 			glfwSwapBuffers(glfwWindow);

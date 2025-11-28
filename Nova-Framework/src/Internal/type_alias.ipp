@@ -364,3 +364,44 @@ struct std::hash<ResourceFilePath> {
 		return std::hash<std::string>{}(resourceFilePath.string);
 	}
 };
+
+// ========================================
+// Entity IDs..
+// ========================================
+
+#if false
+// ---- Prefab File Entity ID ---
+constexpr PrefabFileEntityID::PrefabFileEntityID() : id{ std::numeric_limits<unsigned>::max() } {}
+constexpr PrefabFileEntityID::PrefabFileEntityID(unsigned id) : id{ id } {}
+
+constexpr PrefabFileEntityID::operator unsigned() const { return id; }
+
+constexpr bool operator==(PrefabFileEntityID const& lhs, PrefabFileEntityID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+template<>
+struct std::hash<PrefabFileEntityID> {
+	std::size_t operator()(PrefabFileEntityID const& resourceFilePath) const noexcept {
+		return std::hash<unsigned>{}(resourceFilePath.id);
+	}
+};
+
+// ---- Prefab Registry Entity ID ---
+
+constexpr PrefabRegistryEntityID::PrefabRegistryEntityID() : id{ std::numeric_limits<unsigned>::max() } {}
+constexpr PrefabRegistryEntityID::PrefabRegistryEntityID(unsigned id) : id{ id } {}
+
+constexpr PrefabRegistryEntityID::operator unsigned() const { return id; }
+
+constexpr bool operator==(PrefabRegistryEntityID const& lhs, PrefabRegistryEntityID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+template<>
+struct std::hash<PrefabRegistryEntityID> {
+	std::size_t operator()(PrefabRegistryEntityID const& resourceFilePath) const noexcept {
+		return std::hash<unsigned>{}(resourceFilePath.id);
+	}
+};
+#endif

@@ -16,6 +16,7 @@
 #include "Profiling.h"
 #include "Logger.h"
 
+#include "RandomRange.h"
 #include "systemResource.h"
 
 #undef max
@@ -50,6 +51,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	bloomDownSampleShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomDownSample.frag" },
 	bloomUpSampleShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomUpSample.frag" },
 	bloomFinalShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
+	postprocessingShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/postprocessing.frag" },
 	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
 	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
 	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
@@ -92,8 +94,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
-	hdrExposure					{ 0.25f },
-	toneMappingMethod			{ ToneMappingMethod::None },
+	hdrExposure					{ 0.9f },
+	toneMappingMethod			{ ToneMappingMethod::ACES },
 
 	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
 	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
@@ -103,8 +105,11 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	uiObjectIdFrameBuffer		{ gameWidth, gameHeight, { GL_R32UI } },
 	bloomFrameBuffer			{ gameWidth, gameHeight, 5 },
 	toGammaCorrect				{ true },
+	toPostProcess				{ false },
 	UIProjection				{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
+	randomiseChromaticAberrationoffset();
+
 	printOpenGLDriverDetails();
 
 	glLineWidth(2.f);
@@ -422,6 +427,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 
 	renderBloom(frameBuffers);
 
+	if(toPostProcess)
+		renderPostProcessing(frameBuffers);
+
 	// Apply HDR tone mapping + gamma correction post-processing
 	renderHDRTonemapping(frameBuffers);
 }
@@ -598,6 +606,7 @@ void Renderer::recompileShaders() {
 	bloomDownSampleShader.recompile();
 	bloomUpSampleShader.recompile();
 	bloomFinalShader.recompile();
+	postprocessingShader.recompile();
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -1594,6 +1603,27 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
+void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
+	ZoneScoped;
+
+	frameBuffers.swapFrameBuffer();
+
+	// Bind the post-processing framebuffer for LDR output
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	// Set up tone mapping shader
+	postprocessingShader.use();
+
+	// Bind the HDR texture from main framebuffer
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	postprocessingShader.setImageUniform("scene", 0);
+
+	postprocessingShader.setVec3("offset", chromaticAberration);
+
+	// Render fullscreen triangle (more efficient than quad)
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale) {
 	// ===========================================================================
 	// Retrieve the underlying shader for this material, and verify it's state.
@@ -1764,6 +1794,10 @@ Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
 
 glm::mat4 const& Renderer::getUIProjection() const {
 	return UIProjection;
+}
+
+void Renderer::randomiseChromaticAberrationoffset() {
+	chromaticAberration = RandomRange::Vec3(glm::vec3{ -0.01f, -0.01f, -0.01f }, glm::vec3{ 0.01f, 0.01f, 0.01f });
 }
 
 void Renderer::renderDebugSelectedObjects() {

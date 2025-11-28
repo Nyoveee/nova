@@ -90,6 +90,12 @@ void DebugUI::renderPhysicsSection() {
 void DebugUI::renderHDRSection() {
 	ImGui::SeparatorText("Rendering..");
 
+	ImGui::Checkbox("Post Processing", &renderer.toPostProcess);
+	
+	if (ImGui::Button("Randomize Offset")) {
+		renderer.randomiseChromaticAberrationoffset();
+	}
+
 	float exposure = renderer.getHDRExposure();
 	if (ImGui::SliderFloat("Exposure", &exposure, 0.1f, 5.0f, "%.2f")) {
 		renderer.setHDRExposure(exposure);

@@ -3,8 +3,8 @@
         {
             "EntityData": {
                 "children": [
-                    40894638,
-                    40894639
+                    11,
+                    12
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -15,7 +15,7 @@
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 10263097084352921601,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 10263097084352921601
@@ -66,7 +66,7 @@
                     "z": 1.0
                 }
             },
-            "id": 40894637
+            "id": 10
         },
         {
             "EntityData": {
@@ -77,8 +77,8 @@
                 "name": "Teleporter Destination",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 40894637,
-                "prefabID": 4294967295,
+                "parent": 10,
+                "prefabID": 10263097084352921601,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 10263097084352921601
@@ -135,7 +135,7 @@
                     "z": 1.0
                 }
             },
-            "id": 40894638
+            "id": 11
         },
         {
             "BoxCollider": {
@@ -159,8 +159,8 @@
                 "name": "Teleporter Source",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 40894637,
-                "prefabID": 4294967295,
+                "parent": 10,
+                "prefabID": 10263097084352921601,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 10263097084352921601
@@ -168,6 +168,7 @@
                 "tag": ""
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -179,7 +180,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -241,8 +243,8 @@
                     "z": 53.541900634765625
                 }
             },
-            "id": 40894639
+            "id": 12
         }
     ],
-    "RootEntity": 40894637
+    "RootEntity": 10
 }

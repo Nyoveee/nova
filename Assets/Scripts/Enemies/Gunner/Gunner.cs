@@ -20,6 +20,7 @@ class Gunner : Enemy
     private delegate void CurrentState();
     private enum GunnerState
     {
+        Spawning,
         Idle,
         Walk,
         Shoot,
@@ -52,6 +53,9 @@ class Gunner : Enemy
         updateState.Add(GunnerState.PreJump, Update_PreJump);
         updateState.Add(GunnerState.Jump, Update_Jump);
         updateState.Add(GunnerState.Death, Update_Death);
+
+        updateState.Add(GunnerState.Spawning, () => { });
+
         gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
     }
 
@@ -273,5 +277,16 @@ class Gunner : Enemy
     {
         gunnerState = GunnerState.Jump;
         navMeshAgent.enable = false;
+    }
+
+    // ----
+    public override void SetSpawningDuration(float seconds)
+    {
+        gunnerState = GunnerState.Spawning;
+
+        Invoke(() =>
+        {
+            gunnerState = GunnerState.Idle;
+        }, seconds);
     }
 }

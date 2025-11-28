@@ -22,8 +22,12 @@ ECS::~ECS() {
 }
 
 void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform) {
-	EntityData& childEntityData = registry.get<EntityData>(childEntity);
-	EntityData& newParentEntityData = registry.get<EntityData>(newParentEntity);
+	setEntityParent(childEntity, newParentEntity, recalculateLocalTransform, registry);
+}
+
+void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform, entt::registry& p_registry) {
+	EntityData& childEntityData = p_registry.get<EntityData>(childEntity);
+	EntityData& newParentEntityData = p_registry.get<EntityData>(newParentEntity);
 
 	if (childEntity == newParentEntity) {
 		return;
@@ -48,7 +52,7 @@ void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity
 
 	// 2. Remove itself from the childrens of the old parent.
 	if (childEntityData.parent != entt::null) {
-		EntityData& oldParentEntityData = registry.get<EntityData>(childEntityData.parent);
+		EntityData& oldParentEntityData = p_registry.get<EntityData>(childEntityData.parent);
 		auto iterator = std::ranges::find(oldParentEntityData.children, childEntity);
 
 		if (iterator == std::end(oldParentEntityData.children)) {

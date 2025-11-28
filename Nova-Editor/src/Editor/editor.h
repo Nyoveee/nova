@@ -66,7 +66,14 @@ public:
 	void stopSimulation();
 	bool isInSimulationMode() const;
 
-	void displayEntityHierarchy(entt::registry& registry, entt::entity entity, bool toRecurse, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate);
+	void displayEntityHierarchy(
+		entt::registry& registry, 
+		entt::entity entity, 
+		bool toRecurse, 
+		const char * dragAndDropIdentifier,
+		std::function<void(std::vector<entt::entity>)> const& onClickFunction, 
+		std::function<bool(entt::entity)> const& selectedPredicate
+	);
 
 	// editor does extra housekeeping when loading scenes (like selection of entities)
 	// most editor windows should use this function instead of the scene manager's load scene function.
@@ -95,6 +102,8 @@ public:
 	entt::entity hoveringEntity;
 	std::vector<entt::entity> copiedEntityVec;
 
+	bool displayingPrefabScripts = false;
+
 private:
 	void main(float dt);
 	void toggleViewPortControl(bool toControl);
@@ -107,6 +116,7 @@ private:
 	void toOutline(std::vector<entt::entity> const& entities, bool toOutline) const;
 
 	void toControlMouse(bool toControl);
+
 public:
 	// so that all editors have access to engine interface.
 	Engine& engine;

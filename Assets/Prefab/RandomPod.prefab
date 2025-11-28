@@ -13,7 +13,7 @@
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 5693869810797887489
+                    "prefabID": 12373332581030871063
                 },
                 "tag": ""
             },
@@ -25,6 +25,7 @@
                 "modelId": 4
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -36,7 +37,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
