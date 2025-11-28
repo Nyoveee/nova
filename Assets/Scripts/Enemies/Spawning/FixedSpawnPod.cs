@@ -5,27 +5,20 @@ using ScriptingAPI;
 
 public class FixedSpawnPod : SpawnPod
 {
-    [SerializableField] 
-    private Prefab enemyPrefab;
-
-    public void Spawn()
+    public void Spawn(Prefab enemyPrefab, Wave wave)
     {
         if (podTransform == null)
             podTransform = getComponent<Transform_>();
 
         gameObject.SetActive(true);
         GameObject enemy = Instantiate(enemyPrefab, podTransform.position);
+
         StartAnimation(enemy.transform);
-        if (wave != null)
-            wave.RegisterSpawn(enemy);
+        wave.RegisterSpawn(enemy);
     }
 
     protected override void OnAnimationFinished()
     {
-        // Permanent to be reused
-        gameObject.SetActive(false);
+        Destroy(gameObject);
     }
-
-    // Lerp need duration
-    // Script for animation
 }

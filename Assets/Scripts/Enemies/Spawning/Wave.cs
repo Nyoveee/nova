@@ -7,12 +7,16 @@ using System;
 
 public class Wave : Script
 {
+    public Prefab fixedSpawnPod;
+
     [SerializableField] 
-    private List<FixedSpawnPod> fixedSpawns;
+    private List<SpawnPodLocation> fixedSpawns;
+
     [SerializableField]
     private List<RandomEnemySpawns>? randomSpawns;
 
-    private ArenaManager? arenaManager;
+    [SerializableField]
+    private ArenaManager arenaManager;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
 
     private int enemyCount;
@@ -20,13 +24,18 @@ public class Wave : Script
 
     protected override void init()
     {
-        arenaManager = gameObject.GetParent().getScript<ArenaManager>();
+        // we can't just init here because order of operations of init is not defined.
+        // we utilise serialised fields to ensure that the field is set.
 
+        // arenaManager = gameObject.GetParent().getScript<ArenaManager>();
+
+#if false
         // Turns pods inactive initially if they were not already
-        foreach (FixedSpawnPod pod in fixedSpawns)
+        foreach (SpawnPodLocation pod in fixedSpawns)
         {
             pod.gameObject.SetActive(false);
         }
+#endif
     }
 
     public void StartWave()
@@ -35,10 +44,19 @@ public class Wave : Script
         spawnedEnemies.Clear();
         enemyCount = 0;
 
-        foreach (FixedSpawnPod pod in fixedSpawns)
+        foreach (SpawnPodLocation pod in fixedSpawns)
         {
-            enemyCount++;
-            pod.Spawn();
+            GameObject createdPod = Instantiate(fixedSpawnPod, pod.gameObject.transform.position);
+            FixedSpawnPod podScript = createdPod.getScript<FixedSpawnPod>();
+
+            if (podScript != null)
+            {
+                podScript.Spawn(pod.enemy, this);
+            }
+            else
+            {
+                Debug.LogWarning("Pod prefab does not contain pod script!");
+            }
         }
 
         if (randomSpawns != null)

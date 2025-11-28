@@ -6,39 +6,16 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "RandomPod",
+                "name": "Fixed Spawn Pod",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 5693869810797887489
+                    "prefabID": 13506436489381216259
                 },
                 "tag": ""
-            },
-            "MeshCollider": {
-                "shapeScale": 1.0
-            },
-            "MeshRenderer": {
-                "materialIds": null,
-                "modelId": 4
-            },
-            "Rigidbody": {
-                "dynamicCollider": false,
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "NonMoving",
-                "mass": 10.0,
-                "motionQuality": "Discrete",
-                "motionType": "Static",
-                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -57,16 +34,9 @@
                                     "__variant_value": 2.0
                                 },
                                 "name": "duration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 4294967295
-                                },
-                                "name": "wave"
                             }
                         ],
-                        "scriptId": 1232095605718597635
+                        "scriptId": 7185185810300108835
                     }
                 ]
             },
@@ -83,7 +53,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": -0.1946275234222412,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -99,7 +69,7 @@
                 },
                 "position": {
                     "x": 0.0,
-                    "y": -0.1946275234222412,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "rotation": {
