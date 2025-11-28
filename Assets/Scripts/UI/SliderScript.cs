@@ -5,7 +5,7 @@ using ScriptingAPI;
 
 class SliderScript : Script
 {
-    // Slider boundaries (adjust if needed)
+    // Slider boundaries
     public float minX = 599f;   // Left boundary
     public float maxX = 1299f;  // Right boundary
 
@@ -14,18 +14,13 @@ class SliderScript : Script
     public float maxValue = 100f;
     public float currentValue = 50f;
 
-    // Fill bar settings
-    public string fillEntityName = "Slider fill"; // Name of your fill entity
-
-    // How far vertically can the mouse go before stopping drag
-    public float maxVerticalDistance = 50f;
+    public string fillEntityName = "Slider fill"; 
+    public float maxVerticalDistance = 50f; // when u go to far it stops the mouse 
 
     private bool isDragging = false;
     private Vector2 mouseInitialPosition;
     private float clickOffset;
-    private float sliderCenterY; // Store the Y position of the slider
-
-
+    private float sliderCenterY; 
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -44,20 +39,19 @@ class SliderScript : Script
 
             // Check if mouse is too far away vertically
             float verticalDistance = currentMousePos.y - sliderCenterY;
-            if (verticalDistance < 0) verticalDistance = -verticalDistance; // Absolute value
+            if (verticalDistance < 0) verticalDistance = -verticalDistance; 
 
             if (verticalDistance > maxVerticalDistance)
             {
-                // Mouse is too far away, stop dragging
+                //mouse is too far away, stop dragging
                 isDragging = false;
                 Debug.Log("Stopped dragging - mouse too far away");
                 return;
             }
 
-            // Calculate new position (mouse position minus the click offset)
             float newX = currentMousePos.x - clickOffset;
 
-            // Clamp the X position
+            // clamp the x position
             if (newX < minX) newX = minX;
             if (newX > maxX) newX = maxX;
 
@@ -65,7 +59,7 @@ class SliderScript : Script
             Vector3 currentPos = gameObject.transform.position;
             gameObject.transform.position = new Vector3(newX, currentPos.y, 0f);
 
-            // Calculate the slider value (0-100)
+            // calculate the slider value
             float sliderWidth = maxX - minX;
             float valuePercentage = (newX - minX) / sliderWidth;
             currentValue = minValue + (maxValue - minValue) * valuePercentage;
@@ -83,8 +77,6 @@ class SliderScript : Script
     {
         isDragging = true;
         mouseInitialPosition = Input.GetUIMousePosition();
-
-        // Calculate the offset: where you clicked relative to the handle's current position
         float currentHandleX = gameObject.transform.position.x;
         clickOffset = mouseInitialPosition.x - currentHandleX;
 
