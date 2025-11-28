@@ -22,7 +22,7 @@ public class RandomEnemySpawns : Script
         }
 
         Transform_ transform = gameObject.transform;
-        Vector3 spawnMin = transform.scale * 0.5f;
+        Vector3 spawnMin = -transform.scale * 0.5f;
         Vector3 spawnMax = transform.scale * 0.5f;
 
         for (int i = 0; i < enemyCount; i++)
