@@ -410,9 +410,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 7.006492321624085e-43,
-                    "y": 0.0,
-                    "z": 1.975830834697992e-43
+                    "x": 9.682972388484486e-43,
+                    "y": -7.121823963895935e-12,
+                    "z": 1.9337918807682476e-43
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -425,13 +425,15 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.9172413945198059,
-                        "g": 0.07907254993915558,
-                        "r": 0.5241690874099731
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
@@ -462,12 +464,12 @@
                             "z": -5.0
                         }
                     },
-                    "emissionShape": "Edge",
+                    "emissionShape": "Point",
                     "radiusEmitter": {
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -475,7 +477,7 @@
                     "selected": false
                 },
                 "startSize": 0.10000000149011612,
-                "startSpeed": 0.0,
+                "startSpeed": 1.0,
                 "texture": 16344311177990914191,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -641,6 +643,7 @@
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -652,7 +655,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [

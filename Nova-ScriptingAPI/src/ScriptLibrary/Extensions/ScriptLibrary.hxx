@@ -204,3 +204,21 @@ public:
 	static void				DeleteKey(System::String^ key);
 	static void				DeleteAll();
 };
+
+public ref class RendererAPI {
+public:
+	static property bool toneMapping {
+		bool get() { return Interface::engine->renderer.toneMappingMethod == Renderer::ToneMappingMethod::ACES; };
+		void set(bool value) { Interface::engine->renderer.toneMappingMethod = value ? Renderer::ToneMappingMethod::ACES : Renderer::ToneMappingMethod::None; };
+	};
+
+	static property bool toPostProcess {
+		bool get() { return Interface::engine->renderer.toPostProcess; };
+		void set(bool value) { Interface::engine->renderer.toPostProcess = value; };
+	};
+
+	static property float exposure {
+		float get() { return Interface::engine->renderer.hdrExposure; };
+		void set(float value) { Interface::engine->renderer.hdrExposure = value; };
+	};
+};

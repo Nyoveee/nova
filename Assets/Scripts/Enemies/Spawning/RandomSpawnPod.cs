@@ -9,6 +9,7 @@ public class RandomSpawnPod : SpawnPod
 
     public void InitValues(Wave w, Prefab prefab)
     {
+#if false
         wave = w;
         enemyPrefab = prefab;
         
@@ -16,6 +17,7 @@ public class RandomSpawnPod : SpawnPod
         StartAnimation(enemy.transform);
         if (wave != null)
             wave.RegisterSpawn(enemy);
+#endif
     }
 
     protected override void OnAnimationFinished()

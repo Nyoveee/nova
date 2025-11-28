@@ -110,6 +110,7 @@ public:
 
 	// UI projection
 	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
+	ENGINE_DLL_API void randomiseChromaticAberrationoffset();
 
 public:
 	// Editor rendering..
@@ -129,9 +130,12 @@ public:
 
 public:
 	bool toGammaCorrect;
+	bool toPostProcess;
+
 	float bloomFilterRadius = 0.005f;
 	float bloomCompositePercentage = 0.04f;
 
+	glm::vec3 chromaticAberration;
 private:
 	// =============================================
 	// Private internal helper functions.
@@ -169,6 +173,8 @@ private:
 
 	// render debug shapes in particle emitter
 	void debugRenderParticleEmissionShape();
+
+	void renderPostProcessing(PairFrameBuffer& frameBuffers);
 
 	// HDR post-processing functions
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
@@ -283,6 +289,8 @@ public:
 	Shader bloomDownSampleShader;
 	Shader bloomUpSampleShader;
 	Shader bloomFinalShader;
+
+	Shader postprocessingShader;
 
 	// HDR parameters
 	float hdrExposure;

@@ -158,10 +158,14 @@ glm::vec3 ParticleSystem::determineParticleVelocity(ParticleEmitter& emitter, gl
 void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
 {
 	Particle newParticle{};
-	newParticle.startSize = newParticle.currentSize = emitter.startSize;
+	
+	float startSize = emitter.startSize + RandomRange::Float(emitter.minStartSizeOffset, emitter.maxStartSizeOffset);
+	newParticle.startSize = newParticle.currentSize = startSize;
+
 	newParticle.currentLifeTime = emitter.lifeTime;
-	newParticle.startColor = newParticle.currentColor = emitter.particleColorSelection.color;
 	newParticle.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
+	
+	newParticle.startColor = newParticle.currentColor = emitter.particleColorSelection.color;
 	glm::vec4 color = emitter.particleColorSelection.color;
 	glm::vec3 colorOffsetMin = emitter.particleColorSelection.colorOffsetMin;
 	glm::vec3 colorOffsetMax = emitter.particleColorSelection.colorOffsetMax;
@@ -169,6 +173,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 	startColor = glm::vec4(startColor.r(),startColor.g(),startColor.b(),0) * emitter.particleColorSelection.emissiveMultiplier 
 		+ glm::vec4(0,0,0,startColor.a());
 	newParticle.startColor = newParticle.currentColor = startColor;
+	
 	// Spawn Based on the shape
 	switch (emitter.particleEmissionTypeSelection.emissionShape) {
 	case ParticleEmissionTypeSelection::EmissionShape::Sphere:

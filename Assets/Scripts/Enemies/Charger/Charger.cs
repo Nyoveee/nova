@@ -43,6 +43,7 @@ class Charger : Enemy
     // State machine
     private enum ChargerState
     {
+        Spawning,
         Idle,
         Walk,
         Charging,
@@ -69,8 +70,13 @@ class Charger : Enemy
         updateState.Add(ChargerState.Stomp, Update_Stomp);
         updateState.Add(ChargerState.Jump, Update_Jump);
         updateState.Add(ChargerState.Death, Update_Death);
+
+        // spawning afk...
+        updateState.Add(ChargerState.Spawning, () => { });
+        
         ActivateNavMeshAgent();
     }
+
     protected override void update() {
         updateState[chargerState](); 
     }
@@ -278,6 +284,17 @@ class Charger : Enemy
             currentStompCooldown = chargerstats.stompCooldown;
         }, chargerstats.stompHitboxDuration);
     }
+
+    public override void SetSpawningDuration(float seconds)
+    {
+        chargerState = ChargerState.Spawning;
+
+        Invoke(() =>
+        {
+            chargerState = ChargerState.Idle;
+        }, seconds);
+    }
+
     /***********************************************************
         Collision Events
     ***********************************************************/

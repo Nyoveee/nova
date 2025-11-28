@@ -244,6 +244,15 @@
                 },
                 "tag": ""
             },
+            "Scripts": {
+                "scriptDatas": null
+            },
+            "Sequence": {
+                "sequencerId": 14199128814433894423,
+                "speedMultiplier": 1.0,
+                "startPlaying": true,
+                "toLoop": true
+            },
             "SkinnedMeshRenderer": {
                 "materialIds": [
                     5,
@@ -255,44 +264,44 @@
                 "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
-                    "z": 0.0
+                    "z": 0.015750454738736153
                 },
                 "localEulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
-                    "z": 0.0
+                    "z": 0.015750454738736153
                 },
                 "localPosition": {
-                    "x": -2.2564568519592285,
-                    "y": 1.5289762020111084,
-                    "z": 0.0
+                    "x": -1.9597744941711426,
+                    "y": 1.5289700031280518,
+                    "z": 1.869630217552185
                 },
                 "localRotation": {
-                    "w": 1.0,
+                    "w": 0.9999690055847168,
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": 0.007875146344304085
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 1.000000238418579,
+                    "y": 1.000000238418579,
+                    "z": 0.9999999403953552
                 },
                 "position": {
-                    "x": -2.2564568519592285,
-                    "y": 1.5289762020111084,
-                    "z": 0.0
+                    "x": -1.9597744941711426,
+                    "y": 1.5289700031280518,
+                    "z": 1.869630217552185
                 },
                 "rotation": {
-                    "w": 1.0,
+                    "w": 0.9999690055847168,
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": 0.007875146344304085
                 },
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "x": 1.000000238418579,
+                    "y": 1.000000238418579,
+                    "z": 0.9999999403953552
                 }
             },
             "id": 3145733
@@ -525,102 +534,6 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Dissolve Sphere",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    15668841596711469059
-                ],
-                "modelId": 4
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 3.0
-                                },
-                                "name": "speedMultiplier"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 1,
-                                    "__variant_value": {
-                                        "x": 1.0,
-                                        "y": 1.0,
-                                        "z": 0.0
-                                    }
-                                },
-                                "name": "edgeColor"
-                            }
-                        ],
-                        "scriptId": 12909454436634492929
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 1.9465949535369873,
-                    "y": 3.8038501739501953,
-                    "z": 3.7559404373168945
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 1.9465949535369873,
-                    "y": 3.8038501739501953,
-                    "z": 3.7559404373168945
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 2097174
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "light",
                 "overridenComponents": null,
                 "overridenProperties": null,
@@ -661,9 +574,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 21.644380569458008,
+                    "x": 7.606096267700195,
                     "y": 6.588997840881348,
-                    "z": 0.0
+                    "z": 37.469749450683594
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -677,9 +590,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 21.644380569458008,
+                    "x": 7.606096267700195,
                     "y": 6.588997840881348,
-                    "z": 0.0
+                    "z": 37.469749450683594
                 },
                 "rotation": {
                     "w": 1.0,
@@ -694,198 +607,6 @@
                 }
             },
             "id": 1048593
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Dissolve Sphere",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    15668841596711469059
-                ],
-                "modelId": 4
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "speedMultiplier"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 1,
-                                    "__variant_value": {
-                                        "x": 1.0,
-                                        "y": 0.0,
-                                        "z": 0.0
-                                    }
-                                },
-                                "name": "edgeColor"
-                            }
-                        ],
-                        "scriptId": 12909454436634492929
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 2.838869571685791,
-                    "z": 6.192113876342773
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 2.838869571685791,
-                    "z": 6.192113876342773
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048608
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Dissolve Sphere",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    15668841596711469059
-                ],
-                "modelId": 4
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 6.0
-                                },
-                                "name": "speedMultiplier"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 1,
-                                    "__variant_value": {
-                                        "x": 0.0,
-                                        "y": 1.0,
-                                        "z": 1.0
-                                    }
-                                },
-                                "name": "edgeColor"
-                            }
-                        ],
-                        "scriptId": 12909454436634492929
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 6.4241180419921875,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 6.4241180419921875,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048582
         }
     ],
     "layers": [

@@ -63,6 +63,9 @@ class PlayerController : Script
     // Health
     private float currentHealth = 0f;
 
+    private bool enabled = true;
+    public bool ToEnable { get { return enabled; } set { enabled = value; } }
+
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -113,6 +116,11 @@ class PlayerController : Script
         {
             isGrounded = false;
             wasInMidAir = true;
+        }
+
+        if (!enabled)
+        {
+            return;
         }
 
         // ===================================
@@ -366,6 +374,10 @@ class PlayerController : Script
 
     private void jump()
     {
+        if (!enabled) { 
+            return;
+        }
+
         if (jumpCount < maxJumpCount && !isDashing)
         {
 
@@ -379,7 +391,7 @@ class PlayerController : Script
 
     private void dashInputHandler()
     {
-        if (isDashing || dashTimer < dashCooldown)
+        if (!enabled || isDashing || dashTimer < dashCooldown)
         {
             return;
         }
@@ -412,6 +424,7 @@ class PlayerController : Script
         dashVector.Normalize();
         rigidbody.SetVelocity(dashVector * dashStrength);
     }
+
     /***********************************************************
         Collision Events
     ***********************************************************/

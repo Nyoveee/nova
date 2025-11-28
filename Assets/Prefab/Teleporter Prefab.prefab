@@ -168,6 +168,7 @@
                 "tag": ""
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -179,7 +180,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [

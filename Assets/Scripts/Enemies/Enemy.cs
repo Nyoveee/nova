@@ -143,4 +143,6 @@ public abstract class Enemy : Script
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
     }
 
+    // when invoked, this function puts the enemy into idle state without chasing capability for `seconds` duration.
+    public abstract void SetSpawningDuration(float seconds);
 }

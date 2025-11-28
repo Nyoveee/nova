@@ -268,7 +268,9 @@ struct Rigidbody {
 
 	bool isRotatable				{ true };
 	bool isTrigger					{ false };
-	
+	bool dynamicCollider			{ false };
+	bool toScaleWithTransform		{ true };
+
 	REFLECTABLE(
 		motionType,
 		layer,
@@ -277,7 +279,9 @@ struct Rigidbody {
 		mass,
 		gravityMultiplier,
 		isRotatable,
-		isTrigger
+		isTrigger,
+		dynamicCollider,
+		toScaleWithTransform
 	)
 
 	// RUNTIME PROPERTIES!
@@ -665,7 +669,11 @@ struct ParticleEmitter
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
-	float startSize = 1;
+	
+	float startSize = 1.f;
+	float minStartSizeOffset = 0.f;
+	float maxStartSizeOffset = 0.f;
+
 	float startSpeed = 1;
 	glm::vec3 force;
 	// Velocity
@@ -686,6 +694,8 @@ struct ParticleEmitter
 	(
 		texture,
 		startSize,
+		minStartSizeOffset,
+		maxStartSizeOffset,
 		startSpeed,
 		initialAngularVelocity,
 		minAngularVelocityOffset,

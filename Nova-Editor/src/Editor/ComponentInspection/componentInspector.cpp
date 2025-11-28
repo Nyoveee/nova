@@ -139,7 +139,7 @@ void ComponentInspector::update() {
 	g_displayComponentFunctor(editor, selectedEntity, registry, true);
 
 	// Display add component button.
-	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity);
+	displayComponentDropDownList<ALL_COMPONENTS>(selectedEntity, ecs.registry);
 
 
 	ImGui::End();

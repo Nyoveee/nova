@@ -51,9 +51,7 @@ void AnimationSystem::initialiseAnimator(Animator& animator) {
 }
 
 void AnimationSystem::initialiseSequence(Sequence& sequence) {
-	sequence.timeElapsed = 0.f;
-	sequence.lastTimeElapsed = 0.f;
-	sequence.executedAnimationEvents.clear();
+	resetSequence(sequence);
 
 	sequence.isPlaying = sequence.startPlaying;
 }
@@ -133,6 +131,13 @@ void AnimationSystem::playAnimation(Animator& animator, std::string name) {
 	animator.executedAnimationEvents.clear();
 }
 
+void AnimationSystem::resetSequence(Sequence& sequence) {
+	sequence.currentFrame = 0;
+	sequence.timeElapsed = 0.f;
+	sequence.lastTimeElapsed = 0.f;
+	sequence.executedAnimationEvents.clear();
+}
+
 void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence, Sequencer& sequencer, float dt) {
 	if (sequence.currentFrame < sequencer.data.lastFrame) {
 		sequence.timeElapsed += dt * sequence.speedMultiplier;
@@ -140,7 +145,7 @@ void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence,
 	}
 
 	for (auto&& animationEvent : sequencer.data.animationEvents) {
-		if (sequence.currentFrame > animationEvent.key && !sequence.executedAnimationEvents.count(animationEvent.key)) {
+		if (sequence.currentFrame >= animationEvent.key && !sequence.executedAnimationEvents.count(animationEvent.key)) {
 			sequence.executedAnimationEvents.insert(animationEvent.key);
 			engine.scriptingAPIManager.executeFunction(entityId, animationEvent.scriptId, animationEvent.functionName);
 		}
@@ -150,9 +155,7 @@ void AnimationSystem::updateSequencer(entt::entity entityId, Sequence& sequence,
 		sequence.currentFrame = sequencer.data.lastFrame;
 
 		if (sequence.toLoop) {
-			sequence.currentFrame = 0;
-			sequence.timeElapsed = 0.f;
-			sequence.executedAnimationEvents.clear();
+			resetSequence(sequence);
 		}
 	}
 }
