@@ -67,7 +67,7 @@ public abstract class Enemy : Script
         Vector3 horizontalPos = Vector3.Lerp(offlinkData.startNode, offlinkData.endNode, t);
         float yOffset = verticalMaxJumpHeight * 4f * (t - t * t);
         gameObject.transform.position = horizontalPos + Vector3.Up() * yOffset;
-        currentJumpDuration += Time.V_FixedDeltaTime();
+        currentJumpDuration += Time.V_DeltaTime();
         return currentJumpDuration >= enemyStats.jumpDuration;
     }
 

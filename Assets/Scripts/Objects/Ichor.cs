@@ -32,7 +32,7 @@ class Ichor : Script
     protected override void update()
     {
         // Make sure collision is only affectted by the newly set postiion
-        expandTime = Mathf.Max(0, expandTime - Time.V_FixedDeltaTime());
+        expandTime = Mathf.Max(0, expandTime - Time.V_DeltaTime());
         gameObject.transform.scale = Vector3.Lerp(startSize, startSize * expandedSizeMultiplier, expandTime);
     }
     protected override void onCollisionEnter(GameObject other)

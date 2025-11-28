@@ -361,3 +361,13 @@ void play();
 void pause();
 
 ManagedComponentEnd()
+
+ManagedComponentDeclaration(
+	Light,
+	float, intensity,
+	float, radius
+)
+
+ManagedComponentEnd()
+
+

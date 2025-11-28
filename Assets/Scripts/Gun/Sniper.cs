@@ -46,7 +46,7 @@ class Sniper : Gun
         }
         else
         {
-            timeElapsed += Time.V_FixedDeltaTime();
+            timeElapsed += Time.V_DeltaTime();
         }
     }
 

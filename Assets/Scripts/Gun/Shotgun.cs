@@ -51,7 +51,7 @@ class Shotgun : Gun
         }
         else
         {
-            timeElapsed += Time.V_FixedDeltaTime();
+            timeElapsed += Time.V_DeltaTime();
         }
     }
 

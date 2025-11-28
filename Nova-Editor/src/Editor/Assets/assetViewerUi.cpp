@@ -97,10 +97,6 @@ void AssetViewerUI::update() {
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
 
-	if (ImGui::Button("BroadCast")) {
-		editor.engine.prefabManager.prefabBroadcast();
-	}
-
 	ImGui::End();
 #endif
 }
@@ -643,7 +639,11 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descriptor) {
 	auto&& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
 
-	if (ImGui::TreeNode("Prefab Hierarchy")) {
+	if (ImGui::Button("BroadCast")) {
+		editor.engine.prefabManager.prefabBroadcast();
+	}
+
+	if (ImGui::TreeNodeEx("Prefab Hierarchy", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::BeginChild("##Prefab", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
 		
 		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, true,

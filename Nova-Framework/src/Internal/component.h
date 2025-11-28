@@ -177,7 +177,7 @@ struct Light {
 
 struct MeshRenderer {
 	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
-	std::vector<TypedResourceID<Material>>	materialIds	{};
+	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
 	REFLECTABLE(
 		modelId,

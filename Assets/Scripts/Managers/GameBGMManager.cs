@@ -61,7 +61,7 @@ class GameBGMManager : Script
     }
     private void TransitionState()
     {
-        currentTransitionTimer += Time.V_FixedDeltaTime();
+        currentTransitionTimer += Time.V_DeltaTime();
         if(currentTransitionTimer >= transitionTime){
             if (IsAnyEnemyInCombat()){
                 bgmState = BGMState.Combat;

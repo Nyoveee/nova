@@ -130,7 +130,7 @@ class Charger : Enemy
         State
     ***********************************************************/
     private void Update_Idle(){
-        currentChargeCooldown -= Time.V_FixedDeltaTime();
+        currentChargeCooldown -= Time.V_DeltaTime();
         if (GetDistanceFromPlayer() < chargerstats.chasingRange)
         {
             chargerState = ChargerState.Walk;
@@ -147,8 +147,8 @@ class Charger : Enemy
             return;
         }
         LookAt(player);
-        currentChargeCooldown -= Time.V_FixedDeltaTime();
-        currentStompCooldown -= Time.V_FixedDeltaTime();
+        currentChargeCooldown -= Time.V_DeltaTime();
+        currentStompCooldown -= Time.V_DeltaTime();
         if (IsOnNavMeshOfflink())
         {
             NavigationAPI.stopAgent(gameObject);
@@ -190,7 +190,7 @@ class Charger : Enemy
         MoveToNavMeshPosition(player.transform.position);
     }
     private void Update_Charging() {
-        currentChargeTime -= Time.V_FixedDeltaTime();
+        currentChargeTime -= Time.V_DeltaTime();
         if (currentChargeTime <= 0)
         {
             chargerState = ChargerState.Walk;
@@ -201,7 +201,7 @@ class Charger : Enemy
             return;
         }
         // FootSteps
-        currentFootStepTime -= Time.V_FixedDeltaTime();
+        currentFootStepTime -= Time.V_DeltaTime();
         if(currentFootStepTime <= 0)
         {
             currentFootStepTime = chargerstats.timeBetweenChargeSteps;
@@ -212,7 +212,7 @@ class Charger : Enemy
     }
     private void Update_Attack()
     {
-        currentChargeCooldown -= Time.V_FixedDeltaTime();
+        currentChargeCooldown -= Time.V_DeltaTime();
     }
     private void Update_Jump()
     {
