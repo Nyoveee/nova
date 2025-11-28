@@ -10,6 +10,7 @@ class UltimateExplosion : Script
     // ======================================
     public float fadeInDuration = 1f;
     public float explosionDuration = 1f;
+    public float collapseDuration = 0.5f;
     public float fadeOutDuration = 2f;
 
     public float dissolveOffsetDuration = 0.2f;
@@ -72,20 +73,29 @@ class UltimateExplosion : Script
             transform.scale = Vector3.Lerp(explosionInitialScaleVector, explosionFinalScaleVector, interval);
         }
         // Handle fade out lerp..
-        else if(timeElapsed < fadeInDuration + explosionDuration + fadeOutDuration)
+        else if (timeElapsed < fadeInDuration + explosionDuration + collapseDuration)
         {
             float relativeTimeElapsed = timeElapsed - fadeInDuration - explosionDuration;
 
-            float interval = Mathf.Pow(relativeTimeElapsed / fadeOutDuration, 3f);
+            float interval = Mathf.Pow(relativeTimeElapsed / collapseDuration, 3f);
 
-            transform.scale = Vector3.Lerp(explosionFinalScaleVector, finalScaleVector, interval);
+            transform.scale = Vector3.Lerp(explosionFinalScaleVector, Vector3.Zero(), interval);
+        }
+        // Handle fade out lerp..
+        else if(timeElapsed < fadeInDuration + explosionDuration + collapseDuration + fadeOutDuration)
+        {
+            float relativeTimeElapsed = timeElapsed - fadeInDuration - explosionDuration - collapseDuration;
 
-            if (relativeTimeElapsed > dissolveOffsetDuration) {
-                float dissolveInterval = (relativeTimeElapsed - dissolveOffsetDuration) / (fadeOutDuration - dissolveOffsetDuration);
-                material.setMaterialFloat(0, "dissolveThreshold", 1f - dissolveInterval);
-                light.intensity = Mathf.Interpolate(lightIntensity, 0f, dissolveInterval, 1f);
-                RendererAPI.exposure = Mathf.Interpolate(0.2f, 0.9f, dissolveInterval, 1f);
-            }
+            float interval = Mathf.Pow(relativeTimeElapsed / fadeOutDuration, 0.3f);
+
+            transform.scale = Vector3.Lerp(Vector3.Zero(), finalScaleVector, interval);
+
+            //if (relativeTimeElapsed > dissolveOffsetDuration) {
+                //float dissolveInterval = (relativeTimeElapsed - dissolveOffsetDuration) / (fadeOutDuration - dissolveOffsetDuration);
+                material.setMaterialFloat(0, "dissolveThreshold", 1f - interval);
+                light.intensity = Mathf.Interpolate(lightIntensity, 0f, interval, 1f);
+                RendererAPI.exposure = Mathf.Interpolate(0.2f, 0.9f, interval, 1f);
+            //}
         }
         else
         {

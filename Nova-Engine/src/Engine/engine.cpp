@@ -240,6 +240,8 @@ void Engine::SystemsUnload() {
 	navigationSystem.unloadNavMeshSystems();
 
 	renderer.hdrExposure = 0.9f;
+
+	deltaTimeMultiplier = 1.f;
 }
 
 

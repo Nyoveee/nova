@@ -49,7 +49,7 @@ class UltimateController : Script
 
             if (timeScaleTimeElapsed > timeScaleLerpDuration)
             {
-                RendererAPI.toPostProcess = true;
+                // RendererAPI.toPostProcess = true;
             }
         }
     }
@@ -93,7 +93,7 @@ class UltimateController : Script
     {
         Time.timeScale = 1.0f;
         isSlowingDownTime = false;
-        RendererAPI.toPostProcess = false;
+        // RendererAPI.toPostProcess = false;
 
         GameObject projectile = Instantiate(ultimate, ultimatePose.transform.position);
 
