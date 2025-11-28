@@ -5,52 +5,112 @@ using System.Diagnostics;
 
 public class ArenaManager : Script
 {
-    [SerializableField] 
-    private List<Wave> waves;
-    //[SerializableField]
-    //private List<Door> doors;
+    // Sequential order
+    [SerializableField] private List<Wave> waves;
+    // True for survival, false for sequential
+    [SerializableField] private bool timerMode = false;
+    [SerializableField] private float survivalDuration = 60f;
 
+    private float survivalTimer = 0f;
+    private bool arenaCompleted = false;
+
+    private List<Wave> activeWaves = new List<Wave>();
     private int currentWave = 0;
     private ArenaQuest arenaQuest;
 
     public void StartArena(ArenaQuest quest)
     {
-        currentWave = 0;
         arenaQuest = quest;
-        if (waves != null && waves.Count > 0) 
-            waves[currentWave].StartWave();
+
+        activeWaves.Clear();
+        currentWave = 0;
+        survivalTimer = 0;
+        arenaCompleted = false;
+
+        if (waves != null && waves.Count > 0)
+        {
+            if (!timerMode)
+            {
+                StartNextSequentialWave();
+            }
+            else
+            {
+                StartAllSurvivalWaves();
+            }
+        }
         else
         {
             Debug.LogWarning("Arena " + gameObject.ToString() + " is missing waves");
             ArenaCompleted();
         }
-        //MapKey(Key.K, OnWaveCompleted);
     }
 
-    public void OnWaveCompleted()
+    void StartNextSequentialWave()
     {
-        currentWave++;
-
-        if (currentWave < waves.Count) {
-            waves[currentWave].StartWave();
+        if (currentWave < waves.Count)
+        {
+            Wave w = waves[currentWave];
+            activeWaves.Add(w);
+            w.StartWave();
         }
         else
+        {
             ArenaCompleted();
+        }
+    }
+
+    void StartAllSurvivalWaves()
+    {
+        foreach (var w in waves)
+        {
+            activeWaves.Add(w);
+            w.StartWave();
+        }
+    }
+
+    protected override void update()
+    {
+        if (arenaCompleted)
+            return;
+
+        if (timerMode)
+        {
+            survivalTimer += Time.V_DeltaTime();
+
+            if (survivalTimer >= survivalDuration)
+                ArenaCompleted();
+        }
+    }
+
+    public void OnWaveCompleted(Wave wave)
+    {
+        activeWaves.Remove(wave);
+
+        if (!timerMode)
+        {
+            currentWave++;
+            StartNextSequentialWave();
+        }
     }
 
     public void ResetArena()
     {
-        foreach (var wave in waves)
-            wave.EndWave();
+        foreach (var w in activeWaves)
+            w.EndWave();
 
-        currentWave = 0;
-        waves[currentWave].StartWave();
+        StartArena(arenaQuest);
     }
 
     public void ArenaCompleted()
     {
-        Debug.Log("Arena Completed!");
+        foreach (Wave wave in waves)
+            wave.EndWave();
+
+        arenaCompleted = true;
+        activeWaves.Clear();
+
         if (arenaQuest != null)
             arenaQuest.SetQuestState(Quest.QuestState.Success);
+        Debug.Log("Arena Completed!");
     }
 }
