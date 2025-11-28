@@ -60,7 +60,6 @@ class Door : Script
     private void Update_Closing()
     {
         currentDoorMovingTime -= Time.V_DeltaTime();
-
         leftDoor.localPosition = Vector3.Lerp(leftStart - new Vector3(0, 0, openOffset), leftStart, currentDoorMovingTime / doorMovingDuration);
         rightDoor.localPosition = Vector3.Lerp(rightStart + new Vector3(0, 0, openOffset), rightStart, currentDoorMovingTime / doorMovingDuration);
 

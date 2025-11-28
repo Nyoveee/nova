@@ -17,10 +17,13 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include = "Nova-ScriptingAPI">
+    <Reference Include="Nova-ScriptingAPI">
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include = "../Assets/**/*.cs"></Compile>
+    <Compile Include="../Assets/**/*.cs"></Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="..\Assets\Scripts\ElevatorButtonTest.cs" />
   </ItemGroup>
 </Project>

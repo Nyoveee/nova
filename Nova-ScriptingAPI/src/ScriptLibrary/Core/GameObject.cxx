@@ -50,6 +50,22 @@ System::String^ GameObject::ToString()
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(static_cast<entt::entity>(entityID));
 	return entityData ? msclr::interop::marshal_as<System::String^>(entityData->name.c_str()) : "";
 }
+
+
+void GameObject::SetParent(GameObject^ parent)
+{
+	if (parent == nullptr) {
+		Interface::engine->ecs.removeEntityParent(static_cast<entt::entity>(entityID));
+		return;
+	}
+	Interface::engine->ecs.setEntityParent(static_cast<entt::entity>(entityID),
+		static_cast<entt::entity>(parent->entityID));
+}
+
+void GameObject::SetActive(bool active) {
+	Interface::engine->ecs.setActive(static_cast<entt::entity>(entityID), active);
+}
+
 GameObject^ GameObject::GetParent()
 {
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(static_cast<entt::entity>(entityID));
@@ -72,11 +88,6 @@ array<GameObject^>^ GameObject::GetChildren()
 System::UInt32 GameObject::GetId() {
 	return entityID;
 }
-
-void GameObject::SetActive(bool active) {
-	Interface::engine->ecs.setActive(static_cast<entt::entity>(entityID), active);
-}
-
 bool GameObject::IsActive() {
 	return Interface::engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)).isActive;
 }

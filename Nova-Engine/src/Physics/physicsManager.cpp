@@ -553,10 +553,6 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool)
 				return;
 			}
 			else {
-				// Object needs to be non moving and static.
-				rigidBody->layer = Rigidbody::Layer::NonMoving;
-				rigidBody->motionType = JPH::EMotionType::Static;
-
 				glm::vec3 shapeScale = meshCollider->shapeScale * transform->scale;
 
 				bool anyComponentZero = false;
