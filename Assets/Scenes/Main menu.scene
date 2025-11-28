@@ -7,9 +7,14 @@
                 "isActive": true,
                 "layerId": 1,
                 "name": "Background image",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 39846046,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Image": {
@@ -20,7 +25,8 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "texture": 1280755589832278017
+                "texture": 1280755589832278017,
+                "toFlip": false
             },
             "Transform": {
                 "eulerAngles": {
@@ -75,9 +81,14 @@
                 "isActive": true,
                 "layerId": 2,
                 "name": "Ichrous Logo",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 39846046,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Image": {
@@ -88,7 +99,8 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "texture": 10652350590113579009
+                "texture": 10652350590113579009,
+                "toFlip": false
             },
             "Transform": {
                 "eulerAngles": {
@@ -191,9 +203,14 @@
                 "isActive": true,
                 "layerId": 3,
                 "name": "\"Settings\" Button",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 39846046,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Image": {
@@ -204,7 +221,8 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "texture": 7
+                "texture": 7,
+                "toFlip": false
             },
             "Scripts": {
                 "scriptDatas": [
@@ -245,8 +263,8 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 478.949951171875,
-                    "y": 95.79000091552734,
+                    "x": 500.0,
+                    "y": 100.0,
                     "z": 0.9578999876976013
                 },
                 "position": {
@@ -261,8 +279,8 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 478.949951171875,
-                    "y": 95.79000091552734,
+                    "x": 500.0,
+                    "y": 100.0,
                     "z": 0.9578999876976013
                 }
             },
@@ -323,9 +341,14 @@
                 "isActive": true,
                 "layerId": 3,
                 "name": "\"Quit Game\" Button",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 39846046,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Image": {
@@ -336,7 +359,8 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "texture": 7
+                "texture": 7,
+                "toFlip": false
             },
             "Scripts": {
                 "scriptDatas": [
@@ -377,8 +401,8 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 418.4999694824219,
-                    "y": 83.69999694824219,
+                    "x": 500.0,
+                    "y": 100.0,
                     "z": 0.8369998931884766
                 },
                 "position": {
@@ -393,8 +417,8 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 418.4999694824219,
-                    "y": 83.69999694824219,
+                    "x": 500.0,
+                    "y": 100.0,
                     "z": 0.8369998931884766
                 }
             },
@@ -407,9 +431,14 @@
                 "isActive": true,
                 "layerId": 4,
                 "name": "\"Play Game\" Text",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145744,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Text": {
@@ -434,8 +463,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.34437668323516846,
-                    "y": -0.3157503604888916,
+                    "x": -0.3533400297164917,
+                    "y": -0.15143513679504395,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -445,13 +474,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.002419195370748639,
+                    "x": 0.0024191944394260645,
                     "y": 0.012096000835299492,
                     "z": 1.2096000909805298
                 },
                 "position": {
-                    "x": 801.2556762695313,
-                    "y": 361.9311828613281,
+                    "x": 796.7740478515625,
+                    "y": 378.3627014160156,
                     "z": 0.0
                 },
                 "rotation": {
@@ -461,7 +490,7 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.2095978260040283,
+                    "x": 1.2095973491668701,
                     "y": 1.2096000909805298,
                     "z": 1.2096000909805298
                 }
@@ -475,9 +504,14 @@
                 "isActive": true,
                 "layerId": 4,
                 "name": "\"Settings\" Text",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 44040362,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Text": {
@@ -494,43 +528,43 @@
                 "eulerAngles": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -0.6702979207038879
+                    "z": -0.6706671118736267
                 },
                 "localEulerAngles": {
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -0.6705419421195984
+                    "z": -0.6706671118736267
                 },
                 "localPosition": {
-                    "x": -0.2648012638092041,
-                    "y": -0.25600385665893555,
+                    "x": -0.22596275806427002,
+                    "y": -0.24106764793395996,
                     "z": 0.0
                 },
                 "localRotation": {
-                    "w": 0.9443029165267944,
+                    "w": 0.944300651550293,
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -0.3290773630142212
+                    "z": -0.329084187746048
                 },
                 "localScale": {
-                    "x": 0.22060811519622803,
-                    "y": 0.5443763732910156,
+                    "x": 23.41759490966797,
+                    "y": 57.784481048583984,
                     "z": 0.9800000190734863
                 },
                 "position": {
-                    "x": 833.1735229492188,
-                    "y": 251.97120666503906,
+                    "x": 847.0185546875,
+                    "y": 252.3870391845703,
                     "z": 0.0
                 },
                 "rotation": {
-                    "w": 0.9443075656890869,
+                    "w": 0.944300651550293,
                     "x": 0.0,
                     "y": 0.0,
-                    "z": -0.32906413078308105
+                    "z": -0.329084187746048
                 },
                 "scale": {
-                    "x": 32.97127151489258,
-                    "y": 65.73838806152344,
+                    "x": 3653.552001953125,
+                    "y": 7284.916015625,
                     "z": 0.9387419819831848
                 }
             },
@@ -543,9 +577,14 @@
                 "isActive": true,
                 "layerId": 4,
                 "name": "\"Quit Game\" Text",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 44040363,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Text": {
@@ -570,7 +609,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.3705253601074219,
+                    "x": -0.30479955673217773,
                     "y": -0.2080003023147583,
                     "z": 0.0
                 },
@@ -581,13 +620,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0014399975771084428,
+                    "x": 0.0014399972278624773,
                     "y": 7.200000709417509e-06,
                     "z": 0.7200000286102295
                 },
                 "position": {
-                    "x": 804.9351196289063,
-                    "y": 137.59036254882813,
+                    "x": 807.6002807617188,
+                    "y": 134.19996643066406,
                     "z": 0.0
                 },
                 "rotation": {
@@ -597,8 +636,8 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.6026389598846436,
-                    "y": 0.0006026399787515402,
+                    "x": 0.7199986577033997,
+                    "y": 0.0007200000691227615,
                     "z": 0.6026399731636047
                 }
             },
@@ -659,9 +698,14 @@
                 "isActive": true,
                 "layerId": 3,
                 "name": "\"Play Game\" Button",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 39846046,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Image": {
@@ -672,7 +716,8 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "texture": 7
+                "texture": 7,
+                "toFlip": false
             },
             "Scripts": {
                 "scriptDatas": [
@@ -743,9 +788,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Main Menu Fade Controller",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 39846046,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -862,9 +912,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Canvas UI",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
                 "tag": ""
             },
             "Transform": {
