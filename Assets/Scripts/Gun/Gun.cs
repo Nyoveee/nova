@@ -23,8 +23,9 @@ public abstract class Gun : Script
     // Returns true if it hits an enemy.. you may wanna do something with it?
     public bool RayCastFire(Vector3 position, Vector3 direction, float range, float damage)
     {
+        string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
         // Raycast..
-        RayCastResult? result = PhysicsAPI.Raycast(position, direction, range, player);
+        RayCastResult? result = PhysicsAPI.Raycast(position, direction, range, mask);
 
         if (result == null)
         {
@@ -33,7 +34,7 @@ public abstract class Gun : Script
 
         GameObject collidedEntity = new GameObject(result.Value.entity);
 
-        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "EnemyCollider" && collidedEntity.tag != "Enemy")
+        if (collidedEntity.tag != "Wall" && collidedEntity.tag != "Enemy_ArmouredSpot" && collidedEntity.tag != "Enemy_WeakSpot" && collidedEntity.tag != "Enemy")
         {
             return false;
         }
@@ -42,7 +43,7 @@ public abstract class Gun : Script
 
         if (enemyColliderScript != null)
         {
-            enemyColliderScript.OnColliderShot(damage);
+            enemyColliderScript.OnColliderShot(damage,Enemy.EnemydamageType.WeaponShot,collidedEntity.tag);
             return true;
         }
 

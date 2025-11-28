@@ -89,19 +89,67 @@ class Grunt : Enemy
         return gruntState != GruntState.Idle;
     }
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage,Enemy.EnemydamageType damageType, string colliderTag)
     {
 
-        gruntStats.health -= damage;
-        if (gruntStats.health <= 0)
+        if(damageType == Enemy.EnemydamageType.WeaponShot)
         {
-            if (gruntState != GruntState.Death && !WasRecentlyDamaged())
-                SpawnIchor();
-            gruntState = GruntState.Death;
-            animator.PlayAnimation("Grunt Death");
-            NavigationAPI.stopAgent(gameObject);
-            rigidbody.enable = false;
+
+            if (colliderTag == "Enemy_ArmouredSpot")
+            {
+                damage *= gruntStats.enemyArmouredMultiplier;
+            
+            }
+            if (colliderTag == "Enemy_WeakSpot")
+            {
+                damage *= gruntStats.enemyWeakSpotMultiplier;
+
+            }
+
+            gruntStats.health -= damage;
+            if (gruntStats.health <= 0)
+            {
+                if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                gruntState = GruntState.Death;
+                animator.PlayAnimation("Grunt Death");
+                NavigationAPI.stopAgent(gameObject);
+                rigidbody.enable = false;
+            }
+
+
         }
+
+        if (damageType == Enemy.EnemydamageType.ThrownWeapon)
+        {
+            if (gruntStats.health <= gruntStats.enemyExecuteThreshold)
+            {
+                  Explode();
+                //animator.PlayAnimation("Grunt Death");
+                //NavigationAPI.stopAgent(gameObject);
+                //rigidbody.enable = false;
+                //gruntState = GruntState.Death;
+
+
+                Destroy(gameObject);
+
+            }
+            else
+            {
+                gruntStats.health -= damage;
+                if (gruntStats.health <= 0)
+                {
+                    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+                        SpawnIchor();
+                    gruntState = GruntState.Death;
+                    animator.PlayAnimation("Grunt Death");
+                    NavigationAPI.stopAgent(gameObject);
+                    rigidbody.enable = false;
+                }
+            }
+        
+        }
+
         // blud already died let him die in peace dont take anymore damage..
         if (gruntState == GruntState.Death || WasRecentlyDamaged())
             return;
@@ -228,7 +276,8 @@ class Grunt : Enemy
     }
     public void EndDeath()
     {
-        Destroy(gameObject);
+       if(gameObject == null)
+       Destroy(gameObject);
     }
     public void BeginJump()
     {

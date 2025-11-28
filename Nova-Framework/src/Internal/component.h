@@ -254,7 +254,8 @@ struct Rigidbody {
 		NonMoving,
 		Moving,
 		Wall,
-		Item
+		Item,
+		Enemy_HurtSpot,
 	} layer							= Layer::NonMoving;
 
 	enum class MotionQuality {

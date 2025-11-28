@@ -236,7 +236,7 @@ class PlayerWeaponController : Script
         }
 
         currentlyHeldGun.gameObject.SetActive(false);
-        thrownRifle.getScript<ThrowableRifle>().SetFlightPath();
+        thrownRifle.getScript<ThrowableRifle>().InitWeapon();
 
         weaponControlStates = WeaponControlStates.AwaitWeaponReturn;
         armTimeElapsed = 0;

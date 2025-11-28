@@ -88,18 +88,62 @@ class Gunner : Enemy
     /***********************************************************
        Inherited Functions
     ***********************************************************/
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
-        gunnerStats.health -= damage;
-        if (gunnerStats.health <= 0)
+        if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
-            if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
-                SpawnIchor();
-            gunnerState = GunnerState.Death;
-            animator.PlayAnimation("Gunner_Death");
-            NavigationAPI.stopAgent(gameObject);
-            rigidBody.enable = false;
-        }   
+            if (colliderTag == "Enemy_ArmouredSpot")
+            {
+                damage *= gunnerStats.enemyArmouredMultiplier;
+
+            }
+            if (colliderTag == "Enemy_WeakSpot")
+            {
+                damage *= gunnerStats.enemyWeakSpotMultiplier;
+
+            }
+
+
+            gunnerStats.health -= damage;
+            if (gunnerStats.health <= 0)
+            {
+                if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                gunnerState = GunnerState.Death;
+                animator.PlayAnimation("Gunner_Death");
+                NavigationAPI.stopAgent(gameObject);
+                rigidBody.enable = false;
+            }
+
+
+        }
+
+
+        if (damageType == Enemy.EnemydamageType.ThrownWeapon)
+        {
+            if (gunnerStats.health <= gunnerStats.enemyExecuteThreshold)
+            {
+                Explode();
+
+
+            }
+            else 
+            {
+                gunnerStats.health -= damage;
+                if (gunnerStats.health <= 0)
+                {
+                    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+                        SpawnIchor();
+                    gunnerState = GunnerState.Death;
+                    animator.PlayAnimation("Gunner_Death");
+                    NavigationAPI.stopAgent(gameObject);
+                    rigidBody.enable = false;
+                }
+            }
+
+
+        }
+
         if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
             return;
         SpawnIchor();

@@ -5,6 +5,16 @@ using ScriptingAPI;
 using System.Runtime.CompilerServices;
 public abstract class Enemy : Script
 {
+    public enum EnemydamageType
+    { 
+        WeaponShot,
+        ThrownWeapon,
+    
+    
+    }
+
+
+
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -19,6 +29,8 @@ public abstract class Enemy : Script
     protected SkinnedMeshRenderer_? renderer = null;
     [SerializableField]
     protected NavMeshAgent_? navMeshAgent = null;
+    [SerializableField]
+    public GameObject [] enemyColliders;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -33,15 +45,15 @@ public abstract class Enemy : Script
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
-    public abstract void TakeDamage(float damage);
+    public abstract void TakeDamage(float damage, EnemydamageType type, string colliderTag);
     public abstract bool IsEngagedInBattle();
     /***********************************************************
        Public Functions
     ***********************************************************/
     public void Explode()
     {
-        Destroy(gameObject);
-        for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
+
+        for (int i = 0; i < 1/*enemyStats.ichorExplodeSpawnAmount*/; ++i)
         {
             Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
             direction.Normalize();
@@ -49,6 +61,9 @@ public abstract class Enemy : Script
             GameObject ichor = Instantiate(ichorPrefab);
             ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
         }
+
+
+
     }
     /***********************************************************
         Shared Functions

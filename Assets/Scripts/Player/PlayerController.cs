@@ -409,6 +409,7 @@ class PlayerController : Script
         dashVector.Normalize();
         rigidbody.SetVelocity(dashVector * dashStrength);
     }
+
     /***********************************************************
         Collision Events
     ***********************************************************/

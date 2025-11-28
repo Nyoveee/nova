@@ -9,4 +9,10 @@ public abstract class EnemyStats : Script
     public int ichorExplodeSpawnAmount = 20;
     public float hurtDuration = 0.2f;
     public float jumpDuration = 0.2f;
+
+    public float enemyExecuteThreshold = 50f;
+    public float enemyArmouredMultiplier = 1f;
+    public float enemyWeakSpotMultiplier = 1f;
+
+
 }

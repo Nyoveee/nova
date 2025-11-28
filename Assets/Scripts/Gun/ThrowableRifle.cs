@@ -151,6 +151,7 @@ class ThrowableRifle : Script
             case ThrowingWeaponState.HitEnemy:
 
                 weaponSpinSequence.play();
+                DamageEnemy();
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
                 break;
@@ -169,7 +170,7 @@ class ThrowableRifle : Script
                 }
                 break;
             case ThrowingWeaponState.Recieve:
-                Recieve();
+                Receive();
                 break;
         
         
@@ -273,9 +274,27 @@ class ThrowableRifle : Script
 
         }
 
+        if ((other.tag == "Enemy_ArmouredSpot" || other.tag == "Enemy_WeakSpot") && throwingWeaponState == ThrowingWeaponState.Flying)
+        {
+            weaponRB.SetVelocity(Vector3.Zero());
+            targetObject = other;
+            throwingWeaponState = ThrowingWeaponState.HitEnemy;
+
+        }
+
+
     }
 
-    void Recieve()
+
+    void DamageEnemy()
+    { 
+        
+        targetObject.getScript<EnemyCollider>().OnColliderShot(calculatedTrueDamage,Enemy.EnemydamageType.ThrownWeapon,targetObject.tag);
+    
+
+    }
+
+    void Receive()
     {
         playerGameobject.getScript<PlayerWeaponController>().WeaponCollected(mappedWeapon);
         Destroy(gameObject);
@@ -283,12 +302,12 @@ class ThrowableRifle : Script
     }
 
 
-    public void SetFlightPath()
+    public void InitWeapon()
     {
             weaponRB.SetVelocity(flightPath * weaponFlyingSpeed);
             gameObject.transform.rotation = Quaternion.LookRotation(flightPath);
 
-
+            calculatedTrueDamage =  throwWeaponBaseDamage  +  (mappedWeapon.maxAmmo - mappedWeapon.currentAmmo) * damageMultiplierPerAmmoUsed;
 
     }
 }
