@@ -22,9 +22,11 @@ class GameUIManager : Script
     [SerializableField]
     private Transform_? healthBar = null;
     [SerializableField]
-    private Image_? image = null;
+    private Image_? damageBackground = null;
     [SerializableField]
     private Text_? healthText = null;
+    [SerializableField]
+    private Text_? questText = null;
     [SerializableField]
     private float damageFadeTime = 2.0f;
 
@@ -32,13 +34,6 @@ class GameUIManager : Script
     private Transform_ sniperContainerUi;
     [SerializableField]
     private Transform_ shotgunContainerUi;
-
-#if false
-    [SerializableField]
-    private ColorAlpha activeGunOverlayColor;
-    [SerializableField]
-    private ColorAlpha inactiveGunOverlayColor;
-#endif
 
     protected override void init()
     {
@@ -56,17 +51,17 @@ class GameUIManager : Script
 
     protected override void update()
     {
-        if(image != null && image.colorTint.a > 0)
+        if(damageBackground != null && damageBackground.colorTint.a > 0)
         {
             currentFadeTime = Mathf.Max(currentFadeTime - Time.V_DeltaTime(), 0);
-            ColorAlpha colora = image.colorTint;
+            ColorAlpha colora = damageBackground.colorTint;
             if(damageFadeTime <= 0)
             {
                 Debug.LogError("Damage Fade Time must be more than zero");
                 return;
             }
             colora.a = Mathf.Interpolate(0, 1, currentFadeTime / damageFadeTime, 1);
-            image.colorTint = colora;
+            damageBackground.colorTint = colora;
         }
     }
     /***********************************************************
@@ -84,11 +79,11 @@ class GameUIManager : Script
     }
     public void ActivateDamageUI()
     {
-        if (image != null)
+        if (damageBackground != null)
         {
-            ColorAlpha colora = image.colorTint;
+            ColorAlpha colora = damageBackground.colorTint;
             colora.a = 1;
-            image.colorTint = colora;
+            damageBackground.colorTint = colora;
             currentFadeTime = damageFadeTime;
         }
     }
@@ -123,5 +118,10 @@ class GameUIManager : Script
             if (overlayImage != null)
                 overlayImage.colorTint = new ColorAlpha(10f / 255f, 10f / 255f, 10f / 255f, 0.6f);
         }
+    }
+    public void SetQuestText(string text)
+    {
+        if (questText != null)
+            questText.SetText(text);
     }
 }

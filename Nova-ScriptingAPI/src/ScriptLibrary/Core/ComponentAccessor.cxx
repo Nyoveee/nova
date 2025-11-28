@@ -79,7 +79,6 @@ void ComponentAccessor::Destroy(GameObject^ gameObject) {
 		Destroy(child);
 
 	Interface::submitGameObjectDeleteRequest(gameObject->entityID);
-	gameObject = nullptr;
 }
 
 void ComponentAccessor::Invoke(Callback^ callback, float duration) {

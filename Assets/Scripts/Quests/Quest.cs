@@ -4,6 +4,8 @@
 
 public abstract class Quest : Script
 {
+    [SerializableField]
+    private string questText;
     // State machine
     public enum QuestState
     {
@@ -53,5 +55,6 @@ public abstract class Quest : Script
             OnQuestStateChanged.Invoke(this, new QuestStateChangedEventArgs(oldState, newState));
         }
     }
+    public string GetQuestInformation() => questText;
 
 }

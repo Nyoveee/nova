@@ -81,6 +81,14 @@ bool GameObject::IsActive() {
 	return Interface::engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)).isActive;
 }
 
+bool GameObject::operator==(GameObject^ lhs, GameObject^ rhs)
+{
+	if (!lhs && !rhs) return true;
+	if (!lhs) return !Interface::engine->ecs.registry.valid(static_cast<entt::entity>(rhs->entityID));
+	if (!rhs) return !Interface::engine->ecs.registry.valid(static_cast<entt::entity>(lhs->entityID));
+	return lhs->entityID == rhs->entityID;
+}
+
 
 Transform_^ GameObject::transform::get() { return transformReference; };
 System::String^ GameObject::tag::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->tag); }
