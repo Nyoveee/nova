@@ -12,7 +12,14 @@ class UltimateProjectile : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        Debug.Log("walls");
+        Invoke(() =>
+        {
+            if (gameObject != null)
+            {
+                Instantiate(ultimateExplosion, gameObject.transform.position);
+                Destroy(gameObject);
+            }
+        }, lifetime);
     }
 
     // This function is invoked every update.
@@ -29,7 +36,7 @@ class UltimateProjectile : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        if (other.tag == "Wall")
+        if (other.tag == "Wall" || other.tag == "Floor")
         {
             if (gameObject != null)
             {

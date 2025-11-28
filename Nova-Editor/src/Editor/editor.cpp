@@ -795,7 +795,7 @@ void Editor::loadScene(ResourceID sceneId) {
 	engine.ecs.sceneManager.loadScene(sceneId);
 	editorViewPort.controlOverlay.clearNotification();
 
-	engine.prefabManager.prefabBroadcast();
+	// engine.prefabManager.prefabBroadcast();
 
 	// deselect entity.
 	selectEntities({});

@@ -92,8 +92,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
-	hdrExposure					{ 0.25f },
-	toneMappingMethod			{ ToneMappingMethod::None },
+	hdrExposure					{ 0.9f },
+	toneMappingMethod			{ ToneMappingMethod::ACES },
 
 	editorMainFrameBuffer		{ gameWidth, gameHeight, { GL_RGBA16F } },
 	gameMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },

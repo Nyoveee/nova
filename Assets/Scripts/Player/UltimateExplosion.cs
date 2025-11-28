@@ -49,24 +49,24 @@ class UltimateExplosion : Script
         explosionFinalScaleVector   = new Vector3(explosionFinalScale, explosionFinalScale, explosionFinalScale);
         finalScaleVector            = new Vector3(finalScale, finalScale, finalScale);
 
-        Debug.Log(gameObject.GetId());
+        RendererAPI.toneMapping = true;
     }
 
     // This function is invoked every update.
     protected override void update()
     {
-        // Debug.Log(transform.scale);
-
         // Handle fade in lerp..
         if (timeElapsed < fadeInDuration)
         {
             float interval = timeElapsed / fadeInDuration;
+            RendererAPI.exposure = Mathf.Interpolate(0.9f, 0.2f, interval, 1f);
             transform.scale = Vector3.Lerp(initialScaleVector, explosionInitialScaleVector, Mathf.Pow(interval, 0.2f));
             light.intensity = Mathf.Interpolate(0f, lightIntensity, interval, 1f);
         }
         // Handle explosion stay in...
         else if (timeElapsed < fadeInDuration + explosionDuration) 
-        { 
+        {
+            // RendererAPI.toneMapping = true;
             float relativeTimeElapsed = timeElapsed - fadeInDuration;
             float interval = relativeTimeElapsed / explosionDuration;
             transform.scale = Vector3.Lerp(explosionInitialScaleVector, explosionFinalScaleVector, interval);
@@ -76,18 +76,20 @@ class UltimateExplosion : Script
         {
             float relativeTimeElapsed = timeElapsed - fadeInDuration - explosionDuration;
 
-            float interval = relativeTimeElapsed / fadeOutDuration;
+            float interval = Mathf.Pow(relativeTimeElapsed / fadeOutDuration, 3f);
 
-            transform.scale = Vector3.Lerp(explosionFinalScaleVector, finalScaleVector, Mathf.Pow(interval, 3f));
+            transform.scale = Vector3.Lerp(explosionFinalScaleVector, finalScaleVector, interval);
 
             if (relativeTimeElapsed > dissolveOffsetDuration) {
                 float dissolveInterval = (relativeTimeElapsed - dissolveOffsetDuration) / (fadeOutDuration - dissolveOffsetDuration);
                 material.setMaterialFloat(0, "dissolveThreshold", 1f - dissolveInterval);
                 light.intensity = Mathf.Interpolate(lightIntensity, 0f, dissolveInterval, 1f);
+                RendererAPI.exposure = Mathf.Interpolate(0.2f, 0.9f, dissolveInterval, 1f);
             }
         }
         else
         {
+            // RendererAPI.toneMapping = false;
             Destroy(gameObject);
             return;
         }
@@ -102,6 +104,21 @@ class UltimateExplosion : Script
 
     // This function is invoked when destroyed.
     protected override void exit()
-    {}
+    {
+        
+    }
 
+    protected override void onCollisionEnter(GameObject other)
+    {
+        if (other.tag == "EnemyCollider")
+        {
+            EnemyCollider enemyCollider = other.getScript<EnemyCollider>();
+            Debug.Log(enemyCollider);
+
+            if (enemyCollider != null)
+            {
+                enemyCollider.OnColliderShot(200f);
+            }
+        }
+    }
 }

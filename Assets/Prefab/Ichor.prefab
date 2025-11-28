@@ -13,7 +13,7 @@
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 12217905615932260355
+                    "prefabID": 14493050257245634575
                 },
                 "tag": ""
             },
@@ -30,16 +30,16 @@
                     "endColor": {
                         "a": 0.0,
                         "b": 0.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 7.006492321624085e-43,
-                    "y": 0.0,
-                    "z": 1.975830834697992e-43
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -52,7 +52,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -106,10 +108,10 @@
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
-                        "b": 0.0,
+                        "b": 1.0,
                         "g": 1.0,
                         "r": 1.0
                     },
@@ -125,10 +127,11 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -140,7 +143,8 @@
                 "layer": "Item",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Dynamic"
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [

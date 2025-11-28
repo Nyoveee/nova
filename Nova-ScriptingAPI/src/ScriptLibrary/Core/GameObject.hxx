@@ -46,6 +46,10 @@ public:
 		return lhs->entityID == rhs->entityID;
 	}
 
+	static bool operator!=(GameObject^ lhs, GameObject^ rhs) {
+		return !(lhs == rhs);
+	}
+
 internal:
 	Transform_^ transformReference;
 };

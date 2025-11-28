@@ -119,6 +119,11 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 	Transform& transform = Interface::engine->ecs.registry.get<Transform>(entity);
 	EntityData& entityData = Interface::engine->ecs.registry.get<EntityData>(entity);
 
+	for (auto&& child : entityData.children) {
+		recursivelyInitialiseEntity(child);
+	}
+
+	transform.needsRecalculating = true;
 	engine->transformationSystem.updateLocalMatrix(transform);
 	engine->transformationSystem.recalculateModelMatrix(entity);
 
@@ -158,10 +163,6 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 		}
 		for each (Script ^ script in list)
 			Interface::initializeScript(script);
-	}
-
-	for (auto&& child : entityData.children) {
-		recursivelyInitialiseEntity(child);	
 	}
 }
 

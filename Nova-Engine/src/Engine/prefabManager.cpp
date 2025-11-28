@@ -220,13 +220,13 @@ void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry&
 			}
 
 			if (component && overrideCheck) {
-				auto* entityComponent = toRegistry.try_get<Components>(toEntity);
-				if (entityComponent == nullptr) {
+				auto* newEntityComponent = toRegistry.try_get<Components>(toEntity);
+				if (newEntityComponent == nullptr) {
 					toRegistry.emplace_or_replace<Components>(toEntity, Components{});
 				}
-				entityComponent = toRegistry.try_get<Components>(toEntity);
+				newEntityComponent = toRegistry.try_get<Components>(toEntity);
 				
-				*entityComponent = *component;
+				*newEntityComponent = *component;
 			}
 		}
 		}(), ...);

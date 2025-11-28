@@ -238,6 +238,8 @@ void Engine::SystemsUnload() {
 
 	// Unload navmesh..
 	navigationSystem.unloadNavMeshSystems();
+
+	renderer.hdrExposure = 0.9f;
 }
 
 
