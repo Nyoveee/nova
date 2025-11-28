@@ -64,8 +64,11 @@ public:
 	ENGINE_DLL_API void addImpulse(Rigidbody const& rigidbody, glm::vec3 forceVector);
 
 	ENGINE_DLL_API void setVelocity(Rigidbody& rigidbody, glm::vec3 velocity);
-	ENGINE_DLL_API void setGravity(float value);
+	ENGINE_DLL_API void setAngularVelocity(Rigidbody& rigidbody, glm::vec3 velocity);
 
+	ENGINE_DLL_API void setRotation(Rigidbody& rigidbody, glm::quat quaternion);
+
+	ENGINE_DLL_API void setGravity(float value);
 	ENGINE_DLL_API void setGravityFactor(Rigidbody& rigidbody, float value);
 
 private:

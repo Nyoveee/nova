@@ -134,6 +134,7 @@ static Vector3 operator*(Quaternion quaternion, Vector3 axis);
 static Vector3 operator*(Vector3 axis, Quaternion quaternion);
 static Quaternion Identity();
 static Quaternion Slerp(Quaternion a, Quaternion b, float t);
+static Quaternion LookRotation(Vector3 directionToLook);
 
 ManagedStructEnd(Quaternion, glm::quat)
 
@@ -246,6 +247,13 @@ void AddImpulse(Vector3 forceVector);
 void AddVelocity(Vector3 velocity);
 void SetVelocity(Vector3 velocity);
 Vector3 GetVelocity();
+
+
+void AddAngularVelocity(Vector3 velocity);
+void SetAngularVelocity(Vector3 velocity);
+Vector3 GetAngularVelocity();
+
+void SetBodyRotation(Quaternion rotation);
 
 void SetGravityFactor(float factor);
 float GetGravityFactor();

@@ -283,6 +283,7 @@ struct Rigidbody {
 	// RUNTIME PROPERTIES!
 	JPH::BodyID bodyId				{}; // default constructed body ID is invalid.
 	glm::vec3   velocity;
+	glm::vec3   angularVelocity;
 
 	// when this rigidbody is instantiated, this offset property is set based on whatever collider's offset.
 	// runtime only and is not de/serialised.

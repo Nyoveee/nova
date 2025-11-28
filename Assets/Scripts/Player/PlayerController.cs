@@ -7,10 +7,7 @@ using Windows.UI.Text;
 
 class PlayerController : Script
 {
-    // ==================================
-    // Parameters to be tweaked
-    // ==================================
-    
+
     // Move speed
     public float maximumMoveSpeed       = 5f;
     public float accelerationStrength   = 20f;
@@ -193,7 +190,7 @@ class PlayerController : Script
         //// Stop user from moving if grounded, in the case where user has not pressed any key..
         //else if (isGrounded)
         //{
-        //   // rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
+        //    // rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
         //}
 
 

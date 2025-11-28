@@ -723,6 +723,34 @@ void PhysicsManager::setVelocity(Rigidbody& rigidbody, glm::vec3 velocity) {
 	rigidbody.velocity = velocity;
 }
 
+void PhysicsManager::setAngularVelocity(Rigidbody& rigidbody, glm::vec3 velocity)
+{
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	bodyInterface.SetAngularVelocity(rigidbody.bodyId, toJPHVec3(velocity));
+	rigidbody.angularVelocity = velocity;
+}
+
+void PhysicsManager::setRotation(Rigidbody& rigidbody, glm::quat quaternion)
+{
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	if (rigidbody.motionType == JPH::EMotionType::Static)
+	{
+		bodyInterface.SetRotation(rigidbody.bodyId, toJPHQuat(quaternion), JPH::EActivation::DontActivate);
+
+	}
+	else
+	{
+		bodyInterface.SetRotation(rigidbody.bodyId, toJPHQuat(quaternion), JPH::EActivation::Activate);
+
+	}
+}
+
 void PhysicsManager::setGravity(float value) {
 	gravityStrength = value;
 	physicsSystem.SetGravity(JPH::Vec3{ 0.f, -gravityStrength, 0.f });
