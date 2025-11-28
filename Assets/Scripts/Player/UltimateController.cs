@@ -46,6 +46,11 @@ class UltimateController : Script
 
             Time.timeScale = Mathf.Interpolate(1f, timeScaleSlow, interval, 1f);
             timeScaleTimeElapsed += Time.V_DeltaTime_Unscaled();
+
+            if (timeScaleTimeElapsed > timeScaleLerpDuration)
+            {
+                RendererAPI.toPostProcess = true;
+            }
         }
     }
 
@@ -88,6 +93,7 @@ class UltimateController : Script
     {
         Time.timeScale = 1.0f;
         isSlowingDownTime = false;
+        RendererAPI.toPostProcess = false;
 
         GameObject projectile = Instantiate(ultimate, ultimatePose.transform.position);
 

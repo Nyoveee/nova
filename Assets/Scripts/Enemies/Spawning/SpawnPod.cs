@@ -47,7 +47,7 @@ public abstract class SpawnPod : Script
             OnAnimationFinished();
         }
 
-        timeElapsed += Time.V_FixedDeltaTime();
+        timeElapsed += Time.V_DeltaTime();
 
     }
 
