@@ -3,15 +3,23 @@
         {
             "EntityData": {
                 "children": [
-                    41943213,
-                    41943214
+                    48234766,
+                    48234767
                 ],
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Door ",
+                "overridenComponents": {
+                    "17237801994024849853": true
+                },
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 48234765,
+                    "prefabID": 7022405314293678081
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -21,41 +29,30 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 28
-                                },
-                                "name": "player"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 41943214
+                                    "__variant_value": 48234767
                                 },
                                 "name": "leftDoor"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 41943213
+                                    "__variant_value": 48234766
                                 },
                                 "name": "rightDoor"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 1,
-                                    "__variant_value": {
-                                        "x": 0.0,
-                                        "y": 0.0,
-                                        "z": 10.0
-                                    }
+                                    "__variant_type": 16,
+                                    "__variant_value": 2.0
                                 },
                                 "name": "openOffset"
                             },
                             {
                                 "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 10.0
+                                    "__variant_type": 16,
+                                    "__variant_value": 2.0
                                 },
-                                "name": "detectionRange"
+                                "name": "doorMovingDuration"
                             }
                         ],
                         "scriptId": 840212062307794947
@@ -90,9 +87,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 93.31300354003906,
-                    "y": 31.14028549194336,
-                    "z": -5.064215660095215
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -106,17 +103,36 @@
                     "z": 1.0
                 }
             },
-            "id": 41943212
+            "id": 48234765
         },
         {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "DoorR",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 41943212,
+                "parent": 48234765,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 48234766,
+                    "prefabID": 7022405314293678081
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -124,6 +140,20 @@
                     5
                 ],
                 "modelId": 3
+            },
+            "Rigidbody": {
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static"
             },
             "Transform": {
                 "eulerAngles": {
@@ -153,9 +183,9 @@
                     "z": 5.0
                 },
                 "position": {
-                    "x": 93.31300354003906,
-                    "y": 26.52301597595215,
-                    "z": -10.010842323303223
+                    "x": 0.0,
+                    "y": -4.617269515991211,
+                    "z": -4.946626663208008
                 },
                 "rotation": {
                     "w": 1.0,
@@ -169,17 +199,36 @@
                     "z": 5.0
                 }
             },
-            "id": 41943213
+            "id": 48234766
         },
         {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
             "EntityData": {
                 "children": null,
+                "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "DoorL",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 41943212,
+                "parent": 48234765,
                 "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 48234767,
+                    "prefabID": 7022405314293678081
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -187,6 +236,20 @@
                     5
                 ],
                 "modelId": 3
+            },
+            "Rigidbody": {
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static"
             },
             "Transform": {
                 "eulerAngles": {
@@ -216,9 +279,9 @@
                     "z": 5.0
                 },
                 "position": {
-                    "x": 93.31259155273438,
-                    "y": 26.518648147583008,
-                    "z": 0.0
+                    "x": -0.0004119873046875,
+                    "y": -4.621637344360352,
+                    "z": 5.064215660095215
                 },
                 "rotation": {
                     "w": 1.0,
@@ -232,8 +295,8 @@
                     "z": 5.0
                 }
             },
-            "id": 41943214
+            "id": 48234767
         }
     ],
-    "RootEntity": 41943212
+    "RootEntity": 48234765
 }
