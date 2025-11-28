@@ -7,15 +7,12 @@ class Door : Script
         Closed,
         Opening,
         Open,
-        Closing,
-        Locked,
-        Unlocked,
+        Closing
     }
+    private delegate void CurrentState();
+    private DoorState doorState = DoorState.Closed;
+    private Dictionary<DoorState, CurrentState> updateState = new Dictionary<DoorState, CurrentState>();
 
-    private DoorState state = DoorState.Closed;
-
-    [SerializableField]
-    private Transform_ player;
 
     // Left and right door panels
     [SerializableField]
@@ -25,72 +22,68 @@ class Door : Script
 
     // Editable 
     [SerializableField]
-    private Vector3 openOffset = new Vector3(0, 0, 2);
+    private float openOffset = 2f;
     [SerializableField]
-    private float detectionRange = 10f;
+    private float doorMovingDuration = 2f;
 
     // Positions
     private Vector3 leftStart;
-    private Vector3 leftEnd;
 
     private Vector3 rightStart;
-    private Vector3 rightEnd;
 
-    private float openSpeed = 2f;
-    private float t = 0f;
-
+ 
+    private float currentDoorMovingTime;
     protected override void init()
     {
-        // Setup both door panels
-        leftStart = leftDoor.position;
-        leftEnd = leftStart + openOffset;
-
-        rightStart = rightDoor.position;
-        rightEnd = rightStart - openOffset;   // opposite direction
-
-        Console.WriteLine("Double Door initialized. State: " + state);
+        updateState.Add(DoorState.Open, Update_Open);
+        updateState.Add(DoorState.Closed, Update_Closed);
+        updateState.Add(DoorState.Opening, Update_Opening);
+        updateState.Add(DoorState.Closing, Update_Closing);
     }
-
     protected override void update()
     {
-        float distance = Vector3.Distance(player.position, leftStart);
-
-        if (distance < detectionRange && state == DoorState.Closed)
-        {
-            state = DoorState.Opening;
-            t = 0f;
-        }
-        else if (distance > detectionRange && state == DoorState.Open)
-        {
-            state = DoorState.Closing;
-            t = 0f;
-        }
-
-        AnimateDoor();
+        updateState[doorState]();
     }
-
-
-    private void AnimateDoor()
+    private void Update_Open() { }
+    private void Update_Closed() { }
+    private void Update_Locked() { }
+    private void Update_Opening()
     {
-        if (state == DoorState.Opening)
-        {
-            t += Time.V_FixedDeltaTime() * openSpeed;
+        currentDoorMovingTime -= Time.V_DeltaTime();
 
-            leftDoor.position = Vector3.Lerp(leftStart, leftEnd, t);
-            rightDoor.position = Vector3.Lerp(rightStart, rightEnd, t);
+        leftDoor.localPosition = Vector3.Lerp(leftStart + new Vector3(0, 0, openOffset), leftStart, currentDoorMovingTime/doorMovingDuration);
+        rightDoor.localPosition = Vector3.Lerp(rightStart - new Vector3(0, 0, openOffset),rightStart, currentDoorMovingTime / doorMovingDuration);
 
-            if (t >= 1f)
-                state = DoorState.Open;
-        }
-        else if (state == DoorState.Closing)
-        {
-            t += Time.V_FixedDeltaTime() * openSpeed;
+        if (currentDoorMovingTime <= 0f)
+            doorState = DoorState.Open;
+    }
+    private void Update_Closing()
+    {
+        currentDoorMovingTime -= Time.V_DeltaTime();
 
-            leftDoor.position = Vector3.Lerp(leftEnd, leftStart, t);
-            rightDoor.position = Vector3.Lerp(rightEnd, rightStart, t);
+        leftDoor.localPosition = Vector3.Lerp(leftStart - new Vector3(0, 0, openOffset), leftStart, currentDoorMovingTime / doorMovingDuration);
+        rightDoor.localPosition = Vector3.Lerp(rightStart + new Vector3(0, 0, openOffset), rightStart, currentDoorMovingTime / doorMovingDuration);
 
-            if (t >= 1f)
-                state = DoorState.Closed;
-        }
+        if (currentDoorMovingTime <= 0f)
+            doorState = DoorState.Closed;
+    }
+    public bool IsFullyOpened() => doorState == DoorState.Open;
+    public bool IsFullyClosed() => doorState == DoorState.Closed;
+    /**********************************************************************
+        Collision Trigger Events
+    **********************************************************************/
+    public void OpenDoor()
+    {
+        doorState = DoorState.Opening;
+        leftStart = leftDoor.localPosition;
+        rightStart = rightDoor.localPosition;
+        currentDoorMovingTime = doorMovingDuration;
+    }
+    public void CloseDoor()
+    {
+        doorState = DoorState.Closing;
+        leftStart = leftDoor.localPosition;
+        rightStart = rightDoor.localPosition;
+        currentDoorMovingTime = doorMovingDuration;
     }
 }
