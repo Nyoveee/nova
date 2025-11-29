@@ -3,8 +3,8 @@
         {
             "EntityData": {
                 "children": [
-                    2,
-                    3
+                    90,
+                    91
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -17,10 +17,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 8413762513353850881,
+                "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 1,
-                    "prefabID": 8413762513353850881
+                    "prefabID": 13272653930121527297
                 },
                 "tag": ""
             },
@@ -107,7 +107,7 @@
                             {
                                 "data": {
                                     "__variant_type": 16,
-                                    "__variant_value": 60.0
+                                    "__variant_value": 45.0
                                 },
                                 "name": "weaponReturnSpeed"
                             },
@@ -252,7 +252,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1
+            "id": 82
         },
         {
             "EntityData": {
@@ -263,14 +263,15 @@
                 "name": "RifleModel",
                 "overridenComponents": {
                     "13484132868097894827": true,
+                    "17237801994024849853": true,
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 1,
-                "prefabID": 8413762513353850881,
+                "parent": 82,
+                "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 2,
-                    "prefabID": 8413762513353850881
+                    "prefabID": 13272653930121527297
                 },
                 "tag": ""
             },
@@ -310,9 +311,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999764561653137,
+                    "x": 0.999975860118866,
                     "y": 1.0,
-                    "z": 0.9999764561653137
+                    "z": 0.999975860118866
                 },
                 "position": {
                     "x": 0.0,
@@ -326,12 +327,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999765157699585,
+                    "x": 0.9999759197235107,
                     "y": 1.0,
-                    "z": 0.9999765157699585
+                    "z": 0.9999759197235107
                 }
             },
-            "id": 2
+            "id": 90
         },
         {
             "EntityData": {
@@ -341,14 +342,16 @@
                 "layerId": 0,
                 "name": "IchorCollector",
                 "overridenComponents": {
+                    "11935986701403193153": false,
+                    "13953638462837156301": false,
                     "17237801994024849853": true
                 },
                 "overridenProperties": null,
-                "parent": 1,
-                "prefabID": 8413762513353850881,
+                "parent": 82,
+                "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 3,
-                    "prefabID": 8413762513353850881
+                    "prefabID": 13272653930121527297
                 },
                 "tag": ""
             },
@@ -367,22 +370,6 @@
                 "motionQuality": "Continuous",
                 "motionType": "Kinematic",
                 "toScaleWithTransform": true
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 82
-                                },
-                                "name": "weaponRef"
-                            }
-                        ],
-                        "scriptId": 13761180140375949313
-                    }
-                ]
             },
             "SphereCollider": {
                 "offset": {
@@ -436,8 +423,8 @@
                     "z": 1.0
                 }
             },
-            "id": 3
+            "id": 91
         }
     ],
-    "RootEntity": 1
+    "RootEntity": 82
 }

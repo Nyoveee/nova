@@ -107,6 +107,8 @@ public:
 			JPH_ASSERT(false);
 			return false;
 		}
+
+
 	}
 };
 
@@ -133,6 +135,7 @@ public:
 			JPH_ASSERT(false);
 			return false;
 		}
+
 	}
 };
 
