@@ -7,9 +7,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Cube",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -71,9 +76,14 @@
                 "isActive": true,
                 "layerId": 1,
                 "name": "SnipeOutlineMat",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145734,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -138,9 +148,14 @@
                 "isActive": true,
                 "layerId": 2,
                 "name": "Snipe",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "MeshRenderer": {
@@ -243,9 +258,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Charger",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 7923415505762369541,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": "Enemy"
             },
             "NavMeshAgent": {
@@ -261,6 +281,7 @@
                 "toggleSphere": false
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -272,7 +293,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Dynamic"
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -281,14 +303,14 @@
                             {
                                 "data": {
                                     "__variant_type": 8,
-                                    "__variant_value": 6206435736578506755
+                                    "__variant_value": null
                                 },
                                 "name": "chargerAttackHitBoxPrefab"
                             },
                             {
                                 "data": {
                                     "__variant_type": 8,
-                                    "__variant_value": 16070990181531303937
+                                    "__variant_value": null
                                 },
                                 "name": "stompHitBoxPrefab"
                             },
@@ -330,7 +352,7 @@
                             {
                                 "data": {
                                     "__variant_type": 8,
-                                    "__variant_value": 14493050257245634575
+                                    "__variant_value": null
                                 },
                                 "name": "ichorPrefab"
                             },
@@ -364,135 +386,6 @@
                             }
                         ],
                         "scriptId": 9501847987883769857
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "damage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 0.25999999046325684
-                                },
-                                "name": "timeBetweenChargeSteps"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 30.0
-                                },
-                                "name": "chargingRange"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 20
-                                },
-                                "name": "chargeDamage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "chargeCooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "maxChargeTime"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 2.5
-                                },
-                                "name": "chargeSpeedMultiplier"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 30
-                                },
-                                "name": "stompDamage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "stompCooldown"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 0.10000000149011612
-                                },
-                                "name": "stompHitboxDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 60.0
-                                },
-                                "name": "chasingRange"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 12.5
-                                },
-                                "name": "attackRange"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "movementSpeed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 13,
-                                    "__variant_value": 6
-                                },
-                                "name": "ichorSpawnAmount"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 0.10000000149011612
-                                },
-                                "name": "hurtDuration"
-                            }
-                        ],
-                        "scriptId": 9501847987883769859
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 3145761
-                                },
-                                "name": "enemyGameObject"
-                            }
-                        ],
-                        "scriptId": 12135503810755952677
                     }
                 ]
             },
@@ -552,9 +445,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Charger Model",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145761,
-                "prefabID": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": "Enemy"
             },
             "Scripts": {
@@ -682,20 +580,25 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "AttackHitBoxPosition",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145761,
-                "prefabID": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.06822508573532104,
+                    "y": -0.06822510063648224,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.06822510063648224,
+                    "y": -0.06822509318590164,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -704,7 +607,7 @@
                     "z": 5.448999881744385
                 },
                 "localRotation": {
-                    "w": 0.9994181990623474,
+                    "w": 0.999418318271637,
                     "x": 0.0,
                     "y": -0.03410593047738075,
                     "z": 0.0
@@ -720,9 +623,9 @@
                     "z": 5.448999881744385
                 },
                 "rotation": {
-                    "w": 0.999418318271637,
+                    "w": 0.9994181990623474,
                     "x": 0.0,
-                    "y": -0.034105926752090454,
+                    "y": -0.03410593047738075,
                     "z": 0.0
                 },
                 "scale": {
@@ -740,9 +643,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "IchorSpawnPoint",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145761,
-                "prefabID": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Transform": {
@@ -811,12 +719,18 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "ChargerCollider",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145761,
-                "prefabID": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -828,7 +742,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -899,9 +814,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "StompHitboxPosition",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145761,
-                "prefabID": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Transform": {
@@ -957,13 +877,17 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Emitter",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145761,
-                "prefabID": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
-                "angularVelocity": 0.0,
                 "burstAmount": 30,
                 "burstRate": 0.0,
                 "colorOverLifetime": {
@@ -977,10 +901,11 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 8.603972570954377e-43,
+                    "y": 4.2420011947541525e-11,
+                    "z": 1.7376100957627732e-43
                 },
+                "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
@@ -989,7 +914,11 @@
                     "z": 0.03200000151991844
                 },
                 "looping": true,
+                "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -997,7 +926,17 @@
                         "g": 1.0,
                         "r": 1.0
                     },
-                    "randomizedColor": false
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -1016,12 +955,12 @@
                             "z": -5.0
                         }
                     },
-                    "emissionShape": "Hemisphere",
+                    "emissionShape": "Point",
                     "radiusEmitter": {
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -1029,7 +968,7 @@
                     "selected": false
                 },
                 "startSize": 0.10000000149011612,
-                "startSpeed": 5.0,
+                "startSpeed": 1.0,
                 "texture": 5391556884225917121,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -1040,6 +979,17 @@
                         "g": 1.0,
                         "r": 1.0
                     },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
                     "trailTexture": 0
                 }
@@ -1097,12 +1047,22 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Light",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
                 "color": {
                     "b": 1.0,
                     "g": 1.0,
@@ -1111,6 +1071,7 @@
                 "cutOffAngle": 0.21816615760326385,
                 "intensity": 1.0,
                 "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
                 "type": "Directional"
             },
             "Transform": {
@@ -1166,12 +1127,17 @@
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": false,
+                "isActive": true,
                 "layerId": 0,
                 "name": "ChargerExecuteModel",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 3145761,
                 "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
                 "tag": ""
             },
             "Scripts": {
@@ -1241,8 +1207,8 @@
             },
             "SkinnedMeshRenderer": {
                 "materialIds": [
-                    12073403403658919943,
-                    4579413623711268867
+                    4579413623711268867,
+                    12073403403658919943
                 ],
                 "modelId": 15509887387844050949
             },
