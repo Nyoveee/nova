@@ -38,6 +38,6 @@ class Ichor : Script
     protected override void onCollisionEnter(GameObject other)
     {
         if (other.tag == "Floor")
-            rigidbody.enable = false;
+           rigidbody.SetVelocity(Vector3.Zero());
     }
 }

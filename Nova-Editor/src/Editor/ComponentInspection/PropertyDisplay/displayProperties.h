@@ -542,6 +542,8 @@ template<>
 inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& editor, const char*, std::vector<TypedResourceID<Material>>& dataMember) {
 	ImGui::SeparatorText("Material");
 
+	ImGui::TextWrapped("If the model has only 1 sub mesh, you can attach multiple materials for additional render passes. Else, the rest will be ignored.");
+
 	for (unsigned int i = 0; i < dataMember.size(); ++i) {
 		TypedResourceID<Material>& id = dataMember[i];
 
@@ -549,6 +551,10 @@ inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& edit
 		editor.displayAssetDropDownList<Material>(id, label.c_str(), [&](ResourceID resourceId) {
 			id = TypedResourceID<Material>{ resourceId };
 		});
+	}
+
+	if (ImGui::Button("[+]")) {
+		dataMember.push_back(TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
 	}
 }
 

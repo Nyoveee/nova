@@ -98,7 +98,7 @@ void UISystem::updateSimulation(float dt) {
 				destinationColor = button.pressedColor;
 			}
 
-			button.finalColor = button.finalColor = glm::mix(glm::vec4{ startColor }, glm::vec4{ destinationColor }, lerpFactor) * std::lerp(1.f, button.colorMultiplier, lerpFactor);
+			button.finalColor = glm::mix(glm::vec4{ startColor }, glm::vec4{ destinationColor }, lerpFactor) * std::lerp(1.f, button.colorMultiplier, lerpFactor);
 
 			if (button.timeElapsed < button.fadeDuration) {
 				button.timeElapsed += dt;

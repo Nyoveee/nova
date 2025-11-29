@@ -63,6 +63,7 @@ class Gunner : Enemy
     protected override void update()
     {
         updateState[gunnerState]();
+        FlushDamageEnemy();
     }
     /***********************************************************
        Helpers 
@@ -94,11 +95,6 @@ class Gunner : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
-        if(gunnerState == GunnerState.Spawning)
-        {
-            return;
-        }
-
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
             if (colliderTag == "Enemy_ArmouredSpot")
@@ -112,17 +108,19 @@ class Gunner : Enemy
 
             }
 
-            gunnerStats.health -= damage;
+            accumulatedDamageInstance += damage;
+            //gunnerStats.health -= damage;
+            //if (gunnerStats.health <= 0)
+            //{
+            //    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+            //        SpawnIchor();
+            //    gunnerState = GunnerState.Death;
+            //    animator.PlayAnimation("Gunner_Death");
+            //    NavigationAPI.stopAgent(gameObject);
+            //    rigidBody.enable = false;
+            //}
 
-            if (gunnerStats.health <= 0)
-            {
-                if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
-                    SpawnIchor();
-                gunnerState = GunnerState.Death;
-                animator.PlayAnimation("Gunner_Death");
-                NavigationAPI.stopAgent(gameObject);
-                rigidBody.enable = false;
-            }
+
         }
 
 
@@ -132,20 +130,23 @@ class Gunner : Enemy
             {
                 Explode();
 
-
+                gunnerState = GunnerState.Death;
+                Destroy(gameObject);
             }
             else 
             {
-                gunnerStats.health -= damage;
-                if (gunnerStats.health <= 0)
-                {
-                    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
-                        SpawnIchor();
-                    gunnerState = GunnerState.Death;
-                    animator.PlayAnimation("Gunner_Death");
-                    NavigationAPI.stopAgent(gameObject);
-                    rigidBody.enable = false;
-                }
+
+                accumulatedDamageInstance += damage;
+                //gunnerStats.health -= damage;
+                //if (gunnerStats.health <= 0)
+                //{
+                //    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+                //        SpawnIchor();
+                //    gunnerState = GunnerState.Death;
+                //    animator.PlayAnimation("Gunner_Death");
+                //    NavigationAPI.stopAgent(gameObject);
+                //    rigidBody.enable = false;
+                //}
             }
 
 
@@ -153,36 +154,77 @@ class Gunner : Enemy
 
         if (damageType == Enemy.EnemydamageType.Ultimate)
         {
-            gunnerStats.health -= damage;
-            if (gunnerStats.health <= 0)
-            {
-                if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
-                    SpawnIchor();
-                gunnerState = GunnerState.Death;
-                animator.PlayAnimation("Gunner_Death");
-                NavigationAPI.stopAgent(gameObject);
-                rigidBody.enable = false;
-            }
+
+            accumulatedDamageInstance += damage;
+            //gunnerStats.health -= damage;
+            //if (gunnerStats.health <= 0)
+            //{
+            //    if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+            //        SpawnIchor();
+            //    gunnerState = GunnerState.Death;
+            //    animator.PlayAnimation("Gunner_Death");
+            //    NavigationAPI.stopAgent(gameObject);
+            //    rigidBody.enable = false;
+            //}
 
         }
 
 
 
-            if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
-            return;
-        SpawnIchor();
-        TriggerRecentlyDamageCountdown();
-        AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
-        Invoke(() =>
+        //    if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
+        //    return;
+        //SpawnIchor();
+        //TriggerRecentlyDamageCountdown();
+        //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+        //renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+        //Invoke(() =>
+        //{
+        //    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+        //}, gunnerStats.hurtDuration);
+        //// Don't stagger if it's in the middle of a jump
+        //if (IsCurrentlyJumping())
+        //    return;
+        //gunnerState = GunnerState.Stagger;
+        //animator.PlayAnimation("Gunner_Stagger");
+    }
+
+    void FlushDamageEnemy()
+    {
+
+
+
+        if (accumulatedDamageInstance > 0)
         {
-            renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-        }, gunnerStats.hurtDuration);
-        // Don't stagger if it's in the middle of a jump
-        if (IsCurrentlyJumping())
-            return;
-        gunnerState = GunnerState.Stagger;
-        animator.PlayAnimation("Gunner_Stagger");
+            SpawnIchorFrame();
+
+            gunnerStats.health -= accumulatedDamageInstance;
+            if (gunnerStats.health <= 0)
+            {
+                if (gunnerState != GunnerState.Death/* && !WasRecentlyDamaged()*/)
+                {
+                    gunnerState = GunnerState.Death;
+                    animator.PlayAnimation("Gunner_Death");
+                    NavigationAPI.stopAgent(gameObject);
+                    rigidBody.enable = false;
+                }
+            }
+            else
+            {
+                TriggerRecentlyDamageCountdown();
+                if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+                {
+                    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+                    renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
+                    Invoke(() =>
+                    {
+                        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+                        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
+                    }, gunnerStats.hurtDuration); //bug here is this object dies this frame
+                }
+            }
+            accumulatedDamageInstance = 0;
+        }
     }
     public override bool IsEngagedInBattle()
     {
