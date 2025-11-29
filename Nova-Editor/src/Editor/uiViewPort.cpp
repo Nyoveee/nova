@@ -15,7 +15,7 @@ UIViewPort::UIViewPort(Editor& editor) :
 {}
 
 void UIViewPort::update() {
-	ImGui::Begin(ICON_FA_GAMEPAD " UI");
+	engine.renderer.isUIScreenShown = ImGui::Begin(ICON_FA_GAMEPAD " UI");
 	isHoveringOver = ImGui::IsWindowHovered();
 	isActive = ImGui::IsWindowFocused();
 

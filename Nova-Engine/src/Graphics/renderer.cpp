@@ -329,13 +329,13 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 			renderObjectIds();
 		}
+		// Main render function
 		if(isGameScreenShown)
-		{
-			// Main render function
 			render(gameMainFrameBuffer, gameCamera);
+		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
+		if (isGameScreenShown) {
 			overlayUIToBuffer(gameMainFrameBuffer);
-
 			renderUiObjectIds();
 		}
 		break;
