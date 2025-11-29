@@ -47,6 +47,19 @@ class ThrowableRifle : Script
     private float maxSteeringDistance =   5f;
     [SerializableField]
     private float fakeGravity = 9.8f; //a little downward velocity so there is a throwing arc
+    [SerializableField]
+    private int ichorPerAmmo = 2; //gain X amount of ammo per ichor
+    [SerializableField]
+    private int healthGainedPerIchor = 2; //gain X amount of health per ichor
+    [SerializableField]
+    private int spGainPerIchor = 2; //gain X amount of sp per ichor
+    [SerializableField]
+    private int ichorFindRadius = 5; //gain X amount of sp per ichor
+
+    private float currentIchorGained =0;
+    private float totalIchorGained = 0;
+    private float currentAmmoGained = 0;
+    private float totalAmmoGained = 0;
 
     // ==================================
     // private variables
@@ -100,7 +113,6 @@ class ThrowableRifle : Script
     protected override void update()
     {
     
-    
     }
 
     // This function is invoked every update.
@@ -143,14 +155,16 @@ class ThrowableRifle : Script
                 }
                 break;
             case ThrowingWeaponState.HitEnviroment:
-
+                
+                if(weaponSpinSequence != null)
                 weaponSpinSequence.play();
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
                 break;
             case ThrowingWeaponState.HitEnemy:
 
-                weaponSpinSequence.play();
+                if (weaponSpinSequence != null)
+                    weaponSpinSequence.play();
                 DamageEnemy();
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
@@ -283,6 +297,19 @@ class ThrowableRifle : Script
         }
 
 
+        if ((other.tag == "Enemy_ArmouredSpot" || other.tag == "Enemy_WeakSpot") && throwingWeaponState == ThrowingWeaponState.Return)
+        {
+
+
+            GameObject candidateobject  = other.GetParent();
+            if (hasDamageList.Contains(candidateobject) == false)
+            {
+                hasDamageList.Add(candidateobject);
+                other.getScript<EnemyCollider>().OnColliderShot(returnDamage, Enemy.EnemydamageType.ThrownWeapon, other.tag);
+            }
+
+        }
+
     }
 
 
@@ -297,17 +324,68 @@ class ThrowableRifle : Script
     void Receive()
     {
         playerGameobject.getScript<PlayerWeaponController>().WeaponCollected(mappedWeapon);
+
+        //update player health
+        if (playerGameobject.getScript<PlayerController>() != null)
+        {
+
+            int heal = (int)( totalIchorGained /healthGainedPerIchor);
+            int sp = (int)(totalIchorGained / spGainPerIchor);
+
+            playerGameobject.getScript<PlayerController>().GainHealth(heal);
+            
+            mappedWeapon.currentSp +=  sp;
+
+            mappedWeapon.currentSp = Math.Min(mappedWeapon.currentSp,mappedWeapon.maxSp);
+
+        }
+
         Destroy(gameObject);
+
+    }
+
+    public void ichorPull(GameObject other)
+    {
+        if (other.tag != "Ichor")
+        {
+            return;
+        }
+
+
+        //Continue to gain ichor until max ammo
+        if (mappedWeapon.currentAmmo < mappedWeapon.maxAmmo)
+        {
+            currentIchorGained++;
+            totalAmmoGained++;
+
+            //gain ammo and destroy object
+            if (currentIchorGained >= ichorPerAmmo)
+            { 
+                totalAmmoGained++;
+                currentIchorGained = 0;
+                mappedWeapon.currentAmmo++;
+            }
+        
+            Destroy(other);
+        
+        }
+
+
+
 
     }
 
 
     public void InitWeapon()
     {
-            weaponRB.SetVelocity(flightPath * weaponFlyingSpeed);
-            gameObject.transform.rotation = Quaternion.LookRotation(flightPath);
+        weaponRB.SetVelocity(flightPath * weaponFlyingSpeed);
+        gameObject.transform.rotation = Quaternion.LookRotation(flightPath);
 
-            calculatedTrueDamage =  throwWeaponBaseDamage  +  (mappedWeapon.maxAmmo - mappedWeapon.currentAmmo) * damageMultiplierPerAmmoUsed;
+        calculatedTrueDamage =  throwWeaponBaseDamage  +  (mappedWeapon.maxAmmo - mappedWeapon.currentAmmo) * damageMultiplierPerAmmoUsed;
 
+        if (weaponSpinSequence == null)
+        {
+            weaponSpinSequence = gameObject.GetChildren()[0].getComponent<Sequence_>();
+        }
     }
 }

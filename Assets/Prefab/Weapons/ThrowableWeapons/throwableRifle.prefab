@@ -3,25 +3,29 @@
         {
             "EntityData": {
                 "children": [
-                    44040386
+                    2,
+                    3
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Rifle_Throwable",
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "13953638462837156301": true,
+                    "17237801994024849853": true,
+                    "6919815292445452220": false
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 8413762513353850881,
                 "prefabMetaData": {
-                    "prefabEntity": 44040385,
-                    "prefabID": 2731222537219162113
+                    "prefabEntity": 1,
+                    "prefabID": 8413762513353850881
                 },
                 "tag": ""
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -33,7 +37,8 @@
                 "layer": "Moving",
                 "mass": 10.0,
                 "motionQuality": "Continuous",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -67,7 +72,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 44040386
+                                    "__variant_value": 90
                                 },
                                 "name": "weaponSpinSequence"
                             },
@@ -157,6 +162,34 @@
                             },
                             {
                                 "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 2
+                                },
+                                "name": "ichorPerAmmo"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 2
+                                },
+                                "name": "healthGainedPerIchor"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 2
+                                },
+                                "name": "spGainPerIchor"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 5
+                                },
+                                "name": "ichorFindRadius"
+                            },
+                            {
+                                "data": {
                                     "__variant_type": 16,
                                     "__variant_value": 0.0
                                 },
@@ -219,7 +252,7 @@
                     "z": 1.0
                 }
             },
-            "id": 44040385
+            "id": 1
         },
         {
             "EntityData": {
@@ -233,11 +266,11 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 44040385,
-                "prefabID": 4294967295,
+                "parent": 1,
+                "prefabID": 8413762513353850881,
                 "prefabMetaData": {
-                    "prefabEntity": 44040386,
-                    "prefabID": 2731222537219162113
+                    "prefabEntity": 2,
+                    "prefabID": 8413762513353850881
                 },
                 "tag": ""
             },
@@ -267,7 +300,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": 0.001983642578125,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -277,13 +310,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999780654907227,
+                    "x": 0.9999764561653137,
                     "y": 1.0,
-                    "z": 0.9999780654907227
+                    "z": 0.9999764561653137
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 11.22384262084961,
+                    "y": 11.225826263427734,
                     "z": 0.2930909991264343
                 },
                 "rotation": {
@@ -293,13 +326,118 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999781250953674,
+                    "x": 0.9999765157699585,
                     "y": 1.0,
-                    "z": 0.9999781250953674
+                    "z": 0.9999765157699585
                 }
             },
-            "id": 44040386
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "IchorCollector",
+                "overridenComponents": {
+                    "17237801994024849853": true
+                },
+                "overridenProperties": null,
+                "parent": 1,
+                "prefabID": 8413762513353850881,
+                "prefabMetaData": {
+                    "prefabEntity": 3,
+                    "prefabID": 8413762513353850881
+                },
+                "tag": ""
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 0.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": false,
+                "isTrigger": true,
+                "layer": "Item_Interactor",
+                "mass": 1.0,
+                "motionQuality": "Continuous",
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 82
+                                },
+                                "name": "weaponRef"
+                            }
+                        ],
+                        "scriptId": 13761180140375949313
+                    }
+                ]
+            },
+            "SphereCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 10.0
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.6359577178955078,
+                    "z": 0.5938061475753784
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 11.859800338745117,
+                    "z": 0.8868971467018127
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 3
         }
     ],
-    "RootEntity": 44040385
+    "RootEntity": 1
 }

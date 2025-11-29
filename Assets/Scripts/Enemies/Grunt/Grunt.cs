@@ -77,6 +77,7 @@ class Grunt : Enemy
     protected override void update()
     {   
          updateState[gruntState]();
+         FlushDamageEnemy();
     }
     /**********************************************************************
         Inheritted Functions
@@ -86,16 +87,16 @@ class Grunt : Enemy
         return gruntState != GruntState.Idle;
     }
 
-    public override void TakeDamage(float damage,Enemy.EnemydamageType damageType, string colliderTag)
+    public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
 
-        if(damageType == Enemy.EnemydamageType.WeaponShot)
+        if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
 
             if (colliderTag == "Enemy_ArmouredSpot")
             {
                 damage *= gruntStats.enemyArmouredMultiplier;
-            
+
             }
             if (colliderTag == "Enemy_WeakSpot")
             {
@@ -103,16 +104,17 @@ class Grunt : Enemy
 
             }
 
-            gruntStats.health -= damage;
-            if (gruntStats.health <= 0)
-            {
-                if (gruntState != GruntState.Death && !WasRecentlyDamaged())
-                    SpawnIchor();
-                gruntState = GruntState.Death;
-                animator.PlayAnimation("Grunt Death");
-                NavigationAPI.stopAgent(gameObject);
-                rigidbody.enable = false;
-            }
+            accumulatedDamageInstance += damage;
+            //gruntStats.health -= damage;
+            //if (gruntStats.health <= 0)
+            //{
+            //    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+            //        SpawnIchor();
+            //    gruntState = GruntState.Death;
+            //    animator.PlayAnimation("Grunt Death");
+            //    NavigationAPI.stopAgent(gameObject);
+            //    rigidbody.enable = false;
+            //}
 
 
         }
@@ -121,47 +123,107 @@ class Grunt : Enemy
         {
             if (gruntStats.health <= gruntStats.enemyExecuteThreshold)
             {
-                  Explode();
+                Explode();
                 //animator.PlayAnimation("Grunt Death");
                 //NavigationAPI.stopAgent(gameObject);
                 //rigidbody.enable = false;
-                //gruntState = GruntState.Death;
-
-
+                gruntState = GruntState.Death;
                 Destroy(gameObject);
 
             }
             else
             {
-                gruntStats.health -= damage;
-                if (gruntStats.health <= 0)
+                accumulatedDamageInstance += damage;
+                //if (gruntStats.health <= 0)
+                //{
+                //    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+                //        SpawnIchor();
+                //    gruntState = GruntState.Death;
+                //    animator.PlayAnimation("Grunt Death");
+                //    NavigationAPI.stopAgent(gameObject);
+                //    rigidbody.enable = false;
+                //}
+            }
+
+        }
+
+        if (damageType == Enemy.EnemydamageType.Ultimate)
+        {
+
+            accumulatedDamageInstance += damage;
+            //gruntStats.health -= damage;
+            //if (gruntStats.health <= 0)
+            //{
+            //    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+            //        SpawnIchor();
+            //    gruntState = GruntState.Death;
+            //    animator.PlayAnimation("Grunt Death");
+            //    NavigationAPI.stopAgent(gameObject);
+            //    rigidbody.enable = false;
+            //}
+
+        }
+
+        //    // blud already died let him die in peace dont take anymore damage..
+        //    if (gruntState == GruntState.Death || WasRecentlyDamaged())
+        //    return;
+        //SpawnIchor();
+        //TriggerRecentlyDamageCountdown();
+
+        //if (gruntState != GruntState.Death)
+        //{
+        //    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+        //    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+        //    renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
+        //    Invoke(() =>
+        //    {
+        //        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+        //        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
+        //    }, gruntStats.hurtDuration); //bug here is this object dies this frame
+        //}
+    }
+
+
+
+    void FlushDamageEnemy()
+    {
+
+       
+
+        if (accumulatedDamageInstance > 0)
+        {
+            SpawnIchorFrame();
+
+            gruntStats.health -= accumulatedDamageInstance;
+            if (gruntStats.health <= 0)
+            {
+                if (gruntState != GruntState.Death/* && !WasRecentlyDamaged()*/)
                 {
-                    if (gruntState != GruntState.Death && !WasRecentlyDamaged())
-                        SpawnIchor();
                     gruntState = GruntState.Death;
                     animator.PlayAnimation("Grunt Death");
                     NavigationAPI.stopAgent(gameObject);
                     rigidbody.enable = false;
                 }
             }
-        
+            else
+            {
+                TriggerRecentlyDamageCountdown();
+                if (gruntState != GruntState.Death && !WasRecentlyDamaged())
+                {
+                    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
+                    renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
+                    Invoke(() =>
+                    {
+                        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
+                        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
+                    }, gruntStats.hurtDuration); //bug here is this object dies this frame
+                }
+            }
+            accumulatedDamageInstance = 0;
         }
-
-        // blud already died let him die in peace dont take anymore damage..
-        if (gruntState == GruntState.Death || WasRecentlyDamaged())
-            return;
-        SpawnIchor();
-        TriggerRecentlyDamageCountdown();
-        AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-        renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
-        renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
-        Invoke(() =>
-        {
-            renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
-            renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
-        }, gruntStats.hurtDuration);
-        
     }
+
 
     // kills this gameobject..
     /**********************************************************************
@@ -271,7 +333,7 @@ class Grunt : Enemy
     }
     public void EndDeath()
     {
-       if(gameObject == null)
+       if(gameObject != null)
        Destroy(gameObject);
     }
     public void BeginJump()
@@ -279,6 +341,9 @@ class Grunt : Enemy
         gruntState = GruntState.Jump;
         navMeshAgent.enable = false;
     }
+
+
+
 
     // ------------
     public override void SetSpawningDuration(float seconds)

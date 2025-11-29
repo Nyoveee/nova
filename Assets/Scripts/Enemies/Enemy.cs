@@ -9,6 +9,7 @@ public abstract class Enemy : Script
     { 
         WeaponShot,
         ThrownWeapon,
+        Ultimate,
     
     
     }
@@ -38,6 +39,7 @@ public abstract class Enemy : Script
     private EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
     private float ichorSpawnPositionVariance = 1.5f;
+    protected float accumulatedDamageInstance = 0f;
     // Jump
     private float currentJumpDuration = 0f;
     private NavMeshOfflinkData offlinkData;
@@ -53,7 +55,7 @@ public abstract class Enemy : Script
     public void Explode()
     {
 
-        for (int i = 0; i < 1/*enemyStats.ichorExplodeSpawnAmount*/; ++i)
+        for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
         {
             Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
             direction.Normalize();
@@ -108,9 +110,27 @@ public abstract class Enemy : Script
     {
         return player != null ? Vector3.Distance(player.transform.position, gameObject.transform.position) : 0f;
     }
+
+
+    protected void SpawnIchorFrame()
+    { 
+        int currentSpawnAmount = (int)(accumulatedDamageInstance / enemyStats.ichorPerDamage);
+
+        for (int i = 0; i < currentSpawnAmount; ++i)
+        {
+            Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
+            direction.Normalize();
+            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            GameObject ichor = Instantiate(ichorPrefab);
+            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+        }
+
+    }
+
+
     protected void SpawnIchor()
     {
-        for (int i = 0; i < enemyStats.ichorSpawnAmount; ++i){
+        for (int i = 0; i < enemyStats.ichorPerDamage; ++i){
             Vector3 direction = new Vector3(0, Random.Range(-1f,1f), 0);
             direction.Normalize();
             float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
@@ -118,6 +138,8 @@ public abstract class Enemy : Script
             ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
         }
     }
+
+
     protected void MoveToNavMeshPosition(Vector3 position)
     {
         RayCastResult? result = PhysicsAPI.Raycast(position, -Vector3.Up(), 1000f);

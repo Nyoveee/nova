@@ -162,6 +162,25 @@ class Charger : Enemy
         }
 
 
+        if (damageType == Enemy.EnemydamageType.Ultimate)
+        {
+            chargerstats.health -= damage;
+            if (chargerstats.health <= 0)
+            {
+                if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                chargerState = ChargerState.Death;
+                animator.PlayAnimation("ChargerDeath");
+                AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                chargingRigidbody.enable = false;
+                navMeshRigidbody.enable = false;
+                chargeLines.SetActive(false);
+                NavigationAPI.stopAgent(gameObject);
+
+            }
+
+
+        }
 
             if (chargerState == ChargerState.Death || WasRecentlyDamaged())
             return;

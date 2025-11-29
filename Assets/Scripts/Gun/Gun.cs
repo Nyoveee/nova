@@ -7,7 +7,12 @@ using System;
 public abstract class Gun : Script
 {
     public int currentAmmo;
+    public int currentSp;
     public int maxAmmo;
+    public int maxSp;
+
+
+
 
     private GameObject player;
 

@@ -31,7 +31,7 @@ class UltimateExplosion : Script
     private Transform_ transform;
     private MeshRenderer_ material;
     private Light_ light;
-
+    private List<GameObject> enemyObject = new List<GameObject>();
     private Vector3 initialScaleVector;
     private Vector3 explosionInitialScaleVector;
     private Vector3 explosionFinalScaleVector;
@@ -126,7 +126,14 @@ class UltimateExplosion : Script
 
             if (enemyCollider != null)
             {
-                enemyCollider.OnColliderShot(200f);
+                GameObject enemy = other.GetParent();
+
+                if (enemy != null && !enemyObject.Contains(enemy))
+                {
+                    enemyObject.Add(enemy);
+
+                    enemyCollider.OnColliderShot(200f, Enemy.EnemydamageType.Ultimate, other.tag); //ensure each enemy is hit only once
+                }
             }
         }
     }

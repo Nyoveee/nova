@@ -685,8 +685,17 @@ void NavigationSystem::CompleteOffLinkData(NavMeshAgent& navMeshAgent)
 
 void NavigationSystem::stopAgent(entt::entity entityID)
 {
+	//NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);
+	//crowdManager[agent->agentName]->resetMoveTarget(agent->agentIndex);
+
 	NavMeshAgent* agent = engine.ecs.registry.try_get<NavMeshAgent>(entityID);
-	crowdManager[agent->agentName]->resetMoveTarget(agent->agentIndex);
+	if (agent == nullptr)
+	{
+		return;
+	}
+
+	crowdManager[agent->agentName]->resetMoveTarget(GetDTCrowdIndex(agent->agentName,agent->agentIndex ));
+
 }
 int NavigationSystem::AddAgent(std::string const& agentName, NavMeshAgent& agent)
 {

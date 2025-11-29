@@ -148,7 +148,24 @@ class Gunner : Enemy
 
         }
 
-        if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
+        if (damageType == Enemy.EnemydamageType.Ultimate)
+        {
+            gunnerStats.health -= damage;
+            if (gunnerStats.health <= 0)
+            {
+                if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                gunnerState = GunnerState.Death;
+                animator.PlayAnimation("Gunner_Death");
+                NavigationAPI.stopAgent(gameObject);
+                rigidBody.enable = false;
+            }
+
+        }
+
+
+
+            if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
             return;
         SpawnIchor();
         TriggerRecentlyDamageCountdown();

@@ -4,6 +4,7 @@
 using Windows.Devices.Display.Core;
 using Windows.UI.Composition;
 using Windows.UI.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 class PlayerController : Script
 {
@@ -204,7 +205,15 @@ class PlayerController : Script
 
     }
 
+    public void GainHealth(float heal)
+    {
 
+        currentHealth += heal;
+
+        currentHealth = Mathf.Min(maxHealth,currentHealth);
+
+
+    }
 
     /***********************************************************
        Public Functions

@@ -1,107 +1,6 @@
 {
     "entities": [
         {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Grunt_WeakSpot",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1048635,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
-                "tag": "Enemy_WeakSpot"
-            },
-            "Rigidbody": {
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "Enemy_HurtSpot",
-                "mass": 10.0,
-                "motionQuality": "Discrete",
-                "motionType": "Kinematic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 1048635
-                                },
-                                "name": "enemyGameObject"
-                            }
-                        ],
-                        "scriptId": 12135503810755952677
-                    }
-                ]
-            },
-            "SphereCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 1.0
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 6.332118511199951,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 46.404151916503906,
-                    "y": 7.100652694702148,
-                    "z": 64.84210968017578
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 45088961
-        },
-        {
             "BoxCollider": {
                 "offset": {
                     "x": 0.0,
@@ -132,6 +31,7 @@
                 "tag": "Enemy_ArmouredSpot"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -143,113 +43,8 @@
                 "layer": "Enemy_HurtSpot",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 1048635
-                                },
-                                "name": "enemyGameObject"
-                            }
-                        ],
-                        "scriptId": 12135503810755952677
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 3.866504192352295,
-                    "z": -0.4488525390625
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 46.404151916503906,
-                    "y": 4.635038375854492,
-                    "z": 64.39325714111328
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 44040384
-        },
-        {
-            "BoxCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 1.0,
-                    "y": 3.4000000953674316,
-                    "z": 0.4000000059604645
-                }
-            },
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Grunt Collider",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1048635,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": "Enemy_ArmouredSpot"
-            },
-            "Rigidbody": {
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "Enemy_HurtSpot",
-                "mass": 0.0,
-                "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -394,9 +189,23 @@
                             {
                                 "data": {
                                     "__variant_type": 15,
+                                    "__variant_value": 0
+                                },
+                                "name": "currentSp"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
                                     "__variant_value": 10
                                 },
                                 "name": "maxAmmo"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 0
+                                },
+                                "name": "maxSp"
                             }
                         ],
                         "scriptId": 16782251036674424897
@@ -415,9 +224,9 @@
                     "z": 3.1415703296661377
                 },
                 "localPosition": {
-                    "x": -2.7418136596679688e-05,
-                    "y": 0.0006341934204101563,
-                    "z": -1.854306697845459
+                    "x": -1.6689300537109375e-06,
+                    "y": 0.0006914138793945313,
+                    "z": -1.8543705940246582
                 },
                 "localRotation": {
                     "w": -0.06580368429422379,
@@ -431,9 +240,9 @@
                     "z": 1.0000077486038208
                 },
                 "position": {
-                    "x": -7.615176200866699,
-                    "y": 14.115973472595215,
-                    "z": 7.562983512878418
+                    "x": -7.615120887756348,
+                    "y": 14.116076469421387,
+                    "z": 7.562872409820557
                 },
                 "rotation": {
                     "w": -0.02637494169175625,
@@ -795,7 +604,7 @@
                 "localPosition": {
                     "x": 0.0,
                     "y": 8.453750610351563,
-                    "z": -0.00012922286987304688
+                    "z": -0.00016927719116210938
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -811,7 +620,7 @@
                 "position": {
                     "x": -6.088269233703613,
                     "y": 15.708003044128418,
-                    "z": 7.685415267944336
+                    "z": 7.685375213623047
                 },
                 "rotation": {
                     "w": 1.0,
@@ -858,7 +667,7 @@
                 "localPosition": {
                     "x": 0.0,
                     "y": 0.00015211105346679688,
-                    "z": -0.00013303756713867188
+                    "z": -0.00017309188842773438
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -874,7 +683,7 @@
                 "position": {
                     "x": -6.088269233703613,
                     "y": 7.254404544830322,
-                    "z": 7.68541145324707
+                    "z": 7.685371398925781
                 },
                 "rotation": {
                     "w": 1.0,
@@ -929,7 +738,7 @@
                 "localPosition": {
                     "x": -2.288818359375e-05,
                     "y": 5.0,
-                    "z": -0.00012540817260742188
+                    "z": -0.00016546249389648438
                 },
                 "localRotation": {
                     "w": 4.689912902850694e-16,
@@ -945,7 +754,7 @@
                 "position": {
                     "x": -6.088292121887207,
                     "y": 12.254252433776855,
-                    "z": 7.685419082641602
+                    "z": 7.6853790283203125
                 },
                 "rotation": {
                     "w": 4.689912373455102e-16,
@@ -1005,6 +814,7 @@
                 "layerId": 0,
                 "name": "PlayerBody",
                 "overridenComponents": {
+                    "11935986701403193153": false,
                     "16861337649669213096": false,
                     "17237801994024849853": true,
                     "452538415452204233": false,
@@ -1020,6 +830,7 @@
                 "tag": "Player"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -1031,7 +842,8 @@
                 "layer": "Moving",
                 "mass": 1.0,
                 "motionQuality": "Continuous",
-                "motionType": "Dynamic"
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -1178,7 +990,7 @@
                             {
                                 "data": {
                                     "__variant_type": 9,
-                                    "__variant_value": 2731222537219162113
+                                    "__variant_value": 8413762513353850881
                                 },
                                 "name": "thrownRiflePrefab"
                             },
@@ -1264,7 +1076,9 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "PlayerContainer",
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "6919815292445452220": false
+                },
                 "overridenProperties": null,
                 "parent": 4294967295,
                 "prefabID": 2979562630178127873,
@@ -1509,7 +1323,7 @@
                 },
                 "localPosition": {
                     "x": 0.003216356039047241,
-                    "y": 5.888938903808594e-05,
+                    "y": 6.532669067382813e-05,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -1525,7 +1339,7 @@
                 },
                 "position": {
                     "x": 270.28070068359375,
-                    "y": 93.59343719482422,
+                    "y": 93.59407806396484,
                     "z": 0.0
                 },
                 "rotation": {
@@ -1583,7 +1397,7 @@
                 },
                 "localPosition": {
                     "x": 0.003216356039047241,
-                    "y": 5.888938903808594e-05,
+                    "y": 6.532669067382813e-05,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -1599,7 +1413,7 @@
                 },
                 "position": {
                     "x": 270.28070068359375,
-                    "y": 93.59343719482422,
+                    "y": 93.59407806396484,
                     "z": 0.0
                 },
                 "rotation": {
@@ -2325,6 +2139,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -2336,7 +2151,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -2421,6 +2237,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -2432,7 +2249,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -2574,9 +2392,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 7.006492321624085e-43,
-                    "y": 0.0,
-                    "z": 1.975830834697992e-43
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -2589,7 +2407,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -2631,7 +2451,7 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -2639,7 +2459,7 @@
                     "selected": false
                 },
                 "startSize": 0.10000000149011612,
-                "startSpeed": 5.0,
+                "startSpeed": 1.0,
                 "texture": 5391556884225917121,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -2868,6 +2688,7 @@
                 "tag": "Enemy_ArmouredSpot"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -2879,7 +2700,8 @@
                 "layer": "Enemy_HurtSpot",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -3174,9 +2996,9 @@
                             {
                                 "data": {
                                     "__variant_type": 15,
-                                    "__variant_value": 6
+                                    "__variant_value": 30
                                 },
-                                "name": "ichorSpawnAmount"
+                                "name": "ichorPerDamage"
                             },
                             {
                                 "data": {
@@ -3737,6 +3559,7 @@
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -3748,7 +3571,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -4057,6 +3881,7 @@
                 "Area_Type": "Obstacle"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -4068,7 +3893,8 @@
                 "layer": "Wall",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -4093,9 +3919,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 10.001953125,
+                    "x": 10.002178192138672,
                     "y": 10.0,
-                    "z": 3.0006144046783447
+                    "z": 3.0006797313690186
                 },
                 "position": {
                     "x": -36.77926254272461,
@@ -4109,9 +3935,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 10.001952171325684,
+                    "x": 10.002177238464355,
                     "y": 10.0,
-                    "z": 3.0006141662597656
+                    "z": 3.0006794929504395
                 }
             },
             "id": 15
@@ -4156,6 +3982,7 @@
                 "Area_Type": "Obstacle"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -4167,7 +3994,8 @@
                 "layer": "Wall",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -4392,6 +4220,7 @@
                 "Area_Type": "Obstacle"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -4403,7 +4232,8 @@
                 "layer": "Wall",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -4571,6 +4401,7 @@
                 "Area_Type": "Walkable"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -4582,7 +4413,8 @@
                 "layer": "NonMoving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -4737,6 +4569,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -4748,7 +4581,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -4833,6 +4667,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -4844,7 +4679,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -4869,9 +4705,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 50.002227783203125,
+                    "x": 50.0015869140625,
                     "y": 10.000016212463379,
-                    "z": 20.004179000854492
+                    "z": 20.00385856628418
                 },
                 "position": {
                     "x": 2.388003349304199,
@@ -4885,9 +4721,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 50.00223159790039,
+                    "x": 50.001590728759766,
                     "y": 10.000016212463379,
-                    "z": 20.004180908203125
+                    "z": 20.003860473632813
                 }
             },
             "id": 3145806
@@ -4962,6 +4798,7 @@
                 "toggleSphere": false
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -4973,7 +4810,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Dynamic"
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -5176,9 +5014,9 @@
                             {
                                 "data": {
                                     "__variant_type": 15,
-                                    "__variant_value": 6
+                                    "__variant_value": 30
                                 },
-                                "name": "ichorSpawnAmount"
+                                "name": "ichorPerDamage"
                             },
                             {
                                 "data": {
@@ -5580,6 +5418,7 @@
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -5591,7 +5430,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -5747,7 +5587,7 @@
                             {
                                 "data": {
                                     "__variant_type": 9,
-                                    "__variant_value": 14493050257245634575
+                                    "__variant_value": 5366382474046881793
                                 },
                                 "name": "ichorPrefab"
                             },
@@ -5822,9 +5662,9 @@
                             {
                                 "data": {
                                     "__variant_type": 15,
-                                    "__variant_value": 6
+                                    "__variant_value": 10
                                 },
-                                "name": "ichorSpawnAmount"
+                                "name": "ichorPerDamage"
                             },
                             {
                                 "data": {
@@ -6087,9 +5927,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 7.006492321624085e-43,
-                    "y": 0.0,
-                    "z": 1.975830834697992e-43
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -6102,13 +5942,15 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.9172413945198059,
-                        "g": 0.07907254993915558,
-                        "r": 0.5241690874099731
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
@@ -6139,12 +5981,12 @@
                             "z": -5.0
                         }
                     },
-                    "emissionShape": "Edge",
+                    "emissionShape": "Point",
                     "radiusEmitter": {
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -6152,7 +5994,7 @@
                     "selected": false
                 },
                 "startSize": 0.10000000149011612,
-                "startSpeed": 0.0,
+                "startSpeed": 1.0,
                 "texture": 16344311177990914191,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -6181,12 +6023,12 @@
             "Transform": {
                 "eulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.871631856280146e-07,
+                    "y": -5.871555686098873e-07,
                     "z": -3.1415915489196777
                 },
                 "localEulerAngles": {
                     "x": 1.5707948207855225,
-                    "y": -5.871630719411769e-07,
+                    "y": -5.871555686098873e-07,
                     "z": -3.1415915489196777
                 },
                 "localPosition": {
@@ -6195,15 +6037,15 @@
                     "z": 2.0236892700195313
                 },
                 "localRotation": {
-                    "w": -5.84956524107838e-07,
-                    "x": -1.6976913741473254e-07,
+                    "w": -5.849547619618534e-07,
+                    "x": -1.6977259065242833e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "localScale": {
-                    "x": 1.0003397464752197,
-                    "y": 0.9999966621398926,
-                    "z": 1.0002169609069824
+                    "x": 1.0003798007965088,
+                    "y": 1.000016689300537,
+                    "z": 1.000236988067627
                 },
                 "position": {
                     "x": 46.31636428833008,
@@ -6211,15 +6053,15 @@
                     "z": 66.86579895019531
                 },
                 "rotation": {
-                    "w": -5.849565809512569e-07,
-                    "x": -1.697690947821684e-07,
+                    "w": -5.849547619618534e-07,
+                    "x": -1.6977259065242833e-07,
                     "y": 0.7071062922477722,
                     "z": 0.7071073651313782
                 },
                 "scale": {
-                    "x": 1.0003395080566406,
-                    "y": 0.999996542930603,
-                    "z": 1.0002168416976929
+                    "x": 1.0003795623779297,
+                    "y": 1.0000165700912476,
+                    "z": 1.0002368688583374
                 }
             },
             "id": 1048637
@@ -6532,7 +6374,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.00015735626220703125,
+                    "x": 0.00019741058349609375,
                     "y": 2.384185791015625e-07,
                     "z": 0.0
                 },
@@ -6548,7 +6390,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 1736.967529296875,
+                    "x": 1736.9835205078125,
                     "y": 171.77059936523438,
                     "z": 0.0
                 },
@@ -8014,20 +7856,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -8037,7 +7879,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -8079,19 +7923,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -8110,7 +7954,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -8182,20 +8026,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -8205,7 +8049,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -8247,19 +8093,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -8278,7 +8124,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -8350,20 +8196,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -8373,7 +8219,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -8415,19 +8263,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -8446,7 +8294,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -8518,20 +8366,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -8541,7 +8389,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -8583,19 +8433,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -8614,7 +8464,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -8686,20 +8536,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -8709,7 +8559,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -8751,19 +8603,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -8782,7 +8634,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -8854,20 +8706,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -8877,7 +8729,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -8919,19 +8773,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -8950,7 +8804,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -9022,20 +8876,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 7.5,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -9045,7 +8899,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -9087,19 +8943,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -9118,7 +8974,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -9190,20 +9046,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -7.5,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -9213,7 +9069,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -9255,19 +9113,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -9286,7 +9144,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -9381,7 +9239,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -9459,45 +9319,45 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": -3.1409125328063965,
+                    "x": -3.140911817550659,
                     "y": 1.5233104228973389,
-                    "z": -3.140937566757202
+                    "z": -3.1409366130828857
                 },
                 "localEulerAngles": {
-                    "x": 3.1355533599853516,
+                    "x": 3.135544776916504,
                     "y": -1.565526008605957,
-                    "z": -3.135549545288086
+                    "z": -3.1355412006378174
                 },
                 "localPosition": {
-                    "x": 0.41655445098876953,
-                    "y": 0.7911829948425293,
-                    "z": -3.089812994003296
+                    "x": 0.4165821075439453,
+                    "y": 0.7912206649780273,
+                    "z": -3.089826822280884
                 },
                 "localRotation": {
                     "w": -0.7052410244941711,
-                    "x": -1.2618508662853856e-05,
+                    "x": -1.2509524822235107e-05,
                     "y": 0.7089676260948181,
-                    "z": 9.89534873951925e-06
+                    "z": 1.0036068488261662e-05
                 },
                 "localScale": {
                     "x": 1.000019907951355,
-                    "y": 1.0000836849212646,
+                    "y": 1.000093698501587,
                     "z": 0.999969482421875
                 },
                 "position": {
-                    "x": -8.070621490478516,
-                    "y": 15.540221214294434,
-                    "z": 13.156490325927734
+                    "x": -8.0706148147583,
+                    "y": 15.54039192199707,
+                    "z": 13.15640640258789
                 },
                 "rotation": {
                     "w": 0.690120279788971,
-                    "x": -2.312403012183495e-06,
+                    "x": -2.4502094220224535e-06,
                     "y": 0.7236946821212769,
-                    "z": -2.010200660151895e-05
+                    "z": -1.9989362044725567e-05
                 },
                 "scale": {
                     "x": 1.800049901008606,
-                    "y": 1.8002865314483643,
+                    "y": 1.8003045320510864,
                     "z": 1.799945592880249
                 }
             },
@@ -9592,49 +9452,260 @@
             },
             "Transform": {
                 "eulerAngles": {
-                    "x": 3.1414897441864014,
+                    "x": 3.1414899826049805,
                     "y": -1.4757945537567139,
-                    "z": -3.1414623260498047
+                    "z": -3.141462564468384
                 },
                 "localEulerAngles": {
-                    "x": -5.023723133490421e-05,
+                    "x": -5.013993359170854e-05,
                     "y": 1.4230386018753052,
-                    "z": -0.00010027381358668208
+                    "z": -0.00010018033935921267
                 },
                 "localPosition": {
-                    "x": -0.02798318862915039,
-                    "y": -3.814697265625e-05,
-                    "z": -0.7562062740325928
+                    "x": -0.027979373931884766,
+                    "y": -2.8133392333984375e-05,
+                    "z": -0.7562038898468018
                 },
                 "localRotation": {
                     "w": 0.7573707103729248,
-                    "x": 1.3714628948946483e-05,
+                    "x": 1.3720958122576121e-05,
                     "y": 0.652985155582428,
-                    "z": -2.1570100216194987e-05
+                    "z": -2.1566467694356106e-05
                 },
                 "localScale": {
                     "x": 1.0001477003097534,
-                    "y": 0.9999487400054932,
+                    "y": 0.9999587535858154,
                     "z": 1.0000189542770386
                 },
                 "position": {
-                    "x": -7.493098258972168,
-                    "y": 14.1159029006958,
-                    "z": 8.919615745544434
+                    "x": -7.493051052093506,
+                    "y": 14.116023063659668,
+                    "z": 8.919500350952148
                 },
                 "rotation": {
                     "w": -0.6727336049079895,
-                    "x": -1.3631720321427565e-05,
+                    "x": -1.3628258784592617e-05,
                     "y": 0.7398847937583923,
-                    "z": -5.802489795314614e-06
+                    "z": -5.808911737403832e-06
                 },
                 "scale": {
                     "x": 1.8002797365188599,
-                    "y": 1.8000435829162598,
+                    "y": 1.800061583518982,
                     "z": 1.800034999847412
                 }
             },
             "id": 42991798
+        },
+        {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 3.4000000953674316,
+                    "z": 0.4000000059604645
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Grunt Collider",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 1048635,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
+                "tag": "Enemy_ArmouredSpot"
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "Enemy_HurtSpot",
+                "mass": 0.0,
+                "motionQuality": "Discrete",
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 1048635
+                                },
+                                "name": "enemyGameObject"
+                            }
+                        ],
+                        "scriptId": 12135503810755952677
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 3.866504192352295,
+                    "z": -0.4488525390625
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 46.404151916503906,
+                    "y": 4.635038375854492,
+                    "z": 64.39325714111328
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 44040384
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Grunt_WeakSpot",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 1048635,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": "Enemy_WeakSpot"
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "Enemy_HurtSpot",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 1048635
+                                },
+                                "name": "enemyGameObject"
+                            }
+                        ],
+                        "scriptId": 12135503810755952677
+                    }
+                ]
+            },
+            "SphereCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 1.0
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 6.332118511199951,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 46.404151916503906,
+                    "y": 7.100652694702148,
+                    "z": 64.84210968017578
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 45088961
         }
     ],
     "layers": [
