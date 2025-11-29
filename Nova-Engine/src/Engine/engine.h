@@ -54,6 +54,7 @@ public:
 	ENGINE_DLL_API void SystemsUnload(); //before entity construction step may need to stop certain system, some system might want to reload/unload/init stuff
 
 	ENGINE_DLL_API float getDeltaTime() const;
+	ENGINE_DLL_API float getAccumulatedTime() const; //ALL FOR THE SAKE OF SMOOTH CAMERA LERP!
 
 public:
 	ENGINE_DLL_API int getGameWidth() const;

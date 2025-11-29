@@ -35,7 +35,9 @@ public ref class Time {
 public:
 	static float V_FixedDeltaTime(); 
 	static float V_DeltaTime();
+	static float V_AccumulatedTime();
 
+	static float V_AccumulatedTime_Unscaled();
 	static float V_FixedDeltaTime_Unscaled();
 	static float V_DeltaTime_Unscaled();
 

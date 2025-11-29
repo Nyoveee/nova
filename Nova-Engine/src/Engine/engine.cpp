@@ -245,6 +245,10 @@ void Engine::SystemsUnload() {
 	deltaTimeMultiplier = 1.f;
 }
 
+float Engine::getAccumulatedTime() const {
+	return window.getAccumulatedTime();
+}
+
 
 float Engine::getDeltaTime() const {
 	return window.getDeltaTime();

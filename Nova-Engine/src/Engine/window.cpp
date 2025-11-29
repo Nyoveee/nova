@@ -278,6 +278,10 @@ float Window::getDeltaTime() const {
 	return static_cast<float>(deltaTime);
 }
 
+float Window::getAccumulatedTime() const {
+	return static_cast<float>(accumulatedTime);
+}
+
 namespace {
 	void APIENTRY glDebugOutput(
 		GLenum source,
