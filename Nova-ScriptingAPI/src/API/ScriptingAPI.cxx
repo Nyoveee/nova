@@ -524,7 +524,7 @@ void Interface::update() {
 					executeTimeoutDelegates->Add(delegate);
 				}
 
-				delegate->timeElapsed += Time::V_FixedDeltaTime();
+				delegate->timeElapsed += Time::V_DeltaTime();
 			}
 
 			// Execute delegate, then remove from the list..

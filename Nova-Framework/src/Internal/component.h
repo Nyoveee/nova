@@ -48,6 +48,7 @@ using ScriptName   = std::string;
 using LayerID	   = int;
 using ComponentID  = size_t;
 using PrefabEntityID = entt::entity;
+using MeshIndex	= int;
 
 #include "serializedField.h"
 
@@ -180,6 +181,7 @@ struct MeshRenderer {
 	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
+	// std::vector<>
 	REFLECTABLE(
 		modelId,
 		materialIds

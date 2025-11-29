@@ -94,6 +94,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
+	timeElapsed					{},
 	hdrExposure					{ 0.9f },
 	toneMappingMethod			{ ToneMappingMethod::ACES },
 
@@ -288,7 +289,7 @@ GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
 }
 
 void Renderer::update([[maybe_unused]] float dt) {
-	ZoneScoped;
+	timeElapsed += dt;
 }
 
 void Renderer::renderMain(RenderConfig renderConfig) {
@@ -961,20 +962,43 @@ void Renderer::renderModels(Camera const& camera) {
 				continue;
 			}
 
-			// Draw every mesh of a given model.
-			for (auto const& mesh : model->meshes) {
-				Material const* material = obtainMaterial(*meshRenderer, mesh);
+			// If a model has only one submesh, we render all materials attached to this mesh renderer..
+			if (model->meshes.size() == 1) {
+				// Draw every material of a this mesh.
+				auto const& mesh = model->meshes[0];
 
-				if (!material) {
-					continue;
+				for (auto const& materialId : meshRenderer->materialIds) {
+					auto&& [material, __] = resourceManager.getResource<Material>(materialId);
+
+					if (!material) {
+						continue;
+					}
+
+					// Use the correct shader and configure it's required uniforms..
+					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+					if (shader) {
+						// time to draw!
+						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					}
 				}
+			}
+			else {
+				// Draw every mesh of a given model.
+				for (auto const& mesh : model->meshes) {
+					Material const* material = obtainMaterial(*meshRenderer, mesh);
 
-				// Use the correct shader and configure it's required uniforms..
-				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+					if (!material) {
+						continue;
+					}
 
-				if (shader) {
-					// time to draw!
-					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					// Use the correct shader and configure it's required uniforms..
+					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+					if (shader) {
+						// time to draw!
+						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					}
 				}
 			}
 		}
@@ -1662,6 +1686,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// ===========================================================================
 	// Set uniform data..
 	// ===========================================================================
+	shader.setFloat("timeElapsed", timeElapsed);
+
 	switch (shaderData.pipeline)
 	{
 	case Pipeline::PBR:
@@ -1678,7 +1704,6 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		assert(false && "Unhandled pipeline.");
 		break;
 	}
-
 
 	// We keep track of the number of texture units bound and make sure it doesn't exceed the driver's cap.
 	GLint maxTextureUnits;

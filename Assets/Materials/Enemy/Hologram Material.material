@@ -1,0 +1,47 @@
+{
+    "blendingConfig": "Disabled",
+    "cullingConfig": "Enable",
+    "depthTestingMethod": "DepthTest",
+    "overridenUniforms": {
+        "albedoMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_type": 9,
+                "__variant_value": 7
+            }
+        },
+        "colorTint": {
+            "type": "Color",
+            "value": {
+                "__variant_type": 10,
+                "__variant_value": {
+                    "b": 0.1862068772315979,
+                    "g": 0.8765279054641724,
+                    "r": 1.0
+                }
+            }
+        },
+        "metallic": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_type": 12,
+                "__variant_value": 0.0
+            }
+        },
+        "occulusion": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_type": 12,
+                "__variant_value": 0.0
+            }
+        },
+        "roughness": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_type": 12,
+                "__variant_value": 0.0
+            }
+        }
+    },
+    "selectedShader": 550855796467580931
+}

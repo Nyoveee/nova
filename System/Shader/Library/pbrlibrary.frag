@@ -72,6 +72,8 @@ layout(std430, binding = 2) buffer SpotLights {
 };
 
 uniform vec3 cameraPos;
+uniform float timeElapsed;
+
 out vec4 FragColor;
 
 in VS_OUT {
