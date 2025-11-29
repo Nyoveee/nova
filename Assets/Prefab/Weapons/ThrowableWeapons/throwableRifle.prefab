@@ -11,16 +11,17 @@
                 "layerId": 0,
                 "name": "Rifle_Throwable",
                 "overridenComponents": {
+                    "11935986701403193153": false,
                     "13953638462837156301": true,
                     "17237801994024849853": true,
                     "6919815292445452220": false
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 17211544385474281473,
+                "prefabID": 6925621903903621121,
                 "prefabMetaData": {
-                    "prefabEntity": 1,
-                    "prefabID": 17211544385474281473
+                    "prefabEntity": 0,
+                    "prefabID": 6925621903903621121
                 },
                 "tag": ""
             },
@@ -268,10 +269,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 0,
-                "prefabID": 17211544385474281473,
+                "prefabID": 6925621903903621121,
                 "prefabMetaData": {
-                    "prefabEntity": 2,
-                    "prefabID": 17211544385474281473
+                    "prefabEntity": 1,
+                    "prefabID": 6925621903903621121
                 },
                 "tag": ""
             },
@@ -311,9 +312,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.999975860118866,
+                    "x": 0.9999757409095764,
                     "y": 1.0,
-                    "z": 0.999975860118866
+                    "z": 0.9999757409095764
                 },
                 "position": {
                     "x": 0.0,
@@ -327,9 +328,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999759197235107,
+                    "x": 0.9999758005142212,
                     "y": 1.0,
-                    "z": 0.9999759197235107
+                    "z": 0.9999758005142212
                 }
             },
             "id": 1
@@ -348,10 +349,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 0,
-                "prefabID": 17211544385474281473,
+                "prefabID": 6925621903903621121,
                 "prefabMetaData": {
-                    "prefabEntity": 3,
-                    "prefabID": 17211544385474281473
+                    "prefabEntity": 2,
+                    "prefabID": 6925621903903621121
                 },
                 "tag": ""
             },
@@ -370,6 +371,22 @@
                 "motionQuality": "Continuous",
                 "motionType": "Kinematic",
                 "toScaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 0
+                                },
+                                "name": "weaponRef"
+                            }
+                        ],
+                        "scriptId": 13761180140375949313
+                    }
+                ]
             },
             "SphereCollider": {
                 "offset": {

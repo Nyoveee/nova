@@ -191,9 +191,6 @@ class Grunt : Enemy
 
     void FlushDamageEnemy()
     {
-
-       
-
         if (accumulatedDamageInstance > 0)
         {
             SpawnIchorFrame();
