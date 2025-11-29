@@ -7,7 +7,10 @@ class ElevatorQuest : Quest
     private GameObject checkPointIndicator;
     [SerializableField]
     private Elevator elevator;
-
+    public override void OnEnter()
+    {
+        
+    }
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);

@@ -17,9 +17,9 @@
             },
             "EntityData": {
                 "children": [
-                    1,
-                    2,
-                    3
+                    17,
+                    18,
+                    19
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -31,10 +31,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 2222271799983554563,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 48234765,
-                    "prefabID": 2222271799983554563
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -59,14 +59,14 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 2
+                                    "__variant_value": 18
                                 },
                                 "name": "leftDoor"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1
+                                    "__variant_value": 17
                                 },
                                 "name": "rightDoor"
                             },
@@ -133,7 +133,7 @@
                     "z": 0.7658069729804993
                 }
             },
-            "id": 0
+            "id": 16
         },
         {
             "BoxCollider": {
@@ -159,11 +159,11 @@
                     "11935986701403193153": true
                 },
                 "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 2222271799983554563,
+                "parent": 16,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 48234766,
-                    "prefabID": 2222271799983554563
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -233,7 +233,7 @@
                     "z": 3.8290350437164307
                 }
             },
-            "id": 1
+            "id": 17
         },
         {
             "BoxCollider": {
@@ -260,11 +260,11 @@
                     "17421316227555880647": false
                 },
                 "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 2222271799983554563,
+                "parent": 16,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 48234767,
-                    "prefabID": 2222271799983554563
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -334,7 +334,7 @@
                     "z": 3.8290350437164307
                 }
             },
-            "id": 2
+            "id": 18
         },
         {
             "BoxCollider": {
@@ -358,11 +358,11 @@
                 "name": "DoorLockingMechanism",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 2222271799983554563,
+                "parent": 16,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 49283357,
-                    "prefabID": 2222271799983554563
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -389,7 +389,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 0
+                                    "__variant_value": 16
                                 },
                                 "name": "door"
                             }
@@ -442,8 +442,8 @@
                     "z": 7.412102699279785
                 }
             },
-            "id": 3
+            "id": 19
         }
     ],
-    "RootEntity": 0
+    "RootEntity": 16
 }
