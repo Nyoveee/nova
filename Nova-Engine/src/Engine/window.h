@@ -57,6 +57,8 @@ public:
 	ENGINE_DLL_API float fps() const;
 	ENGINE_DLL_API float getDeltaTime() const;
 
+	ENGINE_DLL_API void quit();
+
 	// Game view port is defined as the interactable area of the game.
 	// In editor it's the size of the calculated image viewport, whilst in game mode it's the size of the scaled game in our window.
 	ENGINE_DLL_API void setGameViewPort(GameViewPort gameViewPort);

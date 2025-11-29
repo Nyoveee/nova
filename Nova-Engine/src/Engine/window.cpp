@@ -218,6 +218,10 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 	engineIsDestructing = true;
 }
 
+void Window::quit() {
+	glfwSetWindowShouldClose(glfwWindow, true);
+}
+
 GLFWwindow* Window::getGLFWwindow() const {
 	return glfwWindow;
 }

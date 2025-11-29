@@ -32,4 +32,9 @@ class ButtonScript : Script
 
         SceneAPI.ChangeScene(nextScene);
     }
+
+    public void Quit()
+    {
+        Systems.Quit();
+    }
 }

@@ -15,7 +15,11 @@ SceneManager::SceneManager(ECS& ecs, Engine& engine, ResourceManager& resourceMa
 	ecs.registry.on_destroy<EntityData>().connect<&SceneManager::onEntityDestruction>(*this);
 }
 
-void SceneManager::loadScene(ResourceID id) {	
+void SceneManager::restartScene() {
+	loadScene(currentScene);
+}
+
+void SceneManager::loadScene(ResourceID id) {
 	auto&& [scene, _] = resourceManager.getResource<Scene>(id);
 
 	if (!scene) {

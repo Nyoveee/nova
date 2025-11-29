@@ -16,6 +16,7 @@ public:
 	ENGINE_DLL_API SceneManager(ECS& ecs, Engine& engine, ResourceManager& resourceManager);
 
 public:
+	ENGINE_DLL_API void restartScene();
 	ENGINE_DLL_API void loadScene(ResourceID id);
 
 	ENGINE_DLL_API ResourceID getCurrentScene() const;

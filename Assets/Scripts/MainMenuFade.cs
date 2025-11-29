@@ -9,6 +9,8 @@ class MainMenuFade : Script
     // Duration for buttons/text fade in seconds
     public float buttonsFadeDuration = 1.5f;
 
+    public float alphaMultiplier = 0.8f;
+
     // References to the entities we need to fade
     public GameObject logoEntity;
     public GameObject playButtonEntity;
@@ -99,14 +101,14 @@ class MainMenuFade : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        timeElapsed += Time.V_FixedDeltaTime();
+        timeElapsed += Time.V_DeltaTime();
 
         // Phase 1: Fade in the logo (0 to 1.5 seconds)
         if (!logoFadeComplete)
         {
             if (timeElapsed <= logoFadeDuration)
             {
-                float alpha = timeElapsed / logoFadeDuration;
+                float alpha = timeElapsed / logoFadeDuration * alphaMultiplier;
 
                 if (logoImage != null)
                 {
@@ -118,7 +120,7 @@ class MainMenuFade : Script
                 // Logo fade complete, ensure it's fully opaque
                 if (logoImage != null)
                 {
-                    logoImage.colorTint = new ColorAlpha(1f, 1f, 1f, 1f);
+                    logoImage.colorTint = new ColorAlpha(1f, 1f, 1f, alphaMultiplier);
                 }
                 logoFadeComplete = true;
             }
