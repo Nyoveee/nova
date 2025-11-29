@@ -101,6 +101,8 @@ void DebugUI::renderHDRSection() {
 		renderer.setHDRExposure(exposure);
 	}
 
+	ImGui::SliderFloat("Vignette", &renderer.vignette, 0.f, 1.0f, "%.2f");
+
 	// Tone mapping method selection
 	auto currentMethod = renderer.getToneMappingMethod();
 

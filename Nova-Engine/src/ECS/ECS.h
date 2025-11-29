@@ -25,6 +25,8 @@ public:
 	// Set newParentEntity as the new parent for childEntity.
 	// You can pass entt::null as the new parent and this makes the child entity a root entity with no parent.
 	ENGINE_DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform = true);
+	ENGINE_DLL_API void setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform, entt::registry& p_registry);
+
 	ENGINE_DLL_API void removeEntityParent(entt::entity childEntity);
 
 	// Finds out if a given entity is a descendant of parent (direct and indirect children).

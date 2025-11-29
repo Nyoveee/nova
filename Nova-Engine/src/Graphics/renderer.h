@@ -135,6 +135,8 @@ public:
 	float bloomFilterRadius = 0.005f;
 	float bloomCompositePercentage = 0.04f;
 
+	float vignette = 0.f;
+
 	glm::vec3 chromaticAberration;
 private:
 	// =============================================

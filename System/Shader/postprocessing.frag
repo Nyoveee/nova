@@ -6,17 +6,16 @@ out vec4 FragColor;
 uniform sampler2D scene;
 
 uniform vec3 offset;
+uniform float vignette;
 
 void main()
 {             
-    float rValue = texture2D(scene, textureCoords - offset.x).r; 
-    float gValue = texture2D(scene, textureCoords - offset.y).g;
-    float bValue = texture2D(scene, textureCoords - offset.z).g;  
+    vec4 color = texture2D(scene, textureCoords); 
 
-    float average = (rValue + gValue + bValue) / 3.0;
-    FragColor = vec4(average, average, average, 1.0);
+    float distance = length(vec2(0.5) - textureCoords);
 
-    // FragColor = vec4(rValue, gValue, bValue, 1.0);  
+    float vignetteMultiplier = clamp(vignette - distance, 0, 1);
+    FragColor = vec4(vec3(color) * vignetteMultiplier, color.a);  
 
     // FragColor = vec4(vec3(1.0 - texture(scene, textureCoords)), 1.0);
 }  

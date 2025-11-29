@@ -35,21 +35,26 @@
             },
             "EntityData": {
                 "children": [
-                    1048631,
-                    1048632,
-                    1048633,
-                    1048634,
-                    2,
-                    28,
-                    21
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "Charger",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": "Enemy"
             },
             "NavMeshAgent": {
@@ -65,6 +70,7 @@
                 "toggleSphere": false
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -76,7 +82,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Dynamic"
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -99,42 +106,42 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048632
+                                    "__variant_value": 17
                                 },
                                 "name": "attackHitBoxTransform"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 2
+                                    "__variant_value": 20
                                 },
                                 "name": "stompHitBoxTransform"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048630
+                                    "__variant_value": 19
                                 },
                                 "name": "chargingRigidbody"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048634
+                                    "__variant_value": 15
                                 },
                                 "name": "navMeshRigidbody"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 28
+                                    "__variant_value": 21
                                 },
                                 "name": "emitter"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 21
+                                    "__variant_value": 22
                                 },
                                 "name": "chargeLines"
                             },
@@ -148,28 +155,28 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048633
+                                    "__variant_value": 18
                                 },
                                 "name": "ichorSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048631
+                                    "__variant_value": 16
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048631
+                                    "__variant_value": 16
                                 },
                                 "name": "renderer"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048630
+                                    "__variant_value": 15
                                 },
                                 "name": "navMeshAgent"
                             }
@@ -365,7 +372,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048630
+            "id": 15
         },
         {
             "Animator": {
@@ -377,9 +384,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Charger Model",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048630,
-                "prefabID": 4294967295,
+                "parent": 15,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": "Enemy"
             },
             "Scripts": {
@@ -498,7 +510,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048631
+            "id": 16
         },
         {
             "EntityData": {
@@ -507,9 +519,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "AttackHitBoxPosition",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048630,
-                "prefabID": 4294967295,
+                "parent": 15,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "Transform": {
@@ -556,7 +573,7 @@
                     "z": 0.9999910593032837
                 }
             },
-            "id": 1048632
+            "id": 17
         },
         {
             "EntityData": {
@@ -565,9 +582,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "IchorSpawnPoint",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048630,
-                "prefabID": 4294967295,
+                "parent": 15,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "Transform": {
@@ -614,7 +636,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048633
+            "id": 18
         },
         {
             "BoxCollider": {
@@ -636,12 +658,18 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "ChargerCollider",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048630,
-                "prefabID": 4294967295,
+                "parent": 15,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": "EnemyCollider"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -653,7 +681,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -662,7 +691,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048630
+                                    "__variant_value": 29
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -715,7 +744,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048634
+            "id": 19
         },
         {
             "EntityData": {
@@ -724,9 +753,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "StompHitboxPosition",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048630,
-                "prefabID": 4294967295,
+                "parent": 15,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "Transform": {
@@ -773,7 +807,7 @@
                     "z": 1.0
                 }
             },
-            "id": 2
+            "id": 20
         },
         {
             "EntityData": {
@@ -782,9 +816,14 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Emitter",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048630,
-                "prefabID": 4294967295,
+                "parent": 15,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -801,9 +840,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": 7.006492321624085e-43,
-                    "y": 0.0,
-                    "z": 1.975830834697992e-43
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -816,7 +855,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -858,7 +899,7 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -866,7 +907,7 @@
                     "selected": false
                 },
                 "startSize": 0.10000000149011612,
-                "startSpeed": 5.0,
+                "startSpeed": 1.0,
                 "texture": 5391556884225917121,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -936,27 +977,32 @@
                     "z": 1.0
                 }
             },
-            "id": 28
+            "id": 21
         },
         {
             "EntityData": {
                 "children": [
+                    23,
+                    24,
+                    25,
+                    26,
+                    27,
+                    28,
                     29,
-                    30,
-                    31,
-                    33,
-                    34,
-                    35,
-                    36,
-                    37
+                    30
                 ],
                 "inactiveComponents": null,
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Lines",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048630,
-                "prefabID": 4294967295,
+                "parent": 15,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "Transform": {
@@ -1003,7 +1049,7 @@
                     "z": 1.0
                 }
             },
-            "id": 21
+            "id": 22
         },
         {
             "EntityData": {
@@ -1012,9 +1058,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 1",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -1023,20 +1074,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -1046,7 +1097,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -1088,19 +1141,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1119,7 +1172,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -1166,7 +1219,7 @@
                     "z": 1.0
                 }
             },
-            "id": 29
+            "id": 23
         },
         {
             "EntityData": {
@@ -1175,9 +1228,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 2",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -1186,20 +1244,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -1209,7 +1267,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -1251,19 +1311,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1282,7 +1342,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -1329,7 +1389,7 @@
                     "z": 1.0
                 }
             },
-            "id": 30
+            "id": 24
         },
         {
             "EntityData": {
@@ -1338,9 +1398,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 3",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -1349,20 +1414,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -1372,7 +1437,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -1414,19 +1481,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1445,7 +1512,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -1492,7 +1559,7 @@
                     "z": 1.0
                 }
             },
-            "id": 31
+            "id": 25
         },
         {
             "EntityData": {
@@ -1501,9 +1568,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 4",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -1512,20 +1584,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -1535,7 +1607,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -1577,19 +1651,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1608,7 +1682,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -1655,7 +1729,7 @@
                     "z": 1.0
                 }
             },
-            "id": 33
+            "id": 26
         },
         {
             "EntityData": {
@@ -1664,9 +1738,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 5",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -1675,20 +1754,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -1698,7 +1777,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -1740,19 +1821,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1771,7 +1852,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -1818,7 +1899,7 @@
                     "z": 1.0
                 }
             },
-            "id": 34
+            "id": 27
         },
         {
             "EntityData": {
@@ -1827,9 +1908,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 6",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -1838,20 +1924,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -15.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -1861,7 +1947,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -1903,19 +1991,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1934,7 +2022,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -1981,7 +2069,7 @@
                     "z": 1.0
                 }
             },
-            "id": 35
+            "id": 28
         },
         {
             "EntityData": {
@@ -1990,9 +2078,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 7",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -2001,20 +2094,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 7.5,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -2024,7 +2117,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -2066,19 +2161,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -2097,7 +2192,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -2144,7 +2239,7 @@
                     "z": 1.0
                 }
             },
-            "id": 36
+            "id": 29
         },
         {
             "EntityData": {
@@ -2153,9 +2248,14 @@
                 "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 8",
+                "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 21,
-                "prefabID": 4294967295,
+                "parent": 22,
+                "prefabID": 10461915178448781313,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10461915178448781313
+                },
                 "tag": ""
             },
             "ParticleEmitter": {
@@ -2164,20 +2264,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": -7.5,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 0.5,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -2187,7 +2287,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
@@ -2229,19 +2331,19 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 0.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
-                    "distancePerEmission": 0.07000000029802322,
-                    "selected": true,
+                    "distancePerEmission": 0.10000000149011612,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -2260,7 +2362,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 5391556884225917121
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -2307,8 +2409,8 @@
                     "z": 1.0
                 }
             },
-            "id": 37
+            "id": 30
         }
     ],
-    "RootEntity": 1048630
+    "RootEntity": 15
 }

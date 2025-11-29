@@ -10,7 +10,7 @@
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 10067489571817177109,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 10067489571817177109
@@ -34,15 +34,15 @@
                         "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -107374176.0,
+                    "y": -107374176.0,
+                    "z": -107374176.0
                 },
-                "initialAngularVelocity": 1.0,
-                "lifeTime": 0.5,
+                "initialAngularVelocity": 0.0,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -50,27 +50,29 @@
                     "z": 0.03200000151991844
                 },
                 "looping": true,
-                "maxAngularVelocityOffset": 2.0,
-                "maxParticles": 200,
+                "maxAngularVelocityOffset": 0.0,
+                "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 0.8805707693099976,
+                        "b": 1.0,
                         "g": 1.0,
-                        "r": 0.35862070322036743
+                        "r": 1.0
                     },
                     "colorOffsetMax": {
-                        "x": 0.20000000298023224,
-                        "y": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
                         "z": 0.0
                     },
                     "colorOffsetMin": {
                         "x": 0.0,
-                        "y": -2.0,
-                        "z": 1.0
+                        "y": 0.0,
+                        "z": 0.0
                     },
-                    "emissiveMultiplier": 15.0
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -94,7 +96,7 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 50.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -106,7 +108,7 @@
                 "texture": 10579703654956564523,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -196,8 +198,8 @@
                     "z": 1.0
                 }
             },
-            "id": 42991787
+            "id": 0
         }
     ],
-    "RootEntity": 42991787
+    "RootEntity": 0
 }

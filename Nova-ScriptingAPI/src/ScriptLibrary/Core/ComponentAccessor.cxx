@@ -34,7 +34,7 @@ GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3
 }
 
 GameObject^ ComponentAccessor::Instantiate(ScriptingAPI::Prefab^ prefab, Vector3^ localPosition, Quaternion^ localRotation, GameObject^ parent) {
-	entt::entity prefabInstanceId = Interface::engine->prefabManager.instantiatePrefab<ALL_COMPONENTS>(prefab->getId());
+	entt::entity prefabInstanceId = Interface::engine->prefabManager.instantiatePrefab(prefab->getId());
 
 	// set parent, and local transform..
 	EntityData* entityData = Interface::engine->ecs.registry.try_get<EntityData>(prefabInstanceId);

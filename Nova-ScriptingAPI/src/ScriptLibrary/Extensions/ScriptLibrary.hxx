@@ -221,4 +221,9 @@ public:
 		float get() { return Interface::engine->renderer.hdrExposure; };
 		void set(float value) { Interface::engine->renderer.hdrExposure = value; };
 	};
+
+	static property float vignette {
+		float get() { return Interface::engine->renderer.vignette; };
+		void set(float value) { Interface::engine->renderer.vignette = value; };
+	};
 };

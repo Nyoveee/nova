@@ -18,11 +18,16 @@
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 2097161,
-                    "prefabID": 4736591003791572993
+                    "prefabID": 2204389340385001473
                 },
                 "tag": ""
             },
             "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
                 "color": {
                     "b": 1.0,
                     "g": 0.0,
@@ -31,6 +36,7 @@
                 "cutOffAngle": 0.21816615760326385,
                 "intensity": 10.0,
                 "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
                 "type": "PointLight"
             },
             "MeshRenderer": {
@@ -98,7 +104,7 @@
                 "prefabID": 4294967295,
                 "prefabMetaData": {
                     "prefabEntity": 2097176,
-                    "prefabID": 4736591003791572993
+                    "prefabID": 2204389340385001473
                 },
                 "tag": ""
             },

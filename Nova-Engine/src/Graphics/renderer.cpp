@@ -1620,6 +1620,9 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
 
 	postprocessingShader.setVec3("offset", chromaticAberration);
 
+	float vignetteDistance = (1 - vignette) * 2.f;
+	postprocessingShader.setFloat("vignette", vignetteDistance);
+
 	// Render fullscreen triangle (more efficient than quad)
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }

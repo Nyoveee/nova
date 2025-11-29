@@ -47,6 +47,7 @@ class Sequencer;
 using ScriptName   = std::string;
 using LayerID	   = int;
 using ComponentID  = size_t;
+using PrefabEntityID = entt::entity;
 
 #include "serializedField.h"
 
@@ -65,7 +66,7 @@ enum class InterpolationType : unsigned int {
 // };
 
 struct PrefabMetaData {
-	entt::entity prefabEntity;
+	PrefabEntityID prefabEntity;
 	ResourceID prefabID;
 };
 // ===================================

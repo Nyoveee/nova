@@ -49,8 +49,6 @@ class UltimateExplosion : Script
         explosionInitialScaleVector = new Vector3(explosionInitialScale, explosionInitialScale, explosionInitialScale);
         explosionFinalScaleVector   = new Vector3(explosionFinalScale, explosionFinalScale, explosionFinalScale);
         finalScaleVector            = new Vector3(finalScale, finalScale, finalScale);
-
-        RendererAPI.toneMapping = true;
     }
 
     // This function is invoked every update.
@@ -90,12 +88,9 @@ class UltimateExplosion : Script
 
             transform.scale = Vector3.Lerp(Vector3.Zero(), finalScaleVector, interval);
 
-            //if (relativeTimeElapsed > dissolveOffsetDuration) {
-                //float dissolveInterval = (relativeTimeElapsed - dissolveOffsetDuration) / (fadeOutDuration - dissolveOffsetDuration);
-                material.setMaterialFloat(0, "dissolveThreshold", 1f - interval);
-                light.intensity = Mathf.Interpolate(lightIntensity, 0f, interval, 1f);
-                RendererAPI.exposure = Mathf.Interpolate(0.2f, 0.9f, interval, 1f);
-            //}
+            material.setMaterialFloat(0, "dissolveThreshold", 1f - interval);
+            light.intensity = Mathf.Interpolate(lightIntensity, 0f, interval, 1f);
+            RendererAPI.exposure = Mathf.Interpolate(0.2f, 0.9f, interval, 1f);
         }
         else
         {
@@ -123,7 +118,6 @@ class UltimateExplosion : Script
         if (other.tag == "EnemyCollider")
         {
             EnemyCollider enemyCollider = other.getScript<EnemyCollider>();
-            Debug.Log(enemyCollider);
 
             if (enemyCollider != null)
             {

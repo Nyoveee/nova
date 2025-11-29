@@ -58,6 +58,7 @@
                 "modelId": 4
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -69,7 +70,8 @@
                 "layer": "Moving",
                 "mass": 1.0,
                 "motionQuality": "Continuous",
-                "motionType": "Dynamic"
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -866,7 +868,9 @@
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
                 "maxParticles": 1000,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
