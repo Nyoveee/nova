@@ -1,72 +1,6 @@
 {
     "entities": [
         {
-            "CameraComponent": {
-                "camStatus": true
-            },
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Camera",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.5608598589897156,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.5608598589897156,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 12.84253215789795,
-                    "z": -20.267385482788086
-                },
-                "localRotation": {
-                    "w": 0.9609365463256836,
-                    "x": 0.2767688035964966,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 0.9999951124191284,
-                    "z": 0.9999951124191284
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 12.84253215789795,
-                    "z": -20.267385482788086
-                },
-                "rotation": {
-                    "w": 0.9609365463256836,
-                    "x": 0.2767688035964966,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 0.9999951124191284,
-                    "z": 0.9999951124191284
-                }
-            },
-            "id": 1048612
-        },
-        {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
@@ -389,6 +323,72 @@
                 }
             },
             "id": 46137537
+        },
+        {
+            "CameraComponent": {
+                "camStatus": true
+            },
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Camera",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.5608598589897156,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.5608598589897156,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 12.84253215789795,
+                    "z": -20.267385482788086
+                },
+                "localRotation": {
+                    "w": 0.9609365463256836,
+                    "x": 0.2767688035964966,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 0.9999951124191284,
+                    "z": 0.9999951124191284
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 12.84253215789795,
+                    "z": -20.267385482788086
+                },
+                "rotation": {
+                    "w": 0.9609365463256836,
+                    "x": 0.2767688035964966,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 0.9999951124191284,
+                    "z": 0.9999951124191284
+                }
+            },
+            "id": 1048612
         }
     ],
     "layers": [

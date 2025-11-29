@@ -192,7 +192,7 @@ class Grunt : Enemy
 
         if (accumulatedDamageInstance > 0)
         {
-            SpawnIchorFrame();
+            //SpawnIchorFrame();
 
             gruntStats.health -= accumulatedDamageInstance;
             if (gruntStats.health <= 0)

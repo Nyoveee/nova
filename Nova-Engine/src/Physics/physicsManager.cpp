@@ -433,6 +433,7 @@ void PhysicsManager::createBody(entt::entity const& entityID)
 {
 	Transform const& transform = registry.get<Transform>(entityID);
 	Rigidbody& rigidBody = registry.get<Rigidbody>(entityID);
+
 	JPH::ScaledShape* shape = recreateScaledShape(entityID, transform, rigidBody);
 
 	if (!shape) {
