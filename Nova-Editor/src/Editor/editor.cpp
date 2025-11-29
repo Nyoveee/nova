@@ -147,7 +147,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	inputManager.subscribe<PasteEntity>(
 		[&](PasteEntity) {
 			if (!copiedEntityVec.empty() && !ImGui::IsAnyItemActive()) {
-				engine.ecs.copyVectorEntities<ALL_COMPONENTS>(copiedEntityVec);
+				engine.ecs.copyVectorEntities(copiedEntityVec);
 			}
 		}
 	);
