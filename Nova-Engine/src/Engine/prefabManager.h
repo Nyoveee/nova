@@ -10,6 +10,7 @@ class Engine;
 class ResourceManager;
 
 // Entity ID that exist in the prefab registry instead.
+using PrefabFileEntityID = entt::entity;
 using PrefabEntityID = entt::entity;
 
 // =================================================================
@@ -41,7 +42,9 @@ public:
 	
 	ENGINE_DLL_API PrefabEntityID loadPrefab(ResourceID id);
 
+	// This public facing variant maps the serialised fields of an entity and his children in the ECS registry.
 	ENGINE_DLL_API void mapSerializedField(entt::entity entity, std::unordered_map<PrefabEntityID, entt::entity> const& entityMapping);
+
 	ENGINE_DLL_API void broadcast(entt::entity prefabEntity);
 	ENGINE_DLL_API void prefabBroadcast(); 
 	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance);
@@ -50,6 +53,8 @@ public:
 	ENGINE_DLL_API void convertToPrefab(entt::entity entity, ResourceID id);
 
 private:
+	// Maps the serialized field of an entity and his children to other value in a specified registry.
+	ENGINE_DLL_API void mapSerializedField(entt::registry& registry, entt::entity entity, std::unordered_map<entt::entity, entt::entity> const& entityMapping);
 
 	template<typename ...Components>
 	entt::entity instantiatePrefabRecursive(PrefabEntityID prefabEntity);

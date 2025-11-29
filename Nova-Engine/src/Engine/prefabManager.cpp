@@ -26,10 +26,12 @@ PrefabEntityID PrefabManager::loadPrefab(ResourceID id) {
 
 	const char* fileName = resource->getFilePath().string.c_str();
 
-	PrefabEntityID prefabEntityId = Serialiser::deserialisePrefab(fileName, TypedResourceID<Prefab>{ id }, prefabRegistry);
+	std::unordered_map<PrefabFileEntityID, PrefabEntityID> mapping;
+	PrefabEntityID prefabEntityId = Serialiser::deserialisePrefab(fileName, TypedResourceID<Prefab>{ id }, prefabRegistry, mapping);
 
 	if (prefabEntityId != entt::null) {
 		prefabMap[id] = prefabEntityId;
+		mapSerializedField(prefabRegistry, prefabEntityId, mapping);
 	}
 
 	return prefabEntityId;
@@ -69,8 +71,12 @@ entt::entity PrefabManager::instantiatePrefab(ResourceID id) {
 	return newPrefabInstanceId;
 }
 
-void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<PrefabEntityID, entt::entity> const& entityMapping) {
-	Scripts* scripts = ecsRegistry.try_get<Scripts>(entity);
+void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<entt::entity, entt::entity> const& entityMapping) {
+	mapSerializedField(ecs.registry, entity, entityMapping);
+}
+
+void PrefabManager::mapSerializedField(entt::registry& registry, entt::entity entity, std::unordered_map<entt::entity, entt::entity> const& entityMapping) {
+	Scripts* scripts = registry.try_get<Scripts>(entity);
 
 	if (scripts != nullptr) {
 		for (ScriptData& scriptDatas : scripts->scriptDatas) {
@@ -91,16 +97,15 @@ void PrefabManager::mapSerializedField(entt::entity entity, std::unordered_map<P
 		}
 	}
 
-	EntityData* entityData = ecsRegistry.try_get<EntityData>(entity);
+	EntityData* entityData = registry.try_get<EntityData>(entity);
 
 	if (!entityData) {
 		return;
 	}
 
 	for (entt::entity child : entityData->children) {
-		mapSerializedField(child, entityMapping);
+		mapSerializedField(registry, child, entityMapping);
 	}
-
 }
 
 void PrefabManager::broadcast(entt::entity prefabEntity) {

@@ -118,7 +118,7 @@ namespace Serialiser {
 		file >> j;
 	}
 
-	PrefabEntityID deserialisePrefab(const char* filepath, ResourceID prefabResourceId, entt::registry& prefabRegistry) {
+	PrefabEntityID deserialisePrefab(const char* filepath, ResourceID prefabResourceId, entt::registry& prefabRegistry, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping) {
 		std::ifstream file(filepath);
 		
 		if (!file) {
@@ -129,11 +129,11 @@ namespace Serialiser {
 		file >> jsonFile;
 
 		PrefabFileEntityID fileRootEntity = jsonFile["RootEntity"];
-		PrefabEntityID prefabEntityId = deserialisePrefabRecursive(jsonFile["Entities"], fileRootEntity, prefabRegistry, prefabResourceId);
+		PrefabEntityID prefabEntityId = deserialisePrefabRecursive(jsonFile["Entities"], fileRootEntity, prefabRegistry, prefabResourceId, mapping);
 		
 		if (prefabEntityId == entt::null) {
 			Logger::error("Failed to deserialise {}! Please check the prefab file. Prefab not loaded.", filepath);
-			return entt::null;
+			return prefabEntityId;
 		}
 
 		// Remember to update entity data for our root entity!
@@ -187,7 +187,7 @@ namespace Serialiser {
 		}
 	}
 
-	PrefabEntityID deserialisePrefabRecursive(std::vector<Json> const& jsonVectorOfEntities, PrefabFileEntityID prefabFileEntityID, entt::registry& prefabRegistry, ResourceID prefabResourceId) {
+	PrefabEntityID deserialisePrefabRecursive(std::vector<Json> const& jsonVectorOfEntities, PrefabFileEntityID prefabFileEntityID, entt::registry& prefabRegistry, ResourceID prefabResourceId, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping) {
 		// In the vector of entities, let's find our json..
 		for (auto const& jsonEntity : jsonVectorOfEntities) {
 			PrefabFileEntityID fileEntityId = static_cast<entt::entity>(static_cast<unsigned>(jsonEntity["id"]));
@@ -209,12 +209,15 @@ namespace Serialiser {
 				return entt::null;
 			}
 
+			// Record mapping..
+			mapping[fileEntityId] = prefabEntityId;
+
 			// We store the mapped entity ids of the children for this prefab entity..
 			std::vector<PrefabEntityID> prefabEntityChildrens;
 
 			for (PrefabFileEntityID childPrefabFileEntityId : entityData->children) {
 				// we recursively deserialise it's children..
-				PrefabEntityID childPrefabEntityId = deserialisePrefabRecursive(jsonVectorOfEntities, childPrefabFileEntityId, prefabRegistry, prefabResourceId);
+				PrefabEntityID childPrefabEntityId = deserialisePrefabRecursive(jsonVectorOfEntities, childPrefabFileEntityId, prefabRegistry, prefabResourceId, mapping);
 
 				if (childPrefabEntityId != entt::null) {
 					prefabEntityChildrens.push_back(childPrefabEntityId);
