@@ -9,6 +9,7 @@ vec4 calculateClipPosition(vec3 localPosition);
 // ======= Vertex attributes, uniforms and inputs set by the pipeline =======
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 textureUnit;
+layout (location = 2) in vec3 normal;
 layout (location = 4) in ivec4 boneIds;
 layout (location = 5) in vec4 boneWeights;
 

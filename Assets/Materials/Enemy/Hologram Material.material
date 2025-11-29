@@ -1,5 +1,5 @@
 {
-    "blendingConfig": "Disabled",
+    "blendingConfig": "AlphaBlending",
     "cullingConfig": "Enable",
     "depthTestingMethod": "DepthTest",
     "overridenUniforms": {
@@ -10,36 +10,44 @@
                 "__variant_value": 7
             }
         },
+        "colorAddition": {
+            "type": "Color",
+            "value": {
+                "__variant_type": 10,
+                "__variant_value": {
+                    "b": 0.0,
+                    "g": 0.0,
+                    "r": 0.0
+                }
+            }
+        },
+        "colorMultiplier": {
+            "type": "Color",
+            "value": {
+                "__variant_type": 10,
+                "__variant_value": {
+                    "b": 0.006896555423736572,
+                    "g": 0.9931510090827942,
+                    "r": 1.0
+                }
+            }
+        },
         "colorTint": {
             "type": "Color",
             "value": {
                 "__variant_type": 10,
                 "__variant_value": {
-                    "b": 0.1862068772315979,
-                    "g": 0.8765279054641724,
+                    "b": 0.07241380214691162,
+                    "g": 0.9936028718948364,
                     "r": 1.0
                 }
             }
         },
-        "metallic": {
-            "type": "NormalizedFloat",
+        "speedMultiplier": {
+            "type": "float",
             "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
-            }
-        },
-        "occulusion": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
-            }
-        },
-        "roughness": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
+                "__variant_type": 3,
+                "__variant_value": 5.0
             }
         }
     },

@@ -1140,20 +1140,42 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 		// upload all bone matrices..
 		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
 
-		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			Material const* material = obtainMaterial(skinnedMeshRenderer, mesh);
+		// If a model has only one submesh, we render all materials attached to this mesh renderer..
+		if (model->meshes.size() == 1) {
+			// Draw every material of a this mesh.
+			auto const& mesh = model->meshes[0];
 
-			if (!material) {
-				continue;
+			for (auto const& materialId : skinnedMeshRenderer.materialIds) {
+				auto&& [material, __] = resourceManager.getResource<Material>(materialId);
+
+				if (!material) {
+					continue;
+				}
+
+				// Use the correct shader and configure it's required uniforms..
+				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+				if (shader) {
+					// time to draw!
+					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
+				}
 			}
+		}
+		else {
+			for (auto const& mesh : model->meshes) {
+				Material const* material = obtainMaterial(skinnedMeshRenderer, mesh);
 
-			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+				if (!material) {
+					continue;
+				}
 
-			if (shader) {
-				// time to draw!
-				renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
+				// Use the correct shader and configure it's required uniforms..
+				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+				if (shader) {
+					// time to draw!
+					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
+				}
 			}
 		}
 	}
@@ -1785,11 +1807,11 @@ void Renderer::renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType
 	switch (pipeline)
 	{
 	case Pipeline::PBR:
-		normalsVBO.uploadData(mesh.normals);
 		tangentsVBO.uploadData(mesh.tangents);
 
 		[[fallthrough]];
 	case Pipeline::Color:
+		normalsVBO.uploadData(mesh.normals);
 		positionsVBO.uploadData(mesh.positions);
 		textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
 
