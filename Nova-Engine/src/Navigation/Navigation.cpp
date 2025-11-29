@@ -53,7 +53,9 @@ NavigationSystem::~NavigationSystem()
 
 void NavigationSystem::update(float const& dt)
 {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	dtCrowdAgentDebugInfo debugInfo;
 

@@ -98,6 +98,9 @@ public:
 
 	ENGINE_DLL_API void executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName);
 
+	// ONLY USED IN NOVA GAME.
+	ENGINE_DLL_API void forceLoadAssembly();
+
 private:
 	template<typename Func>
 	Func getCoreClrFuncPtr(const std::string& functionName);
@@ -141,6 +144,7 @@ private:
 	handleOnCollisionFunctionPtr			 handleOnCollision_;
 	ExecuteFunctionPtr				         executeFunction_;
 	GetHierarchyModifiedScriptsFunctionPtr   getHierarchyModifiedScripts_;
+
 private:
 	CompileState compileState;
 	float timeSinceSave;

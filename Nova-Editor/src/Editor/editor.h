@@ -29,6 +29,8 @@
 #include "Configuration/editorConfigUI.h"
 #include "Configuration/gameConfigUI.h"
 
+#include <tracyprofiler/tracy/Tracy.hpp>
+
 using GLuint = unsigned int;
 
 class Window;

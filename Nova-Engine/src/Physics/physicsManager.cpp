@@ -219,7 +219,9 @@ void PhysicsManager::clear() {
 }
 
 void PhysicsManager::updatePhysics(float dt) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
@@ -449,15 +451,16 @@ void PhysicsManager::createBody(entt::entity const& entityID)
 		static_cast<JPH::ObjectLayer>(rigidBody.layer)											// in which layer?
 	};
 
-	// We now specify mass.. (if it's dynamic..)
-	if (rigidBody.motionType == JPH::EMotionType::Dynamic) {
+	// We now specify mass.. (if it's not static..)
+	if (rigidBody.motionType != JPH::EMotionType::Static) {
 		JPH::MassProperties massProperties;
 		massProperties.ScaleToMass(rigidBody.mass == 0 ? 1.f : rigidBody.mass); //actual mass in kg
 
 		bodySettings.mMassPropertiesOverride = massProperties;
 		bodySettings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
 	}
-	else if (rigidBody.motionType == JPH::EMotionType::Kinematic && rigidBody.isTrigger) {
+	
+	if (rigidBody.motionType == JPH::EMotionType::Kinematic && rigidBody.isTrigger) {
 		bodySettings.mCollideKinematicVsNonDynamic = true;
 	}
 

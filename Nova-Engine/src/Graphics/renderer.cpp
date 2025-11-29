@@ -293,7 +293,10 @@ void Renderer::update([[maybe_unused]] float dt) {
 }
 
 void Renderer::renderMain(RenderConfig renderConfig) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
+
 	prepareRendering();
 
 	// The renderer 
@@ -439,19 +442,13 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 }
 
 void Renderer::renderToDefaultFBO() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	// === 2. Blend the UI FBO on top ===
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glBindTextureUnit(0, getUIFrameBufferTexture());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisable(GL_BLEND);
@@ -787,7 +784,10 @@ void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm
 }
 
 void Renderer::prepareRendering() {
+#if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
+
 	// =================================================================
 	// Configure pre rendering settings
 	// =================================================================
@@ -910,7 +910,9 @@ void Renderer::prepareRendering() {
 }
 
 void Renderer::renderSkyBox() {
+#if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
 	glDisable(GL_DEPTH_TEST);
 
 	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData,SkyBox>().each()) {
@@ -932,7 +934,9 @@ void Renderer::renderSkyBox() {
 }
 
 void Renderer::renderModels(Camera const& camera) {
-	ZoneScopedC(tracy::Color::PaleVioletRed1);	
+#if defined(DEBUG)
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
 
 	glEnable(GL_CULL_FACE);
 
@@ -1115,7 +1119,9 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 
 
 void Renderer::renderSkinnedModels(Camera const& camera) {
+#if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
 
 	// enable back face culling for our 3d models..
 	glEnable(GL_CULL_FACE);
@@ -1630,7 +1636,9 @@ void Renderer::renderUiObjectIds() {
 }
 
 void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	frameBuffers.swapFrameBuffer();
 
@@ -1653,7 +1661,9 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 }
 
 void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	frameBuffers.swapFrameBuffer();
 

@@ -117,6 +117,22 @@ void AssetManager::reload() {
 	}
 
 	// ========================================
+	// 1.3 Check if the resource directory exist, and the respective sub assets folder exist.
+	// ========================================
+
+	// Checking if the main resource directory exist.
+	if (!std::filesystem::exists(AssetIO::resourceDirectory)) {
+		std::filesystem::create_directory(AssetIO::resourceDirectory);
+	}
+
+	// Checking if the sub directories exist..
+	for (auto&& [_, subResourceDirectory] : AssetIO::subResourceDirectories) {
+		if (!std::filesystem::exists(subResourceDirectory)) {
+			std::filesystem::create_directory(subResourceDirectory);
+		}
+	}
+
+	// ========================================
 	// 2. We check if there's new intermediary assets the resource manager has not keep tracked off.
 	// Our descriptors act as the source of truth.
 	// With descriptors, we verify if every intermediary file has it's corresponding resources asset compiled.

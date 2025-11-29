@@ -31,7 +31,13 @@ class PrefabManager;
 
 class Engine {
 public:
-	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig);
+	enum class ScriptingEngineState {
+		Ready,
+		Editor
+	};
+
+public:
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, ScriptingEngineState scriptingEngineState);
 
 	ENGINE_DLL_API ~Engine();
 	ENGINE_DLL_API Engine(Engine const& other)				= delete;

@@ -304,19 +304,25 @@ bool ScriptingAPIManager::isNotCompiled() const
 }
 	
 void ScriptingAPIManager::update() {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	update_();
 }
 
 void ScriptingAPIManager::fixedUpdate() {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	fixedUpdate_();
 }
 
 void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	if (compileState != CompileState::ToBeCompiled) {
 		return;
@@ -393,10 +399,9 @@ bool ScriptingAPIManager::hasCompilationFailed() const {
 }
 
 bool ScriptingAPIManager::startSimulation() {
-	// Recompile if there is a change in script before starting simulation..
+	// Scripting API has not compiled..
 	if (compileState != CompileState::Compiled) {
-		if (!compileScriptAssembly()) 
-			return false;
+		return false;
 	}
 
 	// Instantiate all entities' script..
@@ -456,3 +461,7 @@ void ScriptingAPIManager::executeFunction(entt::entity entityOne, ResourceID scr
 	executeFunction_(static_cast<unsigned>(entityOne), static_cast<unsigned long long>(scriptID), functionName);
 }
 
+void ScriptingAPIManager::forceLoadAssembly() {
+	compileState = CompileState::Compiled;
+	loadAssembly();
+}
