@@ -119,6 +119,7 @@ class Door : Script
         leftStart = leftDoor.localPosition;
         rightStart = rightDoor.localPosition;
         currentDoorMovingTime = doorMovingDuration;
+        AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
     }
     public void CloseDoor()
     {
@@ -126,6 +127,7 @@ class Door : Script
         leftStart = leftDoor.localPosition;
         rightStart = rightDoor.localPosition;
         currentDoorMovingTime = doorMovingDuration;
+        AudioAPI.PlaySound(gameObject, "slidingDoor_close_01");
     }
     public void LockDoor()
     {

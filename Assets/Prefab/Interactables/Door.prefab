@@ -1,22 +1,37 @@
 {
     "Entities": [
         {
+            "AudioComponent": {
+                "data": {
+                    "slidingDoor_close_01": {
+                        "audioId": 2953165557474476033,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    },
+                    "slidingDoor_open_01": {
+                        "audioId": 17941145117363486723,
+                        "stopAudio": false,
+                        "volume": 1.0
+                    }
+                }
+            },
             "EntityData": {
                 "children": [
-                    48234766,
-                    48234767,
-                    49283357
+                    49283363,
+                    49283364,
+                    49283365
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Door ",
+                "name": "Door",
                 "overridenComponents": {
+                    "16861337649669213096": true,
                     "17237801994024849853": true
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 14618781617769611293,
                 "prefabMetaData": {
                     "prefabEntity": 48234765,
                     "prefabID": 14618781617769611293
@@ -44,14 +59,14 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 48234767
+                                    "__variant_value": 49283364
                                 },
                                 "name": "leftDoor"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 48234766
+                                    "__variant_value": 49283363
                                 },
                                 "name": "rightDoor"
                             },
@@ -86,9 +101,9 @@
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
-                    "x": 14.905585289001465,
+                    "x": 14.116752624511719,
                     "y": 26.82621955871582,
-                    "z": 135.756591796875
+                    "z": 135.7161865234375
                 },
                 "localRotation": {
                     "w": -0.6888074278831482,
@@ -102,9 +117,9 @@
                     "z": 0.7658069729804993
                 },
                 "position": {
-                    "x": 14.905585289001465,
+                    "x": 14.116752624511719,
                     "y": 26.82621955871582,
-                    "z": 135.756591796875
+                    "z": 135.7161865234375
                 },
                 "rotation": {
                     "w": -0.6888074278831482,
@@ -118,7 +133,7 @@
                     "z": 0.7658069729804993
                 }
             },
-            "id": 48234765
+            "id": 49283362
         },
         {
             "BoxCollider": {
@@ -144,8 +159,8 @@
                     "11935986701403193153": true
                 },
                 "overridenProperties": null,
-                "parent": 48234765,
-                "prefabID": 4294967295,
+                "parent": 49283362,
+                "prefabID": 14618781617769611293,
                 "prefabMetaData": {
                     "prefabEntity": 48234766,
                     "prefabID": 14618781617769611293
@@ -159,6 +174,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -170,7 +186,8 @@
                 "layer": "Moving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -184,9 +201,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.00140380859375,
+                    "x": 0.0035400390625,
                     "y": -4.617271423339844,
-                    "z": -4.946695327758789
+                    "z": -4.946739196777344
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -200,9 +217,9 @@
                     "z": 5.0
                 },
                 "position": {
-                    "x": 18.688823699951172,
+                    "x": 17.899982452392578,
                     "y": 23.59412956237793,
-                    "z": 135.95066833496094
+                    "z": 135.91111755371094
                 },
                 "rotation": {
                     "w": -0.6888074278831482,
@@ -216,7 +233,7 @@
                     "z": 3.8290350437164307
                 }
             },
-            "id": 48234766
+            "id": 49283363
         },
         {
             "BoxCollider": {
@@ -243,8 +260,8 @@
                     "17421316227555880647": false
                 },
                 "overridenProperties": null,
-                "parent": 48234765,
-                "prefabID": 4294967295,
+                "parent": 49283362,
+                "prefabID": 14618781617769611293,
                 "prefabMetaData": {
                     "prefabEntity": 48234767,
                     "prefabID": 14618781617769611293
@@ -258,6 +275,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -269,7 +287,8 @@
                 "layer": "Moving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -283,9 +302,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0009765625,
+                    "x": 0.002777099609375,
                     "y": -4.621639251708984,
-                    "z": 5.064119338989258
+                    "z": 5.063953399658203
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -299,9 +318,9 @@
                     "z": 5.0
                 },
                 "position": {
-                    "x": 11.032489776611328,
+                    "x": 10.24375057220459,
                     "y": 23.59107208251953,
-                    "z": 135.558837890625
+                    "z": 135.51914978027344
                 },
                 "rotation": {
                     "w": -0.6888074278831482,
@@ -315,7 +334,7 @@
                     "z": 3.8290350437164307
                 }
             },
-            "id": 48234767
+            "id": 49283364
         },
         {
             "BoxCollider": {
@@ -339,15 +358,16 @@
                 "name": "DoorLockingMechanism",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 48234765,
-                "prefabID": 4294967295,
+                "parent": 49283362,
+                "prefabID": 14618781617769611293,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
+                    "prefabEntity": 49283357,
                     "prefabID": 14618781617769611293
                 },
                 "tag": ""
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -359,7 +379,8 @@
                 "layer": "NonMoving",
                 "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -368,7 +389,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 48234765
+                                    "__variant_value": 49283362
                                 },
                                 "name": "door"
                             }
@@ -389,9 +410,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 15.389190673828125,
+                    "x": 15.391204833984375,
                     "y": -5.340599060058594,
-                    "z": 0.45932960510253906
+                    "z": 0.4592475891113281
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -400,14 +421,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 5.612080097198486,
+                    "x": 5.612109661102295,
                     "y": 10.008723258972168,
                     "z": 9.678812980651855
                 },
                 "position": {
-                    "x": 14.239789962768555,
+                    "x": 13.450981140136719,
                     "y": 23.087800979614258,
-                    "z": 141.88644409179688
+                    "z": 141.8468475341797
                 },
                 "rotation": {
                     "w": -0.6888074278831482,
@@ -416,13 +437,13 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 2.244905948638916,
+                    "x": 2.244917869567871,
                     "y": 7.006106376647949,
                     "z": 7.412102699279785
                 }
             },
-            "id": 49283357
+            "id": 49283365
         }
     ],
-    "RootEntity": 48234765
+    "RootEntity": 49283362
 }
