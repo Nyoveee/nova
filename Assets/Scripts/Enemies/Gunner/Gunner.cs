@@ -94,6 +94,11 @@ class Gunner : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
+        if(gunnerState == GunnerState.Spawning)
+        {
+            return;
+        }
+
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
             if (colliderTag == "Enemy_ArmouredSpot")
@@ -107,8 +112,8 @@ class Gunner : Enemy
 
             }
 
-
             gunnerStats.health -= damage;
+
             if (gunnerStats.health <= 0)
             {
                 if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
@@ -118,8 +123,6 @@ class Gunner : Enemy
                 NavigationAPI.stopAgent(gameObject);
                 rigidBody.enable = false;
             }
-
-
         }
 
 

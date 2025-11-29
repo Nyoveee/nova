@@ -97,7 +97,7 @@ class PlayerController : Script
         // ===================================
         // Check if its grounded..
         // ===================================
-        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 0.5f, gameObject);
+        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 1f, gameObject);
         if (result != null)
         {
             isGrounded = true;

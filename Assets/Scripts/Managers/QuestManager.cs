@@ -9,7 +9,10 @@ public class QuestManager : Script
     private Quest? currentQuest;
     private int questIndex;
     private PlayerController? player;
-
+    [SerializableField]
+    private GameUIManager gameUIManager;
+    [SerializableField]
+    private GameObject questContainer;
     protected override void init()
     {
         GameObject[] children = gameObject.GetChildren();
@@ -35,7 +38,7 @@ public class QuestManager : Script
             StartCurrentQuest();
         }
 
-        GameObject playerGO = GameObject.FindWithTag("Player");
+            GameObject playerGO = GameObject.FindWithTag("Player");
         if (playerGO != null)
         {
             player = playerGO.getScript<PlayerController>();
@@ -80,16 +83,20 @@ public class QuestManager : Script
             currentQuest = quests[questIndex];
             StartCurrentQuest();
         }
-        else
+        else if(questContainer!= null)
         {
             Debug.Log("Player Won/Quests are done");
+            questContainer.SetActive(false);
         }
+            
     }
 
     private void StartCurrentQuest()
     {
         currentQuest.OnQuestStateChanged += HandleQuestStateChanged;
         currentQuest.OnEnter();
+        if (gameUIManager != null)
+            gameUIManager.SetQuestText(currentQuest.GetQuestInformation());
     }
 
     // Automatically fails current quest

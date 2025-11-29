@@ -102,6 +102,10 @@ class Charger : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
+        if (chargerState == ChargerState.Spawning)
+        {
+            return;
+        }
 
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
@@ -116,8 +120,8 @@ class Charger : Enemy
 
             }
 
-
             chargerstats.health -= damage;
+            
             if (chargerstats.health <= 0)
             {
                 if (chargerState != ChargerState.Death && !WasRecentlyDamaged())

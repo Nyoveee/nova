@@ -16,7 +16,6 @@ public:
 
 public:
 	void update(float dt);
-
 private:
 	Editor& editor;
 	Engine& engine;

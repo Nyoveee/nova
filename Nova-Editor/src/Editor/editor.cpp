@@ -278,10 +278,10 @@ void Editor::main(float dt) {
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
-	navigationWindow.update();
 	animationTimeLine.update(dt);
-	animatorController.update();
-	gameConfigUI.update();
+	//navigationWindow.update();
+	//animatorController.update();
+	//gameConfigUI.update();
 	editorConfigUI.update();
 
 	handleEntityHovering();

@@ -89,6 +89,10 @@ class Grunt : Enemy
 
     public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
+        if (gruntState == GruntState.Spawning)
+        {
+            return;
+        }
 
         if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
@@ -349,6 +353,7 @@ class Grunt : Enemy
     public override void SetSpawningDuration(float seconds)
     {
         gruntState = GruntState.Spawning;
+
 
         Invoke(() =>
         {

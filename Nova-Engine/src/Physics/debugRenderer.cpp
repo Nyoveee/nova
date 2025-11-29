@@ -24,11 +24,13 @@ DebugRenderer::~DebugRenderer() {}
 
 void DebugRenderer::DrawLine(JPH::RVec3Arg from, JPH::RVec3Arg to, JPH::ColorArg color) {
 	(void) color;
-	renderer.submitLine(toGlmVec3(from), toGlmVec3(to));
+	if(renderer.isEditorScreenShown)
+		renderer.submitLine(toGlmVec3(from), toGlmVec3(to));
 }
 
 void DebugRenderer::DrawTriangle(JPH::RVec3Arg vertice1, JPH::RVec3Arg vertice2, JPH::RVec3Arg vertice3, [[maybe_unused]] JPH::ColorArg color, [[maybe_unused]] ECastShadow castShadow) {
-	renderer.submitTriangle(toGlmVec3(vertice1), toGlmVec3(vertice2), toGlmVec3(vertice3));
+	if(renderer.isEditorScreenShown)
+		renderer.submitTriangle(toGlmVec3(vertice1), toGlmVec3(vertice2), toGlmVec3(vertice3));
 }
 
 void DebugRenderer::DrawText3D(JPH::RVec3Arg position, JPH::string_view const& string, JPH::ColorArg color, float height) {
