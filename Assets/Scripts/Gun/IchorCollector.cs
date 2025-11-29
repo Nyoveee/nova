@@ -25,12 +25,12 @@ class IchorCollector : Script
     //protected override void exit()
     //{}
 
-    //protected override void onCollisionEnter(GameObject other)
-    //{
-    //    weaponRef.ichorPull(other);
-    
-    
-    
-    //}
+    protected override void onCollisionEnter(GameObject other)
+    {
+        weaponRef.ichorPull(other);
+
+
+
+    }
 
 }
