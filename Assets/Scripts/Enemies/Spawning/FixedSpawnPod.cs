@@ -5,7 +5,7 @@ using ScriptingAPI;
 
 public class FixedSpawnPod : SpawnPod
 {
-    public void Spawn(Prefab enemyPrefab, Wave wave)
+    public void Spawn(Prefab enemyPrefab, WaveBehavior wave)
     {
         if (podTransform == null)
             podTransform = getComponent<Transform_>();
