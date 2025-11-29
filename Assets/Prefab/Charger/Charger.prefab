@@ -35,15 +35,15 @@
             },
             "EntityData": {
                 "children": [
-                    55,
-                    56,
-                    57,
-                    58,
-                    59,
-                    60,
-                    61,
-                    70,
-                    71
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    22,
+                    23
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -57,10 +57,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 13167355900897460225,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": "Enemy"
             },
@@ -113,42 +113,42 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 56
+                                    "__variant_value": 8
                                 },
                                 "name": "attackHitBoxTransform"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 59
+                                    "__variant_value": 11
                                 },
                                 "name": "stompHitBoxTransform"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 58
+                                    "__variant_value": 10
                                 },
                                 "name": "chargingRigidbody"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 54
+                                    "__variant_value": 6
                                 },
                                 "name": "navMeshRigidbody"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 60
+                                    "__variant_value": 12
                                 },
                                 "name": "emitter"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 61
+                                    "__variant_value": 13
                                 },
                                 "name": "chargeLines"
                             },
@@ -162,28 +162,28 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 57
+                                    "__variant_value": 9
                                 },
                                 "name": "ichorSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 55
+                                    "__variant_value": 7
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 55
+                                    "__variant_value": 7
                                 },
                                 "name": "renderer"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 54
+                                    "__variant_value": 6
                                 },
                                 "name": "navMeshAgent"
                             }
@@ -347,7 +347,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 54
+                                    "__variant_value": 6
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -400,7 +400,7 @@
                     "z": 1.0
                 }
             },
-            "id": 54
+            "id": 6
         },
         {
             "Animator": {
@@ -414,11 +414,11 @@
                 "name": "Charger Model",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 1,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": "Enemy"
             },
@@ -538,7 +538,7 @@
                     "z": 1.0
                 }
             },
-            "id": 55
+            "id": 7
         },
         {
             "EntityData": {
@@ -549,11 +549,11 @@
                 "name": "AttackHitBoxPosition",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 2,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -601,7 +601,7 @@
                     "z": 0.9999910593032837
                 }
             },
-            "id": 56
+            "id": 8
         },
         {
             "EntityData": {
@@ -612,11 +612,11 @@
                 "name": "IchorSpawnPoint",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 3,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -664,7 +664,7 @@
                     "z": 1.0
                 }
             },
-            "id": 57
+            "id": 9
         },
         {
             "BoxCollider": {
@@ -693,11 +693,11 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 4,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": "Enemy_ArmouredSpot"
             },
@@ -724,7 +724,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 54
+                                    "__variant_value": 6
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -777,7 +777,7 @@
                     "z": 1.0
                 }
             },
-            "id": 58
+            "id": 10
         },
         {
             "EntityData": {
@@ -788,11 +788,11 @@
                 "name": "StompHitboxPosition",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 5,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -840,7 +840,7 @@
                     "z": 1.0
                 }
             },
-            "id": 59
+            "id": 11
         },
         {
             "EntityData": {
@@ -851,11 +851,11 @@
                 "name": "Emitter",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 6,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -1010,19 +1010,19 @@
                     "z": 1.0
                 }
             },
-            "id": 60
+            "id": 12
         },
         {
             "EntityData": {
                 "children": [
-                    62,
-                    63,
-                    64,
-                    65,
-                    66,
-                    67,
-                    68,
-                    69
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -1030,11 +1030,11 @@
                 "name": "Charge Lines",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 7,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -1082,7 +1082,7 @@
                     "z": 1.0
                 }
             },
-            "id": 61
+            "id": 13
         },
         {
             "EntityData": {
@@ -1093,11 +1093,11 @@
                 "name": "Charge Line 1",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 8,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -1252,7 +1252,7 @@
                     "z": 1.0
                 }
             },
-            "id": 62
+            "id": 14
         },
         {
             "EntityData": {
@@ -1263,11 +1263,11 @@
                 "name": "Charge Line 2",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 9,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -1422,7 +1422,7 @@
                     "z": 1.0
                 }
             },
-            "id": 63
+            "id": 15
         },
         {
             "EntityData": {
@@ -1433,11 +1433,11 @@
                 "name": "Charge Line 3",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 10,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -1592,7 +1592,7 @@
                     "z": 1.0
                 }
             },
-            "id": 64
+            "id": 16
         },
         {
             "EntityData": {
@@ -1603,11 +1603,11 @@
                 "name": "Charge Line 4",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 11,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -1762,7 +1762,7 @@
                     "z": 1.0
                 }
             },
-            "id": 65
+            "id": 17
         },
         {
             "EntityData": {
@@ -1773,11 +1773,11 @@
                 "name": "Charge Line 5",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 12,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -1932,7 +1932,7 @@
                     "z": 1.0
                 }
             },
-            "id": 66
+            "id": 18
         },
         {
             "EntityData": {
@@ -1943,11 +1943,11 @@
                 "name": "Charge Line 6",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 13,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -2102,7 +2102,7 @@
                     "z": 1.0
                 }
             },
-            "id": 67
+            "id": 19
         },
         {
             "EntityData": {
@@ -2113,11 +2113,11 @@
                 "name": "Charge Line 7",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 14,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -2272,7 +2272,7 @@
                     "z": 1.0
                 }
             },
-            "id": 68
+            "id": 20
         },
         {
             "EntityData": {
@@ -2283,11 +2283,11 @@
                 "name": "Charge Line 8",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 61,
-                "prefabID": 13167355900897460225,
+                "parent": 13,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 15,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": ""
             },
@@ -2442,7 +2442,7 @@
                     "z": 1.0
                 }
             },
-            "id": 69
+            "id": 21
         },
         {
             "EntityData": {
@@ -2453,11 +2453,11 @@
                 "name": "Charger_WeakSpot",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": "Enemy_WeakSpot"
             },
@@ -2484,7 +2484,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 54
+                                    "__variant_value": 6
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -2545,7 +2545,7 @@
                     "z": 1.0
                 }
             },
-            "id": 70
+            "id": 22
         },
         {
             "EntityData": {
@@ -2556,11 +2556,11 @@
                 "name": "ChargerCollider2",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 54,
-                "prefabID": 13167355900897460225,
+                "parent": 6,
+                "prefabID": 10461915178448781313,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 13167355900897460225
+                    "prefabID": 10461915178448781313
                 },
                 "tag": "Enemy_ArmouredSpot"
             },
@@ -2587,7 +2587,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 54
+                                    "__variant_value": 6
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -2648,8 +2648,8 @@
                     "z": 1.0
                 }
             },
-            "id": 71
+            "id": 23
         }
     ],
-    "RootEntity": 54
+    "RootEntity": 6
 }

@@ -115,7 +115,7 @@ class UltimateExplosion : Script
 
     protected override void onCollisionEnter(GameObject other)
     {
-        if (other.tag == "EnemyCollider")
+        if (other.tag == "Enemy_ArmouredSpot" || other.tag == "Enemy_WeakSpot")
         {
             EnemyCollider enemyCollider = other.getScript<EnemyCollider>();
 
