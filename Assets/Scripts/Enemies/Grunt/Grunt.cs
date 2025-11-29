@@ -42,7 +42,7 @@ class Grunt : Enemy
         Death
     }
     // State machine
-    private GruntState gruntState = GruntState.Spawning;
+    private GruntState gruntState = GruntState.Idle;
     private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
     private float spawningTimeElapsed = 0f;
     private GameObject? hitbox = null;

@@ -3,8 +3,8 @@
         {
             "EntityData": {
                 "children": [
-                    11,
-                    12
+                    9,
+                    10
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -66,7 +66,7 @@
                     "z": 1.0
                 }
             },
-            "id": 10
+            "id": 8
         },
         {
             "EntityData": {
@@ -77,7 +77,7 @@
                 "name": "Teleporter Destination",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 10,
+                "parent": 8,
                 "prefabID": 10263097084352921601,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -135,7 +135,7 @@
                     "z": 1.0
                 }
             },
-            "id": 11
+            "id": 9
         },
         {
             "BoxCollider": {
@@ -159,7 +159,7 @@
                 "name": "Teleporter Source",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 10,
+                "parent": 8,
                 "prefabID": 10263097084352921601,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -243,8 +243,8 @@
                     "z": 53.541900634765625
                 }
             },
-            "id": 12
+            "id": 10
         }
     ],
-    "RootEntity": 10
+    "RootEntity": 8
 }

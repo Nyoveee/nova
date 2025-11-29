@@ -1,22 +1,9 @@
 {
     "Entities": [
         {
-            "BoxCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
             "EntityData": {
                 "children": [
-                    0
+                    6
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -25,12 +12,15 @@
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 11853395524922785801,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
+                    "prefabID": 11853395524922785801
                 },
                 "tag": ""
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
             },
             "MeshRenderer": {
                 "materialIds": [
@@ -98,7 +88,7 @@
                     "z": 2.9778125286102295
                 }
             },
-            "id": 27
+            "id": 5
         },
         {
             "EntityData": {
@@ -109,19 +99,38 @@
                 "name": "Generator Core",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 27,
-                "prefabID": 18446744073709551615,
+                "parent": 5,
+                "prefabID": 11853395524922785801,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 0
+                    "prefabID": 11853395524922785801
                 },
                 "tag": ""
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
             },
             "MeshRenderer": {
                 "materialIds": [
                     8394631011098312709
                 ],
                 "modelId": 14159238534129860609
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {
@@ -167,8 +176,8 @@
                     "z": 2.9778125286102295
                 }
             },
-            "id": 0
+            "id": 6
         }
     ],
-    "RootEntity": 27
+    "RootEntity": 5
 }

@@ -5,9 +5,11 @@
 class UnlockGateQuest : InteractableQuest
 {
     [SerializableField]
-    private GameObject button;
+    private MeshRenderer_ buttonRenderer;
     [SerializableField]
     private GameObject teleporter;
+    [SerializableField]
+    private GameObject gate;
     // This function is first invoked when game starts.
     public override void OnEnter()
     {
@@ -16,8 +18,9 @@ class UnlockGateQuest : InteractableQuest
     public override void OnSuccess()
     {
         AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
-        button.SetActive(false);
+        buttonRenderer.setMaterialFloat(0, "emissiveStrength", 9f);
         teleporter.SetActive(false);
+        gate.SetActive(false);
     }
     public override void OnFail(Transform_ playerTransform)
     {
