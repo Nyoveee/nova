@@ -192,6 +192,8 @@ void PhysicsManager::simulationInitialise() {
 		bodyInterface.ActivateBody(rigidbody.bodyId);
 		bodyInterface.SetGravityFactor(rigidbody.bodyId, rigidbody.gravityMultiplier);
 	}
+
+	physicsSystem.OptimizeBroadPhase();
 }
 
 void PhysicsManager::systemInitialise() {
@@ -199,7 +201,7 @@ void PhysicsManager::systemInitialise() {
 		// due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
 		if (rigidbody.bodyId == JPH::BodyID{} && hasRequiredPhysicsComponents(entityId))
-			initialiseBodyComponent(entityId, false);
+			createBody(entityId);
 	}
 
 	physicsSystem.OptimizeBroadPhase();
@@ -219,8 +221,6 @@ void PhysicsManager::clear() {
 void PhysicsManager::updatePhysics(float dt) {
 	ZoneScoped;
 
-	//Update transform bodies have been moved outside to another function
-#if 1
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
 	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
@@ -236,8 +236,13 @@ void PhysicsManager::updatePhysics(float dt) {
 		}
 
 		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position + rigidbody.offset), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
+
+		// @TODO: Optimise?
+		if (rigidbody.dynamicCollider) {
+			JPH::ScaledShape* shape = recreateScaledShape(entityId, transform, rigidbody);
+			bodyInterface.SetShape(rigidbody.bodyId, shape, false, JPH::EActivation::Activate);
+		}
 	}
-#endif
 
 	// run physics simulation.
 	physicsSystem.Update(dt, 1, &temp_allocator, &job_system);	
@@ -322,37 +327,29 @@ void PhysicsManager::transformUpdateListener(TransformUpdateEvent const& event)
 
 void PhysicsManager::updateTransformBodies()
 {
-	//Look at transformUpdateListener, is filled from transform system
+	// Look at transformUpdateListener, is filled from transform system.
 	while (!transformUpdateStack.empty())
 	{
 		entt::entity entity = transformUpdateStack.top();
 		transformUpdateStack.pop();
 
-		// simulation mode requires a different update sequence.. we just clear the stack if so..
-		if (engine.isInSimulationMode()) {
+		Transform const& transform = registry.get<Transform>(entity);
+		Rigidbody const& rigidbody = registry.get<Rigidbody>(entity);
+
+		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
 			continue;
 		}
 
-		auto [transform, rigidbody] = registry.try_get<Transform, Rigidbody>(entity);
-
-		if (!transform || !rigidbody || rigidbody->bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
-			continue;
-		}
-
-		bodyInterface.SetPositionAndRotation(rigidbody->bodyId, toJPHVec3(transform->position + rigidbody->offset), toJPHQuat(transform->rotation), JPH::EActivation::Activate);
+		bodyInterface.SetPositionAndRotation(rigidbody.bodyId, toJPHVec3(transform.position + rigidbody.offset), toJPHQuat(transform.rotation), JPH::EActivation::Activate);
 	}
 
-#if false
-	if (engine.isInSimulationMode()) {
-		return;
-	}
-
-	//can optimise later to listen to patch events
+	// can optimise later to listen to patch events
 	for (auto&& [entityId, transform, rigidbody] : registry.view<Transform, Rigidbody>().each())
 	{
-		auto&& [boxCollider, sphereCollider, capsuleCollider] = registry.try_get<BoxCollider, SphereCollider, CapsuleCollider>(entityId);
-
-		JPH::RefConst<JPH::Shape> shape = bodyInterface.GetShape(rigidbody.bodyId);
+		// If it's a mesh collider, I don't want to recalculate shape.. expensive..
+		if (registry.any_of<MeshCollider>(entityId)) {
+			continue;
+		}
 
 		JPH::EActivation type;
 		if (bodyInterface.IsActive(rigidbody.bodyId))
@@ -364,36 +361,10 @@ void PhysicsManager::updateTransformBodies()
 			type = JPH::EActivation::DontActivate;
 		}
 
-		if (boxCollider != nullptr && glm::all(glm::greaterThan(boxCollider->shapeScale, glm::vec3{})))
-		{
-			auto* result = new JPH::ScaledShape(box, toJPHVec3(boxCollider->shapeScale));
-			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
-			rigidbody.offset = boxCollider->offset;
-			transformUpdateStack.push(entityId);
-
-		}
-		else if (sphereCollider != nullptr && sphereCollider->radius > 0.f)
-		{
-			auto* result = new JPH::ScaledShape(sphere, toJPHVec3(glm::vec3(sphereCollider->radius)));
-			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
-			rigidbody.offset = sphereCollider->offset;
-			transformUpdateStack.push(entityId);
-		}
-		else if (capsuleCollider != nullptr && capsuleCollider->shapeScale > 0.f)
-		{
-			// Scale validation.
-			// JPH::Vec3 validScale = capsule->MakeScaleValid(toJPHVec3(capsuleCollider->shapeScale));
-			// capsuleCollider->shapeScale = toGlmVec3(validScale);
-
-			auto* result = new JPH::ScaledShape(capsule, JPH::Vec3(capsuleCollider->shapeScale, capsuleCollider->shapeScale, capsuleCollider->shapeScale));
-			bodyInterface.SetShape(rigidbody.bodyId, result, false, type);
-			rigidbody.offset = capsuleCollider->offset;
-			transformUpdateStack.push(entityId);
-		}
-
+		JPH::ScaledShape* shape = recreateScaledShape(entityId, transform, rigidbody);
+		bodyInterface.SetShape(rigidbody.bodyId, shape, false, type);
 		bodyInterface.SetIsSensor(rigidbody.bodyId, rigidbody.isTrigger);
 	}
-#endif
 }
 
 void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
@@ -403,7 +374,7 @@ void PhysicsManager::addBodiesToSystem(entt::registry&, entt::entity entityID)
 		return;
 	}
 
-	initialiseBodyComponent(entityID, true);
+	createBody(entityID);
 }
 
 void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entityID) {
@@ -429,8 +400,6 @@ void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entity
 
 	rigidBody->bodyId = JPH::BodyID{};
 }
-
-
 
 void PhysicsManager::createPrimitiveShapes() {
 	// ===========================================
@@ -460,61 +429,118 @@ void PhysicsManager::createPrimitiveShapes() {
 	capsule = capsuleSettings.Create().Get();
 }
 
-void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling)
+void PhysicsManager::createBody(entt::entity const& entityID)
 {
-	auto&& [transform, meshRenderer, rigidBody, boxCollider, sphereCollider, capsuleCollider, meshCollider] = registry.try_get<Transform, MeshRenderer, Rigidbody, 
-		BoxCollider, 
-		SphereCollider,
-		CapsuleCollider,
-		MeshCollider
-	>(entityID);
-	
+	Transform const& transform = registry.get<Transform>(entityID);
+	Rigidbody& rigidBody = registry.get<Rigidbody>(entityID);
+
+	JPH::ScaledShape* shape = recreateScaledShape(entityID, transform, rigidBody);
+
+	if (!shape) {
+		Logger::error("Failed to create shape for entity: {}", static_cast<unsigned int>(entityID));
+		return;
+	}
+
+	JPH::BodyCreationSettings bodySettings{
+		shape,	// scaled shape
+		toJPHVec3(transform.position),															// position
+		toJPHQuat(transform.rotation),															// rotation (in quartenions)
+		rigidBody.motionType,																	// motion type
+		static_cast<JPH::ObjectLayer>(rigidBody.layer)											// in which layer?
+	};
+
+	// We now specify mass.. (if it's dynamic..)
+	if (rigidBody.motionType == JPH::EMotionType::Dynamic) {
+		JPH::MassProperties massProperties;
+		massProperties.ScaleToMass(rigidBody.mass == 0 ? 1.f : rigidBody.mass); //actual mass in kg
+
+		bodySettings.mMassPropertiesOverride = massProperties;
+		bodySettings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
+	}
+	else if (rigidBody.motionType == JPH::EMotionType::Kinematic && rigidBody.isTrigger) {
+		bodySettings.mCollideKinematicVsNonDynamic = true;
+	}
+
+	JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
+
+	JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
+		bodySettings,
+		activationType //should always be inactive unless its simulation step
+	);
+
+	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityID));
+	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody.initialVelocity));
+	bodyInterface.SetIsSensor(bodyId, rigidBody.isTrigger);
+
+	if (rigidBody.motionQuality == Rigidbody::MotionQuality::Continuous) {
+		bodyInterface.SetMotionQuality(bodyId, JPH::EMotionQuality::LinearCast);
+	}
+
+	createdBodies.push_back(bodyId);
+
+	rigidBody.bodyId = bodyId;
+
+	// Record not rotatable objects.. (non static)
+	if (rigidBody.motionType != JPH::EMotionType::Static) {
+		nonRotatableBodies.push_back(bodyId);
+	}
+}
+
+bool PhysicsManager::hasRequiredPhysicsComponents(entt::entity const& entityID) {
+	return registry.any_of<BoxCollider, SphereCollider, MeshCollider, CapsuleCollider>(entityID) && registry.all_of<Rigidbody>(entityID);
+}
+
+JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Transform const& transform, Rigidbody& rigidBody) {
+	auto&& [
+		meshRenderer, 
+		boxCollider,
+		sphereCollider, 
+		capsuleCollider, 
+		meshCollider
+	] = registry.try_get<MeshRenderer, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider>(entity);
+
 	// Create and add body based on entity's component.
 	JPH::ScaledShape* shape = nullptr;
-	glm::vec3 scale;
 
-	//if have model use model scale, else init without model
+	// Calculate appropriate scale.
+	glm::vec3 scale;
+	glm::vec3 transformScale = rigidBody.toScaleWithTransform ? transform.scale : glm::vec3{ 1.f, 1.f, 1.f };
+
+	// if have model use model scale, else init without model
 	if (meshRenderer != nullptr)
 	{
 		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
 
-		if (!model || model->maxDimension == 0)	{
-			scale = transform->scale;
+		if (!model || model->maxDimension == 0) {
+			scale = transformScale;
 		}
 		else {
-			scale = transform->scale * glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
+			scale = transformScale * glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
 		}
 	}
 	else
 	{
-		scale = transform->scale;
+		scale = transformScale;
 	}
 
 	// Alright here we go have to list down all the possible collider type cause we dk which one is it. :P, 
 	// we only support one type of collider per entt now i think
 	if (boxCollider != nullptr)
 	{
-		auto vecScale = boxCollider->shapeScale * scale;
-		auto jphScale = toJPHVec3(vecScale);
-		auto validSCALE = box->MakeScaleValid(jphScale);
-		shape = new JPH::ScaledShape(box, validSCALE);
-
-		rigidBody->offset = boxCollider->offset;
+		shape = new JPH::ScaledShape(box, box->MakeScaleValid(toJPHVec3(boxCollider->shapeScale * scale)));
+		rigidBody.offset = boxCollider->offset;
 	}
-
 	else if (sphereCollider != nullptr)
 	{
 		shape = new JPH::ScaledShape(sphere, sphere->MakeScaleValid(toJPHVec3(glm::vec3(sphereCollider->radius * scale))));
-		
-		rigidBody->offset = sphereCollider->offset;
+		rigidBody.offset = sphereCollider->offset;
 	}
 	else if (capsuleCollider != nullptr) {
 		shape = new JPH::ScaledShape(capsule, capsule->MakeScaleValid(toJPHVec3(glm::vec3{ capsuleCollider->shapeScale * scale })));
-
-		rigidBody->offset = capsuleCollider->offset;
+		rigidBody.offset = capsuleCollider->offset;
 	}
 	else if (meshRenderer && meshCollider) {
-		rigidBody->offset = { 0.f, 0.f, 0.f };
+		rigidBody.offset = { 0.f, 0.f, 0.f };
 
 		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer->modelId);
 
@@ -529,7 +555,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 				for (glm::vec3 const& localPosition : meshData.positions) {
 					vertexList.push_back({ localPosition.x, localPosition.y, localPosition.z });
 				}
-				
+
 				// map triangle soup with corresponding indices in each mesh
 				for (size_t i = 0; i < meshData.indices.size(); i += 3) {
 					indexedTriangleList.push_back({
@@ -538,7 +564,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 						meshData.indices[i + 2] + vertexOffset
 					});
 				}
-				
+
 				vertexOffset += static_cast<unsigned int>(meshData.positions.size());
 			}
 
@@ -547,17 +573,17 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 			meshShape.SetEmbedded();
 
 			auto&& result = meshShape.Create();
-			
+
 			if (result.HasError()) {
 				Logger::error("Error creating mesh shape settings.. {}", result.GetError());
-				return;
+				return nullptr;
 			}
 			else {
 				// Object needs to be non moving and static.
-				rigidBody->layer = Rigidbody::Layer::NonMoving;
-				rigidBody->motionType = JPH::EMotionType::Static;
+				rigidBody.layer = Rigidbody::Layer::NonMoving;
+				rigidBody.motionType = JPH::EMotionType::Static;
 
-				glm::vec3 shapeScale = meshCollider->shapeScale * transform->scale;
+				glm::vec3 shapeScale = meshCollider->shapeScale * transform.scale;
 
 				bool anyComponentZero = false;
 				for (int i = 0; i < 3; ++i) {
@@ -576,60 +602,7 @@ void PhysicsManager::initialiseBodyComponent(entt::entity const& entityID, bool 
 		}
 	}
 
-	if (!shape) {
-		Logger::error("Failed to create shape for entity: {}", static_cast<unsigned int>(entityID));
-		return;
-	}
-
-	//-----------------------------------------------------------------------------------------------//
-
-	JPH::BodyCreationSettings bodySettings{
-		shape,	// scaled shape
-		toJPHVec3(transform->position),															// position
-		toJPHQuat(transform->rotation),															// rotation (in quartenions)
-		rigidBody->motionType,																	// motion type
-		static_cast<JPH::ObjectLayer>(rigidBody->layer)											// in which layer?
-	};
-
-	// We now specify mass.. (if it's dynamic..)
-	if (rigidBody->motionType == JPH::EMotionType::Dynamic) {
-		JPH::MassProperties massProperties;
-		massProperties.ScaleToMass(rigidBody->mass == 0 ? 1.f : rigidBody->mass); //actual mass in kg
-
-		bodySettings.mMassPropertiesOverride = massProperties;
-		bodySettings.mOverrideMassProperties = JPH::EOverrideMassProperties::CalculateInertia;
-	}
-	else if (rigidBody->motionType == JPH::EMotionType::Kinematic && rigidBody->isTrigger) {
-		bodySettings.mCollideKinematicVsNonDynamic = true;
-	}
-
-	JPH::EActivation activationType = engine.isInSimulationMode() ? JPH::EActivation::Activate : JPH::EActivation::DontActivate;
-
-	JPH::BodyID bodyId = bodyInterface.CreateAndAddBody(
-		bodySettings,
-		activationType //should always be inactive unless its simulation step
-	);
-
-	bodyInterface.SetUserData(bodyId, static_cast<unsigned>(entityID));
-	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody->initialVelocity));
-	bodyInterface.SetIsSensor(bodyId, rigidBody->isTrigger);
-
-	if (rigidBody->motionQuality == Rigidbody::MotionQuality::Continuous) {
-		bodyInterface.SetMotionQuality(bodyId, JPH::EMotionQuality::LinearCast);
-	}
-
-	createdBodies.push_back(bodyId);
-
-	rigidBody->bodyId = bodyId;
-
-	// Record not rotatable objects.. (non static)
-	if (rigidBody->motionType != JPH::EMotionType::Static) {
-		nonRotatableBodies.push_back(bodyId);
-	}
-}
-
-bool PhysicsManager::hasRequiredPhysicsComponents(entt::entity const& entityID) {
-	return registry.any_of<BoxCollider, SphereCollider, MeshCollider, CapsuleCollider>(entityID) && registry.all_of<Rigidbody>(entityID);
+	return shape;
 }
 
 void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {
@@ -681,6 +654,7 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 	JPH::RayCastResult rayCastResult;
 	glm::vec3 distanceVector = glm::normalize(ray.direction) * maxDistance;
 	RayCastLayerMaskFilterImpl layerMaskFilter(layerMask);
+
 	// Object Layer
 	if (narrowPhaseQuery.CastRay(JPH::RRayCast{ toJPHVec3(ray.origin), toJPHVec3(distanceVector) }, rayCastResult, layerMaskFilter)) {
 		JPH::BodyID bodyId = rayCastResult.mBodyID;
@@ -720,6 +694,34 @@ void PhysicsManager::setVelocity(Rigidbody& rigidbody, glm::vec3 velocity) {
 
 	bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(velocity));
 	rigidbody.velocity = velocity;
+}
+
+void PhysicsManager::setAngularVelocity(Rigidbody& rigidbody, glm::vec3 velocity)
+{
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	bodyInterface.SetAngularVelocity(rigidbody.bodyId, toJPHVec3(velocity));
+	rigidbody.angularVelocity = velocity;
+}
+
+void PhysicsManager::setRotation(Rigidbody& rigidbody, glm::quat quaternion)
+{
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	if (rigidbody.motionType == JPH::EMotionType::Static)
+	{
+		bodyInterface.SetRotation(rigidbody.bodyId, toJPHQuat(quaternion), JPH::EActivation::DontActivate);
+
+	}
+	else
+	{
+		bodyInterface.SetRotation(rigidbody.bodyId, toJPHQuat(quaternion), JPH::EActivation::Activate);
+
+	}
 }
 
 void PhysicsManager::setGravity(float value) {

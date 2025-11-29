@@ -1,7 +1,5 @@
 #include <string>
 
-#include "serialisation.h"
-
 #include "reflection.h"
 
 #include "component.h"
@@ -43,7 +41,6 @@ namespace Serialiser {
 
 	template<typename ...Components>
 	void deserialiseComponents(entt::registry& registry, entt::entity entity, Json en) {
-		// for each component (EntityData, Transform, etc.)
 		([&]() {
 			deserialiseComponent<Components>(en, registry, entity);
 		}(), ...);
@@ -63,7 +60,6 @@ namespace Serialiser {
 	}
 	// this was the starting point
 	template<typename T>
-	//void deserialiseComponent(std::ifstream& outputFile, json jsonComponent) {
 	void deserialiseComponent(Json jsonComponent, entt::registry& registry, entt::entity entity) {
 		T component;
 

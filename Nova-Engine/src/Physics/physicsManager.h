@@ -16,6 +16,7 @@ class Engine;
 #include <Jolt/Jolt.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 #include <Jolt/Physics/Collision/CastResult.h>
+#include <Jolt/Physics/Collision/Shape/ScaledShape.h>
 
 #include "joltPhysicsInterface.h"
 #include "debugRenderer.h"
@@ -25,6 +26,7 @@ class Engine;
 #include "export.h"
 #include "physics.h"
 
+struct Transform;
 struct Rigidbody;
 
 class PhysicsManager {
@@ -64,15 +66,20 @@ public:
 	ENGINE_DLL_API void addImpulse(Rigidbody const& rigidbody, glm::vec3 forceVector);
 
 	ENGINE_DLL_API void setVelocity(Rigidbody& rigidbody, glm::vec3 velocity);
-	ENGINE_DLL_API void setGravity(float value);
+	ENGINE_DLL_API void setAngularVelocity(Rigidbody& rigidbody, glm::vec3 velocity);
 
+	ENGINE_DLL_API void setRotation(Rigidbody& rigidbody, glm::quat quaternion);
+
+	ENGINE_DLL_API void setGravity(float value);
 	ENGINE_DLL_API void setGravityFactor(Rigidbody& rigidbody, float value);
 
 private:
 	void createPrimitiveShapes();
-	void initialiseBodyComponent(entt::entity const& entityID, bool automateColliderScaling);
+	void createBody(entt::entity const& entityID);
 	bool hasRequiredPhysicsComponents(entt::entity const& entityID);
 
+	// Given entity and his rigidbody, we recreate a shape according to what colliders it has.
+	JPH::ScaledShape* recreateScaledShape(entt::entity entity, Transform const& transform, Rigidbody& rigidbody);
 
 private:
 	// we use a placeholder data member to invoke certain functions before the construction of the following Jolt data members.

@@ -53,7 +53,7 @@ void Hierarchy::displayHierarchyWindow() {
 				continue;
 			}
 
-			editor.displayEntityHierarchy(ecs.registry, entity, true,
+			editor.displayEntityHierarchy(ecs.registry, entity, true, "HIERARCHY_ITEM",
 				[&](std::vector<entt::entity> const& entities) {
 					editor.selectEntities(entities);
 				},
@@ -72,7 +72,7 @@ void Hierarchy::displayHierarchyWindow() {
 				continue;
 			}
 
-			editor.displayEntityHierarchy(ecs.registry, entity, false,
+			editor.displayEntityHierarchy(ecs.registry, entity, false, "HIERARCHY_ITEM",
 				[&](std::vector<entt::entity> const& entities) {
 					editor.selectEntities(entities);
 				},

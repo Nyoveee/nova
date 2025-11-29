@@ -17,6 +17,7 @@ class Sniper : Gun
     private Vector3 startPosition;
     private Vector3 backPosition;
 
+
     protected override void update()
     {
         if (!onCooldown)
@@ -46,7 +47,7 @@ class Sniper : Gun
         }
         else
         {
-            timeElapsed += Time.V_FixedDeltaTime();
+            timeElapsed += Time.V_DeltaTime();
         }
     }
 
@@ -60,6 +61,8 @@ class Sniper : Gun
 
         onCooldown = true;
         isRecoiling = true;
+        currentAmmo--;
+
 
         AudioAPI.PlaySound(gameObject, "Sniper Fire SFX");
 

@@ -104,6 +104,19 @@ inline Json serializeToJson(DataMemberType const& dataMember) {
 
 	return json;
 }
+
+//struct
+template <isStruct DataMemberType>
+inline Json serializeToJson(DataMemberType const& dataMember) {
+	Json json;
+
+	json["prefabEntity"] = serializeToJson(dataMember.prefabEntity);
+	json["prefabID"] = serializeToJson(dataMember.prefabID);
+
+	return json;
+}
+
+
 template <isUnorderedSet DataMemberType>
 inline Json serializeToJson(DataMemberType const& dataMember) {
 	Json jsonArray;
@@ -137,11 +150,13 @@ inline Json serializeToJson<NormalizedFloat>(NormalizedFloat const& dataMember) 
 	return static_cast<float>(dataMember);
 }
 
+#if false
 // serialize field list is literally just a vector..
 template<>
 inline Json serializeToJson<serialized_field_list>(serialized_field_list const& dataMember) {
 	return serializeToJson(static_cast<std::vector<serialized_field_type> const&>(dataMember));
 }
+#endif
 
 template<>
 inline Json serializeToJson<glm::vec2>(glm::vec2 const& dataMember) {

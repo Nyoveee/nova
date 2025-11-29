@@ -125,7 +125,7 @@ inline void DisplayProperty<double>(Editor&, const char* dataMemberName, double&
 
 template<>
 inline void DisplayProperty<float>(Editor&, const char* dataMemberName, float& dataMember) {
-	ImGui::InputFloat(dataMemberName, &dataMember);
+	ImGui::DragFloat(dataMemberName, &dataMember);
 }
 
 template<>
@@ -214,13 +214,13 @@ inline void DisplayProperty<EulerAngles>(Editor&, const char* dataMemberName, Eu
 		ImGui::Text((std::string{ dataMemberName } + "\n(degrees)").c_str());
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("pitch", &eulerAngles.x);
+		ImGui::DragFloat("pitch", &eulerAngles.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("yaw", &eulerAngles.y);
+		ImGui::DragFloat("yaw", &eulerAngles.y);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("roll", &eulerAngles.z);
+		ImGui::DragFloat("roll", &eulerAngles.z);
 
 		ImGui::EndTable();
 	}
@@ -267,16 +267,16 @@ inline void DisplayProperty<glm::vec4>(Editor&, const char* dataMemberName, glm:
 
 		ImGui::BeginDisabled();
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("x", &dataMember.x);
+		ImGui::DragFloat("x", &dataMember.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("y", &dataMember.y);
+		ImGui::DragFloat("y", &dataMember.y);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("z", &dataMember.z);
+		ImGui::DragFloat("z", &dataMember.z);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("w", &dataMember.w);
+		ImGui::DragFloat("w", &dataMember.w);
 		ImGui::EndDisabled();
 
 		ImGui::EndTable();
@@ -296,13 +296,13 @@ inline void DisplayProperty<glm::vec3>(Editor&, const char* dataMemberName, glm:
 		ImGui::Text(dataMemberName);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("x", &dataMember.x);
+		ImGui::DragFloat("x", &dataMember.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("y", &dataMember.y);
+		ImGui::DragFloat("y", &dataMember.y);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("z", &dataMember.z);
+		ImGui::DragFloat("z", &dataMember.z);
 
 		ImGui::EndTable();
 	}
@@ -322,18 +322,20 @@ inline void DisplayProperty<glm::vec2>(Editor&, const char* dataMemberName, glm:
 		ImGui::Text(dataMemberName);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("x", &dataMember.x);
+		ImGui::DragFloat("x", &dataMember.x);
 
 		ImGui::TableNextColumn();
-		ImGui::InputFloat("y", &dataMember.y);
+		ImGui::DragFloat("y", &dataMember.y);
 
 		ImGui::EndTable();
 	}
 }
 
 template<>
-inline void DisplayProperty<entt::entity>(Editor&, const char* dataMemberName, entt::entity& dataMember) {
-	ImGui::Text("%s: %u", dataMemberName, dataMember);
+inline void DisplayProperty<entt::entity>(Editor& editor, const char* dataMemberName, entt::entity& dataMember) {
+	editor.displayAllEntitiesDropDownList(dataMemberName, dataMember, [&](entt::entity newEntity) {
+		dataMember = newEntity;
+	});
 }
 
 /***************************************************************************************
@@ -353,7 +355,7 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 		}
 	}
 
-	ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || editor.engine.isInSimulationMode());
+	//ImGui::BeginDisabled(scriptingAPIManager.isNotCompiled() || editor.engine.isInSimulationMode());
 
 	// Adding Scripts
 	editor.componentInspector.displayAvailableScriptDropDownList(scriptDatas, [&](ResourceID resourceId) {
@@ -386,7 +388,7 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 	if (it != std::end(scriptDatas)) {
 		scriptDatas.erase(it);
 	}
-	ImGui::EndDisabled();
+	//ImGui::EndDisabled();
 }
 
 template<>
@@ -489,14 +491,13 @@ inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const
 }
 
 template<>
-inline void DisplayProperty<ParticleColorSelection>(Editor& editor, const char* dataMemberName, ParticleColorSelection& dataMember) {
-	DisplayProperty<bool>(editor, "Randomized Color", dataMember.randomizedColor);
-
-	if (!dataMember.randomizedColor) {
-		ImGui::BeginChild("", ImVec2(0, 75), ImGuiChildFlags_Border);
-		DisplayProperty<ColorA>(editor, dataMemberName, dataMember.color);
-		ImGui::EndChild();
-	}
+inline void DisplayProperty<ParticleColorSelection>(Editor& editor, const char*, ParticleColorSelection& dataMember) {
+	ImGui::BeginChild("Particle Color", ImVec2(0, 200), ImGuiChildFlags_Border);
+	DisplayProperty<ColorA>(editor, "Color", dataMember.color);
+	DisplayProperty<glm::vec3>(editor, "Color Offset Min", dataMember.colorOffsetMin);
+	DisplayProperty<glm::vec3>(editor, "Color Offset Max", dataMember.colorOffsetMax);
+	DisplayProperty<float>(editor, "Emissive Multiplier", dataMember.emissiveMultiplier);
+	ImGui::EndChild();
 }
 
 template<>
@@ -526,11 +527,14 @@ template<>
 inline void DisplayProperty<Trails>(Editor& editor, const char* dataMemberName, Trails& dataMember) {
 	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
 	if (dataMember.selected) {
-		ImGui::BeginChild("", ImVec2(0, 175), ImGuiChildFlags_Border);
+		ImGui::BeginChild("", ImVec2(0, 300), ImGuiChildFlags_Border);
 		DisplayProperty<TypedResourceID<Texture>>(editor, "Trail Texture", dataMember.trailTexture);
 		DisplayProperty<float>(editor, "Distance Per Emission", dataMember.distancePerEmission);
 		DisplayProperty<float>(editor, "Trail Size", dataMember.trailSize);
 		DisplayProperty<ColorA>(editor, "Trail Color", dataMember.trailColor);
+		DisplayProperty<glm::vec3>(editor, "Color Offset Min", dataMember.trailColorOffsetMin);
+		DisplayProperty<glm::vec3>(editor, "Color Offset Max", dataMember.trailColorOffsetMax);
+		DisplayProperty<float>(editor, "Trail Color Emissive Multiplier", dataMember.trailEmissiveMultiplier);
 		ImGui::EndChild();
 	}
 }
@@ -549,23 +553,22 @@ inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& edit
 }
 
 template<>
+inline void DisplayProperty<EntityScript>(Editor& editor, const char*, EntityScript& dataMember) {
+	DisplayProperty<entt::entity>(editor, "entity", dataMember.entity);
+	editor.displayEntityScriptDropDownList(static_cast<ResourceID>(dataMember.script), "script", dataMember.entity, [&](ResourceID selectedScript) {
+		dataMember.script = TypedResourceID<ScriptAsset>{ selectedScript };
+	});
+}
+
+template<>
 inline void DisplayProperty<serialized_field_type>(Editor& editor, const char* dataMemberName, serialized_field_type& dataMember) {
 	// Set the field data	
 	std::visit([&](auto&& dataMember) {
 		using FieldType = std::decay_t<decltype(dataMember)>;
 
-		// Specializations
-		if constexpr (std::is_same_v<FieldType, entt::entity>) {
-			editor.displayAllEntitiesDropDownList(dataMemberName, dataMember, [&](entt::entity newEntity) {
-				dataMember = newEntity;
-			});
-			return;
-		}
-		else
-		{
-			// Generalization
-			DisplayProperty<FieldType>(editor, dataMemberName, dataMember);
-		}
+		// Generalization
+		DisplayProperty<FieldType>(editor, dataMemberName, dataMember);
+		
 	}, dataMember);
 }
 

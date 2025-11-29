@@ -98,12 +98,12 @@ void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId
 	Script^ script = gameObjectScripts[entityID][scriptId];
 	System::Type^ scriptType = script->GetType();
 
-	try {
-		System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+	System::Reflection::MethodInfo^ function = scriptType->GetMethod(functionName);
+	if (function) {
 		function->Invoke(script, nullptr);
 	}
-	catch (System::Exception^ ex) {
-		Logger::warn("Error when invoking function name {} of script id {} of entity {}", msclr::interop::marshal_as<std::string>(ex->ToString()), scriptId, entityID);
+	else {
+		Logger::warn("Error when invoking function name {} of script id {} of entity {}", name, scriptId, entityID);
 	}
 }
 
@@ -111,10 +111,15 @@ void Interface::submitGameObjectDeleteRequest(EntityID entityToBeDeleted) {
 	deleteGameObjectQueue.Enqueue(entityToBeDeleted);
 }
 
+void Interface::changeSceneRequest(ScriptingAPI::Scene^ newScene) {
+	newSceneToChangeTo = newScene;
+}
+
 void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 	Transform& transform = Interface::engine->ecs.registry.get<Transform>(entity);
 	EntityData& entityData = Interface::engine->ecs.registry.get<EntityData>(entity);
 
+	transform.needsRecalculating = true;
 	engine->transformationSystem.updateLocalMatrix(transform);
 	engine->transformationSystem.recalculateModelMatrix(entity);
 
@@ -156,8 +161,9 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 			Interface::initializeScript(script);
 	}
 
+
 	for (auto&& child : entityData.children) {
-		recursivelyInitialiseEntity(child);	
+		recursivelyInitialiseEntity(child);
 	}
 }
 
@@ -497,6 +503,117 @@ std::unordered_set<ResourceID> Interface::GetHierarchyModifiedScripts(ScriptID s
 
 void Interface::update() {
 	try {
+		// only execute scripts and logic if engine is not paused.
+		if (!engine->isPaused) {
+			for each (System::UInt32 entityID in gameObjectScripts->Keys) {
+				for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+					EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
+					if (!entityData.isActive || entityData.inactiveComponents.count(typeid(Scripts).hash_code())) {
+						continue;
+					};
+
+					Script^ script = gameObjectScripts[entityID][scriptID];
+					script->callUpdate();
+				}
+			}
+
+			// Handle timeout delegates..
+			// Check if timeout expires..
+			for each (TimeoutDelegate ^ delegate in timeoutDelegates) {
+				if (delegate->timeElapsed >= delegate->duration) {
+					executeTimeoutDelegates->Add(delegate);
+				}
+
+				delegate->timeElapsed += Time::V_FixedDeltaTime();
+			}
+
+			// Execute delegate, then remove from the list..
+			for each (TimeoutDelegate ^ delegate in executeTimeoutDelegates) {
+				delegate->callback();
+				timeoutDelegates->Remove(delegate);
+			}
+
+			executeTimeoutDelegates->Clear();
+
+			// Check the create game object queue to handle any game object request at the end of the frame..
+			for each (System::Collections::Generic::KeyValuePair<EntityID, ScriptDictionary^> ^ kvp1 in createdGameObjectScripts) {
+				for each (System::Collections::Generic::KeyValuePair<ScriptID, Script^> ^ kvp2 in kvp1->Value) {
+					EntityID entityID = kvp1->Key;
+					ScriptID scriptID = kvp2->Key;
+
+					if (!gameObjectScripts->ContainsKey(entityID))
+						gameObjectScripts[entityID] = gcnew ScriptDictionary();
+
+					gameObjectScripts[entityID][scriptID] = kvp2->Value;
+				}
+			}
+
+			createdGameObjectScripts->Clear();
+
+			// Check the delete game object queue to handle any deletion request at the end of the frame..
+			while (deleteGameObjectQueue.Count != 0) {
+				EntityID entityToRemove = deleteGameObjectQueue.Dequeue();
+				// remove from ECS registry..
+				engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
+				// shouldn't really happen but just in case..
+				if (!gameObjectScripts->ContainsKey(entityToRemove)) {
+					continue;
+				}
+
+				for each (Script ^ script in gameObjectScripts[entityToRemove]->Values) {
+					// invokes the exit function before removing it..
+					script->callExit();
+
+					// unsubscribe from input manager..
+					for each (std::size_t observerId in script->scriptObserverIds) {
+						engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
+					}
+
+					for each (std::size_t observerId in script->mouseMoveObserverIds) {
+						engine->inputManager.unsubscribe<MousePosition>(ObserverID{ observerId });
+					}
+
+					for each (std::size_t observerId in script->mouseScrollObserverIds) {
+						engine->inputManager.unsubscribe<Scroll>(ObserverID{ observerId });
+					}
+				}
+
+				// removes it..
+				gameObjectScripts[entityToRemove]->Clear();
+			}
+		}
+
+		// Handle change scene request.
+		if (newSceneToChangeTo) {
+			if (!engine->resourceManager.isResource<Scene>(newSceneToChangeTo->getId())) {
+				Logger::error("Change scene failed. Invalid Scene ID.");
+				newSceneToChangeTo = nullptr;
+				return;
+			}
+
+			// We clear everything..
+			clearAllRuntime();
+			
+			// We change scene in ECS..
+			// This loads all system again..
+			engine->ecs.sceneManager.loadScene(newSceneToChangeTo->getId());
+
+			newSceneToChangeTo = nullptr;
+		}
+
+	}
+	catch (System::Exception^ exception) {
+		Logger::error("{}", Convert(exception->ToString()));		
+		Interface::engine->stopSimulation();
+	}
+}
+
+void Interface::fixedUpdate() {
+	if (engine->isPaused) {
+		return;
+	}
+
+	try {
 		for each (System::UInt32 entityID in gameObjectScripts->Keys) {
 			for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
 				EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
@@ -505,81 +622,15 @@ void Interface::update() {
 				};
 
 				Script^ script = gameObjectScripts[entityID][scriptID];
-				script->callUpdate();
+				script->callFixedUpdate();
 			}
-		}
-
-		// Handle timeout delegates..
-		// Check if timeout expires..
-		for each (TimeoutDelegate ^ delegate in timeoutDelegates) {
-			if (delegate->timeElapsed >= delegate->duration) {
-				executeTimeoutDelegates->Add(delegate);
-			}
-
-			delegate->timeElapsed += Time::V_FixedDeltaTime();
-		}
-
-		// Execute delegate, then remove from the list..
-		for each (TimeoutDelegate ^ delegate in executeTimeoutDelegates) {
-			delegate->callback();
-			timeoutDelegates->Remove(delegate);
-		}
-
-		executeTimeoutDelegates->Clear();
-
-		// Check the create game object queue to handle any game object request at the end of the frame..
-		for each (System::Collections::Generic::KeyValuePair<EntityID, ScriptDictionary^> ^ kvp1 in createdGameObjectScripts) {
-			for each (System::Collections::Generic::KeyValuePair<ScriptID, Script^> ^ kvp2 in kvp1->Value) {
-				EntityID entityID = kvp1->Key;
-				ScriptID scriptID = kvp2->Key;
-
-				if (!gameObjectScripts->ContainsKey(entityID))
-					gameObjectScripts[entityID] = gcnew ScriptDictionary();
-
-				gameObjectScripts[entityID][scriptID] = kvp2->Value;
-			}
-		}
-
-		createdGameObjectScripts->Clear();
-
-		// Check the delete game object queue to handle any deletion request at the end of the frame..
-		while (deleteGameObjectQueue.Count != 0) {
-			EntityID entityToRemove = deleteGameObjectQueue.Dequeue();
-			// remove from ECS registry..
-			engine->ecs.deleteEntity(static_cast<entt::entity>(entityToRemove));
-			// shouldn't really happen but just in case..
-			if (!gameObjectScripts->ContainsKey(entityToRemove)) {
-				continue;
-			}
-
-			for each (Script ^ script in gameObjectScripts[entityToRemove]->Values) {
-				// invokes the exit function before removing it..
-				script->callExit();
-
-				// unsubscribe from input manager..
-				for each (std::size_t observerId in script->scriptObserverIds) {
-					engine->inputManager.unsubscribe<ScriptingInputEvents>(ObserverID{ observerId });
-				}
-
-				for each (std::size_t observerId in script->mouseMoveObserverIds) {
-					engine->inputManager.unsubscribe<MousePosition>(ObserverID{ observerId });
-				}
-
-				for each (std::size_t observerId in script->mouseScrollObserverIds) {
-					engine->inputManager.unsubscribe<Scroll>(ObserverID{ observerId });
-				}
-			}
-
-			// removes it..
-			gameObjectScripts[entityToRemove]->Clear();
 		}
 	}
 	catch (System::Exception^ exception) {
-		Logger::error("{}", Convert(exception->ToString()));		
+		Logger::error("{}", Convert(exception->ToString()));
 		Interface::engine->stopSimulation();
 	}
 }
-
 
 void Interface::removeEntity(EntityID entityID)
 {
@@ -681,21 +732,14 @@ void Interface::unloadAssembly()
 	if (!assemblyLoadContext)
 		return;
 
-	// Clear existing scripts
-	if (gameObjectScripts)	
-		gameObjectScripts->Clear();
+	clearAllRuntime();
+
+	// non runtime containers..
 	if (availableScripts)
 		availableScripts->Clear();
+
 	if (abstractScriptTypes)
 		abstractScriptTypes->Clear();
-	if (timeoutDelegates)
-		timeoutDelegates->Clear();
-	if (executeTimeoutDelegates)
-		executeTimeoutDelegates->Clear();
-	deleteGameObjectQueue.Clear();
-	
-	// Clear all input mapping..
-	Input::ClearAllKeyMapping();
 
 	// Unload the assembly
 	assemblyLoadContext->Unload();
@@ -705,4 +749,22 @@ void Interface::unloadAssembly()
 	System::GC::Collect();
 	// Wait from assembly to finish unloading
 	System::GC::WaitForPendingFinalizers();
+}
+
+void Interface::clearAllRuntime() {
+	// Clear existing scripts
+	if (gameObjectScripts)
+		gameObjectScripts->Clear();
+
+	if (timeoutDelegates)
+		timeoutDelegates->Clear();
+	if (executeTimeoutDelegates)
+		executeTimeoutDelegates->Clear();
+	if (createdGameObjectScripts)
+		createdGameObjectScripts->Clear();
+
+	deleteGameObjectQueue.Clear();
+
+	// Clear all input mapping..
+	Input::ClearAllKeyMapping();
 }

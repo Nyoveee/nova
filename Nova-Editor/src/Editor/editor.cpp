@@ -173,9 +173,37 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 		}
 	);
 
+	inputManager.subscribe<ScriptCompilationStatus>(
+		[&](ScriptCompilationStatus status) {
+			if (status == ScriptCompilationStatus::Failure) {
+				editorViewPort.controlOverlay.setNotification("Script compilation has failed!", FOREVER);
+			}
+			else {
+				editorViewPort.controlOverlay.clearNotification();
+			}
+		}
+	);
+
 	if (engine.ecs.sceneManager.hasNoSceneSelected()) {
 		editorViewPort.controlOverlay.setNotification("No scene selected. Select a scene from the content browser.", FOREVER);
 	}
+
+#if false
+	//check if there is a prefab in the scene, if there is, update the prefabManager
+	// entt::registry& prefabRegistry = engine.prefabManager.getPrefabRegistry();
+	std::unordered_map<ResourceID, entt::entity> prefabMap = engine.prefabManager.getPrefabMap();
+
+	entt::registry& registry = engine.ecs.registry;
+	for (entt::entity entity : registry.view<entt::entity>()) {
+		EntityData* entityData = registry.try_get<EntityData>(entity);
+		if (entityData->prefabID != INVALID_RESOURCE_ID) {
+
+			if (prefabMap.find(entityData->prefabID) == prefabMap.end()) {
+				engine.prefabManager.loadPrefab(entityData->prefabID);
+			}
+		}
+	}
+#endif
 }
 
 void Editor::update(float dt) {
@@ -236,9 +264,6 @@ void Editor::deleteEntity(entt::entity entity) {
 		return;
 	}
 
-	ImGuizmo::Enable(false);
-	ImGuizmo::Enable(true);
-
 	engine.ecs.deleteEntity(entity);
 }
 
@@ -246,9 +271,6 @@ void Editor::deleteEntity(entt::entity entity) {
 void Editor::main(float dt) {
 	// Verify the validity of selected and hovered entities.
 	handleEntityValidity();
-
-	//
-	//ImGui::ShowDemoWindow();
 	
 	gameViewPort.update(dt);
 	editorViewPort.update(dt);
@@ -263,6 +285,8 @@ void Editor::main(float dt) {
 	editorConfigUI.update();
 
 	handleEntityHovering();
+
+	engine.renderer.submitSelectedObjects(selectedEntities);
 }
 
 void Editor::toggleViewPortControl(bool toControl) {
@@ -511,7 +535,14 @@ void Editor::displayEntityScriptDropDownList(ResourceID id, const char* labelNam
 }
 
 void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity selectedEntity, std::function<void(entt::entity)> const& onClickCallback) {
-	entt::registry& registry = engine.ecs.registry;
+	entt::registry& registry = [&]() -> entt::registry& {
+		if (displayingPrefabScripts) {
+			return engine.prefabManager.getPrefabRegistry();
+		}
+		else {
+			return engine.ecs.registry;
+		}
+	}();
 
 	ImGui::PushID(++imguiCounter);
 
@@ -557,9 +588,18 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 	}
 
 	if (ImGui::BeginDragDropTarget()) {
-		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
-			onClickCallback(*((entt::entity*)payload->Data));
+
+		if (displayingPrefabScripts) {
+			if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("PREFAB_HIERARCHY_ITEM")) {
+				onClickCallback(*((entt::entity*)payload->Data));
+			}
 		}
+		else {
+			if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+				onClickCallback(*((entt::entity*)payload->Data));
+			}
+		}
+
 		ImGui::EndDragDropTarget();
 	}
 
@@ -636,7 +676,14 @@ bool Editor::isInSimulationMode() const {
 	return inSimulationMode;
 }
 
-void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entity, bool toRecurse, std::function<void(std::vector<entt::entity>)> const& onClickFunction, std::function<bool(entt::entity)> const& selectedPredicate) {
+void Editor::displayEntityHierarchy(
+	entt::registry& registry,
+	entt::entity entity,
+	bool toRecurse,
+	const char* dragAndDropIdentifier,
+	std::function<void(std::vector<entt::entity>)> const& onClickFunction,
+	std::function<bool(entt::entity)> const& selectedPredicate
+) {
 	constexpr ImVec4 prefabColor = ImVec4(0.5f, 1.f, 1.f, 1.f);
 	constexpr ImVec4 grayColor = ImVec4(0.5f, 0.5f, 0.5f, 1.f);
 	constexpr ImVec4 whiteColor = ImVec4(1.f, 1.f, 1.f, 1.f);
@@ -727,7 +774,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 	// I want my widgets to be draggable, providing the entity id as the payload.
 	if (ImGui::BeginDragDropSource()) {
-		ImGui::SetDragDropPayload("HIERARCHY_ITEM", &entity, sizeof(entt::entity*));
+		ImGui::SetDragDropPayload(dragAndDropIdentifier, &entity, sizeof(entt::entity*));
 
 		// Draw tooltip-style preview while dragging
 		ImGui::Text(entityData.name.c_str());
@@ -737,9 +784,9 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 
 	// I want all my widgets to be a valid drop target.
 	if (ImGui::BeginDragDropTarget()) {
-		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload(dragAndDropIdentifier)) {
 			entt::entity childEntity = *((entt::entity*)payload->Data);
-			engine.ecs.setEntityParent(childEntity, entity);
+			engine.ecs.setEntityParent(childEntity, entity, false, registry);
 		}
 
 		ImGui::EndDragDropTarget();
@@ -750,7 +797,7 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 	// recursively displays tree hierarchy..
 	if (toDisplayTreeNode) {
 		for (entt::entity child : entityData.children) {
-			displayEntityHierarchy(registry, child, toRecurse, onClickFunction, selectedPredicate);
+			displayEntityHierarchy(registry, child, toRecurse, dragAndDropIdentifier, onClickFunction, selectedPredicate);
 		}
 
 		ImGui::TreePop();
@@ -758,6 +805,10 @@ void Editor::displayEntityHierarchy(entt::registry& registry, entt::entity entit
 }
 
 void Editor::loadScene(ResourceID sceneId) {
+	if (engine.isInSimulationMode()) {
+		return;
+	}
+
 	AssetFilePath const* filePath = assetManager.getFilepath(engine.ecs.sceneManager.getCurrentScene());
 
 	if (filePath) {
@@ -766,6 +817,8 @@ void Editor::loadScene(ResourceID sceneId) {
 
 	engine.ecs.sceneManager.loadScene(sceneId);
 	editorViewPort.controlOverlay.clearNotification();
+
+	// engine.prefabManager.prefabBroadcast();
 
 	// deselect entity.
 	selectEntities({});
@@ -800,7 +853,7 @@ Editor::~Editor() {
 			auto descriptor = assetManager.getDescriptor(pair.first);
 			if (descriptor != nullptr) {
 				std::ofstream assetFile{ descriptor->filepath.string};
-				Serialiser::serialisePrefab(prefabRegistry, pair.second, assetFile, std::numeric_limits<std::size_t>::max());
+				Serialiser::serialisePrefab(prefabRegistry, pair.second, assetFile);
 			}
 		}
 	}

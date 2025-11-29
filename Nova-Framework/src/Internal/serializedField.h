@@ -11,6 +11,7 @@
 #include "type_alias.h"
 #include "reflection.h"
 #include "physics.h"
+#include "AdditionalNavigationTypes.h"
 
 class Prefab;
 class Model;
@@ -20,6 +21,7 @@ class ScriptAsset;
 class Audio;
 class Material;
 class Sequencer;
+class Scene;
 
 // ============================
 // Here we list all the possible types our serialized field can have..
@@ -30,12 +32,12 @@ class Sequencer;
 #endif
 
 #define ALL_TYPED_RESOURCE_ID \
-	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>
+	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>, TypedResourceID<Scene>
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
-		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	std::string,	\
-		ALL_TYPED_RESOURCE_ID,																						\
+		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	std::string, navMeshOfflinkData,	\
+		ALL_TYPED_RESOURCE_ID,																											\
 		ALL_FIELD_PRIMITIVES
 #endif
 
@@ -52,7 +54,7 @@ using serialized_field_type = std::variant<
 template <std::size_t I = 0>
 serialized_field_type default_construct_serialized_field_type(std::size_t index);
 
-struct serialized_field_list : public std::vector<serialized_field_type> {
+struct serialized_field_list {
 	serialized_field_list() = default;
 
 	void setIndex(int p_index) {
@@ -67,18 +69,18 @@ struct serialized_field_list : public std::vector<serialized_field_type> {
 			return;
 		}
 		
-		std::vector<serialized_field_type>::push_back(value);
+		list.push_back(value);
 	}
 
 	// i wanna hide the base class's resize.
 	void resize(std::size_t newSize) {
-		if (size() > newSize) {
-			std::vector<serialized_field_type>::resize(newSize);
+		if (list.size() > newSize) {
+			list.resize(newSize);
 		}
 		else {
-			reserve(newSize);
+			list.reserve(newSize);
 
-			while (size() < newSize) {
+			while (list.size() < newSize) {
 				push_back_default_construct();
 			}
 		}
@@ -88,13 +90,28 @@ struct serialized_field_list : public std::vector<serialized_field_type> {
 		return index;
 	}
 
+public:
+	// iterators..
+	auto begin()		{ return list.begin(); }
+	auto begin() const	{ return list.begin(); }
+	auto end()			{ return list.end(); }
+	auto end() const	{ return list.end(); }
+	
+	auto size() const	{ return list.size(); }
 private:
 	void push_back_default_construct() {
 		assert(index != -1 && "Invalid serialized list.");
-		std::vector<serialized_field_type>::push_back(default_construct_serialized_field_type(index));
+		list.push_back(default_construct_serialized_field_type(index));
 	}
 
+private:
+	std::vector<serialized_field_type> list;
 	int index = -1;
+
+	REFLECTABLE(
+		list,
+		index
+	)
 };
 
 // ====================================================================================

@@ -20,12 +20,18 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "StompHitBox",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 16070990181531303937,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 16070990181531303937
+                },
                 "tag": "EnemyHitBox"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -37,7 +43,8 @@
                 "layer": "Moving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Kinematic"
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -91,8 +98,8 @@
                     "z": 1.0
                 }
             },
-            "id": 29
+            "id": 31
         }
     ],
-    "RootEntity": 29
+    "RootEntity": 31
 }

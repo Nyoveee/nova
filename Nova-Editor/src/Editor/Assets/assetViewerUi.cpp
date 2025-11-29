@@ -96,6 +96,14 @@ void AssetViewerUI::update() {
 	};
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
+
+	if (selectedResourceExtension == ".prefab") {
+		if (ImGui::Button("BroadCast")) {
+			editor.engine.prefabManager.prefabBroadcast();
+		}
+	}
+
+
 	ImGui::End();
 #endif
 }
@@ -128,6 +136,36 @@ void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_
 
 	Logger::info("Successfully updated script name.");
 }
+
+//void AssetViewerUI::broadcast() {
+//	entt::registry& ecsRegistry = editor.engine.ecs.registry;
+//	entt::registry& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
+//	std::unordered_map<ResourceID, entt::entity> prefabMap = editor.engine.prefabManager.getPrefabMap();
+//	entt::entity prefabEntity = prefabMap[selectedResourceId];
+//
+//	// find entities with the same prefabID
+//	for (entt::entity en : ecsRegistry.view<entt::entity>()) {
+//		EntityData* entityData = ecsRegistry.try_get<EntityData>(en);
+//		EntityData* prefabData = prefabRegistry.try_get<EntityData>(prefabEntity);
+//		if ((entityData->prefabID == selectedResourceId) && (entityData->name == prefabData->name)) {
+//			updateComponents<ALL_COMPONENTS>(ecsRegistry, prefabRegistry, en, prefabEntity);
+//		}
+//	}
+//}
+//template<typename ...Components>
+//void AssetViewerUI::updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity) {
+//
+//	([&]() {
+//		if (!std::is_same<EntityData, Components>::value) {
+//			auto* component = prefabRegistry.try_get<Components>(prefabEntity);
+//
+//			if (component) {
+//				auto* entityComponent = ecsRegistry.try_get<Components>(entity);
+//				*entityComponent = *component;
+//			}
+//		}
+//	}(), ...);
+//}
 
 void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	selectedResourceId = id;
@@ -608,10 +646,14 @@ void AssetViewerUI::displayFontInfo(AssetInfo<Font>& descriptor) {
 void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descriptor) {
 	auto&& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
 
-	if (ImGui::TreeNode("Prefab Hierarchy")) {
+	//if (ImGui::Button("BroadCast")) {
+	//	editor.engine.prefabManager.prefabBroadcast();
+	//}
+
+	if (ImGui::TreeNodeEx("Prefab Hierarchy", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::BeginChild("##Prefab", ImVec2(0.f, 0.f), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
 		
-		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, true,
+		editor.displayEntityHierarchy(prefabRegistry, rootPrefabEntity, true, "PREFAB_HIERARCHY_ITEM",
 			[&](std::vector<entt::entity> entities) {
 				if (entities.empty()) {
 					return;
@@ -629,7 +671,38 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 	}
 
 	ImGui::Separator();
-	g_displayComponentFunctor(editor, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
+	
+	// Display entity data..
+	EntityData* prefabEntityData = prefabRegistry.try_get<EntityData>(selectedPrefabEntity);
+
+	if (!prefabEntityData) {
+		ImGui::Text("Invalid entity!");
+		return;
+	}
+
+	if (ImGui::CollapsingHeader("Prefab Data")) {
+		ImGui::InputText("Name", &prefabEntityData->name);
+
+		ImGui::Text("Prefab Entity ID: %u", static_cast<unsigned>(selectedPrefabEntity));
+		ImGui::Text("Parent: %s", prefabEntityData->parent == entt::null ? "None" : prefabRegistry.get<EntityData>(prefabEntityData->parent).name.c_str());
+
+		ImGui::Text("Direct children: ");
+
+		ImGui::BeginChild("Direct children", ImVec2{ 0.f, 70.f }, ImGuiChildFlags_Borders);
+		for (entt::entity child : prefabEntityData->children) {
+			ImGui::BulletText(prefabRegistry.get<EntityData>(child).name.c_str());
+		}
+
+		ImGui::EndChild();
+
+		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(prefabEntityData->prefabID));
+	}
+
+	editor.displayingPrefabScripts = true;
+	g_displayComponentFunctor(editor, selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry(), false);
+	editor.displayingPrefabScripts = false;
+
+	editor.componentInspector.displayComponentDropDownList<ALL_COMPONENTS>(selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
 }
 
 void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {

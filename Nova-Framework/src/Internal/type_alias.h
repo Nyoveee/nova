@@ -59,6 +59,10 @@ struct Color {
 	constexpr float b() const;
 
 	constexpr operator glm::vec3() const;
+
+public:
+	constexpr friend Color operator*(Color const& lhs, Color const& rhs);
+
 private:
 	glm::vec3 color;
 };
@@ -76,6 +80,10 @@ struct ColorA {
 	constexpr operator glm::vec4() const;
 	constexpr explicit operator glm::vec3() const;
 	constexpr explicit operator Color() const;
+
+public:
+	constexpr friend ColorA operator*(ColorA const& lhs, ColorA const& rhs);
+
 private:
 	glm::vec4 color;
 };
@@ -308,5 +316,43 @@ struct ResourceFilePath {
 public:
 	std::string string;
 };
+
+// ========================================
+// Entity IDs
+// (The different type of entity ids were way too confusing to keep track)
+// 
+// - Entity ID that lives in the prefab file.
+// - Entity ID that lives in the prefab registry.
+// 
+// We use entt::entity to refer to entity id in our main ECS registry.
+// ========================================
+
+#if false
+struct PrefabFileEntityID {
+	constexpr PrefabFileEntityID();
+	constexpr PrefabFileEntityID(unsigned id);
+
+	constexpr operator unsigned() const;
+
+	constexpr friend bool operator==(PrefabFileEntityID const& lhs, PrefabFileEntityID const& rhs);
+	friend struct std::hash<PrefabFileEntityID>;
+
+public:
+	unsigned id;
+};
+
+struct PrefabRegistryEntityID {
+	constexpr PrefabRegistryEntityID();
+	constexpr PrefabRegistryEntityID(unsigned id);
+
+	constexpr operator unsigned() const;
+
+	constexpr friend bool operator==(PrefabRegistryEntityID const& lhs, PrefabRegistryEntityID  const& rhs);
+	friend struct std::hash<PrefabRegistryEntityID>;
+
+public:
+	unsigned id;
+};
+#endif
 
 #include "type_alias.ipp"

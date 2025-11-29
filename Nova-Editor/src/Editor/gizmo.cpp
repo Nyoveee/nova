@@ -47,8 +47,9 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 
 	// Early exit depending on whether selected entities has ui components
 	const std::vector<entt::entity>& selectedEntities = editor.getSelectedEntities();
+
 	for (entt::entity entity : selectedEntities) {
-		if (ecs.registry.any_of<Image, Text>(entity)) {
+		if (ecs.isParentCanvas(entity)) {
 			if (!isUI) {
 				return;
 			}
@@ -70,7 +71,6 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 	}
 
 	ImGuizmo::SetOrthographic(isUI);
-	ImGuizmo::MODE mode = ImGuizmo::WORLD;
 	glm::mat4 viewMat;
 	glm::mat4 projMat;
 

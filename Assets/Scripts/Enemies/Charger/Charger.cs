@@ -21,6 +21,8 @@ class Charger : Enemy
     private Rigidbody_? navMeshRigidbody;
     [SerializableField]
     private ParticleEmitter_? emitter;
+    [SerializableField]
+    private GameObject? chargeLines;
 
     /***********************************************************
         Local Variables
@@ -41,12 +43,14 @@ class Charger : Enemy
     // State machine
     private enum ChargerState
     {
+        Spawning,
         Idle,
         Walk,
         Charging,
         Attack,
         Stagger,
         Stomp,
+        Jump,
         Death
     }
     private ChargerState chargerState = ChargerState.Idle;
@@ -64,9 +68,15 @@ class Charger : Enemy
         updateState.Add(ChargerState.Attack, Update_Attack);
         updateState.Add(ChargerState.Stagger, Update_Stagger);
         updateState.Add(ChargerState.Stomp, Update_Stomp);
+        updateState.Add(ChargerState.Jump, Update_Jump);
         updateState.Add(ChargerState.Death, Update_Death);
+
+        // spawning afk...
+        updateState.Add(ChargerState.Spawning, () => { });
+        
         ActivateNavMeshAgent();
     }
+
     protected override void update() {
         updateState[chargerState](); 
     }
@@ -90,22 +100,89 @@ class Charger : Enemy
     /***********************************************************
         Inherited Functions
     ***********************************************************/
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
-        chargerstats.health -= damage;
-        if (chargerstats.health <= 0)
+
+        if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
-            if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
-                SpawnIchor();
-            chargerState = ChargerState.Death;
-            animator.PlayAnimation("ChargerDeath");
-            AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-            NavigationAPI.stopAgent(gameObject);
-            chargingRigidbody.enable = false;
-            navMeshRigidbody.enable = false;
-            navMeshAgent.enable = false;
+            if (colliderTag == "Enemy_ArmouredSpot")
+            {
+                damage *= chargerstats.enemyArmouredMultiplier;
+
+            }
+            if (colliderTag == "Enemy_WeakSpot")
+            {
+                damage *= chargerstats.enemyWeakSpotMultiplier;
+
+            }
+
+
+            chargerstats.health -= damage;
+            if (chargerstats.health <= 0)
+            {
+                if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                chargerState = ChargerState.Death;
+                animator.PlayAnimation("ChargerDeath");
+                AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                chargingRigidbody.enable = false;
+                navMeshRigidbody.enable = false;
+                chargeLines.SetActive(false);
+                NavigationAPI.stopAgent(gameObject);
+            }
+
+
         }
-        if (chargerState == ChargerState.Death || WasRecentlyDamaged())
+
+        if (damageType == Enemy.EnemydamageType.ThrownWeapon)
+        {
+            if (chargerstats.health <= chargerstats.enemyExecuteThreshold)
+            {
+                Explode();
+
+
+            }
+            else
+            {
+                chargerstats.health -= damage;
+                if (chargerstats.health <= 0)
+                {
+                    if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                        SpawnIchor();
+                    chargerState = ChargerState.Death;
+                    animator.PlayAnimation("ChargerDeath");
+                    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                    chargingRigidbody.enable = false;
+                    navMeshRigidbody.enable = false;
+                    chargeLines.SetActive(false);
+                    NavigationAPI.stopAgent(gameObject);
+
+                }
+            }
+        }
+
+
+        if (damageType == Enemy.EnemydamageType.Ultimate)
+        {
+            chargerstats.health -= damage;
+            if (chargerstats.health <= 0)
+            {
+                if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                chargerState = ChargerState.Death;
+                animator.PlayAnimation("ChargerDeath");
+                AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                chargingRigidbody.enable = false;
+                navMeshRigidbody.enable = false;
+                chargeLines.SetActive(false);
+                NavigationAPI.stopAgent(gameObject);
+
+            }
+
+
+        }
+
+            if (chargerState == ChargerState.Death || WasRecentlyDamaged())
             return;
         TriggerRecentlyDamageCountdown();
         SpawnIchor();
@@ -126,7 +203,7 @@ class Charger : Enemy
         State
     ***********************************************************/
     private void Update_Idle(){
-        currentChargeCooldown -= Time.V_FixedDeltaTime();
+        currentChargeCooldown -= Time.V_DeltaTime();
         if (GetDistanceFromPlayer() < chargerstats.chasingRange)
         {
             chargerState = ChargerState.Walk;
@@ -142,15 +219,25 @@ class Charger : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAtPlayer();
-        currentChargeCooldown -= Time.V_FixedDeltaTime();
-        currentStompCooldown -= Time.V_FixedDeltaTime();
+        LookAt(player);
+        currentChargeCooldown -= Time.V_DeltaTime();
+        currentStompCooldown -= Time.V_DeltaTime();
+        if (IsOnNavMeshOfflink())
+        {
+            NavigationAPI.stopAgent(gameObject);
+            LookAt(GetTargetJumpPosition());
+            chargerState = ChargerState.Jump;
+            navMeshAgent.enable = false;
+            animator.PlayAnimation("ChargerJump");
+            return;
+        }
         if (GetDistanceFromPlayer() > chargerstats.attackRange && GetDistanceFromPlayer() < chargerstats.chargingRange && currentChargeCooldown <=0 )
         {
             chargerState = ChargerState.Charging;
             animator.PlayAnimation("ChargerCharge");
             currentChargeTime = chargerstats.maxChargeTime;
             ActivateRigidbody();
+            chargeLines.SetActive(true);
             // Set Velocity
             chargeDirection = player.transform.position - gameObject.transform.position;
             chargeDirection.y = 0;
@@ -160,7 +247,7 @@ class Charger : Enemy
         if(GetDistanceFromPlayer() <= chargerstats.attackRange && currentStompCooldown <= 0)
         {
             chargerState = ChargerState.Stomp;
-            animator.PlayAnimation("ChargerJump");
+            animator.PlayAnimation("ChargerStomp");
             ActivateRigidbody();
             return;
         }
@@ -176,17 +263,18 @@ class Charger : Enemy
         MoveToNavMeshPosition(player.transform.position);
     }
     private void Update_Charging() {
-        currentChargeTime -= Time.V_FixedDeltaTime();
+        currentChargeTime -= Time.V_DeltaTime();
         if (currentChargeTime <= 0)
         {
             chargerState = ChargerState.Walk;
             animator.PlayAnimation("ChargerWalk");
             currentChargeCooldown = chargerstats.chargeCooldown;
             ActivateNavMeshAgent();
+            chargeLines.SetActive(false);
             return;
         }
         // FootSteps
-        currentFootStepTime -= Time.V_FixedDeltaTime();
+        currentFootStepTime -= Time.V_DeltaTime();
         if(currentFootStepTime <= 0)
         {
             currentFootStepTime = chargerstats.timeBetweenChargeSteps;
@@ -197,11 +285,29 @@ class Charger : Enemy
     }
     private void Update_Attack()
     {
-        currentChargeCooldown -= Time.V_FixedDeltaTime();
+        currentChargeCooldown -= Time.V_DeltaTime();
+    }
+    private void Update_Jump()
+    {
+        if (IsJumpFinished())
+        {
+            chargerState = ChargerState.Idle;
+            animator.PlayAnimation("ChargerIdle");
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
     }
     private void Update_Stagger() { }
     private void Update_Stomp() { }
-    private void Update_Death() { }
+    private void Update_Death()
+    {
+        if (IsCurrentlyJumping() && IsJumpFinished())
+        {
+            navMeshAgent.CompleteOffMeshLink();
+            navMeshAgent.enable = true;
+        }
+            
+    }
     /***********************************************************
         Animation Events
     ***********************************************************/
@@ -245,6 +351,17 @@ class Charger : Enemy
             currentStompCooldown = chargerstats.stompCooldown;
         }, chargerstats.stompHitboxDuration);
     }
+
+    public override void SetSpawningDuration(float seconds)
+    {
+        chargerState = ChargerState.Spawning;
+
+        Invoke(() =>
+        {
+            chargerState = ChargerState.Idle;
+        }, seconds);
+    }
+
     /***********************************************************
         Collision Events
     ***********************************************************/
@@ -258,6 +375,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerAttack");
             currentChargeCooldown = chargerstats.chargeCooldown;
             chargingRigidbody.SetVelocity(Vector3.Zero());
+            chargeLines.SetActive(false);
         }
         if (other.tag == "Wall" && chargerState == ChargerState.Charging)
         {
@@ -265,6 +383,7 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerStagger");
             AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
             chargingRigidbody.SetVelocity(Vector3.Zero());
+            chargeLines.SetActive(false);
         }
     }
 }

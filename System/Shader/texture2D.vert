@@ -67,6 +67,7 @@ out vec2 textureCoords;
 uniform mat4 model;
 uniform mat4 uiProjection;
 uniform int anchorMode;
+uniform bool toFlip;
 
 const int CENTER_ANCHOR = 0;
 const int BOTTOM_LEFT_ANCHOR = 1;
@@ -103,5 +104,10 @@ void main() {
     }
 
     gl_Position = uiProjection * model * localPosition;
+
     textureCoords = textureCoordinates[index];
+
+    if(!toFlip) {
+        textureCoords.y = 1 - textureCoords.y;
+    }
 }

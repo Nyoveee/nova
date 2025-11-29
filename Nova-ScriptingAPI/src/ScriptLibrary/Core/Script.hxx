@@ -17,6 +17,7 @@ internal:
 	// These also includes exception handling for scripts
 	void callInit();
 	void callUpdate();
+	void callFixedUpdate();
 	void callExit();
 
 	void callOnCollisionEnter(unsigned otherEntityID);
@@ -24,6 +25,7 @@ internal:
 protected:
 	virtual void init() {};
 	virtual void update() {};
+	virtual void fixedUpdate() {};
 	virtual void exit() {};
 
 	virtual void onCollisionEnter([[maybe_unused]] GameObject^ other) {};

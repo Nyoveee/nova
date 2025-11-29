@@ -20,22 +20,31 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "GruntHitBox",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 13123964764219588615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 13123964764219588615
+                },
                 "tag": "EnemyHitBox"
             },
             "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "isRotatable": true,
-                "isTrigger": true,
+                "isTrigger": false,
                 "layer": "Moving",
                 "mass": 0.0,
-                "motionType": "Dynamic"
+                "motionQuality": "Discrete",
+                "motionType": "Dynamic",
+                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -89,8 +98,8 @@
                     "z": 0.6369426846504211
                 }
             },
-            "id": 1048620
+            "id": 7
         }
     ],
-    "RootEntity": 1048620
+    "RootEntity": 7
 }

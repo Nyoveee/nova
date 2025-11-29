@@ -26,24 +26,9 @@ void SceneManager::loadScene(ResourceID id) {
 	ecs.registry.clear();
 	engine.SystemsUnload();
 	currentScene = NO_SCENE_LOADED;
-	
-
 
 	Serialiser::deserialiseScene(ecs.registry, layers, scene->getFilePath().string.c_str());
 	currentScene = scene->id();
-	
-#if 0
-	// Once we have loaded the scene, we populate the layers according to it's layer id..
-	for (entt::entity entity : layer.entities) {
-		EntityData& entityData = ecs.registry.get<EntityData>(entity);
-
-		if (entityData.layerId < 0 || entityData.layerId >= layers.size()) {
-			Logger::warn("Entity {} had invalid layer. Resetting it..", entityData.name);
-			entityData.layerId = 0;
-		}
-
-	}
-#endif
 
 	engine.SystemsOnLoad();
 }

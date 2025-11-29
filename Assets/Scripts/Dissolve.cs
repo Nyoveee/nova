@@ -22,7 +22,7 @@ class Dissolve : Script
         float interval = Mathf.Sin(timeElapsed);
         interval = (interval + 1f) / 2f;
 
-        timeElapsed += Time.V_FixedDeltaTime() * speedMultiplier; 
+        timeElapsed += Time.V_DeltaTime() * speedMultiplier; 
 
         meshRenderer.setMaterialFloat(0, "dissolveThreshold", interval);
     }

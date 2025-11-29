@@ -13,17 +13,31 @@ public abstract class Quest : Script
     }
 
     // Event for success/fail state change of quest
-    public delegate void QuestStateChanged(QuestState oldState, QuestState newState);
-    public event QuestStateChanged OnQuestStateChanged;
+
+    public class QuestStateChangedEventArgs : EventArgs
+    {
+        public QuestState OldState { get; }
+        public QuestState NewState { get; }
+
+        public QuestStateChangedEventArgs(QuestState oldState, QuestState newState)
+        {
+            OldState = oldState;
+            NewState = newState;
+        }
+    }
+    public event EventHandler<QuestStateChangedEventArgs> OnQuestStateChanged;
 
     private QuestState questState = QuestState.InProgress;
+
+    [SerializableField]
+    protected Transform_? playerCheckpoint;
 
     /***********************************************************
         Quest Types must inherit from this
     ***********************************************************/
     public abstract void OnEnter();
     public abstract void OnSuccess();
-    public abstract void OnFail();
+    public abstract void OnFail(Transform_ playerTransform);
 
     public abstract void UpdateQuest();
 
@@ -36,7 +50,7 @@ public abstract class Quest : Script
         {
             QuestState oldState = questState;
             questState = newState;
-            OnQuestStateChanged.Invoke(oldState, newState);
+            OnQuestStateChanged.Invoke(this, new QuestStateChangedEventArgs(oldState, newState));
         }
     }
 

@@ -76,11 +76,11 @@ struct ManagedToNative<ManagedType> {																								\
 property Type Name																			\
 {																							\
 	Type get()				{																\
-		return Type(static_cast<ManagedToNative<Type>::Native>(componentReference->Name));	\
+		return Type(static_cast<ManagedToNative<Type>::Native>(nativeComponent()->Name));	\
 	}																						\
 	void set(Type value)	{																\
-		using NativeType = decltype(componentReference->Name);								\
-		componentReference->Name = native<ManagedToNative<Type>::Native>(value);			\
+		using NativeType = decltype(nativeComponent()->Name);								\
+		nativeComponent()->Name = native<ManagedToNative<Type>::Native>(value);				\
 	}																						\
 }
 

@@ -39,6 +39,10 @@ constexpr float Color::r() const										{ return color.r; };
 constexpr float Color::g() const										{ return color.g; };
 constexpr float Color::b() const										{ return color.b; };
 
+constexpr Color operator*(Color const& lhs, Color const& rhs) {
+	return lhs.color * rhs.color;
+}
+
 constexpr ColorA::ColorA()										: color	{} {}
 constexpr ColorA::ColorA(glm::vec4 color)						: color	{ color } {}
 constexpr float ColorA::r() const										{ return color.r; };
@@ -50,6 +54,9 @@ constexpr ColorA::operator glm::vec4() const							{ return color; }
 constexpr ColorA::operator glm::vec3() const							{ return Color{ color.r, color.g, color.g }; }
 constexpr ColorA::operator Color() const								{ return Color{ color.r, color.g, color.g }; }
 
+constexpr ColorA operator*(ColorA const& lhs, ColorA const& rhs) {
+	return lhs.color * rhs.color;
+}
 // ========================================
 // Normalized float
 // ========================================
@@ -357,3 +364,44 @@ struct std::hash<ResourceFilePath> {
 		return std::hash<std::string>{}(resourceFilePath.string);
 	}
 };
+
+// ========================================
+// Entity IDs..
+// ========================================
+
+#if false
+// ---- Prefab File Entity ID ---
+constexpr PrefabFileEntityID::PrefabFileEntityID() : id{ std::numeric_limits<unsigned>::max() } {}
+constexpr PrefabFileEntityID::PrefabFileEntityID(unsigned id) : id{ id } {}
+
+constexpr PrefabFileEntityID::operator unsigned() const { return id; }
+
+constexpr bool operator==(PrefabFileEntityID const& lhs, PrefabFileEntityID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+template<>
+struct std::hash<PrefabFileEntityID> {
+	std::size_t operator()(PrefabFileEntityID const& resourceFilePath) const noexcept {
+		return std::hash<unsigned>{}(resourceFilePath.id);
+	}
+};
+
+// ---- Prefab Registry Entity ID ---
+
+constexpr PrefabRegistryEntityID::PrefabRegistryEntityID() : id{ std::numeric_limits<unsigned>::max() } {}
+constexpr PrefabRegistryEntityID::PrefabRegistryEntityID(unsigned id) : id{ id } {}
+
+constexpr PrefabRegistryEntityID::operator unsigned() const { return id; }
+
+constexpr bool operator==(PrefabRegistryEntityID const& lhs, PrefabRegistryEntityID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+template<>
+struct std::hash<PrefabRegistryEntityID> {
+	std::size_t operator()(PrefabRegistryEntityID const& resourceFilePath) const noexcept {
+		return std::hash<unsigned>{}(resourceFilePath.id);
+	}
+};
+#endif

@@ -10,8 +10,8 @@ class EnemyCollider : Script
     {
         enemy = enemyGameObject.getScript<Enemy>();
     }
-    public void OnColliderShot(float damage)
+    public void OnColliderShot(float damage,Enemy.EnemydamageType type,string colliderTag)
     {
-        enemy.TakeDamage(damage);
+        enemy.TakeDamage(damage,type,colliderTag);
     }
 }

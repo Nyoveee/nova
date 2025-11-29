@@ -13,7 +13,7 @@ EditorViewPort::EditorViewPort(Editor& editor) :
 	editor					{ editor },
 	engine					{ editor.engine },
 	gizmo					{ editor, engine.ecs },
-	controlOverlay			{ editor },
+	controlOverlay			{ editor, gizmo },
 	isHoveringOver			{ false }
 {}
 
@@ -89,7 +89,7 @@ void EditorViewPort::update(float dt) {
 				editor.loadScene(id);
 			}
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
-				engine.prefabManager.instantiatePrefab<ALL_COMPONENTS>(id);
+				engine.prefabManager.instantiatePrefab(id);
 				editor.selectEntities({});
 			}
 		}
