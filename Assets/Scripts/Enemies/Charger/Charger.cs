@@ -203,7 +203,7 @@ class Charger : Enemy
     }
     public override bool IsEngagedInBattle()
     {
-        return chargerState != ChargerState.Idle && chargerState != ChargerState.Death;
+        return chargerState != ChargerState.Idle;
     }
 
     void FlushDamageEnemy()

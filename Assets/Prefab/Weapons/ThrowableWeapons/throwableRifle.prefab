@@ -3,8 +3,8 @@
         {
             "EntityData": {
                 "children": [
-                    1,
-                    2
+                    11,
+                    12
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -253,7 +253,7 @@
                     "z": 1.0
                 }
             },
-            "id": 0
+            "id": 10
         },
         {
             "EntityData": {
@@ -268,7 +268,7 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 10,
                 "prefabID": 6925621903903621121,
                 "prefabMetaData": {
                     "prefabEntity": 1,
@@ -333,7 +333,7 @@
                     "z": 0.9999758005142212
                 }
             },
-            "id": 1
+            "id": 11
         },
         {
             "EntityData": {
@@ -348,7 +348,7 @@
                     "17237801994024849853": true
                 },
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 10,
                 "prefabID": 6925621903903621121,
                 "prefabMetaData": {
                     "prefabEntity": 2,
@@ -379,7 +379,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 0
+                                    "__variant_value": 10
                                 },
                                 "name": "weaponRef"
                             }
@@ -440,8 +440,8 @@
                     "z": 1.0
                 }
             },
-            "id": 2
+            "id": 12
         }
     ],
-    "RootEntity": 0
+    "RootEntity": 10
 }

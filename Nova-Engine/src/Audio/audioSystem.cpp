@@ -285,7 +285,6 @@ void AudioSystem::playBGM(ResourceID id, float volume)
 	}
 
 	AudioInstance* audioInstance = createSoundInstance(id, volume);
-
 	// Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
@@ -461,7 +460,8 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 		audioInstance = { audioInstanceId, audioId, channel, entity , volume };
 		audioInstance.channel->setVolume(audioInstance.volume);
 		audioInstance.channel->setCallback(channelCallback);
-
+		AudioComponent* audioComponent = engine.ecs.registry.try_get<AudioComponent>(entity);
+		audioInstance.channel->setMode(FMOD_3D | (audioComponent && audioComponent->loop? FMOD_LOOP_NORMAL : FMOD_DEFAULT));
 		return &audioInstance;
 	}
 	else {
@@ -487,7 +487,17 @@ void AudioSystem::playBGM(entt::entity entity, std::string soundName)
 		return;
 	}
 	auto&& [_, audioData] = *iterator;
-	playBGM(audioData.audioId, audioData.volume);
+	// Stop previous BGM.
+	if (currentBGM) {
+		stopAudioInstance(*currentBGM);
+		currentBGM = nullptr;
+	}
+
+	AudioInstance* audioInstance = createSoundInstance(audioData.audioId,audioData.volume,entity);
+	// Update current BGM
+	if (audioInstance) {
+		currentBGM = audioInstance;
+	}
 
 }
 void AudioSystem::playSFX(entt::entity entity, std::string soundName)

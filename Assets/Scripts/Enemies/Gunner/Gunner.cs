@@ -228,7 +228,7 @@ class Gunner : Enemy
     }
     public override bool IsEngagedInBattle()
     {
-        return gunnerState != GunnerState.Idle && gunnerState != GunnerState.Death;
+        return gunnerState != GunnerState.Idle;
     }
     /**********************************************************************
        Enemy States
