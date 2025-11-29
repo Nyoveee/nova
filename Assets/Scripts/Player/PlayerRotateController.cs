@@ -10,13 +10,14 @@ class PlayerRotateController : Script
 
     [SerializableField]
     private Transform_? playerCameraPos = null; //Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
-
+    [SerializableField]
+    private Transform_  playerBody;
     //private float rotationX = 0;
     //private float rotationY = 0;
 
     private float accumulateDifferenceX = 0;
     private float accumulateDifferenceY = 0;
-
+    private float height = 0;
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -24,14 +25,21 @@ class PlayerRotateController : Script
         MouseMoveCallback(CameraMovement);
         accumulateDifferenceX = 0;
         accumulateDifferenceY = 0;
+
+        height = gameObject.transform.position.y - playerBody.position.y; 
+
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {
         UpdateCamera();
-        //MoveToOrientation();
-        Invoke(MoveToOrientation, 0);
+
+
+
+         MoveToOrientation();
+        //Invoke(MoveToOrientation, 0);
+        //gameObject.transform.position = playerCameraPos.position;
         //UpdateCamera();
         //Invoke(MoveToOrientation,0);
 
@@ -49,7 +57,14 @@ class PlayerRotateController : Script
 
     private void MoveToOrientation()
     {
-        gameObject.transform.position = playerCameraPos.position;
+        //gameObject.transform.position = playerCameraPos.position;
+
+        Vector3 position = playerBody.localPosition;
+        position.y += height;
+
+        gameObject.transform.localPosition = position;
+        playerCameraPos.localPosition = position;
+        playerCameraPos.localEulerAngles = gameObject.transform.localEulerAngles;
     }
 
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
@@ -72,25 +87,38 @@ class PlayerRotateController : Script
 
     private void UpdateCamera()
     {
-        Vector3 euler = gameObject.transform.eulerAngles;
+        //Vector3 euler = gameObject.transform.localEulerAngles;
 
-        euler.x -= cameraSensitivity * accumulateDifferenceY * Time.V_DeltaTime();
-        euler.y -= cameraSensitivity * accumulateDifferenceX * Time.V_DeltaTime();
-        euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
-        playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
+        //euler.x -= cameraSensitivity * accumulateDifferenceY * Time.V_DeltaTime();
+        //euler.y -= cameraSensitivity * accumulateDifferenceX * Time.V_DeltaTime();
+        //euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
+        //playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
 
-        gameObject.transform.eulerAngles = euler;
+        //gameObject.transform.localEulerAngles = euler;
 
 
-        accumulateDifferenceX = 0;
-        accumulateDifferenceY = 0;
+        //accumulateDifferenceX = 0;
+        //accumulateDifferenceY = 0;
     }
 
 
     private void CameraMovement(float deltaMouseX, float deltaMouseY)
     {
-        accumulateDifferenceX += deltaMouseX;
-        accumulateDifferenceY += deltaMouseY;
+        //accumulateDifferenceX += deltaMouseX;
+        //accumulateDifferenceY += deltaMouseY;
+
+        Vector3 euler = gameObject.transform.localEulerAngles;
+
+        euler.x -= cameraSensitivity * deltaMouseY * Time.V_DeltaTime();
+        euler.y -= cameraSensitivity * deltaMouseX * Time.V_DeltaTime();
+        euler.x = Mathf.Clamp(euler.x, -80.0f * Mathf.Deg2Rad, 80.0f * Mathf.Deg2Rad);
+        playerOrientation.localEulerAngles = new Vector3(0, euler.y, 0);
+
+        gameObject.transform.localEulerAngles = euler;
+
+
+        //accumulateDifferenceX = 0;
+        //accumulateDifferenceY = 0;
 
     }
 }

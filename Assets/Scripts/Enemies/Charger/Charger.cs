@@ -100,27 +100,93 @@ class Charger : Enemy
     /***********************************************************
         Inherited Functions
     ***********************************************************/
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, Enemy.EnemydamageType damageType, string colliderTag)
     {
         if (chargerState == ChargerState.Spawning)
         {
             return;
         }
 
-        chargerstats.health -= damage;
-        if (chargerstats.health <= 0)
+        if (damageType == Enemy.EnemydamageType.WeaponShot)
         {
-            if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
-                SpawnIchor();
-            chargerState = ChargerState.Death;
-            animator.PlayAnimation("ChargerDeath");
-            AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
-            chargingRigidbody.enable = false;
-            navMeshRigidbody.enable = false;
-            chargeLines.SetActive(false);
-            NavigationAPI.stopAgent(gameObject);
+            if (colliderTag == "Enemy_ArmouredSpot")
+            {
+                damage *= chargerstats.enemyArmouredMultiplier;
+
+            }
+            if (colliderTag == "Enemy_WeakSpot")
+            {
+                damage *= chargerstats.enemyWeakSpotMultiplier;
+
+            }
+
+            chargerstats.health -= damage;
+            
+            if (chargerstats.health <= 0)
+            {
+                if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                chargerState = ChargerState.Death;
+                animator.PlayAnimation("ChargerDeath");
+                AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                chargingRigidbody.enable = false;
+                navMeshRigidbody.enable = false;
+                chargeLines.SetActive(false);
+                NavigationAPI.stopAgent(gameObject);
+            }
+
+
         }
-        if (chargerState == ChargerState.Death || WasRecentlyDamaged())
+
+        if (damageType == Enemy.EnemydamageType.ThrownWeapon)
+        {
+            if (chargerstats.health <= chargerstats.enemyExecuteThreshold)
+            {
+                Explode();
+
+
+            }
+            else
+            {
+                chargerstats.health -= damage;
+                if (chargerstats.health <= 0)
+                {
+                    if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                        SpawnIchor();
+                    chargerState = ChargerState.Death;
+                    animator.PlayAnimation("ChargerDeath");
+                    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                    chargingRigidbody.enable = false;
+                    navMeshRigidbody.enable = false;
+                    chargeLines.SetActive(false);
+                    NavigationAPI.stopAgent(gameObject);
+
+                }
+            }
+        }
+
+
+        if (damageType == Enemy.EnemydamageType.Ultimate)
+        {
+            chargerstats.health -= damage;
+            if (chargerstats.health <= 0)
+            {
+                if (chargerState != ChargerState.Death && !WasRecentlyDamaged())
+                    SpawnIchor();
+                chargerState = ChargerState.Death;
+                animator.PlayAnimation("ChargerDeath");
+                AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                chargingRigidbody.enable = false;
+                navMeshRigidbody.enable = false;
+                chargeLines.SetActive(false);
+                NavigationAPI.stopAgent(gameObject);
+
+            }
+
+
+        }
+
+            if (chargerState == ChargerState.Death || WasRecentlyDamaged())
             return;
         TriggerRecentlyDamageCountdown();
         SpawnIchor();
