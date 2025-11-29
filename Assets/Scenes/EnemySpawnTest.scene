@@ -220,6 +220,7 @@
                 "modelId": 3
             },
             "Rigidbody": {
+                "dynamicCollider": false,
                 "gravityMultiplier": 1.0,
                 "initialVelocity": {
                     "x": 0.0,
@@ -231,7 +232,8 @@
                 "layer": "NonMoving",
                 "mass": 0.0,
                 "motionQuality": "Discrete",
-                "motionType": "Static"
+                "motionType": "Static",
+                "toScaleWithTransform": true
             },
             "Transform": {
                 "eulerAngles": {

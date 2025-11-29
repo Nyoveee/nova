@@ -5,6 +5,17 @@ using ScriptingAPI;
 using System.Runtime.CompilerServices;
 public abstract class Enemy : Script
 {
+    public enum EnemydamageType
+    { 
+        WeaponShot,
+        ThrownWeapon,
+        Ultimate,
+    
+    
+    }
+
+
+
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -19,6 +30,8 @@ public abstract class Enemy : Script
     protected SkinnedMeshRenderer_? renderer = null;
     [SerializableField]
     protected NavMeshAgent_? navMeshAgent = null;
+    [SerializableField]
+    public GameObject [] enemyColliders;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -26,6 +39,7 @@ public abstract class Enemy : Script
     private EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
     private float ichorSpawnPositionVariance = 1.5f;
+    protected float accumulatedDamageInstance = 0f;
     // Jump
     private float currentJumpDuration = 0f;
     private NavMeshOfflinkData offlinkData;
@@ -33,14 +47,14 @@ public abstract class Enemy : Script
     /***********************************************************
         Enemy Types must inherited from this
     ***********************************************************/
-    public abstract void TakeDamage(float damage);
+    public abstract void TakeDamage(float damage, EnemydamageType type, string colliderTag);
     public abstract bool IsEngagedInBattle();
     /***********************************************************
        Public Functions
     ***********************************************************/
     public void Explode()
     {
-        Destroy(gameObject);
+
         for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
         {
             Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
@@ -49,6 +63,9 @@ public abstract class Enemy : Script
             GameObject ichor = Instantiate(ichorPrefab);
             ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
         }
+
+
+
     }
     /***********************************************************
         Shared Functions
@@ -93,9 +110,27 @@ public abstract class Enemy : Script
     {
         return player != null ? Vector3.Distance(player.transform.position, gameObject.transform.position) : 0f;
     }
+
+
+    protected void SpawnIchorFrame()
+    { 
+        int currentSpawnAmount = (int)(accumulatedDamageInstance / enemyStats.ichorPerDamage);
+
+        for (int i = 0; i < currentSpawnAmount; ++i)
+        {
+            Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
+            direction.Normalize();
+            float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
+            GameObject ichor = Instantiate(ichorPrefab);
+            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+        }
+
+    }
+
+
     protected void SpawnIchor()
     {
-        for (int i = 0; i < enemyStats.ichorSpawnAmount; ++i){
+        for (int i = 0; i < enemyStats.ichorPerDamage; ++i){
             Vector3 direction = new Vector3(0, Random.Range(-1f,1f), 0);
             direction.Normalize();
             float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
@@ -103,6 +138,8 @@ public abstract class Enemy : Script
             ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
         }
     }
+
+
     protected void MoveToNavMeshPosition(Vector3 position)
     {
         RayCastResult? result = PhysicsAPI.Raycast(position, -Vector3.Up(), 1000f);

@@ -101,6 +101,16 @@ Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {
 	return Quaternion{ glm::slerp(a.native(), b.native(), t) };
 }
 
+Quaternion Quaternion::LookRotation(Vector3 directionTOLook) {
+	directionTOLook.Normalize();
+	return Quaternion{ glm::quatLookAt( (-directionTOLook).native(), glm::vec3{0,1,0} )};
+}
+
+
+//Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {
+//	return Quaternion{ glm::look(a.native(), b.native(), t) };
+//}
+
 // =================================================================
 // TRANSFORM
 // =================================================================
@@ -185,6 +195,44 @@ Vector3 Rigidbody_::GetVelocity() {
 
 	return Vector3{};
 }
+
+void  Rigidbody_::AddAngularVelocity(Vector3 velocity) {
+	Rigidbody * rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.setAngularVelocity(*rigidbody, rigidbody->angularVelocity + velocity.native());
+	}
+
+}
+
+void  Rigidbody_::SetAngularVelocity(Vector3 velocity) {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.setAngularVelocity(*rigidbody, velocity.native());
+	}
+
+}
+
+Vector3  Rigidbody_::GetAngularVelocity() {
+	Rigidbody * rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		return Vector3{ rigidbody->angularVelocity };
+	}
+
+	return Vector3{};
+}
+void Rigidbody_::SetBodyRotation(Quaternion rotation)
+{
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.setRotation(*rigidbody, rotation.native());
+	}
+
+}
+
 
 void Rigidbody_::SetGravityFactor(float factor) {
 	Interface::engine->physicsManager.setGravityFactor(*nativeComponent(), factor);
@@ -434,3 +482,5 @@ void Sequence_::play() {
 	Interface::engine->animationSystem.resetSequence(*nativeComponent());
 	nativeComponent()->isPlaying = true;
 }
+
+

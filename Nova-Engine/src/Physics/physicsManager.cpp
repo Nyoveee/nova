@@ -433,6 +433,7 @@ void PhysicsManager::createBody(entt::entity const& entityID)
 {
 	Transform const& transform = registry.get<Transform>(entityID);
 	Rigidbody& rigidBody = registry.get<Rigidbody>(entityID);
+
 	JPH::ScaledShape* shape = recreateScaledShape(entityID, transform, rigidBody);
 
 	if (!shape) {
@@ -689,6 +690,34 @@ void PhysicsManager::setVelocity(Rigidbody& rigidbody, glm::vec3 velocity) {
 
 	bodyInterface.SetLinearVelocity(rigidbody.bodyId, toJPHVec3(velocity));
 	rigidbody.velocity = velocity;
+}
+
+void PhysicsManager::setAngularVelocity(Rigidbody& rigidbody, glm::vec3 velocity)
+{
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	bodyInterface.SetAngularVelocity(rigidbody.bodyId, toJPHVec3(velocity));
+	rigidbody.angularVelocity = velocity;
+}
+
+void PhysicsManager::setRotation(Rigidbody& rigidbody, glm::quat quaternion)
+{
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	if (rigidbody.motionType == JPH::EMotionType::Static)
+	{
+		bodyInterface.SetRotation(rigidbody.bodyId, toJPHQuat(quaternion), JPH::EActivation::DontActivate);
+
+	}
+	else
+	{
+		bodyInterface.SetRotation(rigidbody.bodyId, toJPHQuat(quaternion), JPH::EActivation::Activate);
+
+	}
 }
 
 void PhysicsManager::setGravity(float value) {

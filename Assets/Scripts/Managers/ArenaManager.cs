@@ -6,7 +6,7 @@ using System.Diagnostics;
 public class ArenaManager : Script
 {
     // Sequential order
-    [SerializableField] private List<WaveBehavior> waves;
+    private List<WaveBehavior> waves = new List<WaveBehavior>();
 
     // True for survival, false for sequential
     [SerializableField] private bool timerMode = false;
@@ -20,8 +20,30 @@ public class ArenaManager : Script
 
     private ArenaQuest arenaQuest;
 
+    private bool hasInited = false;
+    protected override void init()
+    {
+        if (hasInited)
+        {
+            return;
+        }
+
+        hasInited = true;
+
+        foreach (GameObject child in gameObject.GetChildren()) { 
+            WaveBehavior wave = child.getScript<WaveBehavior>();
+
+            if (wave != null)
+            {
+                waves.Add(wave);
+            }
+        }
+    }
+
     public void StartArena(ArenaQuest quest)
     {
+        init();
+
         arenaQuest = quest;
 
         activeWaves.Clear();
@@ -53,7 +75,7 @@ public class ArenaManager : Script
         {
             WaveBehavior wave = waves[currentWave];
             activeWaves.Add(wave);
-            wave.StartWave();
+            wave.StartWave(this);
         }
         else
         {
@@ -66,7 +88,7 @@ public class ArenaManager : Script
         foreach (var w in waves)
         {
             activeWaves.Add(w);
-            w.StartWave();
+            w.StartWave(this);
         }
     }
 

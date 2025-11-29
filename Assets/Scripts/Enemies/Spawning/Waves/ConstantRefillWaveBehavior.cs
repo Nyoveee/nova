@@ -10,8 +10,9 @@ public class ConstantRefillWaveBehavior : WaveBehavior
 {
     [SerializableField] private List<RandomEnemySpawns> randomSpawns;
 
-    public override void StartWave()
+    public override void StartWave(ArenaManager arenaManager)
     {
+        base.StartWave(arenaManager);
         SpawnEnemies();
     }
 

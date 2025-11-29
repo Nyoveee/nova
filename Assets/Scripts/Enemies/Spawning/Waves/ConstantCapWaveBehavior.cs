@@ -14,8 +14,9 @@ public class ConstantCapWaveBehavior : WaveBehavior
 
     private float timer = 0f;
 
-    public override void StartWave()
+    public override void StartWave(ArenaManager arenaManager)
     {
+        base.StartWave(arenaManager);
         SpawnEnemies();
     }
 

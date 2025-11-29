@@ -19,7 +19,9 @@ namespace Layers {
 	static constexpr JPH::ObjectLayer MOVING = 1;
 	static constexpr JPH::ObjectLayer WALL = 2;
 	static constexpr JPH::ObjectLayer ITEM = 3;
-	static constexpr JPH::ObjectLayer NUM_LAYERS = 4;
+	static constexpr JPH::ObjectLayer ENEMY_HURTSPOT = 4;
+	static constexpr JPH::ObjectLayer ITEM_INTERACTOR = 5;
+	static constexpr JPH::ObjectLayer NUM_LAYERS = 6;
 };
 
 // Each broadphase layer results in a separate bounding volume tree in the broad phase. You at least want to have
@@ -33,7 +35,9 @@ namespace BroadPhaseLayers
 	static constexpr JPH::BroadPhaseLayer MOVING(1);
 	static constexpr JPH::BroadPhaseLayer WALL(2);
 	static constexpr JPH::BroadPhaseLayer ITEM(3);
-	static constexpr JPH::uint NUM_LAYERS(4);
+	static constexpr JPH::BroadPhaseLayer ENEMY_HURTSPOT(4);
+	static constexpr JPH::BroadPhaseLayer ITEM_INTERACTOR(5);
+	static constexpr JPH::uint NUM_LAYERS(6);
 };
 
 // BroadPhaseLayerInterface implementation
@@ -47,6 +51,8 @@ public:
 		mObjectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
 		mObjectToBroadPhase[Layers::WALL] = BroadPhaseLayers::WALL;
 		mObjectToBroadPhase[Layers::ITEM] = BroadPhaseLayers::ITEM;
+		mObjectToBroadPhase[Layers::ENEMY_HURTSPOT] = BroadPhaseLayers::ENEMY_HURTSPOT;
+		mObjectToBroadPhase[Layers::ITEM_INTERACTOR] = BroadPhaseLayers::ITEM_INTERACTOR;
 	}
 
 	JPH::uint GetNumBroadPhaseLayers() const final {
@@ -67,6 +73,8 @@ public:
 		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
 		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::WALL:        return "WALL";
 		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ITEM:        return "ITEM";
+		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ENEMY_HURTSPOT:        return "ENEMY_HURTSPOT";
+		case (JPH::BroadPhaseLayer::Type)BroadPhaseLayers::ITEM_INTERACTOR:        return "ITEM_INTERACTOR";
 		default:														JPH_ASSERT(false); return "INVALID";
 		}
 	}
@@ -90,11 +98,17 @@ public:
 		case Layers::MOVING:
 			return inLayer2 != BroadPhaseLayers::ITEM;	 // Moving collides with everything except item
 		case Layers::ITEM:
-			return inLayer2 == BroadPhaseLayers::NON_MOVING;
+			return inLayer2 == BroadPhaseLayers::NON_MOVING || inLayer2 == BroadPhaseLayers::ITEM_INTERACTOR;
+		case Layers::ENEMY_HURTSPOT:
+			return inLayer2 == BroadPhaseLayers::MOVING; //need to collide with weapons
+		case Layers::ITEM_INTERACTOR:
+			return inLayer2 == BroadPhaseLayers::ITEM; //item interactor requires collision with items like ichor only
 		default:
 			JPH_ASSERT(false);
 			return false;
 		}
+
+
 	}
 };
 
@@ -112,11 +126,16 @@ public:
 		case Layers::MOVING:
 			return inObject2 != Layers::ITEM;   // Moving collides with everything except item
 		case Layers::ITEM:
-			return inObject2 == Layers::NON_MOVING;
+			return inObject2 == Layers::NON_MOVING || inObject2 == Layers::ITEM_INTERACTOR;
+		case Layers::ENEMY_HURTSPOT:
+			return inObject2 == Layers::MOVING;//need to collide with weapons
+		case Layers::ITEM_INTERACTOR:
+			return inObject2 == Layers::ITEM; //item interactor requires collision with items like ichor only
 		default:
 			JPH_ASSERT(false);
 			return false;
 		}
+
 	}
 };
 

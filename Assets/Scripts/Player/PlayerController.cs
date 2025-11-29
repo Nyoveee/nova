@@ -4,13 +4,11 @@
 using Windows.Devices.Display.Core;
 using Windows.UI.Composition;
 using Windows.UI.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 class PlayerController : Script
 {
-    // ==================================
-    // Parameters to be tweaked
-    // ==================================
-    
+
     // Move speed
     public float maximumMoveSpeed       = 5f;
     public float accelerationStrength   = 20f;
@@ -99,7 +97,7 @@ class PlayerController : Script
         // ===================================
         // Check if its grounded..
         // ===================================
-        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 0.5f, gameObject);
+        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 1f, gameObject);
         if (result != null)
         {
             isGrounded = true;
@@ -201,13 +199,21 @@ class PlayerController : Script
         //// Stop user from moving if grounded, in the case where user has not pressed any key..
         //else if (isGrounded)
         //{
-        //   // rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
+        //    // rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
         //}
 
 
     }
 
+    public void GainHealth(float heal)
+    {
 
+        currentHealth += heal;
+
+        currentHealth = Mathf.Min(maxHealth,currentHealth);
+
+
+    }
 
     /***********************************************************
        Public Functions

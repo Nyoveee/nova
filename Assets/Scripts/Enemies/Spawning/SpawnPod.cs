@@ -38,6 +38,7 @@ public abstract class SpawnPod : Script
         }
         else
         {
+            enemyTransform.position = EndPos;
             animating = false;
 
             if (enemyBody != null)
@@ -65,7 +66,7 @@ public abstract class SpawnPod : Script
         timeElapsed = 0f;
         animating = true;
 
-        EndPos = podTransform.position;
+        EndPos = enemyTransform.position;
         StartPos = EndPos - new Vector3(0, yOffset, 0);
 
         enemyTrans.position = StartPos;
