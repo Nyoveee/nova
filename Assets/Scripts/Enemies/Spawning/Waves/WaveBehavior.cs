@@ -7,7 +7,7 @@ using System;
 
 public abstract class WaveBehavior : Script
 {
-    [SerializableField] private ArenaManager arenaManager;
+    private ArenaManager arenaManager;
 
     private List<GameObject> aliveEnemies = new List<GameObject>();
     private bool active = false;
@@ -17,8 +17,15 @@ public abstract class WaveBehavior : Script
 
     // ============================================
     // Interfaces to implement..
-    public virtual void StartWave()
+    public virtual void StartWave(ArenaManager arenaManager)
     {
+        this.arenaManager = arenaManager;
+
+        if (arenaManager == null) {
+            Debug.LogError("Failed to start wave! Arena manager is null.");
+            return;
+        }
+
         aliveEnemies.Clear();
         active = true;
     }

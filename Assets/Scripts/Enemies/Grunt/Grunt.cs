@@ -240,6 +240,7 @@ class Grunt : Enemy
     {
         gruntState = GruntState.Spawning;
 
+
         Invoke(() =>
         {
             gruntState = GruntState.Idle;

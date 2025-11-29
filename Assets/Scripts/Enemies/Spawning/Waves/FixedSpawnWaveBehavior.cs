@@ -7,20 +7,35 @@ using System;
 
 public class FixedSpawnWaveBehavior : WaveBehavior
 {
-    [SerializableField] private List<FixedSpawnPod> fixedSpawns;
-    [SerializableField] private List<RandomEnemySpawns> randomSpawns;
+    public Prefab fixedPodScript;
+    private List<SpawnPodLocation> podLocations = new List<SpawnPodLocation>();
 
-    public override void StartWave()
+    public override void StartWave(ArenaManager arenaManager)
     {
-        foreach (FixedSpawnPod pod in fixedSpawns)
-        {
-            // pod.Spawn();
+        base.StartWave(arenaManager);
+
+        // populate our pod locations..
+        foreach (GameObject podLocation in gameObject.GetChildren()) {
+            SpawnPodLocation podLocationScript = podLocation.getScript<SpawnPodLocation>();
+
+            if (podLocationScript != null) { 
+                podLocations.Add(podLocationScript);
+            }
         }
 
-        if (randomSpawns != null)
+        foreach (SpawnPodLocation pod in podLocations)
         {
-            foreach (RandomEnemySpawns randSpawn in randomSpawns)
-                randSpawn.SpawnEnemies();
+            GameObject createdPod = Instantiate(fixedPodScript, pod.gameObject.transform.position);
+            FixedSpawnPod podScript = createdPod.getScript<FixedSpawnPod>();
+
+            if (podScript != null && pod.enemies.Count != 0)
+            {
+                podScript.Spawn(pod.enemies[0], this);
+            }
+            else
+            {
+                Debug.LogWarning("Pod prefab does not contain pod script or spawn pod location list is empty!");
+            }
         }
     }
 

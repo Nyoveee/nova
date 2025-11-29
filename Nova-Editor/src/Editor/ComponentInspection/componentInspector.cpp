@@ -124,9 +124,63 @@ void ComponentInspector::update() {
 
 		ImGui::Text("Direct children: ");
 
-		ImGui::BeginChild("Direct children", ImVec2{ 0.f, 70.f }, ImGuiChildFlags_Borders);
-		for (entt::entity child : entityData.children) {
-			ImGui::BulletText(registry.get<EntityData>(child).name.c_str());
+		ImGui::BeginChild("Direct children", ImVec2{ 0.f, 250.f }, ImGuiChildFlags_Borders);
+
+		std::function<void()> delayedOperation;
+
+		if (ImGui::BeginTable("Child", 3)) {
+			ImGui::TableSetupColumn("Child", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableSetupColumn("Move Up", ImGuiTableColumnFlags_WidthFixed, 40.f);
+			ImGui::TableSetupColumn("Move Down", ImGuiTableColumnFlags_WidthFixed, 40.f);
+
+			for (int i = 0; i < entityData.children.size(); ++i) {
+				auto& child = entityData.children[i];
+
+				ImGui::PushID(i);
+
+				ImGui::TableNextRow();
+				ImGui::TableNextColumn();
+
+				ImGui::Text(registry.get<EntityData>(child).name.c_str());
+
+				// =====================================
+				// Display move down button..
+				// =====================================	
+				// 		
+				ImGui::TableNextColumn();
+				ImGui::BeginDisabled(i == 0);
+
+				if (ImGui::Button(ICON_FA_UP_LONG)) {
+					delayedOperation = [&, index = i]() {
+						std::swap(entityData.children[index], entityData.children[index - 1]);
+					};
+				}
+
+				ImGui::EndDisabled();
+
+				// =====================================
+				// Display move down button..
+				// =====================================
+
+				ImGui::TableNextColumn();
+				ImGui::BeginDisabled(i + 1 == entityData.children.size());
+
+				if (ImGui::Button(ICON_FA_DOWN_LONG)) {
+					delayedOperation = [&, index = i]() {
+						std::swap(entityData.children[index], entityData.children[index + 1]);
+					};
+				}
+
+				ImGui::EndDisabled();
+
+				ImGui::PopID();
+			}
+
+			ImGui::EndTable();
+		}
+
+		if (delayedOperation) {
+			delayedOperation();
 		}
 
 		ImGui::EndChild();
