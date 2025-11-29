@@ -15,8 +15,6 @@ class Elevator : Script
     private Door tutorialDoor;
     [SerializableField]
     private Door hubDoor;
-    [SerializableField]
-    private GameObject player;
     /**********************************************************************
         Local Variables
     **********************************************************************/

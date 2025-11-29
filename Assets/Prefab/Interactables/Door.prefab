@@ -4,7 +4,8 @@
             "EntityData": {
                 "children": [
                     48234766,
-                    48234767
+                    48234767,
+                    49283357
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -18,7 +19,7 @@
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 48234765,
-                    "prefabID": 12462023588452057093
+                    "prefabID": 14618781617769611293
                 },
                 "tag": ""
             },
@@ -26,6 +27,20 @@
                 "scriptDatas": [
                     {
                         "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 1
+                                },
+                                "name": "doorType"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 25.0
+                                },
+                                "name": "automaticDoordetectionRange"
+                            },
                             {
                                 "data": {
                                     "__variant_type": 4,
@@ -43,26 +58,124 @@
                             {
                                 "data": {
                                     "__variant_type": 16,
-                                    "__variant_value": 2.0
+                                    "__variant_value": 10.0
                                 },
                                 "name": "openOffset"
                             },
                             {
                                 "data": {
                                     "__variant_type": 16,
-                                    "__variant_value": 2.0
+                                    "__variant_value": 0.20000000298023224
                                 },
                                 "name": "doorMovingDuration"
                             }
                         ],
-                        "scriptId": 840212062307794947
+                        "scriptId": 8255212936417148929
                     }
                 ]
             },
             "Transform": {
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -1.499496340751648,
+                    "y": -1.5196855068206787,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.5196855068206787,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 14.905585289001465,
+                    "y": 26.82621955871582,
+                    "z": 135.756591796875
+                },
+                "localRotation": {
+                    "w": -0.6888074278831482,
+                    "x": 0.0,
+                    "y": 0.7249443531036377,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.4000132083892822,
+                    "y": 0.699999988079071,
+                    "z": 0.7658069729804993
+                },
+                "position": {
+                    "x": 14.905585289001465,
+                    "y": 26.82621955871582,
+                    "z": 135.756591796875
+                },
+                "rotation": {
+                    "w": -0.6888074278831482,
+                    "x": 0.0,
+                    "y": 0.7249443531036377,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.4000132083892822,
+                    "y": 0.699999988079071,
+                    "z": 0.7658069729804993
+                }
+            },
+            "id": 48234765
+        },
+        {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "DoorR",
+                "overridenComponents": {
+                    "11935986701403193153": true
+                },
+                "overridenProperties": null,
+                "parent": 48234765,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 48234766,
+                    "prefabID": 14618781617769611293
+                },
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5
+                ],
+                "modelId": 3
+            },
+            "Rigidbody": {
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "Moving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Kinematic"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.5196855068206787,
                     "z": 3.1415927410125732
                 },
                 "localEulerAngles": {
@@ -71,78 +184,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 14.905585289001465,
-                    "y": 26.82621955871582,
-                    "z": 135.711669921875
-                },
-                "localRotation": {
-                    "w": -0.681454062461853,
-                    "x": 0.0,
-                    "y": 0.7318609356880188,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.40000399947166443,
-                    "y": 0.699999988079071,
-                    "z": 0.7657882571220398
-                },
-                "position": {
-                    "x": 14.905585289001465,
-                    "y": 26.82621955871582,
-                    "z": 135.711669921875
-                },
-                "rotation": {
-                    "w": -0.681454062461853,
-                    "x": 0.0,
-                    "y": 0.7318609356880188,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.40000396966934204,
-                    "y": 0.699999988079071,
-                    "z": 0.7657881379127502
-                }
-            },
-            "id": 48234765
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "DoorR",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 48234765,
-                "prefabID": 4294967295,
-                "prefabMetaData": {
-                    "prefabEntity": 48234766,
-                    "prefabID": 12462023588452057093
-                },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": -4.617269515991211,
-                    "z": -4.946626663208008
+                    "x": 0.00140380859375,
+                    "y": -4.617271423339844,
+                    "z": -4.946695327758789
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -151,43 +195,59 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 10.0,
+                    "x": 1.0000004768371582,
+                    "y": 9.99999713897705,
                     "z": 5.0
                 },
                 "position": {
-                    "x": 18.68402862548828,
-                    "y": 23.594131469726563,
-                    "z": 135.98153686523438
+                    "x": 18.688823699951172,
+                    "y": 23.59412956237793,
+                    "z": 135.95066833496094
                 },
                 "rotation": {
-                    "w": -0.681454062461853,
+                    "w": -0.6888074278831482,
                     "x": 0.0,
-                    "y": 0.7318609356880188,
+                    "y": 0.7249443531036377,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.40000399947166443,
-                    "y": 7.0,
-                    "z": 3.8289413452148438
+                    "x": 0.40001338720321655,
+                    "y": 6.999998092651367,
+                    "z": 3.8290350437164307
                 }
             },
             "id": 48234766
         },
         {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
                 "name": "DoorL",
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "11935986701403193153": true,
+                    "17421316227555880647": false
+                },
                 "overridenProperties": null,
                 "parent": 48234765,
                 "prefabID": 4294967295,
                 "prefabMetaData": {
                     "prefabEntity": 48234767,
-                    "prefabID": 12462023588452057093
+                    "prefabID": 14618781617769611293
                 },
                 "tag": ""
             },
@@ -197,11 +257,25 @@
                 ],
                 "modelId": 3
             },
+            "Rigidbody": {
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "Moving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Kinematic"
+            },
             "Transform": {
                 "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
+                    "x": 3.1415927410125732,
+                    "y": -1.5196855068206787,
+                    "z": 3.1415927410125732
                 },
                 "localEulerAngles": {
                     "x": 0.0,
@@ -209,9 +283,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0004119873046875,
-                    "y": -4.621637344360352,
-                    "z": 5.064215660095215
+                    "x": 0.0009765625,
+                    "y": -4.621639251708984,
+                    "z": 5.064119338989258
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -220,28 +294,134 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 10.0,
+                    "x": 1.0000004768371582,
+                    "y": 9.99999713897705,
                     "z": 5.0
                 },
                 "position": {
-                    "x": 11.037334442138672,
-                    "y": 23.591073989868164,
-                    "z": 135.4352264404297
+                    "x": 11.032489776611328,
+                    "y": 23.59107208251953,
+                    "z": 135.558837890625
                 },
                 "rotation": {
-                    "w": -0.681454062461853,
+                    "w": -0.6888074278831482,
                     "x": 0.0,
-                    "y": 0.7318609356880188,
+                    "y": 0.7249443531036377,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.40000399947166443,
-                    "y": 7.0,
-                    "z": 3.8289413452148438
+                    "x": 0.40001338720321655,
+                    "y": 6.999998092651367,
+                    "z": 3.8290350437164307
                 }
             },
             "id": 48234767
+        },
+        {
+            "BoxCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true,
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "DoorLockingMechanism",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 48234765,
+                "prefabID": 4294967295,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 14618781617769611293
+                },
+                "tag": ""
+            },
+            "Rigidbody": {
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": false,
+                "isTrigger": true,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static"
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 48234765
+                                },
+                                "name": "door"
+                            }
+                        ],
+                        "scriptId": 3666027323988967437
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.5196855068206787,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 3.0791298399890366e-09,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 15.389190673828125,
+                    "y": -5.340599060058594,
+                    "z": 0.45932960510253906
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 1.5395649199945183e-09,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 5.612080097198486,
+                    "y": 10.008723258972168,
+                    "z": 9.678812980651855
+                },
+                "position": {
+                    "x": 14.239789962768555,
+                    "y": 23.087800979614258,
+                    "z": 141.88644409179688
+                },
+                "rotation": {
+                    "w": -0.6888074278831482,
+                    "x": 0.0,
+                    "y": 0.7249443531036377,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 2.244905948638916,
+                    "y": 7.006106376647949,
+                    "z": 7.412102699279785
+                }
+            },
+            "id": 49283357
         }
     ],
     "RootEntity": 48234765

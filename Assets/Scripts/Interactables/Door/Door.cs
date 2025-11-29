@@ -9,11 +9,22 @@ class Door : Script
         Open,
         Closing
     }
+    private enum DoorType
+    {
+        Elevator,
+        Automatic,
+        Locked
+    }
     private delegate void CurrentState();
     private DoorState doorState = DoorState.Closed;
+ 
     private Dictionary<DoorState, CurrentState> updateState = new Dictionary<DoorState, CurrentState>();
 
 
+    [SerializableField]
+    private int doorType;
+    [SerializableField]
+    private float automaticDoordetectionRange = 10f;
     // Left and right door panels
     [SerializableField]
     private Transform_ leftDoor;
@@ -30,11 +41,13 @@ class Door : Script
     private Vector3 leftStart;
 
     private Vector3 rightStart;
+    private GameObject player;
 
  
     private float currentDoorMovingTime;
     protected override void init()
     {
+        player = GameObject.FindWithTag("Player");
         updateState.Add(DoorState.Open, Update_Open);
         updateState.Add(DoorState.Closed, Update_Closed);
         updateState.Add(DoorState.Opening, Update_Opening);
@@ -42,7 +55,34 @@ class Door : Script
     }
     protected override void update()
     {
-        updateState[doorState]();
+        switch ((DoorType)doorType)
+        {
+            // Door will open depending on player 
+            case DoorType.Automatic:
+                if(Vector3.Distance(player.transform.position,gameObject.transform.position) <= automaticDoordetectionRange)
+                {
+                    if (doorState != DoorState.Open && doorState != DoorState.Opening)
+                        OpenDoor();
+                }
+                else
+                {
+                    if (doorState != DoorState.Closed && doorState != DoorState.Closing)
+                        CloseDoor();
+                }
+                updateState[doorState]();
+                break;
+            // Force door to be closed
+            case DoorType.Locked:
+                if (doorState != DoorState.Closed && doorState != DoorState.Closing)
+                    CloseDoor();
+                updateState[doorState]();
+                break;
+            // Setting will be done manually by the elevator
+            case DoorType.Elevator:
+                updateState[doorState]();
+                break;
+        }
+        
     }
     private void Update_Open() { }
     private void Update_Closed() { }
@@ -50,7 +90,7 @@ class Door : Script
     private void Update_Opening()
     {
         currentDoorMovingTime -= Time.V_DeltaTime();
-
+        currentDoorMovingTime = Mathf.Max(currentDoorMovingTime, 0f);
         leftDoor.localPosition = Vector3.Lerp(leftStart + new Vector3(0, 0, openOffset), leftStart, currentDoorMovingTime/doorMovingDuration);
         rightDoor.localPosition = Vector3.Lerp(rightStart - new Vector3(0, 0, openOffset),rightStart, currentDoorMovingTime / doorMovingDuration);
 
@@ -60,6 +100,7 @@ class Door : Script
     private void Update_Closing()
     {
         currentDoorMovingTime -= Time.V_DeltaTime();
+        currentDoorMovingTime = Mathf.Max(currentDoorMovingTime, 0f);
         leftDoor.localPosition = Vector3.Lerp(leftStart - new Vector3(0, 0, openOffset), leftStart, currentDoorMovingTime / doorMovingDuration);
         rightDoor.localPosition = Vector3.Lerp(rightStart + new Vector3(0, 0, openOffset), rightStart, currentDoorMovingTime / doorMovingDuration);
 
@@ -68,8 +109,9 @@ class Door : Script
     }
     public bool IsFullyOpened() => doorState == DoorState.Open;
     public bool IsFullyClosed() => doorState == DoorState.Closed;
+    public bool IsDoorUnlocked() => (DoorType)doorType == DoorType.Automatic;
     /**********************************************************************
-        Collision Trigger Events
+        Manual Events
     **********************************************************************/
     public void OpenDoor()
     {
@@ -84,5 +126,13 @@ class Door : Script
         leftStart = leftDoor.localPosition;
         rightStart = rightDoor.localPosition;
         currentDoorMovingTime = doorMovingDuration;
+    }
+    public void LockDoor()
+    {
+        doorType = (int)DoorType.Locked;
+    }
+    public void UnlockDoor()
+    {
+        doorType = (int)DoorType.Automatic;
     }
 }
