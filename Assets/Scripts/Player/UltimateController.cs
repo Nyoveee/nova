@@ -2,6 +2,7 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
+using System.Runtime.Serialization;
 
 class UltimateController : Script
 {
@@ -21,6 +22,11 @@ class UltimateController : Script
 
     public float timeScaleSlow = 0.15f;
     public float timeScaleLerpDuration = 0.5f;
+
+    public float vignetteMultiplier = 0.6f;
+    public float vigenetteDuration = 1.0f;
+    public float vigenetteFadeOutDuration = 0.2f;
+
     // ==============================================
     // Runtime variables
     // ==============================================
@@ -30,27 +36,57 @@ class UltimateController : Script
     private bool isSlowingDownTime = false;
     private float timeScaleTimeElapsed = 0f;
 
+    private bool isAnimatingVignette = false;
+    private bool isAnimatingVignetteFadeOut = false;
+    private float vignetteTimeElapsed = 0f;
+
+
     // This function is first invoked when game starts.
     protected override void init()
     {
         MapKey(Key.E, BeginUltimateSequence);
         rigidbody = getComponent<Rigidbody_>();
+        RendererAPI.toPostProcess = true;
+        RendererAPI.vignette = 0f;
     }
 
     // This function is invoked every fixed update.
     protected override void update()
     {
-        if(isSlowingDownTime && timeScaleTimeElapsed < timeScaleLerpDuration)
+        handleVignetteLerp();
+        handleTimeScaleLerp();
+    }
+
+    private void handleVignetteLerp()
+    {
+        if (isAnimatingVignette && vignetteTimeElapsed < vigenetteDuration)
+        {
+            float interval = vignetteTimeElapsed / vigenetteDuration;
+
+            RendererAPI.vignette = Mathf.Interpolate(0f, vignetteMultiplier, interval, 1f);
+            vignetteTimeElapsed += Time.V_DeltaTime_Unscaled();
+        }
+
+        if (isAnimatingVignetteFadeOut && vignetteTimeElapsed < vigenetteFadeOutDuration)
+        {
+            float interval = vignetteTimeElapsed / vigenetteFadeOutDuration;
+
+            RendererAPI.vignette = Mathf.Interpolate(vignetteMultiplier, 0f, interval, 1f);
+            vignetteTimeElapsed += Time.V_DeltaTime_Unscaled();
+
+            if(vignetteTimeElapsed > vigenetteFadeOutDuration)
+            {
+                isAnimatingVignetteFadeOut = false;
+            }
+        }
+    }
+    private void handleTimeScaleLerp()
+    {
+        if (isSlowingDownTime && timeScaleTimeElapsed < timeScaleLerpDuration)
         {
             float interval = timeScaleTimeElapsed / timeScaleLerpDuration;
-
             Time.timeScale = Mathf.Interpolate(1f, timeScaleSlow, interval, 1f);
             timeScaleTimeElapsed += Time.V_DeltaTime_Unscaled();
-
-            if (timeScaleTimeElapsed > timeScaleLerpDuration)
-            {
-                // RendererAPI.toPostProcess = true;
-            }
         }
     }
 
@@ -69,7 +105,10 @@ class UltimateController : Script
             originalGun.enable = false;
             ultimatePose.SetActive(true);
         }, 0.2f);
-        
+
+        isAnimatingVignette = true;
+        vignetteTimeElapsed = 0;
+
         sequence.play();
     }
 
@@ -93,7 +132,9 @@ class UltimateController : Script
     {
         Time.timeScale = 1.0f;
         isSlowingDownTime = false;
-        // RendererAPI.toPostProcess = false;
+        isAnimatingVignette = false;
+        isAnimatingVignetteFadeOut = true;
+        vignetteTimeElapsed = 0f;
 
         GameObject projectile = Instantiate(ultimate, ultimatePose.transform.position);
 

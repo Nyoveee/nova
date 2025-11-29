@@ -27,10 +27,10 @@
             },
             "EntityData": {
                 "children": [
-                    1048642,
-                    1048643,
-                    1048644,
-                    1048645
+                    11,
+                    12,
+                    13,
+                    14
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -39,7 +39,7 @@
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 7579611416932171781,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 7579611416932171781
@@ -128,14 +128,14 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048645
+                                    "__variant_value": 14
                                 },
                                 "name": "projectileSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048643
+                                    "__variant_value": 12
                                 },
                                 "name": "rigidBody"
                             },
@@ -149,45 +149,33 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048642
+                                    "__variant_value": 11
                                 },
                                 "name": "ichorSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048644
+                                    "__variant_value": 13
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048644
+                                    "__variant_value": 13
                                 },
                                 "name": "renderer"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048641
+                                    "__variant_value": 10
                                 },
                                 "name": "navMeshAgent"
                             }
                         ],
                         "scriptId": 13082807837807067137
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 1048641
-                                },
-                                "name": "enemyGameObject"
-                            }
-                        ],
-                        "scriptId": 12135503810755952677
                     }
                 ]
             },
@@ -235,7 +223,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048641
+            "id": 10
         },
         {
             "EntityData": {
@@ -246,8 +234,8 @@
                 "name": "Ichor Spawn Point",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048641,
-                "prefabID": 4294967295,
+                "parent": 10,
+                "prefabID": 7579611416932171781,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 7579611416932171781
@@ -298,7 +286,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048642
+            "id": 11
         },
         {
             "BoxCollider": {
@@ -322,8 +310,8 @@
                 "name": "Gunner Collider",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048641,
-                "prefabID": 4294967295,
+                "parent": 10,
+                "prefabID": 7579611416932171781,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 7579611416932171781
@@ -353,7 +341,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1048641
+                                    "__variant_value": 10
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -406,7 +394,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048643
+            "id": 12
         },
         {
             "Animator": {
@@ -420,8 +408,8 @@
                 "name": "Gunner Model",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048641,
-                "prefabID": 4294967295,
+                "parent": 10,
+                "prefabID": 7579611416932171781,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 7579611416932171781
@@ -543,7 +531,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1048644
+            "id": 13
         },
         {
             "EntityData": {
@@ -554,8 +542,8 @@
                 "name": "Projectile Spawn Point",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1048641,
-                "prefabID": 4294967295,
+                "parent": 10,
+                "prefabID": 7579611416932171781,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 7579611416932171781
@@ -606,8 +594,8 @@
                     "z": 1.0
                 }
             },
-            "id": 1048645
+            "id": 14
         }
     ],
-    "RootEntity": 1048641
+    "RootEntity": 10
 }

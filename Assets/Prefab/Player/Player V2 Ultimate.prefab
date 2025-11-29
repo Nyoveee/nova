@@ -3,8 +3,8 @@
         {
             "EntityData": {
                 "children": [
-                    1,
-                    5
+                    9,
+                    13
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -66,7 +66,7 @@
                     "z": 1.0
                 }
             },
-            "id": 0
+            "id": 8
         },
         {
             "AudioComponent": {
@@ -103,9 +103,9 @@
             },
             "EntityData": {
                 "children": [
-                    2,
-                    3,
-                    4
+                    10,
+                    11,
+                    12
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -117,7 +117,7 @@
                     "6919815292445452220": false
                 },
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 8,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048646,
@@ -386,7 +386,7 @@
                     "z": 1.0000249147415161
                 }
             },
-            "id": 1
+            "id": 9
         },
         {
             "EntityData": {
@@ -401,7 +401,7 @@
                     "6919815292445452220": false
                 },
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 9,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 39846046,
@@ -459,7 +459,7 @@
                     "z": 5.000122547149658
                 }
             },
-            "id": 2
+            "id": 10
         },
         {
             "EntityData": {
@@ -472,7 +472,7 @@
                     "6919815292445452220": false
                 },
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 9,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 45088942,
@@ -524,7 +524,7 @@
                     "z": 1.0
                 }
             },
-            "id": 3
+            "id": 11
         },
         {
             "EntityData": {
@@ -538,7 +538,7 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 9,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 3,
@@ -590,15 +590,15 @@
                     "z": 1.0
                 }
             },
-            "id": 4
+            "id": 12
         },
         {
             "EntityData": {
                 "children": [
-                    6,
-                    7,
-                    8,
-                    14
+                    14,
+                    15,
+                    16,
+                    22
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -608,7 +608,7 @@
                     "17237801994024849853": true
                 },
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 8,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 5,
@@ -690,7 +690,7 @@
                     "z": 1.0
                 }
             },
-            "id": 5
+            "id": 13
         },
         {
             "EntityData": {
@@ -701,7 +701,7 @@
                 "name": "Head",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 5,
+                "parent": 13,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 45088941,
@@ -756,7 +756,7 @@
                     "z": 1.0
                 }
             },
-            "id": 6
+            "id": 14
         },
         {
             "CameraComponent": {
@@ -775,7 +775,7 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 5,
+                "parent": 13,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048647,
@@ -849,14 +849,14 @@
                     "z": 1.0
                 }
             },
-            "id": 7
+            "id": 15
         },
         {
             "EntityData": {
                 "children": [
-                    9,
-                    11,
-                    13
+                    17,
+                    19,
+                    21
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -866,7 +866,7 @@
                     "6919815292445452220": false
                 },
                 "overridenProperties": null,
-                "parent": 5,
+                "parent": 13,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048648,
@@ -918,7 +918,7 @@
                     "z": 1.8000000715255737
                 }
             },
-            "id": 8
+            "id": 16
         },
         {
             "AudioComponent": {
@@ -932,7 +932,7 @@
             },
             "EntityData": {
                 "children": [
-                    10
+                    18
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -942,7 +942,7 @@
                     "17237801994024849853": true
                 },
                 "overridenProperties": null,
-                "parent": 8,
+                "parent": 16,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048649,
@@ -1052,7 +1052,7 @@
                     "z": 1.8000136613845825
                 }
             },
-            "id": 9
+            "id": 17
         },
         {
             "EntityData": {
@@ -1063,7 +1063,7 @@
                 "name": "Sniper Mesh",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 9,
+                "parent": 17,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048650,
@@ -1122,7 +1122,7 @@
                     "z": 1.8000348806381226
                 }
             },
-            "id": 10
+            "id": 18
         },
         {
             "AudioComponent": {
@@ -1136,7 +1136,7 @@
             },
             "EntityData": {
                 "children": [
-                    12
+                    20
                 ],
                 "inactiveComponents": null,
                 "isActive": false,
@@ -1144,7 +1144,7 @@
                 "name": "Shotgun Holder",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 8,
+                "parent": 16,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048651,
@@ -1268,7 +1268,7 @@
                     "z": 1.8000544309616089
                 }
             },
-            "id": 11
+            "id": 19
         },
         {
             "EntityData": {
@@ -1279,7 +1279,7 @@
                 "name": "Shotgun",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 11,
+                "parent": 19,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048652,
@@ -1348,7 +1348,7 @@
                     "z": 1.7999829053878784
                 }
             },
-            "id": 12
+            "id": 20
         },
         {
             "EntityData": {
@@ -1359,7 +1359,7 @@
                 "name": "Muzzle",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 8,
+                "parent": 16,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 1048653,
@@ -1518,13 +1518,13 @@
                     "z": 1.799945592880249
                 }
             },
-            "id": 13
+            "id": 21
         },
         {
             "EntityData": {
                 "children": [
-                    15,
-                    16
+                    23,
+                    24
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -1534,7 +1534,7 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 5,
+                "parent": 13,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 33,
@@ -1586,7 +1586,7 @@
                     "z": 3.060027599334717
                 }
             },
-            "id": 14
+            "id": 22
         },
         {
             "EntityData": {
@@ -1599,7 +1599,7 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 14,
+                "parent": 22,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 30,
@@ -1658,7 +1658,7 @@
                     "z": 3.060044765472412
                 }
             },
-            "id": 15
+            "id": 23
         },
         {
             "EntityData": {
@@ -1671,7 +1671,7 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 14,
+                "parent": 22,
                 "prefabID": 9771685760784056321,
                 "prefabMetaData": {
                     "prefabEntity": 29,
@@ -1732,8 +1732,8 @@
                     "z": 3.060027599334717
                 }
             },
-            "id": 16
+            "id": 24
         }
     ],
-    "RootEntity": 0
+    "RootEntity": 8
 }
