@@ -12,7 +12,7 @@ class ShootTutorialQuest : Quest
     }
 
     public override void UpdateQuest() {
-        if (grunt == null)
+        //if (grunt == null)
             SetQuestState(QuestState.Success);
     }
 

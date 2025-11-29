@@ -44,7 +44,7 @@ class UltimateController : Script
     // This function is first invoked when game starts.
     protected override void init()
     {
-        MapKey(Key.E, BeginUltimateSequence);
+        MapKey(Key.F, BeginUltimateSequence);
         rigidbody = getComponent<Rigidbody_>();
         RendererAPI.toPostProcess = true;
         RendererAPI.vignette = 0f;
