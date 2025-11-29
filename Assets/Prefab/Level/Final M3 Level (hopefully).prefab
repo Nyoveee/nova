@@ -3,10 +3,10 @@
         {
             "EntityData": {
                 "children": [
-                    1,
-                    4,
-                    7,
-                    10
+                    19,
+                    22,
+                    25,
+                    28
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -66,13 +66,13 @@
                     "z": 0.5
                 }
             },
-            "id": 0
+            "id": 18
         },
         {
             "EntityData": {
                 "children": [
-                    2,
-                    3
+                    20,
+                    21
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -80,7 +80,7 @@
                 "name": "Tutorial Area",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 18,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -132,7 +132,7 @@
                     "z": 0.5
                 }
             },
-            "id": 1
+            "id": 19
         },
         {
             "EntityData": {
@@ -143,7 +143,7 @@
                 "name": "Tutorial Floor",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 19,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -204,7 +204,7 @@
                     "z": 0.5
                 }
             },
-            "id": 2
+            "id": 20
         },
         {
             "EntityData": {
@@ -215,7 +215,7 @@
                 "name": "Tutorial Wall",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 19,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -273,13 +273,13 @@
                     "z": 0.5
                 }
             },
-            "id": 3
+            "id": 21
         },
         {
             "EntityData": {
                 "children": [
-                    5,
-                    6
+                    23,
+                    24
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -287,7 +287,7 @@
                 "name": "Hub Area",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 18,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -339,7 +339,7 @@
                     "z": 0.5
                 }
             },
-            "id": 4
+            "id": 22
         },
         {
             "EntityData": {
@@ -350,7 +350,7 @@
                 "name": "Hub Wall",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 22,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -408,7 +408,7 @@
                     "z": 0.5
                 }
             },
-            "id": 5
+            "id": 23
         },
         {
             "EntityData": {
@@ -419,7 +419,7 @@
                 "name": "Hub Floor",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4,
+                "parent": 22,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -487,13 +487,13 @@
                     "z": 0.5
                 }
             },
-            "id": 6
+            "id": 24
         },
         {
             "EntityData": {
                 "children": [
-                    8,
-                    9
+                    26,
+                    27
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -501,7 +501,7 @@
                 "name": "Closed Ranged Area",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 18,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -553,7 +553,7 @@
                     "z": 0.5
                 }
             },
-            "id": 7
+            "id": 25
         },
         {
             "EntityData": {
@@ -564,7 +564,7 @@
                 "name": "Closed Range Floor",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 7,
+                "parent": 25,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -634,7 +634,7 @@
                     "z": 0.5
                 }
             },
-            "id": 8
+            "id": 26
         },
         {
             "EntityData": {
@@ -645,7 +645,7 @@
                 "name": "Closed Ranged Wall",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 7,
+                "parent": 25,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -703,13 +703,13 @@
                     "z": 0.5
                 }
             },
-            "id": 9
+            "id": 27
         },
         {
             "EntityData": {
                 "children": [
-                    11,
-                    12
+                    29,
+                    30
                 ],
                 "inactiveComponents": null,
                 "isActive": false,
@@ -717,7 +717,7 @@
                 "name": "Ranged Area",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 0,
+                "parent": 18,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -769,7 +769,7 @@
                     "z": 0.5
                 }
             },
-            "id": 10
+            "id": 28
         },
         {
             "EntityData": {
@@ -780,7 +780,7 @@
                 "name": "Ranged Area Floor",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 10,
+                "parent": 28,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -838,7 +838,7 @@
                     "z": 0.5
                 }
             },
-            "id": 11
+            "id": 29
         },
         {
             "EntityData": {
@@ -849,7 +849,7 @@
                 "name": "Ranged Area Wall",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 10,
+                "parent": 28,
                 "prefabID": 2688016129214054405,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -907,8 +907,8 @@
                     "z": 0.5
                 }
             },
-            "id": 12
+            "id": 30
         }
     ],
-    "RootEntity": 0
+    "RootEntity": 18
 }
