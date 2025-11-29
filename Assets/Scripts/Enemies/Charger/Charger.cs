@@ -102,6 +102,11 @@ class Charger : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage)
     {
+        if (chargerState == ChargerState.Spawning)
+        {
+            return;
+        }
+
         chargerstats.health -= damage;
         if (chargerstats.health <= 0)
         {

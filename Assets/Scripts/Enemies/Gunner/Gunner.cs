@@ -94,6 +94,11 @@ class Gunner : Enemy
     ***********************************************************/
     public override void TakeDamage(float damage)
     {
+        if(gunnerState == GunnerState.Spawning)
+        {
+            return;
+        }
+
         gunnerStats.health -= damage;
         if (gunnerStats.health <= 0)
         {

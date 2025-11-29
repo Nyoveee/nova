@@ -88,6 +88,10 @@ class Grunt : Enemy
 
     public override void TakeDamage(float damage)
     {
+        if (gruntState == GruntState.Spawning)
+        {
+            return;
+        }
 
         gruntStats.health -= damage;
         if (gruntStats.health <= 0)
