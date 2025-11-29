@@ -5,5 +5,16 @@ using ScriptingAPI;
 
 class SpawnPodLocation : Script
 {
-    public Prefab enemy;
+    public List<Prefab> enemies;
+
+    protected override void init()
+    {
+        // we use a mesh renderer to visualise where they will be spawning..
+        MeshRenderer_ meshRenderer = getComponent<MeshRenderer_>();
+
+        if(meshRenderer != null)
+        {
+            meshRenderer.enable = false;
+        }
+    }
 }

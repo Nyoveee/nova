@@ -4,6 +4,8 @@
 
 public abstract class Quest : Script
 {
+    [SerializableField]
+    private string questText;
     // State machine
     public enum QuestState
     {
@@ -35,11 +37,11 @@ public abstract class Quest : Script
     /***********************************************************
         Quest Types must inherit from this
     ***********************************************************/
-    public abstract void OnEnter();
-    public abstract void OnSuccess();
-    public abstract void OnFail(Transform_ playerTransform);
+    public virtual void OnEnter() { }
+    public virtual void OnSuccess() { }
+    public virtual void OnFail(Transform_ playerTransform){}
 
-    public abstract void UpdateQuest();
+    public virtual void UpdateQuest() { }
 
     public QuestState GetQuestState() => questState;
 
@@ -53,5 +55,6 @@ public abstract class Quest : Script
             OnQuestStateChanged.Invoke(this, new QuestStateChangedEventArgs(oldState, newState));
         }
     }
+    public string GetQuestInformation() => questText;
 
 }

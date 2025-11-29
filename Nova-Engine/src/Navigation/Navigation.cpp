@@ -694,6 +694,11 @@ void NavigationSystem::stopAgent(entt::entity entityID)
 		return;
 	}
 
+
+	if (agent == nullptr) {
+		return;
+	}
+
 	crowdManager[agent->agentName]->resetMoveTarget(GetDTCrowdIndex(agent->agentName,agent->agentIndex ));
 
 }

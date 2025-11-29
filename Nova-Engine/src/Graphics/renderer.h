@@ -129,6 +129,8 @@ public:
 	void submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3);
 
 public:
+	bool isEditorScreenShown;
+	bool isGameScreenShown;
 	bool toGammaCorrect;
 	bool toPostProcess;
 
