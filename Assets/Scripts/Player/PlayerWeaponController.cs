@@ -92,11 +92,11 @@ class PlayerWeaponController : Script
                 break;
             case WeaponControlStates.WeaponFree:
                 {
-                    if (currentlyHeldGun.currentAmmo != 0)
+                    if (currentlyHeldGun.CurrentAmmo != 0)
                     {
 
                     }
-                    else if (currentlyHeldGun.currentAmmo <= 0)
+                    else if (currentlyHeldGun.CurrentAmmo <= 0)
                     { 
                         weaponControlStates = WeaponControlStates.ArmingThrow;
                         
@@ -164,7 +164,7 @@ class PlayerWeaponController : Script
 
     private void Arming()
     {
-        if (currentlyHeldGun.currentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree ) )
+        if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree ) )
         {
 
             weaponControlStates = WeaponControlStates.ArmingThrow;
@@ -176,7 +176,7 @@ class PlayerWeaponController : Script
 
     private void Disarming()
     {
-        if (currentlyHeldGun.currentAmmo != 0 && weaponControlStates == WeaponControlStates.ArmingThrow || weaponControlStates == WeaponControlStates.ThrowReady)
+        if (currentlyHeldGun.CurrentAmmo != 0 && weaponControlStates == WeaponControlStates.ArmingThrow || weaponControlStates == WeaponControlStates.ThrowReady)
         {
 
             weaponControlStates = WeaponControlStates.DisarmingFree;

@@ -139,7 +139,7 @@ class PlayerControllerV2 : Script
         {
             gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, dashTimer, dashTimerCap);
             gameUIManager.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
-            gameUIManager.SetHealthText((int)currentHealth);
+            // gameUIManager.SetHealthText((int)currentHealth);
         }
 
     }

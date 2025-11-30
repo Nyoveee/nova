@@ -101,6 +101,7 @@ internal:
 
 private:
 	using ScriptDictionary = System::Collections::Generic::Dictionary<ScriptID, Script^>;
+
 	using Components = System::Collections::Generic::List<IManagedComponent^>;
 
 	// Stores all of the loaded scripts of a given game object.

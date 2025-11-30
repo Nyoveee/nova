@@ -279,7 +279,8 @@ ManagedComponentEnd()
 // ======================================
 ManagedComponentDeclaration(
 	Image,
-	ColorAlpha, colorTint
+	ColorAlpha, colorTint,
+	Vector2, textureCoordinatesRange
 )
 ManagedComponentEnd()
 

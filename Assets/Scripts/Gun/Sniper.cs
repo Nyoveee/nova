@@ -17,7 +17,6 @@ class Sniper : Gun
     private Vector3 startPosition;
     private Vector3 backPosition;
 
-
     protected override void update()
     {
         if (!onCooldown)
@@ -61,8 +60,7 @@ class Sniper : Gun
 
         onCooldown = true;
         isRecoiling = true;
-        currentAmmo--;
-
+        CurrentAmmo--;
 
         AudioAPI.PlaySound(gameObject, "Sniper Fire SFX");
 

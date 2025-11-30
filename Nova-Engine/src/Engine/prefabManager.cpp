@@ -97,6 +97,15 @@ void PrefabManager::mapSerializedField(entt::registry& registry, entt::entity en
 		}
 	}
 
+	Button* button = registry.try_get<Button>(entity);
+
+	if (button) {
+		auto iterator = entityMapping.find(button->reference.entity);
+		if (iterator != entityMapping.end()) {
+			button->reference.entity = iterator->second;
+		}
+	}
+
 	EntityData* entityData = registry.try_get<EntityData>(entity);
 
 	if (!entityData) {

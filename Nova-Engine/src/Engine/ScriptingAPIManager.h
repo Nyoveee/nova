@@ -27,6 +27,7 @@
 struct FieldData;
 
 // More readable function pointer syntax because C lmaoo
+using ClearRunTimeScriptsFunctionPtr		 = void (*)(void);
 using UpdateFunctionPtr				         = void (*)(void);
 using FixedUpdateFunctionPtr				 = void (*)(void);
 using AddScriptFunctionPtr			         = void (*)(unsigned int, std::size_t);
@@ -143,6 +144,7 @@ private:
 	SetScriptFieldFunctionPtr				 setScriptFieldData;
 	handleOnCollisionFunctionPtr			 handleOnCollision_;
 	ExecuteFunctionPtr				         executeFunction_;
+	ClearRunTimeScriptsFunctionPtr			 clearRunTimeScriptsFunction_;
 	GetHierarchyModifiedScriptsFunctionPtr   getHierarchyModifiedScripts_;
 
 private:

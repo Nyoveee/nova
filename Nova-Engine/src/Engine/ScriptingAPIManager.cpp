@@ -134,7 +134,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
 		executeFunction_						= GetFunctionPtr<ExecuteFunctionPtr>("Interface", "executeEntityScriptFunction");
 		getHierarchyModifiedScripts_            = GetFunctionPtr<GetHierarchyModifiedScriptsFunctionPtr>("Interface", "GetHierarchyModifiedScripts");
-
+		clearRunTimeScriptsFunction_			= GetFunctionPtr<ClearRunTimeScriptsFunctionPtr>("Interface", "clearAllRuntime");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -403,6 +403,8 @@ bool ScriptingAPIManager::startSimulation() {
 	if (compileState != CompileState::Compiled) {
 		return false;
 	}
+
+	clearRunTimeScriptsFunction_();
 
 	// Instantiate all entities' script..
 	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {

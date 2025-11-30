@@ -310,6 +310,9 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		if (isEditorScreenShown) {
 			render(editorMainFrameBuffer, editorCamera);
 
+			// Apply HDR tone mapping + gamma correction post-processing
+			renderHDRTonemapping(editorMainFrameBuffer);
+			
 			debugShader.setMatrix("model", glm::mat4{ 1.f });
 			// ===============================================
 			// Debug rendering + object ids for editor..
@@ -333,15 +336,22 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 			renderObjectIds();
 		}
+		
 		// Main render function
 		if(isGameScreenShown)
 			render(gameMainFrameBuffer, gameCamera);
+
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
+		
 		if (isGameScreenShown) {
 			overlayUIToBuffer(gameMainFrameBuffer);
 			renderUiObjectIds();
 		}
+
+		// Apply HDR tone mapping + gamma correction post-processing
+		renderHDRTonemapping(gameMainFrameBuffer);
+
 		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
@@ -356,6 +366,9 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		if (renderConfig == RenderConfig::Game) {
 			renderToDefaultFBO();
 		}
+
+		// Apply HDR tone mapping + gamma correction post-processing
+		renderHDRTonemapping(gameMainFrameBuffer);
 
 		break;
 	default:
@@ -375,7 +388,10 @@ void Renderer::renderUI()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	setDepthMode(DepthTestingMethod::NoDepthWriteTest);
-	setBlendMode(BlendingConfig::AlphaBlending);
+
+	glEnable(GL_BLEND);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+	glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
 
 	glBindVertexArray(textVAO);
 
@@ -438,7 +454,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 		renderPostProcessing(frameBuffers);
 
 	// Apply HDR tone mapping + gamma correction post-processing
-	renderHDRTonemapping(frameBuffers);
+	// renderHDRTonemapping(frameBuffers);
 }
 
 void Renderer::renderToDefaultFBO() {
@@ -552,7 +568,13 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
+	
 	setBlendMode(BlendingConfig::AlphaBlending);
+
+	// Overlaying UI layers require special form of alpha blending.
+	//glEnable(GL_BLEND);
+	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+	////glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
@@ -1116,7 +1138,8 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
-	texture2dShader.setVec2("textureCoordinatesMultiplier", image.textureCoordinatesMultiplier);
+
+	texture2dShader.setVec2("textureCoordinatesRange", image.textureCoordinatesRange);
 	texture2dShader.setMatrix("uiProjection", UIProjection);
 	texture2dShader.setInt("image", 0);
 	texture2dShader.setBool("toFlip", image.toFlip);

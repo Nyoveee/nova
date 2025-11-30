@@ -14,6 +14,6 @@ layout (location = 0) out vec4 FragColor;
 
 void main()
 {
-    vec4 color = texture(image, fsIn.textureUnit * textureCoordinatesMultiplier);
+    vec4 color = texture(image, fsIn.textureUnit);
     FragColor = color;
 }
