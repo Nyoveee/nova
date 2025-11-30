@@ -62,6 +62,7 @@ public:
 	ENGINE_DLL_API void quit();
 
 	ENGINE_DLL_API float getDeltaTime() const;
+	ENGINE_DLL_API float getAccumulatedTime() const; //ALL FOR THE SAKE OF SMOOTH CAMERA LERP!
 
 public:
 	ENGINE_DLL_API int getGameWidth() const;

@@ -258,6 +258,10 @@ void Engine::SystemsUnload() {
 void Engine::quit() {
 	window.quit();
 }
+float Engine::getAccumulatedTime() const {
+	return window.getAccumulatedTime();
+}
+
 
 float Engine::getDeltaTime() const {
 	return window.getDeltaTime();

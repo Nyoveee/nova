@@ -56,6 +56,7 @@ public:
 	ENGINE_DLL_API void toggleFullScreen();
 	ENGINE_DLL_API float fps() const;
 	ENGINE_DLL_API float getDeltaTime() const;
+	ENGINE_DLL_API float getAccumulatedTime() const;
 
 	ENGINE_DLL_API void quit();
 

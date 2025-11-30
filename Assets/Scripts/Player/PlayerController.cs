@@ -32,6 +32,8 @@ class PlayerController : Script
     [SerializableField]
     private Transform_? playerOrientation = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
     [SerializableField]
+    private PlayerRotateController? playerHead = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence
+    [SerializableField]
     private GameUIManager? gameUIManager = null;
 
     // ==================================
@@ -64,6 +66,12 @@ class PlayerController : Script
     private bool enabled = true;
     public bool ToEnable { get { return enabled; } set { enabled = value; } }
 
+
+    //Fix DT problem
+    public Transform_ lastFDTTransform; //this is the last update position in fixed DT
+    public float      accumulatedTime;
+
+
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -79,7 +87,7 @@ class PlayerController : Script
         dashTimerCap = dashCooldown * dashCount;
         dashTimer = dashTimerCap;
 
-
+        lastFDTTransform = gameObject.transform;
 
         MapKey(Key.W, beginWalkingForward, endWalkingForward);
         MapKey(Key.A, beginWalkingLeft, endWalkingLeft);
@@ -94,6 +102,8 @@ class PlayerController : Script
     // This function is invoked every fixed update.
     protected override void fixedUpdate()
     {
+
+        lastFDTTransform = transform;
         // ===================================
         // Check if its grounded..
         // ===================================
@@ -190,17 +200,97 @@ class PlayerController : Script
 
         //if (isMoving)
         //{
+        //    Vector3 currentVelocity = rigidbody.GetVelocity();
         //    directionVector.Normalize();
-        //    Vector3 movingVector = directionVector * maximumMoveSpeed * Time.V_DeltaTime();
+        //    Vector3 movingVector = directionVector * maximumMoveSpeed * Time.V_FixedDeltaTime();
 
-        //    transform.position += movingVector;
+        //    //rigidbody.SetVelocity(movingVector);
+        //    transform.localPosition += movingVector;
 
         //}
         //// Stop user from moving if grounded, in the case where user has not pressed any key..
         //else if (isGrounded)
         //{
-        //    // rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
+        //    rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
         //}
+
+
+        //// ==============================
+        //// Handles WASD movement, we calculate the oriented directional vector from input..
+        //// ==============================
+        //Vector3 orientedFront = new Vector3(playerOrientation.front.x, 0, playerOrientation.front.z);
+        //Vector3 orientedRight = new Vector3(playerOrientation.right.x, 0, playerOrientation.right.z);
+
+        //Vector3 directionVector = Vector3.Zero();
+
+        //orientedFront.Normalize();
+        //orientedRight.Normalize();
+
+        //// We accumulate all directional input command..
+        //bool isMoving = false;
+
+        //if (isMovingForward)
+        //{
+        //    directionVector += orientedFront;
+        //    isMoving = true;
+        //}
+        //if (isMovingBackward)
+        //{
+        //    directionVector -= orientedFront;
+        //    isMoving = true;
+
+        //}
+        //if (isMovingLeft)
+        //{
+        //    directionVector -= orientedRight;
+        //    isMoving = true;
+
+        //}
+        //if (isMovingRight)
+        //{
+        //    directionVector += orientedRight;
+        //    isMoving = true;
+        //}
+
+        //// ==============================
+        //// We calculate resulting velocity based on input..
+        //// ==============================
+
+        //// This frame, user has at least pressed one movement key..
+        //if (isMoving)
+        //{
+        //    directionVector.Normalize();
+        //    Vector3 movingVector = directionVector * maximumMoveSpeed;
+
+        //    if (isGrounded)
+        //    {
+        //        Vector3 newVelocity = new Vector3(movingVector.x, rigidbody.GetVelocity().y, movingVector.z);
+        //        rigidbody.SetVelocity(newVelocity);
+        //    }
+        //    else
+        //    {
+        //        Vector3 forceVector = new Vector3(movingVector.x, 0f, movingVector.z);
+        //        rigidbody.AddForce(forceVector * accelerationStrength);
+        //    }
+
+        //    // Speed consistency.. we clamp it's speed based on some max move speed.. (mid air)
+        //    Vector3 flatVelocity = new Vector3(rigidbody.GetVelocity().x, 0f, rigidbody.GetVelocity().z);
+        //    float length = flatVelocity.Length();
+
+        //    if (length > maximumMoveSpeed)
+        //    {
+        //        flatVelocity.Normalize();
+        //        Vector3 clampedVelocity = flatVelocity * maximumMoveSpeed;
+        //        rigidbody.SetVelocity(new Vector3(clampedVelocity.x, rigidbody.GetVelocity().y, clampedVelocity.z));
+        //    }
+        //}
+        //// Stop user from moving if grounded, in the case where user has not pressed any key..
+        //else if (isGrounded)
+        //{
+        //    rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
+        //}
+
+
 
 
     }
@@ -236,6 +326,7 @@ class PlayerController : Script
     ***********************************************************/
     private void handleMovement()
     {
+        playerHead.lockOutRotate = true;
         // ==============================
         // Handles WASD movement, we calculate the oriented directional vector from input..
         // ==============================
@@ -246,6 +337,7 @@ class PlayerController : Script
 
         orientedFront.Normalize();
         orientedRight.Normalize();
+
 
         // We accumulate all directional input command..
         bool isMoving = false;
@@ -310,6 +402,58 @@ class PlayerController : Script
         {
             rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
         }
+
+        
+        //// ==============================
+        //// Handles WASD movement, we calculate the oriented directional vector from input..
+        //// ==============================
+        //Vector3 orientedFront = new Vector3(playerOrientation.front.x, 0, playerOrientation.front.z);
+        //Vector3 orientedRight = new Vector3(playerOrientation.right.x, 0, playerOrientation.right.z);
+
+        //Vector3 directionVector = Vector3.Zero();
+
+        //orientedFront.Normalize();
+        //orientedRight.Normalize();
+
+        //// We accumulate all directional input command..
+        //bool isMoving = false;
+
+        //if (isMovingForward)
+        //{
+        //    directionVector += orientedFront;
+        //    isMoving = true;
+        //}
+        //if (isMovingBackward)
+        //{
+        //    directionVector -= orientedFront;
+        //    isMoving = true;
+
+        //}
+        //if (isMovingLeft)
+        //{
+        //    directionVector -= orientedRight;
+        //    isMoving = true;
+
+        //}
+        //if (isMovingRight)
+        //{
+        //    directionVector += orientedRight;
+        //    isMoving = true;
+        //}
+
+        //if (isMoving)
+        //{
+        //    directionVector.Normalize();
+        //    Vector3 movingVector = directionVector * maximumMoveSpeed * Time.V_DeltaTime();
+
+        //    transform.position += movingVector;
+
+        //}
+        //// Stop user from moving if grounded, in the case where user has not pressed any key..
+        //else if (isGrounded)
+        //{
+        //    // rigidbody.SetVelocity(new Vector3(0f, rigidbody.GetVelocity().y, 0f));
+        //}
     }
 
     private void handleDashing()
