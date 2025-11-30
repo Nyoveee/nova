@@ -6,16 +6,14 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Fog",
-                "overridenComponents": {
-                    "3548010661223935717": true
-                },
+                "name": "AmmoTrails",
+                "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 12949793333334310941,
+                "prefabID": 14030885946471890945,
                 "prefabMetaData": {
-                    "prefabEntity": 40894644,
-                    "prefabID": 12949793333334310941
+                    "prefabEntity": 0,
+                    "prefabID": 14030885946471890945
                 },
                 "tag": ""
             },
@@ -30,15 +28,15 @@
                         "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": true
+                    "selected": false
                 },
                 "force": {
-                    "x": 7.412868876278282e-43,
+                    "x": 0.0,
                     "y": 0.0,
-                    "z": 6.866362475191604e-44
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 10.0,
+                "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -47,16 +45,16 @@
                 },
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
-                "maxParticles": 200,
+                "maxParticles": 1000,
                 "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
-                        "a": 0.0117647061124444,
-                        "b": 0.501960813999176,
-                        "g": 0.501960813999176,
-                        "r": 0.501960813999176
+                        "a": 1.0,
+                        "b": 1.0,
+                        "g": 1.0,
+                        "r": 1.0
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
@@ -87,24 +85,24 @@
                             "z": -5.0
                         }
                     },
-                    "emissionShape": "Circle",
+                    "emissionShape": "Point",
                     "radiusEmitter": {
-                        "radius": 100.0
+                        "radius": 5.0
                     }
                 },
-                "particleRate": 20.0,
+                "particleRate": 100.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
                     "selected": false
                 },
-                "startSize": 25.0,
-                "startSpeed": 0.20000000298023224,
-                "texture": 8273860645742952571,
+                "startSize": 1.0,
+                "startSpeed": 1.0,
+                "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -123,8 +121,53 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 12983095345617403905
                 }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 1,
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    }
+                                },
+                                "name": "endPosition"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 1,
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    }
+                                },
+                                "name": "startPosition"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.10000000149011612
+                                },
+                                "name": "killTime"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.10000000149011612
+                                },
+                                "name": "totalDuration"
+                            }
+                        ],
+                        "scriptId": 12406634593317568515
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
@@ -138,9 +181,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 19.41333770751953,
-                    "y": 20.6324462890625,
-                    "z": 59.32004928588867
+                    "x": 2.19580078125,
+                    "y": 1.270921230316162,
+                    "z": 0.1915949285030365
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -154,9 +197,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 19.41333770751953,
-                    "y": 20.6324462890625,
-                    "z": 59.32004928588867
+                    "x": 2.19580078125,
+                    "y": 1.270921230316162,
+                    "z": 0.1915949285030365
                 },
                 "rotation": {
                     "w": 1.0,
@@ -170,8 +213,8 @@
                     "z": 1.0
                 }
             },
-            "id": 1
+            "id": 0
         }
     ],
-    "RootEntity": 1
+    "RootEntity": 0
 }

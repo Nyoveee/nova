@@ -472,8 +472,17 @@ class ThrowableRifle : Script
                 currentIchorGained = 0;
                 mappedWeapon.currentAmmo++;
             }
-        
-            Destroy(other);
+
+
+            if (other.getScript<Ichor>() != null)
+            {
+                other.getScript<Ichor>().PullTowardsGun(gameObject.transform.position);
+
+
+
+            }
+
+          //  Destroy(other);
         
         }
 

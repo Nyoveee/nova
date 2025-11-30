@@ -2,6 +2,7 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+using ScriptingAPI;
 using System;
 
 public abstract class Gun : Script
@@ -10,7 +11,6 @@ public abstract class Gun : Script
     public int currentSp;
     public int maxAmmo;
     public int maxSp;
-
 
 
 
@@ -51,6 +51,10 @@ public abstract class Gun : Script
             enemyColliderScript.OnColliderShot(damage,Enemy.EnemydamageType.WeaponShot,collidedEntity.tag);
             return true;
         }
+
+
+        
+
 
         return false;
     }
