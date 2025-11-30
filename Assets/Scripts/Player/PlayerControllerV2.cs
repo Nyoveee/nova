@@ -129,7 +129,7 @@ class PlayerControllerV2 : Script
         // ===================================
         else
         {
-            dashTimer = Mathf.Clamp(dashTimer + Time.V_DeltaTime(), 0f, dashTimerCap);
+            dashTimer = Mathf.Clamp(dashTimer + Time.V_FixedDeltaTime(), 0f, dashTimerCap);
             handleMovement();
         }
         // ===================================
@@ -320,7 +320,7 @@ class PlayerControllerV2 : Script
 
         // constantly apply velocity.
         rigidbody.SetVelocity(dashVector * dashStrength);
-        dashTimeElapsed += Time.V_DeltaTime();
+        dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
