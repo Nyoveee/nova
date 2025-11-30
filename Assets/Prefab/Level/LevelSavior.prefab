@@ -1,0 +1,2336 @@
+{
+    "Entities": [
+        {
+            "EntityData": {
+                "children": [
+                    14,
+                    27
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "LevelSavior",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 13
+        },
+        {
+            "EntityData": {
+                "children": [
+                    15,
+                    18,
+                    21,
+                    24
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Final M3 Level V2",
+                "overridenComponents": {
+                    "6919815292445452220": true
+                },
+                "overridenProperties": null,
+                "parent": 13,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 14
+        },
+        {
+            "EntityData": {
+                "children": [
+                    16,
+                    17
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Tutorial Area",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 14,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 1,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 15
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Tutorial Floor",
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "9059764703561530457": false
+                },
+                "overridenProperties": null,
+                "parent": 15,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 2,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1004452720811704379,
+                    1004452720811704379,
+                    1004452720811704379,
+                    1004452720811704379
+                ],
+                "modelId": 15992432280698109965
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 16
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Tutorial Wall",
+                "overridenComponents": {
+                    "9059764703561530457": true
+                },
+                "overridenProperties": null,
+                "parent": 15,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 3,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Wall"
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    17145353785307807805
+                ],
+                "modelId": 8498442500753621007
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 17
+        },
+        {
+            "EntityData": {
+                "children": [
+                    19,
+                    20
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Hub Area",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 14,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 4,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 18
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Hub Wall",
+                "overridenComponents": {
+                    "10106385962890515953": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": true
+                },
+                "overridenProperties": null,
+                "parent": 18,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 5,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Wall"
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    6769060243856588867
+                ],
+                "modelId": 15415971528394555399
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 19
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Hub Floor",
+                "overridenComponents": {
+                    "10106385962890515953": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": true
+                },
+                "overridenProperties": null,
+                "parent": 18,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 6,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265,
+                    13110128519189299265
+                ],
+                "modelId": 7921981748450033669
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 20
+        },
+        {
+            "EntityData": {
+                "children": [
+                    22,
+                    23
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Closed Ranged Area",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 14,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 7,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 21
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Closed Range Floor",
+                "overridenComponents": {
+                    "10106385962890515953": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": true
+                },
+                "overridenProperties": null,
+                "parent": 21,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 8,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391,
+                    4463217234652856391
+                ],
+                "modelId": 17145353785304809473
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 22
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Closed Ranged Wall",
+                "overridenComponents": {
+                    "10106385962890515953": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": true
+                },
+                "overridenProperties": null,
+                "parent": 21,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 9,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Wall"
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    16568893033024421957
+                ],
+                "modelId": 9074903253056880643
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 23
+        },
+        {
+            "EntityData": {
+                "children": [
+                    25,
+                    26
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Ranged Area",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 14,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 10,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 24
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Ranged Area Floor",
+                "overridenComponents": {
+                    "10106385962890515953": true,
+                    "11935986701403193153": false,
+                    "9059764703561530457": true
+                },
+                "overridenProperties": null,
+                "parent": 24,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 11,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 100.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    10182005909152825345
+                ],
+                "modelId": 4678730310118129665
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 25
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Ranged Area Wall",
+                "overridenComponents": {
+                    "10106385962890515953": false,
+                    "11935986701403193153": false,
+                    "9059764703561530457": true
+                },
+                "overridenProperties": null,
+                "parent": 24,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 12,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Wall"
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 14263050023787839499
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.03500000014901161,
+                    "y": 0.03500000014901161,
+                    "z": 0.03500000014901161
+                }
+            },
+            "id": 26
+        },
+        {
+            "EntityData": {
+                "children": [
+                    28,
+                    31
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "PlatformPrefab",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 13,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 27
+        },
+        {
+            "EntityData": {
+                "children": [
+                    29,
+                    30
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Close Ranged Platforms",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 27,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 28
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform1",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 28,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    16568893033024421957
+                ],
+                "modelId": 873733983203049473
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 198.64794921875,
+                    "y": 14.165366172790527,
+                    "z": 104.9029312133789
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 198.64794921875,
+                    "y": 14.165366172790527,
+                    "z": 104.9029312133789
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 29
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform2",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 28,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    16568893033024421957
+                ],
+                "modelId": 12979409781574942723
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 145.22744750976563,
+                    "y": -13.231599807739258,
+                    "z": 143.70114135742188
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 145.22744750976563,
+                    "y": -13.231599807739258,
+                    "z": 143.70114135742188
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 30
+        },
+        {
+            "EntityData": {
+                "children": [
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
+                    38,
+                    39,
+                    40
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Ranged Area Platforms",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 27,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 31
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform1",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 5911230068369801217
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 70.72270202636719,
+                    "y": -18.833080291748047,
+                    "z": -141.6201171875
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 70.72270202636719,
+                    "y": -18.833080291748047,
+                    "z": -141.6201171875
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 32
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform2",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 10522916086797205507
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 85.36341094970703,
+                    "y": -18.83300018310547,
+                    "z": -191.3363037109375
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 85.36341094970703,
+                    "y": -18.83300018310547,
+                    "z": -191.3363037109375
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 33
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform3",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 5334769316066394117
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 96.32486724853516,
+                    "y": -23.382953643798828,
+                    "z": -202.79042053222656
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 96.32486724853516,
+                    "y": -23.382953643798828,
+                    "z": -202.79042053222656
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 34
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform4",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 16287523609831440391
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 81.38560485839844,
+                    "y": -28.297443389892578,
+                    "z": -180.69973754882813
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 81.38560485839844,
+                    "y": -28.297443389892578,
+                    "z": -180.69973754882813
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 35
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform5",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 3605387059156123657
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.014274375513195992,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.014274376444518566,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 72.48704528808594,
+                    "y": -0.40900731086730957,
+                    "z": -181.8887481689453
+                },
+                "localRotation": {
+                    "w": 0.9999745488166809,
+                    "x": 0.0,
+                    "y": -0.007137128617614508,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.000001072883606,
+                    "y": 1.0,
+                    "z": 1.000001072883606
+                },
+                "position": {
+                    "x": 72.48704528808594,
+                    "y": -0.40900731086730957,
+                    "z": -181.8887481689453
+                },
+                "rotation": {
+                    "w": 0.9999745488166809,
+                    "x": 0.0,
+                    "y": -0.007137129083275795,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.000001072883606,
+                    "y": 1.0,
+                    "z": 1.000001072883606
+                }
+            },
+            "id": 36
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform6",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 18016905866741710859
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 66.62669372558594,
+                    "y": -4.497228622436523,
+                    "z": -173.82574462890625
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 66.62669372558594,
+                    "y": -4.497228622436523,
+                    "z": -173.82574462890625
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 37
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform7",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 3605387059156123661
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 53.42942810058594,
+                    "y": -26.01801300048828,
+                    "z": -155.91514587402344
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 53.42942810058594,
+                    "y": -26.01801300048828,
+                    "z": -155.91514587402344
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 38
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform8",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 1299544049942429711
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 65.58103942871094,
+                    "y": -24.631061553955078,
+                    "z": -199.00653076171875
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 65.58103942871094,
+                    "y": -24.631061553955078,
+                    "z": -199.00653076171875
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 39
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Platform9",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 31,
+                "prefabID": 295302906686521345,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 295302906686521345
+                },
+                "tag": "Floor"
+            },
+            "MeshCollider": {
+                "shapeScale": 0.03999999910593033
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 10522916086797205521
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": false,
+                "layer": "NonMoving",
+                "mass": 10.0,
+                "motionQuality": "Discrete",
+                "motionType": "Static",
+                "toScaleWithTransform": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 80.24217987060547,
+                    "y": -25.760265350341797,
+                    "z": -196.83865356445313
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 80.24217987060547,
+                    "y": -25.760265350341797,
+                    "z": -196.83865356445313
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 40
+        }
+    ],
+    "RootEntity": 13
+}
