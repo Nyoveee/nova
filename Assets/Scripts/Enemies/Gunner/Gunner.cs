@@ -274,7 +274,6 @@ class Gunner : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAt(targetVantagePoint);
     }
     private void Update_Shoot()
     {

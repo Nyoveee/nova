@@ -1,15 +1,12 @@
 {
     "entities": [
         {
-            "CameraComponent": {
-                "camStatus": true
-            },
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Camera",
+                "name": "NavMeshSurface_Humanoid",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
@@ -20,51 +17,214 @@
                 },
                 "tag": ""
             },
+            "NavMeshSurface": {
+                "label": "Humanoid",
+                "navMeshId": 2189198408433270785
+            },
             "Transform": {
                 "eulerAngles": {
-                    "x": 0.5608598589897156,
+                    "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
-                    "x": 0.5608598589897156,
+                    "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 12.84253215789795,
-                    "z": -20.267385482788086
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "localRotation": {
-                    "w": 0.9609365463256836,
-                    "x": 0.2767688035964966,
+                    "w": 1.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
                     "x": 1.0,
-                    "y": 0.9999951124191284,
-                    "z": 0.9999951124191284
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 12.84253215789795,
-                    "z": -20.267385482788086
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "rotation": {
-                    "w": 0.9609365463256836,
-                    "x": 0.2767688035964966,
+                    "w": 1.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
                     "x": 1.0,
-                    "y": 0.9999951124191284,
-                    "z": 0.9999951124191284
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 1048612
+            "id": 1048613
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "manager",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 9,
+                                    "__variant_value": 2376792765867245569
+                                },
+                                "name": "cubePrefab"
+                            }
+                        ],
+                        "scriptId": 11234819069356212225
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 45088959
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Light",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 5.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 30.0,
+                "type": "PointLight"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 20.525354385375977,
+                    "z": 1.7847204208374023
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 316.1185607910156,
+                    "y": 1.0,
+                    "z": 3.4735755920410156
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 20.525354385375977,
+                    "z": 1.7847204208374023
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 316.1185607910156,
+                    "y": 1.0,
+                    "z": 3.4735755920410156
+                }
+            },
+            "id": 45088960
         },
         {
             "BoxCollider": {
@@ -165,12 +325,15 @@
             "id": 46137537
         },
         {
+            "CameraComponent": {
+                "camStatus": true
+            },
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Light",
+                "name": "Camera",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
@@ -181,214 +344,51 @@
                 },
                 "tag": ""
             },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 5.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 30.0,
-                "type": "PointLight"
-            },
             "Transform": {
                 "eulerAngles": {
-                    "x": 0.0,
+                    "x": 0.5608598589897156,
                     "y": -0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
-                    "x": 0.0,
+                    "x": 0.5608598589897156,
                     "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 20.525354385375977,
-                    "z": 1.7847204208374023
+                    "y": 12.84253215789795,
+                    "z": -20.267385482788086
                 },
                 "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 316.1185607910156,
-                    "y": 1.0,
-                    "z": 3.4735755920410156
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 20.525354385375977,
-                    "z": 1.7847204208374023
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 316.1185607910156,
-                    "y": 1.0,
-                    "z": 3.4735755920410156
-                }
-            },
-            "id": 45088960
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "manager",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
-                "tag": ""
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 9,
-                                    "__variant_value": 2376792765867245569
-                                },
-                                "name": "cubePrefab"
-                            }
-                        ],
-                        "scriptId": 11234819069356212225
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
+                    "w": 0.9609365463256836,
+                    "x": 0.2767688035964966,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
                     "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "y": 0.9999951124191284,
+                    "z": 0.9999951124191284
                 },
                 "position": {
                     "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "y": 12.84253215789795,
+                    "z": -20.267385482788086
                 },
                 "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
+                    "w": 0.9609365463256836,
+                    "x": 0.2767688035964966,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
                     "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                    "y": 0.9999951124191284,
+                    "z": 0.9999951124191284
                 }
             },
-            "id": 45088959
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "NavMeshSurface_Humanoid",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
-                "tag": ""
-            },
-            "NavMeshSurface": {
-                "label": "Humanoid",
-                "navMeshId": 2189198408433270785
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048613
+            "id": 1048612
         }
     ],
     "layers": [
