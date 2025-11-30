@@ -406,9 +406,10 @@ struct AudioData
 struct AudioComponent 
 {
 	std::unordered_map<std::string, AudioData> data {};
-
+	bool loop{};
 	REFLECTABLE(
-		data
+		data,
+		loop
 	)
 };
 

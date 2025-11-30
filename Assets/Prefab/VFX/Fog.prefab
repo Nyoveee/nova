@@ -12,10 +12,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 18446744073709551615,
+                "prefabID": 3426281012760051721,
                 "prefabMetaData": {
-                    "prefabEntity": 1048628,
-                    "prefabID": 1691832203641815041
+                    "prefabEntity": 40894644,
+                    "prefabID": 3426281012760051721
                 },
                 "tag": ""
             },
@@ -25,20 +25,20 @@
                 "colorOverLifetime": {
                     "endColor": {
                         "a": 0.0,
-                        "b": 0.501960813999176,
-                        "g": 0.501960813999176,
-                        "r": 0.501960813999176
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "interpolationType": "Linear",
                     "selected": true
                 },
                 "force": {
-                    "x": 0.0,
+                    "x": 7.412868876278282e-43,
                     "y": 0.0,
-                    "z": 0.0
+                    "z": 6.866362475191604e-44
                 },
                 "initialAngularVelocity": 0.0,
-                "lifeTime": 20.0,
+                "lifeTime": 10.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -47,11 +47,13 @@
                 },
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
-                "maxParticles": 100,
+                "maxParticles": 200,
+                "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
+                "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
-                        "a": 0.003921568859368563,
+                        "a": 0.0117647061124444,
                         "b": 0.501960813999176,
                         "g": 0.501960813999176,
                         "r": 0.501960813999176
@@ -70,19 +72,19 @@
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
-                        "arc": 0.0,
-                        "distance": 10.0
+                        "arc": 30.0,
+                        "distance": 5.0
                     },
                     "cubeEmitter": {
                         "max": {
-                            "x": 10.0,
+                            "x": 5.0,
                             "y": 5.0,
-                            "z": 10.0
+                            "z": 5.0
                         },
                         "min": {
-                            "x": -10.0,
+                            "x": -5.0,
                             "y": -5.0,
-                            "z": -10.0
+                            "z": -5.0
                         }
                     },
                     "emissionShape": "Circle",
@@ -90,7 +92,7 @@
                         "radius": 100.0
                     }
                 },
-                "particleRate": 10.0,
+                "particleRate": 20.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -98,7 +100,7 @@
                     "selected": false
                 },
                 "startSize": 25.0,
-                "startSpeed": 0.5,
+                "startSpeed": 0.20000000298023224,
                 "texture": 8273860645742952571,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -136,9 +138,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 19.41333770751953,
+                    "y": 20.6324462890625,
+                    "z": 59.32004928588867
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -152,9 +154,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 19.41333770751953,
+                    "y": 20.6324462890625,
+                    "z": 59.32004928588867
                 },
                 "rotation": {
                     "w": 1.0,
@@ -168,8 +170,8 @@
                     "z": 1.0
                 }
             },
-            "id": 40894644
+            "id": 35
         }
     ],
-    "RootEntity": 40894644
+    "RootEntity": 35
 }

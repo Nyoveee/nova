@@ -38,15 +38,20 @@ class Door : Script
     private float doorMovingDuration = 2f;
 
     // Positions
-    private Vector3 leftStart;
-
-    private Vector3 rightStart;
+    private Vector3 leftStartClosed;
+    private Vector3 rightStartClosed;
+    private Vector3 leftStartOpen;
+    private Vector3 rightStartOpen;
     private GameObject player;
 
  
     private float currentDoorMovingTime;
     protected override void init()
     {
+        leftStartClosed = leftDoor.localPosition;
+        rightStartClosed = rightDoor.localPosition;
+        leftStartOpen = leftDoor.localPosition - new Vector3(openOffset, 0, 0);
+        rightStartOpen = rightDoor.localPosition + new Vector3(openOffset, 0, 0);
         player = GameObject.FindWithTag("Player");
         updateState.Add(DoorState.Open, Update_Open);
         updateState.Add(DoorState.Closed, Update_Closed);
@@ -91,8 +96,8 @@ class Door : Script
     {
         currentDoorMovingTime -= Time.V_DeltaTime();
         currentDoorMovingTime = Mathf.Max(currentDoorMovingTime, 0f);
-        leftDoor.localPosition = Vector3.Lerp(leftStart + new Vector3(0, 0, openOffset), leftStart, currentDoorMovingTime/doorMovingDuration);
-        rightDoor.localPosition = Vector3.Lerp(rightStart - new Vector3(0, 0, openOffset),rightStart, currentDoorMovingTime / doorMovingDuration);
+        leftDoor.localPosition = Vector3.Lerp(leftStartOpen, leftStartClosed, currentDoorMovingTime/doorMovingDuration);
+        rightDoor.localPosition = Vector3.Lerp(rightStartOpen, rightStartClosed, currentDoorMovingTime / doorMovingDuration);
 
         if (currentDoorMovingTime <= 0f)
             doorState = DoorState.Open;
@@ -101,8 +106,8 @@ class Door : Script
     {
         currentDoorMovingTime -= Time.V_DeltaTime();
         currentDoorMovingTime = Mathf.Max(currentDoorMovingTime, 0f);
-        leftDoor.localPosition = Vector3.Lerp(leftStart - new Vector3(0, 0, openOffset), leftStart, currentDoorMovingTime / doorMovingDuration);
-        rightDoor.localPosition = Vector3.Lerp(rightStart + new Vector3(0, 0, openOffset), rightStart, currentDoorMovingTime / doorMovingDuration);
+        leftDoor.localPosition = Vector3.Lerp(leftStartClosed, leftStartOpen, currentDoorMovingTime / doorMovingDuration);
+        rightDoor.localPosition = Vector3.Lerp(rightStartClosed, rightStartOpen, currentDoorMovingTime / doorMovingDuration);
 
         if (currentDoorMovingTime <= 0f)
             doorState = DoorState.Closed;
@@ -116,16 +121,16 @@ class Door : Script
     public void OpenDoor()
     {
         doorState = DoorState.Opening;
-        leftStart = leftDoor.localPosition;
-        rightStart = rightDoor.localPosition;
+
         currentDoorMovingTime = doorMovingDuration;
+        AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
     }
     public void CloseDoor()
     {
         doorState = DoorState.Closing;
-        leftStart = leftDoor.localPosition;
-        rightStart = rightDoor.localPosition;
+
         currentDoorMovingTime = doorMovingDuration;
+        AudioAPI.PlaySound(gameObject, "slidingDoor_close_01");
     }
     public void LockDoor()
     {

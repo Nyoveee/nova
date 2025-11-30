@@ -131,6 +131,7 @@ public:
 public:
 	bool isEditorScreenShown;
 	bool isGameScreenShown;
+	bool isUIScreenShown;
 	bool toGammaCorrect;
 	bool toPostProcess;
 

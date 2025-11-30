@@ -15,11 +15,15 @@ class GameBGMManager : Script
     private BGMState bgmState = BGMState.NonCombat;
     private Dictionary<BGMState, CurrentState> updateState = new Dictionary<BGMState, CurrentState>();
     private float currentTransitionTimer = 0f;
+    private float currentBufferTime;
     /***********************************************************
         Inspector Variables
     ***********************************************************/
     [SerializableField]
     private float transitionTime;
+    [SerializableField]
+    private float bufferTime;
+ 
     // This function is first invoked when game starts.
     protected override void init()
     {
@@ -27,6 +31,7 @@ class GameBGMManager : Script
         updateState.Add(BGMState.NonCombat, NonCombatState);
         updateState.Add(BGMState.Transition, TransitionState);
         updateState.Add(BGMState.Combat, CombatState);
+        currentBufferTime = bufferTime;
     }
 
     // This function is invoked every fixed update.
@@ -34,15 +39,18 @@ class GameBGMManager : Script
     {
         updateState[bgmState]();
     }
-    private bool IsAnyEnemyInCombat()
+    private bool IsInCombat()
     {
         GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] pods = GameObject.FindGameObjectsWithTag("Pod");
+        if (pods.Length > 0)
+            return true;
         foreach(GameObject gameObject in gameObjects)
         {
-            Grunt? grunt = gameObject.getScript<Grunt>();
-            if (grunt == null)
+            Enemy? enemy = gameObject.getScript<Enemy>();
+            if (enemy == null)
                 continue;
-            if (grunt.IsEngagedInBattle())
+            if (enemy.IsEngagedInBattle())
                 return true;
         }
         return false;
@@ -52,20 +60,27 @@ class GameBGMManager : Script
    **********************************************************************/
     private void NonCombatState()
     {
-        if (IsAnyEnemyInCombat())
+        if (IsInCombat())
         {
-            bgmState = BGMState.Transition;
-            AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-Transition_Linear_140bpm");
-            currentTransitionTimer = 0f;
+            currentBufferTime -= Time.V_DeltaTime();
+            if (currentBufferTime <= 0f)
+            {
+                bgmState = BGMState.Transition;
+                AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-Transition_Linear_140bpm");
+                currentTransitionTimer = 0f;
+            }
         }
+        else
+            currentBufferTime = bufferTime;
     }
     private void TransitionState()
     {
         currentTransitionTimer += Time.V_DeltaTime();
         if(currentTransitionTimer >= transitionTime){
-            if (IsAnyEnemyInCombat()){
+            if (IsInCombat()){
                 bgmState = BGMState.Combat;
                 AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-2nd-Part_DubStep_Loop_140bpm");
+                currentBufferTime = bufferTime;
                 return;
             }
             bgmState = BGMState.NonCombat;
@@ -74,13 +89,18 @@ class GameBGMManager : Script
     }
     private void CombatState()
     {
-        if (!IsAnyEnemyInCombat())
+        if (!IsInCombat())
         {
-            bgmState = BGMState.Transition;
-            AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-Transition_Linear_140bpm");
-            currentTransitionTimer = 0f;
+            currentBufferTime -= Time.V_DeltaTime();
+            if (currentBufferTime <= 0f)
+            {
+                bgmState = BGMState.Transition;
+                AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-Transition_Linear_140bpm");
+                currentTransitionTimer = 0f;
+                return;
+            }
         }
+        else
+            currentBufferTime = bufferTime;
     }
-   
-
 }

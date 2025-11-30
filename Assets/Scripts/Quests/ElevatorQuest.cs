@@ -7,7 +7,19 @@ class ElevatorQuest : Quest
     private GameObject checkPointIndicator;
     [SerializableField]
     private Elevator elevator;
-
+    [SerializableField]
+    private GameObject missionObjectiveContainer;
+    [SerializableField]
+    private GameObject questInformationContainer;
+    [SerializableField]
+    private Vector3 newMissionObjectiveUILocation;
+    [SerializableField]
+    private Vector3 newQuestInformationUILocation;
+    public override void OnEnter()
+    {
+        missionObjectiveContainer.transform.localPosition = newMissionObjectiveUILocation;
+        questInformationContainer.transform.localPosition = newQuestInformationUILocation;
+    }
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);
