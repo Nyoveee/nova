@@ -101,7 +101,8 @@ class MainMenuFade : Script
     // This function is invoked every fixed update.
     protected override void update()
     {
-        timeElapsed += Time.V_DeltaTime();
+        //timeElapsed += ;
+        Debug.Log(Time.V_DeltaTime());
 
         // Phase 1: Fade in the logo (0 to 1.5 seconds)
         if (!logoFadeComplete)

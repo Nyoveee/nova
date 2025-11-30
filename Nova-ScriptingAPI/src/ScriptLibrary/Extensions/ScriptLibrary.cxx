@@ -9,8 +9,8 @@ float Time::V_DeltaTime()				{ return Interface::engine->getDeltaTime() * Interf
 float Time::V_AccumulatedTime()			{ return Interface::engine->getAccumulatedTime() * Interface::engine->deltaTimeMultiplier; }
 
 float Time::V_AccumulatedTime_Unscaled()			{ return Interface::engine->getAccumulatedTime(); }
-float Time::V_FixedDeltaTime_Unscaled() { return 1 / 60.f; }
-float Time::V_DeltaTime_Unscaled()		{ return Interface::engine->getDeltaTime(); }
+float Time::V_FixedDeltaTime_Unscaled()				{ return 1 / 60.f; }
+float Time::V_DeltaTime_Unscaled()					{ return Interface::engine->getDeltaTime(); }
 
 // ======================================
 // Debug and logging..

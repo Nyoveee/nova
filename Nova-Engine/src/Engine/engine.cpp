@@ -13,7 +13,7 @@
 #include "ECS/SceneManager.h"
 
 
-Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, ScriptingEngineState scriptingEngineState) :
+Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state) :
 	window					{ window },
 	resourceManager			{ resourceManager },
 	inputManager            { inputManager },
@@ -34,11 +34,12 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	prefabManager			{ *this },
 	dataManager				{ *this },
 	deltaTimeMultiplier		{ 1.f },
-	isPaused				{ false }
+	isPaused				{ false },
+	engineState				{ state }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
 
-	if (scriptingEngineState == ScriptingEngineState::Ready) {
+	if (state == State::Game) {
 		scriptingAPIManager.forceLoadAssembly();
 	}
 }
@@ -163,6 +164,10 @@ void Engine::stopSimulation() {
 
 		gameLockMouse(false);
 		isPaused = false;
+
+		if (engineState == State::Game) {
+			window.quit();
+		}
 	};
 }
 
@@ -236,6 +241,8 @@ void Engine::SystemsOnLoad() {
 	// unpause all systems when loaded.. and clear accumulated dt
 	isPaused = false;
 	window.clearAccumulatedTime();
+
+	deltaTimeMultiplier = 1.f;
 }
 
 
@@ -251,13 +258,12 @@ void Engine::SystemsUnload() {
 
 	renderer.hdrExposure = 0.9f;
 	renderer.vignette = 0.f;
-
-	deltaTimeMultiplier = 1.f;
 }
 
 void Engine::quit() {
-	window.quit();
+	stopSimulation();
 }
+
 float Engine::getAccumulatedTime() const {
 	return window.getAccumulatedTime();
 }
