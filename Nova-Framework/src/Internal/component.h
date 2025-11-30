@@ -361,12 +361,17 @@ struct Image {
 	} anchorMode = AnchorMode::Center;
 
 	bool toFlip = false;
+	
+	glm::vec2 textureCoordinatesMultiplier { 1.f, 1.f };
+	bool toTile = false;
 
 	REFLECTABLE(
 		texture,
 		colorTint,
 		anchorMode,
-		toFlip
+		toFlip,
+		textureCoordinatesMultiplier,
+		toTile
 	)
 };
 

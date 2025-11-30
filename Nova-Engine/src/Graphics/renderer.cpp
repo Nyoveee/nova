@@ -1101,9 +1101,6 @@ void Renderer::renderText(Transform const& transform, Text const& text)
 void Renderer::renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier)
 {
 	texture2dShader.use();
-	texture2dShader.setMatrix("uiProjection", UIProjection);
-	texture2dShader.setInt("image", 0);
-	texture2dShader.setBool("toFlip", image.toFlip);
 
 	// Get texture resource
 	auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
@@ -1119,6 +1116,11 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
+	texture2dShader.setVec2("textureCoordinatesMultiplier", image.textureCoordinatesMultiplier);
+	texture2dShader.setMatrix("uiProjection", UIProjection);
+	texture2dShader.setInt("image", 0);
+	texture2dShader.setBool("toFlip", image.toFlip);
+	texture2dShader.setBool("toTile", image.toTile);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureId);
