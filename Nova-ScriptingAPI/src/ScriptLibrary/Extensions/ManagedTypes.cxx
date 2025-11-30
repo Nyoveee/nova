@@ -81,6 +81,22 @@ Vector3 Vector3::Lerp(Vector3 a, Vector3 b, float interval) {
 	return Vector3{ std::lerp(a.x, b.x, interval), std::lerp(a.y, b.y, interval), std::lerp(a.z, b.z, interval) };
 }
 
+Vector3 Vector3::Proj(Vector3 vector, Vector3 onNormal)
+{
+	//Intsert code here
+
+	// (a.b/ b.mag()^2) * b;
+
+	return  (Dot(vector, onNormal) / (onNormal.Length() * onNormal.Length())) * onNormal;
+}
+
+Vector3 Vector3::Cross(Vector3 lhs, Vector3 rhs)
+{
+	return Vector3{glm::cross(lhs.native(), rhs.native())};
+
+
+}
+
 // =================================================================
 // QUATERNION
 // =================================================================
@@ -105,6 +121,15 @@ Quaternion Quaternion::LookRotation(Vector3 directionTOLook) {
 	directionTOLook.Normalize();
 	return Quaternion{ glm::quatLookAt( (-directionTOLook).native(), glm::vec3{0,1,0} )};
 }
+
+Quaternion Quaternion::AngleAxis(float angle, Vector3 axis)
+{
+
+	return Quaternion{ glm::angleAxis(angle, axis.native()) };
+
+
+}
+
 
 
 //Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {

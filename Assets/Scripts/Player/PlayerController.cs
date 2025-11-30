@@ -326,7 +326,7 @@ class PlayerController : Script
     ***********************************************************/
     private void handleMovement()
     {
-        playerHead.lockOutRotate = true;
+
         // ==============================
         // Handles WASD movement, we calculate the oriented directional vector from input..
         // ==============================
@@ -372,6 +372,7 @@ class PlayerController : Script
         // This frame, user has at least pressed one movement key..
         if (isMoving)
         {
+            playerHead.lockOutRotate = true;
             directionVector.Normalize();
             Vector3 movingVector = directionVector * maximumMoveSpeed;
 
@@ -458,8 +459,9 @@ class PlayerController : Script
 
     private void handleDashing()
     {
+        playerHead.lockOutRotate = true;
         // We finished dashing..
-        if(dashTimeElapsed > dashDuration)
+        if (dashTimeElapsed > dashDuration)
         {
             isDashing = false;
             rigidbody.SetVelocity(Vector3.Zero());

@@ -176,7 +176,7 @@ class PlayerWeaponController : Script
 
     private void Disarming()
     {
-        if (currentlyHeldGun.currentAmmo != 0 && weaponControlStates == WeaponControlStates.ArmingThrow || weaponControlStates == WeaponControlStates.ThrowReady)
+        if (currentlyHeldGun.currentAmmo != 0 && (weaponControlStates == WeaponControlStates.ArmingThrow || weaponControlStates == WeaponControlStates.ThrowReady))
         {
 
             weaponControlStates = WeaponControlStates.DisarmingFree;
@@ -222,6 +222,11 @@ class PlayerWeaponController : Script
        // RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front,500f,layerMask);
 
         RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f,playerCollider);
+
+
+       
+
+
         //Do a raycast to objects
         if (result != null)
         {
@@ -229,10 +234,21 @@ class PlayerWeaponController : Script
             targetDirection.Normalize();
 
             thrownRifle.getScript<ThrowableRifle>().flightPath = targetDirection;
+
+            thrownRifle.getScript<ThrowableRifle>().SeekTarget(playerCamera.position, result.Value.point);
+
+
         }
         else
         {
             thrownRifle.getScript<ThrowableRifle>().flightPath = playerCamera.front;
+
+            Vector3 endPoint = (playerCamera.front - playerCamera.position) * 500f;
+
+            endPoint += playerCamera.position;
+
+
+            thrownRifle.getScript<ThrowableRifle>().SeekTarget(throwPosition.position,endPoint);
         }
 
         currentlyHeldGun.gameObject.SetActive(false);
@@ -263,6 +279,60 @@ class PlayerWeaponController : Script
     {
         gunHolder.localPosition = gunPosition.localPosition;
     }
+
+
+
+    //public GameObject SeekTarget(Vector3 origin, Vector3 end, float seekDistance)
+    //{
+    //    GameObject[] candidateEnemies = GameObject.FindGameObjectsWithTag("Enemy_WeakSpot");
+
+    //    Vector3 rayCast = end - origin;
+
+    //    GameObject candidateTarget = null;
+
+    //    float smallestDistance = float.PositiveInfinity;
+
+    //    foreach (var enemy in candidateEnemies)
+    //    {
+    //        Vector3 otherVector = enemy.transform.position - origin;
+
+    //        Vector3 pointOnLine = Vector3.Proj(otherVector, rayCast);
+
+    //        if (Vector3.Distance(pointOnLine + origin, enemy.transform.position) > seekDistance)
+    //        {
+    //            continue;
+    //        }
+
+    //        float t = Vector3.Dot(pointOnLine, rayCast);
+
+
+    //        //is on line segment?
+    //        if (t > 0 && pointOnLine.Length() < rayCast.Length())
+    //        {
+    //            float currentDistance = Vector3.Distance(pointOnLine + origin, enemy.transform.position);
+
+    //            if (currentDistance < smallestDistance)
+    //            {
+
+    //                smallestDistance = currentDistance;
+    //                candidateTarget = enemy;
+    //            }
+
+    //        }
+
+
+
+
+    //    }
+    //    if (candidateTarget != null)
+    //    {
+    //        return candidateTarget;
+    //    }
+    //    return null;
+
+    //}
+
+
 
 
     private void SwapWeaponHandler(float scrollDelta)

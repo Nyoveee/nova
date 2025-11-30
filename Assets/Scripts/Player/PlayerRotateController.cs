@@ -33,7 +33,6 @@ class PlayerRotateController : Script
         accumulateDifferenceY = 0;
 
         height = gameObject.transform.position.y - playerBody.position.y;
-        Time.timeScale = 1f;
     }
 
     // This function is invoked every fixed update.
