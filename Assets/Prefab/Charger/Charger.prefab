@@ -18,15 +18,16 @@
                         "stopAudio": false,
                         "volume": 1.0
                     }
-                }
+                },
+                "loop": false
             },
             "BoxCollider": {
                 "offset": {
                     "x": 0.0,
-                    "y": 3.2019999027252197,
-                    "z": 1.0
+                    "y": 2.700000047683716,
+                    "z": 0.0
                 },
-                "scaleWithTransform": true,
+                "scaleWithTransform": false,
                 "shapeScale": {
                     "x": 2.0,
                     "y": 2.4000000953674316,
@@ -35,15 +36,15 @@
             },
             "EntityData": {
                 "children": [
+                    5,
+                    6,
                     7,
                     8,
                     9,
                     10,
                     11,
-                    12,
-                    13,
-                    22,
-                    23
+                    20,
+                    21
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -57,10 +58,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 10461915178448781313,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": "Enemy"
             },
@@ -84,7 +85,7 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "isRotatable": false,
+                "isRotatable": true,
                 "isTrigger": false,
                 "layer": "Enemy_HurtSpot",
                 "mass": 0.0,
@@ -113,42 +114,42 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 8
+                                    "__variant_value": 6
                                 },
                                 "name": "attackHitBoxTransform"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 11
+                                    "__variant_value": 9
                                 },
                                 "name": "stompHitBoxTransform"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 10
+                                    "__variant_value": 4
                                 },
                                 "name": "chargingRigidbody"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 6
+                                    "__variant_value": 21
                                 },
                                 "name": "navMeshRigidbody"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 12
+                                    "__variant_value": 10
                                 },
                                 "name": "emitter"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 13
+                                    "__variant_value": 11
                                 },
                                 "name": "chargeLines"
                             },
@@ -162,28 +163,28 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 9
+                                    "__variant_value": 7
                                 },
                                 "name": "ichorSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 7
+                                    "__variant_value": 5
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 7
+                                    "__variant_value": 5
                                 },
                                 "name": "renderer"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 6
+                                    "__variant_value": 4
                                 },
                                 "name": "navMeshAgent"
                             }
@@ -347,7 +348,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 6
+                                    "__variant_value": 4
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -400,7 +401,7 @@
                     "z": 1.0
                 }
             },
-            "id": 6
+            "id": 4
         },
         {
             "Animator": {
@@ -412,13 +413,15 @@
                 "isActive": true,
                 "layerId": 0,
                 "name": "Charger Model",
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "6919815292445452220": true
+                },
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 1,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": "Enemy"
             },
@@ -538,7 +541,7 @@
                     "z": 1.0
                 }
             },
-            "id": 7
+            "id": 5
         },
         {
             "EntityData": {
@@ -549,23 +552,23 @@
                 "name": "AttackHitBoxPosition",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 2,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.06822509318590164,
+                    "y": -0.06822508573532104,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.06822508573532104,
+                    "y": -0.06822510063648224,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -576,7 +579,7 @@
                 "localRotation": {
                     "w": 0.9994181990623474,
                     "x": 0.0,
-                    "y": -0.03410593420267105,
+                    "y": -0.03410593047738075,
                     "z": 0.0
                 },
                 "localScale": {
@@ -592,7 +595,7 @@
                 "rotation": {
                     "w": 0.999418318271637,
                     "x": 0.0,
-                    "y": -0.03410593047738075,
+                    "y": -0.034105926752090454,
                     "z": 0.0
                 },
                 "scale": {
@@ -601,7 +604,7 @@
                     "z": 0.9999910593032837
                 }
             },
-            "id": 8
+            "id": 6
         },
         {
             "EntityData": {
@@ -612,11 +615,11 @@
                 "name": "IchorSpawnPoint",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 3,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -664,7 +667,7 @@
                     "z": 1.0
                 }
             },
-            "id": 9
+            "id": 7
         },
         {
             "BoxCollider": {
@@ -693,11 +696,11 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 4,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": "Enemy_ArmouredSpot"
             },
@@ -724,7 +727,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 6
+                                    "__variant_value": 4
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -777,7 +780,7 @@
                     "z": 1.0
                 }
             },
-            "id": 10
+            "id": 8
         },
         {
             "EntityData": {
@@ -788,11 +791,11 @@
                 "name": "StompHitboxPosition",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 5,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -840,7 +843,7 @@
                     "z": 1.0
                 }
             },
-            "id": 11
+            "id": 9
         },
         {
             "EntityData": {
@@ -851,11 +854,11 @@
                 "name": "Emitter",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 6,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -873,9 +876,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -932,15 +935,15 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 100.0,
+                "particleRate": 0.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
                     "selected": false
                 },
-                "startSize": 0.10000000149011612,
-                "startSpeed": 1.0,
+                "startSize": 0.5,
+                "startSpeed": 20.0,
                 "texture": 5391556884225917121,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
@@ -1010,31 +1013,31 @@
                     "z": 1.0
                 }
             },
-            "id": 12
+            "id": 10
         },
         {
             "EntityData": {
                 "children": [
+                    12,
+                    13,
                     14,
                     15,
                     16,
                     17,
                     18,
-                    19,
-                    20,
-                    21
+                    19
                 ],
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Lines",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 7,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -1082,22 +1085,24 @@
                     "z": 1.0
                 }
             },
-            "id": 13
+            "id": 11
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 1",
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "3548010661223935717": true
+                },
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 8,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -1115,9 +1120,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -1179,14 +1184,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1205,7 +1210,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -1252,22 +1257,22 @@
                     "z": 1.0
                 }
             },
-            "id": 14
+            "id": 12
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 2",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 9,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -1285,9 +1290,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -1349,14 +1354,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1375,7 +1380,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -1422,22 +1427,22 @@
                     "z": 1.0
                 }
             },
-            "id": 15
+            "id": 13
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 3",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 10,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -1455,9 +1460,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -1519,14 +1524,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1545,7 +1550,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -1592,22 +1597,22 @@
                     "z": 1.0
                 }
             },
-            "id": 16
+            "id": 14
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 4",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 11,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -1625,9 +1630,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -1689,14 +1694,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1715,7 +1720,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -1762,22 +1767,22 @@
                     "z": 1.0
                 }
             },
-            "id": 17
+            "id": 15
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 5",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 12,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -1795,9 +1800,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -1859,14 +1864,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -1885,7 +1890,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -1932,22 +1937,22 @@
                     "z": 1.0
                 }
             },
-            "id": 18
+            "id": 16
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 6",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 13,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -1965,9 +1970,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -2029,14 +2034,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -2055,7 +2060,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -2102,22 +2107,22 @@
                     "z": 1.0
                 }
             },
-            "id": 19
+            "id": 17
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 7",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 14,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -2135,9 +2140,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -2199,14 +2204,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -2225,7 +2230,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -2272,22 +2277,22 @@
                     "z": 1.0
                 }
             },
-            "id": 20
+            "id": 18
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": true,
+                "isActive": false,
                 "layerId": 0,
                 "name": "Charge Line 8",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
-                "prefabID": 10461915178448781313,
+                "parent": 11,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 15,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": ""
             },
@@ -2305,9 +2310,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -2369,14 +2374,14 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -2395,7 +2400,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 5391556884225917121
                 }
             },
             "Transform": {
@@ -2442,7 +2447,7 @@
                     "z": 1.0
                 }
             },
-            "id": 21
+            "id": 19
         },
         {
             "EntityData": {
@@ -2453,11 +2458,11 @@
                 "name": "Charger_WeakSpot",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": "Enemy_WeakSpot"
             },
@@ -2484,7 +2489,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 6
+                                    "__variant_value": 4
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -2545,7 +2550,7 @@
                     "z": 1.0
                 }
             },
-            "id": 22
+            "id": 20
         },
         {
             "EntityData": {
@@ -2556,11 +2561,11 @@
                 "name": "ChargerCollider2",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 6,
-                "prefabID": 10461915178448781313,
+                "parent": 4,
+                "prefabID": 2631202165997649921,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 10461915178448781313
+                    "prefabID": 2631202165997649921
                 },
                 "tag": "Enemy_ArmouredSpot"
             },
@@ -2587,7 +2592,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 6
+                                    "__variant_value": 4
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -2648,8 +2653,8 @@
                     "z": 1.0
                 }
             },
-            "id": 23
+            "id": 21
         }
     ],
-    "RootEntity": 6
+    "RootEntity": 4
 }

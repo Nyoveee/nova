@@ -237,7 +237,7 @@ class Grunt : Enemy
             Debug.LogWarning("Missing Reference Found");
             return;
         }
-        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius)
+        if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(gameObject))
         {
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
@@ -254,7 +254,7 @@ class Grunt : Enemy
             LookAt(GetTargetJumpPosition());
             return;
         }
-        if (GetDistanceFromPlayer() > gruntStats.chasingRadius)
+        if (GetDistanceFromPlayer() > gruntStats.chasingRadius || !HasLineOfSightToPlayer(gameObject))
         {
             animator.PlayAnimation("Grunt Idle (Base)");
             gruntState = GruntState.Idle;

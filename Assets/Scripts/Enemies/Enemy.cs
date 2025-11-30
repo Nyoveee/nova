@@ -110,7 +110,12 @@ public abstract class Enemy : Script
     {
         return player != null ? Vector3.Distance(player.transform.position, gameObject.transform.position) : 0f;
     }
-
+    protected bool HasLineOfSightToPlayer(GameObject from)
+    {
+        string[] layerMask = { "Wall","Floor" };
+        float distance = Vector3.Distance(from.transform.position, player.transform.position);
+        return PhysicsAPI.Linecast(from.transform.position, player.transform.position, layerMask) == null;
+    }
 
     protected void SpawnIchorFrame()
     { 
