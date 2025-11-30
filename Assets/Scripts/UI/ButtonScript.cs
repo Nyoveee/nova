@@ -37,4 +37,9 @@ class ButtonScript : Script
     {
         Systems.Quit();
     }
+
+    public void Restart()
+    {
+        Systems.Restart();
+    }
 }
