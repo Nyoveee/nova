@@ -106,6 +106,9 @@ Window::Window(const char* name, Dimension dimension, GameConfig gameConfig, Con
 
 	if (viewportConfig == Viewport::ChangeDuringResize) {
 		glfwSetFramebufferSizeCallback(glfwWindow, window_size_callback);
+
+		// set it up once.
+		window_size_callback(glfwWindow, windowWidth, windowHeight);
 	}
 
 	glfwSetKeyCallback			(glfwWindow, key_callback);
@@ -248,6 +251,10 @@ void Window::toggleFullScreen()
 	isFullScreen = !isFullScreen;
 }
 
+GameConfig const& Window::getGameConfig() const {
+	return gameConfig;
+}
+
 void Window::toEnableMouse(bool toEnable) {
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, toEnable ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
 }
@@ -262,6 +269,10 @@ float Window::fps() const {
 
 void Window::setGameViewPort(GameViewPort p_gameViewPort) {
 	gameViewPort = p_gameViewPort;
+}
+
+Window::GameViewPort Window::getGameViewPort() const {
+	return gameViewPort;
 }
 
 glm::vec2 Window::getNormalizedViewportPos() const {
@@ -372,9 +383,36 @@ namespace {
 		Logger::error("{}", ss.str());
 	}
 
-	void window_size_callback(GLFWwindow* window, int width, int height) {
-		(void) window;
-		glViewport(0, 0, width, height);
+	void window_size_callback(GLFWwindow*, int width, int height) {
+		// Specified dimension for our game.
+		float gameWidth = static_cast<float>(g_Window->getGameConfig().gameWidth);
+		float gameHeight = static_cast<float>(g_Window->getGameConfig().gameHeight);
+
+		float ratio = 1.f;
+		float imageWidth;
+		float imageHeight;
+
+		ratio = gameWidth / static_cast<float>(width);
+		imageWidth = static_cast<float>(width);
+		imageHeight = gameHeight / ratio;
+
+		if (imageHeight > height) {
+			ratio = imageHeight / static_cast<float>(height);
+			imageWidth /= ratio;
+			imageHeight = static_cast<float>(height);
+		}
+
+		float centerXOffset = (static_cast<float>(width) - imageWidth) / 2.f;
+		float centerYOffset = (static_cast<float>(height) - imageHeight) / 2.f;
+
+		Window::GameViewPort resizedGameViewPort {
+			.topLeftX = static_cast<int>(centerXOffset),
+			.topLeftY = static_cast<int>(centerYOffset),
+			.gameWidth = static_cast<int>(imageWidth),
+			.gameHeight = static_cast<int>(imageHeight)
+		};
+
+		g_Window->setGameViewPort(resizedGameViewPort);
 	}
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {

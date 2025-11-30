@@ -169,6 +169,10 @@ void Engine::stopSimulation() {
 			window.quit();
 		}
 	};
+
+	if (engineState == State::Game) {
+		setupSimulationFunction.value()();
+	}
 }
 
 int Engine::getGameWidth() const {

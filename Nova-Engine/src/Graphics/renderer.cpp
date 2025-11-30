@@ -444,12 +444,21 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 void Renderer::renderToDefaultFBO() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	glViewport(
+		engine.window.getGameViewPort().topLeftX,
+		engine.window.getGameViewPort().topLeftY,
+		engine.window.getGameViewPort().gameWidth,
+		engine.window.getGameViewPort().gameHeight
+	);
+
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glViewport(0, 0, gameWidth, gameHeight);
 
 	glDisable(GL_BLEND);
 }
