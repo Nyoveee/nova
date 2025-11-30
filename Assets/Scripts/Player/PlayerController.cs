@@ -102,7 +102,7 @@ class PlayerController : Script
     // This function is invoked every fixed update.
     protected override void fixedUpdate()
     {
-        playerHead.lockOutRotate = true;
+
         lastFDTTransform = transform;
         // ===================================
         // Check if its grounded..
@@ -326,6 +326,7 @@ class PlayerController : Script
     ***********************************************************/
     private void handleMovement()
     {
+        playerHead.lockOutRotate = true;
         // ==============================
         // Handles WASD movement, we calculate the oriented directional vector from input..
         // ==============================
