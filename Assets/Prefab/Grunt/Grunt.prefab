@@ -18,12 +18,12 @@
             },
             "EntityData": {
                 "children": [
-                    14,
-                    15,
-                    16,
-                    17,
-                    18,
-                    19
+                    23,
+                    24,
+                    25,
+                    26,
+                    27,
+                    28
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -58,7 +58,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 15
+                                    "__variant_value": 24
                                 },
                                 "name": "emitter"
                             },
@@ -72,7 +72,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 16
+                                    "__variant_value": 25
                                 },
                                 "name": "hitboxPosition"
                             },
@@ -86,7 +86,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 17
+                                    "__variant_value": 26
                                 },
                                 "name": "rigidbody"
                             },
@@ -100,28 +100,28 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 18
+                                    "__variant_value": 27
                                 },
                                 "name": "ichorSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 14
+                                    "__variant_value": 23
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 14
+                                    "__variant_value": 23
                                 },
                                 "name": "renderer"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 13
+                                    "__variant_value": 22
                                 },
                                 "name": "navMeshAgent"
                             }
@@ -263,7 +263,7 @@
                     "z": 1.0
                 }
             },
-            "id": 13
+            "id": 22
         },
         {
             "Animator": {
@@ -277,7 +277,7 @@
                 "name": "Grunt Model",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
+                "parent": 22,
                 "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -400,7 +400,7 @@
                     "z": 1.0
                 }
             },
-            "id": 14
+            "id": 23
         },
         {
             "EntityData": {
@@ -411,7 +411,7 @@
                 "name": "Emitter",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
+                "parent": 22,
                 "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -570,7 +570,7 @@
                     "z": 1.0001755952835083
                 }
             },
-            "id": 15
+            "id": 24
         },
         {
             "EntityData": {
@@ -581,7 +581,7 @@
                 "name": "Hitbox Position",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
+                "parent": 22,
                 "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -633,7 +633,7 @@
                     "z": 0.6369405388832092
                 }
             },
-            "id": 16
+            "id": 25
         },
         {
             "BoxCollider": {
@@ -657,7 +657,7 @@
                 "name": "Grunt Collider",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
+                "parent": 22,
                 "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -688,7 +688,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 13
+                                    "__variant_value": 22
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -741,7 +741,7 @@
                     "z": 1.0
                 }
             },
-            "id": 17
+            "id": 26
         },
         {
             "EntityData": {
@@ -752,7 +752,7 @@
                 "name": "Ichor Spawn Point",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
+                "parent": 22,
                 "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -804,7 +804,7 @@
                     "z": 1.0
                 }
             },
-            "id": 18
+            "id": 27
         },
         {
             "EntityData": {
@@ -815,7 +815,7 @@
                 "name": "Grunt WeakSpot",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 13,
+                "parent": 22,
                 "prefabID": 9308993673842245635,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -846,7 +846,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 13
+                                    "__variant_value": 22
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -907,8 +907,8 @@
                     "z": 1.0
                 }
             },
-            "id": 19
+            "id": 28
         }
     ],
-    "RootEntity": 13
+    "RootEntity": 22
 }

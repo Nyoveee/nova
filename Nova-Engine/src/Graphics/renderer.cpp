@@ -362,13 +362,13 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
 
+		// Apply HDR tone mapping + gamma correction post-processing
+		renderHDRTonemapping(gameMainFrameBuffer);
+
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
 			renderToDefaultFBO();
 		}
-
-		// Apply HDR tone mapping + gamma correction post-processing
-		renderHDRTonemapping(gameMainFrameBuffer);
 
 		break;
 	default:

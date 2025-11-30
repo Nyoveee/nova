@@ -97,6 +97,9 @@ static Vector3 One();
 static Vector3 Zero();
 static float Dot(Vector3 a, Vector3 b);
 static Vector3 Lerp(Vector3 a, Vector3 b, float interval);
+static Vector3 Proj(Vector3 vector, Vector3 onNormal);
+static Vector3 Cross(Vector3 lhs, Vector3 rhs);
+
 
 
 ManagedStructEnd(Vector3, glm::vec3)
@@ -135,6 +138,7 @@ static Vector3 operator*(Vector3 axis, Quaternion quaternion);
 static Quaternion Identity();
 static Quaternion Slerp(Quaternion a, Quaternion b, float t);
 static Quaternion LookRotation(Vector3 directionToLook);
+static Quaternion AngleAxis(float angle, Vector3 axis);
 
 ManagedStructEnd(Quaternion, glm::quat)
 

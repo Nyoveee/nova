@@ -76,12 +76,14 @@
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
+    <TargetName>Ichorus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Internal;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Resource;$(ProjectDir)src;$(SolutionDir)Nova-Engine\src;$(WindowsSDK_IncludePath);$(SolutionDir)Include;$(VC_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
+    <TargetName>Ichorus</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

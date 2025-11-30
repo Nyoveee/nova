@@ -252,7 +252,7 @@ class Charger : Enemy
     ***********************************************************/
     private void Update_Idle(){
         currentChargeCooldown -= Time.V_DeltaTime();
-        if (GetDistanceFromPlayer() < chargerstats.chasingRange)
+        if (GetDistanceFromPlayer() < chargerstats.chasingRange && HasLineOfSightToPlayer(gameObject))
         {
             chargerState = ChargerState.Walk;
             animator.PlayAnimation("ChargerWalk");
@@ -260,7 +260,7 @@ class Charger : Enemy
         }
     }
     private void Update_Walk() {
-        if(GetDistanceFromPlayer() > chargerstats.chasingRange)
+        if(GetDistanceFromPlayer() > chargerstats.chasingRange || !HasLineOfSightToPlayer(gameObject))
         {
             chargerState = ChargerState.Idle;
             animator.PlayAnimation("ChargerIdle");
@@ -417,7 +417,7 @@ class Charger : Enemy
     {
         if(other.tag == "Player" && chargerState == ChargerState.Charging)
         {
-            PlayerController playerController = other.getScript<PlayerController>();
+            PlayerControllerV2 playerController = other.getScript<PlayerControllerV2>();
             playerController.TakeDamage(chargerstats.chargeDamage);
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");

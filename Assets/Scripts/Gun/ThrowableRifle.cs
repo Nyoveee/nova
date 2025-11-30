@@ -42,11 +42,15 @@ class ThrowableRifle : Script
     [SerializableField]
     private float baseSeekStrength = 30f; //rotatation strength in degrees
     [SerializableField]
-    private float startSteeringDistance = 10f;
+    private float startSteeringDistance = 50f;
     [SerializableField]
-    private float maxSteeringDistance =   5f;
+    private float maxSteeringDistance =   40f;
+    [SerializableField]
+    private float seekDistance = 3f;
     [SerializableField]
     private float fakeGravity = 9.8f; //a little downward velocity so there is a throwing arc
+    [SerializableField]
+    private float angledFlight = 1f; //a little downward velocity so there is a throwing arc
     [SerializableField]
     private int ichorPerAmmo = 2; //gain X amount of ammo per ichor
     [SerializableField]
@@ -68,12 +72,13 @@ class ThrowableRifle : Script
     private float calculatedTrueDamage;
     private Rigidbody_? weaponRB;
 
-    private GameObject targetObject;
+    private GameObject targetObject = null;
     private ThrowingWeaponState throwingWeaponState;
     private bool seekingFailed = true; //Need to call seeking
     private float timeElapsed = 0f;
     private List<GameObject> hasDamageList = new List<GameObject>();
     private float playerHeight =5.0f;
+
 
     public enum ThrowingWeaponState
     { 
@@ -104,6 +109,45 @@ class ThrowableRifle : Script
 
        throwingWeaponState = ThrowingWeaponState.Seeking;
         
+
+
+
+    }
+
+    public void InitWeapon()
+    {
+
+        flightPath.Normalize();
+        angledFlight *= Mathf.Deg2Rad;
+        Vector3 angledFlightPath = Quaternion.AngleAxis(angledFlight, Vector3.Cross(Vector3.Up(), flightPath)) * flightPath;
+
+        
+
+        weaponRB.SetVelocity(angledFlightPath * weaponFlyingSpeed);
+        angledFlightPath.Normalize();
+        gameObject.transform.rotation = Quaternion.LookRotation(angledFlightPath);
+
+        
+
+        //Quaternion baseRotation = Quaternion.LookRotation(flightPath);
+        //Quaternion angleOffset = Quaternion.Euler(angledFlight, 0f, 0f);
+
+        //Quaternion finalRotation = baseRotation * angleOffset;
+
+        //// The new direction is the forward vector of this final rotation.
+        //Vector3 angledFlightPath = finalRotation * Vector3.forward;
+
+        // The rest of your launch code remains the same:
+        //weaponRB.SetVelocity(angledFlightPath * weaponFlyingSpeed);
+        //gameObject.transform.rotation = finalRotation
+
+        calculatedTrueDamage = throwWeaponBaseDamage + (mappedWeapon.MaxAmmo - mappedWeapon.CurrentAmmo) * damageMultiplierPerAmmoUsed;
+
+        if (weaponSpinSequence == null)
+        {
+            weaponSpinSequence = gameObject.GetChildren()[0].getComponent<Sequence_>();
+        }
+
 
 
 
@@ -149,6 +193,15 @@ class ThrowableRifle : Script
                         //rbVelocity = rbVelocity * weaponFlyingSpeed * Time.V_FixedDeltaTime();
                         //weaponRB.SetVelocity(rbVelocity);
 
+
+                        Vector3 v = weaponRB.GetVelocity();
+                        v.y -= fakeGravity * Time.V_FixedDeltaTime();
+                        weaponRB.SetVelocity(v);
+                    }
+                    else
+                    {
+                        HomingToTarget();
+                    
                     }
 
 
@@ -241,6 +294,60 @@ class ThrowableRifle : Script
         weaponRB.SetVelocity(currentVelocity);
     }
 
+
+
+    void HomingToTarget()
+    {
+        if (targetObject != null)
+        {
+            seekingFailed = true;
+
+        }
+
+        Vector3 directionToTarget = (targetObject.transform.position - gameObject.transform.position);
+
+        directionToTarget.Normalize();
+
+        float distance = Vector3.Distance(targetObject.transform.position, gameObject.transform.position);
+
+        float steerPower = (startSteeringDistance - distance) / (startSteeringDistance - maxSteeringDistance);
+
+
+        if (steerPower > 1.0f)
+        {
+            steerPower = 1.0f;
+        }
+
+        if(steerPower < 0.0f)
+        {
+            steerPower = 0.0f;
+        }
+
+        //always up to max rotation
+        float rotationSpeed = baseSeekStrength + (360 - baseSeekStrength) * steerPower;
+
+        float rotationFactor = rotationSpeed / 360.0f;
+
+        if (rotationFactor > 1.0f)
+        {
+            rotationFactor = 1.0f;
+        }
+
+        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+
+        Quaternion newRotation = Quaternion.Slerp(gameObject.transform.rotation, targetRotation, rotationFactor);
+
+
+        gameObject.transform.rotation = newRotation;
+
+
+        Vector3 localFront = gameObject.transform.rotation * Vector3.Front();
+
+        Vector3 currentVelocity = localFront * weaponFlyingSpeed;
+
+        weaponRB.SetVelocity(currentVelocity);
+
+    }
 
 
     private void HitDelay()
@@ -375,18 +482,63 @@ class ThrowableRifle : Script
 
 
     }
-
-
-    public void InitWeapon()
+    
+    
+    
+    
+    public void SeekTarget(Vector3 origin, Vector3 end)
     {
-        weaponRB.SetVelocity(flightPath * weaponFlyingSpeed);
-        gameObject.transform.rotation = Quaternion.LookRotation(flightPath);
+        GameObject[] candidateEnemies = GameObject.FindGameObjectsWithTag("Enemy_WeakSpot");
 
-        calculatedTrueDamage =  throwWeaponBaseDamage  +  (mappedWeapon.MaxAmmo - mappedWeapon.CurrentAmmo) * damageMultiplierPerAmmoUsed;
+        Vector3 rayCast = end - origin;
 
-        if (weaponSpinSequence == null)
+        GameObject candidateTarget = null;
+
+        float smallestDistance = float.PositiveInfinity;
+
+        foreach (var enemy in candidateEnemies)
         {
-            weaponSpinSequence = gameObject.GetChildren()[0].getComponent<Sequence_>();
+            Vector3 otherVector = enemy.transform.position - origin;
+
+            Vector3 pointOnLine = Vector3.Proj(otherVector, rayCast);
+
+            if (Vector3.Distance(pointOnLine + origin, enemy.transform.position) > seekDistance)
+            {
+                continue;
+            }
+
+            float t = Vector3.Dot(pointOnLine, rayCast);
+
+
+            //is on line segment?
+            if (t > 0 && pointOnLine.Length() < rayCast.Length())
+            {
+                float currentDistance = Vector3.Distance(pointOnLine + origin, enemy.transform.position);
+
+                if (currentDistance < smallestDistance)
+                {
+
+                    smallestDistance = currentDistance;
+                    candidateTarget = enemy;
+                }
+
+            }
+
+
+
+
         }
+
+
+        if (candidateTarget != null)
+        {
+            seekingFailed = false;
+            targetObject = candidateTarget;
+        }
+
     }
+
+
+
+
 }

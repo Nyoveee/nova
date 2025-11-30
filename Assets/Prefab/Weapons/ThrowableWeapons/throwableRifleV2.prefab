@@ -1,0 +1,454 @@
+{
+    "Entities": [
+        {
+            "EntityData": {
+                "children": [
+                    1,
+                    2
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Rifle_Throwable",
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "13953638462837156301": true,
+                    "17237801994024849853": true,
+                    "6919815292445452220": false
+                },
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 7040551656613101569,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 7040551656613101569
+                },
+                "tag": ""
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 1.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": true,
+                "isTrigger": true,
+                "layer": "Moving",
+                "mass": 10.0,
+                "motionQuality": "Continuous",
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 1,
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    }
+                                },
+                                "name": "flightPath"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 4294967295
+                                },
+                                "name": "mappedWeapon"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 4294967295
+                                },
+                                "name": "playerGameobject"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 1
+                                },
+                                "name": "weaponSpinSequence"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "maxFlyingTime"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1.0
+                                },
+                                "name": "maxReturnTime"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.4000000059604645
+                                },
+                                "name": "weaponHitDelayTime"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 60.0
+                                },
+                                "name": "weaponFlyingSpeed"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 45.0
+                                },
+                                "name": "weaponReturnSpeed"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "throwWeaponBaseDamage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1.2999999523162842
+                                },
+                                "name": "damageMultiplierPerAmmoUsed"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 20.0
+                                },
+                                "name": "returnDamage"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 30.0
+                                },
+                                "name": "baseSeekStrength"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "startSteeringDistance"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 5.0
+                                },
+                                "name": "maxSteeringDistance"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 10.0
+                                },
+                                "name": "seekDistance"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 9.800000190734863
+                                },
+                                "name": "fakeGravity"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 2
+                                },
+                                "name": "ichorPerAmmo"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 2
+                                },
+                                "name": "healthGainedPerIchor"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 2
+                                },
+                                "name": "spGainPerIchor"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 15,
+                                    "__variant_value": 5
+                                },
+                                "name": "ichorFindRadius"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.0
+                                },
+                                "name": "calculatedTrueDamage"
+                            }
+                        ],
+                        "scriptId": 8332820863668568065
+                    }
+                ]
+            },
+            "SphereCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 0.5
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 11.22384262084961,
+                    "z": 0.2930909991264343
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 11.22384262084961,
+                    "z": 0.2930909991264343
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "RifleModel",
+                "overridenComponents": {
+                    "13484132868097894827": true,
+                    "17237801994024849853": true,
+                    "6919815292445452220": true
+                },
+                "overridenProperties": null,
+                "parent": 0,
+                "prefabID": 7040551656613101569,
+                "prefabMetaData": {
+                    "prefabEntity": 1,
+                    "prefabID": 7040551656613101569
+                },
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    5,
+                    5
+                ],
+                "modelId": 5829496742909313055
+            },
+            "Sequence": {
+                "sequencerId": 12142012928043827201,
+                "speedMultiplier": 1.0,
+                "startPlaying": false,
+                "toLoop": true
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.001983642578125,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999748468399048,
+                    "y": 1.0,
+                    "z": 0.9999748468399048
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 11.225826263427734,
+                    "z": 0.2930909991264343
+                },
+                "rotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999749064445496,
+                    "y": 1.0,
+                    "z": 0.9999749064445496
+                }
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "IchorCollector",
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "13953638462837156301": false,
+                    "17237801994024849853": true
+                },
+                "overridenProperties": null,
+                "parent": 0,
+                "prefabID": 7040551656613101569,
+                "prefabMetaData": {
+                    "prefabEntity": 2,
+                    "prefabID": 7040551656613101569
+                },
+                "tag": ""
+            },
+            "Rigidbody": {
+                "dynamicCollider": false,
+                "gravityMultiplier": 0.0,
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "isRotatable": false,
+                "isTrigger": true,
+                "layer": "Item_Interactor",
+                "mass": 1.0,
+                "motionQuality": "Continuous",
+                "motionType": "Kinematic",
+                "toScaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 4,
+                                    "__variant_value": 0
+                                },
+                                "name": "weaponRef"
+                            }
+                        ],
+                        "scriptId": 13761180140375949313
+                    }
+                ]
+            },
+            "SphereCollider": {
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 10.0
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.6359577178955078,
+                    "z": 0.5938061475753784
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 11.859800338745117,
+                    "z": 0.8868971467018127
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 2
+        }
+    ],
+    "RootEntity": 0
+}

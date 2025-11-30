@@ -106,7 +106,7 @@ class   GameUIManager : Script
     {
         SetCurrentAmmoText(currentAmmo);
 
-        if (maxAmmo != null)
+        if (maxAmmoText != null)
             maxAmmoText.SetText("/ " + currentAmmo);
     }
 

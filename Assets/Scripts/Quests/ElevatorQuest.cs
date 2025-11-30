@@ -15,16 +15,20 @@ class ElevatorQuest : Quest
     private Vector3 newMissionObjectiveUILocation;
     [SerializableField]
     private Vector3 newQuestInformationUILocation;
+    
     public override void OnEnter()
     {
-        missionObjectiveContainer.transform.localPosition = newMissionObjectiveUILocation;
-        questInformationContainer.transform.localPosition = newQuestInformationUILocation;
+        // missionObjectiveContainer.transform.localPosition = newMissionObjectiveUILocation;
+        // questInformationContainer.transform.localPosition = newQuestInformationUILocation;
     }
+
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);
         elevator.CloseTutorialDoor();
+        AudioAPI.PlaySound(gameObject, "IntroLiftSpeech_01mono");
     }
+
     public override void OnFail(Transform_ playerTransform)
     {
         if (playerTransform != null && playerCheckpoint != null)

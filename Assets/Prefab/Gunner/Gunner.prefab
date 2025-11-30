@@ -23,27 +23,28 @@
                         "stopAudio": false,
                         "volume": 1.0
                     }
-                }
+                },
+                "loop": false
             },
             "EntityData": {
                 "children": [
-                    25,
-                    26,
-                    27,
-                    28,
-                    29
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
                 ],
                 "inactiveComponents": null,
-                "isActive": false,
+                "isActive": true,
                 "layerId": 0,
                 "name": "Gunner",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 7579611416932171781,
+                "prefabID": 12431034955156455427,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 7579611416932171781
+                    "prefabID": 12431034955156455427
                 },
                 "tag": "Enemy"
             },
@@ -150,14 +151,14 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 28
+                                    "__variant_value": 5
                                 },
                                 "name": "projectileSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 26
+                                    "__variant_value": 3
                                 },
                                 "name": "rigidBody"
                             },
@@ -171,28 +172,28 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 25
+                                    "__variant_value": 2
                                 },
                                 "name": "ichorSpawnPoint"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 27
+                                    "__variant_value": 4
                                 },
                                 "name": "animator"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 27
+                                    "__variant_value": 4
                                 },
                                 "name": "renderer"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 24
+                                    "__variant_value": 1
                                 },
                                 "name": "navMeshAgent"
                             }
@@ -204,7 +205,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 24
+                                    "__variant_value": 1
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -257,22 +258,22 @@
                     "z": 1.0
                 }
             },
-            "id": 24
+            "id": 1
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": false,
+                "isActive": true,
                 "layerId": 0,
                 "name": "Ichor Spawn Point",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 24,
-                "prefabID": 7579611416932171781,
+                "parent": 1,
+                "prefabID": 12431034955156455427,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 7579611416932171781
+                    "prefabID": 12431034955156455427
                 },
                 "tag": ""
             },
@@ -320,7 +321,7 @@
                     "z": 1.0
                 }
             },
-            "id": 25
+            "id": 2
         },
         {
             "BoxCollider": {
@@ -339,16 +340,16 @@
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": false,
+                "isActive": true,
                 "layerId": 0,
                 "name": "Gunner Collider",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 24,
-                "prefabID": 7579611416932171781,
+                "parent": 1,
+                "prefabID": 12431034955156455427,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 7579611416932171781
+                    "prefabID": 12431034955156455427
                 },
                 "tag": "Enemy_ArmouredSpot"
             },
@@ -375,7 +376,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 24
+                                    "__variant_value": 1
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -428,7 +429,7 @@
                     "z": 1.0
                 }
             },
-            "id": 26
+            "id": 3
         },
         {
             "Animator": {
@@ -437,16 +438,16 @@
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": false,
+                "isActive": true,
                 "layerId": 0,
                 "name": "Gunner Model",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 24,
-                "prefabID": 7579611416932171781,
+                "parent": 1,
+                "prefabID": 12431034955156455427,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 7579611416932171781
+                    "prefabID": 12431034955156455427
                 },
                 "tag": ""
             },
@@ -565,22 +566,22 @@
                     "z": 1.0
                 }
             },
-            "id": 27
+            "id": 4
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": false,
+                "isActive": true,
                 "layerId": 0,
                 "name": "Projectile Spawn Point",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 24,
-                "prefabID": 7579611416932171781,
+                "parent": 1,
+                "prefabID": 12431034955156455427,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 7579611416932171781
+                    "prefabID": 12431034955156455427
                 },
                 "tag": ""
             },
@@ -628,22 +629,22 @@
                     "z": 1.0
                 }
             },
-            "id": 28
+            "id": 5
         },
         {
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
-                "isActive": false,
+                "isActive": true,
                 "layerId": 0,
                 "name": "Gunner_ColliderWeak",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 24,
-                "prefabID": 7579611416932171781,
+                "parent": 1,
+                "prefabID": 12431034955156455427,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 7579611416932171781
+                    "prefabID": 12431034955156455427
                 },
                 "tag": "Enemy_WeakSpot"
             },
@@ -670,7 +671,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 24
+                                    "__variant_value": 1
                                 },
                                 "name": "enemyGameObject"
                             }
@@ -731,8 +732,8 @@
                     "z": 1.0
                 }
             },
-            "id": 29
+            "id": 6
         }
     ],
-    "RootEntity": 24
+    "RootEntity": 1
 }

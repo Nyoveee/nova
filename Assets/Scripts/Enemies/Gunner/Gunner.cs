@@ -2,6 +2,7 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
+using System.Threading.Tasks;
 
 class Gunner : Enemy
 {
@@ -68,16 +69,13 @@ class Gunner : Enemy
     /***********************************************************
        Helpers 
     ***********************************************************/
-    private bool HasLineOfSightToPlayer(GameObject from)
-    {
-        string[] layerMask = { "Wall" };
-        float distance = Vector3.Distance(from.transform.position, player.transform.position);
-        return PhysicsAPI.Linecast(from.transform.position, player.transform.position, layerMask) == null;
-    }
+
     private void GetVantagePoint()
     {
         targetVantagePoint = null;
         float closestVantagePoint = Single.MaxValue;
+        if (gameGlobalReferenceManager.vantagePoints == null)
+            return;
         foreach (GameObject vantagePoint in gameGlobalReferenceManager.vantagePoints)
         {
             if (!HasLineOfSightToPlayer(vantagePoint))
@@ -276,7 +274,6 @@ class Gunner : Enemy
             NavigationAPI.stopAgent(gameObject);
             return;
         }
-        LookAt(targetVantagePoint);
     }
     private void Update_Shoot()
     {
