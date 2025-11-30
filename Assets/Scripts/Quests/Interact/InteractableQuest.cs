@@ -12,7 +12,7 @@ class InteractableQuest : Quest
     // This function is first invoked when game starts.
     protected bool IsLookingAtInteractable()
     {
-        RayCastResult? result = PhysicsAPI.Raycast(cameraTransform.position, cameraTransform.front, 1000f, player);
+        RayCastResult? result = PhysicsAPI.Raycast(cameraTransform.position, cameraTransform.front, 10f, player);
         if (result == null)
             return false;
         return interactable == new GameObject(result.Value.entity);
