@@ -31,13 +31,13 @@ class PrefabManager;
 
 class Engine {
 public:
-	enum class ScriptingEngineState {
-		Ready,
+	enum class State {
+		Game,
 		Editor
 	};
 
 public:
-	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, ScriptingEngineState scriptingEngineState);
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state);
 
 	ENGINE_DLL_API ~Engine();
 	ENGINE_DLL_API Engine(Engine const& other)				= delete;
@@ -106,6 +106,7 @@ public:
 	bool                    toDebugRenderParticleEmissionShape;
 
 	GameConfig				gameConfig;
+	State					engineState;
 
 	float					deltaTimeMultiplier;
 
