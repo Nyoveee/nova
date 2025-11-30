@@ -94,6 +94,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	numOfPhysicsDebugTriangles	{},
 	numOfNavMeshDebugTriangles	{},
 	isOnWireframeMode			{},
+	timeElapsed					{},
 	hdrExposure					{ 0.9f },
 	toneMappingMethod			{ ToneMappingMethod::ACES },
 
@@ -288,11 +289,14 @@ GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
 }
 
 void Renderer::update([[maybe_unused]] float dt) {
-	ZoneScoped;
+	timeElapsed += dt;
 }
 
 void Renderer::renderMain(RenderConfig renderConfig) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
+
 	prepareRendering();
 
 	// The renderer 
@@ -438,19 +442,13 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 }
 
 void Renderer::renderToDefaultFBO() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
 	glBindTextureUnit(0, getGameFrameBufferTexture());
 
 	// VBO-less draw.
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	// === 2. Blend the UI FBO on top ===
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glBindTextureUnit(0, getUIFrameBufferTexture());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisable(GL_BLEND);
@@ -786,7 +784,10 @@ void Renderer::submitNavMeshTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm
 }
 
 void Renderer::prepareRendering() {
+#if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
+
 	// =================================================================
 	// Configure pre rendering settings
 	// =================================================================
@@ -909,7 +910,9 @@ void Renderer::prepareRendering() {
 }
 
 void Renderer::renderSkyBox() {
+#if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
 	glDisable(GL_DEPTH_TEST);
 
 	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData,SkyBox>().each()) {
@@ -931,7 +934,9 @@ void Renderer::renderSkyBox() {
 }
 
 void Renderer::renderModels(Camera const& camera) {
-	ZoneScopedC(tracy::Color::PaleVioletRed1);	
+#if defined(DEBUG)
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
 
 	glEnable(GL_CULL_FACE);
 
@@ -961,20 +966,43 @@ void Renderer::renderModels(Camera const& camera) {
 				continue;
 			}
 
-			// Draw every mesh of a given model.
-			for (auto const& mesh : model->meshes) {
-				Material const* material = obtainMaterial(*meshRenderer, mesh);
+			// If a model has only one submesh, we render all materials attached to this mesh renderer..
+			if (model->meshes.size() == 1) {
+				// Draw every material of a this mesh.
+				auto const& mesh = model->meshes[0];
 
-				if (!material) {
-					continue;
+				for (auto const& materialId : meshRenderer->materialIds) {
+					auto&& [material, __] = resourceManager.getResource<Material>(materialId);
+
+					if (!material) {
+						continue;
+					}
+
+					// Use the correct shader and configure it's required uniforms..
+					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+					if (shader) {
+						// time to draw!
+						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					}
 				}
+			}
+			else {
+				// Draw every mesh of a given model.
+				for (auto const& mesh : model->meshes) {
+					Material const* material = obtainMaterial(*meshRenderer, mesh);
 
-				// Use the correct shader and configure it's required uniforms..
-				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+					if (!material) {
+						continue;
+					}
 
-				if (shader) {
-					// time to draw!
-					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					// Use the correct shader and configure it's required uniforms..
+					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+					if (shader) {
+						// time to draw!
+						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					}
 				}
 			}
 		}
@@ -1091,7 +1119,9 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 
 
 void Renderer::renderSkinnedModels(Camera const& camera) {
+#if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
 
 	// enable back face culling for our 3d models..
 	glEnable(GL_CULL_FACE);
@@ -1116,20 +1146,42 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 		// upload all bone matrices..
 		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
 
-		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			Material const* material = obtainMaterial(skinnedMeshRenderer, mesh);
+		// If a model has only one submesh, we render all materials attached to this mesh renderer..
+		if (model->meshes.size() == 1) {
+			// Draw every material of a this mesh.
+			auto const& mesh = model->meshes[0];
 
-			if (!material) {
-				continue;
+			for (auto const& materialId : skinnedMeshRenderer.materialIds) {
+				auto&& [material, __] = resourceManager.getResource<Material>(materialId);
+
+				if (!material) {
+					continue;
+				}
+
+				// Use the correct shader and configure it's required uniforms..
+				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+				if (shader) {
+					// time to draw!
+					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
+				}
 			}
+		}
+		else {
+			for (auto const& mesh : model->meshes) {
+				Material const* material = obtainMaterial(skinnedMeshRenderer, mesh);
 
-			// Use the correct shader and configure it's required uniforms..
-			CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+				if (!material) {
+					continue;
+				}
 
-			if (shader) {
-				// time to draw!
-				renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
+				// Use the correct shader and configure it's required uniforms..
+				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+				if (shader) {
+					// time to draw!
+					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
+				}
 			}
 		}
 	}
@@ -1584,7 +1636,9 @@ void Renderer::renderUiObjectIds() {
 }
 
 void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	frameBuffers.swapFrameBuffer();
 
@@ -1607,7 +1661,9 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 }
 
 void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	frameBuffers.swapFrameBuffer();
 
@@ -1662,6 +1718,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// ===========================================================================
 	// Set uniform data..
 	// ===========================================================================
+	shader.setFloat("timeElapsed", timeElapsed);
+
 	switch (shaderData.pipeline)
 	{
 	case Pipeline::PBR:
@@ -1678,7 +1736,6 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		assert(false && "Unhandled pipeline.");
 		break;
 	}
-
 
 	// We keep track of the number of texture units bound and make sure it doesn't exceed the driver's cap.
 	GLint maxTextureUnits;
@@ -1760,11 +1817,11 @@ void Renderer::renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType
 	switch (pipeline)
 	{
 	case Pipeline::PBR:
-		normalsVBO.uploadData(mesh.normals);
 		tangentsVBO.uploadData(mesh.tangents);
 
 		[[fallthrough]];
 	case Pipeline::Color:
+		normalsVBO.uploadData(mesh.normals);
 		positionsVBO.uploadData(mesh.positions);
 		textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
 

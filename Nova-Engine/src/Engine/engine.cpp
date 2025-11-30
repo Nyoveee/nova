@@ -13,7 +13,7 @@
 #include "ECS/SceneManager.h"
 
 
-Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig) :
+Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, ScriptingEngineState scriptingEngineState) :
 	window					{ window },
 	resourceManager			{ resourceManager },
 	inputManager            { inputManager },
@@ -37,6 +37,10 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	isPaused				{ false }
 {
 	std::srand(static_cast<unsigned int>(time(NULL)));
+
+	if (scriptingEngineState == ScriptingEngineState::Ready) {
+		scriptingAPIManager.forceLoadAssembly();
+	}
 }
 
 Engine::~Engine() {
@@ -47,7 +51,9 @@ Engine::~Engine() {
 }
 
 void Engine::fixedUpdate(float dt) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	if (isPaused) {
 		return;
@@ -64,7 +70,9 @@ void Engine::fixedUpdate(float dt) {
 }
 
 void Engine::update(float dt) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	// Note the order should be correct
 	audioSystem.update();
@@ -101,7 +109,9 @@ void Engine::setupSimulation() {
 }
 
 void Engine::render(RenderConfig renderConfig) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	if (toDebugRenderPhysics) {
 		physicsManager.debugRender();
@@ -245,6 +255,9 @@ void Engine::SystemsUnload() {
 	deltaTimeMultiplier = 1.f;
 }
 
+void Engine::quit() {
+	window.quit();
+}
 
 float Engine::getDeltaTime() const {
 	return window.getDeltaTime();

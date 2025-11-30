@@ -15,6 +15,7 @@ class UltimateController : Script
     public GameObject ultimatePose;
     public MeshRenderer_ originalGun;
     public PlayerController playerController;
+    public PlayerWeaponController playerWeaponController;
 
     public Sequence_ sequence;
 
@@ -96,6 +97,8 @@ class UltimateController : Script
             return;
         }
 
+        playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
+
         isCasting = true;
         rigidbody.enable = false;
         playerController.ToEnable = false;
@@ -114,6 +117,9 @@ class UltimateController : Script
 
     public void EndUltimateSequence()
     {
+        playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.WeaponFree;
+        playerWeaponController.ResetGunPosition();
+
         isCasting = false;
         originalGun.enable = true;
         playerController.ToEnable = true;

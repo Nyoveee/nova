@@ -53,12 +53,12 @@ public:
 	void rollbackRegistry();
 
 	// this copies the entities in a given vector
-	template<typename ...Components>
-	void copyVectorEntities(std::vector<entt::entity> const& entityVec);
+	ENGINE_DLL_API void copyVectorEntities(std::vector<entt::entity> const& entityVec);
+
+	ENGINE_DLL_API entt::entity copyEntity(entt::entity en);
 
 	template<typename ...Components>
-	//void copyEntity(entt::entity en);
-	entt::entity copyEntity(entt::entity en);
+	entt::entity copyEntityRecursively(entt::entity en, std::unordered_map<entt::entity, entt::entity>& map);
 
 	template<typename Component>
 	bool isComponentActive(entt::entity entity);
@@ -92,8 +92,6 @@ private:
 	// We rollback to the original state when we end simulation mode.
 	entt::registry copiedRegistry;
 	PrefabManager prefabManager;
-
-	std::unordered_map<entt::entity, entt::entity> map;
 };
 
 template <typename ...Components>
@@ -141,52 +139,12 @@ void ECS::rollbackRegistry() {
 }
 
 template<typename ...Components>
-void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
-	for (auto en : entityVec) {
-		entt::entity rootEntity = copyEntity<ALL_COMPONENTS>(en);
-		prefabManager.mapSerializedField(rootEntity, map);
-		map.clear();
-	}
-}
-
-template<typename ...Components>
-//void ECS::copyEntity(entt::entity en) {
-entt::entity ECS::copyEntity(entt::entity en) {
-	//create new entity
+entt::entity ECS::copyEntityRecursively(entt::entity en, std::unordered_map<entt::entity, entt::entity>& map) {
 	entt::id_type highestID = Serialiser::findLargestEntity(registry);
 	auto tempEntity = registry.create(static_cast<entt::entity>(highestID + 1));
 
-	([&]() {
-		Components* component = registry.try_get<Components>(en);
-		if (component) {
-			registry.emplace<Components>(tempEntity, *component);
-		}
-		}(), ...);
-
 	map[en] = tempEntity;
 
-	std::vector<entt::entity> childVec;
-
-	EntityData* entityData = registry.try_get<EntityData>(tempEntity);
-	if (entityData->children.size()) {
-		for ([[maybe_unused]] entt::entity child : entityData->children) {
-			copyEntity<ALL_COMPONENTS>(child);
-
-			childVec.push_back(map[child]);
-		}
-
-		entityData->children = childVec;
-
-		//for each child, assign the parent to the current ecsEntity
-		for (entt::entity childEn : childVec) {
-			EntityData* childData = registry.try_get<EntityData>(childEn);
-			childData->parent = tempEntity;
-		}
-	}
-	return tempEntity;
-
-#if 0
-	auto tempEntity = registry.create();
 	([&]() {
 		Components* component = registry.try_get<Components>(en);
 		if (component) {
@@ -194,34 +152,21 @@ entt::entity ECS::copyEntity(entt::entity en) {
 		}
 	}(), ...);
 
-	map[en] = tempEntity;
+	std::vector<entt::entity> childVec;
 
-	EntityData& entityData = registry.get<EntityData>(tempEntity);
+	EntityData* entityData = registry.try_get<EntityData>(tempEntity);
 
-	// if there is a parent, push temp entity into the parent and set the parent of the temp entity
-	if (parent != entt::null) {
-		EntityData* p = registry.try_get<EntityData>(parent);
-		p->children.push_back(tempEntity);
+	for (entt::entity child : entityData->children) {
+		entt::entity childEntity = copyEntityRecursively<ALL_COMPONENTS>(child, map);
 
-		entityData.parent = parent;
+		EntityData* childData = registry.try_get<EntityData>(childEntity);
+		childData->parent = tempEntity;
+
+		childVec.push_back(childEntity);
 	}
 
-	//if temp entity is a parent, call the function recursively
-	if (!entityData.children.empty()) {
-		EntityData& parentED = registry.get<EntityData>(en);
-		entityData.children.clear();
-		for (entt::entity child : parentED.children) {
-			copyEntity<ALL_COMPONENTS>(child, tempEntity);
-		}
-	}
-
-	//if the selected entity is a child
-	EntityData* ed = registry.try_get<EntityData>(en);
-	if (ed->parent != entt::null && parent == entt::null) {
-		EntityData& p = registry.get<EntityData>(ed->parent);
-		p.children.push_back(tempEntity);
-	}
-#endif
+	entityData->children = std::move(childVec);
+	return tempEntity;
 }
 // Eseentially a proxy function since engine.h can't be included in this file
 template<typename Component>

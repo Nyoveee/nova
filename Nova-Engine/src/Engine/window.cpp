@@ -166,7 +166,10 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 	double before = 0;
 
 	while (!glfwWindowShouldClose(glfwWindow)) {
+#if defined(DEBUG)
 		ZoneScoped;
+#endif
+
 		// executes fixed update based on accumulated time.
 		int numOfFixedSteps = 0;
 		accumulatedTime += deltaTime;
@@ -193,20 +196,30 @@ void Window::run(std::function<void(float)> fixedUpdateFunc, std::function<void(
 
 
 		{
+#if defined(DEBUG)
 			ZoneScopedNC("glfwSwapBuffers", tracy::Color::AliceBlue);
+#endif
 			glfwSwapBuffers(glfwWindow);
 		}
 		{
+#if defined(DEBUG)
 			ZoneScopedNC("glfwPollEvents", tracy::Color::AliceBlue);
+#endif
 		
 			glfwPollEvents();
 
 		}
+#if defined(DEBUG)
 		FrameMark;
+#endif
 	}
 
 	// game loop stops, the whole app starts destructing..
 	engineIsDestructing = true;
+}
+
+void Window::quit() {
+	glfwSetWindowShouldClose(glfwWindow, true);
 }
 
 GLFWwindow* Window::getGLFWwindow() const {

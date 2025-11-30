@@ -259,7 +259,10 @@ class PlayerWeaponController : Script
 
     }
 
-
+    public void ResetGunPosition()
+    {
+        gunHolder.localPosition = gunPosition.localPosition;
+    }
 
 
     private void SwapWeaponHandler(float scrollDelta)

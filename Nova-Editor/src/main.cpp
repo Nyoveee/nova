@@ -26,7 +26,7 @@ int main() {
 	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
 	
 	ResourceManager resourceManager {};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig };
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::ScriptingEngineState::Editor };
 
 	AssetManager	assetManager	{ resourceManager, engine };
 

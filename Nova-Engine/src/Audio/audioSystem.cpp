@@ -86,7 +86,9 @@ AudioSystem::~AudioSystem() {
 }
 
 void AudioSystem::update() {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	// Update listener position based on camera
 	updateListener();

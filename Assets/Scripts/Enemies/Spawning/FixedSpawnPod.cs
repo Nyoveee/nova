@@ -19,6 +19,14 @@ public class FixedSpawnPod : SpawnPod
 
     protected override void OnAnimationFinished()
     {
-        Destroy(gameObject);
+        PodDissolve podDissolve = podInstanceTransform.gameObject.getScript<PodDissolve>();
+        if (podDissolve != null)
+        {
+            podDissolve.StartDissolve(1.5f);
+        }
+        else
+        {
+            Destroy(podInstanceTransform.gameObject);
+        }
     }
 }

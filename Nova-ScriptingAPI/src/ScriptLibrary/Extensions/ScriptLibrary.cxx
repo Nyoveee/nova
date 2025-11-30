@@ -316,3 +316,16 @@ void PlayerPrefs::DeleteKey(System::String^ key) {
 void PlayerPrefs::DeleteAll() {
 	Interface::engine->dataManager.clear();
 }
+
+// =================================================================
+// Systems related API.
+// =================================================================
+void Systems::Restart()
+{
+	Interface::engine->ecs.sceneManager.restartScene();
+}
+
+void Systems::Quit()
+{
+	Interface::engine->quit();
+}

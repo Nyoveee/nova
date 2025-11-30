@@ -130,8 +130,13 @@ void ECS::deleteEntity(entt::entity entity) {
 			EntityData& parentEntityData = registry.get<EntityData>(entityData->parent);
 
 			auto iterator = std::ranges::find(parentEntityData.children, entity);
-			assert(iterator != parentEntityData.children.end() && "Invariant broken.");
-			parentEntityData.children.erase(iterator);
+			
+			if (iterator == parentEntityData.children.end()) {
+				Logger::warn("Deleting stray entity. Entity hierarchy invariant was broken.");
+			}
+			else {
+				parentEntityData.children.erase(iterator);
+			}
 		}
 	}
 
@@ -220,6 +225,29 @@ void ECS::deleteEntityRecursively(entt::entity entity) {
 	}
 
 	registry.destroy(entity);
+}
+
+entt::entity ECS::copyEntity(entt::entity oldEntity) {
+	std::unordered_map<entt::entity, entt::entity> map;
+	entt::entity newCopiedEntity = copyEntityRecursively<ALL_COMPONENTS>(oldEntity, map);
+
+	EntityData& entityData = registry.get<EntityData>(newCopiedEntity);
+
+	// update parent that it has 1 more child.
+	if (entityData.parent != entt::null) {
+		registry.get<EntityData>(entityData.parent).children.push_back(newCopiedEntity);
+	}
+
+	prefabManager.mapSerializedField(newCopiedEntity, map);
+
+	return newCopiedEntity;
+}
+
+
+void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
+	for (auto en : entityVec) {
+		copyEntity(en);
+	}
 }
 
 #if false

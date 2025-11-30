@@ -28,22 +28,6 @@ void ResourceManager::reload() {
 		loadAllSystemResources();
 
 		// ========================================
-		// 2. Check if the resource directory exist, and the respective sub assets folder exist.
-		// ========================================
-
-		// Checking if the main resource directory exist.
-		if (!std::filesystem::exists(AssetIO::resourceDirectory)) {
-			std::filesystem::create_directory(AssetIO::resourceDirectory);
-		}
-
-		// Checking if the sub directories exist..
-		for (auto&& [_, subResourceDirectory] : AssetIO::subResourceDirectories) {
-			if (!std::filesystem::exists(subResourceDirectory)) {
-				std::filesystem::create_directory(subResourceDirectory);
-			}
-		}
-
-		// ========================================
 		// 3. Load all resources..
 		// ========================================
 		loadAllResources<ALL_RESOURCES>();
@@ -54,7 +38,9 @@ void ResourceManager::reload() {
 }
 
 void ResourceManager::update() {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	std::lock_guard lock{ initialisationQueueMutex };
 	

@@ -44,6 +44,7 @@ const int INVALID_BONE = -1;
 uniform mat4 model;
 uniform mat3 normalMatrix;
 uniform mat4 localScale;
+uniform float timeElapsed;
 
 out VS_OUT {
     vec2 textureUnit;

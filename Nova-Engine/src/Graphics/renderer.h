@@ -141,6 +141,7 @@ public:
 	float vignette = 0.f;
 
 	glm::vec3 chromaticAberration;
+
 private:
 	// =============================================
 	// Private internal helper functions.
@@ -266,6 +267,7 @@ private:
 
 	bool isOnWireframeMode;
 
+	float timeElapsed;
 	std::vector<entt::entity> selectedEntities;
 
 public:

@@ -184,6 +184,9 @@ public:
 		bool get() { return Interface::engine->isPaused; };
 		void set(bool value) { Interface::engine->isPaused = value; };
 	};
+
+	static void Restart();
+	static void Quit();
 };
 
 public ref class PlayerPrefs {

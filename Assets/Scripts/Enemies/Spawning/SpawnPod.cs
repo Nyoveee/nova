@@ -9,6 +9,7 @@ public abstract class SpawnPod : Script
     protected Transform_ podTransform;
     protected Transform_ enemyTransform;
     protected Rigidbody_? enemyBody;
+    protected Transform_ podInstanceTransform;
 
     protected bool animating = false;
     protected float timeElapsed = 0f;
@@ -19,6 +20,8 @@ public abstract class SpawnPod : Script
     protected float yOffset = 5f;
     [SerializableField]
     protected float duration = 2f;
+    [SerializableField] 
+    private Prefab PodPrefab;
 
     protected override void init()
     {
@@ -34,15 +37,28 @@ public abstract class SpawnPod : Script
 
         if (ratio < 1)
         {
-            enemyTransform.position = Vector3.Lerp(StartPos, EndPos, Mathf.Pow(ratio, 0.15f));
+            Vector3 newPos = Vector3.Lerp(StartPos, EndPos, Mathf.Pow(ratio, 0.15f));
+            enemyTransform.position = newPos;
+
+            if (podInstanceTransform != null)
+            {
+                podInstanceTransform.position = newPos;
+            }
         }
         else
         {
             enemyTransform.position = EndPos;
+            if(podInstanceTransform != null)
+            {
+                podInstanceTransform.position = EndPos;
+            }
+
             animating = false;
 
-            if (enemyBody != null)
-                enemyBody.enable = true;
+            if (enemyBody != null && podInstanceTransform == null)
+            { 
+               enemyBody.enable = true;
+            }
 
             OnAnimationFinished();
         }
@@ -56,7 +72,7 @@ public abstract class SpawnPod : Script
             enemyBody.enable = true;
     }
 
-    protected void StartAnimation(Transform_ enemyTrans)
+    public void StartAnimation(Transform_ enemyTrans)
     {
         enemyTransform = enemyTrans;
         enemyBody = enemyTrans.gameObject.getComponent<Rigidbody_>();
@@ -70,6 +86,12 @@ public abstract class SpawnPod : Script
         StartPos = EndPos - new Vector3(0, yOffset, 0);
 
         enemyTrans.position = StartPos;
+
+        if(PodPrefab != null)
+        {
+            GameObject pod = Instantiate(PodPrefab, StartPos, gameObject);
+            podInstanceTransform = pod.getComponent<Transform_>();
+        }
 
         Enemy enemyScript = enemyTrans.gameObject.getScript<Enemy>();
         enemyScript?.SetSpawningDuration(duration);

@@ -31,7 +31,13 @@ class PrefabManager;
 
 class Engine {
 public:
-	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig);
+	enum class ScriptingEngineState {
+		Ready,
+		Editor
+	};
+
+public:
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, ScriptingEngineState scriptingEngineState);
 
 	ENGINE_DLL_API ~Engine();
 	ENGINE_DLL_API Engine(Engine const& other)				= delete;
@@ -52,6 +58,8 @@ public:
 	
 	ENGINE_DLL_API void SystemsOnLoad(); //on scene load, some system might want to reload/unload/init stuff
 	ENGINE_DLL_API void SystemsUnload(); //before entity construction step may need to stop certain system, some system might want to reload/unload/init stuff
+
+	ENGINE_DLL_API void quit();
 
 	ENGINE_DLL_API float getDeltaTime() const;
 

@@ -10,16 +10,26 @@
 constexpr int			windowWidth		= 1200;
 constexpr int			windowHeight	= 900;
 
+#if defined(NDEBUG)
+int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+	(void)hInstance;
+	(void)hPrevInstance;
+	(void)lpCmdLine;
+	(void)nShowCmd;
+#else
 int main() {
+#endif
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	GameConfig gameConfig = Serialiser::deserialiseGameConfig("gameConfig.json");
 
 	InputManager	inputManager	{};
 	ResourceManager resourceManager	{};
-	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, gameConfig, Window::Configuration::FullScreen, inputManager, Window::Viewport::ChangeDuringResize};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig };
+	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::ChangeDuringResize};
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::ScriptingEngineState::Ready };
 
+	// In the executable, we don't do any compiling. We assume it has been compiled and provided for.
+	
 	// Start up scene
 	engine.ecs.sceneManager.loadScene(gameConfig.sceneStartUp);
 	engine.startSimulation();

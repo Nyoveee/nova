@@ -76,7 +76,9 @@ CameraSystem::CameraSystem(Engine& engine) :
 }
 
 void CameraSystem::update(float dt) {
+#if defined(DEBUG)
 	ZoneScoped;
+#endif
 
 	for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
 	{
