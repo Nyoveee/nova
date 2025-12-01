@@ -3,11 +3,11 @@
         {
             "EntityData": {
                 "children": [
+                    1,
                     2,
                     3,
                     4,
-                    5,
-                    6
+                    5
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -76,7 +76,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 2
+                                    "__variant_value": 1
                                 },
                                 "name": "weaponSpinSequence"
                             },
@@ -270,7 +270,7 @@
                     "z": 1.0
                 }
             },
-            "id": 1
+            "id": 0
         },
         {
             "EntityData": {
@@ -285,7 +285,7 @@
                     "6919815292445452220": true
                 },
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 0,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 1,
@@ -350,7 +350,7 @@
                     "z": 0.9999746680259705
                 }
             },
-            "id": 2
+            "id": 1
         },
         {
             "EntityData": {
@@ -365,7 +365,7 @@
                     "17237801994024849853": true
                 },
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 0,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 2,
@@ -396,7 +396,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 1
+                                    "__variant_value": 0
                                 },
                                 "name": "weaponRef"
                             }
@@ -457,7 +457,7 @@
                     "z": 1.0
                 }
             },
-            "id": 3
+            "id": 2
         },
         {
             "EntityData": {
@@ -468,7 +468,7 @@
                 "name": "ParticleTrail",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 0,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -627,7 +627,7 @@
                     "z": 1.0000042915344238
                 }
             },
-            "id": 4
+            "id": 3
         },
         {
             "EntityData": {
@@ -638,7 +638,7 @@
                 "name": "ParticleTrail",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 0,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -797,7 +797,7 @@
                     "z": 1.0000042915344238
                 }
             },
-            "id": 5
+            "id": 4
         },
         {
             "EntityData": {
@@ -808,7 +808,7 @@
                 "name": "ParticleTrail",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 1,
+                "parent": 0,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 0,
@@ -967,8 +967,8 @@
                     "z": 1.0000042915344238
                 }
             },
-            "id": 6
+            "id": 5
         }
     ],
-    "RootEntity": 1
+    "RootEntity": 0
 }

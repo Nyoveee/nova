@@ -1,6 +1,8 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using static GameUIManager;
+
 class   GameUIManager : Script
 {
     public enum ProgressBarType
@@ -10,8 +12,7 @@ class   GameUIManager : Script
         UltimateBar
     }
     private float currentFadeTime;
-    private Dictionary<ProgressBarType, Image_> progressBars = new Dictionary<ProgressBarType, Image_>();
-    //private Dictionary<ProgressBarType, float> progressMaxSize = new Dictionary<ProgressBarType, float>();
+    private Dictionary<ProgressBarType, Image_> progressBars = new ();
 
     private bool isPaused = false;  
     /***********************************************************
@@ -118,7 +119,20 @@ class   GameUIManager : Script
 
     public void SetUltimateBarUI(int currentSp, int maxSp)
     {
-        SetProgress(ProgressBarType.UltimateBar, (float) currentSp, (float) maxSp);
+        if (maxSp == 0)
+        {
+            Debug.LogError("Progress bar max cannot be zero");
+            return;
+        }
+
+        if (ultimateBar == null)
+        {
+            return;
+        }
+
+        Vector2 textureCoordinates = ultimateBar.textureCoordinatesRange;
+        textureCoordinates.x = Mathf.Interpolate(0, 1f, currentSp / maxSp, 1);
+        ultimateBar.textureCoordinatesRange = textureCoordinates;
     }
 
     /***********************************************************
