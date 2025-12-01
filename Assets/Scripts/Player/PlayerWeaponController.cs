@@ -3,6 +3,7 @@
 // Editor will automatically rename and recompile this file.
 
 using ScriptingAPI;
+using System;
 using static PlayerWeaponController;
 
 public delegate void SetWeaponActive();
@@ -21,6 +22,8 @@ class PlayerWeaponController : Script
     public required Sniper sniper;
     public required GameObject playerCollider;
     public required Prefab thrownRiflePrefab;
+    public required Prefab ammoTrailPrefab;
+
 
     public float armingTime = 0.3f;
     public float bulletSpeed;
@@ -199,6 +202,33 @@ class PlayerWeaponController : Script
         if(weaponControlStates == WeaponControlStates.WeaponFree && currentlyHeldGun.Fire())
         {
             muzzle.emit(30);
+
+
+            string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
+            // Raycast..
+            RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f, mask);
+            if (result != null)
+            { 
+                GameObject ammoTrail = Instantiate(ammoTrailPrefab, muzzle.gameObject.transform.position, muzzle.gameObject.transform.rotation);
+                Vector3 directionTOLookAt = result.Value.point - muzzle.gameObject.transform.position;
+                directionTOLookAt.Normalize();
+                muzzle.gameObject.transform.rotation = Quaternion.LookRotation(directionTOLookAt);
+                ammoTrail.getScript<ammoTrails>().startPosition = muzzle.gameObject.transform.position;
+                ammoTrail.getScript<ammoTrails>().endPosition = result.Value.point;
+                
+
+            }
+            else
+            {
+                GameObject ammoTrail = Instantiate(ammoTrailPrefab, muzzle.gameObject.transform.position, muzzle.gameObject.transform.rotation);
+
+                ammoTrail.getScript<ammoTrails>().startPosition = muzzle.gameObject.transform.position;
+                ammoTrail.getScript<ammoTrails>().endPosition = muzzle.gameObject.transform.position + (muzzle.gameObject.transform.front * 500f);
+
+            }
+
+
+
         }
 
         if (weaponControlStates == WeaponControlStates.ThrowReady && currentlyHeldGun.gameObject.IsActive() == true)

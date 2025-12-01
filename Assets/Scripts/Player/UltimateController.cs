@@ -97,6 +97,8 @@ class UltimateController : Script
             return;
         }
 
+        AudioAPI.PlaySound(gameObject, "sniper_specialFire_01");
+
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
 
         isCasting = true;

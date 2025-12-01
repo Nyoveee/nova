@@ -6,22 +6,16 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Ichor",
+                "name": "AmmoTrails",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 13493251147225464833,
+                "prefabID": 14030885946471890945,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 13493251147225464833
+                    "prefabID": 14030885946471890945
                 },
-                "tag": "Ichor"
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    16833312378621526017
-                ],
-                "modelId": 4
+                "tag": ""
             },
             "ParticleEmitter": {
                 "burstAmount": 30,
@@ -37,9 +31,9 @@
                     "selected": false
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
@@ -108,7 +102,7 @@
                 "texture": 0,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": false,
+                    "selected": true,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -127,24 +121,8 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 0
+                    "trailTexture": 12983095345617403905
                 }
-            },
-            "Rigidbody": {
-                "dynamicCollider": false,
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "Item",
-                "mass": 0.0,
-                "motionQuality": "Discrete",
-                "motionType": "Dynamic",
-                "toScaleWithTransform": true
             },
             "Scripts": {
                 "scriptDatas": [
@@ -152,37 +130,44 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 10.0
+                                    "__variant_type": 1,
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    }
                                 },
-                                "name": "ichorLifeTime"
+                                "name": "endPosition"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 1,
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    }
+                                },
+                                "name": "startPosition"
                             },
                             {
                                 "data": {
                                     "__variant_type": 16,
-                                    "__variant_value": 1.5
+                                    "__variant_value": 0.10000000149011612
                                 },
-                                "name": "expandedSizeMultiplier"
+                                "name": "killTime"
                             },
                             {
                                 "data": {
                                     "__variant_type": 16,
-                                    "__variant_value": 1.0
+                                    "__variant_value": 0.10000000149011612
                                 },
-                                "name": "expandTime"
+                                "name": "totalDuration"
                             }
                         ],
-                        "scriptId": 3870070279982465025
+                        "scriptId": 12406634593317568515
                     }
                 ]
-            },
-            "SphereCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 0.32499998807907104
             },
             "Transform": {
                 "eulerAngles": {
@@ -196,9 +181,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 2.19580078125,
+                    "y": 1.270921230316162,
+                    "z": 0.1915949285030365
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -207,14 +192,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 2.19580078125,
+                    "y": 1.270921230316162,
+                    "z": 0.1915949285030365
                 },
                 "rotation": {
                     "w": 1.0,
@@ -223,13 +208,13 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
-            "id": 7
+            "id": 1
         }
     ],
-    "RootEntity": 7
+    "RootEntity": 1
 }
