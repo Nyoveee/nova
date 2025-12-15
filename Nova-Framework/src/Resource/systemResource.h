@@ -8,6 +8,7 @@ enum SystemResourceID : unsigned long long {
 // =============================== Models =============================== 
 	CUBE_MODEL_ID,
 	SPHERE_MODEL_ID,
+	CAPSULE_MODEL_ID,
 
 // =============================== Material =============================== 
 	DEFAULT_PBR_MATERIAL_ID,	// References DEFAULT_PBR_SHADER_ID with constant the constant 1! Don't change DEFAULT_PBR_SHADER_ID's value.

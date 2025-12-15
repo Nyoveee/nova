@@ -10,7 +10,8 @@
 // =============================== Models =============================== 
 const std::unordered_map<ResourceID, ResourceFilePath> AssetIO::systemModelResources {
 	{	CUBE_MODEL_ID,					SystemFilePath(Model, "Cube")		},
-	{	SPHERE_MODEL_ID,				SystemFilePath(Model, "Sphere")		}
+	{	SPHERE_MODEL_ID,				SystemFilePath(Model, "Sphere")		},
+	{	CAPSULE_MODEL_ID,				SystemFilePath(Model, "Capsule") }
 };
 
 // =============================== Shader =============================== 
