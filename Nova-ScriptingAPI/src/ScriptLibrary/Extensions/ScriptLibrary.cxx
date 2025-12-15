@@ -53,26 +53,26 @@ void Debug::LogError(Object^ object) {
 // Input management..
 // ======================================
 
-std::size_t Input::MapKey(Key key, EventCallback^ pressCallback) {
-	std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key)) };
+std::size_t Input::MapKey(Key key, EventCallback^ pressCallback, bool toExecuteEvenWhenPaused) {
+	std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key, toExecuteEvenWhenPaused)) };
 	scriptObserverIds.Add(observerId);
 	return observerId;
 }
 
-std::size_t Input::MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) {
-	std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key), Convert<ScriptingInputEvents>(releaseCallback, key)) };
+std::size_t Input::MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback, bool toExecuteEvenWhenPaused) {
+	std::size_t observerId{ Interface::engine->inputManager.subscribe(Convert<ScriptingInputEvents>(pressCallback, key, toExecuteEvenWhenPaused), Convert<ScriptingInputEvents>(releaseCallback, key, toExecuteEvenWhenPaused)) };
 	scriptObserverIds.Add(observerId);
 	return observerId;
 }
 
-std::size_t Input::MouseMoveCallback(MouseEventCallback^ callback) {
-	std::size_t observerId{ Interface::engine->inputManager.subscribe<MousePosition>(CreateMouseCallback(callback)) };
+std::size_t Input::MouseMoveCallback(MouseEventCallback^ callback, bool toExecuteEvenWhenPaused) {
+	std::size_t observerId{ Interface::engine->inputManager.subscribe<MousePosition>(CreateMouseCallback(callback, toExecuteEvenWhenPaused)) };
 	mouseMoveObserverIds.Add(observerId);
 	return observerId;
 }
 
-std::size_t Input::ScrollCallback(ScrollEventCallback^ callback) {
-	std::size_t observerId{ Interface::engine->inputManager.subscribe<Scroll>(CreateScrollCallback(callback)) };
+std::size_t Input::ScrollCallback(ScrollEventCallback^ callback, bool toExecuteEvenWhenPaused) {
+	std::size_t observerId{ Interface::engine->inputManager.subscribe<Scroll>(CreateScrollCallback(callback, toExecuteEvenWhenPaused)) };
 	mouseScrollObserverIds.Add(observerId);
 	return observerId;
 }

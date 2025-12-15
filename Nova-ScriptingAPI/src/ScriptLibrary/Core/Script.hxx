@@ -33,19 +33,35 @@ protected:
 protected:
 	// Subscribing to input manager..
 	void MapKey(Key key, EventCallback^ pressCallback) {
-		scriptObserverIds.Add(Input::MapKey(key, pressCallback));
+		scriptObserverIds.Add(Input::MapKey(key, pressCallback, false));
 	}
 
 	void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback) {
-		scriptObserverIds.Add(Input::MapKey(key, pressCallback, releaseCallback));
+		scriptObserverIds.Add(Input::MapKey(key, pressCallback, releaseCallback, false));
 	}
 
 	void MouseMoveCallback(MouseEventCallback^ callback) {
-		mouseMoveObserverIds.Add(Input::MouseMoveCallback(callback));
+		mouseMoveObserverIds.Add(Input::MouseMoveCallback(callback, false));
 	}
 
 	void ScrollCallback(ScrollEventCallback^ callback) {
-		mouseScrollObserverIds.Add(Input::ScrollCallback(callback));
+		mouseScrollObserverIds.Add(Input::ScrollCallback(callback, false));
+	}
+
+	void MapKey(Key key, EventCallback^ pressCallback, bool toExecuteEvenWhenPaused) {
+		scriptObserverIds.Add(Input::MapKey(key, pressCallback, toExecuteEvenWhenPaused));
+	}
+
+	void MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback, bool toExecuteEvenWhenPaused) {
+		scriptObserverIds.Add(Input::MapKey(key, pressCallback, releaseCallback, toExecuteEvenWhenPaused));
+	}
+
+	void MouseMoveCallback(MouseEventCallback^ callback, bool toExecuteEvenWhenPaused) {
+		mouseMoveObserverIds.Add(Input::MouseMoveCallback(callback, toExecuteEvenWhenPaused));
+	}
+
+	void ScrollCallback(ScrollEventCallback^ callback, bool toExecuteEvenWhenPaused) {
+		mouseScrollObserverIds.Add(Input::ScrollCallback(callback, toExecuteEvenWhenPaused));
 	}
 
 internal:

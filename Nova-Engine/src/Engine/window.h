@@ -64,6 +64,8 @@ public:
 	// In editor it's the size of the calculated image viewport, whilst in game mode it's the size of the scaled game in our window.
 	ENGINE_DLL_API void setGameViewPort(GameViewPort gameViewPort);
 
+	ENGINE_DLL_API GameViewPort getGameViewPort() const;
+
 	// Normalized viewport pos is defined as a ranged from [0, 1], from the bottom left to the top right of the game viewport.
 	ENGINE_DLL_API glm::vec2 getNormalizedViewportPos() const;
 	
@@ -73,9 +75,12 @@ public:
 	// scaled normalized viewport based on UI projection size.
 	ENGINE_DLL_API glm::vec2 getUISpacePos() const;
 
+	ENGINE_DLL_API GameConfig const& getGameConfig() const;
+
 	ENGINE_DLL_API void toEnableMouse(bool toEnable);
 
 	ENGINE_DLL_API void clearAccumulatedTime();
+
 
 public:
 	// GLFW function callbacks are in the global scope and therefore do not have private access to Input Manager.

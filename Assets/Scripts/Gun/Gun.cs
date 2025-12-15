@@ -2,24 +2,102 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+using ScriptingAPI;
 using System;
 
 public abstract class Gun : Script
 {
-    public int currentAmmo;
-    public int currentSp;
-    public int maxAmmo;
-    public int maxSp;
+    [SerializableField]
+    private GameUIManager gameUIManager;
+
+    [SerializableField]
+    private int initialMaxAmmo;
+
+    [SerializableField]
+    private int initialCurrentSp = 0;
+
+    [SerializableField]
+    private int initialMaxSp = 30;
+
+    // Private backing field
+    private int currentAmmo;
+
+    // Public property with get and set accessors
+    public int CurrentAmmo
+    {
+        get
+        {
+            return currentAmmo;
+        }
+        set
+        {
+            currentAmmo = value;
+            gameUIManager?.SetCurrentAmmoText(currentAmmo);
+        }
+    }
+
+    // Private backing field
+    private int maxAmmo;
+
+    // Public property with get and set accessors. This is how we gurantee sync between ammo and ui.
+    public int MaxAmmo
+    {
+        get
+        {
+            return maxAmmo;
+        }
+        set
+        {
+            maxAmmo = value;
+            gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
+        }
+    }
 
 
+    private int currentSp;
 
+    // Public property with get and set accessors
+    public int CurrentSp
+    {
+        get
+        {
+            return CurrentSp;
+        }
+        set
+        {
+            currentSp = value;
+            gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
+        }
+    }
+
+    // Private backing field
+    private int maxSp;
+
+    // Public property with get and set accessors. This is how we gurantee sync between ammo and ui.
+    public int MaxSp
+    {
+        get
+        {
+            return maxSp;
+        }
+        set
+        {
+            maxSp = value;
+            gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
+        }
+    }
 
     private GameObject player;
 
     protected override void init()
     {
-        maxAmmo = currentAmmo;
+        maxAmmo = currentAmmo = initialMaxAmmo;
+        maxSp = initialMaxSp;
+        currentSp = initialCurrentSp;
+
         player = GameObject.FindWithTag("Player");
+        gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
+        gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
     }
 
     public abstract bool Fire();
@@ -51,6 +129,10 @@ public abstract class Gun : Script
             enemyColliderScript.OnColliderShot(damage,Enemy.EnemydamageType.WeaponShot,collidedEntity.tag);
             return true;
         }
+
+
+        
+
 
         return false;
     }

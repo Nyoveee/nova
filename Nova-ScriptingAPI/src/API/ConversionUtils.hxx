@@ -22,15 +22,15 @@ inline std::string Convert(System::String^ str) {
 // Event Callback
 public delegate void EventCallback();
 template<typename T> 
-inline std::function<void(T)> Convert(EventCallback^ callback, Key key) {
+inline std::function<void(T)> Convert(EventCallback^ callback, Key key, bool toExecuteEvenWhenPaused) {
 	gcroot<EventCallback^> callbackWrapper; // For Wrapping the callback function in a native class gcroot since lambda can't use the callbacks directly
 	int keyValue = safe_cast<int>(key);
 	// Press
 	callbackWrapper = callback;
 
-	auto pressCallbackFunction = [callbackWrapper, keyValue](T inputEvent) {
+	auto pressCallbackFunction = [callbackWrapper, keyValue, toExecuteEvenWhenPaused](T inputEvent) {
 		// Don't broadcast input event if engine is paused.s
-		if (Interface::engine->isPaused) {
+		if (!toExecuteEvenWhenPaused && Interface::engine->isPaused) {
 			return;
 		}
 
@@ -43,13 +43,13 @@ inline std::function<void(T)> Convert(EventCallback^ callback, Key key) {
 // Mouse event callback
 public delegate void MouseEventCallback(float deltaX, float deltaY);
 
-inline std::function<void(MousePosition)> CreateMouseCallback(MouseEventCallback^ callback) {
+inline std::function<void(MousePosition)> CreateMouseCallback(MouseEventCallback^ callback, bool toExecuteEvenWhenPaused) {
 	gcroot<MouseEventCallback^> callbackWrapper = callback;	// For Wrapping the callback function in a native class gcroot since lambda can't use the callbacks directly
 															// ok buddy :)
 
-	auto callbackFunction = [callbackWrapper](MousePosition mousePosition) {
+	auto callbackFunction = [callbackWrapper, toExecuteEvenWhenPaused](MousePosition mousePosition) {
 		// Don't broadcast input event if engine is paused.s
-		if (Interface::engine->isPaused) {
+		if (!toExecuteEvenWhenPaused && Interface::engine->isPaused) {
 			return;
 		}
 
@@ -65,12 +65,12 @@ inline std::function<void(MousePosition)> CreateMouseCallback(MouseEventCallback
 // Scroll event callback
 public delegate void ScrollEventCallback(float scrollDelta);
 
-inline std::function<void(Scroll)> CreateScrollCallback(ScrollEventCallback^ callback) {
+inline std::function<void(Scroll)> CreateScrollCallback(ScrollEventCallback^ callback, bool toExecuteEvenWhenPaused) {
 	gcroot<ScrollEventCallback^> callbackWrapper = callback;
 
-	auto callbackFunction = [callbackWrapper](Scroll scroll) {
+	auto callbackFunction = [callbackWrapper, toExecuteEvenWhenPaused](Scroll scroll) {
 		// Don't broadcast input event if engine is paused.s
-		if (Interface::engine->isPaused) {
+		if (!toExecuteEvenWhenPaused && Interface::engine->isPaused) {
 			return;
 		}
 

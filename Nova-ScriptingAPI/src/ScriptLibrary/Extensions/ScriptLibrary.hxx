@@ -73,10 +73,10 @@ public:
 internal:
 	// This functions are called by the script's member function.. this is because each script needs to know 
 	// what it has subscribed to for proper destruction.
-	static std::size_t MapKey(Key key, EventCallback^ pressCallback);
-	static std::size_t MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback);
-	static std::size_t MouseMoveCallback(MouseEventCallback^ callback);
-	static std::size_t ScrollCallback(ScrollEventCallback^ callback);
+	static std::size_t MapKey(Key key, EventCallback^ pressCallback, bool toExecuteEvenWhenPaused);
+	static std::size_t MapKey(Key key, EventCallback^ pressCallback, EventCallback^ releaseCallback, bool toExecuteEvenWhenPaused);
+	static std::size_t MouseMoveCallback(MouseEventCallback^ callback, bool toExecuteEvenWhenPaused);
+	static std::size_t ScrollCallback(ScrollEventCallback^ callback, bool toExecuteEvenWhenPaused);
 	
 	static Vector2 V_MousePosition();
 

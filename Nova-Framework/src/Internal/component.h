@@ -362,12 +362,17 @@ struct Image {
 	} anchorMode = AnchorMode::Center;
 
 	bool toFlip = false;
+	
+	glm::vec2 textureCoordinatesRange { 1.f, 1.f };
+	bool toTile = false;
 
 	REFLECTABLE(
 		texture,
 		colorTint,
 		anchorMode,
-		toFlip
+		toFlip,
+		textureCoordinatesRange,
+		toTile
 	)
 };
 
@@ -376,7 +381,7 @@ struct ScriptData
 	TypedResourceID<ScriptAsset> scriptId	{ INVALID_RESOURCE_ID };
 	std::vector<FieldData> fields			{};
 
-	REFLECTABLE(
+	REFLECTABLE (
 		scriptId,
 		fields
 	)
@@ -385,6 +390,7 @@ struct ScriptData
 struct Scripts
 {
 	std::vector<ScriptData> scriptDatas		{};
+
 	REFLECTABLE(
 		scriptDatas
 	)

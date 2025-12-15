@@ -310,6 +310,9 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		if (isEditorScreenShown) {
 			render(editorMainFrameBuffer, editorCamera);
 
+			// Apply HDR tone mapping + gamma correction post-processing
+			renderHDRTonemapping(editorMainFrameBuffer);
+			
 			debugShader.setMatrix("model", glm::mat4{ 1.f });
 			// ===============================================
 			// Debug rendering + object ids for editor..
@@ -333,15 +336,22 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 			renderObjectIds();
 		}
+		
 		// Main render function
 		if(isGameScreenShown)
 			render(gameMainFrameBuffer, gameCamera);
+
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
+		
 		if (isGameScreenShown) {
 			overlayUIToBuffer(gameMainFrameBuffer);
 			renderUiObjectIds();
 		}
+
+		// Apply HDR tone mapping + gamma correction post-processing
+		renderHDRTonemapping(gameMainFrameBuffer);
+
 		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
@@ -351,6 +361,9 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		render(gameMainFrameBuffer, gameCamera);
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
+
+		// Apply HDR tone mapping + gamma correction post-processing
+		renderHDRTonemapping(gameMainFrameBuffer);
 
 		// only render to default FBO if it's truly game mode.
 		if (renderConfig == RenderConfig::Game) {
@@ -375,7 +388,10 @@ void Renderer::renderUI()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	setDepthMode(DepthTestingMethod::NoDepthWriteTest);
-	setBlendMode(BlendingConfig::AlphaBlending);
+
+	glEnable(GL_BLEND);
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+	glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
 
 	glBindVertexArray(textVAO);
 
@@ -438,11 +454,18 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 		renderPostProcessing(frameBuffers);
 
 	// Apply HDR tone mapping + gamma correction post-processing
-	renderHDRTonemapping(frameBuffers);
+	// renderHDRTonemapping(frameBuffers);
 }
 
 void Renderer::renderToDefaultFBO() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glViewport(
+		engine.window.getGameViewPort().topLeftX,
+		engine.window.getGameViewPort().topLeftY,
+		engine.window.getGameViewPort().gameWidth,
+		engine.window.getGameViewPort().gameHeight
+	);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
@@ -450,6 +473,8 @@ void Renderer::renderToDefaultFBO() {
 
 	// VBO-less draw.
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glViewport(0, 0, gameWidth, gameHeight);
 
 	glDisable(GL_BLEND);
 }
@@ -543,7 +568,13 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 void Renderer::overlayUIToBuffer(PairFrameBuffer& target)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, target.getActiveFrameBuffer().fboId());
+	
 	setBlendMode(BlendingConfig::AlphaBlending);
+
+	// Overlaying UI layers require special form of alpha blending.
+	//glEnable(GL_BLEND);
+	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+	////glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 
 	overlayShader.use();
 	overlayShader.setImageUniform("overlay", 0);
@@ -1092,9 +1123,6 @@ void Renderer::renderText(Transform const& transform, Text const& text)
 void Renderer::renderImage(Transform const& transform, Image const& image, ColorA const& colorMultiplier)
 {
 	texture2dShader.use();
-	texture2dShader.setMatrix("uiProjection", UIProjection);
-	texture2dShader.setInt("image", 0);
-	texture2dShader.setBool("toFlip", image.toFlip);
 
 	// Get texture resource
 	auto [textureAsset, status] = resourceManager.getResource<Texture>(image.texture);
@@ -1110,6 +1138,12 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 	texture2dShader.setVec4("tintColor", image.colorTint * colorMultiplier);
 	texture2dShader.setMatrix("model", transform.modelMatrix);
 	texture2dShader.setInt("anchorMode", static_cast<int>(image.anchorMode));
+
+	texture2dShader.setVec2("textureCoordinatesRange", image.textureCoordinatesRange);
+	texture2dShader.setMatrix("uiProjection", UIProjection);
+	texture2dShader.setInt("image", 0);
+	texture2dShader.setBool("toFlip", image.toFlip);
+	texture2dShader.setBool("toTile", image.toTile);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureId);

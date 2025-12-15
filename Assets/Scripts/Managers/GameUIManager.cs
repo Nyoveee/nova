@@ -1,52 +1,53 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-class GameUIManager : Script
+using static GameUIManager;
+
+class   GameUIManager : Script
 {
     public enum ProgressBarType
     {
         HealthBar,
-        DashBar
+        DashBar,
+        UltimateBar
     }
     private float currentFadeTime;
-    private Dictionary<ProgressBarType, Transform_> progressBars = new Dictionary<ProgressBarType, Transform_>();
-    private Dictionary<ProgressBarType, float> progressMaxSize = new Dictionary<ProgressBarType, float>();
+    private Dictionary<ProgressBarType, Image_> progressBars = new ();
 
-    private Dictionary<Type, Transform_> gunToUiContainer = new Dictionary<Type, Transform_>();
-
+    private bool isPaused = false;  
     /***********************************************************
         Inspector Variables
     ***********************************************************/
     [SerializableField]
-    private Transform_? dashBar = null;
+    private Image_? dashBar = null;
     [SerializableField]
-    private Transform_? healthBar = null;
+    private Image_? healthBar = null;
+    [SerializableField]
+    private Image_? ultimateBar = null;
+
+    [SerializableField]
+    private GameObject? pauseUI = null;
+
     [SerializableField]
     private Image_? damageBackground = null;
-    [SerializableField]
-    private Text_? healthText = null;
     [SerializableField]
     private Text_? questText = null;
     [SerializableField]
     private float damageFadeTime = 2.0f;
 
     [SerializableField]
-    private Transform_ sniperContainerUi;
+    private Text_? maxAmmoText = null;
+
     [SerializableField]
-    private Transform_ shotgunContainerUi;
+    private Text_? currentAmmoText = null;
 
     protected override void init()
     {
-        if(dashBar != null && healthBar!= null)
-        {
-            progressBars[ProgressBarType.DashBar] = dashBar;
-            progressBars[ProgressBarType.HealthBar] = healthBar;
-            progressMaxSize[ProgressBarType.DashBar] = dashBar.scale.x;
-            progressMaxSize[ProgressBarType.HealthBar] = healthBar.scale.x;
-        }
+        progressBars[ProgressBarType.DashBar] = dashBar;
+        progressBars[ProgressBarType.HealthBar] = healthBar;
+        progressBars[ProgressBarType.UltimateBar] = ultimateBar;
 
-        gunToUiContainer.Add(typeof(Sniper), sniperContainerUi);
-        gunToUiContainer.Add(typeof(Shotgun), shotgunContainerUi);
+        MapKey(Key.P, PauseHandler, true);
     }
 
     protected override void update()
@@ -64,19 +65,27 @@ class GameUIManager : Script
             damageBackground.colorTint = colora;
         }
     }
+
     /***********************************************************
        UI Setters
-   ***********************************************************/
+    ***********************************************************/
     public void SetProgress(ProgressBarType progressBarType, float current, float max)
     {
         if (max == 0){
             Debug.LogError("Progress bar max cannot be zero");
             return;
         }
-        Vector3 scale = progressBars[progressBarType].scale;
-        scale.x = Mathf.Interpolate(0, progressMaxSize[progressBarType], current / max,1);
-        progressBars[progressBarType].scale = scale;
+
+        if(progressBars[progressBarType] == null)
+        {
+            return;
+        }
+
+        Vector2 textureCoordinates = progressBars[progressBarType].textureCoordinatesRange;
+        textureCoordinates.x = Mathf.Interpolate(0, 1f, current / max, 1);
+        progressBars[progressBarType].textureCoordinatesRange = textureCoordinates;
     }
+
     public void ActivateDamageUI()
     {
         if (damageBackground != null)
@@ -87,41 +96,61 @@ class GameUIManager : Script
             currentFadeTime = damageFadeTime;
         }
     }
-    public void SetHealthText(int health)
-    {
-        if(healthText!= null){
-            healthText.SetText(health.ToString());
-        }
-    }
 
-    public void SwapWeaponUI(Gun from, Gun to)
-    {
-        Transform_ fromUiContainer = gunToUiContainer[from.GetType()];
-        Transform_ toUiContainer = gunToUiContainer[to.GetType()];
-
-        fromUiContainer.localScale = Vector3.One();
-
-        foreach(GameObject child in fromUiContainer.gameObject.GetChildren())
-        {
-            Image_ overlayImage = child.getComponent<Image_>();
-
-            if (overlayImage != null)
-                overlayImage.colorTint = new ColorAlpha(125f / 255f, 125f / 255f, 125f / 255f, 0.5f);
-        }
-
-        toUiContainer.localScale = Vector3.One() * 1.3f;
-
-        foreach (GameObject child in toUiContainer.gameObject.GetChildren())
-        {
-            Image_ overlayImage = child.getComponent<Image_>();
-
-            if (overlayImage != null)
-                overlayImage.colorTint = new ColorAlpha(10f / 255f, 10f / 255f, 10f / 255f, 0.6f);
-        }
-    }
     public void SetQuestText(string text)
     {
         if (questText != null)
             questText.SetText(text);
+    }
+
+    public void SetAmmoText(int currentAmmo, int maxAmmo)
+    {
+        SetCurrentAmmoText(currentAmmo);
+
+        if (maxAmmoText != null)
+            maxAmmoText.SetText("/ " + currentAmmo);
+    }
+
+    public void SetCurrentAmmoText(int currentAmmo)
+    {
+        if (currentAmmoText != null)
+            currentAmmoText.SetText(currentAmmo.ToString());
+    }
+
+    public void SetUltimateBarUI(int currentSp, int maxSp)
+    {
+        if (maxSp == 0)
+        {
+            Debug.LogError("Progress bar max cannot be zero");
+            return;
+        }
+
+        if (ultimateBar == null)
+        {
+            return;
+        }
+
+        Vector2 textureCoordinates = ultimateBar.textureCoordinatesRange;
+        textureCoordinates.x = Mathf.Interpolate(0, 1f, currentSp / maxSp, 1);
+        ultimateBar.textureCoordinatesRange = textureCoordinates;
+    }
+
+    /***********************************************************
+       Pause handler..
+    ***********************************************************/
+    public void PauseHandler()
+    {
+        isPaused = !isPaused;
+        Systems.Pause = isPaused;
+        pauseUI?.SetActive(isPaused);
+
+        if (isPaused)
+        {
+            CameraAPI.UnlockMouse();
+        }
+        else
+        {
+            CameraAPI.LockMouse();
+        }
     }
 }

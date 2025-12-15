@@ -3,6 +3,9 @@
 uniform sampler2D image;
 uniform uint objectId;
 
+uniform vec2 textureCoordinatesMultiplier;
+uniform bool toTile;
+
 in VS_OUT {
     vec2 textureUnit;
 } fsIn;

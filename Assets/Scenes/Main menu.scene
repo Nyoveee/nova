@@ -21,12 +21,17 @@
                 "anchorMode": "Center",
                 "colorTint": {
                     "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
+                    "b": 0.5862069129943848,
+                    "g": 0.5862069129943848,
+                    "r": 0.5862069129943848
                 },
                 "texture": 1280755589832278017,
-                "toFlip": false
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
             },
             "Transform": {
                 "eulerAngles": {
@@ -100,7 +105,12 @@
                     "r": 1.0
                 },
                 "texture": 9650836240637755393,
-                "toFlip": false
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
             },
             "Transform": {
                 "eulerAngles": {
@@ -176,7 +186,7 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "onClickReleasedFunction": "onReleased",
+                "onClickReleasedFunction": "Restart",
                 "onHoverFunction": "onHover",
                 "onPressFunction": "onPressed",
                 "padding": {
@@ -222,7 +232,12 @@
                     "r": 1.0
                 },
                 "texture": 7,
-                "toFlip": false
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
             },
             "Scripts": {
                 "scriptDatas": [
@@ -360,7 +375,12 @@
                     "r": 1.0
                 },
                 "texture": 7,
-                "toFlip": false
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
             },
             "Scripts": {
                 "scriptDatas": [
@@ -463,7 +483,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.43518561124801636,
+                    "x": -0.43518367409706116,
                     "y": -0.15143203735351563,
                     "z": 0.0
                 },
@@ -479,7 +499,7 @@
                     "z": 1.209596872329712
                 },
                 "position": {
-                    "x": 126.77912902832031,
+                    "x": 126.77995300292969,
                     "y": 505.7372131347656,
                     "z": 0.0
                 },
@@ -536,7 +556,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.42354750633239746,
+                    "x": -0.42354851961135864,
                     "y": -0.20786809921264648,
                     "z": 0.0
                 },
@@ -552,7 +572,7 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 126.78781127929688,
+                    "x": 126.78738403320313,
                     "y": 392.5738220214844,
                     "z": 0.0
                 },
@@ -609,8 +629,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.44626855850219727,
-                    "y": -0.20799016952514648,
+                    "x": -0.4462669789791107,
+                    "y": -0.20798230171203613,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -622,11 +642,11 @@
                 "localScale": {
                     "x": 0.0014399971114471555,
                     "y": 7.200000709417509e-06,
-                    "z": 0.7199923992156982
+                    "z": 0.7199905514717102
                 },
                 "position": {
-                    "x": 122.06869506835938,
-                    "y": 268.98651123046875,
+                    "x": 122.06936645507813,
+                    "y": 268.9871826171875,
                     "z": 0.0
                 },
                 "rotation": {
@@ -638,7 +658,7 @@
                 "scale": {
                     "x": 0.6119987368583679,
                     "y": 0.0006120000616647303,
-                    "z": 0.5122385621070862
+                    "z": 0.5122372508049011
                 }
             },
             "id": 44040371
@@ -717,7 +737,12 @@
                     "r": 1.0
                 },
                 "texture": 7,
-                "toFlip": false
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
             },
             "Scripts": {
                 "scriptDatas": [

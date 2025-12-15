@@ -590,9 +590,6 @@ void Interface::update() {
 				newSceneToChangeTo = nullptr;
 				return;
 			}
-
-			// We clear everything..
-			clearAllRuntime();
 			
 			// We change scene in ECS..
 			// This loads all system again..

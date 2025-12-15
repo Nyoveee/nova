@@ -141,7 +141,7 @@ class ThrowableRifle : Script
         //weaponRB.SetVelocity(angledFlightPath * weaponFlyingSpeed);
         //gameObject.transform.rotation = finalRotation
 
-        calculatedTrueDamage = throwWeaponBaseDamage + (mappedWeapon.maxAmmo - mappedWeapon.currentAmmo) * damageMultiplierPerAmmoUsed;
+        calculatedTrueDamage = throwWeaponBaseDamage + (mappedWeapon.MaxAmmo - mappedWeapon.CurrentAmmo) * damageMultiplierPerAmmoUsed;
 
         if (weaponSpinSequence == null)
         {
@@ -441,9 +441,9 @@ class ThrowableRifle : Script
 
             playerGameobject.getScript<PlayerController>().GainHealth(heal);
             
-            mappedWeapon.currentSp +=  sp;
+            mappedWeapon.CurrentSp +=  sp;
 
-            mappedWeapon.currentSp = Math.Min(mappedWeapon.currentSp,mappedWeapon.maxSp);
+            mappedWeapon.CurrentSp = Math.Min(mappedWeapon.CurrentSp,mappedWeapon.MaxSp);
 
         }
 
@@ -460,7 +460,7 @@ class ThrowableRifle : Script
 
 
         //Continue to gain ichor until max ammo
-        if (mappedWeapon.currentAmmo < mappedWeapon.maxAmmo)
+        if (mappedWeapon.CurrentAmmo < mappedWeapon.MaxAmmo)
         {
             currentIchorGained++;
             totalAmmoGained++;
@@ -470,10 +470,20 @@ class ThrowableRifle : Script
             { 
                 totalAmmoGained++;
                 currentIchorGained = 0;
-                mappedWeapon.currentAmmo++;
+                mappedWeapon.CurrentAmmo++;
+
             }
-        
-            Destroy(other);
+
+
+            if (other.getScript<Ichor>() != null)
+            {
+                other.getScript<Ichor>().PullTowardsGun(gameObject.transform.position);
+
+
+
+            }
+
+          //  Destroy(other);
         
         }
 
