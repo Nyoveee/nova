@@ -14,7 +14,7 @@ class UltimateController : Script
     
     public GameObject ultimatePose;
     public MeshRenderer_ originalGun;
-    public PlayerControllerV2 playerController;
+    public PlayerController playerController;
     public PlayerWeaponController playerWeaponController;
 
     public Sequence_ sequence;

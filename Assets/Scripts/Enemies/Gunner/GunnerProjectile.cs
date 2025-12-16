@@ -41,7 +41,7 @@ class GunnerProjectile : Script
         }
         if(other.tag == "Player")
         {
-            PlayerControllerV2 playerController = other.getScript<PlayerControllerV2>();
+            PlayerController playerController = other.getScript<PlayerController>();
             playerController.TakeDamage(damage);
             if (gameObject != null)
                 Destroy(gameObject);

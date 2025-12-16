@@ -1,25 +1,31 @@
 {
     "Entities": [
         {
+            "AudioComponent": {
+                "data": null,
+                "loop": false
+            },
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Ichor",
-                "overridenComponents": null,
+                "name": "Ultimate Ball",
+                "overridenComponents": {
+                    "17237801994024849853": true
+                },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 13493251147225464833,
+                "prefabID": 7309333867294359695,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 13493251147225464833
+                    "prefabEntity": 42991787,
+                    "prefabID": 7309333867294359695
                 },
-                "tag": "Ichor"
+                "tag": ""
             },
             "MeshRenderer": {
                 "materialIds": [
-                    16833312378621526017
+                    9644898874447265793
                 ],
                 "modelId": 4
             },
@@ -34,14 +40,14 @@
                         "r": 0.0
                     },
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
-                "initialAngularVelocity": 0.0,
+                "initialAngularVelocity": 2.0,
                 "lifeTime": 1.0,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
@@ -50,29 +56,29 @@
                     "z": 0.03200000151991844
                 },
                 "looping": true,
-                "maxAngularVelocityOffset": 0.0,
-                "maxParticles": 1000,
-                "maxStartSizeOffset": 0.0,
+                "maxAngularVelocityOffset": 2.0,
+                "maxParticles": 100,
+                "maxStartSizeOffset": 1.0,
                 "minAngularVelocityOffset": 0.0,
                 "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
                         "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "g": 0.9365042448043823,
+                        "r": 0.3862069249153137
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": 1.0,
                         "z": 0.0
                     },
                     "colorOffsetMin": {
                         "x": 0.0,
-                        "y": 0.0,
+                        "y": -0.5,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 1.0
+                    "emissiveMultiplier": 7.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -101,11 +107,11 @@
                 "sizeOverLifetime": {
                     "endSize": 0.0,
                     "interpolationType": "Linear",
-                    "selected": false
+                    "selected": true
                 },
-                "startSize": 1.0,
-                "startSpeed": 1.0,
-                "texture": 0,
+                "startSize": 4.0,
+                "startSpeed": 0.0,
+                "texture": 10579703654956564523,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
                     "selected": false,
@@ -139,11 +145,11 @@
                     "z": 0.0
                 },
                 "isRotatable": true,
-                "isTrigger": false,
-                "layer": "Item",
-                "mass": 0.0,
+                "isTrigger": true,
+                "layer": "Moving",
+                "mass": 10.0,
                 "motionQuality": "Discrete",
-                "motionType": "Dynamic",
+                "motionType": "Kinematic",
                 "toScaleWithTransform": true
             },
             "Scripts": {
@@ -152,27 +158,20 @@
                         "fields": [
                             {
                                 "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 10.0
+                                    "__variant_type": 9,
+                                    "__variant_value": 11921019885713047693
                                 },
-                                "name": "ichorLifeTime"
+                                "name": "ultimateExplosion"
                             },
                             {
                                 "data": {
                                     "__variant_type": 16,
-                                    "__variant_value": 1.5
+                                    "__variant_value": 3.0
                                 },
-                                "name": "expandedSizeMultiplier"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "expandTime"
+                                "name": "lifetime"
                             }
                         ],
-                        "scriptId": 3870070279982465025
+                        "scriptId": 1261650478362968065
                     }
                 ]
             },
@@ -182,7 +181,7 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "radius": 0.32499998807907104
+                "radius": 2.0
             },
             "Transform": {
                 "eulerAngles": {
@@ -196,9 +195,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 21.355815887451172,
+                    "y": -8.921747207641602,
+                    "z": -7.29443359375
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -207,14 +206,14 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.559999942779541,
+                    "y": 1.559999942779541,
+                    "z": 1.559999942779541
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": 21.355815887451172,
+                    "y": -8.921747207641602,
+                    "z": -7.29443359375
                 },
                 "rotation": {
                     "w": 1.0,
@@ -223,13 +222,13 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.559999942779541,
+                    "y": 1.559999942779541,
+                    "z": 1.559999942779541
                 }
             },
-            "id": 24
+            "id": 7
         }
     ],
-    "RootEntity": 24
+    "RootEntity": 7
 }

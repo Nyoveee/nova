@@ -746,7 +746,7 @@ void Editor::displayEntityHierarchy(
 	}
 	else {
 		// Display children recursively..
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen;
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
 
 		if (selectedPredicate(entity)) {
 			flags |= ImGuiTreeNodeFlags_Selected;

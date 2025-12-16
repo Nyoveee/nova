@@ -61,7 +61,7 @@ public abstract class Gun : Script
     {
         get
         {
-            return CurrentSp;
+            return currentSp;
         }
         set
         {

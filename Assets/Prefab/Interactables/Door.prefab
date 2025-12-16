@@ -13,13 +13,14 @@
                         "stopAudio": false,
                         "volume": 1.0
                     }
-                }
+                },
+                "loop": false
             },
             "EntityData": {
                 "children": [
-                    49283363,
-                    49283364,
-                    49283365
+                    33,
+                    34,
+                    35
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
@@ -31,10 +32,10 @@
                 },
                 "overridenProperties": null,
                 "parent": 4294967295,
-                "prefabID": 14618781617769611293,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 48234765,
-                    "prefabID": 14618781617769611293
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -59,14 +60,14 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 49283364
+                                    "__variant_value": 34
                                 },
                                 "name": "leftDoor"
                             },
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 49283363
+                                    "__variant_value": 33
                                 },
                                 "name": "rightDoor"
                             },
@@ -133,7 +134,7 @@
                     "z": 0.4010428786277771
                 }
             },
-            "id": 49283362
+            "id": 32
         },
         {
             "EntityData": {
@@ -149,11 +150,11 @@
                     "9059764703561530457": true
                 },
                 "overridenProperties": null,
-                "parent": 49283362,
-                "prefabID": 14618781617769611293,
+                "parent": 32,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 48234766,
-                    "prefabID": 14618781617769611293
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -226,7 +227,7 @@
                     "z": 4.628647327423096
                 }
             },
-            "id": 49283363
+            "id": 33
         },
         {
             "EntityData": {
@@ -243,11 +244,11 @@
                     "9059764703561530457": true
                 },
                 "overridenProperties": null,
-                "parent": 49283362,
-                "prefabID": 14618781617769611293,
+                "parent": 32,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 48234767,
-                    "prefabID": 14618781617769611293
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -320,7 +321,7 @@
                     "z": 4.64682674407959
                 }
             },
-            "id": 49283364
+            "id": 34
         },
         {
             "BoxCollider": {
@@ -348,11 +349,11 @@
                     "9059764703561530457": true
                 },
                 "overridenProperties": null,
-                "parent": 49283362,
-                "prefabID": 14618781617769611293,
+                "parent": 32,
+                "prefabID": 12462023588452057093,
                 "prefabMetaData": {
                     "prefabEntity": 49283357,
-                    "prefabID": 14618781617769611293
+                    "prefabID": 12462023588452057093
                 },
                 "tag": ""
             },
@@ -379,7 +380,7 @@
                             {
                                 "data": {
                                     "__variant_type": 4,
-                                    "__variant_value": 49283362
+                                    "__variant_value": 32
                                 },
                                 "name": "door"
                             }
@@ -432,8 +433,8 @@
                     "z": 7.689539432525635
                 }
             },
-            "id": 49283365
+            "id": 35
         }
     ],
-    "RootEntity": 49283362
+    "RootEntity": 32
 }

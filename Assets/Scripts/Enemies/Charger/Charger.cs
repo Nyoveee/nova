@@ -417,7 +417,7 @@ class Charger : Enemy
     {
         if(other.tag == "Player" && chargerState == ChargerState.Charging)
         {
-            PlayerControllerV2 playerController = other.getScript<PlayerControllerV2>();
+            PlayerController playerController = other.getScript<PlayerController>();
             playerController.TakeDamage(chargerstats.chargeDamage);
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");
