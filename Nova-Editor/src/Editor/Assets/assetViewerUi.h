@@ -50,7 +50,6 @@ private:
 	// ---------------------------------------------------
 	// Name applies for all resource
 	std::string selectedResourceName;
-	std::string selectedResourceStemCopy;
 	std::string selectedResourceExtension;
 
 	// Font

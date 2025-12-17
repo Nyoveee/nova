@@ -54,7 +54,7 @@ void AssetViewerUI::update() {
 	ImGui::Text("Resource ID: %zu", static_cast<std::size_t>(descriptorPtr->id));
 
 	// ===== Display asset name ======
-	ImGui::InputText("Name: ", &selectedResourceName);
+	ImGui::InputText(selectedResourceExtension.c_str(), &selectedResourceName);
 
 	if (ImGui::IsItemDeactivatedAfterEdit()) {
 		// empty name is not a valid name.
@@ -66,24 +66,15 @@ void AssetViewerUI::update() {
 			descriptorPtr->name = selectedResourceName;
 		}
 	}
-
-	ImGui::Text("Filepath: %s", selectedResourceStemCopy.c_str());
-
-	ImGui::InputText(selectedResourceExtension.empty() ? "##" : selectedResourceExtension.c_str(), &selectedResourceStemCopy);
-
-	if (ImGui::IsItemDeactivatedAfterEdit() && std::filesystem::path{ descriptorPtr->filepath }.stem() != selectedResourceStemCopy) {
-		if (!assetManager.renameFile(selectedResourceId, selectedResourceStemCopy)) {
+	// If there is a name change, serialise the descriptor..
+	if (ImGui::IsItemDeactivatedAfterEdit() && std::filesystem::path{ descriptorPtr->filepath }.stem() != selectedResourceName) {
+		if (!assetManager.renameFile(selectedResourceId, selectedResourceName)) {
 			// reset rename attempt.
-			selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
+			selectedResourceName = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
 		}
-	}
-
-	// If there is a name or filepath change, serialise the descriptor..
-	if (toSerialiseSelectedDescriptor) {
 		if (resourceManager.isResource<ScriptAsset>(selectedResourceId)) {
 			updateScriptFilePath(descriptorPtr->filepath, selectedResourceId);
 		}
-
 		assetManager.serialiseDescriptor(selectedResourceId);
 	}
 
@@ -96,13 +87,6 @@ void AssetViewerUI::update() {
 	};
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
-
-	//if (selectedResourceExtension == ".prefab") {
-	//	if (ImGui::Button("BroadCast")) {
-	//		editor.engine.prefabManager.prefabBroadcast();
-	//	}
-	//}
-
 
 	ImGui::End();
 #endif
@@ -177,7 +161,6 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	}
 
 	selectedResourceName = descriptorPtr->name;
-	selectedResourceStemCopy = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
 	selectedResourceExtension = std::filesystem::path{ descriptorPtr->filepath }.extension().string();
 
 	// save a copy of the current font size..

@@ -64,7 +64,7 @@ public:
 	// private function renamefile has the ability to move asset to a new folder.
 	// we provide a public facing function that does not allow that. if there is a need to move an asset, 
 	// use moveAssetToFolder.
-	bool renameFile(ResourceID id, std::string const& newFileStem);
+	bool renameFile(ResourceID id, std::string const& newFileName);
 
 	// moves a given asset to another folder..
 	bool moveAssetToFolder(ResourceID resourceId, FolderID destinationFolder);
@@ -104,7 +104,7 @@ private:
 	// renames a given asset file given a new file stem. (preserves extension)
 	// if there is a provided parent folder, rename file will move that asset to that new folder.
 	// calling function should provide the descriptor.
-	bool renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor, std::string const& newFileStem, FolderID parentFolder);
+	bool renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor, std::string const& newFileName, FolderID parentFolder);
 
 private:
 	void processAssetFilePath(AssetFilePath const& path);

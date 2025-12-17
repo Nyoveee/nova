@@ -86,14 +86,13 @@ std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descri
 		std::getline(descriptorFile, line);
 		resourceId = std::stoull(line);
 
-		// reads the 2nd line, name.
-		std::string name;
-		std::getline(descriptorFile, name);
-
-		// reads the 3rd line, relative filepath.
+		// reads the 2nd line, relative filepath.
 		std::string relativeFilepath;
 		std::getline(descriptorFile, relativeFilepath);
 		std::string fullFilepath = std::filesystem::path{ rootDirectory / relativeFilepath }.string();
+
+		// Get the name of the file from the fullFilepath
+		std::string name{ std::filesystem::path{ fullFilepath }.stem().string() };
 
 		return { { resourceId, std::move(name), std::move(fullFilepath) }};
 	}
@@ -116,7 +115,7 @@ BasicAssetInfo AssetIO::createDescriptorFile(ResourceID id, std::filesystem::pat
 		}
 
 		// write to file
-		descriptorFile << static_cast<std::size_t>(assetInfo.id) << '\n' << assetInfo.name << '\n' << relativePath.string() << '\n';
+		descriptorFile << static_cast<std::size_t>(assetInfo.id) << '\n' << relativePath.string() << '\n';
 		return assetInfo;
 	}
 	catch (std::exception const& ex) {

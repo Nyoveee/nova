@@ -304,7 +304,7 @@ void AssetManager::recordFolder(FolderID id, std::filesystem::path const& path) 
 	};
 }
 
-bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor, std::string const& newFileStem, FolderID parentFolder) {
+bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor, std::string const& newFileName, FolderID parentFolder) {
 	// Determine the appropriate full new file path.
 	std::filesystem::path oldFullFilePath { descriptor->filepath };
 
@@ -321,9 +321,9 @@ bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor,
 	}().lexically_normal();
 	
 	// uses the original file name if newFileStem is empty.
-	std::filesystem::path newFullFilePath = newFileStem.empty()
+	std::filesystem::path newFullFilePath = newFileName.empty()
 		? std::move(parentPath) / std::filesystem::path{ descriptor->filepath }.stem()
-		: std::move(parentPath) / newFileStem;
+		: std::move(parentPath) / newFileName;
 
 	newFullFilePath.replace_extension(oldFullFilePath.extension());
 
@@ -354,8 +354,8 @@ bool AssetManager::renameFile(std::unique_ptr<BasicAssetInfo> const& descriptor,
 		assert(false && "Intermediary filepath not recorded. Invariant broken.");
 	}
 
+	descriptor->name = newFileName;
 	descriptor->filepath = newFullFilePath;
-	serialiseDescriptor(descriptor->id);
 
 	Logger::debug("Asset filepath rename successful.");
 
@@ -585,7 +585,7 @@ FolderID AssetManager::getParentFolder(ResourceID id) const {
 	return iterator->second;
 }
 
-bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
+bool AssetManager::renameFile(ResourceID id, std::string const& newFileName) {
 	auto iterator = assetToDescriptor.find(id);
 
 	if (iterator == assetToDescriptor.end()) {
@@ -595,7 +595,7 @@ bool AssetManager::renameFile(ResourceID id, std::string const& newFileStem) {
 
 	auto&& [_, descriptor] = *iterator;
 
-	return renameFile(descriptor, newFileStem, NO_FOLDER);
+	return renameFile(descriptor, newFileName, NO_FOLDER);
 }
 
 void AssetManager::removeResource(ResourceID id) {

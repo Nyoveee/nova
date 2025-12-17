@@ -308,7 +308,7 @@ void AssetManager::serializeDescriptor(ResourceID id) {
 
 	// calculate relative path to the Assets directory.
 	std::filesystem::path relativePath = std::filesystem::relative(std::filesystem::path{ assetInfo->filepath }, AssetIO::assetDirectory);
-	descriptorFile << static_cast<std::size_t>(assetInfo->id) << '\n' << assetInfo->name << '\n' << relativePath.string() << '\n';
+	descriptorFile << static_cast<std::size_t>(assetInfo->id) << '\n' << relativePath.string() << '\n';
 
 	// ============================
 	// Filestream is now pointing at the 4th line.
