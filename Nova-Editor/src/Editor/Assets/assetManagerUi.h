@@ -86,7 +86,13 @@ private:
 	std::unique_ptr<Texture> sceneIcon;
 	std::unique_ptr<Texture> modelIcon;
 	std::unique_ptr<Texture> cubeMapIcon;
-
+	std::unique_ptr<Texture> materialIcon;
+	std::unique_ptr<Texture> shaderIcon;
+	std::unique_ptr<Texture> navmeshIcon;
+	std::unique_ptr<Texture> prefabIcon;
+	std::unique_ptr<Texture> sequencerIcon;
+	std::unique_ptr<Texture> animationControllerIcon;
+	std::unique_ptr<Texture> fontIcon;
 private:
 	float columnWidth = 100.f;
 

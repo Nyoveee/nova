@@ -25,26 +25,47 @@ AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 	selectedFolderId { ASSET_FOLDER },
 	folderIcon		 { nullptr }
 {
-	auto folderPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/folder" }).value()();
+	auto folderPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/folder" }).value()();
 	folderIcon.reset(static_cast<Texture*>(folderPtr.release()));
 
-	auto texturePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,	std::string{ "System/Image/texture" }).value()();
+	auto texturePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,				std::string{ "System/Image/texture" }).value()();
 	textureIcon.reset(static_cast<Texture*>(texturePtr.release()));
 
-	auto audioPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/audio" }).value()();
+	auto audioPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/audio" }).value()();
 	audioIcon.reset(static_cast<Texture*>(audioPtr.release()));
 
-	auto scriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/script" }).value()();
+	auto scriptPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/script" }).value()();
 	scriptIcon.reset(static_cast<Texture*>(scriptPtr.release()));
 
-	auto scenePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/scene" }).value()();
+	auto scenePtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/scene" }).value()();
 	sceneIcon.reset(static_cast<Texture*>(scenePtr.release()));
 
-	auto modelPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,		std::string{ "System/Image/model" }).value()();
+	auto modelPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/model" }).value()();
 	modelIcon.reset(static_cast<Texture*>(modelPtr.release()));
 
-	auto cubeMapPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,	std::string{ "System/Image/cubemap" }).value()();
+	auto cubeMapPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,				std::string{ "System/Image/cubemap" }).value()();
 	cubeMapIcon.reset(static_cast<Texture*>(cubeMapPtr.release()));
+
+	auto materialPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,				std::string{ "System/Image/material" }).value()();
+	materialIcon.reset(static_cast<Texture*>(materialPtr.release()));
+
+	auto shaderPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/shader" }).value()();
+	shaderIcon.reset(static_cast<Texture*>(shaderPtr.release()));
+
+	auto navMeshPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,				std::string{ "System/Image/navmesh" }).value()();
+	navmeshIcon.reset(static_cast<Texture*>(navMeshPtr.release()));
+
+	auto prefabPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/prefab" }).value()();
+	prefabIcon.reset(static_cast<Texture*>(prefabPtr.release()));
+
+	auto sequencerPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,				std::string{ "System/Image/sequencer" }).value()();
+	sequencerIcon.reset(static_cast<Texture*>(sequencerPtr.release()));
+
+	auto animationControllerPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,	std::string{ "System/Image/animationController" }).value()();
+	animationControllerIcon.reset(static_cast<Texture*>(animationControllerPtr.release()));
+
+	auto fontPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/font" }).value()();
+	fontIcon.reset(static_cast<Texture*>(fontPtr.release()));
 }
 
 void AssetManagerUI::update() {
@@ -278,6 +299,27 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 	}
 	else if (resourceManager.isResource<CubeMap>(resourceId)) {
 		texture = cubeMapIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Material>(resourceId)) {
+		texture = materialIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<CustomShader>(resourceId)) {
+		texture = shaderIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<NavMesh>(resourceId)) {
+		texture = navmeshIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Prefab>(resourceId)) {
+		texture = prefabIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Sequencer>(resourceId)) {
+		texture = sequencerIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Controller>(resourceId)) {
+		texture = animationControllerIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Font>(resourceId)) {
+		texture = fontIcon->getTextureId();
 	}
 
 	displayThumbnail(
