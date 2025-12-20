@@ -908,23 +908,25 @@ void Renderer::prepareRendering() {
 
 		}
 	}
-	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each())
+	for (auto&& [textureid, textureParticles] : engine.particleSystem.particles)
 	{
-		if (emitter.lightIntensity <= 0)
-			continue;
-		for (Particle const& particle : emitter.particles) {
+		(void)textureid;
+		for (Particle& particle : textureParticles) {
+			if (particle.lightIntensity <= 0)
+				continue;
 			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
 				Logger::warn("Unable to add more particle lights, max number of point lights reached!");
 				break;
 			}
 			pointLightData[numOfPtLights++] = {
 				particle.position,
-				glm::vec3{ particle.currentColor } *emitter.lightIntensity,
-				emitter.lightattenuation
+				glm::vec3{ particle.currentColor } * particle.lightIntensity,
+				particle.lightattenuation
 			};
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
+				break;
 		}
-		if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
-			break;
+		
 	}
 
 	// Send it over to SSBO.
@@ -1259,59 +1261,53 @@ void Renderer::renderParticles()
 	glBindVertexArray(particleVAO);
 	setBlendMode(BlendingConfig::AlphaBlending);
 	particleShader.use();
-
 	// Disable writing to depth buffer for particles
 	glDepthMask(GL_FALSE);
-
-	for (auto&& [entity, transform, emitter] : registry.view<Transform, ParticleEmitter>().each()) {
-		const glm::vec3 vertexPos[4]{
+	const glm::vec3 vertexPos[4]{
 			glm::vec3(-1, -1, 0),	// bottom left
 			glm::vec3(1, -1, 0),	// bottom right
-			glm::vec3(1, 1, 0),	// top right
+			glm::vec3(1, 1, 0),		// top right
 			glm::vec3(-1, 1, 0) 	// top left
-		};
-		const glm::vec2 textureCoordinates[4]{
-			glm::vec2(0, 0),
-			glm::vec2(1, 0),
-			glm::vec2(1, 1),
-			glm::vec2(0, 1)
-		};
-		const int squareIndices[6]{ 0, 2, 1, 2, 0, 3 };
+	};
+	const glm::vec2 textureCoordinates[4]{
+		glm::vec2(0, 0),
+		glm::vec2(1, 0),
+		glm::vec2(1, 1),
+		glm::vec2(0, 1)
+	};
+	const int squareIndices[6]{ 0, 2, 1, 2, 0, 3 };
+	auto renderParticleBatch = [&](std::vector<Particle> const& particles) {
+		int i{};
 		std::vector<ParticleVertex> particleVertexes;
 		std::vector<unsigned int> indices;
-		int i{};
-		auto renderParticleBatch = [&](std::vector<Particle> const &particles) {
-			for (Particle const &particle: particles) {
-				auto&& [texture, result] = resourceManager.getResource<Texture>(particle.texture);
-				if (!texture)
-					continue;
-				glBindTextureUnit(0, texture->getTextureId());
-				ParticleVertex particleVertex;
-				// Add to batch
-				for (int j{}; j < 4; ++j) {
-					particleVertex.localPos = vertexPos[j] * particle.currentSize;
-					particleVertex.worldPos = particle.position;
-					particleVertex.texCoord = textureCoordinates[j];
-					particleVertex.color = particle.currentColor;
-					particleVertex.rotation = particle.rotation;
-					particleVertexes.push_back(particleVertex);
-				}
-				for (int j{}; j < 6; ++j)
-					indices.push_back(squareIndices[j] + i * 4);
-				++i;
+		for (Particle const& particle : particles) {
+			ParticleVertex particleVertex;
+			// Add to batch
+			for (int j{}; j < 4; ++j) {
+				particleVertex.localPos = vertexPos[j] * particle.currentSize;
+				particleVertex.worldPos = particle.position;
+				particleVertex.texCoord = textureCoordinates[j];
+				particleVertex.color = particle.currentColor;
+				particleVertex.rotation = particle.rotation;
+				particleVertexes.push_back(particleVertex);
 			}
-			particleVBO.uploadData(particleVertexes);
-			EBO.uploadData(indices);
-			glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
-		};
-		renderParticleBatch(emitter.trailParticles);
-		renderParticleBatch(emitter.particles);
-		
-		
+			for (int j{}; j < 6; ++j)
+				indices.push_back(squareIndices[j] + i * 4);
+			++i;
+		}
+		particleVBO.uploadData(particleVertexes);
+		EBO.uploadData(indices);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
+	};
+	for (auto&& [textureid, textureParticles] : engine.particleSystem.particles) {
+		auto&& [texture, result] = resourceManager.getResource<Texture>(textureid);
+		if (!texture)
+			continue;
+		glBindTextureUnit(0, texture->getTextureId());
+		renderParticleBatch(textureParticles);
 	}
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
-
 }
 
 Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh) {

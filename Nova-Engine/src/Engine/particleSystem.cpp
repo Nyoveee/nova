@@ -6,7 +6,9 @@
 #undef max
 
 ParticleSystem::ParticleSystem(Engine& p_engine)
-	:engine{ p_engine }
+	: engine{ p_engine }
+	, particles{}
+	, interpolationType{}
 {
 	interpolationType[InterpolationType::Root] = 0.5f;
 	interpolationType[InterpolationType::Linear] = 1.0f;
@@ -16,25 +18,25 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 
 void ParticleSystem::update(float dt)
 {
+	particleMovement(dt);
+	particleOverLifeTime();
 	for (auto&& [entity, transform, entityData, emitter] : engine.ecs.registry.view<Transform, EntityData, ParticleEmitter>().each()){ 
-		particleMovement(transform, emitter, dt);
-		particleOverLifeTime(emitter);
-		if (!entityData.isActive || !engine.ecs.isComponentActive<ParticleEmitter>(entity)) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<ParticleEmitter>(entity))
 			continue;
-		}
 		continuousGeneration(transform, emitter, dt);
 		burstGeneration(transform, emitter, dt);
 		trailGeneration(transform, emitter);
 	}
+
 }
 
 void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt)
 {
 	if (emitter.particleRate <= 0 || !emitter.looping)
 		return;
-	if (emitter.particles.size() < emitter.maxParticles)
+	if (emitter.particleCount < emitter.maxParticles)
 		emitter.currentContinuousTime -= dt;
-	while (emitter.currentContinuousTime <= 0 && emitter.particles.size() < emitter.maxParticles) {
+	while (emitter.currentContinuousTime <= 0 && emitter.particleCount < emitter.maxParticles) {
 		emitter.currentContinuousTime += 1.f / emitter.particleRate;
 		spawnParticle(transform, emitter);
 	}
@@ -44,9 +46,9 @@ void ParticleSystem::burstGeneration(Transform const& transform, ParticleEmitter
 {
 	if (emitter.burstRate <= 0 || !emitter.looping)
 		return;
-	if (emitter.particles.size() < emitter.maxParticles)
+	if (emitter.particleCount < emitter.maxParticles)
 		emitter.currentBurstTime -= dt;
-	while (emitter.currentBurstTime <= 0 && emitter.particles.size() < emitter.maxParticles) {
+	while (emitter.currentBurstTime <= 0 && emitter.particleCount < emitter.maxParticles) {
 		emitter.currentBurstTime += 1.f / emitter.burstRate;
 		emit(transform, emitter, emitter.burstAmount);
 	}
@@ -68,23 +70,37 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 		glm::vec3 startPosition{ emitter.prevPosition };
 		glm::vec3 direction{ glm::normalize(transform.position - emitter.prevPosition) };
 		int index{};
-		// Spawn the trail
 		while (maxDistance > 0.f) {
-			// Spawn the particle trail
 			Particle newParticle{};
-			newParticle.texture = emitter.trails.trailTexture;
-			newParticle.position = startPosition + direction * (distancePerEmission * index);
+			newParticle.type = Particle::Type::Trail;
+			newParticle.emitter = &emitter;
+			newParticle.emitterTransform = &transform;
+			// Size
+			newParticle.sizeInterpolation = interpolationType[emitter.sizeOverLifetime.interpolationType];
 			newParticle.startSize = newParticle.currentSize = emitter.trails.trailSize;
+			newParticle.sizeOverLifetime = emitter.sizeOverLifetime.selected;
+			newParticle.endSize = emitter.sizeOverLifetime.endSize;
+			// Color
 			glm::vec4 color = emitter.trails.trailColor;
 			glm::vec3 colorOffsetMin = emitter.trails.trailColorOffsetMin;
 			glm::vec3 colorOffsetMax = emitter.trails.trailColorOffsetMax;
 			ColorA startColor = color + glm::vec4(glm::vec3(RandomRange::Vec3(colorOffsetMin, colorOffsetMax)), 0);
 			startColor = glm::vec4(startColor.r(), startColor.g(), startColor.b(), 0) * emitter.trails.trailEmissiveMultiplier
 				+ glm::vec4(0, 0, 0, startColor.a());
+			newParticle.colorInterpolation = interpolationType[emitter.colorOverLifetime.interpolationType];
 			newParticle.startColor = newParticle.currentColor = startColor;
-			newParticle.currentLifeTime = emitter.lifeTime;
+			newParticle.colorOverLifetime = emitter.colorOverLifetime.selected;
+			newParticle.endColor = emitter.colorOverLifetime.endColor;
+			// Lifetime
+			newParticle.currentLifeTime = newParticle.lifeTime = emitter.lifeTime;
+			// Other Particle Details
+			newParticle.position = startPosition + direction * (distancePerEmission * index);
 			newParticle.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
-			emitter.trailParticles.push_back(newParticle);
+			newParticle.force = emitter.force;
+			newParticle.lightIntensity = emitter.lightIntensity;
+			newParticle.lightattenuation = emitter.lightattenuation;
+			// Create the Particle Trail
+			particles[emitter.trails.trailTexture].push_back(newParticle);
 			// Update the loop
 			++index;
 			maxDistance -= distancePerEmission;
@@ -93,58 +109,57 @@ void ParticleSystem::trailGeneration(Transform& transform, ParticleEmitter& emit
 	}
 }
 
-void ParticleSystem::particleMovement(Transform const& transform, ParticleEmitter& emitter, float dt)
+void ParticleSystem::particleMovement(float dt)
 {
 	auto updateParticleMovement = [&](std::vector<Particle>& particles) {
 		// Move the particles
-		std::vector<Particle>::iterator it = std::remove_if(std::begin(particles), std::end(particles), [&transform, &emitter, dt](Particle& particle) {
+		std::vector<Particle>::iterator it = std::remove_if(std::begin(particles), std::end(particles), [dt](Particle& particle) {
 			particle.currentLifeTime -= dt;
-			if (particle.currentLifeTime <= 0)
+			// Set this particle to be removed
+			if (particle.currentLifeTime <= 0) {
+				if (particle.type == Particle::Type::Standard && particle.emitter)
+					--(particle.emitter->particleCount);
 				return true;
+			}
+			
 			particle.position += particle.velocity * dt;
 			glm::mat4 rotation = glm::identity<glm::mat4>();
-			rotation = glm::mat4_cast(transform.rotation) * rotation;
-			glm::vec4 rotatedForce = rotation * glm::vec4{ emitter.force, 0 };
+			if(particle.emitterTransform)
+				rotation = glm::mat4_cast(particle.emitterTransform->rotation) * rotation;
+			glm::vec4 rotatedForce = rotation * glm::vec4{ particle.force, 0 };
 			particle.velocity += glm::vec3{ rotatedForce.x, rotatedForce.y,rotatedForce.z } *dt;
 			particle.rotation += particle.angularVelocity * dt;
 			return false;
 		});
 		// Remove once end of lifetime
-		if (it != std::end(particles)) {
+		if (it != std::end(particles))
 			particles.erase(it, std::end(particles));
-		}
 	};
-	updateParticleMovement(emitter.particles);
-	updateParticleMovement(emitter.trailParticles);
+	for (auto&& [textureid, textureParticles] : particles) {
+		(void)textureid;
+		updateParticleMovement(textureParticles);
+	}
+	
 }
 
-void ParticleSystem::particleOverLifeTime(ParticleEmitter& emitter)
+void ParticleSystem::particleOverLifeTime()
 {
-	if (emitter.lifeTime <= 0)
-		return;
-	if (emitter.sizeOverLifetime.selected) {
-		auto updateSizeOverLifetime = [&](std::vector<Particle>& particles) {
-			for (Particle& particle : particles) {
-				float endSize{ emitter.sizeOverLifetime.endSize };
-				float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
-				float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
-				particle.currentSize = Interpolation::Interpolation(particle.startSize, endSize, interpolationValue, degree);
+	for (auto&& [textureid, textureParticles] : particles) {
+		(void)textureid;
+		for (Particle& particle : textureParticles) {
+			// Size Interpolation
+			if (particle.sizeOverLifetime) {
+				float interpolationValue{ 1 - particle.currentLifeTime / particle.lifeTime };
+				float degree{ particle.sizeInterpolation };
+				particle.currentSize = Interpolation::Interpolation(particle.startSize, particle.endSize, interpolationValue, degree);
 			}
-			};
-		updateSizeOverLifetime(emitter.particles);
-		updateSizeOverLifetime(emitter.trailParticles);
-	}
-	if (emitter.colorOverLifetime.selected) {
-		auto updateColorOverLifetime = [&](std::vector<Particle>& particles) {
-			for (Particle& particle : particles) {
-				glm::vec4 endColor{ emitter.colorOverLifetime.endColor };
-				float interpolationValue{ 1 - particle.currentLifeTime / emitter.lifeTime };
-				float degree{ interpolationType[emitter.sizeOverLifetime.interpolationType] };
-				particle.currentColor = Interpolation::Interpolation(particle.startColor, endColor, interpolationValue, degree);
+			// Color Interpolation
+			if (particle.colorOverLifetime) {
+				float interpolationValue{ 1 - particle.currentLifeTime / particle.lifeTime };
+				float degree{ particle.colorInterpolation };
+				particle.currentColor = Interpolation::Interpolation(particle.startColor, particle.endColor, interpolationValue, degree);
 			}
-			};
-		updateColorOverLifetime(emitter.particles);
-		updateColorOverLifetime(emitter.trailParticles);
+		}
 	}
 }
 
@@ -158,13 +173,18 @@ glm::vec3 ParticleSystem::determineParticleVelocity(ParticleEmitter& emitter, gl
 void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& emitter)
 {
 	Particle newParticle{};
-	
+	newParticle.type = Particle::Type::Standard;
+	newParticle.emitter = &emitter;
+	newParticle.emitterTransform = &transform;
+	// Size
 	float startSize = emitter.startSize + RandomRange::Float(emitter.minStartSizeOffset, emitter.maxStartSizeOffset);
+	newParticle.sizeInterpolation = interpolationType[emitter.sizeOverLifetime.interpolationType];
 	newParticle.startSize = newParticle.currentSize = startSize;
-
-	newParticle.currentLifeTime = emitter.lifeTime;
-	newParticle.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
-	
+	newParticle.colorOverLifetime = emitter.colorOverLifetime.selected;
+	newParticle.endSize = emitter.sizeOverLifetime.endSize;
+	// Lifetime
+	newParticle.currentLifeTime = newParticle.lifeTime = emitter.lifeTime;
+	// Color
 	newParticle.startColor = newParticle.currentColor = emitter.particleColorSelection.color;
 	glm::vec4 color = emitter.particleColorSelection.color;
 	glm::vec3 colorOffsetMin = emitter.particleColorSelection.colorOffsetMin;
@@ -172,8 +192,10 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 	ColorA startColor = color + glm::vec4(glm::vec3(RandomRange::Vec3(colorOffsetMin, colorOffsetMax)), 0);
 	startColor = glm::vec4(startColor.r(),startColor.g(),startColor.b(),0) * emitter.particleColorSelection.emissiveMultiplier 
 		+ glm::vec4(0,0,0,startColor.a());
+	newParticle.colorInterpolation = interpolationType[emitter.colorOverLifetime.interpolationType];
 	newParticle.startColor = newParticle.currentColor = startColor;
-	
+	newParticle.colorOverLifetime = emitter.colorOverLifetime.selected;
+	newParticle.endColor = emitter.colorOverLifetime.endColor;
 	// Spawn Based on the shape
 	switch (emitter.particleEmissionTypeSelection.emissionShape) {
 	case ParticleEmissionTypeSelection::EmissionShape::Sphere:
@@ -248,12 +270,16 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		break;
 	}
 	}
-	// Change Particles position and velocity based on tranform rotation
+	// Other Particle Details
 	newParticle.position = rotateParticleSpawnPoint(transform, newParticle.position);
 	newParticle.velocity = rotateParticleVelocity(transform, newParticle.velocity);
-	newParticle.texture = emitter.texture;
+	newParticle.angularVelocity = emitter.initialAngularVelocity + RandomRange::Float(emitter.minAngularVelocityOffset, emitter.maxAngularVelocityOffset);
+	newParticle.force = emitter.force;
+	newParticle.lightIntensity = emitter.lightIntensity;
+	newParticle.lightattenuation = emitter.lightattenuation;
 	// Create the new particle
-	emitter.particles.push_back(newParticle);
+	particles[emitter.texture].push_back(newParticle);
+	++emitter.particleCount;
 }
 
 
@@ -280,6 +306,6 @@ glm::vec3 ParticleSystem::rotateParticleVelocity(Transform const& transform, glm
 ******************************************************************************/
 void ParticleSystem::emit(Transform const& transform, ParticleEmitter& emitter, int count)
 {
-	while (count-- && emitter.particles.size() < emitter.maxParticles)
+	while (count-- && emitter.particleCount < emitter.maxParticles)
 		spawnParticle(transform, emitter);
 }

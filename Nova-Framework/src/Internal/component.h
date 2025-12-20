@@ -537,24 +537,6 @@ struct NavigationTestTarget
 /******************************************************************************
 	Particles System
 ******************************************************************************/
-struct Particle {
-	TypedResourceID<Texture> texture;
-	glm::vec3 position;
-	glm::vec3 velocity;
-	// Color
-	glm::vec4 startColor;
-	glm::vec4 currentColor;
-	// Movement
-	glm::vec3 direction;
-	float rotation;
-	float angularVelocity;
-	// Size
-	float startSize;
-	float currentSize;
-	// Lifetime
-	float currentLifeTime;
-};
-
 struct CubeEmitter {
 	glm::vec3 min = { -5.f,-5.f,-5.f };
 	glm::vec3 max = { 5.f,5.f,5.f };
@@ -667,19 +649,16 @@ struct ParticleEmitter
 	// Update
 	float currentContinuousTime{};
 	float currentBurstTime{};
-	glm::vec3 prevPosition;
+	glm::vec3 prevPosition{};
 	bool b_firstPositionUpdate{ true };
-	// Rendering
-	std::vector<Particle> particles;
-	std::vector<Particle> trailParticles;
-
+	int particleCount{};
 	// Categories
-	TypedResourceID<Texture> texture;
-	ParticleEmissionTypeSelection particleEmissionTypeSelection;
-	ParticleColorSelection particleColorSelection;
-	SizeOverLifetime sizeOverLifetime;
-	ColorOverLifetime colorOverLifetime;
-	Trails trails;
+	TypedResourceID<Texture> texture{};
+	ParticleEmissionTypeSelection particleEmissionTypeSelection{};
+	ParticleColorSelection particleColorSelection{};
+	SizeOverLifetime sizeOverLifetime{};
+	ColorOverLifetime colorOverLifetime{};
+	Trails trails{};
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
@@ -689,7 +668,7 @@ struct ParticleEmitter
 	float maxStartSizeOffset = 0.f;
 
 	float startSpeed = 1;
-	glm::vec3 force;
+	glm::vec3 force{};
 	// Velocity
 	float initialAngularVelocity{};
 	float minAngularVelocityOffset{};
@@ -732,6 +711,43 @@ struct ParticleEmitter
 	)
 };
 
+struct Particle {
+	// References
+	ParticleEmitter* emitter{};
+	Transform const* emitterTransform{};
+	// Type
+	enum class Type {
+		Standard,
+		Trail
+	}type;
+	// Interpolation
+	float colorInterpolation{};
+	float sizeInterpolation{};
+	// Light
+	float lightIntensity{};
+	glm::vec3 lightattenuation{};
+	// Position
+	glm::vec3 position{};
+	// Color
+	bool colorOverLifetime{};
+	glm::vec4 startColor{};
+	glm::vec4 currentColor{};
+	glm::vec4 endColor{};
+	// Movement
+	glm::vec3 velocity{};
+	glm::vec3 direction{};
+	glm::vec3 force{};
+	float rotation{};
+	float angularVelocity{};
+	// Size
+	bool sizeOverLifetime{};
+	float startSize{};
+	float currentSize{};
+	float endSize{};
+	// Lifetime
+	float currentLifeTime{};
+	float lifeTime{};
+};
 struct Text {
 	TypedResourceID<Font> font;
 	int fontSize = 13;

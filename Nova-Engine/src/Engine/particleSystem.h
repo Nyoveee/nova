@@ -2,6 +2,7 @@
 #include "export.h"
 #include "component.h"
 #include <unordered_map>
+#include <map>
 class Engine;
 
 class ParticleSystem
@@ -16,7 +17,8 @@ public:
 	ENGINE_DLL_API void emit(Transform const& transform, ParticleEmitter& emitter, int count);
 public:
 	void update(float dt);
-
+public:
+	std::map<TypedResourceID<Texture>, std::vector<Particle>> particles;
 private:
 	// Spawning
 	void continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
@@ -25,8 +27,8 @@ private:
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
 	
 	// Update
-	void particleMovement(Transform const& transform, ParticleEmitter& emitter, float dt);
-	void particleOverLifeTime(ParticleEmitter& emitter);
+	void particleMovement(float dt);
+	void particleOverLifeTime();
 	// Particle Info
 	glm::vec3 determineParticleVelocity(ParticleEmitter& emitter, glm::vec3 nonRandomizedDirection);
 	// Rotation
