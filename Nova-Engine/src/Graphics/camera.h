@@ -1,7 +1,6 @@
 #pragma once
 
 #include "export.h"
-
 #include "type_alias.h"
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -33,6 +32,19 @@ public:
 	void		setFront(glm::vec3 front);
 
 	glm::vec3	getRight() const;
+	glm::vec3	getUp() const;
+
+
+	void		setFov(Radian angle);
+	Radian		getFov() const;
+
+	void		setNearPlaneDistance(float plane);
+	float		getNearPlaneDistance() const;
+
+	void		setFarPlaneDistance(float plane);
+	float		getFarPlaneDistance() const;
+
+	float		getAspectRatio() const;
 
 public:
 	// only calculate view and projection matrix at the end of game loop once, for optimisation.
@@ -43,6 +55,7 @@ private:
 	glm::vec3 cameraPos;
 	glm::vec3 cameraFront;
 	glm::vec3 cameraRight;
+	glm::vec3 cameraUp;
 
 	glm::mat4x4 viewMatrix;
 

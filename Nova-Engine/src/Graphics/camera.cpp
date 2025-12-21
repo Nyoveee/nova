@@ -58,10 +58,43 @@ glm::vec3 Camera::getFront() const {
 void Camera::setFront(glm::vec3 front) {
 	cameraFront = front;
 	cameraRight = glm::normalize(glm::cross(cameraFront, Up));
+	cameraUp = glm::normalize(glm::cross(cameraFront, cameraRight));
 }
 
 glm::vec3 Camera::getRight() const {
 	return cameraRight;
+}
+
+glm::vec3 Camera::getUp() const {
+	return cameraUp;
+}
+
+void Camera::setFov(Radian angle) {
+	fovAngle = angle;
+}
+
+Radian Camera::getFov() const {
+	return fovAngle;
+}
+
+void Camera::setNearPlaneDistance(float plane) {
+	nearPlaneDistance = plane;
+}
+
+float Camera::getNearPlaneDistance() const {
+	return nearPlaneDistance;
+}
+
+void Camera::setFarPlaneDistance(float plane) {
+	farPlaneDistance = plane;
+}
+
+float Camera::getFarPlaneDistance() const {
+	return farPlaneDistance;
+}
+
+float Camera::getAspectRatio() const {
+	return aspectRatio;
 }
 
 void Camera::recalculateViewMatrix() {

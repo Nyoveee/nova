@@ -65,6 +65,8 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 	boneNameToIndex.clear();
 	materialNames.clear();
 	maxDimension = 0.f;
+	maxBound = glm::vec3{ std::numeric_limits<float>::min(), std::numeric_limits<float>::min(), std::numeric_limits<float>::min() };
+	minBound = glm::vec3{ std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
 
 	std::vector<Mesh> meshes;
 	meshes.reserve(scene->mNumMeshes);
@@ -106,7 +108,11 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 	}
 #endif
 
-	return {{ std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension * scale, scale }};
+	// Calculate center point and extents..
+	glm::vec3 centerPoint = (maxBound + minBound) / 2.f;
+	glm::vec3 extent = centerPoint - minBound;
+
+	return { { std::move(meshes), std::move(materialNames), std::move(skeletonOpt), std::move(animations), maxDimension * scale, scale, maxBound * scale, minBound * scale, centerPoint * scale, extent * scale  } };
 }
 
 Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix) {
@@ -143,9 +149,14 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 			position = glm::vec3{ globalTransformationMatrix * glm::vec4{ toGlmVec3(mesh->mVertices[i]), 1.f } };
 		}
 
-		if (position.x > maxDimension || position.y > maxDimension || position.z > maxDimension) {
-			maxDimension = std::max(std::max(position.x, position.y), position.z);
+		// calculating max dimension
+		if (std::abs(position.x) > maxDimension || std::abs(position.y) > maxDimension || std::abs(position.z) > maxDimension) {
+			maxDimension = std::max(std::max(std::abs(position.x), std::abs(position.y)), std::abs(position.z));
 		}
+
+		// calculating bounds..
+		maxBound = glm::max(position, maxBound);
+		minBound = glm::min(position, minBound);
 
 		positions.push_back(position);
 

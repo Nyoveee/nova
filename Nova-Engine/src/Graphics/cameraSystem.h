@@ -4,6 +4,7 @@
 #include "export.h"
 #include "type_alias.h"
 #include "InputManager/inputEvent.h"
+#include "frustum.h"
 
 class Camera;
 class Engine;
@@ -38,7 +39,6 @@ public:
 	void endSimulation();
 
 	ENGINE_DLL_API void focusOnPosition(glm::vec3 const& targetPosition);
-
 	ENGINE_DLL_API float getCameraSpeed() const;
 	ENGINE_DLL_API LevelEditorCamera const& getLevelEditorCamera() const;
 
@@ -49,6 +49,11 @@ public:
 	// Focus camera settings - adjust these to change focus behavior
 	float focusOffsetDistance;  // Distance behind the target
 	float focusHeightOffset;    // Height above the target
+
+private:
+	// Perform frustum culling on all mesh renderers and skinned mesh renderers
+	void frustumCulling(Frustum frustum);
+	Frustum calculateGameCameraFrustum();
 
 private:
 	LevelEditorCamera levelEditorCamera;

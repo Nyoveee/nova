@@ -1,10 +1,12 @@
 #include <cmath>
+#include <glm/gtc/matrix_access.hpp>
 
 #include "Engine/engine.h"
 #include "cameraSystem.h"
 #include "renderer.h"
 #include "InputManager/inputManager.h"
 #include "Profiling.h"
+#include "frustum.h"
 
 namespace {
 	constexpr float sensitivity = 0.1f;		// change this value to your liking
@@ -80,19 +82,24 @@ void CameraSystem::update(float dt) {
 	ZoneScoped;
 #endif
 
-	for (auto&& [entityID, cameraComponent] : engine.ecs.registry.view<CameraComponent>().each())
-	{
-		if (cameraComponent.camStatus)
-		{
-			Transform& objTransform = engine.ecs.registry.get<Transform>(entityID);
-			// Use Transform data to set camera variables.
-			gameCamera.setPos(objTransform.position);
-			gameCamera.setFront(objTransform.front);
-
-			gameCamera.recalculateViewMatrix();
-			gameCamera.recalculateProjectionMatrix();
-			break;
+	for (auto&& [entityID, transform, cameraComponent] : engine.ecs.registry.view<Transform, CameraComponent>().each()) {
+		if (!cameraComponent.camStatus) {
+			continue;
 		}
+		
+		gameCamera.setPos(transform.position);
+		gameCamera.setFront(transform.front);
+		gameCamera.setFov(cameraComponent.fov);
+		gameCamera.setNearPlaneDistance(cameraComponent.nearPlane);
+		gameCamera.setFarPlaneDistance(cameraComponent.farPlane);
+
+		gameCamera.recalculateViewMatrix();
+		gameCamera.recalculateProjectionMatrix();
+		
+		// We perform frustum culling..
+		frustumCulling(calculateGameCameraFrustum());
+
+		break;
 	}
 
 	// for editor camera
@@ -169,6 +176,78 @@ float CameraSystem::getCameraSpeed() const {
 
 CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() const {
     return levelEditorCamera;
+}
+
+void CameraSystem::frustumCulling(Frustum gameCameraFrustum) {
+	auto calculateFrustumCulling = [&](Model* model, Transform& transform) {
+		if (!model) {
+			return;
+		}
+
+		glm::vec3 rotatedCenter = transform.rotation * (transform.scale * model->center);
+
+		glm::vec3 extents = [&]() {
+			if (transform.rotation == glm::quat_identity<float, glm::highp>()) {
+				return transform.scale * model->extents;
+			}
+
+			return (transform.scale * model->extents);
+		}();
+
+		// Calculate appropriate bounding box.
+		transform.boundingBox = {
+			rotatedCenter + transform.position,
+			extents
+		};
+
+		transform.inCameraFrustum = gameCameraFrustum.isAABBInFrustum(transform.boundingBox);
+	};
+
+	for (auto&& [entityID, entityData, transform, meshRenderer] : engine.ecs.registry.view<EntityData, Transform, MeshRenderer>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+			continue;
+		}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer.modelId);
+		calculateFrustumCulling(model, transform);
+	}
+
+	for (auto&& [entityID, entityData, transform, skinnedMeshRenderer] : engine.ecs.registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+			continue;
+		}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
+		calculateFrustumCulling(model, transform);
+	}
+}
+
+Frustum CameraSystem::calculateGameCameraFrustum() {
+	Frustum frustum;
+
+	// https://www.gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
+	// https://www.reddit.com/r/opengl/comments/1fstgtt/strange_issue_with_frustum_extraction/
+	glm::mat4x4 m = gameCamera.projection() * gameCamera.view();
+
+	frustum.leftPlane	= { glm::row(m, 3) + glm::row(m, 0) };
+	frustum.rightPlane	= { glm::row(m, 3) - glm::row(m, 0) };
+	frustum.bottomPlane = { glm::row(m, 3) + glm::row(m, 1) };
+	frustum.topPlane	= { glm::row(m, 3) - glm::row(m, 1) };
+	frustum.nearPlane	= { glm::row(m, 3) + glm::row(m, 2) };
+	frustum.farPlane	= { glm::row(m, 3) - glm::row(m, 2) };
+
+	frustum.leftPlane.normalize();
+	frustum.rightPlane.normalize();
+	frustum.bottomPlane.normalize();
+	frustum.topPlane.normalize();
+	frustum.nearPlane.normalize();
+	frustum.farPlane.normalize();
+	
+	return frustum;
 }
 
 void CameraSystem::calculateEulerAngle(float xOffset, float yOffset) {

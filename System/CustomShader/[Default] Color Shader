@@ -3,7 +3,7 @@
     "cullingConfig": "Enable",
     "depthTestingMethod": "DepthTest",
     "fShaderCode": "\n    return vec4(intensity * color, 1.0); // ok\n",
-    "pipeline": "PBR",
+    "pipeline": "Color",
     "uniforms": {
         "color": "Color",
         "intensity": "float"

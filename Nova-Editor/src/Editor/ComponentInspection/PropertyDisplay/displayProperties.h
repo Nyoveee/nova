@@ -129,6 +129,13 @@ inline void DisplayProperty<float>(Editor&, const char* dataMemberName, float& d
 }
 
 template<>
+inline void DisplayProperty<Degree>(Editor&, const char* dataMemberName, Degree& dataMember) {
+	float value = dataMember;
+	ImGui::DragFloat(dataMemberName, &value);
+	dataMember = value;
+}
+
+template<>
 inline void DisplayProperty<NormalizedFloat>(Editor&, const char* dataMemberName, NormalizedFloat& dataMember) {
 	float value = dataMember;
 	ImGui::SliderFloat(dataMemberName, &value, 0.f, 1.f);
@@ -242,6 +249,7 @@ inline void DisplayProperty<Radian>(Editor&, const char* dataMemberName, Radian&
 		dataMember = toRadian(angle);
 	}
 }
+
 template<>
 inline void DisplayProperty<ResourceID>(Editor& editor, const char* dataMemberName, ResourceID& dataMember) {
 	ImGui::Text(dataMemberName);

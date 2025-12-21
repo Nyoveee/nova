@@ -308,28 +308,15 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	case RenderConfig::Editor:
 		// Main render function
 		if (isEditorScreenShown) {
-			render(editorMainFrameBuffer, editorCamera);
+			render(editorMainFrameBuffer, editorCamera, false);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(editorMainFrameBuffer);
 			
 			debugShader.setMatrix("model", glm::mat4{ 1.f });
-			// ===============================================
-			// Debug rendering + object ids for editor..
-			// ===============================================
-			if (engine.toDebugRenderPhysics) {
-				debugRenderPhysicsCollider();
-			}
 
-			if (engine.toDebugRenderNavMesh) {
-				debugRenderNavMesh();
-			}
-
-			if (engine.toDebugRenderParticleEmissionShape) {
-				debugRenderParticleEmissionShape();
-			}
-
-			renderDebugSelectedObjects();
+			// render debug information..
+			debugRender();
 
 			// after debug rendering.. bind main position VBO back to VAO..
 			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
@@ -339,7 +326,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		
 		// Main render function
 		if(isGameScreenShown)
-			render(gameMainFrameBuffer, gameCamera);
+			render(gameMainFrameBuffer, gameCamera, true);
 
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
@@ -358,7 +345,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	// ===============================================
 	case RenderConfig::Game:
 		// Main render function
-		render(gameMainFrameBuffer, gameCamera);
+		render(gameMainFrameBuffer, gameCamera, true);
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
 
@@ -422,7 +409,7 @@ void Renderer::renderUI()
 	glBindVertexArray(mainVAO);
 }
 
-void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, bool toFrustumCull) {
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
 
@@ -438,8 +425,8 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	// We render individual game objects..
 	renderSkyBox();
 
-	renderModels(camera);
-	renderSkinnedModels(camera);
+	renderModels(camera, toFrustumCull);
+	renderSkinnedModels(camera, toFrustumCull);
 	renderParticles();
 
 	// ======= Post Processing =======
@@ -452,9 +439,6 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 
 	if(toPostProcess)
 		renderPostProcessing(frameBuffers);
-
-	// Apply HDR tone mapping + gamma correction post-processing
-	// renderHDRTonemapping(frameBuffers);
 }
 
 void Renderer::renderToDefaultFBO() {
@@ -731,8 +715,6 @@ void Renderer::debugRenderParticleEmissionShape()
 
 	glBindVertexArray(mainVAO);
 
-	// glBindFramebuffer(GL_FRAMEBUFFER, getActiveMainFrameBuffer().fboId());
-	
 	glEnable(GL_DEPTH_TEST);
 	setBlendMode(BlendingConfig::AlphaBlending);
 
@@ -784,13 +766,69 @@ void Renderer::debugRenderParticleEmissionShape()
 	}
 }
 
+void Renderer::debugRenderBoundingVolume() {
+	debugShader.use();
+	debugShader.setVec4("color", { 1.f, 1.0f, 0.0f, 1.0f });
+	debugShader.setMatrix("model", glm::identity<glm::mat4>());
+
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
+	glBindVertexArray(mainVAO);
+	glEnable(GL_DEPTH_TEST);
+
+	for (auto&& [entityID, entityData, transform, meshRenderer] : engine.ecs.registry.view<EntityData, Transform, MeshRenderer>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+			continue;
+		}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer.modelId);
+
+		if (!model) {
+			// missing model.
+			continue;
+		}
+
+		debugParticleShapeVBO.uploadData(DebugShapes::Cube(transform.boundingBox));
+		glDrawArrays(GL_LINES, 0, 24);
+	}
+
+	for (auto&& [entityID, transform, cameraComponent] : engine.ecs.registry.view<Transform, CameraComponent>().each()) {
+		if (!cameraComponent.camStatus) {
+			continue;
+		}
+		
+		// We found our game camera..
+		debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
+
+		auto vertices = DebugShapes::CameraFrustumOutline(transform.position, gameCamera);
+		debugParticleShapeVBO.uploadData(vertices);
+		glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size()));
+		
+		setBlendMode(BlendingConfig::AlphaBlending);
+		debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 0.2f });
+		
+		vertices = DebugShapes::CameraFrustum(transform.position, gameCamera);
+		debugParticleShapeVBO.uploadData(vertices);
+		glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+		
+		break;
+	}
+}
+
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
+	static std::vector<glm::vec3> vertices(3);
+
 	if (numOfPhysicsDebugTriangles > MAX_DEBUG_TRIANGLES) {
 		std::cerr << "too much triangles!\n";
 		return;
 	}
 
-	debugPhysicsVBO.uploadData(std::vector<glm::vec3>{ { vertice1 }, { vertice2 }, { vertice3 } }, 3 * numOfPhysicsDebugTriangles * sizeof(glm::vec3));
+	vertices[0] = vertice1;
+	vertices[1] = vertice2;
+	vertices[2] = vertice3;
+
+	debugPhysicsVBO.uploadData(vertices, 3 * numOfPhysicsDebugTriangles * sizeof(glm::vec3));
 	++numOfPhysicsDebugTriangles;
 }
 
@@ -966,7 +1004,7 @@ void Renderer::renderSkyBox() {
 	}
 }
 
-void Renderer::renderModels(Camera const& camera) {
+void Renderer::renderModels(Camera const& camera, bool toFrustumCull) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -984,6 +1022,11 @@ void Renderer::renderModels(Camera const& camera) {
 			EntityData const& entityData = registry.get<EntityData>(entity);
 
 			if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
+				continue;
+			}
+
+			// frustum culling :)
+			if (!transform.inCameraFrustum) {
 				continue;
 			}
 
@@ -1024,10 +1067,6 @@ void Renderer::renderModels(Camera const& camera) {
 				// Draw every mesh of a given model.
 				for (auto const& mesh : model->meshes) {
 					Material const* material = obtainMaterial(*meshRenderer, mesh);
-
-					if (!material) {
-						continue;
-					}
 
 					// Use the correct shader and configure it's required uniforms..
 					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
@@ -1154,7 +1193,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 }
 
 
-void Renderer::renderSkinnedModels(Camera const& camera) {
+void Renderer::renderSkinnedModels(Camera const& camera, bool toFrustumCull) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1179,6 +1218,11 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 			continue;
 		}
 		
+		// frustum culling :)
+		if (!transform.inCameraFrustum) {
+			continue;
+		}
+
 		// upload all bone matrices..
 		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
 
@@ -1257,10 +1301,10 @@ void Renderer::renderOutline() {
 
 void Renderer::renderParticles()
 {
-
 	glBindVertexArray(particleVAO);
 	setBlendMode(BlendingConfig::AlphaBlending);
 	particleShader.use();
+	
 	// Disable writing to depth buffer for particles
 	glDepthMask(GL_FALSE);
 	const glm::vec3 vertexPos[4]{
@@ -1269,13 +1313,16 @@ void Renderer::renderParticles()
 			glm::vec3(1, 1, 0),		// top right
 			glm::vec3(-1, 1, 0) 	// top left
 	};
+	
 	const glm::vec2 textureCoordinates[4]{
 		glm::vec2(0, 0),
 		glm::vec2(1, 0),
 		glm::vec2(1, 1),
 		glm::vec2(0, 1)
 	};
+	
 	const int squareIndices[6]{ 0, 2, 1, 2, 0, 3 };
+	
 	auto renderParticleBatch = [&](std::vector<Particle> const& particles) {
 		int i{};
 		std::vector<ParticleVertex> particleVertexes;
@@ -1299,6 +1346,7 @@ void Renderer::renderParticles()
 		EBO.uploadData(indices);
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 	};
+
 	for (auto&& [textureid, textureParticles] : engine.particleSystem.particles) {
 		auto&& [texture, result] = resourceManager.getResource<Texture>(textureid);
 		if (!texture)
@@ -1306,6 +1354,7 @@ void Renderer::renderParticles()
 		glBindTextureUnit(0, texture->getTextureId());
 		renderParticleBatch(textureParticles);
 	}
+
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
 }
@@ -1893,6 +1942,26 @@ void Renderer::randomiseChromaticAberrationoffset() {
 	chromaticAberration = RandomRange::Vec3(glm::vec3{ -0.01f, -0.01f, -0.01f }, glm::vec3{ 0.01f, 0.01f, 0.01f });
 }
 
+void Renderer::debugRender() {
+	if (engine.toDebugRenderPhysics) {
+		debugRenderPhysicsCollider();
+	}
+
+	if (engine.toDebugRenderNavMesh) {
+		debugRenderNavMesh();
+	}
+
+	if (engine.toDebugRenderParticleEmissionShape) {
+		debugRenderParticleEmissionShape();
+	}
+
+	if (toDebugRenderBoundingVolume) {
+		debugRenderBoundingVolume();
+	}
+
+	renderDebugSelectedObjects();
+}
+
 void Renderer::renderDebugSelectedObjects() {
 	debugShader.use();
 	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
@@ -1904,17 +1973,18 @@ void Renderer::renderDebugSelectedObjects() {
 		Transform const* transform				= registry.try_get<Transform>(entity);
 		Light const* light						= registry.try_get<Light>(entity);
 		NavMeshOffLinks const* navMeshOffLinks  = registry.try_get<NavMeshOffLinks>(entity);
+		CameraComponent const* cameraComponent	= registry.try_get<CameraComponent>(entity);
 
 		if (!transform) {
 			return;
 		}
 
+		// Render light's radius of influence
 		if (light) {
 			glm::mat4 model = glm::identity<glm::mat4>();
 			model = glm::translate(model, transform->position);
 			debugShader.setMatrix("model", model);
 
-			// Debug render light outline..
 			switch (light->type) {
 			case Light::Type::PointLight:
 			case Light::Type::Spotlight:
@@ -1928,6 +1998,7 @@ void Renderer::renderDebugSelectedObjects() {
 			}
 		}
 
+		// Render navmesh offlinks location
 		if (navMeshOffLinks) {
 			glm::mat4 model = glm::identity<glm::mat4>();
 			model = glm::translate(model, navMeshOffLinks->startPoint);
@@ -1940,8 +2011,16 @@ void Renderer::renderDebugSelectedObjects() {
 			debugShader.setMatrix("model", model);
 
 			// same radius, same mesh.
-			// debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(navMeshOffLinks->radius));
 			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+		}
+
+		// Render camera frustum
+		if (cameraComponent && cameraComponent->camStatus) {
+			// We found our game camera..
+			debugShader.setMatrix("model", glm::identity<glm::mat4>());
+			auto vertices = DebugShapes::CameraFrustumOutline(transform->position, gameCamera);
+			debugParticleShapeVBO.uploadData(vertices);
+			glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size()));
 		}
 	}
 }

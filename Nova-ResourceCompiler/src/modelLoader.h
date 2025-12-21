@@ -29,6 +29,9 @@ private:
 
 private:
 	inline static float maxDimension;
+	inline static glm::vec3 maxBound;
+	inline static glm::vec3 minBound;
+
 	inline static std::vector<MaterialName> materialNames;
 	inline static std::vector<Bone> bones {};
 

@@ -57,7 +57,7 @@ public:
 
 	void renderUI();
 
-	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera, bool toFrustumCull);
 	
 	void renderToDefaultFBO();
 
@@ -154,10 +154,10 @@ private:
 	void renderSkyBox();
 
 	// render all MeshRenderers.
-	void renderModels(Camera const& camera);
+	void renderModels(Camera const& camera, bool toFrustumCull);
 
 	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels(Camera const& camera);
+	void renderSkinnedModels(Camera const& camera, bool toFrustumCull);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -180,6 +180,13 @@ private:
 	// render debug shapes in particle emitter
 	void debugRenderParticleEmissionShape();
 
+	// renders the bounding volume to debug frustum culling..
+	void debugRenderBoundingVolume();
+
+	// main debug render function
+	void debugRender();
+
+	// renders post processing effect on the pair framebuffer
 	void renderPostProcessing(PairFrameBuffer& frameBuffers);
 
 	// HDR post-processing functions
@@ -302,4 +309,7 @@ public:
 	// HDR parameters
 	float hdrExposure;
 	ToneMappingMethod toneMappingMethod;
+
+	// Used to debug frustum culling..
+	bool toDebugRenderBoundingVolume = false;
 };

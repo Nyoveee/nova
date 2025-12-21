@@ -86,13 +86,22 @@ struct ModelData {
 	float maxDimension;
 	float scale = 1.f;
 
+	glm::vec3 maxBound;
+	glm::vec3 minBound;
+	glm::vec3 center;
+	glm::vec3 extents;
+
 	REFLECTABLE(
 		meshes,
 		materialNames,
 		skeleton,
 		animations,
 		maxDimension,
-		scale
+		scale,
+		maxBound,
+		minBound,
+		center,
+		extents
 	)
 };
 

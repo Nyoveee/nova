@@ -379,6 +379,10 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 		}
 
 		if (ImGui::TreeNode("Vertex Shader")) {
+			if (ImGui::Button("Print")) {
+				std::cout << openglShader.getVertexShader() << '\n';
+			}
+
 			ImGui::BeginChild("Vertex Shader", ImVec2{}, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY);
 			ImGui::Text("%s", openglShader.getVertexShader().c_str());
 			ImGui::EndChild();
@@ -387,6 +391,10 @@ void AssetViewerUI::displayShaderInfo(AssetInfo<CustomShader>& descriptor) {
 		}
 
 		if (ImGui::TreeNode("Fragment Shader")) {
+			if (ImGui::Button("Print")) {
+				std::cout << openglShader.getFragmentShader() << '\n';
+			}
+
 			ImGui::BeginChild("Fragment Shader", ImVec2{}, ImGuiChildFlags_Border | ImGuiChildFlags_AutoResizeY);
 			ImGui::Text("%s", openglShader.getFragmentShader().c_str());
 			ImGui::EndChild();
@@ -478,6 +486,13 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 
 	if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::Text("Max dimension: %.2f", model->maxDimension);
+
+		ImGui::BeginDisabled();
+		DisplayProperty<glm::vec3>(editor, "Max Bound", model->maxBound);
+		DisplayProperty<glm::vec3>(editor, "Min Bound", model->minBound);
+		DisplayProperty<glm::vec3>(editor, "Center", model->center);
+		DisplayProperty<glm::vec3>(editor, "Extents", model->extents);
+		ImGui::EndDisabled();
 
 		ImGui::InputFloat("Scale", &copyOfScale);
 

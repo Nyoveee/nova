@@ -59,22 +59,21 @@ void DebugUI::renderPerformanceSection() {
 }
 
 void DebugUI::renderPhysicsSection() {
-	ImGui::SeparatorText("Physics");
 	ImGui::Checkbox("Physics debug render", &engine.toDebugRenderPhysics);
-
 	ImGui::Checkbox("NavMesh debug render", &engine.toDebugRenderNavMesh);
-
 	ImGui::Checkbox("Particle Emission Shape debug render", &engine.toDebugRenderParticleEmissionShape);
+	ImGui::Checkbox("(Frustum Culling) Bounding Volume debug render", &renderer.toDebugRenderBoundingVolume);
 
 	ImGui::SeparatorText("Mouse positions");
 
+	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
+
+#if 0
 	glm::vec3 farClipPos = { window.getClipSpacePos(), 1.f };
 	glm::vec3 nearClipPos = { farClipPos.x, farClipPos.y, -1.f };
 
 	glm::vec3 farWorldPos = renderer.getEditorCamera().clipToWorldSpace(farClipPos);
 	glm::vec3 nearWorldPos = renderer.getEditorCamera().clipToWorldSpace(nearClipPos);
-
-	ImGui::Text("Camera Speed: %.2f", engine.cameraSystem.getCameraSpeed());
 
 	ImGui::Text("Clip space mouse coords, (%2f, %2f, %2f)", farClipPos.x, farClipPos.y, farClipPos.z);
 	ImGui::Text("World space far plane mouse coords, (%2f, %2f, %2f)", farWorldPos.x, farWorldPos.y, farWorldPos.z);
@@ -85,6 +84,7 @@ void DebugUI::renderPhysicsSection() {
 
 	ImGui::Text("Level Editor camera pos, (%2f, %2f, %2f)", levelEditorCamera.position.x, levelEditorCamera.position.y, levelEditorCamera.position.z);
 	ImGui::Text("Mouse raycast direction, (%2f, %2f, %2f)", raycastDirection.x, raycastDirection.y, raycastDirection.z);
+#endif
 }
 
 void DebugUI::renderHDRSection() {

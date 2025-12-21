@@ -33,6 +33,11 @@ public:
 
 	float maxDimension;
 	float scale;
+
+	glm::vec3 maxBound;
+	glm::vec3 minBound;
+	glm::vec3 center;
+	glm::vec3 extents;
 };
 
 template <>

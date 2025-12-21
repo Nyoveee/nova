@@ -23,6 +23,7 @@
 #include "navMesh.h"
 #include "controller.h"
 #include "systemResource.h"
+#include "frustum.h"
 
 // Forward declaring.
 class Prefab;
@@ -113,6 +114,18 @@ struct Transform {
 	glm::quat	localRotation	{ 1.0f, 0.f, 0.f, 0.f };
 	EulerAngles localEulerAngles{ localRotation };	// this will be derieved from quartenions
 
+	// Reflect these data members for level editor to display
+	REFLECTABLE(
+		position,
+		scale,
+		rotation,
+		eulerAngles,
+		localPosition,
+		localScale,
+		localRotation,
+		localEulerAngles
+	)
+
 	// ====== These data members are calculated by the systems and do not need to be serialised. =======
 	glm::vec3 up{};
 	glm::vec3 right{};
@@ -137,17 +150,11 @@ struct Transform {
 	bool worldHasChanged = true;
 	bool needsRecalculating = true;
 
-	// Reflect these data members for level editor to display
-	REFLECTABLE(
-		position,
-		scale,
-		rotation,
-		eulerAngles,
-		localPosition,
-		localScale,
-		localRotation,
-		localEulerAngles
-	)
+	bool inCameraFrustum = true;
+
+	// not every transform will have bounding box.
+	// This is used for frustum culling.
+	AABB boundingBox = {};
 };
 
 struct Light {
@@ -436,8 +443,16 @@ struct PositionalAudio
 struct CameraComponent {
 	bool camStatus = true;
 
+	Degree fov = { 45.f };
+
+	float nearPlane = 0.3f;
+	float farPlane = 1000.f;
+
 	REFLECTABLE(
-		camStatus
+		camStatus,
+		fov,
+		nearPlane,
+		farPlane
 	)
 };
 

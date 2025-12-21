@@ -8,5 +8,9 @@ Model::Model(ResourceID id, ResourceFilePath resourceFilePath, ModelData modelDa
 	skeleton				{ std::move(modelData.skeleton) },
 	animations				{ std::move(modelData.animations) },
 	maxDimension			{ modelData.maxDimension },
-	scale					{ modelData.scale }
+	scale					{ modelData.scale },
+	maxBound				{ modelData.maxBound },
+	minBound				{ modelData.minBound },
+	center					{ modelData.center },
+	extents					{ modelData.extents }
 {}

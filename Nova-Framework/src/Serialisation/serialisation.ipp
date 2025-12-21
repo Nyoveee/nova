@@ -82,7 +82,9 @@ namespace Serialiser {
 		}
 		catch (std::exception const& ex) {
 			Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
-			registry.emplace<T>(entity, std::move(component));
+			
+			if(!registry.any_of<T>(entity)) 
+				registry.emplace<T>(entity, std::move(component));
 		}
 	}
 
