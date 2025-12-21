@@ -32,10 +32,14 @@ public:
 
 
 	bool IsActive();
-
+internal:
+	std::string GetNameID();
 public:
 	property Transform_^ transform{
 		Transform_^ get();
+	}
+	property System::String^ name {
+		System::String^ get();
 	}
 	property System::String^ tag {
 		System::String^ get();

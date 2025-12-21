@@ -28,21 +28,17 @@ internal:
 	static void loadAssembly();
 	static void unloadAssembly();
 
-	static void clearAllRuntime();
-
 	static void update();
 	static void fixedUpdate();
 
 	static void addEntityScript(EntityID entityID, ScriptID scriptId);
 	static Script^ delayedAddEntityScript(EntityID entityID, ScriptID scriptId);
 
-	static void initializeScript(EntityID entityID, ScriptID scriptId);
+	static void intializeAllScripts();
 	static void initializeScript(Script^ script);
 
 	static void removeEntity(EntityID entityID);
 	static void removeEntityScript(EntityID entityID, ScriptID scriptId);
-
-	static void intializeAllScripts();
 
 	static void handleOnCollision(EntityID entityOne, EntityID entityTwo);
 
@@ -65,14 +61,15 @@ internal:
 	// Set script field data..
 	static void setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData);
 
-	// process each individual script field data.. and set to it..
-	static void processSetScriptFieldData(Object^% object, System::Type^ fieldType, serialized_field_type const& field);
-
 	// Used when instantiating a new script..
 	static void setFieldData(Script^ script, FieldData const& fieldData);
 
+	// process each individual script field data.. and set to it..
+	static void processSetScriptFieldData(Object^% object, System::Type^ fieldType, serialized_field_type const& field);
+
 	static void addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate);
 
+	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
@@ -92,9 +89,6 @@ internal:
 
 	template <typename Type, typename ...Types>
 	static bool SetTypedResourceIDFromScript(serialized_field_type const& fieldData, Object^% object);
-
-internal:
-	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
 
 internal:
 	static Engine* engine;

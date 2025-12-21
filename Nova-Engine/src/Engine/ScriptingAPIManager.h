@@ -144,7 +144,6 @@ private:
 	SetScriptFieldFunctionPtr				 setScriptFieldData;
 	handleOnCollisionFunctionPtr			 handleOnCollision_;
 	ExecuteFunctionPtr				         executeFunction_;
-	ClearRunTimeScriptsFunctionPtr			 clearRunTimeScriptsFunction_;
 	GetHierarchyModifiedScriptsFunctionPtr   getHierarchyModifiedScripts_;
 
 private:

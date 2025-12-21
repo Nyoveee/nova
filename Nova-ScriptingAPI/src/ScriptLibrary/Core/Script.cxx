@@ -7,27 +7,50 @@
 // These also includes exception handling for scripts
 
 
+void Script::callAwake()
+{
+	try {
+		// Call Init Function
+		awake();
+	}
+	catch (const std::exception& e) {
+		Logger::error("{}Unable to call awake(): {}", gameObject->GetNameID(), e.what());
+	}
+	catch (System::Exception^ e) {
+		Logger::error("{}Unable to call awake(): {}", gameObject->GetNameID(), msclr::interop::marshal_as<std::string>(e->Message));
+		Interface::engine->stopSimulation();
+	}
+}
+
 void Script::callInit() {
 	try { 
 		// Call Init Function
 		init(); 
+		b_Initialized = true;
 	}
 	catch (const std::exception& e) {
-		Logger::error("Unable to call init(): {}", e.what());
+		Logger::error("{}Unable to call init(): {}", gameObject->GetNameID(), e.what());
 	}
 	catch (System::Exception^ e) {
-		Logger::error("Unable to call init(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Logger::error("{}Unable to call init(): {}", gameObject->GetNameID(), msclr::interop::marshal_as<std::string>(e->Message));
 		Interface::engine->stopSimulation();
 	}
 }
 
 void Script::callUpdate() {
-	try { update(); }
+	try {
+		// if it's not already intialized, call awake and start
+		if (!b_Initialized) {
+			callAwake();
+			callInit();
+		}
+		update();
+	}
 	catch (const std::exception& e) {
-		Logger::error("Unable to call update(): {}", e.what());
+		Logger::error("{}Unable to call update(): {}", gameObject->GetNameID(), e.what());
 	}
 	catch (System::Exception^ e) {
-		Logger::error("Unable to call update(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Logger::error("{}Unable to call update(): {}", gameObject->GetNameID(), msclr::interop::marshal_as<std::string>(e->Message));
 		Interface::engine->stopSimulation();
 	}
 }
@@ -35,10 +58,10 @@ void Script::callUpdate() {
 void Script::callFixedUpdate() {
 	try { fixedUpdate(); }
 	catch (const std::exception& e) {
-		Logger::error("Unable to call fixed update(): {}", e.what());
+		Logger::error("{}Unable to call fixedUpdate(): {}", gameObject->GetNameID(), e.what());
 	}
 	catch (System::Exception^ e) {
-		Logger::error("Unable to call fixed update(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Logger::error("{}Unable to call fixedUpdate(): {}", gameObject->GetNameID(), msclr::interop::marshal_as<std::string>(e->Message));
 		Interface::engine->stopSimulation();
 	}
 }
@@ -46,10 +69,10 @@ void Script::callFixedUpdate() {
 void Script::callExit() {
 	try { exit(); }
 	catch (const std::exception& e) {
-		Logger::error("Unable to call exit(): {}", e.what());
+		Logger::error("{}Unable to call exit(): {}", gameObject->GetNameID(), e.what());
 	}
 	catch (System::Exception^ e) {
-		Logger::error("Unable to call exit(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Logger::error("{}Unable to call exit(): {}", gameObject->GetNameID(), msclr::interop::marshal_as<std::string>(e->Message));
 		Interface::engine->stopSimulation();
 	}
 }
@@ -60,10 +83,10 @@ void Script::callOnCollisionEnter(unsigned otherEntityID) {
 		onCollisionEnter(other); 
 	}
 	catch (const std::exception& e) {
-		Logger::error("Unable to call on collision enter(): {}", e.what());
+		Logger::error("{}Unable to call onCollisionEnter(): {}", gameObject->GetNameID(), e.what());
 	}
 	catch (System::Exception^ e) {
-		Logger::error("Unable to call on collision enter(): {}", msclr::interop::marshal_as<std::string>(e->Message));
+		Logger::error("{}Unable to call onCollisionEnter(): {}", gameObject->GetNameID(), msclr::interop::marshal_as<std::string>(e->Message));
 		Interface::engine->stopSimulation();
 	}
 }

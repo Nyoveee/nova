@@ -1,6 +1,6 @@
 #include "GameObject.hxx"
 #include "ScriptLibrary/Extensions/ManagedTypes.hxx"
-#include <msclr/marshal_cppstd.h>
+#include "API/ConversionUtils.hxx"
 
 // delegating ctor.
 GameObject::GameObject(entt::entity entity) :
@@ -92,7 +92,10 @@ bool GameObject::IsActive() {
 	return Interface::engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)).isActive;
 }
 
+std::string GameObject::GetNameID() { return Convert("(" + name + " " + entityID.ToString() + ")"); }
+
 Transform_^ GameObject::transform::get() { return transformReference; };
+System::String^ GameObject::name::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->name); }
 System::String^ GameObject::tag::get() { return msclr::interop::marshal_as<System::String^>(Interface::getNativeComponent<EntityData>(entityID)->tag); }
 
 bool GameObject::operator==(GameObject^ lhs, GameObject^ rhs) {
