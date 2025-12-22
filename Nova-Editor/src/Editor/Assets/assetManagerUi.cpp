@@ -280,47 +280,7 @@ void AssetManagerUI::displayAssetThumbnail(ResourceID resourceId) {
 		return;
 	}
 
-	ImTextureID texture = NO_TEXTURE;
-
-	if (resourceManager.isResource<Texture>(resourceId)) {
-		texture = textureIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Audio>(resourceId)) {
-		texture = audioIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<ScriptAsset>(resourceId)) {
-		texture = scriptIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Scene>(resourceId)) {
-		texture = sceneIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Model>(resourceId)) {
-		texture = modelIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<CubeMap>(resourceId)) {
-		texture = cubeMapIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Material>(resourceId)) {
-		texture = materialIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<CustomShader>(resourceId)) {
-		texture = shaderIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<NavMesh>(resourceId)) {
-		texture = navmeshIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Prefab>(resourceId)) {
-		texture = prefabIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Sequencer>(resourceId)) {
-		texture = sequencerIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Controller>(resourceId)) {
-		texture = animationControllerIcon->getTextureId();
-	}
-	else if (resourceManager.isResource<Font>(resourceId)) {
-		texture = fontIcon->getTextureId();
-	}
+	ImTextureID texture = getAssetThumbnailImage(resourceId);
 
 	displayThumbnail(
 		static_cast<std::size_t>(resourceId),
@@ -661,6 +621,60 @@ void AssetManagerUI::displayAssetContextMenu(ResourceID id) {
 		}
 
 		ImGui::EndPopup();
+	}
+}
+
+ImTextureID AssetManagerUI::getAssetThumbnailImage(ResourceID resourceId) {
+
+	if (resourceManager.isResource<Texture>(resourceId)) {
+		// Texture is a special case. We wanna preview texture if available.
+		auto&& [texture, _] = resourceManager.getResource<Texture>(resourceId);
+
+		if (texture) {
+			return texture->getTextureId();
+		}
+		else {
+			return textureIcon->getTextureId();
+		}
+	}
+	else if (resourceManager.isResource<Audio>(resourceId)) {
+		return audioIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<ScriptAsset>(resourceId)) {
+		return scriptIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Scene>(resourceId)) {
+		return sceneIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Model>(resourceId)) {
+		return modelIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<CubeMap>(resourceId)) {
+		return cubeMapIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Material>(resourceId)) {
+		return materialIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<CustomShader>(resourceId)) {
+		return shaderIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<NavMesh>(resourceId)) {
+		return navmeshIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Prefab>(resourceId)) {
+		return prefabIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Sequencer>(resourceId)) {
+		return sequencerIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Controller>(resourceId)) {
+		return animationControllerIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Font>(resourceId)) {
+		return fontIcon->getTextureId();
+	}
+	else {
+		return NO_TEXTURE;
 	}
 }
 

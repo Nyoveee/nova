@@ -76,18 +76,22 @@ void ResourceManager::removeResource(ResourceID id) {
 void ResourceManager::loadAllSystemResources() {
 	for (auto&& [id, resourceFilePath] : AssetIO::systemModelResources) {
 		addResourceFile<Model>(resourceFilePath, id);
+		loadResource<Model>(id);
 	}
 
 	for (auto&& [id, resourceFilePath] : AssetIO::systemMaterialResources) {
 		addResourceFile<Material>(resourceFilePath, id);
+		loadResource<Material>(id);
 	}
 
 	for (auto&& [id, resourceFilePath] : AssetIO::systemShaderResources) {
 		addResourceFile<CustomShader>(resourceFilePath, id);
+		loadResource<CustomShader>(id);
 	}
 
 	for (auto&& [id, resourceFilePath] : AssetIO::systemTextureResources) {
 		addResourceFile<Texture>(resourceFilePath, id);
+		loadResource<Texture>(id);
 	}
 }
 

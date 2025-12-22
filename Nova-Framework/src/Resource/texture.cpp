@@ -99,3 +99,11 @@ Texture& Texture::operator=(Texture&& other) noexcept {
 GLuint Texture::getTextureId() const {
 	return textureId;
 }
+
+int Texture::getWidth() const {
+	return width;
+}
+
+int Texture::getHeight() const {
+	return height;
+}

@@ -13,11 +13,16 @@
 #include <queue>
 #include <mutex>
 #include <functional>
+#include <BS_thread_pool.hpp>
 
 #include "Material.h"
 
 class AssetManager;
 class AssetViewerUI;
+
+// some assets are lazily loaded, meaning the asset is loaded in a separate thread..
+template<class T>
+concept LazyLoadResource = std::same_as<T, Texture>;
 
 class ResourceManager {
 public:
@@ -47,11 +52,17 @@ public:
 	ENGINE_DLL_API ResourceManager& operator=(ResourceManager&& other)			= delete;
 
 public:
-
 	// main way all systems query for a specific resource.
+	// lazy loaded resources are loaded in a separate thread
 	template <ValidResource T>
 	ResourceQuery<T> getResource(ResourceID id);
-	
+
+	// loads the resource into memory. forces the resource to be loaded (no lazy loading) if not already loading
+	// useful to force all system resources to load prior to launch.
+	template <ValidResource T>
+	void loadResource(ResourceID id);
+
+	// only get resource if its already loaded. (mainly used for serialisation)
 	template <ValidResource T>
 	T* getResourceOnlyIfLoaded(ResourceID id);
 
@@ -92,6 +103,11 @@ private:
 	template <ValidResource T>
 	ResourceID addResourceFile(ResourceFilePath const& filepath, ResourceID id = INVALID_RESOURCE_ID);
 
+	// given a resource constructor, loads it into the resource manager
+	// resource constructors are returned by resource loaders.
+	template <ValidResource T>
+	T* loadResourceConstructor(std::optional<ResourceConstructor> resourceConstructor);
+
 	// records all the given resources in a given directory, taking note of their filepaths.
 	template<ValidResource ...T>
 	void loadAllResources();
@@ -114,6 +130,9 @@ private:
 	// stores all copies of resources instances. this is useful so that we can clear them at the end of simulation.
 	std::vector<ResourceID> createdResourceInstances;
 
+	// keeps track of all resource that is loaded in a separate thread. let's not load it twice.
+	std::unordered_set<ResourceID> resourceIsLoading;
+
 	// groups all assets based on their type.
 	std::unordered_map<ResourceTypeID, std::vector<ResourceID>> resourcesByType;
 
@@ -121,6 +140,8 @@ private:
 	// this function will construct the asset type, and store it in resources, the main container containing all LOADED resources.
 	std::mutex initialisationQueueMutex;
 	std::queue<std::function<void()>> initialisationQueue;
+
+	BS::thread_pool<BS::tp::none> threadPool;
 };
 
 #include "resourceManager.ipp"

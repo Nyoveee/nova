@@ -67,6 +67,8 @@ private:
 
 	//std::optional<std::ofstream> createAssetFile(std::string const& extension, std::string filename = "", bool binary = false);
 
+	ImTextureID getAssetThumbnailImage(ResourceID id);
+
 private:
 	Editor& editor;
 	AssetManager& assetManager;

@@ -1,18 +1,12 @@
 {
     "entities": [
         {
-            "CameraComponent": {
-                "camStatus": true,
-                "farPlane": 1000.0,
-                "fov": 45.0,
-                "nearPlane": 0.30000001192092896
-            },
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Camera",
+                "name": "Entity 2",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
@@ -23,51 +17,57 @@
                 },
                 "tag": ""
             },
+            "MeshRenderer": {
+                "materialIds": [
+                    1535094624601767939
+                ],
+                "modelId": 3
+            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.10089955478906631,
+                    "y": -0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.10089956969022751,
+                    "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -383.76458740234375,
-                    "y": 194.5122833251953,
-                    "z": 0.0
+                    "x": -0.8405807614326477,
+                    "y": 0.0,
+                    "z": -5.960464477539063e-08
                 },
                 "localRotation": {
-                    "w": 0.9987276792526245,
+                    "w": 1.0,
                     "x": 0.0,
-                    "y": -0.050428397953510284,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999991655349731,
+                    "x": 1.0,
                     "y": 1.0,
-                    "z": 0.9999991655349731
+                    "z": 1.0
                 },
                 "position": {
-                    "x": -383.76458740234375,
-                    "y": 194.5122833251953,
-                    "z": 0.0
+                    "x": -0.8405807614326477,
+                    "y": 0.0,
+                    "z": -5.960464477539063e-08
                 },
                 "rotation": {
-                    "w": 0.9987276792526245,
+                    "w": 1.0,
                     "x": 0.0,
-                    "y": -0.05042839050292969,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9999992251396179,
+                    "x": 1.0,
                     "y": 1.0,
-                    "z": 0.9999992251396179
+                    "z": 1.0
                 }
             },
-            "id": 1048576
+            "id": 10485849
         },
         {
             "EntityData": {
@@ -98,7 +98,7 @@
                     "r": 1.0
                 },
                 "cutOffAngle": 0.21816615760326385,
-                "intensity": 1.0,
+                "intensity": 11.0,
                 "outerCutOffAngle": 0.30543261766433716,
                 "radius": 50.0,
                 "type": "Directional"
@@ -153,12 +153,18 @@
             "id": 6291542
         },
         {
+            "CameraComponent": {
+                "camStatus": true,
+                "farPlane": 1000.0,
+                "fov": 45.0,
+                "nearPlane": 0.30000001192092896
+            },
             "EntityData": {
                 "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Entity 2",
+                "name": "Camera",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
@@ -169,57 +175,51 @@
                 },
                 "tag": ""
             },
-            "MeshRenderer": {
-                "materialIds": [
-                    6
-                ],
-                "modelId": 3
-            },
             "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": -0.1009000614285469,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": -0.1009000688791275,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 1.4901161193847656e-08,
-                    "z": -5.960464477539063e-08
+                    "x": -383.76458740234375,
+                    "y": 194.5122833251953,
+                    "z": 0.0
                 },
                 "localRotation": {
-                    "w": 1.0,
+                    "w": 0.9987276792526245,
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.05042864754796028,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
+                    "x": 0.9999982118606567,
                     "y": 1.0,
-                    "z": 1.0
+                    "z": 0.9999982118606567
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 1.4901161193847656e-08,
-                    "z": -5.960464477539063e-08
+                    "x": -383.76458740234375,
+                    "y": 194.5122833251953,
+                    "z": 0.0
                 },
                 "rotation": {
-                    "w": 1.0,
+                    "w": 0.9987276792526245,
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.050428640097379684,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0,
+                    "x": 0.9999982714653015,
                     "y": 1.0,
-                    "z": 1.0
+                    "z": 0.9999982714653015
                 }
             },
-            "id": 10485849
+            "id": 1048576
         }
     ],
     "layers": [

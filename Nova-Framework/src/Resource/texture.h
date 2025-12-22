@@ -17,6 +17,8 @@ public:
 
 public:
 	FRAMEWORK_DLL_API GLuint getTextureId() const;
+	FRAMEWORK_DLL_API int getWidth() const;
+	FRAMEWORK_DLL_API int getHeight() const;
 
 private:
 	GLuint textureId;

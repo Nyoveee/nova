@@ -465,6 +465,39 @@ void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 	if (toRecompile) {
 		recompileResourceWithUpdatedDescriptor<Texture>(textureInfo);
 	}
+
+	ImGui::Separator();
+
+	auto&& [texture, loadStatus] = resourceManager.getResource<Texture>(selectedResourceId);
+
+	if (!texture) {
+		switch (loadStatus)
+		{
+		case ResourceManager::QueryResult::Invalid:
+			ImGui::Text("Resource ID is invalid.");
+			return;
+		case ResourceManager::QueryResult::WrongType:
+			ImGui::Text("This should never happened. Resource ID is not a texture?");
+			assert(false && "Resource ID is not a texture.");
+			return;
+		case ResourceManager::QueryResult::Loading:
+			ImGui::Text("Loading..");
+			return;
+		case ResourceManager::QueryResult::LoadingFailed:
+			ImGui::Text("Loading of texture failed.");
+			return;
+		default:
+			assert(false);
+			return;
+		}
+	}
+
+	ImGui::Text("Width: %d", texture->getWidth());
+	ImGui::Text("Height: %d", texture->getHeight());
+
+	//float aspectRatio = texture->getWidth() / texture->getHeight();
+
+	ImGui::Image(texture->getTextureId(), ImVec2{ static_cast<float>(texture->getWidth()), static_cast<float>(texture->getHeight()) });
 }
 
 void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descriptor) {

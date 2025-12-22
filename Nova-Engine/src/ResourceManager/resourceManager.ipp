@@ -15,9 +15,13 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 		return ResourceQuery<T>{ resource, resource ? QueryResult::Success : QueryResult::WrongType };
 	}
 
+	// check if resource is being loaded in a separate thread..
+	if (resourceIsLoading.contains(id)) {
+		return ResourceQuery<T>{ nullptr, QueryResult::Loading };
+	}
+
 	// resource is not loaded, let's load it via our loaders.
 	// we first get the filepath of this resource id.
-
 	auto filepathIterator = resourceFilePaths.find(id);
 
 	// this resource file was never recorded. invalid resource id?
@@ -33,19 +37,67 @@ ResourceManager::ResourceQuery<T> ResourceManager::getResource(ResourceID id) {
 	auto&& [_, resourceFilePath] = *filepathIterator;
 
 	// attempts to load the resource..
-	std::optional<ResourceConstructor> resourceConstructor = ResourceLoader<T>::load(id, resourceFilePath);
+	if constexpr (LazyLoadResource<T>) {
+		// lazy load!
 
-	if (!resourceConstructor) {
-		return ResourceQuery<T>{ nullptr, QueryResult::LoadingFailed };
+		// we need to copy the "reference" into our lambda. to do that we use pointer.
+		// pointer to a reference can mostly never be nullptr.
+		ResourceFilePath* resourceFilePathPtr = &resourceFilePath;
+
+		threadPool.detach_task([&, id, resourceFilePathPtr]() {
+			// task here should be thread safe.. resourceloader load function are thread safe.
+			std::optional<ResourceConstructor> resourceConstructor = ResourceLoader<T>::load(id, *resourceFilePathPtr);
+
+			// we submit a clean up task to the resource manager, because adding resource is NOT thread safe.
+			submitInitialisationCallback([this, resourceConstructor = std::move(resourceConstructor), id]{
+				loadResourceConstructor<T>(std::move(resourceConstructor));
+				resourceIsLoading.erase(id);
+			});
+		});
+
+		resourceIsLoading.insert(id);
+
+		return ResourceQuery<T>{ nullptr, QueryResult::Loading };
+	}
+	else {
+		std::optional<ResourceConstructor> resourceConstructor = ResourceLoader<T>::load(id, resourceFilePath);
+		T* resource = loadResourceConstructor<T>(std::move(resourceConstructor));
+		return ResourceQuery<T>{ resource, resource ? QueryResult::Success : QueryResult::LoadingFailed  };
+	}
+}
+
+template<ValidResource T>
+void ResourceManager::loadResource(ResourceID id) {
+	// Let's find our loaded resource in the map
+	auto iterator = loadedResources.find(id);
+
+	// resource is already loaded, let's return it.
+	if (iterator != loadedResources.end()) {
+		return;
 	}
 
-	// constructs the resource..
-	auto resourcePtr = resourceConstructor.value()();
-	auto&& [resourceIterator, __]  = loadedResources.insert({id, std::move(resourcePtr)});
-	assert(resourceIterator != loadedResources.end());
+	// check if resource is being loaded in a separate thread..
+	if (resourceIsLoading.contains(id)) {
+		return;
+	}
 
-	T* resource = static_cast<T*>(resourceIterator->second.get());
-	return ResourceQuery<T>{ resource, QueryResult::Success };
+	// resource is not loaded, let's load it via our loaders.
+	// we first get the filepath of this resource id.
+	auto filepathIterator = resourceFilePaths.find(id);
+
+	// this resource file was never recorded. invalid resource id?
+	if (filepathIterator == resourceFilePaths.end()) {
+		return;
+	}
+
+	// verify if it's the correct type..
+	if (!isResource<T>(id)) {
+		return;
+	}
+
+	// loads the resource..
+	auto&& [_, resourceFilePath] = *filepathIterator;
+	loadResourceConstructor<T>(ResourceLoader<T>::load(id, resourceFilePath));
 }
 
 template<ValidResource T>
@@ -88,6 +140,21 @@ ResourceID ResourceManager::addResourceFile(ResourceFilePath const& filepath, Re
 		Logger::error("Failed to add resource file. {}", ex.what());
 		return INVALID_RESOURCE_ID;
 	}
+}
+
+template<ValidResource T>
+T* ResourceManager::loadResourceConstructor(std::optional<ResourceConstructor> resourceConstructor) {
+	if (!resourceConstructor) {
+		return nullptr;
+	}
+
+	// constructs the resource..
+	std::unique_ptr<Resource> resourcePtr = resourceConstructor.value()();
+	ResourceID id = resourcePtr->id();
+	auto&& [resourceIterator, __] = loadedResources.insert({ id, std::move(resourcePtr) });
+	assert(resourceIterator != loadedResources.end());
+
+	return static_cast<T*>(resourceIterator->second.get());
 }
 
 template<ValidResource ...T>

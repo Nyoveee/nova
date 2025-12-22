@@ -1863,7 +1863,7 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 
 				// Setting texture is a way more complicated step.
 				// We first retrieve the texture from resource manager..
-				auto&& [texture, _] = resourceManager.getResource<Texture>(value);
+				auto&& [texture, status] = resourceManager.getResource<Texture>(value);
 				
 				if (!texture) {
 					// We bind an invalid texture..
