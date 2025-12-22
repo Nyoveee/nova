@@ -10,6 +10,24 @@
 
 namespace {
 	constexpr float sensitivity = 0.1f;		// change this value to your liking
+
+	glm::vec3 findMaxBound(glm::vec3 boundOne) {
+		return boundOne;
+	}
+
+	template <typename ...Args>
+	glm::vec3 findMaxBound(glm::vec3 bound, Args... bounds) {
+		return glm::max(bound, findMaxBound(bounds...));
+	}
+
+	glm::vec3 findMinBound(glm::vec3 boundOne) {
+		return boundOne;
+	}
+
+	template <typename ...Args>
+	glm::vec3 findMinBound(glm::vec3 bound, Args... bounds) {
+		return glm::min(bound, findMinBound(bounds...));
+	}
 }
 
 CameraSystem::CameraSystem(Engine& engine) :
@@ -184,22 +202,8 @@ void CameraSystem::frustumCulling(Frustum gameCameraFrustum) {
 			return;
 		}
 
-		glm::vec3 rotatedCenter = transform.rotation * (transform.scale * model->center);
-
-		glm::vec3 extents = [&]() {
-			if (transform.rotation == glm::quat_identity<float, glm::highp>()) {
-				return transform.scale * model->extents;
-			}
-
-			return (transform.scale * model->extents);
-		}();
-
 		// Calculate appropriate bounding box.
-		transform.boundingBox = {
-			rotatedCenter + transform.position,
-			extents
-		};
-
+		transform.boundingBox = calculateAABB(*model, transform);
 		transform.inCameraFrustum = gameCameraFrustum.isAABBInFrustum(transform.boundingBox);
 	};
 
@@ -248,6 +252,56 @@ Frustum CameraSystem::calculateGameCameraFrustum() {
 	frustum.farPlane.normalize();
 	
 	return frustum;
+}
+
+AABB CameraSystem::calculateAABB(Model const& model, Transform const& transform) {
+	if (transform.rotation == glm::quat_identity<float, glm::highp>()) {
+		return {
+			model.center * transform.scale + transform.position,
+			model.extents * transform.scale
+		};
+	}
+
+	// https://stackoverflow.com/questions/34619341/can-axis-aligned-bounding-boxes-be-recalculated-after-rotation-of-object-using-t
+	// We need to transform our AABBs
+	glm::vec3 pointOne		= model.maxBound;
+	glm::vec3 pointTwo		= glm::vec3{ model.maxBound.x, model.maxBound.y, model.minBound.z };
+	glm::vec3 pointThree	= glm::vec3{ model.maxBound.x, model.minBound.y, model.minBound.z };
+	glm::vec3 pointFour		= glm::vec3{ model.maxBound.x, model.minBound.y, model.maxBound.z };
+	glm::vec3 pointFive		= glm::vec3{ model.minBound.x, model.minBound.y, model.maxBound.z };
+	glm::vec3 pointSix		= glm::vec3{ model.minBound.x, model.maxBound.y, model.maxBound.z };
+	glm::vec3 pointSeven	= glm::vec3{ model.minBound.x, model.maxBound.y, model.minBound.z };
+	glm::vec3 pointEight	= model.minBound;
+
+	pointOne	= transform.rotation * (transform.scale * pointOne);
+	pointTwo	= transform.rotation * (transform.scale * pointTwo);
+	pointThree	= transform.rotation * (transform.scale * pointThree);
+	pointFour	= transform.rotation * (transform.scale * pointFour);
+	pointFive	= transform.rotation * (transform.scale * pointFive);
+	pointSix	= transform.rotation * (transform.scale * pointSix);
+	pointSeven	= transform.rotation * (transform.scale * pointSeven);
+	pointEight	= transform.rotation * (transform.scale * pointEight);
+
+	glm::vec3 newMaxBound = findMaxBound(pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix, pointSeven, pointEight);
+	glm::vec3 newMinBound = findMinBound(pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix, pointSeven, pointEight);
+	glm::vec3 newCenter = (newMaxBound + newMinBound) / 2.f;
+	glm::vec3 newExtent = newMaxBound - newCenter;
+
+	return {
+		newCenter + transform.position,
+		newExtent
+	};
+
+	//glm::vec3 rotatedCenter = transform.rotation * (transform.scale * model->center);
+
+	//glm::vec3 extents = [&]() {
+	//	if (transform.rotation == glm::quat_identity<float, glm::highp>()) {
+	//		return transform.scale * model->extents;
+	//	}
+
+	//	glm::vec3 rotatedMax = transform.rotation * (transform.scale * model->maxBound);
+	//	return rotatedMax - rotatedCenter;
+	//}();
 }
 
 void CameraSystem::calculateEulerAngle(float xOffset, float yOffset) {

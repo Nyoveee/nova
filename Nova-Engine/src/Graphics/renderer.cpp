@@ -1026,7 +1026,7 @@ void Renderer::renderModels(Camera const& camera, bool toFrustumCull) {
 			}
 
 			// frustum culling :)
-			if (!transform.inCameraFrustum) {
+			if (toFrustumCull && !transform.inCameraFrustum) {
 				continue;
 			}
 
@@ -1219,7 +1219,7 @@ void Renderer::renderSkinnedModels(Camera const& camera, bool toFrustumCull) {
 		}
 		
 		// frustum culling :)
-		if (!transform.inCameraFrustum) {
+		if (toFrustumCull && !transform.inCameraFrustum) {
 			continue;
 		}
 
