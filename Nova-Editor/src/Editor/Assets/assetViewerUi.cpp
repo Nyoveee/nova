@@ -31,7 +31,6 @@ AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, Resourc
 {}
 
 void AssetViewerUI::update() {
-#if 1
 	ImGui::Begin(ICON_FA_AUDIO_DESCRIPTION " Asset Viewer");
 
 	if (selectedResourceId == INVALID_RESOURCE_ID) {
@@ -52,6 +51,11 @@ void AssetViewerUI::update() {
 
 	// Display common shared asset info across all assets..
 	ImGui::Text("Resource ID: %zu", static_cast<std::size_t>(descriptorPtr->id));
+
+	if (isSystemResource(selectedResourceId)) {
+		ImGui::BeginDisabled();
+		ImGui::TextWrapped("This is a system resource. In built into the engine, it is not meant to be modified.");
+	}
 
 	// ===== Display asset name ======
 	ImGui::InputText(selectedResourceExtension.c_str(), &selectedResourceName);
@@ -88,8 +92,12 @@ void AssetViewerUI::update() {
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
 
+	if (isSystemResource(selectedResourceId)) {
+		ImGui::EndDisabled();
+	}
+
 	ImGui::End();
-#endif
+
 }
 
 void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_unused]] ResourceID id) {

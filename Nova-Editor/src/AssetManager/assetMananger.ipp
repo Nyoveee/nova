@@ -132,6 +132,7 @@ void AssetManager::serializeAllResources() {
 
 		auto&& [__, descriptor] = *iterator;
 
+#if false
 		std::ofstream outputFile = [&]() -> std::ofstream {
 			// Controller, material and sequencer wants to overwrite the original asset file..
 			if constexpr (std::same_as<T, Controller> || std::same_as<T, Material> || std::same_as<T, Sequencer>) {
@@ -146,6 +147,8 @@ void AssetManager::serializeAllResources() {
 				return {};
 			}
 		}();
+#endif
+		std::ofstream outputFile = std::ofstream{ descriptor->filepath };
 
 		if (!outputFile) {
 			assert(false && "Invalid file?");
