@@ -786,7 +786,7 @@ void Editor::displayEntityHierarchy(
 	if (ImGui::BeginDragDropTarget()) {
 		if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload(dragAndDropIdentifier)) {
 			entt::entity childEntity = *((entt::entity*)payload->Data);
-			engine.ecs.setEntityParent(childEntity, entity, false, registry);
+			engine.ecs.setEntityParent(childEntity, entity, true, registry);
 		}
 
 		ImGui::EndDragDropTarget();
