@@ -80,8 +80,12 @@ public:
 	ResourceID createResourceFile(AssetInfo<T> descriptor);
 
 	// certain resources are modified in editor runtime
-	// we want to serialise this back to either as resource or even as asset.
+	// we want to serialise this back to an asset. (will call serialiseResource<T> for all resources)
 	void serialiseResources();
+
+	// serialises one specific resource.
+	template <ValidResource T>
+	void serialiseResource(ResourceID id);
 
 public:
 	// Getters..

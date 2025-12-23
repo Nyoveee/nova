@@ -73,22 +73,31 @@ void AssetViewerUI::update() {
 			descriptorPtr->name = selectedResourceName;
 		}
 	}
-	// If there is a name change, serialise the descriptor..
-	if (ImGui::IsItemDeactivatedAfterEdit() && std::filesystem::path{ descriptorPtr->filepath }.stem() != selectedResourceName) {
-		if (!assetManager.renameFile(selectedResourceId, selectedResourceName)) {
-			// reset rename attempt.
-			selectedResourceName = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
-		}
-		if (resourceManager.isResource<ScriptAsset>(selectedResourceId)) {
-			updateScriptFilePath(descriptorPtr->filepath, selectedResourceId);
-		}
-		assetManager.serialiseDescriptor(selectedResourceId);
-	}
+
+	bool hasNamedChanged = ImGui::IsItemDeactivatedAfterEdit() && std::filesystem::path{ descriptorPtr->filepath }.stem() != selectedResourceName;
 
 	auto displayResourceUIFunctor = [&]<ValidResource ...T>(ResourceID id) {
 		([&] {
 			if (resourceManager.isResource<T>(id)) {
 				displayAssetUI<T>(*descriptorPtr);
+
+				// If there is a name change, we serialise the asset, change it's name and filepath, then serialise the descriptor
+				if (hasNamedChanged) {
+					// serialise the asset.. (some assets are modified by the editor, so we need to serialise it)
+					assetManager.serialiseResource<T>(id);
+
+					if (!assetManager.renameFile(selectedResourceId, selectedResourceName)) {
+						// reset rename attempt.
+						selectedResourceName = std::filesystem::path{ descriptorPtr->filepath }.stem().string();
+					}
+
+					// if this resource is a script, we want to update the class name if possible..
+					if constexpr (std::same_as<T, ScriptAsset>) {
+						updateScriptFilePath(descriptorPtr->filepath, selectedResourceId);
+					}
+
+					assetManager.serialiseDescriptor(selectedResourceId);
+				}
 			}
 		}(), ...);
 	};

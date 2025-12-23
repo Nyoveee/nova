@@ -112,71 +112,7 @@ void AssetManager::loadSystemResourceDescriptor(std::unordered_map<ResourceID, R
 template<ValidResource T>
 void AssetManager::serializeAllResources() {
 	for (auto const& resourceId : resourceManager.getAllResources<T>()) {
-		if (systemResourcesId.contains(resourceId)) {
-			continue;
-		}
-
-		T* resource = resourceManager.getResourceOnlyIfLoaded<T>(resourceId);
-
-		if (!resource) {
-			continue;
-		}
-
-		// get descriptor..
-		auto iterator = assetToDescriptor.find(resourceId);
-
-		if (iterator == assetToDescriptor.end()) {
-			Logger::error("Failed to serialise {}", static_cast<std::size_t>(resourceId));
-			continue;
-		}
-
-		auto&& [__, descriptor] = *iterator;
-
-#if false
-		std::ofstream outputFile = [&]() -> std::ofstream {
-			// Controller, material and sequencer wants to overwrite the original asset file..
-			if constexpr (std::same_as<T, Controller> || std::same_as<T, Material> || std::same_as<T, Sequencer>) {
-				return std::ofstream{ descriptor->filepath };
-			}
-			// Custom shader wants to overwrite the resource file..
-			else if constexpr (std::same_as <T, CustomShader>) {
-				return std::ofstream{ AssetIO::getResourceFilename<T>(resourceId) };
-			}
-			else {
-				static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
-				return {};
-			}
-		}();
-#endif
-		std::ofstream outputFile = std::ofstream{ descriptor->filepath };
-
-		if (!outputFile) {
-			assert(false && "Invalid file?");
-			continue;
-		}
-
-		// get resource file..
-		if constexpr (std::same_as<T, Controller>) {
-			Serialiser::serializeToJsonFile(resource->data, outputFile);
-			Logger::debug("Serialised controller: {}", static_cast<std::size_t>(resourceId));
-		}
-		else if constexpr (std::same_as<T, Sequencer>) {
-			Serialiser::serializeToJsonFile(resource->data, outputFile);
-			Logger::debug("Serialised sequencer: {}", static_cast<std::size_t>(resourceId));
-		}
-		else if constexpr (std::same_as<T, Material>) {
-			Serialiser::serializeToJsonFile(resource->materialData, outputFile);
-			Logger::debug("Serialised material: {}", static_cast<std::size_t>(resourceId));
-		}
-		else if constexpr (std::same_as<T, CustomShader>) {
-			Serialiser::serializeToJsonFile(resource->customShaderData, outputFile);
-			Logger::debug("Serialised shader: {}", static_cast<std::size_t>(resourceId));
-		}
-		else {
-			static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
-			return;
-		}
-
+		serialiseResource<T>(resourceId);
 	}
 }
 
@@ -288,6 +224,65 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	}
 
 	return id;
+}
+
+template<ValidResource T>
+void AssetManager::serialiseResource(ResourceID resourceId) {
+	if constexpr (
+			!std::same_as<T, Controller>
+		&&	!std::same_as<T, Sequencer>
+		&&	!std::same_as<T, Material>
+		&&	!std::same_as<T, CustomShader>
+	) {
+		// other resource type are not edited by the editor, therefore asset manager has no responsiblity in serialising them.
+		return;
+	}
+	else {
+		if (systemResourcesId.contains(resourceId)) {
+			return;
+		}
+
+		T* resource = resourceManager.getResourceOnlyIfLoaded<T>(resourceId);
+
+		if (!resource) {
+			return;
+		}
+
+		// get descriptor..
+		auto iterator = assetToDescriptor.find(resourceId);
+
+		if (iterator == assetToDescriptor.end()) {
+			Logger::error("Failed to serialise {}", static_cast<std::size_t>(resourceId));
+			return;
+		}
+
+		auto&& [__, descriptor] = *iterator;
+
+		std::ofstream outputFile = std::ofstream{ descriptor->filepath };
+
+		if (!outputFile) {
+			assert(false && "Invalid file?");
+			return;
+		}
+
+		// get resource file..
+		if constexpr (std::same_as<T, Controller>) {
+			Serialiser::serializeToJsonFile(resource->data, outputFile);
+			Logger::debug("Serialised controller: {}", static_cast<std::size_t>(resourceId));
+		}
+		else if constexpr (std::same_as<T, Sequencer>) {
+			Serialiser::serializeToJsonFile(resource->data, outputFile);
+			Logger::debug("Serialised sequencer: {}", static_cast<std::size_t>(resourceId));
+		}
+		else if constexpr (std::same_as<T, Material>) {
+			Serialiser::serializeToJsonFile(resource->materialData, outputFile);
+			Logger::debug("Serialised material: {}", static_cast<std::size_t>(resourceId));
+		}
+		else if constexpr (std::same_as<T, CustomShader>) {
+			Serialiser::serializeToJsonFile(resource->customShaderData, outputFile);
+			Logger::debug("Serialised shader: {}", static_cast<std::size_t>(resourceId));
+		}
+	}
 }
 
 template<ValidResource T>
