@@ -51,25 +51,40 @@ bool AssetManager::hasAssetChanged(AssetInfo<T> const& descriptor) const {
 		return true;
 	}
 
-	long long cachedDuration;
+	long long cachedAssetDuration;
+	long long cachedDescriptorDuration;
 
 	// Attempt to read the time..
 	try {
 		std::string durationInString;
 		std::getline(cacheFile, durationInString);
-		cachedDuration = std::stoull(durationInString);
+		cachedAssetDuration = std::stoull(durationInString);
+
+		std::getline(cacheFile, durationInString);
+		cachedDescriptorDuration = std::stoull(durationInString);
 	}
 	catch (std::exception const&) {
 		// Failed to read cache file.. invalid..
+		Logger::error("Failed to read cache file for {}", static_cast<std::size_t>(descriptor.id));
 		return true;
 	}
 
-	// We compare our cached duration and see if it matches with the filepath...
+	// We compare our cached asset duration and see if it matches with the filepath...
 	auto assetLastWriteTime = std::filesystem::last_write_time(descriptor.filepath);
 	auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
-	long long duration = assetEpoch.count();
+	long long assetDuration = assetEpoch.count();
 
-	return cachedDuration != duration;
+	// duration is different..
+	if (cachedAssetDuration != assetDuration) {
+		return true;
+	}
+
+	// We also compare our cached descriptor duration and see if it matches with the descriptor..
+	auto descriptorLastWriteTime = std::filesystem::last_write_time(AssetIO::getDescriptorFilename<T>(descriptor.id));
+	auto descriptorEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(descriptorLastWriteTime.time_since_epoch());
+	long long descriptorDuration = descriptorEpoch.count();
+
+	return cachedDescriptorDuration != descriptorDuration;
 }
 
 template<ValidResource T>
@@ -83,11 +98,17 @@ void AssetManager::updateAssetCache(AssetInfo<T> const& descriptor) const {
 		return;
 	}
 
+	// Get asset last write time..
 	auto assetLastWriteTime = std::filesystem::last_write_time(descriptor.filepath);
 	auto assetEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(assetLastWriteTime.time_since_epoch());
-	long long duration = assetEpoch.count();
+	long long assetDuration = assetEpoch.count();
 
-	cacheFile << duration << '\n';
+	// Get descriptor last write time..
+	auto descriptorLastWriteTime = std::filesystem::last_write_time(AssetIO::getDescriptorFilename<T>(descriptor.id));
+	auto descriptorEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(descriptorLastWriteTime.time_since_epoch());
+	long long descriptorDuration = descriptorEpoch.count();
+
+	cacheFile << assetDuration << '\n' << descriptorDuration << '\n';
 	Logger::debug("Successfully updated {} cache.", descriptor.filepath.string);
 }
 
@@ -258,7 +279,20 @@ void AssetManager::serialiseResource(ResourceID resourceId) {
 
 		auto&& [__, descriptor] = *iterator;
 
-		std::ofstream outputFile = std::ofstream{ descriptor->filepath };
+		std::ofstream outputFile = [&]() -> std::ofstream {
+			// Controller, material and sequencer wants to overwrite the original asset file..
+			if constexpr (std::same_as<T, Controller> || std::same_as<T, Material> || std::same_as<T, Sequencer>) {
+				return std::ofstream{ descriptor->filepath };
+			}
+			// Custom shader wants to overwrite the resource file..
+			else if constexpr (std::same_as <T, CustomShader>) {
+				return std::ofstream{ AssetIO::getResourceFilename<T>(resourceId) };
+			}
+			else {
+				static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
+				return {};
+			}
+		}();
 
 		if (!outputFile) {
 			assert(false && "Invalid file?");
@@ -281,6 +315,10 @@ void AssetManager::serialiseResource(ResourceID resourceId) {
 		else if constexpr (std::same_as<T, CustomShader>) {
 			Serialiser::serializeToJsonFile(resource->customShaderData, outputFile);
 			Logger::debug("Serialised shader: {}", static_cast<std::size_t>(resourceId));
+		}
+		else {
+			static_assert(dependent_false<T> && "Unhandled serialisation case" __FUNCSIG__);
+			return {};
 		}
 	}
 }

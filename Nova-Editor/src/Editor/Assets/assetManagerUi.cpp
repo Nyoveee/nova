@@ -132,6 +132,7 @@ void AssetManagerUI::displayRightContentPanel() {
 	ImGui::SameLine();
 
 	if (ImGui::Button("Reload")) {
+		selectedFolderId = NO_FOLDER;
 		assetManager.reload();
 	}
 
