@@ -21,6 +21,8 @@ public:
 	//void updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity);
 
 public:
+	// this is the public facing api when attempting to select a new resource id..
+	// it populates the resource navigation history
 	void selectNewResourceId(ResourceID id);
 
 private:
@@ -37,6 +39,15 @@ private:
 
 	template <typename T>
 	void recompileResourceWithUpdatedDescriptor(AssetInfo<T> const& assetInfo);
+	
+	// this function is responsible for actually switching resource id
+	void selectResourceID(ResourceID id);
+
+	// selects the previous / next resource id based on history
+	void selectPreviousResourceID();
+	void selectNextResourceID();
+
+	void displayNavigationHistory();
 
 private:
 	ResourceID selectedResourceId;
@@ -64,6 +75,11 @@ private:
 
 	// ---------------------------------------------------
 	bool toSerialiseSelectedDescriptor;
+
+	// --- We store history of navigated resources for easy traversal --- (like undo, redo)
+	std::list<ResourceID> previousResourceIds;
+	std::list<ResourceID> nextResourceIds;
+
 };
 
 #include "assetViewerUi.ipp"

@@ -21,6 +21,7 @@
 
 #include "systemResource.h"
 
+constexpr int MAXIMUM_RESOURCE_HISOTRY_ENTRIES = 50;
 
 AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager) :
 	editor							{ editor },
@@ -46,6 +47,9 @@ void AssetViewerUI::update() {
 		ImGui::End();
 		return;
 	}
+
+	// Display navigation history..
+	displayNavigationHistory();
 
 	toSerialiseSelectedDescriptor = false;
 
@@ -172,38 +176,20 @@ void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_
 //}
 
 void AssetViewerUI::selectNewResourceId(ResourceID id) {
-	selectedResourceId = id;
-
-	auto descriptorPtr = assetManager.getDescriptor(selectedResourceId);
-
-	if (!descriptorPtr) {
+	if (id == selectedResourceId) {
 		return;
 	}
 
-	selectedResourceName = descriptorPtr->name;
-	selectedResourceExtension = std::filesystem::path{ descriptorPtr->filepath }.extension().string();
-
-	// save a copy of the current font size..
-	if (resourceManager.isResource<Font>(id)) {
-		AssetInfo<Font>* fontDescriptorPtr = static_cast<AssetInfo<Font>*>(descriptorPtr);
-		copyOfSelectedFontSize = fontDescriptorPtr->fontSize;
+	// populate history..
+	if (selectedResourceId != INVALID_RESOURCE_ID) {
+		previousResourceIds.push_back(selectedResourceId);
+		nextResourceIds.clear();
 	}
-	else if (resourceManager.isResource<Model>(id)) {
-		AssetInfo<Model>* modelDescriptorPtr = static_cast<AssetInfo<Model>*>(descriptorPtr);
-		copyOfScale = modelDescriptorPtr->scale;
-	}
-	else if (resourceManager.isResource<Prefab>(id)) {
-		auto&& prefabMap = editor.engine.prefabManager.getPrefabMap();
-		auto iterator = prefabMap.find(selectedResourceId);
 
-		if (iterator == prefabMap.end()) {
-			rootPrefabEntity = editor.engine.prefabManager.loadPrefab(selectedResourceId);
-		}
-		else {
-			rootPrefabEntity = iterator->second;
-		}
+	selectResourceID(id);
 
-		selectedPrefabEntity = rootPrefabEntity;
+	if (previousResourceIds.size() > MAXIMUM_RESOURCE_HISOTRY_ENTRIES) {
+		previousResourceIds.pop_front();
 	}
 }
 
@@ -782,6 +768,142 @@ void AssetViewerUI::displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton cons
 
 		ImGui::TreePop();
 	}
+}
+
+void AssetViewerUI::selectResourceID(ResourceID id) {
+	selectedResourceId = id;
+
+	auto descriptorPtr = assetManager.getDescriptor(selectedResourceId);
+
+	if (!descriptorPtr) {
+		return;
+	}
+
+	// save a copy of resource name..
+	selectedResourceName = descriptorPtr->name;
+	selectedResourceExtension = std::filesystem::path{ descriptorPtr->filepath }.extension().string();
+
+	// save a copy of the current font size..
+	if (resourceManager.isResource<Font>(id)) {
+		AssetInfo<Font>* fontDescriptorPtr = static_cast<AssetInfo<Font>*>(descriptorPtr);
+		copyOfSelectedFontSize = fontDescriptorPtr->fontSize;
+	}
+	// save a copy of the current scale
+	else if (resourceManager.isResource<Model>(id)) {
+		AssetInfo<Model>* modelDescriptorPtr = static_cast<AssetInfo<Model>*>(descriptorPtr);
+		copyOfScale = modelDescriptorPtr->scale;
+	}
+	// we need to make sure that this prefab is loaded before displaying the prefav details.
+	else if (resourceManager.isResource<Prefab>(id)) {
+		auto&& prefabMap = editor.engine.prefabManager.getPrefabMap();
+		auto iterator = prefabMap.find(selectedResourceId);
+
+		if (iterator == prefabMap.end()) {
+			rootPrefabEntity = editor.engine.prefabManager.loadPrefab(selectedResourceId);
+		}
+		else {
+			rootPrefabEntity = iterator->second;
+		}
+
+		selectedPrefabEntity = rootPrefabEntity;
+	}
+}
+
+void AssetViewerUI::selectPreviousResourceID() {
+	if (previousResourceIds.empty()) {
+		return;
+	}
+
+	// pops the most recent resource id..
+	ResourceID newResourceId = previousResourceIds.back();
+	previousResourceIds.pop_back();
+
+	// update next resource ids..
+	if (selectedResourceId != INVALID_RESOURCE_ID) {
+		nextResourceIds.push_back(selectedResourceId);
+
+		if (nextResourceIds.size() > MAXIMUM_RESOURCE_HISOTRY_ENTRIES) {
+			nextResourceIds.pop_front();
+		}
+	}
+
+	selectResourceID(newResourceId);
+}
+
+void AssetViewerUI::selectNextResourceID() {
+	if (nextResourceIds.empty()) {
+		return;
+	}
+
+	// pops the most recent resource id..
+	ResourceID newResourceId = nextResourceIds.back();
+	nextResourceIds.pop_back();
+
+	// update previous resource ids..
+	if (selectedResourceId != INVALID_RESOURCE_ID) {
+		previousResourceIds.push_back(selectedResourceId);
+
+		if (previousResourceIds.size() > MAXIMUM_RESOURCE_HISOTRY_ENTRIES) {
+			previousResourceIds.pop_front();
+		}
+	}
+
+	selectResourceID(newResourceId);
+}
+
+void AssetViewerUI::displayNavigationHistory() {
+	constexpr ImVec2 buttonSize = { 30.f, 30.f };
+
+	ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(0, 0));
+
+	if (!ImGui::BeginTable("Navigation Tab", 2)) {
+		ImGui::PopStyleVar();
+		return;
+	}
+
+	ImGui::BeginDisabled(previousResourceIds.empty());
+
+	ImGui::TableNextRow();
+	ImGui::TableNextColumn();
+
+	if (ImGui::Button(ICON_FA_ARROW_LEFT, buttonSize)) {
+		selectPreviousResourceID();
+	}
+
+	if (previousResourceIds.size()) {
+		if (std::string const* name = assetManager.getName(previousResourceIds.back())) {
+			ImGui::SameLine();
+			ImGui::Text("%s", name->c_str());
+		}
+	}
+
+	ImGui::EndDisabled();
+	ImGui::TableNextColumn();
+	
+	ImGui::BeginDisabled(nextResourceIds.empty());
+
+	if (nextResourceIds.size()) {
+		if (std::string const* name = assetManager.getName(nextResourceIds.back())) {
+			float textWidth = ImGui::CalcTextSize(name->c_str()).x;
+
+			// right align.
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - textWidth - buttonSize.x - 10.f);
+
+			ImGui::Text("%s", name->c_str());
+			ImGui::SameLine();
+		}
+	}
+
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - buttonSize.x);
+
+	if (ImGui::Button(ICON_FA_ARROW_RIGHT, buttonSize)) {
+		selectNextResourceID();
+	}
+
+	ImGui::EndDisabled();
+	ImGui::EndTable();
+
+	ImGui::PopStyleVar();
 }
 
 #include "Editor/ComponentInspection/displayComponent.ipp"
