@@ -52,7 +52,10 @@ void AssetViewerUI::update() {
 	// Display common shared asset info across all assets..
 	ImGui::Text("Resource ID: %zu", static_cast<std::size_t>(descriptorPtr->id));
 
-	if (isSystemResource(selectedResourceId)) {
+	// we store this in a variable because selected resource id may change midst execution of this window,
+	bool isSystem = isSystemResource(selectedResourceId);
+
+	if (isSystem) {
 		ImGui::BeginDisabled();
 		ImGui::TextWrapped("This is a system resource. In built into the engine, it is not meant to be modified.");
 	}
@@ -92,7 +95,7 @@ void AssetViewerUI::update() {
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
 
-	if (isSystemResource(selectedResourceId)) {
+	if (isSystem) {
 		ImGui::EndDisabled();
 	}
 
