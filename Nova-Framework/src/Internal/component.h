@@ -2,6 +2,8 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
+#pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
+
 #include <entt/entt.hpp>
 #include <string>
 #include <vector>
@@ -710,33 +712,24 @@ struct ParticleEmitter
 		trails
 	)
 };
-
-struct Particle {
-	// References
-	ParticleEmitter* emitter{};
-	Transform const* emitterTransform{};
-	// Type
-	enum class Type {
-		Standard,
-		Trail
-	}type;
+struct alignas(16) ParticleLifespanData {
 	// Interpolation
 	float colorInterpolation{};
 	float sizeInterpolation{};
 	// Light
 	float lightIntensity{};
-	glm::vec3 lightattenuation{};
+	alignas(16) glm::vec3 lightattenuation{};
 	// Position
-	glm::vec3 position{};
+	alignas(16) glm::vec3 position{};
 	// Color
 	bool colorOverLifetime{};
 	glm::vec4 startColor{};
 	glm::vec4 currentColor{};
 	glm::vec4 endColor{};
 	// Movement
-	glm::vec3 velocity{};
-	glm::vec3 direction{};
-	glm::vec3 force{};
+	alignas(16) glm::vec3 velocity{};
+	alignas(16) glm::vec3 direction{};
+	alignas(16) glm::vec3 force{};
 	float rotation{};
 	float angularVelocity{};
 	// Size
@@ -747,6 +740,15 @@ struct Particle {
 	// Lifetime
 	float currentLifeTime{};
 	float lifeTime{};
+};
+struct Particle {
+	// References
+	ParticleEmitter* emitter{};
+	// Type
+	enum class Type {
+		Standard,
+		Trail
+	}type;
 };
 struct Text {
 	TypedResourceID<Font> font;

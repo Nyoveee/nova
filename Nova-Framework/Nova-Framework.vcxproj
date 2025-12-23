@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Internal\computeShader.h" />
     <ClInclude Include="src\Internal\AdditionalNavigationTypes.h" />
     <ClInclude Include="src\Internal\animationEvent.h" />
     <ClInclude Include="src\Internal\config.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="src\Serialisation\serializeToJson.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Internal\computeShader.cpp" />
     <ClCompile Include="src\Internal\Interpolation.cpp" />
     <ClCompile Include="src\Internal\materialConfig.h" />
     <ClCompile Include="src\Internal\RandomRange.cpp" />

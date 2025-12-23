@@ -120,11 +120,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
 
-	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, pointLightSSBO.id());
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, directionalLightSSBO.id());
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, spotLightSSBO.id());
-
 	// we bind bones SSBO to 3.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
 
@@ -908,26 +903,30 @@ void Renderer::prepareRendering() {
 
 		}
 	}
-	for (auto&& [textureid, textureParticles] : engine.particleSystem.particles)
+	for (auto&& [textureid, textureParticles] : engine.particleSystem.particleLifeSpanDatas)
 	{
 		(void)textureid;
-		for (Particle& particle : textureParticles) {
-			if (particle.lightIntensity <= 0)
+		for (ParticleLifespanData& particleLifeSpanData : textureParticles) {
+			if (particleLifeSpanData.lightIntensity <= 0)
 				continue;
 			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
 				Logger::warn("Unable to add more particle lights, max number of point lights reached!");
 				break;
 			}
 			pointLightData[numOfPtLights++] = {
-				particle.position,
-				glm::vec3{ particle.currentColor } * particle.lightIntensity,
-				particle.lightattenuation
+				particleLifeSpanData.position,
+				glm::vec3{ particleLifeSpanData.currentColor } * particleLifeSpanData.lightIntensity,
+				particleLifeSpanData.lightattenuation
 			};
 			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
 				break;
 		}
 		
 	}
+	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, pointLightSSBO.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, directionalLightSSBO.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, spotLightSSBO.id());
 
 	// Send it over to SSBO.
 	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
@@ -940,6 +939,8 @@ void Renderer::prepareRendering() {
 	glNamedBufferSubData(pointLightSSBO.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
 	glNamedBufferSubData(directionalLightSSBO.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
 	glNamedBufferSubData(spotLightSSBO.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
+
+
 }
 
 void Renderer::renderSkyBox() {
@@ -1276,19 +1277,19 @@ void Renderer::renderParticles()
 		glm::vec2(0, 1)
 	};
 	const int squareIndices[6]{ 0, 2, 1, 2, 0, 3 };
-	auto renderParticleBatch = [&](std::vector<Particle> const& particles) {
+	auto renderParticleBatch = [&](std::vector<ParticleLifespanData> const& textureParticlesLifeSpanDatas) {
 		int i{};
 		std::vector<ParticleVertex> particleVertexes;
 		std::vector<unsigned int> indices;
-		for (Particle const& particle : particles) {
+		for (ParticleLifespanData const& particleLifeSpanData : textureParticlesLifeSpanDatas) {
 			ParticleVertex particleVertex;
 			// Add to batch
 			for (int j{}; j < 4; ++j) {
-				particleVertex.localPos = vertexPos[j] * particle.currentSize;
-				particleVertex.worldPos = particle.position;
+				particleVertex.localPos = vertexPos[j] * particleLifeSpanData.currentSize;
+				particleVertex.worldPos = particleLifeSpanData.position;
 				particleVertex.texCoord = textureCoordinates[j];
-				particleVertex.color = particle.currentColor;
-				particleVertex.rotation = particle.rotation;
+				particleVertex.color = particleLifeSpanData.currentColor;
+				particleVertex.rotation = particleLifeSpanData.rotation;
 				particleVertexes.push_back(particleVertex);
 			}
 			for (int j{}; j < 6; ++j)
@@ -1299,7 +1300,7 @@ void Renderer::renderParticles()
 		EBO.uploadData(indices);
 		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
 	};
-	for (auto&& [textureid, textureParticles] : engine.particleSystem.particles) {
+	for (auto&& [textureid, textureParticles] : engine.particleSystem.particleLifeSpanDatas) {
 		auto&& [texture, result] = resourceManager.getResource<Texture>(textureid);
 		if (!texture)
 			continue;
