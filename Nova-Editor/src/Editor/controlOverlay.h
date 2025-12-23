@@ -23,6 +23,7 @@ public:
 private:
 	void displayTopControlBar(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight);
 	void displayNotification(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight);
+	void displayGridSnappingSettings();
 
 private:
 	Editor& editor;

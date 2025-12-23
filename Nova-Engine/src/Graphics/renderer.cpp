@@ -917,9 +917,9 @@ void Renderer::prepareRendering() {
 				Logger::warn("Max number of directional lights reached!");
 				continue;
 			}
-			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+
 			directionalLightData[numOfDirLights++] = {
-				glm::normalize(forward),
+				glm::normalize(transform.front),
 				glm::vec3{ light.color } * light.intensity
 			};
 			break;
@@ -1964,7 +1964,7 @@ void Renderer::debugRender() {
 
 void Renderer::renderDebugSelectedObjects() {
 	debugShader.use();
-	debugShader.setVec4("color", { 0.f,1.0f,1.0f,1.0f });
+	debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
 	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 	glBindVertexArray(mainVAO);
 	glEnable(GL_DEPTH_TEST);
@@ -1983,9 +1983,14 @@ void Renderer::renderDebugSelectedObjects() {
 		if (light) {
 			glm::mat4 model = glm::identity<glm::mat4>();
 			model = glm::translate(model, transform->position);
+
 			debugShader.setMatrix("model", model);
 
 			switch (light->type) {
+			case Light::Type::Directional:
+				debugParticleShapeVBO.uploadData(DebugShapes::Line(glm::vec3{0.f}, transform->front * 2.f));
+				glDrawArrays(GL_LINES, 0, 2);
+				break;
 			case Light::Type::PointLight:
 			case Light::Type::Spotlight:
 				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light->radius));

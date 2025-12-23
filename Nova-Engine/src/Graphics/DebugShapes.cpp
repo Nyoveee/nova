@@ -127,6 +127,28 @@ std::vector<glm::vec3> DebugShapes::Edge(float distance)
 	return result;
 }
 
+std::vector<glm::vec3> DebugShapes::Line(glm::vec3 start, glm::vec3 end) {
+	std::vector<glm::vec3> result;
+	result.push_back(start);
+	result.push_back(end);
+	return result;
+}
+
+#if false
+std::vector<glm::vec3> DebugShapes::Triangle(float size, Radian rotation, glm::vec3 offset) {
+	std::vector<glm::vec3> result;
+
+	Radian sineAngle	= std::sin(std::numbers::pi_v<float> / 2.f + rotation);
+	Radian cosAngle		= std::cos(std::numbers::pi_v<float> / 2.f + rotation);
+
+	result.push_back(glm::vec3{ size * std::cos(rotation), size * std::sin(rotation), 0.f} + offset);
+	result.push_back(glm::vec3{ size * -cosAngle, sineAngle, 0.f } + offset);
+	result.push_back(glm::vec3{ size * -cosAngle, -sineAngle, 0.f } + offset);
+
+	return result;
+}
+#endif
+
 std::vector<glm::vec3> DebugShapes::CameraFrustumOutline(glm::vec3 position, Camera const& camera) {
 	// @TODO: Use a index buffer?
 

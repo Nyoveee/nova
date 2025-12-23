@@ -83,13 +83,41 @@ void Gizmo::update(float viewportPosX, float viewportPosY, float viewportWidth, 
 		projMat = editor.engine.renderer.getEditorCamera().projection();
 	}
 
-#if 0
-	// Assumes UI is the only ones that would need this
-	if (isUI) {
-		transform.modelMatrix = Math::composeMatrix(transform.position, transform.rotation, transform.scale);
-	}
-#endif
-	ImGuizmo::Manipulate(glm::value_ptr(viewMat), glm::value_ptr(projMat), operation, mode, glm::value_ptr(transform.modelMatrix));
+	// variable here because of lifetime.
+	glm::vec3 snappingValues;
+
+	const float* snapping = [&]() -> const float* {
+		if (!isSnapping) {
+			return nullptr;
+		}
+
+		switch (operation) {
+			using enum ImGuizmo::OPERATION;
+		case SCALE:
+			snappingValues = { scaleSnappingValue, scaleSnappingValue , scaleSnappingValue };
+			break;
+		case ROTATE:
+			snappingValues = { rotationSnappingValue, rotationSnappingValue , rotationSnappingValue };
+			break;
+		case TRANSLATE:
+			snappingValues = { translationSnappingValue, translationSnappingValue , translationSnappingValue };
+			break;
+		default:
+			return nullptr;
+		}
+
+		return glm::value_ptr(snappingValues);
+	}();
+
+	ImGuizmo::Manipulate(
+		glm::value_ptr(viewMat), 
+		glm::value_ptr(projMat), 
+		operation, 
+		mode, 
+		glm::value_ptr(transform.modelMatrix), 
+		nullptr,
+		snapping
+	);
 
 	if (!ImGuizmo::IsUsing()) {
 		return;

@@ -16,6 +16,12 @@ public:
 public:
 	ImGuizmo::MODE mode = ImGuizmo::WORLD;
 
+	float translationSnappingValue = 1.f;
+	float scaleSnappingValue = 1.f;
+	float rotationSnappingValue = 45.f;
+
+	bool isSnapping = false;
+
 private:
 	ECS& ecs;
 	Editor& editor;

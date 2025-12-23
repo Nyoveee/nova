@@ -18,6 +18,8 @@ namespace {
 		ImGui::SetCursorPosX(text_indentation);
 		ImGui::Text(text);
 	}
+
+	constexpr const char* gridSnappingPopupId = "Grid Snapping Settings Popup";
 }
 
 ControlOverlay::ControlOverlay(Editor& editor, Gizmo& gizmo) :
@@ -51,10 +53,14 @@ void ControlOverlay::clearNotification() {
 }
 
 void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY, float viewportWidth, float viewportHeight) {
-	constexpr float overlayWidth	= 120.f;
-	constexpr float overlayHeight	= 25.f;
-	constexpr float topPadding		= 10.f;
-	constexpr float buttonSize		= 25.f;
+	constexpr float topPadding			= 10.f;
+	constexpr float buttonSize			= 25.f;
+	constexpr float	dropdownButtonSize	= 12.f;
+	constexpr float buttonPadding		= 10.f;
+	constexpr float largeButtonPadding	= 30.f;
+
+	constexpr float overlayHeight		= 25.f;
+	constexpr float overlayWidth		= 4 * buttonSize + 3 * buttonPadding + largeButtonPadding + dropdownButtonSize;
 
 	if (viewportHeight < overlayHeight || viewportWidth < overlayWidth) {
 		return;
@@ -78,7 +84,14 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 		ImGui::BeginDisabled();
 	}
 
-	if (ImGui::BeginTable("##buttons", 3, ImGuiTableFlags_SizingStretchProp)) {
+	int numOfColumns = 5;
+	if (ImGui::BeginTable("##buttons", numOfColumns, ImGuiTableFlags_SizingStretchProp)) {
+		ImGui::TableSetupColumn("Play column", ImGuiTableColumnFlags_WidthFixed, buttonSize + buttonPadding);
+		ImGui::TableSetupColumn("Pause column", ImGuiTableColumnFlags_WidthFixed, buttonSize + buttonPadding);
+		ImGui::TableSetupColumn("Global/Local column", ImGuiTableColumnFlags_WidthFixed, buttonSize + largeButtonPadding);
+		ImGui::TableSetupColumn("Grid Snapping column", ImGuiTableColumnFlags_WidthFixed, buttonSize + buttonPadding);
+		ImGui::TableSetupColumn("Grid Snapping drop down column", ImGuiTableColumnFlags_WidthFixed, dropdownButtonSize);
+
 		ImGui::TableNextRow();
 		ImGui::TableNextColumn();
 
@@ -95,8 +108,7 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 
 		ImGui::TableNextColumn();
 
-		// Compute horizontal offset to center the button
-		offset = (columnWidth - buttonSize) * 0.5f;
+		// Horizontal offset to center the button
 		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
 
 		if (!editor.isInSimulationMode()) {
@@ -113,9 +125,9 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 
 		ImGui::TableNextColumn();
 
-		// Compute horizontal offset to center the button
-		offset = (columnWidth - buttonSize) * 0.5f;
-		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
+		// Horizontal offset to center the button
+		// Because we utilise a large padding, we want to right align this button.
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + largeButtonPadding - offset);
 
 		if (ImGui::Button(gizmo.mode == ImGuizmo::MODE::WORLD ? ICON_FA_GLOBE : ICON_FA_LOCATION_DOT, ImVec2{ buttonSize, buttonSize })) {
 			if (gizmo.mode == ImGuizmo::MODE::WORLD) {
@@ -126,16 +138,49 @@ void ControlOverlay::displayTopControlBar(float viewportPosX, float viewportPosY
 			}
 		}
 
+		ImGui::TableNextColumn();
+
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offset);
+
+		// brighten the button if grid snapping is on.
+		// we save the old value.
+		bool isGizmoSnapping = gizmo.isSnapping;
+
+		if (isGizmoSnapping) {
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2352941185235977f, 0.2156862765550613f, 0.5960784554481506f, 1.0f));
+		}
+
+		if (ImGui::Button(ICON_FA_BORDER_ALL, ImVec2{ buttonSize, buttonSize })) {
+			gizmo.isSnapping = !gizmo.isSnapping;
+		}
+
+		if (isGizmoSnapping) {
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::TableNextColumn();
+
+		ImGui::SetCursorPosX(ImGui::GetCursorPosX() - offset);
+
+		if (ImGui::Button(ICON_FA_ANGLE_DOWN, ImVec2{ dropdownButtonSize, buttonSize })) {
+			ImGui::OpenPopup(gridSnappingPopupId);
+		}
+		
+		// i need to restore the original style early here..
+		ImGui::PopStyleVar(3);
+
+		displayGridSnappingSettings();
+
 		ImGui::EndTable();
+	}
+	else {
+		ImGui::PopStyleVar(3);
 	}
 
 	if (editor.engine.ecs.sceneManager.hasNoSceneSelected()) {
 		ImGui::EndDisabled();
 	}
 
-	ImGui::PopStyleVar();
-	ImGui::PopStyleVar();
-	ImGui::PopStyleVar();
 	ImGui::End();
 }
 
@@ -153,4 +198,14 @@ void ControlOverlay::displayNotification(float viewportPosX, float viewportPosY,
 	ImGui::Begin("Notification Overlay", nullptr, window_flags);
 	centerTextInWindow(notificationText.c_str());
 	ImGui::End();
+}
+
+void ControlOverlay::displayGridSnappingSettings() {
+	if (ImGui::BeginPopup(gridSnappingPopupId)) {
+		ImGui::DragFloat("Translation", &gizmo.translationSnappingValue);
+		ImGui::DragFloat("Scale",		&gizmo.scaleSnappingValue);
+		ImGui::DragFloat("Rotation",	&gizmo.rotationSnappingValue, 1.0f, 0.f, 180.f);
+
+		ImGui::EndPopup();
+	}
 }
