@@ -713,33 +713,26 @@ struct ParticleEmitter
 	)
 };
 struct alignas(16) ParticleLifespanData {
-	// Interpolation
-	float colorInterpolation{};
-	float sizeInterpolation{};
-	// Light
-	float lightIntensity{};
-	alignas(16) glm::vec3 lightattenuation{};
-	// Position
-	alignas(16) glm::vec3 position{};
-	// Color
-	bool colorOverLifetime{};
 	glm::vec4 startColor{};
 	glm::vec4 currentColor{};
 	glm::vec4 endColor{};
-	// Movement
 	alignas(16) glm::vec3 velocity{};
 	alignas(16) glm::vec3 direction{};
 	alignas(16) glm::vec3 force{};
+	alignas(16) glm::vec3 lightattenuation{};
+	alignas(16) glm::vec3 position{};
+	float colorInterpolation{};
+	float sizeInterpolation{};
+	float lightIntensity{};
 	float rotation{};
 	float angularVelocity{};
-	// Size
-	bool sizeOverLifetime{};
 	float startSize{};
 	float currentSize{};
 	float endSize{};
-	// Lifetime
 	float currentLifeTime{};
 	float lifeTime{};
+	bool colorOverLifetime{};
+	bool sizeOverLifetime{};
 };
 struct Particle {
 	// References

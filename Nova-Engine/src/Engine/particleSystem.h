@@ -20,6 +20,7 @@ public:
 public:
 	ENGINE_DLL_API void emit(Transform const& transform, ParticleEmitter& emitter, int count);
 public:
+	void reset();
 	void update(float dt);
 public:
 	std::map<TypedResourceID<Texture>, std::vector<Particle>> particles;
@@ -30,18 +31,19 @@ private:
 	void burstGeneration(Transform const& transform, ParticleEmitter& emitter, float dt);
 	void trailGeneration(Transform& transform, ParticleEmitter& emitter);
 	void spawnParticle(Transform const& transform, ParticleEmitter& emitter);
-	// Particle Info
-	glm::vec3 determineParticleVelocity(ParticleEmitter& emitter, glm::vec3 nonRandomizedDirection);
-	// Rotation
-	glm::vec3 rotateParticleSpawnPoint(Transform const& transform, glm::vec3 position);
-	glm::vec3 rotateParticleVelocity(Transform const& transform, glm::vec3 velocity);
+	// Setup everything the particle needs to work
+	void determineParticleSpawnDetails(glm::vec3 position, ParticleEmitter& emitter,ParticleLifespanData& particleLifeSpanData ,ParticleEmissionTypeSelection::EmissionShape emissionShape);
+	void determineParticleColor(ParticleLifespanData& particleLifeSpanData, ParticleEmitter& emitter, float emissiveMultiplier, ColorA startcolor, ColorA endColor, glm::vec3 colorOffsetMin, glm::vec3 colorOffsetMax);
+	void determineParticleSize(ParticleLifespanData& particleLifeSpanData, ParticleEmitter& emitter, float startSize, float endSize, float minStartSizeOffset, float maxStartSizeOffset);
+	// Rotate Particle's position, velocity and force values based on transform
+	void rotateParticle(Transform const& transform, ParticleLifespanData& particleLifeSpanData);
 private:
 	ComputeShader particleUpdateComputeShader;
 	BufferObject particleSSBO;
 	BufferObject particleDeletionListSSBO;
 	std::unordered_map<InterpolationType, float> interpolationType;
 	std::vector<unsigned int> deletionList{};
-	int numberOfDeletions;
+	int maxdeletionIndex;
 	Engine& engine;
 };
 

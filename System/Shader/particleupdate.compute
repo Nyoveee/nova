@@ -1,43 +1,36 @@
 #version 450 core
 struct Particle{
-    // Interpolation
-    float colorInterpolation;
-    float sizeInterpolation;
-    // Light
-    float lightIntensity;
-    vec3 lightattenuation;
-    // Position
-    vec3 position;
-    // Color
-    bool colorOverLifetime;
     vec4 startColor;
     vec4 currentColor;
     vec4 endColor;
-    // Movement
     vec3 velocity;
     vec3 direction;
     vec3 force;
+    vec3 lightattenuation;
+    vec3 position;
+    float colorInterpolation;
+    float sizeInterpolation;
+    float lightIntensity;
     float rotation;
     float angularVelocity;
-    // Size
-    bool sizeOverLifetime;
     float startSize;
     float currentSize;
     float endSize;
-    // Lifetime
     float currentLifeTime;
     float lifeTime;
+    bool colorOverLifetime;
+    bool sizeOverLifetime;
 };
 
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
-layout(std430, binding = 0) buffer ParticleList {
+layout(std430, binding = 4) buffer ParticleList {
     uint particleCount;
     Particle particles[];
 };
 
-layout(std430, binding = 1) buffer ParticleDeletionList {
-    int deletionCount;
+layout(std430, binding = 5) buffer ParticleDeletionList {
+    int maxdeletionIndex;
     uint deletionindexes[];
 };
 
@@ -60,8 +53,8 @@ void main() {
     particles[particleIndex].currentLifeTime -= dt;
     // Set this particle to be removed once it reach end of lifetime
     if (particles[particleIndex].currentLifeTime <= 0) {
-        deletionCount = atomicAdd(deletionCount, 1); // Prevent race condition
-        deletionindexes[deletionCount] = particleIndex; 
+        maxdeletionIndex = atomicAdd(maxdeletionIndex, 1); // Prevent race condition
+        deletionindexes[maxdeletionIndex] = particleIndex; 
 	    return;
     }
     // Movement

@@ -6,75 +6,6 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Floor made of Floor",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    6
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 10.0,
-                    "y": 1.0,
-                    "z": 10.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 10.0,
-                    "y": 1.0,
-                    "z": 10.0
-                }
-            },
-            "id": 4194390
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Emitter",
                 "overridenComponents": null,
                 "overridenProperties": null,
@@ -166,11 +97,11 @@
                     "interpolationType": "Linear",
                     "selected": false
                 },
-                "startSize": 1.0,
+                "startSize": 0.5,
                 "startSpeed": 1.0,
                 "texture": 16920771930294239281,
                 "trails": {
-                    "distancePerEmission": 0.10000000149011612,
+                    "distancePerEmission": 0.009999999776482582,
                     "selected": true,
                     "trailColor": {
                         "a": 1.0,
@@ -205,9 +136,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -2.1627073287963867,
-                    "y": 5.353116989135742,
-                    "z": 1.2419846057891846
+                    "x": -1.1166906356811523,
+                    "y": 8.736096382141113,
+                    "z": 0.11863216757774353
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -221,9 +152,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -2.1627073287963867,
-                    "y": 5.353116989135742,
-                    "z": 1.2419846057891846
+                    "x": -1.1166906356811523,
+                    "y": 8.736096382141113,
+                    "z": 0.11863216757774353
                 },
                 "rotation": {
                     "w": 1.0,
@@ -238,6 +169,75 @@
                 }
             },
             "id": 0
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Floor made of Floor",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    6
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
+                }
+            },
+            "id": 4194390
         }
     ],
     "layers": [

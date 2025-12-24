@@ -120,6 +120,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
 
+	// we bind light SSBO to binding point of 0, 1 & 2
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, pointLightSSBO.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, directionalLightSSBO.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, spotLightSSBO.id());
 	// we bind bones SSBO to 3.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
 
@@ -923,10 +927,6 @@ void Renderer::prepareRendering() {
 		}
 		
 	}
-	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, pointLightSSBO.id());
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, directionalLightSSBO.id());
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, spotLightSSBO.id());
 
 	// Send it over to SSBO.
 	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
