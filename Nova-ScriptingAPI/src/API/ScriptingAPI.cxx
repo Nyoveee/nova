@@ -9,8 +9,6 @@
 #include <filesystem>
 #include <msclr/marshal_cppstd.h>
 
-
-
 #include "scriptAsset.h"
 
 generic<typename T> where T : Script
@@ -62,10 +60,22 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 
 void Interface::intializeAllScripts()
 {
-	// Instantiate all scripts..
-	for each (System::UInt32 entityID in gameObjectScripts->Keys)
-		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys)
+	for each (System::UInt32 entityID in gameObjectScripts->Keys) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+			EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
+			if (!entityData.isActive)
+				continue;
+			gameObjectScripts[entityID][scriptID]->callAwake();
+		}
+	}	
+	for each (System::UInt32 entityID in gameObjectScripts->Keys) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityID]->Keys) {
+			EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(entityID)) };
+			if (!entityData.isActive)
+				continue;
 			gameObjectScripts[entityID][scriptID]->callInit();
+		}
+	}
 }
 
 void Interface::handleOnCollision(EntityID entityOne, EntityID entityTwo) {
@@ -86,12 +96,12 @@ void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId
 	System::String^ functionName = msclr::interop::marshal_as<System::String^>(name);
 
 	if (!gameObjectScripts->ContainsKey(entityID)) {
-		Logger::warn("Attempt to invoke script function of unknown entity {}", entityID);
+		Logger::warn("{}Attempt to invoke unknown script function", GameObject(entityID).GetNameID());
 		return;
 	}
 
 	if (!gameObjectScripts[entityID]->ContainsKey(scriptId)) {
-		Logger::warn("Attempt to invoke unknown script id {} of entity {}", scriptId, entityID);
+		Logger::warn("{}Attempt to invoke unknown script id {}",GameObject(entityID).GetNameID(), scriptId);
 		return;
 	}
 
@@ -103,7 +113,7 @@ void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId
 		function->Invoke(script, nullptr);
 	}
 	else {
-		Logger::warn("Error when invoking function name {} of script id {} of entity {}", name, scriptId, entityID);
+		Logger::warn("{}Error when invoking function name {} of script id {}",GameObject(entityID).GetNameID(), name, scriptId);
 	}
 }
 
@@ -157,14 +167,13 @@ void Interface::recursivelyInitialiseEntity(entt::entity entity) {
 				Interface::setFieldData(script, fieldData);
 			list->Add(script);
 		}
-		for each (Script ^ script in list)
-			Interface::initializeScript(script);
+		if (entityData.isActive)
+			for each (Script ^ script in list)
+				Interface::initializeScript(script);
 	}
 
-
-	for (auto&& child : entityData.children) {
+	for (auto&& child : entityData.children)
 		recursivelyInitialiseEntity(child);
-	}
 }
 
 std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
@@ -293,16 +302,14 @@ bool Interface::getScriptFieldData(System::Object^ fieldValue, System::Type^ fie
 	if (fieldType->IsPrimitive) {
 		Logger::warn("Primitive type in script currently not supported for script serialization {}",
 			msclr::interop::marshal_as<std::string>(fieldType->ToString()));
-
 	}
-	
 	return false;
 }
 
 void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 {
 	if (!availableScripts->ContainsKey(scriptId)) {
-		Logger::error("Failed to add invalid script {} for entity {}!", scriptId, entityID);
+		Logger::error("{}Failed to add invalid script {}!", GameObject(entityID).GetNameID(), scriptId);
 		return;
 	}
 
@@ -320,7 +327,7 @@ void Interface::addEntityScript(EntityID entityID, ScriptID scriptId)
 
 Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) {
 	if (!availableScripts->ContainsKey(scriptId)) {
-		Logger::error("Failed to add invalid script {} for entity {}!", scriptId, entityID);
+		Logger::error("{}Failed to add invalid script {}!",GameObject(entityID).GetNameID(), scriptId, entityID);
 		return nullptr;
 	}
 
@@ -336,18 +343,18 @@ Script^ Interface::delayedAddEntityScript(EntityID entityID, ScriptID scriptId) 
 	return newScript;
 }
 
-void Interface::initializeScript(EntityID entityID, ScriptID scriptId) {
-	gameObjectScripts[entityID][scriptId]->callInit();
-}
-
 void Interface::initializeScript(Script^ script) {
+	EntityData const& entityData{ engine->ecs.registry.get<EntityData>(static_cast<entt::entity>(script->entityID)) };
+	if (!entityData.isActive)
+		return;
+	script->callAwake();
 	script->callInit();
 }
 
 void Interface::setScriptFieldData(EntityID entityID, ScriptID scriptID, FieldData const& fieldData)
 {
 	if (!gameObjectScripts->ContainsKey(entityID) || !gameObjectScripts[entityID]->ContainsKey(scriptID)) {
-		Logger::error("Failed to set field data for entityID {}", entityID);
+		Logger::error("{}Failed to set field data", GameObject(entityID).GetNameID());
 		return;
 	}
 
@@ -637,7 +644,7 @@ void Interface::removeEntity(EntityID entityID)
 void Interface::removeEntityScript(EntityID entityID, ScriptID scriptId)
 {
 	if (!availableScripts->ContainsKey(scriptId)) {
-		Logger::error("Failed to remove script {} for entity {}!", scriptId, entityID);
+		Logger::error("{}Failed to remove script {}!",GameObject(entityID).GetNameID(), scriptId);
 		return;
 	}
 	gameObjectScripts[entityID]->Remove(scriptId);
@@ -729,7 +736,21 @@ void Interface::unloadAssembly()
 	if (!assemblyLoadContext)
 		return;
 
-	clearAllRuntime();
+	// Clear existing scripts
+	if (gameObjectScripts)
+		gameObjectScripts->Clear();
+
+	if (timeoutDelegates)
+		timeoutDelegates->Clear();
+	if (executeTimeoutDelegates)
+		executeTimeoutDelegates->Clear();
+	if (createdGameObjectScripts)
+		createdGameObjectScripts->Clear();
+
+	deleteGameObjectQueue.Clear();
+
+	// Clear all input mapping..
+	Input::ClearAllKeyMapping();
 
 	// non runtime containers..
 	if (availableScripts)
@@ -746,22 +767,4 @@ void Interface::unloadAssembly()
 	System::GC::Collect();
 	// Wait from assembly to finish unloading
 	System::GC::WaitForPendingFinalizers();
-}
-
-void Interface::clearAllRuntime() {
-	// Clear existing scripts
-	if (gameObjectScripts)
-		gameObjectScripts->Clear();
-
-	if (timeoutDelegates)
-		timeoutDelegates->Clear();
-	if (executeTimeoutDelegates)
-		executeTimeoutDelegates->Clear();
-	if (createdGameObjectScripts)
-		createdGameObjectScripts->Clear();
-
-	deleteGameObjectQueue.Clear();
-
-	// Clear all input mapping..
-	Input::ClearAllKeyMapping();
 }

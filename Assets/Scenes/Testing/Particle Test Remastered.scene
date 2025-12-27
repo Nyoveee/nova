@@ -6,176 +6,6 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Emitter",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
-                "tag": ""
-            },
-            "ParticleEmitter": {
-                "burstAmount": 30,
-                "burstRate": 0.0,
-                "colorOverLifetime": {
-                    "endColor": {
-                        "a": 0.0,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
-                    },
-                    "interpolationType": "Linear",
-                    "selected": false
-                },
-                "force": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "initialAngularVelocity": 0.0,
-                "lifeTime": 1.0,
-                "lightIntensity": 0.0,
-                "lightattenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "looping": true,
-                "maxAngularVelocityOffset": 0.0,
-                "maxParticles": 1000,
-                "maxStartSizeOffset": 0.0,
-                "minAngularVelocityOffset": 0.0,
-                "minStartSizeOffset": 0.0,
-                "particleColorSelection": {
-                    "color": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "colorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "colorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "emissiveMultiplier": 500.0
-                },
-                "particleEmissionTypeSelection": {
-                    "coneEmitter": {
-                        "arc": 30.0,
-                        "distance": 5.0
-                    },
-                    "cubeEmitter": {
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        },
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        }
-                    },
-                    "emissionShape": "Point",
-                    "radiusEmitter": {
-                        "radius": 5.0
-                    }
-                },
-                "particleRate": 100.0,
-                "randomizedDirection": false,
-                "sizeOverLifetime": {
-                    "endSize": 0.0,
-                    "interpolationType": "Linear",
-                    "selected": false
-                },
-                "startSize": 1.0,
-                "startSpeed": 1.0,
-                "texture": 10579703654956564523,
-                "trails": {
-                    "distancePerEmission": 0.009999999776482582,
-                    "selected": true,
-                    "trailColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "trailColorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailColorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailEmissiveMultiplier": 1.0,
-                    "trailSize": 0.10000000149011612,
-                    "trailTexture": 9
-                }
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 1.819821834564209,
-                    "y": 2.2467844486236572,
-                    "z": -2.054823398590088
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 1.819821834564209,
-                    "y": 2.2467844486236572,
-                    "z": -2.054823398590088
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 8388697
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Floor made of Floor",
                 "overridenComponents": null,
                 "overridenProperties": null,
@@ -205,7 +35,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.996171236038208,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -216,12 +46,12 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 10.168025016784668,
-                    "y": 1.559999942779541,
-                    "z": 22.46103286743164
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
                 },
                 "position": {
-                    "x": -0.996171236038208,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -232,9 +62,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 10.168025016784668,
-                    "y": 1.559999942779541,
-                    "z": 22.46103286743164
+                    "x": 10.0,
+                    "y": 1.0,
+                    "z": 10.0
                 }
             },
             "id": 4194390
@@ -305,7 +135,7 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 500.0
+                    "emissiveMultiplier": 1.0
                 },
                 "particleEmissionTypeSelection": {
                     "coneEmitter": {
@@ -329,7 +159,7 @@
                         "radius": 5.0
                     }
                 },
-                "particleRate": 100.0,
+                "particleRate": 1.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -338,9 +168,9 @@
                 },
                 "startSize": 1.0,
                 "startSpeed": 1.0,
-                "texture": 10579703654956564523,
+                "texture": 16920771930294239281,
                 "trails": {
-                    "distancePerEmission": 0.009999999776482582,
+                    "distancePerEmission": 0.10000000149011612,
                     "selected": true,
                     "trailColor": {
                         "a": 1.0,
@@ -375,9 +205,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1.819821834564209,
-                    "y": 2.2467844486236572,
-                    "z": 5.7352423667907715
+                    "x": -2.1627073287963867,
+                    "y": 5.353116989135742,
+                    "z": 1.2419846057891846
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -391,9 +221,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 1.819821834564209,
-                    "y": 2.2467844486236572,
-                    "z": 5.7352423667907715
+                    "x": -2.1627073287963867,
+                    "y": 5.353116989135742,
+                    "z": 1.2419846057891846
                 },
                 "rotation": {
                     "w": 1.0,

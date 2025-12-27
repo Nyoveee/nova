@@ -15,6 +15,7 @@ public ref class Script abstract : ComponentAccessor
 internal:
 	// C++/cli doesn't support friend class so this is a way to make sure scripts cannot access the init update exit functions of other scripts
 	// These also includes exception handling for scripts
+	void callAwake();
 	void callInit();
 	void callUpdate();
 	void callFixedUpdate();
@@ -23,6 +24,7 @@ internal:
 	void callOnCollisionEnter(unsigned otherEntityID);
 
 protected:
+	virtual void awake() {};
 	virtual void init() {};
 	virtual void update() {};
 	virtual void fixedUpdate() {};
@@ -78,4 +80,6 @@ internal:
 	System::Collections::Generic::List<std::size_t> scriptObserverIds;
 	System::Collections::Generic::List<std::size_t> mouseMoveObserverIds;
 	System::Collections::Generic::List<std::size_t> mouseScrollObserverIds;
+private:
+	bool b_Initialized{};
 };
