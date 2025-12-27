@@ -32,12 +32,11 @@ enum class RenderConfig {
 	Game
 };
 
-struct ParticleVertex {
-	glm::vec3 localPos;
-	glm::vec3 worldPos;
-	glm::vec2 texCoord;
+struct alignas(16) ParticleVertex {
 	glm::vec4 color;
+	alignas(16) glm::vec3 position;
 	float rotation;
+	float currentSize;
 };
 
 struct Mesh {
@@ -127,34 +126,3 @@ struct alignas(16) SpotLightData {
 };
 
 #pragma warning( pop )
-
-#if 0
-struct Material {
-	enum class Pipeline {
-		PBR,			// uses everything.
-		BlinnPhong,		// use albedo and normal map.
-		Color			// only uses albedo.
-	};
-
-	struct Config {
-		float roughness;
-		float metallic;
-		float occulusion;
-
-		REFLECTABLE(
-			roughness,
-			metallic,
-			occulusion
-		)
-	};
-
-	Pipeline renderingPipeline = Pipeline::PBR;
-
-	// either texture map or constant.
-	std::variant<ResourceID, Color>		albedo = Color{ 0.1f, 0.1f, 0.1f };
-	std::variant<ResourceID, Config>	config = Config{ 0.5f, 0.f, 0.f };
-	std::optional<ResourceID>			normalMap = std::nullopt;
-
-	float ambient = 0.1f;
-};
-#endif

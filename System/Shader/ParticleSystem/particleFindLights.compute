@@ -1,0 +1,69 @@
+#version 450 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+struct Particle{
+    vec4 startColor;
+    vec4 endColor;
+    vec3 velocity;
+    vec3 direction;
+    vec3 force;
+    vec3 lightattenuation;
+    float colorInterpolation;
+    float sizeInterpolation;
+    float lightIntensity;
+    float lightRadius;
+    float angularVelocity;
+    float startSize;
+    float endSize;
+    float currentLifeTime;
+    float lifeTime;
+    bool colorOverLifetime;
+    bool sizeOverLifetime;
+    bool b_Active;
+};
+struct PointLightData{
+    vec3 lightPos;		
+    vec3 color;		
+    vec3 attenuation; 
+    float radius;
+};
+struct ParticleVertex{
+	vec4 color;
+	vec3 position;
+	float rotation;
+	float currentSize;
+};
+layout(std430, binding = 4) buffer ParticleVertexList {
+    ParticleVertex particleVertices[];
+};
+layout(std430, binding = 5) buffer ParticleList {
+    int particleCount;
+    int newParticleIndex;
+    Particle particles[];
+};
+layout(std430, binding = 6) buffer LightParticleList {
+    int lightParticleCount;
+    bool b_AmountExceeded;
+    PointLightData pointLightDatas[];
+};
+
+uniform uint maxSearchableLight;
+
+void main() {
+    if(lightParticleCount >= maxSearchableLight)
+        return;
+    uint particleIndex = gl_GlobalInvocationID.x;
+    if(particleIndex >= particleCount)
+        return;
+    if(particles[particleIndex].b_Active && particles[particleIndex].lightIntensity > 0){
+        atomicAdd(lightParticleCount, 1);
+        if(lightParticleCount >= maxSearchableLight){
+            b_AmountExceeded = true;
+            return;
+        }
+        pointLightDatas[lightParticleCount-1].lightPos = particleVertices[lightParticleCount-1].position;
+        pointLightDatas[lightParticleCount-1].color = particleVertices[lightParticleCount-1].color.xyz * particles[lightParticleCount].lightIntensity;
+        pointLightDatas[lightParticleCount-1].attenuation = particles[lightParticleCount-1].lightattenuation;
+        pointLightDatas[lightParticleCount-1].radius = particles[lightParticleCount-1].lightRadius;
+    }
+}

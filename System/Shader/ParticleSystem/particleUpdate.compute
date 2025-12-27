@@ -1,38 +1,43 @@
 #version 450 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+struct ParticleVertex{
+	vec4 color;
+	vec3 position;
+	float rotation;
+	float currentSize;
+};
 struct Particle{
     vec4 startColor;
-    vec4 currentColor;
     vec4 endColor;
     vec3 velocity;
     vec3 direction;
     vec3 force;
     vec3 lightattenuation;
-    vec3 position;
     float colorInterpolation;
     float sizeInterpolation;
     float lightIntensity;
-    float rotation;
+    float lightRadius;
     float angularVelocity;
     float startSize;
-    float currentSize;
     float endSize;
     float currentLifeTime;
     float lifeTime;
     bool colorOverLifetime;
     bool sizeOverLifetime;
+    bool b_Active;
 };
 
-layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(std430, binding = 4) buffer ParticleVertexList {
+    ParticleVertex particleVertices[];
+};
 
-layout(std430, binding = 4) buffer ParticleList {
-    uint particleCount;
+layout(std430, binding = 5) buffer ParticleList {
+    int particleCount;
+    int newParticleIndex;
     Particle particles[];
 };
 
-layout(std430, binding = 5) buffer ParticleDeletionList {
-    int maxdeletionIndex;
-    uint deletionindexes[];
-};
 
 uniform float dt;  
 
@@ -50,22 +55,23 @@ vec4 InterpolationVector(vec4 start, vec4 end, float t, float degree) {
 
 void main() {
     uint particleIndex = gl_GlobalInvocationID.x;
+    if(particleIndex >= particleCount)
+        return;
     particles[particleIndex].currentLifeTime -= dt;
     // Set this particle to be removed once it reach end of lifetime
     if (particles[particleIndex].currentLifeTime <= 0) {
-        maxdeletionIndex = atomicAdd(maxdeletionIndex, 1); // Prevent race condition
-        deletionindexes[maxdeletionIndex] = particleIndex; 
+        particles[particleIndex].b_Active = false;
 	    return;
     }
     // Movement
-    particles[particleIndex].position += particles[particleIndex].velocity * dt;
+    particleVertices[particleIndex].position += particles[particleIndex].velocity * dt;
     particles[particleIndex].velocity += particles[particleIndex].force * dt;
-    particles[particleIndex].rotation += particles[particleIndex].angularVelocity * dt;
+    particleVertices[particleIndex].rotation += particles[particleIndex].angularVelocity * dt;
     // Color
     if (particles[particleIndex].colorOverLifetime) {
 	    float interpolationValue = 1 - particles[particleIndex].currentLifeTime / particles[particleIndex].lifeTime;
 	    float degree = particles[particleIndex].colorInterpolation;
-	    particles[particleIndex].currentColor = InterpolationVector(particles[particleIndex].startColor, 
+	    particleVertices[particleIndex].color = InterpolationVector(particles[particleIndex].startColor, 
                                                                     particles[particleIndex].endColor, 
                                                                     interpolationValue, 
                                                                     degree);
@@ -74,11 +80,9 @@ void main() {
     if (particles[particleIndex].sizeOverLifetime) {
 	    float interpolationValue = 1 - particles[particleIndex].currentLifeTime / particles[particleIndex].lifeTime;
 	    float degree = particles[particleIndex].sizeInterpolation;
-	    particles[particleIndex].currentSize = InterpolationFloat(particles[particleIndex].startSize, 
-                                                                  particles[particleIndex].endSize, 
-                                                                  interpolationValue, 
-                                                                  degree);
+	    particleVertices[particleIndex].currentSize = InterpolationFloat(particles[particleIndex].startSize, 
+                                                                         particles[particleIndex].endSize, 
+                                                                         interpolationValue, 
+                                                                         degree);
     }
 }
-
-

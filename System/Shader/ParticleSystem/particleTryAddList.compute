@@ -1,0 +1,54 @@
+#version 450 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+struct Particle{
+    vec4 startColor;
+    vec4 endColor;
+    vec3 velocity;
+    vec3 direction;
+    vec3 force;
+    vec3 lightattenuation;
+    float colorInterpolation;
+    float sizeInterpolation;
+    float lightIntensity;
+    float lightRadius;
+    float angularVelocity;
+    float startSize;
+    float endSize;
+    float currentLifeTime;
+    float lifeTime;
+    bool colorOverLifetime;
+    bool sizeOverLifetime;
+    bool b_Active;
+};
+struct ParticleVertex{
+	vec4 color;
+	vec3 position;
+	float rotation;
+	float currentSize;
+};
+layout(std430, binding = 4) buffer ParticleVertexList {
+    ParticleVertex particleVertices[];
+};
+layout(std430, binding = 5) buffer ParticleList {
+    int particleCount;
+    int newParticleIndex;
+    Particle particles[];
+};
+
+uniform int textureIndex;
+uniform int maxParticlesPerTexture;
+uniform Particle particle;
+uniform ParticleVertex particleVertex;
+
+void main() {
+    int particleIndex = textureIndex * maxParticlesPerTexture + int(gl_GlobalInvocationID.x);
+    if(particleIndex >= particleCount)
+        return;
+    if(!particles[particleIndex].b_Active){
+        if(atomicCompSwap(newParticleIndex,-1,particleIndex) != -1){
+            particleVertices[newParticleIndex] = particleVertex;
+            particles[newParticleIndex] = particle;
+            particles[newParticleIndex].b_Active = true;
+        }
+    }
+}

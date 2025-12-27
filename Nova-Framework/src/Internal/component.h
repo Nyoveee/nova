@@ -653,7 +653,6 @@ struct ParticleEmitter
 	float currentBurstTime{};
 	glm::vec3 prevPosition{};
 	bool b_firstPositionUpdate{ true };
-	int particleCount{};
 	// Categories
 	TypedResourceID<Texture> texture{};
 	ParticleEmissionTypeSelection particleEmissionTypeSelection{};
@@ -664,11 +663,9 @@ struct ParticleEmitter
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
-	
 	float startSize = 1.f;
 	float minStartSizeOffset = 0.f;
 	float maxStartSizeOffset = 0.f;
-
 	float startSpeed = 1;
 	glm::vec3 force{};
 	// Velocity
@@ -677,13 +674,13 @@ struct ParticleEmitter
 	float maxAngularVelocityOffset{};
 	// Particle spawning info
 	float lifeTime = 1;
-	int maxParticles = 1000;
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
 	// Light
 	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
+	float lightRadius{};
 
 	REFLECTABLE
 	(
@@ -697,12 +694,12 @@ struct ParticleEmitter
 		maxAngularVelocityOffset,
 		force,
 		lifeTime,
-		maxParticles,
 		particleRate,
 		burstRate,
 		burstAmount,
 		lightIntensity,
 		lightattenuation,
+		lightRadius,
 		looping,
 		randomizedDirection,
 		particleEmissionTypeSelection,
@@ -714,34 +711,23 @@ struct ParticleEmitter
 };
 struct alignas(16) ParticleLifespanData {
 	glm::vec4 startColor{};
-	glm::vec4 currentColor{};
 	glm::vec4 endColor{};
 	alignas(16) glm::vec3 velocity{};
 	alignas(16) glm::vec3 direction{};
 	alignas(16) glm::vec3 force{};
 	alignas(16) glm::vec3 lightattenuation{};
-	alignas(16) glm::vec3 position{};
 	float colorInterpolation{};
 	float sizeInterpolation{};
 	float lightIntensity{};
-	float rotation{};
+	float lightRadius{};
 	float angularVelocity{};
 	float startSize{};
-	float currentSize{};
 	float endSize{};
 	float currentLifeTime{};
 	float lifeTime{};
 	bool colorOverLifetime{};
 	bool sizeOverLifetime{};
-};
-struct Particle {
-	// References
-	ParticleEmitter* emitter{};
-	// Type
-	enum class Type {
-		Standard,
-		Trail
-	}type;
+	bool b_Active{};
 };
 struct Text {
 	TypedResourceID<Font> font;
