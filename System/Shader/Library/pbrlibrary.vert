@@ -50,6 +50,7 @@ out VS_OUT {
     vec2 textureUnit;
     vec3 normal;
     vec3 fragWorldPos;
+    vec3 fragViewPos;
     mat3 TBN;
 } vsOut;
 
@@ -106,9 +107,10 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
             localTangent += normalBoneTransform * tangent;
         }
 
-        worldSpace.position = model * localScale * localPosition;
-        worldSpace.normal   = normalize(normalMatrix * localNormal);
-        worldSpace.tangent  = normalize(normalMatrix * localTangent);
+        worldSpace.position             = model * localScale * localPosition;
+        worldSpace.normal               = normalize(normalMatrix * localNormal);
+        worldSpace.tangent              = normalize(normalMatrix * localTangent);
+
         return worldSpace;
     }
 }

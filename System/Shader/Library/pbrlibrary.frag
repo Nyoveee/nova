@@ -34,6 +34,16 @@ const float ambientFactor = 0.2;
 const float PI = 3.14159265358979323846;
 
 // === LIGHT PROPERTIES ===
+struct Cluster
+{
+    vec4 minPoint;
+    vec4 maxPoint;
+    uint pointLightCount;
+    uint spotLightCount;
+    uint pointLightIndices[100];
+    uint spotLightIndices[100];
+};
+
 struct PointLight {
     vec3 position;
     vec3 color;
@@ -71,6 +81,16 @@ layout(std430, binding = 2) buffer SpotLights {
     SpotLight spotLights[];
 };
 
+layout(std430, binding = 7) buffer clusterSSBO
+{
+    Cluster clusters[];
+};
+
+uniform float zNear;
+uniform float zFar;
+uniform uvec3 gridSize;
+uniform uvec2 screenDimensions;
+
 uniform vec3 cameraPos;
 uniform float timeElapsed;
 
@@ -80,6 +100,7 @@ in VS_OUT {
     vec2 textureUnit;
     vec3 normal;
     vec3 fragWorldPos;
+    vec3 fragViewPos;
     mat3 TBN;
 } fsIn;
 
@@ -107,16 +128,37 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     // ambient is the easiest.
     vec3 finalColor = ambientFactor * albedoColor * (occulusion * 0.04);
 
+    // Locating which cluster this fragment is part of
+    uint zTile = uint((log(abs(fsIn.fragViewPos.z) / zNear) * gridSize.z) / log(zFar / zNear));      // we find the z value of this tile..
+    vec2 tileSize = screenDimensions / gridSize.xy;                                     
+    uvec3 tile = uvec3(gl_FragCoord.xy / tileSize, zTile);                                  // we found our tile index for x, y and z.
+    uint tileIndex = tile.x + (tile.y * gridSize.x) + (tile.z * gridSize.x * gridSize.y);   // convert it to index.
+
+    Cluster cluster = clusters[tileIndex];
+
     // Calculate diffuse and specular light for each light.
-    for(int i = 0; i < pointLightCount; ++i) {
-        // Calculate point light contribution using microfacet model
-        finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLights[i]);
+    for(int i = 0; i < cluster.pointLightCount; ++i) {
+        PointLight pointLight = pointLights[cluster.pointLightIndices[i]];
+        finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLight);
     }
+
+    for(int i = 0; i < cluster.spotLightCount; ++i) {
+        SpotLight spotLight = spotLights[cluster.spotLightIndices[i]];
+        finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLight);
+    }
+
+    // Calculate diffuse and specular light for each light.
+    // for(int i = 0; i < pointLightCount; ++i) {
+    //     finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLights[i]);
+    // }
+
+    // for(int i = 0; i < spotLightCount; ++i) {
+    //     finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLights[i]);
+    // }
+
+    // No clustering for directional lights, it affects all fragments.
     for(int i = 0; i < dirLightCount; ++i) {
         finalColor += microfacetModelDir(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, dirLights[i]);
-    }
-    for(int i = 0; i < spotLightCount; ++i) {
-        finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLights[i]);
     }
 
     return finalColor;
@@ -182,7 +224,6 @@ float calculateAttenuation(float distance, vec3 attenutationFactor, float radius
 
     // Combine both to get the final attenuation
     float attenuation = smooth_factor * inverse_square_attenuation;
-
 
     return attenuation;
 }

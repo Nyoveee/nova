@@ -55,9 +55,29 @@ constexpr int MAX_DEBUG_LINES	  = 100000;
 constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
 
 // ok right?
-constexpr int MAX_NUMBER_OF_LIGHT = 100;
+constexpr int MAX_NUMBER_OF_LIGHT = 250;
 
-constexpr int MAX_NUMBER_OF_BONES = 255;
+constexpr int MAX_NUMBER_OF_BONES = 250;
+
+// For cluster forward rendering..
+constexpr unsigned int gridSizeX = 16;
+constexpr unsigned int gridSizeY = 9;
+constexpr unsigned int gridSizeZ = 24;
+constexpr unsigned int numClusters = gridSizeX * gridSizeY * gridSizeZ;
+
+#pragma warning( push )
+#pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
+
+struct alignas(16) Cluster {
+	glm::vec4 minPoint;
+	glm::vec4 maxPoint;
+	unsigned int pointLightCount;
+	unsigned int spotLightCount;
+	unsigned int pointLightIndices[MAX_NUMBER_OF_LIGHT];
+	unsigned int spotLightIndices[MAX_NUMBER_OF_LIGHT];
+};
+
+#pragma warning( pop )
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	engine						{ engine },
@@ -86,6 +106,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
 	texture2dShader				{ "System/Shader/texture2d.vert",			"System/Shader/image2D.frag"},
 	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
+	clusterBuildingCompute		{ "System/Shader/clusterBuilding.compute" },
+	clusterLightCompute			{ "System/Shader/clusterLightAssignment.compute" },
 	mainVAO						{},
 	positionsVBO				{ AMOUNT_OF_MEMORY_ALLOCATED },
 	textureCoordinatesVBO		{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -102,6 +124,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	gameLights					{ MAX_NUMBER_OF_LIGHT },
 	editorLights				{ MAX_NUMBER_OF_LIGHT },
+	gameClusterSSBO				{ numClusters * sizeof(Cluster) },
+	editorClusterSSBO			{ numClusters * sizeof(Cluster) },
 
 								// we allocate memory for view and projection matrix.
 	sharedUBO					{ 2 * sizeof(glm::mat4) },
@@ -249,7 +273,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glEnableVertexArrayAttrib(particleVAO, 2);
 	glEnableVertexArrayAttrib(particleVAO, 3);
 	glEnableVertexArrayAttrib(particleVAO, 4);
-
 }
 
 Renderer::~Renderer() {
@@ -322,7 +345,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	case RenderConfig::Editor:
 		// Main render function
 		if (isEditorScreenShown) {
-			render(editorMainFrameBuffer, editorCamera, editorLights);
+			render(editorMainFrameBuffer, editorCamera, editorLights, editorClusterSSBO);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(editorMainFrameBuffer);
@@ -339,8 +362,8 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		}
 		
 		// Main render function
-		if(isGameScreenShown)
-			render(gameMainFrameBuffer, gameCamera, gameLights);
+		if (isGameScreenShown)
+			render(gameMainFrameBuffer, gameCamera, gameLights, gameClusterSSBO);
 
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
@@ -359,7 +382,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	// ===============================================
 	case RenderConfig::Game:
 		// Main render function
-		render(gameMainFrameBuffer, gameCamera, gameLights);
+		render(gameMainFrameBuffer, gameCamera, gameLights, gameClusterSSBO);
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
 
@@ -423,7 +446,7 @@ void Renderer::renderUI()
 	glBindVertexArray(mainVAO);
 }
 
-void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO) {
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO, BufferObject const& clusterSSBO) {
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
 
@@ -438,7 +461,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	frustumCulling(camera);
 
 	// We prepare our lights for rendering..
-	prepareLights(lightSSBO);
+	prepareLights(camera, lightSSBO, clusterSSBO);
 
 	setBlendMode(BlendingConfig::Disabled);
 
@@ -643,6 +666,15 @@ void Renderer::recompileShaders() {
 	bloomUpSampleShader.recompile();
 	bloomFinalShader.recompile();
 	postprocessingShader.recompile();
+
+	clusterBuildingCompute.recompile();
+	clusterLightCompute.recompile();
+
+	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
+
+	if (defaultPBRShader) {
+		defaultPBRShader->compile();
+	}
 }
 
 void Renderer::debugRenderPhysicsCollider() {
@@ -834,6 +866,36 @@ void Renderer::debugRenderBoundingVolume() {
 		
 		break;
 	}
+}
+
+void Renderer::debugRenderClusters() {
+	glBindVertexArray(mainVAO);
+	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
+
+	static std::array<Cluster, numClusters> clusters {};
+
+	// retrieve all cluster information..
+	glGetNamedBufferSubData(gameClusterSSBO.id(), 0, numClusters * sizeof(Cluster), clusters.data());
+
+	std::size_t offset = 0;
+
+	// upload cluster AABB to VBO.
+	for (auto const& cluster : clusters) {
+		glm::vec3 center = glm::vec4{ (cluster.maxPoint + cluster.minPoint) / 2.f };
+		glm::vec3 extents = glm::vec3{ cluster.maxPoint } - center;
+
+		std::vector<glm::vec3> cubeVertices = DebugShapes::Cube({ center, extents });
+		std::size_t size = cubeVertices.size();
+
+		debugParticleShapeVBO.uploadData(std::move(cubeVertices), offset);
+		offset += size * sizeof(glm::vec3);
+	}
+
+	debugShader.use();
+
+	// because clusters are defined in view space, the inverse of the camera's view matrix brings clusters to world space. 
+	debugShader.setMatrix("model", glm::inverse(gameCamera.view()));	
+	glDrawArrays(GL_LINES, 0, 24 * numClusters);
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
@@ -1421,7 +1483,7 @@ void Renderer::setCullMode(CullingConfig configuration) {
 	}
 }
 
-void Renderer::prepareLights(LightSSBO& lightSSBO) {
+void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferObject const& clusterSSBO) {
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
 	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
@@ -1527,6 +1589,35 @@ void Renderer::prepareLights(LightSSBO& lightSSBO) {
 	glNamedBufferSubData(lightSSBO.pointLight.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
 	glNamedBufferSubData(lightSSBO.directionalLight.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
 	glNamedBufferSubData(lightSSBO.spotLight.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
+
+	// Prepare cluster forwarded rendering..
+	clusterBuilding(camera, clusterSSBO);
+}
+
+void Renderer::clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO) {
+	// we bind bones SSBO to 7.
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, clusterSSBO.id());
+
+	// ===============================================
+	// 1. We first build the clusters AABB from screen space..
+	// ===============================================
+	clusterBuildingCompute.use();
+	clusterBuildingCompute.setFloat("zNear", camera.getNearPlaneDistance());
+	clusterBuildingCompute.setFloat("zFar", camera.getFarPlaneDistance());
+	clusterBuildingCompute.setMatrix("inverseProjection", glm::inverse(camera.projection()));
+	clusterBuildingCompute.setUVec3("gridSize", { gridSizeX, gridSizeY, gridSizeZ });
+	clusterBuildingCompute.setUVec2("screenDimensions", { gameWidth, gameHeight });
+
+	glDispatchCompute(gridSizeX, gridSizeY, gridSizeZ);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	// ===============================================
+	// 2. We assign lights to their respective clusters..
+	// ===============================================
+	clusterLightCompute.use();
+
+	glDispatchCompute(27, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
 Frustum Renderer::calculateCameraFrustum(Camera const& camera) {
@@ -1956,6 +2047,11 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		shader.setVec3("cameraPos", camera.getPos());
 		shader.setMatrix("normalMatrix", transform.normalMatrix);
 
+		shader.setFloat("zNear", camera.getNearPlaneDistance());
+		shader.setFloat("zFar", camera.getFarPlaneDistance());
+		shader.setUVec3("gridSize", { gridSizeX, gridSizeY, gridSizeZ });
+		shader.setUVec2("screenDimensions", { gameWidth, gameHeight });
+		
 		// both pipeline requires these to be set..
 		[[fallthrough]];
 	case Pipeline::Color:
@@ -2108,6 +2204,10 @@ void Renderer::debugRender() {
 
 	if (toDebugRenderBoundingVolume) {
 		debugRenderBoundingVolume();
+	}
+
+	if (toDebugClusters) {
+		debugRenderClusters();
 	}
 
 	renderDebugSelectedObjects();

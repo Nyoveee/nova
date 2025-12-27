@@ -56,6 +56,8 @@ public:
 	FRAMEWORK_DLL_API void setVec3			(const std::string& name, glm::vec3 const& list) const;
 	FRAMEWORK_DLL_API void setVec3			(const std::string& name, float x, float y, float z) const;
 	FRAMEWORK_DLL_API void setVec4			(const std::string& name, glm::vec4 const& list) const;
+	FRAMEWORK_DLL_API void setUVec2			(const std::string& name, glm::uvec2 const& list) const;
+	FRAMEWORK_DLL_API void setUVec3			(const std::string& name, glm::uvec3 const& list) const;
 	FRAMEWORK_DLL_API void setMatrix		(const std::string& name, const glm::mat4x4& matrix, bool transpose = false) const;
 	FRAMEWORK_DLL_API void setMatrix		(const std::string& name, const glm::mat3x3& matrix, bool transpose = false) const;
 	FRAMEWORK_DLL_API void setImageUniform	(const std::string& name, int uniform) const;

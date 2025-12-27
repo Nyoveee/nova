@@ -36,23 +36,27 @@ public:
 	// getters
 	FRAMEWORK_DLL_API std::string const& getErrorMessage() const;
 
+
 public:
 	// setting uniform functions
-	FRAMEWORK_DLL_API void setBool(const std::string& name, bool value) const;
-	FRAMEWORK_DLL_API void setInt(const std::string& name, int value) const;
-	FRAMEWORK_DLL_API void setUInt(const std::string& name, unsigned int value) const;
-	FRAMEWORK_DLL_API void setFloat(const std::string& name, float value) const;
-	FRAMEWORK_DLL_API void setVec2(const std::string& name, float x, float y) const;
-	FRAMEWORK_DLL_API void setVec2(const std::string& name, glm::vec2 const& list) const;
-	FRAMEWORK_DLL_API void setVec3(const std::string& name, glm::vec3 const& list) const;
-	FRAMEWORK_DLL_API void setVec3(const std::string& name, float x, float y, float z) const;
-	FRAMEWORK_DLL_API void setVec4(const std::string& name, glm::vec4 const& list) const;
-	FRAMEWORK_DLL_API void setMatrix(const std::string& name, const glm::mat4x4& matrix, bool transpose = false) const;
-	FRAMEWORK_DLL_API void setMatrix(const std::string& name, const glm::mat3x3& matrix, bool transpose = false) const;
-	FRAMEWORK_DLL_API void setImageUniform(const std::string& name, int uniform) const;
+	FRAMEWORK_DLL_API void setBool			(const std::string& name, bool value) const;
+	FRAMEWORK_DLL_API void setInt			(const std::string& name, int value) const;
+	FRAMEWORK_DLL_API void setUInt			(const std::string& name, unsigned int value) const;
+	FRAMEWORK_DLL_API void setFloat			(const std::string& name, float value) const;
+	FRAMEWORK_DLL_API void setVec2			(const std::string& name, float x, float y) const;
+	FRAMEWORK_DLL_API void setVec2			(const std::string& name, glm::vec2 const& list) const;
+	FRAMEWORK_DLL_API void setVec3			(const std::string& name, glm::vec3 const& list) const;
+	FRAMEWORK_DLL_API void setVec3			(const std::string& name, float x, float y, float z) const;
+	FRAMEWORK_DLL_API void setVec4			(const std::string& name, glm::vec4 const& list) const;
+	FRAMEWORK_DLL_API void setUVec2			(const std::string& name, glm::uvec2 const& list) const;
+	FRAMEWORK_DLL_API void setUVec3			(const std::string& name, glm::uvec3 const& list) const;
+	FRAMEWORK_DLL_API void setMatrix		(const std::string& name, const glm::mat4x4& matrix, bool transpose = false) const;
+	FRAMEWORK_DLL_API void setMatrix		(const std::string& name, const glm::mat3x3& matrix, bool transpose = false) const;
+	FRAMEWORK_DLL_API void setImageUniform	(const std::string& name, int uniform) const;
 
 public:
 	FRAMEWORK_DLL_API void compile();
+	FRAMEWORK_DLL_API void recompile();
 
 private:
 	GLuint m_id;

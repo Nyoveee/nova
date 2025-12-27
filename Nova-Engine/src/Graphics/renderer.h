@@ -7,8 +7,10 @@
 #include "export.h"
 
 #include "shader.h"
+#include "computeShader.h"
 #include "camera.h"
 #include "bufferObject.h"
+#include "lightSSBO.h"
 #include "framebuffer.h"
 #include "pairFrameBuffer.h"
 #include "ECS/ECS.h"
@@ -16,7 +18,6 @@
 #include "vertex.h"
 #include "font.h"
 #include "bloomFrameBuffer.h"
-#include "lightSSBO.h"
 
 #include "model.h"
 #include "cubemap.h"
@@ -59,7 +60,7 @@ public:
 	void renderUI();
 
 	// renders the main scene in the perspective of given camera. light storage is provided by lightSSBO.
-	void render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO);
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO, BufferObject const& clusterSSBO);
 	
 	void renderToDefaultFBO();
 
@@ -185,6 +186,9 @@ private:
 	// renders the bounding volume to debug frustum culling..
 	void debugRenderBoundingVolume();
 
+	// renders all the clusters of the camera..
+	void debugRenderClusters();
+
 	// main debug render function
 	void debugRender();
 
@@ -209,7 +213,10 @@ private:
 	void frustumCulling(Camera const& camera);
 
 	// upload lights into SSBO
-	void prepareLights(LightSSBO& lightSBBO);
+	void prepareLights(Camera const& camera, LightSSBO& lightSBBO, BufferObject const& clusterSSBO);
+
+	// builds clusters information for clustered forward rendering..
+	void clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO);
 
 	// Calculates the camera's frustum.
 	Frustum calculateCameraFrustum(Camera const& camera);
@@ -239,6 +246,9 @@ private:
 	LightSSBO gameLights;
 	LightSSBO editorLights;
 	
+	BufferObject gameClusterSSBO;
+	BufferObject editorClusterSSBO;
+
 	BufferObject sharedUBO;
 
 	// Skeletal animation, bones SSBO
@@ -321,10 +331,16 @@ public:
 
 	Shader postprocessingShader;
 
+	// Compute shaders..
+	ComputeShader clusterBuildingCompute;
+	ComputeShader clusterLightCompute;
+
 	// HDR parameters
 	float hdrExposure;
 	ToneMappingMethod toneMappingMethod;
 
 	// Used to debug frustum culling..
 	bool toDebugRenderBoundingVolume = false;
+	bool toDebugClusters = false;
+
 };

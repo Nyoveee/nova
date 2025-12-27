@@ -12,26 +12,7 @@ ComputeShader::ComputeShader(const char* computeShaderPath)
 	, m_id{}
 	, computeShaderPath{ computeShaderPath }
 {
-	if (computeShaderPath) {
-		// retrieve the compute source code from filePath
-		std::ifstream vComputeShaderFile;
-
-		// ensure ifstream objects can throw exceptions
-		vComputeShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-		// open file
-		vComputeShaderFile.open(computeShaderPath);
-
-		std::stringstream vComputeShaderStream;
-
-		// read file's buffer contents into streams
-		vComputeShaderStream << vComputeShaderFile.rdbuf();
-
-		// convert stream into string
-		computeShaderCode = vComputeShaderStream.str();
-
-		compile();
-	}
+	recompile();
 }
 
 ComputeShader::~ComputeShader() {
@@ -63,8 +44,31 @@ ComputeShader& ComputeShader::operator=(ComputeShader&& other) noexcept {
 
 	return *this;
 }
+
+void ComputeShader::recompile() {
+	if (computeShaderPath) {
+		// retrieve the compute source code from filePath
+		std::ifstream vComputeShaderFile;
+
+		// ensure ifstream objects can throw exceptions
+		vComputeShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+		// open file
+		vComputeShaderFile.open(computeShaderPath);
+
+		std::stringstream vComputeShaderStream;
+
+		// read file's buffer contents into streams
+		vComputeShaderStream << vComputeShaderFile.rdbuf();
+
+		// convert stream into string
+		computeShaderCode = vComputeShaderStream.str();
+
+		compile();
+	}
+}
+
 void ComputeShader::compile() {
-	
 	if (shaderCompileStatus == ShaderCompileStatus::Success) {
 		glDeleteProgram(m_id);
 	}
@@ -110,6 +114,7 @@ void ComputeShader::compile() {
 	shaderCompileStatus = ShaderCompileStatus::Success;
 	errorMessage.clear();
 }
+
 void ComputeShader::use() const {
 	glUseProgram(m_id);
 }
@@ -150,7 +155,6 @@ void ComputeShader::setImageUniform(const std::string& name, int uniform) const 
 	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), uniform);
 }
 
-
 void ComputeShader::setVec3(const std::string& name, glm::vec3 const& list) const {
 	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
 }
@@ -165,6 +169,14 @@ void ComputeShader::setVec3(const std::string& name, float x, float y, float z) 
 
 void ComputeShader::setVec4(const std::string& name, glm::vec4 const& list) const {
 	glProgramUniform4f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2], list[3]);
+}
+
+void ComputeShader::setUVec2(const std::string& name, glm::uvec2 const& list) const {
+	glProgramUniform2ui(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1]);
+}
+
+void ComputeShader::setUVec3(const std::string& name, glm::uvec3 const& list) const {
+	glProgramUniform3ui(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
 }
 
 GLuint ComputeShader::id() const {

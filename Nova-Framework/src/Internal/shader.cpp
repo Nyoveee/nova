@@ -234,6 +234,14 @@ void Shader::setVec4(const std::string& name, glm::vec4 const& list) const {
 	glProgramUniform4f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2], list[3]);
 }
 
+void Shader::setUVec2(const std::string& name, glm::uvec2 const& list) const {
+	glProgramUniform2ui(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1]);
+}
+
+void Shader::setUVec3(const std::string& name, glm::uvec3 const& list) const {
+	glProgramUniform3ui(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
+}
+
 GLuint Shader::id() const {
 	return m_id;
 }

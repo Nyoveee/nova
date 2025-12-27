@@ -1,0 +1,109 @@
+#version 450 core
+
+#define LOCAL_SIZE 128
+layout(local_size_x = LOCAL_SIZE, local_size_y = 1, local_size_z = 1) in;
+
+// https://github.com/DaveH355/clustered-shading?tab=readme-ov-file
+
+struct Cluster
+{
+    vec4 minPoint;
+    vec4 maxPoint;
+    uint pointLightCount;
+    uint spotLightCount;
+    uint pointLightIndices[100];
+    uint spotLightIndices[100];
+};
+
+layout(std430, binding = 7) buffer clusterSSBO
+{
+    Cluster clusters[];
+};
+
+// === LIGHT PROPERTIES ===
+struct PointLight {
+    vec3 position;
+    vec3 color;
+    vec3 attenuation;
+    float radius;
+};
+
+struct DirectionalLight {
+    vec3 direction;
+    vec3 color;
+};
+
+struct SpotLight {
+    vec3 position;
+    vec3 direction;
+    vec3 color;
+    vec3 attenuation;
+	float cutOffAngle;
+	float outerCutOffAngle;
+    float radius;
+};
+
+layout(std430, binding = 0) buffer PointLights {
+    uint pointLightCount;
+    PointLight pointLights[];
+};
+
+layout(std430, binding = 1) buffer DirectionalLights {
+    uint dirLightCount;
+    DirectionalLight dirLights[];
+};
+
+layout(std430, binding = 2) buffer SpotLights {
+    uint spotLightCount;
+    SpotLight spotLights[];
+};
+
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+};
+
+bool sphereAABBIntersection(vec3 center, float radius, vec3 aabbMin, vec3 aabbMax) {
+    // closest point on the AABB to the sphere center
+    vec3 closestPoint = clamp(center, aabbMin, aabbMax);
+    // squared distance between the sphere center and closest point
+    float distanceSquared = dot(closestPoint - center, closestPoint - center);
+    return distanceSquared <= radius * radius;
+}
+
+// each invocation of main() is a thread processing a cluster
+void main() {
+    // Get cluster..
+    uint index = gl_WorkGroupID.x * LOCAL_SIZE + gl_LocalInvocationID.x;
+    Cluster cluster = clusters[index];
+
+    // We deal with all point lights first..
+    cluster.pointLightCount = 0;
+
+    for (uint i = 0; i < pointLightCount && cluster.pointLightCount < 100; ++i) {
+        // Get the position of point light in view space.
+        vec3 viewPos = vec3(view * vec4(pointLights[i].position, 1.0));
+
+        // Check if a given light's influence intersects with cluster AABB.
+        if(sphereAABBIntersection(viewPos, pointLights[i].radius, cluster.minPoint.xyz, cluster.maxPoint.xyz)){
+            cluster.pointLightIndices[cluster.pointLightCount] = i;
+            cluster.pointLightCount++;
+        }
+    }
+
+    // We now deal with spot lights..
+    cluster.spotLightCount = 0;
+
+    for (uint i = 0; i < spotLightCount && cluster.spotLightCount < 100; ++i) {
+        // Get the position of point light in view space.
+        vec3 viewPos = vec3(view * vec4(spotLights[i].position, 1.0));
+
+        // Check if a given light's influence intersects with cluster AABB.
+        if(sphereAABBIntersection(viewPos, spotLights[i].radius, cluster.minPoint.xyz, cluster.maxPoint.xyz)){
+            cluster.spotLightIndices[cluster.spotLightCount] = i;
+            cluster.spotLightCount++;
+        }
+    }
+
+    clusters[index] = cluster;
+}

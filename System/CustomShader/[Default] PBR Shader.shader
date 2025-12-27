@@ -33,7 +33,9 @@ Vert{
 
     // Pass attributes to fragment shader.. //
     vsOut.textureUnit = textureUnit;
-    vsOut.fragWorldPos = worldSpace.position.xyz / worldSpace.position.w;
+    vsOut.fragWorldPos = worldSpace.position.xyz;
+    vsOut.fragViewPos = vec3(view * worldSpace.position);
+
     vsOut.normal = worldSpace.normal;
     vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
 }
