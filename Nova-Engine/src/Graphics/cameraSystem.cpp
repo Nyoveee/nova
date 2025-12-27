@@ -1,5 +1,4 @@
 #include <cmath>
-#include <glm/gtc/matrix_access.hpp>
 
 #include "Engine/engine.h"
 #include "cameraSystem.h"
@@ -7,28 +6,6 @@
 #include "InputManager/inputManager.h"
 #include "Profiling.h"
 #include "frustum.h"
-
-namespace {
-	constexpr float sensitivity = 0.1f;		// change this value to your liking
-
-	glm::vec3 findMaxBound(glm::vec3 boundOne) {
-		return boundOne;
-	}
-
-	template <typename ...Args>
-	glm::vec3 findMaxBound(glm::vec3 bound, Args... bounds) {
-		return glm::max(bound, findMaxBound(bounds...));
-	}
-
-	glm::vec3 findMinBound(glm::vec3 boundOne) {
-		return boundOne;
-	}
-
-	template <typename ...Args>
-	glm::vec3 findMinBound(glm::vec3 bound, Args... bounds) {
-		return glm::min(bound, findMinBound(bounds...));
-	}
-}
 
 CameraSystem::CameraSystem(Engine& engine) :
 	engine					{ engine },
@@ -113,9 +90,6 @@ void CameraSystem::update(float dt) {
 
 		gameCamera.recalculateViewMatrix();
 		gameCamera.recalculateProjectionMatrix();
-		
-		// We perform frustum culling..
-		frustumCulling(calculateGameCameraFrustum());
 
 		break;
 	}
@@ -196,125 +170,9 @@ CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() cons
     return levelEditorCamera;
 }
 
-void CameraSystem::frustumCulling(Frustum gameCameraFrustum) {
-	// ============================================
-	// We do frustum culling check for mesh & skinned mesh renderer
-	// ============================================
-	auto calculateFrustumCulling = [&](Model* model, Transform& transform) {
-		if (!model) {
-			return;
-		}
-
-		// Calculate appropriate bounding box.
-		transform.boundingBox = calculateAABB(*model, transform);
-		transform.inCameraFrustum = gameCameraFrustum.isAABBInFrustum(transform.boundingBox);
-	};
-
-	for (auto&& [entityID, entityData, transform, meshRenderer] : engine.ecs.registry.view<EntityData, Transform, MeshRenderer>().each()) {
-		// pointless to do frustum culling on disabled objects.
-		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
-			continue;
-		}
-
-		// Retrieves model asset from asset manager.
-		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer.modelId);
-		calculateFrustumCulling(model, transform);
-	}
-
-	for (auto&& [entityID, entityData, transform, skinnedMeshRenderer] : engine.ecs.registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
-		// pointless to do frustum culling on disabled objects.
-		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
-			continue;
-		}
-
-		// Retrieves model asset from asset manager.
-		auto [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
-		calculateFrustumCulling(model, transform);
-	}
-
-	// ============================================
-	// We do frustum culling check for lights
-	// ============================================
-	for (auto&& [entityID, entityData, transform, light] : engine.ecs.registry.view<EntityData, Transform, Light>().each()) {
-		// pointless to do frustum culling on disabled objects.
-		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entityID)) {
-			continue;
-		}
-
-		if (light.type == Light::Type::Directional) {
-			// directional lights affects everything :)
-			transform.inCameraFrustum = true;
-		}
-		else {
-			transform.inCameraFrustum = gameCameraFrustum.isSphereInFrustum(Sphere{ transform.position, light.radius });
-		}
-	}
-}
-
-Frustum CameraSystem::calculateGameCameraFrustum() {
-	Frustum frustum;
-
-	// https://www.gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
-	// https://www.reddit.com/r/opengl/comments/1fstgtt/strange_issue_with_frustum_extraction/
-	glm::mat4x4 m = gameCamera.projection() * gameCamera.view();
-
-	frustum.leftPlane	= { glm::row(m, 3) + glm::row(m, 0) };
-	frustum.rightPlane	= { glm::row(m, 3) - glm::row(m, 0) };
-	frustum.bottomPlane = { glm::row(m, 3) + glm::row(m, 1) };
-	frustum.topPlane	= { glm::row(m, 3) - glm::row(m, 1) };
-	frustum.nearPlane	= { glm::row(m, 3) + glm::row(m, 2) };
-	frustum.farPlane	= { glm::row(m, 3) - glm::row(m, 2) };
-
-	frustum.leftPlane.normalize();
-	frustum.rightPlane.normalize();
-	frustum.bottomPlane.normalize();
-	frustum.topPlane.normalize();
-	frustum.nearPlane.normalize();
-	frustum.farPlane.normalize();
-	
-	return frustum;
-}
-
-AABB CameraSystem::calculateAABB(Model const& model, Transform const& transform) {
-	if (transform.rotation == glm::quat_identity<float, glm::highp>()) {
-		return {
-			model.center * transform.scale + transform.position,
-			model.extents * transform.scale
-		};
-	}
-
-	// https://stackoverflow.com/questions/34619341/can-axis-aligned-bounding-boxes-be-recalculated-after-rotation-of-object-using-t
-	// We need to transform our AABBs
-	glm::vec3 pointOne		= model.maxBound;
-	glm::vec3 pointTwo		= glm::vec3{ model.maxBound.x, model.maxBound.y, model.minBound.z };
-	glm::vec3 pointThree	= glm::vec3{ model.maxBound.x, model.minBound.y, model.minBound.z };
-	glm::vec3 pointFour		= glm::vec3{ model.maxBound.x, model.minBound.y, model.maxBound.z };
-	glm::vec3 pointFive		= glm::vec3{ model.minBound.x, model.minBound.y, model.maxBound.z };
-	glm::vec3 pointSix		= glm::vec3{ model.minBound.x, model.maxBound.y, model.maxBound.z };
-	glm::vec3 pointSeven	= glm::vec3{ model.minBound.x, model.maxBound.y, model.minBound.z };
-	glm::vec3 pointEight	= model.minBound;
-
-	pointOne	= transform.rotation * (transform.scale * pointOne);
-	pointTwo	= transform.rotation * (transform.scale * pointTwo);
-	pointThree	= transform.rotation * (transform.scale * pointThree);
-	pointFour	= transform.rotation * (transform.scale * pointFour);
-	pointFive	= transform.rotation * (transform.scale * pointFive);
-	pointSix	= transform.rotation * (transform.scale * pointSix);
-	pointSeven	= transform.rotation * (transform.scale * pointSeven);
-	pointEight	= transform.rotation * (transform.scale * pointEight);
-
-	glm::vec3 newMaxBound = findMaxBound(pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix, pointSeven, pointEight);
-	glm::vec3 newMinBound = findMinBound(pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix, pointSeven, pointEight);
-	glm::vec3 newCenter = (newMaxBound + newMinBound) / 2.f;
-	glm::vec3 newExtent = newMaxBound - newCenter;
-
-	return {
-		newCenter + transform.position,
-		newExtent
-	};
-}
-
 void CameraSystem::calculateEulerAngle(float xOffset, float yOffset) {
+	constexpr float sensitivity = 0.1f;
+
 	levelEditorCamera.yaw += xOffset * sensitivity;
 	levelEditorCamera.pitch += yOffset * sensitivity;
 

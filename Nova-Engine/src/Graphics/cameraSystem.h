@@ -54,13 +54,6 @@ public:
 	float focusHeightOffset;    // Height above the target
 
 private:
-	// Perform frustum culling on all mesh renderers and skinned mesh renderers
-	void frustumCulling(Frustum frustum);
-	Frustum calculateGameCameraFrustum();
-	
-	AABB calculateAABB(Model const& model, Transform const& transform);
-
-private:
 	LevelEditorCamera levelEditorCamera;
 
 	float cameraSpeed;

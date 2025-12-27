@@ -4,6 +4,7 @@
 #include <array>
 #include <fstream>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_access.hpp>
 
 #include "Engine/engine.h"
 #include "renderer.h"
@@ -20,6 +21,26 @@
 #include "systemResource.h"
 
 #undef max
+
+namespace {
+	glm::vec3 findMaxBound(glm::vec3 boundOne) {
+		return boundOne;
+	}
+
+	template <typename ...Args>
+	glm::vec3 findMaxBound(glm::vec3 bound, Args... bounds) {
+		return glm::max(bound, findMaxBound(bounds...));
+	}
+
+	glm::vec3 findMinBound(glm::vec3 boundOne) {
+		return boundOne;
+	}
+
+	template <typename ...Args>
+	glm::vec3 findMinBound(glm::vec3 bound, Args... bounds) {
+		return glm::min(bound, findMinBound(bounds...));
+	}
+}
 
 constexpr ColorA whiteColor{ 1.f, 1.f, 1.f, 1.f };
 
@@ -79,10 +100,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	textVBO						{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	EBO							{ AMOUNT_OF_MEMORY_ALLOCATED },
 
-								// we allocate the memory of all light data + space for 1 unsigned int indicating object count.
-	pointLightSSBO				{ MAX_NUMBER_OF_LIGHT * sizeof(PointLightData) + alignof(PointLightData)},
-	directionalLightSSBO		{ MAX_NUMBER_OF_LIGHT * sizeof(DirectionalLightData) + alignof(DirectionalLightData)},
-	spotLightSSBO				{ MAX_NUMBER_OF_LIGHT * sizeof(SpotLightData) + alignof(SpotLightData)},
+	gameLights					{ MAX_NUMBER_OF_LIGHT },
+	editorLights				{ MAX_NUMBER_OF_LIGHT },
 
 								// we allocate memory for view and projection matrix.
 	sharedUBO					{ 2 * sizeof(glm::mat4) },
@@ -303,7 +322,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	case RenderConfig::Editor:
 		// Main render function
 		if (isEditorScreenShown) {
-			render(editorMainFrameBuffer, editorCamera, false);
+			render(editorMainFrameBuffer, editorCamera, editorLights);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(editorMainFrameBuffer);
@@ -321,7 +340,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		
 		// Main render function
 		if(isGameScreenShown)
-			render(gameMainFrameBuffer, gameCamera, true);
+			render(gameMainFrameBuffer, gameCamera, gameLights);
 
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
@@ -340,7 +359,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	// ===============================================
 	case RenderConfig::Game:
 		// Main render function
-		render(gameMainFrameBuffer, gameCamera, true);
+		render(gameMainFrameBuffer, gameCamera, gameLights);
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
 
@@ -404,7 +423,7 @@ void Renderer::renderUI()
 	glBindVertexArray(mainVAO);
 }
 
-void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, bool toFrustumCull) {
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO) {
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
 
@@ -415,13 +434,19 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, bool 
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
 
+	// We perform frustum culling for models and lights..
+	frustumCulling(camera);
+
+	// We prepare our lights for rendering..
+	prepareLights(lightSSBO);
+
 	setBlendMode(BlendingConfig::Disabled);
 
 	// We render individual game objects..
 	renderSkyBox();
 
-	renderModels(camera, toFrustumCull);
-	renderSkinnedModels(camera, toFrustumCull);
+	renderModels(camera);
+	renderSkinnedModels(camera);
 	renderParticles();
 
 	// ======= Post Processing =======
@@ -877,114 +902,7 @@ void Renderer::prepareRendering() {
 	// =================================================================
 	// Set up the uniforms for my respective shaders
 	// Note: calling shader.use() before setting uniforms is redundant because we are using DSA.
-	// =================================================================
-
-	// we need to set up light data..
-	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
-	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
-	std::array<SpotLightData, MAX_NUMBER_OF_LIGHT>			spotLightData;
-
-	unsigned int numOfPtLights = 0;
-	unsigned int numOfDirLights = 0;
-	unsigned int numOfSpotLights = 0;
-
-	for (auto&& [entity, transform, entityData, light] : registry.view<Transform, EntityData, Light>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity)) {
-			continue;
-		}
-
-		// No point in including light calculation for point light sources with influences outside the camera frustum.
-		if (!transform.inCameraFrustum)
-			continue;
-
-		switch (light.type)
-		{
-		case Light::Type::PointLight:
-			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
-				Logger::warn("Max number of point lights reached!");
-				continue;
-			}
-			pointLightData[numOfPtLights++] = {
-				transform.position,
-				glm::vec3{ light.color } * light.intensity,
-				light.attenuation,
-				light.radius
-			};
-			break;
-
-		case Light::Type::Directional:
-		{
-			if (numOfDirLights >= MAX_NUMBER_OF_LIGHT) {
-				Logger::warn("Max number of directional lights reached!");
-				continue;
-			}
-
-			directionalLightData[numOfDirLights++] = {
-				glm::normalize(transform.front),
-				glm::vec3{ light.color } * light.intensity
-			};
-			break;
-		}
-
-		case Light::Type::Spotlight:
-		{
-			if (numOfSpotLights >= MAX_NUMBER_OF_LIGHT) {
-				Logger::warn("Max number of spot lights reached!");
-				continue;
-			}
-			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
-			spotLightData[numOfSpotLights++] = {
-				transform.position,
-				glm::normalize(forward),
-				glm::vec3{ light.color } *light.intensity,
-				light.attenuation,
-				light.cutOffAngle,
-				light.outerCutOffAngle,
-				light.radius
-			};
-			break;
-		}
-
-		}
-	}
-	for (auto&& [textureid, textureParticles] : engine.particleSystem.particleLifeSpanDatas)
-	{
-		(void)textureid;
-		for (ParticleLifespanData& particleLifeSpanData : textureParticles) {
-			if (particleLifeSpanData.lightIntensity <= 0)
-				continue;
-			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
-				Logger::warn("Unable to add more particle lights, max number of point lights reached!");
-				break;
-			}
-			pointLightData[numOfPtLights++] = {
-				particleLifeSpanData.position,
-				glm::vec3{ particleLifeSpanData.currentColor } * particleLifeSpanData.lightIntensity,
-				particleLifeSpanData.lightattenuation
-			};
-			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
-				break;
-		}
-		
-	}
-	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, pointLightSSBO.id());
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, directionalLightSSBO.id());
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, spotLightSSBO.id());
-
-	// Send it over to SSBO.
-	glNamedBufferSubData(pointLightSSBO.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
-	glNamedBufferSubData(directionalLightSSBO.id(), 0, sizeof(unsigned int), &numOfDirLights);
-	glNamedBufferSubData(spotLightSSBO.id(), 0, sizeof(unsigned int), &numOfSpotLights);
-
-	// copy all the light data to the SSBO.
-	// offset is an alignment of LightData!! because of alignment requirements of this struct!
-	// omdayz..
-	glNamedBufferSubData(pointLightSSBO.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
-	glNamedBufferSubData(directionalLightSSBO.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
-	glNamedBufferSubData(spotLightSSBO.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
-
-
+	// ================================================================
 }
 
 void Renderer::renderSkyBox() {
@@ -1011,7 +929,7 @@ void Renderer::renderSkyBox() {
 	}
 }
 
-void Renderer::renderModels(Camera const& camera, bool toFrustumCull) {
+void Renderer::renderModels(Camera const& camera) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1033,7 +951,7 @@ void Renderer::renderModels(Camera const& camera, bool toFrustumCull) {
 			}
 
 			// frustum culling :)
-			if (toFrustumCull && !transform.inCameraFrustum) {
+			if (!transform.inCameraFrustum) {
 				continue;
 			}
 
@@ -1200,7 +1118,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 }
 
 
-void Renderer::renderSkinnedModels(Camera const& camera, bool toFrustumCull) {
+void Renderer::renderSkinnedModels(Camera const& camera) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1226,7 +1144,7 @@ void Renderer::renderSkinnedModels(Camera const& camera, bool toFrustumCull) {
 		}
 		
 		// frustum culling :)
-		if (toFrustumCull && !transform.inCameraFrustum) {
+		if (!transform.inCameraFrustum) {
 			continue;
 		}
 
@@ -1382,6 +1300,63 @@ Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshR
 	return material;
 }
 
+void Renderer::frustumCulling(Camera const& camera) {
+	Frustum const& cameraFrustum = calculateCameraFrustum(camera);
+
+	// ============================================
+	// We do frustum culling check for mesh & skinned mesh renderer
+	// ============================================
+	auto calculateFrustumCulling = [&](Model* model, Transform& transform) {
+		if (!model) {
+			return;
+		}
+
+		// Calculate appropriate bounding box.
+		transform.boundingBox = calculateAABB(*model, transform);
+		transform.inCameraFrustum = cameraFrustum.isAABBInFrustum(transform.boundingBox);
+	};
+
+	for (auto&& [entityID, entityData, transform, meshRenderer] : registry.view<EntityData, Transform, MeshRenderer>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+			continue;
+		}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer.modelId);
+		calculateFrustumCulling(model, transform);
+	}
+
+	for (auto&& [entityID, entityData, transform, skinnedMeshRenderer] : registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+			continue;
+		}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
+		calculateFrustumCulling(model, transform);
+	}
+
+	// ============================================
+	// We do frustum culling check for lights
+	// ============================================
+	for (auto&& [entityID, entityData, transform, light] : registry.view<EntityData, Transform, Light>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entityID)) {
+			continue;
+		}
+
+		if (light.type == Light::Type::Directional) {
+			// directional lights affects everything :)
+			transform.inCameraFrustum = true;
+		}
+		else {
+			transform.inCameraFrustum = cameraFrustum.isSphereInFrustum(Sphere{ transform.position, light.radius });
+		}
+	}
+}
+
 void Renderer::setBlendMode(BlendingConfig configuration) {
 	switch (configuration) {
 		using enum BlendingConfig;
@@ -1444,6 +1419,177 @@ void Renderer::setCullMode(CullingConfig configuration) {
 		assert(false && "Forget to handle other case.");
 		break;
 	}
+}
+
+void Renderer::prepareLights(LightSSBO& lightSSBO) {
+	// we need to set up light data..
+	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
+	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
+	std::array<SpotLightData, MAX_NUMBER_OF_LIGHT>			spotLightData;
+
+	unsigned int numOfPtLights = 0;
+	unsigned int numOfDirLights = 0;
+	unsigned int numOfSpotLights = 0;
+
+	for (auto&& [entity, transform, entityData, light] : registry.view<Transform, EntityData, Light>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity)) {
+			continue;
+		}
+
+		// No point in including light calculation for point light sources with influences outside the camera frustum.
+		if (!transform.inCameraFrustum)
+			continue;
+
+		switch (light.type)
+		{
+		case Light::Type::PointLight:
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of point lights reached!");
+				continue;
+			}
+			pointLightData[numOfPtLights++] = {
+				transform.position,
+				glm::vec3{ light.color } *light.intensity,
+				light.attenuation,
+				light.radius
+			};
+			break;
+
+		case Light::Type::Directional:
+		{
+			if (numOfDirLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of directional lights reached!");
+				continue;
+			}
+
+			directionalLightData[numOfDirLights++] = {
+				glm::normalize(transform.front),
+				glm::vec3{ light.color } *light.intensity
+			};
+			break;
+		}
+
+		case Light::Type::Spotlight:
+		{
+			if (numOfSpotLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Max number of spot lights reached!");
+				continue;
+			}
+			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+			spotLightData[numOfSpotLights++] = {
+				transform.position,
+				glm::normalize(forward),
+				glm::vec3{ light.color } *light.intensity,
+				light.attenuation,
+				light.cutOffAngle,
+				light.outerCutOffAngle,
+				light.radius
+			};
+			break;
+		}
+
+		}
+	}
+
+	for (auto&& [textureid, textureParticles] : engine.particleSystem.particleLifeSpanDatas)
+	{
+		(void)textureid;
+		for (ParticleLifespanData& particleLifeSpanData : textureParticles) {
+			if (particleLifeSpanData.lightIntensity <= 0)
+				continue;
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT) {
+				Logger::warn("Unable to add more particle lights, max number of point lights reached!");
+				break;
+			}
+			pointLightData[numOfPtLights++] = {
+				particleLifeSpanData.position,
+				glm::vec3{ particleLifeSpanData.currentColor } *particleLifeSpanData.lightIntensity,
+				particleLifeSpanData.lightattenuation
+			};
+			if (numOfPtLights >= MAX_NUMBER_OF_LIGHT)
+				break;
+		}
+	}
+
+	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightSSBO.directionalLight.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, lightSSBO.spotLight.id());
+
+	// Send it over to SSBO.
+	glNamedBufferSubData(lightSSBO.pointLight.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
+	glNamedBufferSubData(lightSSBO.directionalLight.id(), 0, sizeof(unsigned int), &numOfDirLights);
+	glNamedBufferSubData(lightSSBO.spotLight.id(), 0, sizeof(unsigned int), &numOfSpotLights);
+
+	// copy all the light data to the SSBO.
+	// offset is an alignment of LightData!! because of alignment requirements of this struct!
+	// omdayz..
+	glNamedBufferSubData(lightSSBO.pointLight.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
+	glNamedBufferSubData(lightSSBO.directionalLight.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
+	glNamedBufferSubData(lightSSBO.spotLight.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
+}
+
+Frustum Renderer::calculateCameraFrustum(Camera const& camera) {
+	Frustum frustum;
+
+	// https://www.gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
+	// https://www.reddit.com/r/opengl/comments/1fstgtt/strange_issue_with_frustum_extraction/
+	glm::mat4x4 m = camera.projection() * camera.view();
+
+	frustum.leftPlane = { glm::row(m, 3) + glm::row(m, 0) };
+	frustum.rightPlane = { glm::row(m, 3) - glm::row(m, 0) };
+	frustum.bottomPlane = { glm::row(m, 3) + glm::row(m, 1) };
+	frustum.topPlane = { glm::row(m, 3) - glm::row(m, 1) };
+	frustum.nearPlane = { glm::row(m, 3) + glm::row(m, 2) };
+	frustum.farPlane = { glm::row(m, 3) - glm::row(m, 2) };
+
+	frustum.leftPlane.normalize();
+	frustum.rightPlane.normalize();
+	frustum.bottomPlane.normalize();
+	frustum.topPlane.normalize();
+	frustum.nearPlane.normalize();
+	frustum.farPlane.normalize();
+
+	return frustum;
+}
+
+AABB Renderer::calculateAABB(Model const& model, Transform const& transform) {
+	if (transform.rotation == glm::quat_identity<float, glm::highp>()) {
+		return {
+			model.center * transform.scale + transform.position,
+			model.extents * transform.scale
+		};
+	}
+
+	// https://stackoverflow.com/questions/34619341/can-axis-aligned-bounding-boxes-be-recalculated-after-rotation-of-object-using-t
+	// We need to transform our AABBs
+	glm::vec3 pointOne = model.maxBound;
+	glm::vec3 pointTwo = glm::vec3{ model.maxBound.x, model.maxBound.y, model.minBound.z };
+	glm::vec3 pointThree = glm::vec3{ model.maxBound.x, model.minBound.y, model.minBound.z };
+	glm::vec3 pointFour = glm::vec3{ model.maxBound.x, model.minBound.y, model.maxBound.z };
+	glm::vec3 pointFive = glm::vec3{ model.minBound.x, model.minBound.y, model.maxBound.z };
+	glm::vec3 pointSix = glm::vec3{ model.minBound.x, model.maxBound.y, model.maxBound.z };
+	glm::vec3 pointSeven = glm::vec3{ model.minBound.x, model.maxBound.y, model.minBound.z };
+	glm::vec3 pointEight = model.minBound;
+
+	pointOne = transform.rotation * (transform.scale * pointOne);
+	pointTwo = transform.rotation * (transform.scale * pointTwo);
+	pointThree = transform.rotation * (transform.scale * pointThree);
+	pointFour = transform.rotation * (transform.scale * pointFour);
+	pointFive = transform.rotation * (transform.scale * pointFive);
+	pointSix = transform.rotation * (transform.scale * pointSix);
+	pointSeven = transform.rotation * (transform.scale * pointSeven);
+	pointEight = transform.rotation * (transform.scale * pointEight);
+
+	glm::vec3 newMaxBound = findMaxBound(pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix, pointSeven, pointEight);
+	glm::vec3 newMinBound = findMinBound(pointOne, pointTwo, pointThree, pointFour, pointFive, pointSix, pointSeven, pointEight);
+	glm::vec3 newCenter = (newMaxBound + newMinBound) / 2.f;
+	glm::vec3 newExtent = newMaxBound - newCenter;
+
+	return {
+		newCenter + transform.position,
+		newExtent
+	};
 }
 
 void Renderer::printOpenGLDriverDetails() const {

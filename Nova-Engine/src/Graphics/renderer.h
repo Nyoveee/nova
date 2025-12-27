@@ -16,6 +16,7 @@
 #include "vertex.h"
 #include "font.h"
 #include "bloomFrameBuffer.h"
+#include "lightSSBO.h"
 
 #include "model.h"
 #include "cubemap.h"
@@ -57,7 +58,8 @@ public:
 
 	void renderUI();
 
-	void render(PairFrameBuffer& frameBuffers, Camera const& camera, bool toFrustumCull);
+	// renders the main scene in the perspective of given camera. light storage is provided by lightSSBO.
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO);
 	
 	void renderToDefaultFBO();
 
@@ -154,10 +156,10 @@ private:
 	void renderSkyBox();
 
 	// render all MeshRenderers.
-	void renderModels(Camera const& camera, bool toFrustumCull);
+	void renderModels(Camera const& camera);
 
 	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels(Camera const& camera, bool toFrustumCull);
+	void renderSkinnedModels(Camera const& camera);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -199,8 +201,21 @@ private:
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
 	void renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType);
 
+	// helper function to obtain the underlying material of a mesh given its renderers.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
+
+	// performs frustum culling for models and lights
+	void frustumCulling(Camera const& camera);
+
+	// upload lights into SSBO
+	void prepareLights(LightSSBO& lightSBBO);
+
+	// Calculates the camera's frustum.
+	Frustum calculateCameraFrustum(Camera const& camera);
+
+	// Calculate the AABB bounding box of a given model.
+	AABB calculateAABB(Model const& model, Transform const& transform);
 
 	void printOpenGLDriverDetails() const;
 
@@ -221,9 +236,9 @@ private:
 	BufferObject EBO;						// VA 5
 
 	// SSBO and UBO.
-	BufferObject pointLightSSBO;
-	BufferObject directionalLightSSBO;
-	BufferObject spotLightSSBO;
+	LightSSBO gameLights;
+	LightSSBO editorLights;
+	
 	BufferObject sharedUBO;
 
 	// Skeletal animation, bones SSBO
