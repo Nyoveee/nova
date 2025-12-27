@@ -888,9 +888,15 @@ void Renderer::prepareRendering() {
 	unsigned int numOfDirLights = 0;
 	unsigned int numOfSpotLights = 0;
 
-	for (auto&& [entity, entityData, transform, light] : registry.view<EntityData, Transform,  Light>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity))
+	for (auto&& [entity, transform, entityData, light] : registry.view<Transform, EntityData, Light>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity)) {
 			continue;
+		}
+
+		// No point in including light calculation for point light sources with influences outside the camera frustum.
+		if (!transform.inCameraFrustum)
+			continue;
+
 		switch (light.type)
 		{
 		case Light::Type::PointLight:

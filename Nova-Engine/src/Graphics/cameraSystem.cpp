@@ -197,6 +197,9 @@ CameraSystem::LevelEditorCamera const& CameraSystem::getLevelEditorCamera() cons
 }
 
 void CameraSystem::frustumCulling(Frustum gameCameraFrustum) {
+	// ============================================
+	// We do frustum culling check for mesh & skinned mesh renderer
+	// ============================================
 	auto calculateFrustumCulling = [&](Model* model, Transform& transform) {
 		if (!model) {
 			return;
@@ -227,6 +230,24 @@ void CameraSystem::frustumCulling(Frustum gameCameraFrustum) {
 		// Retrieves model asset from asset manager.
 		auto [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
 		calculateFrustumCulling(model, transform);
+	}
+
+	// ============================================
+	// We do frustum culling check for lights
+	// ============================================
+	for (auto&& [entityID, entityData, transform, light] : engine.ecs.registry.view<EntityData, Transform, Light>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entityID)) {
+			continue;
+		}
+
+		if (light.type == Light::Type::Directional) {
+			// directional lights affects everything :)
+			transform.inCameraFrustum = true;
+		}
+		else {
+			transform.inCameraFrustum = gameCameraFrustum.isSphereInFrustum(Sphere{ transform.position, light.radius });
+		}
 	}
 }
 
@@ -291,17 +312,6 @@ AABB CameraSystem::calculateAABB(Model const& model, Transform const& transform)
 		newCenter + transform.position,
 		newExtent
 	};
-
-	//glm::vec3 rotatedCenter = transform.rotation * (transform.scale * model->center);
-
-	//glm::vec3 extents = [&]() {
-	//	if (transform.rotation == glm::quat_identity<float, glm::highp>()) {
-	//		return transform.scale * model->extents;
-	//	}
-
-	//	glm::vec3 rotatedMax = transform.rotation * (transform.scale * model->maxBound);
-	//	return rotatedMax - rotatedCenter;
-	//}();
 }
 
 void CameraSystem::calculateEulerAngle(float xOffset, float yOffset) {
