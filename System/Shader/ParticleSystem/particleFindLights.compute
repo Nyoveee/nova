@@ -61,9 +61,9 @@ void main() {
             b_AmountExceeded = true;
             return;
         }
-        pointLightDatas[lightParticleCount-1].lightPos = particleVertices[lightParticleCount-1].position;
-        pointLightDatas[lightParticleCount-1].color = particleVertices[lightParticleCount-1].color.xyz * particles[lightParticleCount].lightIntensity;
-        pointLightDatas[lightParticleCount-1].attenuation = particles[lightParticleCount-1].lightattenuation;
-        pointLightDatas[lightParticleCount-1].radius = particles[lightParticleCount-1].lightRadius;
+        pointLightDatas[lightParticleCount-1].lightPos = particleVertices[particleIndex].position;
+        pointLightDatas[lightParticleCount-1].color = particleVertices[particleIndex].color.xyz * particles[particleIndex].lightIntensity;
+        pointLightDatas[lightParticleCount-1].attenuation = particles[particleIndex].lightattenuation;
+        pointLightDatas[lightParticleCount-1].radius = particles[particleIndex].lightRadius;
     }
 }
