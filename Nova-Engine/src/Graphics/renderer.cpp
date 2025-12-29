@@ -1222,13 +1222,12 @@ void Renderer::renderParticles()
 	std::vector<int> squareIndices{ 0, 2, 1, 2, 0, 3 };
 	EBO.uploadData(squareIndices);
 	// render texture by texture
-	int textureIndex{};
-	for (TypedResourceID<Texture> const& textureid : engine.particleSystem.usedTextures) {
-		auto&& [texture, result] = resourceManager.getResource<Texture>(textureid);
+	for (int textureIndex{}; textureIndex < engine.particleSystem.usedTextures.size(); ++textureIndex) {
+		auto&& [texture, result] = resourceManager.getResource<Texture>(engine.particleSystem.usedTextures[textureIndex]);
 		if (!texture)
 			continue;
 		glBindTextureUnit(0, texture->getTextureId());
-		particleShader.setUInt("textureIndex", textureIndex++);
+		particleShader.setUInt("textureIndex", textureIndex);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLESPERTEXTURE);
 	}
 	// Renable Depth Writing for other rendering
