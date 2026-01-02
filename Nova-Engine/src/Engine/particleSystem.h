@@ -49,7 +49,6 @@ private:
 	void addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture);
 private:
 	ComputeShader particleUpdateComputeShader;
-	ComputeShader particleTryAddListComputeShader;
 	ComputeShader particleFindLightsComputeShader;
 	ComputeShader particleResetAllComputeShader;
 	BufferObject particleVerticesBO;
