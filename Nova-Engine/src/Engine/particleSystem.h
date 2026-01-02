@@ -26,6 +26,8 @@ public:
 	void update(float dt);
 public:
 	std::vector<TypedResourceID<Texture>> usedTextures;
+	std::vector<int> counterInEachTextures;
+
 	// Edit as you wish
 	const int MAX_PARTICLESPERTEXTURE = 20000;
 	const int MAX_TEXTURETYPES = 64;

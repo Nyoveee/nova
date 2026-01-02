@@ -27,7 +27,9 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, particleLightsSSBO.id());
 	// Intialize buffer values
 	int maxParticles{ getMaxParticles() };
+
 	glNamedBufferSubData(particlesSSBO.id(), 0, sizeof(int), &maxParticles);
+	
 	// Interpolation
 	interpolationType[InterpolationType::Root] = 0.5f;
 	interpolationType[InterpolationType::Linear] = 1.0f;
@@ -36,6 +38,7 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 	// Intialize all particles to inactive
 	reset();
 }
+
 void ParticleSystem::reset() {
 	// Call the reset compute shader
 	particleResetAllComputeShader.use();
@@ -43,7 +46,10 @@ void ParticleSystem::reset() {
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Reset the texture array
 	usedTextures.clear();
+	
+	counterInEachTextures.resize(MAX_TEXTURETYPES, 0);
 }
+
 void ParticleSystem::update(float dt)
 {
 	// Generation of Particles
@@ -296,7 +302,6 @@ void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, 
 
 void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture)
 {
-	particleTryAddListComputeShader.use();
 	std::vector<TypedResourceID<Texture>>::iterator iter = std::find(std::begin(usedTextures), std::end(usedTextures), texture);
 	int textureIndex;
 	if (iter == std::end(usedTextures)) {
@@ -305,6 +310,10 @@ void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanDat
 	}
 	else
 		textureIndex = static_cast<int>(iter - std::begin(usedTextures));
+
+#if 0
+	particleTryAddListComputeShader.use();
+
 	particleTryAddListComputeShader.setInt("textureIndex", textureIndex);
 	particleTryAddListComputeShader.setInt("maxParticlesPerTexture", MAX_PARTICLESPERTEXTURE);
 	// Particle Life Span Data
@@ -333,9 +342,22 @@ void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanDat
 	particleTryAddListComputeShader.setFloat("particleVertex.currentSize", particleVertex.currentSize);
 	// Call the compute shader
 	int newParticleIndex{ -1 };
+	
 	glNamedBufferSubData(particlesSSBO.id(), sizeof(int), sizeof(int), &newParticleIndex);
 	glDispatchCompute(MAX_PARTICLESPERTEXTURE / LOCALWORKGROUPSIZE, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+#else
+
+	int offset = (textureIndex * MAX_PARTICLESPERTEXTURE + counterInEachTextures[textureIndex]);
+	glNamedBufferSubData(particleVerticesBO.id(), offset * sizeof(ParticleVertex), sizeof(ParticleVertex), &particleVertex);
+	glNamedBufferSubData(particlesSSBO.id(), offset * sizeof(ParticleLifespanData) + alignof(ParticleLifespanData), sizeof(ParticleLifespanData), &particleLifeSpanData);
+
+	counterInEachTextures[textureIndex]++;
+
+	if (counterInEachTextures[textureIndex] >= MAX_PARTICLESPERTEXTURE) {
+		counterInEachTextures[textureIndex] = 0;
+	}
+#endif
 }
 
 std::vector<PointLightData> ParticleSystem::getParticleLights(int count)

@@ -1221,6 +1221,7 @@ void Renderer::renderParticles()
 	glDepthMask(GL_FALSE);
 	std::vector<int> squareIndices{ 0, 2, 1, 2, 0, 3 };
 	EBO.uploadData(squareIndices);
+
 	// render texture by texture
 	for (int textureIndex{}; textureIndex < engine.particleSystem.usedTextures.size(); ++textureIndex) {
 		auto&& [texture, result] = resourceManager.getResource<Texture>(engine.particleSystem.usedTextures[textureIndex]);
@@ -1230,6 +1231,7 @@ void Renderer::renderParticles()
 		particleShader.setUInt("textureIndex", textureIndex);
 		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLESPERTEXTURE);
 	}
+
 	// Renable Depth Writing for other rendering
 	glDepthMask(GL_TRUE);
 }
