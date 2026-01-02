@@ -1542,6 +1542,7 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 }
 
 void Renderer::clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO) {
+#if 0
 	// we bind bones SSBO to 7.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, clusterSSBO.id());
 
@@ -1565,6 +1566,7 @@ void Renderer::clusterBuilding(Camera const& camera, BufferObject const& cluster
 
 	glDispatchCompute(27, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+#endif
 }
 
 Frustum Renderer::calculateCameraFrustum(Camera const& camera) {
