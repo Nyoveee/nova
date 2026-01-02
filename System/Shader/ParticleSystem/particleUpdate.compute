@@ -1,45 +1,43 @@
 #version 450 core
+layout (local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
+
+struct ParticleVertex{
+	vec4 color;
+	vec3 position;
+	float rotation;
+	float currentSize;
+};
 struct Particle{
-    // Interpolation
-    float colorInterpolation;
-    float sizeInterpolation;
-    // Light
-    float lightIntensity;
-    vec3 lightattenuation;
-    // Position
-    vec3 position;
-    // Color
-    bool colorOverLifetime;
     vec4 startColor;
-    vec4 currentColor;
     vec4 endColor;
-    // Movement
     vec3 velocity;
     vec3 direction;
     vec3 force;
-    float rotation;
+    vec3 lightattenuation;
+    float colorInterpolation;
+    float sizeInterpolation;
+    float lightIntensity;
+    float lightRadius;
     float angularVelocity;
-    // Size
-    bool sizeOverLifetime;
     float startSize;
-    float currentSize;
     float endSize;
-    // Lifetime
     float currentLifeTime;
     float lifeTime;
+    bool colorOverLifetime;
+    bool sizeOverLifetime;
+    bool b_Active;
 };
 
-layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(std430, binding = 4) buffer ParticleVertexList {
+    ParticleVertex particleVertices[];
+};
 
-layout(std430, binding = 0) buffer ParticleList {
-    uint particleCount;
+layout(std430, binding = 5) buffer ParticleList {
+    int particleCount;
+    int newParticleIndex;
     Particle particles[];
 };
 
-layout(std430, binding = 1) buffer ParticleDeletionList {
-    int deletionCount;
-    uint deletionindexes[];
-};
 
 uniform float dt;  
 
@@ -57,22 +55,23 @@ vec4 InterpolationVector(vec4 start, vec4 end, float t, float degree) {
 
 void main() {
     uint particleIndex = gl_GlobalInvocationID.x;
+    if(particleIndex >= particleCount)
+        return;
     particles[particleIndex].currentLifeTime -= dt;
     // Set this particle to be removed once it reach end of lifetime
     if (particles[particleIndex].currentLifeTime <= 0) {
-        deletionCount = atomicAdd(deletionCount, 1); // Prevent race condition
-        deletionindexes[deletionCount] = particleIndex; 
+        particles[particleIndex].b_Active = false;
 	    return;
     }
     // Movement
-    particles[particleIndex].position += particles[particleIndex].velocity * dt;
+    particleVertices[particleIndex].position += particles[particleIndex].velocity * dt;
     particles[particleIndex].velocity += particles[particleIndex].force * dt;
-    particles[particleIndex].rotation += particles[particleIndex].angularVelocity * dt;
+    particleVertices[particleIndex].rotation += particles[particleIndex].angularVelocity * dt;
     // Color
     if (particles[particleIndex].colorOverLifetime) {
 	    float interpolationValue = 1 - particles[particleIndex].currentLifeTime / particles[particleIndex].lifeTime;
 	    float degree = particles[particleIndex].colorInterpolation;
-	    particles[particleIndex].currentColor = InterpolationVector(particles[particleIndex].startColor, 
+	    particleVertices[particleIndex].color = InterpolationVector(particles[particleIndex].startColor, 
                                                                     particles[particleIndex].endColor, 
                                                                     interpolationValue, 
                                                                     degree);
@@ -81,11 +80,9 @@ void main() {
     if (particles[particleIndex].sizeOverLifetime) {
 	    float interpolationValue = 1 - particles[particleIndex].currentLifeTime / particles[particleIndex].lifeTime;
 	    float degree = particles[particleIndex].sizeInterpolation;
-	    particles[particleIndex].currentSize = InterpolationFloat(particles[particleIndex].startSize, 
-                                                                  particles[particleIndex].endSize, 
-                                                                  interpolationValue, 
-                                                                  degree);
+	    particleVertices[particleIndex].currentSize = InterpolationFloat(particles[particleIndex].startSize, 
+                                                                         particles[particleIndex].endSize, 
+                                                                         interpolationValue, 
+                                                                         degree);
     }
 }
-
-

@@ -77,7 +77,6 @@ namespace Serialiser {
 				deserializeFromJson<DataMemberType>(dataMember, jsonComponent[componentName][dataMemberName]);
 
 			}, component);
-
 			registry.emplace<T>(entity, std::move(component));
 		}
 		catch (std::exception const& ex) {

@@ -256,7 +256,6 @@ private:
 
 	// Particle VAO and VBO
 	GLuint particleVAO;
-	BufferObject particleVBO;
 
 	// Debug Physics VAO and it's corresponding VBO.
 	BufferObject debugPhysicsVBO;

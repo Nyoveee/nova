@@ -85,27 +85,27 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	gameHeight					{ gameHeight },
 	resourceManager				{ engine.resourceManager },
 	registry					{ engine.ecs.registry },
-	basicShader					{ "System/Shader/basic.vert",				"System/Shader/basic.frag" },
-	standardShader				{ "System/Shader/standard.vert",			"System/Shader/basic.frag" },
-	textureShader				{ "System/Shader/standard.vert",			"System/Shader/image.frag" },
-	colorShader					{ "System/Shader/standard.vert",			"System/Shader/color.frag" },
-	bloomDownSampleShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomDownSample.frag" },
-	bloomUpSampleShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomUpSample.frag" },
-	bloomFinalShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/bloomFinal.frag" },
-	postprocessingShader		{ "System/Shader/squareOverlay.vert",		"System/Shader/postprocessing.frag" },
-	gridShader					{ "System/Shader/grid.vert",				"System/Shader/grid.frag" },
-	outlineShader				{ "System/Shader/outline.vert",				"System/Shader/outline.frag" },
-	debugShader					{ "System/Shader/debug.vert",				"System/Shader/debug.frag" },
-	overlayShader				{ "System/Shader/squareOverlay.vert",		"System/Shader/overlay.frag" },
-	objectIdShader				{ "System/Shader/standard.vert",			"System/Shader/objectId.frag" },
-	uiImageObjectIdShader		{ "System/Shader/texture2D.vert",			"System/Shader/objectId.frag" },
-	uiTextObjectIdShader		{ "System/Shader/text.vert",				"System/Shader/objectId.frag" },
-	skyboxShader				{ "System/Shader/skybox.vert",				"System/Shader/skybox.frag" },
-	toneMappingShader			{ "System/Shader/squareOverlay.vert",		"System/Shader/tonemap.frag" },
-	particleShader              { "System/Shader/particle.vert",            "System/Shader/particle.frag"},
-	textShader					{ "System/Shader/text.vert",				"System/Shader/text.frag"},
-	texture2dShader				{ "System/Shader/texture2d.vert",			"System/Shader/image2D.frag"},
-	skeletalAnimationShader		{ "System/Shader/skeletal.vert",            "System/Shader/PBR.frag"},
+	basicShader					{ "System/Shader/basic.vert",						"System/Shader/basic.frag" },
+	standardShader				{ "System/Shader/standard.vert",					"System/Shader/basic.frag" },
+	textureShader				{ "System/Shader/standard.vert",					"System/Shader/image.frag" },
+	colorShader					{ "System/Shader/standard.vert",					"System/Shader/color.frag" },
+	bloomDownSampleShader		{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomDownSample.frag" },
+	bloomUpSampleShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomUpSample.frag" },
+	bloomFinalShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomFinal.frag" },
+	postprocessingShader		{ "System/Shader/squareOverlay.vert",				"System/Shader/postprocessing.frag" },
+	gridShader					{ "System/Shader/grid.vert",						"System/Shader/grid.frag" },
+	outlineShader				{ "System/Shader/outline.vert",						"System/Shader/outline.frag" },
+	debugShader					{ "System/Shader/debug.vert",						"System/Shader/debug.frag" },
+	overlayShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/overlay.frag" },
+	objectIdShader				{ "System/Shader/standard.vert",					"System/Shader/objectId.frag" },
+	uiImageObjectIdShader		{ "System/Shader/texture2D.vert",					"System/Shader/objectId.frag" },
+	uiTextObjectIdShader		{ "System/Shader/text.vert",						"System/Shader/objectId.frag" },
+	skyboxShader				{ "System/Shader/skybox.vert",						"System/Shader/skybox.frag" },
+	toneMappingShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/tonemap.frag" },
+	particleShader              { "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag"},
+	textShader					{ "System/Shader/text.vert",						"System/Shader/text.frag"},
+	texture2dShader				{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
+	skeletalAnimationShader		{ "System/Shader/skeletal.vert",					"System/Shader/PBR.frag"},
 	clusterBuildingCompute		{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute			{ "System/Shader/clusterLightAssignment.compute" },
 	mainVAO						{},
@@ -114,7 +114,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	normalsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	tangentsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	skeletalVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
-	particleVBO                 { AMOUNT_OF_MEMORY_ALLOCATED },
 	debugPhysicsVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugPhysicsLineVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugNavMeshVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
@@ -245,34 +244,9 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// Particle VAO configuration
 	// ======================================================
 	glCreateVertexArrays(1, &particleVAO);
-	constexpr GLuint particleBindingIndex = 0;
 
 	// Bind this EBO to this VAO.
 	glVertexArrayElementBuffer(particleVAO, EBO.id());
-
-	// Associate binding index 0 with this vbo for particleVAO
-	glVertexArrayVertexBuffer(particleVAO, particleBindingIndex, particleVBO.id(), 0, sizeof(ParticleVertex));
-
-	// Associate Attribute Indexes with their properties
-	glVertexArrayAttribFormat(particleVAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, localPos));
-	glVertexArrayAttribFormat(particleVAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, worldPos));
-	glVertexArrayAttribFormat(particleVAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, texCoord));
-	glVertexArrayAttribFormat(particleVAO, 3, 4, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, color));
-	glVertexArrayAttribFormat(particleVAO, 4, 1, GL_FLOAT, GL_FALSE, offsetof(ParticleVertex, rotation));
-
-	// Associate vertex attributes with binding index 0
-	glVertexArrayAttribBinding(particleVAO, 0, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 1, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 2, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 3, particleBindingIndex);
-	glVertexArrayAttribBinding(particleVAO, 4, particleBindingIndex);
-
-	// Enable Attributes
-	glEnableVertexArrayAttrib(particleVAO, 0);
-	glEnableVertexArrayAttrib(particleVAO, 1);
-	glEnableVertexArrayAttrib(particleVAO, 2);
-	glEnableVertexArrayAttrib(particleVAO, 3);
-	glEnableVertexArrayAttrib(particleVAO, 4);
 }
 
 Renderer::~Renderer() {
@@ -1291,53 +1265,21 @@ void Renderer::renderParticles()
 	glBindVertexArray(particleVAO);
 	setBlendMode(BlendingConfig::AlphaBlending);
 	particleShader.use();
+	particleShader.setUInt("maxParticlesPerTexture", engine.particleSystem.MAX_PARTICLESPERTEXTURE);
 	
 	// Disable writing to depth buffer for particles
 	glDepthMask(GL_FALSE);
-	const glm::vec3 vertexPos[4]{
-			glm::vec3(-1, -1, 0),	// bottom left
-			glm::vec3(1, -1, 0),	// bottom right
-			glm::vec3(1, 1, 0),		// top right
-			glm::vec3(-1, 1, 0) 	// top left
-	};
-	
-	const glm::vec2 textureCoordinates[4]{
-		glm::vec2(0, 0),
-		glm::vec2(1, 0),
-		glm::vec2(1, 1),
-		glm::vec2(0, 1)
-	};
-	
-	const int squareIndices[6]{ 0, 2, 1, 2, 0, 3 };
-	auto renderParticleBatch = [&](std::vector<ParticleLifespanData> const& textureParticlesLifeSpanDatas) {
-		int i{};
-		std::vector<ParticleVertex> particleVertexes;
-		std::vector<unsigned int> indices;
-		for (ParticleLifespanData const& particleLifeSpanData : textureParticlesLifeSpanDatas) {
-			ParticleVertex particleVertex;
-			// Add to batch
-			for (int j{}; j < 4; ++j) {
-				particleVertex.localPos = vertexPos[j] * particleLifeSpanData.currentSize;
-				particleVertex.worldPos = particleLifeSpanData.position;
-				particleVertex.texCoord = textureCoordinates[j];
-				particleVertex.color = particleLifeSpanData.currentColor;
-				particleVertex.rotation = particleLifeSpanData.rotation;
-				particleVertexes.push_back(particleVertex);
-			}
-			for (int j{}; j < 6; ++j)
-				indices.push_back(squareIndices[j] + i * 4);
-			++i;
-		}
-		particleVBO.uploadData(particleVertexes);
-		EBO.uploadData(indices);
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
-	};
-	for (auto&& [textureid, textureParticles] : engine.particleSystem.particleLifeSpanDatas) {
-		auto&& [texture, result] = resourceManager.getResource<Texture>(textureid);
+	std::vector<int> squareIndices{ 0, 2, 1, 2, 0, 3 };
+	EBO.uploadData(squareIndices);
+
+	// render texture by texture
+	for (int textureIndex{}; textureIndex < engine.particleSystem.usedTextures.size(); ++textureIndex) {
+		auto&& [texture, result] = resourceManager.getResource<Texture>(engine.particleSystem.usedTextures[textureIndex]);
 		if (!texture)
 			continue;
 		glBindTextureUnit(0, texture->getTextureId());
-		renderParticleBatch(textureParticles);
+		particleShader.setUInt("textureIndex", textureIndex);
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLESPERTEXTURE);
 	}
 
 	// Renable Depth Writing for other rendering
@@ -1553,6 +1495,7 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 		}
 	}
 
+#if 0
 	for (auto&& [textureid, textureParticles] : engine.particleSystem.particleLifeSpanDatas)
 	{
 		(void)textureid;
@@ -1572,6 +1515,10 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 				break;
 		}
 	}
+#endif
+
+	for (PointLightData const& lightParticle : engine.particleSystem.getParticleLights(MAX_NUMBER_OF_LIGHT - numOfPtLights))
+		pointLightData[numOfPtLights++] = lightParticle;
 
 	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id());

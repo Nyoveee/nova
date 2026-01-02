@@ -668,7 +668,6 @@ struct ParticleEmitter
 	float currentBurstTime{};
 	glm::vec3 prevPosition{};
 	bool b_firstPositionUpdate{ true };
-	int particleCount{};
 	// Categories
 	TypedResourceID<Texture> texture{};
 	ParticleEmissionTypeSelection particleEmissionTypeSelection{};
@@ -679,11 +678,9 @@ struct ParticleEmitter
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
-	
 	float startSize = 1.f;
 	float minStartSizeOffset = 0.f;
 	float maxStartSizeOffset = 0.f;
-
 	float startSpeed = 1;
 	glm::vec3 force{};
 	// Velocity
@@ -692,13 +689,13 @@ struct ParticleEmitter
 	float maxAngularVelocityOffset{};
 	// Particle spawning info
 	float lifeTime = 1;
-	int maxParticles = 1000;
 	float particleRate = 100;
 	float burstRate = 0;
 	int burstAmount = 30;
 	// Light
 	float lightIntensity{};
 	glm::vec3 lightattenuation = glm::vec3{ 1.f, 0.09f, 0.032f };
+	float lightRadius{};
 
 	REFLECTABLE
 	(
@@ -712,12 +709,12 @@ struct ParticleEmitter
 		maxAngularVelocityOffset,
 		force,
 		lifeTime,
-		maxParticles,
 		particleRate,
 		burstRate,
 		burstAmount,
 		lightIntensity,
 		lightattenuation,
+		lightRadius,
 		looping,
 		randomizedDirection,
 		particleEmissionTypeSelection,
@@ -728,42 +725,24 @@ struct ParticleEmitter
 	)
 };
 struct alignas(16) ParticleLifespanData {
-	// Interpolation
-	float colorInterpolation{};
-	float sizeInterpolation{};
-	// Light
-	float lightIntensity{};
-	alignas(16) glm::vec3 lightattenuation{};
-	// Position
-	alignas(16) glm::vec3 position{};
-	// Color
-	bool colorOverLifetime{};
 	glm::vec4 startColor{};
-	glm::vec4 currentColor{};
 	glm::vec4 endColor{};
-	// Movement
 	alignas(16) glm::vec3 velocity{};
 	alignas(16) glm::vec3 direction{};
 	alignas(16) glm::vec3 force{};
-	float rotation{};
+	alignas(16) glm::vec3 lightattenuation{};
+	float colorInterpolation{};
+	float sizeInterpolation{};
+	float lightIntensity{};
+	float lightRadius{};
 	float angularVelocity{};
-	// Size
-	bool sizeOverLifetime{};
 	float startSize{};
-	float currentSize{};
 	float endSize{};
-	// Lifetime
 	float currentLifeTime{};
 	float lifeTime{};
-};
-struct Particle {
-	// References
-	ParticleEmitter* emitter{};
-	// Type
-	enum class Type {
-		Standard,
-		Trail
-	}type;
+	bool colorOverLifetime{};
+	bool sizeOverLifetime{};
+	bool b_Active{};
 };
 struct Text {
 	TypedResourceID<Font> font;

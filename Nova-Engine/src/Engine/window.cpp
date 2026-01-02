@@ -380,7 +380,7 @@ namespace {
 		}
 
 		ss << "\n\n";
-		Logger::error("{}", ss.str());
+		// Logger::error("{}", ss.str());
 	}
 
 	void window_size_callback(GLFWwindow*, int width, int height) {

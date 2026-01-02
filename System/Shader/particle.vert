@@ -42,7 +42,18 @@ void main() {
     modelView[2][0] = 0;
     modelView[2][1] = 0;
     modelView[2][2] = 1;
-
+	const glm::vec3 vertexPos[4] = {
+		glm::vec3(-1, -1, 0),	// bottom left
+		glm::vec3(1, -1, 0),	// bottom right
+		glm::vec3(1, 1, 0),		// top right
+		glm::vec3(-1, 1, 0)		// top left
+	};
+	const glm::vec2 textureCoordinates[4] = {
+		glm::vec2(0, 0), // bottom left
+		glm::vec2(1, 0), // bottom right
+		glm::vec2(1, 1), // top right
+		glm::vec2(0, 1)  // top left
+	};
     gl_Position = projection * modelView * RotationMatrix(rotation) * vec4(localpos,1);
     textureUnit = textureCoordinates;
     color = vertColor;

@@ -260,6 +260,9 @@ void Engine::SystemsUnload() {
 	// Unload navmesh..
 	navigationSystem.unloadNavMeshSystems();
 
+	// Reset Particle System
+	particleSystem.reset();
+
 	renderer.hdrExposure = 0.9f;
 	renderer.vignette = 0.f;
 }
