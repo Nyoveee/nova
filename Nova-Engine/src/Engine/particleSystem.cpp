@@ -14,7 +14,6 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 	: engine{ p_engine }
 	, interpolationType{}
 	, particleUpdateComputeShader{ "System/Shader/ParticleSystem/particleupdate.compute" }
-	, particleTryAddListComputeShader{ "System/Shader/ParticleSystem/particleTryAddList.compute" }
 	, particleFindLightsComputeShader{ "System/Shader/ParticleSystem/particleFindLights.compute" }
 	, particleResetAllComputeShader{ "System/Shader/ParticleSystem/particleResetAll.compute" }
 	, particleVerticesBO{ static_cast<int>(getMaxParticles() * sizeof(ParticleVertex)) }
@@ -42,12 +41,12 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 void ParticleSystem::reset() {
 	// Call the reset compute shader
 	particleResetAllComputeShader.use();
-	glDispatchCompute((MAX_TEXTURETYPES * MAX_PARTICLESPERTEXTURE) / LOCALWORKGROUPSIZE, 1, 1);
+	glDispatchCompute((MAX_PARTICLE_TEXTURE_TYPES * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Reset the texture array
 	usedTextures.clear();
 	
-	counterInEachTextures.resize(MAX_TEXTURETYPES, 0);
+	counterInEachTextures.resize(MAX_PARTICLE_TEXTURE_TYPES, 0);
 }
 
 void ParticleSystem::update(float dt)
@@ -65,14 +64,14 @@ void ParticleSystem::update(float dt)
 	// Update the particles over life span
 	int numTextures{ static_cast<int>(usedTextures.size()) };
 	if (numTextures != 0) {
-		glDispatchCompute((numTextures * MAX_PARTICLESPERTEXTURE) / LOCALWORKGROUPSIZE, 1, 1);
+		glDispatchCompute((numTextures * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
 }
 
 int ParticleSystem::getMaxParticles()
 {
-	return MAX_PARTICLESPERTEXTURE * MAX_TEXTURETYPES;
+	return MAX_PARTICLES_PER_TEXTURE * MAX_PARTICLE_TEXTURE_TYPES;
 }
 
 void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt)
@@ -311,53 +310,14 @@ void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanDat
 	else
 		textureIndex = static_cast<int>(iter - std::begin(usedTextures));
 
-#if 0
-	particleTryAddListComputeShader.use();
-
-	particleTryAddListComputeShader.setInt("textureIndex", textureIndex);
-	particleTryAddListComputeShader.setInt("maxParticlesPerTexture", MAX_PARTICLESPERTEXTURE);
-	// Particle Life Span Data
-	particleTryAddListComputeShader.setVec4("particle.startColor", particleLifeSpanData.startColor);
-	particleTryAddListComputeShader.setVec4("particle.endColor", particleLifeSpanData.endColor);
-	particleTryAddListComputeShader.setVec3("particle.velocity", particleLifeSpanData.velocity);
-	particleTryAddListComputeShader.setVec3("particle.direction", particleLifeSpanData.direction);
-	particleTryAddListComputeShader.setVec3("particle.force", particleLifeSpanData.force);
-	particleTryAddListComputeShader.setVec3("particle.lightattenuation", particleLifeSpanData.lightattenuation);
-	particleTryAddListComputeShader.setFloat("particle.colorInterpolation", particleLifeSpanData.colorInterpolation);
-	particleTryAddListComputeShader.setFloat("particle.sizeInterpolation", particleLifeSpanData.sizeInterpolation);
-	particleTryAddListComputeShader.setFloat("particle.lightIntensity", particleLifeSpanData.lightIntensity);
-	particleTryAddListComputeShader.setFloat("particle.lightRadius", particleLifeSpanData.lightRadius);
-	particleTryAddListComputeShader.setFloat("particle.angularVelocity", particleLifeSpanData.angularVelocity);
-	particleTryAddListComputeShader.setFloat("particle.startSize", particleLifeSpanData.startSize);
-	particleTryAddListComputeShader.setFloat("particle.endSize", particleLifeSpanData.endSize);
-	particleTryAddListComputeShader.setFloat("particle.currentLifeTime", particleLifeSpanData.currentLifeTime);
-	particleTryAddListComputeShader.setFloat("particle.lifeTime", particleLifeSpanData.lifeTime);
-	particleTryAddListComputeShader.setBool("particle.colorOverLifetime", particleLifeSpanData.colorOverLifetime);
-	particleTryAddListComputeShader.setBool("particle.sizeOverLifetime", particleLifeSpanData.sizeOverLifetime);
-	particleTryAddListComputeShader.setBool("particle.b_Active", particleLifeSpanData.b_Active);
-	// Particle Vertex
-	particleTryAddListComputeShader.setVec4("particleVertex.color", particleVertex.color);
-	particleTryAddListComputeShader.setVec3("particleVertex.position", particleVertex.position);
-	particleTryAddListComputeShader.setFloat("particleVertex.rotation", particleVertex.rotation);
-	particleTryAddListComputeShader.setFloat("particleVertex.currentSize", particleVertex.currentSize);
-	// Call the compute shader
-	int newParticleIndex{ -1 };
-	
-	glNamedBufferSubData(particlesSSBO.id(), sizeof(int), sizeof(int), &newParticleIndex);
-	glDispatchCompute(MAX_PARTICLESPERTEXTURE / LOCALWORKGROUPSIZE, 1, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-#else
-
-	int offset = (textureIndex * MAX_PARTICLESPERTEXTURE + counterInEachTextures[textureIndex]);
+	int offset = (textureIndex * MAX_PARTICLES_PER_TEXTURE + counterInEachTextures[textureIndex]);
 	glNamedBufferSubData(particleVerticesBO.id(), offset * sizeof(ParticleVertex), sizeof(ParticleVertex), &particleVertex);
 	glNamedBufferSubData(particlesSSBO.id(), offset * sizeof(ParticleLifespanData) + alignof(ParticleLifespanData), sizeof(ParticleLifespanData), &particleLifeSpanData);
-
 	counterInEachTextures[textureIndex]++;
 
-	if (counterInEachTextures[textureIndex] >= MAX_PARTICLESPERTEXTURE) {
+	if (counterInEachTextures[textureIndex] >= MAX_PARTICLES_PER_TEXTURE) {
 		counterInEachTextures[textureIndex] = 0;
 	}
-#endif
 }
 
 std::vector<PointLightData> ParticleSystem::getParticleLights(int count)
@@ -370,7 +330,7 @@ std::vector<PointLightData> ParticleSystem::getParticleLights(int count)
 	glNamedBufferSubData(particleLightsSSBO.id(), sizeof(int), sizeof(bool), &b_Exceeded);
 	int numTextures{ static_cast<int>(usedTextures.size()) };
 	if (numTextures != 0) {
-		glDispatchCompute((numTextures * MAX_PARTICLESPERTEXTURE) / LOCALWORKGROUPSIZE, 1, 1);
+		glDispatchCompute((numTextures * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
 	glGetNamedBufferSubData(particleLightsSSBO.id(), 0, sizeof(int), &lightParticleCount);

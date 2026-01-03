@@ -6,7 +6,156 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Emitter",
+                "name": "Directional Light",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Light": {
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "color": {
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "cutOffAngle": 0.21816615760326385,
+                "intensity": 1.0,
+                "outerCutOffAngle": 0.30543261766433716,
+                "radius": 50.0,
+                "type": "Directional"
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": -0.6212819218635559,
+                    "y": 0.5510725975036621,
+                    "z": -1.9912691116333008
+                },
+                "localEulerAngles": {
+                    "x": -0.6212819218635559,
+                    "y": 0.5510725975036621,
+                    "z": -1.9912691116333008
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": -0.5681790709495544,
+                    "x": -0.05735994875431061,
+                    "y": -0.38772422075271606,
+                    "z": 0.7235691547393799
+                },
+                "localScale": {
+                    "x": 1.000074863433838,
+                    "y": 1.0000417232513428,
+                    "z": 1.0000065565109253
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": -0.5681790709495544,
+                    "x": -0.05735994875431061,
+                    "y": -0.38772422075271606,
+                    "z": 0.7235691547393799
+                },
+                "scale": {
+                    "x": 1.000074863433838,
+                    "y": 1.0000417232513428,
+                    "z": 1.0000065565109253
+                }
+            },
+            "id": 1048926
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Floor Made of Floor",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "MeshRenderer": {
+                "materialIds": [
+                    6
+                ],
+                "modelId": 3
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": -4.085877418518066,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 20.0,
+                    "y": 1.0,
+                    "z": 20.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": -4.085877418518066,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 20.0,
+                    "y": 1.0,
+                    "z": 20.0
+                }
+            },
+            "id": 1048932
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "100K Particle Emitter",
                 "overridenComponents": null,
                 "overridenProperties": null,
                 "parent": 4294967295,
@@ -38,6 +187,7 @@
                 "initialAngularVelocity": 0.0,
                 "lifeTime": 1.0,
                 "lightIntensity": 0.0,
+                "lightRadius": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
                     "y": 0.09000000357627869,
@@ -45,16 +195,15 @@
                 },
                 "looping": true,
                 "maxAngularVelocityOffset": 0.0,
-                "maxParticles": 1000,
                 "maxStartSizeOffset": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "minStartSizeOffset": 0.0,
                 "particleColorSelection": {
                     "color": {
                         "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
+                        "b": 0.0,
+                        "g": 0.0,
+                        "r": 0.0
                     },
                     "colorOffsetMax": {
                         "x": 0.0,
@@ -75,22 +224,22 @@
                     },
                     "cubeEmitter": {
                         "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
+                            "x": 100.0,
+                            "y": 100.0,
+                            "z": 100.0
                         },
                         "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
+                            "x": -100.0,
+                            "y": -100.0,
+                            "z": -100.0
                         }
                     },
-                    "emissionShape": "Point",
+                    "emissionShape": "Sphere",
                     "radiusEmitter": {
                         "radius": 5.0
                     }
                 },
-                "particleRate": 1.0,
+                "particleRate": 100000.0,
                 "randomizedDirection": false,
                 "sizeOverLifetime": {
                     "endSize": 0.0,
@@ -102,7 +251,7 @@
                 "texture": 16920771930294239281,
                 "trails": {
                     "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
+                    "selected": false,
                     "trailColor": {
                         "a": 1.0,
                         "b": 1.0,
@@ -121,7 +270,7 @@
                     },
                     "trailEmissiveMultiplier": 1.0,
                     "trailSize": 0.10000000149011612,
-                    "trailTexture": 9
+                    "trailTexture": 0
                 }
             },
             "Transform": {
@@ -136,9 +285,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -2.1627073287963867,
-                    "y": 5.353116989135742,
-                    "z": 1.2419846057891846
+                    "x": 0.0,
+                    "y": 10.493823051452637,
+                    "z": 0.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -152,9 +301,9 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": -2.1627073287963867,
-                    "y": 5.353116989135742,
-                    "z": 1.2419846057891846
+                    "x": 0.0,
+                    "y": 10.493823051452637,
+                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -169,75 +318,6 @@
                 }
             },
             "id": 0
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Floor made of Floor",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 0
-                },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    6
-                ],
-                "modelId": 3
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 10.0,
-                    "y": 1.0,
-                    "z": 10.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 10.0,
-                    "y": 1.0,
-                    "z": 10.0
-                }
-            },
-            "id": 4194390
         }
     ],
     "layers": [

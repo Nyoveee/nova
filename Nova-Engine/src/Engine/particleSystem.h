@@ -29,8 +29,8 @@ public:
 	std::vector<int> counterInEachTextures;
 
 	// Edit as you wish
-	const int MAX_PARTICLESPERTEXTURE = 20000;
-	const int MAX_TEXTURETYPES = 64;
+	const int MAX_PARTICLES_PER_TEXTURE = 100000;
+	const int MAX_PARTICLE_TEXTURE_TYPES = 64;
 private:
 	// Helper
 	int getMaxParticles();
@@ -49,7 +49,6 @@ private:
 	void addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture);
 private:
 	ComputeShader particleUpdateComputeShader;
-	ComputeShader particleTryAddListComputeShader;
 	ComputeShader particleFindLightsComputeShader;
 	ComputeShader particleResetAllComputeShader;
 	BufferObject particleVerticesBO;
