@@ -25,6 +25,9 @@ public:
 	ENGINE_DLL_API void onEntityCreation(entt::registry& registry, entt::entity entityId);
 	ENGINE_DLL_API void onEntityDestruction(entt::registry& registry, entt::entity entityId);
 
+	// this change scene is only used via the editor, it serialises the data instead.
+	ENGINE_DLL_API void editorChangeScene(ResourceID id, AssetFilePath const& sceneAssetFilepath);
+
 public:
 	std::vector<Layer> layers;
 

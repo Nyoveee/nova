@@ -37,6 +37,24 @@ void SceneManager::loadScene(ResourceID id) {
 	engine.SystemsOnLoad();
 }
 
+void SceneManager::editorChangeScene(ResourceID id, AssetFilePath const& sceneAssetFilepath) {
+	auto&& [scene, _] = resourceManager.getResource<Scene>(id);
+
+	if (!scene) {
+		Logger::error("Failed to load invalid scene w/ id {}", static_cast<std::size_t>(id));
+		return;
+	}
+
+	ecs.registry.clear();
+	engine.SystemsUnload();
+	currentScene = NO_SCENE_LOADED;
+
+	Serialiser::deserialiseScene(ecs.registry, layers, sceneAssetFilepath.string.c_str());
+	currentScene = id;
+
+	engine.SystemsOnLoad();
+}
+
 ResourceID SceneManager::getCurrentScene() const {
 	return currentScene;
 }

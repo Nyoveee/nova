@@ -1,3 +1,5 @@
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/matrix_decompose.hpp>
 #include "nova_math.h"
 
 #include "component.h"
@@ -5,25 +7,17 @@
 
 // Reference: https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
 namespace Math {
-	DecomposedMatrix decomposeMatrix(glm::mat4 const& m) {
-		glm::vec3 pos = m[3];
+	DecomposedMatrix decomposeMatrix(glm::mat4 const& modelMatrix) {
 		glm::vec3 scale;
-
-		for (int i = 0; i < 3; i++)
-			scale[i] = glm::length(glm::vec3(m[i]));
-
-
-		const glm::mat3 rotMtx(
-			glm::vec3(m[0]) / (scale[0] == 0 ? 1 : scale[0]),
-			glm::vec3(m[1]) / (scale[1] == 0 ? 1 : scale[1]),
-			glm::vec3(m[2]) / (scale[2] == 0 ? 1 : scale[2])
-		);
-
-		glm::quat rot = glm::quat_cast(rotMtx);
+		glm::quat rotation;
+		glm::vec3 translation;
+		glm::vec3 skew;
+		glm::vec4 perspective;
+		glm::decompose(modelMatrix, scale, rotation, translation, skew, perspective);
 
 		return {
-			pos,
-			rot,
+			translation,
+			rotation,
 			scale
 		};
 	}

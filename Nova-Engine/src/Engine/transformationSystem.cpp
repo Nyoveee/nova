@@ -96,7 +96,7 @@ void TransformationSystem::update() {
 			// In this case we want to calculate the new world transform due to any change in ancestor.
 
 			// Either none of the ancestors has changed their transform or world transform has been recalculated.
-			
+
 			// Update events, try to save old data for more tweking
 			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastPosition, transform.lastScale, transform.lastRotation });
 
@@ -105,7 +105,7 @@ void TransformationSystem::update() {
 			recalculateModelMatrix(entity);
 		}
 		else if (transform.worldHasChanged) {
-			//Update events, try to save old data for more tweking
+			// Update events, try to save old data for more tweking
 			eventDispatcher.trigger<TransformUpdateEvent>(TransformUpdateEvent{ entity, transform.lastLocalPosition, transform.lastLocalScale, transform.lastLocalRotation });
 
 			// World transform has changed. This means it has been directly edited.
@@ -115,7 +115,6 @@ void TransformationSystem::update() {
 			setLocalTransformFromWorld(transform, entityData);
 		}
 	}
-
 }
 
 

@@ -935,10 +935,7 @@ void Renderer::prepareRendering() {
 	glClearColor(0.05f, 0.05f, 0.05f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// =================================================================
-	// Set up the uniforms for my respective shaders
-	// Note: calling shader.use() before setting uniforms is redundant because we are using DSA.
-	// ================================================================
+	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT);
 }
 
 void Renderer::renderSkyBox() {
@@ -1517,8 +1514,6 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 	}
 
 #endif
-	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT - numOfPtLights);
-
 	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id());
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightSSBO.directionalLight.id());

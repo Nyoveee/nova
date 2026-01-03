@@ -815,10 +815,15 @@ void Editor::loadScene(ResourceID sceneId) {
 		Serialiser::serialiseScene(engine.ecs.registry, engine.ecs.sceneManager.layers, filePath->string.c_str());
 	}
 
-	engine.ecs.sceneManager.loadScene(sceneId);
-	editorViewPort.controlOverlay.clearNotification();
+	AssetFilePath const* newFilePath = assetManager.getFilepath(sceneId);
 
-	// engine.prefabManager.prefabBroadcast();
+	if (!newFilePath) {
+		Logger::error("Loading of invalid scene {}", static_cast<std::size_t>(sceneId));
+		return;
+	}
+
+	engine.ecs.sceneManager.editorChangeScene(sceneId, *newFilePath);
+	editorViewPort.controlOverlay.clearNotification();
 
 	// deselect entity.
 	selectEntities({});
