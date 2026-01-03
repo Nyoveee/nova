@@ -41,12 +41,12 @@ ParticleSystem::ParticleSystem(Engine& p_engine)
 void ParticleSystem::reset() {
 	// Call the reset compute shader
 	particleResetAllComputeShader.use();
-	glDispatchCompute((MAX_TEXTURETYPES * MAX_PARTICLESPERTEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
+	glDispatchCompute((MAX_PARTICLE_TEXTURE_TYPES * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Reset the texture array
 	usedTextures.clear();
 	
-	counterInEachTextures.resize(MAX_TEXTURETYPES, 0);
+	counterInEachTextures.resize(MAX_PARTICLE_TEXTURE_TYPES, 0);
 }
 
 void ParticleSystem::update(float dt)
@@ -64,14 +64,14 @@ void ParticleSystem::update(float dt)
 	// Update the particles over life span
 	int numTextures{ static_cast<int>(usedTextures.size()) };
 	if (numTextures != 0) {
-		glDispatchCompute((numTextures * MAX_PARTICLESPERTEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
+		glDispatchCompute((numTextures * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
 }
 
 int ParticleSystem::getMaxParticles()
 {
-	return MAX_PARTICLESPERTEXTURE * MAX_TEXTURETYPES;
+	return MAX_PARTICLES_PER_TEXTURE * MAX_PARTICLE_TEXTURE_TYPES;
 }
 
 void ParticleSystem::continuousGeneration(Transform const& transform, ParticleEmitter& emitter, float dt)
@@ -310,12 +310,12 @@ void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanDat
 	else
 		textureIndex = static_cast<int>(iter - std::begin(usedTextures));
 
-	int offset = (textureIndex * MAX_PARTICLESPERTEXTURE + counterInEachTextures[textureIndex]);
+	int offset = (textureIndex * MAX_PARTICLES_PER_TEXTURE + counterInEachTextures[textureIndex]);
 	glNamedBufferSubData(particleVerticesBO.id(), offset * sizeof(ParticleVertex), sizeof(ParticleVertex), &particleVertex);
 	glNamedBufferSubData(particlesSSBO.id(), offset * sizeof(ParticleLifespanData) + alignof(ParticleLifespanData), sizeof(ParticleLifespanData), &particleLifeSpanData);
 	counterInEachTextures[textureIndex]++;
 
-	if (counterInEachTextures[textureIndex] >= MAX_PARTICLESPERTEXTURE) {
+	if (counterInEachTextures[textureIndex] >= MAX_PARTICLES_PER_TEXTURE) {
 		counterInEachTextures[textureIndex] = 0;
 	}
 }
@@ -330,7 +330,7 @@ std::vector<PointLightData> ParticleSystem::getParticleLights(int count)
 	glNamedBufferSubData(particleLightsSSBO.id(), sizeof(int), sizeof(bool), &b_Exceeded);
 	int numTextures{ static_cast<int>(usedTextures.size()) };
 	if (numTextures != 0) {
-		glDispatchCompute((numTextures * MAX_PARTICLESPERTEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
+		glDispatchCompute((numTextures * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
 	glGetNamedBufferSubData(particleLightsSSBO.id(), 0, sizeof(int), &lightParticleCount);

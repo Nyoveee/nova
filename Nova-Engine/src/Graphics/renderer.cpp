@@ -1265,7 +1265,7 @@ void Renderer::renderParticles()
 	glBindVertexArray(particleVAO);
 	setBlendMode(BlendingConfig::AlphaBlending);
 	particleShader.use();
-	particleShader.setUInt("maxParticlesPerTexture", engine.particleSystem.MAX_PARTICLESPERTEXTURE);
+	particleShader.setUInt("maxParticlesPerTexture", engine.particleSystem.MAX_PARTICLES_PER_TEXTURE);
 	
 	// Disable writing to depth buffer for particles
 	glDepthMask(GL_FALSE);
@@ -1279,7 +1279,7 @@ void Renderer::renderParticles()
 			continue;
 		glBindTextureUnit(0, texture->getTextureId());
 		particleShader.setUInt("textureIndex", textureIndex);
-		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLESPERTEXTURE);
+		glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, engine.particleSystem.MAX_PARTICLES_PER_TEXTURE);
 	}
 
 	// Renable Depth Writing for other rendering
