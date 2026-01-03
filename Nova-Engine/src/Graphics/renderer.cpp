@@ -1516,9 +1516,8 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 		}
 	}
 
-	for (PointLightData const& lightParticle : engine.particleSystem.getParticleLights(MAX_NUMBER_OF_LIGHT - numOfPtLights))
-		pointLightData[numOfPtLights++] = lightParticle;
 #endif
+	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT - numOfPtLights);
 
 	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id());

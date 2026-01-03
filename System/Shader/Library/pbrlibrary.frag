@@ -81,6 +81,12 @@ layout(std430, binding = 2) buffer SpotLights {
     SpotLight spotLights[];
 };
 
+layout(std430, binding = 6) buffer LightParticleList {
+    int lightParticleCount;
+    bool b_AmountExceeded;
+    PointLight particlePointLights[];
+};
+
 layout(std430, binding = 7) buffer clusterSSBO
 {
     Cluster clusters[];
@@ -141,6 +147,11 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     for(uint i = 0; i < cluster.pointLightCount; ++i) {
         PointLight pointLight = pointLights[cluster.pointLightIndices[i]];
         finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLight);
+    }
+    
+    // particle point light..
+    for(int i = 0; i < lightParticleCount; ++i) {
+        finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, particlePointLights[i]);
     }
 
     for(uint i = 0; i < cluster.spotLightCount; ++i) {

@@ -58,7 +58,6 @@ void main() {
     if(particles[particleIndex].b_Active && particles[particleIndex].lightIntensity > 0){
         atomicAdd(lightParticleCount, 1);
         if(lightParticleCount >= maxSearchableLight){
-            b_AmountExceeded = true;
             return;
         }
         pointLightDatas[lightParticleCount-1].lightPos = particleVertices[particleIndex].position;

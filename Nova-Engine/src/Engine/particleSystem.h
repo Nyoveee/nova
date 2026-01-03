@@ -19,7 +19,7 @@ public:
 	ENGINE_DLL_API ParticleSystem& operator=(ParticleSystem&& other) = delete;
 public:
 	ENGINE_DLL_API void emit(Transform const& transform, ParticleEmitter& emitter, int count);
-	ENGINE_DLL_API std::vector<PointLightData> getParticleLights(int count);
+	ENGINE_DLL_API void populateParticleLights(int count);
 	ENGINE_DLL_API BufferObject const& getParticeVerticesBO();
 public:
 	void reset();

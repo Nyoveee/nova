@@ -320,26 +320,34 @@ void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanDat
 	}
 }
 
-std::vector<PointLightData> ParticleSystem::getParticleLights(int count)
+void ParticleSystem::populateParticleLights(int count)
 {
 	particleFindLightsComputeShader.use();
 	particleFindLightsComputeShader.setUInt("maxSearchableLight", count);
+
 	bool b_Exceeded{};
 	int lightParticleCount{};
+
 	glNamedBufferSubData(particleLightsSSBO.id(), 0, sizeof(int), &lightParticleCount);
 	glNamedBufferSubData(particleLightsSSBO.id(), sizeof(int), sizeof(bool), &b_Exceeded);
 	int numTextures{ static_cast<int>(usedTextures.size()) };
+	
 	if (numTextures != 0) {
 		glDispatchCompute((numTextures * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
+
+#if 0
 	glGetNamedBufferSubData(particleLightsSSBO.id(), 0, sizeof(int), &lightParticleCount);
+	
 	glGetNamedBufferSubData(particleLightsSSBO.id(), sizeof(int), sizeof(bool), &b_Exceeded);
 	std::vector<PointLightData> particleLights(lightParticleCount);
 	glGetNamedBufferSubData(particleLightsSSBO.id(), alignof(PointLightData), lightParticleCount * sizeof(PointLightData), particleLights.data());
+	
 	if(b_Exceeded)
 		Logger::warn("Unable to add more particle lights, max number of point lights reached!");
 	return particleLights;
+#endif
 }
 
 BufferObject const& ParticleSystem::getParticeVerticesBO()

@@ -324,7 +324,7 @@ namespace {
 
 		bool isAnError = true;
 
-		if (id == 131169 || id == 131185 || id == 131218 || id == 131204 || id == 7 || id == 1281 || id == 8) {
+		if (id == 131169 || id == 131186 || id == 131185 || id == 131218 || id == 131204 || id == 7 || id == 1281 || id == 8) {
 			isAnError = false;
 			return;
 		}
@@ -380,7 +380,7 @@ namespace {
 		}
 
 		ss << "\n\n";
-		// Logger::error("{}", ss.str());
+		Logger::error("{}", ss.str());
 	}
 
 	void window_size_callback(GLFWwindow*, int width, int height) {
