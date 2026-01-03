@@ -11,8 +11,8 @@ struct Cluster
     vec4 maxPoint;
     uint pointLightCount;
     uint spotLightCount;
-    uint pointLightIndices[100];
-    uint spotLightIndices[100];
+    uint pointLightIndices[25];
+    uint spotLightIndices[25];
 };
 
 layout(std430, binding = 7) buffer clusterSSBO
@@ -80,7 +80,7 @@ void main() {
     // We deal with all point lights first..
     cluster.pointLightCount = 0;
 
-    for (uint i = 0; i < pointLightCount && cluster.pointLightCount < 100; ++i) {
+    for (uint i = 0; i < pointLightCount && cluster.pointLightCount < 25; ++i) {
         // Get the position of point light in view space.
         vec3 viewPos = vec3(view * vec4(pointLights[i].position, 1.0));
 
@@ -94,7 +94,7 @@ void main() {
     // We now deal with spot lights..
     cluster.spotLightCount = 0;
 
-    for (uint i = 0; i < spotLightCount && cluster.spotLightCount < 100; ++i) {
+    for (uint i = 0; i < spotLightCount && cluster.spotLightCount < 25; ++i) {
         // Get the position of point light in view space.
         vec3 viewPos = vec3(view * vec4(spotLights[i].position, 1.0));
 

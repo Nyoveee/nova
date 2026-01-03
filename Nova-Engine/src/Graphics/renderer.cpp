@@ -73,8 +73,8 @@ struct alignas(16) Cluster {
 	glm::vec4 maxPoint;
 	unsigned int pointLightCount;
 	unsigned int spotLightCount;
-	unsigned int pointLightIndices[MAX_NUMBER_OF_LIGHT];
-	unsigned int spotLightIndices[MAX_NUMBER_OF_LIGHT];
+	unsigned int pointLightIndices[25];
+	unsigned int spotLightIndices[25];
 };
 
 #pragma warning( pop )
@@ -1515,10 +1515,10 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 				break;
 		}
 	}
-#endif
 
 	for (PointLightData const& lightParticle : engine.particleSystem.getParticleLights(MAX_NUMBER_OF_LIGHT - numOfPtLights))
 		pointLightData[numOfPtLights++] = lightParticle;
+#endif
 
 	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id());
@@ -1542,7 +1542,7 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 }
 
 void Renderer::clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO) {
-#if 0
+#if 1
 	// we bind bones SSBO to 7.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, clusterSSBO.id());
 

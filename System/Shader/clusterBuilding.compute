@@ -9,8 +9,8 @@ struct Cluster
     vec4 maxPoint;
     uint pointLightCount;
     uint spotLightCount;
-    uint pointLightIndices[100];
-    uint spotLightIndices[100];
+    uint pointLightIndices[25];
+    uint spotLightIndices[25];
 };
 
 layout(std430, binding = 7) buffer clusterSSBO {

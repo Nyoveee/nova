@@ -408,7 +408,7 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter.particleColorSelection.colorOffsetMin,
 		emitter.particleColorSelection.colorOffsetMax
 	);
-	determineParticleSize(
+	determineParticleSize(	
 		particleLifeSpanData,
 		particleVertex,
 		emitter,
