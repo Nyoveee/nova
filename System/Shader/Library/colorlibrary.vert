@@ -16,6 +16,7 @@ layout (location = 5) in vec4 boneWeights;
 layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
+    mat4 cameraProjectionView;
 };
 
 layout(std430, binding = 3) buffer Bones {
@@ -30,6 +31,8 @@ uniform mat4 model;
 uniform mat4 localScale;
 uniform float timeElapsed;
 
+invariant gl_Position;
+
 out VS_OUT {
     out vec2 textureUnit;
 } vsOut;
@@ -40,7 +43,7 @@ out VS_OUT {
 vec4 calculateClipPosition(vec3 position) {
     // this is not a skinned mesh.
     if(isSkinnedMesh == 0) {
-        return projection * view * model * localScale * vec4(position, 1.0);
+        return cameraProjectionView * model * localScale * vec4(position, 1.0);
     }
     // this is a skinned mesh.
     else {
@@ -60,6 +63,6 @@ vec4 calculateClipPosition(vec3 position) {
             localPosition += (bonesFinalMatrices[boneId] * vec4(position, 1.0)) * boneWeight;
         }
 
-        return projection * view * model * localScale * localPosition;
+        return cameraProjectionView * model * localScale * localPosition;
     }
 }

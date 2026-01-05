@@ -72,6 +72,8 @@ public:
 	// generates shadow maps for each light source..
 	void shadowPass(Camera const& camera);
 
+	void depthPrePass(Camera const& camera);
+
 public:
 	// =============================================
 	// Public facing API.
@@ -217,7 +219,7 @@ private:
 	void frustumCulling(Camera const& camera);
 
 	// upload lights into SSBO
-	void prepareLights(Camera const& camera, LightSSBO& lightSBBO, BufferObject const& clusterSSBO);
+	void prepareLights(Camera const& camera, LightSSBO& lightSBBO);
 
 	// builds clusters information for clustered forward rendering..
 	void clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO);
@@ -330,7 +332,6 @@ public:
 	
 	Shader skyboxShader;
 	Shader particleShader;
-	Shader skeletalAnimationShader;
 	Shader textShader;
 	Shader texture2dShader;
 

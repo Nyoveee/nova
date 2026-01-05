@@ -212,7 +212,7 @@ float ggxDistribution(float nDotH, float roughness)
 {
     float alpha2 = roughness * roughness * roughness * roughness;
     float d = (nDotH * nDotH) * (alpha2 - 1.0f) + 1.0f;
-    return alpha2 / max(PI * d * d, 0.0001f);
+    return alpha2 / max(PI * d * d, 0.00000001f);
 }
 
 // The Smith Masking-Shadowing Function describes the probability that microfacets with 
@@ -224,7 +224,7 @@ float geomSmith(float nDotL, float roughness)
 {
     float k = (roughness + 1.0f) * (roughness + 1.0f) / 8.0f;
     float denom = nDotL * (1.0f - k) + k;
-    return 1.0f / max(denom, 0.0001f);
+    return 1.0f / max(denom, 0.00000001f);
 }
 
 // Schlick approximation for Fresnel reflection that defines the probability of light

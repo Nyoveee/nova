@@ -29,7 +29,7 @@ Properties{
 Vert{
     // Calculate world space of our local attributes..
     WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);
-    gl_Position = calculateClipPosition(worldSpace.position);
+    gl_Position = worldSpace.clipSpacePosition;
 
     // Pass attributes to fragment shader.. //
     vsOut.textureUnit = textureUnit;

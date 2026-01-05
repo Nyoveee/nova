@@ -18,10 +18,12 @@
                 "tag": "Ichor"
             },
             "MeshRenderer": {
+                "castShadow": true,
                 "materialIds": [
                     16833312378621526017
                 ],
-                "modelId": 4
+                "modelId": 4,
+                "shadowCullFrontFace": true
             },
             "ParticleEmitter": {
                 "burstAmount": 30,

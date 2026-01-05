@@ -15,6 +15,7 @@ layout(std430, binding = 3) buffer Bones {
     mat4 bonesFinalMatrices[];
 };
 
+invariant gl_Position;
 void main()
 {
     // this is not a skinned mesh.

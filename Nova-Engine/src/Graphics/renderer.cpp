@@ -109,7 +109,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	particleShader					{ "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag"},
 	textShader						{ "System/Shader/text.vert",						"System/Shader/text.frag"},
 	texture2dShader					{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
-	skeletalAnimationShader			{ "System/Shader/skeletal.vert",					"System/Shader/PBR.frag"},
 	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
@@ -132,7 +131,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	editorClusterSSBO				{ numClusters * sizeof(Cluster) },
 
 									// we allocate memory for view and projection matrix.
-	sharedUBO						{ 2 * sizeof(glm::mat4) },
+	sharedUBO						{ 3 * sizeof(glm::mat4) },
 	
 									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
 	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
@@ -147,9 +146,9 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	timeElapsed						{},
 	hdrExposure						{ 0.9f },
 	toneMappingMethod				{ ToneMappingMethod::ACES },
-
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F } },
+															 // main	   position	   normal
+	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA32F, GL_RGB8 } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA32F, GL_RGB8 } },
 	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8  } },
 	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
@@ -436,6 +435,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	// We upload camera data to the UBO..
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
+	glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection() * camera.view()));
 
 	// We perform frustum culling for models and lights..
 	frustumCulling(camera);
@@ -443,18 +443,33 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	// We prepare our lights for rendering..
 	// Build clusters and assign lights for clustered forward rendering
 	// And render shadow maps..
-	prepareLights(camera, lightSSBO, clusterSSBO);
+	prepareLights(camera, lightSSBO);
+
+	// Prepare cluster forwarded rendering..
+	clusterBuilding(camera, clusterSSBO);
+
+	// Generate shadow map based on camera position..
+	shadowPass(camera);
 
 	// We bind to the active framebuffer for majority of the in game rendering..
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
 	setBlendMode(BlendingConfig::Disabled);
 
+	// We perform a depth pre pass..
+	depthPrePass(camera);
+
 	// We render individual game objects..
 	renderSkyBox();
 
+	// Because we had a depth pre pass, we can change depth function to equal.
+	glDepthFunc(GL_EQUAL);
+
 	renderModels(camera);
 	renderSkinnedModels(camera);
+	
+	glDepthFunc(GL_LESS);
+
 	renderParticles();
 
 	// ======= Post Processing =======
@@ -590,7 +605,7 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target) {
 	glDisable(GL_BLEND);
 }
 
-void Renderer::shadowPass(Camera const& camera) {
+void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 	glViewport(0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
 
 	hasDirectionalLightShadowCaster = false;
@@ -638,6 +653,112 @@ void Renderer::shadowPass(Camera const& camera) {
 	}
 
 	glViewport(0, 0, gameWidth, gameHeight);
+}
+
+void Renderer::depthPrePass(Camera const& camera) {
+	glEnable(GL_CULL_FACE);
+
+	shadowMapShader.use();
+	shadowMapShader.setMatrix("lightSpaceMatrix", camera.projection() * camera.view());
+
+	// ===========================================================
+	// 1. Render mesh renderer shadows
+	// ===========================================================
+
+	// indicate that this is a skinned mesh renderer..
+	static const unsigned int isNotASkinnedMeshRenderer = 0;
+	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
+
+	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
+		for (auto const& entity : entities) {
+			MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
+			Transform const& transform = registry.get<Transform>(entity);
+			EntityData const& entityData = registry.get<EntityData>(entity);
+
+			if (!meshRenderer) {
+				continue;
+			}
+
+			if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
+				continue;
+			}
+
+			if (!transform.inCameraFrustum) {
+				continue;
+			}
+
+			// Retrieves model asset from asset manager.
+			auto [model, _] = resourceManager.getResource<Model>(meshRenderer->modelId);
+
+			if (!model) {
+				// missing model.
+				continue;
+			}
+
+			shadowMapShader.setMatrix("model", transform.modelMatrix);
+			shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
+
+			// Draw every mesh of a given model.
+			for (auto const& mesh : model->meshes) {
+				positionsVBO.uploadData(mesh.positions);
+				EBO.uploadData(mesh.indices);
+				skeletalVBO.uploadData(mesh.vertexWeights);
+				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+			}
+		}
+	}
+
+	// ===========================================================
+	// 2. Render skinned mesh renderer shadows
+	// ===========================================================
+	// indicate that this is NOT a skinned mesh renderer..
+
+	static const unsigned int isASkinnedMeshRenderer = 1;
+	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isASkinnedMeshRenderer);
+
+	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
+		for (auto const& entity : entities) {
+			SkinnedMeshRenderer* skinnedMeshRenderer = registry.try_get<SkinnedMeshRenderer>(entity);
+			Transform const& transform = registry.get<Transform>(entity);
+			EntityData const& entityData = registry.get<EntityData>(entity);
+
+			if (!skinnedMeshRenderer) {
+				continue;
+			}
+
+			if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) {
+				continue;
+			}
+
+			if (!transform.inCameraFrustum) {
+				continue;
+			}
+
+			// Retrieves model asset from asset manager.
+			auto [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer->modelId);
+
+			if (!model) {
+				// missing model.
+				continue;
+			}
+
+			shadowMapShader.setMatrix("model", transform.modelMatrix);
+			shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
+
+			// upload all bone matrices..
+			glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer->bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer->bonesFinalMatrices.data());
+
+			// Draw every mesh of a given model.
+			for (auto const& mesh : model->meshes) {
+				positionsVBO.uploadData(mesh.positions);
+				EBO.uploadData(mesh.indices);
+				skeletalVBO.uploadData(mesh.vertexWeights);
+				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+			}
+		}
+	}
+
+	glDisable(GL_CULL_FACE);
 }
 
 void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
@@ -689,7 +810,6 @@ void Renderer::recompileShaders() {
 	textShader.recompile();
 	toneMappingShader.recompile();
 	particleShader.recompile();
-	skeletalAnimationShader.recompile();
 	texture2dShader.recompile();
 	bloomDownSampleShader.recompile();
 	bloomUpSampleShader.recompile();
@@ -1477,7 +1597,7 @@ void Renderer::setCullMode(CullingConfig configuration) {
 	}
 }
 
-void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferObject const& clusterSSBO) {
+void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& lightSSBO) {
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
 	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
@@ -1548,7 +1668,7 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 	}
 
 	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id()); 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightSSBO.directionalLight.id());
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, lightSSBO.spotLight.id());
 
@@ -1563,12 +1683,6 @@ void Renderer::prepareLights(Camera const& camera, LightSSBO& lightSSBO, BufferO
 	glNamedBufferSubData(lightSSBO.pointLight.id(), alignof(PointLightData), numOfPtLights * sizeof(PointLightData), pointLightData.data());
 	glNamedBufferSubData(lightSSBO.directionalLight.id(), alignof(DirectionalLightData), numOfDirLights * sizeof(DirectionalLightData), directionalLightData.data());
 	glNamedBufferSubData(lightSSBO.spotLight.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
-
-	// Prepare cluster forwarded rendering..
-	clusterBuilding(camera, clusterSSBO);
-
-	// Generate shadow map based on camera position..
-	shadowPass(camera);
 }
 
 void Renderer::clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO) {
@@ -1763,6 +1877,9 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 		shadowMapShader.setMatrix("model", transform.modelMatrix);
 		shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
 
+		// upload all bone matrices..
+		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
+
 		// Draw every mesh of a given model.
 		for (auto const& mesh : model->meshes) {
 			positionsVBO.uploadData(mesh.positions);
@@ -1772,7 +1889,6 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 	}
 
 	glCullFace(GL_BACK);
-	glDisable(GL_CULL_FACE);
 }
 
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {

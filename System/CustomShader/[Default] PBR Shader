@@ -18,5 +18,5 @@
         "toUseNormalMap": "bool",
         "toUsePackedMap": "bool"
     },
-    "vShaderCode": "\n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);\n    gl_Position = calculateClipPosition(worldSpace.position);\n\n    // Pass attributes to fragment shader.. //\n    vsOut.textureUnit = textureUnit;\n    vsOut.fragWorldPos = worldSpace.position.xyz;\n    vsOut.fragViewPos = vec3(view * worldSpace.position);\n    vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;\n\n    vsOut.normal = worldSpace.normal;\n    vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);\n"
+    "vShaderCode": "\n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);\n    gl_Position = worldSpace.clipSpacePosition;\n\n    // Pass attributes to fragment shader.. //\n    vsOut.textureUnit = textureUnit;\n    vsOut.fragWorldPos = worldSpace.position.xyz;\n    vsOut.fragViewPos = vec3(view * worldSpace.position);\n    vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;\n\n    vsOut.normal = worldSpace.normal;\n    vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);\n"
 }
