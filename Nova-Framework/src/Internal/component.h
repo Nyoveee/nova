@@ -175,6 +175,11 @@ struct Light {
 	Radian outerCutOffAngle = glm::radians(17.5f);
 	float radius			= 50.f;
 
+	bool shadowCaster		= false;
+	float orthogonalShadowCasterSize = 35.0f;
+	float shadowNearPlane	= 0.1f;
+	float shadowFarPlane	= 750.0f;
+
 	REFLECTABLE(
 		type,
 		color,
@@ -182,7 +187,11 @@ struct Light {
 		cutOffAngle,
 		outerCutOffAngle,
 		attenuation,
-		radius
+		radius,
+		shadowCaster,
+		orthogonalShadowCasterSize,
+		shadowNearPlane,
+		shadowFarPlane
 	)
 };
 
@@ -190,10 +199,15 @@ struct MeshRenderer {
 	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
+	bool castShadow = true;
+	bool shadowCullFrontFace = true;
+
 	// std::vector<>
 	REFLECTABLE(
 		modelId,
-		materialIds
+		materialIds,
+		castShadow,
+		shadowCullFrontFace
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;
@@ -203,9 +217,12 @@ struct SkinnedMeshRenderer {
 	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
 	std::vector<TypedResourceID<Material>>	materialIds {};
 
+	bool castShadow = true;
+
 	REFLECTABLE(
 		modelId,
-		materialIds
+		materialIds,
+		castShadow
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;

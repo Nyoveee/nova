@@ -4,6 +4,7 @@
 
 #include "framebuffer.h"
 #include "Logger.h"
+#include "depthFrameBuffer.h"
 
 namespace {
 	// A FBO holding INVALID_ID means it's not holding to any dynamically allocated resource.

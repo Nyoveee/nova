@@ -30,7 +30,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 // ====================================
 // These are set by the pipeline, and exposed. 
 // ==================================== 
-const float ambientFactor = 0.2;
+const float ambientFactor = 0.04;
 const float PI = 3.14159265358979323846;
 
 // === LIGHT PROPERTIES ===
@@ -92,13 +92,20 @@ layout(std430, binding = 7) buffer clusterSSBO
     Cluster clusters[];
 };
 
+// Clusters related info
 uniform float zNear;
 uniform float zFar;
 uniform uvec3 gridSize;
 uniform uvec2 screenDimensions;
 
+// Shadows
+uniform bool hasDirectionalLightShadowCaster;
+uniform vec3 directionalLightDir;
+
 uniform vec3 cameraPos;
 uniform float timeElapsed;
+
+uniform sampler2D shadowMap;
 
 out vec4 FragColor;
 
@@ -107,6 +114,7 @@ in VS_OUT {
     vec3 normal;
     vec3 fragWorldPos;
     vec3 fragViewPos;
+    vec4 fragDirectionalLightPos;
     mat3 TBN;
 } fsIn;
 
@@ -123,6 +131,9 @@ vec3  microfacetModelDir    (vec3 position, vec3 n, vec3 baseColor, float roughn
 vec3  microfacetModelSpot   (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
 vec3  BRDFCalculation       (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic);
 
+float shadowCalculation     ();
+Cluster getCluster          ();
+
 // =================================================================================
 // IMPLEMENTATION DETAILS.
 // =================================================================================
@@ -132,16 +143,11 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     normal = normalize(normal);
 
     // ambient is the easiest.
-    vec3 finalColor = ambientFactor * albedoColor * (occulusion * 0.04);
+    vec3 finalColor = vec3(0.0, 0.0, 0.0);
 
 #if 1
     // Locating which cluster this fragment is part of
-    uint zTile = uint((log(abs(fsIn.fragViewPos.z) / zNear) * gridSize.z) / log(zFar / zNear));      // we find the z value of this tile..
-    vec2 tileSize = screenDimensions / gridSize.xy;                                     
-    uvec3 tile = uvec3(gl_FragCoord.xy / tileSize, zTile);                                  // we found our tile index for x, y and z.
-    uint tileIndex = tile.x + (tile.y * gridSize.x) + (tile.z * gridSize.x * gridSize.y);   // convert it to index.
-
-    Cluster cluster = clusters[tileIndex];
+    Cluster cluster = getCluster();
 
     // Calculate diffuse and specular light for each light.
     for(uint i = 0; i < cluster.pointLightCount; ++i) {
@@ -175,6 +181,22 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         finalColor += microfacetModelDir(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, dirLights[i]);
     }
 
+    if(hasDirectionalLightShadowCaster) {
+        // // We perform perspective divide on fragment light position.
+        // vec3 projCoords = fsIn.fragDirectionalLightPos.xyz / fsIn.fragDirectionalLightPos.w;
+
+        // // transform to [0,1] range
+        // projCoords = projCoords * 0.5 + 0.5;
+    
+        // // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+        // return texture(shadowMap, clamp(projCoords.xy, vec2(0, 0), vec2(1, 1))).rgb; 
+    }
+
+    // We calculate the fragment's shadow factor.
+    float shadowFactor = shadowCalculation();
+
+    finalColor *= (1.0 - shadowFactor);
+    finalColor += albedoColor * (occulusion * ambientFactor);
     return finalColor;
 }
 
@@ -310,4 +332,52 @@ vec3 BRDFCalculation(vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor
     diffuseBrdf *= 1.0 - metallic;
 
     return (diffuseBrdf * baseColor / PI + specBrdf) * lightIntensity * nDotL;
+}
+
+Cluster getCluster() {
+    uint zTile = uint((log(abs(fsIn.fragViewPos.z) / zNear) * gridSize.z) / log(zFar / zNear));      // we find the z value of this tile..
+    vec2 tileSize = screenDimensions / gridSize.xy;                                     
+    uvec3 tile = uvec3(gl_FragCoord.xy / tileSize, zTile);                                  // we found our tile index for x, y and z.
+    uint tileIndex = tile.x + (tile.y * gridSize.x) + (tile.z * gridSize.x * gridSize.y);   // convert it to index.
+
+    return clusters[tileIndex];
+}
+
+float shadowCalculation() {
+    if(!hasDirectionalLightShadowCaster) {
+        return 0.0;
+    }
+
+    // We perform perspective divide on fragment light position.
+    vec3 projCoords = fsIn.fragDirectionalLightPos.xyz / fsIn.fragDirectionalLightPos.w;
+
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    
+    // Fragment is outside of the shadow map.
+    if(projCoords.z > 1.0 || projCoords.z < 0.0) {
+        return 0.0;
+    }
+
+    // // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    // float closestDepth = texture(shadowMap, projCoords.xy).r; 
+    
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    
+    // check whether current frag pos is in shadow
+    // float bias = max(0.05 * (1.0 - dot(fsIn.normal, directionalLightDir)), 0.005);  
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - 0.003 > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
+
+    return shadow;
 }

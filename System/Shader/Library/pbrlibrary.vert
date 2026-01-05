@@ -46,11 +46,15 @@ uniform mat3 normalMatrix;
 uniform mat4 localScale;
 uniform float timeElapsed;
 
+// Shadows
+uniform mat4 directionalLightSpaceMatrix;
+
 out VS_OUT {
     vec2 textureUnit;
     vec3 normal;
     vec3 fragWorldPos;
     vec3 fragViewPos;
+    vec4 fragDirectionalLightPos;
     mat3 TBN;
 } vsOut;
 

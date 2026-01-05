@@ -18,6 +18,7 @@
 #include "vertex.h"
 #include "font.h"
 #include "bloomFrameBuffer.h"
+#include "depthFrameBuffer.h"
 
 #include "model.h"
 #include "cubemap.h"
@@ -67,6 +68,9 @@ public:
 	void renderBloom(PairFrameBuffer& frameBuffers);
 
 	void overlayUIToBuffer(PairFrameBuffer& target);
+
+	// generates shadow maps for each light source..
+	void shadowPass(Camera const& camera);
 
 public:
 	// =============================================
@@ -226,6 +230,9 @@ private:
 
 	void printOpenGLDriverDetails() const;
 
+	// populates the directional light shadow pass
+	void directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::vec3 const& lightFront, Light const& light);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -276,6 +283,8 @@ private:
 
 	BloomFrameBuffer bloomFrameBuffer;
 
+	DepthFrameBuffer directionalLightShadowFBO;
+
 	// contains all physics debug rendering..
 	FrameBuffer uiMainFrameBuffer;
 	FrameBuffer physicsDebugFrameBuffer;
@@ -300,6 +309,10 @@ private:
 
 	float timeElapsed;
 	std::vector<entt::entity> selectedEntities;
+
+	bool hasDirectionalLightShadowCaster;
+	glm::mat4x4 directionalLightViewMatrix;
+	glm::vec3 directionalLightDir;
 
 public:
 	Shader basicShader;
@@ -329,6 +342,8 @@ public:
 	Shader bloomFinalShader;
 
 	Shader postprocessingShader;
+
+	Shader shadowMapShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;
