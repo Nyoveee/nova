@@ -220,6 +220,47 @@ bool ScriptingAPIManager::hasFieldChanged(serialized_field_type const& oldField,
 	return oldField.index() != newField.index();
 }
 
+void ScriptingAPIManager::UpdateAllScriptComponentFields(ResourceID scriptID)
+{
+	// We include Inheritted Scripts
+	std::unordered_set<ResourceID> hierarchyScripts{ getHierarchyModifiedScripts_(static_cast<std::size_t>(scriptID)) };
+
+	// update the field data of all entities with affected scripts..
+	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
+		for (auto&& script : scripts.scriptDatas) {
+
+			// only get script field data if this script itself has been modified.
+			if (!hierarchyScripts.count(script.scriptId))
+				continue;
+
+			std::vector<FieldData> oldFieldData{ script.fields };
+			script.fields.clear();
+
+			for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
+				bool b_IsExistingField{ false };
+
+				for (FieldData const& oldFields : oldFieldData) {
+					if (oldFields.name != newFields.name)
+						continue;
+
+					if (!hasFieldChanged(oldFields.data, newFields.data)) {
+						// We already have an old field containing data, let's reuse it.
+						script.fields.push_back(oldFields);
+						b_IsExistingField = true;
+						break;
+					}
+					else {
+						// The type of the old field has changed, let's override it.
+						break;
+					}
+				}
+				if (!b_IsExistingField)
+					script.fields.push_back(newFields);
+			}
+		}
+	}
+}
+
 bool ScriptingAPIManager::compileScriptAssembly()
 {
 	compileState = CompileState::CompilationFailed;
@@ -335,49 +376,9 @@ void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 
 	// we attempt to recompile the script assembly
 	if (compileScriptAssembly()) {
-		for (ResourceID modifiedScriptID : modifiedScripts) {
-
-			// We include Inheritted Scripts to modify
-			std::unordered_set<ResourceID> hierarchyModifiedScripts{ getHierarchyModifiedScripts_(static_cast<std::size_t>(modifiedScriptID)) };
-
-			// update the field data of all entities with affected scripts..
-			for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
-				for (auto&& script : scripts.scriptDatas) {
-
-					// only get script field data if this script itself has been modified.
-					if (!hierarchyModifiedScripts.count(script.scriptId))
-						continue;
-
-					std::vector<FieldData> oldFieldData{ script.fields };
-					script.fields.clear();
-
-					for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
-						bool b_IsExistingField{ false };
-
-						for (FieldData const& oldFields : oldFieldData) {
-							if (oldFields.name != newFields.name)
-								continue;
-							
-							if (!hasFieldChanged(oldFields.data, newFields.data)) {
-								// We already have an old field containing data, let's reuse it.
-								script.fields.push_back(oldFields);
-								b_IsExistingField = true;
-								break;
-							}
-							else {
-								// The type of the old field has changed, let's override it.
-								break;
-							}
-						}
-
-						if (!b_IsExistingField)
-							script.fields.push_back(newFields);
-					}
-				}
-			}
-
-			engine.inputManager.broadcast<ScriptCompilationStatus>(ScriptCompilationStatus::Success);
-		}
+		for (ResourceID modifiedScriptID : modifiedScripts)
+			UpdateAllScriptComponentFields(modifiedScriptID);
+		engine.inputManager.broadcast<ScriptCompilationStatus>(ScriptCompilationStatus::Success);
 		modifiedScripts.clear();
 	}
 	else {
@@ -447,6 +448,12 @@ void ScriptingAPIManager::OnAssetContentModifiedCallback(ResourceID resourceId) 
 void ScriptingAPIManager::OnAssetContentDeletedCallback(ResourceID resourceId) {
 	(void) resourceId;
 	// AssetID might disappear if assetmanager deletes it before this callback, maybe do typedAssetID or filepath instead(Overloaded callback?) 
+}
+
+void ScriptingAPIManager::OnSceneLoaded()
+{
+	for (ResourceID scriptID : engine.resourceManager.getAllResources<ScriptAsset>())
+		UpdateAllScriptComponentFields(scriptID);
 }
 
 void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity entityTwo) {
