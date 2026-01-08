@@ -19,6 +19,7 @@
 #include "font.h"
 #include "bloomFrameBuffer.h"
 #include "depthFrameBuffer.h"
+//#include "SSAOFrameBuffer.h"
 
 #include "model.h"
 #include "cubemap.h"
@@ -72,7 +73,14 @@ public:
 	// generates shadow maps for each light source..
 	void shadowPass(Camera const& camera);
 
+	// does a depth pre pass and populates the gbuffer for ssao generation.
 	void depthPrePass(Camera const& camera);
+
+	// generates the SSAO texture.
+	void generateSSAO(PairFrameBuffer& frameBuffers);
+
+	// initialise the sample kernel and noise texture used in SSAO
+	void initialiseSSAO();
 
 public:
 	// =============================================
@@ -235,6 +243,9 @@ private:
 	// populates the directional light shadow pass
 	void directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::vec3 const& lightFront, Light const& light);
 
+	// set up the required uniforms for normal map
+	void setupNormalMapUniforms(Shader& shader, Material const& material);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -277,12 +288,15 @@ private:
 	GLuint textVAO;
 	BufferObject textVBO;
 
+	GLuint ssaoNoiseTextureId;
+
 	Camera editorCamera;
 	Camera gameCamera;
 
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
+	FrameBuffer ssaoFrameBuffer;
 	BloomFrameBuffer bloomFrameBuffer;
 
 	DepthFrameBuffer directionalLightShadowFBO;
@@ -345,6 +359,8 @@ public:
 	Shader postprocessingShader;
 
 	Shader shadowMapShader;
+	Shader depthGBufferShader;
+	Shader ssaoShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;

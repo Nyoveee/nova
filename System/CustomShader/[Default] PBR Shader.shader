@@ -38,7 +38,10 @@ Vert{
     vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;
 
     vsOut.normal = worldSpace.normal;
-    vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
+
+    if(toUseNormalMap) {
+        vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
+    }
 }
 
 // Fragment shader..

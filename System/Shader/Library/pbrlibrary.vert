@@ -47,6 +47,7 @@ uniform mat4 model;
 uniform mat3 normalMatrix;
 uniform mat4 localScale;
 uniform float timeElapsed;
+uniform bool toUseNormalMap;
 
 invariant gl_Position;
 

@@ -4,7 +4,7 @@
 #include "pairFrameBuffer.h"
 
 PairFrameBuffer::PairFrameBuffer(int width, int height, std::vector<TextureInternalFormat> colorAttachments) :
-	frameBuffers{ {{ width, height, colorAttachments }, { width, height, std::vector<TextureInternalFormat>{ colorAttachments[0] }}}}
+	frameBuffers{ {{ width, height, std::vector<TextureInternalFormat>{ colorAttachments[0] } }, { width, height, colorAttachments }}}
 {}
 
 void PairFrameBuffer::clearFrameBuffers() {

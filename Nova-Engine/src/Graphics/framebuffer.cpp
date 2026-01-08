@@ -30,11 +30,11 @@ namespace {
 // =============================================
 
 FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachmentProperties) :
-	FBO_id		{ INVALID_ID },
-	texture_ids	{},
-	RBO_id		{ INVALID_ID },
-	width		{ width },
-	height		{ height }
+	FBO_id					{ INVALID_ID },
+	texture_ids				{},
+	depthStencilTextureId	{ INVALID_ID },
+	width					{ width },
+	height					{ height }
 {
 	if (colorAttachmentProperties.size() > 8) {
 		Logger::error("Too many render targets specified.");
@@ -64,12 +64,12 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 		++i;
 	}
 
-	// Generating renderbuffer object for depth / stencil testing
-	glCreateRenderbuffers(1, &RBO_id);
-	glNamedRenderbufferStorage(RBO_id, GL_DEPTH24_STENCIL8, width, height);
+	// Generating a texture object for depth / stencil testing
+	glCreateTextures(GL_TEXTURE_2D, 1, &depthStencilTextureId);
+	glTextureStorage2D(depthStencilTextureId, 1, GL_DEPTH24_STENCIL8, width, height);
 
 	// Attaching renderbuffer object to depth and stencil attachment of framebuffer
-	glNamedFramebufferRenderbuffer(FBO_id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO_id);
+	glNamedFramebufferTexture(FBO_id, GL_DEPTH_STENCIL_ATTACHMENT, depthStencilTextureId, 0);
 
 	if (glCheckNamedFramebufferStatus(FBO_id, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 		Logger::error("Error: Framebuffer incomplete!");
@@ -77,8 +77,8 @@ FrameBuffer::FrameBuffer(int width, int height, std::vector<int> colorAttachment
 }
 
 FrameBuffer::~FrameBuffer() {
-	if(FBO_id != INVALID_ID)		glDeleteFramebuffers(1, &FBO_id);
-	if(RBO_id != INVALID_ID)		glDeleteRenderbuffers(1, &RBO_id);
+	if(FBO_id != INVALID_ID)					glDeleteFramebuffers(1, &FBO_id);
+	if(depthStencilTextureId != INVALID_ID)		glDeleteTextures(1, &depthStencilTextureId);
 
 	for (GLuint texture_id : texture_ids) {
 		glDeleteTextures(1, &texture_id);
@@ -86,14 +86,14 @@ FrameBuffer::~FrameBuffer() {
 }
 
 FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept :
-	FBO_id		{ other.FBO_id },
-	texture_ids	{ std::move(other.texture_ids) },
-	RBO_id		{ other.RBO_id },
-	width		{ other.width },
-	height		{ other.height }
+	FBO_id					{ other.FBO_id },
+	texture_ids				{ std::move(other.texture_ids) },
+	depthStencilTextureId	{ other.depthStencilTextureId },
+	width					{ other.width },
+	height					{ other.height }
 {
 	other.FBO_id		= INVALID_ID;
-	other.RBO_id		= INVALID_ID;
+	other.depthStencilTextureId = INVALID_ID;
 
 	other.texture_ids.clear();
 }
@@ -105,11 +105,11 @@ FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other) noexcept {
 }
 
 void FrameBuffer::swap(FrameBuffer& rhs) {
-	std::swap(FBO_id,		rhs.FBO_id);
-	std::swap(texture_ids,	rhs.texture_ids);
-	std::swap(RBO_id,		rhs.RBO_id);
-	std::swap(width,		rhs.width);
-	std::swap(height,		rhs.height);
+	std::swap(FBO_id,					rhs.FBO_id);
+	std::swap(texture_ids,				rhs.texture_ids);
+	std::swap(depthStencilTextureId,	rhs.depthStencilTextureId);
+	std::swap(width,					rhs.width);
+	std::swap(height,					rhs.height);
 }
 
 void FrameBuffer::setColorAttachmentActive(int number) const {
@@ -125,8 +125,8 @@ std::vector<GLuint> const& FrameBuffer::textureIds() const {
 	return texture_ids;
 }
 
-GLuint FrameBuffer::rboId() const {
-	return RBO_id;
+GLuint FrameBuffer::depthStencilId() const {
+	return depthStencilTextureId;
 }
 
 int FrameBuffer::getWidth() const {

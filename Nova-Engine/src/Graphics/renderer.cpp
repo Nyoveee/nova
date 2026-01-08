@@ -40,6 +40,9 @@ namespace {
 	glm::vec3 findMinBound(glm::vec3 bound, Args... bounds) {
 		return glm::min(bound, findMinBound(bounds...));
 	}
+
+	// INVALID_ID means it's not holding to any dynamically allocated resource.
+	constexpr inline GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
 }
 
 constexpr ColorA whiteColor{ 1.f, 1.f, 1.f, 1.f };
@@ -110,6 +113,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	textShader						{ "System/Shader/text.vert",						"System/Shader/text.frag"},
 	texture2dShader					{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
 	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
+	depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
+	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
 	mainVAO							{},
@@ -130,8 +135,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	gameClusterSSBO					{ numClusters * sizeof(Cluster) },
 	editorClusterSSBO				{ numClusters * sizeof(Cluster) },
 
-									// we allocate memory for view and projection matrix.
-	sharedUBO						{ 3 * sizeof(glm::mat4) },
+									// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
+	sharedUBO						{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
 	
 									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
 	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
@@ -144,16 +149,18 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	directionalLightViewMatrix		{},
 	directionalLightDir				{},
 	timeElapsed						{},
+	ssaoNoiseTextureId				{ INVALID_ID },
 	hdrExposure						{ 0.9f },
 	toneMappingMethod				{ ToneMappingMethod::ACES },
-															 // main	   position	   normal
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA32F, GL_RGB8 } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F, GL_RGBA32F, GL_RGB8 } },
-	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8  } },
+															 // main		normal
+	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
+	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
 	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
 	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
+	ssaoFrameBuffer					{ gameWidth, gameHeight, { GL_R8 } },
 	directionalLightShadowFBO		{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
 	toGammaCorrect					{ true },
 	toPostProcess					{ false },
@@ -255,12 +262,17 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// Bind this EBO to this VAO.
 	glVertexArrayElementBuffer(particleVAO, EBO.id());
+
+	initialiseSSAO();
+	ssaoShader.setVec2("screenDimensions", { gameWidth, gameHeight });
 }
 
 Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &mainVAO);
 	glDeleteVertexArrays(1, &textVAO);
 	glDeleteVertexArrays(1, &particleVAO);
+
+	if (ssaoNoiseTextureId != INVALID_ID) glDeleteTextures(1, &ssaoNoiseTextureId);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -457,19 +469,31 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	setBlendMode(BlendingConfig::Disabled);
 
 	// We perform a depth pre pass..
-	depthPrePass(camera);
+	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1 };
+	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 2, buffers);
 
-	// We render individual game objects..
+	depthPrePass(camera);
+	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+
+	// We generate SSAO texture for forward rendering later..
+	generateSSAO(frameBuffers);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	// W Skybox	.
 	renderSkyBox();
 
 	// Because we had a depth pre pass, we can change depth function to equal.
 	glDepthFunc(GL_EQUAL);
 
+	// We render individual game objects..
 	renderModels(camera);
 	renderSkinnedModels(camera);
-	
+
+	// Restore default depth testing.
 	glDepthFunc(GL_LESS);
 
+	// Render particles
 	renderParticles();
 
 	// ======= Post Processing =======
@@ -478,8 +502,10 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 
 	setBlendMode(BlendingConfig::Disabled);
 
+	// Apply bloom post processing via multi down and up samples.
 	renderBloom(frameBuffers);
 
+	// @TODO : Custom post processing stack.
 	if(toPostProcess)
 		renderPostProcessing(frameBuffers);
 }
@@ -658,8 +684,8 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 void Renderer::depthPrePass(Camera const& camera) {
 	glEnable(GL_CULL_FACE);
 
-	shadowMapShader.use();
-	shadowMapShader.setMatrix("lightSpaceMatrix", camera.projection() * camera.view());
+	depthGBufferShader.use();
+	depthGBufferShader.setMatrix("lightSpaceMatrix", camera.projection() * camera.view());
 
 	// ===========================================================
 	// 1. Render mesh renderer shadows
@@ -695,14 +721,24 @@ void Renderer::depthPrePass(Camera const& camera) {
 				continue;
 			}
 
-			shadowMapShader.setMatrix("model", transform.modelMatrix);
-			shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
+			depthGBufferShader.setMatrix("model", transform.modelMatrix);
+			depthGBufferShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
+			depthGBufferShader.setMatrix("normalMatrix", transform.normalMatrix);
 
 			// Draw every mesh of a given model.
 			for (auto const& mesh : model->meshes) {
+				Material const* material = obtainMaterial(*meshRenderer, mesh);
+
+				if (!material) {
+					continue;
+				}
+
+				setupNormalMapUniforms(depthGBufferShader, *material);
+
 				positionsVBO.uploadData(mesh.positions);
+				textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
+				normalsVBO.uploadData(mesh.normals);
 				EBO.uploadData(mesh.indices);
-				skeletalVBO.uploadData(mesh.vertexWeights);
 				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 			}
 		}
@@ -742,15 +778,25 @@ void Renderer::depthPrePass(Camera const& camera) {
 				continue;
 			}
 
-			shadowMapShader.setMatrix("model", transform.modelMatrix);
-			shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
+			depthGBufferShader.setMatrix("model", transform.modelMatrix);
+			depthGBufferShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
 
 			// upload all bone matrices..
 			glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer->bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer->bonesFinalMatrices.data());
 
 			// Draw every mesh of a given model.
 			for (auto const& mesh : model->meshes) {
+				Material const* material = obtainMaterial(*skinnedMeshRenderer, mesh);
+
+				if (!material) {
+					continue;
+				}
+
+				setupNormalMapUniforms(depthGBufferShader, *material);
+
 				positionsVBO.uploadData(mesh.positions);
+				textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
+				normalsVBO.uploadData(mesh.normals);
 				EBO.uploadData(mesh.indices);
 				skeletalVBO.uploadData(mesh.vertexWeights);
 				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
@@ -759,6 +805,89 @@ void Renderer::depthPrePass(Camera const& camera) {
 	}
 
 	glDisable(GL_CULL_FACE);
+}
+
+void Renderer::generateSSAO(PairFrameBuffer& frameBuffers) {
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFrameBuffer.fboId());
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glDisable(GL_DEPTH_TEST);
+
+	ssaoShader.use();
+	
+	// Bind depth, normal and noise texture..
+	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().depthStencilId());
+	ssaoShader.setImageUniform("depthMap", 0);
+
+	glBindTextureUnit(1, frameBuffers.getActiveFrameBuffer().textureIds()[1]);
+	ssaoShader.setImageUniform("normalMap", 1);
+
+	glBindTextureUnit(2, ssaoNoiseTextureId);
+	ssaoShader.setImageUniform("noiseTexture", 2);
+
+	// Render fullscreen quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Renderer::initialiseSSAO() {
+	// https://learnopengl.com/Advanced-Lighting/SSAO
+	std::vector<glm::vec4> ssaoKernel;
+	constexpr int numOfKernalSamples = 64;
+
+	// =======================================================
+	// 1. We initialise a sample kernel to be used for SSAO.
+	// =======================================================
+
+	std::uniform_real_distribution<float> randomFloats(0.0, 1.0); // random floats between [0.0, 1.0]
+	std::default_random_engine generator;
+
+	for (unsigned int i = 0; i < numOfKernalSamples; ++i) {
+		glm::vec4 sample (
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator),
+			0
+		);
+
+		sample = glm::normalize(sample);	// Randomised direction, unit vector.
+		sample *= randomFloats(generator);	// Randomised magnitude
+
+		float scale = (float)i / numOfKernalSamples;	// Scale of vector, resulting in samples near the hemisphere.
+		scale = std::lerp(0.1f, 1.0f, scale * scale);
+
+		sample *= scale;
+		ssaoKernel.push_back(sample);
+	}
+
+	// upload to UBO..
+	glNamedBufferSubData(sharedUBO.id(), 3 * sizeof(glm::mat4x4), numOfKernalSamples * sizeof(glm::vec4), ssaoKernel.data());
+
+	// =======================================================
+	// 2. Generating a 4x4 random noise
+	// =======================================================
+	// 2.1 Value generation.
+
+	std::vector<glm::vec3> ssaoNoise;
+
+	for (unsigned int i = 0; i < 16; i++) {
+		glm::vec3 noise(
+			randomFloats(generator) * 2.0 - 1.0,
+			randomFloats(generator) * 2.0 - 1.0,
+			0.0f
+		);
+
+		ssaoNoise.push_back(noise);
+	}
+
+	// 2.2 Texture creation.
+	glCreateTextures(GL_TEXTURE_2D, 1, &ssaoNoiseTextureId);
+	glTextureStorage2D(ssaoNoiseTextureId, 1, GL_RGB8, 4, 4);
+	glTextureParameteri(ssaoNoiseTextureId, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTextureParameteri(ssaoNoiseTextureId, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTextureParameteri(ssaoNoiseTextureId, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(ssaoNoiseTextureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTextureSubImage2D(ssaoNoiseTextureId, 0, 0, 0, 4, 4, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
 }
 
 void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
@@ -1891,6 +2020,41 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 	glCullFace(GL_BACK);
 }
 
+void Renderer::setupNormalMapUniforms(Shader& shader, Material const& material) {
+	// Setting up normal map..
+	bool isUsingNormalMap = [&]() -> bool {
+		auto iterator = material.materialData.overridenUniforms.find("toUseNormalMap");
+
+		if (iterator == material.materialData.overridenUniforms.end()) {
+			return false;
+		}
+
+		if (!std::holds_alternative<bool>(iterator->second.value)) {
+			return false;
+		}
+
+		return std::get<bool>(iterator->second.value);
+	}();
+
+	shader.setBool("toUseNormalMap", isUsingNormalMap);
+
+	if (isUsingNormalMap) {
+		auto normalMapIterator = material.materialData.overridenUniforms.find("normalMap");
+
+		if (
+				normalMapIterator != material.materialData.overridenUniforms.end()
+			&&	std::holds_alternative<TypedResourceID<Texture>>(normalMapIterator->second.value)
+		) {
+			auto [texture, _] = resourceManager.getResource<Texture>(std::get<TypedResourceID<Texture>>(normalMapIterator->second.value));
+
+			if (texture) {
+				glBindTextureUnit(0, texture->getTextureId());
+				shader.setImageUniform("normalMap", 0);
+			}
+		}
+	}
+}
+
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
 		const dtMeshTile* tile = mesh.getTile(tileNum);
@@ -2165,7 +2329,7 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
 	toneMappingShader.setImageUniform("hdrBuffer", 0);
 
-	// Render fullscreen triangle (more efficient than quad)
+	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
@@ -2191,7 +2355,7 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
 	float vignetteDistance = (1 - vignette) * 2.f;
 	postprocessingShader.setFloat("vignette", vignetteDistance);
 
-	// Render fullscreen triangle (more efficient than quad)
+	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

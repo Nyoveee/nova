@@ -181,17 +181,6 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         finalColor += microfacetModelDir(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, dirLights[i]);
     }
 
-    if(hasDirectionalLightShadowCaster) {
-        // // We perform perspective divide on fragment light position.
-        // vec3 projCoords = fsIn.fragDirectionalLightPos.xyz / fsIn.fragDirectionalLightPos.w;
-
-        // // transform to [0,1] range
-        // projCoords = projCoords * 0.5 + 0.5;
-    
-        // // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-        // return texture(shadowMap, clamp(projCoords.xy, vec2(0, 0), vec2(1, 1))).rgb; 
-    }
-
     // We calculate the fragment's shadow factor.
     float shadowFactor = shadowCalculation();
 
