@@ -349,9 +349,6 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 			// render debug information..
 			debugRender();
 
-			// after debug rendering.. bind main position VBO back to VAO..
-			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
-
 			renderObjectIds();
 		}
 		
@@ -692,7 +689,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 	// 1. Render mesh renderer shadows
 	// ===========================================================
 
-	// indicate that this is a skinned mesh renderer..
+	// indicate that this is not a skinned mesh renderer..
 	static const unsigned int isNotASkinnedMeshRenderer = 0;
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
 
@@ -727,7 +724,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 			depthGBufferShader.setMatrix("normalMatrix", transform.normalMatrix);
 
 			// Draw every mesh of a given model.
-			for (auto const& mesh : model->meshes) {
+			for (auto& mesh : model->meshes) {
 				Material const* material = obtainMaterial(*meshRenderer, mesh);
 
 				if (!material) {
@@ -735,12 +732,9 @@ void Renderer::depthPrePass(Camera const& camera) {
 				}
 
 				setupNormalMapUniforms(depthGBufferShader, *material);
+				constructMeshBuffers(mesh);
+				swapVertexBuffer(mesh);
 
-				positionsVBO.uploadData(mesh.positions);
-				textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
-				normalsVBO.uploadData(mesh.normals);
-				tangentsVBO.uploadData(mesh.tangents);
-				EBO.uploadData(mesh.indices);
 				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 			}
 		}
@@ -787,7 +781,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 			glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer->bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer->bonesFinalMatrices.data());
 
 			// Draw every mesh of a given model.
-			for (auto const& mesh : model->meshes) {
+			for (auto& mesh : model->meshes) {
 				Material const* material = obtainMaterial(*skinnedMeshRenderer, mesh);
 
 				if (!material) {
@@ -795,13 +789,9 @@ void Renderer::depthPrePass(Camera const& camera) {
 				}
 
 				setupNormalMapUniforms(depthGBufferShader, *material);
+				constructMeshBuffers(mesh);
+				swapVertexBuffer(mesh);
 
-				positionsVBO.uploadData(mesh.positions);
-				textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
-				normalsVBO.uploadData(mesh.normals);
-				tangentsVBO.uploadData(mesh.tangents);
-				EBO.uploadData(mesh.indices);
-				skeletalVBO.uploadData(mesh.vertexWeights);
 				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 			}
 		}
@@ -1267,10 +1257,12 @@ void Renderer::prepareRendering() {
 	setDepthMode(DepthTestingMethod::DepthTest);
 
 	// bind the VBOs to their respective binding index
+#if 0
 	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(),			0, sizeof(glm::vec3));
 	glVertexArrayVertexBuffer(mainVAO, 1, textureCoordinatesVBO.id(),	0, sizeof(glm::vec2));
 	glVertexArrayVertexBuffer(mainVAO, 2, normalsVBO.id(),				0, sizeof(glm::vec3));
 	glVertexArrayVertexBuffer(mainVAO, 3, tangentsVBO.id(),				0, sizeof(glm::vec3));
+#endif
 	glBindVertexArray(mainVAO);
 
 	// =================================================================
@@ -1350,7 +1342,7 @@ void Renderer::renderModels(Camera const& camera) {
 			// If a model has only one submesh, we render all materials attached to this mesh renderer..
 			if (model->meshes.size() == 1) {
 				// Draw every material of a this mesh.
-				auto const& mesh = model->meshes[0];
+				auto& mesh = model->meshes[0];
 
 				for (auto const& materialId : meshRenderer->materialIds) {
 					auto&& [material, __] = resourceManager.getResource<Material>(materialId);
@@ -1370,7 +1362,7 @@ void Renderer::renderModels(Camera const& camera) {
 			}
 			else {
 				// Draw every mesh of a given model.
-				for (auto const& mesh : model->meshes) {
+				for (auto& mesh : model->meshes) {
 					Material const* material = obtainMaterial(*meshRenderer, mesh);
 
 					// Use the correct shader and configure it's required uniforms..
@@ -1445,7 +1437,7 @@ void Renderer::renderTranslucentModels(Camera const& camera)
 			// If a model has only one submesh, we render all materials attached to this mesh renderer..
 			if (model->meshes.size() == 1) {
 				// Draw every material of a this mesh.
-				auto const& mesh = model->meshes[0];
+				auto& mesh = model->meshes[0];
 
 				for (auto const& materialId : meshRenderer->materialIds) {
 					auto&& [material, __] = resourceManager.getResource<Material>(materialId);
@@ -1465,7 +1457,7 @@ void Renderer::renderTranslucentModels(Camera const& camera)
 			}
 			else {
 				// Draw every mesh of a given model.
-				for (auto const& mesh : model->meshes) {
+				for (auto& mesh : model->meshes) {
 					Material const* material = obtainMaterial(*meshRenderer, mesh);
 
 					// Use the correct shader and configure it's required uniforms..
@@ -1479,7 +1471,7 @@ void Renderer::renderTranslucentModels(Camera const& camera)
 			}
 		}
 	}
-
+	
 	glDisable(GL_CULL_FACE);
 }
 
@@ -1629,7 +1621,7 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 		// If a model has only one submesh, we render all materials attached to this mesh renderer..
 		if (model->meshes.size() == 1) {
 			// Draw every material of a this mesh.
-			auto const& mesh = model->meshes[0];
+			auto& mesh = model->meshes[0];
 
 			for (auto const& materialId : skinnedMeshRenderer.materialIds) {
 				auto&& [material, __] = resourceManager.getResource<Material>(materialId);
@@ -1648,7 +1640,7 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 			}
 		}
 		else {
-			for (auto const& mesh : model->meshes) {
+			for (auto& mesh : model->meshes) {
 				Material const* material = obtainMaterial(skinnedMeshRenderer, mesh);
 
 				if (!material) {
@@ -2117,6 +2109,9 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 
 		// Draw every mesh of a given model.
 		for (auto const& mesh : model->meshes) {
+			glVertexArrayElementBuffer(mainVAO, EBO.id());
+			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
+			glVertexArrayVertexBuffer(mainVAO, 4, skeletalVBO.id(), 0, sizeof(VertexWeight));
 			positionsVBO.uploadData(mesh.positions);
 			EBO.uploadData(mesh.indices);
 			skeletalVBO.uploadData(mesh.vertexWeights);
@@ -2159,6 +2154,8 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 
 		// Draw every mesh of a given model.
 		for (auto const& mesh : model->meshes) {
+			glVertexArrayElementBuffer(mainVAO, EBO.id());
+			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
 			positionsVBO.uploadData(mesh.positions);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
@@ -2201,6 +2198,40 @@ void Renderer::setupNormalMapUniforms(Shader& shader, Material const& material) 
 			}
 		}
 	}
+}
+
+void Renderer::constructMeshBuffers(Mesh& mesh) {
+	// Create Buffer Objects for first render
+	if (mesh.meshID) {
+		return;
+	}
+
+	mesh.meshID = Math::getGUID();
+	meshBOs[mesh.meshID].EBO					= BufferObject(sizeof(unsigned int) * std::size(mesh.indices));
+	meshBOs[mesh.meshID].normalsVBO				= BufferObject(sizeof(glm::vec3) * std::size(mesh.normals));
+	meshBOs[mesh.meshID].positionsVBO			= BufferObject(sizeof(glm::vec3) * std::size(mesh.positions));
+	meshBOs[mesh.meshID].skeletalVBO			= BufferObject(sizeof(VertexWeight) * std::size(mesh.vertexWeights));
+	meshBOs[mesh.meshID].tangentsVBO			= BufferObject(sizeof(glm::vec3) * std::size(mesh.tangents));
+	meshBOs[mesh.meshID].textureCoordinatesVBO	= BufferObject(sizeof(glm::vec2) * std::size(mesh.textureCoordinates));
+
+	meshBOs.at(mesh.meshID).tangentsVBO.uploadData(mesh.tangents);
+	meshBOs.at(mesh.meshID).normalsVBO.uploadData(mesh.normals);
+	meshBOs.at(mesh.meshID).positionsVBO.uploadData(mesh.positions);
+	meshBOs.at(mesh.meshID).textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
+	meshBOs.at(mesh.meshID).skeletalVBO.uploadData(mesh.vertexWeights);
+		
+	meshBOs.at(mesh.meshID).EBO.uploadData(mesh.indices);
+}
+
+void Renderer::swapVertexBuffer(Mesh& mesh) {
+	glVertexArrayElementBuffer(mainVAO, meshBOs.at(mesh.meshID).EBO.id());
+	glVertexArrayVertexBuffer(mainVAO, 0, meshBOs.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));		
+	glVertexArrayVertexBuffer(mainVAO, 1, meshBOs.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
+	glVertexArrayVertexBuffer(mainVAO, 2, meshBOs.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
+	glVertexArrayVertexBuffer(mainVAO, 3, meshBOs.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
+	
+	if(mesh.vertexWeights.size()) 
+		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
 }
 
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
@@ -2289,7 +2320,8 @@ void Renderer::renderObjectIds() {
 			if (!obtainMaterial(meshRenderer, mesh)) {
 				continue;
 			}
-
+			glVertexArrayElementBuffer(mainVAO, EBO.id());
+			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
 			positionsVBO.uploadData(mesh.positions);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
@@ -2319,7 +2351,8 @@ void Renderer::renderObjectIds() {
 			if (!obtainMaterial(skinnedMeshRenderer, mesh)) {
 				continue;
 			}
-
+			glVertexArrayElementBuffer(mainVAO, EBO.id());
+			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
 			positionsVBO.uploadData(mesh.positions);
 			EBO.uploadData(mesh.indices);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
@@ -2658,29 +2691,31 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	return customShader;
 }
 
-void Renderer::renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType) {
+void Renderer::renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType) {
+	// Create Buffer Objects for first render
+	constructMeshBuffers(mesh);
+
 	switch (pipeline)
 	{
 	case Pipeline::PBR:
-		tangentsVBO.uploadData(mesh.tangents);
-
+		glVertexArrayVertexBuffer(mainVAO, 3, meshBOs.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
 		[[fallthrough]];
 	case Pipeline::Color:
-		normalsVBO.uploadData(mesh.normals);
-		positionsVBO.uploadData(mesh.positions);
-		textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
-
+		glVertexArrayVertexBuffer(mainVAO, 2, meshBOs.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
+		glVertexArrayVertexBuffer(mainVAO, 0, meshBOs.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));
+		glVertexArrayVertexBuffer(mainVAO, 1, meshBOs.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
 		break;
 	default:
 		assert(false && "Unhandled pipeline.");
 		break;
 	}
-	
 	if (meshType == MeshType::Skinned) {
-		skeletalVBO.uploadData(mesh.vertexWeights);
+		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
+		//glVertexArrayVertexBuffer(mainVAO, 5, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
 	}
 
-	EBO.uploadData(mesh.indices);
+	// Bind this EBO to this VAO.
+	glVertexArrayElementBuffer(mainVAO, meshBOs.at(mesh.meshID).EBO.id());
 	glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 }
 

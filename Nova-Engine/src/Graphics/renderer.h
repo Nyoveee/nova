@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include <entt/entt.hpp>
+#include <unordered_map>
 
 #include "export.h"
 
@@ -31,6 +32,16 @@
 class Engine;
 class ResourceManager;
 
+struct MeshBOs {
+	BufferObject positionsVBO{ BufferObject{0} };			// VA 0
+	BufferObject textureCoordinatesVBO{ BufferObject{0} };	// VA 1
+	BufferObject normalsVBO{ BufferObject{0} };				// VA 2
+	BufferObject tangentsVBO{ BufferObject{0} };			// VA 3
+
+	// Skeletal animation VBO..
+	BufferObject skeletalVBO{ BufferObject{0} };			// VA 4
+	BufferObject EBO{ BufferObject{0} };					// VA 5
+};
 class Renderer {
 public:
 	enum class ToneMappingMethod {
@@ -220,7 +231,7 @@ private:
 	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale = 1.f);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
-	void renderMesh(Mesh const& mesh, Pipeline pipeline, MeshType meshType);
+	void renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType);
 
 	// helper function to obtain the underlying material of a mesh given its renderers.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
@@ -250,6 +261,12 @@ private:
 	// set up the required uniforms for normal map
 	void setupNormalMapUniforms(Shader& shader, Material const& material);
 
+	// construct all required VBOs and EBO of the meshes if not constructed.
+	void constructMeshBuffers(Mesh& mesh);
+
+	// swap buffers to a new mesh to its respective buffer binding index
+	void swapVertexBuffer(Mesh& mesh);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -257,6 +274,7 @@ private:
 
 	// Main VAO and their related buffers
 	GLuint mainVAO;
+
 	BufferObject positionsVBO;				// VA 0
 	BufferObject textureCoordinatesVBO;		// VA 1
 	BufferObject normalsVBO;				// VA 2
@@ -265,6 +283,9 @@ private:
 	// Skeletal animation VBO..
 	BufferObject skeletalVBO;				// VA 4
 	BufferObject EBO;						// VA 5
+
+	// List of mesh VBOs
+	std::unordered_map<MeshID, MeshBOs> meshBOs; // VA 0 - 4
 
 	// SSBO and UBO.
 	LightSSBO gameLights;
