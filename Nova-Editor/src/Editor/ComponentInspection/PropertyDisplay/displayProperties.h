@@ -74,6 +74,7 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 				};
 
 				updateMaterial.template operator()<MeshRenderer>();
+				updateMaterial.template operator()<TranslucentMeshRenderer>();
 				updateMaterial.template operator()<SkinnedMeshRenderer>();
 			}
 		}

@@ -1,16 +1,16 @@
 {
-    "blendingConfig": "Disabled",
+    "blendingConfig": "AlphaBlending",
     "cullingConfig": "Enable",
-    "depthTestingMethod": "DepthTest",
+    "depthTestingMethod": "NoDepthWriteTest",
     "overridenUniforms": {
         "color": {
             "type": "Color",
             "value": {
                 "__variant_type": 10,
                 "__variant_value": {
-                    "b": 0.7448276281356812,
-                    "g": 0.7448276281356812,
-                    "r": 0.7448276281356812
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
                 }
             }
         },
@@ -25,7 +25,7 @@
             "type": "NormalizedFloat",
             "value": {
                 "__variant_type": 12,
-                "__variant_value": 1.0
+                "__variant_value": 0.24300000071525574
             }
         }
     },

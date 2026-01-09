@@ -43,7 +43,7 @@ class Sequencer;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
+	EntityData, Transform, Light, MeshRenderer, TranslucentMeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
 	Image, Sequence, Button, Canvas, NavMeshOffLinks
 
@@ -196,6 +196,24 @@ struct Light {
 };
 
 struct MeshRenderer {
+	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
+	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
+
+	bool castShadow = true;
+	bool shadowCullFrontFace = true;
+
+	// std::vector<>
+	REFLECTABLE(
+		modelId,
+		materialIds,
+		castShadow,
+		shadowCullFrontFace
+	)
+
+	std::unordered_set<int>					isMaterialInstanced;
+};
+
+struct TranslucentMeshRenderer {
 	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 

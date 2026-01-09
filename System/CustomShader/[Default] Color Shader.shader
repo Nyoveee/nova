@@ -9,6 +9,8 @@ Tags{
 Properties{
     Color color;
     float intensity;
+
+    NormalizedFloat transparency;
 }
 
 // Vertex shader..
@@ -21,5 +23,5 @@ Vert{
 
 // Fragment shader..
 Frag{
-    return vec4(intensity * color, 1.0); // ok
+    return vec4(intensity * color, transparency); // ok
 }

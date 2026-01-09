@@ -467,6 +467,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 
 	renderModels(camera);
 	renderSkinnedModels(camera);
+	renderTranslucentModels(camera);
 	
 	glDepthFunc(GL_LESS);
 
@@ -1216,6 +1217,101 @@ void Renderer::renderModels(Camera const& camera) {
 	glDisable(GL_CULL_FACE);
 }
 
+void Renderer::renderTranslucentModels(Camera const& camera)
+{
+#if defined(DEBUG)
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
+
+	glEnable(GL_CULL_FACE);
+
+	// indicate that this is NOT a skinned mesh renderer..
+	static const unsigned int isNotASkinnedMeshRenderer = 0;
+	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
+	const glm::mat4 view = camera.view();
+
+	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
+		std::vector<entt::entity> sortedEntities(entities.begin(), entities.end());
+		std::sort(sortedEntities.begin(), sortedEntities.end(), 
+			[&](entt::entity left, entt::entity right)
+			{
+				const Transform& transLeft = registry.get<Transform>(left);
+				const Transform& transRight = registry.get<Transform>(right);
+
+				float distLeft = (view * glm::vec4(transLeft.position, 1.f)).z;
+				float distRight = (view * glm::vec4(transRight.position, 1.f)).z;
+
+				// Back-to-front for translucency
+				return distLeft < distRight;
+			});
+
+		for (auto const& entity : sortedEntities) {
+			TranslucentMeshRenderer* meshRenderer = registry.try_get<TranslucentMeshRenderer>(entity);
+			Transform const& transform = registry.get<Transform>(entity);
+			EntityData const& entityData = registry.get<EntityData>(entity);
+
+			if (!entityData.isActive || !engine.ecs.isComponentActive<TranslucentMeshRenderer>(entity)) {
+				continue;
+			}
+
+			// frustum culling :)
+			if (!transform.inCameraFrustum) {
+				continue;
+			}
+
+			if (!meshRenderer) {
+				continue;
+			}
+
+			// Retrieves model asset from asset manager.
+			auto [model, _] = resourceManager.getResource<Model>(meshRenderer->modelId);
+
+			if (!model) {
+				// missing model.
+				continue;
+			}
+
+			// If a model has only one submesh, we render all materials attached to this mesh renderer..
+			if (model->meshes.size() == 1) {
+				// Draw every material of a this mesh.
+				auto const& mesh = model->meshes[0];
+
+				for (auto const& materialId : meshRenderer->materialIds) {
+					auto&& [material, __] = resourceManager.getResource<Material>(materialId);
+
+					if (!material) {
+						continue;
+					}
+
+					// Use the correct shader and configure it's required uniforms..
+					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+					if (shader) {
+						// time to draw!
+						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					}
+				}
+			}
+			else {
+				// Draw every mesh of a given model.
+				for (auto const& mesh : model->meshes) {
+					Material const* material = obtainMaterial(*meshRenderer, mesh);
+
+					// Use the correct shader and configure it's required uniforms..
+					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+
+					if (shader) {
+						// time to draw!
+						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
+					}
+				}
+			}
+		}
+	}
+
+	glDisable(GL_CULL_FACE);
+}
+
 void Renderer::renderText(Transform const& transform, Text const& text)
 {
 	struct Vertex {
@@ -1464,6 +1560,16 @@ Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh 
 	}
 
 	auto&& [material, _] = resourceManager.getResource<Material>(meshRenderer.materialIds[mesh.materialIndex]);
+	return material;
+}
+
+Material const* Renderer::obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh)
+{
+	if (mesh.materialIndex >= transMeshRenderer.materialIds.size()) {
+		return nullptr;
+	}
+
+	auto&& [material, _] = resourceManager.getResource<Material>(transMeshRenderer.materialIds[mesh.materialIndex]);
 	return material;
 }
 

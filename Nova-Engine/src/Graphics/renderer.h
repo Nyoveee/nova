@@ -165,6 +165,9 @@ private:
 	// render all MeshRenderers.
 	void renderModels(Camera const& camera);
 
+	// render all TranslucentMeshRenderers.
+	void renderTranslucentModels(Camera const& camera);
+
 	// render all SkinnedMeshRenderers.
 	void renderSkinnedModels(Camera const& camera);
 
@@ -213,6 +216,7 @@ private:
 
 	// helper function to obtain the underlying material of a mesh given its renderers.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
+	Material const* obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
 	// performs frustum culling for models and lights
