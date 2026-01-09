@@ -20,7 +20,7 @@ layout(std140, binding = 0) uniform Camera {
 };
 
 const int kernelSize = 64;
-const float radius = 0.5;
+const float radius = 2;
 
 vec3 WorldPositionFromDepth(float depth, vec2 textureCoords) {
     // 1. Map to NDC space [-1, 1]
@@ -79,9 +79,7 @@ void main() {
         const float bias = 0.025;
 
         float rangeCheck = smoothstep(0.0, 1.0, radius / abs(linearizeDepth(depth) - sampleDepth));
-        occlusion       += (sampleDepth >= -samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;    
-        // occlusion += samplePos.z;
-        // FragColor = vec4(sampleDepth, samplePos.z, 0, 1);
+        occlusion       += (sampleDepth <= -(samplePos.z + bias) ? 1.0 : 0.0) * rangeCheck;    
     }  
 
     occlusion = 1.0 - (occlusion / kernelSize);

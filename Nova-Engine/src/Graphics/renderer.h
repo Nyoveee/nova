@@ -296,7 +296,7 @@ private:
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;
 
-	FrameBuffer ssaoFrameBuffer;
+	PairFrameBuffer ssaoFrameBuffer;
 	BloomFrameBuffer bloomFrameBuffer;
 
 	DepthFrameBuffer directionalLightShadowFBO;
@@ -339,7 +339,7 @@ public:
 	Shader outlineShader;
 	Shader debugShader;
 	Shader overlayShader;
-
+	
 	Shader objectIdShader;
 	Shader uiImageObjectIdShader;
 	Shader uiTextObjectIdShader;
@@ -361,6 +361,7 @@ public:
 	Shader shadowMapShader;
 	Shader depthGBufferShader;
 	Shader ssaoShader;
+	Shader gaussianBlurShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;
@@ -374,4 +375,5 @@ public:
 	bool toDebugRenderBoundingVolume = false;
 	bool toDebugClusters = false;
 
+	bool toEnableSSAO = true;
 };

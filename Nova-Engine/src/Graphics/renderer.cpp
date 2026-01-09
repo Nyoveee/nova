@@ -115,6 +115,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
 	depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
 	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
+	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
 	mainVAO							{},
@@ -160,7 +161,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
 	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
-	ssaoFrameBuffer					{ gameWidth, gameHeight, { GL_R8 } },
+	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
 	directionalLightShadowFBO		{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
 	toGammaCorrect					{ true },
 	toPostProcess					{ false },
@@ -475,7 +476,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
 
 	// We generate SSAO texture for forward rendering later..
-	generateSSAO(frameBuffers, camera);
+	if(toEnableSSAO) generateSSAO(frameBuffers, camera);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -809,7 +810,12 @@ void Renderer::depthPrePass(Camera const& camera) {
 }
 
 void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera) {
-	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFrameBuffer.fboId());
+	// ========================================================================================
+	// 1. We first generate the SSAO texture using the random kernels, depth and normal map.
+	// ========================================================================================
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFrameBuffer.getActiveFrameBuffer().fboId());
+
+	glViewport(0, 0, gameWidth / 2, gameHeight / 2);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glDisable(GL_DEPTH_TEST);
@@ -831,6 +837,36 @@ void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera)
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// ========================================================================================
+	// 2. We then perform a 2 gaussian blur pass.
+	// ========================================================================================
+	
+	// Swap pair framebuffer..
+	ssaoFrameBuffer.swapFrameBuffer();
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFrameBuffer.getActiveFrameBuffer().fboId());
+
+	gaussianBlurShader.use();
+
+	glBindTextureUnit(0, ssaoFrameBuffer.getReadFrameBuffer().textureIds()[0]);
+	gaussianBlurShader.setImageUniform("image", 0);
+
+	// first horizontal blur pass
+	gaussianBlurShader.setBool("horizontal", true);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// Swap pair framebuffer..
+	ssaoFrameBuffer.swapFrameBuffer();
+	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFrameBuffer.getActiveFrameBuffer().fboId());
+
+	glBindTextureUnit(0, ssaoFrameBuffer.getReadFrameBuffer().textureIds()[0]);
+	gaussianBlurShader.setImageUniform("image", 0);
+
+	// second vertical blur pass
+	gaussianBlurShader.setBool("horizontal", false);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glViewport(0, 0, gameWidth, gameHeight);
 }
 
 void Renderer::initialiseSSAO() {
@@ -2409,7 +2445,14 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		shader.setFloat("zFar", camera.getFarPlaneDistance());
 		shader.setUVec3("gridSize", { gridSizeX, gridSizeY, gridSizeZ });
 		shader.setUVec2("screenDimensions", { gameWidth, gameHeight });
+
+		shader.setBool("toEnableSSAO", toEnableSSAO);
 		
+		if (toEnableSSAO) {
+			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]);
+			shader.setImageUniform("ssao", 1);
+		}
+
 		shader.setBool("hasDirectionalLightShadowCaster", hasDirectionalLightShadowCaster);
 		
 		if (hasDirectionalLightShadowCaster) {
@@ -2436,8 +2479,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
-	// We reserve the very 1st texture unit for shadow map.
-	int numOfTextureUnitBound = 1;
+	// We reserve the very 2 texture unit for shadow map and SSAO.
+	int numOfTextureUnitBound = 2;
 	
 	for (auto const& [name, overriddenUniformData] : material.materialData.overridenUniforms) {
 		std::visit([&](auto&& value) {

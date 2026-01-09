@@ -64,6 +64,7 @@ void DebugUI::renderPhysicsSection() {
 	ImGui::Checkbox("Particle Emission Shape debug render", &engine.toDebugRenderParticleEmissionShape);
 	ImGui::Checkbox("(Frustum Culling) Bounding Volume debug render", &renderer.toDebugRenderBoundingVolume);
 	ImGui::Checkbox("Clusters debug render", &renderer.toDebugClusters);
+	ImGui::Checkbox("SSAO", &renderer.toEnableSSAO);
 
 	ImGui::SeparatorText("Mouse positions");
 

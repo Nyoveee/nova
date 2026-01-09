@@ -30,7 +30,6 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 // ====================================
 // These are set by the pipeline, and exposed. 
 // ==================================== 
-const float ambientFactor = 0.04;
 const float PI = 3.14159265358979323846;
 
 // === LIGHT PROPERTIES ===
@@ -106,6 +105,8 @@ uniform vec3 cameraPos;
 uniform float timeElapsed;
 
 uniform sampler2D shadowMap;
+uniform sampler2D ssao;
+uniform bool toEnableSSAO;
 
 out vec4 FragColor;
 
@@ -183,9 +184,20 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 
     // We calculate the fragment's shadow factor.
     float shadowFactor = shadowCalculation();
-
     finalColor *= (1.0 - shadowFactor);
-    finalColor += albedoColor * (occulusion * ambientFactor);
+
+    // Because SSAO is screen space, we need a way to retrieve SSAO texture in screenspace.
+    vec2 screenSpaceTextureCoordinates = gl_FragCoord.xy / screenDimensions;
+
+    const float ambientFactor = 0.07;
+    float occulusionFactor = occulusion * ambientFactor;
+
+    if(toEnableSSAO) {
+        float ambientOcculusion = texture(ssao, screenSpaceTextureCoordinates).r;
+        occulusionFactor *= ambientOcculusion; 
+    }
+
+    finalColor += albedoColor * (occulusionFactor);
     return finalColor;
 }
 
