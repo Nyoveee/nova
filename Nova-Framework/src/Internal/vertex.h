@@ -25,6 +25,7 @@
 using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
 
 using MaterialName		= std::string;
+using MeshID = size_t;
 
 // i genuinely have no idea where to put this
 enum class RenderConfig {
@@ -40,6 +41,7 @@ struct alignas(16) ParticleVertex {
 };
 
 struct Mesh {
+	MeshID meshID{}; // Assume 0 doesn't exist
 	std::string name;
 	
 	// std::vector<Vertex> vertices;

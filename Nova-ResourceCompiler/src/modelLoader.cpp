@@ -292,6 +292,7 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 	}
 
 	return { 
+		0,
 		mesh->mName.C_Str(),
 		std::move(positions),
 		std::move(textureCoordinates),

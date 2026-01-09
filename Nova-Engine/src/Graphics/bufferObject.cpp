@@ -31,9 +31,9 @@ BufferObject::BufferObject(BufferObject&& other) noexcept :
 	other.m_id = INVALID_ID;
 }
 
-BufferObject& BufferObject ::operator=(BufferObject&& other) noexcept {
+BufferObject& BufferObject::operator=(BufferObject&& other) noexcept {
 	BufferObject tmp{ std::move(other) };
-	swap(other);
+	swap(tmp);
 	return *this;
 }
 
