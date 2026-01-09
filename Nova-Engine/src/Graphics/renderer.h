@@ -77,7 +77,7 @@ public:
 	void depthPrePass(Camera const& camera);
 
 	// generates the SSAO texture.
-	void generateSSAO(PairFrameBuffer& frameBuffers);
+	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
 
 	// initialise the sample kernel and noise texture used in SSAO
 	void initialiseSSAO();

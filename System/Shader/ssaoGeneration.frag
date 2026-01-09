@@ -9,6 +9,8 @@ uniform sampler2D noiseTexture;
 
 uniform vec2 screenDimensions;
 
+uniform float near;
+uniform float far;
 
 layout(std140, binding = 0) uniform Camera {
     mat4 view;
@@ -32,44 +34,56 @@ vec3 WorldPositionFromDepth(float depth, vec2 textureCoords) {
     return worldSpacePos.xyz / worldSpacePos.w;
 }
 
+float linearizeDepth(float depth) {
+    // Example of reconstructing View-Space Z from a [0,1] Depth Map
+    float ndcDepth = depth * 2.0 - 1.0; 
+    float viewZ = (2.0 * near * far) / (far + near - ndcDepth * (far - near));
+
+    return viewZ;
+}
+
 void main() {
     // tile noise texture over screen, based on screen dimensions divided by noise size
     const vec2 noiseScale = screenDimensions / 4.0;
 
     float depth    = texture(depthMap, textureCoords).r;
-    vec3 normal    = texture(normalMap, textureCoords).rgb;
+    vec3 normal    = normalize(vec3(view * vec4(texture(normalMap, textureCoords).rgb, 0)));
+    
     vec3 randomVec = texture(noiseTexture, textureCoords * noiseScale).rgb;  
+    randomVec = normalize(randomVec + vec3(0.001, 0.001, 0.0));
 
     vec3 worldPosition = WorldPositionFromDepth(depth, textureCoords);
+    vec3 viewPosition = vec3(view * vec4(worldPosition, 1));
 
-    // learnopengl follows view space, but we are following world space
+    // construct TBN
     vec3 tangent   = normalize(randomVec - normal * dot(randomVec, normal));
     vec3 bitangent = cross(normal, tangent);
-    mat3 TBN       = mat3(tangent, bitangent, normal);  // world space TBN.
+    mat3 TBN       = mat3(tangent, bitangent, normal);  // view space TBN.
 
     float occlusion = 0.0;
 
     for(int i = 0; i < kernelSize; ++i) {
         // we retrieve a random sample, and offset from the current fragment..
-        vec3 samplePos = TBN * vec3(samples[i]);          // from tangent to world space
-        samplePos = worldPosition + samplePos * radius; 
+        vec3 samplePos = TBN * vec3(samples[i]);          // from tangent to view space
+        samplePos = viewPosition + samplePos * radius; 
 
         // we convert our sample position to screen space, so we can query for depth.
         vec4 offset = vec4(samplePos, 1.0);
-        offset      = cameraProjectionView * offset;    // from world to clip-space
+        offset      = projection * offset;              // from view to clip-space
         offset.xyz /= offset.w;                         // perspective divide
         offset.xyz  = offset.xyz * 0.5 + 0.5;           // transform to range 0.0 - 1.0  
 
         // depth of the sampled fragment
-        float sampleDepth = texture(depthMap, offset.xy).r; 
+        float sampleDepth = linearizeDepth(texture(depthMap, offset.xy).r); 
 
         const float bias = 0.025;
-        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(worldPosition.z - sampleDepth));
-        occlusion  += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck; 
+
+        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(linearizeDepth(depth) - sampleDepth));
+        occlusion       += (sampleDepth >= -samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;    
+        // occlusion += samplePos.z;
+        // FragColor = vec4(sampleDepth, samplePos.z, 0, 1);
     }  
 
     occlusion = 1.0 - (occlusion / kernelSize);
-    // FragColor = occlusion;  
-
-    FragColor = texture(depthMap, textureCoords).r; 
+    FragColor = occlusion;  
 }

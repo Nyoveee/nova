@@ -264,7 +264,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayElementBuffer(particleVAO, EBO.id());
 
 	initialiseSSAO();
-	ssaoShader.setVec2("screenDimensions", { gameWidth, gameHeight });
 }
 
 Renderer::~Renderer() {
@@ -476,7 +475,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
 
 	// We generate SSAO texture for forward rendering later..
-	generateSSAO(frameBuffers);
+	generateSSAO(frameBuffers, camera);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -738,6 +737,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 				positionsVBO.uploadData(mesh.positions);
 				textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
 				normalsVBO.uploadData(mesh.normals);
+				tangentsVBO.uploadData(mesh.tangents);
 				EBO.uploadData(mesh.indices);
 				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 			}
@@ -797,6 +797,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 				positionsVBO.uploadData(mesh.positions);
 				textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
 				normalsVBO.uploadData(mesh.normals);
+				tangentsVBO.uploadData(mesh.tangents);
 				EBO.uploadData(mesh.indices);
 				skeletalVBO.uploadData(mesh.vertexWeights);
 				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
@@ -807,14 +808,17 @@ void Renderer::depthPrePass(Camera const& camera) {
 	glDisable(GL_CULL_FACE);
 }
 
-void Renderer::generateSSAO(PairFrameBuffer& frameBuffers) {
+void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFrameBuffer.fboId());
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glDisable(GL_DEPTH_TEST);
 
 	ssaoShader.use();
-	
+	ssaoShader.setVec2("screenDimensions", { gameWidth, gameHeight });
+	ssaoShader.setFloat("near", camera.getNearPlaneDistance());
+	ssaoShader.setFloat("far", camera.getFarPlaneDistance());
+
 	// Bind depth, normal and noise texture..
 	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().depthStencilId());
 	ssaoShader.setImageUniform("depthMap", 0);
@@ -947,6 +951,8 @@ void Renderer::recompileShaders() {
 
 	clusterBuildingCompute.recompile();
 	clusterLightCompute.recompile();
+
+	ssaoShader.recompile();
 
 	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
 
