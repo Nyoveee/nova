@@ -221,6 +221,10 @@ glm::vec2 Engine::getUIMousePosition() const {
 }
 
 void Engine::SystemsOnLoad() {
+	// Make sure the next scene gets the latest script field properties in inspector to edit
+	if (engineState == State::Editor)
+		scriptingAPIManager.OnSceneLoaded();
+
 	if (!inSimulationMode) {
 		return;
 	}

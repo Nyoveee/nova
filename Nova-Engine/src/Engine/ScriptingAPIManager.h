@@ -81,7 +81,6 @@ public:
 	// Serializable Field Reference
 	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(ResourceID scriptID);
 
-	//ENGINE_DLL_API bool setScriptFieldData(entt::entity entityID, ResourceID scriptID, FieldData const& fieldData);
 
 	// This is the callback when the assets files are Added
 	ENGINE_DLL_API void OnAssetContentAddedCallback(std::string abspath);
@@ -92,6 +91,8 @@ public:
 	// This is the callback when the assets files are deleted
 	ENGINE_DLL_API void OnAssetContentDeletedCallback(ResourceID assetTypeID);
 
+	// Make sure the properties for scripts in the inspector are the latest when scene changes
+	ENGINE_DLL_API void OnSceneLoaded();
 public:
 	// Interfaces
 	ENGINE_DLL_API void onCollisionEnter(entt::entity entityOne, entt::entity entityTwo);
@@ -115,6 +116,7 @@ private:
 
 	bool hasFieldChanged(serialized_field_type const& oldField, serialized_field_type const& newField);
 
+	void UpdateAllScriptComponentFields(ResourceID scriptID);
 private:
 	Engine& engine;
 	std::string runtimeDirectory;

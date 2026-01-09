@@ -2,11 +2,12 @@
     "blendingConfig": "AlphaBlending",
     "cullingConfig": "Enable",
     "depthTestingMethod": "DepthTest",
-    "fShaderCode": "\n    return vec4(intensity * color, 1.0); // ok\n",
+    "fShaderCode": "\n    return vec4(intensity * color, transparency); // ok\n",
     "pipeline": "Color",
     "uniforms": {
         "color": "Color",
-        "intensity": "float"
+        "intensity": "float",
+        "transparency": "NormalizedFloat"
     },
     "vShaderCode": "    \n    gl_Position = calculateClipPosition(position);\n\n    // pass texture units to fragment shader..\n    vsOut.textureUnit = textureUnit; \n"
 }
