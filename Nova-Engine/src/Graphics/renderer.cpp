@@ -196,16 +196,16 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// specify vertex attribute and VBO bindings..
 	glVertexArrayAttribFormat(mainVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
-	// glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
+	glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
 
 	glVertexArrayAttribFormat(mainVAO, 1, 2, GL_FLOAT, GL_FALSE, 0);
-	// glVertexArrayVertexBuffer(mainVAO, 1, textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
+	glVertexArrayVertexBuffer(mainVAO, 1, textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
 	
 	glVertexArrayAttribFormat(mainVAO, 2, 3, GL_FLOAT, GL_FALSE, 0);
-	// glVertexArrayVertexBuffer(mainVAO, 2, normalsVBO.id(), 0, sizeof(glm::vec3));
+	glVertexArrayVertexBuffer(mainVAO, 2, normalsVBO.id(), 0, sizeof(glm::vec3));
 
 	glVertexArrayAttribFormat(mainVAO, 3, 3, GL_FLOAT, GL_FALSE, 0);
-	// glVertexArrayVertexBuffer(mainVAO, 3, tangentsVBO.id(), 0, sizeof(glm::vec3));
+	glVertexArrayVertexBuffer(mainVAO, 3, tangentsVBO.id(), 0, sizeof(glm::vec3));
 
 	// associate vertex attributes to binding indices.
 	//										vertex attribute	binding index
@@ -2363,15 +2363,6 @@ void Renderer::renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType) {
 		meshVBOS[mesh.meshID].tangentsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.tangents));
 		meshVBOS[mesh.meshID].textureCoordinatesVBO = BufferObject(sizeof(glm::vec2) * std::size(mesh.textureCoordinates));
 
-#if 0
-		meshVBOS[mesh.meshID].EBO = BufferObject(sizeof(unsigned int) * std::size(mesh.indices));
-		meshVBOS[mesh.meshID].normalsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.normals));
-		meshVBOS[mesh.meshID].positionsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.positions));
-		meshVBOS[mesh.meshID].skeletalVBO = BufferObject(sizeof(VertexWeight) * std::size(mesh.vertexWeights));
-		meshVBOS[mesh.meshID].tangentsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.tangents));
-		meshVBOS[mesh.meshID].textureCoordinatesVBO = BufferObject(sizeof(glm::vec2) * std::size(mesh.textureCoordinates));
-#endif
-
 		switch (pipeline)
 		{
 		case Pipeline::PBR:
@@ -2391,15 +2382,26 @@ void Renderer::renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType) {
 		}
 		meshVBOS.at(mesh.meshID).EBO.uploadData(mesh.indices);
 	}
+	switch (pipeline)
+	{
+	case Pipeline::PBR:
+		glVertexArrayVertexBuffer(mainVAO, 3, meshVBOS.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
+		[[fallthrough]];
+	case Pipeline::Color:
+		glVertexArrayVertexBuffer(mainVAO, 2, meshVBOS.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
+		glVertexArrayVertexBuffer(mainVAO, 0, meshVBOS.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));
+		glVertexArrayVertexBuffer(mainVAO, 1, meshVBOS.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
+		break;
+	default:
+		assert(false && "Unhandled pipeline.");
+		break;
+	}
+	if (meshType == MeshType::Skinned) {
+		glVertexArrayVertexBuffer(mainVAO, 4, meshVBOS.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
+	}
 	// Bind this EBO to this VAO.
 	glVertexArrayElementBuffer(mainVAO, meshVBOS.at(mesh.meshID).EBO.id());
-	// specify vertex attribute and VBO bindings..
-	glVertexArrayVertexBuffer(mainVAO, 0, meshVBOS.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));
-	glVertexArrayVertexBuffer(mainVAO, 1, meshVBOS.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
-	glVertexArrayVertexBuffer(mainVAO, 2, meshVBOS.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
-	glVertexArrayVertexBuffer(mainVAO, 3, meshVBOS.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
-	// bind skeletal VBO to binding index 4
-	glVertexArrayVertexBuffer(mainVAO, 4, meshVBOS.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
+
 
 	glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 }
