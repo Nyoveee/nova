@@ -31,7 +31,7 @@
 class Engine;
 class ResourceManager;
 
-struct MeshVBOS {
+struct MeshBOs {
 	BufferObject positionsVBO{ BufferObject{0} };			// VA 0
 	BufferObject textureCoordinatesVBO{ BufferObject{0} };	// VA 1
 	BufferObject normalsVBO{ BufferObject{0} };				// VA 2
@@ -264,7 +264,7 @@ private:
 	BufferObject EBO;						// VA 5
 
 	// List of mesh VBOs
-	std::unordered_map<MeshID, MeshVBOS> meshVBOS; // VA 0 - 4
+	std::unordered_map<MeshID, MeshBOs> meshBOs; // VA 0 - 4
 
 	// SSBO and UBO.
 	LightSSBO gameLights;

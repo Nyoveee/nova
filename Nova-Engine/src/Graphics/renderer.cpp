@@ -2356,51 +2356,51 @@ void Renderer::renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType) {
 	// Create Buffer Objects for first render
 	if (!mesh.meshID) {
 		mesh.meshID = Math::getGUID();
-		meshVBOS[mesh.meshID].EBO = BufferObject(sizeof(unsigned int) * std::size(mesh.indices));
-		meshVBOS[mesh.meshID].normalsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.normals));
-		meshVBOS[mesh.meshID].positionsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.positions));
-		meshVBOS[mesh.meshID].skeletalVBO = BufferObject(sizeof(VertexWeight) * std::size(mesh.vertexWeights));
-		meshVBOS[mesh.meshID].tangentsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.tangents));
-		meshVBOS[mesh.meshID].textureCoordinatesVBO = BufferObject(sizeof(glm::vec2) * std::size(mesh.textureCoordinates));
+		meshBOs[mesh.meshID].EBO = BufferObject(sizeof(unsigned int) * std::size(mesh.indices));
+		meshBOs[mesh.meshID].normalsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.normals));
+		meshBOs[mesh.meshID].positionsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.positions));
+		meshBOs[mesh.meshID].skeletalVBO = BufferObject(sizeof(VertexWeight) * std::size(mesh.vertexWeights));
+		meshBOs[mesh.meshID].tangentsVBO = BufferObject(sizeof(glm::vec3) * std::size(mesh.tangents));
+		meshBOs[mesh.meshID].textureCoordinatesVBO = BufferObject(sizeof(glm::vec2) * std::size(mesh.textureCoordinates));
 
 		switch (pipeline)
 		{
 		case Pipeline::PBR:
-			meshVBOS.at(mesh.meshID).tangentsVBO.uploadData(mesh.tangents);
+			meshBOs.at(mesh.meshID).tangentsVBO.uploadData(mesh.tangents);
 			[[fallthrough]];
 		case Pipeline::Color:
-			meshVBOS.at(mesh.meshID).normalsVBO.uploadData(mesh.normals);
-			meshVBOS.at(mesh.meshID).positionsVBO.uploadData(mesh.positions);
-			meshVBOS.at(mesh.meshID).textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
+			meshBOs.at(mesh.meshID).normalsVBO.uploadData(mesh.normals);
+			meshBOs.at(mesh.meshID).positionsVBO.uploadData(mesh.positions);
+			meshBOs.at(mesh.meshID).textureCoordinatesVBO.uploadData(mesh.textureCoordinates);
 			break;
 		default:
 			assert(false && "Unhandled pipeline.");
 			break;
 		}
 		if (meshType == MeshType::Skinned) {
-			meshVBOS.at(mesh.meshID).skeletalVBO.uploadData(mesh.vertexWeights);
+			meshBOs.at(mesh.meshID).skeletalVBO.uploadData(mesh.vertexWeights);
 		}
-		meshVBOS.at(mesh.meshID).EBO.uploadData(mesh.indices);
+		meshBOs.at(mesh.meshID).EBO.uploadData(mesh.indices);
 	}
 	switch (pipeline)
 	{
 	case Pipeline::PBR:
-		glVertexArrayVertexBuffer(mainVAO, 3, meshVBOS.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
+		glVertexArrayVertexBuffer(mainVAO, 3, meshBOs.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
 		[[fallthrough]];
 	case Pipeline::Color:
-		glVertexArrayVertexBuffer(mainVAO, 2, meshVBOS.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
-		glVertexArrayVertexBuffer(mainVAO, 0, meshVBOS.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));
-		glVertexArrayVertexBuffer(mainVAO, 1, meshVBOS.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
+		glVertexArrayVertexBuffer(mainVAO, 2, meshBOs.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
+		glVertexArrayVertexBuffer(mainVAO, 0, meshBOs.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));
+		glVertexArrayVertexBuffer(mainVAO, 1, meshBOs.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
 		break;
 	default:
 		assert(false && "Unhandled pipeline.");
 		break;
 	}
 	if (meshType == MeshType::Skinned) {
-		glVertexArrayVertexBuffer(mainVAO, 4, meshVBOS.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
+		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
 	}
 	// Bind this EBO to this VAO.
-	glVertexArrayElementBuffer(mainVAO, meshVBOS.at(mesh.meshID).EBO.id());
+	glVertexArrayElementBuffer(mainVAO, meshBOs.at(mesh.meshID).EBO.id());
 
 
 	glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
