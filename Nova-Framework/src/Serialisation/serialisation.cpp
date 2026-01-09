@@ -15,6 +15,8 @@ namespace Serialiser {
 			jsonVec.push_back(componentsJson);
 		}
 
+		std::sort(jsonVec.begin(), jsonVec.end(), [](Json& a, Json& b) {return a["id"] < b["id"]; });
+
 		// save to output file
 		js["entities"] = jsonVec;
 

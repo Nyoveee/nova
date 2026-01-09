@@ -4,7 +4,7 @@
 #include <json/json.hpp>
 #include "iostream"
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 EditorConfigUI::EditorConfigUI(Editor& editor) :
     editor{ editor }
