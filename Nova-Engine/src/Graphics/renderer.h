@@ -220,6 +220,8 @@ private:
 	// main debug render function
 	void debugRender();
 
+	// Calls the relevant compute shader Pre Post Process
+	void computePostProcessing(PairFrameBuffer& frameBuffers, Camera const& camera);
 	// renders post processing effect on the pair framebuffer
 	void renderPostProcessing(PairFrameBuffer& frameBuffers);
 
@@ -299,6 +301,9 @@ private:
 	// Skeletal animation, bones SSBO
 	BufferObject bonesSSBO;
 
+	// Volumetric Fog SSBO
+	BufferObject volumetricFogSSBO;
+
 	// Particle VAO and VBO
 	GLuint particleVAO;
 
@@ -337,6 +342,8 @@ private:
 	glm::mat4 UIProjection;
 
 private:
+	unsigned int numOfPtLights;
+
 	int numOfPhysicsDebugTriangles;
 	int numOfPhysicsDebugLines;
 	int numOfNavMeshDebugTriangles;
@@ -391,6 +398,8 @@ public:
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;
 	ComputeShader clusterLightCompute;
+	ComputeShader rayMarchingVolumetricFogCompute;
+	ComputeShader volumetricFogBufferResetCompute;
 
 	// HDR parameters
 	float hdrExposure;

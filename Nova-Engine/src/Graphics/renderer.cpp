@@ -72,6 +72,9 @@ constexpr unsigned int numClusters = gridSizeX * gridSizeY * gridSizeZ;
 constexpr int SHADOW_MAP_WIDTH  = 2048;
 constexpr int SHADOW_MAP_HEIGHT = 2048;
 
+// For Volumetric Fog
+constexpr int VOLUMETRIC_FOG_DOWNSCALE = 4;
+
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
@@ -87,85 +90,87 @@ struct alignas(16) Cluster {
 #pragma warning( pop )
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
-	engine							{ engine },
-	gameWidth						{ gameWidth },
-	gameHeight						{ gameHeight },
-	resourceManager					{ engine.resourceManager },
-	registry						{ engine.ecs.registry },
-	basicShader						{ "System/Shader/basic.vert",						"System/Shader/basic.frag" },
-	standardShader					{ "System/Shader/standard.vert",					"System/Shader/basic.frag" },
-	textureShader					{ "System/Shader/standard.vert",					"System/Shader/image.frag" },
-	colorShader						{ "System/Shader/standard.vert",					"System/Shader/color.frag" },
-	bloomDownSampleShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomDownSample.frag" },
-	bloomUpSampleShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomUpSample.frag" },
-	bloomFinalShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomFinal.frag" },
-	postprocessingShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/postprocessing.frag" },
-	gridShader						{ "System/Shader/grid.vert",						"System/Shader/grid.frag" },
-	outlineShader					{ "System/Shader/outline.vert",						"System/Shader/outline.frag" },
-	debugShader						{ "System/Shader/debug.vert",						"System/Shader/debug.frag" },
-	overlayShader					{ "System/Shader/squareOverlay.vert",				"System/Shader/overlay.frag" },
-	objectIdShader					{ "System/Shader/standard.vert",					"System/Shader/objectId.frag" },
-	uiImageObjectIdShader			{ "System/Shader/texture2D.vert",					"System/Shader/objectId.frag" },
-	uiTextObjectIdShader			{ "System/Shader/text.vert",						"System/Shader/objectId.frag" },
-	skyboxShader					{ "System/Shader/skybox.vert",						"System/Shader/skybox.frag" },
-	toneMappingShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/tonemap.frag" },
-	particleShader					{ "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag"},
-	textShader						{ "System/Shader/text.vert",						"System/Shader/text.frag"},
-	texture2dShader					{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
-	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
-	depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
-	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
-	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
-	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
-	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
-	mainVAO							{},
-	positionsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
-	textureCoordinatesVBO			{ AMOUNT_OF_MEMORY_ALLOCATED },
-	normalsVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
-	tangentsVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
-	skeletalVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
-	debugPhysicsVBO					{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	debugPhysicsLineVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	debugNavMeshVBO					{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	debugParticleShapeVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	textVBO							{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	EBO								{ AMOUNT_OF_MEMORY_ALLOCATED },
+	engine{ engine },
+	gameWidth{ gameWidth },
+	gameHeight{ gameHeight },
+	resourceManager{ engine.resourceManager },
+	registry{ engine.ecs.registry },
+	basicShader{ "System/Shader/basic.vert",						"System/Shader/basic.frag" },
+	standardShader{ "System/Shader/standard.vert",					"System/Shader/basic.frag" },
+	textureShader{ "System/Shader/standard.vert",					"System/Shader/image.frag" },
+	colorShader{ "System/Shader/standard.vert",					"System/Shader/color.frag" },
+	bloomDownSampleShader{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomDownSample.frag" },
+	bloomUpSampleShader{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomUpSample.frag" },
+	bloomFinalShader{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomFinal.frag" },
+	postprocessingShader{ "System/Shader/squareOverlay.vert",				"System/Shader/postprocessing.frag" },
+	gridShader{ "System/Shader/grid.vert",						"System/Shader/grid.frag" },
+	outlineShader{ "System/Shader/outline.vert",						"System/Shader/outline.frag" },
+	debugShader{ "System/Shader/debug.vert",						"System/Shader/debug.frag" },
+	overlayShader{ "System/Shader/squareOverlay.vert",				"System/Shader/overlay.frag" },
+	objectIdShader{ "System/Shader/standard.vert",					"System/Shader/objectId.frag" },
+	uiImageObjectIdShader{ "System/Shader/texture2D.vert",					"System/Shader/objectId.frag" },
+	uiTextObjectIdShader{ "System/Shader/text.vert",						"System/Shader/objectId.frag" },
+	skyboxShader{ "System/Shader/skybox.vert",						"System/Shader/skybox.frag" },
+	toneMappingShader{ "System/Shader/squareOverlay.vert",				"System/Shader/tonemap.frag" },
+	particleShader{ "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag" },
+	textShader{ "System/Shader/text.vert",						"System/Shader/text.frag" },
+	texture2dShader{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag" },
+	shadowMapShader{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
+	depthGBufferShader{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
+	ssaoShader{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
+	gaussianBlurShader{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
+	clusterBuildingCompute{ "System/Shader/clusterBuilding.compute" },
+	clusterLightCompute{ "System/Shader/clusterLightAssignment.compute" },
+	rayMarchingVolumetricFogCompute{ "System/Shader/VolumetricFog/rayMarchingVolumetricFog.compute" },
+	volumetricFogBufferResetCompute{ "System/Shader/VolumetricFog/volumetricFogBufferReset.compute" },
+	mainVAO{},
+	positionsVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
+	textureCoordinatesVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
+	normalsVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
+	tangentsVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
+	skeletalVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
+	debugPhysicsVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugPhysicsLineVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugNavMeshVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugParticleShapeVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	textVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	EBO{ AMOUNT_OF_MEMORY_ALLOCATED },
 
-	gameLights						{ MAX_NUMBER_OF_LIGHT },
-	editorLights					{ MAX_NUMBER_OF_LIGHT },
-	gameClusterSSBO					{ numClusters * sizeof(Cluster) },
-	editorClusterSSBO				{ numClusters * sizeof(Cluster) },
+	gameLights{ MAX_NUMBER_OF_LIGHT },
+	editorLights{ MAX_NUMBER_OF_LIGHT },
+	gameClusterSSBO{ numClusters * sizeof(Cluster) },
+	editorClusterSSBO{ numClusters * sizeof(Cluster) },
+	volumetricFogSSBO{ static_cast<int>((gameWidth * gameHeight * sizeof(VolumetricFogData))/ VOLUMETRIC_FOG_DOWNSCALE)},
+	// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
+	sharedUBO{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
 
-									// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
-	sharedUBO						{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
-	
-									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
-	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
-	editorCamera					{},
-	gameCamera						{},
-	numOfPhysicsDebugTriangles		{},
-	numOfNavMeshDebugTriangles		{},
-	isOnWireframeMode				{},
-	hasDirectionalLightShadowCaster {},
-	directionalLightViewMatrix		{},
-	directionalLightDir				{},
-	timeElapsed						{},
-	ssaoNoiseTextureId				{ INVALID_ID },
-	hdrExposure						{ 0.9f },
-	toneMappingMethod				{ ToneMappingMethod::ACES },
-															 // main		normal
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
-	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
-	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
-	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
-	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
-	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
-	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
-	directionalLightShadowFBO		{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
-	toGammaCorrect					{ true },
-	toPostProcess					{ false },
-	UIProjection					{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
+	// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
+	bonesSSBO{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
+	editorCamera{},
+	gameCamera{},
+	numOfPhysicsDebugTriangles{},
+	numOfNavMeshDebugTriangles{},
+	isOnWireframeMode{},
+	hasDirectionalLightShadowCaster{},
+	directionalLightViewMatrix{},
+	directionalLightDir{},
+	timeElapsed{},
+	ssaoNoiseTextureId{ INVALID_ID },
+	hdrExposure{ 0.9f },
+	toneMappingMethod{ ToneMappingMethod::ACES },
+	// main		normal
+	editorMainFrameBuffer{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
+	gameMainFrameBuffer{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
+	uiMainFrameBuffer{ gameWidth, gameHeight, { GL_RGBA8 } },
+	physicsDebugFrameBuffer{ gameWidth, gameHeight, { GL_RGBA8 } },
+	objectIdFrameBuffer{ gameWidth, gameHeight, { GL_R32UI } },
+	uiObjectIdFrameBuffer{ gameWidth, gameHeight, { GL_R32UI } },
+	bloomFrameBuffer{ gameWidth, gameHeight, 5 },
+	ssaoFrameBuffer{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
+	directionalLightShadowFBO{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
+	toGammaCorrect{ true },
+	toPostProcess{ false },
+	UIProjection{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
 	randomiseChromaticAberrationoffset();
 
@@ -208,7 +213,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	glVertexArrayAttribFormat(mainVAO, 1, 2, GL_FLOAT, GL_FALSE, 0);
 	glVertexArrayVertexBuffer(mainVAO, 1, textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
-	
+
 	glVertexArrayAttribFormat(mainVAO, 2, 3, GL_FLOAT, GL_FALSE, 0);
 	glVertexArrayVertexBuffer(mainVAO, 2, normalsVBO.id(), 0, sizeof(glm::vec3));
 
@@ -217,17 +222,17 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 
 	// associate vertex attributes to binding indices.
 	//										vertex attribute	binding index
-	glVertexArrayAttribBinding(mainVAO,		0,					0					);
-	glVertexArrayAttribBinding(mainVAO,		1,					1					);
-	glVertexArrayAttribBinding(mainVAO,		2,					2					);
-	glVertexArrayAttribBinding(mainVAO,		3,					3					);
+	glVertexArrayAttribBinding(mainVAO, 0, 0);
+	glVertexArrayAttribBinding(mainVAO, 1, 1);
+	glVertexArrayAttribBinding(mainVAO, 2, 2);
+	glVertexArrayAttribBinding(mainVAO, 3, 3);
 
 	// bind skeletal VBO to binding index 4
-	glVertexArrayVertexBuffer (mainVAO, 4, skeletalVBO.id(), 0, sizeof(VertexWeight));
+	glVertexArrayVertexBuffer(mainVAO, 4, skeletalVBO.id(), 0, sizeof(VertexWeight));
 
 	// specify skeletal vertex attribute
 	glVertexArrayAttribIFormat(mainVAO, 4, 4, GL_INT, 0);
-	glVertexArrayAttribFormat (mainVAO, 5, 4, GL_FLOAT, GL_FALSE, offsetof(VertexWeight, weights));
+	glVertexArrayAttribFormat(mainVAO, 5, 4, GL_FLOAT, GL_FALSE, offsetof(VertexWeight, weights));
 
 	// associate vertex attributes 5 & 6 to skeletal binding index 4. 
 	glVertexArrayAttribBinding(mainVAO, 4, 4);
@@ -265,6 +270,24 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glVertexArrayElementBuffer(particleVAO, EBO.id());
 
 	initialiseSSAO();
+
+	// ======================================================
+	// Volumetric Fog Compute Shader configuration
+	// ======================================================
+	rayMarchingVolumetricFogCompute.use();
+	rayMarchingVolumetricFogCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+	volumetricFogBufferResetCompute.use();
+	volumetricFogBufferResetCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+	// ======================================================
+	// Post Process Shader Configuration
+	// ======================================================
+	postprocessingShader.use();
+	postprocessingShader.setUVec2("screenResolution", {gameWidth/ VOLUMETRIC_FOG_DOWNSCALE, gameHeight/ VOLUMETRIC_FOG_DOWNSCALE } );
+
+	// ======================================================
+	// Volumetric Fog SSBO Configuration
+	// ======================================================
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, volumetricFogSSBO.id());
 }
 
 Renderer::~Renderer() {
@@ -504,8 +527,11 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	renderBloom(frameBuffers);
 
 	// @TODO : Custom post processing stack.
-	if(toPostProcess)
+	if (toPostProcess) {
+		computePostProcessing(frameBuffers, camera);
 		renderPostProcessing(frameBuffers);
+	}
+		
 }
 
 void Renderer::renderToDefaultFBO() {
@@ -979,7 +1005,10 @@ void Renderer::recompileShaders() {
 	clusterBuildingCompute.recompile();
 	clusterLightCompute.recompile();
 
+	rayMarchingVolumetricFogCompute.recompile();
+
 	ssaoShader.recompile();
+
 
 	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
 
@@ -1872,7 +1901,7 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
 	std::array<SpotLightData, MAX_NUMBER_OF_LIGHT>			spotLightData;
 
-	unsigned int numOfPtLights = 0;
+	numOfPtLights = 0;
 	unsigned int numOfDirLights = 0;
 	unsigned int numOfSpotLights = 0;
 
@@ -2512,6 +2541,30 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Renderer::computePostProcessing(PairFrameBuffer& frameBuffers, Camera const& camera)
+{
+	// Get the depth Texture
+	if (numOfPtLights) {
+		glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().depthStencilId());
+
+		// Upload camera data to the UBO
+		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
+		glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
+		glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::vec3), glm::value_ptr(camera.getPos()));
+
+		// Reset the VolumetricFog SSBO Data
+		volumetricFogBufferResetCompute.use();
+		glDispatchCompute(gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE, 1);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+		// Run the Ray Marching Volumetric Compute shader
+		rayMarchingVolumetricFogCompute.use();
+		rayMarchingVolumetricFogCompute.setImageUniform("depthBuffer", 0);
+		glDispatchCompute(gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE, numOfPtLights);
+		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	}
 }
 
 void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {

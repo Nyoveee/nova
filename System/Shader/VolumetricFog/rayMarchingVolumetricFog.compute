@@ -1,0 +1,109 @@
+#version 450 core
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+#define PI 3.141592
+
+// Structs
+struct FogData{
+    vec3 radiance;
+    float transmittance;
+};
+
+struct PointLight {
+    vec3 position;
+    vec3 color;
+    vec3 attenuation;
+    float radius;
+    float intensity;
+};
+
+// Uniform Buffers
+layout(std140, binding = 0) uniform Camera {
+    mat4 cameraView;
+    mat4 cameraProjection;
+    vec3 cameraPosition;
+};
+
+// SSBO
+layout(std430, binding = 0) buffer PointLights {
+    uint pointLightCount;
+    PointLight pointLights[];
+};
+
+layout(std140, binding = 8) buffer VolumetricFogBuffer {
+    FogData[] fogDatas;
+};
+
+// Constants
+const float STEP_AMOUNT = 0.8f;
+const float MAX_RAY_DISTANCE = 50.f;
+const float SCATTERING_DENSITY = 0.01f;
+const float ABSORPTION_DENSITY = 0.03f;
+const float u_k = 0.5f; // Forward Scattering
+const vec3 SCATTERING_COLOR = vec3(1.0,1.0,1.0);
+// Uniforms
+uniform sampler2D depthBuffer;
+uniform uvec2 screenResolution;
+
+// Convert from z-depth based on camera to world pos
+vec3 DepthToWorldPos(float depth, vec2 uv){
+    vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
+    vec4 viewSpacePosition = inverse(cameraProjection) * clipSpacePosition;
+    viewSpacePosition /= viewSpacePosition.w;
+    vec4 worldSpacePosition = inverse(cameraView) * viewSpacePosition;
+
+    return worldSpacePosition.xyz;
+}
+
+float AbsorptionFactor(float fogDensity, float distanceMarched){
+    return exp(-fogDensity * distanceMarched);
+}
+
+// Schlick phase function approximation of Henyey-Greenstein, decides probability density of scattering directions
+float PhaseFunction_Schlick(vec3 w0, vec3 w1){
+    float cos_theta = dot(w0,w1);
+    float nom = 1.0 - u_k * u_k;
+    float denom = 4.0 * PI * (1.0 + u_k * cos_theta) * (1.0 + u_k * cos_theta);
+    return nom / denom;
+}
+
+vec3 CalculateLightScatter(vec3 fragmentToCamera, vec3 lightToMarchPosition, PointLight light){
+    vec3 fragmentToCameraNormalized = normalize(fragmentToCamera);
+    float visibility = 1.f; // Unless we want to include shadow in the calculation this shouldn't change from 1
+    
+    float lightDistance = length(lightToMarchPosition);
+    float phi = light.intensity;
+    float denom = 4.0 * PI * lightDistance * lightDistance;
+    float Lin = AbsorptionFactor(ABSORPTION_DENSITY, lightDistance) * light.intensity * visibility * phi/denom;
+    return Lin * SCATTERING_DENSITY * SCATTERING_COLOR * PhaseFunction_Schlick(normalize(lightToMarchPosition), fragmentToCameraNormalized);
+}
+
+void main(){
+    // Get fragment world position based on depth of a specific pixel
+    vec2 uv = vec2(float(gl_GlobalInvocationID.x) / screenResolution.x, float(gl_GlobalInvocationID.y) / screenResolution.y);
+    float z = texture(depthBuffer, uv).r;
+    vec3 fragmentPosition = DepthToWorldPos(z, uv);
+
+    // Ray Marching information with distance limit
+    vec3 rayDirection = normalize(fragmentPosition - cameraPosition);
+    float rayDistance = min(length(fragmentPosition - cameraPosition), MAX_RAY_DISTANCE);
+
+    // Ray Marching
+    vec3 marchPosition = cameraPosition;
+    vec3 deltaStep = rayDirection * STEP_AMOUNT;
+    uint fogIndex = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * screenResolution.x;
+    // Accumulate transmittance and radiance for the current pixel from each light
+    PointLight light = pointLights[gl_GlobalInvocationID.z];
+    vec3 fragmentToCamera = cameraPosition - fragmentPosition;
+    for(float currDistance = 0; currDistance < rayDistance; currDistance += STEP_AMOUNT){
+        // In-Scattering calculation
+        vec3 lightToMarchPosition = marchPosition - light.position;
+        vec3 Li = CalculateLightScatter(fragmentToCamera, lightToMarchPosition, light);
+
+        // Accumulation
+        fogDatas[fogIndex].transmittance *= AbsorptionFactor(ABSORPTION_DENSITY, STEP_AMOUNT);
+        fogDatas[fogIndex].radiance += Li * fogDatas[fogIndex].transmittance  * STEP_AMOUNT;
+
+        marchPosition += deltaStep;
+    }
+}

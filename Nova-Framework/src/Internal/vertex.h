@@ -136,4 +136,8 @@ struct alignas(16) SpotLightData {
 	float radius;						// Light sphere of influence..
 };
 
+struct alignas(16) VolumetricFogData {
+	alignas(16) glm::vec3 radiance{};
+	float transmittance{ 1 };
+};
 #pragma warning( pop )
