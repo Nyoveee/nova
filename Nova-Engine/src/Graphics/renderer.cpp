@@ -17,6 +17,8 @@
 #include "Profiling.h"
 #include "Logger.h"
 
+#include "cubemap.h"
+
 #include "RandomRange.h"
 #include "systemResource.h"
 
@@ -72,6 +74,10 @@ constexpr unsigned int numClusters = gridSizeX * gridSizeY * gridSizeZ;
 constexpr int SHADOW_MAP_WIDTH  = 2048;
 constexpr int SHADOW_MAP_HEIGHT = 2048;
 
+// Irradiance map
+constexpr int IRRADIANCE_MAP_WIDTH = 512;
+constexpr int IRRADIANCE_MAP_HEIGHT = 512;
+
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
@@ -108,6 +114,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	uiImageObjectIdShader			{ "System/Shader/texture2D.vert",					"System/Shader/objectId.frag" },
 	uiTextObjectIdShader			{ "System/Shader/text.vert",						"System/Shader/objectId.frag" },
 	skyboxShader					{ "System/Shader/skybox.vert",						"System/Shader/skybox.frag" },
+	skyboxCubemapShader				{ "System/Shader/skybox.vert",						"System/Shader/skyboxCubemap.frag" },
 	toneMappingShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/tonemap.frag" },
 	particleShader					{ "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag"},
 	textShader						{ "System/Shader/text.vert",						"System/Shader/text.frag"},
@@ -162,6 +169,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
 	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
+	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGB16F } },
 	directionalLightShadowFBO		{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
 	toGammaCorrect					{ true },
 	toPostProcess					{ false },
@@ -933,9 +941,16 @@ GLuint Renderer::getGameFrameBufferTexture() const {
 	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
 }
 
-GLuint Renderer::getUIFrameBufferTexture() const
-{
+GLuint Renderer::getUIFrameBufferTexture() const {
 	return uiMainFrameBuffer.textureIds()[0];
+}
+
+GLuint Renderer::getUBOId() const {
+	return sharedUBO.id();
+}
+
+GLuint Renderer::getEditorFrameBufferId() const {
+	return editorMainFrameBuffer.getActiveFrameBuffer().fboId();
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -1275,31 +1290,98 @@ void Renderer::prepareRendering() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT);
+
+	glViewport(0, 0, gameWidth, gameHeight);
 }
 
 void Renderer::renderSkyBox() {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
-	glDisable(GL_DEPTH_TEST);
 
-	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData,SkyBox>().each()) {
-		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
+#if 0
+	// Testing code to see if baking of cube map works.
+	CubeMap savedCubeMap = bakeDiffuseIrradianceMap([&] {
+		auto&& [equirectangularMap, _] = resourceManager.getResource<EquirectangularMap>(resourceManager.getSomeResourceID<EquirectangularMap>());
+		renderSkyBox(*equirectangularMap);
+	});
+
+	glDisable(GL_DEPTH_TEST);
+	glBindFramebuffer(GL_FRAMEBUFFER, getEditorFrameBufferId());
+	glViewport(0, 0, gameWidth, gameHeight);
+
+	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(getEditorCamera().view()));
+	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(getEditorCamera().projection()));
+
+	renderSkyBox(savedCubeMap);
+#endif
+
+#if 1
+	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData, SkyBox>().each()) {
+		auto [asset, status] = resourceManager.getResource<EquirectangularMap>(skyBox.equirectangularMap);
 
 		// skybox not loaded..
 		if (!asset || !entityData.isActive || !engine.ecs.isComponentActive<SkyBox>(entityId)) {
 			continue;
 		}
 
-		skyboxShader.use();
-		skyboxShader.setImageUniform("equirectangularMap", 0);
-		glBindTextureUnit(0, asset->getTextureId());
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		renderSkyBox(*asset);
 
 		// only render the very first skybox.
 		return;
 	}
+
+	for (auto&& [entityId, entityData, skyBox] : registry.view<EntityData, SkyboxCubeMap>().each()) {
+		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
+
+		// skybox not loaded..
+		if (!asset || !entityData.isActive || !engine.ecs.isComponentActive<SkyboxCubeMap>(entityId)) {
+			continue;
+		}
+
+		renderSkyBox(*asset);
+
+		// only render the very first skybox.
+		return;
+	}
+#endif
 }
+
+void Renderer::renderSkyBox(EquirectangularMap const& equirectangularMap) {
+	skyboxShader.use();
+	skyboxShader.setImageUniform("equirectangularMap", 0);
+	glBindTextureUnit(0, equirectangularMap.getTextureId());
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void Renderer::renderSkyBox(CubeMap const& cubemap) {
+	skyboxCubemapShader.use();
+	skyboxCubemapShader.setImageUniform("cubemap", 0);
+	glBindTextureUnit(0, cubemap.getTextureId());
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+#if 0
+std::unique_ptr<std::byte[]> Renderer::getBytes(CubeMap const& cubemap, int face, int mipmapLevel, std::size_t size) {
+	std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(size);
+	
+	// because 16 bits (2 bytes) may not be aligned with 4 bytes.
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+	glGetTextureSubImage(
+		cubemap.getTextureId(),
+		mipmapLevel,								// Mipmap level
+		0, 0, face,									// x, y, zOffset (zOffset is the Face Index)
+		cubemap.getWidth(), cubemap.getHeight(), 1, // width, height, depth (1 slice = 1 face)
+		GL_RGB,         // Format
+		GL_HALF_FLOAT,  // Data type
+		static_cast<GLsizei>(size),
+		buffer.get()
+	);
+	
+	return buffer;
+}
+#endif
 
 void Renderer::renderModels(Camera const& camera) {
 #if defined(DEBUG)
@@ -2234,6 +2316,40 @@ void Renderer::swapVertexBuffer(Mesh& mesh) {
 		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
 }
 
+CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
+	CubeMap cubemap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT };
+
+	// https://learnopengl.com/PBR/IBL/Diffuse-irradiance
+	static glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	static glm::mat4 captureViews[] = {
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+	};
+
+	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(captureProjection));
+			
+	glViewport(0, 0, IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT); 
+	glBindFramebuffer(GL_FRAMEBUFFER, cubeMapFrameBuffer.fboId());
+	
+	for (unsigned int i = 0; i < 6; ++i) {
+		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap.getTextureId(), 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		render();
+	}
+
+	// bind back to default FBO.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	return cubemap;
+}
+	
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
 		const dtMeshTile* tile = mesh.getTile(tileNum);

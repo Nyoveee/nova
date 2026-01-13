@@ -1,89 +1,89 @@
 {
-    "blendingConfig": "Disabled",
-    "cullingConfig": "Enable",
-    "depthTestingMethod": "DepthTest",
+    "selectedShader": 1,
     "overridenUniforms": {
         "albedoMap": {
             "type": "sampler2D",
             "value": {
-                "__variant_type": 9,
-                "__variant_value": 12514043657600122881
-            }
-        },
-        "colorTint": {
-            "type": "Color",
-            "value": {
-                "__variant_type": 10,
-                "__variant_value": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                }
-            }
-        },
-        "emissiveMap": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_type": 9,
-                "__variant_value": 984828611531653123
-            }
-        },
-        "metallic": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
-            }
-        },
-        "normalMap": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_type": 9,
-                "__variant_value": 9891127883222351873
-            }
-        },
-        "occulusion": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
-            }
-        },
-        "packedMap": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_type": 9,
-                "__variant_value": 13090504409903546375
+                "__variant_value": 12514043657600122881,
+                "__variant_type": 9
             }
         },
         "roughness": {
             "type": "NormalizedFloat",
             "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        "colorTint": {
+            "type": "Color",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        "packedMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 13090504409903546375,
+                "__variant_type": 9
+            }
+        },
+        "metallic": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        "emissiveMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 984828611531653123,
+                "__variant_type": 9
+            }
+        },
+        "normalMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 9891127883222351873,
+                "__variant_type": 9
+            }
+        },
+        "occulusion": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
             }
         },
         "toUseEmissiveMap": {
             "type": "bool",
             "value": {
-                "__variant_type": 0,
-                "__variant_value": true
+                "__variant_value": true,
+                "__variant_type": 0
             }
         },
         "toUseNormalMap": {
             "type": "bool",
             "value": {
-                "__variant_type": 0,
-                "__variant_value": true
+                "__variant_value": true,
+                "__variant_type": 0
             }
         },
         "toUsePackedMap": {
             "type": "bool",
             "value": {
-                "__variant_type": 0,
-                "__variant_value": true
+                "__variant_value": true,
+                "__variant_type": 0
             }
         }
     },
-    "selectedShader": 1
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
 }

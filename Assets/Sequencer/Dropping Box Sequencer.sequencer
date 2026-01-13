@@ -1,150 +1,150 @@
 {
-    "animationEvents": [
-        {
-            "functionName": "BeginLift",
-            "key": 60,
-            "scriptId": 1072516887275454469
-        },
-        {
-            "functionName": "EndLift",
-            "key": 120,
-            "scriptId": 1072516887275454469
-        },
-        {
-            "functionName": "EndDrop",
-            "key": 139,
-            "scriptId": 1072516887275454469
-        }
-    ],
-    "lastFrame": 140,
     "positionKeyframes": [
         {
+            "frame": 0,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "x": -125.52760314941406,
                 "y": 133.30125427246094,
                 "z": 71.97845458984375
-            },
-            "frame": 0,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         },
         {
+            "frame": 60,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "x": -125.52760314941406,
                 "y": 101.95755004882813,
                 "z": 71.97845458984375
-            },
-            "frame": 60,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         },
         {
+            "frame": 120,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "x": -125.52760314941406,
                 "y": 106.79751586914063,
                 "z": 71.97845458984375
-            },
-            "frame": 120,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         },
         {
+            "frame": 140,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "x": -125.52759552001953,
                 "y": 91.83541107177734,
                 "z": 71.97845458984375
-            },
-            "frame": 140,
+            }
+        }
+    ],
+    "scaleKeyframes": [
+        {
+            "frame": 0,
+            "power": 1.0,
             "lerpType": "CatmullRom",
-            "power": 1.0
+            "data": {
+                "x": 6.000000953674316,
+                "y": 6.0,
+                "z": 6.000000953674316
+            }
+        },
+        {
+            "frame": 60,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
+            "data": {
+                "x": 6.000000953674316,
+                "y": 6.0,
+                "z": 6.000000953674316
+            }
+        },
+        {
+            "frame": 120,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
+            "data": {
+                "x": 6.000001430511475,
+                "y": 6.0,
+                "z": 6.000001430511475
+            }
+        },
+        {
+            "frame": 140,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
+            "data": {
+                "x": 6.000001430511475,
+                "y": 6.000000476837158,
+                "z": 6.000001430511475
+            }
         }
     ],
     "rotationKeyframes": [
         {
-            "data": {
-                "w": 0.9920617938041687,
-                "x": 0.0,
-                "y": 0.12575207650661469,
-                "z": 0.0
-            },
             "frame": 0,
+            "power": 1.0,
             "lerpType": "CatmullRom",
-            "power": 1.0
-        },
-        {
             "data": {
                 "w": 0.9920617938041687,
                 "x": 0.0,
                 "y": 0.12575207650661469,
                 "z": 0.0
-            },
-            "frame": 60,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         },
         {
+            "frame": 60,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
+            "data": {
+                "w": 0.9920617938041687,
+                "x": 0.0,
+                "y": 0.12575207650661469,
+                "z": 0.0
+            }
+        },
+        {
+            "frame": 120,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "w": 0.9920617938041687,
                 "x": 0.0,
                 "y": 0.12575213611125946,
                 "z": 0.0
-            },
-            "frame": 120,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         },
         {
+            "frame": 140,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "w": 0.9920616745948792,
                 "x": 0.0,
                 "y": 0.12575221061706543,
                 "z": 0.0
-            },
-            "frame": 140,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         }
     ],
-    "scaleKeyframes": [
+    "animationEvents": [
         {
-            "data": {
-                "x": 6.000000953674316,
-                "y": 6.0,
-                "z": 6.000000953674316
-            },
-            "frame": 0,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            "key": 60,
+            "scriptId": 1072516887275454469,
+            "functionName": "BeginLift"
         },
         {
-            "data": {
-                "x": 6.000000953674316,
-                "y": 6.0,
-                "z": 6.000000953674316
-            },
-            "frame": 60,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            "key": 120,
+            "scriptId": 1072516887275454469,
+            "functionName": "EndLift"
         },
         {
-            "data": {
-                "x": 6.000001430511475,
-                "y": 6.0,
-                "z": 6.000001430511475
-            },
-            "frame": 120,
-            "lerpType": "CatmullRom",
-            "power": 1.0
-        },
-        {
-            "data": {
-                "x": 6.000001430511475,
-                "y": 6.000000476837158,
-                "z": 6.000001430511475
-            },
-            "frame": 140,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            "key": 139,
+            "scriptId": 1072516887275454469,
+            "functionName": "EndDrop"
         }
-    ]
+    ],
+    "lastFrame": 140
 }

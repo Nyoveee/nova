@@ -23,7 +23,6 @@
 //#include "SSAOFrameBuffer.h"
 
 #include "model.h"
-#include "cubemap.h"
 
 #include "Detour/Detour/DetourNavMesh.h"
 
@@ -103,6 +102,10 @@ public:
 	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
 	ENGINE_DLL_API GLuint getUIFrameBufferTexture() const;
 
+	ENGINE_DLL_API GLuint getUBOId() const;
+
+	ENGINE_DLL_API GLuint getEditorFrameBufferId() const;
+
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// parameter normalisedPosition expects value of range [0, 1], representing the spot in the color attachment from bottom left.
@@ -145,6 +148,23 @@ public:
 	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
 	ENGINE_DLL_API void renderDebugSelectedObjects();
 
+	// first renders the scene with the given render function onto an intermediate framebuffer, then
+	// bakes it into a convoluted diffuse irradiance map.
+	// the scene is rendered 6 times.
+	ENGINE_DLL_API CubeMap bakeDiffuseIrradianceMap(std::function<void()> render);
+
+	// render first skybox in the scene, if any.
+	ENGINE_DLL_API void renderSkyBox();
+
+	// renders skybox given an equirectangular map.
+	ENGINE_DLL_API void renderSkyBox(EquirectangularMap const& equirectangularMap);
+
+	// renders skybox given an cubemap.
+	ENGINE_DLL_API void renderSkyBox(CubeMap const& cubemap);
+
+	// retrieves raw bytes of a given cube map, and a given face
+	// ENGINE_DLL_API std::unique_ptr<std::byte[]> getBytes(CubeMap const& cubemap, int face, int mipmapLevel, std::size_t size);
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
@@ -177,9 +197,6 @@ private:
 
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
-
-	// render skybox
-	void renderSkyBox();
 
 	// render all MeshRenderers.
 	void renderModels(Camera const& camera);
@@ -334,6 +351,9 @@ private:
 	FrameBuffer objectIdFrameBuffer;
 	FrameBuffer uiObjectIdFrameBuffer;
 
+	// contains an intermediary framebuffer for baking irradiance map
+	FrameBuffer cubeMapFrameBuffer;
+
 	glm::mat4 UIProjection;
 
 private:
@@ -370,6 +390,7 @@ public:
 	Shader uiTextObjectIdShader;
 	
 	Shader skyboxShader;
+	Shader skyboxCubemapShader;
 	Shader particleShader;
 	Shader textShader;
 	Shader texture2dShader;

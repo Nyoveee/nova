@@ -202,6 +202,7 @@
     <ClInclude Include="src\Resource\controller.h" />
     <ClInclude Include="src\Resource\controllerStructs.h" />
     <ClInclude Include="src\Resource\cubemap.h" />
+    <ClInclude Include="src\Resource\equirectangularMap.h" />
     <ClInclude Include="src\Resource\customShader.h" />
     <ClInclude Include="src\Resource\font.h" />
     <ClInclude Include="src\Resource\Material.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="src\Internal\type_alias.cpp" />
     <ClCompile Include="src\Loader\controllerLoader.cpp" />
     <ClCompile Include="src\Loader\cubemapLoader.cpp" />
+    <ClCompile Include="src\Loader\equirectangularMapLoader.cpp" />
     <ClCompile Include="src\Loader\materialLoader.cpp" />
     <ClCompile Include="src\Loader\fontLoader.cpp" />
     <ClCompile Include="src\Loader\modelLoader.cpp" />
@@ -264,6 +266,7 @@
     <ClCompile Include="src\Resource\audio.cpp" />
     <ClCompile Include="src\Resource\controller.cpp" />
     <ClCompile Include="src\Resource\cubemap.cpp" />
+    <ClCompile Include="src\Resource\equirectangularMap.cpp" />
     <ClCompile Include="src\Resource\customshader.cpp" />
     <ClCompile Include="src\Resource\font.cpp" />
     <ClCompile Include="src\Resource\Material.cpp" />
