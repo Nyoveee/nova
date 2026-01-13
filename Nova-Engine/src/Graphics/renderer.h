@@ -29,6 +29,8 @@
 
 #include "materialConfig.h"
 
+#include "Internal/pl_mpeg.h"
+
 class Engine;
 class ResourceManager;
 
@@ -214,6 +216,9 @@ private:
 	// renders the bounding volume to debug frustum culling..
 	void debugRenderBoundingVolume();
 
+	// render video playback
+	void renderVideo();
+
 	// renders all the clusters of the camera..
 	void debugRenderClusters();
 
@@ -315,6 +320,14 @@ private:
 
 	GLuint ssaoNoiseTextureId;
 
+	// Video playback members
+	plm_t* plm;
+	GLuint videoVAO;
+	BufferObject videoVBO;
+	GLuint videoTextureY;
+	GLuint videoTextureCr;
+	GLuint videoTextureCb;
+
 	Camera editorCamera;
 	Camera gameCamera;
 
@@ -387,6 +400,9 @@ public:
 	Shader depthGBufferShader;
 	Shader ssaoShader;
 	Shader gaussianBlurShader;
+
+	// Video shader
+	Shader videoShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;

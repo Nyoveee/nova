@@ -1,3 +1,4 @@
+#define PL_MPEG_IMPLEMENTATION
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -116,6 +117,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
 	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
+	videoShader						{ "System/Shader/video.vert",						"System/Shader/video.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
 	mainVAO							{},
@@ -129,6 +131,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	debugNavMeshVBO					{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	textVBO							{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	videoVBO						{ 1024 },
 	EBO								{ AMOUNT_OF_MEMORY_ALLOCATED },
 
 	gameLights						{ MAX_NUMBER_OF_LIGHT },
@@ -151,6 +154,11 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	directionalLightDir				{},
 	timeElapsed						{},
 	ssaoNoiseTextureId				{ INVALID_ID },
+	plm								{ nullptr },
+	videoVAO						{},
+	videoTextureY					{ INVALID_ID },
+	videoTextureCr					{ INVALID_ID },
+	videoTextureCb					{ INVALID_ID },
 	hdrExposure						{ 0.9f },
 	toneMappingMethod				{ ToneMappingMethod::ACES },
 															 // main		normal
@@ -264,6 +272,84 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// Bind this EBO to this VAO.
 	glVertexArrayElementBuffer(particleVAO, EBO.id());
 
+	// ======================================================
+	// Video VAO configuration
+	// ======================================================
+	glGenVertexArrays(1, &videoVAO);
+	glBindVertexArray(videoVAO);
+
+	// Create quad vertices for video rendering
+	float videoVertices[] = {
+		// positions    // texCoords
+		-1.0f,  1.0f,   0.0f, 1.0f,
+		-1.0f, -1.0f,   0.0f, 0.0f,
+		 1.0f, -1.0f,   1.0f, 0.0f,
+		-1.0f,  1.0f,   0.0f, 1.0f,
+		 1.0f, -1.0f,   1.0f, 0.0f,
+		 1.0f,  1.0f,   1.0f, 1.0f
+	};
+
+	glBindBuffer(GL_ARRAY_BUFFER, videoVBO.id());
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(videoVertices), videoVertices);
+
+	// Position attribute
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	// TexCoord attribute
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	// Create textures for Y, Cr, Cb planes
+	glGenTextures(1, &videoTextureY);
+	glGenTextures(1, &videoTextureCr);
+	glGenTextures(1, &videoTextureCb);
+
+	// Initialize plmpeg with the video file
+	plm = plm_create_with_filename("Test Video.mpeg");
+	if (plm) {
+		Logger::info("Video loaded successfully: Test Video.mpeg");
+		// Get video dimensions
+		int width = plm_get_width(plm);
+		int height = plm_get_height(plm);
+		Logger::info("Video dimensions: {}x{}", width, height);
+
+		// Set up Y texture (full resolution)
+		glBindTexture(GL_TEXTURE_2D, videoTextureY);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		// Set up Cr texture (half resolution)
+		glBindTexture(GL_TEXTURE_2D, videoTextureCr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		// Set up Cb texture (half resolution)
+		glBindTexture(GL_TEXTURE_2D, videoTextureCb);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		// Enable video and disable audio
+		plm_set_audio_enabled(plm, false);
+		plm_set_loop(plm, true);
+	}
+	else {
+		Logger::error("Failed to load video file: Test Video.mpg - File may not exist or is invalid");
+	}
+
 	initialiseSSAO();
 }
 
@@ -271,8 +357,15 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &mainVAO);
 	glDeleteVertexArrays(1, &textVAO);
 	glDeleteVertexArrays(1, &particleVAO);
+	glDeleteVertexArrays(1, &videoVAO);
 
 	if (ssaoNoiseTextureId != INVALID_ID) glDeleteTextures(1, &ssaoNoiseTextureId);
+
+	if (videoTextureY != INVALID_ID) glDeleteTextures(1, &videoTextureY);
+	if (videoTextureCr != INVALID_ID) glDeleteTextures(1, &videoTextureCr);
+	if (videoTextureCb != INVALID_ID) glDeleteTextures(1, &videoTextureCb);
+
+	if (plm) plm_destroy(plm);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -321,6 +414,26 @@ GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
 
 void Renderer::update([[maybe_unused]] float dt) {
 	timeElapsed += dt;
+
+	// Update video playback
+	if (plm) {
+		plm_frame_t* frame = plm_decode_video(plm);
+		if (frame) {
+			// Upload Y plane
+			glBindTexture(GL_TEXTURE_2D, videoTextureY);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->y.width, frame->y.height, GL_RED, GL_UNSIGNED_BYTE, frame->y.data);
+
+			// Upload Cr plane
+			glBindTexture(GL_TEXTURE_2D, videoTextureCr);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->cr.width, frame->cr.height, GL_RED, GL_UNSIGNED_BYTE, frame->cr.data);
+
+			// Upload Cb plane
+			glBindTexture(GL_TEXTURE_2D, videoTextureCb);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->cb.width, frame->cb.height, GL_RED, GL_UNSIGNED_BYTE, frame->cb.data);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	}
 }
 
 void Renderer::renderMain(RenderConfig renderConfig) {
@@ -493,6 +606,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 
 	// Render particles
 	renderParticles();
+
+	// Render video overlay
+	renderVideo();
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -1299,6 +1415,54 @@ void Renderer::renderSkyBox() {
 		// only render the very first skybox.
 		return;
 	}
+}
+
+void Renderer::renderVideo() {
+#if defined(DEBUG)
+	ZoneScopedC(tracy::Color::PaleVioletRed1);
+#endif
+
+	if (!plm) return;
+
+	// Disable depth testing for video overlay
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+
+	videoShader.use();
+
+	// Get video dimensions
+	int videoWidth = plm_get_width(plm);
+	int videoHeight = plm_get_height(plm);
+
+	// Calculate texture crop size for proper aspect ratio
+	glm::vec2 textureCropSize(1.0f, 1.0f);
+	videoShader.setVec2("texture_crop_size", textureCropSize);
+
+	// Set up matrices for full screen quad
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+
+	videoShader.setMatrix("model", model);
+	videoShader.setMatrix("view", view);
+	videoShader.setMatrix("projection", projection);
+
+	// Bind the YCbCr textures
+	videoShader.setImageUniform("texture_y", 0);
+	videoShader.setImageUniform("texture_cr", 1);
+	videoShader.setImageUniform("texture_cb", 2);
+
+	glBindTextureUnit(0, videoTextureY);
+	glBindTextureUnit(1, videoTextureCr);
+	glBindTextureUnit(2, videoTextureCb);
+
+	// Draw the video quad
+	glBindVertexArray(videoVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+
+	// Re-enable depth testing
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::renderModels(Camera const& camera) {
