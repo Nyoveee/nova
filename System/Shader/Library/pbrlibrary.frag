@@ -43,11 +43,12 @@ struct Cluster
     uint spotLightIndices[25];
 };
 
-struct PointLight {
-    vec3 position;
-    vec3 color;
-    vec3 attenuation;
+struct PointLight{
+    vec3 position;		
+    vec3 color;		
+    vec3 attenuation; 
     float radius;
+    float intensity;
 };
 
 struct DirectionalLight {
@@ -271,7 +272,7 @@ vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, float roughness
     vec3 l = light.position - position;
     float dist = length(l);
     l = normalize(l);
-    vec3 lightIntensity = light.color;
+    vec3 lightIntensity = light.color * light.intensity;
     lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
     vec3 v = normalize(cameraPos - position);

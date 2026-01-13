@@ -21,11 +21,12 @@ layout(std430, binding = 7) buffer clusterSSBO
 };
 
 // === LIGHT PROPERTIES ===
-struct PointLight {
-    vec3 position;
-    vec3 color;
-    vec3 attenuation;
+struct PointLight{
+    vec3 position;		
+    vec3 color;		
+    vec3 attenuation; 
     float radius;
+    float intensity;
 };
 
 struct DirectionalLight {

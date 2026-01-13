@@ -119,6 +119,7 @@ struct alignas(16) PointLightData {
 	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
 	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
 	float radius;						// Light sphere of influence..
+	float intensity;
 };
 
 struct alignas(16) DirectionalLightData{

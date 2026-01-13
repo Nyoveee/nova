@@ -26,6 +26,7 @@ struct PointLightData{
     vec3 color;		
     vec3 attenuation; 
     float radius;
+    float intensity;
 };
 struct ParticleVertex{
 	vec4 color;
@@ -61,8 +62,9 @@ void main() {
             return;
         }
         pointLightDatas[lightParticleCount-1].lightPos = particleVertices[particleIndex].position;
-        pointLightDatas[lightParticleCount-1].color = particleVertices[particleIndex].color.xyz * particles[particleIndex].lightIntensity;
+        pointLightDatas[lightParticleCount-1].color = particleVertices[particleIndex].color.xyz;
         pointLightDatas[lightParticleCount-1].attenuation = particles[particleIndex].lightattenuation;
         pointLightDatas[lightParticleCount-1].radius = particles[particleIndex].lightRadius;
+        pointLightDatas[lightParticleCount-1].intensity = particles[particleIndex].lightIntensity;
     }
 }

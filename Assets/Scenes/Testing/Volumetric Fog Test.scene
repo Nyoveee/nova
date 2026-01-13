@@ -20,7 +20,7 @@
             "Transform": {
                 "position": {
                     "x": 3.103469133377075,
-                    "y": 0.5948324203491211,
+                    "y": 0.0806739330291748,
                     "z": 0.0
                 },
                 "scale": {
@@ -41,7 +41,7 @@
                 },
                 "localPosition": {
                     "x": 3.103469133377075,
-                    "y": 0.5948324203491211,
+                    "y": 0.0806739330291748,
                     "z": 0.0
                 },
                 "localScale": {
@@ -64,11 +64,11 @@
             "Light": {
                 "type": "PointLight",
                 "color": {
-                    "r": 0.501960813999176,
-                    "g": 0.501960813999176,
-                    "b": 0.501960813999176
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
                 },
-                "intensity": 1.0,
+                "intensity": 1000.0,
                 "cutOffAngle": 0.21816615760326385,
                 "outerCutOffAngle": 0.30543261766433716,
                 "attenuation": {
@@ -82,7 +82,91 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 1048578
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Light",
+                "tag": "",
+                "parent": 4294967295,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -21.589296340942383,
+                    "y": 0.0806739330291748,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -21.589296340942383,
+                    "y": 0.0806739330291748,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "intensity": 1000.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 100.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 1048579
         },
         {
             "EntityData": {

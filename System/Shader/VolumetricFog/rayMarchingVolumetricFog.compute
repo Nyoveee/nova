@@ -9,10 +9,10 @@ struct FogData{
     float transmittance;
 };
 
-struct PointLight {
-    vec3 position;
-    vec3 color;
-    vec3 attenuation;
+struct PointLight{
+    vec3 position;		
+    vec3 color;		
+    vec3 attenuation; 
     float radius;
     float intensity;
 };
@@ -37,13 +37,14 @@ layout(std140, binding = 8) buffer VolumetricFogBuffer {
 // Constants
 const float STEP_AMOUNT = 0.8f;
 const float MAX_RAY_DISTANCE = 50.f;
-const float SCATTERING_DENSITY = 0.01f;
-const float ABSORPTION_DENSITY = 0.03f;
+const float SCATTERING_DENSITY = 0.03f;
+const float ABSORPTION_DENSITY = 0.05f;
 const float u_k = 0.5f; // Forward Scattering
-const vec3 SCATTERING_COLOR = vec3(1.0,1.0,1.0);
+const vec3 SCATTERING_COLOR = vec3(0.5,0.5,0.5);
 // Uniforms
 uniform sampler2D depthBuffer;
 uniform uvec2 screenResolution;
+uniform int lightIndex;
 
 // Convert from z-depth based on camera to world pos
 vec3 DepthToWorldPos(float depth, vec2 uv){
@@ -74,7 +75,7 @@ vec3 CalculateLightScatter(vec3 fragmentToCamera, vec3 lightToMarchPosition, Poi
     float lightDistance = length(lightToMarchPosition);
     float phi = light.intensity;
     float denom = 4.0 * PI * lightDistance * lightDistance;
-    float Lin = AbsorptionFactor(ABSORPTION_DENSITY, lightDistance) * light.intensity * visibility * phi/denom;
+    vec3 Lin = AbsorptionFactor(ABSORPTION_DENSITY, lightDistance) * light.color * visibility * phi/denom;
     return Lin * SCATTERING_DENSITY * SCATTERING_COLOR * PhaseFunction_Schlick(normalize(lightToMarchPosition), fragmentToCameraNormalized);
 }
 
@@ -101,8 +102,8 @@ void main(){
         vec3 Li = CalculateLightScatter(fragmentToCamera, lightToMarchPosition, light);
 
         // Accumulation
-        fogDatas[fogIndex].transmittance *= AbsorptionFactor(ABSORPTION_DENSITY, STEP_AMOUNT);
-        fogDatas[fogIndex].radiance += Li * fogDatas[fogIndex].transmittance  * STEP_AMOUNT;
+        fogDatas[fogIndex].transmittance  = AbsorptionFactor(ABSORPTION_DENSITY, currDistance);
+        fogDatas[fogIndex].radiance += Li * fogDatas[fogIndex].transmittance * STEP_AMOUNT;
 
         marchPosition += deltaStep;
     }

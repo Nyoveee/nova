@@ -140,7 +140,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	editorLights{ MAX_NUMBER_OF_LIGHT },
 	gameClusterSSBO{ numClusters * sizeof(Cluster) },
 	editorClusterSSBO{ numClusters * sizeof(Cluster) },
-	volumetricFogSSBO{ static_cast<int>((gameWidth * gameHeight * sizeof(VolumetricFogData))/ VOLUMETRIC_FOG_DOWNSCALE)},
+	volumetricFogSSBO{ static_cast<int>((gameWidth/ VOLUMETRIC_FOG_DOWNSCALE) * (gameHeight/ VOLUMETRIC_FOG_DOWNSCALE) * sizeof(VolumetricFogData))},
 	// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
 	sharedUBO{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
 
@@ -1923,9 +1923,10 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 			}
 			pointLightData[numOfPtLights++] = {
 				transform.position,
-				glm::vec3{ light.color } *light.intensity,
+				glm::vec3{ light.color },
 				light.attenuation,
-				light.radius
+				light.radius,
+				light.intensity,
 			};
 			break;
 
