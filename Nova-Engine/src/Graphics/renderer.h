@@ -20,7 +20,7 @@
 #include "font.h"
 #include "bloomFrameBuffer.h"
 #include "depthFrameBuffer.h"
-//#include "SSAOFrameBuffer.h"
+#include "texture2dArray.h"
 
 #include "model.h"
 
@@ -255,8 +255,9 @@ private:
 	Material const* obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
-	// performs frustum culling for models and lights
-	void frustumCulling(Camera const& camera);
+	// performs frustum culling for models and light
+	void frustumCullModels(glm::mat4 const& viewProjectionMatrix);
+	void frustumCullLight(glm::mat4 const& viewProjectionMatrix);
 
 	// upload lights into SSBO
 	void prepareLights(Camera const& camera, LightSSBO& lightSBBO);
@@ -265,7 +266,7 @@ private:
 	void clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO);
 
 	// Calculates the camera's frustum.
-	Frustum calculateCameraFrustum(Camera const& camera);
+	Frustum calculateCameraFrustum(glm::mat4 const& viewProjectionMatrix);
 
 	// Calculate the AABB bounding box of a given model.
 	AABB calculateAABB(Model const& model, Transform const& transform);
@@ -273,7 +274,7 @@ private:
 	void printOpenGLDriverDetails() const;
 
 	// populates the directional light shadow pass
-	void directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::vec3 const& lightFront, Light const& light);
+	void shadowPassRender(glm::mat4 const& viewProjectionMatrix);
 
 	// set up the required uniforms for normal map
 	void setupNormalMapUniforms(Shader& shader, Material const& material);
@@ -341,7 +342,9 @@ private:
 	PairFrameBuffer ssaoFrameBuffer;
 	BloomFrameBuffer bloomFrameBuffer;
 
+	// shadow map..
 	DepthFrameBuffer directionalLightShadowFBO;
+	Texture2DArray spotlightShadowMaps;
 
 	// contains all physics debug rendering..
 	FrameBuffer uiMainFrameBuffer;

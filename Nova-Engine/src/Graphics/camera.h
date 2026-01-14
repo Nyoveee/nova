@@ -16,8 +16,9 @@ public:
 
 public:
 	// gets the view matrix
-	ENGINE_DLL_API glm::mat4x4 view() const;
-	ENGINE_DLL_API glm::mat4x4 projection() const;
+	ENGINE_DLL_API glm::mat4x4 const& view() const;
+	ENGINE_DLL_API glm::mat4x4 const& projection() const;
+	ENGINE_DLL_API glm::mat4x4 const& viewProjection() const;
 
 	ENGINE_DLL_API glm::vec3 clipToWorldSpace(glm::vec3 const& clipPos);
 
@@ -65,4 +66,6 @@ private:
 	Radian fovAngle;
 
 	glm::mat4x4 projectionMatrix;
+
+	glm::mat4x4 viewProjectionMatrix;
 };

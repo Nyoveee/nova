@@ -200,6 +200,7 @@
     <ClInclude Include="src\Graphics\pairFrameBuffer.h" />
     <ClInclude Include="src\Graphics\renderer.h" />
     <ClInclude Include="src\Graphics\bufferObject.h" />
+    <ClInclude Include="src\Graphics\texture2dArray.h" />
     <ClInclude Include="src\InputManager\inputManager.h" />
     <ClInclude Include="src\InputManager\glfwInput.h" />
     <ClInclude Include="src\InputManager\inputEvent.h" />
@@ -238,6 +239,7 @@
     <ClCompile Include="src\Graphics\pairFrameBuffer.cpp" />
     <ClCompile Include="src\Graphics\renderer.cpp" />
     <ClCompile Include="src\Graphics\bufferObject.cpp" />
+    <ClCompile Include="src\Graphics\texture2dArray.cpp" />
     <ClCompile Include="src\InputManager\inputManager.cpp" />
     <ClCompile Include="src\InputManager\inputMapping.cpp" />
     <ClCompile Include="src\Navigation\Navigation.cpp" />

@@ -71,8 +71,11 @@ constexpr unsigned int gridSizeZ = 24;
 constexpr unsigned int numClusters = gridSizeX * gridSizeY * gridSizeZ;
 
 // Shadow mapping..
-constexpr int SHADOW_MAP_WIDTH  = 2048;
-constexpr int SHADOW_MAP_HEIGHT = 2048;
+constexpr int DIRECTIONAL_SHADOW_MAP_WIDTH  = 2048;
+constexpr int DIRECTIONAL_SHADOW_MAP_HEIGHT = 2048;
+constexpr int SHADOW_MAP_WIDTH				= 1024;
+constexpr int SHADOW_MAP_HEIGHT				= 1024;
+constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
 
 // Irradiance map
 constexpr int IRRADIANCE_MAP_WIDTH = 512;
@@ -137,7 +140,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	debugParticleShapeVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	textVBO							{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	EBO								{ AMOUNT_OF_MEMORY_ALLOCATED },
-
+	
 	gameLights						{ MAX_NUMBER_OF_LIGHT },
 	editorLights					{ MAX_NUMBER_OF_LIGHT },
 	gameClusterSSBO					{ numClusters * sizeof(Cluster) },
@@ -170,7 +173,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
 	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
 	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGB16F } },
-	directionalLightShadowFBO		{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
+	directionalLightShadowFBO		{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
+	spotlightShadowMaps				{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
 	toGammaCorrect					{ true },
 	toPostProcess					{ false },
 	UIProjection					{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
@@ -452,28 +456,29 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	// We upload camera data to the UBO..
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
-	glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection() * camera.view()));
+	glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.viewProjection()));
 
-	// We perform frustum culling for models and lights..
-	frustumCulling(camera);
+	// We perform frustum culling for lights, this is for our cluster building to minimize the number of lights involved.
+	frustumCullLight(camera.viewProjection());
 
-	// We prepare our lights for rendering..
-	// Build clusters and assign lights for clustered forward rendering
-	// And render shadow maps..
+	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
 	prepareLights(camera, lightSSBO);
 
-	// Prepare cluster forwarded rendering..
+	// Prepare cluster forwarded rendering information..
 	clusterBuilding(camera, clusterSSBO);
 
-	// Generate shadow map based on camera position..
+	// Main function to handle shadow pass for all light types.. 
 	shadowPass(camera);
+
+	// We are now ready to render the main scene, let's frustum cull our models..
+	frustumCullModels(camera.viewProjection());
 
 	// We bind to the active framebuffer for majority of the in game rendering..
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
 	setBlendMode(BlendingConfig::Disabled);
 
-	// We perform a depth pre pass..
+	// We perform a depth pre pass.. we disable the main color attachment and enable the normal color attachment..s
 	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1 };
 	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 2, buffers);
 
@@ -638,7 +643,7 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target) {
 }
 
 void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
-	glViewport(0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
+	glEnable(GL_CULL_FACE);
 
 	hasDirectionalLightShadowCaster = false;
 
@@ -667,12 +672,27 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 				continue;
 			}
 
+			// Properly set up render target and configurations
+			glViewport(0, 0, DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, directionalLightShadowFBO.fboId());
+
+			// we swap FBO's depth attachment (this is because point and spotlight attaches their own texture to this FBO).
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, directionalLightShadowFBO.textureId(), 0);
+
 			glClear(GL_DEPTH_BUFFER_BIT);
 
-			hasDirectionalLightShadowCaster = true;
-			directionalLightShadowPass(transform.position, transform.front, light);
+			// Calculate directional light's matrix.
+			glm::mat4 lightProjection = glm::ortho(-light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, -light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, light.shadowNearPlane, light.shadowFarPlane);
+			glm::mat4 lightView = glm::lookAt(transform.position, transform.position + transform.front, glm::vec3(0.0f, 1.0f, 0.0f));
 
+			// Set the global variables..
+			hasDirectionalLightShadowCaster = true;
+			directionalLightViewMatrix = lightProjection * lightView;
+			directionalLightDir = transform.front;
+
+			shadowMapShader.use();
+			shadowPassRender(directionalLightViewMatrix);
+			
 			break;
 		}
 
@@ -691,7 +711,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 	glEnable(GL_CULL_FACE);
 
 	depthGBufferShader.use();
-	depthGBufferShader.setMatrix("lightSpaceMatrix", camera.projection() * camera.view());
+	depthGBufferShader.setMatrix("lightSpaceMatrix", camera.viewProjection());
 
 	// ===========================================================
 	// 1. Render mesh renderer shadows
@@ -1295,6 +1315,8 @@ void Renderer::prepareRendering() {
 }
 
 void Renderer::renderSkyBox() {
+	glDisable(GL_DEPTH_TEST);
+
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1827,8 +1849,8 @@ Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshR
 	return material;
 }
 
-void Renderer::frustumCulling(Camera const& camera) {
-	Frustum const& cameraFrustum = calculateCameraFrustum(camera);
+void Renderer::frustumCullModels(glm::mat4 const& viewProjectionMatrix) {
+	Frustum const& cameraFrustum = calculateCameraFrustum(viewProjectionMatrix);
 
 	// ============================================
 	// We do frustum culling check for mesh & skinned mesh renderer
@@ -1864,6 +1886,10 @@ void Renderer::frustumCulling(Camera const& camera) {
 		auto [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
 		calculateFrustumCulling(model, transform);
 	}
+}
+
+void Renderer::frustumCullLight(glm::mat4 const& viewProjectionMatrix) {
+	Frustum const& cameraFrustum = calculateCameraFrustum(viewProjectionMatrix);
 
 	// ============================================
 	// We do frustum culling check for lights
@@ -1976,7 +2002,7 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 			}
 			pointLightData[numOfPtLights++] = {
 				transform.position,
-				glm::vec3{ light.color } *light.intensity,
+				glm::vec3{ light.color } * light.intensity,
 				light.attenuation,
 				light.radius
 			};
@@ -2002,14 +2028,13 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 				Logger::warn("Max number of spot lights reached!");
 				continue;
 			}
-			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
 			spotLightData[numOfSpotLights++] = {
 				transform.position,
-				glm::normalize(forward),
-				glm::vec3{ light.color } *light.intensity,
+				glm::normalize(transform.front),
+				glm::vec3{ light.color } * light.intensity,
 				light.attenuation,
-				light.cutOffAngle,
-				light.outerCutOffAngle,
+				light.cutOffAngle / 2.f,
+				light.outerCutOffAngle / 2.f,
 				light.radius
 			};
 			break;
@@ -2064,12 +2089,11 @@ void Renderer::clusterBuilding(Camera const& camera, BufferObject const& cluster
 #endif
 }
 
-Frustum Renderer::calculateCameraFrustum(Camera const& camera) {
+Frustum Renderer::calculateCameraFrustum(glm::mat4 const& m) {
 	Frustum frustum;
 
 	// https://www.gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
 	// https://www.reddit.com/r/opengl/comments/1fstgtt/strange_issue_with_frustum_extraction/
-	glm::mat4x4 m = camera.projection() * camera.view();
 
 	frustum.leftPlane = { glm::row(m, 3) + glm::row(m, 0) };
 	frustum.rightPlane = { glm::row(m, 3) - glm::row(m, 0) };
@@ -2147,22 +2171,14 @@ void Renderer::printOpenGLDriverDetails() const {
 	}
 }
 
-void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::vec3 const& lightFront, Light const& light) {
-	glm::mat4 lightProjection = glm::ortho(-light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, -light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, light.shadowNearPlane, light.shadowFarPlane);
-	glm::mat4 lightView = glm::lookAt(cameraPosition, cameraPosition + lightFront, glm::vec3(0.0f, 1.0f, 0.0f));
-	directionalLightViewMatrix = lightProjection * lightView;
-	directionalLightDir = lightFront;
-
-	glEnable(GL_CULL_FACE);
-
-	shadowMapShader.use();
-	shadowMapShader.setMatrix("lightSpaceMatrix", directionalLightViewMatrix);
+void Renderer::shadowPassRender(glm::mat4 const& viewProjectionMatrix) {
+	shadowMapShader.setMatrix("lightSpaceMatrix", viewProjectionMatrix);
 
 	// ===========================================================
 	// 1. Render mesh renderer shadows
 	// ===========================================================
 
-	// indicate that this is a skinned mesh renderer..
+	// indicate that this is NOT a skinned mesh renderer..
 	static const unsigned int isNotASkinnedMeshRenderer = 0;
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
 
@@ -2190,13 +2206,9 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 		meshRenderer.shadowCullFrontFace ? glCullFace(GL_FRONT) : glCullFace(GL_BACK);
 
 		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			glVertexArrayElementBuffer(mainVAO, EBO.id());
-			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
-			glVertexArrayVertexBuffer(mainVAO, 4, skeletalVBO.id(), 0, sizeof(VertexWeight));
-			positionsVBO.uploadData(mesh.positions);
-			EBO.uploadData(mesh.indices);
-			skeletalVBO.uploadData(mesh.vertexWeights);
+		for (auto& mesh : model->meshes) {
+			constructMeshBuffers(mesh);
+			swapVertexBuffer(mesh);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
@@ -2204,7 +2216,7 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 	// ===========================================================
 	// 2. Render skinned mesh renderer shadows
 	// ===========================================================
-	// indicate that this is NOT a skinned mesh renderer..
+	// indicate that this is A skinned mesh renderer..
 	glCullFace(GL_FRONT);
 
 	static const unsigned int isASkinnedMeshRenderer = 1;
@@ -2235,11 +2247,9 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
 
 		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			glVertexArrayElementBuffer(mainVAO, EBO.id());
-			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
-			positionsVBO.uploadData(mesh.positions);
-			EBO.uploadData(mesh.indices);
+		for (auto& mesh : model->meshes) {
+			constructMeshBuffers(mesh);
+			swapVertexBuffer(mesh);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
@@ -2905,15 +2915,16 @@ void Renderer::renderDebugSelectedObjects() {
 			glm::mat4 model = glm::identity<glm::mat4>();
 			model = glm::translate(model, transform->position);
 
-			debugShader.setMatrix("model", model);
-
 			switch (light->type) {
 			case Light::Type::Directional:
+				debugShader.setMatrix("model", model);
+
 				debugParticleShapeVBO.uploadData(DebugShapes::Line(glm::vec3{0.f}, transform->front * 2.f));
 				glDrawArrays(GL_LINES, 0, 2);
 				break;
 			case Light::Type::PointLight:
-			case Light::Type::Spotlight:
+				debugShader.setMatrix("model", model);
+
 				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light->radius));
 				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light->radius));
@@ -2921,6 +2932,23 @@ void Renderer::renderDebugSelectedObjects() {
 				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light->radius));
 				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 				break;
+			case Light::Type::Spotlight: {
+				model = model * glm::mat4_cast(transform->rotation * glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+				debugShader.setMatrix("model", model);
+
+				debugParticleShapeVBO.uploadData(DebugShapes::ConeEdges(0, Degree{ light->outerCutOffAngle } / 2.f, light->radius));
+				glDrawArrays(GL_LINES, 0, 8);
+
+				debugParticleShapeVBO.uploadData(DebugShapes::ConeOuterAxisXZ(0, Degree{ light->outerCutOffAngle } / 2.f, light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+				model = glm::identity<glm::mat4>();
+				model = glm::translate(model, transform->position);
+				debugShader.setMatrix("model", model);
+
+				debugParticleShapeVBO.uploadData(DebugShapes::Line(glm::vec3{ 0.f }, transform->front * 2.f));
+				glDrawArrays(GL_LINES, 0, 2);
+			}
 			}
 		}
 

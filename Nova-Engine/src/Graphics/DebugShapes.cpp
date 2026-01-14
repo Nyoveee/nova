@@ -95,8 +95,10 @@ std::vector<glm::vec3> DebugShapes::Cube(AABB const& aabb)
 std::vector<glm::vec3> DebugShapes::ConeOuterAxisXZ(float radius, float arc, float distance)
 {
 	std::vector<glm::vec3> result;
-	arc = Radian{ Degree{std::clamp(arc, 0.f, 75.f)} };
-	radius += distance * std::sin(arc);
+	arc = Radian{ Degree{90.f - std::clamp(arc, 0.f, 90.f)} };
+	float offset = (distance / std::tan(arc));
+	radius += offset;
+
 	for (float i{}; i < PI2; i += PI2 / NUM_DEBUG_CIRCLE_POINTS)
 		result.push_back(glm::vec3{ std::cos(i), 0, std::sin(i) } * radius + glm::vec3{0,distance,0});
 	return result;
@@ -105,8 +107,10 @@ std::vector<glm::vec3> DebugShapes::ConeOuterAxisXZ(float radius, float arc, flo
 std::vector<glm::vec3> DebugShapes::ConeEdges(float radius, float arc, float distance)
 {
 	std::vector<glm::vec3> result;
-	arc = Radian{ Degree{std::clamp(arc, 0.f, 75.f)} };
-	float outerRadius = radius + distance * std::sin(arc);
+	arc = Radian{ Degree{90.f - std::clamp(arc, 0.f, 90.f)} };
+	float offset = (distance / std::tan(arc));
+	float outerRadius = radius + offset;
+
 	result.push_back(glm::vec3{radius,0,0});
 	result.push_back(glm::vec3{outerRadius,distance,0});
 	result.push_back(glm::vec3{-radius,0,0});
