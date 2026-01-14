@@ -55,18 +55,14 @@ using MeshIndex	= int;
 
 #include "serializedField.h"
 
+constexpr int NO_SHADOW_MAP = -1;
+
 enum class InterpolationType : unsigned int {
 	Root,
 	Linear,
 	Quadractic,
 	Cubic
 };
-
-// 	REFLECTABLE(
-// 		name,
-// 		data
-// 	)
-// };
 
 struct PrefabMetaData {
 	PrefabEntityID prefabEntity;
@@ -192,6 +188,9 @@ struct Light {
 		shadowNearPlane,
 		shadowFarPlane
 	)
+
+	// runtime variable..
+	int shadowMapIndex = NO_SHADOW_MAP;		// every light component has an index to it's own array of shadow maps..
 };
 
 struct MeshRenderer {

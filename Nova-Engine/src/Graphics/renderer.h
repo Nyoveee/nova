@@ -199,13 +199,13 @@ private:
 	void prepareRendering();
 
 	// render all MeshRenderers.
-	void renderModels(Camera const& camera);
+	void renderModels(Camera const& camera, bool normalOnly = false);
 
 	// render all TranslucentMeshRenderers.
 	void renderTranslucentModels(Camera const& camera);
 
 	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels(Camera const& camera);
+	void renderSkinnedModels(Camera const& camera, bool normalOnly = false);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -246,6 +246,12 @@ private:
 	// set up the material's chosen shader and supply the proper uniforms..
 	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
 	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale = 1.f);
+
+	// sets up the custom shader to output the mesh into the normal buffer instead.
+	CustomShader* setupMaterialNormalPass(Material const& material, Transform const& transform, float scale = 1.f);
+
+	// void set up all the uniforms for the custom shader.
+	void setupCustomShaderUniforms(Shader const& shader, Material const& material, int numOfTextureUnitsUsed = 0);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
 	void renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType);
@@ -344,6 +350,8 @@ private:
 
 	// shadow map..
 	DepthFrameBuffer directionalLightShadowFBO;
+
+	DepthFrameBuffer shadowFBO; // smaller than directionalLight
 	Texture2DArray spotlightShadowMaps;
 
 	// contains all physics debug rendering..
@@ -377,6 +385,8 @@ private:
 	bool hasDirectionalLightShadowCaster;
 	glm::mat4x4 directionalLightViewMatrix;
 	glm::vec3 directionalLightDir;
+	
+	int numOfSpotlightShadowCaster;
 
 public:
 	Shader basicShader;
@@ -408,7 +418,7 @@ public:
 	Shader postprocessingShader;
 
 	Shader shadowMapShader;
-	Shader depthGBufferShader;
+	// Shader depthGBufferShader;
 	Shader ssaoShader;
 	Shader gaussianBlurShader;
 

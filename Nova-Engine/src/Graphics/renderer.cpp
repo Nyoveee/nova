@@ -75,7 +75,7 @@ constexpr int DIRECTIONAL_SHADOW_MAP_WIDTH  = 2048;
 constexpr int DIRECTIONAL_SHADOW_MAP_HEIGHT = 2048;
 constexpr int SHADOW_MAP_WIDTH				= 1024;
 constexpr int SHADOW_MAP_HEIGHT				= 1024;
-constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
+constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 30;
 
 // Irradiance map
 constexpr int IRRADIANCE_MAP_WIDTH = 512;
@@ -123,7 +123,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	textShader						{ "System/Shader/text.vert",						"System/Shader/text.frag"},
 	texture2dShader					{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
 	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
-	depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
+	// depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
 	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
@@ -159,6 +159,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	hasDirectionalLightShadowCaster {},
 	directionalLightViewMatrix		{},
 	directionalLightDir				{},
+	numOfSpotlightShadowCaster		{},
 	timeElapsed						{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	hdrExposure						{ 0.9f },
@@ -174,6 +175,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
 	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGB16F } },
 	directionalLightShadowFBO		{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
+	shadowFBO						{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
 	spotlightShadowMaps				{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
 	toGammaCorrect					{ true },
 	toPostProcess					{ false },
@@ -461,14 +463,15 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	// We perform frustum culling for lights, this is for our cluster building to minimize the number of lights involved.
 	frustumCullLight(camera.viewProjection());
 
+	// Main function to handle shadow pass for all light types.. 
+	// We run a shadow pass first so we can pass shadow related data in prepareLights..
+	shadowPass(camera);
+
 	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
 	prepareLights(camera, lightSSBO);
 
 	// Prepare cluster forwarded rendering information..
 	clusterBuilding(camera, clusterSSBO);
-
-	// Main function to handle shadow pass for all light types.. 
-	shadowPass(camera);
 
 	// We are now ready to render the main scene, let's frustum cull our models..
 	frustumCullModels(camera.viewProjection());
@@ -494,11 +497,14 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	renderSkyBox();
 
 	// Because we had a depth pre pass, we can change depth function to equal.
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_EQUAL);
 
 	// We render individual game objects..
 	renderModels(camera);
 	renderSkinnedModels(camera);
+
+	glDisable(GL_DEPTH_TEST);
 	renderTranslucentModels(camera);
 
 	// Restore default depth testing.
@@ -584,7 +590,6 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 	bloomUpSampleShader.setImageUniform("srcTexture", 0);
 
 	// Enable additive blending
-	// setBlendMode(CustomShader::BlendingConfig::AdditiveBlending);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
@@ -645,13 +650,18 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target) {
 void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 	glEnable(GL_CULL_FACE);
 
+	numOfSpotlightShadowCaster = 0;
 	hasDirectionalLightShadowCaster = false;
+	
+	shadowMapShader.use();
 
 	// let's find our directional light shadow caster..
 	for (auto&& [entity, transform, entityData, light] : registry.view<Transform, EntityData, Light>().each()) {
 		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity)) {
 			continue;
 		}
+
+		light.shadowMapIndex = NO_SHADOW_MAP;
 
 		// light not in camera frustum
 		if (!transform.inCameraFrustum) {
@@ -675,10 +685,6 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 			// Properly set up render target and configurations
 			glViewport(0, 0, DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, directionalLightShadowFBO.fboId());
-
-			// we swap FBO's depth attachment (this is because point and spotlight attaches their own texture to this FBO).
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, directionalLightShadowFBO.textureId(), 0);
-
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 			// Calculate directional light's matrix.
@@ -690,9 +696,7 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 			directionalLightViewMatrix = lightProjection * lightView;
 			directionalLightDir = transform.front;
 
-			shadowMapShader.use();
 			shadowPassRender(directionalLightViewMatrix);
-			
 			break;
 		}
 
@@ -700,6 +704,27 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 			break;
 
 		case Light::Type::Spotlight:
+			if (numOfSpotlightShadowCaster >= MAX_SPOTLIGHT_SHADOW_CASTER) {
+				continue;
+			}
+
+			// Properly set up render target and configurations
+			glViewport(0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
+			glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO.fboId());
+			
+			// we swap FBO's depth attachment (this is because point and spotlight attaches their own texture to this FBO).
+			glNamedFramebufferTextureLayer(shadowFBO.fboId(), GL_DEPTH_ATTACHMENT, spotlightShadowMaps.getTextureId(), 0, numOfSpotlightShadowCaster);
+
+			glClear(GL_DEPTH_BUFFER_BIT);
+
+			// Calculate spot light's matrix.
+			glm::mat4 lightProjection	= glm::perspective(static_cast<float>(light.outerCutOffAngle), 1.0f, 0.1f, light.radius);
+			glm::mat4 lightView			= glm::lookAt(transform.position, transform.position + transform.front, glm::vec3(0.0f, 1.0f, 0.0f));
+
+			shadowPassRender(lightProjection * lightView);
+
+			light.shadowMapIndex = numOfSpotlightShadowCaster;
+			++numOfSpotlightShadowCaster;
 			break;
 		}
 	}
@@ -708,6 +733,12 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 }
 
 void Renderer::depthPrePass(Camera const& camera) {
+	glEnable(GL_DEPTH_TEST);
+
+	renderModels(camera, true);
+	renderSkinnedModels(camera, true);
+
+#if 0
 	glEnable(GL_CULL_FACE);
 
 	depthGBufferShader.use();
@@ -826,6 +857,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 	}
 
 	glDisable(GL_CULL_FACE);
+#endif
 }
 
 void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera) {
@@ -1405,7 +1437,7 @@ std::unique_ptr<std::byte[]> Renderer::getBytes(CubeMap const& cubemap, int face
 }
 #endif
 
-void Renderer::renderModels(Camera const& camera) {
+void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1456,7 +1488,10 @@ void Renderer::renderModels(Camera const& camera) {
 					}
 
 					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+					CustomShader* shader = [&]() {
+						//return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+						return setupMaterial(camera, *material, transform, model->scale);
+					}();
 
 					if (shader) {
 						// time to draw!
@@ -1470,7 +1505,10 @@ void Renderer::renderModels(Camera const& camera) {
 					Material const* material = obtainMaterial(*meshRenderer, mesh);
 
 					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+					CustomShader* shader = [&]() {
+						//return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+						return setupMaterial(camera, *material, transform, model->scale);
+					}();
 
 					if (shader) {
 						// time to draw!
@@ -1689,7 +1727,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 }
 
 
-void Renderer::renderSkinnedModels(Camera const& camera) {
+void Renderer::renderSkinnedModels(Camera const& camera, bool normalOnly) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1735,7 +1773,9 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 				}
 
 				// Use the correct shader and configure it's required uniforms..
-				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+				CustomShader* shader = [&]() {
+					return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+				}(); 
 
 				if (shader) {
 					// time to draw!
@@ -1752,7 +1792,9 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 				}
 
 				// Use the correct shader and configure it's required uniforms..
-				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+				CustomShader* shader = [&]() {
+					return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+				}(); 
 
 				if (shader) {
 					// time to draw!
@@ -2000,12 +2042,15 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 				Logger::warn("Max number of point lights reached!");
 				continue;
 			}
+
 			pointLightData[numOfPtLights++] = {
 				transform.position,
 				glm::vec3{ light.color } * light.intensity,
 				light.attenuation,
-				light.radius
+				light.radius,
+				light.shadowMapIndex
 			};
+
 			break;
 
 		case Light::Type::Directional:
@@ -2019,6 +2064,7 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 				glm::normalize(transform.front),
 				glm::vec3{ light.color } *light.intensity
 			};
+
 			break;
 		}
 
@@ -2028,6 +2074,7 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 				Logger::warn("Max number of spot lights reached!");
 				continue;
 			}
+
 			spotLightData[numOfSpotLights++] = {
 				transform.position,
 				glm::normalize(transform.front),
@@ -2035,8 +2082,10 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 				light.attenuation,
 				light.cutOffAngle / 2.f,
 				light.outerCutOffAngle / 2.f,
-				light.radius
+				light.radius,
+				light.shadowMapIndex
 			};
+
 			break;
 		}
 
@@ -2333,7 +2382,7 @@ CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	static glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
 	static glm::mat4 captureViews[] = {
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -2690,7 +2739,7 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// ===========================================================================
 
 	setBlendMode(material.materialData.blendingConfig);
-	setDepthMode(material.materialData.depthTestingMethod);
+	setDepthMode(material.materialData.depthTestingMethod); // We had a depth pre pass.
 	setCullMode(material.materialData.cullingConfig);
 
 	Shader const& shader = shaderOpt.value();
@@ -2698,13 +2747,14 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// ===========================================================================
 	// Set uniform data..
 	// ===========================================================================
+	shader.setMatrix("normalMatrix", transform.normalMatrix);
 	shader.setFloat("timeElapsed", timeElapsed);
+	shader.setFloat("toOutputNormal", false);
 
 	switch (shaderData.pipeline)
 	{
 	case Pipeline::PBR:
 		shader.setVec3("cameraPos", camera.getPos());
-		shader.setMatrix("normalMatrix", transform.normalMatrix);
 
 		shader.setFloat("zNear", camera.getNearPlaneDistance());
 		shader.setFloat("zFar", camera.getFarPlaneDistance());
@@ -2740,13 +2790,67 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	glBindTextureUnit(0, directionalLightShadowFBO.textureId());
 	shader.setImageUniform("shadowMap", 0);
 
+	// We reserve the very 2 texture unit for shadow map and SSAO.
+	int numOfTextureUnitBound = 2;
+	
+	setupCustomShaderUniforms(shader, material, numOfTextureUnitBound);
+
+	// Use the shader
+	shader.use();
+
+	return customShader;
+}
+
+CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transform const& transform, float scale) {
+	// ===========================================================================
+	// Retrieve the underlying shader for this material, and verify it's state.
+	// ===========================================================================
+	TypedResourceID<CustomShader> customShaderId = material.materialData.selectedShader;
+
+	auto&& [customShader, _] = resourceManager.getResource<CustomShader>(customShaderId);
+
+	if (!customShader) {
+		return nullptr;
+	}
+
+	auto const& shaderOpt = customShader->getShader();
+	if (!shaderOpt || !shaderOpt.value().hasCompiled()) {
+		return nullptr;
+	}
+	
+	Shader const& shader = shaderOpt.value();
+
+	// ===========================================================================
+	// Set rendering fixed pipeline configuration.
+	// ===========================================================================
+
+	setBlendMode(material.materialData.blendingConfig);
+	setDepthMode(material.materialData.depthTestingMethod);
+	setCullMode(material.materialData.cullingConfig);
+
+	// ===========================================================================
+	// Set uniform data..
+	// ===========================================================================
+	shader.setMatrix("normalMatrix", transform.normalMatrix);
+	shader.setMatrix("model", transform.modelMatrix);
+	shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
+	
+	shader.setFloat("toOutputNormal", true);
+
+	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.
+	setupCustomShaderUniforms(shader, material, 0);
+
+	// Use the shader
+	shader.use();
+
+	return customShader;
+}
+
+void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& material, int numOfTextureUnitsUsed) {
 	// We keep track of the number of texture units bound and make sure it doesn't exceed the driver's cap.
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
-	// We reserve the very 2 texture unit for shadow map and SSAO.
-	int numOfTextureUnitBound = 2;
-	
 	for (auto const& [name, overriddenUniformData] : material.materialData.overridenUniforms) {
 		std::visit([&](auto&& value) {
 			using Type = std::decay_t<decltype(value)>;
@@ -2797,51 +2901,26 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 					texture = invalidTexture;
 				}
 
-				if (numOfTextureUnitBound >= maxTextureUnits) {
-					Logger::error("Too many texture units bound. Textures bound: {}, Capacity: {}", numOfTextureUnitBound, maxTextureUnits);
+				if (numOfTextureUnitsUsed >= maxTextureUnits) {
+					Logger::error("Too many texture units bound. Textures bound: {}, Capacity: {}", numOfTextureUnitsUsed, maxTextureUnits);
 					return;
 				}
 
 				// we bind to a unused texture unit..
-				glBindTextureUnit(numOfTextureUnitBound, texture->getTextureId());
-				shader.setImageUniform(name, numOfTextureUnitBound);
+				glBindTextureUnit(numOfTextureUnitsUsed, texture->getTextureId());
+				shader.setImageUniform(name, numOfTextureUnitsUsed);
 
-				++numOfTextureUnitBound;
+				++numOfTextureUnitsUsed;
 			}
 		}, overriddenUniformData.value);
 	}
-
-	// Use the shader
-	shader.use();
-
-	return customShader;
 }
 
 void Renderer::renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType) {
 	// Create Buffer Objects for first render
 	constructMeshBuffers(mesh);
+	swapVertexBuffer(mesh);
 
-	switch (pipeline)
-	{
-	case Pipeline::PBR:
-		glVertexArrayVertexBuffer(mainVAO, 3, meshBOs.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
-		[[fallthrough]];
-	case Pipeline::Color:
-		glVertexArrayVertexBuffer(mainVAO, 2, meshBOs.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
-		glVertexArrayVertexBuffer(mainVAO, 0, meshBOs.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));
-		glVertexArrayVertexBuffer(mainVAO, 1, meshBOs.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
-		break;
-	default:
-		assert(false && "Unhandled pipeline.");
-		break;
-	}
-	if (meshType == MeshType::Skinned) {
-		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
-		//glVertexArrayVertexBuffer(mainVAO, 5, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
-	}
-
-	// Bind this EBO to this VAO.
-	glVertexArrayElementBuffer(mainVAO, meshBOs.at(mesh.meshID).EBO.id());
 	glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 }
 

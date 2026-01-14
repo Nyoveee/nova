@@ -15,11 +15,17 @@ Properties{
 
 // Vertex shader..
 Vert{    
-    gl_Position = calculateClipPosition(position);
+    // Calculate world space of our local attributes..
+    WorldSpace worldSpace = calculateWorldSpace(position, normal);
+    gl_Position = calculateClipPosition(worldSpace.position);
 
-    // pass texture units to fragment shader..
-    vsOut.textureUnit = textureUnit; 
-}
+    // Pass attributes to fragment shader.. 
+    vsOut.textureUnit = textureUnit;
+    vsOut.fragWorldPos = worldSpace.position.xyz;
+    vsOut.fragViewPos = vec3(view * worldSpace.position);
+
+    vsOut.normal = normalize(worldSpace.normal);
+}   
 
 // Fragment shader..
 Frag{

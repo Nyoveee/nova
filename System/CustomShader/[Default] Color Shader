@@ -1,13 +1,13 @@
 {
     "blendingConfig": "AlphaBlending",
-    "cullingConfig": "Enable",
     "depthTestingMethod": "DepthTest",
-    "fShaderCode": "\n    return vec4(intensity * color, transparency); // ok\n",
-    "pipeline": "Color",
+    "cullingConfig": "Enable",
     "uniforms": {
-        "color": "Color",
         "intensity": "float",
-        "transparency": "NormalizedFloat"
+        "transparency": "NormalizedFloat",
+        "color": "Color"
     },
-    "vShaderCode": "    \n    gl_Position = calculateClipPosition(position);\n\n    // pass texture units to fragment shader..\n    vsOut.textureUnit = textureUnit; \n"
+    "vShaderCode": "    \n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal);\n    gl_Position = calculateClipPosition(worldSpace.position);\n\n    // Pass attributes to fragment shader.. \n    vsOut.textureUnit = textureUnit;\n    vsOut.fragWorldPos = worldSpace.position.xyz;\n    vsOut.fragViewPos = vec3(view * worldSpace.position);\n\n    vsOut.normal = normalize(worldSpace.normal);\n",
+    "fShaderCode": "\n    return vec4(intensity * color, transparency); // ok\n",
+    "pipeline": "Color"
 }
