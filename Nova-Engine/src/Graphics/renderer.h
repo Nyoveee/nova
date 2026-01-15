@@ -20,10 +20,9 @@
 #include "font.h"
 #include "bloomFrameBuffer.h"
 #include "depthFrameBuffer.h"
-//#include "SSAOFrameBuffer.h"
+#include "texture2dArray.h"
 
 #include "model.h"
-#include "cubemap.h"
 
 #include "Detour/Detour/DetourNavMesh.h"
 
@@ -103,6 +102,10 @@ public:
 	ENGINE_DLL_API GLuint getGameFrameBufferTexture() const;
 	ENGINE_DLL_API GLuint getUIFrameBufferTexture() const;
 
+	ENGINE_DLL_API GLuint getUBOId() const;
+
+	ENGINE_DLL_API GLuint getEditorFrameBufferId() const;
+
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
 	// parameter normalisedPosition expects value of range [0, 1], representing the spot in the color attachment from bottom left.
@@ -145,6 +148,23 @@ public:
 	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
 	ENGINE_DLL_API void renderDebugSelectedObjects();
 
+	// first renders the scene with the given render function onto an intermediate framebuffer, then
+	// bakes it into a convoluted diffuse irradiance map.
+	// the scene is rendered 6 times.
+	ENGINE_DLL_API CubeMap bakeDiffuseIrradianceMap(std::function<void()> render);
+
+	// render first skybox in the scene, if any.
+	ENGINE_DLL_API void renderSkyBox();
+
+	// renders skybox given an equirectangular map.
+	ENGINE_DLL_API void renderSkyBox(EquirectangularMap const& equirectangularMap);
+
+	// renders skybox given an cubemap.
+	ENGINE_DLL_API void renderSkyBox(CubeMap const& cubemap);
+
+	// retrieves raw bytes of a given cube map, and a given face
+	// ENGINE_DLL_API std::unique_ptr<std::byte[]> getBytes(CubeMap const& cubemap, int face, int mipmapLevel, std::size_t size);
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
@@ -178,17 +198,14 @@ private:
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
 
-	// render skybox
-	void renderSkyBox();
-
 	// render all MeshRenderers.
-	void renderModels(Camera const& camera);
+	void renderModels(Camera const& camera, bool normalOnly = false);
 
 	// render all TranslucentMeshRenderers.
 	void renderTranslucentModels(Camera const& camera);
 
 	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels(Camera const& camera);
+	void renderSkinnedModels(Camera const& camera, bool normalOnly = false);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -232,6 +249,12 @@ private:
 	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
 	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale = 1.f);
 
+	// sets up the custom shader to output the mesh into the normal buffer instead.
+	CustomShader* setupMaterialNormalPass(Material const& material, Transform const& transform, float scale = 1.f);
+
+	// void set up all the uniforms for the custom shader.
+	void setupCustomShaderUniforms(Shader const& shader, Material const& material, int numOfTextureUnitsUsed = 0);
+
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
 	void renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType);
 
@@ -240,8 +263,9 @@ private:
 	Material const* obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
-	// performs frustum culling for models and lights
-	void frustumCulling(Camera const& camera);
+	// performs frustum culling for models and light
+	void frustumCullModels(glm::mat4 const& viewProjectionMatrix);
+	void frustumCullLight(glm::mat4 const& viewProjectionMatrix);
 
 	// upload lights into SSBO
 	void prepareLights(Camera const& camera, LightSSBO& lightSBBO);
@@ -250,7 +274,7 @@ private:
 	void clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO);
 
 	// Calculates the camera's frustum.
-	Frustum calculateCameraFrustum(Camera const& camera);
+	Frustum calculateCameraFrustum(glm::mat4 const& viewProjectionMatrix);
 
 	// Calculate the AABB bounding box of a given model.
 	AABB calculateAABB(Model const& model, Transform const& transform);
@@ -258,7 +282,7 @@ private:
 	void printOpenGLDriverDetails() const;
 
 	// populates the directional light shadow pass
-	void directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::vec3 const& lightFront, Light const& light);
+	void shadowPassRender(glm::mat4 const& viewProjectionMatrix);
 
 	// set up the required uniforms for normal map
 	void setupNormalMapUniforms(Shader& shader, Material const& material);
@@ -304,6 +328,9 @@ private:
 	// Volumetric Fog SSBO
 	BufferObject volumetricFogSSBO;
 
+	// stores the shadow caster matrixes in a UBO.
+	BufferObject shadowCasterMatrixes;
+
 	// Particle VAO and VBO
 	GLuint particleVAO;
 
@@ -329,7 +356,11 @@ private:
 	PairFrameBuffer ssaoFrameBuffer;
 	BloomFrameBuffer bloomFrameBuffer;
 
+	// shadow map..
 	DepthFrameBuffer directionalLightShadowFBO;
+
+	DepthFrameBuffer shadowFBO; // smaller than directionalLight
+	Texture2DArray spotlightShadowMaps;
 
 	// contains all physics debug rendering..
 	FrameBuffer uiMainFrameBuffer;
@@ -338,6 +369,9 @@ private:
 	// contains objectIds for object picking.
 	FrameBuffer objectIdFrameBuffer;
 	FrameBuffer uiObjectIdFrameBuffer;
+
+	// contains an intermediary framebuffer for baking irradiance map
+	FrameBuffer cubeMapFrameBuffer;
 
 	glm::mat4 UIProjection;
 
@@ -361,6 +395,8 @@ private:
 	bool hasDirectionalLightShadowCaster;
 	glm::mat4x4 directionalLightViewMatrix;
 	glm::vec3 directionalLightDir;
+	
+	int numOfSpotlightShadowCaster;
 
 public:
 	Shader basicShader;
@@ -377,6 +413,7 @@ public:
 	Shader uiTextObjectIdShader;
 	
 	Shader skyboxShader;
+	Shader skyboxCubemapShader;
 	Shader particleShader;
 	Shader textShader;
 	Shader texture2dShader;
@@ -391,7 +428,7 @@ public:
 	Shader postprocessingShader;
 
 	Shader shadowMapShader;
-	Shader depthGBufferShader;
+	// Shader depthGBufferShader;
 	Shader ssaoShader;
 	Shader gaussianBlurShader;
 

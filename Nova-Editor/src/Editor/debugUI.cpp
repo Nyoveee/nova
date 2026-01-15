@@ -12,6 +12,7 @@
 #include <format>
 #include <GLFW/glfw3.h>
 
+#include "cubemap.h"
 
 DebugUI::DebugUI(Editor& editor) :
 	editor			{ editor },
@@ -23,6 +24,43 @@ DebugUI::DebugUI(Editor& editor) :
 
 void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
+
+	//static CubeMap const* cubeMap = nullptr;
+
+	if (ImGui::Button("Bake skybox")) {
+		static CubeMap savedCubeMap = renderer.bakeDiffuseIrradianceMap([&] {
+			renderer.renderSkyBox();
+		});
+
+		editor.assetManager.serialiseCubeMap(savedCubeMap);
+		//cubeMap = &savedCubeMap;
+	}
+
+	if (ImGui::Button("Test")) {
+		auto texture = gli::load_dds("C:\\Users\\Nyove\\Desktop\\nova\\Resources\\CubeMap\\1938131670727802909");
+
+		//if (!gli::save_dds(texture, (AssetIO::assetDirectory / (Logger::getUniqueTimedId() + ".dds")).string())) {
+		//	Logger::error("Failed to serialise cube map!");
+		//}
+
+		gli::gl GL{ gli::gl::PROFILE_GL33 };
+		gli::gl::format format = GL.translate(texture.format(), texture.swizzles());
+		CubeMap cubeMap{ INVALID_RESOURCE_ID, ResourceFilePath{}, texture, format };
+		editor.assetManager.serialiseCubeMap(cubeMap);
+	}
+
+#if 0
+	if (cubeMap) {
+		glBindFramebuffer(GL_FRAMEBUFFER, renderer.getEditorFrameBufferId());
+		glNamedBufferSubData(renderer.getUBOId(), 0, sizeof(glm::mat4x4), glm::value_ptr(renderer.getEditorCamera().view()));
+		glNamedBufferSubData(renderer.getUBOId(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(renderer.getEditorCamera().projection()));
+
+		glDisable(GL_DEPTH_TEST);
+		glViewport(0, 0, window.getGameConfig().gameWidth, window.getGameConfig().gameHeight);
+		renderer.renderSkyBox(*cubeMap);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+#endif
 
 	ImGui::Text("Hovering entity: %u", static_cast<unsigned int>(editor.hoveringEntity));
 

@@ -6,8 +6,10 @@
 #include "FileWatch.hpp"
 #include "Logger.h"
 
-#include "cubemap.h"
+#include "equirectangularMap.h"
 #include "Engine/engine.h"
+
+#include "cubemap.h"
 
 #include "Material.h"
 
@@ -227,7 +229,7 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 		return initialiseResourceFile.template operator()<Texture>();
 	}
 	else if (fileExtension == ".hdr") {
-		return initialiseResourceFile.template operator()<CubeMap>();
+		return initialiseResourceFile.template operator()<EquirectangularMap>();
 	}
 	else if (fileExtension == ".cs") {
 		return initialiseResourceFile.template operator()<ScriptAsset>();
@@ -258,6 +260,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".sequencer") {
 		return initialiseResourceFile.template operator()<Sequencer>();
+	}
+	else if (fileExtension == ".dds") {
+		return initialiseResourceFile.template operator()<CubeMap>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
@@ -569,6 +574,54 @@ bool AssetManager::moveAssetToFolder(ResourceID resourceId, FolderID destination
 	destinationFolder.assets.insert(resourceId);
 
 	return true;
+}
+
+void AssetManager::serialiseCubeMap(CubeMap const& cubeMap) {
+	GLint oldAlignment;
+	glGetIntegerv(GL_PACK_ALIGNMENT, &oldAlignment);
+
+	// Set alignment to 1 to handle 6-byte RGB16F data correctly (default alignment is 4)
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+	// 1. Create a cube map to be serialised.
+	gli::texture_cube cubemapBuffer(gli::FORMAT_RGB16_SFLOAT_PACK16, gli::extent2d(cubeMap.getWidth(), cubeMap.getHeight()), cubeMap.getMipmap());
+
+	// 2. For each face.. copy its data..
+	for (std::size_t face = 0; face < 6; ++face) {
+		for (std::size_t level = 0; level < cubeMap.getMipmap(); ++level) {
+			// Get dimensions for this specific mipmap level
+			auto level_extent = cubemapBuffer[face][level].extent();
+
+			// Get the specific pointer for THIS face at THIS level
+			void* data_ptr = cubemapBuffer[face][level].data();
+
+			// Download only ONE face (depth = 1) at the correct Z-offset
+			glGetTextureSubImage(
+				cubeMap.getTextureId(),
+				static_cast<GLint>(level),
+				0, 0, static_cast<GLint>(face),      // Z-offset is the face index
+				level_extent.x, level_extent.y, 1,   // Download 1 face at a time
+				GL_RGB,
+				GL_HALF_FLOAT,
+				static_cast<GLsizei>(cubemapBuffer[face][level].size()),
+				data_ptr
+			);
+		}
+	}
+	
+	// 3. Serialize to a DDS file
+	if (!gli::save_ktx(cubemapBuffer, (AssetIO::assetDirectory / (Logger::getUniqueTimedId() + ".ktx")).string())) {
+		Logger::error("Failed to serialise cube map!");
+	}
+#if 0
+	// restore alignment..
+	glPixelStorei(GL_PACK_ALIGNMENT, oldAlignment);
+
+	static gli::gl GL{ gli::gl::PROFILE_GL33 };
+	static gli::gl::format format = GL.translate(cubemapBuffer.format(), cubemapBuffer.swizzles());
+	static CubeMap cubeMapCopy{ INVALID_RESOURCE_ID, ResourceFilePath{}, cubemapBuffer, format };
+	return cubeMapCopy;
+#endif
 }
 
 std::unordered_map<FolderID, Folder> const& AssetManager::getDirectories() const {

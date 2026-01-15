@@ -24,12 +24,16 @@ Camera::Camera() :
 	recalculateProjectionMatrix();
 }
 
-glm::mat4x4 Camera::view() const {
+glm::mat4x4 const& Camera::view() const {
 	return viewMatrix;
 }
 
-glm::mat4x4 Camera::projection() const {
+glm::mat4x4 const& Camera::projection() const {
 	return projectionMatrix;
+}
+
+glm::mat4x4 const& Camera::viewProjection() const {
+	return viewProjectionMatrix;
 }
 
 glm::vec3 Camera::clipToWorldSpace(glm::vec3 const& clipPos) {
@@ -99,10 +103,12 @@ float Camera::getAspectRatio() const {
 
 void Camera::recalculateViewMatrix() {
 	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, Up);
+	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 
 void Camera::recalculateProjectionMatrix() {
 	projectionMatrix = glm::perspective<float>(fovAngle, aspectRatio, nearPlaneDistance, farPlaneDistance);
+	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 
 //bool Camera::getStatus() {

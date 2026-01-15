@@ -13,7 +13,9 @@ in VS_OUT {
 
 void main()
 {             
+#if 0
     vec3 _normal;
+
     if(toUseNormalMap) {
         // We assume that our normal map is compressed into BC5.
         // Since BC5 only stores 2 channels, we need to calculate z in runtime.
@@ -31,4 +33,7 @@ void main()
     }
 
     gNormal = _normal;
+#else
+    gNormal = fsIn.normal;
+#endif
 }  

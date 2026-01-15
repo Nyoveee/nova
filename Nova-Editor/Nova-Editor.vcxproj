@@ -171,6 +171,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\Assets\animationTimeline.cpp" />
     <ClCompile Include="src\Editor\Assets\assetViewerUi.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\componentInspector.cpp" />
+    <ClCompile Include="src\Editor\ComponentInspection\displayLightComponent.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp" />
     <ClCompile Include="src\Editor\ImGui\crude_json.cpp" />

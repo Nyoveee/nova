@@ -652,7 +652,7 @@ ImTextureID AssetManagerUI::getAssetThumbnailImage(ResourceID resourceId) {
 	else if (resourceManager.isResource<Model>(resourceId)) {
 		return modelIcon->getTextureId();
 	}
-	else if (resourceManager.isResource<CubeMap>(resourceId)) {
+	else if (resourceManager.isResource<EquirectangularMap>(resourceId)) {
 		return cubeMapIcon->getTextureId();
 	}
 	else if (resourceManager.isResource<Material>(resourceId)) {

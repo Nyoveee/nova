@@ -22,6 +22,8 @@ class ResourceManager;
 class Engine;
 class Editor;
 
+class CubeMap;
+
 class AssetManager {
 public:
 	struct Descriptor {
@@ -86,6 +88,8 @@ public:
 	// serialises one specific resource.
 	template <ValidResource T>
 	void serialiseResource(ResourceID id);
+
+	void serialiseCubeMap(CubeMap const& cubeMap);
 
 public:
 	// Getters..

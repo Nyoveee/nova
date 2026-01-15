@@ -1,22 +1,22 @@
 {
     "blendingConfig": "AlphaBlending",
-    "cullingConfig": "Enable",
     "depthTestingMethod": "DepthTest",
-    "fShaderCode": "\n    // === Handling the 3 properties ===\n    float _roughness; \n    float _metallic; \n    float _occulusion;\n\n    if (toUsePackedMap) {\n        vec3 map = texture(packedMap, fsIn.textureUnit).rgb;\n        _metallic   = map.r;\n        _roughness  = map.g;\n        _occulusion = map.b;\n    } \n    else {\n        _roughness  = roughness;\n        _metallic   = metallic;\n        _occulusion = occulusion;\n    }\n\n    // === Handling normal ===\n    vec3 _normal;\n    if(toUseNormalMap) {\n        // We assume that our normal map is compressed into BC5.\n        // Since BC5 only stores 2 channels, we need to calculate z in runtime.\n        vec2 bc5Channels = vec2(texture(normalMap, fsIn.textureUnit));\n        \n        // We shift the range from [0, 1] to  [-1, 1]\n        bc5Channels = bc5Channels * 2.0 - 1.0; \n\n        // We calculate the z portion of the normal..\n        vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));\n        _normal = normalize(fsIn.TBN * sampledNormal);\n    }\n    else {\n        _normal = normalize(fsIn.normal);\n    }\n\n    vec3 emissiveColor = vec3(0);\n\n    if(toUseEmissiveMap) {\n        emissiveColor = emissiveStrength * vec3(texture(emissiveMap, fsIn.textureUnit));\n    }\n\n    vec4 albedo = texture(albedoMap, fsIn.textureUnit);\n    vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);\n\n    return vec4(emissiveColor + pbrColor, 1.0);\n",
-    "pipeline": "PBR",
+    "cullingConfig": "Enable",
     "uniforms": {
-        "albedoMap": "sampler2D",
-        "colorTint": "Color",
-        "emissiveMap": "sampler2D",
         "emissiveStrength": "float",
-        "metallic": "NormalizedFloat",
-        "normalMap": "sampler2D",
-        "occulusion": "NormalizedFloat",
-        "packedMap": "sampler2D",
-        "roughness": "NormalizedFloat",
-        "toUseEmissiveMap": "bool",
+        "toUsePackedMap": "bool",
+        "albedoMap": "sampler2D",
         "toUseNormalMap": "bool",
-        "toUsePackedMap": "bool"
+        "toUseEmissiveMap": "bool",
+        "roughness": "NormalizedFloat",
+        "metallic": "NormalizedFloat",
+        "occulusion": "NormalizedFloat",
+        "colorTint": "Color",
+        "packedMap": "sampler2D",
+        "normalMap": "sampler2D",
+        "emissiveMap": "sampler2D"
     },
-    "vShaderCode": "\n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);\n    gl_Position = worldSpace.clipSpacePosition;\n\n    // Pass attributes to fragment shader.. //\n    vsOut.textureUnit = textureUnit;\n    vsOut.fragWorldPos = worldSpace.position.xyz;\n    vsOut.fragViewPos = vec3(view * worldSpace.position);\n    vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;\n\n    vsOut.normal = worldSpace.normal;\n    vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);\n"
+    "vShaderCode": "\n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);\n    gl_Position = calculateClipPosition(worldSpace.position);\n    \n    passDataToFragment(worldSpace);\n",
+    "fShaderCode": "\n    // === Handling the 3 properties ===\n    float _roughness; \n    float _metallic; \n    float _occulusion;\n\n    if (toUsePackedMap) {\n        vec3 map = texture(packedMap, fsIn.textureUnit).rgb;\n        _metallic   = map.r;\n        _roughness  = map.g;\n        _occulusion = map.b;\n    } \n    else {\n        _roughness  = roughness;\n        _metallic   = metallic;\n        _occulusion = occulusion;\n    }\n\n    // === Handling normal ===\n    vec3 _normal;\n    if(toUseNormalMap) {\n        // We assume that our normal map is compressed into BC5.\n        // Since BC5 only stores 2 channels, we need to calculate z in runtime.\n        vec2 bc5Channels = vec2(texture(normalMap, fsIn.textureUnit));\n        \n        // We shift the range from [0, 1] to  [-1, 1]\n        bc5Channels = bc5Channels * 2.0 - 1.0; \n\n        // We calculate the z portion of the normal..\n        vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));\n        _normal = normalize(fsIn.TBN * sampledNormal);\n    }\n    else {\n        _normal = normalize(fsIn.normal);\n    }\n\n    vec3 emissiveColor = vec3(0);\n\n    if(toUseEmissiveMap) {\n        emissiveColor = emissiveStrength * vec3(texture(emissiveMap, fsIn.textureUnit));\n    }\n\n    vec4 albedo = texture(albedoMap, fsIn.textureUnit);\n    vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);\n\n    return vec4(emissiveColor + pbrColor, 1.0);\n    // return vec4(fsIn.normal, 1);\n",
+    "pipeline": "PBR"
 }

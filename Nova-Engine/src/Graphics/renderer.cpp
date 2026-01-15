@@ -17,6 +17,8 @@
 #include "Profiling.h"
 #include "Logger.h"
 
+#include "cubemap.h"
+
 #include "RandomRange.h"
 #include "systemResource.h"
 
@@ -69,11 +71,19 @@ constexpr unsigned int gridSizeZ = 24;
 constexpr unsigned int numClusters = gridSizeX * gridSizeY * gridSizeZ;
 
 // Shadow mapping..
-constexpr int SHADOW_MAP_WIDTH  = 2048;
-constexpr int SHADOW_MAP_HEIGHT = 2048;
+constexpr int DIRECTIONAL_SHADOW_MAP_WIDTH  = 2048;
+constexpr int DIRECTIONAL_SHADOW_MAP_HEIGHT = 2048;
+
+constexpr int SHADOW_MAP_WIDTH				= 1024;
+constexpr int SHADOW_MAP_HEIGHT				= 1024;
+constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
+
+// Irradiance map
+constexpr int IRRADIANCE_MAP_WIDTH = 512;
+constexpr int IRRADIANCE_MAP_HEIGHT = 512;
 
 // For Volumetric Fog
-constexpr int VOLUMETRIC_FOG_DOWNSCALE = 4;
+constexpr int VOLUMETRIC_FOG_DOWNSCALE 		= 4;
 
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
@@ -90,87 +100,95 @@ struct alignas(16) Cluster {
 #pragma warning( pop )
 
 Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
-	engine{ engine },
-	gameWidth{ gameWidth },
-	gameHeight{ gameHeight },
-	resourceManager{ engine.resourceManager },
-	registry{ engine.ecs.registry },
-	basicShader{ "System/Shader/basic.vert",						"System/Shader/basic.frag" },
-	standardShader{ "System/Shader/standard.vert",					"System/Shader/basic.frag" },
-	textureShader{ "System/Shader/standard.vert",					"System/Shader/image.frag" },
-	colorShader{ "System/Shader/standard.vert",					"System/Shader/color.frag" },
-	bloomDownSampleShader{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomDownSample.frag" },
-	bloomUpSampleShader{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomUpSample.frag" },
-	bloomFinalShader{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomFinal.frag" },
-	postprocessingShader{ "System/Shader/squareOverlay.vert",				"System/Shader/postprocessing.frag" },
-	gridShader{ "System/Shader/grid.vert",						"System/Shader/grid.frag" },
-	outlineShader{ "System/Shader/outline.vert",						"System/Shader/outline.frag" },
-	debugShader{ "System/Shader/debug.vert",						"System/Shader/debug.frag" },
-	overlayShader{ "System/Shader/squareOverlay.vert",				"System/Shader/overlay.frag" },
-	objectIdShader{ "System/Shader/standard.vert",					"System/Shader/objectId.frag" },
-	uiImageObjectIdShader{ "System/Shader/texture2D.vert",					"System/Shader/objectId.frag" },
-	uiTextObjectIdShader{ "System/Shader/text.vert",						"System/Shader/objectId.frag" },
-	skyboxShader{ "System/Shader/skybox.vert",						"System/Shader/skybox.frag" },
-	toneMappingShader{ "System/Shader/squareOverlay.vert",				"System/Shader/tonemap.frag" },
-	particleShader{ "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag" },
-	textShader{ "System/Shader/text.vert",						"System/Shader/text.frag" },
-	texture2dShader{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag" },
-	shadowMapShader{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
-	depthGBufferShader{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
-	ssaoShader{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
-	gaussianBlurShader{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
-	clusterBuildingCompute{ "System/Shader/clusterBuilding.compute" },
-	clusterLightCompute{ "System/Shader/clusterLightAssignment.compute" },
-	rayMarchingVolumetricFogCompute{ "System/Shader/VolumetricFog/rayMarchingVolumetricFog.compute" },
-	volumetricFogBufferResetCompute{ "System/Shader/VolumetricFog/volumetricFogBufferReset.compute" },
-	mainVAO{},
-	positionsVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
-	textureCoordinatesVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
-	normalsVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
-	tangentsVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
-	skeletalVBO{ AMOUNT_OF_MEMORY_ALLOCATED },
-	debugPhysicsVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	debugPhysicsLineVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	debugNavMeshVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	debugParticleShapeVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	textVBO{ AMOUNT_OF_MEMORY_FOR_DEBUG },
-	EBO{ AMOUNT_OF_MEMORY_ALLOCATED },
+	engine							{ engine },
+	gameWidth						{ gameWidth },
+	gameHeight						{ gameHeight },
+	resourceManager					{ engine.resourceManager },
+	registry						{ engine.ecs.registry },
+	basicShader						{ "System/Shader/basic.vert",						"System/Shader/basic.frag" },
+	standardShader					{ "System/Shader/standard.vert",					"System/Shader/basic.frag" },
+	textureShader					{ "System/Shader/standard.vert",					"System/Shader/image.frag" },
+	colorShader						{ "System/Shader/standard.vert",					"System/Shader/color.frag" },
+	bloomDownSampleShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomDownSample.frag" },
+	bloomUpSampleShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomUpSample.frag" },
+	bloomFinalShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/bloomFinal.frag" },
+	postprocessingShader			{ "System/Shader/squareOverlay.vert",				"System/Shader/postprocessing.frag" },
+	gridShader						{ "System/Shader/grid.vert",						"System/Shader/grid.frag" },
+	outlineShader					{ "System/Shader/outline.vert",						"System/Shader/outline.frag" },
+	debugShader						{ "System/Shader/debug.vert",						"System/Shader/debug.frag" },
+	overlayShader					{ "System/Shader/squareOverlay.vert",				"System/Shader/overlay.frag" },
+	objectIdShader					{ "System/Shader/standard.vert",					"System/Shader/objectId.frag" },
+	uiImageObjectIdShader			{ "System/Shader/texture2D.vert",					"System/Shader/objectId.frag" },
+	uiTextObjectIdShader			{ "System/Shader/text.vert",						"System/Shader/objectId.frag" },
+	skyboxShader					{ "System/Shader/skybox.vert",						"System/Shader/skybox.frag" },
+	skyboxCubemapShader				{ "System/Shader/skybox.vert",						"System/Shader/skyboxCubemap.frag" },
+	toneMappingShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/tonemap.frag" },
+	particleShader					{ "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag"},
+	textShader						{ "System/Shader/text.vert",						"System/Shader/text.frag"},
+	texture2dShader					{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
+	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
+	// depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
+	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
+	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
+	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
+	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
+	rayMarchingVolumetricFogCompute	{ "System/Shader/VolumetricFog/rayMarchingVolumetricFog.compute" },
+	volumetricFogBufferResetCompute	{ "System/Shader/VolumetricFog/volumetricFogBufferReset.compute" },
+	mainVAO							{},
+	positionsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
+	textureCoordinatesVBO			{ AMOUNT_OF_MEMORY_ALLOCATED },
+	normalsVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
+	tangentsVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
+	skeletalVBO						{ AMOUNT_OF_MEMORY_ALLOCATED },
+	debugPhysicsVBO					{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugPhysicsLineVBO				{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugNavMeshVBO					{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	debugParticleShapeVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	textVBO							{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	EBO								{ AMOUNT_OF_MEMORY_ALLOCATED },
+	
+	gameLights						{ MAX_NUMBER_OF_LIGHT },
+	editorLights					{ MAX_NUMBER_OF_LIGHT },
+	gameClusterSSBO					{ numClusters * sizeof(Cluster) },
+	editorClusterSSBO				{ numClusters * sizeof(Cluster) },
+	volumetricFogSSBO				{ static_cast<int>((gameWidth/ VOLUMETRIC_FOG_DOWNSCALE) * (gameHeight/ VOLUMETRIC_FOG_DOWNSCALE) * sizeof(VolumetricFogData))},
+									// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
+	sharedUBO						{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
+	
+									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
+	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
 
-	gameLights{ MAX_NUMBER_OF_LIGHT },
-	editorLights{ MAX_NUMBER_OF_LIGHT },
-	gameClusterSSBO{ numClusters * sizeof(Cluster) },
-	editorClusterSSBO{ numClusters * sizeof(Cluster) },
-	volumetricFogSSBO{ static_cast<int>((gameWidth/ VOLUMETRIC_FOG_DOWNSCALE) * (gameHeight/ VOLUMETRIC_FOG_DOWNSCALE) * sizeof(VolumetricFogData))},
-	// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
-	sharedUBO{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
-
-	// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
-	bonesSSBO{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
-	editorCamera{},
-	gameCamera{},
-	numOfPhysicsDebugTriangles{},
-	numOfNavMeshDebugTriangles{},
-	isOnWireframeMode{},
-	hasDirectionalLightShadowCaster{},
-	directionalLightViewMatrix{},
-	directionalLightDir{},
-	timeElapsed{},
-	ssaoNoiseTextureId{ INVALID_ID },
-	hdrExposure{ 0.9f },
-	toneMappingMethod{ ToneMappingMethod::ACES },
-	// main		normal
-	editorMainFrameBuffer{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
-	gameMainFrameBuffer{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
-	uiMainFrameBuffer{ gameWidth, gameHeight, { GL_RGBA8 } },
-	physicsDebugFrameBuffer{ gameWidth, gameHeight, { GL_RGBA8 } },
-	objectIdFrameBuffer{ gameWidth, gameHeight, { GL_R32UI } },
-	uiObjectIdFrameBuffer{ gameWidth, gameHeight, { GL_R32UI } },
-	bloomFrameBuffer{ gameWidth, gameHeight, 5 },
-	ssaoFrameBuffer{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
-	directionalLightShadowFBO{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
-	toGammaCorrect{ true },
-	toPostProcess{ false },
-	UIProjection{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
+									// we allocate enough memory to store the max number of shadow caster's viewProjection matrixes.
+	shadowCasterMatrixes			{ MAX_SPOTLIGHT_SHADOW_CASTER * sizeof(glm::mat4) },
+	editorCamera					{},
+	gameCamera						{},
+	numOfPhysicsDebugTriangles		{},
+	numOfNavMeshDebugTriangles		{},
+	isOnWireframeMode				{},
+	hasDirectionalLightShadowCaster {},
+	directionalLightViewMatrix		{},
+	directionalLightDir				{},
+	numOfSpotlightShadowCaster		{},
+	timeElapsed						{},
+	ssaoNoiseTextureId				{ INVALID_ID },
+	hdrExposure						{ 0.9f },
+	toneMappingMethod				{ ToneMappingMethod::ACES },
+															 // main		normal
+	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
+	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
+	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
+	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
+	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
+	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
+	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
+	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGB16F } },
+	directionalLightShadowFBO		{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
+	shadowFBO						{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
+	spotlightShadowMaps				{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
+	toGammaCorrect					{ true },
+	toPostProcess					{ false },
+	UIProjection					{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
 	randomiseChromaticAberrationoffset();
 
@@ -182,7 +200,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// Prepare shared UBO, that will be used by all shaders. (like view and projection matrix.)
 	// ======================================================
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
-
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, shadowCasterMatrixes.id());
+	
 	// we bind bones SSBO to 3.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
 
@@ -467,28 +486,30 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	// We upload camera data to the UBO..
 	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
 	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
-	glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection() * camera.view()));
+	glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.viewProjection()));
 
-	// We perform frustum culling for models and lights..
-	frustumCulling(camera);
+	// We perform frustum culling for lights, this is for our cluster building to minimize the number of lights involved.
+	frustumCullLight(camera.viewProjection());
 
-	// We prepare our lights for rendering..
-	// Build clusters and assign lights for clustered forward rendering
-	// And render shadow maps..
+	// Main function to handle shadow pass for all light types.. 
+	// We run a shadow pass first so we can pass shadow related data in prepareLights..
+	shadowPass(camera);
+
+	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
 	prepareLights(camera, lightSSBO);
 
-	// Prepare cluster forwarded rendering..
+	// Prepare cluster forwarded rendering information..
 	clusterBuilding(camera, clusterSSBO);
 
-	// Generate shadow map based on camera position..
-	shadowPass(camera);
+	// We are now ready to render the main scene, let's frustum cull our models..
+	frustumCullModels(camera.viewProjection());
 
 	// We bind to the active framebuffer for majority of the in game rendering..
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
 	setBlendMode(BlendingConfig::Disabled);
 
-	// We perform a depth pre pass..
+	// We perform a depth pre pass.. we disable the main color attachment and enable the normal color attachment..s
 	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1 };
 	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 2, buffers);
 
@@ -504,11 +525,14 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	renderSkyBox();
 
 	// Because we had a depth pre pass, we can change depth function to equal.
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_EQUAL);
 
 	// We render individual game objects..
 	renderModels(camera);
 	renderSkinnedModels(camera);
+
+	glDisable(GL_DEPTH_TEST);
 	renderTranslucentModels(camera);
 
 	// Restore default depth testing.
@@ -597,7 +621,6 @@ void Renderer::renderBloom(PairFrameBuffer& frameBuffers) {
 	bloomUpSampleShader.setImageUniform("srcTexture", 0);
 
 	// Enable additive blending
-	// setBlendMode(CustomShader::BlendingConfig::AdditiveBlending);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
@@ -656,15 +679,20 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target) {
 }
 
 void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
-	glViewport(0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
+	glEnable(GL_CULL_FACE);
 
+	numOfSpotlightShadowCaster = 0;
 	hasDirectionalLightShadowCaster = false;
+	
+	shadowMapShader.use();
 
 	// let's find our directional light shadow caster..
 	for (auto&& [entity, transform, entityData, light] : registry.view<Transform, EntityData, Light>().each()) {
 		if (!entityData.isActive || !engine.ecs.isComponentActive<Light>(entity)) {
 			continue;
 		}
+
+		light.shadowMapIndex = NO_SHADOW_MAP;
 
 		// light not in camera frustum
 		if (!transform.inCameraFrustum) {
@@ -685,12 +713,21 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 				continue;
 			}
 
+			// Properly set up render target and configurations
+			glViewport(0, 0, DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, directionalLightShadowFBO.fboId());
 			glClear(GL_DEPTH_BUFFER_BIT);
 
-			hasDirectionalLightShadowCaster = true;
-			directionalLightShadowPass(transform.position, transform.front, light);
+			// Calculate directional light's matrix.
+			glm::mat4 lightProjection = glm::ortho(-light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, -light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, light.shadowNearPlane, light.shadowFarPlane);
+			glm::mat4 lightView = glm::lookAt(transform.position, transform.position + transform.front, glm::vec3(0.0f, 1.0f, 0.0f));
 
+			// Set the global variables..
+			hasDirectionalLightShadowCaster = true;
+			directionalLightViewMatrix = lightProjection * lightView;
+			directionalLightDir = transform.front;
+
+			shadowPassRender(directionalLightViewMatrix);
 			break;
 		}
 
@@ -698,6 +735,32 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 			break;
 
 		case Light::Type::Spotlight:
+			if (numOfSpotlightShadowCaster >= MAX_SPOTLIGHT_SHADOW_CASTER) {
+				continue;
+			}
+
+			// Properly set up render target and configurations
+			glViewport(0, 0, SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT);
+			glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO.fboId());
+			
+			// we swap FBO's depth attachment (this is because point and spotlight attaches their own texture to this FBO).
+			glNamedFramebufferTextureLayer(shadowFBO.fboId(), GL_DEPTH_ATTACHMENT, spotlightShadowMaps.getTextureId(), 0, numOfSpotlightShadowCaster);
+
+			glClear(GL_DEPTH_BUFFER_BIT);
+
+			// Calculate spot light's matrix.
+			glm::mat4 lightProjection	= glm::perspective(static_cast<float>(light.outerCutOffAngle), 1.0f, 0.1f, light.radius);
+			glm::mat4 lightView			= glm::lookAt(transform.position, transform.position + transform.front, glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 viewProjection	= lightProjection * lightView;
+			shadowPassRender(viewProjection);
+
+			light.shadowMapIndex = numOfSpotlightShadowCaster;
+
+			// Populate the shadow caster matrixes UBO..
+			glNamedBufferSubData(shadowCasterMatrixes.id(), numOfSpotlightShadowCaster * sizeof(glm::mat4), sizeof(glm::mat4), &viewProjection);
+
+			++numOfSpotlightShadowCaster;
+
 			break;
 		}
 	}
@@ -706,10 +769,16 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 }
 
 void Renderer::depthPrePass(Camera const& camera) {
+	glEnable(GL_DEPTH_TEST);
+
+	renderModels(camera, true);
+	renderSkinnedModels(camera, true);
+
+#if 0
 	glEnable(GL_CULL_FACE);
 
 	depthGBufferShader.use();
-	depthGBufferShader.setMatrix("lightSpaceMatrix", camera.projection() * camera.view());
+	depthGBufferShader.setMatrix("lightSpaceMatrix", camera.viewProjection());
 
 	// ===========================================================
 	// 1. Render mesh renderer shadows
@@ -824,6 +893,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 	}
 
 	glDisable(GL_CULL_FACE);
+#endif
 }
 
 void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera) {
@@ -959,9 +1029,16 @@ GLuint Renderer::getGameFrameBufferTexture() const {
 	return gameMainFrameBuffer.getActiveFrameBuffer().textureIds()[0];
 }
 
-GLuint Renderer::getUIFrameBufferTexture() const
-{
+GLuint Renderer::getUIFrameBufferTexture() const {
 	return uiMainFrameBuffer.textureIds()[0];
+}
+
+GLuint Renderer::getUBOId() const {
+	return sharedUBO.id();
+}
+
+GLuint Renderer::getEditorFrameBufferId() const {
+	return editorMainFrameBuffer.getActiveFrameBuffer().fboId();
 }
 
 void Renderer::enableWireframeMode(bool toEnable) {
@@ -1304,33 +1381,102 @@ void Renderer::prepareRendering() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT);
+
+	glViewport(0, 0, gameWidth, gameHeight);
 }
 
 void Renderer::renderSkyBox() {
+	glDisable(GL_DEPTH_TEST);
+
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
-	glDisable(GL_DEPTH_TEST);
 
-	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData,SkyBox>().each()) {
-		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
+#if 0
+	// Testing code to see if baking of cube map works.
+	CubeMap savedCubeMap = bakeDiffuseIrradianceMap([&] {
+		auto&& [equirectangularMap, _] = resourceManager.getResource<EquirectangularMap>(resourceManager.getSomeResourceID<EquirectangularMap>());
+		renderSkyBox(*equirectangularMap);
+	});
+
+	glDisable(GL_DEPTH_TEST);
+	glBindFramebuffer(GL_FRAMEBUFFER, getEditorFrameBufferId());
+	glViewport(0, 0, gameWidth, gameHeight);
+
+	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(getEditorCamera().view()));
+	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(getEditorCamera().projection()));
+
+	renderSkyBox(savedCubeMap);
+#endif
+
+#if 1
+	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData, SkyBox>().each()) {
+		auto [asset, status] = resourceManager.getResource<EquirectangularMap>(skyBox.equirectangularMap);
 
 		// skybox not loaded..
 		if (!asset || !entityData.isActive || !engine.ecs.isComponentActive<SkyBox>(entityId)) {
 			continue;
 		}
 
-		skyboxShader.use();
-		skyboxShader.setImageUniform("equirectangularMap", 0);
-		glBindTextureUnit(0, asset->getTextureId());
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		renderSkyBox(*asset);
 
 		// only render the very first skybox.
 		return;
 	}
+
+	for (auto&& [entityId, entityData, skyBox] : registry.view<EntityData, SkyboxCubeMap>().each()) {
+		auto [asset, status] = resourceManager.getResource<CubeMap>(skyBox.cubeMapId);
+
+		// skybox not loaded..
+		if (!asset || !entityData.isActive || !engine.ecs.isComponentActive<SkyboxCubeMap>(entityId)) {
+			continue;
+		}
+
+		renderSkyBox(*asset);
+
+		// only render the very first skybox.
+		return;
+	}
+#endif
 }
 
-void Renderer::renderModels(Camera const& camera) {
+void Renderer::renderSkyBox(EquirectangularMap const& equirectangularMap) {
+	skyboxShader.use();
+	skyboxShader.setImageUniform("equirectangularMap", 0);
+	glBindTextureUnit(0, equirectangularMap.getTextureId());
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void Renderer::renderSkyBox(CubeMap const& cubemap) {
+	skyboxCubemapShader.use();
+	skyboxCubemapShader.setImageUniform("cubemap", 0);
+	glBindTextureUnit(0, cubemap.getTextureId());
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+#if 0
+std::unique_ptr<std::byte[]> Renderer::getBytes(CubeMap const& cubemap, int face, int mipmapLevel, std::size_t size) {
+	std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(size);
+	
+	// because 16 bits (2 bytes) may not be aligned with 4 bytes.
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+	glGetTextureSubImage(
+		cubemap.getTextureId(),
+		mipmapLevel,								// Mipmap level
+		0, 0, face,									// x, y, zOffset (zOffset is the Face Index)
+		cubemap.getWidth(), cubemap.getHeight(), 1, // width, height, depth (1 slice = 1 face)
+		GL_RGB,         // Format
+		GL_HALF_FLOAT,  // Data type
+		static_cast<GLsizei>(size),
+		buffer.get()
+	);
+	
+	return buffer;
+}
+#endif
+
+void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1381,7 +1527,9 @@ void Renderer::renderModels(Camera const& camera) {
 					}
 
 					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+					CustomShader* shader = [&]() {
+						return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+					}();
 
 					if (shader) {
 						// time to draw!
@@ -1395,7 +1543,9 @@ void Renderer::renderModels(Camera const& camera) {
 					Material const* material = obtainMaterial(*meshRenderer, mesh);
 
 					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+					CustomShader* shader = [&]() {
+						return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+					}();
 
 					if (shader) {
 						// time to draw!
@@ -1614,7 +1764,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 }
 
 
-void Renderer::renderSkinnedModels(Camera const& camera) {
+void Renderer::renderSkinnedModels(Camera const& camera, bool normalOnly) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1660,7 +1810,9 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 				}
 
 				// Use the correct shader and configure it's required uniforms..
-				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+				CustomShader* shader = [&]() {
+					return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+				}(); 
 
 				if (shader) {
 					// time to draw!
@@ -1677,7 +1829,9 @@ void Renderer::renderSkinnedModels(Camera const& camera) {
 				}
 
 				// Use the correct shader and configure it's required uniforms..
-				CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
+				CustomShader* shader = [&]() {
+					return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+				}(); 
 
 				if (shader) {
 					// time to draw!
@@ -1774,8 +1928,8 @@ Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshR
 	return material;
 }
 
-void Renderer::frustumCulling(Camera const& camera) {
-	Frustum const& cameraFrustum = calculateCameraFrustum(camera);
+void Renderer::frustumCullModels(glm::mat4 const& viewProjectionMatrix) {
+	Frustum const& cameraFrustum = calculateCameraFrustum(viewProjectionMatrix);
 
 	// ============================================
 	// We do frustum culling check for mesh & skinned mesh renderer
@@ -1811,6 +1965,10 @@ void Renderer::frustumCulling(Camera const& camera) {
 		auto [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
 		calculateFrustumCulling(model, transform);
 	}
+}
+
+void Renderer::frustumCullLight(glm::mat4 const& viewProjectionMatrix) {
+	Frustum const& cameraFrustum = calculateCameraFrustum(viewProjectionMatrix);
 
 	// ============================================
 	// We do frustum culling check for lights
@@ -1921,13 +2079,16 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 				Logger::warn("Max number of point lights reached!");
 				continue;
 			}
+
 			pointLightData[numOfPtLights++] = {
 				transform.position,
 				glm::vec3{ light.color },
 				light.attenuation,
 				light.radius,
 				light.intensity,
+				light.shadowMapIndex,
 			};
+
 			break;
 
 		case Light::Type::Directional:
@@ -1939,8 +2100,9 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 
 			directionalLightData[numOfDirLights++] = {
 				glm::normalize(transform.front),
-				glm::vec3{ light.color } *light.intensity
+				glm::vec3{ light.color } * light.intensity
 			};
+
 			break;
 		}
 
@@ -1950,16 +2112,19 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 				Logger::warn("Max number of spot lights reached!");
 				continue;
 			}
-			glm::vec3 forward = transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+
 			spotLightData[numOfSpotLights++] = {
 				transform.position,
-				glm::normalize(forward),
-				glm::vec3{ light.color } *light.intensity,
+				glm::normalize(transform.front),
+				glm::vec3{ light.color },
 				light.attenuation,
-				light.cutOffAngle,
-				light.outerCutOffAngle,
-				light.radius
+				light.cutOffAngle / 2.f,
+				light.outerCutOffAngle / 2.f,
+				light.radius,
+				light.intensity,
+				light.shadowMapIndex
 			};
+
 			break;
 		}
 
@@ -2012,12 +2177,11 @@ void Renderer::clusterBuilding(Camera const& camera, BufferObject const& cluster
 #endif
 }
 
-Frustum Renderer::calculateCameraFrustum(Camera const& camera) {
+Frustum Renderer::calculateCameraFrustum(glm::mat4 const& m) {
 	Frustum frustum;
 
 	// https://www.gamedevs.org/uploads/fast-extraction-viewing-frustum-planes-from-world-view-projection-matrix.pdf
 	// https://www.reddit.com/r/opengl/comments/1fstgtt/strange_issue_with_frustum_extraction/
-	glm::mat4x4 m = camera.projection() * camera.view();
 
 	frustum.leftPlane = { glm::row(m, 3) + glm::row(m, 0) };
 	frustum.rightPlane = { glm::row(m, 3) - glm::row(m, 0) };
@@ -2095,22 +2259,14 @@ void Renderer::printOpenGLDriverDetails() const {
 	}
 }
 
-void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::vec3 const& lightFront, Light const& light) {
-	glm::mat4 lightProjection = glm::ortho(-light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, -light.orthogonalShadowCasterSize, light.orthogonalShadowCasterSize, light.shadowNearPlane, light.shadowFarPlane);
-	glm::mat4 lightView = glm::lookAt(cameraPosition, cameraPosition + lightFront, glm::vec3(0.0f, 1.0f, 0.0f));
-	directionalLightViewMatrix = lightProjection * lightView;
-	directionalLightDir = lightFront;
-
-	glEnable(GL_CULL_FACE);
-
-	shadowMapShader.use();
-	shadowMapShader.setMatrix("lightSpaceMatrix", directionalLightViewMatrix);
+void Renderer::shadowPassRender(glm::mat4 const& viewProjectionMatrix) {
+	shadowMapShader.setMatrix("lightSpaceMatrix", viewProjectionMatrix);
 
 	// ===========================================================
 	// 1. Render mesh renderer shadows
 	// ===========================================================
 
-	// indicate that this is a skinned mesh renderer..
+	// indicate that this is NOT a skinned mesh renderer..
 	static const unsigned int isNotASkinnedMeshRenderer = 0;
 	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
 
@@ -2138,13 +2294,9 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 		meshRenderer.shadowCullFrontFace ? glCullFace(GL_FRONT) : glCullFace(GL_BACK);
 
 		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			glVertexArrayElementBuffer(mainVAO, EBO.id());
-			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
-			glVertexArrayVertexBuffer(mainVAO, 4, skeletalVBO.id(), 0, sizeof(VertexWeight));
-			positionsVBO.uploadData(mesh.positions);
-			EBO.uploadData(mesh.indices);
-			skeletalVBO.uploadData(mesh.vertexWeights);
+		for (auto& mesh : model->meshes) {
+			constructMeshBuffers(mesh);
+			swapVertexBuffer(mesh);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
@@ -2152,7 +2304,7 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 	// ===========================================================
 	// 2. Render skinned mesh renderer shadows
 	// ===========================================================
-	// indicate that this is NOT a skinned mesh renderer..
+	// indicate that this is A skinned mesh renderer..
 	glCullFace(GL_FRONT);
 
 	static const unsigned int isASkinnedMeshRenderer = 1;
@@ -2183,11 +2335,9 @@ void Renderer::directionalLightShadowPass(glm::vec3 const& cameraPosition, glm::
 		glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer.bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer.bonesFinalMatrices.data());
 
 		// Draw every mesh of a given model.
-		for (auto const& mesh : model->meshes) {
-			glVertexArrayElementBuffer(mainVAO, EBO.id());
-			glVertexArrayVertexBuffer(mainVAO, 0, positionsVBO.id(), 0, sizeof(glm::vec3));
-			positionsVBO.uploadData(mesh.positions);
-			EBO.uploadData(mesh.indices);
+		for (auto& mesh : model->meshes) {
+			constructMeshBuffers(mesh);
+			swapVertexBuffer(mesh);
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
@@ -2264,6 +2414,40 @@ void Renderer::swapVertexBuffer(Mesh& mesh) {
 		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
 }
 
+CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
+	CubeMap cubemap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT };
+
+	// https://learnopengl.com/PBR/IBL/Diffuse-irradiance
+	static glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	static glm::mat4 captureViews[] = {
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+	};
+
+	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(captureProjection));
+			
+	glViewport(0, 0, IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT); 
+	glBindFramebuffer(GL_FRAMEBUFFER, cubeMapFrameBuffer.fboId());
+	
+	for (unsigned int i = 0; i < 6; ++i) {
+		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap.getTextureId(), 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		render();
+	}
+
+	// bind back to default FBO.
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	return cubemap;
+}
+	
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
 	for (int tileNum = 0; tileNum < mesh.getMaxTiles(); ++tileNum) {
 		const dtMeshTile* tile = mesh.getTile(tileNum);
@@ -2618,7 +2802,7 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// ===========================================================================
 
 	setBlendMode(material.materialData.blendingConfig);
-	setDepthMode(material.materialData.depthTestingMethod);
+	setDepthMode(material.materialData.depthTestingMethod); // We had a depth pre pass.
 	setCullMode(material.materialData.cullingConfig);
 
 	Shader const& shader = shaderOpt.value();
@@ -2626,13 +2810,14 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// ===========================================================================
 	// Set uniform data..
 	// ===========================================================================
+	shader.setMatrix("normalMatrix", transform.normalMatrix);
 	shader.setFloat("timeElapsed", timeElapsed);
+	shader.setFloat("toOutputNormal", false);
 
 	switch (shaderData.pipeline)
 	{
 	case Pipeline::PBR:
 		shader.setVec3("cameraPos", camera.getPos());
-		shader.setMatrix("normalMatrix", transform.normalMatrix);
 
 		shader.setFloat("zNear", camera.getNearPlaneDistance());
 		shader.setFloat("zFar", camera.getFarPlaneDistance());
@@ -2640,7 +2825,6 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		shader.setUVec2("screenDimensions", { gameWidth, gameHeight });
 
 		shader.setBool("toEnableSSAO", toEnableSSAO);
-		
 		if (toEnableSSAO) {
 			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]);
 			shader.setImageUniform("ssao", 1);
@@ -2652,6 +2836,10 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 			shader.setMatrix("directionalLightSpaceMatrix", directionalLightViewMatrix);
 			shader.setVec3("directionalLightDir", directionalLightDir);
 		}
+
+		// bind to spotlight shadow map array
+		glBindTextureUnit(2, spotlightShadowMaps.getTextureId());
+		shader.setImageUniform("spotlightShadowMaps", 2);
 
 		// both pipeline requires these to be set..
 		[[fallthrough]];
@@ -2668,13 +2856,67 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	glBindTextureUnit(0, directionalLightShadowFBO.textureId());
 	shader.setImageUniform("shadowMap", 0);
 
+	// We reserve the very 3 texture unit for shadow maps and SSAO.
+	int numOfTextureUnitBound = 3;
+	
+	setupCustomShaderUniforms(shader, material, numOfTextureUnitBound);
+
+	// Use the shader
+	shader.use();
+
+	return customShader;
+}
+
+CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transform const& transform, float scale) {
+	// ===========================================================================
+	// Retrieve the underlying shader for this material, and verify it's state.
+	// ===========================================================================
+	TypedResourceID<CustomShader> customShaderId = material.materialData.selectedShader;
+
+	auto&& [customShader, _] = resourceManager.getResource<CustomShader>(customShaderId);
+
+	if (!customShader) {
+		return nullptr;
+	}
+
+	auto const& shaderOpt = customShader->getShader();
+	if (!shaderOpt || !shaderOpt.value().hasCompiled()) {
+		return nullptr;
+	}
+	
+	Shader const& shader = shaderOpt.value();
+
+	// ===========================================================================
+	// Set rendering fixed pipeline configuration.
+	// ===========================================================================
+
+	setBlendMode(material.materialData.blendingConfig);
+	setDepthMode(material.materialData.depthTestingMethod);
+	setCullMode(material.materialData.cullingConfig);
+
+	// ===========================================================================
+	// Set uniform data..
+	// ===========================================================================
+	shader.setMatrix("normalMatrix", transform.normalMatrix);
+	shader.setMatrix("model", transform.modelMatrix);
+	shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
+	
+	shader.setFloat("toOutputNormal", true);
+
+	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.
+	setupCustomShaderUniforms(shader, material, 3);
+
+	// Use the shader
+	shader.use();
+
+	return customShader;
+}
+
+void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& material, int numOfTextureUnitsUsed) {
 	// We keep track of the number of texture units bound and make sure it doesn't exceed the driver's cap.
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
-	// We reserve the very 2 texture unit for shadow map and SSAO.
-	int numOfTextureUnitBound = 2;
-	
 	for (auto const& [name, overriddenUniformData] : material.materialData.overridenUniforms) {
 		std::visit([&](auto&& value) {
 			using Type = std::decay_t<decltype(value)>;
@@ -2725,51 +2967,26 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 					texture = invalidTexture;
 				}
 
-				if (numOfTextureUnitBound >= maxTextureUnits) {
-					Logger::error("Too many texture units bound. Textures bound: {}, Capacity: {}", numOfTextureUnitBound, maxTextureUnits);
+				if (numOfTextureUnitsUsed >= maxTextureUnits) {
+					Logger::error("Too many texture units bound. Textures bound: {}, Capacity: {}", numOfTextureUnitsUsed, maxTextureUnits);
 					return;
 				}
 
 				// we bind to a unused texture unit..
-				glBindTextureUnit(numOfTextureUnitBound, texture->getTextureId());
-				shader.setImageUniform(name, numOfTextureUnitBound);
+				glBindTextureUnit(numOfTextureUnitsUsed, texture->getTextureId());
+				shader.setImageUniform(name, numOfTextureUnitsUsed);
 
-				++numOfTextureUnitBound;
+				++numOfTextureUnitsUsed;
 			}
 		}, overriddenUniformData.value);
 	}
-
-	// Use the shader
-	shader.use();
-
-	return customShader;
 }
 
-void Renderer::renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType) {
+void Renderer::renderMesh(Mesh& mesh, [[maybe_unused]] Pipeline pipeline, [[maybe_unused]] MeshType meshType) {
 	// Create Buffer Objects for first render
 	constructMeshBuffers(mesh);
+	swapVertexBuffer(mesh);
 
-	switch (pipeline)
-	{
-	case Pipeline::PBR:
-		glVertexArrayVertexBuffer(mainVAO, 3, meshBOs.at(mesh.meshID).tangentsVBO.id(), 0, sizeof(glm::vec3));
-		[[fallthrough]];
-	case Pipeline::Color:
-		glVertexArrayVertexBuffer(mainVAO, 2, meshBOs.at(mesh.meshID).normalsVBO.id(), 0, sizeof(glm::vec3));
-		glVertexArrayVertexBuffer(mainVAO, 0, meshBOs.at(mesh.meshID).positionsVBO.id(), 0, sizeof(glm::vec3));
-		glVertexArrayVertexBuffer(mainVAO, 1, meshBOs.at(mesh.meshID).textureCoordinatesVBO.id(), 0, sizeof(glm::vec2));
-		break;
-	default:
-		assert(false && "Unhandled pipeline.");
-		break;
-	}
-	if (meshType == MeshType::Skinned) {
-		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
-		//glVertexArrayVertexBuffer(mainVAO, 5, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
-	}
-
-	// Bind this EBO to this VAO.
-	glVertexArrayElementBuffer(mainVAO, meshBOs.at(mesh.meshID).EBO.id());
 	glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 }
 
@@ -2843,15 +3060,16 @@ void Renderer::renderDebugSelectedObjects() {
 			glm::mat4 model = glm::identity<glm::mat4>();
 			model = glm::translate(model, transform->position);
 
-			debugShader.setMatrix("model", model);
-
 			switch (light->type) {
 			case Light::Type::Directional:
+				debugShader.setMatrix("model", model);
+
 				debugParticleShapeVBO.uploadData(DebugShapes::Line(glm::vec3{0.f}, transform->front * 2.f));
 				glDrawArrays(GL_LINES, 0, 2);
 				break;
 			case Light::Type::PointLight:
-			case Light::Type::Spotlight:
+				debugShader.setMatrix("model", model);
+
 				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(light->radius));
 				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(light->radius));
@@ -2859,6 +3077,23 @@ void Renderer::renderDebugSelectedObjects() {
 				debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(light->radius));
 				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
 				break;
+			case Light::Type::Spotlight: {
+				model = model * glm::mat4_cast(transform->rotation * glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+				debugShader.setMatrix("model", model);
+
+				debugParticleShapeVBO.uploadData(DebugShapes::ConeEdges(0, Degree{ light->outerCutOffAngle } / 2.f, light->radius));
+				glDrawArrays(GL_LINES, 0, 8);
+
+				debugParticleShapeVBO.uploadData(DebugShapes::ConeOuterAxisXZ(0, Degree{ light->outerCutOffAngle } / 2.f, light->radius));
+				glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+				model = glm::identity<glm::mat4>();
+				model = glm::translate(model, transform->position);
+				debugShader.setMatrix("model", model);
+
+				debugParticleShapeVBO.uploadData(DebugShapes::Line(glm::vec3{ 0.f }, transform->front * 2.f));
+				glDrawArrays(GL_LINES, 0, 2);
+			}
 			}
 		}
 

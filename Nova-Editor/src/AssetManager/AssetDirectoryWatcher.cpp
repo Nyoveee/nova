@@ -1,7 +1,7 @@
 #include "AssetDirectoryWatcher.h"
 #include "scriptAsset.h"
 #include "model.h"
-#include "cubemap.h"
+#include "equirectangularMap.h"
 #include "texture.h"
 #include "assetManager.h"
 

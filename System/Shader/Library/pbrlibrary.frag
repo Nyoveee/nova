@@ -49,6 +49,7 @@ struct PointLight{
     vec3 attenuation; 
     float radius;
     float intensity;
+    int shadowMapIndex;
 };
 
 struct DirectionalLight {
@@ -64,6 +65,14 @@ struct SpotLight {
 	float cutOffAngle;
 	float outerCutOffAngle;
     float radius;
+    float intensity;
+    int shadowMapIndex;
+};
+
+const int MAX_SHADOW_CASTER = 15;
+
+layout(std140, binding = 1) uniform ShadowCasterMatrixes {
+    mat4 shadowCasterMatrix[MAX_SHADOW_CASTER];
 };
 
 layout(std430, binding = 0) buffer PointLights {
@@ -92,6 +101,9 @@ layout(std430, binding = 7) buffer clusterSSBO
     Cluster clusters[];
 };
 
+uniform vec3 cameraPos;
+uniform float timeElapsed;
+
 // Clusters related info
 uniform float zNear;
 uniform float zFar;
@@ -101,15 +113,18 @@ uniform uvec2 screenDimensions;
 // Shadows
 uniform bool hasDirectionalLightShadowCaster;
 uniform vec3 directionalLightDir;
+uniform sampler2D directionalShadowMap;
+uniform sampler2DArray spotlightShadowMaps;
 
-uniform vec3 cameraPos;
-uniform float timeElapsed;
-
-uniform sampler2D shadowMap;
+// SSAO
 uniform sampler2D ssao;
 uniform bool toEnableSSAO;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor; 
+
+// for depth pre pass..
+layout (location = 1) out vec3 gNormal;
+uniform bool toOutputNormal;
 
 in VS_OUT {
     vec2 textureUnit;
@@ -125,16 +140,18 @@ in VS_OUT {
 // ==================================== 
 
 // ============= Function Declaration =============
-float ggxDistribution       (float nDotH);
-float geomSmith             (float nDotL);
-vec3  schlickFresnel        (float lDotH, vec3 baseColor);
-vec3  microfacetModelPoint  (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, PointLight light);
-vec3  microfacetModelDir    (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, DirectionalLight light);
-vec3  microfacetModelSpot   (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
-vec3  BRDFCalculation       (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic);
+float ggxDistribution               (float nDotH);
+float geomSmith                     (float nDotL);
+vec3  schlickFresnel                (float lDotH, vec3 baseColor);
+vec3  microfacetModelPoint          (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, PointLight light);
+vec3  microfacetModelDir            (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, DirectionalLight light);
+vec3  microfacetModelSpot           (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
+vec3  BRDFCalculation               (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic);
 
-float shadowCalculation     ();
-Cluster getCluster          ();
+float directionalShadowCalculation  (sampler2D shadowMap, vec4 fragmentLightPos);
+float spotlightShadowCalculation    (sampler2DArray spotlightShadowMaps, int shadowMapIndex, vec4 fragmentLightPos);
+float getShadowFactor               (int lightShadowIndex);
+Cluster getCluster                  ();
 
 // =================================================================================
 // IMPLEMENTATION DETAILS.
@@ -144,56 +161,54 @@ Cluster getCluster          ();
 vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metallic, float occulusion) {
     normal = normalize(normal);
 
-    // ambient is the easiest.
     vec3 finalColor = vec3(0.0, 0.0, 0.0);
 
-#if 1
     // Locating which cluster this fragment is part of
     Cluster cluster = getCluster();
 
+    // --------------------------------------------------------------------
     // Calculate diffuse and specular light for each light.
     for(uint i = 0; i < cluster.pointLightCount; ++i) {
         PointLight pointLight = pointLights[cluster.pointLightIndices[i]];
         finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLight);
     }
-    
+
+    for(uint i = 0; i < cluster.spotLightCount; ++i) {
+        SpotLight spotLight = spotLights[cluster.spotLightIndices[i]];
+
+        vec3 directLight = microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLight);
+        directLight *= (1.0 - getShadowFactor(spotLight.shadowMapIndex));
+
+        finalColor += directLight;
+    }
+
     // particle point light..
     for(int i = 0; i < lightParticleCount; ++i) {
         finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, particlePointLights[i]);
     }
-
-    for(uint i = 0; i < cluster.spotLightCount; ++i) {
-        SpotLight spotLight = spotLights[cluster.spotLightIndices[i]];
-        finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLight);
-    }
-
-#else
-    // Calculate diffuse and specular light for each light.
-    for(int i = 0; i < pointLightCount; ++i) {
-        finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLights[i]);
-    }
-
-    for(int i = 0; i < spotLightCount; ++i) {
-        finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLights[i]);
-    }
-#endif
 
     // No clustering for directional lights, it affects all fragments.
     for(int i = 0; i < dirLightCount; ++i) {
         finalColor += microfacetModelDir(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, dirLights[i]);
     }
 
-    // We calculate the fragment's shadow factor.
-    float shadowFactor = shadowCalculation();
-    finalColor *= (1.0 - shadowFactor);
+    // --------------------------------------------------------------------
+    // We calculate the fragment's shadow factor due to directional light..
+    if(hasDirectionalLightShadowCaster) {
+        finalColor *= (1.0 - directionalShadowCalculation(directionalShadowMap, fsIn.fragDirectionalLightPos));
+    }
 
-    // Because SSAO is screen space, we need a way to retrieve SSAO texture in screenspace.
-    vec2 screenSpaceTextureCoordinates = gl_FragCoord.xy / screenDimensions;
+    // --------------------------------------------------------------------
+    // @TODO: Indirect light
 
+    // --------------------------------------------------------------------
+    // SSAO
     const float ambientFactor = 0.07;
     float occulusionFactor = occulusion * ambientFactor;
 
     if(toEnableSSAO) {
+        // Because SSAO is screen space, we need a way to retrieve SSAO texture in screenspace.
+        vec2 screenSpaceTextureCoordinates = gl_FragCoord.xy / screenDimensions;
         float ambientOcculusion = texture(ssao, screenSpaceTextureCoordinates).r;
         occulusionFactor *= ambientOcculusion; 
     }
@@ -307,7 +322,7 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, float roughness,
         return vec3(0.0);
     }
     spotIntensity = clamp(spotIntensity, 0.0, 1.0);
-    vec3 lightIntensity = light.color;
+    vec3 lightIntensity = light.color * light.intensity;
     lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
     vec3 v = normalize(cameraPos - position);
@@ -345,41 +360,99 @@ Cluster getCluster() {
     return clusters[tileIndex];
 }
 
-float shadowCalculation() {
-    if(!hasDirectionalLightShadowCaster) {
-        return 0.0;
-    }
-
+vec3 getProjectionCoords(vec4 fragmentLightPos) {
     // We perform perspective divide on fragment light position.
-    vec3 projCoords = fsIn.fragDirectionalLightPos.xyz / fsIn.fragDirectionalLightPos.w;
+    vec3 projCoords = fragmentLightPos.xyz / fragmentLightPos.w;
 
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
+
+    return projCoords;
+}
+
+float directionalShadowCalculation(sampler2D shadowMap, vec4 fragmentLightPos) {
+    vec3 projCoords = getProjectionCoords(fragmentLightPos);
     
     // Fragment is outside of the shadow map.
     if(projCoords.z > 1.0 || projCoords.z < 0.0) {
         return 0.0;
     }
-
-    // // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    // float closestDepth = texture(shadowMap, projCoords.xy).r; 
     
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     
     // check whether current frag pos is in shadow
-    // float bias = max(0.05 * (1.0 - dot(fsIn.normal, directionalLightDir)), 0.005);  
+    float bias = 0.003;  
+    
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+
     for(int x = -1; x <= 1; ++x)
     {
         for(int y = -1; y <= 1; ++y)
         {
             float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-            shadow += currentDepth - 0.003 > pcfDepth ? 1.0 : 0.0;        
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
         }    
     }
+
     shadow /= 9.0;
 
     return shadow;
+}
+
+float spotlightShadowCalculation(sampler2DArray spotlightShadowMaps, int shadowMapIndex, vec4 fragmentLightPos) {
+    vec3 projCoords = getProjectionCoords(fragmentLightPos);
+    
+    // Fragment is outside of the shadow map.
+    if(projCoords.z > 1.0 || projCoords.z < 0.0) {
+        return 0.0;
+    }
+    
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    
+    // check whether current frag pos is in shadow
+    float bias = 0;  
+    
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(spotlightShadowMaps, 0).xy;
+    
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(spotlightShadowMaps, vec3(projCoords.xy + vec2(x, y) * texelSize, float(shadowMapIndex))).r; 
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+
+    shadow /= 9.0;
+
+    return shadow;
+}
+
+float getShadowFactor(int lightShadowIndex) {    
+    // doesn't have an active shadow map..
+    if(lightShadowIndex == -1) {
+        return 0;
+    }
+
+    // retrieve shadow caster view projection matrix, to transform fragment world position to light caster's space.
+    vec4 fragmentLightPos = shadowCasterMatrix[lightShadowIndex] * vec4(fsIn.fragWorldPos, 1);
+
+    return spotlightShadowCalculation(spotlightShadowMaps, lightShadowIndex, fragmentLightPos);
+}
+
+// User shader entry point.
+vec4 __internal__main__();
+
+// Wrapper around user entry point.
+void main() { 
+    if(toOutputNormal) {
+        gNormal = fsIn.normal;
+    }
+    else {
+        FragColor = __internal__main__(); 
+    }
 }

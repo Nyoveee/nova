@@ -1,7 +1,7 @@
 #include "resourceManager.h"
 #include "Logger.h"
 
-#include "cubemap.h"
+#include "equirectangularMap.h"
 #include "scriptAsset.h"
 
 #include "family.h"

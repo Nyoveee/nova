@@ -7,6 +7,7 @@ Tags{
 
 // Properties for material instances to configure..
 Properties{
+    sampler2D albedo;
     Color color;
     float intensity;
 
@@ -15,13 +16,16 @@ Properties{
 
 // Vertex shader..
 Vert{    
-    gl_Position = calculateClipPosition(position);
+    // Calculate world space of our local attributes..
+    WorldSpace worldSpace = calculateWorldSpace(position, normal);
+    gl_Position = calculateClipPosition(worldSpace.position);
 
-    // pass texture units to fragment shader..
-    vsOut.textureUnit = textureUnit; 
-}
+    // Pass attributes to fragment shader.. 
+    passDataToFragment(worldSpace);
+}   
 
 // Fragment shader..
 Frag{
-    return vec4(intensity * color, transparency); // ok
+    vec3 finalColor = texture(albedo, fsIn.textureUnit).rgb * color * intensity;
+    return vec4(finalColor , transparency); // ok
 }

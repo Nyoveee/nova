@@ -31,7 +31,7 @@
 class Prefab;
 class Model;
 class Texture;
-class CubeMap;
+class EquirectangularMap;
 class ScriptAsset;
 class Audio;
 class Material;
@@ -45,7 +45,7 @@ class Sequencer;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, TranslucentMeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
-	Image, Sequence, Button, Canvas, NavMeshOffLinks
+	Image, Sequence, Button, Canvas, NavMeshOffLinks, SkyboxCubeMap
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -55,19 +55,14 @@ using MeshIndex	= int;
 
 #include "serializedField.h"
 
+constexpr int NO_SHADOW_MAP = -1;
+
 enum class InterpolationType : unsigned int {
 	Root,
 	Linear,
 	Quadractic,
 	Cubic
 };
-
-
-// 	REFLECTABLE(
-// 		name,
-// 		data
-// 	)
-// };
 
 struct PrefabMetaData {
 	PrefabEntityID prefabEntity;
@@ -193,6 +188,9 @@ struct Light {
 		shadowNearPlane,
 		shadowFarPlane
 	)
+
+	// runtime variable..
+	int shadowMapIndex = NO_SHADOW_MAP;		// every light component has an index to it's own array of shadow maps..
 };
 
 struct MeshRenderer {
@@ -386,8 +384,16 @@ struct MeshCollider {
 };
 
 struct SkyBox {
-	TypedResourceID<CubeMap> cubeMapId{ INVALID_RESOURCE_ID };
+	TypedResourceID<EquirectangularMap> equirectangularMap{ INVALID_RESOURCE_ID };
 	
+	REFLECTABLE(
+		equirectangularMap
+	)
+};
+
+struct SkyboxCubeMap {
+	TypedResourceID<CubeMap> cubeMapId{ INVALID_RESOURCE_ID };
+
 	REFLECTABLE(
 		cubeMapId
 	)
