@@ -5,9 +5,10 @@
     "uniforms": {
         "intensity": "float",
         "transparency": "NormalizedFloat",
-        "color": "Color"
+        "color": "Color",
+        "albedo": "sampler2D"
     },
-    "vShaderCode": "    \n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal);\n    gl_Position = calculateClipPosition(worldSpace.position);\n\n    // Pass attributes to fragment shader.. \n    vsOut.textureUnit = textureUnit;\n    vsOut.fragWorldPos = worldSpace.position.xyz;\n    vsOut.fragViewPos = vec3(view * worldSpace.position);\n\n    vsOut.normal = normalize(worldSpace.normal);\n",
-    "fShaderCode": "\n    return vec4(intensity * color, transparency); // ok\n",
+    "vShaderCode": "    \n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal);\n    gl_Position = calculateClipPosition(worldSpace.position);\n\n    // Pass attributes to fragment shader.. \n    passDataToFragment(worldSpace);\n",
+    "fShaderCode": "\n    vec3 finalColor = texture(albedo, fsIn.textureUnit).rgb * color * intensity;\n    return vec4(finalColor , transparency); // ok\n",
     "pipeline": "Color"
 }

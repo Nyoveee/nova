@@ -60,6 +60,15 @@ vec4 calculateClipPosition(vec4 worldPosition) {
     return cameraProjectionView * worldPosition;
 }
 
+void passDataToFragment(WorldSpace worldSpace) {
+    // Pass attributes to fragment shader.. 
+    vsOut.textureUnit = textureUnit;
+    vsOut.fragWorldPos = worldSpace.position.xyz;
+    vsOut.fragViewPos = vec3(view * worldSpace.position);
+
+    vsOut.normal = normalize(worldSpace.normal);
+}
+
 WorldSpace calculateWorldSpace(vec3 position, vec3 normal) {
     WorldSpace worldSpace;
 
@@ -94,13 +103,6 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal) {
         worldSpace.position             = model * localScale * localPosition;
         worldSpace.normal               = normalize(normalMatrix * localNormal);
     }
-
-    // Pass attributes to fragment shader.. 
-    // vsOut.textureUnit = textureUnit;
-    // vsOut.fragWorldPos = worldSpace.position.xyz;
-    // vsOut.fragViewPos = vec3(view * worldSpace.position);
-
-    // vsOut.normal = normalize(worldSpace.normal);
 
     return worldSpace;
 }

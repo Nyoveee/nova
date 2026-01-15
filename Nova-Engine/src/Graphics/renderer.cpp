@@ -75,7 +75,7 @@ constexpr int DIRECTIONAL_SHADOW_MAP_WIDTH  = 2048;
 constexpr int DIRECTIONAL_SHADOW_MAP_HEIGHT = 2048;
 constexpr int SHADOW_MAP_WIDTH				= 1024;
 constexpr int SHADOW_MAP_HEIGHT				= 1024;
-constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 30;
+constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
 
 // Irradiance map
 constexpr int IRRADIANCE_MAP_WIDTH = 512;
@@ -151,6 +151,9 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	
 									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
 	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
+
+									// we allocate enough memory to store the max number of shadow caster's viewProjection matrixes.
+	shadowCasterMatrixes			{ MAX_SPOTLIGHT_SHADOW_CASTER * sizeof(glm::mat4) },
 	editorCamera					{},
 	gameCamera						{},
 	numOfPhysicsDebugTriangles		{},
@@ -191,7 +194,8 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// Prepare shared UBO, that will be used by all shaders. (like view and projection matrix.)
 	// ======================================================
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
-
+	glBindBufferBase(GL_UNIFORM_BUFFER, 1, shadowCasterMatrixes.id());
+	
 	// we bind bones SSBO to 3.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
 
@@ -720,11 +724,16 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 			// Calculate spot light's matrix.
 			glm::mat4 lightProjection	= glm::perspective(static_cast<float>(light.outerCutOffAngle), 1.0f, 0.1f, light.radius);
 			glm::mat4 lightView			= glm::lookAt(transform.position, transform.position + transform.front, glm::vec3(0.0f, 1.0f, 0.0f));
-
-			shadowPassRender(lightProjection * lightView);
+			glm::mat4 viewProjection	= lightProjection * lightView;
+			shadowPassRender(viewProjection);
 
 			light.shadowMapIndex = numOfSpotlightShadowCaster;
+
+			// Populate the shadow caster matrixes UBO..
+			glNamedBufferSubData(shadowCasterMatrixes.id(), numOfSpotlightShadowCaster * sizeof(glm::mat4), sizeof(glm::mat4), &viewProjection);
+
 			++numOfSpotlightShadowCaster;
+
 			break;
 		}
 	}
@@ -1489,8 +1498,7 @@ void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 
 					// Use the correct shader and configure it's required uniforms..
 					CustomShader* shader = [&]() {
-						//return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
-						return setupMaterial(camera, *material, transform, model->scale);
+						return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
 					}();
 
 					if (shader) {
@@ -1506,8 +1514,7 @@ void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 
 					// Use the correct shader and configure it's required uniforms..
 					CustomShader* shader = [&]() {
-						//return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
-						return setupMaterial(camera, *material, transform, model->scale);
+						return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
 					}();
 
 					if (shader) {
@@ -2762,7 +2769,6 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		shader.setUVec2("screenDimensions", { gameWidth, gameHeight });
 
 		shader.setBool("toEnableSSAO", toEnableSSAO);
-		
 		if (toEnableSSAO) {
 			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]);
 			shader.setImageUniform("ssao", 1);
@@ -2774,6 +2780,10 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 			shader.setMatrix("directionalLightSpaceMatrix", directionalLightViewMatrix);
 			shader.setVec3("directionalLightDir", directionalLightDir);
 		}
+
+		// bind to spotlight shadow map array
+		glBindTextureUnit(2, spotlightShadowMaps.getTextureId());
+		shader.setImageUniform("spotlightShadowMaps", 2);
 
 		// both pipeline requires these to be set..
 		[[fallthrough]];
@@ -2790,8 +2800,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	glBindTextureUnit(0, directionalLightShadowFBO.textureId());
 	shader.setImageUniform("shadowMap", 0);
 
-	// We reserve the very 2 texture unit for shadow map and SSAO.
-	int numOfTextureUnitBound = 2;
+	// We reserve the very 3 texture unit for shadow maps and SSAO.
+	int numOfTextureUnitBound = 3;
 	
 	setupCustomShaderUniforms(shader, material, numOfTextureUnitBound);
 
@@ -2838,7 +2848,7 @@ CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transf
 	shader.setFloat("toOutputNormal", true);
 
 	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.
-	setupCustomShaderUniforms(shader, material, 0);
+	setupCustomShaderUniforms(shader, material, 3);
 
 	// Use the shader
 	shader.use();
@@ -2916,7 +2926,7 @@ void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& m
 	}
 }
 
-void Renderer::renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType) {
+void Renderer::renderMesh(Mesh& mesh, [[maybe_unused]] Pipeline pipeline, [[maybe_unused]] MeshType meshType) {
 	// Create Buffer Objects for first render
 	constructMeshBuffers(mesh);
 	swapVertexBuffer(mesh);

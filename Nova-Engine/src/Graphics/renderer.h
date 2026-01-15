@@ -323,6 +323,9 @@ private:
 	// Skeletal animation, bones SSBO
 	BufferObject bonesSSBO;
 
+	// stores the 
+	BufferObject shadowCasterMatrixes;
+
 	// Particle VAO and VBO
 	GLuint particleVAO;
 

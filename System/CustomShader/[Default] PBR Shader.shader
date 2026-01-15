@@ -30,18 +30,8 @@ Vert{
     // Calculate world space of our local attributes..
     WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);
     gl_Position = calculateClipPosition(worldSpace.position);
-
-    // Pass attributes to fragment shader.. 
-    vsOut.textureUnit = textureUnit;
-    vsOut.fragWorldPos = worldSpace.position.xyz;
-    vsOut.fragViewPos = vec3(view * worldSpace.position);
-    vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;
-
-    vsOut.normal = normalize(worldSpace.normal);
-
-    if(toUseNormalMap) {
-        vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
-    }
+    
+    passDataToFragment(worldSpace);
 }
 
 // Fragment shader..

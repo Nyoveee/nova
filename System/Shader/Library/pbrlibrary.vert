@@ -80,6 +80,20 @@ vec4 calculateClipPosition(vec4 worldPosition) {
     return cameraProjectionView * worldPosition;
 }
 
+void passDataToFragment(WorldSpace worldSpace) {
+    // Pass attributes to fragment shader.. 
+    vsOut.textureUnit = textureUnit;
+    vsOut.fragWorldPos = worldSpace.position.xyz;
+    vsOut.fragViewPos = vec3(view * worldSpace.position);
+    vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;
+
+    vsOut.normal = normalize(worldSpace.normal);
+ 
+    if(toUseNormalMap) {
+        vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
+    }
+}
+
 WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
     WorldSpace worldSpace;
 
@@ -118,18 +132,6 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
         worldSpace.normal               = normalize(normalMatrix * localNormal);
         worldSpace.tangent              = normalize(normalMatrix * localTangent);
     }
-
-    // Pass attributes to fragment shader.. 
-    // vsOut.textureUnit = textureUnit;
-    // vsOut.fragWorldPos = worldSpace.position.xyz;
-    // vsOut.fragViewPos = vec3(view * worldSpace.position);
-    // vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;
-
-    // vsOut.normal = normalize(worldSpace.normal);
-
-    // if(toUseNormalMap) {
-    //     vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
-    // }
 
     return worldSpace;
 }

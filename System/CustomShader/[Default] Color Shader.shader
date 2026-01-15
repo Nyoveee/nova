@@ -7,6 +7,7 @@ Tags{
 
 // Properties for material instances to configure..
 Properties{
+    sampler2D albedo;
     Color color;
     float intensity;
 
@@ -20,14 +21,11 @@ Vert{
     gl_Position = calculateClipPosition(worldSpace.position);
 
     // Pass attributes to fragment shader.. 
-    vsOut.textureUnit = textureUnit;
-    vsOut.fragWorldPos = worldSpace.position.xyz;
-    vsOut.fragViewPos = vec3(view * worldSpace.position);
-
-    vsOut.normal = normalize(worldSpace.normal);
+    passDataToFragment(worldSpace);
 }   
 
 // Fragment shader..
 Frag{
-    return vec4(intensity * color, transparency); // ok
+    vec3 finalColor = texture(albedo, fsIn.textureUnit).rgb * color * intensity;
+    return vec4(finalColor , transparency); // ok
 }
