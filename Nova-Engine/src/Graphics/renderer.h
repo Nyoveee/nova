@@ -314,19 +314,18 @@ private:
 	std::unordered_map<MeshID, MeshBOs> meshBOs; // VA 0 - 4
 
 	// SSBO and UBO.
-	LightSSBO gameLights;
-	LightSSBO editorLights;
-	
-	BufferObject gameClusterSSBO;
-	BufferObject editorClusterSSBO;
-
+	LightSSBO gameLights;                 // SSBO 1 - 3
+	LightSSBO editorLights;               // SSBO 1 - 3
+	BufferObject gameClusterSSBO;         // SSBO 7
+	BufferObject editorClusterSSBO;       // SSBO 7
+	BufferObject volumetricFogSSBO;       // SSBO 8
 	BufferObject sharedUBO;
 
 	// Skeletal animation, bones SSBO
 	BufferObject bonesSSBO;
 
 	// Volumetric Fog SSBO
-	BufferObject volumetricFogSSBO;
+
 
 	// stores the shadow caster matrixes in a UBO.
 	BufferObject shadowCasterMatrixes;
@@ -376,7 +375,6 @@ private:
 	glm::mat4 UIProjection;
 
 private:
-	unsigned int numOfPtLights;
 
 	int numOfPhysicsDebugTriangles;
 	int numOfPhysicsDebugLines;
@@ -436,7 +434,6 @@ public:
 	ComputeShader clusterBuildingCompute;
 	ComputeShader clusterLightCompute;
 	ComputeShader rayMarchingVolumetricFogCompute;
-	ComputeShader volumetricFogBufferResetCompute;
 
 	// HDR parameters
 	float hdrExposure;
