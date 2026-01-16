@@ -139,6 +139,10 @@ in VS_OUT {
 // End of pipeline setup. 
 // ==================================== 
 
+vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
+    return textureCoordinates * UVTiling + UVOffset;
+}
+
 // ============= Function Declaration =============
 float ggxDistribution               (float nDotH);
 float geomSmith                     (float nDotL);

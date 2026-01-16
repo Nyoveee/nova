@@ -15,6 +15,10 @@ layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec3 gNormal;
 uniform bool toOutputNormal;
 
+vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
+    return textureCoordinates * UVTiling + UVOffset;
+}
+
 // User shader entry point.
 vec4 __internal__main__();
 

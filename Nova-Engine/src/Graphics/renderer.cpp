@@ -151,7 +151,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	editorLights					{ MAX_NUMBER_OF_LIGHT },
 	gameClusterSSBO					{ numClusters * sizeof(Cluster) },
 	editorClusterSSBO				{ numClusters * sizeof(Cluster) },
-	volumetricFogSSBO				{ static_cast<int>((gameWidth/ VOLUMETRIC_FOG_DOWNSCALE) * (gameHeight/ VOLUMETRIC_FOG_DOWNSCALE) * sizeof(VolumetricFogData))},
+	volumetricFogSSBO				{ static_cast<int>((gameWidth / VOLUMETRIC_FOG_DOWNSCALE) * (gameHeight / VOLUMETRIC_FOG_DOWNSCALE) * sizeof(VolumetricFogData))},
 									// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
 	sharedUBO						{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
 	

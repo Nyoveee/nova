@@ -23,6 +23,9 @@ Properties{
     bool toUseEmissiveMap;
     sampler2D emissiveMap;
     float emissiveStrength;
+
+    vec2 UVTiling; 
+    vec2 UVOffset; 
 }
 
 // Vertex shader..
@@ -41,8 +44,10 @@ Frag{
     float _metallic; 
     float _occulusion;
 
+    vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);
+
     if (toUsePackedMap) {
-        vec3 map = texture(packedMap, fsIn.textureUnit).rgb;
+        vec3 map = texture(packedMap, uv).rgb;
         _metallic   = map.r;
         _roughness  = map.g;
         _occulusion = map.b;
@@ -58,7 +63,7 @@ Frag{
     if(toUseNormalMap) {
         // We assume that our normal map is compressed into BC5.
         // Since BC5 only stores 2 channels, we need to calculate z in runtime.
-        vec2 bc5Channels = vec2(texture(normalMap, fsIn.textureUnit));
+        vec2 bc5Channels = vec2(texture(normalMap, uv));
         
         // We shift the range from [0, 1] to  [-1, 1]
         bc5Channels = bc5Channels * 2.0 - 1.0; 
@@ -74,10 +79,10 @@ Frag{
     vec3 emissiveColor = vec3(0);
 
     if(toUseEmissiveMap) {
-        emissiveColor = emissiveStrength * vec3(texture(emissiveMap, fsIn.textureUnit));
+        emissiveColor = emissiveStrength * vec3(texture(emissiveMap, uv));
     }
 
-    vec4 albedo = texture(albedoMap, fsIn.textureUnit);
+    vec4 albedo = texture(albedoMap, uv);
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);
 
     return vec4(emissiveColor + pbrColor, 1.0);

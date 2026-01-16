@@ -12,6 +12,9 @@ Properties{
     float intensity;
 
     NormalizedFloat transparency;
+
+    vec2 UVTiling; 
+    vec2 UVOffset; 
 }
 
 // Vertex shader..
@@ -26,6 +29,8 @@ Vert{
 
 // Fragment shader..
 Frag{
-    vec3 finalColor = texture(albedo, fsIn.textureUnit).rgb * color * intensity;
+    vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);
+
+    vec3 finalColor = texture(albedo, uv).rgb * color * intensity;
     return vec4(finalColor , transparency); // ok
 }
