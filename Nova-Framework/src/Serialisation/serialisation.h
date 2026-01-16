@@ -11,7 +11,7 @@
 class ECS;
 
 class Prefab;
-using Json = nlohmann::ordered_json;
+using Json = nlohmann::json;
 using PrefabEntityID = entt::entity;
 using PrefabFileEntityID = entt::entity;
 
