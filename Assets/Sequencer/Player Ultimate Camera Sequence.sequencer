@@ -1,54 +1,54 @@
 {
-    "animationEvents": [
-        {
-            "functionName": "EndAnimation",
-            "key": 120,
-            "scriptId": 26335971410624513
-        },
-        {
-            "functionName": "FireUltimate",
-            "key": 60,
-            "scriptId": 26335971410624513
-        },
-        {
-            "functionName": "TimeScaleSlow",
-            "key": 42,
-            "scriptId": 26335971410624513
-        }
-    ],
-    "lastFrame": 120,
     "positionKeyframes": [
         {
+            "frame": 0,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "x": 0.0,
                 "y": 0.0,
                 "z": -0.00022363662719726563
-            },
-            "frame": 0,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         },
         {
+            "frame": 60,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "x": -3.4785995483398438,
                 "y": 0.0,
                 "z": -19.044551849365234
-            },
-            "frame": 60,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         },
         {
+            "frame": 120,
+            "power": 1.0,
+            "lerpType": "CatmullRom",
             "data": {
                 "x": 0.0,
                 "y": 0.0,
                 "z": 0.0
-            },
-            "frame": 120,
-            "lerpType": "CatmullRom",
-            "power": 1.0
+            }
         }
     ],
+    "scaleKeyframes": null,
     "rotationKeyframes": null,
-    "scaleKeyframes": null
+    "animationEvents": [
+        {
+            "key": 120,
+            "scriptId": 26335971410624513,
+            "functionName": "EndAnimation"
+        },
+        {
+            "key": 60,
+            "scriptId": 26335971410624513,
+            "functionName": "FireUltimate"
+        },
+        {
+            "key": 42,
+            "scriptId": 26335971410624513,
+            "functionName": "TimeScaleSlow"
+        }
+    ],
+    "lastFrame": 120
 }

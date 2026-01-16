@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <json/json.hpp>
 
-using Json = nlohmann::json;
+using Json = nlohmann::ordered_json;
 
 /***************************************************************************************
 	Base case.

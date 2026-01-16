@@ -1,26 +1,26 @@
 {
-    "blendingConfig": "Disabled",
-    "cullingConfig": "Enable",
-    "depthTestingMethod": "DepthTest",
+    "selectedShader": 2,
     "overridenUniforms": {
         "color": {
             "type": "Color",
             "value": {
-                "__variant_type": 10,
                 "__variant_value": {
-                    "b": 0.03448277711868286,
+                    "r": 1.0,
                     "g": 0.03448277711868286,
-                    "r": 1.0
-                }
+                    "b": 0.03448277711868286
+                },
+                "__variant_type": 10
             }
         },
         "intensity": {
             "type": "float",
             "value": {
-                "__variant_type": 3,
-                "__variant_value": 12.0
+                "__variant_value": 12.0,
+                "__variant_type": 3
             }
         }
     },
-    "selectedShader": 2
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
 }

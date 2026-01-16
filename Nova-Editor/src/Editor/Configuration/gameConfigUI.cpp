@@ -9,7 +9,7 @@
 #include <json/json.hpp>
 #include <iostream>
 
-using json = nlohmann::json;
+using json = nlohmann::ordered_json;
 
 GameConfigUI::GameConfigUI(Editor& editor) :
     editor		{ editor },
