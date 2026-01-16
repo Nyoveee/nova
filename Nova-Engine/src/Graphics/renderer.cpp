@@ -307,49 +307,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glGenTextures(1, &videoTextureCr);
 	glGenTextures(1, &videoTextureCb);
 
-	// Initialize plmpeg with the video file
-	plm = plm_create_with_filename("Test Video.mpeg");
-	if (plm) {
-		Logger::info("Video loaded successfully: Test Video.mpeg");
-		// Get video dimensions
-		int width = plm_get_width(plm);
-		int height = plm_get_height(plm);
-		Logger::info("Video dimensions: {}x{}", width, height);
-
-		// Set up Y texture (full resolution)
-		glBindTexture(GL_TEXTURE_2D, videoTextureY);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		// Set up Cr texture (half resolution)
-		glBindTexture(GL_TEXTURE_2D, videoTextureCr);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		// Set up Cb texture (half resolution)
-		glBindTexture(GL_TEXTURE_2D, videoTextureCb);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		// Enable video and disable audio
-		plm_set_audio_enabled(plm, false);
-		plm_set_loop(plm, true);
-	}
-	else {
-		Logger::error("Failed to load video file: Test Video.mpg - File may not exist or is invalid");
-	}
-
 	initialiseSSAO();
 }
 
@@ -1415,6 +1372,58 @@ void Renderer::renderSkyBox() {
 		// only render the very first skybox.
 		return;
 	}
+}
+
+void Renderer::loadVideo(std::string const& filepath) {
+	// Clean up existing video if any
+	if (plm) {
+		plm_destroy(plm);
+		plm = nullptr;
+	}
+
+	// Initialize plmpeg with the video file
+	plm = plm_create_with_filename(filepath.c_str());
+	if (!plm) {
+		Logger::error("Failed to load video: {}", filepath);
+		return;
+	}
+
+	Logger::info("Video loaded successfully: {}", filepath);
+
+	// Get video dimensions
+	int width = plm_get_width(plm);
+	int height = plm_get_height(plm);
+	Logger::info("Video dimensions: {}x{}", width, height);
+
+	// Set up Y texture (full resolution)
+	glBindTexture(GL_TEXTURE_2D, videoTextureY);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// Set up Cr texture (half resolution)
+	glBindTexture(GL_TEXTURE_2D, videoTextureCr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// Set up Cb texture (half resolution)
+	glBindTexture(GL_TEXTURE_2D, videoTextureCb);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// Disable audio and enable looping
+	plm_set_audio_enabled(plm, false);
+	plm_set_loop(plm, true);
 }
 
 void Renderer::renderVideo() {

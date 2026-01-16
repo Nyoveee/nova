@@ -342,6 +342,9 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	else if (resourceType == "Sequencer") {
 		return compileAsset.template operator()<Sequencer>();
 	}
+	else if (resourceType == "Video") {
+		return compileAsset.template operator()<Video>();
+	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);
 		return -1;

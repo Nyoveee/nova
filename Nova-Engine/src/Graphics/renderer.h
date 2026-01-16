@@ -147,6 +147,9 @@ public:
 	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
 	ENGINE_DLL_API void renderDebugSelectedObjects();
 
+	// load video from file path
+	ENGINE_DLL_API void loadVideo(std::string const& filepath);
+
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.

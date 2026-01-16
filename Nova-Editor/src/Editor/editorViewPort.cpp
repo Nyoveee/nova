@@ -8,6 +8,7 @@
 #include "Serialisation/serialisation.h"
 #include "IconsFontAwesome6.h"
 #include "AssetManager/assetManager.h"
+#include "video.h"
 
 EditorViewPort::EditorViewPort(Editor& editor) :
 	editor					{ editor },
@@ -91,6 +92,12 @@ void EditorViewPort::update(float dt) {
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
 				engine.prefabManager.instantiatePrefab(id);
 				editor.selectEntities({});
+			}
+			else if (editor.resourceManager.isResource<Video>(id)) {
+				auto&& [video, refCount] = editor.resourceManager.getResource<Video>(id);
+				if (video) {
+					engine.renderer.loadVideo(video->getFilePath().string);
+				}
 			}
 		}
 

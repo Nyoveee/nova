@@ -259,6 +259,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".sequencer") {
 		return initialiseResourceFile.template operator()<Sequencer>();
 	}
+	else if (fileExtension == ".mpeg") {
+		return initialiseResourceFile.template operator()<Video>();
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return INVALID_RESOURCE_ID;
