@@ -14,6 +14,8 @@
 
 #include "cubemap.h"
 
+#include "API/assetSerializer.h"
+
 DebugUI::DebugUI(Editor& editor) :
 	editor			{ editor },
 	engine			{ editor.engine },
@@ -25,15 +27,12 @@ DebugUI::DebugUI(Editor& editor) :
 void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
 
-	//static CubeMap const* cubeMap = nullptr;
-
 	if (ImGui::Button("Bake skybox")) {
 		static CubeMap savedCubeMap = renderer.bakeDiffuseIrradianceMap([&] {
 			renderer.renderSkyBox();
 		});
 
-		editor.assetManager.serialiseCubeMap(savedCubeMap);
-		//cubeMap = &savedCubeMap;
+		AssetSerializer::serialiseCubeMap(savedCubeMap);
 	}
 
 	if (ImGui::Button("Test")) {
@@ -46,7 +45,7 @@ void DebugUI::update() {
 		gli::gl GL{ gli::gl::PROFILE_GL33 };
 		gli::gl::format format = GL.translate(texture.format(), texture.swizzles());
 		CubeMap cubeMap{ INVALID_RESOURCE_ID, ResourceFilePath{}, texture, format };
-		editor.assetManager.serialiseCubeMap(cubeMap);
+		AssetSerializer::serialiseCubeMap(cubeMap);
 	}
 
 #if 0

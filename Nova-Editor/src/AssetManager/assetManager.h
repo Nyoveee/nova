@@ -89,8 +89,6 @@ public:
 	template <ValidResource T>
 	void serialiseResource(ResourceID id);
 
-	void serialiseCubeMap(CubeMap const& cubeMap);
-
 public:
 	// Getters..
 	std::unordered_map<FolderID, Folder> const& getDirectories()									const;

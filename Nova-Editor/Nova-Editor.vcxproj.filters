@@ -60,6 +60,8 @@
     <ClCompile Include="src\AssetManager\prefab.cpp" />
     <ClCompile Include="src\Editor\uiViewPort.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\displayLightComponent.cpp" />
+    <ClCompile Include="src\API\assetSerializer.cpp" />
+    <ClCompile Include="src\API\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AssetManager\prefab.h" />
@@ -129,6 +131,9 @@
     <ClInclude Include="src\Editor\uiViewPort.h" />
     <ClInclude Include="src\Editor\ComponentInspection\displayComponent.h" />
     <ClInclude Include="src\Editor\Assets\animationTimeline.ipp" />
+    <ClInclude Include="src\API\assetSerializer.h" />
+    <ClInclude Include="src\API\stb_image.hpp" />
+    <ClInclude Include="src\API\stb_image_write.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Editor\ImGui\imgui_bezier_math.inl" />
