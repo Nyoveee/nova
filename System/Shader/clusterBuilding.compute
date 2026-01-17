@@ -17,12 +17,19 @@ layout(std430, binding = 7) buffer clusterSSBO {
     Cluster clusters[];
 };
 
-uniform float zNear;
-uniform float zFar;
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+    mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
 
 uniform mat4 inverseProjection;
-uniform uvec3 gridSize;
-uniform uvec2 screenDimensions;
 
 vec3 screenToView(vec2 screenCoord);
 vec3 lineIntersectionWithZPlane(vec3 startPoint, vec3 endPoint, float zDistance);

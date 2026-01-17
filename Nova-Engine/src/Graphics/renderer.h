@@ -239,6 +239,7 @@ private:
 
 	// Calls the relevant compute shader Pre Post Process
 	void computePostProcessing(PairFrameBuffer& frameBuffers, Camera const& camera);
+
 	// renders post processing effect on the pair framebuffer
 	void renderPostProcessing(PairFrameBuffer& frameBuffers);
 
@@ -293,6 +294,9 @@ private:
 	// swap buffers to a new mesh to its respective buffer binding index
 	void swapVertexBuffer(Mesh& mesh);
 
+	// updates the camera UBO with camera information.
+	void updateCameraUBO(Camera const& camera);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -320,7 +324,8 @@ private:
 	BufferObject gameClusterSSBO;
 	BufferObject editorClusterSSBO;
 
-	BufferObject sharedUBO;
+	BufferObject cameraUBO;
+	BufferObject PBRUBO;
 
 	// Skeletal animation, bones SSBO
 	BufferObject bonesSSBO;

@@ -30,6 +30,12 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
 };
 
 layout(std430, binding = 3) buffer Bones {

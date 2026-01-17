@@ -7,8 +7,6 @@ uniform sampler2D depthMap;
 uniform sampler2D normalMap;
 uniform sampler2D noiseTexture;
 
-uniform vec2 screenDimensions;
-
 uniform float near;
 uniform float far;
 
@@ -16,6 +14,15 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
+
+layout(std140, binding = 2) uniform PBRUBO {
     vec4 samples[64];
 };
 
@@ -37,7 +44,7 @@ vec3 WorldPositionFromDepth(float depth, vec2 textureCoords) {
 float linearizeDepth(float depth) {
     // Example of reconstructing View-Space Z from a [0,1] Depth Map
     float ndcDepth = depth * 2.0 - 1.0; 
-    float viewZ = (2.0 * near * far) / (far + near - ndcDepth * (far - near));
+    float viewZ = (2.0 * zNear * zFar) / (zFar + zNear - ndcDepth * (zFar - zNear));
 
     return viewZ;
 }

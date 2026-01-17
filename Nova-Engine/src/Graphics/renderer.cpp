@@ -79,10 +79,10 @@ constexpr int SHADOW_MAP_HEIGHT				= 1024;
 constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
 
 // Irradiance map
-constexpr int IRRADIANCE_MAP_WIDTH = 512;
-constexpr int IRRADIANCE_MAP_HEIGHT = 512;
+constexpr int IRRADIANCE_MAP_WIDTH			= 512;
+constexpr int IRRADIANCE_MAP_HEIGHT			= 512;
 
-constexpr int DIFFUSE_IRRADIANCE_MAP_WIDTH = 64;
+constexpr int DIFFUSE_IRRADIANCE_MAP_WIDTH	= 64;
 constexpr int DIFFUSE_IRRADIANCE_MAP_HEIGHT = 64;
 
 // For Volumetric Fog
@@ -98,6 +98,24 @@ struct alignas(16) Cluster {
 	unsigned int spotLightCount;
 	unsigned int pointLightIndices[25];
 	unsigned int spotLightIndices[25];
+};
+
+// this struct is used to represent the memory layout of the CameraUBO, location = 0.
+struct alignas(16) CameraUBO {
+				glm::mat4 view;
+				glm::mat4 projection;
+				glm::mat4 viewProjection;
+	alignas(16) glm::vec3 cameraPosition;
+
+	alignas(16) glm::uvec3 gridSize;
+	alignas(16) glm::uvec2 screenDimensions;
+				float zNear;
+				float zFar;
+};
+
+// this struct is used to represent the memory layout of the PBRUBO, location = 2.
+struct alignas(16) PBR_UBO {
+	glm::vec4 ssaoKernels[64];
 };
 
 #pragma warning( pop )
@@ -155,9 +173,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	gameClusterSSBO					{ numClusters * sizeof(Cluster) },
 	editorClusterSSBO				{ numClusters * sizeof(Cluster) },
 	volumetricFogSSBO				{ static_cast<int>((gameWidth / VOLUMETRIC_FOG_DOWNSCALE) * (gameHeight / VOLUMETRIC_FOG_DOWNSCALE) * sizeof(VolumetricFogData))},
-									// we allocate memory for view and projection matrix, view * projection matrix, and 64 ssao sample kernels.
-	sharedUBO						{ 3 * sizeof(glm::mat4) + 64 * sizeof(glm::vec4) },
-	
+									
+	cameraUBO						{ sizeof(CameraUBO) },
+	PBRUBO							{ sizeof(PBR_UBO) },
+
 									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
 	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
 
@@ -203,9 +222,10 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	// Prepare shared UBO, that will be used by all shaders. (like view and projection matrix.)
 	// ======================================================
-	glBindBufferBase(GL_UNIFORM_BUFFER, 0, sharedUBO.id());
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO.id());
 	glBindBufferBase(GL_UNIFORM_BUFFER, 1, shadowCasterMatrixes.id());
-	
+	glBindBufferBase(GL_UNIFORM_BUFFER, 2, PBRUBO.id());
+
 	// we bind bones SSBO to 3.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
 
@@ -299,13 +319,15 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	// ======================================================
 	rayMarchingVolumetricFogCompute.use();
 	rayMarchingVolumetricFogCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+	
 	volumetricFogBufferResetCompute.use();
 	volumetricFogBufferResetCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+
 	// ======================================================
 	// Post Process Shader Configuration
 	// ======================================================
 	postprocessingShader.use();
-	postprocessingShader.setUVec2("screenResolution", {gameWidth/ VOLUMETRIC_FOG_DOWNSCALE, gameHeight/ VOLUMETRIC_FOG_DOWNSCALE } );
+	postprocessingShader.setUVec2("screenResolution", { gameWidth/ VOLUMETRIC_FOG_DOWNSCALE, gameHeight/ VOLUMETRIC_FOG_DOWNSCALE } );
 
 	// ======================================================
 	// Volumetric Fog SSBO Configuration
@@ -488,9 +510,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	frameBuffers.clearFrameBuffers();
 
 	// We upload camera data to the UBO..
-	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
-	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
-	glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.viewProjection()));
+	updateCameraUBO(camera);
 
 	// We perform frustum culling for lights, this is for our cluster building to minimize the number of lights involved.
 	frustumCullLight(camera.viewProjection());
@@ -900,7 +920,7 @@ void Renderer::depthPrePass(Camera const& camera) {
 #endif
 }
 
-void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera) {
+void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, [[maybe_unused]] Camera const& camera) {
 	// ========================================================================================
 	// 1. We first generate the SSAO texture using the random kernels, depth and normal map.
 	// ========================================================================================
@@ -912,9 +932,6 @@ void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera)
 	glDisable(GL_DEPTH_TEST);
 
 	ssaoShader.use();
-	ssaoShader.setVec2("screenDimensions", { gameWidth, gameHeight });
-	ssaoShader.setFloat("near", camera.getNearPlaneDistance());
-	ssaoShader.setFloat("far", camera.getFarPlaneDistance());
 
 	// Bind depth, normal and noise texture..
 	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().depthStencilId());
@@ -991,7 +1008,7 @@ void Renderer::initialiseSSAO() {
 	}
 
 	// upload to UBO..
-	glNamedBufferSubData(sharedUBO.id(), 3 * sizeof(glm::mat4x4), numOfKernalSamples * sizeof(glm::vec4), ssaoKernel.data());
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, ssaoKernels), numOfKernalSamples * sizeof(glm::vec4), ssaoKernel.data());
 
 	// =======================================================
 	// 2. Generating a 4x4 random noise
@@ -1038,7 +1055,7 @@ GLuint Renderer::getUIFrameBufferTexture() const {
 }
 
 GLuint Renderer::getUBOId() const {
-	return sharedUBO.id();
+	return cameraUBO.id();
 }
 
 GLuint Renderer::getEditorFrameBufferId() const {
@@ -2143,11 +2160,7 @@ void Renderer::clusterBuilding(Camera const& camera, BufferObject const& cluster
 	// 1. We first build the clusters AABB from screen space..
 	// ===============================================
 	clusterBuildingCompute.use();
-	clusterBuildingCompute.setFloat("zNear", camera.getNearPlaneDistance());
-	clusterBuildingCompute.setFloat("zFar", camera.getFarPlaneDistance());
 	clusterBuildingCompute.setMatrix("inverseProjection", glm::inverse(camera.projection()));
-	clusterBuildingCompute.setUVec3("gridSize", { gridSizeX, gridSizeY, gridSizeZ });
-	clusterBuildingCompute.setUVec2("screenDimensions", { gameWidth, gameHeight });
 
 	glDispatchCompute(gridSizeX, gridSizeY, gridSizeZ);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -2399,6 +2412,21 @@ void Renderer::swapVertexBuffer(Mesh& mesh) {
 		glVertexArrayVertexBuffer(mainVAO, 4, meshBOs.at(mesh.meshID).skeletalVBO.id(), 0, sizeof(VertexWeight));
 }
 
+void Renderer::updateCameraUBO(Camera const& camera) {
+	float zNearLocal	= camera.getNearPlaneDistance();
+	float zFarLocal 	= camera.getFarPlaneDistance();
+
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, view),				sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, projection),		sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, viewProjection),	sizeof(glm::mat4x4), glm::value_ptr(camera.viewProjection()));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, cameraPosition),	sizeof(glm::vec3),	 glm::value_ptr(camera.getPos()));
+
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, gridSize),			sizeof(glm::uvec3),  glm::value_ptr(glm::uvec3{ gridSizeX, gridSizeY, gridSizeZ }));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, screenDimensions),	sizeof(glm::uvec2),	 glm::value_ptr(glm::uvec2{ gameWidth, gameHeight }));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, zNear),			sizeof(float),		 &zNearLocal);
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, zFar),				sizeof(float),		 &zFarLocal);
+}
+
 CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	CubeMap inputCubemap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT };
 
@@ -2418,13 +2446,13 @@ CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
 	};
 
-	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(captureProjection));
-			
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, projection), sizeof(glm::mat4x4), glm::value_ptr(captureProjection));
+	
 	glViewport(0, 0, IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT); 
 	glBindFramebuffer(GL_FRAMEBUFFER, cubeMapFrameBuffer.fboId());
 	
 	for (unsigned int i = 0; i < 6; ++i) {
-		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));
+		glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, view), sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, inputCubemap.getTextureId(), 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -2439,8 +2467,6 @@ CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 
 	// We now run our convolution code to generate diffuse irradiance map..
 	bakeDiffuseIrradianceMapShader.use();
-
-	bakeDiffuseIrradianceMapShader.use();
 	bakeDiffuseIrradianceMapShader.setImageUniform("cubemap", 0);
 	glBindTextureUnit(0, inputCubemap.getTextureId());
 
@@ -2448,7 +2474,7 @@ CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	glBindFramebuffer(GL_FRAMEBUFFER, diffuseIrradianceMapFrameBuffer.fboId());
 
 	for (unsigned int i = 0; i < 6; ++i) {
-		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));	
+		glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, view), sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));
 
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outputCubemap.getTextureId(), 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -2746,9 +2772,7 @@ void Renderer::computePostProcessing(PairFrameBuffer& frameBuffers, Camera const
 		glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().depthStencilId());
 
 		// Upload camera data to the UBO
-		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
-		glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
-		glNamedBufferSubData(sharedUBO.id(), 2 * sizeof(glm::mat4x4), sizeof(glm::vec3), glm::value_ptr(camera.getPos()));
+		// updateCameraUBO(camera);
 
 		// Reset the VolumetricFog SSBO Data
 		volumetricFogBufferResetCompute.use();
@@ -2828,15 +2852,6 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	switch (shaderData.pipeline)
 	{
 	case Pipeline::PBR: {
-		// setup camera
-		shader.setVec3("cameraPos", camera.getPos());
-
-		// setup cluster uniforms
-		shader.setFloat("zNear", camera.getNearPlaneDistance());
-		shader.setFloat("zFar", camera.getFarPlaneDistance());
-		shader.setUVec3("gridSize", { gridSizeX, gridSizeY, gridSizeZ });
-		shader.setUVec2("screenDimensions", { gameWidth, gameHeight });
-
 		// setup SSAO
 		shader.setBool("toEnableSSAO", toEnableSSAO);
 		if (toEnableSSAO) {
@@ -2883,7 +2898,7 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 
 	// we bind to a unused texture unit..
 	glBindTextureUnit(0, directionalLightShadowFBO.textureId());
-	shader.setImageUniform("shadowMap", 0);
+	shader.setImageUniform("directionalShadowMap", 0);
 
 	// We reserve the very 4 texture unit for shadow maps and SSAO.
 	int numOfTextureUnitBound = 4;

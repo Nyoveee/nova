@@ -13,7 +13,20 @@ uniform float timeElapsed;
 
 layout (location = 0) out vec4 FragColor; 
 layout (location = 1) out vec3 gNormal;
+
 uniform bool toOutputNormal;
+
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+    mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
 
 vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
     return textureCoordinates * UVTiling + UVOffset;

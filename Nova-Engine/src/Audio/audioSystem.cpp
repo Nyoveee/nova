@@ -51,10 +51,10 @@ namespace {
 }
 
 AudioSystem::AudioSystem(Engine& engine) :
-	engine{ engine },
-	resourceManager{ engine.resourceManager },
-	fmodSystem{ nullptr },
-	currentBGM{ nullptr }
+	engine			{ engine },
+	resourceManager	{ engine.resourceManager },
+	fmodSystem		{ nullptr },
+	currentBGM		{ nullptr }
 {
 	g_audioSystem = this;
 

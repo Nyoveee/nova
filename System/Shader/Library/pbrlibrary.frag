@@ -71,8 +71,25 @@ struct SpotLight {
 
 const int MAX_SHADOW_CASTER = 15;
 
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+    mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    // Clusters related info
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
+
 layout(std140, binding = 1) uniform ShadowCasterMatrixes {
     mat4 shadowCasterMatrix[MAX_SHADOW_CASTER];
+};
+
+layout(std140, binding = 2) uniform PBRUBO {
+    vec4 samples[64];
 };
 
 layout(std430, binding = 0) buffer PointLights {
@@ -101,28 +118,23 @@ layout(std430, binding = 7) buffer clusterSSBO
     Cluster clusters[];
 };
 
-uniform vec3 cameraPos;
 uniform float timeElapsed;
-
-// Clusters related info
-uniform float zNear;
-uniform float zFar;
-uniform uvec3 gridSize;
-uniform uvec2 screenDimensions;
 
 // Shadows
 uniform bool hasDirectionalLightShadowCaster;
 uniform vec3 directionalLightDir;
-uniform sampler2D directionalShadowMap;
-uniform sampler2DArray spotlightShadowMaps;
+
 
 // SSAO
-uniform sampler2D ssao;
 uniform bool toEnableSSAO;
 
 // IBL
 uniform bool toUseDiffuseIrradianceMap;
-uniform samplerCube diffuseIrradianceMap;
+
+layout(location = 0) uniform sampler2D directionalShadowMap;
+layout(location = 1) uniform sampler2D ssao;
+layout(location = 2) uniform sampler2DArray spotlightShadowMaps;
+layout(location = 3) uniform samplerCube diffuseIrradianceMap;
 
 layout (location = 0) out vec4 FragColor; 
 
@@ -213,7 +225,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 
     // 1. IBL Diffuse
     if(toUseDiffuseIrradianceMap) {
-        vec3 viewDir    = normalize(cameraPos - fsIn.fragWorldPos);
+        vec3 viewDir    = normalize(cameraPosition - fsIn.fragWorldPos);
 
         vec3 F0         = vec3(0.04); // Dielectrics
         F0              = mix(F0, albedoColor, metallic);
@@ -325,7 +337,7 @@ vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, float roughness
     vec3 lightIntensity = light.color * light.intensity;
     lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
-    vec3 v = normalize(cameraPos - position);
+    vec3 v = normalize(cameraPosition - position);
     return BRDFCalculation(n, v, l, lightIntensity, baseColor, roughness, metallic);
 }
 
@@ -335,7 +347,7 @@ vec3 microfacetModelDir(vec3 position, vec3 n, vec3 baseColor, float roughness, 
     vec3 l = normalize(-light.direction);
     vec3 lightIntensity = light.color;
     
-    vec3 v = normalize(cameraPos - position);
+    vec3 v = normalize(cameraPosition - position);
     return BRDFCalculation(n, v, l, lightIntensity, baseColor, roughness, metallic);
 }
 
@@ -360,7 +372,7 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, float roughness,
     vec3 lightIntensity = light.color * light.intensity;
     lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
-    vec3 v = normalize(cameraPos - position);
+    vec3 v = normalize(cameraPosition - position);
     return BRDFCalculation(n, v, l, lightIntensity * spotIntensity, baseColor, roughness, metallic);
 }
 
