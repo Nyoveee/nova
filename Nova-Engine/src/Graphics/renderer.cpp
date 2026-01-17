@@ -82,6 +82,9 @@ constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
 constexpr int IRRADIANCE_MAP_WIDTH = 512;
 constexpr int IRRADIANCE_MAP_HEIGHT = 512;
 
+constexpr int DIFFUSE_IRRADIANCE_MAP_WIDTH = 64;
+constexpr int DIFFUSE_IRRADIANCE_MAP_HEIGHT = 64;
+
 // For Volumetric Fog
 constexpr int VOLUMETRIC_FOG_DOWNSCALE 		= 4;
 
@@ -122,12 +125,12 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	uiTextObjectIdShader			{ "System/Shader/text.vert",						"System/Shader/objectId.frag" },
 	skyboxShader					{ "System/Shader/skybox.vert",						"System/Shader/skybox.frag" },
 	skyboxCubemapShader				{ "System/Shader/skybox.vert",						"System/Shader/skyboxCubemap.frag" },
+	bakeDiffuseIrradianceMapShader	{ "System/Shader/skybox.vert",						"System/Shader/diffuseIrradianceMap.frag" },
 	toneMappingShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/tonemap.frag" },
 	particleShader					{ "System/Shader/ParticleSystem/particle.vert",     "System/Shader/ParticleSystem/particle.frag"},
 	textShader						{ "System/Shader/text.vert",						"System/Shader/text.frag"},
 	texture2dShader					{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
 	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
-	// depthGBufferShader				{ "System/Shader/gbuffer.vert",						"System/Shader/gbuffer.frag" },
 	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
@@ -183,6 +186,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
 	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
 	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGB16F } },
+	diffuseIrradianceMapFrameBuffer	{ DIFFUSE_IRRADIANCE_MAP_WIDTH, DIFFUSE_IRRADIANCE_MAP_HEIGHT },
 	directionalLightShadowFBO		{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
 	shadowFBO						{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
 	spotlightShadowMaps				{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
@@ -1085,7 +1089,7 @@ void Renderer::recompileShaders() {
 	rayMarchingVolumetricFogCompute.recompile();
 
 	ssaoShader.recompile();
-
+	bakeDiffuseIrradianceMapShader.recompile();
 
 	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
 
@@ -1392,24 +1396,6 @@ void Renderer::renderSkyBox() {
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
-#if 0
-	// Testing code to see if baking of cube map works.
-	CubeMap savedCubeMap = bakeDiffuseIrradianceMap([&] {
-		auto&& [equirectangularMap, _] = resourceManager.getResource<EquirectangularMap>(resourceManager.getSomeResourceID<EquirectangularMap>());
-		renderSkyBox(*equirectangularMap);
-	});
-
-	glDisable(GL_DEPTH_TEST);
-	glBindFramebuffer(GL_FRAMEBUFFER, getEditorFrameBufferId());
-	glViewport(0, 0, gameWidth, gameHeight);
-
-	glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(getEditorCamera().view()));
-	glNamedBufferSubData(sharedUBO.id(), sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(getEditorCamera().projection()));
-
-	renderSkyBox(savedCubeMap);
-#endif
-
-#if 1
 	for (auto&& [entityId,entityData, skyBox] : registry.view<EntityData, SkyBox>().each()) {
 		auto [asset, status] = resourceManager.getResource<EquirectangularMap>(skyBox.equirectangularMap);
 
@@ -1437,7 +1423,6 @@ void Renderer::renderSkyBox() {
 		// only render the very first skybox.
 		return;
 	}
-#endif
 }
 
 void Renderer::renderSkyBox(EquirectangularMap const& equirectangularMap) {
@@ -2415,11 +2400,16 @@ void Renderer::swapVertexBuffer(Mesh& mesh) {
 }
 
 CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
-	CubeMap cubemap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT };
+	CubeMap inputCubemap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT };
 
 	// https://learnopengl.com/PBR/IBL/Diffuse-irradiance
-	static glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-	static glm::mat4 captureViews[] = {
+	
+	// =========================================================
+	// 1. We first capture the surrounding for our irradiance map..
+	// =========================================================
+
+	static const glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	static const glm::mat4 captureViews[] = {
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
@@ -2436,16 +2426,37 @@ CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	for (unsigned int i = 0; i < 6; ++i) {
 		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));
 
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemap.getTextureId(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, inputCubemap.getTextureId(), 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		render();
 	}
 
-	// bind back to default FBO.
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// =========================================================
+	// 2. We convulate this cubemap..
+	// =========================================================
+	CubeMap outputCubemap{ DIFFUSE_IRRADIANCE_MAP_WIDTH, DIFFUSE_IRRADIANCE_MAP_HEIGHT };
 
-	return cubemap;
+	// We now run our convolution code to generate diffuse irradiance map..
+	bakeDiffuseIrradianceMapShader.use();
+
+	bakeDiffuseIrradianceMapShader.use();
+	bakeDiffuseIrradianceMapShader.setImageUniform("cubemap", 0);
+	glBindTextureUnit(0, inputCubemap.getTextureId());
+
+	glViewport(0, 0, DIFFUSE_IRRADIANCE_MAP_WIDTH, DIFFUSE_IRRADIANCE_MAP_HEIGHT);
+	glBindFramebuffer(GL_FRAMEBUFFER, diffuseIrradianceMapFrameBuffer.fboId());
+
+	for (unsigned int i = 0; i < 6; ++i) {
+		glNamedBufferSubData(sharedUBO.id(), 0, sizeof(glm::mat4x4), glm::value_ptr(captureViews[i]));	
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, outputCubemap.getTextureId(), 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+
+	return outputCubemap;
 }
 	
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
@@ -2816,20 +2827,24 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 
 	switch (shaderData.pipeline)
 	{
-	case Pipeline::PBR:
+	case Pipeline::PBR: {
+		// setup camera
 		shader.setVec3("cameraPos", camera.getPos());
 
+		// setup cluster uniforms
 		shader.setFloat("zNear", camera.getNearPlaneDistance());
 		shader.setFloat("zFar", camera.getFarPlaneDistance());
 		shader.setUVec3("gridSize", { gridSizeX, gridSizeY, gridSizeZ });
 		shader.setUVec2("screenDimensions", { gameWidth, gameHeight });
 
+		// setup SSAO
 		shader.setBool("toEnableSSAO", toEnableSSAO);
 		if (toEnableSSAO) {
 			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]);
 			shader.setImageUniform("ssao", 1);
 		}
 
+		// setup directional light shadow
 		shader.setBool("hasDirectionalLightShadowCaster", hasDirectionalLightShadowCaster);
 		
 		if (hasDirectionalLightShadowCaster) {
@@ -2837,12 +2852,26 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 			shader.setVec3("directionalLightDir", directionalLightDir);
 		}
 
-		// bind to spotlight shadow map array
+		// setup spotlight shadow
 		glBindTextureUnit(2, spotlightShadowMaps.getTextureId());
 		shader.setImageUniform("spotlightShadowMaps", 2);
 
-		// both pipeline requires these to be set..
-		[[fallthrough]];
+		// setup IBL irradiance maps..
+		auto&& [diffuseIrradianceMap, __] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentDiffuseMap);
+
+		if (diffuseIrradianceMap) {
+			shader.setBool("toUseDiffuseIrradianceMap", true);
+
+			glBindTextureUnit(3, diffuseIrradianceMap->getTextureId());
+			shader.setImageUniform("diffuseIrradianceMap", 3);
+		}
+		else {
+			shader.setBool("toUseDiffuseIrradianceMap", false);
+		}
+	}
+
+	// both pipeline requires these to be set..
+	[[fallthrough]];
 	case Pipeline::Color:
 		shader.setMatrix("model", transform.modelMatrix);
 		shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
@@ -2856,8 +2885,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	glBindTextureUnit(0, directionalLightShadowFBO.textureId());
 	shader.setImageUniform("shadowMap", 0);
 
-	// We reserve the very 3 texture unit for shadow maps and SSAO.
-	int numOfTextureUnitBound = 3;
+	// We reserve the very 4 texture unit for shadow maps and SSAO.
+	int numOfTextureUnitBound = 4;
 	
 	setupCustomShaderUniforms(shader, material, numOfTextureUnitBound);
 
@@ -2904,7 +2933,7 @@ CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transf
 	shader.setFloat("toOutputNormal", true);
 
 	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.
-	setupCustomShaderUniforms(shader, material, 3);
+	setupCustomShaderUniforms(shader, material, 4);
 
 	// Use the shader
 	shader.use();

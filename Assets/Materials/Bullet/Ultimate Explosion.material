@@ -1,54 +1,54 @@
 {
-    "blendingConfig": "AlphaBlending",
-    "cullingConfig": "Disable",
-    "depthTestingMethod": "DepthTest",
+    "selectedShader": 1772861812701872129,
     "overridenUniforms": {
-        "dissolveTexture": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_type": 9,
-                "__variant_value": 1794271476785463393
-            }
-        },
         "dissolveThreshold": {
             "type": "NormalizedFloat",
             "value": {
-                "__variant_type": 12,
-                "__variant_value": 1.0
+                "__variant_value": 1.0,
+                "__variant_type": 12
             }
         },
-        "edgeColor": {
-            "type": "Color",
+        "dissolveTexture": {
+            "type": "sampler2D",
             "value": {
-                "__variant_type": 10,
-                "__variant_value": {
-                    "b": 0.962758481502533,
-                    "g": 1.0,
-                    "r": 0.3999999761581421
-                }
-            }
-        },
-        "edgeWidth": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.10199999809265137
-            }
-        },
-        "intensity": {
-            "type": "float",
-            "value": {
-                "__variant_type": 3,
-                "__variant_value": 49.0
+                "__variant_value": 1794271476785463393,
+                "__variant_type": 9
             }
         },
         "mainTexture": {
             "type": "sampler2D",
             "value": {
-                "__variant_type": 9,
-                "__variant_value": 11490495086275592255
+                "__variant_value": 11490495086275592255,
+                "__variant_type": 9
+            }
+        },
+        "edgeColor": {
+            "type": "Color",
+            "value": {
+                "__variant_value": {
+                    "r": 0.3999999761581421,
+                    "g": 1.0,
+                    "b": 0.962758481502533
+                },
+                "__variant_type": 10
+            }
+        },
+        "edgeWidth": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.10199999809265137,
+                "__variant_type": 12
+            }
+        },
+        "intensity": {
+            "type": "float",
+            "value": {
+                "__variant_value": 49.0,
+                "__variant_type": 3
             }
         }
     },
-    "selectedShader": 1772861812701872129
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Disable"
 }

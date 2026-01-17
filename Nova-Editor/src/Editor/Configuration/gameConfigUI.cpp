@@ -38,8 +38,21 @@ void GameConfigUI::update() {
         if (gameConfig.gameHeight < 1) gameConfig.gameHeight = 1;
     
 		ImGui::Text("Start Up Scene");
+
 		editor.displayAssetDropDownList<Scene>(gameConfig.sceneStartUp, "##startUp", [&](ResourceID scene) {
 			gameConfig.sceneStartUp = scene;
+		});
+
+		ImGui::Text("Diffuse Environment Map");
+
+		editor.displayAssetDropDownList<CubeMap, true>(gameConfig.environmentDiffuseMap, "##diffuseMap", [&](ResourceID scene) {
+			gameConfig.environmentDiffuseMap = TypedResourceID<CubeMap>{ scene };
+		});
+
+		ImGui::Text("Diffuse Specular Map");
+
+		editor.displayAssetDropDownList<CubeMap, true>(gameConfig.environmentSpecularMap, "##specularMap", [&](ResourceID scene) {
+			gameConfig.environmentSpecularMap = TypedResourceID<CubeMap>{ scene };
 		});
 
 		float gravity = gameConfig.gravityStrength;

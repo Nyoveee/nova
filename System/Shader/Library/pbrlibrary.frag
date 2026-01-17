@@ -120,6 +120,10 @@ uniform sampler2DArray spotlightShadowMaps;
 uniform sampler2D ssao;
 uniform bool toEnableSSAO;
 
+// IBL
+uniform bool toUseDiffuseIrradianceMap;
+uniform samplerCube diffuseIrradianceMap;
+
 layout (location = 0) out vec4 FragColor; 
 
 // for depth pre pass..
@@ -147,6 +151,7 @@ vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
 float ggxDistribution               (float nDotH);
 float geomSmith                     (float nDotL);
 vec3  schlickFresnel                (float lDotH, vec3 baseColor);
+vec3  fresnelSchlickRoughness       (float cosTheta, vec3 F0, float roughness);
 vec3  microfacetModelPoint          (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, PointLight light);
 vec3  microfacetModelDir            (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, DirectionalLight light);
 vec3  microfacetModelSpot           (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
@@ -171,7 +176,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     Cluster cluster = getCluster();
 
     // --------------------------------------------------------------------
-    // Calculate diffuse and specular light for each light.
+    // Calculate direct diffuse and specular light for each light.
     for(uint i = 0; i < cluster.pointLightCount; ++i) {
         PointLight pointLight = pointLights[cluster.pointLightIndices[i]];
         finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLight);
@@ -203,21 +208,40 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     }
 
     // --------------------------------------------------------------------
-    // @TODO: Indirect light
+    // Indirect lighting
+    vec3 ambient = vec3(0);
+
+    // 1. IBL Diffuse
+    if(toUseDiffuseIrradianceMap) {
+        vec3 viewDir    = normalize(cameraPos - fsIn.fragWorldPos);
+
+        vec3 F0         = vec3(0.04); // Dielectrics
+        F0              = mix(F0, albedoColor, metallic);
+
+        vec3 kS         = fresnelSchlickRoughness(max(dot(normal, viewDir), 0.0), F0, roughness); 
+        vec3 kD         = vec3(1.0) - kS;
+        kD              *= 1.0 - metallic;
+        
+        vec3 irradiance = texture(diffuseIrradianceMap, normal).rgb;
+        vec3 diffuse    = irradiance * albedoColor;
+        ambient         = (kD * diffuse); 
+    }
+    else {
+        ambient = albedoColor * 0.07;
+    }
 
     // --------------------------------------------------------------------
     // SSAO
-    const float ambientFactor = 0.07;
-    float occulusionFactor = occulusion * ambientFactor;
+    ambient *= occulusion;    // multiply by AO map..
 
     if(toEnableSSAO) {
         // Because SSAO is screen space, we need a way to retrieve SSAO texture in screenspace.
         vec2 screenSpaceTextureCoordinates = gl_FragCoord.xy / screenDimensions;
         float ambientOcculusion = texture(ssao, screenSpaceTextureCoordinates).r;
-        occulusionFactor *= ambientOcculusion; 
+        ambient *= ambientOcculusion; 
     }
 
-    finalColor += albedoColor * (occulusionFactor);
+    finalColor += ambient;
     return finalColor;
 }
 
@@ -260,6 +284,13 @@ vec3 schlickFresnel(float lDotH, vec3 baseColor, float metallic)
     f0 = mix(f0, baseColor, metallic);
     return f0 + (1.0f - f0) * pow(1.0f - lDotH, 5);
 }
+
+// Schlick approximation for Fresnel reflection, but for diffuse indirect lighting.
+// https://seblagarde.wordpress.com/2011/08/17/hello-world/
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}   
 
 // Calculates light attenuation.
 float calculateAttenuation(float distance, vec3 attenutationFactor, float radius) {

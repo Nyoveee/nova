@@ -35,10 +35,10 @@ namespace AssetSerializer {
 	}
 
 	void serialiseCubeMap(CubeMap const& cubeMap) {
-		constexpr std::string temporaryDirectory = ".temp";
+		static const std::string temporaryDirectory = ".temp";
 		constexpr int channels = 3; // RGB
 
-		constexpr static std::array<std::string, 6> cubemapFaceFileNames{
+		static const std::array<std::string, 6> cubemapFaceFileNames {
 			"positive_x.hdr",
 			"negative_x.hdr",
 			"positive_y.hdr",

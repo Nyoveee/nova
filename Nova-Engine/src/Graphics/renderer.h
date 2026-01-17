@@ -372,6 +372,7 @@ private:
 
 	// contains an intermediary framebuffer for baking irradiance map
 	FrameBuffer cubeMapFrameBuffer;
+	FrameBuffer diffuseIrradianceMapFrameBuffer;
 
 	glm::mat4 UIProjection;
 
@@ -431,6 +432,8 @@ public:
 	// Shader depthGBufferShader;
 	Shader ssaoShader;
 	Shader gaussianBlurShader;
+
+	Shader bakeDiffuseIrradianceMapShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;
