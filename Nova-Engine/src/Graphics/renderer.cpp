@@ -573,6 +573,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	renderTranslucentModels(camera);
 
 	// Restore default depth testing.
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
 	// Render particles
