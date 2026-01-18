@@ -176,6 +176,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\ComponentInspection\displayLightComponent.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp" />
+    <ClCompile Include="src\Editor\Configuration\renderConfigUI.cpp" />
     <ClCompile Include="src\Editor\ImGui\crude_json.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_canvas.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_neo_internal.cpp" />
@@ -253,6 +254,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
     <ClInclude Include="src\Editor\Configuration\editorConfigUI.h" />
     <ClInclude Include="src\Editor\Configuration\gameConfigUI.h" />
+    <ClInclude Include="src\Editor\Configuration\renderConfigUI.h" />
     <ClInclude Include="src\Editor\editor.ipp" />
     <ClInclude Include="src\Editor\ImGui\crude_json.h" />
     <ClInclude Include="src\Editor\ImGui\imgui_bezier_math.h" />

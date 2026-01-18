@@ -81,6 +81,16 @@ namespace Serialiser {
 		serializeToJsonFile(gameConfig, outputFile);
 	}
 
+	void serialiseRenderConfig(const char* fileName, RenderConfig const& config) {
+		std::ofstream outputFile{ fileName };
+
+		if (!outputFile) {
+			return;
+		}
+
+		serializeToJsonFile(config, outputFile);
+	}
+
 	GameConfig deserialiseGameConfig(const char* fileName) {
 		GameConfig gameConfig;
 
@@ -91,6 +101,18 @@ namespace Serialiser {
 		}
 
 		return gameConfig;
+	}
+
+	RenderConfig deserialiseRenderConfig(const char* fileName) {
+		RenderConfig renderConfig;
+
+		std::ifstream jsonFile{ fileName };
+
+		if (jsonFile) {
+			deserializeFromJsonFile(renderConfig, jsonFile);
+		}
+
+		return renderConfig;
 	}
 
 	template <typename ...Windows>

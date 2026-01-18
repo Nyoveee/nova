@@ -23,14 +23,15 @@ int main() {
 		return -1;
 	}
 
-	GameConfig gameConfig = Serialiser::deserialiseGameConfig("gameConfig.json");
+	GameConfig		gameConfig		= Serialiser::deserialiseGameConfig("gameConfig.json");
+	RenderConfig	renderConfig	= Serialiser::deserialiseRenderConfig("renderConfig.json");
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
 	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
 	
 	ResourceManager resourceManager {};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig, renderConfig, Engine::State::Editor };
 
 	AssetManager	assetManager	{ resourceManager, engine };
 
@@ -48,7 +49,7 @@ int main() {
 		// Update loop.
 		[&](float dt) {
 			engine.update(dt);
-			engine.render(RenderConfig::Editor);
+			engine.render(RenderMode::Editor);
 			
 			// we update the editor the simulation mode of the engine. this is because simulation may stop abruptly outside of
 			// the editor's control. during simulation setup, it may fail too.

@@ -41,22 +41,21 @@ struct MeshBOs {
 	BufferObject skeletalVBO{ BufferObject{0} };			// VA 4
 	BufferObject EBO{ BufferObject{0} };					// VA 5
 };
+
+enum class RenderMode {
+	Editor,
+	Game
+};
+
 class Renderer {
 public:
-	enum class ToneMappingMethod {
-		Exposure,
-		Reinhard,
-		ACES,
-		None
-	};
-
 	enum class MeshType {
 		Normal,
 		Skinned
 	};
 
 public:
-	Renderer(Engine& engine, int gameWidth, int gameHeight);
+	Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int gameHeight);
 
 	~Renderer();
 	Renderer(Renderer const& other)				= delete;
@@ -67,7 +66,7 @@ public:
 public:
 	void update(float dt);
 
-	void renderMain(RenderConfig renderConfig);
+	void renderMain(RenderMode renderMode);
 
 	void renderUI();
 
@@ -135,10 +134,6 @@ public:
 	ENGINE_DLL_API void setHDRExposure(float exposure);
 	ENGINE_DLL_API float getHDRExposure() const;
 
-	// Tone mapping controls
-	ENGINE_DLL_API void setToneMappingMethod(ToneMappingMethod method);
-	ENGINE_DLL_API ToneMappingMethod getToneMappingMethod() const;
-
 	// UI projection
 	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
 	ENGINE_DLL_API void randomiseChromaticAberrationoffset();
@@ -146,8 +141,7 @@ public:
 public:
 	// Editor rendering..
 	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
-	ENGINE_DLL_API void renderDebugSelectedObjects();
-
+	ENGINE_DLL_API void renderDebugSelectedObjects();	
 
 	// first renders the scene with the given render function onto an intermediate framebuffer, then
 	// bakes it into a convoluted diffuse irradiance map.
@@ -412,6 +406,8 @@ private:
 	int numOfSpotlightShadowCaster;
 
 public:
+	RenderConfig renderConfig;
+
 	Shader basicShader;
 	Shader standardShader;
 	Shader textureShader;
@@ -456,11 +452,8 @@ public:
 
 	// HDR parameters
 	float hdrExposure;
-	ToneMappingMethod toneMappingMethod;
 
 	// Used to debug frustum culling..
 	bool toDebugRenderBoundingVolume = false;
 	bool toDebugClusters = false;
-
-	bool toEnableSSAO = true;
 };

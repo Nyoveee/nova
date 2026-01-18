@@ -37,7 +37,7 @@ public:
 	};
 
 public:
-	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state);
+	ENGINE_DLL_API Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, RenderConfig renderConfig, State state);
 
 	ENGINE_DLL_API ~Engine();
 	ENGINE_DLL_API Engine(Engine const& other)				= delete;
@@ -49,7 +49,7 @@ public:
 	ENGINE_DLL_API void fixedUpdate(float dt);
 	ENGINE_DLL_API void update(float dt);
 	
-	ENGINE_DLL_API void render(RenderConfig renderConfig);
+	ENGINE_DLL_API void render(RenderMode renderMode);
 	
 	ENGINE_DLL_API void startSimulation();
 	ENGINE_DLL_API void stopSimulation();

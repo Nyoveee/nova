@@ -61,6 +61,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	animatorController				{ *this },
 	gameConfigUI					{ *this },
 	editorConfigUI					{ *this },
+	renderConfigUI					{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false }
@@ -278,11 +279,9 @@ void Editor::main(float dt) {
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
-	//navigationWindow.update();
 	animationTimeLine.update(dt);
-	//animatorController.update();
-	//gameConfigUI.update();
 	editorConfigUI.update();
+	renderConfigUI.update();
 
 	handleEntityHovering();
 

@@ -120,8 +120,9 @@ struct alignas(16) PBR_UBO {
 
 #pragma warning( pop )
 
-Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
+Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int gameHeight) :
 	engine							{ engine },
+	renderConfig					{ renderConfig },
 	gameWidth						{ gameWidth },
 	gameHeight						{ gameHeight },
 	resourceManager					{ engine.resourceManager },
@@ -195,7 +196,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	timeElapsed						{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	hdrExposure						{ 0.9f },
-	toneMappingMethod				{ ToneMappingMethod::ACES },
 															 // main		normal
 	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
 	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
@@ -354,6 +354,9 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &particleVAO);
 
 	if (ssaoNoiseTextureId != INVALID_ID) glDeleteTextures(1, &ssaoNoiseTextureId);
+
+	// serialise render config..
+	Serialiser::serialiseRenderConfig("renderConfig.json", renderConfig);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -404,7 +407,7 @@ void Renderer::update([[maybe_unused]] float dt) {
 	timeElapsed += dt;
 }
 
-void Renderer::renderMain(RenderConfig renderConfig) {
+void Renderer::renderMain(RenderMode renderMode) {
 #if defined(DEBUG)
 	ZoneScoped;
 #endif
@@ -412,12 +415,12 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	prepareRendering();
 
 	// The renderer 
-	switch (renderConfig)
+	switch (renderMode)
 	{
 	// ===============================================
 	// In this case, we focus on rendering to the editor's FBO.
 	// ===============================================
-	case RenderConfig::Editor:
+	case RenderMode::Editor:
 		// Main render function
 		if (isEditorScreenShown) {
 			render(editorMainFrameBuffer, editorCamera, editorLights, editorClusterSSBO);
@@ -452,7 +455,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
 	// ===============================================
-	case RenderConfig::Game:
+	case RenderMode::Game:
 		// Main render function
 		render(gameMainFrameBuffer, gameCamera, gameLights, gameClusterSSBO);
 		renderUI();
@@ -462,7 +465,7 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 		renderHDRTonemapping(gameMainFrameBuffer);
 
 		// only render to default FBO if it's truly game mode.
-		if (renderConfig == RenderConfig::Game) {
+		if (renderMode == RenderMode::Game) {
 			renderToDefaultFBO();
 		}
 
@@ -530,7 +533,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 
 	// Main function to handle shadow pass for all light types.. 
 	// We run a shadow pass first so we can pass shadow related data in prepareLights..
-	shadowPass(camera);
+	if(renderConfig.toEnableShadows) shadowPass(camera);
 
 	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
 	prepareLights(camera, lightSSBO);
@@ -554,7 +557,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
 
 	// We generate SSAO texture for forward rendering later..
-	if(toEnableSSAO) generateSSAO(frameBuffers, camera);
+	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers, camera);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -2840,7 +2843,7 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	toneMappingShader.use();
 	toneMappingShader.setFloat("exposure", hdrExposure);
 	toneMappingShader.setFloat("gamma", 2.2f);
-	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(toneMappingMethod));
+	toneMappingShader.setInt("toneMappingMethod", static_cast<int>(renderConfig.toneMappingMethod));
 	toneMappingShader.setBool("toGammaCorrect", toGammaCorrect);
 
 	// Bind the HDR texture from main framebuffer
@@ -2939,8 +2942,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	{
 	case Pipeline::PBR: {
 		// setup SSAO
-		shader.setBool("toEnableSSAO", toEnableSSAO);
-		if (toEnableSSAO) {
+		shader.setBool("toEnableSSAO", renderConfig.toEnableSSAO);
+		if (renderConfig.toEnableSSAO) {
 			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]);
 			shader.setImageUniform("ssao", 1);
 		}
@@ -3133,14 +3136,6 @@ void Renderer::setHDRExposure(float exposure) {
 
 float Renderer::getHDRExposure() const {
 	return hdrExposure;
-}
-
-void Renderer::setToneMappingMethod(ToneMappingMethod method) {
-	toneMappingMethod = method;
-}
-
-Renderer::ToneMappingMethod Renderer::getToneMappingMethod() const {
-	return toneMappingMethod;
 }
 
 glm::mat4 const& Renderer::getUIProjection() const {

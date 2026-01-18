@@ -212,10 +212,12 @@ public:
 
 public ref class RendererAPI {
 public:
+#if 0
 	static property bool toneMapping {
 		bool get() { return Interface::engine->renderer.toneMappingMethod == Renderer::ToneMappingMethod::ACES; };
 		void set(bool value) { Interface::engine->renderer.toneMappingMethod = value ? Renderer::ToneMappingMethod::ACES : Renderer::ToneMappingMethod::None; };
 	};
+#endif
 
 	static property bool toPostProcess {
 		bool get() { return Interface::engine->renderer.toPostProcess; };

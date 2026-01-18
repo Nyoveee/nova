@@ -12,6 +12,8 @@ struct GameConfig {
 	ResourceID					sceneStartUp			= INVALID_RESOURCE_ID;
 	float						gravityStrength			= 60.f;
 	
+	bool						fullScreen				= true;
+
 	TypedResourceID<CubeMap>	environmentDiffuseMap	= { INVALID_RESOURCE_ID };
 	TypedResourceID<CubeMap>	environmentSpecularMap	= { INVALID_RESOURCE_ID };
 
@@ -21,8 +23,34 @@ struct GameConfig {
 		gameHeight,
 		sceneStartUp,
 		gravityStrength,
+		fullScreen,
 		environmentDiffuseMap,
 		environmentSpecularMap
+	)
+};
+
+enum class ToneMappingMethod {
+	Exposure,
+	Reinhard,
+	ACES,
+	None
+};
+
+struct RenderConfig {
+	ToneMappingMethod	toneMappingMethod		= ToneMappingMethod::ACES;
+	bool				toEnableSSAO			= true;
+	bool				toEnableFog				= true;
+	bool				toEnableVsync			= true;
+	bool				toEnableAntiAliasing	= true;
+	bool				toEnableShadows			= true;
+
+	REFLECTABLE(
+		toneMappingMethod,
+		toEnableSSAO,
+		toEnableFog,
+		toEnableVsync,
+		toEnableAntiAliasing,
+		toEnableShadows
 	)
 };
 

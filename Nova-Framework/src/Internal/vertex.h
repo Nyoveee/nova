@@ -27,12 +27,6 @@ using GlobalVertexIndex = unsigned int;		// global vertex index are like indices
 using MaterialName		= std::string;
 using MeshID = size_t;
 
-// i genuinely have no idea where to put this
-enum class RenderConfig {
-	Editor,
-	Game
-};
-
 struct alignas(16) ParticleVertex {
 	glm::vec4 color;
 	alignas(16) glm::vec3 position;

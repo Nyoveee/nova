@@ -28,6 +28,7 @@
 #include "type_concepts.h"
 #include "Configuration/editorConfigUI.h"
 #include "Configuration/gameConfigUI.h"
+#include "Configuration/renderConfigUI.h"
 
 #include <tracyprofiler/tracy/Tracy.hpp>
 
@@ -140,6 +141,7 @@ public:
 	NavigationWindow navigationWindow;
 	GameConfigUI gameConfigUI;
 	EditorConfigUI editorConfigUI;
+	RenderConfigUI renderConfigUI;
 	NavBar navBar;
 	AnimationTimeLine animationTimeLine;
 	AnimatorController animatorController;
