@@ -28,11 +28,13 @@ void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
 
 	if (ImGui::Button("Bake skybox")) {
-		CubeMap savedCubeMap = renderer.bakeDiffuseIrradianceMap([&] {
+		AssetSerializer::serialiseCubeMap(renderer.bakeDiffuseIrradianceMap([&] {
 			renderer.renderSkyBox();
-		});
+		}));
 
-		AssetSerializer::serialiseCubeMap(savedCubeMap);
+		AssetSerializer::serialiseCubeMap(renderer.bakeSpecularIrradianceMap([&] {
+			renderer.renderSkyBox();
+		}));
 	}
 
 	ImGui::Text("Hovering entity: %u", static_cast<unsigned int>(editor.hoveringEntity));

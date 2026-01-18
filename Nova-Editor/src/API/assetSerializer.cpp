@@ -6,6 +6,8 @@
 
 #include <glad/glad.h>
 
+#include <DirectXTex/DirectXTex.h>
+
 namespace AssetSerializer {
 	void flipImageData(std::vector<float>& image, int width, int height, int components) {
 		int rowsToProcess = height / 2; // i want flooring here.
@@ -35,92 +37,95 @@ namespace AssetSerializer {
 	}
 
 	void serialiseCubeMap(CubeMap const& cubeMap) {
+		DirectX::ScratchImage cubemapImage;
+
+		HRESULT initialisationResult = cubemapImage.InitializeCube(
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			cubeMap.getWidth(),
+			cubeMap.getHeight(),
+			1,
+			cubeMap.getMipmap()
+		);
+
+		if (FAILED(initialisationResult)) {
+			Logger::error("Failed to initialise DirectX cubemap {}.", static_cast<unsigned int>(initialisationResult));
+			return;
+		}
+
+		GLint oldAlignment;
+		glGetIntegerv(GL_PACK_ALIGNMENT, &oldAlignment);
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
 		static const std::string temporaryDirectory = ".temp";
 		constexpr int channels = 3; // RGB
 
-		static const std::array<std::string, 6> cubemapFaceFileNames {
-			"positive_x.hdr",
-			"negative_x.hdr",
-			"positive_y.hdr",
-			"negative_y.hdr",	// WE FLIP Y HERE BECAUSE OPENGL LOADS THEM BOTTOM UP.
-			"positive_z.hdr",
-			"negative_z.hdr"
+		static const std::array<std::string, 6> cubemapFaceFileNames{
+			"positive_x",
+			"negative_x",
+			"positive_y",
+			"negative_y",
+			"positive_z",
+			"negative_z"
 		};
 
-		// 1. Create a temporary directory..
-		std::filesystem::create_directory(temporaryDirectory);
-		
-		GLint oldAlignment;
-		glGetIntegerv(GL_PACK_ALIGNMENT, &oldAlignment);
+		int width = cubeMap.getWidth();
+		int height = cubeMap.getHeight();
 
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		for (int mipmapLevel = 0; mipmapLevel < cubeMap.getMipmap(); ++mipmapLevel) {
+			for (std::size_t face = 0; face < 6; ++face) {
 
-		// store the all the full filepaths..
-		std::array<std::string, 6> fullFilePaths;
+				// 1. Allocate enough buffer to store result..
+				std::vector<float> buffer;
+				buffer.resize(width * height * channels);
 
-		// For each face.. copy its data into stbi image..
-		// Create 6 different png files, to be used to feed into texassemble.exe..
-		for (std::size_t face = 0; face < 6; ++face) {
-			std::filesystem::path filepath = std::filesystem::current_path() / temporaryDirectory / cubemapFaceFileNames[face];
-			fullFilePaths[face] = "\"" + filepath.string() + "\" ";
+				// 2. Download only ONE face (depth = 1) at the correct Z-offset
+				glGetTextureSubImage(
+					cubeMap.getTextureId(),
+					mipmapLevel,							// mipmap level
+					0, 0, static_cast<GLint>(face),			// Z-offset is the face index
+					width, height, 1,						// Download 1 face at a time
+					GL_RGB,
+					GL_FLOAT,								// natively this cubemap is a HALF_FLoat, but stb requires 32 bit floating point.
+					static_cast<GLsizei>(buffer.size() * sizeof(float)),
+					buffer.data()
+				);
 
-			// 1. Allocate enough buffer to store result..
-			std::vector<float> buffer;
-			buffer.resize(cubeMap.getWidth() * cubeMap.getHeight() * channels);
+				// Flip image in the y direction.
+				flipImageData(buffer, width, height, 3);
 
-			// 2. Download only ONE face (depth = 1) at the correct Z-offset
-			glGetTextureSubImage(
-				cubeMap.getTextureId(),
-				0,												// mipmap level
-				0, 0, static_cast<GLint>(face),					// Z-offset is the face index
-				cubeMap.getWidth(), cubeMap.getHeight(), 1,		// Download 1 face at a time
-				GL_RGB,
-				GL_FLOAT,										// natively this cubemap is a HALF_FLoat, but stb requires 32 bit floating point.
-				static_cast<GLsizei>(buffer.size() * sizeof(float)),
-				buffer.data()
-			);
+				int faceToSave = face;
 
-			// Flip image in the y direction.
-			flipImageData(buffer, cubeMap.getWidth(), cubeMap.getHeight(), 3);
+				// we flip y face..
+				if (face == 2) {		// 2, POSITIVE_Y
+					faceToSave = 3;		// 3, NEGATIVE_Y
+				}
+				else if (face == 3) {	// 3, NEGATIVE_Y
+					faceToSave = 2;		// 2, POSITIVE_Y
+				}
 
-			// 3. Serialise as .HDR
-			if (!stbi_write_hdr(filepath.string().c_str(), cubeMap.getWidth(), cubeMap.getHeight(), channels, buffer.data())) {
-				Logger::error("Failed to serialise cubemap");
-				return;
+				// Copy data into directx subsection of the image..
+				DirectX::Image const* img = cubemapImage.GetImage(mipmapLevel, faceToSave, 0);
+				std::memcpy(img->pixels, buffer.data(), buffer.size() * sizeof(float));
 			}
-		}
 
-		// Use texassemble.exe to convert the 6 .hdr files into one combined .dds file..
-		constexpr const char* executableName = "texassemble.exe";
-		std::filesystem::path texAssemblePath = std::filesystem::current_path() / "ExternalApplication" / executableName;
-		std::filesystem::path outputFileName = AssetIO::assetDirectory / (Logger::getUniqueTimedId() + ".dds");
-
-		// command line arguments..
-		std::string commandLineArguments = "cube -o \"" + outputFileName.string() + "\" ";
-
-		// also flip the y cube faces..
-		std::swap(fullFilePaths[2], fullFilePaths[3]);
-
-		for (auto const& filepath : fullFilePaths) {
-			commandLineArguments += filepath;
-		}
-
-		// https://stackoverflow.com/questions/27975969/how-to-run-an-executable-with-spaces-using-stdsystem-on-windows/27976653#27976653
-		std::string command = 
-			"\""										// outer quotation encapsulating everything..
-			"\"" + texAssemblePath.string() + "\" " 
-			+ commandLineArguments +
-			"\"";										// outer quotation encapsulating everything..
-
-		Logger::debug("Running command: {}", command);
-
-		if (std::system(command.c_str())) {
-			Logger::error("Error baking cubemap.");
-		}
-		else {
-			Logger::debug("Successful baked cube map.");
+			width /= 2;
+			height /= 2;
 		}
 
 		glPixelStorei(GL_PACK_ALIGNMENT, oldAlignment);
+
+		std::filesystem::path outputFileName = AssetIO::assetDirectory / (Logger::getUniqueTimedId() + ".dds");
+	
+		HRESULT saveResult = DirectX::SaveToDDSFile(
+			cubemapImage.GetImages(),
+			cubemapImage.GetImageCount(),
+			cubemapImage.GetMetadata(),
+			DirectX::DDS_FLAGS_NONE,
+			outputFileName.c_str()
+		);
+
+		if (FAILED(saveResult)) {
+			Logger::error("Failed to bake irradiance map {}.", static_cast<unsigned int>(saveResult));
+		}
 	}
 }

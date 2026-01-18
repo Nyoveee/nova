@@ -148,10 +148,14 @@ public:
 	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
 	ENGINE_DLL_API void renderDebugSelectedObjects();
 
+
 	// first renders the scene with the given render function onto an intermediate framebuffer, then
 	// bakes it into a convoluted diffuse irradiance map.
 	// the scene is rendered 6 times.
 	ENGINE_DLL_API CubeMap bakeDiffuseIrradianceMap(std::function<void()> render);
+
+	// for specular irradiance map..
+	ENGINE_DLL_API CubeMap bakeSpecularIrradianceMap(std::function<void()> render);
 
 	// render first skybox in the scene, if any.
 	ENGINE_DLL_API void renderSkyBox();
@@ -161,9 +165,6 @@ public:
 
 	// renders skybox given an cubemap.
 	ENGINE_DLL_API void renderSkyBox(CubeMap const& cubemap);
-
-	// retrieves raw bytes of a given cube map, and a given face
-	// ENGINE_DLL_API std::unique_ptr<std::byte[]> getBytes(CubeMap const& cubemap, int face, int mipmapLevel, std::size_t size);
 
 public:
 	// =============================================
@@ -297,6 +298,9 @@ private:
 	// updates the camera UBO with camera information.
 	void updateCameraUBO(Camera const& camera);
 
+	// captures surrounding for baking irradiance maps..
+	CubeMap captureSurrounding(std::function<void()> render);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -381,6 +385,9 @@ private:
 
 	glm::mat4 UIProjection;
 
+	// BRDF Look Up Table, used for split sum approximation for specular IBL.
+	std::unique_ptr<Texture> BRDFLUT;
+
 private:
 	unsigned int numOfPtLights;
 
@@ -438,7 +445,8 @@ public:
 	Shader ssaoShader;
 	Shader gaussianBlurShader;
 
-	Shader bakeDiffuseIrradianceMapShader;
+	Shader bakeDiffuseIrradianceMapShader;	
+	Shader bakeSpecularIrradianceMapShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;

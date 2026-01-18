@@ -124,17 +124,18 @@ uniform float timeElapsed;
 uniform bool hasDirectionalLightShadowCaster;
 uniform vec3 directionalLightDir;
 
-
 // SSAO
 uniform bool toEnableSSAO;
 
 // IBL
 uniform bool toUseDiffuseIrradianceMap;
 
-layout(location = 0) uniform sampler2D directionalShadowMap;
-layout(location = 1) uniform sampler2D ssao;
-layout(location = 2) uniform sampler2DArray spotlightShadowMaps;
-layout(location = 3) uniform samplerCube diffuseIrradianceMap;
+uniform sampler2D directionalShadowMap;
+uniform sampler2D ssao;
+uniform sampler2D brdfLUT;
+uniform sampler2DArray spotlightShadowMaps;
+uniform samplerCube diffuseIrradianceMap;
+uniform samplerCube prefilterMap;
 
 layout (location = 0) out vec4 FragColor; 
 
@@ -223,20 +224,31 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     // Indirect lighting
     vec3 ambient = vec3(0);
 
-    // 1. IBL Diffuse
     if(toUseDiffuseIrradianceMap) {
-        vec3 viewDir    = normalize(cameraPosition - fsIn.fragWorldPos);
+        vec3 viewDir = normalize(cameraPosition - fsIn.fragWorldPos);
+        float NdotV = max(dot(normal, viewDir), 0.0);
 
+        vec3 R = reflect(-viewDir, normal);   
+
+        // Get specular and diffuse components respectively..
         vec3 F0         = vec3(0.04); // Dielectrics
         F0              = mix(F0, albedoColor, metallic);
 
-        vec3 kS         = fresnelSchlickRoughness(max(dot(normal, viewDir), 0.0), F0, roughness); 
+        vec3 kS         = fresnelSchlickRoughness(NdotV, F0, roughness); 
         vec3 kD         = vec3(1.0) - kS;
         kD              *= 1.0 - metallic;
         
+        // IBL Diffuse..
         vec3 irradiance = texture(diffuseIrradianceMap, normal).rgb;
         vec3 diffuse    = irradiance * albedoColor;
-        ambient         = (kD * diffuse); 
+
+        // IBL Specular..
+        const float MAX_REFLECTION_LOD = 4.0;
+        vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;  
+        vec2 envBRDF  = texture(brdfLUT, vec2(NdotV, roughness)).rg;
+        vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
+
+        ambient         = (kD * diffuse + specular); 
     }
     else {
         ambient = albedoColor * 0.07;
@@ -272,7 +284,7 @@ float ggxDistribution(float nDotH, float roughness)
     return alpha2 / max(PI * d * d, 0.00000001f);
 }
 
-// The Smith Masking-Shadowing Function describes the probability that microfacets with 
+// The Smith Masking-Shadowing Function describes th    e probability that microfacets with 
 // a given normal are visible from both the light direction and the view direction.
 //
 // Parameter is cosine of the angle between the normal vector and the view direction.

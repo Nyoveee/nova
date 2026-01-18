@@ -10,14 +10,18 @@
 
 #include <crtdbg.h>
 
-//constexpr const char*	windowName		= "Nova Engine";
 constexpr int			windowWidth		= 1200;
 constexpr int			windowHeight	= 900;
-//constexpr int			gameWidth		= 1920;
-//constexpr int			gameHeight		= 1080;
 
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
+	if (FAILED(hr)) {
+		Logger::error("Failed to initialize COM {}.", static_cast<unsigned int>(hr));
+		return -1;
+	}
 
 	GameConfig gameConfig = Serialiser::deserialiseGameConfig("gameConfig.json");
 
@@ -59,6 +63,4 @@ int main() {
 			engine.setupSimulation();
 		}
 	);
-
-
 }

@@ -114,6 +114,7 @@ void main() {
         float resolution = 1024.0; // resolution of source cubemap (per face)
         // with a higher resolution, we should sample coarser mipmap levels
         float saTexel = 4.0 * PI / (6.0 * resolution * resolution);
+        
         // as we take more samples, we can sample from a finer mipmap.
         // And places where H is more likely to be sampled (higher pdf) we
         // can use a finer mipmap, otherwise use courser mipmap.

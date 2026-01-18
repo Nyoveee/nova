@@ -11,6 +11,13 @@
                 "__variant_type": 4
             }
         },
+        "roughness": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
         "UVOffset": {
             "type": "vec2",
             "value": {
@@ -19,13 +26,6 @@
                     "y": 0.0
                 },
                 "__variant_type": 4
-            }
-        },
-        "roughness": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_value": 0.0,
-                "__variant_type": 12
             }
         },
         "emissiveStrength": {
@@ -66,7 +66,7 @@
         "occulusion": {
             "type": "NormalizedFloat",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 1.0,
                 "__variant_type": 12
             }
         },
@@ -74,6 +74,13 @@
             "type": "sampler2D",
             "value": {
                 "__variant_value": 17194603109256200217,
+                "__variant_type": 9
+            }
+        },
+        "packedMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 8547691824704847901,
                 "__variant_type": 9
             }
         },
@@ -86,13 +93,6 @@
                     "b": 1.0
                 },
                 "__variant_type": 10
-            }
-        },
-        "packedMap": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_value": 8547691824704847901,
-                "__variant_type": 9
             }
         },
         "normalMap": {
