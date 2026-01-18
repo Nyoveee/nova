@@ -1,18 +1,17 @@
 {
-    "RootEntity": 0,
-    "Entities": [
+    "entities": [
         {
             "EntityData": {
-                "name": "ChargerAttackHitBox",
-                "tag": "EnemyHitBox",
+                "name": "Entity 1",
+                "tag": "",
                 "parent": 4294967295,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 6206435736578506755,
+                "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 6206435736578506755
+                    "prefabID": 0
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -20,9 +19,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -57.42671203613281,
-                    "y": 9.510208129882813,
-                    "z": 5.290647983551025
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
                 "scale": {
                     "x": 1.0,
@@ -62,44 +61,35 @@
                     "z": 0.0
                 }
             },
-            "Rigidbody": {
-                "motionType": "Kinematic",
-                "layer": "Moving",
-                "motionQuality": "Discrete",
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "mass": 0.0,
-                "gravityMultiplier": 1.0,
-                "isRotatable": true,
-                "isTrigger": false,
-                "dynamicCollider": false,
-                "toScaleWithTransform": true
-            },
-            "BoxCollider": {
-                "shapeScale": {
-                    "x": 3.0,
-                    "y": 3.0,
-                    "z": 1.5
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
             },
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 16742835744522895361,
-                        "fields": null
+                        "scriptId": 17684044184081039377,
+                        "fields": [
+                            {
+                                "name": "audioList",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "index": 14
+                                    },
+                                    "__variant_type": 19
+                                }
+                            }
+                        ]
                     }
                 ]
             },
             "id": 0
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
         }
     ]
 }

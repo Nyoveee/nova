@@ -7,6 +7,7 @@
 #include <string>
 
 #include "type_alias.h"
+#include "audio.h"
 
 struct AudioComponent;
 
@@ -93,10 +94,10 @@ public:
 	void handleFinishedAudioInstance(FMOD::Channel* channel);
 
 public:
-	// this function is called from the scripting API.
-	ENGINE_DLL_API void playSFX(entt::entity entity, std::string soundName);
-	ENGINE_DLL_API void playBGM(entt::entity entity, std::string soundName);
-	ENGINE_DLL_API void stopSound(entt::entity entity, std::string soundName);
+	// These functions is called from the scripting API.
+	ENGINE_DLL_API void playSFX(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API void playBGM(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API void stopSound(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
 
 private:
 	FMOD::Sound* getSound(ResourceID audioId) const;

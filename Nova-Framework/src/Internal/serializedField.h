@@ -30,9 +30,9 @@ class Scene;
 #define ALL_FIELD_PRIMITIVES \
 		bool, int, float, double
 #endif
-
+// 15, 16, 17, 18
 #define ALL_TYPED_RESOURCE_ID \
-	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>, TypedResourceID<Scene>
+	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>, TypedResourceID<Scene>, TypedResourceID<Audio>
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \

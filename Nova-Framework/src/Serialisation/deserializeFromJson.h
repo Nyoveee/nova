@@ -162,7 +162,10 @@ inline void deserializeFromJson(T& dataMember, Json const& json) {
 		using DataMemberType = std::decay_t<decltype(dataMember)>;
 
 		if (json.contains(dataMemberName)) {
-			deserializeFromJson(dataMember, json[dataMemberName]);
+			try {
+				deserializeFromJson(dataMember, json[dataMemberName]);
+			}
+			catch(...){ }
 		}
 	}, dataMember);
 }

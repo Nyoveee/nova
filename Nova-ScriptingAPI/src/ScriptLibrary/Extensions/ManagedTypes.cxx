@@ -508,4 +508,16 @@ void Sequence_::play() {
 	nativeComponent()->isPlaying = true;
 }
 
+// ======================================
+// Audio
+// ======================================
+void AudioComponent_::PlaySound(ScriptingAPI::Audio^ audio){
+	Interface::engine->audioSystem.playSFX(Convert(gameObject), Convert(this), audio->getId());
+}
+void AudioComponent_::PlayBGM(ScriptingAPI::Audio^ audio) {
+	Interface::engine->audioSystem.playBGM(Convert(gameObject),Convert(this), audio->getId());
+}
+void AudioComponent_::StopSound(ScriptingAPI::Audio^ audio) {
+	Interface::engine->audioSystem.stopSound(Convert(gameObject), Convert(this), audio->getId());
+}
 

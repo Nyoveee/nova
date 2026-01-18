@@ -399,7 +399,7 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 	}
 	//ImGui::EndDisabled();
 }
-
+#if 0
 template<>
 inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& editor, const char*, std::unordered_map<std::string, AudioData>& dataMember) {
 	auto& audioDatas = dataMember;
@@ -471,7 +471,7 @@ inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& 
 	}
 	ImGui::EndChild();
 }
-
+#endif
 template<>
 inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const char*, ParticleEmissionTypeSelection& dataMember) {
 	DisplayProperty<ParticleEmissionTypeSelection::EmissionShape>(editor, "Emission Shape", dataMember.emissionShape);
