@@ -11,7 +11,6 @@ struct Particle{
     vec4 startColor;
     vec4 endColor;
     vec3 velocity;
-    vec3 direction;
     vec3 force;
     vec3 lightattenuation;
     float colorInterpolation;
@@ -37,8 +36,7 @@ layout(std430, binding = 4) buffer ParticleVertexList {
     ParticleVertex particleVertices[];
 };
 layout(std430, binding = 5) buffer ParticleList {
-    uint particleCount;
-    int newParticleIndex;
+    int particleCount;
     Particle particles[];
 };
 out vec4 color;

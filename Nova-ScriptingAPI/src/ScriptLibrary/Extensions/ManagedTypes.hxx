@@ -389,7 +389,8 @@ ManagedComponentEnd()
 
 #undef PlaySound
 ManagedComponentDeclaration(
-	AudioComponent
+	AudioComponent,
+	float, volume
 )
 void PlaySound(ScriptingAPI::Audio^ audio);
 void PlayBGM(ScriptingAPI::Audio^ audio);
