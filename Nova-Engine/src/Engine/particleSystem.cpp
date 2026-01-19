@@ -224,8 +224,8 @@ void ParticleSystem::determineParticleSpawnDetails(
 			RadiusEmitter& radiusEmitter{ emitter.particleEmissionTypeSelection.radiusEmitter };
 			ConeEmitter& coneEmitter{ emitter.particleEmissionTypeSelection.coneEmitter };
 			float radius = radiusEmitter.radius, distance = coneEmitter.distance;
-			float arc = Radian{ Degree{std::clamp(coneEmitter.arc, 0.f, 75.f)} };
-			float outerRadius = radius + coneEmitter.distance * std::sin(arc);
+			float arc = Radian{ Degree{std::clamp(coneEmitter.arc, 0.f, 90.f)} };
+			float outerRadius = radius + coneEmitter.distance * std::tan(arc);
 			// Other Details
 			float spawnRadius = RandomRange::Float(0, radius);
 			// Calculate the spawn to target Position
