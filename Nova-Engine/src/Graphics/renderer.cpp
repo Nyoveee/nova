@@ -170,10 +170,8 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	textVBO							{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	EBO								{ AMOUNT_OF_MEMORY_ALLOCATED },
 	
-	gameLights						{ MAX_NUMBER_OF_LIGHT },
-	editorLights					{ MAX_NUMBER_OF_LIGHT },
-	gameClusterSSBO					{ numClusters * sizeof(Cluster) },
-	editorClusterSSBO				{ numClusters * sizeof(Cluster) },
+	lightSSBO						{ MAX_NUMBER_OF_LIGHT },
+	clusterSSBO						{ numClusters * sizeof(Cluster) },
 	volumetricFogSSBO				{ static_cast<int>((gameWidth / VOLUMETRIC_FOG_DOWNSCALE) * (gameHeight / VOLUMETRIC_FOG_DOWNSCALE) * sizeof(VolumetricFogData))},
 									
 	cameraUBO						{ sizeof(CameraUBO) },
@@ -214,6 +212,12 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	toPostProcess					{ false },
 	UIProjection					{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
 {
+	// Setup baking camera once.. this camera is used for baking cubemaps..
+	bakingCamera.setFov(glm::radians(90.f));
+	bakingCamera.setNearPlaneDistance(0.1f);
+	bakingCamera.setAspectRatio(1.f);
+	bakingCamera.recalculateProjectionMatrix();
+
 	// Load the BRDF LUT from systems folder..
 	auto ptr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID, std::string{ "System/brdfLUT.dds" }).value()();
 	BRDFLUT.reset(static_cast<Texture*>(ptr.release()));
@@ -346,6 +350,18 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	// Volumetric Fog SSBO Configuration
 	// ======================================================
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 8, volumetricFogSSBO.id());
+
+	// ======================================================
+	// Light SSBO configuration
+	// ======================================================
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightSSBO.directionalLight.id());
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, lightSSBO.spotLight.id());
+
+	// ======================================================
+	// Cluster SSBO configuration
+	// ======================================================
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, clusterSSBO.id());
 }
 
 Renderer::~Renderer() {
@@ -423,7 +439,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 	case RenderMode::Editor:
 		// Main render function
 		if (isEditorScreenShown) {
-			render(editorMainFrameBuffer, editorCamera, editorLights, editorClusterSSBO);
+			render(editorMainFrameBuffer, editorCamera);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(editorMainFrameBuffer);
@@ -438,7 +454,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 		
 		// Main render function
 		if (isGameScreenShown)
-			render(gameMainFrameBuffer, gameCamera, gameLights, gameClusterSSBO);
+			render(gameMainFrameBuffer, gameCamera);
 
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
@@ -457,7 +473,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 	// ===============================================
 	case RenderMode::Game:
 		// Main render function
-		render(gameMainFrameBuffer, gameCamera, gameLights, gameClusterSSBO);
+		render(gameMainFrameBuffer, gameCamera);
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
 
@@ -521,7 +537,7 @@ void Renderer::renderUI()
 	glBindVertexArray(mainVAO);
 }
 
-void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO, BufferObject const& clusterSSBO) {
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
 
@@ -533,13 +549,13 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 
 	// Main function to handle shadow pass for all light types.. 
 	// We run a shadow pass first so we can pass shadow related data in prepareLights..
-	if(renderConfig.toEnableShadows) shadowPass(camera);
+	shadowPass(gameWidth, gameHeight);
 
 	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
-	prepareLights(camera, lightSSBO);
+	prepareLights();
 
 	// Prepare cluster forwarded rendering information..
-	clusterBuilding(camera, clusterSSBO);
+	clusterBuilding(camera);
 
 	// We are now ready to render the main scene, let's frustum cull our models..
 	frustumCullModels(camera.viewProjection());
@@ -596,7 +612,40 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 		computePostProcessing(frameBuffers, camera);
 		renderPostProcessing(frameBuffers);
 	}
-		
+}
+
+void Renderer::renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer) {
+	// We upload camera data to the UBO..
+	updateCameraUBO(camera);
+
+	// We perform frustum culling for lights, this is for our cluster building to minimize the number of lights involved.
+	frustumCullLight(camera.viewProjection());
+
+	// Main function to handle shadow pass for all light types.. 
+	// We run a shadow pass first so we can pass shadow related data in prepareLights..
+	if (renderConfig.toEnableShadows) shadowPass(IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT);
+
+	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
+	prepareLights();
+
+	// Prepare cluster forwarded rendering information..
+	clusterBuilding(camera);
+
+	// We are now ready to render the main scene, let's frustum cull our models..
+	frustumCullModels(camera.viewProjection());
+
+	// We setup, clear and bind to the correct framebuffer for rest of the rendering..
+	setupFramebuffer();
+
+	// W Skybox	.
+	renderSkyBox();
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	// We render individual game objects..
+	renderModels(camera);
+	renderSkinnedModels(camera);
 }
 
 void Renderer::renderToDefaultFBO() {
@@ -719,7 +768,7 @@ void Renderer::overlayUIToBuffer(PairFrameBuffer& target) {
 	glDisable(GL_BLEND);
 }
 
-void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
+void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 	glEnable(GL_CULL_FACE);
 
 	numOfSpotlightShadowCaster = 0;
@@ -734,6 +783,10 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 		}
 
 		light.shadowMapIndex = NO_SHADOW_MAP;
+
+		if (!renderConfig.toEnableShadows) {
+			continue;
+		}
 
 		// light not in camera frustum
 		if (!transform.inCameraFrustum) {
@@ -806,7 +859,7 @@ void Renderer::shadowPass([[maybe_unused]] Camera const& camera) {
 		}
 	}
 
-	glViewport(0, 0, gameWidth, gameHeight);
+	glViewport(0, 0, viewportWidth, viewportHeight);
 }
 
 void Renderer::depthPrePass(Camera const& camera) {
@@ -1324,6 +1377,8 @@ void Renderer::debugRenderBoundingVolume() {
 }
 
 void Renderer::debugRenderClusters() {
+	// i can't support it anymore..
+#if false
 	glBindVertexArray(mainVAO);
 	glVertexArrayVertexBuffer(mainVAO, 0, debugParticleShapeVBO.id(), 0, sizeof(glm::vec3));
 
@@ -1351,6 +1406,7 @@ void Renderer::debugRenderClusters() {
 	// because clusters are defined in view space, the inverse of the camera's view matrix brings clusters to world space. 
 	debugShader.setMatrix("model", glm::inverse(gameCamera.view()));	
 	glDrawArrays(GL_LINES, 0, 24 * numClusters);
+#endif
 }
 
 void Renderer::submitTriangle(glm::vec3 vertice1, glm::vec3 vertice2, glm::vec3 vertice3) {
@@ -1425,6 +1481,7 @@ void Renderer::prepareRendering() {
 
 void Renderer::renderSkyBox() {
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
 
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
@@ -2072,7 +2129,7 @@ void Renderer::setCullMode(CullingConfig configuration) {
 	}
 }
 
-void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& lightSSBO) {
+void Renderer::prepareLights() {
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
 	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
@@ -2150,11 +2207,6 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 		}
 	}
 
-	// prepare the light SSBOs. we bind light SSBO to binding point of 0, 1 & 2
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightSSBO.pointLight.id()); 
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lightSSBO.directionalLight.id());
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, lightSSBO.spotLight.id());
-
 	// Send it over to SSBO.
 	glNamedBufferSubData(lightSSBO.pointLight.id(), 0, sizeof(unsigned int), &numOfPtLights);	// copy the unsigned int representing number of lights into SSBO.
 	glNamedBufferSubData(lightSSBO.directionalLight.id(), 0, sizeof(unsigned int), &numOfDirLights);
@@ -2168,11 +2220,7 @@ void Renderer::prepareLights([[maybe_unused]] Camera const& camera, LightSSBO& l
 	glNamedBufferSubData(lightSSBO.spotLight.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
 }
 
-void Renderer::clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO) {
-#if 1
-	// we bind bones SSBO to 7.
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, clusterSSBO.id());
-
+void Renderer::clusterBuilding(Camera const& camera) {
 	// ===============================================
 	// 1. We first build the clusters AABB from screen space..
 	// ===============================================
@@ -2189,7 +2237,6 @@ void Renderer::clusterBuilding(Camera const& camera, BufferObject const& cluster
 
 	glDispatchCompute(27, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-#endif
 }
 
 Frustum Renderer::calculateCameraFrustum(glm::mat4 const& m) {
@@ -2482,6 +2529,38 @@ CubeMap Renderer::captureSurrounding(std::function<void()> render) {
 	return inputCubemap;
 }
 
+CubeMap Renderer::captureSurrounding(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
+	glm::mat4 captureViews[] = {
+	   glm::lookAt(position, position + glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(position, position + glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(position, position + glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+	   glm::lookAt(position, position + glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+	   glm::lookAt(position, position + glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+	   glm::lookAt(position, position + glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+	};
+
+	CubeMap inputCubemap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, 5 };
+
+	bakingCamera.setFarPlaneDistance(reflectionProbe.captureRadius);
+	// bakingCamera.setPos(position);
+
+	glViewport(0, 0, IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT);
+
+	for (unsigned int i = 0; i < 6; ++i) {
+		bakingCamera.setViewMatrix(captureViews[i]);
+		
+		renderCapturePass(bakingCamera, [&]() {
+			glBindFramebuffer(GL_FRAMEBUFFER, cubeMapFrameBuffer.fboId());
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, inputCubemap.getTextureId(), 0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		});
+	}
+
+	// automatically generates mipmap from the captured scene..
+	glGenerateTextureMipmap(inputCubemap.getTextureId());
+	return inputCubemap;
+}
+
 CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	CubeMap inputCubemap{ captureSurrounding(render) };
 
@@ -2570,8 +2649,17 @@ CubeMap Renderer::bakeSpecularIrradianceMap(std::function<void()> render) {
 		viewportHeight /= 2;
 	}
 
-
 	return outputCubemap;
+}
+
+CubeMap Renderer::bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
+	CubeMap inputCubeMap { captureSurrounding(reflectionProbe, position) };
+	return inputCubeMap;
+}
+
+CubeMap Renderer::bakeSpecularIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
+	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position) };
+	return inputCubeMap;
 }
 	
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
@@ -3182,6 +3270,7 @@ void Renderer::renderDebugSelectedObjects() {
 		Light const* light						= registry.try_get<Light>(entity);
 		NavMeshOffLinks const* navMeshOffLinks  = registry.try_get<NavMeshOffLinks>(entity);
 		CameraComponent const* cameraComponent	= registry.try_get<CameraComponent>(entity);
+		ReflectionProbe const* reflectionProbe	= registry.try_get<ReflectionProbe>(entity);
 
 		if (!transform) {
 			return;
@@ -3252,6 +3341,42 @@ void Renderer::renderDebugSelectedObjects() {
 			auto vertices = DebugShapes::CameraFrustumOutline(transform->position, gameCamera);
 			debugParticleShapeVBO.uploadData(vertices);
 			glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size()));
+		}
+
+		// Render reflection probe area
+		if (reflectionProbe) {
+			glm::mat4 model = glm::translate(glm::identity<glm::mat4>(), transform->position);
+			debugShader.setMatrix("model", model);
+
+			glm::vec3 boxMin = -reflectionProbe->boxExtents;
+			glm::vec3 boxMax = reflectionProbe->boxExtents;
+
+			// Draw AABB
+			auto vertices = DebugShapes::Cube(boxMin, boxMax);
+			debugParticleShapeVBO.uploadData(vertices);
+			glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(vertices.size()));
+
+			// Draw sphere..
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(reflectionProbe->captureRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(reflectionProbe->captureRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(reflectionProbe->captureRadius));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			// Draw probe position..
+			debugShader.setVec4("color", glm::vec4{ 1.0f, 0.f, 0.f, 1.0f });
+			model = glm::translate(model, reflectionProbe->centerOffset);
+			debugShader.setMatrix("model", model);
+
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXY(0.5f));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisXZ(0.5f));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+			debugParticleShapeVBO.uploadData(DebugShapes::SphereAxisYZ(0.5f));
+			glDrawArrays(GL_LINE_LOOP, 0, DebugShapes::NUM_DEBUG_CIRCLE_POINTS);
+
+			debugShader.setVec4("color", { 0.f, 1.0f, 1.0f, 1.0f });
 		}
 	}
 }

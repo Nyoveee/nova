@@ -3,6 +3,7 @@
 #include "PropertyDisplay/displayProperties.h"
 
 void displayLightComponent(Editor& editor, Light& dataMember);
+void displayReflectionProbeComponent(Editor& editor, ReflectionProbe& dataMember, Transform const& transform);
 
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
@@ -88,9 +89,13 @@ namespace {
 			ImGui::PushID(static_cast<int>(entity));
 			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
 
+			// light has it's own display light logic..
 			if constexpr (std::same_as<Component, Light>) {
-				// light has it's own display light logic..
 				displayLightComponent(editor, component);
+			}
+			// reflection probe has an extra bake button.. and some constraints..
+			else if constexpr (std::same_as<Component, ReflectionProbe>) {
+				displayReflectionProbeComponent(editor, component, registry.get<Transform>(entity));
 			}
 			else {
 				// Visits each of the component's data member and renders them.
@@ -106,7 +111,7 @@ namespace {
 					},
 				component);
 			}
-			
+
 			ImGui::PopID();
 			ImGui::PopID();
 		

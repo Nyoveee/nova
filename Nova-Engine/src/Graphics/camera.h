@@ -35,7 +35,6 @@ public:
 	glm::vec3	getRight() const;
 	glm::vec3	getUp() const;
 
-
 	void		setFov(Radian angle);
 	Radian		getFov() const;
 
@@ -45,7 +44,10 @@ public:
 	void		setFarPlaneDistance(float plane);
 	float		getFarPlaneDistance() const;
 
+	void		setAspectRatio(float aspectRatio);
 	float		getAspectRatio() const;
+
+	void		setViewMatrix(glm::mat4x4 const& viewMatrix);
 
 public:
 	// only calculate view and projection matrix at the end of game loop once, for optimisation.

@@ -71,7 +71,7 @@ public:
 	void renderUI();
 
 	// renders the main scene in the perspective of given camera. light storage is provided by lightSSBO.
-	void render(PairFrameBuffer& frameBuffers, Camera const& camera, LightSSBO& lightSSBO, BufferObject const& clusterSSBO);
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
 	
 	void renderToDefaultFBO();
 
@@ -80,7 +80,7 @@ public:
 	void overlayUIToBuffer(PairFrameBuffer& target);
 
 	// generates shadow maps for each light source..
-	void shadowPass(Camera const& camera);
+	void shadowPass(int viewportWidth, int viewportHeight);
 
 	// does a depth pre pass and populates the gbuffer for ssao generation.
 	void depthPrePass(Camera const& camera);
@@ -151,6 +151,9 @@ public:
 	// for specular irradiance map..
 	ENGINE_DLL_API CubeMap bakeSpecularIrradianceMap(std::function<void()> render);
 
+	ENGINE_DLL_API CubeMap bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position);
+	ENGINE_DLL_API CubeMap bakeSpecularIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position);
+
 	// render first skybox in the scene, if any.
 	ENGINE_DLL_API void renderSkyBox();
 
@@ -189,6 +192,9 @@ private:
 	// =============================================
 	// Private internal helper functions.
 	// =============================================
+
+	// renders object for the purpose of capturing into a cubemap..
+	void renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer);
 
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
@@ -264,10 +270,10 @@ private:
 	void frustumCullLight(glm::mat4 const& viewProjectionMatrix);
 
 	// upload lights into SSBO
-	void prepareLights(Camera const& camera, LightSSBO& lightSBBO);
+	void prepareLights();
 
 	// builds clusters information for clustered forward rendering..
-	void clusterBuilding(Camera const& camera, BufferObject const& clusterSSBO);
+	void clusterBuilding(Camera const& camera);
 
 	// Calculates the camera's frustum.
 	Frustum calculateCameraFrustum(glm::mat4 const& viewProjectionMatrix);
@@ -295,6 +301,9 @@ private:
 	// captures surrounding for baking irradiance maps..
 	CubeMap captureSurrounding(std::function<void()> render);
 
+	// captures surrounding via the POV of reflection probe.
+	CubeMap captureSurrounding(ReflectionProbe const& reflectionProbe, glm::vec3 const& position);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -316,11 +325,8 @@ private:
 	std::unordered_map<MeshID, MeshBOs> meshBOs; // VA 0 - 4
 
 	// SSBO and UBO.
-	LightSSBO gameLights;
-	LightSSBO editorLights;
-	
-	BufferObject gameClusterSSBO;
-	BufferObject editorClusterSSBO;
+	LightSSBO lightSSBO;
+	BufferObject clusterSSBO;
 
 	BufferObject cameraUBO;
 	BufferObject PBRUBO;
@@ -352,6 +358,7 @@ private:
 
 	Camera editorCamera;
 	Camera gameCamera;
+	Camera bakingCamera;
 
 	PairFrameBuffer editorMainFrameBuffer;
 	PairFrameBuffer gameMainFrameBuffer;

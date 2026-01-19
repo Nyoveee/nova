@@ -244,7 +244,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 
         // IBL Specular..
         const float MAX_REFLECTION_LOD = 4.0;
-        vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;  
+        vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;  
         vec2 envBRDF  = texture(brdfLUT, vec2(NdotV, roughness)).rg;
         vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
 

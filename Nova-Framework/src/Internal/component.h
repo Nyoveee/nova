@@ -45,7 +45,7 @@ class Sequencer;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, TranslucentMeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
-	Image, Sequence, Button, Canvas, NavMeshOffLinks, SkyboxCubeMap
+	Image, Sequence, Button, Canvas, NavMeshOffLinks, SkyboxCubeMap, ReflectionProbe
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -875,4 +875,24 @@ struct Button {
 		isInteractable = false;
 		state = Button::State::Disabled;
 	}
+};
+
+struct ReflectionProbe {
+	glm::vec3 boxExtents	= { 10.f, 10.f, 10.f };
+	glm::vec3 centerOffset	= {};
+
+	float captureRadius		= 20.f;
+	bool toCaptureShadow	= true;
+
+	TypedResourceID<CubeMap> irradianceMap				= { INVALID_RESOURCE_ID };
+	TypedResourceID<CubeMap> prefilteredEnvironmentMap	= { INVALID_RESOURCE_ID };
+
+	REFLECTABLE(
+		boxExtents,
+		centerOffset,
+		captureRadius,
+		toCaptureShadow,
+		irradianceMap,
+		prefilteredEnvironmentMap
+	)
 };
