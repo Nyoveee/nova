@@ -3,7 +3,7 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 
-class AudioListScriptTest : Script
+class AudioListScriptTest2 : Script
 {
     private AudioComponent_ audioComponent;
     public Audio audio;
@@ -11,12 +11,17 @@ class AudioListScriptTest : Script
     protected override void init()
     {
         audioComponent = getComponent<AudioComponent_>();
-        MapKey(Key._1, PlaySound1);
+        MapKey(Key._2, PlaySound);
+        MapKey(Key._3, StopSound);
     }
 
-    private void PlaySound1()
+    private void PlaySound()
     {
         audioComponent.PlaySound(audio);
+    }
+    private void StopSound()
+    {
+        audioComponent.StopSound(audio);
     }
 
 }

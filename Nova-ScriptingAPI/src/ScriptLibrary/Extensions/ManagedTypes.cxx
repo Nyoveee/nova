@@ -525,6 +525,6 @@ void AudioComponent_::PlayBGM(ScriptingAPI::Audio^ audio) {
 	Interface::engine->audioSystem.playBGM(Convert(gameObject),Convert(this), audio->getId());
 }
 void AudioComponent_::StopSound(ScriptingAPI::Audio^ audio) {
-	Interface::engine->audioSystem.stopSound(Convert(gameObject), Convert(this), audio->getId());
+	Interface::engine->audioSystem.stopSound(Convert(gameObject), audio->getId());
 }
 

@@ -66,12 +66,12 @@ public:
 
 	// Retrieves resourceID from the unorderedmap using filename
 	ENGINE_DLL_API ResourceID getResourceId(const std::string& string);
-
+#if 0
 	ENGINE_DLL_API void playSFX(ResourceID audioId, float x, float y, float z, float volume = 1.f);
 
 	// PlayBGM based on ResourceID audioId
 	ENGINE_DLL_API void playBGM(ResourceID audioId, float volume = 1.f);
-
+#endif
 	// Pause the sound of the sfx based on ResourceID audioId
 	ENGINE_DLL_API void pauseSound(ResourceID audioId, bool paused);
 
@@ -79,7 +79,7 @@ public:
 	ENGINE_DLL_API void StopAllAudio();
 
 	// Stops all currently playing audio files with ResourceID audioId
-	ENGINE_DLL_API void StopAudio(ResourceID audioId);
+	ENGINE_DLL_API void StopAudio(entt::entity entity, ResourceID audioId);
 
 	ENGINE_DLL_API void AdjustVol(ResourceID audioId, float volume);
 
@@ -97,7 +97,7 @@ public:
 	// These functions is called from the scripting API.
 	ENGINE_DLL_API void playSFX(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
 	ENGINE_DLL_API void playBGM(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
-	ENGINE_DLL_API void stopSound(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio);
+	ENGINE_DLL_API void stopSound(entt::entity entity, TypedResourceID<Audio> audio);
 
 private:
 	FMOD::Sound* getSound(ResourceID audioId) const;

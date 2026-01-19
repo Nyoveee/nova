@@ -256,7 +256,7 @@ ResourceID AudioSystem::getResourceId(const std::string& string) {
 
 	return INVALID_RESOURCE_ID;
 }
-
+#if 0
 void AudioSystem::playSFX(ResourceID id, float x, float y, float z, float volume)
 {
 	// Play the sound
@@ -287,7 +287,7 @@ void AudioSystem::playBGM(ResourceID id, float volume)
 		currentBGM = audioInstance;
 	}
 }
-
+#endif
 void AudioSystem::pauseSound(ResourceID audioId, bool paused)
 {
 	// Find all instances that were created from this audioId
@@ -314,13 +314,13 @@ void AudioSystem::StopAllAudio()
 	currentBGM = nullptr;
 }
 
-void AudioSystem::StopAudio(ResourceID audioId)
+void AudioSystem::StopAudio(entt::entity entity, ResourceID audioId)
 {
 	for (auto it = audioInstances.begin(); it != audioInstances.end(); )
 	{
 		auto& [instanceId, audioInstance] = *it;
 
-		if (audioInstance.audioId == audioId && audioInstance.channel)
+		if (audioInstance.entity == entity && audioInstance.audioId == audioId && audioInstance.channel)
 		{
 			audioInstance.channel->stop();
 			it = audioInstances.erase(it);
@@ -515,11 +515,11 @@ void AudioSystem::playSFX(entt::entity entity, AudioComponent* audioComponent, T
 
 	audioInstance->channel->setPaused(false);
 }
-void AudioSystem::stopSound(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio)
+void AudioSystem::stopSound(entt::entity entity, TypedResourceID<Audio> audio)
 {
 	if (audio == INVALID_RESOURCE_ID) {
 		Logger::error("Attempting to Stop Audio that doesn't exist");
 		return;
 	}
-	StopAudio(audio);
+	StopAudio(entity, audio);
 }
