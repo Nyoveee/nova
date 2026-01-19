@@ -393,6 +393,7 @@ ManagedComponentDeclaration(
 	float, volume
 )
 void PlaySound(ScriptingAPI::Audio^ audio);
+void PlayRandomSound(System::Collections::Generic::List<ScriptingAPI::Audio^>^ audio);
 void PlayBGM(ScriptingAPI::Audio^ audio);
 void StopSound(ScriptingAPI::Audio^ audio);
 

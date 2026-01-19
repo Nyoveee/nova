@@ -13,6 +13,7 @@ class AudioListScriptTest : Script
         audioComponent = getComponent<AudioComponent_>();
         MapKey(Key._1, PlaySound1);
         MapKey(Key._2, PlaySound2);
+        MapKey(Key._3, PlayRandomSound);
     }
 
     private void PlaySound1()
@@ -22,6 +23,10 @@ class AudioListScriptTest : Script
     private void PlaySound2()
     {
         audioComponent.PlaySound(audioList[1]);
+    }
+    private void PlayRandomSound()
+    {
+        audioComponent.PlayRandomSound(audioList);
     }
 
 }
