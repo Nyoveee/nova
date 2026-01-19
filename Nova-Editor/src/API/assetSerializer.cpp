@@ -9,6 +9,7 @@
 #include <DirectXTex/DirectXTex.h>
 
 namespace AssetSerializer {
+#if 0
 	void flipImageData(std::vector<float>& image, int width, int height, int components) {
 		int rowsToProcess = height / 2; // i want flooring here.
 		int rowStride = width * components;
@@ -35,12 +36,13 @@ namespace AssetSerializer {
 			std::memcpy(image.data() + topRowOffset, buffer.data(), sizeOfWidthInBytes);
 		}
 	}
+#endif
 
 	void serialiseCubeMap(CubeMap const& cubeMap) {
 		DirectX::ScratchImage cubemapImage;
 
 		HRESULT initialisationResult = cubemapImage.InitializeCube(
-			DXGI_FORMAT_R32G32B32_FLOAT,
+			DXGI_FORMAT_R16G16B16A16_FLOAT,
 			cubeMap.getWidth(),
 			cubeMap.getHeight(),
 			1,
@@ -57,7 +59,7 @@ namespace AssetSerializer {
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
 		static const std::string temporaryDirectory = ".temp";
-		constexpr int channels = 3; // RGB
+		constexpr int channels = 4; // RGBA
 
 		static const std::array<std::string, 6> cubemapFaceFileNames{
 			"positive_x",
@@ -75,25 +77,25 @@ namespace AssetSerializer {
 			for (std::size_t face = 0; face < 6; ++face) {
 
 				// 1. Allocate enough buffer to store result..
-				std::vector<float> buffer;
-				buffer.resize(width * height * channels);
+				std::vector<unsigned char> buffer;
+				buffer.resize(width * height * channels * 2);
 
 				// 2. Download only ONE face (depth = 1) at the correct Z-offset
 				glGetTextureSubImage(
 					cubeMap.getTextureId(),
-					mipmapLevel,							// mipmap level
-					0, 0, static_cast<GLint>(face),			// Z-offset is the face index
-					width, height, 1,						// Download 1 face at a time
-					GL_RGB,
-					GL_FLOAT,								// natively this cubemap is a HALF_FLoat, but stb requires 32 bit floating point.
-					static_cast<GLsizei>(buffer.size() * sizeof(float)),
+					mipmapLevel,								// mipmap level
+					0, 0, static_cast<GLint>(face),				// Z-offset is the face index
+					width, height, 1,							// Download 1 face at a time
+					GL_RGBA,
+					GL_HALF_FLOAT,								// this cubemap is a HALF_FLoat
+					static_cast<GLsizei>(buffer.size()),
 					buffer.data()
 				);
 
-				// Flip image in the y direction.
-				flipImageData(buffer, width, height, 3);
-
 				int faceToSave = face;
+#if 0
+				// Flip image in the y direction.
+				flipImageData(buffer, width, height, channels);
 
 				// we flip y face..
 				if (face == 2) {		// 2, POSITIVE_Y
@@ -102,10 +104,10 @@ namespace AssetSerializer {
 				else if (face == 3) {	// 3, NEGATIVE_Y
 					faceToSave = 2;		// 2, POSITIVE_Y
 				}
-
+#endif
 				// Copy data into directx subsection of the image..
 				DirectX::Image const* img = cubemapImage.GetImage(mipmapLevel, faceToSave, 0);
-				std::memcpy(img->pixels, buffer.data(), buffer.size() * sizeof(float));
+				std::memcpy(img->pixels, buffer.data(), buffer.size());
 			}
 
 			width /= 2;

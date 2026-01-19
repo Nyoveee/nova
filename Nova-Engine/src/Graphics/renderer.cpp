@@ -54,7 +54,7 @@ constexpr GLuint clearValue = std::numeric_limits<GLuint>::max();
 // 100 MB should be nothing right?
 constexpr int AMOUNT_OF_MEMORY_ALLOCATED = 100 * 1024 * 1024;
 
-// we allow a maximum of 10,000 triangle. (honestly some arbritary value lmao)
+// we allow a maximum of 100,000 triangle. (honestly some arbritary value lmao)
 constexpr int MAX_DEBUG_TRIANGLES = 100000;
 constexpr int MAX_DEBUG_LINES	  = 100000;
 constexpr int AMOUNT_OF_MEMORY_FOR_DEBUG = MAX_DEBUG_TRIANGLES * 3 * sizeof(glm::vec3);
@@ -78,12 +78,14 @@ constexpr int SHADOW_MAP_WIDTH				= 1024;
 constexpr int SHADOW_MAP_HEIGHT				= 1024;
 constexpr int MAX_SPOTLIGHT_SHADOW_CASTER	= 15;
 
-// Irradiance map
+// IBL.
 constexpr int IRRADIANCE_MAP_WIDTH			= 512;
 constexpr int IRRADIANCE_MAP_HEIGHT			= 512;
 
 constexpr int DIFFUSE_IRRADIANCE_MAP_WIDTH	= 64;
 constexpr int DIFFUSE_IRRADIANCE_MAP_HEIGHT = 64;
+
+constexpr int MAX_REFLECTION_PROBES			= 30;
 
 // For Volumetric Fog
 constexpr int VOLUMETRIC_FOG_DOWNSCALE 		= 4;
@@ -94,10 +96,14 @@ constexpr int VOLUMETRIC_FOG_DOWNSCALE 		= 4;
 struct alignas(16) Cluster {
 	glm::vec4 minPoint;
 	glm::vec4 maxPoint;
+
 	unsigned int pointLightCount;
 	unsigned int spotLightCount;
+	unsigned int reflectionProbeCount;
+
 	unsigned int pointLightIndices[25];
 	unsigned int spotLightIndices[25];
+	unsigned int reflectionProbeIndices[4];
 };
 
 // this struct is used to represent the memory layout of the CameraUBO, location = 0.
@@ -116,6 +122,22 @@ struct alignas(16) CameraUBO {
 // this struct is used to represent the memory layout of the PBRUBO, location = 2.
 struct alignas(16) PBR_UBO {
 	glm::vec4 ssaoKernels[64];
+};
+
+// these are in world space..
+struct alignas(16) ReflectionProbeUBOData {
+	alignas(16) glm::vec3 worldMin;
+	alignas(16) glm::vec3 worldMax;
+	alignas(16) glm::vec3 viewMin;
+	alignas(16) glm::vec3 viewMax;
+	alignas(16) glm::vec3 worldProbePosition;
+				int		  indexToProbeArray;
+};
+
+// this struct is used to represent the memory layout of the ReflectionProbeUBO, location = 3.
+struct alignas(16) ReflectionProbeUBO {
+	unsigned int numOfReflectionProbes;
+	ReflectionProbeUBOData reflectionProbes[MAX_REFLECTION_PROBES];
 };
 
 #pragma warning( pop )
@@ -176,6 +198,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 									
 	cameraUBO						{ sizeof(CameraUBO) },
 	PBRUBO							{ sizeof(PBR_UBO) },
+	reflectionProbesUBO				{ sizeof(ReflectionProbeUBO) },
 
 									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
 	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
@@ -191,6 +214,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	directionalLightViewMatrix		{},
 	directionalLightDir				{},
 	numOfSpotlightShadowCaster		{},
+	numOfLoadedReflectionProbe		{},
 	timeElapsed						{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	hdrExposure						{ 0.9f },
@@ -208,6 +232,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	directionalLightShadowFBO		{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
 	shadowFBO						{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
 	spotlightShadowMaps				{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT, GL_DEPTH_COMPONENT32F, MAX_SPOTLIGHT_SHADOW_CASTER },
+	loadedReflectionProbesMap		{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, MAX_REFLECTION_PROBES, 5 },
 	toGammaCorrect					{ true },
 	toPostProcess					{ false },
 	UIProjection					{ glm::ortho(0.0f, static_cast<float>(gameWidth), 0.0f, static_cast<float>(gameHeight)) }
@@ -242,6 +267,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, cameraUBO.id());
 	glBindBufferBase(GL_UNIFORM_BUFFER, 1, shadowCasterMatrixes.id());
 	glBindBufferBase(GL_UNIFORM_BUFFER, 2, PBRUBO.id());
+	glBindBufferBase(GL_UNIFORM_BUFFER, 3, reflectionProbesUBO.id());
 
 	// we bind bones SSBO to 3.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
@@ -554,6 +580,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
 	prepareLights();
 
+	// We prepare our reflection probes as well, setting up it's UBO..
+	prepareReflectionProbes(camera);
+
 	// Prepare cluster forwarded rendering information..
 	clusterBuilding(camera);
 
@@ -628,6 +657,11 @@ void Renderer::renderCapturePass(Camera const& camera, std::function<void()> set
 	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
 	prepareLights();
 
+	// We DO NOT want to capture other reflection probes.. (i think?)
+	// prepareReflectionProbes(camera);
+	static constexpr int numOfReflectionProbes = 0;
+	glNamedBufferSubData(reflectionProbesUBO.id(), 0, sizeof(unsigned int), &numOfReflectionProbes);
+		
 	// Prepare cluster forwarded rendering information..
 	clusterBuilding(camera);
 
@@ -1106,6 +1140,10 @@ void Renderer::initialiseSSAO() {
 	glTextureParameteri(ssaoNoiseTextureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	glTextureSubImage2D(ssaoNoiseTextureId, 0, 0, 0, 4, 4, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+}
+
+void Renderer::resetLoadedReflectionProbes() {
+	numOfLoadedReflectionProbe = 0;
 }
 
 void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
@@ -2220,6 +2258,70 @@ void Renderer::prepareLights() {
 	glNamedBufferSubData(lightSSBO.spotLight.id(), alignof(SpotLightData), numOfSpotLights * sizeof(SpotLightData), spotLightData.data());
 }
 
+void Renderer::prepareReflectionProbes(Camera const& camera) {
+	std::array<ReflectionProbeUBOData, MAX_REFLECTION_PROBES> reflectionProbes;
+
+	unsigned int numOfReflectionProbes = 0;
+
+	// Only populate reflection probe UBO if enabled..
+	for (auto&& [entity, transform, entityData, reflectionProbe] : registry.view<Transform, EntityData, ReflectionProbe>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<ReflectionProbe>(entity)) {
+			continue;
+		}
+
+		// @TODO: Frustum cull..
+		// if(...)
+
+		// load reflection probe into cubemap array if not loaded..
+		if (reflectionProbe.indexToCubeMapArray == NOT_LOADED) {
+			auto&& [prefilteredEnvironmentMap, _] = resourceManager.getResource<CubeMap>(reflectionProbe.prefilteredEnvironmentMap);
+
+			if (prefilteredEnvironmentMap && numOfLoadedReflectionProbe < MAX_REFLECTION_PROBES) {
+				reflectionProbe.indexToCubeMapArray = numOfLoadedReflectionProbe++;
+				loadReflectionProbe(reflectionProbe, *prefilteredEnvironmentMap);
+			}
+			else {
+				// invalid reflection probe.	
+				continue;
+			}
+		}
+#if 1
+		// https://stackoverflow.com/questions/6053522/how-to-recalculate-axis-aligned-bounding-box-after-translate-rotate/58630206#58630206
+		// Arvo's method
+		// Build absolute matrix
+		glm::mat3 rotationMatrix { camera.view() };
+		glm::mat3 absoluteRotation = glm::mat3(
+			glm::abs(rotationMatrix[0]),
+			glm::abs(rotationMatrix[1]),
+			glm::abs(rotationMatrix[2])
+		);
+
+		// Transform extents and position..
+		glm::vec3 viewExtents	= absoluteRotation * reflectionProbe.boxExtents;
+		glm::vec3 viewPos		= camera.view() * glm::vec4(transform.position, 1.0f);
+#endif
+
+		// We calculate world position for these reflection probes..
+		reflectionProbes[numOfReflectionProbes] = ReflectionProbeUBOData{
+			transform.position - reflectionProbe.boxExtents,	// worldMin
+			transform.position + reflectionProbe.boxExtents,	// worldMax
+			viewPos			   - viewExtents,					// viewMin
+			viewPos			   + viewExtents,					// viewMax
+			transform.position + reflectionProbe.centerOffset,	// world probe's position
+			reflectionProbe.indexToCubeMapArray
+		};
+
+		++numOfReflectionProbes;
+
+		if (numOfReflectionProbes >= MAX_REFLECTION_PROBES) {
+			break;
+		}
+	}
+
+	glNamedBufferSubData(reflectionProbesUBO.id(), 0, sizeof(unsigned int), &numOfReflectionProbes);
+	glNamedBufferSubData(reflectionProbesUBO.id(), alignof(ReflectionProbeUBOData), numOfReflectionProbes * sizeof(ReflectionProbeUBOData), reflectionProbes.data());
+}
+
 void Renderer::clusterBuilding(Camera const& camera) {
 	// ===============================================
 	// 1. We first build the clusters AABB from screen space..
@@ -2561,9 +2663,44 @@ CubeMap Renderer::captureSurrounding(ReflectionProbe const& reflectionProbe, glm
 	return inputCubemap;
 }
 
+void Renderer::loadReflectionProbe(ReflectionProbe const& reflectionProbe, CubeMap const& reflectionProbePrefilteredMap) {
+	for (int level = 0; level < reflectionProbePrefilteredMap.getMipmap(); ++level) {
+		int mipWidth = std::max(1, reflectionProbePrefilteredMap.getWidth() >> level);
+		int mipHeight = std::max(1, reflectionProbePrefilteredMap.getHeight() >> level);
+
+		for (int face = 0; face < 6; ++face) {
+			glCopyImageSubData(
+				reflectionProbePrefilteredMap.getTextureId(), GL_TEXTURE_CUBE_MAP, level, 0, 0, face,												// SOURCE
+				loadedReflectionProbesMap.getTextureId(), GL_TEXTURE_CUBE_MAP_ARRAY, level, 0, 0, reflectionProbe.indexToCubeMapArray * 6 + face,	// DESTINATION
+				mipWidth, mipHeight, 1																												// One face at a time.
+			);
+		}
+	}
+	Logger::debug("Loaded reflection probe, index {}.", reflectionProbe.indexToCubeMapArray);
+}
+
+
 CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	CubeMap inputCubemap{ captureSurrounding(render) };
+	return convoluteIrradianceMap(inputCubemap);
+}
 
+CubeMap Renderer::bakeSpecularIrradianceMap(std::function<void()> render) {
+	CubeMap inputCubemap{ captureSurrounding(render) };
+	return convolutePrefilteredEnvironmentMap(inputCubemap);
+}
+
+CubeMap Renderer::bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
+	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position) };
+	return convoluteIrradianceMap(inputCubeMap);
+}
+
+CubeMap Renderer::bakeSpecularIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
+	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position) };
+	return convolutePrefilteredEnvironmentMap(inputCubeMap);
+}
+
+CubeMap Renderer::convoluteIrradianceMap(CubeMap const& inputCubemap) {
 	static const glm::mat4 captureViews[] = {
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -2598,9 +2735,7 @@ CubeMap Renderer::bakeDiffuseIrradianceMap(std::function<void()> render) {
 	return outputCubemap;
 }
 
-CubeMap Renderer::bakeSpecularIrradianceMap(std::function<void()> render) {
-	CubeMap inputCubemap{ captureSurrounding(render) };
-
+CubeMap Renderer::convolutePrefilteredEnvironmentMap(CubeMap const& inputCubemap) {
 	static const glm::mat4 captureViews[] = {
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 	   glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -2650,16 +2785,6 @@ CubeMap Renderer::bakeSpecularIrradianceMap(std::function<void()> render) {
 	}
 
 	return outputCubemap;
-}
-
-CubeMap Renderer::bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
-	CubeMap inputCubeMap { captureSurrounding(reflectionProbe, position) };
-	return inputCubeMap;
-}
-
-CubeMap Renderer::bakeSpecularIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
-	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position) };
-	return inputCubeMap;
 }
 	
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
@@ -3067,6 +3192,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 			shader.setBool("toUseDiffuseIrradianceMap", false);
 		}
 
+		glBindTextureUnit(6, loadedReflectionProbesMap.getTextureId());
+		shader.setImageUniform("reflectionProbesPrefilterMap", 6);
 	}
 
 	// both pipeline requires these to be set..
@@ -3084,8 +3211,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	glBindTextureUnit(0, directionalLightShadowFBO.textureId());
 	shader.setImageUniform("directionalShadowMap", 0);
 
-	// We reserve the very first 5 texture unit for PBR required textures..
-	int numOfTextureUnitBound = 6;
+	// We reserve the very first 6 texture unit for PBR required textures..
+	int numOfTextureUnitBound = 7;
 	
 	setupCustomShaderUniforms(shader, material, numOfTextureUnitBound);
 
@@ -3132,7 +3259,7 @@ CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transf
 	shader.setFloat("toOutputNormal", true);
 
 	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.
-	setupCustomShaderUniforms(shader, material, 6);
+	setupCustomShaderUniforms(shader, material, 7);
 
 	// Use the shader
 	shader.use();

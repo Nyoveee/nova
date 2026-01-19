@@ -3,28 +3,6 @@
 #include "PropertyDisplay/displayProperties.h"
 #include "API/assetSerializer.h"
 
-/*
-struct ReflectionProbe {
-	glm::vec3 boxMin;
-	glm::vec3 boxMax;
-	glm::vec3 probePosition;
-
-	float captureRadius;
-
-	TypedResourceID<CubeMap> irradianceMap;
-	TypedResourceID<CubeMap> prefilteredEnvironmentMap;
-
-	REFLECTABLE(
-		boxMin,
-		boxMax,
-		probePosition,
-		captureRadius,
-		irradianceMap,
-		prefilteredEnvironmentMap
-	)
-};
-*/
-
 void displayReflectionProbeComponent(Editor& editor, ReflectionProbe& reflectionProbe, Transform const& transform) {
 	DisplayProperty<glm::vec3>(editor, "Box extents", reflectionProbe.boxExtents);
 	DisplayProperty<glm::vec3>(editor, "Probe position offset", reflectionProbe.centerOffset);
@@ -52,6 +30,6 @@ void displayReflectionProbeComponent(Editor& editor, ReflectionProbe& reflection
 	DisplayProperty<TypedResourceID<CubeMap>>(editor, "Prefiltered environment map", reflectionProbe.prefilteredEnvironmentMap);
 
 	if (ImGui::	Button("Bake")) {
-		AssetSerializer::serialiseCubeMap(editor.engine.renderer.bakeDiffuseIrradianceMap(reflectionProbe, transform.position));
+		AssetSerializer::serialiseCubeMap(editor.engine.renderer.bakeSpecularIrradianceMap(reflectionProbe, transform.position));
 	}
 }	

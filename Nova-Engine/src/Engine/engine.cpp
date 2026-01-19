@@ -269,6 +269,7 @@ void Engine::SystemsUnload() {
 
 	renderer.hdrExposure = 0.9f;
 	renderer.vignette = 0.f;
+	renderer.resetLoadedReflectionProbes();
 }
 
 void Engine::quit() {

@@ -39,8 +39,10 @@ struct Cluster
     vec4 maxPoint;
     uint pointLightCount;
     uint spotLightCount;
+    uint reflectionProbesCount;
     uint pointLightIndices[25];
     uint spotLightIndices[25];
+    uint reflectionProbesIndices[4];
 };
 
 struct PointLight{
@@ -69,6 +71,15 @@ struct SpotLight {
     int shadowMapIndex;
 };
 
+struct ReflectionProbe {
+	vec3 worldMin;
+	vec3 worldMax;
+    vec3 viewMin;
+	vec3 viewMax;
+    vec3 worldProbePosition;
+    int indexToProbeArray;
+};
+
 const int MAX_SHADOW_CASTER = 15;
 
 layout(std140, binding = 0) uniform Camera {
@@ -90,6 +101,11 @@ layout(std140, binding = 1) uniform ShadowCasterMatrixes {
 
 layout(std140, binding = 2) uniform PBRUBO {
     vec4 samples[64];
+};
+
+layout(std140, binding = 3) uniform ReflectionProbes {
+    uint reflectionProbesCount;
+    ReflectionProbe reflectionProbes[30];
 };
 
 layout(std430, binding = 0) buffer PointLights {
@@ -136,6 +152,7 @@ uniform sampler2D brdfLUT;
 uniform sampler2DArray spotlightShadowMaps;
 uniform samplerCube diffuseIrradianceMap;
 uniform samplerCube prefilterMap;
+uniform samplerCubeArray reflectionProbesPrefilterMap;
 
 layout (location = 0) out vec4 FragColor; 
 
@@ -174,6 +191,8 @@ float directionalShadowCalculation  (sampler2D shadowMap, vec4 fragmentLightPos)
 float spotlightShadowCalculation    (sampler2DArray spotlightShadowMaps, int shadowMapIndex, vec4 fragmentLightPos);
 float getShadowFactor               (int lightShadowIndex);
 Cluster getCluster                  ();
+
+vec3 getPrefilteredColor            (Cluster cluster, float roughness, vec3 reflectDir);
 
 // =================================================================================
 // IMPLEMENTATION DETAILS.
@@ -228,7 +247,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         vec3 viewDir = normalize(cameraPosition - fsIn.fragWorldPos);
         float NdotV = max(dot(normal, viewDir), 0.0);
 
-        vec3 R = reflect(-viewDir, normal);   
+        vec3 reflectDir = reflect(-viewDir, normal);   
 
         // Get specular and diffuse components respectively..
         vec3 F0         = vec3(0.04); // Dielectrics
@@ -243,9 +262,8 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         vec3 diffuse    = irradiance * albedoColor;
 
         // IBL Specular..
-        const float MAX_REFLECTION_LOD = 4.0;
-        vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;  
         vec2 envBRDF  = texture(brdfLUT, vec2(NdotV, roughness)).rg;
+        vec3 prefilteredColor = getPrefilteredColor(cluster, roughness, reflectDir);  
         vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
 
         ambient         = (kD * diffuse + specular); 
@@ -501,6 +519,43 @@ float getShadowFactor(int lightShadowIndex) {
     vec4 fragmentLightPos = shadowCasterMatrix[lightShadowIndex] * vec4(fsIn.fragWorldPos, 1);
 
     return spotlightShadowCalculation(spotlightShadowMaps, lightShadowIndex, fragmentLightPos);
+}
+
+bool is_within_range(vec3 value, vec3 min_val, vec3 max_val) {
+    // Check if all components of 'value' are >= all components of 'min_val'
+    bvec3 greater_than_min = greaterThanEqual(value, min_val);
+
+    // Check if all components of 'value' are <= all components of 'max_val'
+    bvec3 less_than_max = lessThanEqual(value, max_val);
+
+    // Return true only if both conditions are true for ALL components
+    return all(greater_than_min) && all(less_than_max);
+}
+
+// IBL, Reflection probe
+vec3 getPrefilteredColor(Cluster cluster, float roughness, vec3 reflectDir) {
+    const float MAX_REFLECTION_LOD = 4.0;
+
+    int indexToReflectionProbeMap = -1;
+
+    // @TODO: Blending..
+    for(uint i = 0; i < cluster.reflectionProbesCount; ++i) {
+        ReflectionProbe reflectionProbe = reflectionProbes[cluster.reflectionProbesIndices[i]];
+        
+        if(is_within_range(fsIn.fragWorldPos, reflectionProbe.worldMin, reflectionProbe.worldMax)) {
+            indexToReflectionProbeMap = reflectionProbe.indexToProbeArray;
+            break;
+        }
+    }
+    
+    // not near any local IBL..
+    if(indexToReflectionProbeMap == -1) {
+        return textureLod(prefilterMap, reflectDir, roughness * MAX_REFLECTION_LOD).rgb;
+    }
+    else {
+        // Appropriately calculate the reflected vector..
+        return textureLod(reflectionProbesPrefilterMap, vec4(reflectDir, indexToReflectionProbeMap), roughness * MAX_REFLECTION_LOD).rgb;
+    }
 }
 
 // User shader entry point.

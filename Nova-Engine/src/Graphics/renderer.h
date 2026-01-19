@@ -21,6 +21,7 @@
 #include "bloomFrameBuffer.h"
 #include "depthFrameBuffer.h"
 #include "texture2dArray.h"
+#include "cubemapArray.h"
 
 #include "model.h"
 
@@ -91,6 +92,9 @@ public:
 	// initialise the sample kernel and noise texture used in SSAO
 	void initialiseSSAO();
 
+	// when changing scene, mark all reflection probes as unloaded.
+	void resetLoadedReflectionProbes();
+
 public:
 	// =============================================
 	// Public facing API.
@@ -137,6 +141,7 @@ public:
 	// UI projection
 	ENGINE_DLL_API const glm::mat4& getUIProjection() const;
 	ENGINE_DLL_API void randomiseChromaticAberrationoffset();
+
 
 public:
 	// Editor rendering..
@@ -272,6 +277,10 @@ private:
 	// upload lights into SSBO
 	void prepareLights();
 
+	// upload reflection probes into UBO
+	// pass in disable to set reflection probe to 0.
+	void prepareReflectionProbes(Camera const& camera);
+
 	// builds clusters information for clustered forward rendering..
 	void clusterBuilding(Camera const& camera);
 
@@ -304,6 +313,14 @@ private:
 	// captures surrounding via the POV of reflection probe.
 	CubeMap captureSurrounding(ReflectionProbe const& reflectionProbe, glm::vec3 const& position);
 
+	// load a reflection probe's cube map to cube maparray if not loaded..
+	// this function assumes a valid index has already been assigned to reflection probe.
+	void loadReflectionProbe(ReflectionProbe const& reflectionProbe, CubeMap const& reflectionProbePrefilteredMap);
+
+	// Convolutes the respective IBL maps..
+	CubeMap convoluteIrradianceMap(CubeMap const& inputCubemap);
+	CubeMap convolutePrefilteredEnvironmentMap(CubeMap const& inputCubemap);
+
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -330,6 +347,7 @@ private:
 
 	BufferObject cameraUBO;
 	BufferObject PBRUBO;
+	BufferObject reflectionProbesUBO;
 
 	// Skeletal animation, bones SSBO
 	BufferObject bonesSSBO;
@@ -372,6 +390,8 @@ private:
 	DepthFrameBuffer shadowFBO; // smaller than directionalLight
 	Texture2DArray spotlightShadowMaps;
 
+	CubeMapArray loadedReflectionProbesMap;
+
 	// contains all physics debug rendering..
 	FrameBuffer uiMainFrameBuffer;
 	FrameBuffer physicsDebugFrameBuffer;
@@ -411,6 +431,7 @@ private:
 	glm::vec3 directionalLightDir;
 	
 	int numOfSpotlightShadowCaster;
+	int numOfLoadedReflectionProbe;
 
 public:
 	RenderConfig renderConfig;

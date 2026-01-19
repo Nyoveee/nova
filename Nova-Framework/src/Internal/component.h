@@ -56,6 +56,7 @@ using MeshIndex	= int;
 #include "serializedField.h"
 
 constexpr int NO_SHADOW_MAP = -1;
+constexpr int NOT_LOADED = -1;
 
 enum class InterpolationType : unsigned int {
 	Root,
@@ -895,4 +896,6 @@ struct ReflectionProbe {
 		irradianceMap,
 		prefilteredEnvironmentMap
 	)
+
+	int indexToCubeMapArray = NOT_LOADED;
 };

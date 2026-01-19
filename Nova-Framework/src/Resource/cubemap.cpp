@@ -85,7 +85,7 @@ CubeMap::CubeMap(int width, int height, int mipmapLevel) :
 	mipmapLevels	{ mipmapLevel }
 {
 	glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureId);
-	glTextureStorage2D(textureId, mipmapLevel, GL_RGB16F, width, height);
+	glTextureStorage2D(textureId, mipmapLevel, GL_RGBA16F, width, height);
 
 	glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

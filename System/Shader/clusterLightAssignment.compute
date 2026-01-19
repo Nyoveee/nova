@@ -11,8 +11,10 @@ struct Cluster
     vec4 maxPoint;
     uint pointLightCount;
     uint spotLightCount;
+    uint reflectionProbesCount;
     uint pointLightIndices[25];
     uint spotLightIndices[25];
+    uint reflectionProbesIndices[4];
 };
 
 layout(std430, binding = 7) buffer clusterSSBO
@@ -44,6 +46,15 @@ struct SpotLight {
     float radius;
 };
 
+struct ReflectionProbe {
+	vec3 worldMin;
+	vec3 worldMax;
+    vec3 viewMin;
+	vec3 viewMax;
+    vec3 worldProbePosition;
+    int indexToProbeArray;
+};
+
 layout(std430, binding = 0) buffer PointLights {
     uint pointLightCount;
     PointLight pointLights[];
@@ -62,6 +73,18 @@ layout(std430, binding = 2) buffer SpotLights {
 layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
+    mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
+
+layout(std140, binding = 3) uniform ReflectionProbes {
+    uint reflectionProbesCount;
+    ReflectionProbe reflectionProbes[30];
 };
 
 bool sphereAABBIntersection(vec3 center, float radius, vec3 aabbMin, vec3 aabbMax) {
@@ -70,6 +93,16 @@ bool sphereAABBIntersection(vec3 center, float radius, vec3 aabbMin, vec3 aabbMa
     // squared distance between the sphere center and closest point
     float distanceSquared = dot(closestPoint - center, closestPoint - center);
     return distanceSquared <= radius * radius;
+}
+
+bool AABBIntersection(vec3 aabbMin1, vec3 aabbMax1, vec3 aabbMin2, vec3 aabbMax2) {
+    // Check for separation along X, Y, Z axes
+    if (aabbMax1.x < aabbMin2.x || aabbMin1.x > aabbMax2.x) return false;
+    if (aabbMax1.y < aabbMin2.y || aabbMin1.y > aabbMax2.y) return false;
+    if (aabbMax1.z < aabbMin2.z || aabbMin1.z > aabbMax2.z) return false;
+
+    // No separation found
+    return true;
 }
 
 // each invocation of main() is a thread processing a cluster
@@ -103,6 +136,20 @@ void main() {
         if(sphereAABBIntersection(viewPos, spotLights[i].radius, cluster.minPoint.xyz, cluster.maxPoint.xyz)){
             cluster.spotLightIndices[cluster.spotLightCount] = i;
             cluster.spotLightCount++;
+        }
+    }
+
+    // We now deal with reflection probes.. xD
+    cluster.reflectionProbesCount = 0;
+
+    for (uint i = 0; i < reflectionProbesCount && cluster.reflectionProbesCount < 4; ++i) {
+        // Get reflection probe..
+        ReflectionProbe reflectionProbe = reflectionProbes[i];
+
+        // Check if the reflection probe AABB intersect with cluster AABB..
+        if(AABBIntersection(reflectionProbe.viewMin, reflectionProbe.viewMax, cluster.minPoint.xyz, cluster.maxPoint.xyz)){
+            cluster.reflectionProbesIndices[cluster.reflectionProbesCount] = i;
+            cluster.reflectionProbesCount++;
         }
     }
 
