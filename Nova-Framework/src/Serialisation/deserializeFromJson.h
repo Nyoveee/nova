@@ -276,6 +276,11 @@ inline void deserializeFromJson<ControllerNodeID>(ControllerNodeID& dataMember, 
 	dataMember = static_cast<ControllerNodeID>(static_cast<std::size_t>(json));
 }
 
+template<>
+inline void deserializeFromJson<FieldEnum>(FieldEnum& datamember, Json const& json) {
+	datamember.type = json["Type"];
+	datamember.value = json["Value"];
+}
 #if 0
 template<>
 inline void deserializeFromJson(std::unordered_map<MaterialName, Material>& dataMember) {

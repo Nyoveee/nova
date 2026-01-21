@@ -18,6 +18,9 @@ inline entt::entity Convert(GameObject^ gameObject) {
 inline std::string Convert(System::String^ str) {
 	return msclr::interop::marshal_as<std::string>(str);
 }
+inline System::String^ Convert(std::string str) {
+	return msclr::interop::marshal_as<System::String^>(str);
+}
 
 // Event Callback
 public delegate void EventCallback();

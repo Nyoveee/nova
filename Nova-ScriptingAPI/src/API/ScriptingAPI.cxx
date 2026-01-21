@@ -54,6 +54,8 @@ void Interface::init(Engine& p_engine, const char* p_runtimePath)
 	timeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
 	executeTimeoutDelegates = gcnew System::Collections::Generic::List<TimeoutDelegate^>();
 	abstractScriptTypes = gcnew System::Collections::Generic::Dictionary<ScriptID, System::Type^>();
+	enumTypeNamesToValues = gcnew System::Collections::Generic::Dictionary<System::String^, array<System::String^>^>();
+	enumTypes = gcnew System::Collections::Generic::Dictionary<System::String^, System::Type^>();
 
 	assemblyLoadContext = nullptr;
 }
@@ -223,14 +225,16 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 				serialized_field_type sampleVariant;
 				getScriptFieldData(System::Activator::CreateInstance(elementType), elementType, sampleVariant);
 				listOfSerializedFields.setIndex(static_cast<int>(sampleVariant.index()));
-				
+				if (elementType->IsEnum)
+					listOfSerializedFields.setEnumType(Convert(elementType->Name));
+
 				// not an empty list..
 				if (genericList) {
 					for each (System::Object ^ fieldElementValue in genericList) {
 						serialized_field_type element;
 						getScriptFieldData(fieldElementValue, elementType, element);
 						listOfSerializedFields.push_back(std::move(element));
-					}
+					}	
 				}
 
 				field.data = std::move(listOfSerializedFields);
@@ -293,7 +297,14 @@ bool Interface::getScriptFieldData(System::Object^ fieldValue, System::Type^ fie
 		fieldData = string ? Convert(string): "";
 		return true;
 	}
-
+	// Enums
+	if (fieldType->IsEnum) {
+		FieldEnum fieldEnum;
+		fieldEnum.type = Convert(fieldType->Name);
+		fieldEnum.value = Convert(System::Enum::GetName(fieldType, fieldValue));
+		fieldData = fieldEnum;
+		return true;
+	}
 	// Primitives
 	if (fieldType->IsPrimitive && ObtainPrimitiveDataFromScript<ALL_FIELD_PRIMITIVES>(fieldData, fieldValue)) {
 		return true;
@@ -425,7 +436,25 @@ void Interface::processSetScriptFieldData(Object^% object, System::Type^ fieldTy
 		object = string;
 		return;
 	}
-
+	// Enum
+	if (fieldType->IsEnum) {
+		FieldEnum const& fieldEnum{ std::get<FieldEnum>(fieldData) };
+		System::Type^ enumType{  };
+		System::String^ enumTypeStr{ Convert(fieldEnum.type) };
+		if (enumTypes->ContainsKey(enumTypeStr))
+			enumType = enumTypes[enumTypeStr];
+		if (!enumType) {
+			Logger::warn("Unable to set {} of type {}, Enum Type does not exist or may have been deleted", fieldEnum.value, fieldEnum.type);
+			return;
+		}
+		System::Object^ enumObject;
+		if (!System::Enum::TryParse(enumType, Convert(fieldEnum.value), enumObject)) {
+			Logger::warn("Unable to set {} of type {}, Enum Value does not exist or may have been deleted", fieldEnum.value, fieldEnum.type);
+			return;
+		}
+		object = enumObject;
+		return;
+	}
 	// Primitives
 	if (SetScriptPrimitiveFromNativeData<ALL_FIELD_PRIMITIVES>(fieldData, object))
 		return;
@@ -479,7 +508,6 @@ void Interface::setFieldData(Script^ script, FieldData const& fieldData) {
 	} while (type != nullptr);
 }
 
-
 void Interface::addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate) {
 	timeoutDelegates->Add(timeoutDelegate);
 }
@@ -506,6 +534,16 @@ std::unordered_set<ResourceID> Interface::GetHierarchyModifiedScripts(ScriptID s
 		
 	}
 	return results;
+}
+
+std::vector<std::string> Interface::getEnumNames(System::String^ type)
+{
+	std::vector<std::string> result{};
+	if (enumTypeNamesToValues->ContainsKey(type)) {
+		for each (System::String ^ value in enumTypeNamesToValues[type])
+			result.push_back(Convert(value));
+	}
+	return result;
 }
 
 void Interface::update() {
@@ -696,12 +734,16 @@ void Interface::loadAssembly()
 	// 3. Load all script types in loaded assembly.
 	// ========================================================
 	
-	// We maintain a temporary dictionary mapping class names to script types.
+	// We map the types names to their respective containers
 	System::Collections::Generic::Dictionary<System::String^, System::Type^> classNameToScriptType;
 	for each (System::Type ^ type in novaScriptAssembly->GetTypes()) {
-		if (!type->IsSubclassOf(Script::typeid))
-			continue;
-		classNameToScriptType.Add(type->Name, type);
+		if (type->IsSubclassOf(Script::typeid)) 
+			classNameToScriptType.Add(type->Name, type);
+		if (type->IsEnum) {
+			enumTypes->Add(type->Name, type);
+			enumTypeNamesToValues->Add(type->Name, type->GetEnumNames());
+		}
+			
 	}
 	
 	// ========================================================
@@ -746,6 +788,10 @@ void Interface::unloadAssembly()
 		executeTimeoutDelegates->Clear();
 	if (createdGameObjectScripts)
 		createdGameObjectScripts->Clear();
+	if (enumTypeNamesToValues)
+		enumTypeNamesToValues->Clear();
+	if (enumTypes)
+		enumTypes->Clear();
 
 	deleteGameObjectQueue.Clear();
 

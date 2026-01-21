@@ -1,5 +1,5 @@
 {
-    "RootEntity": 26,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -92,14 +92,14 @@
                             {
                                 "name": "killTime",
                                 "data": {
-                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_value": 0,
                                     "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "totalDuration",
                                 "data": {
-                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_value": 0,
                                     "__variant_type": 17
                                 }
                             }
@@ -134,6 +134,7 @@
                 "lightRadius": 0.0,
                 "looping": true,
                 "randomizedDirection": false,
+                "invertMovement": false,
                 "particleEmissionTypeSelection": {
                     "emissionShape": "Point",
                     "radiusEmitter": {
@@ -214,7 +215,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 26
+            "id": 0
         }
     ]
 }

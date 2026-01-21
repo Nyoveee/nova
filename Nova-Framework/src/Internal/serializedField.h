@@ -23,20 +23,26 @@ class Material;
 class Sequencer;
 class Scene;
 
+struct FieldEnum {
+	std::string type;
+	std::string value;
+};
+
 // ============================
 // Here we list all the possible types our serialized field can have..
 // ============================
 #ifndef ALL_FIELD_PRIMITIVES
 #define ALL_FIELD_PRIMITIVES \
 		bool, int, float, double
+
 #endif
-// 15, 16, 17, 18
 #define ALL_TYPED_RESOURCE_ID \
 	TypedResourceID<Prefab>, TypedResourceID<Model>, TypedResourceID<Texture>, TypedResourceID<Material>, TypedResourceID<Scene>, TypedResourceID<Audio>
 
 #ifndef ALL_FIELD_TYPES
 #define ALL_FIELD_TYPES \
 		glm::vec2, glm::vec3, glm::vec4, glm::quat, entt::entity, PhysicsRay, PhysicsRayCastResult,	std::string, navMeshOfflinkData,	\
+		FieldEnum,                                                                                                                      \
 		ALL_TYPED_RESOURCE_ID,																											\
 		ALL_FIELD_PRIMITIVES
 #endif
@@ -56,6 +62,10 @@ serialized_field_type default_construct_serialized_field_type(std::size_t index)
 
 struct serialized_field_list {
 	serialized_field_list() = default;
+
+	void setEnumType(std::string enumType) {
+		enumListType = enumType;
+	}
 
 	void setIndex(int p_index) {
 		index = p_index;
@@ -89,6 +99,9 @@ struct serialized_field_list {
 	int getIndex() const {
 		return index;
 	}
+	std::string getEnumType() {
+		return enumListType;
+	}
 
 public:
 	// iterators..
@@ -106,10 +119,12 @@ private:
 
 private:
 	std::vector<serialized_field_type> list;
+	std::string enumListType{}; // Need this for default initializing enums in list
 	int index = -1;
 
 	REFLECTABLE(
 		list,
+		enumListType,
 		index
 	)
 };

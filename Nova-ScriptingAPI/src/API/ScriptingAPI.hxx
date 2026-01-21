@@ -70,6 +70,9 @@ internal:
 	static void addTimeoutDelegate(TimeoutDelegate^ timeoutDelegate);
 
 	static std::unordered_set<ResourceID> GetHierarchyModifiedScripts(ScriptID scriptId);
+
+	static std::vector<std::string> getEnumNames(System::String^ type);
+
 internal:
 	template<typename T>
 	static T* getNativeComponent(System::UInt32 entityID);
@@ -105,6 +108,10 @@ private:
 	// We map an Asset ID to the corresponding script type.
 	static System::Collections::Generic::Dictionary<ScriptID, Script^>^ availableScripts;
 	static System::Collections::Generic::Dictionary<ScriptID, System::Type^>^ abstractScriptTypes;
+
+	// Map enum names to values and types
+	static System::Collections::Generic::Dictionary<System::String^, array<System::String^>^>^ enumTypeNamesToValues;
+	static System::Collections::Generic::Dictionary<System::String^, System::Type^>^ enumTypes;
 
 	// Stores all the game object that is requested to be deleted. We delay object destruction till the end of the frame.
 	// (had bad experience with instant deletion..)

@@ -64,34 +64,56 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 7458946669463093249,
+                        "scriptId": 8585154461207871725,
                         "fields": [
                             {
-                                "name": "scriptfield1",
+                                "name": "test",
                                 "data": {
-                                    "__variant_value": 0.0,
-                                    "__variant_type": 18
+                                    "__variant_value": {
+                                        "Type": "Test",
+                                        "Value": "NaisuGeimu"
+                                    },
+                                    "__variant_type": 9
                                 }
                             },
                             {
-                                "name": "scriptfield2",
+                                "name": "test2",
                                 "data": {
-                                    "__variant_value": 0.0,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "scriptfield3",
-                                "data": {
-                                    "__variant_value": 0.0,
-                                    "__variant_type": 18
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": {
+                                                    "Type": "Test",
+                                                    "Value": "Hi"
+                                                },
+                                                "__variant_type": 9
+                                            },
+                                            {
+                                                "__variant_value": {
+                                                    "Type": "Test",
+                                                    "Value": "Bye"
+                                                },
+                                                "__variant_type": 9
+                                            },
+                                            {
+                                                "__variant_value": {
+                                                    "Type": "Test",
+                                                    "Value": "NaisuGeimu"
+                                                },
+                                                "__variant_type": 9
+                                            }
+                                        ],
+                                        "enumListType": "Test",
+                                        "index": 9
+                                    },
+                                    "__variant_type": 20
                                 }
                             }
                         ]
                     }
                 ]
             },
-            "id": 1048578
+            "id": 1048576
         }
     ],
     "layers": [
