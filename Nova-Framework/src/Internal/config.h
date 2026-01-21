@@ -43,6 +43,7 @@ struct RenderConfig {
 	bool				toEnableVsync			= true;
 	bool				toEnableAntiAliasing	= true;
 	bool				toEnableShadows			= true;
+	bool				toEnableIBL				= true;
 
 	REFLECTABLE(
 		toneMappingMethod,
@@ -50,7 +51,8 @@ struct RenderConfig {
 		toEnableFog,
 		toEnableVsync,
 		toEnableAntiAliasing,
-		toEnableShadows
+		toEnableShadows,
+		toEnableIBL
 	)
 };
 

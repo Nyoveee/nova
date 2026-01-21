@@ -9,15 +9,15 @@
 #include <DirectXTex/DirectXTex.h>
 
 namespace AssetSerializer {
-#if 0
-	void flipImageData(std::vector<float>& image, int width, int height, int components) {
+#if 1
+	void flipImageData(std::vector<unsigned char>& image, int width, int height, int components) {
 		int rowsToProcess = height / 2; // i want flooring here.
-		int rowStride = width * components;
+		int rowStride = width * components * 2;
 
-		std::vector<float> buffer;
+		std::vector<unsigned char> buffer;
 		buffer.resize(rowStride);
 
-		int sizeOfWidthInBytes = rowStride * sizeof(float);
+		int sizeOfWidthInBytes = rowStride;
 
 		for (int i = 0; i < rowsToProcess; ++i) {
 			// top row
@@ -92,8 +92,8 @@ namespace AssetSerializer {
 					buffer.data()
 				);
 
-				int faceToSave = face;
-#if 0
+				std::size_t faceToSave = face;
+#if 1
 				// Flip image in the y direction.
 				flipImageData(buffer, width, height, channels);
 

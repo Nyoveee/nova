@@ -547,8 +547,8 @@
             "Transform": {
                 "position": {
                     "x": 1.4904470443725586,
-                    "y": 8.107402801513672,
-                    "z": 3.3659660816192627
+                    "y": 4.558589935302734,
+                    "z": 7.694744110107422
                 },
                 "scale": {
                     "x": 1.0,
@@ -568,8 +568,8 @@
                 },
                 "localPosition": {
                     "x": 1.4904470443725586,
-                    "y": 8.107402801513672,
-                    "z": 3.3659660816192627
+                    "y": 4.558589935302734,
+                    "z": 7.694744110107422
                 },
                 "localScale": {
                     "x": 1.0,
@@ -590,19 +590,22 @@
             },
             "ReflectionProbe": {
                 "boxExtents": {
-                    "x": 10.0,
+                    "x": 21.0,
                     "y": 10.0,
-                    "z": 10.0
+                    "z": 18.0
                 },
                 "centerOffset": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "captureRadius": 20.0,
+                "captureRadius": 32.07802963256836,
                 "toCaptureShadow": true,
+                "toCaptureEnvironmentLight": false,
+                "fallOff": 0.3269999921321869,
+                "intensity": 1.0,
                 "irradianceMap": 18446744073709551615,
-                "prefilteredEnvironmentMap": 15392204557974437917
+                "prefilteredEnvironmentMap": 7662928088419631391
             },
             "id": 1048583
         },

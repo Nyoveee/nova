@@ -879,11 +879,15 @@ struct Button {
 };
 
 struct ReflectionProbe {
-	glm::vec3 boxExtents	= { 10.f, 10.f, 10.f };
-	glm::vec3 centerOffset	= {};
+	glm::vec3 boxExtents			= { 10.f, 10.f, 10.f };
+	glm::vec3 centerOffset			= {};
 
-	float captureRadius		= 20.f;
-	bool toCaptureShadow	= true;
+	float captureRadius				= 20.f;
+	
+	bool toCaptureShadow			= true;
+	bool toCaptureEnvironmentLight	= false;
+	float fallOff					= 0.2f;
+	float intensity					= 1.0f;
 
 	TypedResourceID<CubeMap> irradianceMap				= { INVALID_RESOURCE_ID };
 	TypedResourceID<CubeMap> prefilteredEnvironmentMap	= { INVALID_RESOURCE_ID };
@@ -893,6 +897,9 @@ struct ReflectionProbe {
 		centerOffset,
 		captureRadius,
 		toCaptureShadow,
+		toCaptureEnvironmentLight,
+		fallOff,
+		intensity,
 		irradianceMap,
 		prefilteredEnvironmentMap
 	)

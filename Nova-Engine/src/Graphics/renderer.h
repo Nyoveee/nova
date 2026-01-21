@@ -95,6 +95,8 @@ public:
 	// when changing scene, mark all reflection probes as unloaded.
 	void resetLoadedReflectionProbes();
 
+	void handleReflectionProbeDeletion(entt::registry&, entt::entity entityID);
+
 public:
 	// =============================================
 	// Public facing API.
@@ -156,8 +158,8 @@ public:
 	// for specular irradiance map..
 	ENGINE_DLL_API CubeMap bakeSpecularIrradianceMap(std::function<void()> render);
 
-	ENGINE_DLL_API CubeMap bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position);
-	ENGINE_DLL_API CubeMap bakeSpecularIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position);
+	ENGINE_DLL_API CubeMap bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position, bool toCaptureEnvironmentLight);
+	ENGINE_DLL_API CubeMap bakePrefilteredEnvironmentMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position, bool toCaptureEnvironmentLight);
 
 	// render first skybox in the scene, if any.
 	ENGINE_DLL_API void renderSkyBox();
@@ -167,6 +169,10 @@ public:
 
 	// renders skybox given an cubemap.
 	ENGINE_DLL_API void renderSkyBox(CubeMap const& cubemap);
+
+	// load a reflection probe's cube map to cube maparray if not loaded..
+	// this function assumes a valid index has already been assigned to reflection probe.
+	ENGINE_DLL_API void loadReflectionProbe(ReflectionProbe const& reflectionProbe, CubeMap const& reflectionProbePrefilteredMap);
 
 public:
 	// =============================================
@@ -199,7 +205,7 @@ private:
 	// =============================================
 
 	// renders object for the purpose of capturing into a cubemap..
-	void renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer);
+	void renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, bool toCaptureEnvironmentLight);
 
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
@@ -311,15 +317,15 @@ private:
 	CubeMap captureSurrounding(std::function<void()> render);
 
 	// captures surrounding via the POV of reflection probe.
-	CubeMap captureSurrounding(ReflectionProbe const& reflectionProbe, glm::vec3 const& position);
-
-	// load a reflection probe's cube map to cube maparray if not loaded..
-	// this function assumes a valid index has already been assigned to reflection probe.
-	void loadReflectionProbe(ReflectionProbe const& reflectionProbe, CubeMap const& reflectionProbePrefilteredMap);
+	CubeMap captureSurrounding(ReflectionProbe const& reflectionProbe, glm::vec3 const& position, bool toCaptureEnvironmentLight);
 
 	// Convolutes the respective IBL maps..
 	CubeMap convoluteIrradianceMap(CubeMap const& inputCubemap);
 	CubeMap convolutePrefilteredEnvironmentMap(CubeMap const& inputCubemap);
+
+	// finds a suitable index to assign a reflection probe to the cubemap array.
+	// will return a number greater than MAX_REFLECTION_PROBES if no more slot. (rare imo)
+	int getIndexToCubeMapArray();
 
 private:
 	Engine& engine;
@@ -408,6 +414,9 @@ private:
 
 	// BRDF Look Up Table, used for split sum approximation for specular IBL.
 	std::unique_ptr<Texture> BRDFLUT;
+
+	// when a reflection probe is deleted, the index is now free to use.
+	std::unordered_set<int> freeCubeMapArraySlots;
 
 private:
 	unsigned int numOfPtLights;

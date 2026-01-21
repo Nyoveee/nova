@@ -78,6 +78,8 @@ struct ReflectionProbe {
 	vec3 viewMax;
     vec3 worldProbePosition;
     int indexToProbeArray;
+    float blendFallOff;
+    float intensity;
 };
 
 const int MAX_SHADOW_CASTER = 15;
@@ -100,7 +102,7 @@ layout(std140, binding = 1) uniform ShadowCasterMatrixes {
 };
 
 layout(std140, binding = 2) uniform PBRUBO {
-    vec4 samples[64];
+    vec4 samples[64];   
 };
 
 layout(std140, binding = 3) uniform ReflectionProbes {
@@ -144,7 +146,7 @@ uniform vec3 directionalLightDir;
 uniform bool toEnableSSAO;
 
 // IBL
-uniform bool toUseDiffuseIrradianceMap;
+uniform bool toEnableIBL;
 
 uniform sampler2D directionalShadowMap;
 uniform sampler2D ssao;
@@ -194,6 +196,9 @@ Cluster getCluster                  ();
 
 vec3 getPrefilteredColor            (Cluster cluster, float roughness, vec3 reflectDir);
 
+vec3 boxProjectionReflection        (vec3 reflectDir, vec3 fragmentPos, vec3 probeMin, vec3 probeMax, vec3 probePos);
+float getBlendFactor                (vec3 position, ReflectionProbe reflectionProbe);
+
 // =================================================================================
 // IMPLEMENTATION DETAILS.
 // =================================================================================
@@ -206,6 +211,11 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 
     // Locating which cluster this fragment is part of
     Cluster cluster = getCluster();
+
+    // for(uint i = 0; i < cluster.reflectionProbesCount; ++i) {
+    //     ReflectionProbe reflectionProbe = reflectionProbes[cluster.reflectionProbesIndices[i]];
+    //     return vec3(getBlendFactor(fsIn.fragWorldPos, reflectionProbe));
+    // }
 
     // --------------------------------------------------------------------
     // Calculate direct diffuse and specular light for each light.
@@ -243,7 +253,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
     // Indirect lighting
     vec3 ambient = vec3(0);
 
-    if(toUseDiffuseIrradianceMap) {
+    if(toEnableIBL) {
         vec3 viewDir = normalize(cameraPosition - fsIn.fragWorldPos);
         float NdotV = max(dot(normal, viewDir), 0.0);
 
@@ -259,7 +269,7 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         
         // IBL Diffuse..
         vec3 irradiance = texture(diffuseIrradianceMap, normal).rgb;
-        vec3 diffuse    = irradiance * albedoColor;
+        vec3 diffuse    = irradiance * albedoColor * occulusion;
 
         // IBL Specular..
         vec2 envBRDF  = texture(brdfLUT, vec2(NdotV, roughness)).rg;
@@ -269,13 +279,11 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         ambient         = (kD * diffuse + specular); 
     }
     else {
-        ambient = albedoColor * 0.07;
+        ambient = albedoColor * 0.07 * occulusion;
     }
 
     // --------------------------------------------------------------------
     // SSAO
-    ambient *= occulusion;    // multiply by AO map..
-
     if(toEnableSSAO) {
         // Because SSAO is screen space, we need a way to retrieve SSAO texture in screenspace.
         vec2 screenSpaceTextureCoordinates = gl_FragCoord.xy / screenDimensions;
@@ -532,30 +540,127 @@ bool is_within_range(vec3 value, vec3 min_val, vec3 max_val) {
     return all(greater_than_min) && all(less_than_max);
 }
 
+// box projection..
+// these are in world space..
+vec3 boxProjectionReflection(vec3 reflectDir, vec3 fragmentPos, vec3 probeMin, vec3 probeMax, vec3 probePos) {
+    // https://www.gamedev.net/forums/topic/568829-box-projected-cubemap-environment-mapping/
+    // 1. Find the intersection from fragmentPos going in the reflectDir direction to probe's AABB
+
+    // BPCEM (Box Projected Cubemap Environment Map)
+    vec3 tMin = (probeMin - fragmentPos) / reflectDir;
+    vec3 tMax = (probeMax - fragmentPos) / reflectDir;
+
+    vec3 t1 = min(tMin, tMax);
+    vec3 t2 = max(tMin, tMax);
+
+    // X(t) = P + tHit * r; (ray equation indicating intersection)
+    float tHit = min(t2.x, min(t2.y, t2.z));
+    vec3 intersection = fragmentPos + reflectDir * tHit;
+
+    // 2. Return new reflection direction from probe position to intersection 
+    return normalize(intersection - probePos);
+}
+
+// https://iquilezles.org/articles/distfunctions/ [Box SDF]
+// https://seblagarde.wordpress.com/2012/09/29/image-based-lighting-approaches-and-parallax-corrected-cubemap/ [Local cubemaps blending weights calculation]
+// ^ inspiration..
+float getBlendFactor(vec3 position, ReflectionProbe reflectionProbe) {
+    // The general idea is to calculate distance a given fragment is to the reflection probe's AABB center.
+    vec3 boxExtents = (reflectionProbe.worldMax - reflectionProbe.worldMin) / 2.0;
+
+    // We first transform fragment's world position to the reflection probe's local space..
+    vec3 localPosition = position - reflectionProbe.worldProbePosition;
+
+    // We don't really want distance, but some normalized factor ranging from [0, 1]..
+    // So let's scale down our local space by the extents of the AABB.
+    localPosition /= boxExtents;
+
+    // We focus on the positive quadrant..
+    localPosition = abs(localPosition);
+
+    // We want to calculate an appropriate factor, but not via vector length.
+    // We want to make sure that points at the boundary is 1, even at diagonals..
+    // We follow how SDF implements with maxcomp
+    float factor = max(localPosition.x, max(localPosition.y, localPosition.z));
+
+    // This factor is based on distance, so let's "inverse" it.. (if distance is 0, factor is highest..)
+    factor = max(1.0 - factor, 0.0);
+    
+    // We scale factor based on blend fall off, so fragment with high factor will be multiplied and stay at 1.
+    // This is how we ensure factor is 1 when inside the blend fall off.
+    factor = min(factor / max(reflectionProbe.blendFallOff, 0.0001), 1);
+
+    return factor;
+}
+
 // IBL, Reflection probe
 vec3 getPrefilteredColor(Cluster cluster, float roughness, vec3 reflectDir) {
     const float MAX_REFLECTION_LOD = 4.0;
 
     int indexToReflectionProbeMap = -1;
 
-    // @TODO: Blending..
+    // We collate all reflection probes that is influencing..
+    struct InfluencingProbe {
+        uint index; // to UBO of reflection probes..
+        float blendFactor;
+    };
+
+    InfluencingProbe influencingProbes[4];
+    uint numOfInfluencingProbes = 0;
+    float totalBlendFactor = 0; // we keep this for normalisation, weigted factors..
+
+    // For each fragment, let's find the nearby reflection probe that influences it.. and calculate their blending factor..
     for(uint i = 0; i < cluster.reflectionProbesCount; ++i) {
         ReflectionProbe reflectionProbe = reflectionProbes[cluster.reflectionProbesIndices[i]];
         
-        if(is_within_range(fsIn.fragWorldPos, reflectionProbe.worldMin, reflectionProbe.worldMax)) {
-            indexToReflectionProbeMap = reflectionProbe.indexToProbeArray;
-            break;
+        // Calculate blend factor for this reflection probe..
+        float blendFactor = getBlendFactor(fsIn.fragWorldPos, reflectionProbe);
+
+        // Outside the reflection probe's influence..
+        if(blendFactor == 0.0) {
+            continue;
         }
+
+        // Within a reflection probe..
+        influencingProbes[numOfInfluencingProbes].index = cluster.reflectionProbesIndices[i];
+        influencingProbes[numOfInfluencingProbes].blendFactor = blendFactor;
+        totalBlendFactor += blendFactor;
+        numOfInfluencingProbes++;
     }
     
-    // not near any local IBL..
-    if(indexToReflectionProbeMap == -1) {
-        return textureLod(prefilterMap, reflectDir, roughness * MAX_REFLECTION_LOD).rgb;
+    // We add environment into the mix if there's 0 or 1 reflection probe affecting it.. (resulting totalBlendFactor < 0)
+    float environmentBlendFactor = 0;
+
+    if(totalBlendFactor < 1) {
+        environmentBlendFactor = max(1 - totalBlendFactor, 0); // jic 
+        totalBlendFactor = 1;
     }
-    else {
-        // Appropriately calculate the reflected vector..
-        return textureLod(reflectionProbesPrefilterMap, vec4(reflectDir, indexToReflectionProbeMap), roughness * MAX_REFLECTION_LOD).rgb;
+
+    vec3 finalPrefilteredColor = vec3(0.0);
+
+    // We reweight the blend factors, by normalising them.. then adding the colours up..
+    for(uint i = 0; i < numOfInfluencingProbes; ++i) {
+        InfluencingProbe influenceProbe = influencingProbes[i];
+        influenceProbe.blendFactor /= totalBlendFactor;
+
+        ReflectionProbe reflectionProbe = reflectionProbes[influenceProbe.index];
+        
+        // Get index to loaded reflection probes..
+        indexToReflectionProbeMap = reflectionProbe.indexToProbeArray;
+
+        // Calculate box projected reflection..
+        vec3 boxProjectedReflection = boxProjectionReflection(reflectDir, fsIn.fragWorldPos, reflectionProbe.worldMin, reflectionProbe.worldMax, reflectionProbe.worldProbePosition);
+
+        // Sample from reflection probe map..
+        finalPrefilteredColor += textureLod(reflectionProbesPrefilterMap, vec4(boxProjectedReflection, indexToReflectionProbeMap), roughness * MAX_REFLECTION_LOD).rgb * influenceProbe.blendFactor * reflectionProbe.intensity;
     }
+    
+    // Blend in environment if appropriate..
+    if(environmentBlendFactor > 0) {
+        finalPrefilteredColor += textureLod(prefilterMap, reflectDir, roughness * MAX_REFLECTION_LOD).rgb * environmentBlendFactor;
+    }
+
+    return finalPrefilteredColor;
 }
 
 // User shader entry point.

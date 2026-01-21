@@ -82,9 +82,9 @@ public:
 	ResourceManager&		resourceManager;
 	InputManager&           inputManager;
 
+	ECS						ecs;
 	Renderer				renderer;
 	CameraSystem			cameraSystem;
-	ECS						ecs;
 	ScriptingAPIManager		scriptingAPIManager;
 	TransformationSystem	transformationSystem;
 	PhysicsManager			physicsManager;

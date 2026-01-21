@@ -24,6 +24,8 @@ void main() {
     vec3 V = R;
 
     const uint SAMPLE_COUNT = 32768u;
+
+#if 0
     float totalWeight = 0.0;   
     vec3 prefilteredColor = vec3(0.0);    
 
@@ -54,7 +56,36 @@ void main() {
     }
 
     prefilteredColor = prefilteredColor / totalWeight;
+#else
+    float totalWeight = 0.0;   
+    vec3 prefilteredColor = vec3(0.0);     
+ 
+    for(uint i = 0u; i < SAMPLE_COUNT; ++i)
+    {
+        vec2 Xi = Hammersley(i, SAMPLE_COUNT);
+        vec3 H  = ImportanceSampleGGX(Xi, N, roughness);
+        vec3 L  = normalize(2.0 * dot(V, H) * H - V);
 
+        float NdotL = max(dot(N, L), 0.0);
+
+        float NdotH = max(dot(N, H), 0.0);
+        float D   = ggxDistribution(NdotH, roughness);
+        float pdf = (D * NdotH / (4.0)) + 0.0001; 
+
+        // with a higher resolution, we should sample coarser mipmap levels
+        float saTexel  = 4.0 * PI / (6.0 * resolution * resolution);
+        float saSample = 1.0 / (float(SAMPLE_COUNT) * pdf + 0.0001);
+
+        float mipLevel = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel); 
+
+        if(NdotL > 0.0)
+        {
+            prefilteredColor += textureLod(cubemap, L, mipLevel).rgb * NdotL;
+            totalWeight      += NdotL;
+        }
+    }
+    prefilteredColor = prefilteredColor / totalWeight;
+#endif
     FragColor = vec4(prefilteredColor, 1.0);
 } 
 

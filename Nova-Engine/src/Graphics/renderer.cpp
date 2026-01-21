@@ -132,6 +132,8 @@ struct alignas(16) ReflectionProbeUBOData {
 	alignas(16) glm::vec3 viewMax;
 	alignas(16) glm::vec3 worldProbePosition;
 				int		  indexToProbeArray;
+				float	  fallOff;
+				float	  intensity;
 };
 
 // this struct is used to represent the memory layout of the ReflectionProbeUBO, location = 3.
@@ -388,6 +390,9 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	// Cluster SSBO configuration
 	// ======================================================
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, clusterSSBO.id());
+
+	// handle reflection probe deletion..
+	registry.on_destroy<ReflectionProbe>().connect<&Renderer::handleReflectionProbeDeletion>(*this);
 }
 
 Renderer::~Renderer() {
@@ -643,7 +648,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	}
 }
 
-void Renderer::renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer) {
+void Renderer::renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, bool toCaptureEnvironmentLight) {
 	// We upload camera data to the UBO..
 	updateCameraUBO(camera);
 
@@ -676,10 +681,15 @@ void Renderer::renderCapturePass(Camera const& camera, std::function<void()> set
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+	
+	bool oldValue = renderConfig.toEnableIBL;
+	renderConfig.toEnableIBL = toCaptureEnvironmentLight && renderConfig.toEnableIBL;
 
 	// We render individual game objects..
 	renderModels(camera);
 	renderSkinnedModels(camera);
+
+	renderConfig.toEnableIBL = oldValue;
 }
 
 void Renderer::renderToDefaultFBO() {
@@ -1144,6 +1154,17 @@ void Renderer::initialiseSSAO() {
 
 void Renderer::resetLoadedReflectionProbes() {
 	numOfLoadedReflectionProbe = 0;
+	freeCubeMapArraySlots.clear();
+}
+
+void Renderer::handleReflectionProbeDeletion(entt::registry&, entt::entity entityID) {
+	auto&& [transform, reflectionProbe] = registry.try_get<Transform, ReflectionProbe>(entityID);
+
+	if (!reflectionProbe) {
+		return;
+	}
+
+	freeCubeMapArraySlots.insert(reflectionProbe->indexToCubeMapArray);
 }
 
 void Renderer::submitSelectedObjects(std::vector<entt::entity> const& entities) {
@@ -2277,7 +2298,7 @@ void Renderer::prepareReflectionProbes(Camera const& camera) {
 			auto&& [prefilteredEnvironmentMap, _] = resourceManager.getResource<CubeMap>(reflectionProbe.prefilteredEnvironmentMap);
 
 			if (prefilteredEnvironmentMap && numOfLoadedReflectionProbe < MAX_REFLECTION_PROBES) {
-				reflectionProbe.indexToCubeMapArray = numOfLoadedReflectionProbe++;
+				reflectionProbe.indexToCubeMapArray = getIndexToCubeMapArray();
 				loadReflectionProbe(reflectionProbe, *prefilteredEnvironmentMap);
 			}
 			else {
@@ -2308,7 +2329,9 @@ void Renderer::prepareReflectionProbes(Camera const& camera) {
 			viewPos			   - viewExtents,					// viewMin
 			viewPos			   + viewExtents,					// viewMax
 			transform.position + reflectionProbe.centerOffset,	// world probe's position
-			reflectionProbe.indexToCubeMapArray
+			reflectionProbe.indexToCubeMapArray,				// index to the samplerCubeArray
+			reflectionProbe.fallOff,							// blending fall off..
+			reflectionProbe.intensity							// intensity of the light multiplied.
 		};
 
 		++numOfReflectionProbes;
@@ -2631,7 +2654,7 @@ CubeMap Renderer::captureSurrounding(std::function<void()> render) {
 	return inputCubemap;
 }
 
-CubeMap Renderer::captureSurrounding(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
+CubeMap Renderer::captureSurrounding(ReflectionProbe const& reflectionProbe, glm::vec3 const& position, bool toCaptureEnvironmentLight) {
 	glm::mat4 captureViews[] = {
 	   glm::lookAt(position, position + glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 	   glm::lookAt(position, position + glm::vec3(-1.0f, 0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -2655,7 +2678,7 @@ CubeMap Renderer::captureSurrounding(ReflectionProbe const& reflectionProbe, glm
 			glBindFramebuffer(GL_FRAMEBUFFER, cubeMapFrameBuffer.fboId());
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, inputCubemap.getTextureId(), 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		});
+		}, toCaptureEnvironmentLight);
 	}
 
 	// automatically generates mipmap from the captured scene..
@@ -2690,13 +2713,13 @@ CubeMap Renderer::bakeSpecularIrradianceMap(std::function<void()> render) {
 	return convolutePrefilteredEnvironmentMap(inputCubemap);
 }
 
-CubeMap Renderer::bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
-	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position) };
+CubeMap Renderer::bakeDiffuseIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position, bool toCaptureEnvironmentLight) {
+	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position, toCaptureEnvironmentLight) };
 	return convoluteIrradianceMap(inputCubeMap);
 }
 
-CubeMap Renderer::bakeSpecularIrradianceMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position) {
-	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position) };
+CubeMap Renderer::bakePrefilteredEnvironmentMap(ReflectionProbe const& reflectionProbe, glm::vec3 const& position, bool toCaptureEnvironmentLight) {
+	CubeMap inputCubeMap{ captureSurrounding(reflectionProbe, position, toCaptureEnvironmentLight) };
 	return convolutePrefilteredEnvironmentMap(inputCubeMap);
 }
 
@@ -2785,6 +2808,20 @@ CubeMap Renderer::convolutePrefilteredEnvironmentMap(CubeMap const& inputCubemap
 	}
 
 	return outputCubemap;
+}
+
+int Renderer::getIndexToCubeMapArray() {
+	// check the unordered_set first..
+	if (freeCubeMapArraySlots.size()) {
+		auto beginIterator = freeCubeMapArraySlots.begin();
+		int freeIndex = *beginIterator;
+		freeCubeMapArraySlots.erase(beginIterator);
+
+		return freeIndex;
+	}
+	else {
+		return numOfLoadedReflectionProbe++;
+	}
 }
 	
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
@@ -3177,8 +3214,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		auto&& [diffuseIrradianceMap, __] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentDiffuseMap);
 		auto&& [prefilteredEnvironmentMap, ___] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentSpecularMap);
 
-		if (diffuseIrradianceMap && prefilteredEnvironmentMap) {
-			shader.setBool("toUseDiffuseIrradianceMap", true);
+		if (renderConfig.toEnableIBL && diffuseIrradianceMap && prefilteredEnvironmentMap) {
+			shader.setBool("toEnableIBL", true);
 
 			glBindTextureUnit(2, BRDFLUT->getTextureId());
 			glBindTextureUnit(4, diffuseIrradianceMap->getTextureId());
@@ -3189,7 +3226,7 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 			shader.setImageUniform("prefilterMap", 5);
 		}
 		else {
-			shader.setBool("toUseDiffuseIrradianceMap", false);
+			shader.setBool("toEnableIBL", false);
 		}
 
 		glBindTextureUnit(6, loadedReflectionProbesMap.getTextureId());
