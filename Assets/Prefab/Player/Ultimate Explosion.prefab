@@ -1,165 +1,41 @@
 {
+    "RootEntity": 8,
     "Entities": [
         {
-            "AudioComponent": {
-                "data": {
-                    "sniper_specialImpact_01": {
-                        "audioId": 14297046925997506561,
-                        "stopAudio": false,
-                        "volume": 1.0
-                    }
-                },
-                "loop": false
-            },
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Ultimate Explosion",
-                "overridenComponents": null,
-                "overridenProperties": null,
+                "tag": "",
                 "parent": 4294967295,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 11921019885713047693,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 11921019885713047693
                 },
-                "tag": ""
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 0.9704636335372925,
-                    "g": 1.0,
-                    "r": 0.2862069010734558
-                },
-                "cutOffAngle": 0.21816615760326385,
-                "intensity": 2000.0,
-                "outerCutOffAngle": 0.30543261766433716,
-                "radius": 117.0,
-                "type": "PointLight"
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    7866742281898999813
-                ],
-                "modelId": 4
-            },
-            "Rigidbody": {
-                "dynamicCollider": true,
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": true,
-                "layer": "Moving",
-                "mass": 10.0,
-                "motionQuality": "Discrete",
-                "motionType": "Kinematic",
-                "toScaleWithTransform": true
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 0.550000011920929
-                                },
-                                "name": "fadeInDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "explosionDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "fadeOutDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 0.20000000298023224
-                                },
-                                "name": "dissolveOffsetDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "initialScale"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "explosionInitialScale"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 25.0
-                                },
-                                "name": "explosionFinalScale"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 50.0
-                                },
-                                "name": "finalScale"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 2000.0
-                                },
-                                "name": "lightIntensity"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "angularVelocity"
-                            }
-                        ],
-                        "scriptId": 16569130525193601025
-                    }
-                ]
-            },
-            "SphereCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 2.0
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": 1.370631456375122,
-                    "z": 3.1415927410125732
+                "position": {
+                    "x": 2.8232879638671875,
+                    "y": 8.452951431274414,
+                    "z": -18.350711822509766
                 },
-                "localEulerAngles": {
+                "scale": {
+                    "x": 30.84149169921875,
+                    "y": 30.838417053222656,
+                    "z": 30.84149169921875
+                },
+                "rotation": {
+                    "w": 0.6329174637794495,
+                    "x": 0.0,
+                    "y": 0.774219274520874,
+                    "z": 0.0
+                },
+                "eulerAngles": {
                     "x": 3.1415927410125732,
                     "y": 1.370631456375122,
                     "z": 3.1415927410125732
@@ -169,36 +45,166 @@
                     "y": 8.452951431274414,
                     "z": -18.350711822509766
                 },
+                "localScale": {
+                    "x": 30.84149169921875,
+                    "y": 30.838417053222656,
+                    "z": 30.84149169921875
+                },
                 "localRotation": {
                     "w": 0.6329174637794495,
                     "x": 0.0,
                     "y": 0.774219274520874,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 30.84149169921875,
-                    "y": 30.838417053222656,
-                    "z": 30.84149169921875
-                },
-                "position": {
-                    "x": 2.8232879638671875,
-                    "y": 8.452951431274414,
-                    "z": -18.350711822509766
-                },
-                "rotation": {
-                    "w": 0.6329174637794495,
-                    "x": 0.0,
-                    "y": 0.774219274520874,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 30.84149169921875,
-                    "y": 30.838417053222656,
-                    "z": 30.84149169921875
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": 1.370631456375122,
+                    "z": 3.1415927410125732
                 }
             },
-            "id": 1
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 0.2862069010734558,
+                    "g": 1.0,
+                    "b": 0.9704636335372925
+                },
+                "intensity": 2000.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 117.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    7866742281898999813
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Moving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "isRotatable": true,
+                "isTrigger": true,
+                "dynamicCollider": true,
+                "toScaleWithTransform": true
+            },
+            "SphereCollider": {
+                "radius": 2.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "data": {
+                    "sniper_specialImpact_01": {
+                        "audioId": 14297046925997506561,
+                        "volume": 1.0,
+                        "stopAudio": false
+                    }
+                },
+                "loop": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 16569130525193601025,
+                        "fields": [
+                            {
+                                "name": "fadeInDuration",
+                                "data": {
+                                    "__variant_value": 0.550000011920929,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "explosionDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "fadeOutDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "dissolveOffsetDuration",
+                                "data": {
+                                    "__variant_value": 0.20000000298023224,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "initialScale",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "explosionInitialScale",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "explosionFinalScale",
+                                "data": {
+                                    "__variant_value": 25.0,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "finalScale",
+                                "data": {
+                                    "__variant_value": 50.0,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "lightIntensity",
+                                "data": {
+                                    "__variant_value": 2000.0,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "angularVelocity",
+                                "data": {
+                                    "__variant_value": 100.0,
+                                    "__variant_type": 16
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 8
         }
-    ],
-    "RootEntity": 1
+    ]
 }
