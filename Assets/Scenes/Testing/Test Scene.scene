@@ -605,7 +605,7 @@
                 "fallOff": 0.3269999921321869,
                 "intensity": 1.0,
                 "irradianceMap": 18446744073709551615,
-                "prefilteredEnvironmentMap": 7662928088419631391
+                "prefilteredEnvironmentMap": 14074497049403162927
             },
             "id": 1048583
         },
@@ -714,7 +714,7 @@
                 "position": {
                     "x": 7.374161720275879,
                     "y": 6.4287028312683105,
-                    "z": 9.451745986938477
+                    "z": -8.478504180908203
                 },
                 "scale": {
                     "x": 1.0,
@@ -735,7 +735,7 @@
                 "localPosition": {
                     "x": 7.374161720275879,
                     "y": 6.4287028312683105,
-                    "z": 9.451745986938477
+                    "z": -8.478504180908203
                 },
                 "localScale": {
                     "x": 1.0,
@@ -757,7 +757,7 @@
             "MeshRenderer": {
                 "modelId": 4,
                 "materialIds": [
-                    11507471645771988995
+                    3462177945169314037
                 ],
                 "castShadow": false,
                 "shadowCullFrontFace": true
@@ -919,6 +919,77 @@
         },
         {
             "EntityData": {
+                "name": "Entity 1",
+                "tag": "",
+                "parent": 4294967295,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 7.353081703186035,
+                    "y": 6.4287028312683105,
+                    "z": -5.93355655670166
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 7.353081703186035,
+                    "y": 6.4287028312683105,
+                    "z": -5.93355655670166
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    11507471645771988995
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048600
+        },
+        {
+            "EntityData": {
                 "name": "Sniper Mesh",
                 "tag": "",
                 "parent": 4294967295,
@@ -938,7 +1009,7 @@
                 "position": {
                     "x": -0.9610769748687744,
                     "y": 4.817105293273926,
-                    "z": 1.6210930347442627
+                    "z": -1.1142492294311523
                 },
                 "scale": {
                     "x": 17.059846878051758,
@@ -959,7 +1030,7 @@
                 "localPosition": {
                     "x": -0.9610769748687744,
                     "y": 4.817105293273926,
-                    "z": 1.6210930347442627
+                    "z": -1.1142492294311523
                 },
                 "localScale": {
                     "x": 17.059846878051758,
