@@ -1,6 +1,13 @@
 {
     "selectedShader": 1,
     "overridenUniforms": {
+        "occulusion": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
         "UVTiling": {
             "type": "vec2",
             "value": {
@@ -11,11 +18,11 @@
                 "__variant_type": 4
             }
         },
-        "occulusion": {
+        "roughness": {
             "type": "NormalizedFloat",
             "value": {
                 "__variant_value": 0.0,
-                "__variant_type": 12
+                "__variant_type": 3
             }
         },
         "colorTint": {
@@ -36,11 +43,11 @@
                 "__variant_type": 9
             }
         },
-        "roughness": {
+        "metallic": {
             "type": "NormalizedFloat",
             "value": {
                 "__variant_value": 0.0,
-                "__variant_type": 3
+                "__variant_type": 12
             }
         },
         "emissiveMap": {
@@ -48,13 +55,6 @@
             "value": {
                 "__variant_value": 984828611531653123,
                 "__variant_type": 9
-            }
-        },
-        "metallic": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_value": 0.0,
-                "__variant_type": 12
             }
         },
         "normalMap": {
