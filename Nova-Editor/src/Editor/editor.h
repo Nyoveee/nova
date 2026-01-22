@@ -56,6 +56,7 @@ public:
 	void update(float dt);
 	
 	bool isEntitySelected(entt::entity entity);
+	bool isChildEntitySelected(entt::entity entity,entt::entity root);
 	bool hasAnyEntitySelected() const;
 	
 	void selectEntities(std::vector<entt::entity> entities);
@@ -77,6 +78,7 @@ public:
 		std::function<void(std::vector<entt::entity>)> const& onClickFunction, 
 		std::function<bool(entt::entity)> const& selectedPredicate
 	);
+
 
 	// editor does extra housekeeping when loading scenes (like selection of entities)
 	// most editor windows should use this function instead of the scene manager's load scene function.

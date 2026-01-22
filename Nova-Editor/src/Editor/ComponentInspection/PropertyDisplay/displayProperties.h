@@ -399,7 +399,7 @@ inline void DisplayProperty<std::vector<ScriptData>>(Editor& editor, const char*
 	}
 	//ImGui::EndDisabled();
 }
-
+#if 0
 template<>
 inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& editor, const char*, std::unordered_map<std::string, AudioData>& dataMember) {
 	auto& audioDatas = dataMember;
@@ -471,7 +471,7 @@ inline void DisplayProperty<std::unordered_map<std::string, AudioData>>(Editor& 
 	}
 	ImGui::EndChild();
 }
-
+#endif
 template<>
 inline void DisplayProperty<ParticleEmissionTypeSelection>(Editor& editor, const char*, ParticleEmissionTypeSelection& dataMember) {
 	DisplayProperty<ParticleEmissionTypeSelection::EmissionShape>(editor, "Emission Shape", dataMember.emissionShape);
@@ -532,6 +532,7 @@ inline void DisplayProperty<ColorOverLifetime>(Editor& editor, const char* dataM
 		ImGui::EndChild();
 	}
 }
+
 template<>
 inline void DisplayProperty<Trails>(Editor& editor, const char* dataMemberName, Trails& dataMember) {
 	DisplayProperty<bool>(editor, dataMemberName, dataMember.selected);
@@ -547,6 +548,7 @@ inline void DisplayProperty<Trails>(Editor& editor, const char* dataMemberName, 
 		ImGui::EndChild();
 	}
 }
+
 template<>
 inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& editor, const char*, std::vector<TypedResourceID<Material>>& dataMember) {
 	ImGui::SeparatorText("Material");
@@ -576,6 +578,20 @@ inline void DisplayProperty<EntityScript>(Editor& editor, const char*, EntityScr
 }
 
 template<>
+inline void DisplayProperty<FieldEnum>(Editor& editor, const char* dataMemberName, FieldEnum& dataMember) {
+	std::vector<std::string> listOfEnumValues = editor.engine.scriptingAPIManager.getEnumNamesFromType(dataMember.type);
+	if (std::find(std::begin(listOfEnumValues), std::end(listOfEnumValues), dataMember.value) == std::end(listOfEnumValues))
+		if (listOfEnumValues.size())
+			dataMember.value = listOfEnumValues[0];
+	// Selecting the enum value
+	if (ImGui::BeginCombo(dataMemberName, dataMember.value.c_str())) {
+		for (std::string const& enumValue: listOfEnumValues)
+			if (ImGui::Selectable(enumValue.c_str()))
+				dataMember.value = enumValue;
+		ImGui::EndCombo();
+	}
+}
+template<>
 inline void DisplayProperty<serialized_field_type>(Editor& editor, const char* dataMemberName, serialized_field_type& dataMember) {
 	// Set the field data	
 	std::visit([&](auto&& dataMember) {
@@ -583,7 +599,6 @@ inline void DisplayProperty<serialized_field_type>(Editor& editor, const char* d
 
 		// Generalization
 		DisplayProperty<FieldType>(editor, dataMemberName, dataMember);
-		
 	}, dataMember);
 }
 
@@ -609,11 +624,18 @@ inline void DisplayProperty<serialized_field_list>(Editor& editor, const char* d
 		ImGui::SetNextItemWidth(150.f);
 		ImGui::InputInt("Count", &size);
 
-		if (
-			size != static_cast<int>(dataMember.size())
-			&& size >= 0
-			) {
+		if (size != static_cast<int>(dataMember.size()) && size >= 0) {
 			dataMember.resize(size);
+			// Set enum default value type
+			try {
+				for (serialized_field_type& element : dataMember) {
+					FieldEnum& fieldEnum = std::get<FieldEnum>(element);
+					if (fieldEnum.type.empty())
+						fieldEnum.type = dataMember.getEnumType();
+				}
+			}
+			catch (...) {}
+
 		}
 
 		ImGui::EndChild();

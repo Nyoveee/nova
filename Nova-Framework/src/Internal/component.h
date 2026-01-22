@@ -463,10 +463,10 @@ struct AudioData
 
 struct AudioComponent 
 {
-	std::unordered_map<std::string, AudioData> data {};
+	float volume{ 1.f };
 	bool loop{};
 	REFLECTABLE(
-		data,
+		volume,
 		loop
 	)
 };
@@ -720,6 +720,7 @@ struct ParticleEmitter
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
+	bool invertMovement = false;
 	float startSize = 1.f;
 	float minStartSizeOffset = 0.f;
 	float maxStartSizeOffset = 0.f;
@@ -759,6 +760,7 @@ struct ParticleEmitter
 		lightRadius,
 		looping,
 		randomizedDirection,
+		invertMovement,
 		particleEmissionTypeSelection,
 		particleColorSelection,
 		sizeOverLifetime,
@@ -770,7 +772,6 @@ struct alignas(16) ParticleLifespanData {
 	glm::vec4 startColor{};
 	glm::vec4 endColor{};
 	alignas(16) glm::vec3 velocity{};
-	alignas(16) glm::vec3 direction{};
 	alignas(16) glm::vec3 force{};
 	alignas(16) glm::vec3 lightattenuation{};
 	float colorInterpolation{};
@@ -782,9 +783,9 @@ struct alignas(16) ParticleLifespanData {
 	float endSize{};
 	float currentLifeTime{};
 	float lifeTime{};
-	bool colorOverLifetime{};
-	bool sizeOverLifetime{};
-	bool b_Active{};
+	int colorOverLifetime{};
+	int sizeOverLifetime{};
+	int b_Active{};
 };
 struct Text {
 	TypedResourceID<Font> font;

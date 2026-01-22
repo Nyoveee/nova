@@ -14,11 +14,12 @@ namespace ScriptingAPI {
 	ManagedResource(Model)
 	ManagedResource(Material)
 	ManagedResource(Scene)
+	ManagedResource(Audio)
 }
 
 
 #define ALL_MANAGED_TYPED_RESOURCE_ID \
-	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material, ScriptingAPI::Scene
+	ScriptingAPI::Prefab, ScriptingAPI::Texture, ScriptingAPI::Model, ScriptingAPI::Material, ScriptingAPI::Scene, ScriptingAPI::Audio
 
 // ===========================================================================================
 // 1. Defining structs..
@@ -375,6 +376,9 @@ void pause();
 
 ManagedComponentEnd()
 
+// ======================================
+// Audio Component
+// ======================================
 ManagedComponentDeclaration(
 	Light,
 	float, intensity,
@@ -383,4 +387,14 @@ ManagedComponentDeclaration(
 
 ManagedComponentEnd()
 
+#undef PlaySound
+ManagedComponentDeclaration(
+	AudioComponent,
+	float, volume
+)
+void PlaySound(ScriptingAPI::Audio^ audio);
+void PlayRandomSound(System::Collections::Generic::List<ScriptingAPI::Audio^>^ audio);
+void PlayBGM(ScriptingAPI::Audio^ audio);
+void StopSound(ScriptingAPI::Audio^ audio);
 
+ManagedComponentEnd()

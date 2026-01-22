@@ -1,90 +1,90 @@
 {
     "entryNode": 1000,
     "nodes": {
-        "1000": {
-            "animation": 18446744073709551615,
-            "animationEvents": null,
-            "id": 1000,
-            "name": "Entry Node",
+        "9868178887971946501": {
+            "id": 9868178887971946501,
+            "animation": 7295743889278828547,
+            "transitions": null,
             "toLoop": true,
-            "transitions": [
+            "name": "Gunner_Idle",
+            "animationEvents": null
+        },
+        "1221267603423068175": {
+            "id": 1221267603423068175,
+            "animation": 4413440127761711109,
+            "transitions": null,
+            "toLoop": false,
+            "name": "Gunner_Jump",
+            "animationEvents": [
                 {
-                    "conditions": null,
-                    "nextNode": 9868178887971946501
+                    "key": 10,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent4"
                 }
             ]
         },
-        "1221267603423068175": {
-            "animation": 4413440127761711109,
-            "animationEvents": [
+        "1000": {
+            "id": 1000,
+            "animation": 18446744073709551615,
+            "transitions": [
                 {
-                    "functionName": "TriggerEvent4",
-                    "key": 10,
-                    "scriptId": 16372493856992313355
+                    "nextNode": 9868178887971946501,
+                    "conditions": null
                 }
             ],
-            "id": 1221267603423068175,
-            "name": "Gunner_Jump",
-            "toLoop": false,
-            "transitions": null
+            "toLoop": true,
+            "name": "Entry Node",
+            "animationEvents": null
         },
         "13903404154096713735": {
-            "animation": 7562335878756352001,
-            "animationEvents": [
-                {
-                    "functionName": "TriggerEvent1",
-                    "key": 28,
-                    "scriptId": 16372493856992313355
-                }
-            ],
             "id": 13903404154096713735,
-            "name": "Gunner_Attack",
+            "animation": 7562335878756352001,
+            "transitions": null,
             "toLoop": true,
-            "transitions": null
-        },
-        "16209247163311652875": {
-            "animation": 4680032117239234563,
+            "name": "Gunner_Attack",
             "animationEvents": [
                 {
-                    "functionName": "TriggerEvent3",
-                    "key": 77,
-                    "scriptId": 16372493856992313355
+                    "key": 28,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent1"
                 }
-            ],
-            "id": 16209247163311652875,
-            "name": "Gunner_Death",
-            "toLoop": false,
-            "transitions": null
+            ]
         },
         "5832953621849931785": {
-            "animation": 2684057870851440649,
-            "animationEvents": null,
             "id": 5832953621849931785,
-            "name": "Gunner_Walk",
+            "animation": 2684057870851440649,
+            "transitions": null,
             "toLoop": true,
-            "transitions": null
+            "name": "Gunner_Walk",
+            "animationEvents": null
         },
-        "9291718135670767629": {
-            "animation": 954675613941170183,
+        "16209247163311652875": {
+            "id": 16209247163311652875,
+            "animation": 4680032117239234563,
+            "transitions": null,
+            "toLoop": false,
+            "name": "Gunner_Death",
             "animationEvents": [
                 {
-                    "functionName": "TriggerEvent2",
-                    "key": 28,
-                    "scriptId": 16372493856992313355
+                    "key": 77,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent3"
                 }
-            ],
-            "id": 9291718135670767629,
-            "name": "Gunner_Stagger",
-            "toLoop": false,
-            "transitions": null
+            ]
         },
-        "9868178887971946501": {
-            "animation": 7295743889278828547,
-            "animationEvents": null,
-            "id": 9868178887971946501,
-            "name": "Gunner_Idle",
-            "toLoop": true,
-            "transitions": null
+        "9291718135670767629": {
+            "id": 9291718135670767629,
+            "animation": 954675613941170183,
+            "transitions": null,
+            "toLoop": false,
+            "name": "Gunner_Stagger",
+            "animationEvents": [
+                {
+                    "key": 28,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent2"
+                }
+            ]
         }
     },
     "parameters": null

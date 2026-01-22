@@ -348,21 +348,15 @@ private:
 	std::unordered_map<MeshID, MeshBOs> meshBOs; // VA 0 - 4
 
 	// SSBO and UBO.
-	LightSSBO lightSSBO;
-	BufferObject clusterSSBO;
+	LightSSBO lightSSBO;				// SSBO 0 - 2 (Pointlight, Spotlight, DirectionalLight)	
+	BufferObject bonesSSBO;				// SSBO 3, bones SSBO
+	BufferObject clusterSSBO;			// SSBO 7
+	BufferObject volumetricFogSSBO;		// SSBO 8, Volumetric Fog SSBO
 
-	BufferObject cameraUBO;
-	BufferObject PBRUBO;
-	BufferObject reflectionProbesUBO;
-
-	// Skeletal animation, bones SSBO
-	BufferObject bonesSSBO;
-
-	// Volumetric Fog SSBO
-	BufferObject volumetricFogSSBO;
-
-	// stores the shadow caster matrixes in a UBO.
-	BufferObject shadowCasterMatrixes;
+	BufferObject cameraUBO;				// UBO 0
+	BufferObject shadowCasterMatrixes;	// UBO 1  stores the shadow caster matrixes in a UBO.
+	BufferObject PBRUBO;				// UBO 2
+	BufferObject reflectionProbesUBO;	// UBO 3
 
 	// Particle VAO and VBO
 	GLuint particleVAO;
@@ -419,7 +413,6 @@ private:
 	std::unordered_set<int> freeCubeMapArraySlots;
 
 private:
-	unsigned int numOfPtLights;
 
 	int numOfPhysicsDebugTriangles;
 	int numOfPhysicsDebugLines;
@@ -485,7 +478,6 @@ public:
 	ComputeShader clusterBuildingCompute;
 	ComputeShader clusterLightCompute;
 	ComputeShader rayMarchingVolumetricFogCompute;
-	ComputeShader volumetricFogBufferResetCompute;
 
 	// HDR parameters
 	float hdrExposure;

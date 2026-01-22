@@ -1,7 +1,8 @@
 using System;
-
+using ScriptingAPI;
 class Door : Script
 {
+    // States
     private enum DoorState
     {
         Closed,
@@ -20,6 +21,13 @@ class Door : Script
  
     private Dictionary<DoorState, CurrentState> updateState = new Dictionary<DoorState, CurrentState>();
 
+    // Components
+    private AudioComponent_? audioComponent;
+    // Editable 
+    [SerializableField]
+    private Audio doorOpenSFX;
+    [SerializableField]
+    private Audio doorClosedSFX;
 
     [SerializableField]
     private int doorType;
@@ -30,8 +38,6 @@ class Door : Script
     private Transform_ leftDoor;
     [SerializableField]
     private Transform_ rightDoor;
-
-    // Editable 
     [SerializableField]
     private float openOffset = 2f;
     [SerializableField]
@@ -48,6 +54,7 @@ class Door : Script
     private float currentDoorMovingTime;
     protected override void init()
     {
+        audioComponent = getComponent<AudioComponent_>();
         leftStartClosed = leftDoor.localPosition;
         rightStartClosed = rightDoor.localPosition;
         leftStartOpen = leftDoor.localPosition - new Vector3(openOffset, 0, 0);
@@ -123,14 +130,14 @@ class Door : Script
         doorState = DoorState.Opening;
 
         currentDoorMovingTime = doorMovingDuration;
-        AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
+        audioComponent.PlaySound(doorOpenSFX);
     }
     public void CloseDoor()
     {
         doorState = DoorState.Closing;
 
         currentDoorMovingTime = doorMovingDuration;
-        AudioAPI.PlaySound(gameObject, "slidingDoor_close_01");
+        audioComponent.PlaySound(doorClosedSFX);
     }
     public void LockDoor()
     {

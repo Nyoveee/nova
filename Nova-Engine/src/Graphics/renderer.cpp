@@ -88,7 +88,7 @@ constexpr int DIFFUSE_IRRADIANCE_MAP_HEIGHT = 64;
 constexpr int MAX_REFLECTION_PROBES			= 30;
 
 // For Volumetric Fog
-constexpr int VOLUMETRIC_FOG_DOWNSCALE 		= 4;
+constexpr int VOLUMETRIC_FOG_DOWNSCALE 	= 4;
 
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
@@ -179,8 +179,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
-	rayMarchingVolumetricFogCompute	{ "System/Shader/VolumetricFog/rayMarchingVolumetricFog.compute" },
-	volumetricFogBufferResetCompute	{ "System/Shader/VolumetricFog/volumetricFogBufferReset.compute" },
+	rayMarchingVolumetricFogCompute	{ "System/Shader/rayMarchingVolumetricFog.compute" },
 	mainVAO							{},
 	positionsVBO					{ AMOUNT_OF_MEMORY_ALLOCATED },
 	textureCoordinatesVBO			{ AMOUNT_OF_MEMORY_ALLOCATED },
@@ -365,8 +364,10 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	rayMarchingVolumetricFogCompute.use();
 	rayMarchingVolumetricFogCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
 	
+#if 0
 	volumetricFogBufferResetCompute.use();
 	volumetricFogBufferResetCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+#endif
 
 	// ======================================================
 	// Post Process Shader Configuration
@@ -2194,7 +2195,7 @@ void Renderer::prepareLights() {
 	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
 	std::array<SpotLightData, MAX_NUMBER_OF_LIGHT>			spotLightData;
 
-	numOfPtLights = 0;
+	unsigned int numOfPtLights = 0;
 	unsigned int numOfDirLights = 0;
 	unsigned int numOfSpotLights = 0;
 
@@ -3107,23 +3108,15 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 void Renderer::computePostProcessing(PairFrameBuffer& frameBuffers, Camera const& camera)
 {
 	// Get the depth Texture
-	if (numOfPtLights) {
-		glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().depthStencilId());
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().depthStencilId());
 
-		// Upload camera data to the UBO
-		// updateCameraUBO(camera);
-
-		// Reset the VolumetricFog SSBO Data
-		volumetricFogBufferResetCompute.use();
-		glDispatchCompute(gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE, 1);
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-
-		// Run the Ray Marching Volumetric Compute shader
-		rayMarchingVolumetricFogCompute.use();
-		rayMarchingVolumetricFogCompute.setImageUniform("depthBuffer", 0);
-		glDispatchCompute(gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE, numOfPtLights);
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	}
+	// Run the Ray Marching Volumetric Compute shader
+	rayMarchingVolumetricFogCompute.use();
+	rayMarchingVolumetricFogCompute.setImageUniform("depthBuffer", 0);
+	glBindTextureUnit(0, spotlightShadowMaps.getTextureId());
+	rayMarchingVolumetricFogCompute.setImageUniform("spotlightShadowMaps", 0);
+	glDispatchCompute(gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
 void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
@@ -3311,6 +3304,7 @@ void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& m
 
 	for (auto const& [name, overriddenUniformData] : material.materialData.overridenUniforms) {
 		std::visit([&](auto&& value) {
+			Material const& p_material = material;
 			using Type = std::decay_t<decltype(value)>;
 
 			if constexpr (std::same_as<Type, bool>) {

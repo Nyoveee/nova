@@ -13,9 +13,6 @@ public abstract class Enemy : Script
     
     
     }
-
-
-
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -36,6 +33,7 @@ public abstract class Enemy : Script
         Local Variables
     ***********************************************************/
     protected GameObject? player = null;
+    protected AudioComponent_? audioComponent = null;
     private EnemyStats? enemyStats = null;
     private bool wasRecentlyDamaged = false;
     private float ichorSpawnPositionVariance = 1.5f;
@@ -181,6 +179,7 @@ public abstract class Enemy : Script
     protected override void init()
     {
         enemyStats = getScript<EnemyStats>();
+        audioComponent = getComponent<AudioComponent_>();
         player = GameObject.FindWithTag("Player");
         navMeshAgent.setAutomateNavMeshOfflinksState(false);
     }
