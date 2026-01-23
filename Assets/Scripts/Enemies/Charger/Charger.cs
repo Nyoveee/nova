@@ -219,7 +219,8 @@ class Charger : Enemy
                 {
                     chargerState = ChargerState.Death;
                     animator.PlayAnimation("ChargerDeath");
-                    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                    //ADD SHUFFLE _1 to _4
+                    AudioAPI.PlaySound(gameObject, "Charger-Death_3");
                     chargingRigidbody.enable = false;
                     navMeshRigidbody.enable = false;
                     chargeLines.SetActive(false);
@@ -231,7 +232,8 @@ class Charger : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (chargerState == ChargerState.Death && !WasRecentlyDamaged())
                 {
-                    AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                    //ADD SHUFFLE _1 to _4
+                    AudioAPI.PlaySound(gameObject, "Charger-Hurt_1");
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
                     renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
@@ -256,6 +258,8 @@ class Charger : Enemy
         {
             chargerState = ChargerState.Walk;
             animator.PlayAnimation("ChargerWalk");
+            //ADD SHUFFLE _1 to _4
+            AudioAPI.PlaySound(gameObject, "Charger-Spot_3");
             return;
         }
     }
