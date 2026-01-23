@@ -225,7 +225,7 @@ void PhysicsManager::updatePhysics(float dt) {
 
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
-	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
+	// @TODO: Don't update every frame! Only update when there is a change in transform. 
 	// =============================================================
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {

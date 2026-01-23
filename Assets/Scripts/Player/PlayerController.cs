@@ -311,16 +311,17 @@ class PlayerController : Script
     private void handleDashing()
     {
         // We finished dashing..
-        //if (dashTimeElapsed > dashDuration)
-        //{
-        //    isDashing = false;
-        //    rigidbody.SetVelocity(Vector3.Zero());
-        //    return;
-        //}
+        if (dashTimeElapsed > dashDuration)
+        {
+            isDashing = false;
+            rigidbody.SetVelocity(Vector3.Zero());
+            return;
+        }
 
-        //// constantly apply velocity.
-        //rigidbody.SetVelocity(dashVector * dashStrength);
-        //dashTimeElapsed += Time.V_FixedDeltaTime();
+        // constantly apply velocity.
+        // rigidbody.SetVelocity(dashVector * dashStrength);
+        //rigidbody.AddImpulse(dashVector * dashStrength);
+        dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
@@ -425,7 +426,8 @@ class PlayerController : Script
         }
 
         dashVector.Normalize();
-       // rigidbody.SetVelocity(dashVector * dashStrength);
+        //rigidbody.SetVelocity(dashVector * dashStrength);
+        rigidbody.AddImpulse(dashVector * dashStrength);
     }
 
     /***********************************************************
