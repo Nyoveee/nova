@@ -28,7 +28,8 @@ AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, Resourc
 	assetManager					{ assetManager },
 	resourceManager					{ resourceManager },
 	selectedResourceId				{ INVALID_RESOURCE_ID },
-	toSerialiseSelectedDescriptor	{ false }
+	toSerialiseSelectedDescriptor	{ false },
+	toOverrideEditSystemResource	{ false }
 {}
 
 void AssetViewerUI::update() {
@@ -58,10 +59,13 @@ void AssetViewerUI::update() {
 
 	// we store this in a variable because selected resource id may change midst execution of this window,
 	bool isSystem = isSystemResource(selectedResourceId);
+	bool toOverrideSystemDisable = toOverrideEditSystemResource;
 
 	if (isSystem) {
-		ImGui::BeginDisabled();
 		ImGui::TextWrapped("This is a system resource. In built into the engine, it is not meant to be modified.");
+		ImGui::Checkbox("[Debug] Override disable.", &toOverrideEditSystemResource);
+		
+		if(!toOverrideSystemDisable) ImGui::BeginDisabled();
 	}
 
 	// ===== Display asset name ======
@@ -108,7 +112,7 @@ void AssetViewerUI::update() {
 
 	displayResourceUIFunctor.template operator()<ALL_RESOURCES>(selectedResourceId);
 
-	if (isSystem) {
+	if (isSystem && !toOverrideSystemDisable) {
 		ImGui::EndDisabled();
 	}
 
@@ -180,6 +184,8 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 		return;
 	}
 
+	toOverrideEditSystemResource = false;
+
 	// populate history..
 	if (selectedResourceId != INVALID_RESOURCE_ID) {
 		previousResourceIds.push_back(selectedResourceId);
@@ -192,7 +198,6 @@ void AssetViewerUI::selectNewResourceId(ResourceID id) {
 		previousResourceIds.pop_front();
 	}
 }
-
 
 void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& descriptor)
 {

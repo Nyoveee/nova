@@ -21,12 +21,13 @@ int main() {
 #endif
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-	GameConfig gameConfig = Serialiser::deserialiseGameConfig("gameConfig.json");
+	GameConfig		gameConfig		= Serialiser::deserialiseGameConfig("gameConfig.json");
+	RenderConfig	renderConfig	= Serialiser::deserialiseRenderConfig("renderConfig.json");
 
 	InputManager	inputManager	{};
 	ResourceManager resourceManager	{};
 	Window			window			{ gameConfig.gameName.c_str(), {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::ChangeDuringResize};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Game };
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig, renderConfig, Engine::State::Game };
 
 	// In the executable, we don't do any compiling. We assume it has been compiled and provided for.
 	
@@ -44,7 +45,7 @@ int main() {
 		// Update loop.
 		[&](float dt) {
 			engine.update(dt);
-			engine.render(RenderConfig::Game);
+			engine.render(RenderMode::Game);
 		}
 	);
 }

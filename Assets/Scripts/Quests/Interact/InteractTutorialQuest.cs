@@ -5,11 +5,18 @@ using ScriptingAPI;
 
 class InteractTutorialQuest : InteractableQuest
 {
+    private AudioComponent_? audioComponent;
     [SerializableField]
     private MeshRenderer_? renderer;
     [SerializableField]
     private Sequence_? droppingBoxSequencer;
+    [SerializableField]
+    private Audio interactSFX;
     // This function is first invoked when game starts.
+    protected override void init()
+    {
+        audioComponent = getComponent<AudioComponent_>();
+    }
     public override void OnEnter() {
         MapKey(Key.E, CheckInteraction);
     }
@@ -17,7 +24,7 @@ class InteractTutorialQuest : InteractableQuest
     public override void OnSuccess(){
         renderer.setMaterialFloat(0, "emissiveStrength", 9f);
         droppingBoxSequencer.play();
-        AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
+        audioComponent.PlaySound(interactSFX);
     }
     public override void OnFail(Transform_ playerTransform){
         if (playerTransform != null && playerCheckpoint != null)

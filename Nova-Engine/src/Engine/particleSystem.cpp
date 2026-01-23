@@ -224,8 +224,8 @@ void ParticleSystem::determineParticleSpawnDetails(
 			RadiusEmitter& radiusEmitter{ emitter.particleEmissionTypeSelection.radiusEmitter };
 			ConeEmitter& coneEmitter{ emitter.particleEmissionTypeSelection.coneEmitter };
 			float radius = radiusEmitter.radius, distance = coneEmitter.distance;
-			float arc = Radian{ Degree{std::clamp(coneEmitter.arc, 0.f, 75.f)} };
-			float outerRadius = radius + coneEmitter.distance * std::sin(arc);
+			float arc = Radian{ Degree{std::clamp(coneEmitter.arc, 0.f, 90.f)} };
+			float outerRadius = radius + coneEmitter.distance * std::tan(arc);
 			// Other Details
 			float spawnRadius = RandomRange::Float(0, radius);
 			// Calculate the spawn to target Position
@@ -301,6 +301,7 @@ void ParticleSystem::rotateParticle(ParticleLifespanData& particleLifeSpanData, 
 
 void ParticleSystem::addParticleToList(ParticleLifespanData& particleLifeSpanData, ParticleVertex& particleVertex, TypedResourceID<Texture> texture)
 {
+	particleLifeSpanData.b_Active = true;
 	std::vector<TypedResourceID<Texture>>::iterator iter = std::find(std::begin(usedTextures), std::end(usedTextures), texture);
 	int textureIndex;
 	if (iter == std::end(usedTextures)) {
@@ -336,18 +337,6 @@ void ParticleSystem::populateParticleLights(int count)
 		glDispatchCompute((numTextures * MAX_PARTICLES_PER_TEXTURE) / LOCALWORKGROUPSIZE + 1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	}
-
-#if 0
-	glGetNamedBufferSubData(particleLightsSSBO.id(), 0, sizeof(int), &lightParticleCount);
-	
-	glGetNamedBufferSubData(particleLightsSSBO.id(), sizeof(int), sizeof(bool), &b_Exceeded);
-	std::vector<PointLightData> particleLights(lightParticleCount);
-	glGetNamedBufferSubData(particleLightsSSBO.id(), alignof(PointLightData), lightParticleCount * sizeof(PointLightData), particleLights.data());
-	
-	if(b_Exceeded)
-		Logger::warn("Unable to add more particle lights, max number of point lights reached!");
-	return particleLights;
-#endif
 }
 
 BufferObject const& ParticleSystem::getParticeVerticesBO()
@@ -386,6 +375,10 @@ void ParticleSystem::spawnParticle(Transform const& transform, ParticleEmitter& 
 		emitter.maxStartSizeOffset
 	);
 	rotateParticle(particleLifeSpanData,particleVertex,transform);
+	if (emitter.invertMovement) {
+		particleVertex.position += particleLifeSpanData.lifeTime * particleLifeSpanData.velocity;
+		particleLifeSpanData.velocity = -particleLifeSpanData.velocity;
+	}
 	addParticleToList(particleLifeSpanData, particleVertex,emitter.texture);
 }
 

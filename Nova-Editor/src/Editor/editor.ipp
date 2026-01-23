@@ -3,7 +3,7 @@
 #include "IconsFontAwesome6.h"
 #include "editor.h"
 
-template<typename T>
+template<typename T, bool showNone>
 void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> const& onClickCallback) {
 	char const* selectedAssetName = "";
 
@@ -27,6 +27,12 @@ void Editor::displayAssetDropDownList(std::optional<ResourceID> id, const char* 
 
 	if (ImGui::BeginCombo(labelName, selectedAssetName)) {
 		ImGui::InputText("Search", &assetSearchQuery);
+
+		if constexpr (showNone) {
+			if (ImGui::Selectable("<None>", false)) {
+				onClickCallback(INVALID_RESOURCE_ID);
+			}
+		} 
 
 		for (auto&& resourceId : allResources) {
 			std::string const* assetName = assetManager.getName(resourceId);

@@ -1,96 +1,96 @@
 {
-    "blendingConfig": "Disabled",
-    "cullingConfig": "Enable",
-    "depthTestingMethod": "DepthTest",
+    "selectedShader": 17631593000886566917,
     "overridenUniforms": {
-        "dissolveTexture": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_type": 9,
-                "__variant_value": 1794271476785463393
-            }
-        },
         "dissolveThreshold": {
             "type": "NormalizedFloat",
             "value": {
-                "__variant_type": 12,
-                "__variant_value": 1.0
-            }
-        },
-        "edgeColor": {
-            "type": "Color",
-            "value": {
-                "__variant_type": 10,
-                "__variant_value": {
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                }
-            }
-        },
-        "edgeWidth": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
-            }
-        },
-        "mainTexture": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_type": 9,
-                "__variant_value": 13031060439616815105
-            }
-        },
-        "metallic": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
-            }
-        },
-        "normalMap": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_type": 9,
-                "__variant_value": 14183981944223694851
-            }
-        },
-        "occulusion": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
+                "__variant_value": 1.0,
+                "__variant_type": 12
             }
         },
         "packedMap": {
             "type": "sampler2D",
             "value": {
-                "__variant_type": 9,
-                "__variant_value": 2654766898155241477
+                "__variant_value": 2654766898155241477,
+                "__variant_type": 9
+            }
+        },
+        "dissolveTexture": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 1794271476785463393,
+                "__variant_type": 9
+            }
+        },
+        "mainTexture": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 13031060439616815105,
+                "__variant_type": 9
+            }
+        },
+        "edgeColor": {
+            "type": "Color",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        "edgeWidth": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        "metallic": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        "normalMap": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 14183981944223694851,
+                "__variant_type": 9
+            }
+        },
+        "occulusion": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
             }
         },
         "roughness": {
             "type": "NormalizedFloat",
             "value": {
-                "__variant_type": 12,
-                "__variant_value": 0.0
+                "__variant_value": 0.0,
+                "__variant_type": 12
             }
         },
         "toUseNormalMap": {
             "type": "bool",
             "value": {
-                "__variant_type": 0,
-                "__variant_value": true
+                "__variant_value": true,
+                "__variant_type": 0
             }
         },
         "toUsePackedMap": {
             "type": "bool",
             "value": {
-                "__variant_type": 0,
-                "__variant_value": true
+                "__variant_value": true,
+                "__variant_type": 0
             }
         }
     },
-    "selectedShader": 17631593000886566917
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
 }

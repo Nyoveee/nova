@@ -13,11 +13,11 @@
 #include "ECS/SceneManager.h"
 
 
-Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, State state) :
+Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& resourceManager, GameConfig gameConfig, RenderConfig renderConfig, State state) :
 	window					{ window },
 	resourceManager			{ resourceManager },
 	inputManager            { inputManager },
-	renderer				{ *this, gameConfig.gameWidth, gameConfig.gameHeight },
+	renderer				{ *this, renderConfig, gameConfig.gameWidth, gameConfig.gameHeight },
 	cameraSystem			{ *this },
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
@@ -109,7 +109,7 @@ void Engine::setupSimulation() {
 	setupSimulationFunction = std::nullopt;
 }
 
-void Engine::render(RenderConfig renderConfig) {
+void Engine::render(RenderMode renderMode) {
 #if defined(DEBUG)
 	ZoneScoped;
 #endif
@@ -118,7 +118,7 @@ void Engine::render(RenderConfig renderConfig) {
 		physicsManager.debugRender();
 	}
 
-	renderer.renderMain(renderConfig);
+	renderer.renderMain(renderMode);
 }
 
 void Engine::startSimulation() {
@@ -269,6 +269,7 @@ void Engine::SystemsUnload() {
 
 	renderer.hdrExposure = 0.9f;
 	renderer.vignette = 0.f;
+	renderer.resetLoadedReflectionProbes();
 }
 
 void Engine::quit() {

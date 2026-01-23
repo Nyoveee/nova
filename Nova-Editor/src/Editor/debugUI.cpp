@@ -12,6 +12,9 @@
 #include <format>
 #include <GLFW/glfw3.h>
 
+#include "cubemap.h"
+
+#include "API/assetSerializer.h"
 
 DebugUI::DebugUI(Editor& editor) :
 	editor			{ editor },
@@ -23,6 +26,16 @@ DebugUI::DebugUI(Editor& editor) :
 
 void DebugUI::update() {
 	ImGui::Begin(ICON_FA_MOBILE_SCREEN " Statistics");
+
+	if (ImGui::Button("Bake skybox")) {
+		AssetSerializer::serialiseCubeMap(renderer.bakeDiffuseIrradianceMap([&] {
+			renderer.renderSkyBox();
+		}));
+
+		AssetSerializer::serialiseCubeMap(renderer.bakeSpecularIrradianceMap([&] {
+			renderer.renderSkyBox();
+		}));
+	}
 
 	ImGui::Text("Hovering entity: %u", static_cast<unsigned int>(editor.hoveringEntity));
 
@@ -64,7 +77,6 @@ void DebugUI::renderPhysicsSection() {
 	ImGui::Checkbox("Particle Emission Shape debug render", &engine.toDebugRenderParticleEmissionShape);
 	ImGui::Checkbox("(Frustum Culling) Bounding Volume debug render", &renderer.toDebugRenderBoundingVolume);
 	ImGui::Checkbox("Clusters debug render", &renderer.toDebugClusters);
-	ImGui::Checkbox("SSAO", &renderer.toEnableSSAO);
 
 	ImGui::SeparatorText("Mouse positions");
 
@@ -105,12 +117,14 @@ void DebugUI::renderHDRSection() {
 
 	ImGui::SliderFloat("Vignette", &renderer.vignette, 0.f, 1.0f, "%.2f");
 
+#if 0
 	// Tone mapping method selection
 	auto currentMethod = renderer.getToneMappingMethod();
 
 	editor.displayEnumDropDownList<Renderer::ToneMappingMethod>(currentMethod, "Tone Mapping Method", [&](auto enumValue) {
 		renderer.setToneMappingMethod(enumValue);
 	});
+#endif
 
 	ImGui::SliderFloat("Bloom Filter Radius", &renderer.bloomFilterRadius, 0.0001f, 0.1f);
 	ImGui::SliderFloat("Bloom Composite Percentage", &renderer.bloomCompositePercentage, 0.f, 1.0f);

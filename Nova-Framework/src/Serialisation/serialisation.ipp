@@ -68,23 +68,20 @@ namespace Serialiser {
 
 		if (jsonComponent.find(componentName) == jsonComponent.end())
 			return;
-
-		try {
 			reflection::visit([&](auto fieldData) {
 				auto& dataMember = fieldData.get();
 				constexpr const char* dataMemberName = fieldData.name();
 				using DataMemberType = std::decay_t<decltype(dataMember)>;
-				deserializeFromJson<DataMemberType>(dataMember, jsonComponent[componentName][dataMemberName]);
+				try {
+					deserializeFromJson<DataMemberType>(dataMember, jsonComponent[componentName][dataMemberName]);
+				}
+				catch (std::exception const& ex) {
+					Logger::error("Error parsing [{}]{} for entity {} : {}", componentName, dataMemberName, static_cast<unsigned int>(entity), ex.what());
+				}
 
 			}, component);
 			registry.emplace<T>(entity, std::move(component));
-		}
-		catch (std::exception const& ex) {
-			Logger::error("Error parsing {} for entity {} : {}", componentName, static_cast<unsigned int>(entity), ex.what());
-			
-			if(!registry.any_of<T>(entity)) 
-				registry.emplace<T>(entity, std::move(component));
-		}
+		
 	}
 
 	template<typename T>

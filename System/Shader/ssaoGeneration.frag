@@ -7,8 +7,6 @@ uniform sampler2D depthMap;
 uniform sampler2D normalMap;
 uniform sampler2D noiseTexture;
 
-uniform vec2 screenDimensions;
-
 uniform float near;
 uniform float far;
 
@@ -16,11 +14,20 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
+
+layout(std140, binding = 2) uniform PBRUBO {
     vec4 samples[64];
 };
 
 const int kernelSize = 64;
-const float radius = 2;
+const float radius = 0.5;
 
 vec3 WorldPositionFromDepth(float depth, vec2 textureCoords) {
     // 1. Map to NDC space [-1, 1]
@@ -37,7 +44,7 @@ vec3 WorldPositionFromDepth(float depth, vec2 textureCoords) {
 float linearizeDepth(float depth) {
     // Example of reconstructing View-Space Z from a [0,1] Depth Map
     float ndcDepth = depth * 2.0 - 1.0; 
-    float viewZ = (2.0 * near * far) / (far + near - ndcDepth * (far - near));
+    float viewZ = (2.0 * zNear * zFar) / (zFar + zNear - ndcDepth * (zFar - zNear));
 
     return viewZ;
 }
@@ -62,10 +69,13 @@ void main() {
 
     float occlusion = 0.0;
 
+    // fragment's z position..
+    float viewZ = linearizeDepth(depth);
+
     for(int i = 0; i < kernelSize; ++i) {
         // we retrieve a random sample, and offset from the current fragment..
         vec3 samplePos = TBN * vec3(samples[i]);          // from tangent to view space
-        samplePos = viewPosition + samplePos * radius; 
+        samplePos = viewPosition + samplePos * radius * viewZ; 
 
         // we convert our sample position to screen space, so we can query for depth.
         vec4 offset = vec4(samplePos, 1.0);
@@ -78,7 +88,7 @@ void main() {
 
         const float bias = 0.025;
 
-        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(linearizeDepth(depth) - sampleDepth));
+        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(viewZ - sampleDepth));
         occlusion       += (sampleDepth <= -(samplePos.z + bias) ? 1.0 : 0.0) * rangeCheck;    
     }  
 

@@ -183,6 +183,7 @@
     <ClInclude Include="src\Engine\prefabManager.ipp" />
     <ClInclude Include="src\Engine\uiSystem.h" />
     <ClInclude Include="src\Graphics\bloomFrameBuffer.h" />
+    <ClInclude Include="src\Graphics\cubemapArray.h" />
     <ClInclude Include="src\Graphics\DebugShapes.h" />
     <ClInclude Include="src\Engine\particleSystem.h" />
     <ClInclude Include="src\ECS\SceneManager.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="src\Graphics\pairFrameBuffer.h" />
     <ClInclude Include="src\Graphics\renderer.h" />
     <ClInclude Include="src\Graphics\bufferObject.h" />
+    <ClInclude Include="src\Graphics\texture2dArray.h" />
     <ClInclude Include="src\InputManager\inputManager.h" />
     <ClInclude Include="src\InputManager\glfwInput.h" />
     <ClInclude Include="src\InputManager\inputEvent.h" />
@@ -222,6 +224,7 @@
     <ClCompile Include="src\Engine\prefabManager.cpp" />
     <ClCompile Include="src\Engine\uiSystem.cpp" />
     <ClCompile Include="src\Graphics\bloomFrameBuffer.cpp" />
+    <ClCompile Include="src\Graphics\cubemapArray.cpp" />
     <ClCompile Include="src\Graphics\DebugShapes.cpp" />
     <ClCompile Include="src\Engine\particleSystem.cpp" />
     <ClCompile Include="src\ECS\SceneManager.cpp" />
@@ -238,6 +241,7 @@
     <ClCompile Include="src\Graphics\pairFrameBuffer.cpp" />
     <ClCompile Include="src\Graphics\renderer.cpp" />
     <ClCompile Include="src\Graphics\bufferObject.cpp" />
+    <ClCompile Include="src\Graphics\texture2dArray.cpp" />
     <ClCompile Include="src\InputManager\inputManager.cpp" />
     <ClCompile Include="src\InputManager\inputMapping.cpp" />
     <ClCompile Include="src\Navigation\Navigation.cpp" />

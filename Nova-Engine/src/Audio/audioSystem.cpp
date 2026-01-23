@@ -51,10 +51,10 @@ namespace {
 }
 
 AudioSystem::AudioSystem(Engine& engine) :
-	engine{ engine },
-	resourceManager{ engine.resourceManager },
-	fmodSystem{ nullptr },
-	currentBGM{ nullptr }
+	engine			{ engine },
+	resourceManager	{ engine.resourceManager },
+	fmodSystem		{ nullptr },
+	currentBGM		{ nullptr }
 {
 	g_audioSystem = this;
 
@@ -153,15 +153,10 @@ void AudioSystem::updatePositionalAudio() {
 			volumeMultiplier = 1.0f - ((distance - positionalAudio.innerRadius) / (positionalAudio.maxRadius - positionalAudio.innerRadius));
 
 		for (auto& [instanceId, audioInstance] : audioInstances) {
-			bool belongsToEntity = false;
-			for (auto const& [soundName, audioData] : audioComponent.data) {
-				if (audioData.audioId == audioInstance.audioId) {
-					belongsToEntity = true;
-					break;
-				}
-			}
+			if (audioInstance.entity != entity)
+				continue;
 
-			if (belongsToEntity && audioInstance.channel) {
+			if (audioInstance.channel) {
 				FMOD_VECTOR pos = { sourcePos.x, sourcePos.y, sourcePos.z };
 				FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
 
@@ -261,7 +256,7 @@ ResourceID AudioSystem::getResourceId(const std::string& string) {
 
 	return INVALID_RESOURCE_ID;
 }
-
+#if 0
 void AudioSystem::playSFX(ResourceID id, float x, float y, float z, float volume)
 {
 	// Play the sound
@@ -292,7 +287,7 @@ void AudioSystem::playBGM(ResourceID id, float volume)
 		currentBGM = audioInstance;
 	}
 }
-
+#endif
 void AudioSystem::pauseSound(ResourceID audioId, bool paused)
 {
 	// Find all instances that were created from this audioId
@@ -319,13 +314,13 @@ void AudioSystem::StopAllAudio()
 	currentBGM = nullptr;
 }
 
-void AudioSystem::StopAudio(ResourceID audioId)
+void AudioSystem::StopAudio(entt::entity entity, ResourceID audioId)
 {
 	for (auto it = audioInstances.begin(); it != audioInstances.end(); )
 	{
 		auto& [instanceId, audioInstance] = *it;
 
-		if (audioInstance.audioId == audioId && audioInstance.channel)
+		if (audioInstance.entity == entity && audioInstance.audioId == audioId && audioInstance.channel)
 		{
 			audioInstance.channel->stop();
 			it = audioInstances.erase(it);
@@ -475,51 +470,37 @@ AudioSystem::AudioInstance* AudioSystem::createSoundInstance(ResourceID audioId,
 /***********************************************************************************************************
 	Scripting Functions
 ***********************************************************************************************************/
-void AudioSystem::playBGM(entt::entity entity, std::string soundName)
+void AudioSystem::playBGM(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio)
 {
-	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
-	if (!audio) {
-		Logger::warn("Attempting to play sound from entity with no audio component!");
+
+	if (audio == INVALID_RESOURCE_ID) {
+		Logger::error("Attempting to Play Audio that doesn't exist");
 		return;
 	}
 
-	auto iterator = audio->data.find(soundName);
-	if (iterator == audio->data.end()) {
-		Logger::warn("Entity has no sound named {}", soundName);
-		return;
-	}
-	auto&& [_, audioData] = *iterator;
 	// Stop previous BGM.
 	if (currentBGM) {
 		stopAudioInstance(*currentBGM);
 		currentBGM = nullptr;
 	}
 
-	AudioInstance* audioInstance = createSoundInstance(audioData.audioId,audioData.volume,entity);
+	AudioInstance* audioInstance = createSoundInstance(audio,audioComponent->volume,entity);
 	// Update current BGM
 	if (audioInstance) {
 		currentBGM = audioInstance;
 	}
 
 }
-void AudioSystem::playSFX(entt::entity entity, std::string soundName)
+void AudioSystem::playSFX(entt::entity entity, AudioComponent* audioComponent, TypedResourceID<Audio> audio)
 {
-	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
-	if (!audio) {
-		Logger::warn("Attempting to play sound from entity with no audio component!");
-		return;
-	}
-
-	auto iterator = audio->data.find(soundName);
-	if (iterator == audio->data.end()) {
-		Logger::warn("Entity has no sound named {}", soundName);
+	if (audio == INVALID_RESOURCE_ID) {
+		Logger::error("Attempting to Play Audio that doesn't exist");
 		return;
 	}
 
 	Transform const& transform = engine.ecs.registry.get<Transform>(entity);
-	auto&& [_, audioData] = *iterator;
 
-	AudioInstance* audioInstance = createSoundInstance(audioData.audioId, audioData.volume, entity);
+	AudioInstance* audioInstance = createSoundInstance(audio, audioComponent->volume, entity);
 	if (!audioInstance) return;
 
 	FMOD_VECTOR pos = { transform.position.x, transform.position.y, transform.position.z };
@@ -534,19 +515,11 @@ void AudioSystem::playSFX(entt::entity entity, std::string soundName)
 
 	audioInstance->channel->setPaused(false);
 }
-void AudioSystem::stopSound(entt::entity entity, std::string soundName)
+void AudioSystem::stopSound(entt::entity entity, TypedResourceID<Audio> audio)
 {
-	AudioComponent* audio = engine.ecs.registry.try_get<AudioComponent>(entity);
-	if (!audio) {
-		Logger::warn("Attempting to stop sound from entity with no audio component!");
+	if (audio == INVALID_RESOURCE_ID) {
+		Logger::error("Attempting to Stop Audio that doesn't exist");
 		return;
 	}
-
-	auto iterator = audio->data.find(soundName);
-	if (iterator == audio->data.end()) {
-		Logger::warn("Entity has no sound named {}", soundName);
-		return;
-	}
-	auto&& [_, audioData] = *iterator;
-	StopAudio(audioData.audioId);
+	StopAudio(entity, audio);
 }

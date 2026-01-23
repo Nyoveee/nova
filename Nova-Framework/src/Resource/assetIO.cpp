@@ -25,6 +25,7 @@
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDescriptorDirectories {
 	DescriptorSubDirectory(Texture),
 	DescriptorSubDirectory(Model),
+	DescriptorSubDirectory(EquirectangularMap),
 	DescriptorSubDirectory(CubeMap),
 	DescriptorSubDirectory(ScriptAsset),
 	DescriptorSubDirectory(Audio),
@@ -41,6 +42,7 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subDesc
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subResourceDirectories{
 	ResourceSubDirectory(Texture),
 	ResourceSubDirectory(Model),
+	ResourceSubDirectory(EquirectangularMap),
 	ResourceSubDirectory(CubeMap),
 	ResourceSubDirectory(ScriptAsset),
 	ResourceSubDirectory(Audio),
@@ -58,6 +60,7 @@ std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subReso
 std::unordered_map<ResourceTypeID, std::filesystem::path> const AssetIO::subAssetCacheDirectories{
 	AssetCacheSubDirectory(Texture),
 	AssetCacheSubDirectory(Model),
+	AssetCacheSubDirectory(EquirectangularMap),
 	AssetCacheSubDirectory(CubeMap),
 	AssetCacheSubDirectory(ScriptAsset),
 	AssetCacheSubDirectory(Audio),

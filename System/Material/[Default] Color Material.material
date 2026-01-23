@@ -1,33 +1,60 @@
 {
-    "blendingConfig": "Disabled",
-    "cullingConfig": "Enable",
-    "depthTestingMethod": "DepthTest",
+    "selectedShader": 2,
     "overridenUniforms": {
-        "color": {
-            "type": "Color",
+        "UVTiling": {
+            "type": "vec2",
             "value": {
-                "__variant_type": 10,
                 "__variant_value": {
-                    "b": 0.7448276281356812,
-                    "g": 0.7448276281356812,
-                    "r": 0.7448276281356812
-                }
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "__variant_type": 4
+            }
+        },
+        "UVOffset": {
+            "type": "vec2",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
             }
         },
         "intensity": {
             "type": "float",
             "value": {
-                "__variant_type": 3,
-                "__variant_value": 1.0
+                "__variant_value": 1.0,
+                "__variant_type": 3
             }
         },
         "transparency": {
             "type": "NormalizedFloat",
             "value": {
-                "__variant_type": 12,
-                "__variant_value": 1.0
+                "__variant_value": 1.0,
+                "__variant_type": 12
+            }
+        },
+        "albedo": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        "color": {
+            "type": "Color",
+            "value": {
+                "__variant_value": {
+                    "r": 0.7448276281356812,
+                    "g": 0.7448276281356812,
+                    "b": 0.7448276281356812
+                },
+                "__variant_type": 10
             }
         }
     },
-    "selectedShader": 2
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
 }

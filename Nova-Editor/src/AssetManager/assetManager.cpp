@@ -6,8 +6,10 @@
 #include "FileWatch.hpp"
 #include "Logger.h"
 
-#include "cubemap.h"
+#include "equirectangularMap.h"
 #include "Engine/engine.h"
+
+#include "cubemap.h"
 
 #include "Material.h"
 
@@ -227,7 +229,7 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 		return initialiseResourceFile.template operator()<Texture>();
 	}
 	else if (fileExtension == ".hdr") {
-		return initialiseResourceFile.template operator()<CubeMap>();
+		return initialiseResourceFile.template operator()<EquirectangularMap>();
 	}
 	else if (fileExtension == ".cs") {
 		return initialiseResourceFile.template operator()<ScriptAsset>();
@@ -258,6 +260,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	}
 	else if (fileExtension == ".sequencer") {
 		return initialiseResourceFile.template operator()<Sequencer>();
+	}
+	else if (fileExtension == ".dds") {
+		return initialiseResourceFile.template operator()<CubeMap>();
 	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);

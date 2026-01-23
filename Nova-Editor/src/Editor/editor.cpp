@@ -61,6 +61,7 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 	animatorController				{ *this },
 	gameConfigUI					{ *this },
 	editorConfigUI					{ *this },
+	renderConfigUI					{ *this },
 	isControllingInViewPort			{ false },
 	hoveringEntity					{ entt::null },
 	inSimulationMode				{ false }
@@ -239,6 +240,17 @@ bool Editor::isEntitySelected(entt::entity entity) {
 	return std::ranges::find(selectedEntities, entity) != std::end(selectedEntities);
 }
 
+bool Editor::isChildEntitySelected(entt::entity entity,entt::entity root)
+{
+	// Shouldn't expand if the root is selected
+	if(entity != root && isEntitySelected(entity))
+		return true;
+	for (entt::entity child : engine.ecs.registry.get<EntityData>(entity).children)
+		if (isChildEntitySelected(child,root))
+			return true;
+	return false;
+}
+
 bool Editor::hasAnyEntitySelected() const {
 	return selectedEntities.size();
 }
@@ -278,11 +290,9 @@ void Editor::main(float dt) {
 	assetManagerUi.update();
 	navBar.update();
 	assetViewerUi.update();
-	//navigationWindow.update();
 	animationTimeLine.update(dt);
-	//animatorController.update();
-	//gameConfigUI.update();
 	editorConfigUI.update();
+	renderConfigUI.update();
 
 	handleEntityHovering();
 
@@ -751,6 +761,10 @@ void Editor::displayEntityHierarchy(
 		if (selectedPredicate(entity)) {
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
+		if (isChildEntitySelected(entity, entity)) {
+			ImGui::SetNextItemOpen(true);
+		}
+			
 
 		toDisplayTreeNode = ImGui::TreeNodeEx((
 			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)

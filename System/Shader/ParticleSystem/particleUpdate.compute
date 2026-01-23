@@ -11,7 +11,6 @@ struct Particle{
     vec4 startColor;
     vec4 endColor;
     vec3 velocity;
-    vec3 direction;
     vec3 force;
     vec3 lightattenuation;
     float colorInterpolation;
@@ -34,7 +33,6 @@ layout(std430, binding = 4) buffer ParticleVertexList {
 
 layout(std430, binding = 5) buffer ParticleList {
     int particleCount;
-    int newParticleIndex;
     Particle particles[];
 };
 
@@ -55,7 +53,7 @@ vec4 InterpolationVector(vec4 start, vec4 end, float t, float degree) {
 
 void main() {
     uint particleIndex = gl_GlobalInvocationID.x;
-    if(particleIndex >= particleCount)
+    if(particleIndex >= particleCount || !particles[particleIndex].b_Active)
         return;
     particles[particleIndex].currentLifeTime -= dt;
     // Set this particle to be removed once it reach end of lifetime
