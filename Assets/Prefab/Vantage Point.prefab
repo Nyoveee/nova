@@ -1,52 +1,41 @@
 {
+    "RootEntity": 3,
     "Entities": [
         {
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Vantage Point",
-                "overridenComponents": null,
-                "overridenProperties": null,
+                "tag": "Vantage Point",
                 "parent": 4294967295,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 8977477721741262849,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 8977477721741262849
                 },
-                "tag": "Vantage Point"
-            },
-            "Light": {
-                "attenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "color": {
-                    "b": 0.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "cutOffAngle": 0.9666505455970764,
-                "intensity": 20.0,
-                "outerCutOffAngle": 0.7411017417907715,
-                "radius": 50.0,
-                "type": "PointLight"
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    5
-                ],
-                "modelId": 4
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
+                "position": {
+                    "x": 48.20203399658203,
+                    "y": 4.43781042098999,
+                    "z": -26.807069778442383
+                },
+                "scale": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                },
+                "rotation": {
+                    "w": 1.0,
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
-                "localEulerAngles": {
+                "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
@@ -56,36 +45,53 @@
                     "y": 4.43781042098999,
                     "z": -26.807069778442383
                 },
+                "localScale": {
+                    "x": 0.10000000149011612,
+                    "y": 0.10000000149011612,
+                    "z": 0.10000000149011612
+                },
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
-                },
-                "position": {
-                    "x": 48.20203399658203,
-                    "y": 4.43781042098999,
-                    "z": -26.807069778442383
-                },
-                "rotation": {
-                    "w": 1.0,
+                "localEulerAngles": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.0,
                     "z": 0.0
-                },
-                "scale": {
-                    "x": 0.10000000149011612,
-                    "y": 0.10000000149011612,
-                    "z": 0.10000000149011612
                 }
             },
-            "id": 0
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 0.0
+                },
+                "intensity": 20.0,
+                "cutOffAngle": 0.9666505455970764,
+                "outerCutOffAngle": 0.7411017417907715,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 50.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    5
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 3
         }
-    ],
-    "RootEntity": 0
+    ]
 }
