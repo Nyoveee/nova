@@ -1,22 +1,65 @@
 {
     "entities": [
         {
+            "Button": {
+                "colorMultiplier": 1.0,
+                "disabledColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "fadeDuration": 0.10000000149011612,
+                "highlightedColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "isInteractable": true,
+                "normalColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onHoverFunction": "",
+                "onPressFunction": "onPressed",
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "pressedColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "reference": {
+                    "entity": 5,
+                    "script": 5333748966267764737
+                }
+            },
             "EntityData": {
-                "children": [
-                    40894627,
-                    2097178
-                ],
+                "children": null,
                 "inactiveComponents": null,
                 "isActive": true,
-                "layerId": 0,
-                "name": "Slider Background",
+                "layerId": 1,
+                "name": "SFX Settings Knob",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 41943221,
+                "parent": 3,
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
+                    "prefabID": 0
                 },
                 "tag": ""
             },
@@ -24,17 +67,82 @@
                 "anchorMode": "Center",
                 "colorTint": {
                     "a": 1.0,
-                    "b": 0.7308918237686157,
-                    "g": 0.7308918237686157,
-                    "r": 0.8758620619773865
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
                 },
-                "texture": 7,
+                "texture": 8,
                 "textureCoordinatesRange": {
                     "x": 1.0,
                     "y": 1.0
                 },
                 "toFlip": false,
                 "toTile": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 599.0
+                                },
+                                "name": "minX"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1299.0
+                                },
+                                "name": "maxX"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.0
+                                },
+                                "name": "minValue"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "maxValue"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "currentValue"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": "SFX Slider Fill"
+                                },
+                                "name": "fillEntityName"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": "SFXVolume"
+                                },
+                                "name": "saveKey"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "maxVerticalDistance"
+                            }
+                        ],
+                        "scriptId": 5333748966267764737
+                    }
+                ]
             },
             "Transform": {
                 "eulerAngles": {
@@ -48,8 +156,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 956.7623291015625,
-                    "y": 545.3964233398438,
+                    "x": -0.4832834303379059,
+                    "y": -0.012264491058886051,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -59,13 +167,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 700.0,
-                    "y": 88.0,
-                    "z": 0.9999999403953552
+                    "x": 0.03571430966258049,
+                    "y": 1.3636363744735718,
+                    "z": 1.0
                 },
                 "position": {
-                    "x": 956.7623291015625,
-                    "y": 545.3964233398438,
+                    "x": 608.7015991210938,
+                    "y": 234.19911193847656,
                     "z": 0.0
                 },
                 "rotation": {
@@ -75,12 +183,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 700.0,
-                    "y": 88.0,
-                    "z": 0.9999999403953552
+                    "x": 25.00001335144043,
+                    "y": 120.0,
+                    "z": 1.0
                 }
             },
-            "id": 39846050
+            "id": 5
         },
         {
             "EntityData": {
@@ -88,14 +196,14 @@
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 2,
-                "name": "Slider fill",
+                "name": "SFX Slider Fill",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 39846050,
+                "parent": 3,
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
+                    "prefabID": 0
                 },
                 "tag": ""
             },
@@ -103,11 +211,11 @@
                 "anchorMode": "BottomLeft",
                 "colorTint": {
                     "a": 1.0,
-                    "b": 0.2680142819881439,
-                    "g": 0.2680142819881439,
-                    "r": 0.6758620738983154
+                    "b": 0.2666666805744171,
+                    "g": 0.2666666805744171,
+                    "r": 0.6745098233222961
                 },
-                "texture": 7,
+                "texture": 8,
                 "textureCoordinatesRange": {
                     "x": 1.0,
                     "y": 1.0
@@ -127,8 +235,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.4979955554008484,
-                    "y": -0.5028538703918457,
+                    "x": -0.5002433061599731,
+                    "y": -0.5028377175331116,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -138,13 +246,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 0.9999998807907104,
+                    "x": 1.0000008344650269,
+                    "y": 1.0,
                     "z": 1.0
                 },
                 "position": {
-                    "x": 608.1654052734375,
-                    "y": 501.1452941894531,
+                    "x": 596.8297119140625,
+                    "y": 191.02867126464844,
                     "z": 0.0
                 },
                 "rotation": {
@@ -154,34 +262,48 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 700.0,
-                    "y": 87.99999237060547,
-                    "z": 0.9999999403953552
+                    "x": 700.00048828125,
+                    "y": 88.0,
+                    "z": 1.0
                 }
             },
-            "id": 40894627
+            "id": 4
         },
         {
-            "Canvas": {
-                "placeholder": ""
-            },
             "EntityData": {
                 "children": [
-                    39846050
+                    4,
+                    5
                 ],
                 "inactiveComponents": null,
                 "isActive": true,
                 "layerId": 0,
-                "name": "Setting UI",
+                "name": "SFX Volume",
                 "overridenComponents": null,
                 "overridenProperties": null,
-                "parent": 4294967295,
+                "parent": 41943221,
                 "prefabID": 18446744073709551615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
+                    "prefabID": 0
                 },
                 "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.729411780834198,
+                    "g": 0.729411780834198,
+                    "r": 0.8745098114013672
+                },
+                "texture": 8,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
             },
             "Transform": {
                 "eulerAngles": {
@@ -195,8 +317,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
+                    "x": 947.0,
+                    "y": 235.2783660888672,
                     "z": 0.0
                 },
                 "localRotation": {
@@ -206,13 +328,13 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
+                    "x": 700.0,
+                    "y": 88.0,
                     "z": 1.0
                 },
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
+                    "x": 947.0,
+                    "y": 235.2783660888672,
                     "z": 0.0
                 },
                 "rotation": {
@@ -222,12 +344,12 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
+                    "x": 700.0,
+                    "y": 88.0,
                     "z": 1.0
                 }
             },
-            "id": 41943221
+            "id": 3
         },
         {
             "Button": {
@@ -300,7 +422,7 @@
                     "g": 1.0,
                     "r": 1.0
                 },
-                "texture": 7,
+                "texture": 8,
                 "textureCoordinatesRange": {
                     "x": 1.0,
                     "y": 1.0
@@ -312,6 +434,20 @@
                 "scriptDatas": [
                     {
                         "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 599.0
+                                },
+                                "name": "minX"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1299.0
+                                },
+                                "name": "maxX"
+                            },
                             {
                                 "data": {
                                     "__variant_type": 16,
@@ -335,10 +471,24 @@
                             },
                             {
                                 "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 400.0
+                                    "__variant_type": 7,
+                                    "__variant_value": "Slider fill"
                                 },
-                                "name": "sliderWidth"
+                                "name": "fillEntityName"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": "SliderVolume"
+                                },
+                                "name": "saveKey"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "maxVerticalDistance"
                             }
                         ],
                         "scriptId": 5333748966267764737
@@ -357,7 +507,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.48257768154144287,
+                    "x": -0.4856600761413574,
                     "y": -0.036792755126953125,
                     "z": 0.0
                 },
@@ -373,8 +523,8 @@
                     "z": 1.0
                 },
                 "position": {
-                    "x": 618.9579467773438,
-                    "y": 542.15869140625,
+                    "x": 607.0869140625,
+                    "y": 873.4908447265625,
                     "z": 0.0
                 },
                 "rotation": {
@@ -390,6 +540,588 @@
                 }
             },
             "id": 2097178
+        },
+        {
+            "Canvas": {
+                "placeholder": ""
+            },
+            "EntityData": {
+                "children": [
+                    39846050,
+                    2097154,
+                    3
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Setting UI",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 4294967295,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
+                "tag": ""
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                }
+            },
+            "id": 41943221
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 2,
+                "name": "Slider fill",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 39846050,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "BottomLeft",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.2680142819881439,
+                    "g": 0.2680142819881439,
+                    "r": 0.6758620738983154
+                },
+                "texture": 8,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.49799513816833496,
+                    "y": -0.5028543472290039,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 0.9999998807907104,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 598.452392578125,
+                    "y": 832.4774169921875,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 700.0,
+                    "y": 87.99999237060547,
+                    "z": 0.9999999403953552
+                }
+            },
+            "id": 40894627
+        },
+        {
+            "EntityData": {
+                "children": [
+                    40894627,
+                    2097178
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Master Volume",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 41943221,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 18446744073709551615
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.7308918237686157,
+                    "g": 0.7308918237686157,
+                    "r": 0.8758620619773865
+                },
+                "texture": 8,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 947.0490112304688,
+                    "y": 876.7285766601563,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 700.0,
+                    "y": 88.0,
+                    "z": 0.9999999403953552
+                },
+                "position": {
+                    "x": 947.0490112304688,
+                    "y": 876.7285766601563,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 700.0,
+                    "y": 88.0,
+                    "z": 0.9999999403953552
+                }
+            },
+            "id": 39846050
+        },
+        {
+            "EntityData": {
+                "children": [
+                    0,
+                    1
+                ],
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 0,
+                "name": "Music Volume",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 41943221,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.729411780834198,
+                    "g": 0.729411780834198,
+                    "r": 0.8745098114013672
+                },
+                "texture": 8,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 947.0,
+                    "y": 544.6036987304688,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 700.0,
+                    "y": 88.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 947.0,
+                    "y": 544.6036987304688,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 700.0,
+                    "y": 88.0,
+                    "z": 1.0
+                }
+            },
+            "id": 2097154
+        },
+        {
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 2,
+                "name": "Music Slider Fill",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 2097154,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "BottomLeft",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 0.2666666805744171,
+                    "g": 0.2666666805744171,
+                    "r": 0.6745098233222961
+                },
+                "texture": 8,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.49869897961616516,
+                    "y": -0.5102906823158264,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0000038146972656,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 597.9107055664063,
+                    "y": 499.6981201171875,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 700.0025634765625,
+                    "y": 88.0,
+                    "z": 1.0
+                }
+            },
+            "id": 0
+        },
+        {
+            "Button": {
+                "colorMultiplier": 1.0,
+                "disabledColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "fadeDuration": 0.10000000149011612,
+                "highlightedColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "isInteractable": true,
+                "normalColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onHoverFunction": "",
+                "onPressFunction": "onPressed",
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "pressedColor": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "reference": {
+                    "entity": 1,
+                    "script": 5333748966267764737
+                }
+            },
+            "EntityData": {
+                "children": null,
+                "inactiveComponents": null,
+                "isActive": true,
+                "layerId": 1,
+                "name": "Music Settings Knob",
+                "overridenComponents": null,
+                "overridenProperties": null,
+                "parent": 2097154,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "tag": ""
+            },
+            "Image": {
+                "anchorMode": "Center",
+                "colorTint": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "texture": 8,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toFlip": false,
+                "toTile": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "fields": [
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 599.0
+                                },
+                                "name": "minX"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 1299.0
+                                },
+                                "name": "maxX"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 0.0
+                                },
+                                "name": "minValue"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 100.0
+                                },
+                                "name": "maxValue"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "currentValue"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": "Music Slider Fill"
+                                },
+                                "name": "fillEntityName"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 7,
+                                    "__variant_value": "MusicVolume"
+                                },
+                                "name": "saveKey"
+                            },
+                            {
+                                "data": {
+                                    "__variant_type": 16,
+                                    "__variant_value": 50.0
+                                },
+                                "name": "maxVerticalDistance"
+                            }
+                        ],
+                        "scriptId": 5333748966267764737
+                    }
+                ]
+            },
+            "Transform": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.48482546210289,
+                    "y": 0.01705503650009632,
+                    "z": 0.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.03571440652012825,
+                    "y": 1.3636363744735718,
+                    "z": 1.0
+                },
+                "position": {
+                    "x": 607.6221923828125,
+                    "y": 546.1045532226563,
+                    "z": 0.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 25.00008201599121,
+                    "y": 120.0,
+                    "z": 1.0
+                }
+            },
+            "id": 1
         }
     ],
     "layers": [
