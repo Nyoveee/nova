@@ -52,8 +52,6 @@ namespace Serialiser {
 
 			j = nlohmann::ordered_json::parse(file);
 
-			std::cout << j.dump(4) << std::endl;
-
 			//file >> j;
 
 			layers.clear();

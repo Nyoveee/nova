@@ -6,7 +6,8 @@
 PrefabManager::PrefabManager(Engine& engine) :
 	resourceManager { engine.resourceManager },
 	ecsRegistry		{ engine.ecs.registry },
-	ecs				{ engine.ecs }
+	ecs				{ engine.ecs },
+	firstTimeLoad	{ false }
 {}
 
 entt::registry& PrefabManager::getPrefabRegistry() {
@@ -150,12 +151,15 @@ void PrefabManager::broadcast(entt::entity prefabEntity) {
 
 }
 
-void PrefabManager::prefabBroadcast() {
+void PrefabManager::prefabBroadcast(ResourceID prefabID) {
+
+	//Check if prefab is loaded
+	entt::entity prefabEntity = entt::null;
+
 	for (entt::entity entity : ecsRegistry.view<entt::entity>()) {
 		EntityData* entityData = ecsRegistry.try_get<EntityData>(entity);
-		if (entityData->prefabMetaData.prefabID != INVALID_RESOURCE_ID) {
-
-			entt::entity prefabEntity;
+		//if (entityData->prefabMetaData.prefabID != INVALID_RESOURCE_ID) {
+		if (entityData->prefabMetaData.prefabID == prefabID) {
 
 			//checks if prefab is loaded
 			auto iterator = prefabMap.find(entityData->prefabMetaData.prefabID);
@@ -164,34 +168,33 @@ void PrefabManager::prefabBroadcast() {
 				if (prefabEntity == entt::null) {
 					entityData->prefabMetaData.prefabID = INVALID_RESOURCE_ID;
 				}
-				continue;
+				break;
 			}
 			else {
 				prefabEntity = iterator->second;
+				break;
 			}
-
-			//if (prefabMap.find(entityData->prefabMetaData.prefabID) == prefabMap.end()) {
-			//	prefabEntity = loadPrefab(entityData->prefabMetaData.prefabID);
-			//	if (prefabEntity == entt::null) {
-			//		entityData->prefabMetaData.prefabID = INVALID_RESOURCE_ID;
-			//	}
-			//}
 			
-			//only broadcast the root
-			EntityData* prefabData = prefabRegistry.try_get<EntityData>(prefabEntity);
-			if (prefabData->name == entityData->name) {
-				broadcast(entityData->prefabMetaData.prefabEntity);
-			}
-			//if (prefabData) {
-	
-			//}
+			//only broadcast the root, broadcast function will check for child
+			//broadcast(getParent(prefabEntity, prefabRegistry));
 
+			//EntityData* prefabData = prefabRegistry.try_get<EntityData>(prefabEntity);
+			//if (prefabData->name == entityData->name) {
+			//	//entityData->prefabMetaData.prefabEntity = prefabEntity;
+			//	//entityData->prefabMetaData.prefabID = prefabID;
+
+			//	broadcast(prefabEntity);
+			//}
 		}
+	}
+	//only broadcast the root, broadcast function will check for child
+	if (prefabEntity != entt::null) {
+		broadcast(getParent(prefabEntity, prefabRegistry));
 	}
 }
 
-entt::entity PrefabManager::getParent(entt::entity prefabInstance) {
-	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
+entt::entity PrefabManager::getParent(entt::entity prefabInstance, entt::registry& registry) {
+	EntityData* entityData = registry.try_get<EntityData>(prefabInstance);
 	if (entityData->parent == entt::null) {
 		return prefabInstance;
 	}
@@ -208,6 +211,19 @@ entt::entity PrefabManager::getParent(entt::entity prefabInstance) {
 
 
 void PrefabManager::updatePrefab(entt::entity prefabInstance) {
+	if (!firstTimeLoad) {
+		for (entt::entity en : ecsRegistry.view<entt::entity>()) {
+			EntityData* ed = ecsRegistry.try_get<EntityData>(en);
+			if (ed->prefabMetaData.prefabID != INVALID_RESOURCE_ID) {
+				auto it = prefabMap.find(ed->prefabMetaData.prefabID);
+				if (it == prefabMap.end()) {
+					loadPrefab(ed->prefabMetaData.prefabID);
+				}
+			}
+		}
+		firstTimeLoad = true;
+	}
+
 	//get the root prefab
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
 	auto iterator = prefabMap.find(entityData->prefabMetaData.prefabID);
@@ -218,11 +234,9 @@ void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 	if (entityData->prefabMetaData.prefabID == INVALID_RESOURCE_ID) {
 		return;
 	}
-
-
-
-	//updateFromPrefabInstance(iterator->second);
-	updateFromPrefabInstance(getParent(prefabInstance));
+	
+	//updateFromPrefabInstance(getParent(prefabInstance));
+	updateFromPrefabInstance(getParent(prefabInstance, ecsRegistry));
 }
 
 void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
@@ -233,7 +247,6 @@ void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
 	for (entt::entity child : entityData->children) {
 		convertToPrefab(child, id);
 	}
-
 }
 
 void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
@@ -255,17 +268,20 @@ template<typename ...Components>
 void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity toEntity, entt::entity fromEntity) {
 
 	([&]() {
-		if (!std::is_same<EntityData, Components>::value) {
+		if (!(std::is_same<EntityData, Components>::value || std::is_same<Transform, Components>::value)) {
 			auto* component = fromRegistry.try_get<Components>(fromEntity);
-
-			EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
+			
 			bool overrideCheck{ false };
 
 			//check for override check box
-			if (toEntityData->overridenComponents.find(Family::id<Components>()) != toEntityData->overridenComponents.end()) {
-				if (!toEntityData->overridenComponents[Family::id<Components>()]) {
-					overrideCheck = true;
+			if (&toRegistry != &prefabRegistry) {
+				EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
+				if (toEntityData->overridenComponents.find(Family::id<Components>()) != toEntityData->overridenComponents.end()) {
+					if (toEntityData->overridenComponents[Family::id<Components>()]) {
+						overrideCheck = true;
+					}
 				}
+
 			}
 
 			//If toRegistry is prefabRegistry or the toRegistry does not contain the component
@@ -275,13 +291,7 @@ void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry&
 			}
 
 			if (component && overrideCheck) {
-				auto* newEntityComponent = toRegistry.try_get<Components>(toEntity);
-				if (newEntityComponent == nullptr) {
-					toRegistry.emplace_or_replace<Components>(toEntity, Components{});
-				}
-				newEntityComponent = toRegistry.try_get<Components>(toEntity);
-				
-				*newEntityComponent = *component;
+				toRegistry.emplace_or_replace<Components>(toEntity, *component);
 			}
 		}
 		}(), ...);

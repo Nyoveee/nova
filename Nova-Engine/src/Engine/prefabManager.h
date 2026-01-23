@@ -46,8 +46,8 @@ public:
 	ENGINE_DLL_API void mapSerializedField(entt::entity entity, std::unordered_map<PrefabEntityID, entt::entity> const& entityMapping);
 
 	ENGINE_DLL_API void broadcast(entt::entity prefabEntity);
-	ENGINE_DLL_API void prefabBroadcast(); 
-	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance);
+	ENGINE_DLL_API void prefabBroadcast(ResourceID prefabID);
+	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance, entt::registry& registry);
 	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance);
 	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
 	ENGINE_DLL_API void convertToPrefab(entt::entity entity, ResourceID id);
@@ -66,6 +66,7 @@ private:
 	ResourceManager& resourceManager;
 	entt::registry& ecsRegistry;
 	ECS& ecs;
+	bool firstTimeLoad;
 	
 	// maps a prefab entity to a ecs entity
 	std::unordered_map<PrefabEntityID, entt::entity> prefabEntityIdToInstanceId;
