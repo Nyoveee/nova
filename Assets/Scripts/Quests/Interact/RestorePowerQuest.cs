@@ -2,9 +2,11 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
+using Windows.Graphics.Display;
 
 class RestorePowerQuest : InteractableQuest
 {
+    private AudioComponent_? audioComponent;
     [SerializableField]
     private MeshRenderer_ generatorCoreRenderer;
     [SerializableField]
@@ -22,6 +24,13 @@ class RestorePowerQuest : InteractableQuest
     [SerializableField]
     public Material lockedDoorMaterial;
 
+    [SerializableField]
+    private Audio powerUnlockedSFX;
+
+    protected override void init()
+    {
+        audioComponent = getComponent<AudioComponent_>();
+    }
     // This function is first invoked when game starts.
     public override void OnEnter()
     {
@@ -40,7 +49,7 @@ class RestorePowerQuest : InteractableQuest
 
     public override void OnSuccess()
     {
-        AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
+        audioComponent.PlaySound(powerUnlockedSFX);
         generatorCoreRenderer.setMaterialFloat(0, "emissiveStrength", 9f);
         foreach (Door door in unlockableDoors)
             door.UnlockDoor();

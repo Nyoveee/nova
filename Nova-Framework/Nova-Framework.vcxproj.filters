@@ -213,7 +213,7 @@
     <ClInclude Include="src\Resource\controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resource\cubemap.h">
+    <ClInclude Include="src\Resource\equirectangularMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Resource\customShader.h">
@@ -283,6 +283,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Internal\frustum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\cubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -428,7 +431,7 @@
     <ClCompile Include="src\Resource\controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Resource\cubemap.cpp">
+    <ClCompile Include="src\Resource\equirectangularMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Resource\customshader.cpp">
@@ -480,6 +483,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Internal\computeShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\cubemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\equirectangularMapLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -25,12 +25,7 @@
 using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
 
 using MaterialName		= std::string;
-
-// i genuinely have no idea where to put this
-enum class RenderConfig {
-	Editor,
-	Game
-};
+using MeshID = size_t;
 
 struct alignas(16) ParticleVertex {
 	glm::vec4 color;
@@ -40,6 +35,7 @@ struct alignas(16) ParticleVertex {
 };
 
 struct Mesh {
+	MeshID meshID{}; // Assume 0 doesn't exist
 	std::string name;
 	
 	// std::vector<Vertex> vertices;
@@ -114,14 +110,16 @@ struct ModelData {
 
 struct alignas(16) PointLightData {
 	alignas(16) glm::vec3 lightPos;		// this will represent light position for point light
-	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
+	alignas(16) glm::vec3 color;		// color of the light, limited to range of [0, 1]
 	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
 	float radius;						// Light sphere of influence..
+	float intensity;					// strength of the light
+	int shadowMapIndex;					// index to the array of shadow maps. -1 if not a shadow caster.
 };
 
 struct alignas(16) DirectionalLightData{
 	alignas(16) glm::vec3 lightDir;		// this will represent light direction for directional light
-	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
+	alignas(16) glm::vec3 color;		// color * strength of the light, not limited to range of [0, 1]
 };
 
 struct alignas(16) SpotLightData {
@@ -132,6 +130,12 @@ struct alignas(16) SpotLightData {
 	float cutOffAngle;					// Inner cutoff angle which shows full brightness
 	float outerCutOffAngle;				// Outer cutoff angle where the light will dim from inner to outer range
 	float radius;						// Light sphere of influence..
+	float intensity;					// strength of the light
+	int shadowMapIndex;					// index to the array of shadow maps. -1 if not a shadow caster.
 };
 
+struct alignas(16) VolumetricFogData {
+	alignas(16) glm::vec3 radiance{};
+	float transmittance{ 1 };
+};
 #pragma warning( pop )

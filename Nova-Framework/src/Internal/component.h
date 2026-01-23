@@ -31,7 +31,7 @@
 class Prefab;
 class Model;
 class Texture;
-class CubeMap;
+class EquirectangularMap;
 class ScriptAsset;
 class Audio;
 class Material;
@@ -43,9 +43,9 @@ class Sequencer;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
+	EntityData, Transform, Light, MeshRenderer, TranslucentMeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
-	Image, Sequence, Button, Canvas, NavMeshOffLinks
+	Image, Sequence, Button, Canvas, NavMeshOffLinks, SkyboxCubeMap, ReflectionProbe
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -55,19 +55,15 @@ using MeshIndex	= int;
 
 #include "serializedField.h"
 
+constexpr int NO_SHADOW_MAP = -1;
+constexpr int NOT_LOADED = -1;
+
 enum class InterpolationType : unsigned int {
 	Root,
 	Linear,
 	Quadractic,
 	Cubic
 };
-
-
-// 	REFLECTABLE(
-// 		name,
-// 		data
-// 	)
-// };
 
 struct PrefabMetaData {
 	PrefabEntityID prefabEntity;
@@ -193,9 +189,30 @@ struct Light {
 		shadowNearPlane,
 		shadowFarPlane
 	)
+
+	// runtime variable..
+	int shadowMapIndex = NO_SHADOW_MAP;		// every light component has an index to it's own array of shadow maps..
 };
 
 struct MeshRenderer {
+	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
+	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
+
+	bool castShadow = true;
+	bool shadowCullFrontFace = true;
+
+	// std::vector<>
+	REFLECTABLE(
+		modelId,
+		materialIds,
+		castShadow,
+		shadowCullFrontFace
+	)
+
+	std::unordered_set<int>					isMaterialInstanced;
+};
+
+struct TranslucentMeshRenderer {
 	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
@@ -368,8 +385,16 @@ struct MeshCollider {
 };
 
 struct SkyBox {
-	TypedResourceID<CubeMap> cubeMapId{ INVALID_RESOURCE_ID };
+	TypedResourceID<EquirectangularMap> equirectangularMap{ INVALID_RESOURCE_ID };
 	
+	REFLECTABLE(
+		equirectangularMap
+	)
+};
+
+struct SkyboxCubeMap {
+	TypedResourceID<CubeMap> cubeMapId{ INVALID_RESOURCE_ID };
+
 	REFLECTABLE(
 		cubeMapId
 	)
@@ -438,10 +463,10 @@ struct AudioData
 
 struct AudioComponent 
 {
-	std::unordered_map<std::string, AudioData> data {};
+	float volume{ 1.f };
 	bool loop{};
 	REFLECTABLE(
-		data,
+		volume,
 		loop
 	)
 };
@@ -695,6 +720,7 @@ struct ParticleEmitter
 	// Core
 	bool looping = true;
 	bool randomizedDirection = false;
+	bool invertMovement = false;
 	float startSize = 1.f;
 	float minStartSizeOffset = 0.f;
 	float maxStartSizeOffset = 0.f;
@@ -734,6 +760,7 @@ struct ParticleEmitter
 		lightRadius,
 		looping,
 		randomizedDirection,
+		invertMovement,
 		particleEmissionTypeSelection,
 		particleColorSelection,
 		sizeOverLifetime,
@@ -745,7 +772,6 @@ struct alignas(16) ParticleLifespanData {
 	glm::vec4 startColor{};
 	glm::vec4 endColor{};
 	alignas(16) glm::vec3 velocity{};
-	alignas(16) glm::vec3 direction{};
 	alignas(16) glm::vec3 force{};
 	alignas(16) glm::vec3 lightattenuation{};
 	float colorInterpolation{};
@@ -757,9 +783,9 @@ struct alignas(16) ParticleLifespanData {
 	float endSize{};
 	float currentLifeTime{};
 	float lifeTime{};
-	bool colorOverLifetime{};
-	bool sizeOverLifetime{};
-	bool b_Active{};
+	int colorOverLifetime{};
+	int sizeOverLifetime{};
+	int b_Active{};
 };
 struct Text {
 	TypedResourceID<Font> font;
@@ -851,4 +877,33 @@ struct Button {
 		isInteractable = false;
 		state = Button::State::Disabled;
 	}
+};
+
+struct ReflectionProbe {
+	glm::vec3 boxExtents			= { 10.f, 10.f, 10.f };
+	glm::vec3 centerOffset			= {};
+
+	float captureRadius				= 20.f;
+	
+	bool toCaptureShadow			= true;
+	bool toCaptureEnvironmentLight	= false;
+	float fallOff					= 0.2f;
+	float intensity					= 1.0f;
+
+	TypedResourceID<CubeMap> irradianceMap				= { INVALID_RESOURCE_ID };
+	TypedResourceID<CubeMap> prefilteredEnvironmentMap	= { INVALID_RESOURCE_ID };
+
+	REFLECTABLE(
+		boxExtents,
+		centerOffset,
+		captureRadius,
+		toCaptureShadow,
+		toCaptureEnvironmentLight,
+		fallOff,
+		intensity,
+		irradianceMap,
+		prefilteredEnvironmentMap
+	)
+
+	int indexToCubeMapArray = NOT_LOADED;
 };

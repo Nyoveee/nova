@@ -16,6 +16,7 @@ layout(std430, binding = 3) buffer Bones {
 };
 
 invariant gl_Position;
+
 void main()
 {
     // this is not a skinned mesh.

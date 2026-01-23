@@ -29,16 +29,16 @@ public:
 	void clear();
 
 public:
-	GLuint						fboId()			const;
-	std::vector<GLuint> const&	textureIds()	const;
-	GLuint						rboId()			const;
-	int							getWidth()		const;
-	int							getHeight()		const;
+	GLuint						fboId()			 const;
+	std::vector<GLuint> const&	textureIds()	 const;
+	GLuint						depthStencilId() const;
+	int							getWidth()		 const;
+	int							getHeight()		 const;
 
 private:
 	GLuint FBO_id;
 	std::vector<GLuint> texture_ids; // holds the texture of the respective color attachments
-	GLuint RBO_id;
+	GLuint depthStencilTextureId;
 
 	int width;
 	int height;

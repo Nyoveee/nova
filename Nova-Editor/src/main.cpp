@@ -10,23 +10,28 @@
 
 #include <crtdbg.h>
 
-//constexpr const char*	windowName		= "Nova Engine";
 constexpr int			windowWidth		= 1200;
 constexpr int			windowHeight	= 900;
-//constexpr int			gameWidth		= 1920;
-//constexpr int			gameHeight		= 1080;
 
 int main() {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
-	GameConfig gameConfig = Serialiser::deserialiseGameConfig("gameConfig.json");
+	if (FAILED(hr)) {
+		Logger::error("Failed to initialize COM {}.", static_cast<unsigned int>(hr));
+		return -1;
+	}
+
+	GameConfig		gameConfig		= Serialiser::deserialiseGameConfig("gameConfig.json");
+	RenderConfig	renderConfig	= Serialiser::deserialiseRenderConfig("renderConfig.json");
 
 	// Nova Engine base applications.
 	InputManager	inputManager	{};
 	Window			window			{ "Nova Editor", {windowWidth, windowHeight}, gameConfig, Window::Configuration::Maximised, inputManager, Window::Viewport::Constant};
 	
 	ResourceManager resourceManager {};
-	Engine			engine			{ window, inputManager, resourceManager, gameConfig, Engine::State::Editor };
+	Engine			engine			{ window, inputManager, resourceManager, gameConfig, renderConfig, Engine::State::Editor };
 
 	AssetManager	assetManager	{ resourceManager, engine };
 
@@ -44,7 +49,7 @@ int main() {
 		// Update loop.
 		[&](float dt) {
 			engine.update(dt);
-			engine.render(RenderConfig::Editor);
+			engine.render(RenderMode::Editor);
 			
 			// we update the editor the simulation mode of the engine. this is because simulation may stop abruptly outside of
 			// the editor's control. during simulation setup, it may fail too.
@@ -59,6 +64,4 @@ int main() {
 			engine.setupSimulation();
 		}
 	);
-
-
 }

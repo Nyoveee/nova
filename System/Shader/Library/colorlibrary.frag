@@ -4,19 +4,43 @@
 
 in VS_OUT {
     vec2 textureUnit;
+    vec3 normal;
+    vec3 fragWorldPos;
+    vec3 fragViewPos;
 } fsIn;
-
-layout (location = 0) out vec4 FragColor;
-layout (location = 1) out vec4 BrightColor;  
 
 uniform float timeElapsed;
 
-void renderBloomBrightColors() {
-    // check whether fragment output is higher than threshold, if so output as brightness color
-    float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
+layout (location = 0) out vec4 FragColor; 
+layout (location = 1) out vec3 gNormal;
 
-    if(brightness > 1.0)
-        BrightColor = vec4(FragColor.rgb, 1.0);
-    else
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+uniform bool toOutputNormal;
+
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+    mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
+
+vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
+    return textureCoordinates * UVTiling + UVOffset;
+}
+
+// User shader entry point.
+vec4 __internal__main__();
+
+// Wrapper around user entry point.
+void main() { 
+    if(toOutputNormal) {
+        gNormal = fsIn.normal;
+    }
+    else {
+        FragColor = __internal__main__(); 
+    }
 }

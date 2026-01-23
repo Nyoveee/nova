@@ -91,16 +91,6 @@ private:
 };
 
 // ======================================
-// This class is responsible for providing audio related APIs to the script.
-// ======================================
-public ref class AudioAPI {
-public:
-	static void PlaySound(GameObject^ gameObject, System::String^ string);
-	static void PlayBGM(GameObject^ gameObject, System::String^ string);
-	static void StopSound(GameObject^ gameObject, System::String^ string);
-};
-
-// ======================================
 // This class is responsible for providing Physics related APIs
 // ======================================
 public ref class PhysicsAPI {
@@ -212,10 +202,12 @@ public:
 
 public ref class RendererAPI {
 public:
+#if 0
 	static property bool toneMapping {
 		bool get() { return Interface::engine->renderer.toneMappingMethod == Renderer::ToneMappingMethod::ACES; };
 		void set(bool value) { Interface::engine->renderer.toneMappingMethod = value ? Renderer::ToneMappingMethod::ACES : Renderer::ToneMappingMethod::None; };
 	};
+#endif
 
 	static property bool toPostProcess {
 		bool get() { return Interface::engine->renderer.toPostProcess; };

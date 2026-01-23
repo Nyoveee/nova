@@ -28,6 +28,7 @@
 #include "type_concepts.h"
 #include "Configuration/editorConfigUI.h"
 #include "Configuration/gameConfigUI.h"
+#include "Configuration/renderConfigUI.h"
 
 #include <tracyprofiler/tracy/Tracy.hpp>
 
@@ -55,6 +56,7 @@ public:
 	void update(float dt);
 	
 	bool isEntitySelected(entt::entity entity);
+	bool isChildEntitySelected(entt::entity entity,entt::entity root);
 	bool hasAnyEntitySelected() const;
 	
 	void selectEntities(std::vector<entt::entity> entities);
@@ -77,6 +79,7 @@ public:
 		std::function<bool(entt::entity)> const& selectedPredicate
 	);
 
+
 	// editor does extra housekeeping when loading scenes (like selection of entities)
 	// most editor windows should use this function instead of the scene manager's load scene function.
 	void loadScene(ResourceID sceneId);
@@ -86,7 +89,7 @@ public:
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
 	// first parameter is used to specific which asset id is selected.
-	template <typename T>
+	template <typename T, bool showNone = false>
 	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> const& onClickCallback);
 	
 	// similar to asset dropdown list, but only displays scripts the current entity has.
@@ -140,6 +143,7 @@ public:
 	NavigationWindow navigationWindow;
 	GameConfigUI gameConfigUI;
 	EditorConfigUI editorConfigUI;
+	RenderConfigUI renderConfigUI;
 	NavBar navBar;
 	AnimationTimeLine animationTimeLine;
 	AnimatorController animatorController;

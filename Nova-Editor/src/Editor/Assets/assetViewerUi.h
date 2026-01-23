@@ -80,6 +80,7 @@ private:
 	std::list<ResourceID> previousResourceIds;
 	std::list<ResourceID> nextResourceIds;
 
+	bool toOverrideEditSystemResource;
 };
 
 #include "assetViewerUi.ipp"

@@ -206,11 +206,24 @@ void Shader::setVec2(const std::string& name, glm::vec2 const& list) const {
 }
 
 void Shader::setMatrix(const std::string& name, const glm::mat4x4& matrix, bool transpose) const {
-	glProgramUniformMatrix4fv(m_id, glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
+	auto location = glGetUniformLocation(m_id, name.c_str());
+	glProgramUniformMatrix4fv(m_id, location, 1, transpose, glm::value_ptr(matrix));
 }
 
 void Shader::setMatrix(const std::string& name, const glm::mat3x3& matrix, bool transpose) const {
-	glProgramUniformMatrix3fv(m_id, glGetUniformLocation(m_id, name.c_str()), 1, transpose, glm::value_ptr(matrix));
+	auto location = glGetUniformLocation(m_id, name.c_str());
+
+	//GLint count;
+	//glGetProgramiv(m_id, GL_ACTIVE_UNIFORMS, &count);
+	//for (int i = 0; i < count; i++) {
+	//	char name[256];
+	//	GLenum type;
+	//	GLint size;
+	//	glGetActiveUniform(m_id, i, 256, NULL, &size, &type, name);
+	//	printf("Active Uniform #%d: %s\n", i, name);
+	//}
+
+	glProgramUniformMatrix3fv(m_id, location, 1, transpose, glm::value_ptr(matrix));
 }
 
 void Shader::setImageUniform(const std::string& name, int uniform) const {

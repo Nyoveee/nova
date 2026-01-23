@@ -1,16 +1,14 @@
 #include "reflection.h"
 
 #include "PropertyDisplay/displayProperties.h"
+
+void displayLightComponent(Editor& editor, Light& dataMember);
+void displayReflectionProbeComponent(Editor& editor, ReflectionProbe& dataMember, Transform const& transform);
+
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 
 	template<typename Component>
-	// void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component, bool disable, entt::registry& registry) {
-	// //void displayComponent(ComponentInspector& componentInspector, entt::entity entity, Component& component) {
-	// 	(void) entity;
-
-	// 	[[maybe_unused]] Editor& editor = componentInspector.editor;
-
 	void displayComponent([[maybe_unused]] Editor& editor, [[maybe_unused]] entt::entity entity, Component& component, entt::registry& registry, bool disable) {
 		if constexpr (!reflection::isReflectable<Component>()) {
 			return;
@@ -90,19 +88,30 @@ namespace {
 			
 			ImGui::PushID(static_cast<int>(entity));
 			ImGui::PushID(static_cast<int>(typeid(Component).hash_code()));
-			// Visits each of the component's data member and renders them.
-			reflection::visit(
-				[&](auto fieldData) {
-					auto& dataMember = fieldData.get();
-					constexpr const char* dataMemberName = fieldData.name();
-					using DataMemberType = std::decay_t<decltype(dataMember)>;
-					ImGui::PushID(static_cast<int>(std::hash<std::string>{}(dataMemberName)));
-					// Generalization
-					DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
-					ImGui::PopID();
-				},
-			component);
-			
+
+			// light has it's own display light logic..
+			if constexpr (std::same_as<Component, Light>) {
+				displayLightComponent(editor, component);
+			}
+			// reflection probe has an extra bake button.. and some constraints..
+			else if constexpr (std::same_as<Component, ReflectionProbe>) {
+				displayReflectionProbeComponent(editor, component, registry.get<Transform>(entity));
+			}
+			else {
+				// Visits each of the component's data member and renders them.
+				reflection::visit(
+					[&](auto fieldData) {
+						auto& dataMember = fieldData.get();
+						constexpr const char* dataMemberName = fieldData.name();
+						using DataMemberType = std::decay_t<decltype(dataMember)>;
+						ImGui::PushID(static_cast<int>(std::hash<std::string>{}(dataMemberName)));
+						// Generalization
+						DisplayProperty<DataMemberType>(editor, dataMemberName, dataMember);
+						ImGui::PopID();
+					},
+				component);
+			}
+
 			ImGui::PopID();
 			ImGui::PopID();
 		

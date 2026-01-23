@@ -7,19 +7,30 @@ Tags{
 
 // Properties for material instances to configure..
 Properties{
+    sampler2D albedo;
     Color color;
     float intensity;
+
+    NormalizedFloat transparency;
+
+    vec2 UVTiling; 
+    vec2 UVOffset; 
 }
 
 // Vertex shader..
 Vert{    
-    gl_Position = calculateClipPosition(position);
+    // Calculate world space of our local attributes..
+    WorldSpace worldSpace = calculateWorldSpace(position, normal);
+    gl_Position = calculateClipPosition(worldSpace.position);
 
-    // pass texture units to fragment shader..
-    vsOut.textureUnit = textureUnit; 
-}
+    // Pass attributes to fragment shader.. 
+    passDataToFragment(worldSpace);
+}   
 
 // Fragment shader..
 Frag{
-    return vec4(intensity * color, 1.0); // ok
+    vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);
+
+    vec3 finalColor = texture(albedo, uv).rgb * color * intensity;
+    return vec4(finalColor , transparency); // ok
 }

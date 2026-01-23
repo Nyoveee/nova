@@ -1,0 +1,60 @@
+{
+    "selectedShader": 2,
+    "overridenUniforms": {
+        "UVTiling": {
+            "type": "vec2",
+            "value": {
+                "__variant_value": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "__variant_type": 4
+            }
+        },
+        "UVOffset": {
+            "type": "vec2",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        },
+        "intensity": {
+            "type": "float",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        "transparency": {
+            "type": "NormalizedFloat",
+            "value": {
+                "__variant_value": 0.24300000071525574,
+                "__variant_type": 12
+            }
+        },
+        "albedo": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        "color": {
+            "type": "Color",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        }
+    },
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "NoDepthWriteTest",
+    "cullingConfig": "Enable"
+}

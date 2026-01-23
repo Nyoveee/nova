@@ -1,238 +1,52 @@
 {
+    "RootEntity": 27,
     "Entities": [
         {
             "EntityData": {
-                "children": [
-                    5,
-                    6,
-                    7,
-                    8,
-                    9
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Rifle_Throwable",
-                "overridenComponents": {
-                    "11935986701403193153": false,
-                    "13953638462837156301": true,
-                    "17237801994024849853": true,
-                    "6919815292445452220": false
-                },
-                "overridenProperties": null,
+                "tag": "",
                 "parent": 4294967295,
+                "children": [
+                    28,
+                    29,
+                    30,
+                    31,
+                    32
+                ],
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 14424009731752280065
                 },
-                "tag": ""
-            },
-            "Rigidbody": {
-                "dynamicCollider": false,
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "17237801994024849853": true,
+                    "11935986701403193153": false,
+                    "13953638462837156301": true,
+                    "6919815292445452220": false
                 },
-                "isRotatable": true,
-                "isTrigger": true,
-                "layer": "Moving",
-                "mass": 10.0,
-                "motionQuality": "Continuous",
-                "motionType": "Kinematic",
-                "toScaleWithTransform": true
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 1,
-                                    "__variant_value": {
-                                        "x": 0.0,
-                                        "y": 0.0,
-                                        "z": 0.0
-                                    }
-                                },
-                                "name": "flightPath"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 4294967295
-                                },
-                                "name": "mappedWeapon"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 4294967295
-                                },
-                                "name": "playerGameobject"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 5
-                                },
-                                "name": "weaponSpinSequence"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "maxFlyingTime"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "maxReturnTime"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 0.4000000059604645
-                                },
-                                "name": "weaponHitDelayTime"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 60.0
-                                },
-                                "name": "weaponFlyingSpeed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 45.0
-                                },
-                                "name": "weaponReturnSpeed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 50.0
-                                },
-                                "name": "throwWeaponBaseDamage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 1.2999999523162842
-                                },
-                                "name": "damageMultiplierPerAmmoUsed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 20.0
-                                },
-                                "name": "returnDamage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 30.0
-                                },
-                                "name": "baseSeekStrength"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 50.0
-                                },
-                                "name": "startSteeringDistance"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 40.0
-                                },
-                                "name": "maxSteeringDistance"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "seekDistance"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "fakeGravity"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "angledFlight"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 2
-                                },
-                                "name": "ichorPerAmmo"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 2
-                                },
-                                "name": "healthGainedPerIchor"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 2
-                                },
-                                "name": "spGainPerIchor"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 15,
-                                    "__variant_value": 5
-                                },
-                                "name": "ichorFindRadius"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 16,
-                                    "__variant_value": 0.0
-                                },
-                                "name": "calculatedTrueDamage"
-                            }
-                        ],
-                        "scriptId": 8332820863668568065
-                    }
-                ]
-            },
-            "SphereCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 0.5
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
+                "position": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": 11.22384262084961,
+                    "z": 0.2930909991264343
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
-                "localEulerAngles": {
+                "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
@@ -242,77 +56,262 @@
                     "y": 11.22384262084961,
                     "z": 0.2930909991264343
                 },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
+                "localEulerAngles": {
                     "x": 0.0,
-                    "y": 11.22384262084961,
-                    "z": 0.2930909991264343
-                },
-                "rotation": {
-                    "w": 1.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Moving",
+                "motionQuality": "Continuous",
+                "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "isRotatable": true,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "SphereCollider": {
+                "radius": 0.5,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
-            "id": 4
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 8332820863668568065,
+                        "fields": [
+                            {
+                                "name": "flightPath",
+                                "data": {
+                                    "__variant_value": {
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
+                                    },
+                                    "__variant_type": 1
+                                }
+                            },
+                            {
+                                "name": "mappedWeapon",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "playerGameobject",
+                                "data": {
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "weaponSpinSequence",
+                                "data": {
+                                    "__variant_value": 28,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "maxFlyingTime",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "maxReturnTime",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "weaponHitDelayTime",
+                                "data": {
+                                    "__variant_value": 0.4000000059604645,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "weaponFlyingSpeed",
+                                "data": {
+                                    "__variant_value": 60.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "weaponReturnSpeed",
+                                "data": {
+                                    "__variant_value": 45.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "throwWeaponBaseDamage",
+                                "data": {
+                                    "__variant_value": 50.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "damageMultiplierPerAmmoUsed",
+                                "data": {
+                                    "__variant_value": 1.2999999523162842,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "returnDamage",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "baseSeekStrength",
+                                "data": {
+                                    "__variant_value": 30.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "startSteeringDistance",
+                                "data": {
+                                    "__variant_value": 50.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "maxSteeringDistance",
+                                "data": {
+                                    "__variant_value": 40.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "seekDistance",
+                                "data": {
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "fakeGravity",
+                                "data": {
+                                    "__variant_value": 5.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "angledFlight",
+                                "data": {
+                                    "__variant_value": 5.0,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "ichorPerAmmo",
+                                "data": {
+                                    "__variant_value": 2,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "healthGainedPerIchor",
+                                "data": {
+                                    "__variant_value": 2,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "spGainPerIchor",
+                                "data": {
+                                    "__variant_value": 2,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "ichorFindRadius",
+                                "data": {
+                                    "__variant_value": 5,
+                                    "__variant_type": 16
+                                }
+                            },
+                            {
+                                "name": "calculatedTrueDamage",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 17
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 27
         },
         {
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "RifleModel",
-                "overridenComponents": {
-                    "13484132868097894827": true,
-                    "17237801994024849853": true,
-                    "6919815292445452220": true
-                },
-                "overridenProperties": null,
-                "parent": 4,
+                "tag": "",
+                "parent": 27,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 1,
                     "prefabID": 14424009731752280065
                 },
-                "tag": ""
-            },
-            "MeshRenderer": {
-                "materialIds": [
-                    11017643513640124435,
-                    17358711788977782805
-                ],
-                "modelId": 5829496742909313055
-            },
-            "Sequence": {
-                "sequencerId": 12142012928043827201,
-                "speedMultiplier": 1.0,
-                "startPlaying": false,
-                "toLoop": true
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "13484132868097894827": true,
+                    "17237801994024849853": true,
+                    "6919815292445452220": true
+                },
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": -1.570451021194458,
-                    "z": 3.1415927410125732
+                "position": {
+                    "x": 0.0,
+                    "y": 11.225826263427734,
+                    "z": 0.2930909991264343
                 },
-                "localEulerAngles": {
+                "scale": {
+                    "x": 0.9999746680259705,
+                    "y": 1.0,
+                    "z": 0.9999746680259705
+                },
+                "rotation": {
+                    "w": -0.7071067094802856,
+                    "x": 0.0,
+                    "y": 0.7071068286895752,
+                    "z": 0.0
+                },
+                "eulerAngles": {
                     "x": 3.1415927410125732,
                     "y": -1.570451021194458,
                     "z": 3.1415927410125732
@@ -322,104 +321,79 @@
                     "y": 0.001983642578125,
                     "z": 0.0
                 },
+                "localScale": {
+                    "x": 0.9999746084213257,
+                    "y": 1.0,
+                    "z": 0.9999746084213257
+                },
                 "localRotation": {
                     "w": -0.7071067094802856,
                     "x": 0.0,
                     "y": 0.7071068286895752,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 0.9999746084213257,
-                    "y": 1.0,
-                    "z": 0.9999746084213257
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 11.225826263427734,
-                    "z": 0.2930909991264343
-                },
-                "rotation": {
-                    "w": -0.7071067094802856,
-                    "x": 0.0,
-                    "y": 0.7071068286895752,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999746680259705,
-                    "y": 1.0,
-                    "z": 0.9999746680259705
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.570451021194458,
+                    "z": 3.1415927410125732
                 }
             },
-            "id": 5
+            "MeshRenderer": {
+                "modelId": 5829496742909313055,
+                "materialIds": [
+                    11017643513640124435,
+                    17358711788977782805
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "Sequence": {
+                "sequencerId": 12142012928043827201,
+                "speedMultiplier": 1.0,
+                "toLoop": true,
+                "startPlaying": false
+            },
+            "id": 28
         },
         {
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "IchorCollector",
-                "overridenComponents": {
-                    "11935986701403193153": false,
-                    "13953638462837156301": false,
-                    "17237801994024849853": true
-                },
-                "overridenProperties": null,
-                "parent": 4,
+                "tag": "",
+                "parent": 27,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 2,
                     "prefabID": 14424009731752280065
                 },
-                "tag": ""
-            },
-            "Rigidbody": {
-                "dynamicCollider": false,
-                "gravityMultiplier": 0.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "17237801994024849853": true,
+                    "11935986701403193153": false,
+                    "13953638462837156301": false
                 },
-                "isRotatable": false,
-                "isTrigger": true,
-                "layer": "Item_Interactor",
-                "mass": 1.0,
-                "motionQuality": "Continuous",
-                "motionType": "Kinematic",
-                "toScaleWithTransform": true
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 4
-                                },
-                                "name": "weaponRef"
-                            }
-                        ],
-                        "scriptId": 13761180140375949313
-                    }
-                ]
-            },
-            "SphereCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 10.0
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
+                "position": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": 11.859800338745117,
+                    "z": 0.8868971467018127
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
-                "localEulerAngles": {
+                "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
@@ -429,169 +403,102 @@
                     "y": 0.6359577178955078,
                     "z": 0.5938061475753784
                 },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
+                "localEulerAngles": {
                     "x": 0.0,
-                    "y": 11.859800338745117,
-                    "z": 0.8868971467018127
-                },
-                "rotation": {
-                    "w": 1.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Item_Interactor",
+                "motionQuality": "Continuous",
+                "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                "mass": 1.0,
+                "gravityMultiplier": 0.0,
+                "isRotatable": false,
+                "isTrigger": true,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "SphereCollider": {
+                "radius": 10.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
-            "id": 6
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 13761180140375949313,
+                        "fields": [
+                            {
+                                "name": "weaponRef",
+                                "data": {
+                                    "__variant_value": 27,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 29
         },
         {
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "ParticleTrail",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4,
+                "tag": "",
+                "parent": 27,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 14424009731752280065,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 14424009731752280065
                 },
-                "tag": ""
-            },
-            "ParticleEmitter": {
-                "burstAmount": 30,
-                "burstRate": 0.0,
-                "colorOverLifetime": {
-                    "endColor": {
-                        "a": 0.0,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
-                    },
-                    "interpolationType": "Linear",
-                    "selected": false
-                },
-                "force": {
-                    "x": 0.0,
-                    "y": 10.0,
-                    "z": 0.0
-                },
-                "initialAngularVelocity": 0.0,
-                "lifeTime": 1.0,
-                "lightIntensity": 0.0,
-                "lightRadius": 0.0,
-                "lightattenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "looping": true,
-                "maxAngularVelocityOffset": 0.0,
-                "maxStartSizeOffset": 0.0,
-                "minAngularVelocityOffset": 0.0,
-                "minStartSizeOffset": 0.0,
-                "particleColorSelection": {
-                    "color": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "colorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "colorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "emissiveMultiplier": 1.0
-                },
-                "particleEmissionTypeSelection": {
-                    "coneEmitter": {
-                        "arc": 0.0,
-                        "distance": 5.0
-                    },
-                    "cubeEmitter": {
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        },
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        }
-                    },
-                    "emissionShape": "Point",
-                    "radiusEmitter": {
-                        "radius": 1.0
-                    }
-                },
-                "particleRate": 0.0,
-                "randomizedDirection": false,
-                "sizeOverLifetime": {
-                    "endSize": 0.0,
-                    "interpolationType": "Linear",
-                    "selected": true
-                },
-                "startSize": 1.0,
-                "startSpeed": 1.0,
-                "texture": 203410113495040133,
-                "trails": {
-                    "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
-                    "trailColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "trailColorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailColorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailEmissiveMultiplier": 1.0,
-                    "trailSize": 0.10000000149011612,
-                    "trailTexture": 12309085911866933375
-                }
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": -1.5629544258117676,
+                "position": {
+                    "x": 0.0,
+                    "y": 11.88443660736084,
+                    "z": 3.690516710281372
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0000042915344238,
+                    "z": 1.0000042915344238
+                },
+                "rotation": {
+                    "w": 0.7098738551139832,
+                    "x": -0.7043288350105286,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
+                "eulerAngles": {
+                    "x": -1.5629544258117676,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -599,21 +506,159 @@
                     "y": 0.6605939865112305,
                     "z": 3.397425651550293
                 },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0000042915344238,
+                    "z": 1.0000042915344238
+                },
                 "localRotation": {
                     "w": 0.7098738551139832,
                     "x": -0.7043288350105286,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "localScale": {
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "ParticleEmitter": {
+                "texture": 203410113495040133,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 10.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 0.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 1.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 0.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": true,
+                    "trailTexture": 12309085911866933375,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 30
+        },
+        {
+            "EntityData": {
+                "name": "ParticleTrail",
+                "tag": "",
+                "parent": 27,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 14424009731752280065,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 14424009731752280065
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 11.735053062438965,
+                    "z": -1.3168110847473145
+                },
+                "scale": {
                     "x": 1.0,
                     "y": 1.0000042915344238,
                     "z": 1.0000042915344238
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 11.88443660736084,
-                    "z": 3.690516710281372
                 },
                 "rotation": {
                     "w": 0.7098738551139832,
@@ -621,147 +666,9 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0000042915344238,
-                    "z": 1.0000042915344238
-                }
-            },
-            "id": 7
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "ParticleTrail",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4,
-                "prefabID": 14424009731752280065,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 14424009731752280065
-                },
-                "tag": ""
-            },
-            "ParticleEmitter": {
-                "burstAmount": 30,
-                "burstRate": 0.0,
-                "colorOverLifetime": {
-                    "endColor": {
-                        "a": 0.0,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
-                    },
-                    "interpolationType": "Linear",
-                    "selected": false
-                },
-                "force": {
-                    "x": 0.0,
-                    "y": 10.0,
-                    "z": 0.0
-                },
-                "initialAngularVelocity": 0.0,
-                "lifeTime": 1.0,
-                "lightIntensity": 0.0,
-                "lightRadius": 0.0,
-                "lightattenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "looping": true,
-                "maxAngularVelocityOffset": 0.0,
-                "maxStartSizeOffset": 0.0,
-                "minAngularVelocityOffset": 0.0,
-                "minStartSizeOffset": 0.0,
-                "particleColorSelection": {
-                    "color": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "colorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "colorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "emissiveMultiplier": 1.0
-                },
-                "particleEmissionTypeSelection": {
-                    "coneEmitter": {
-                        "arc": 0.0,
-                        "distance": 5.0
-                    },
-                    "cubeEmitter": {
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        },
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        }
-                    },
-                    "emissionShape": "Point",
-                    "radiusEmitter": {
-                        "radius": 1.0
-                    }
-                },
-                "particleRate": 0.0,
-                "randomizedDirection": false,
-                "sizeOverLifetime": {
-                    "endSize": 0.0,
-                    "interpolationType": "Linear",
-                    "selected": true
-                },
-                "startSize": 1.0,
-                "startSpeed": 1.0,
-                "texture": 203410113495040133,
-                "trails": {
-                    "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
-                    "trailColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "trailColorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailColorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailEmissiveMultiplier": 1.0,
-                    "trailSize": 0.10000000149011612,
-                    "trailTexture": 12309085911866933375
-                }
-            },
-            "Transform": {
                 "eulerAngles": {
                     "x": -1.5629544258117676,
                     "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -769,163 +676,14 @@
                     "y": 0.5112104415893555,
                     "z": -1.6099021434783936
                 },
-                "localRotation": {
-                    "w": 0.7098738551139832,
-                    "x": -0.7043288350105286,
-                    "y": 0.0,
-                    "z": 0.0
-                },
                 "localScale": {
                     "x": 1.0,
                     "y": 1.0000042915344238,
                     "z": 1.0000042915344238
                 },
-                "position": {
-                    "x": 0.0,
-                    "y": 11.735053062438965,
-                    "z": -1.3168110847473145
-                },
-                "rotation": {
+                "localRotation": {
                     "w": 0.7098738551139832,
                     "x": -0.7043288350105286,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0000042915344238,
-                    "z": 1.0000042915344238
-                }
-            },
-            "id": 8
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "ParticleTrail",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4,
-                "prefabID": 14424009731752280065,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 14424009731752280065
-                },
-                "tag": ""
-            },
-            "ParticleEmitter": {
-                "burstAmount": 30,
-                "burstRate": 0.0,
-                "colorOverLifetime": {
-                    "endColor": {
-                        "a": 0.0,
-                        "b": 0.0,
-                        "g": 0.0,
-                        "r": 0.0
-                    },
-                    "interpolationType": "Linear",
-                    "selected": false
-                },
-                "force": {
-                    "x": 0.0,
-                    "y": 10.0,
-                    "z": 0.0
-                },
-                "initialAngularVelocity": 0.0,
-                "lifeTime": 1.0,
-                "lightIntensity": 0.0,
-                "lightRadius": 0.0,
-                "lightattenuation": {
-                    "x": 1.0,
-                    "y": 0.09000000357627869,
-                    "z": 0.03200000151991844
-                },
-                "looping": true,
-                "maxAngularVelocityOffset": 0.0,
-                "maxStartSizeOffset": 0.0,
-                "minAngularVelocityOffset": 0.0,
-                "minStartSizeOffset": 0.0,
-                "particleColorSelection": {
-                    "color": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "colorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "colorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "emissiveMultiplier": 1.0
-                },
-                "particleEmissionTypeSelection": {
-                    "coneEmitter": {
-                        "arc": 0.0,
-                        "distance": 5.0
-                    },
-                    "cubeEmitter": {
-                        "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
-                        },
-                        "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
-                        }
-                    },
-                    "emissionShape": "Point",
-                    "radiusEmitter": {
-                        "radius": 1.0
-                    }
-                },
-                "particleRate": 0.0,
-                "randomizedDirection": false,
-                "sizeOverLifetime": {
-                    "endSize": 0.0,
-                    "interpolationType": "Linear",
-                    "selected": true
-                },
-                "startSize": 1.0,
-                "startSpeed": 1.0,
-                "texture": 203410113495040133,
-                "trails": {
-                    "distancePerEmission": 0.10000000149011612,
-                    "selected": true,
-                    "trailColor": {
-                        "a": 1.0,
-                        "b": 1.0,
-                        "g": 1.0,
-                        "r": 1.0
-                    },
-                    "trailColorOffsetMax": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailColorOffsetMin": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "z": 0.0
-                    },
-                    "trailEmissiveMultiplier": 1.0,
-                    "trailSize": 0.10000000149011612,
-                    "trailTexture": 12309085911866933375
-                }
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": -1.5629544258117676,
                     "y": 0.0,
                     "z": 0.0
                 },
@@ -933,27 +691,144 @@
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
-                },
-                "localPosition": {
+                }
+            },
+            "ParticleEmitter": {
+                "texture": 203410113495040133,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
                     "x": 0.0,
-                    "y": 0.19966506958007813,
-                    "z": -1.6099021434783936
-                },
-                "localRotation": {
-                    "w": 0.7098738551139832,
-                    "x": -0.7043288350105286,
-                    "y": 0.0,
+                    "y": 10.0,
                     "z": 0.0
                 },
-                "localScale": {
+                "lifeTime": 1.0,
+                "particleRate": 0.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
                     "x": 1.0,
-                    "y": 1.0000042915344238,
-                    "z": 1.0000042915344238
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
                 },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 1.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 0.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": true,
+                    "trailTexture": 12309085911866933375,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 31
+        },
+        {
+            "EntityData": {
+                "name": "ParticleTrail",
+                "tag": "",
+                "parent": 27,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 14424009731752280065,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 14424009731752280065
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
                 "position": {
                     "x": 0.0,
                     "y": 11.423507690429688,
                     "z": -1.3168110847473145
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0000042915344238,
+                    "z": 1.0000042915344238
                 },
                 "rotation": {
                     "w": 0.7098738551139832,
@@ -961,14 +836,141 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
+                "eulerAngles": {
+                    "x": -1.5629544258117676,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.19966506958007813,
+                    "z": -1.6099021434783936
+                },
+                "localScale": {
                     "x": 1.0,
                     "y": 1.0000042915344238,
                     "z": 1.0000042915344238
+                },
+                "localRotation": {
+                    "w": 0.7098738551139832,
+                    "x": -0.7043288350105286,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
                 }
             },
-            "id": 9
+            "ParticleEmitter": {
+                "texture": 203410113495040133,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 10.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 0.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 1.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 0.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": true,
+                    "trailTexture": 12309085911866933375,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 32
         }
-    ],
-    "RootEntity": 4
+    ]
 }

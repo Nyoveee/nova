@@ -1,7 +1,6 @@
 #version 450 core
 
 struct WorldSpace {
-    vec4 clipSpacePosition;
     vec4 position;
     vec3 normal;
     vec3 tangent;
@@ -33,6 +32,12 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
 };
 
 layout(std430, binding = 3) buffer Bones {
@@ -47,6 +52,7 @@ uniform mat4 model;
 uniform mat3 normalMatrix;
 uniform mat4 localScale;
 uniform float timeElapsed;
+uniform bool toUseNormalMap;
 
 invariant gl_Position;
 
@@ -80,16 +86,28 @@ vec4 calculateClipPosition(vec4 worldPosition) {
     return cameraProjectionView * worldPosition;
 }
 
+void passDataToFragment(WorldSpace worldSpace) {
+    // Pass attributes to fragment shader.. 
+    vsOut.textureUnit = textureUnit;
+    vsOut.fragWorldPos = worldSpace.position.xyz;
+    vsOut.fragViewPos = vec3(view * worldSpace.position);
+    vsOut.fragDirectionalLightPos = directionalLightSpaceMatrix * worldSpace.position;
+
+    vsOut.normal = normalize(worldSpace.normal);
+ 
+    if(toUseNormalMap) {
+        vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
+    }
+}
+
 WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
     WorldSpace worldSpace;
 
     // this is not a skinned mesh.
     if(isSkinnedMesh == 0) {
-        worldSpace.clipSpacePosition    = cameraProjectionView * model * localScale * vec4(position, 1.0);
         worldSpace.position             = model * localScale * vec4(position, 1.0);
         worldSpace.normal               = normalize(normalMatrix * normal);
         worldSpace.tangent              = normalize(normalMatrix * tangent);
-        return worldSpace;
     }
     // this is a skinned mesh.
     else {
@@ -116,11 +134,10 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
             localTangent += normalBoneTransform * tangent;
         }
 
-        worldSpace.clipSpacePosition    = cameraProjectionView * model * localScale * localPosition;
         worldSpace.position             = model * localScale * localPosition;
         worldSpace.normal               = normalize(normalMatrix * localNormal);
         worldSpace.tangent              = normalize(normalMatrix * localTangent);
-
-        return worldSpace;
     }
+
+    return worldSpace;
 }

@@ -30,7 +30,6 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
 // ====================================
 // These are set by the pipeline, and exposed. 
 // ==================================== 
-const float ambientFactor = 0.04;
 const float PI = 3.14159265358979323846;
 
 // === LIGHT PROPERTIES ===
@@ -40,15 +39,19 @@ struct Cluster
     vec4 maxPoint;
     uint pointLightCount;
     uint spotLightCount;
+    uint reflectionProbesCount;
     uint pointLightIndices[25];
     uint spotLightIndices[25];
+    uint reflectionProbesIndices[4];
 };
 
-struct PointLight {
-    vec3 position;
-    vec3 color;
-    vec3 attenuation;
+struct PointLight{
+    vec3 position;		
+    vec3 color;		
+    vec3 attenuation; 
     float radius;
+    float intensity;
+    int shadowMapIndex;
 };
 
 struct DirectionalLight {
@@ -64,6 +67,47 @@ struct SpotLight {
 	float cutOffAngle;
 	float outerCutOffAngle;
     float radius;
+    float intensity;
+    int shadowMapIndex;
+};
+
+struct ReflectionProbe {
+	vec3 worldMin;
+	vec3 worldMax;
+    vec3 viewMin;
+	vec3 viewMax;
+    vec3 worldProbePosition;
+    int indexToProbeArray;
+    float blendFallOff;
+    float intensity;
+};
+
+const int MAX_SHADOW_CASTER = 15;
+
+layout(std140, binding = 0) uniform Camera {
+    mat4 view;
+    mat4 projection;
+    mat4 cameraProjectionView;
+    vec3 cameraPosition;
+
+    // Clusters related info
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
+};
+
+layout(std140, binding = 1) uniform ShadowCasterMatrixes {
+    mat4 shadowCasterMatrix[MAX_SHADOW_CASTER];
+};
+
+layout(std140, binding = 2) uniform PBRUBO {
+    vec4 samples[64];   
+};
+
+layout(std140, binding = 3) uniform ReflectionProbes {
+    uint reflectionProbesCount;
+    ReflectionProbe reflectionProbes[30];
 };
 
 layout(std430, binding = 0) buffer PointLights {
@@ -92,22 +136,31 @@ layout(std430, binding = 7) buffer clusterSSBO
     Cluster clusters[];
 };
 
-// Clusters related info
-uniform float zNear;
-uniform float zFar;
-uniform uvec3 gridSize;
-uniform uvec2 screenDimensions;
+uniform float timeElapsed;
 
 // Shadows
 uniform bool hasDirectionalLightShadowCaster;
 uniform vec3 directionalLightDir;
 
-uniform vec3 cameraPos;
-uniform float timeElapsed;
+// SSAO
+uniform bool toEnableSSAO;
 
-uniform sampler2D shadowMap;
+// IBL
+uniform bool toEnableIBL;
 
-out vec4 FragColor;
+uniform sampler2D directionalShadowMap;
+uniform sampler2D ssao;
+uniform sampler2D brdfLUT;
+uniform sampler2DArray spotlightShadowMaps;
+uniform samplerCube diffuseIrradianceMap;
+uniform samplerCube prefilterMap;
+uniform samplerCubeArray reflectionProbesPrefilterMap;
+
+layout (location = 0) out vec4 FragColor; 
+
+// for depth pre pass..
+layout (location = 1) out vec3 gNormal;
+uniform bool toOutputNormal;
 
 in VS_OUT {
     vec2 textureUnit;
@@ -122,17 +175,29 @@ in VS_OUT {
 // End of pipeline setup. 
 // ==================================== 
 
-// ============= Function Declaration =============
-float ggxDistribution       (float nDotH);
-float geomSmith             (float nDotL);
-vec3  schlickFresnel        (float lDotH, vec3 baseColor);
-vec3  microfacetModelPoint  (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, PointLight light);
-vec3  microfacetModelDir    (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, DirectionalLight light);
-vec3  microfacetModelSpot   (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
-vec3  BRDFCalculation       (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic);
+vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
+    return textureCoordinates * UVTiling + UVOffset;
+}
 
-float shadowCalculation     ();
-Cluster getCluster          ();
+// ============= Function Declaration =============
+float ggxDistribution               (float nDotH);
+float geomSmith                     (float nDotL);
+vec3  schlickFresnel                (float lDotH, vec3 baseColor);
+vec3  fresnelSchlickRoughness       (float cosTheta, vec3 F0, float roughness);
+vec3  microfacetModelPoint          (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, PointLight light);
+vec3  microfacetModelDir            (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, DirectionalLight light);
+vec3  microfacetModelSpot           (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
+vec3  BRDFCalculation               (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic);
+
+float directionalShadowCalculation  (sampler2D shadowMap, vec4 fragmentLightPos);
+float spotlightShadowCalculation    (sampler2DArray spotlightShadowMaps, int shadowMapIndex, vec4 fragmentLightPos);
+float getShadowFactor               (int lightShadowIndex);
+Cluster getCluster                  ();
+
+vec3 getPrefilteredColor            (Cluster cluster, float roughness, vec3 reflectDir);
+
+vec3 boxProjectionReflection        (vec3 reflectDir, vec3 fragmentPos, vec3 probeMin, vec3 probeMax, vec3 probePos);
+float getBlendFactor                (vec3 position, ReflectionProbe reflectionProbe);
 
 // =================================================================================
 // IMPLEMENTATION DETAILS.
@@ -142,61 +207,91 @@ Cluster getCluster          ();
 vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metallic, float occulusion) {
     normal = normalize(normal);
 
-    // ambient is the easiest.
     vec3 finalColor = vec3(0.0, 0.0, 0.0);
 
-#if 1
     // Locating which cluster this fragment is part of
     Cluster cluster = getCluster();
 
-    // Calculate diffuse and specular light for each light.
+    // for(uint i = 0; i < cluster.reflectionProbesCount; ++i) {
+    //     ReflectionProbe reflectionProbe = reflectionProbes[cluster.reflectionProbesIndices[i]];
+    //     return vec3(getBlendFactor(fsIn.fragWorldPos, reflectionProbe));
+    // }
+
+    // --------------------------------------------------------------------
+    // Calculate direct diffuse and specular light for each light.
     for(uint i = 0; i < cluster.pointLightCount; ++i) {
         PointLight pointLight = pointLights[cluster.pointLightIndices[i]];
         finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLight);
     }
-    
+
+    for(uint i = 0; i < cluster.spotLightCount; ++i) {
+        SpotLight spotLight = spotLights[cluster.spotLightIndices[i]];
+
+        vec3 directLight = microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLight);
+        directLight *= (1.0 - getShadowFactor(spotLight.shadowMapIndex));
+
+        finalColor += directLight;
+    }
+
     // particle point light..
     for(int i = 0; i < lightParticleCount; ++i) {
         finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, particlePointLights[i]);
     }
-
-    for(uint i = 0; i < cluster.spotLightCount; ++i) {
-        SpotLight spotLight = spotLights[cluster.spotLightIndices[i]];
-        finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLight);
-    }
-
-#else
-    // Calculate diffuse and specular light for each light.
-    for(int i = 0; i < pointLightCount; ++i) {
-        finalColor += microfacetModelPoint(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, pointLights[i]);
-    }
-
-    for(int i = 0; i < spotLightCount; ++i) {
-        finalColor += microfacetModelSpot(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, spotLights[i]);
-    }
-#endif
 
     // No clustering for directional lights, it affects all fragments.
     for(int i = 0; i < dirLightCount; ++i) {
         finalColor += microfacetModelDir(fsIn.fragWorldPos, normal, albedoColor, roughness, metallic, dirLights[i]);
     }
 
+    // --------------------------------------------------------------------
+    // We calculate the fragment's shadow factor due to directional light..
     if(hasDirectionalLightShadowCaster) {
-        // // We perform perspective divide on fragment light position.
-        // vec3 projCoords = fsIn.fragDirectionalLightPos.xyz / fsIn.fragDirectionalLightPos.w;
-
-        // // transform to [0,1] range
-        // projCoords = projCoords * 0.5 + 0.5;
-    
-        // // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-        // return texture(shadowMap, clamp(projCoords.xy, vec2(0, 0), vec2(1, 1))).rgb; 
+        finalColor *= (1.0 - directionalShadowCalculation(directionalShadowMap, fsIn.fragDirectionalLightPos));
     }
 
-    // We calculate the fragment's shadow factor.
-    float shadowFactor = shadowCalculation();
+    // --------------------------------------------------------------------
+    // Indirect lighting
+    vec3 ambient = vec3(0);
 
-    finalColor *= (1.0 - shadowFactor);
-    finalColor += albedoColor * (occulusion * ambientFactor);
+    if(toEnableIBL) {
+        vec3 viewDir = normalize(cameraPosition - fsIn.fragWorldPos);
+        float NdotV = max(dot(normal, viewDir), 0.0);
+
+        vec3 reflectDir = reflect(-viewDir, normal);   
+
+        // Get specular and diffuse components respectively..
+        vec3 F0         = vec3(0.04); // Dielectrics
+        F0              = mix(F0, albedoColor, metallic);
+
+        vec3 kS         = fresnelSchlickRoughness(NdotV, F0, roughness); 
+        vec3 kD         = vec3(1.0) - kS;
+        kD              *= 1.0 - metallic;
+        
+        // IBL Diffuse..
+        vec3 irradiance = texture(diffuseIrradianceMap, normal).rgb;
+        vec3 diffuse    = irradiance * albedoColor * occulusion;
+
+        // IBL Specular..
+        vec2 envBRDF  = texture(brdfLUT, vec2(NdotV, roughness)).rg;
+        vec3 prefilteredColor = getPrefilteredColor(cluster, roughness, reflectDir);  
+        vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
+
+        ambient         = (kD * diffuse + specular); 
+    }
+    else {
+        ambient = albedoColor * 0.07 * occulusion;
+    }
+
+    // --------------------------------------------------------------------
+    // SSAO
+    if(toEnableSSAO) {
+        // Because SSAO is screen space, we need a way to retrieve SSAO texture in screenspace.
+        vec2 screenSpaceTextureCoordinates = gl_FragCoord.xy / screenDimensions;
+        float ambientOcculusion = texture(ssao, screenSpaceTextureCoordinates).r;
+        ambient *= ambientOcculusion; 
+    }
+
+    finalColor += ambient;
     return finalColor;
 }
 
@@ -215,7 +310,7 @@ float ggxDistribution(float nDotH, float roughness)
     return alpha2 / max(PI * d * d, 0.00000001f);
 }
 
-// The Smith Masking-Shadowing Function describes the probability that microfacets with 
+// The Smith Masking-Shadowing Function describes th    e probability that microfacets with 
 // a given normal are visible from both the light direction and the view direction.
 //
 // Parameter is cosine of the angle between the normal vector and the view direction.
@@ -239,6 +334,13 @@ vec3 schlickFresnel(float lDotH, vec3 baseColor, float metallic)
     f0 = mix(f0, baseColor, metallic);
     return f0 + (1.0f - f0) * pow(1.0f - lDotH, 5);
 }
+
+// Schlick approximation for Fresnel reflection, but for diffuse indirect lighting.
+// https://seblagarde.wordpress.com/2011/08/17/hello-world/
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}   
 
 // Calculates light attenuation.
 float calculateAttenuation(float distance, vec3 attenutationFactor, float radius) {
@@ -270,10 +372,10 @@ vec3 microfacetModelPoint(vec3 position, vec3 n, vec3 baseColor, float roughness
     vec3 l = light.position - position;
     float dist = length(l);
     l = normalize(l);
-    vec3 lightIntensity = light.color;
+    vec3 lightIntensity = light.color * light.intensity;
     lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
-    vec3 v = normalize(cameraPos - position);
+    vec3 v = normalize(cameraPosition - position);
     return BRDFCalculation(n, v, l, lightIntensity, baseColor, roughness, metallic);
 }
 
@@ -283,7 +385,7 @@ vec3 microfacetModelDir(vec3 position, vec3 n, vec3 baseColor, float roughness, 
     vec3 l = normalize(-light.direction);
     vec3 lightIntensity = light.color;
     
-    vec3 v = normalize(cameraPos - position);
+    vec3 v = normalize(cameraPosition - position);
     return BRDFCalculation(n, v, l, lightIntensity, baseColor, roughness, metallic);
 }
 
@@ -305,10 +407,10 @@ vec3 microfacetModelSpot(vec3 position, vec3 n, vec3 baseColor, float roughness,
         return vec3(0.0);
     }
     spotIntensity = clamp(spotIntensity, 0.0, 1.0);
-    vec3 lightIntensity = light.color;
+    vec3 lightIntensity = light.color * light.intensity;
     lightIntensity *= calculateAttenuation(dist, light.attenuation, light.radius); 
     
-    vec3 v = normalize(cameraPos - position);
+    vec3 v = normalize(cameraPosition - position);
     return BRDFCalculation(n, v, l, lightIntensity * spotIntensity, baseColor, roughness, metallic);
 }
 
@@ -343,41 +445,233 @@ Cluster getCluster() {
     return clusters[tileIndex];
 }
 
-float shadowCalculation() {
-    if(!hasDirectionalLightShadowCaster) {
-        return 0.0;
-    }
-
+vec3 getProjectionCoords(vec4 fragmentLightPos) {
     // We perform perspective divide on fragment light position.
-    vec3 projCoords = fsIn.fragDirectionalLightPos.xyz / fsIn.fragDirectionalLightPos.w;
+    vec3 projCoords = fragmentLightPos.xyz / fragmentLightPos.w;
 
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
+
+    return projCoords;
+}
+
+float directionalShadowCalculation(sampler2D shadowMap, vec4 fragmentLightPos) {
+    vec3 projCoords = getProjectionCoords(fragmentLightPos);
     
     // Fragment is outside of the shadow map.
     if(projCoords.z > 1.0 || projCoords.z < 0.0) {
         return 0.0;
     }
-
-    // // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    // float closestDepth = texture(shadowMap, projCoords.xy).r; 
     
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     
     // check whether current frag pos is in shadow
-    // float bias = max(0.05 * (1.0 - dot(fsIn.normal, directionalLightDir)), 0.005);  
+    float bias = 0.003;  
+    
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+
     for(int x = -1; x <= 1; ++x)
     {
         for(int y = -1; y <= 1; ++y)
         {
             float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-            shadow += currentDepth - 0.003 > pcfDepth ? 1.0 : 0.0;        
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
         }    
     }
+
     shadow /= 9.0;
 
     return shadow;
+}
+
+float spotlightShadowCalculation(sampler2DArray spotlightShadowMaps, int shadowMapIndex, vec4 fragmentLightPos) {
+    vec3 projCoords = getProjectionCoords(fragmentLightPos);
+    
+    // Fragment is outside of the shadow map.
+    if(projCoords.z > 1.0 || projCoords.z < 0.0) {
+        return 0.0;
+    }
+    
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    
+    // check whether current frag pos is in shadow
+    float bias = 0;  
+    
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(spotlightShadowMaps, 0).xy;
+    
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(spotlightShadowMaps, vec3(projCoords.xy + vec2(x, y) * texelSize, float(shadowMapIndex))).r; 
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+
+    shadow /= 9.0;
+
+    return shadow;
+}
+
+float getShadowFactor(int lightShadowIndex) {    
+    // doesn't have an active shadow map..
+    if(lightShadowIndex == -1) {
+        return 0;
+    }
+
+    // retrieve shadow caster view projection matrix, to transform fragment world position to light caster's space.
+    vec4 fragmentLightPos = shadowCasterMatrix[lightShadowIndex] * vec4(fsIn.fragWorldPos, 1);
+
+    return spotlightShadowCalculation(spotlightShadowMaps, lightShadowIndex, fragmentLightPos);
+}
+
+bool is_within_range(vec3 value, vec3 min_val, vec3 max_val) {
+    // Check if all components of 'value' are >= all components of 'min_val'
+    bvec3 greater_than_min = greaterThanEqual(value, min_val);
+
+    // Check if all components of 'value' are <= all components of 'max_val'
+    bvec3 less_than_max = lessThanEqual(value, max_val);
+
+    // Return true only if both conditions are true for ALL components
+    return all(greater_than_min) && all(less_than_max);
+}
+
+// box projection..
+// these are in world space..
+vec3 boxProjectionReflection(vec3 reflectDir, vec3 fragmentPos, vec3 probeMin, vec3 probeMax, vec3 probePos) {
+    // https://www.gamedev.net/forums/topic/568829-box-projected-cubemap-environment-mapping/
+    // 1. Find the intersection from fragmentPos going in the reflectDir direction to probe's AABB
+
+    // BPCEM (Box Projected Cubemap Environment Map)
+    vec3 tMin = (probeMin - fragmentPos) / reflectDir;
+    vec3 tMax = (probeMax - fragmentPos) / reflectDir;
+
+    vec3 t1 = min(tMin, tMax);
+    vec3 t2 = max(tMin, tMax);
+
+    // X(t) = P + tHit * r; (ray equation indicating intersection)
+    float tHit = min(t2.x, min(t2.y, t2.z));
+    vec3 intersection = fragmentPos + reflectDir * tHit;
+
+    // 2. Return new reflection direction from probe position to intersection 
+    return normalize(intersection - probePos);
+}
+
+// https://iquilezles.org/articles/distfunctions/ [Box SDF]
+// https://seblagarde.wordpress.com/2012/09/29/image-based-lighting-approaches-and-parallax-corrected-cubemap/ [Local cubemaps blending weights calculation]
+// ^ inspiration..
+float getBlendFactor(vec3 position, ReflectionProbe reflectionProbe) {
+    // The general idea is to calculate distance a given fragment is to the reflection probe's AABB center.
+    vec3 boxExtents = (reflectionProbe.worldMax - reflectionProbe.worldMin) / 2.0;
+
+    // We first transform fragment's world position to the reflection probe's local space..
+    vec3 localPosition = position - reflectionProbe.worldProbePosition;
+
+    // We don't really want distance, but some normalized factor ranging from [0, 1]..
+    // So let's scale down our local space by the extents of the AABB.
+    localPosition /= boxExtents;
+
+    // We focus on the positive quadrant..
+    localPosition = abs(localPosition);
+
+    // We want to calculate an appropriate factor, but not via vector length.
+    // We want to make sure that points at the boundary is 1, even at diagonals..
+    // We follow how SDF implements with maxcomp
+    float factor = max(localPosition.x, max(localPosition.y, localPosition.z));
+
+    // This factor is based on distance, so let's "inverse" it.. (if distance is 0, factor is highest..)
+    factor = max(1.0 - factor, 0.0);
+    
+    // We scale factor based on blend fall off, so fragment with high factor will be multiplied and stay at 1.
+    // This is how we ensure factor is 1 when inside the blend fall off.
+    factor = min(factor / max(reflectionProbe.blendFallOff, 0.0001), 1);
+
+    return factor;
+}
+
+// IBL, Reflection probe
+vec3 getPrefilteredColor(Cluster cluster, float roughness, vec3 reflectDir) {
+    const float MAX_REFLECTION_LOD = 4.0;
+
+    int indexToReflectionProbeMap = -1;
+
+    // We collate all reflection probes that is influencing..
+    struct InfluencingProbe {
+        uint index; // to UBO of reflection probes..
+        float blendFactor;
+    };
+
+    InfluencingProbe influencingProbes[4];
+    uint numOfInfluencingProbes = 0;
+    float totalBlendFactor = 0; // we keep this for normalisation, weigted factors..
+
+    // For each fragment, let's find the nearby reflection probe that influences it.. and calculate their blending factor..
+    for(uint i = 0; i < cluster.reflectionProbesCount; ++i) {
+        ReflectionProbe reflectionProbe = reflectionProbes[cluster.reflectionProbesIndices[i]];
+        
+        // Calculate blend factor for this reflection probe..
+        float blendFactor = getBlendFactor(fsIn.fragWorldPos, reflectionProbe);
+
+        // Outside the reflection probe's influence..
+        if(blendFactor == 0.0) {
+            continue;
+        }
+
+        // Within a reflection probe..
+        influencingProbes[numOfInfluencingProbes].index = cluster.reflectionProbesIndices[i];
+        influencingProbes[numOfInfluencingProbes].blendFactor = blendFactor;
+        totalBlendFactor += blendFactor;
+        numOfInfluencingProbes++;
+    }
+    
+    // We add environment into the mix if there's 0 or 1 reflection probe affecting it.. (resulting totalBlendFactor < 0)
+    float environmentBlendFactor = 0;
+
+    if(totalBlendFactor < 1) {
+        environmentBlendFactor = max(1 - totalBlendFactor, 0); // jic 
+        totalBlendFactor = 1;
+    }
+
+    vec3 finalPrefilteredColor = vec3(0.0);
+
+    // We reweight the blend factors, by normalising them.. then adding the colours up..
+    for(uint i = 0; i < numOfInfluencingProbes; ++i) {
+        InfluencingProbe influenceProbe = influencingProbes[i];
+        influenceProbe.blendFactor /= totalBlendFactor;
+
+        ReflectionProbe reflectionProbe = reflectionProbes[influenceProbe.index];
+        
+        // Get index to loaded reflection probes..
+        indexToReflectionProbeMap = reflectionProbe.indexToProbeArray;
+
+        // Calculate box projected reflection..
+        vec3 boxProjectedReflection = boxProjectionReflection(reflectDir, fsIn.fragWorldPos, reflectionProbe.worldMin, reflectionProbe.worldMax, reflectionProbe.worldProbePosition);
+
+        // Sample from reflection probe map..
+        finalPrefilteredColor += textureLod(reflectionProbesPrefilterMap, vec4(boxProjectedReflection, indexToReflectionProbeMap), roughness * MAX_REFLECTION_LOD).rgb * influenceProbe.blendFactor * reflectionProbe.intensity;
+    }
+    
+    // Blend in environment if appropriate..
+    if(environmentBlendFactor > 0) {
+        finalPrefilteredColor += textureLod(prefilterMap, reflectDir, roughness * MAX_REFLECTION_LOD).rgb * environmentBlendFactor;
+    }
+
+    return finalPrefilteredColor;
+}
+
+// User shader entry point.
+vec4 __internal__main__();
+
+// Wrapper around user entry point.
+void main() { 
+    if(toOutputNormal) {
+        gNormal = fsIn.normal;
+    }
+    else {
+        FragColor = __internal__main__(); 
+    }
 }
