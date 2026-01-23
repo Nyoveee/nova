@@ -1,13 +1,6 @@
 {
     "selectedShader": 1772861812701872129,
     "overridenUniforms": {
-        "dissolveThreshold": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_value": 1.0,
-                "__variant_type": 12
-            }
-        },
         "dissolveTexture": {
             "type": "sampler2D",
             "value": {
@@ -15,11 +8,11 @@
                 "__variant_type": 9
             }
         },
-        "mainTexture": {
-            "type": "sampler2D",
+        "dissolveThreshold": {
+            "type": "NormalizedFloat",
             "value": {
-                "__variant_value": 11490495086275592255,
-                "__variant_type": 9
+                "__variant_value": 1.0,
+                "__variant_type": 12
             }
         },
         "edgeColor": {
@@ -31,6 +24,13 @@
                     "b": 0.962758481502533
                 },
                 "__variant_type": 10
+            }
+        },
+        "mainTexture": {
+            "type": "sampler2D",
+            "value": {
+                "__variant_value": 11490495086275592255,
+                "__variant_type": 9
             }
         },
         "edgeWidth": {

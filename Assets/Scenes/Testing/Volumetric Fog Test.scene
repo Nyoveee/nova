@@ -141,7 +141,7 @@
                     "g": 1.0,
                     "b": 1.0
                 },
-                "intensity": 100000.0,
+                "intensity": 30.0,
                 "cutOffAngle": 0.3649308383464813,
                 "outerCutOffAngle": 0.4812920093536377,
                 "attenuation": {
@@ -251,7 +251,7 @@
                 "position": {
                     "x": -21.589296340942383,
                     "y": 0.0806739330291748,
-                    "z": 31.254058837890625
+                    "z": 56.37100601196289
                 },
                 "scale": {
                     "x": 0.9999998211860657,
@@ -272,7 +272,7 @@
                 "localPosition": {
                     "x": -21.589296340942383,
                     "y": 0.0806739330291748,
-                    "z": 31.254058837890625
+                    "z": 56.37100601196289
                 },
                 "localScale": {
                     "x": 0.9999998211860657,
@@ -298,7 +298,7 @@
                     "g": 1.0,
                     "b": 1.0
                 },
-                "intensity": 20.0,
+                "intensity": 1.0,
                 "cutOffAngle": 0.21816615760326385,
                 "outerCutOffAngle": 0.30543261766433716,
                 "attenuation": {
@@ -450,9 +450,9 @@
                 "equirectangularMap": 17591087065804193799
             },
             "Fog": {
-                "absorptionDensity": 0.05000000074505806,
-                "inscatteringDensity": 0.05000000074505806,
-                "scatteringDistribution": 0.4059999883174896,
+                "absorptionDensity": 0.0,
+                "inscatteringDensity": 100.0,
+                "scatteringDistribution": 0.5,
                 "heightFallOff": 1.0,
                 "fogInscatteringColor": {
                     "r": 1.0,

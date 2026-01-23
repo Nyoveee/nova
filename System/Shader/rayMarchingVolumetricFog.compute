@@ -87,9 +87,9 @@ layout(std140, binding = 8) buffer VolumetricFogBuffer {
 // Convert from z-depth based on camera to world pos
 vec3 DepthToWorldPos(float depth, vec2 uv){
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
-    vec4 viewSpacePosition = inverse(cameraProjection) * clipSpacePosition;
+    vec4 viewSpacePosition = inverse(projection) * clipSpacePosition;
     viewSpacePosition /= viewSpacePosition.w;
-    vec4 worldSpacePosition = inverse(cameraView) * viewSpacePosition;
+    vec4 worldSpacePosition = inverse(view) * viewSpacePosition;
 
     return worldSpacePosition.xyz;
 }
@@ -149,7 +149,7 @@ float spotlightShadowCalculation(sampler2DArray spotlightShadowMaps, int shadowM
 
     return shadow;
 }
-/*
+
 float getShadowFactor(int lightShadowIndex,vec3 marchPosition) {    
     // doesn't have an active shadow map..
     if(lightShadowIndex == -1) {
@@ -161,13 +161,13 @@ float getShadowFactor(int lightShadowIndex,vec3 marchPosition) {
 
     return spotlightShadowCalculation(spotlightShadowMaps, lightShadowIndex, fragmentLightPos);
 }
-*/
+
 vec3 CalculateSpotLightScatter(vec3 marchPosition, vec3 fragmentToCamera, vec3 lightToMarchPosition, SpotLight light){
     float lightDistance = length(lightToMarchPosition);
     vec3 l = normalize(lightToMarchPosition);
 
     vec3 fragmentToCameraNormalized = normalize(fragmentToCamera);
-    float visibility = 1.f; // Unless we want to include shadow in the calculation this shouldn't change from 1
+    float visibility = 1.f - getShadowFactor(light.shadowMapIndex, marchPosition); // Unless we want to include shadow in the calculation this shouldn't change from 1
     
     // Cutoff angles for spotlight
     float cutOffAngle       = cos(light.cutOffAngle);
@@ -207,32 +207,32 @@ void main(){
     fogDatas[fogIndex].radiance = vec3(0.0);
     fogDatas[fogIndex].transmittance = 0.0;
 
-    // float transmittance = 1;
+    float transmittance = 1;
 
-    // for(float currDistance = 0; currDistance <= rayDistance; currDistance += rayMarchingStepSize){
-    //     transmittance *= AbsorptionFactor(absorptionDensity, rayMarchingStepSize);
-    //     // Early out if transmittance is too low, too low transmittance doesn't contribute much to radiance
-    //     if(transmittance <= MIN_TRANSMITTANCE)
-    //         break;
+    for(float currDistance = 0; currDistance <= rayDistance; currDistance += rayMarchingStepSize){
+       transmittance *= AbsorptionFactor(absorptionDensity, rayMarchingStepSize);
+       // Early out if transmittance is too low, too low transmittance doesn't contribute much to radiance
+       if(transmittance <= MIN_TRANSMITTANCE)
+           break;
 
-    //     // In-Scattering calculation
-    //     for(int i = 0;i<pointLightCount;++i){
-    //         // Accumulation
-    //         PointLight light = pointLights[i];
-    //         vec3 lightToMarchPosition = marchPosition - light.position;
-    //         vec3 Li = CalculatePointLightScatter(fragmentToCamera, lightToMarchPosition, light);
-    //         fogDatas[fogIndex].radiance += Li * transmittance * rayMarchingStepSize;
-    //     }
-    //     for(int i = 0;i<spotLightCount;++i){
-    //         // Accumulation
-    //         SpotLight light = spotLights[i];
-    //         vec3 lightToMarchPosition = marchPosition - light.position;
-    //         vec3 Li = CalculateSpotLightScatter(marchPosition,fragmentToCamera, lightToMarchPosition, light);
-    //         fogDatas[fogIndex].radiance += Li * transmittance * rayMarchingStepSize;
-    //     }
-    //     marchPosition += deltaStep;
-    // }
+        // In-Scattering calculation
+       for(int i = 0;i<pointLightCount;++i){
+            // Accumulation
+            PointLight light = pointLights[i];
+            vec3 lightToMarchPosition = marchPosition - light.position;
+            vec3 Li = CalculatePointLightScatter(fragmentToCamera, lightToMarchPosition, light);
+            fogDatas[fogIndex].radiance += Li * transmittance * rayMarchingStepSize;
+        }
+        for(int i = 0;i<spotLightCount;++i){
+            // Accumulation
+            SpotLight light = spotLights[i];
+            vec3 lightToMarchPosition = marchPosition - light.position;
+            vec3 Li = CalculateSpotLightScatter(marchPosition,fragmentToCamera, lightToMarchPosition, light);
+            fogDatas[fogIndex].radiance += Li * transmittance * rayMarchingStepSize;
+        }
+        marchPosition += deltaStep;
+    }
 
-    // // Max sure it doesn't get too dark
-    // fogDatas[fogIndex].transmittance = max(MIN_UNIFORM_TRANSMITTANCE,transmittance);
+    // Max sure it doesn't get too dark
+    fogDatas[fogIndex].transmittance = max(MIN_UNIFORM_TRANSMITTANCE,transmittance);
 }

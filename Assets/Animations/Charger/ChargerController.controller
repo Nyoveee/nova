@@ -1,23 +1,6 @@
 {
     "entryNode": 1000,
     "nodes": {
-        "13554120084823654411": {
-            "id": 13554120084823654411,
-            "animation": 15509887387844050953,
-            "transitions": null,
-            "toLoop": true,
-            "name": "ChargerStagger",
-            "animationEvents": [
-                {
-                    "key": 22,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent1"
-                }
-            ],
-            "toLoop": true,
-            "name": "Entry Node",
-            "animationEvents": null
-        },
         "1000": {
             "id": 1000,
             "animation": 18446744073709551615,
@@ -31,12 +14,12 @@
             "name": "Entry Node",
             "animationEvents": null
         },
-        "5483669552575332355": {
-            "id": 5483669552575332355,
-            "animation": 15509887387844050949,
+        "13554120084823654411": {
+            "id": 13554120084823654411,
+            "animation": 15509887387844050953,
             "transitions": null,
             "toLoop": true,
-            "name": "ChargerIdle",
+            "name": "Entry Node",
             "animationEvents": null
         },
         "14130580837126930439": {
@@ -47,20 +30,12 @@
             "name": "ChargerWalk",
             "animationEvents": null
         },
-        "5483669552575643657": {
-            "id": 5483669552575643657,
-            "animation": 15104853692451422209,
+        "5483669552575332355": {
+            "id": 5483669552575332355,
+            "animation": 15509887387844050949,
             "transitions": null,
             "toLoop": true,
-            "name": "ChargerCharge",
-            "animationEvents": null
-        },
-        "3325363430777339905": {
-            "id": 3325363430777339905,
-            "animation": 13204044378630356999,
-            "transitions": null,
-            "toLoop": false,
-            "name": "ChargerJump",
+            "name": "ChargerIdle",
             "animationEvents": null
         },
         "1448444286451908621": {
@@ -76,6 +51,22 @@
                     "functionName": "TriggerEvent5"
                 }
             ]
+        },
+        "3325363430777339905": {
+            "id": 3325363430777339905,
+            "animation": 13204044378630356999,
+            "transitions": null,
+            "toLoop": false,
+            "name": "ChargerJump",
+            "animationEvents": null
+        },
+        "5483669552575643657": {
+            "id": 5483669552575643657,
+            "animation": 15104853692451422209,
+            "transitions": null,
+            "toLoop": true,
+            "name": "ChargerCharge",
+            "animationEvents": null
         },
         "16233225301454651393": {
             "id": 16233225301454651393,

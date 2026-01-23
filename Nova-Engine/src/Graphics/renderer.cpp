@@ -3134,7 +3134,7 @@ void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog)
 	rayMarchingVolumetricFogCompute.setFloat("scatteringDistribution",	fog.scatteringDistribution);
 
 	// Get the depth Texture
-	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().depthStencilId());
+	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().depthStencilId());
 	rayMarchingVolumetricFogCompute.setImageUniform("depthBuffer", 0);
 
 	glBindTextureUnit(3, spotlightShadowMaps.getTextureId());
