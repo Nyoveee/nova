@@ -106,7 +106,6 @@ void CustomShader::compile()
 	fShaderLibraryStream << "\n// Custom Shader Fragment Code";
 	fShaderLibraryStream << "\n// !! ==========================================\n\n";
 	fShaderLibraryStream << "vec4 __internal__main__(){" << customShaderData.fShaderCode << "}\n\n";
-	fShaderLibraryStream << "void main(){ FragColor = __internal__main__(); }";
 
 	std::string fragmentCode = fShaderLibraryStream.str();
 

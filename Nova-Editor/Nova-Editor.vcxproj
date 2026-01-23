@@ -79,7 +79,7 @@
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Resource;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Include</IncludePath>
+    <IncludePath>$(SolutionDir)Nova-Framework\src;$(SolutionDir)Nova-Framework\src\Loader;$(SolutionDir)Nova-Framework\src\Resource;$(SolutionDir)Nova-Framework\src\Imported;$(SolutionDir)Nova-Framework\src\Internal;$(ProjectDir)src;$(ProjectDir)src\Editor\ImGui;$(SolutionDir)Nova-Engine\src;$(SolutionDir)Include</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Program Files (x86)\Visual Leak Detector\lib\Win64</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
@@ -116,7 +116,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -129,7 +129,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)Library\Debug\*.lib;$(SolutionDir)Library\Debug\Editor\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)DLL\Debug\*.dll" /Y /Q "$(OutDir)"</Command>
@@ -141,7 +141,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLAD_GLAPI_EXPORT;JPH_SHARED_LIBRARY;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_DEBUG_RENDERER;JPH_PROFILE_ENABLED;JPH_OBJECT_STREAM;TRACY_ENABLE;FMT_UNICODE=0;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -164,6 +164,8 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\API\assetSerializer.cpp" />
+    <ClCompile Include="src\API\stb_image.cpp" />
     <ClCompile Include="src\AssetManager\AssetDirectoryWatcher.cpp" />
     <ClCompile Include="src\AssetManager\assetManager.cpp" />
     <ClCompile Include="src\AssetManager\prefab.cpp" />
@@ -171,8 +173,11 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClCompile Include="src\Editor\Assets\animationTimeline.cpp" />
     <ClCompile Include="src\Editor\Assets\assetViewerUi.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\componentInspector.cpp" />
+    <ClCompile Include="src\Editor\ComponentInspection\displayLightComponent.cpp" />
+    <ClCompile Include="src\Editor\ComponentInspection\displayReflectionProbeComponent.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayMaterial.cpp" />
     <ClCompile Include="src\Editor\ComponentInspection\PropertyDisplay\displayScripts.cpp" />
+    <ClCompile Include="src\Editor\Configuration\renderConfigUI.cpp" />
     <ClCompile Include="src\Editor\ImGui\crude_json.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_canvas.cpp" />
     <ClCompile Include="src\Editor\ImGui\imgui_neo_internal.cpp" />
@@ -234,6 +239,9 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\API\assetSerializer.h" />
+    <ClInclude Include="src\API\stb_image.hpp" />
+    <ClInclude Include="src\API\stb_image_write.h" />
     <ClInclude Include="src\AssetManager\prefab.h" />
     <ClInclude Include="src\Editor\Assets\animationTimeline.ipp" />
     <ClInclude Include="src\Editor\Assets\animatorController.h" />
@@ -247,6 +255,7 @@ xcopy "$(SolutionDir)Nova-Scripts\*" /Y /Q "$(OutDir)Nova-Scripts\*"</Command>
     <ClInclude Include="src\Editor\ComponentInspection\PropertyDisplay\displayProperties.h" />
     <ClInclude Include="src\Editor\Configuration\editorConfigUI.h" />
     <ClInclude Include="src\Editor\Configuration\gameConfigUI.h" />
+    <ClInclude Include="src\Editor\Configuration\renderConfigUI.h" />
     <ClInclude Include="src\Editor\editor.ipp" />
     <ClInclude Include="src\Editor\ImGui\crude_json.h" />
     <ClInclude Include="src\Editor\ImGui\imgui_bezier_math.h" />

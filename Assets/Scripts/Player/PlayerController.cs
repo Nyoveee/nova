@@ -1,7 +1,7 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-
+using ScriptingAPI;
 class PlayerController : Script
 {
 
@@ -35,6 +35,13 @@ class PlayerController : Script
     // ==================================
     private Transform_? transform;
     private Rigidbody_? rigidbody;
+    private AudioComponent_? audioComponent;
+
+    // Audio
+    [SerializableField]
+    private Audio dashSFX;
+    [SerializableField]
+    private List<Audio> jumpSFX;
 
     // WASD
     private bool isMovingForward = false;
@@ -65,6 +72,7 @@ class PlayerController : Script
     {
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
+        audioComponent = getComponent<AudioComponent_>();
 
         CameraAPI.LockMouse();
 
@@ -383,8 +391,7 @@ class PlayerController : Script
 
         if (jumpCount < maxJumpCount && !isDashing)
         {
-
-            AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
+            audioComponent.PlaySound(jumpSFX[jumpCount]);
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
@@ -398,8 +405,7 @@ class PlayerController : Script
         {
             return;
         }
-
-        AudioAPI.PlaySound(gameObject, "dash1_sfx");
+        audioComponent.PlaySound(dashSFX);
         // We initialise dashing mechanic..
         isDashing = true;
         dashTimer -= dashCooldown;

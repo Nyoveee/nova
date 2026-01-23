@@ -384,7 +384,7 @@ namespace {
 	}
 
 	void window_size_callback(GLFWwindow*, int width, int height) {
-		// Specified dimension for our game.
+		// Specified dimension for our game.s
 		float gameWidth = static_cast<float>(g_Window->getGameConfig().gameWidth);
 		float gameHeight = static_cast<float>(g_Window->getGameConfig().gameHeight);
 

@@ -6,7 +6,7 @@
 constexpr glm::vec3 defaultCameraFront		= { 0.f, 0.f, -1.f };
 constexpr Radian defaultFovAngle			= Degree{ 45.0f };
 constexpr float defaultNearPlaneDistance	= 0.2f;
-constexpr float defaultFarPlaneDistance		= 10000.f;
+constexpr float defaultFarPlaneDistance		= 3000.f;
 constexpr float defaultAspectRatio			= 1920.f / 1080.f;
 
 Camera::Camera() : 
@@ -24,12 +24,16 @@ Camera::Camera() :
 	recalculateProjectionMatrix();
 }
 
-glm::mat4x4 Camera::view() const {
+glm::mat4x4 const& Camera::view() const {
 	return viewMatrix;
 }
 
-glm::mat4x4 Camera::projection() const {
+glm::mat4x4 const& Camera::projection() const {
 	return projectionMatrix;
+}
+
+glm::mat4x4 const& Camera::viewProjection() const {
+	return viewProjectionMatrix;
 }
 
 glm::vec3 Camera::clipToWorldSpace(glm::vec3 const& clipPos) {
@@ -93,16 +97,27 @@ float Camera::getFarPlaneDistance() const {
 	return farPlaneDistance;
 }
 
+void Camera::setAspectRatio(float p_aspectRatio) {
+	aspectRatio = p_aspectRatio;
+}
+
 float Camera::getAspectRatio() const {
 	return aspectRatio;
 }
 
+void Camera::setViewMatrix(glm::mat4x4 const& p_viewMatrix) {
+	viewMatrix = p_viewMatrix;
+	viewProjectionMatrix = projectionMatrix * viewMatrix;
+}
+
 void Camera::recalculateViewMatrix() {
 	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, Up);
+	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 
 void Camera::recalculateProjectionMatrix() {
 	projectionMatrix = glm::perspective<float>(fovAngle, aspectRatio, nearPlaneDistance, farPlaneDistance);
+	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 
 //bool Camera::getStatus() {

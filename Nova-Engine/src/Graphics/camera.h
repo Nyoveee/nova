@@ -16,8 +16,9 @@ public:
 
 public:
 	// gets the view matrix
-	ENGINE_DLL_API glm::mat4x4 view() const;
-	ENGINE_DLL_API glm::mat4x4 projection() const;
+	ENGINE_DLL_API glm::mat4x4 const& view() const;
+	ENGINE_DLL_API glm::mat4x4 const& projection() const;
+	ENGINE_DLL_API glm::mat4x4 const& viewProjection() const;
 
 	ENGINE_DLL_API glm::vec3 clipToWorldSpace(glm::vec3 const& clipPos);
 
@@ -34,7 +35,6 @@ public:
 	glm::vec3	getRight() const;
 	glm::vec3	getUp() const;
 
-
 	void		setFov(Radian angle);
 	Radian		getFov() const;
 
@@ -44,7 +44,10 @@ public:
 	void		setFarPlaneDistance(float plane);
 	float		getFarPlaneDistance() const;
 
+	void		setAspectRatio(float aspectRatio);
 	float		getAspectRatio() const;
+
+	void		setViewMatrix(glm::mat4x4 const& viewMatrix);
 
 public:
 	// only calculate view and projection matrix at the end of game loop once, for optimisation.
@@ -65,4 +68,6 @@ private:
 	Radian fovAngle;
 
 	glm::mat4x4 projectionMatrix;
+
+	glm::mat4x4 viewProjectionMatrix;
 };

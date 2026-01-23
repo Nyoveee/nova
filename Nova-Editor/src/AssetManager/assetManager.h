@@ -22,6 +22,8 @@ class ResourceManager;
 class Engine;
 class Editor;
 
+class CubeMap;
+
 class AssetManager {
 public:
 	struct Descriptor {

@@ -50,7 +50,7 @@ class Material;
 // explicit template specialisation for respective loaders.
 ResourceLoaderDefinition(Model)
 ResourceLoaderDefinition(Texture)
-ResourceLoaderDefinition(CubeMap)
+ResourceLoaderDefinition(EquirectangularMap)
 ResourceLoaderDefinition(ScriptAsset)
 ResourceLoaderDefinition(NavMesh)
 ResourceLoaderDefinition(Controller)
@@ -58,3 +58,4 @@ ResourceLoaderDefinition(CustomShader)
 ResourceLoaderDefinition(Material)
 ResourceLoaderDefinition(Font)
 ResourceLoaderDefinition(Sequencer)
+ResourceLoaderDefinition(CubeMap)

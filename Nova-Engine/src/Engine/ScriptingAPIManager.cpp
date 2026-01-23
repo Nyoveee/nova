@@ -133,6 +133,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
 		executeFunction_						= GetFunctionPtr<ExecuteFunctionPtr>("Interface", "executeEntityScriptFunction");
 		getHierarchyModifiedScripts_            = GetFunctionPtr<GetHierarchyModifiedScriptsFunctionPtr>("Interface", "GetHierarchyModifiedScripts");
+		getEnumNames							= GetFunctionPtr<GetEnumNamesFunctionPtr>("Interface", "getEnumNames");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -225,7 +226,7 @@ void ScriptingAPIManager::UpdateAllScriptComponentFields(ResourceID scriptID)
 	// We include Inheritted Scripts
 	std::unordered_set<ResourceID> hierarchyScripts{ getHierarchyModifiedScripts_(static_cast<std::size_t>(scriptID)) };
 
-	// update the field data of all entities with affected scripts..
+	// update the field data of all entities with affected scripts..(Very Cursed Nested Loops)
 	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
 		for (auto&& script : scripts.scriptDatas) {
 
@@ -236,7 +237,7 @@ void ScriptingAPIManager::UpdateAllScriptComponentFields(ResourceID scriptID)
 			std::vector<FieldData> oldFieldData{ script.fields };
 			script.fields.clear();
 
-			for (FieldData const& newFields : getScriptFieldDatas(script.scriptId)) {
+			for (FieldData& newFields : getScriptFieldDatas(script.scriptId)) {
 				bool b_IsExistingField{ false };
 
 				for (FieldData const& oldFields : oldFieldData) {
@@ -254,7 +255,8 @@ void ScriptingAPIManager::UpdateAllScriptComponentFields(ResourceID scriptID)
 						break;
 					}
 				}
-				if (!b_IsExistingField)
+				// Override the new fieflds
+				if (!b_IsExistingField) 
 					script.fields.push_back(newFields);
 			}
 		}
@@ -391,6 +393,11 @@ void ScriptingAPIManager::checkIfRecompilationNeeded(float dt) {
 std::vector<FieldData> ScriptingAPIManager::getScriptFieldDatas(ResourceID scriptID)
 {
 	return getScriptFieldDatas_(static_cast<std::size_t>(scriptID));
+}
+
+std::vector<std::string> ScriptingAPIManager::getEnumNamesFromType(std::string enumType)
+{
+	return getEnumNames(enumType.c_str());
 }
 
 bool ScriptingAPIManager::hasCompilationFailed() const {

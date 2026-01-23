@@ -295,6 +295,13 @@ inline Json serializeToJson<ControllerNodeID>(ControllerNodeID const& controller
 	return static_cast<size_t>(controllerId);
 }
 
+template<>
+inline Json serializeToJson<FieldEnum>(FieldEnum const& dataMember) {
+	Json json;
+	json["Type"] = dataMember.type;
+	json["Value"] = dataMember.value;
+	return json;
+}
 #if 0
 template<>
 inline Json serializeToJson<std::unordered_map<MaterialName, Material>>(std::unordered_map<MaterialName, Material> const& dataMember) {

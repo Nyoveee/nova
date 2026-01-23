@@ -42,6 +42,8 @@ using SetScriptFieldFunctionPtr		         = void (*)(unsigned int, unsigned long
 using handleOnCollisionFunctionPtr		     = void (*)(unsigned int, unsigned int);
 using ExecuteFunctionPtr			         = void (*)(unsigned int, unsigned long long, std::string const&);
 using GetHierarchyModifiedScriptsFunctionPtr = std::unordered_set<ResourceID>(*)(std::size_t);
+using GetEnumNamesFunctionPtr				 = std::vector<std::string> (*)(const char*);
+
 class Engine;
 
 class ScriptingAPIManager {
@@ -81,6 +83,8 @@ public:
 	// Serializable Field Reference
 	ENGINE_DLL_API std::vector<FieldData> getScriptFieldDatas(ResourceID scriptID);
 
+	// Get The list of values from SerializableField Enum Type
+	ENGINE_DLL_API std::vector<std::string> getEnumNamesFromType(std::string enumType);
 
 	// This is the callback when the assets files are Added
 	ENGINE_DLL_API void OnAssetContentAddedCallback(std::string abspath);
@@ -147,7 +151,7 @@ private:
 	handleOnCollisionFunctionPtr			 handleOnCollision_;
 	ExecuteFunctionPtr				         executeFunction_;
 	GetHierarchyModifiedScriptsFunctionPtr   getHierarchyModifiedScripts_;
-
+	GetEnumNamesFunctionPtr                  getEnumNames;
 private:
 	CompileState compileState;
 	float timeSinceSave;

@@ -51,9 +51,9 @@ private:
 	ComputeShader particleUpdateComputeShader;
 	ComputeShader particleFindLightsComputeShader;
 	ComputeShader particleResetAllComputeShader;
-	BufferObject particleVerticesBO;
-	BufferObject particlesSSBO;
-	BufferObject particleLightsSSBO;
+	BufferObject particleVerticesBO;  // SSBO 4
+	BufferObject particlesSSBO;		  // SSBO 5
+	BufferObject particleLightsSSBO;  // SSBO 6
 	std::unordered_map<InterpolationType, float> interpolationType;
 	Engine& engine;
 };

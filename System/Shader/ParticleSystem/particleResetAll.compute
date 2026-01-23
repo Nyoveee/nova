@@ -5,7 +5,6 @@ struct Particle{
     vec4 startColor;
     vec4 endColor;
     vec3 velocity;
-    vec3 direction;
     vec3 force;
     vec3 lightattenuation;
     float colorInterpolation;
@@ -21,10 +20,8 @@ struct Particle{
     bool sizeOverLifetime;
     bool b_Active;
 };
-
 layout(std430, binding = 5) buffer ParticleList {
     int particleCount;
-    int newParticleIndex;
     Particle particles[];
 };
 
