@@ -141,7 +141,7 @@
                     "g": 1.0,
                     "b": 1.0
                 },
-                "intensity": 625.0,
+                "intensity": 100000.0,
                 "cutOffAngle": 0.3649308383464813,
                 "outerCutOffAngle": 0.4812920093536377,
                 "attenuation": {
@@ -384,6 +384,86 @@
                 "shadowCullFrontFace": true
             },
             "id": 4
+        },
+        {
+            "EntityData": {
+                "name": "Environment",
+                "tag": "",
+                "parent": 4294967295,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "SkyBox": {
+                "equirectangularMap": 17591087065804193799
+            },
+            "Fog": {
+                "absorptionDensity": 0.05000000074505806,
+                "inscatteringDensity": 0.05000000074505806,
+                "scatteringDistribution": 0.4059999883174896,
+                "heightFallOff": 1.0,
+                "fogInscatteringColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "startDistance": 1.0,
+                "endDistance": 150.0,
+                "rayMarchingStepSize": 1.0
+            },
+            "id": 5
         }
     ],
     "layers": [

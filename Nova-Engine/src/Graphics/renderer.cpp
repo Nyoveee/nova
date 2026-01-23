@@ -136,6 +136,17 @@ struct alignas(16) ReflectionProbeUBOData {
 				float	  intensity;
 };
 
+/*
+	Texture unit setup
+	0 - TEXTURE_2D				directionalShadowMap;
+	1 - TEXTURE_2D				ssao;
+	2 - TEXTURE_2D				brdfLUT;
+	3 - TEXTURE_2D_ARRAY		spotlightShadowMaps;
+	4 - TEXTURE_CUBE_MAP		diffuseIrradianceMap;
+	5 - TEXTURE_CUBE_MAP		prefilterMap;
+	6 - TEXTURE_CUBE_MAP_ARRAY	reflectionProbesPrefilterMap;
+*/
+
 // this struct is used to represent the memory layout of the ReflectionProbeUBO, location = 3.
 struct alignas(16) ReflectionProbeUBO {
 	unsigned int numOfReflectionProbes;
@@ -361,8 +372,6 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	// ======================================================
 	// Volumetric Fog Compute Shader configuration
 	// ======================================================
-	rayMarchingVolumetricFogCompute.use();
-	rayMarchingVolumetricFogCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
 	
 #if 0
 	volumetricFogBufferResetCompute.use();
@@ -639,14 +648,21 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 
 	setBlendMode(BlendingConfig::Disabled);
 
+	// @TODO : Custom post processing stack. (Temp: Fog only..)
+	if (renderConfig.toEnableFog) {
+		for (auto&& [entityId, entityData, fog] : registry.view<EntityData, Fog>().each()) {
+			if (!entityData.isActive || !engine.ecs.isComponentActive<Fog>(entityId)) {
+				continue;
+			}
+
+			computeFog(frameBuffers, fog);
+			renderPostProcessing(frameBuffers);
+			break;
+		}
+	}
+
 	// Apply bloom post processing via multi down and up samples.
 	renderBloom(frameBuffers);
-
-	// @TODO : Custom post processing stack.
-	if (toPostProcess) {
-		computePostProcessing(frameBuffers, camera);
-		renderPostProcessing(frameBuffers);
-	}
 }
 
 void Renderer::renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, bool toCaptureEnvironmentLight) {
@@ -1234,6 +1250,7 @@ void Renderer::recompileShaders() {
 	clusterLightCompute.recompile();
 
 	rayMarchingVolumetricFogCompute.recompile();
+	postprocessingShader.recompile();
 
 	ssaoShader.recompile();
 	bakeDiffuseIrradianceMapShader.recompile();
@@ -3105,16 +3122,25 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::computePostProcessing(PairFrameBuffer& frameBuffers, Camera const& camera)
+void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog)
 {
+	rayMarchingVolumetricFogCompute.use();
+	
+	rayMarchingVolumetricFogCompute.setUVec2("screenResolution",		{ gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+	rayMarchingVolumetricFogCompute.setFloat("rayMarchingStepSize",		std::max(fog.rayMarchingStepSize, 0.01f));
+	rayMarchingVolumetricFogCompute.setFloat("maxRayDistance",			fog.endDistance);
+	rayMarchingVolumetricFogCompute.setFloat("scatteringDensity",		fog.inscatteringDensity);
+	rayMarchingVolumetricFogCompute.setFloat("absorptionDensity",		fog.absorptionDensity);
+	rayMarchingVolumetricFogCompute.setFloat("scatteringDistribution",	fog.scatteringDistribution);
+
 	// Get the depth Texture
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().depthStencilId());
-
-	// Run the Ray Marching Volumetric Compute shader
-	rayMarchingVolumetricFogCompute.use();
 	rayMarchingVolumetricFogCompute.setImageUniform("depthBuffer", 0);
-	glBindTextureUnit(0, spotlightShadowMaps.getTextureId());
-	rayMarchingVolumetricFogCompute.setImageUniform("spotlightShadowMaps", 0);
+
+	glBindTextureUnit(3, spotlightShadowMaps.getTextureId());
+	rayMarchingVolumetricFogCompute.setImageUniform("spotlightShadowMaps", 3);
+	
+	// Run the Ray Marching Volumetric Compute shader
 	glDispatchCompute(gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }

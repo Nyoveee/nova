@@ -45,7 +45,7 @@ class Sequencer;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, TranslucentMeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
-	Image, Sequence, Button, Canvas, NavMeshOffLinks, SkyboxCubeMap, ReflectionProbe
+	Image, Sequence, Button, Canvas, NavMeshOffLinks, SkyboxCubeMap, ReflectionProbe, Fog
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -906,4 +906,27 @@ struct ReflectionProbe {
 	)
 
 	int indexToCubeMapArray = NOT_LOADED;
+};
+
+struct Fog {
+	float absorptionDensity					= 0.05f;
+	float inscatteringDensity				= 0.5f;
+	NormalizedFloat scatteringDistribution	= 0.5f;
+	NormalizedFloat heightFallOff			= 1.f;
+	Color fogInscatteringColor				= Color { 1.f, 1.f, 1.f };
+
+	float startDistance						= 1.f;
+	float endDistance						= 150.f;
+	float rayMarchingStepSize				= 1.0f;
+
+	REFLECTABLE(
+		absorptionDensity,
+		inscatteringDensity,
+		scatteringDistribution,
+		heightFallOff,
+		fogInscatteringColor,
+		startDistance,
+		endDistance,
+		rayMarchingStepSize
+	)
 };

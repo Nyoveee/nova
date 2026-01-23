@@ -29,9 +29,8 @@ void main()
     color += vec4(fogDatas[fogIndex].radiance, 0.0f);
 
     // Vignette
-    float distance = length(vec2(0.5) - textureCoords);
-    float vignetteMultiplier = clamp(vignette - distance, 0, 1);
-    FragColor = vec4(vec3(color) * vignetteMultiplier, color.a);  
-    
-    
+    // float distance = length(vec2(0.5) - textureCoords);
+    // float vignetteMultiplier = clamp(vignette - distance, 0, 1);
+    // FragColor = vec4(vec3(color) * vignetteMultiplier, color.a);  
+    // FragColor = vec4(1.0); 
 }  

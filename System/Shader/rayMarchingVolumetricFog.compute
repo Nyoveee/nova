@@ -5,23 +5,25 @@ layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
 #define PI 3.141592
 
-
-
 // Constants
-const float STEP_AMOUNT = 1.0f;
-const float MAX_RAY_DISTANCE = 150.f;
-const float SCATTERING_DENSITY = 0.5f;
-const float ABSORPTION_DENSITY = 0.05f;
-const float u_k = 0.5f; // Forward Scattering
 const float MIN_UNIFORM_TRANSMITTANCE = 0.3; // Uniform darken limit
 const float MIN_TRANSMITTANCE = 0.01f; // Optimization to reduce uncessary accumulation calculation
+
 const int MAX_SHADOW_CASTER = 15;
 
-// Uniforms
+/// Uniforms
+// Configurations..
+uniform float rayMarchingStepSize;
+uniform float maxRayDistance;
+uniform float scatteringDensity;
+uniform float absorptionDensity;
+uniform float scatteringDistribution;
+
+// Renderer input..
 uniform sampler2D depthBuffer;
 uniform uvec2 screenResolution;
 uniform int lightIndex;
-uniform sampler2DArray spotlightShadowMaps;
+uniform sampler2DArray spotlightShadowMaps; 
 
 // Structs
 struct FogData{
@@ -35,6 +37,7 @@ struct PointLight{
     vec3 attenuation; 
     float radius;
     float intensity;
+    int shadowMapIndex;
 };
 
 struct SpotLight {
@@ -48,11 +51,18 @@ struct SpotLight {
     float intensity;
     int shadowMapIndex;
 };
+
 // Uniform Buffers
 layout(std140, binding = 0) uniform Camera {
-    mat4 cameraView;
-    mat4 cameraProjection;
+    mat4 view;
+    mat4 projection;
+    mat4 cameraProjectionView;
     vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
 };
 
 layout(std140, binding = 1) uniform ShadowCasterMatrixes {
@@ -64,6 +74,7 @@ layout(std430, binding = 0) buffer PointLights {
     uint pointLightCount;
     PointLight pointLights[];
 };
+
 layout(std430, binding = 2) buffer SpotLights {
     uint spotLightCount;
     SpotLight spotLights[];
@@ -90,11 +101,10 @@ float AbsorptionFactor(float fogDensity, float distanceMarched){
 // Schlick phase function approximation of Henyey-Greenstein, decides probability density of scattering directions
 float PhaseFunction_Schlick(vec3 w0, vec3 w1){
     float cos_theta = dot(w0,w1);
-    float nom = 1.0 - u_k * u_k;
-    float denom = 4.0 * PI * (1.0 + u_k * cos_theta) * (1.0 + u_k * cos_theta);
+    float nom = 1.0 - scatteringDistribution * scatteringDistribution;
+    float denom = 4.0 * PI * (1.0 + scatteringDistribution * cos_theta) * (1.0 + scatteringDistribution * cos_theta);
     return nom / denom;
 }
-
 
 vec3 CalculatePointLightScatter(vec3 fragmentToCamera, vec3 lightToMarchPosition, PointLight light){
     vec3 fragmentToCameraNormalized = normalize(fragmentToCamera);
@@ -103,8 +113,8 @@ vec3 CalculatePointLightScatter(vec3 fragmentToCamera, vec3 lightToMarchPosition
     float lightDistance = length(lightToMarchPosition);
     float phi = light.intensity;
     float denom = 4.0 * PI * lightDistance * lightDistance;
-    vec3 Lin = AbsorptionFactor(ABSORPTION_DENSITY, lightDistance) * light.color * light.intensity * visibility * phi/denom;
-    return Lin * SCATTERING_DENSITY * light.color * PhaseFunction_Schlick(normalize(lightToMarchPosition), fragmentToCameraNormalized);
+    vec3 Lin = AbsorptionFactor(absorptionDensity, lightDistance) * light.color * light.intensity * visibility * phi/denom;
+    return Lin * scatteringDensity * light.color * PhaseFunction_Schlick(normalize(lightToMarchPosition), fragmentToCameraNormalized);
 }
 
 vec3 getProjectionCoords(vec4 fragmentLightPos) {
@@ -171,8 +181,8 @@ vec3 CalculateSpotLightScatter(vec3 marchPosition, vec3 fragmentToCamera, vec3 l
     float phi = light.intensity;
     float denom = 4.0 * PI * lightDistance * lightDistance;
 
-    vec3 Lin = AbsorptionFactor(ABSORPTION_DENSITY, lightDistance) * light.color * light.intensity * spotIntensity * visibility * phi/denom;
-    return Lin * SCATTERING_DENSITY * light.color * PhaseFunction_Schlick(normalize(lightToMarchPosition), fragmentToCameraNormalized);
+    vec3 Lin = AbsorptionFactor(absorptionDensity, lightDistance) * light.color * light.intensity * spotIntensity * visibility * phi/denom;
+    return Lin * scatteringDensity * light.color * PhaseFunction_Schlick(normalize(lightToMarchPosition), fragmentToCameraNormalized);
 }
 
 
@@ -184,41 +194,45 @@ void main(){
 
     // Ray Marching information with distance limit
     vec3 rayDirection = normalize(fragmentPosition - cameraPosition);
-    float rayDistance = min(length(fragmentPosition - cameraPosition), MAX_RAY_DISTANCE);
+    float rayDistance = min(length(fragmentPosition - cameraPosition), maxRayDistance);
 
     // Ray Marching
     vec3 marchPosition = cameraPosition;
-    vec3 deltaStep = rayDirection * STEP_AMOUNT;
+    vec3 deltaStep = rayDirection * rayMarchingStepSize;
 
     // Accumulate transmittance and radiance for the current pixel from each light
     uint fogIndex = gl_GlobalInvocationID.x + gl_GlobalInvocationID.y * screenResolution.x;
     vec3 fragmentToCamera = cameraPosition - fragmentPosition;
 
     fogDatas[fogIndex].radiance = vec3(0.0);
-    float transmittance = 1;
+    fogDatas[fogIndex].transmittance = 0.0;
 
-    for(float currDistance = 0; currDistance <= rayDistance; currDistance += STEP_AMOUNT){
-        transmittance *= AbsorptionFactor(ABSORPTION_DENSITY, STEP_AMOUNT);
-        // Early out if transmittance is too low, too low transmittance doesn't contribute much to radiance
-        if(transmittance <= MIN_TRANSMITTANCE)
-            break;
-        // In-Scattering calculation
-        for(int i = 0;i<pointLightCount;++i){
-            // Accumulation
-            PointLight light = pointLights[i];
-            vec3 lightToMarchPosition = marchPosition - light.position;
-            vec3 Li = CalculatePointLightScatter(fragmentToCamera, lightToMarchPosition, light);
-            fogDatas[fogIndex].radiance += Li * transmittance * STEP_AMOUNT;
-        }
-        for(int i = 0;i<spotLightCount;++i){
-            // Accumulation
-            SpotLight light = spotLights[i];
-            vec3 lightToMarchPosition = marchPosition - light.position;
-            vec3 Li = CalculateSpotLightScatter(marchPosition,fragmentToCamera, lightToMarchPosition, light);
-            fogDatas[fogIndex].radiance += Li * transmittance * STEP_AMOUNT;
-        }
-        marchPosition += deltaStep;
-    }
-    // Max sure it doesn't get too dark
-    fogDatas[fogIndex].transmittance = max(MIN_UNIFORM_TRANSMITTANCE,transmittance);
+    // float transmittance = 1;
+
+    // for(float currDistance = 0; currDistance <= rayDistance; currDistance += rayMarchingStepSize){
+    //     transmittance *= AbsorptionFactor(absorptionDensity, rayMarchingStepSize);
+    //     // Early out if transmittance is too low, too low transmittance doesn't contribute much to radiance
+    //     if(transmittance <= MIN_TRANSMITTANCE)
+    //         break;
+
+    //     // In-Scattering calculation
+    //     for(int i = 0;i<pointLightCount;++i){
+    //         // Accumulation
+    //         PointLight light = pointLights[i];
+    //         vec3 lightToMarchPosition = marchPosition - light.position;
+    //         vec3 Li = CalculatePointLightScatter(fragmentToCamera, lightToMarchPosition, light);
+    //         fogDatas[fogIndex].radiance += Li * transmittance * rayMarchingStepSize;
+    //     }
+    //     for(int i = 0;i<spotLightCount;++i){
+    //         // Accumulation
+    //         SpotLight light = spotLights[i];
+    //         vec3 lightToMarchPosition = marchPosition - light.position;
+    //         vec3 Li = CalculateSpotLightScatter(marchPosition,fragmentToCamera, lightToMarchPosition, light);
+    //         fogDatas[fogIndex].radiance += Li * transmittance * rayMarchingStepSize;
+    //     }
+    //     marchPosition += deltaStep;
+    // }
+
+    // // Max sure it doesn't get too dark
+    // fogDatas[fogIndex].transmittance = max(MIN_UNIFORM_TRANSMITTANCE,transmittance);
 }

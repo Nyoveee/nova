@@ -90,7 +90,7 @@ public:
 	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
 
 	// initialise the sample kernel and noise texture used in SSAO
-	void initialiseSSAO();
+	void initialiseSSAO();	
 
 	// when changing scene, mark all reflection probes as unloaded.
 	void resetLoadedReflectionProbes();
@@ -250,7 +250,7 @@ private:
 	void debugRender();
 
 	// Calls the relevant compute shader Pre Post Process
-	void computePostProcessing(PairFrameBuffer& frameBuffers, Camera const& camera);
+	void computeFog(PairFrameBuffer& frameBuffers, Fog const& fog);
 
 	// renders post processing effect on the pair framebuffer
 	void renderPostProcessing(PairFrameBuffer& frameBuffers);
@@ -354,7 +354,7 @@ private:
 	BufferObject volumetricFogSSBO;		// SSBO 8, Volumetric Fog SSBO
 
 	BufferObject cameraUBO;				// UBO 0
-	BufferObject shadowCasterMatrixes;	// UBO 1  stores the shadow caster matrixes in a UBO.
+	BufferObject shadowCasterMatrixes;	// UBO 1 stores the shadow caster matrixes in a UBO.
 	BufferObject PBRUBO;				// UBO 2
 	BufferObject reflectionProbesUBO;	// UBO 3
 
