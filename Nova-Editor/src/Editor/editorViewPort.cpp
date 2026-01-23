@@ -92,6 +92,15 @@ void EditorViewPort::update(float dt) {
 				engine.prefabManager.instantiatePrefab(id);
 				editor.selectEntities({});
 			}
+			// add 1 more for model
+			else if (editor.resourceManager.isResource<Model>(id)) {
+				// create a model here
+				entt::entity new_model = engine.ecs.registry.create();
+				engine.ecs.registry.emplace<EntityData>(new_model , EntityData{ "New Model" });
+				engine.ecs.registry.emplace<Transform>(new_model);
+				engine.ecs.registry.emplace<MeshRenderer>(new_model, id);
+				
+			}
 		}
 
 		ImGui::EndDragDropTarget();
