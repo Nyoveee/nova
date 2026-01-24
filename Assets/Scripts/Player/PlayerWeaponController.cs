@@ -242,6 +242,11 @@ class PlayerWeaponController : Script
     {
 
         GameObject thrownRifle = Instantiate(thrownRiflePrefab, throwPosition.position, throwPosition.rotation);
+          
+        if(thrownRifle == null)
+        {
+            return;
+        }
 
         thrownRifle.getScript<ThrowableRifle>().playerGameobject  = this.gameObject;
         thrownRifle.getScript<ThrowableRifle>().mappedWeapon = currentlyHeldGun;

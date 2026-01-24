@@ -15,12 +15,6 @@ class Gunner : Enemy
     private GameObject? projectileSpawnPoint;
     [SerializableField]
     private Rigidbody_? rigidBody;
-    [SerializableField]
-    private Audio hurtSFX;
-    [SerializableField]
-    private Audio shootSFX;
-    [SerializableField]
-    private List<Audio> bulletShotSFX;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -39,7 +33,7 @@ class Gunner : Enemy
     private GunnerState gunnerState = GunnerState.Idle;
     private Dictionary<GunnerState, CurrentState> updateState = new Dictionary<GunnerState, CurrentState>();
     GameObject? targetVantagePoint = null;
-    int bulletSFX = 0;
+    int gunShootIndex = 0;
     NavMeshOfflinkData offlinkData;
     /***********************************************************
         Components
@@ -217,7 +211,7 @@ class Gunner : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
                 {
-                    audioComponent.PlaySound(hurtSFX);
+                    //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
                     renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
@@ -318,9 +312,9 @@ class Gunner : Enemy
     **********************************************************************/
     public void Shoot()
     {
-        audioComponent.PlaySound(shootSFX);
-        bulletSFX = (bulletSFX + 1) % bulletShotSFX.Count;
-        audioComponent.PlaySound(bulletShotSFX[bulletSFX]);
+        //AudioAPI.PlaySound(gameObject, "Gun1_LaserRifle_Switch_Select5");
+        gunShootIndex = (gunShootIndex + 1) % 2;
+        AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
         // Shoot Projectile
         GameObject projectile = Instantiate(projectilePrefab);
         projectile.transform.position = projectileSpawnPoint.transform.position;

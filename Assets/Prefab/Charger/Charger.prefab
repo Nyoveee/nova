@@ -1,5 +1,5 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -107,7 +107,23 @@
                 "scaleWithTransform": false
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "data": {
+                    "Enemy Hurt SFX": {
+                        "audioId": 13583868459018207259,
+                        "volume": 1.0,
+                        "stopAudio": false
+                    },
+                    "sfx_enemyChargeStep_01mono": {
+                        "audioId": 9759151303459094547,
+                        "volume": 1.0,
+                        "stopAudio": false
+                    },
+                    "sfx_enemyChargeStep_02mono": {
+                        "audioId": 1688700771211165717,
+                        "volume": 1.0,
+                        "stopAudio": false
+                    }
+                },
                 "loop": false
             },
             "PositionalAudio": {
@@ -137,42 +153,42 @@
                             {
                                 "name": "attackHitBoxTransform",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "stompHitBoxTransform",
                                 "data": {
-                                    "__variant_value": 6,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "chargingRigidbody",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidbody",
                                 "data": {
-                                    "__variant_value": 18,
+                                    "__variant_value": 17,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "emitter",
                                 "data": {
-                                    "__variant_value": 7,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "chargeLines",
                                 "data": {
-                                    "__variant_value": 8,
+                                    "__variant_value": 7,
                                     "__variant_type": 4
                                 }
                             },
@@ -186,28 +202,28 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -220,147 +236,147 @@
                                 "name": "damage",
                                 "data": {
                                     "__variant_value": 20.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "timeBetweenChargeSteps",
                                 "data": {
                                     "__variant_value": 0.25999999046325684,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "chargingRange",
                                 "data": {
                                     "__variant_value": 30.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "chargeDamage",
                                 "data": {
                                     "__variant_value": 20,
-                                    "__variant_type": 16
+                                    "__variant_type": 15
                                 }
                             },
                             {
                                 "name": "chargeCooldown",
                                 "data": {
                                     "__variant_value": 20.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "maxChargeTime",
                                 "data": {
                                     "__variant_value": 5.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "chargeSpeedMultiplier",
                                 "data": {
                                     "__variant_value": 3.5,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "stompDamage",
                                 "data": {
                                     "__variant_value": 30,
-                                    "__variant_type": 16
+                                    "__variant_type": 15
                                 }
                             },
                             {
                                 "name": "stompCooldown",
                                 "data": {
                                     "__variant_value": 20.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "stompHitboxDuration",
                                 "data": {
                                     "__variant_value": 0.10000000149011612,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "chasingRange",
                                 "data": {
                                     "__variant_value": 200.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "attackRange",
                                 "data": {
                                     "__variant_value": 12.5,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "health",
                                 "data": {
                                     "__variant_value": 300.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "movementSpeed",
                                 "data": {
                                     "__variant_value": 10.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "ichorPerDamage",
                                 "data": {
                                     "__variant_value": 30,
-                                    "__variant_type": 16
+                                    "__variant_type": 15
                                 }
                             },
                             {
                                 "name": "ichorExplodeSpawnAmount",
                                 "data": {
                                     "__variant_value": 20,
-                                    "__variant_type": 16
+                                    "__variant_type": 15
                                 }
                             },
                             {
                                 "name": "hurtDuration",
                                 "data": {
                                     "__variant_value": 0.10000000149011612,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "jumpDuration",
                                 "data": {
                                     "__variant_value": 1.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "enemyExecuteThreshold",
                                 "data": {
                                     "__variant_value": 50.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "enemyArmouredMultiplier",
                                 "data": {
                                     "__variant_value": 1.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             },
                             {
                                 "name": "enemyWeakSpotMultiplier",
                                 "data": {
                                     "__variant_value": 10.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 16
                                 }
                             }
                         ]
@@ -371,7 +387,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -386,13 +402,13 @@
                 "agentRotationSpeed": 100.0,
                 "separationWeight": 0.0
             },
-            "id": 1
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Charger Model",
                 "tag": "Enemy",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -527,13 +543,13 @@
             "Animator": {
                 "controllerId": 9182558606910275585
             },
-            "id": 2
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "AttackHitBoxPosition",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -596,7 +612,7 @@
             "EntityData": {
                 "name": "IchorSpawnPoint",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -653,13 +669,13 @@
                     "z": 0.0
                 }
             },
-            "id": 4
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "ChargerCollider",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -696,7 +712,7 @@
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -758,7 +774,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -766,19 +782,19 @@
                     }
                 ]
             },
-            "id": 5
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "StompHitboxPosition",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 13167355900897460225,
                 "prefabMetaData": {
-                    "prefabEntity": 6,
+                    "prefabEntity": 5,
                     "prefabID": 13167355900897460225
                 },
                 "overridenProperties": null,
@@ -829,13 +845,13 @@
                     "z": 0.0
                 }
             },
-            "id": 6
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Emitter",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -1005,7 +1021,7 @@
             "EntityData": {
                 "name": "Charge Lines",
                 "tag": "",
-                "parent": 1,
+                "parent": 0,
                 "children": [
                     8,
                     9,
@@ -1077,7 +1093,7 @@
             "EntityData": {
                 "name": "Charge Line 1",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -1243,13 +1259,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 9
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Charge Line 2",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -1413,13 +1429,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 10
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Charge Line 3",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -1583,13 +1599,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 11
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Charge Line 4",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -1753,13 +1769,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 12
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Charge Line 5",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -1923,13 +1939,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 13
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Charge Line 6",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -2093,13 +2109,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 14
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Charge Line 7",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -2263,13 +2279,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 15
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Charge Line 8",
                 "tag": "",
-                "parent": 8,
+                "parent": 7,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
@@ -2439,7 +2455,7 @@
             "EntityData": {
                 "name": "Charger_WeakSpot",
                 "tag": "Enemy_WeakSpot",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -2528,7 +2544,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -2536,13 +2552,13 @@
                     }
                 ]
             },
-            "id": 17
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "ChargerCollider2",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 1,
+                "parent": 0,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -2631,7 +2647,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -2639,7 +2655,7 @@
                     }
                 ]
             },
-            "id": 18
+            "id": 17
         }
     ]
 }

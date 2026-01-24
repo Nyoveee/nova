@@ -224,3 +224,13 @@ public:
 		void set(float value) { Interface::engine->renderer.vignette = value; };
 	};
 };
+
+// ======================================
+// This class is responsible for providing audio related APIs to the script.
+// ======================================
+public ref class AudioAPI {
+public:
+	static void PlaySound(GameObject^ gameObject, System::String^ string);
+	static void PlayBGM(GameObject^ gameObject, System::String^ string);
+	static void StopSound(GameObject^ gameObject, System::String^ string);
+};
