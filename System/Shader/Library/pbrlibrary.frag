@@ -47,8 +47,23 @@ struct Cluster
 
 struct PointLight{
     vec3 position;		
+    vec3 viewPosition;
     vec3 color;		
     vec3 attenuation; 
+    float radius;
+    float intensity;
+    int shadowMapIndex;
+};
+
+struct SpotLight {
+    vec3 position;
+    vec3 viewPosition;
+    vec3 direction;
+    vec3 viewDirection;
+    vec3 color;
+    vec3 attenuation;
+	float cutOffAngle;
+	float outerCutOffAngle;
     float radius;
     float intensity;
     int shadowMapIndex;
@@ -57,18 +72,6 @@ struct PointLight{
 struct DirectionalLight {
     vec3 direction;
     vec3 color;
-};
-
-struct SpotLight {
-    vec3 position;
-    vec3 direction;
-    vec3 color;
-    vec3 attenuation;
-	float cutOffAngle;
-	float outerCutOffAngle;
-    float radius;
-    float intensity;
-    int shadowMapIndex;
 };
 
 struct ReflectionProbe {

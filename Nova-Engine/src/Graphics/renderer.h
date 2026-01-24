@@ -250,10 +250,10 @@ private:
 	void debugRender();
 
 	// Calls the relevant compute shader Pre Post Process
-	void computeFog(PairFrameBuffer& frameBuffers, Fog const& fog);
+	void computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera const& camera);
 
 	// renders post processing effect on the pair framebuffer
-	void renderPostProcessing(PairFrameBuffer& frameBuffers);
+	void renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog);
 
 	// HDR post-processing functions
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
@@ -281,7 +281,7 @@ private:
 	void frustumCullLight(glm::mat4 const& viewProjectionMatrix);
 
 	// upload lights into SSBO
-	void prepareLights();
+	void prepareLights(Camera const& camera);
 
 	// upload reflection probes into UBO
 	// pass in disable to set reflection probe to 0.

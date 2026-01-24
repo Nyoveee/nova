@@ -376,13 +376,13 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 #if 0
 	volumetricFogBufferResetCompute.use();
 	volumetricFogBufferResetCompute.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
-#endif
 
 	// ======================================================
 	// Post Process Shader Configuration
 	// ======================================================
 	postprocessingShader.use();
-	postprocessingShader.setUVec2("screenResolution", { gameWidth/ VOLUMETRIC_FOG_DOWNSCALE, gameHeight/ VOLUMETRIC_FOG_DOWNSCALE } );
+	postprocessingShader.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
+#endif
 
 	// ======================================================
 	// Volumetric Fog SSBO Configuration
@@ -593,7 +593,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	shadowPass(gameWidth, gameHeight);
 
 	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
-	prepareLights();
+	prepareLights(camera);
 
 	// We prepare our reflection probes as well, setting up it's UBO..
 	prepareReflectionProbes(camera);
@@ -655,8 +655,8 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 				continue;
 			}
 
-			computeFog(frameBuffers, fog);
-			renderPostProcessing(frameBuffers);
+			computeFog(frameBuffers, fog, camera);
+			renderPostProcessing(frameBuffers, fog);
 			break;
 		}
 	}
@@ -677,7 +677,7 @@ void Renderer::renderCapturePass(Camera const& camera, std::function<void()> set
 	if (renderConfig.toEnableShadows) shadowPass(IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT);
 
 	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
-	prepareLights();
+	prepareLights(camera);
 
 	// We DO NOT want to capture other reflection probes.. (i think?)
 	// prepareReflectionProbes(camera);
@@ -2206,7 +2206,7 @@ void Renderer::setCullMode(CullingConfig configuration) {
 	}
 }
 
-void Renderer::prepareLights() {
+void Renderer::prepareLights(Camera const& camera) {
 	// we need to set up light data..
 	std::array<PointLightData, MAX_NUMBER_OF_LIGHT>			pointLightData;
 	std::array<DirectionalLightData, MAX_NUMBER_OF_LIGHT>	directionalLightData;
@@ -2235,6 +2235,7 @@ void Renderer::prepareLights() {
 
 			pointLightData[numOfPtLights++] = {
 				transform.position,
+				camera.view() * glm::vec4(transform.position, 1.0f),
 				glm::vec3{ light.color },
 				light.attenuation,
 				light.radius,
@@ -2268,7 +2269,9 @@ void Renderer::prepareLights() {
 
 			spotLightData[numOfSpotLights++] = {
 				transform.position,
+				camera.view() * glm::vec4(transform.position, 1.0f),
 				glm::normalize(transform.front),
+				glm::normalize(glm::mat3(camera.view()) * transform.front),
 				glm::vec3{ light.color },
 				light.attenuation,
 				light.cutOffAngle / 2.f,
@@ -3122,16 +3125,19 @@ void Renderer::renderHDRTonemapping(PairFrameBuffer& frameBuffers) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog)
+void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera const& camera)
 {
 	rayMarchingVolumetricFogCompute.use();
 	
 	rayMarchingVolumetricFogCompute.setUVec2("screenResolution",		{ gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
 	rayMarchingVolumetricFogCompute.setFloat("rayMarchingStepSize",		std::max(fog.rayMarchingStepSize, 0.01f));
 	rayMarchingVolumetricFogCompute.setFloat("maxRayDistance",			fog.endDistance);
+	rayMarchingVolumetricFogCompute.setFloat("minRayDistance",			fog.startDistance);
 	rayMarchingVolumetricFogCompute.setFloat("scatteringDensity",		fog.inscatteringDensity);
-	rayMarchingVolumetricFogCompute.setFloat("absorptionDensity",		fog.absorptionDensity);
+	rayMarchingVolumetricFogCompute.setFloat("absorptionDensity",		fog.absorptionDensity / 100.f);
 	rayMarchingVolumetricFogCompute.setFloat("scatteringDistribution",	fog.scatteringDistribution);
+
+	rayMarchingVolumetricFogCompute.setFloat("fovY", camera.getFov());
 
 	// Get the depth Texture
 	glBindTextureUnit(0, frameBuffers.getActiveFrameBuffer().depthStencilId());
@@ -3145,7 +3151,7 @@ void Renderer::computeFog(PairFrameBuffer& frameBuffers, Fog const& fog)
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
-void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
+void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog) {
 #if defined(DEBUG)
 	ZoneScoped;
 #endif
@@ -3162,10 +3168,12 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers) {
 	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
 	postprocessingShader.setImageUniform("scene", 0);
 
-	postprocessingShader.setVec3("offset", chromaticAberration);
+	postprocessingShader.setVec3("fogColor", fog.fogInscatteringColor);
 
-	float vignetteDistance = (1 - vignette) * 2.f;
-	postprocessingShader.setFloat("vignette", vignetteDistance);
+	//float vignetteDistance = (1 - vignette) * 2.f;
+	//postprocessingShader.setFloat("vignette", vignetteDistance);
+
+	postprocessingShader.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
