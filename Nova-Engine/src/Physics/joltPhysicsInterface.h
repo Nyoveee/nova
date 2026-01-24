@@ -106,7 +106,7 @@ public:
 		case Layers::ITEM:
 			return inLayer2 == BroadPhaseLayers::NON_MOVING || inLayer2 == BroadPhaseLayers::ITEM_INTERACTOR;
 		case Layers::ENEMY_HURTSPOT:
-			return inLayer2 == BroadPhaseLayers::MOVING || inLayer2 == BroadPhaseLayers::WALL;//need to collide with weapons
+			return inLayer2 == BroadPhaseLayers::NON_MOVING || inLayer2 == BroadPhaseLayers::MOVING || inLayer2 == BroadPhaseLayers::WALL;//need to collide with weapons
 		case Layers::ITEM_INTERACTOR:
 			return inLayer2 == BroadPhaseLayers::ITEM; //item interactor requires collision with items like ichor only
 		default:
@@ -136,7 +136,7 @@ public:
 		case Layers::ITEM:
 			return inObject2 == Layers::NON_MOVING || inObject2 == Layers::ITEM_INTERACTOR;
 		case Layers::ENEMY_HURTSPOT:
-			return inObject2 == Layers::MOVING || inObject2 == Layers::WALL;//need to collide with weapons
+			return inObject2 == Layers::NON_MOVING || inObject2 == Layers::MOVING || inObject2 == Layers::WALL;//need to collide with weapons
 		case Layers::ITEM_INTERACTOR:
 			return inObject2 == Layers::ITEM; //item interactor requires collision with items like ichor only
 		default:

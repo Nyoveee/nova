@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 2,
     "Entities": [
         {
             "EntityData": {
@@ -7,11 +7,11 @@
                 "tag": "",
                 "parent": 4294967295,
                 "children": [
-                    1,
-                    2,
                     3,
                     4,
-                    5
+                    5,
+                    6,
+                    7
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -130,7 +130,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             },
@@ -271,13 +271,13 @@
                     }
                 ]
             },
-            "id": 0
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 0,
+                "parent": 2,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -353,13 +353,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 1
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 0,
+                "parent": 2,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -452,7 +452,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             }
@@ -460,13 +460,13 @@
                     }
                 ]
             },
-            "id": 2
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 0,
+                "parent": 2,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -631,13 +631,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 3
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 0,
+                "parent": 2,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -802,13 +802,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 4
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 0,
+                "parent": 2,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -973,7 +973,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 5
+            "id": 7
         }
     ]
 }
