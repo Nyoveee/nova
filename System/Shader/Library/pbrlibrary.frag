@@ -106,6 +106,13 @@ layout(std140, binding = 1) uniform ShadowCasterMatrixes {
 
 layout(std140, binding = 2) uniform PBRUBO {
     vec4 samples[64];   
+	mat4 directionalLightSpaceMatrix;
+	vec3 directionalLightDir;
+	float timeElapsed;
+	bool toEnableSSAO;
+	bool hasDirectionalLightShadowCaster;
+	bool toEnableIBL;
+	bool toOutputNormal;
 };
 
 layout(std140, binding = 3) uniform ReflectionProbes {
@@ -139,18 +146,6 @@ layout(std430, binding = 7) buffer clusterSSBO
     Cluster clusters[];
 };
 
-uniform float timeElapsed;
-
-// Shadows
-uniform bool hasDirectionalLightShadowCaster;
-uniform vec3 directionalLightDir;
-
-// SSAO
-uniform bool toEnableSSAO;
-
-// IBL
-uniform bool toEnableIBL;
-
 uniform sampler2D directionalShadowMap;
 uniform sampler2D ssao;
 uniform sampler2D brdfLUT;
@@ -160,10 +155,7 @@ uniform samplerCube prefilterMap;
 uniform samplerCubeArray reflectionProbesPrefilterMap;
 
 layout (location = 0) out vec4 FragColor; 
-
-// for depth pre pass..
-layout (location = 1) out vec3 gNormal;
-uniform bool toOutputNormal;
+layout (location = 1) out vec3 gNormal; // for depth pre pass..
 
 in VS_OUT {
     vec2 textureUnit;

@@ -40,6 +40,17 @@ layout(std140, binding = 0) uniform Camera {
     float zFar;
 };
 
+layout(std140, binding = 2) uniform PBRUBO {
+    vec4 samples[64];   
+	mat4 directionalLightSpaceMatrix;
+	vec3 directionalLightDir;
+	float timeElapsed;
+	bool toEnableSSAO;
+	bool hasDirectionalLightShadowCaster;
+	bool toEnableIBL;
+	bool toOutputNormal;
+};
+
 layout(std430, binding = 3) buffer Bones {
     uint isSkinnedMesh;
     mat4 bonesFinalMatrices[];
@@ -51,14 +62,11 @@ const int INVALID_BONE = -1;
 uniform mat4 model;
 uniform mat3 normalMatrix;
 uniform mat4 localScale;
-uniform float timeElapsed;
 uniform bool toUseNormalMap;
 
 invariant gl_Position;
 
 // Shadows
-uniform mat4 directionalLightSpaceMatrix;
-
 out VS_OUT {
     vec2 textureUnit;
     vec3 normal;

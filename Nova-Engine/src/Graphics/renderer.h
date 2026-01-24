@@ -84,7 +84,7 @@ public:
 	void shadowPass(int viewportWidth, int viewportHeight);
 
 	// does a depth pre pass and populates the gbuffer for ssao generation.
-	void depthPrePass(Camera const& camera);
+	void depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera);
 
 	// generates the SSAO texture.
 	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
@@ -286,6 +286,9 @@ private:
 	// upload reflection probes into UBO
 	// pass in disable to set reflection probe to 0.
 	void prepareReflectionProbes(Camera const& camera);
+
+	// we set all uniforms that the PBR pipeline requires here once, saving up uniform set up cost.
+	void preparePBRUniforms();
 
 	// builds clusters information for clustered forward rendering..
 	void clusterBuilding(Camera const& camera);

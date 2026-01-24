@@ -121,7 +121,14 @@ struct alignas(16) CameraUBO {
 
 // this struct is used to represent the memory layout of the PBRUBO, location = 2.
 struct alignas(16) PBR_UBO {
-	glm::vec4 ssaoKernels[64];
+				glm::vec4 ssaoKernels[64];
+				glm::mat4 directionalLightSpaceMatrix;
+	alignas(16) glm::vec3 directionalLightDir;
+				float timeElapsed;
+				int toEnableSSAO;
+				int hasDirectionalLightShadowCaster;
+				int toEnableIBL;
+				int toOutputNormal;
 };
 
 // these are in world space..
@@ -598,6 +605,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	// We prepare our reflection probes as well, setting up it's UBO..
 	prepareReflectionProbes(camera);
 
+	// We prepare PBR required uniforms..
+	preparePBRUniforms();
+
 	// Prepare cluster forwarded rendering information..
 	clusterBuilding(camera);
 
@@ -609,12 +619,8 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 
 	setBlendMode(BlendingConfig::Disabled);
 
-	// We perform a depth pre pass.. we disable the main color attachment and enable the normal color attachment..s
-	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1 };
-	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 2, buffers);
-
-	depthPrePass(camera);
-	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+	// We perform a depth pre pass.. and output the normal into a separate attachment..
+	depthPrePass(frameBuffers, camera);
 
 	// We generate SSAO texture for forward rendering later..
 	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers, camera);
@@ -923,132 +929,27 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 	glViewport(0, 0, viewportWidth, viewportHeight);
 }
 
-void Renderer::depthPrePass(Camera const& camera) {
+void Renderer::depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glEnable(GL_DEPTH_TEST);
 
+	// Disable the color attachment, enable the normal attachment.
+	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1 };
+	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 2, buffers);
+
+	// Set PBR UBO to output normals only..
+	int toOutputNormalOnly = true;
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &toOutputNormalOnly);
+
+	// Render pass..
 	renderModels(camera, true);
 	renderSkinnedModels(camera, true);
 
-#if 0
-	glEnable(GL_CULL_FACE);
+	// Reset color attachment active back to original..
+	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
 
-	depthGBufferShader.use();
-	depthGBufferShader.setMatrix("lightSpaceMatrix", camera.viewProjection());
-
-	// ===========================================================
-	// 1. Render mesh renderer shadows
-	// ===========================================================
-
-	// indicate that this is not a skinned mesh renderer..
-	static const unsigned int isNotASkinnedMeshRenderer = 0;
-	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
-
-	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
-		for (auto const& entity : entities) {
-			MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
-			Transform const& transform = registry.get<Transform>(entity);
-			EntityData const& entityData = registry.get<EntityData>(entity);
-
-			if (!meshRenderer) {
-				continue;
-			}
-
-			if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
-				continue;
-			}
-
-			if (!transform.inCameraFrustum) {
-				continue;
-			}
-
-			// Retrieves model asset from asset manager.
-			auto [model, _] = resourceManager.getResource<Model>(meshRenderer->modelId);
-
-			if (!model) {
-				// missing model.
-				continue;
-			}
-
-			depthGBufferShader.setMatrix("model", transform.modelMatrix);
-			depthGBufferShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
-			depthGBufferShader.setMatrix("normalMatrix", transform.normalMatrix);
-
-			// Draw every mesh of a given model.
-			for (auto& mesh : model->meshes) {
-				Material const* material = obtainMaterial(*meshRenderer, mesh);
-
-				if (!material) {
-					continue;
-				}
-
-				setupNormalMapUniforms(depthGBufferShader, *material);
-				constructMeshBuffers(mesh);
-				swapVertexBuffer(mesh);
-
-				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
-			}
-		}
-	}
-
-	// ===========================================================
-	// 2. Render skinned mesh renderer shadows
-	// ===========================================================
-	// indicate that this is NOT a skinned mesh renderer..
-
-	static const unsigned int isASkinnedMeshRenderer = 1;
-	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isASkinnedMeshRenderer);
-
-	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
-		for (auto const& entity : entities) {
-			SkinnedMeshRenderer* skinnedMeshRenderer = registry.try_get<SkinnedMeshRenderer>(entity);
-			Transform const& transform = registry.get<Transform>(entity);
-			EntityData const& entityData = registry.get<EntityData>(entity);
-
-			if (!skinnedMeshRenderer) {
-				continue;
-			}
-
-			if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) {
-				continue;
-			}
-
-			if (!transform.inCameraFrustum) {
-				continue;
-			}
-
-			// Retrieves model asset from asset manager.
-			auto [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer->modelId);
-
-			if (!model) {
-				// missing model.
-				continue;
-			}
-
-			depthGBufferShader.setMatrix("model", transform.modelMatrix);
-			depthGBufferShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
-
-			// upload all bone matrices..
-			glNamedBufferSubData(bonesSSBO.id(), sizeof(glm::vec4), skinnedMeshRenderer->bonesFinalMatrices.size() * sizeof(glm::mat4x4), skinnedMeshRenderer->bonesFinalMatrices.data());
-
-			// Draw every mesh of a given model.
-			for (auto& mesh : model->meshes) {
-				Material const* material = obtainMaterial(*skinnedMeshRenderer, mesh);
-
-				if (!material) {
-					continue;
-				}
-
-				setupNormalMapUniforms(depthGBufferShader, *material);
-				constructMeshBuffers(mesh);
-				swapVertexBuffer(mesh);
-
-				glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
-			}
-		}
-	}
-
-	glDisable(GL_CULL_FACE);
-#endif
+	// Reset PBR UBO uniform..
+	toOutputNormalOnly = false;
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &toOutputNormalOnly);
 }
 
 void Renderer::generateSSAO(PairFrameBuffer& frameBuffers, [[maybe_unused]] Camera const& camera) {
@@ -2366,6 +2267,19 @@ void Renderer::prepareReflectionProbes(Camera const& camera) {
 	glNamedBufferSubData(reflectionProbesUBO.id(), alignof(ReflectionProbeUBOData), numOfReflectionProbes * sizeof(ReflectionProbeUBOData), reflectionProbes.data());
 }
 
+void Renderer::preparePBRUniforms() {
+	int ssao					= renderConfig.toEnableSSAO;
+	int directionalLightCaster	= hasDirectionalLightShadowCaster;
+	int ibl						= renderConfig.toEnableIBL;
+
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightSpaceMatrix), sizeof(glm::mat4x4), glm::value_ptr(directionalLightViewMatrix));
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightDir), sizeof(glm::vec3), glm::value_ptr(directionalLightDir));
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, timeElapsed), sizeof(float), &timeElapsed);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toEnableSSAO), sizeof(int), &ssao);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, hasDirectionalLightShadowCaster), sizeof(int), &directionalLightCaster);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toEnableIBL), sizeof(int), &ibl);
+}
+
 void Renderer::clusterBuilding(Camera const& camera) {
 	// ===============================================
 	// 1. We first build the clusters AABB from screen space..
@@ -3212,25 +3126,14 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// Set uniform data..
 	// ===========================================================================
 	shader.setMatrix("normalMatrix", transform.normalMatrix);
-	shader.setFloat("timeElapsed", timeElapsed);
-	shader.setFloat("toOutputNormal", false);
 
 	switch (shaderData.pipeline)
 	{
 	case Pipeline::PBR: {
 		// setup SSAO
-		shader.setBool("toEnableSSAO", renderConfig.toEnableSSAO);
 		if (renderConfig.toEnableSSAO) {
 			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]);
 			shader.setImageUniform("ssao", 1);
-		}
-
-		// setup directional light shadow
-		shader.setBool("hasDirectionalLightShadowCaster", hasDirectionalLightShadowCaster);
-		
-		if (hasDirectionalLightShadowCaster) {
-			shader.setMatrix("directionalLightSpaceMatrix", directionalLightViewMatrix);
-			shader.setVec3("directionalLightDir", directionalLightDir);
 		}
 
 		// setup spotlight shadow
@@ -3242,8 +3145,6 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		auto&& [prefilteredEnvironmentMap, ___] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentSpecularMap);
 
 		if (renderConfig.toEnableIBL && diffuseIrradianceMap && prefilteredEnvironmentMap) {
-			shader.setBool("toEnableIBL", true);
-
 			glBindTextureUnit(2, BRDFLUT->getTextureId());
 			glBindTextureUnit(4, diffuseIrradianceMap->getTextureId());
 			glBindTextureUnit(5, prefilteredEnvironmentMap->getTextureId());
@@ -3252,9 +3153,9 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 			shader.setImageUniform("diffuseIrradianceMap", 4);
 			shader.setImageUniform("prefilterMap", 5);
 		}
-		else {
-			shader.setBool("toEnableIBL", false);
-		}
+
+		glBindTextureUnit(0, directionalLightShadowFBO.textureId());
+		shader.setImageUniform("directionalShadowMap", 0);
 
 		glBindTextureUnit(6, loadedReflectionProbesMap.getTextureId());
 		shader.setImageUniform("reflectionProbesPrefilterMap", 6);
@@ -3270,10 +3171,6 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 		assert(false && "Unhandled pipeline.");
 		break;
 	}
-
-	// we bind to a unused texture unit..
-	glBindTextureUnit(0, directionalLightShadowFBO.textureId());
-	shader.setImageUniform("directionalShadowMap", 0);
 
 	// We reserve the very first 6 texture unit for PBR required textures..
 	int numOfTextureUnitBound = 7;
@@ -3320,8 +3217,6 @@ CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transf
 	shader.setMatrix("model", transform.modelMatrix);
 	shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
 	
-	shader.setFloat("toOutputNormal", true);
-
 	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.
 	setupCustomShaderUniforms(shader, material, 7);
 
@@ -3338,7 +3233,6 @@ void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& m
 
 	for (auto const& [name, overriddenUniformData] : material.materialData.overridenUniforms) {
 		std::visit([&](auto&& value) {
-			Material const& p_material = material;
 			using Type = std::decay_t<decltype(value)>;
 
 			if constexpr (std::same_as<Type, bool>) {
