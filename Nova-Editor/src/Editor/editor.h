@@ -56,7 +56,7 @@ public:
 	void update(float dt);
 	
 	bool isEntitySelected(entt::entity entity);
-	bool isChildEntitySelected(entt::entity entity,entt::entity root);
+	bool isChildEntitySelected(entt::registry& registry, entt::entity entity,entt::entity root);
 	bool hasAnyEntitySelected() const;
 	
 	void selectEntities(std::vector<entt::entity> entities);
