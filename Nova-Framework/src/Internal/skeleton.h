@@ -140,6 +140,9 @@ struct Skeleton {
 	std::vector<Bone> bones		 {};
 	BoneIndex rootBone			 = NO_BONE;
 
+	// Sockets with bone indexes
+	std::unordered_map<BoneIndex, Bone> sockets{};
+
 	REFLECTABLE(
 		nodes,
 		rootNode,

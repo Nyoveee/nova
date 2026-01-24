@@ -76,9 +76,31 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 				updateMaterial.template operator()<MeshRenderer>();
 				updateMaterial.template operator()<TranslucentMeshRenderer>();
 				updateMaterial.template operator()<SkinnedMeshRenderer>();
+
+
 			}
 		}
 	});
+
+	// Socket list for skinned mesh
+	auto& registry = editor.engine.ecs.registry;
+	for (auto& entity : editor.getSelectedEntities()) {
+		SkinnedMeshRenderer* mesh = registry.try_get<SkinnedMeshRenderer>(entity);
+		if (!mesh)
+			continue;
+
+		auto&& [model, _] = editor.resourceManager.getResource<Model>(mesh->modelId);
+		if (!model || !model->skeleton) {
+			continue;
+		}
+
+		for (auto& socket : model->skeleton->sockets) {
+			editor.displayAllEntitiesDropDownList("Socket", entity, [&](entt::entity newEntity) {
+				// Somehow work with metadata or smth
+			});
+		}
+	}
+
 }
 
 template<IsEnum DataMemberType>

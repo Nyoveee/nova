@@ -163,6 +163,9 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 		if (entityData.parent == entt::null) {
 			// parent to nothing..
 			transform.modelMatrix = transform.localMatrix;
+
+			// set model matrix to bone final matrix if attached
+			//transform.modelMatrix *= bone
 		}
 		else {
 			transform.modelMatrix = getUpdatedModelMatrix(entityData.parent) * transform.localMatrix;
