@@ -19,6 +19,14 @@ class ElevatorQuest : Quest
     private Vector3 newQuestInformationUILocation;
     [SerializableField]
     private Audio elevatorSpeechAudio;
+    [SerializableField]
+    private GameUIManager gameUIManager;
+    [SerializableField]
+    private List<string> dialogues;
+    [SerializableField]
+    private List<float> timings;
+    [SerializableField]
+    private float finalDialogueTime;
     protected override void init()
     {
         audioComponent = getComponent<AudioComponent_>();
@@ -28,6 +36,7 @@ class ElevatorQuest : Quest
         Destroy(checkPointIndicator);
         elevator.CloseTutorialDoor();
         audioComponent.PlaySound(elevatorSpeechAudio);
+        gameUIManager.ActivateDialogue(dialogues, timings, finalDialogueTime);
     }
 
     public override void OnFail(Transform_ playerTransform)

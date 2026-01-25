@@ -3,7 +3,7 @@
 // Editor will automatically rename and recompile this file.
 using static GameUIManager;
 
-class   GameUIManager : Script
+class GameUIManager : Script
 {
     public enum ProgressBarType
     {
@@ -40,6 +40,9 @@ class   GameUIManager : Script
 
     [SerializableField]
     private Text_? currentAmmoText = null;
+
+    [SerializableField]
+    private DialogueScript? dialogueScript = null;
 
     protected override void init()
     {
@@ -152,5 +155,13 @@ class   GameUIManager : Script
         {
             CameraAPI.LockMouse();
         }
+    }
+    /***********************************************************
+       Dialogue 
+    ***********************************************************/
+    public void ActivateDialogue(List<string> text, List<float> times, float finalDialogueTime)
+    {
+        dialogueScript.gameObject.SetActive(true);
+        dialogueScript.BeginDialogueSequence(text, times, finalDialogueTime);
     }
 }
