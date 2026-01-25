@@ -4,6 +4,7 @@ struct WorldSpace {
     vec4 position;
     vec3 normal;
     vec3 tangent;
+    vec4 previousPosition;
 };
 
 // ======= Function declaration =======
@@ -32,6 +33,11 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    mat4 inverseView;
+    mat4 inverseProjection;
+    mat4 inverseProjectionView;
+    mat4 previousViewProjection;    // for TAA
+
     vec3 cameraPosition;
 
     uvec3 gridSize;
@@ -66,19 +72,21 @@ const int MAX_NUMBER_OF_BONES = 4;
 const int INVALID_BONE = -1;
 
 uniform mat4 model;
+uniform mat4 previousModel;
 uniform mat3 normalMatrix;
 uniform mat4 localScale;
 uniform bool toUseNormalMap;
 
 invariant gl_Position;
 
-// Shadows
 out VS_OUT {
     vec2 textureUnit;
     vec3 normal;
     vec3 fragWorldPos;
     vec3 fragViewPos;
     vec4 fragDirectionalLightPos;
+    vec4 fragOldClipPos;
+    vec4 fragCurrentClipPos;
     mat3 TBN;
 } vsOut;
 
@@ -118,6 +126,11 @@ void passDataToFragment(WorldSpace worldSpace) {
     if(toUseNormalMap) {
         vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
     }
+
+    if(isTAAEnabled) {
+        vsOut.fragCurrentClipPos = cameraProjectionView * worldSpace.position;
+        vsOut.fragOldClipPos = previousViewProjection * worldSpace.previousPosition;
+    }
 }
 
 WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
@@ -128,6 +141,7 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
         worldSpace.position             = model * localScale * vec4(position, 1.0);
         worldSpace.normal               = normalize(normalMatrix * normal);
         worldSpace.tangent              = normalize(normalMatrix * tangent);
+        worldSpace.previousPosition     = previousModel * localScale * vec4(position, 1.0);
     }
     // this is a skinned mesh.
     else {
@@ -157,6 +171,7 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
         worldSpace.position             = model * localScale * localPosition;
         worldSpace.normal               = normalize(normalMatrix * localNormal);
         worldSpace.tangent              = normalize(normalMatrix * localTangent);
+        worldSpace.previousPosition     = previousModel * localScale * localPosition;
     }
 
     return worldSpace;

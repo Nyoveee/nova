@@ -133,6 +133,7 @@ struct Transform {
 	glm::mat3x3 normalMatrix	{};	// normal matrix is used to transform normals.
 	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
 
+	glm::mat4x4 lastModelMatrix	{}; // records the previous frame's model matrix. (used for TAA).
 	glm::vec3 lastPosition		{ position };
 	glm::vec3 lastScale			{ scale };
 	glm::quat lastRotation		{ rotation };

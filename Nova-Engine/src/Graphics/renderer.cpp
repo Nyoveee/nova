@@ -22,6 +22,8 @@
 #include "RandomRange.h"
 #include "systemResource.h"
 
+#include <glm/gtx/io.hpp> // Required for operator<< overload
+
 #undef max
 
 namespace {
@@ -55,15 +57,15 @@ namespace {
 		{
 			f = f / base;
 			r = r + f * (current % base);
-			current = glm::floor(current / base);
+			current = current / base;
 		} while (current > 0);
 
 		return r;
 	}
-
-	// INVALID_ID means it's not holding to any dynamically allocated resource.
-	constexpr inline GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
 }
+
+// INVALID_ID means it's not holding to any dynamically allocated resource.
+constexpr inline GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
 
 constexpr ColorA whiteColor{ 1.f, 1.f, 1.f, 1.f };
 
@@ -132,6 +134,10 @@ struct alignas(16) CameraUBO {
 				glm::mat4 view;
 				glm::mat4 projection;
 				glm::mat4 viewProjection;
+				glm::mat4 inverseView;
+				glm::mat4 inverseProjection;
+				glm::mat4 inverseViewProjection;
+				glm::mat4 previousViewProjection;
 	alignas(16) glm::vec3 cameraPosition;
 
 	alignas(16) glm::uvec3 gridSize;
@@ -267,9 +273,9 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	haltonFrameIndex				{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	hdrExposure						{ 0.9f },
-															 // main		normal
-	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
-	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM } },
+															 // main		normal			velocity
+	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F } },
+	gameMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F } },
 	uiMainFrameBuffer				{ gameWidth, gameHeight, { GL_RGBA8 } },
 	physicsDebugFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA8 } },
 	objectIdFrameBuffer				{ gameWidth, gameHeight, { GL_R32UI } },
@@ -500,7 +506,7 @@ GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
 	return objectId;
 }
 
-void Renderer::update([[maybe_unused]] float dt) {
+void Renderer::update(float dt) {
 	timeElapsed += dt;
 }
 
@@ -578,6 +584,10 @@ void Renderer::renderMain(RenderMode renderMode) {
 	if (renderConfig.toEnableAntiAliasing) {
 		haltonFrameIndex = (haltonFrameIndex + 1) % MAX_HALTON_SEQUENCE;
 		glNamedBufferSubData(TAAUBO.id(), offsetof(TAAUBOData, frameIndex), sizeof(int), &haltonFrameIndex);
+
+		// stores the previous view projection matrix..
+		gameCamera.recordViewProjectionMatrix();
+		editorCamera.recordViewProjectionMatrix();
 	}
 
 	glNamedBufferSubData(TAAUBO.id(), offsetof(TAAUBOData, isTAAEnabled), sizeof(int), &isTAAEnabled);
@@ -980,8 +990,8 @@ void Renderer::depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera)
 	glEnable(GL_DEPTH_TEST);
 
 	// Disable the color attachment, enable the normal attachment.
-	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1 };
-	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 2, buffers);
+	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 3, buffers);
 
 	// Set PBR UBO to output normals only..
 	int toOutputNormalOnly = true;
@@ -1187,6 +1197,10 @@ GLuint Renderer::getEditorFrameBufferId() const {
 	return editorMainFrameBuffer.getActiveFrameBuffer().fboId();
 }
 
+PairFrameBuffer const& Renderer::getEditorFrameBuffer() const {
+	return editorMainFrameBuffer;
+}
+
 void Renderer::enableWireframeMode(bool toEnable) {
 	if (toEnable) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1233,6 +1247,8 @@ void Renderer::recompileShaders() {
 
 	ssaoShader.recompile();
 	bakeDiffuseIrradianceMapShader.recompile();
+
+	TAAResolveShader.recompile();
 
 	auto [defaultPBRShader, _] = resourceManager.getResource<CustomShader>(DEFAULT_PBR_SHADER_ID);
 
@@ -1608,7 +1624,7 @@ std::unique_ptr<std::byte[]> Renderer::getBytes(CubeMap const& cubemap, int face
 }
 #endif
 
-void Renderer::renderModels(Camera const& camera, bool normalOnly) {
+void Renderer::renderModels(Camera const& camera, bool depthPrePass) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1622,7 +1638,7 @@ void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
 		for (auto const& entity : entities) {
 			MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
-			Transform const& transform = registry.get<Transform>(entity);
+			Transform& transform = registry.get<Transform>(entity);
 			EntityData const& entityData = registry.get<EntityData>(entity);
 
 			if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
@@ -1660,7 +1676,7 @@ void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 
 					// Use the correct shader and configure it's required uniforms..
 					CustomShader* shader = [&]() {
-						return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+						return depthPrePass ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
 					}();
 
 					if (shader) {
@@ -1676,7 +1692,7 @@ void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 
 					// Use the correct shader and configure it's required uniforms..
 					CustomShader* shader = [&]() {
-						return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+						return depthPrePass ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
 					}();
 
 					if (shader) {
@@ -1684,6 +1700,10 @@ void Renderer::renderModels(Camera const& camera, bool normalOnly) {
 						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
 					}
 				}
+			}
+
+			if (depthPrePass && renderConfig.toEnableAntiAliasing) {
+				transform.lastModelMatrix = transform.modelMatrix;
 			}
 		}
 	}
@@ -1896,7 +1916,7 @@ void Renderer::renderImage(Transform const& transform, Image const& image, Color
 }
 
 
-void Renderer::renderSkinnedModels(Camera const& camera, bool normalOnly) {
+void Renderer::renderSkinnedModels(Camera const& camera, bool depthPrePass) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
@@ -1943,7 +1963,7 @@ void Renderer::renderSkinnedModels(Camera const& camera, bool normalOnly) {
 
 				// Use the correct shader and configure it's required uniforms..
 				CustomShader* shader = [&]() {
-					return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+					return depthPrePass ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
 				}(); 
 
 				if (shader) {
@@ -1962,7 +1982,7 @@ void Renderer::renderSkinnedModels(Camera const& camera, bool normalOnly) {
 
 				// Use the correct shader and configure it's required uniforms..
 				CustomShader* shader = [&]() {
-					return normalOnly ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
+					return depthPrePass ? setupMaterialNormalPass(*material, transform, model->scale) : setupMaterial(camera, *material, transform, model->scale);
 				}(); 
 
 				if (shader) {
@@ -1970,6 +1990,10 @@ void Renderer::renderSkinnedModels(Camera const& camera, bool normalOnly) {
 					renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Skinned);
 				}
 			}
+		}
+
+		if (depthPrePass && renderConfig.toEnableAntiAliasing) {
+			transform.lastModelMatrix = transform.modelMatrix;
 		}
 	}
 
@@ -2363,7 +2387,6 @@ void Renderer::clusterBuilding(Camera const& camera) {
 	// 1. We first build the clusters AABB from screen space..
 	// ===============================================
 	clusterBuildingCompute.use();
-	clusterBuildingCompute.setMatrix("inverseProjection", glm::inverse(camera.projection()));
 
 	glDispatchCompute(gridSizeX, gridSizeY, gridSizeZ);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -2618,15 +2641,22 @@ void Renderer::updateCameraUBO(Camera const& camera) {
 	float zNearLocal	= camera.getNearPlaneDistance();
 	float zFarLocal 	= camera.getFarPlaneDistance();
 
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, view),				sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, projection),		sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, viewProjection),	sizeof(glm::mat4x4), glm::value_ptr(camera.viewProjection()));
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, cameraPosition),	sizeof(glm::vec3),	 glm::value_ptr(camera.getPos()));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, view),						sizeof(glm::mat4x4), glm::value_ptr(camera.view()));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, projection),				sizeof(glm::mat4x4), glm::value_ptr(camera.projection()));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, viewProjection),			sizeof(glm::mat4x4), glm::value_ptr(camera.viewProjection()));
+	
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, inverseView),				sizeof(glm::mat4x4), glm::value_ptr(glm::inverse(camera.view())));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, inverseProjection),		sizeof(glm::mat4x4), glm::value_ptr(glm::inverse(camera.projection())));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, inverseViewProjection),	sizeof(glm::mat4x4), glm::value_ptr(glm::inverse(camera.viewProjection())));
 
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, gridSize),			sizeof(glm::uvec3),  glm::value_ptr(glm::uvec3{ gridSizeX, gridSizeY, gridSizeZ }));
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, screenDimensions),	sizeof(glm::uvec2),	 glm::value_ptr(glm::uvec2{ gameWidth, gameHeight }));
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, zNear),			sizeof(float),		 &zNearLocal);
-	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, zFar),				sizeof(float),		 &zFarLocal);
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, previousViewProjection),	sizeof(glm::mat4x4), glm::value_ptr(camera.getPreviousViewProjectionMatrix()));
+
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, cameraPosition),			sizeof(glm::vec3),	 glm::value_ptr(camera.getPos()));
+
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, gridSize),					sizeof(glm::uvec3),  glm::value_ptr(glm::uvec3{ gridSizeX, gridSizeY, gridSizeZ }));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, screenDimensions),			sizeof(glm::uvec2),	 glm::value_ptr(glm::uvec2{ gameWidth, gameHeight }));
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, zNear),					sizeof(float),		 &zNearLocal);
+	glNamedBufferSubData(cameraUBO.id(), offsetof(CameraUBO, zFar),						sizeof(float),		 &zFarLocal);
 }
 
 CubeMap Renderer::captureSurrounding(std::function<void()> render) {
@@ -2839,6 +2869,8 @@ int Renderer::getIndexToCubeMapArray() {
 
 void Renderer::resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture) {
 	// https://sugulee.wordpress.com/2021/06/21/temporal-anti-aliasingtaa-tutorial/
+	// https://www.elopezr.com/temporal-aa-and-the-quest-for-the-holy-trail/
+
 	frameBuffers.swapFrameBuffer();
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
 
@@ -2851,6 +2883,9 @@ void Renderer::resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture) 
 	// Bind history texture..
 	glBindTextureUnit(1, historyTexture);
 	TAAResolveShader.setImageUniform("historyTexture", 1);
+
+	glBindTextureUnit(2, frameBuffers.getMotionTexture());
+	TAAResolveShader.setImageUniform("velocityUvTexture", 2);
 
 	// Render fullscreen quad
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -3269,6 +3304,8 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	[[fallthrough]];
 	case Pipeline::Color:
 		shader.setMatrix("model", transform.modelMatrix);
+		shader.setMatrix("previousModel", transform.lastModelMatrix);
+
 		shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
 		break;
 	default:
@@ -3319,6 +3356,7 @@ CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transf
 	// ===========================================================================
 	shader.setMatrix("normalMatrix", transform.normalMatrix);
 	shader.setMatrix("model", transform.modelMatrix);
+	shader.setMatrix("previousModel", transform.lastModelMatrix);
 	shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
 	
 	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.

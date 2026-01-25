@@ -3,7 +3,20 @@
 layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
+    mat4 cameraProjectionView;
+    mat4 inverseView;
+    mat4 inverseProjection;
+    mat4 inverseProjectionView;
+    mat4 previousViewProjection;    // for TAA
+
+    vec3 cameraPosition;
+
+    uvec3 gridSize;
+    uvec2 screenDimensions;
+    float zNear;
+    float zFar;
 };
+
 
 layout (location = 0) in vec3 localpos;
 layout (location = 1) in vec3 worldPos;

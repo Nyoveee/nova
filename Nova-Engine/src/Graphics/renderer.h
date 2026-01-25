@@ -113,6 +113,7 @@ public:
 	ENGINE_DLL_API GLuint getUBOId() const;
 
 	ENGINE_DLL_API GLuint getEditorFrameBufferId() const;
+	ENGINE_DLL_API PairFrameBuffer const& getEditorFrameBuffer() const;
 
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
@@ -214,13 +215,13 @@ private:
 	void prepareRendering();
 
 	// render all MeshRenderers.
-	void renderModels(Camera const& camera, bool normalOnly = false);
+	void renderModels(Camera const& camera, bool depthPrePass = false);
 
 	// render all TranslucentMeshRenderers.
 	void renderTranslucentModels(Camera const& camera);
 
 	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels(Camera const& camera, bool normalOnly = false);
+	void renderSkinnedModels(Camera const& camera, bool depthPrePass = false);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);

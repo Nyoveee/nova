@@ -65,6 +65,8 @@ void EditorViewPort::update(float dt) {
 
 	// Retrieve main texture from main frame buffer in renderer and put it in imgui draw list.
 	ImTextureID textureId = engine.renderer.getEditorFrameBufferTexture();
+	//ImTextureID textureId = engine.renderer.getEditorFrameBuffer().getMotionTexture();
+
 	ImGui::GetWindowDrawList()->AddImage(textureId, gameWindowTopLeft, gameWindowBottomRight, { 0, 1 }, { 1, 0 });
 	
 	engine.window.setGameViewPort({ 

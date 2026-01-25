@@ -40,3 +40,15 @@ FrameBuffer const& PairFrameBuffer::getActiveFrameBuffer() const {
 FrameBuffer const& PairFrameBuffer::getReadFrameBuffer() const {
 	return frameBuffers[readFrameBufferIndex];
 }
+
+GLuint PairFrameBuffer::getMotionTexture() const {
+	// THIS IS A HARDCODED FUNCTION MEANT FOR DEBUGGING ONLY.
+	if (getActiveFrameBuffer().textureIds().size() >= 3) {
+		return getActiveFrameBuffer().textureIds()[2];
+	}
+	else if (getReadFrameBuffer().textureIds().size() >= 3) {
+		return getReadFrameBuffer().textureIds()[2];
+	}
+
+	return 0;
+}

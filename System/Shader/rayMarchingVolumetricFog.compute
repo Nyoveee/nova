@@ -74,6 +74,11 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    mat4 inverseView;
+    mat4 inverseProjection;
+    mat4 inverseProjectionView;
+    mat4 previousViewProjection;    // for TAA
+
     vec3 cameraPosition;
 
     uvec3 gridSize;
@@ -108,9 +113,9 @@ layout(std430, binding = 7) buffer clusterSSBO {
 // Convert from z-depth based on camera to world pos
 vec3 DepthToWorldPos(float depth, vec2 uv){
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
-    vec4 viewSpacePosition = inverse(projection) * clipSpacePosition;
+    vec4 viewSpacePosition = inverseProjection * clipSpacePosition;
     viewSpacePosition /= viewSpacePosition.w;
-    vec4 worldSpacePosition = inverse(view) * viewSpacePosition;
+    vec4 worldSpacePosition = inverseView * viewSpacePosition;
 
     return worldSpacePosition.xyz;
 }
@@ -118,7 +123,7 @@ vec3 DepthToWorldPos(float depth, vec2 uv){
 // Convert from z-depth based on camera to view pos
 vec3 DepthToViewPos(float depth, vec2 uv){
     vec4 clipSpacePosition = vec4(uv * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
-    vec4 viewSpacePosition = inverse(projection) * clipSpacePosition;
+    vec4 viewSpacePosition = inverseProjection * clipSpacePosition;
     viewSpacePosition /= viewSpacePosition.w;
 
     return viewSpacePosition.xyz;
