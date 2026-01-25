@@ -30,25 +30,19 @@ class UltimateExplosion : Script
     private float timeElapsed = 0f;
     private Transform_ transform;
     private MeshRenderer_ material;
-    private AudioComponent_ audioComponent;
-
     private Light_ light;
     private List<GameObject> enemyObject = new List<GameObject>();
-
     private Vector3 initialScaleVector;
     private Vector3 explosionInitialScaleVector;
     private Vector3 explosionFinalScaleVector;
     private Vector3 finalScaleVector;
 
-    [SerializableField]
-    private Audio impactSFX;
     // This function is first invoked when game starts.
     protected override void init()
     {
         transform = gameObject.transform;
         transform.scale = Vector3.One();
         material = getComponent<MeshRenderer_>();
-        audioComponent = getComponent<AudioComponent_>();
         light = getComponent<Light_>();
 
         initialScaleVector          = new Vector3(initialScale, initialScale, initialScale);
@@ -56,7 +50,7 @@ class UltimateExplosion : Script
         explosionFinalScaleVector   = new Vector3(explosionFinalScale, explosionFinalScale, explosionFinalScale);
         finalScaleVector            = new Vector3(finalScale, finalScale, finalScale);
 
-        audioComponent.PlaySound(impactSFX);
+        AudioAPI.PlaySound(gameObject, "sniper_specialImpact_01");
     }
 
     // This function is invoked every update.

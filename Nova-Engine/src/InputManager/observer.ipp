@@ -6,10 +6,10 @@ Observer<InputEvent>::Observer(std::function<void(InputEvent)> pressCallback, st
 
 template<typename InputEvent>
 void Observer<InputEvent>::notifyPress(InputEvent data) {
-	if (pressCallback) pressCallback(data);
+	 if (pressCallback) pressCallback(data);
 }
 
 template<typename InputEvent>
 void Observer<InputEvent>::notifyRelease(InputEvent data) {
-	if (releaseCallback) releaseCallback(data);
+	 if (releaseCallback) releaseCallback(data);
 }

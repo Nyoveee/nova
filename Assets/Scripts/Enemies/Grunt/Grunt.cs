@@ -22,14 +22,10 @@ class Grunt : Enemy
     private float spawningDuration = 1f;
     [SerializableField]
     private Rigidbody_? rigidbody;
-    [SerializableField]
-    private Audio hurtSFX;
-    [SerializableField]
-    private Audio attackSFX;
-
     /***********************************************************
         Components
     ***********************************************************/
+
     private GruntStats? gruntStats = null;
 
     /***********************************************************
@@ -215,7 +211,7 @@ class Grunt : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (gruntState != GruntState.Death && !WasRecentlyDamaged())
                 {
-                    audioComponent.PlaySound(hurtSFX);
+                    //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
                     renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
@@ -325,7 +321,7 @@ class Grunt : Enemy
     }
     public void BeginSwing()
     {
-        audioComponent.PlaySound(attackSFX);
+        //AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
         if (hitboxPrefab == null)
             return;
         hitbox = Instantiate(hitboxPrefab);

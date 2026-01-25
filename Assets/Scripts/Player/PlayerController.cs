@@ -1,7 +1,7 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-using ScriptingAPI;
+
 class PlayerController : Script
 {
 
@@ -35,13 +35,6 @@ class PlayerController : Script
     // ==================================
     private Transform_? transform;
     private Rigidbody_? rigidbody;
-    private AudioComponent_? audioComponent;
-
-    // Audio
-    [SerializableField]
-    private Audio dashSFX;
-    [SerializableField]
-    private List<Audio> jumpSFX;
 
     // WASD
     private bool isMovingForward = false;
@@ -72,7 +65,6 @@ class PlayerController : Script
     {
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
-        audioComponent = getComponent<AudioComponent_>();
 
         CameraAPI.LockMouse();
 
@@ -101,7 +93,7 @@ class PlayerController : Script
         // ===================================
         // Check if its grounded..
         // ===================================
-        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 1f, gameObject);
+        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 14f, gameObject);
         if (result != null)
         {
             isGrounded = true;
@@ -391,7 +383,8 @@ class PlayerController : Script
 
         if (jumpCount < maxJumpCount && !isDashing)
         {
-            audioComponent.PlaySound(jumpSFX[jumpCount]);
+
+            AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
@@ -405,7 +398,8 @@ class PlayerController : Script
         {
             return;
         }
-        audioComponent.PlaySound(dashSFX);
+
+        AudioAPI.PlaySound(gameObject, "dash1_sfx");
         // We initialise dashing mechanic..
         isDashing = true;
         dashTimer -= dashCooldown;

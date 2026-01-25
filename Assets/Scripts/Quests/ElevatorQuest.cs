@@ -1,10 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-using ScriptingAPI;
 class ElevatorQuest : Quest
 {
-    private AudioComponent_? audioComponent;
     [SerializableField]
     private GameObject checkPointIndicator;
     [SerializableField]
@@ -17,17 +15,18 @@ class ElevatorQuest : Quest
     private Vector3 newMissionObjectiveUILocation;
     [SerializableField]
     private Vector3 newQuestInformationUILocation;
-    [SerializableField]
-    private Audio elevatorSpeechAudio;
-    protected override void init()
+    
+    public override void OnEnter()
     {
-        audioComponent = getComponent<AudioComponent_>();
+        // missionObjectiveContainer.transform.localPosition = newMissionObjectiveUILocation;
+        // questInformationContainer.transform.localPosition = newQuestInformationUILocation;
     }
+
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);
         elevator.CloseTutorialDoor();
-        audioComponent.PlaySound(elevatorSpeechAudio);
+        AudioAPI.PlaySound(gameObject, "IntroLiftSpeech_01mono");
     }
 
     public override void OnFail(Transform_ playerTransform)
