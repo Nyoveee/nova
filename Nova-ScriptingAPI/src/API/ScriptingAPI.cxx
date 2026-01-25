@@ -223,7 +223,9 @@ std::vector<FieldData> Interface::getScriptFieldDatas(ScriptID scriptID)
 				// we need to set the index of this list according to the element type..
 				// so we throw 1 dummy variant.
 				serialized_field_type sampleVariant;
-				getScriptFieldData(System::Activator::CreateInstance(elementType), elementType, sampleVariant);
+				// String doesn't work with CreateInstance
+				getScriptFieldData(elementType->Equals(System::String::typeid) ? gcnew System::String("")
+					: System::Activator::CreateInstance(elementType), elementType, sampleVariant);
 				listOfSerializedFields.setIndex(static_cast<int>(sampleVariant.index()));
 				if (elementType->IsEnum)
 					listOfSerializedFields.setEnumType(Convert(elementType->Name));

@@ -1,5 +1,5 @@
 {
-    "RootEntity": 27,
+    "RootEntity": 9,
     "Entities": [
         {
             "EntityData": {
@@ -7,11 +7,11 @@
                 "tag": "",
                 "parent": 4294967295,
                 "children": [
-                    28,
-                    29,
-                    30,
-                    31,
-                    32
+                    10,
+                    11,
+                    12,
+                    13,
+                    14
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -130,7 +130,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 28,
+                                    "__variant_value": 10,
                                     "__variant_type": 4
                                 }
                             },
@@ -138,146 +138,146 @@
                                 "name": "maxFlyingTime",
                                 "data": {
                                     "__variant_value": 1.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "maxReturnTime",
                                 "data": {
                                     "__variant_value": 1.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "weaponHitDelayTime",
                                 "data": {
                                     "__variant_value": 0.4000000059604645,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "weaponFlyingSpeed",
                                 "data": {
                                     "__variant_value": 60.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "weaponReturnSpeed",
                                 "data": {
                                     "__variant_value": 45.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "throwWeaponBaseDamage",
                                 "data": {
                                     "__variant_value": 50.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "damageMultiplierPerAmmoUsed",
                                 "data": {
                                     "__variant_value": 1.2999999523162842,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "returnDamage",
                                 "data": {
                                     "__variant_value": 20.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "baseSeekStrength",
                                 "data": {
                                     "__variant_value": 30.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "startSteeringDistance",
                                 "data": {
                                     "__variant_value": 50.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "maxSteeringDistance",
                                 "data": {
                                     "__variant_value": 40.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "seekDistance",
                                 "data": {
                                     "__variant_value": 10.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "fakeGravity",
                                 "data": {
                                     "__variant_value": 5.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "angledFlight",
                                 "data": {
                                     "__variant_value": 5.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "ichorPerAmmo",
                                 "data": {
                                     "__variant_value": 2,
-                                    "__variant_type": 16
+                                    "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "healthGainedPerIchor",
                                 "data": {
                                     "__variant_value": 2,
-                                    "__variant_type": 16
+                                    "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "spGainPerIchor",
                                 "data": {
                                     "__variant_value": 2,
-                                    "__variant_type": 16
+                                    "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "ichorFindRadius",
                                 "data": {
                                     "__variant_value": 5,
-                                    "__variant_type": 16
+                                    "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "calculatedTrueDamage",
                                 "data": {
                                     "__variant_value": 0.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             }
                         ]
                     }
                 ]
             },
-            "id": 27
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 27,
+                "parent": 9,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -353,13 +353,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 28
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 27,
+                "parent": 9,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -452,7 +452,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 27,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             }
@@ -460,13 +460,13 @@
                     }
                 ]
             },
-            "id": 29
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 27,
+                "parent": 9,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -550,6 +550,7 @@
                 "lightRadius": 0.0,
                 "looping": true,
                 "randomizedDirection": false,
+                "invertMovement": false,
                 "particleEmissionTypeSelection": {
                     "emissionShape": "Point",
                     "radiusEmitter": {
@@ -630,13 +631,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 30
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 27,
+                "parent": 9,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -720,6 +721,7 @@
                 "lightRadius": 0.0,
                 "looping": true,
                 "randomizedDirection": false,
+                "invertMovement": false,
                 "particleEmissionTypeSelection": {
                     "emissionShape": "Point",
                     "radiusEmitter": {
@@ -800,13 +802,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 31
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 27,
+                "parent": 9,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -890,6 +892,7 @@
                 "lightRadius": 0.0,
                 "looping": true,
                 "randomizedDirection": false,
+                "invertMovement": false,
                 "particleEmissionTypeSelection": {
                     "emissionShape": "Point",
                     "radiusEmitter": {
@@ -970,7 +973,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 32
+            "id": 14
         }
     ]
 }
