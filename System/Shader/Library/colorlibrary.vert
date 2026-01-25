@@ -38,6 +38,12 @@ layout(std140, binding = 0) uniform Camera {
     float zFar;
 };
 
+layout(std140, binding = 4) uniform TAAUBO {
+	vec4 haltonSequence[16]; // only first 2 elements used.
+	int frameIndex;
+    bool isTAAEnabled;
+};
+
 layout(std430, binding = 3) buffer Bones {
     uint isSkinnedMesh;
     mat4 bonesFinalMatrices[];
@@ -63,7 +69,13 @@ out VS_OUT {
 // ======= Implementation =======
 
 vec4 calculateClipPosition(vec4 worldPosition) {
-    return cameraProjectionView * worldPosition;
+    vec4 clipPos = cameraProjectionView * worldPosition;
+
+    if(isTAAEnabled) {
+        clipPos.xy += haltonSequence[frameIndex].xy * clipPos.w; // Apply Jittering;
+    }
+
+    return clipPos;
 }
 
 void passDataToFragment(WorldSpace worldSpace) {

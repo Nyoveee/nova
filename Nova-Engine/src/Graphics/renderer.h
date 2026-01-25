@@ -71,8 +71,8 @@ public:
 
 	void renderUI();
 
-	// renders the main scene in the perspective of given camera. light storage is provided by lightSSBO.
-	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
+	// renders the main scene in the perspective of given camera. 
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint TAAhistoryTexture);
 	
 	void renderToDefaultFBO();
 
@@ -90,7 +90,10 @@ public:
 	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
 
 	// initialise the sample kernel and noise texture used in SSAO
-	void initialiseSSAO();	
+	void initialiseSSAO();
+
+	// initialise the data that TAA requires..
+	void initialiseTAA();
 
 	// when changing scene, mark all reflection probes as unloaded.
 	void resetLoadedReflectionProbes();
@@ -330,6 +333,9 @@ private:
 	// will return a number greater than MAX_REFLECTION_PROBES if no more slot. (rare imo)
 	int getIndexToCubeMapArray();
 
+	// Resolves TAA, for anti aliasing.. then update the history texture..
+	void resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture);
+	
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -360,6 +366,7 @@ private:
 	BufferObject shadowCasterMatrixes;	// UBO 1 stores the shadow caster matrixes in a UBO.
 	BufferObject PBRUBO;				// UBO 2
 	BufferObject reflectionProbesUBO;	// UBO 3
+	BufferObject TAAUBO;				// UBO 4
 
 	// Particle VAO and VBO
 	GLuint particleVAO;
@@ -376,6 +383,9 @@ private:
 	BufferObject textVBO;
 
 	GLuint ssaoNoiseTextureId;
+
+	GLuint editorHistoryTexture;
+	GLuint gameHistoryTexture;
 
 	Camera editorCamera;
 	Camera gameCamera;
@@ -416,7 +426,6 @@ private:
 	std::unordered_set<int> freeCubeMapArraySlots;
 
 private:
-
 	int numOfPhysicsDebugTriangles;
 	int numOfPhysicsDebugLines;
 	int numOfNavMeshDebugTriangles;
@@ -437,6 +446,8 @@ private:
 	
 	int numOfSpotlightShadowCaster;
 	int numOfLoadedReflectionProbe;
+
+	int haltonFrameIndex;
 
 public:
 	RenderConfig renderConfig;
@@ -476,6 +487,8 @@ public:
 
 	Shader bakeDiffuseIrradianceMapShader;	
 	Shader bakeSpecularIrradianceMapShader;
+
+	Shader TAAResolveShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;

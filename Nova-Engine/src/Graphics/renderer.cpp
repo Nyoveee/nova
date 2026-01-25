@@ -43,6 +43,24 @@ namespace {
 		return glm::min(bound, findMinBound(bounds...));
 	}
 
+	// https://docs.google.com/document/d/15z2Vp-24S69jiZnxqSHb9dX-A-o4n3tYiPQOCRkCt5Q/edit?tab=t.0
+	// note that index starts with 1..
+	float createHaltonSequence(unsigned int index, int base) {
+		float f = 1;
+		float r = 0;
+
+		int current = index;
+		
+		do
+		{
+			f = f / base;
+			r = r + f * (current % base);
+			current = glm::floor(current / base);
+		} while (current > 0);
+
+		return r;
+	}
+
 	// INVALID_ID means it's not holding to any dynamically allocated resource.
 	constexpr inline GLuint INVALID_ID = std::numeric_limits<GLuint>::max();
 }
@@ -89,6 +107,9 @@ constexpr int MAX_REFLECTION_PROBES			= 30;
 
 // For Volumetric Fog
 constexpr int VOLUMETRIC_FOG_DOWNSCALE 	= 4;
+
+// TAA..
+constexpr int MAX_HALTON_SEQUENCE = 16;
 
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
@@ -143,6 +164,12 @@ struct alignas(16) ReflectionProbeUBOData {
 				float	  intensity;
 };
 
+struct alignas(16) TAAUBOData {
+	glm::vec4 haltonSequence[MAX_HALTON_SEQUENCE];	// i only need glm::vec2 but i need glm::vec4 size..
+	int		  frameIndex;
+	int		  isTAAEnabled;
+};
+
 /*
 	Texture unit setup
 	0 - TEXTURE_2D				directionalShadowMap;
@@ -194,6 +221,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	texture2dShader					{ "System/Shader/texture2d.vert",					"System/Shader/image2D.frag"},
 	shadowMapShader					{ "System/Shader/shadow.vert",						"System/Shader/empty.frag" },
 	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
+	TAAResolveShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/TAAResolveShader.frag" },
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
@@ -218,6 +246,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	cameraUBO						{ sizeof(CameraUBO) },
 	PBRUBO							{ sizeof(PBR_UBO) },
 	reflectionProbesUBO				{ sizeof(ReflectionProbeUBO) },
+	TAAUBO							{ sizeof(TAAUBOData) },
 
 									// we allocate the memory of all bone data + space for 1 unsigned int indicating true or false (whether the current invocation is a skinned meshrenderer).
 	bonesSSBO						{ MAX_NUMBER_OF_BONES * sizeof(glm::mat4x4) + alignof(glm::vec4) },
@@ -235,6 +264,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	numOfSpotlightShadowCaster		{},
 	numOfLoadedReflectionProbe		{},
 	timeElapsed						{},
+	haltonFrameIndex				{},
 	ssaoNoiseTextureId				{ INVALID_ID },
 	hdrExposure						{ 0.9f },
 															 // main		normal
@@ -287,6 +317,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	glBindBufferBase(GL_UNIFORM_BUFFER, 1, shadowCasterMatrixes.id());
 	glBindBufferBase(GL_UNIFORM_BUFFER, 2, PBRUBO.id());
 	glBindBufferBase(GL_UNIFORM_BUFFER, 3, reflectionProbesUBO.id());
+	glBindBufferBase(GL_UNIFORM_BUFFER, 4, TAAUBO.id());
 
 	// we bind bones SSBO to 3.
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bonesSSBO.id());
@@ -373,8 +404,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 
 	// Bind this EBO to this VAO.
 	glVertexArrayElementBuffer(particleVAO, EBO.id());
-
-	initialiseSSAO();
+	
 
 	// ======================================================
 	// Volumetric Fog Compute Shader configuration
@@ -407,6 +437,9 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	// Cluster SSBO configuration
 	// ======================================================
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, clusterSSBO.id());
+
+	initialiseSSAO();
+	initialiseTAA();
 
 	// handle reflection probe deletion..
 	registry.on_destroy<ReflectionProbe>().connect<&Renderer::handleReflectionProbeDeletion>(*this);
@@ -487,7 +520,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 	case RenderMode::Editor:
 		// Main render function
 		if (isEditorScreenShown) {
-			render(editorMainFrameBuffer, editorCamera);
+			render(editorMainFrameBuffer, editorCamera, editorHistoryTexture);
 
 			// Apply HDR tone mapping + gamma correction post-processing
 			renderHDRTonemapping(editorMainFrameBuffer);
@@ -502,7 +535,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 		
 		// Main render function
 		if (isGameScreenShown)
-			render(gameMainFrameBuffer, gameCamera);
+			render(gameMainFrameBuffer, gameCamera, gameHistoryTexture);
 
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
@@ -521,7 +554,7 @@ void Renderer::renderMain(RenderMode renderMode) {
 	// ===============================================
 	case RenderMode::Game:
 		// Main render function
-		render(gameMainFrameBuffer, gameCamera);
+		render(gameMainFrameBuffer, gameCamera, gameHistoryTexture);
 		renderUI();
 		overlayUIToBuffer(gameMainFrameBuffer);
 
@@ -538,6 +571,17 @@ void Renderer::renderMain(RenderMode renderMode) {
 		assert(false && "Forget to account for a case.");
 		break;
 	}
+
+	int isTAAEnabled = renderConfig.toEnableAntiAliasing;
+
+	// advance frame index for TAA..	
+	if (renderConfig.toEnableAntiAliasing) {
+		haltonFrameIndex = (haltonFrameIndex + 1) % MAX_HALTON_SEQUENCE;
+		glNamedBufferSubData(TAAUBO.id(), offsetof(TAAUBOData, frameIndex), sizeof(int), &haltonFrameIndex);
+	}
+
+	glNamedBufferSubData(TAAUBO.id(), offsetof(TAAUBOData, isTAAEnabled), sizeof(int), &isTAAEnabled);
+
 	// Bind back to default FBO for ImGui or Nova-Game to work on.
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -585,7 +629,7 @@ void Renderer::renderUI()
 	glBindVertexArray(mainVAO);
 }
 
-void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
+void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture) {
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
 
@@ -653,6 +697,9 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera) {
 	glDisable(GL_CULL_FACE);
 
 	setBlendMode(BlendingConfig::Disabled);
+
+	// Resolve TAA for anti-aliasing..
+	if (renderConfig.toEnableAntiAliasing) resolveTAA(frameBuffers, historyTexture);
 
 	// @TODO : Custom post processing stack. (Temp: Fog only..)
 	if (renderConfig.toEnableFog) {
@@ -1068,6 +1115,37 @@ void Renderer::initialiseSSAO() {
 	glTextureParameteri(ssaoNoiseTextureId, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	glTextureSubImage2D(ssaoNoiseTextureId, 0, 0, 0, 4, 4, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+}
+
+void Renderer::initialiseTAA() {
+	// creating halton 23 sequence..
+	glm::vec4 haltonSequence[MAX_HALTON_SEQUENCE];
+
+	for (int i = 0; i < MAX_HALTON_SEQUENCE; i++) {
+		haltonSequence[i] = glm::vec4(createHaltonSequence(i + 1, 2), createHaltonSequence(i + 1, 3), 0, 0);
+
+		// remap to [-1, 1], and scale it down by game resolution so that it never exceeds one pixel.
+		haltonSequence[i].x = ((haltonSequence[i].x - 0.5f) / gameWidth) * 2.0f;
+		haltonSequence[i].y = ((haltonSequence[i].y - 0.5f) / gameHeight) * 2.0f;
+	}
+
+	glNamedBufferSubData(TAAUBO.id(), offsetof(TAAUBOData, haltonSequence), sizeof(haltonSequence), haltonSequence);
+	glNamedBufferSubData(TAAUBO.id(), offsetof(TAAUBOData, frameIndex), sizeof(int), &haltonFrameIndex);
+
+	// creating my history textures..
+	glCreateTextures(GL_TEXTURE_2D, 1, &gameHistoryTexture);
+	glTextureStorage2D(gameHistoryTexture, 1, GL_RGBA16F, gameWidth, gameHeight);
+	glTextureParameteri(gameHistoryTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(gameHistoryTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTextureParameteri(gameHistoryTexture, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(gameHistoryTexture, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glCreateTextures(GL_TEXTURE_2D, 1, &editorHistoryTexture);
+	glTextureStorage2D(editorHistoryTexture, 1, GL_RGBA16F, gameWidth, gameHeight);
+	glTextureParameteri(editorHistoryTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTextureParameteri(editorHistoryTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTextureParameteri(editorHistoryTexture, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTextureParameteri(editorHistoryTexture, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 void Renderer::resetLoadedReflectionProbes() {
@@ -2757,6 +2835,32 @@ int Renderer::getIndexToCubeMapArray() {
 	else {
 		return numOfLoadedReflectionProbe++;
 	}
+}
+
+void Renderer::resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture) {
+	// https://sugulee.wordpress.com/2021/06/21/temporal-anti-aliasingtaa-tutorial/
+	frameBuffers.swapFrameBuffer();
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
+
+	TAAResolveShader.use();
+
+	// Bind main scene to texture 1..
+	glBindTextureUnit(0, frameBuffers.getReadFrameBuffer().textureIds()[0]);
+	TAAResolveShader.setImageUniform("scene", 0);
+
+	// Bind history texture..
+	glBindTextureUnit(1, historyTexture);
+	TAAResolveShader.setImageUniform("historyTexture", 1);
+
+	// Render fullscreen quad
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// Update history texture!!
+	glCopyImageSubData(
+		frameBuffers.getActiveFrameBuffer().textureIds()[0], GL_TEXTURE_2D, 0, 0, 0, 0,
+		historyTexture, GL_TEXTURE_2D, 0, 0, 0, 0,
+		gameWidth, gameHeight, 1
+	);
 }
 	
 void Renderer::renderNavMesh(dtNavMesh const& mesh) {
