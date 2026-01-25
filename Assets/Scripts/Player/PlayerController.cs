@@ -39,7 +39,7 @@ class PlayerController : Script
 
     // Audio
     [SerializableField]
-    private Audio dashSFX;
+    private List<Audio> dashSFX;
     [SerializableField]
     private List<Audio> jumpSFX;
 
@@ -331,6 +331,12 @@ class PlayerController : Script
         dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
+    private void HandleJumpSound()
+    {
+        //count no. of jumps, up to like 5 or 6
+        // play a jump grunt sfx
+        // reset count to 0
+    }
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
     //{
     //    // We rotate our parent in the y axis..
