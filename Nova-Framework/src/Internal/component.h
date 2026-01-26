@@ -77,6 +77,7 @@ struct EntityData {
 	entt::entity parent													= entt::null;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
+	glm::mat4x4* socketMatrix											{ nullptr };
 
 	bool isActive														= true;
 
@@ -243,6 +244,8 @@ struct SkinnedMeshRenderer {
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;
+
+	std::unordered_map<BoneIndex, entt::entity> socketConnections{};
 
 	// owns all the bone's final matrices.
 	std::vector<glm::mat4x4> bonesFinalMatrices;

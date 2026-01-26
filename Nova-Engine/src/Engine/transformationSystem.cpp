@@ -52,6 +52,7 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
+			setSocketDirtyFlag(entity);
 		}
 
 		// Figure out if the entity requires updating it's local matrix.
@@ -66,6 +67,7 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
+			setSocketDirtyFlag(entity);
 
 			// Quartenions changed, let's update our euler angles.
 			if (!glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))) {
@@ -153,23 +155,42 @@ void TransformationSystem::setChildrenDirtyFlag(entt::entity entity) {
 	}
 }
 
+void TransformationSystem::setSocketDirtyFlag(entt::entity entity)
+{
+	SkinnedMeshRenderer* mesh = registry.try_get<SkinnedMeshRenderer>(entity);
+	if (!mesh)
+		return;
+
+	for (auto& socketConnection : mesh->socketConnections) {
+		entt::entity connectedEntity = socketConnection.second;
+		Transform* trans = registry.try_get<Transform>(connectedEntity);
+		if (trans) {
+			trans->needsRecalculating = true;
+			setChildrenDirtyFlag(connectedEntity);
+		}
+	}
+}
+
 glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity entity) {
 	Transform& transform = registry.get<Transform>(entity);
+	EntityData& entityData = registry.get<EntityData>(entity);
 
 	// Attempts to get the most updated model matrix.
 	if (transform.needsRecalculating) {
-		EntityData& entityData = registry.get<EntityData>(entity);
 
 		if (entityData.parent == entt::null) {
 			// parent to nothing..
 			transform.modelMatrix = transform.localMatrix;
 
-			// set model matrix to bone final matrix if attached
-			//transform.modelMatrix *= bone
 		}
 		else {
 			transform.modelMatrix = getUpdatedModelMatrix(entityData.parent) * transform.localMatrix;
 		}
+		// multiply model matrix to bone final matrix if attached
+		if (entityData.socketMatrix != nullptr) {
+			transform.modelMatrix *= *entityData.socketMatrix;
+		}
+
 
 		transform.needsRecalculating = false;
 

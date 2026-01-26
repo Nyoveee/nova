@@ -753,18 +753,19 @@ void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton& skeleton
 
 	bool isOpen = ImGui::TreeNodeEx(bone.name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap);
 
-	bool isSocket = (skeleton.sockets.find(boneIndex) != skeleton.sockets.end());
+	auto socket = std::find(skeleton.sockets.begin(), skeleton.sockets.end(), boneIndex);
+	bool isSocket = socket != skeleton.sockets.end();
 
 	ImGui::SameLine();
 	float checkboxPadding = ImGui::GetTextLineHeightWithSpacing() * 0.125f;
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ checkboxPadding, checkboxPadding });
 
-	if (ImGui::Checkbox(("##" + std::to_string(boneIndex)).c_str(), &isSocket)) {
+	if (ImGui::Checkbox(("Socket" + std::to_string(boneIndex)).c_str(), &isSocket)) {
 		if (isSocket) {
-			skeleton.sockets[boneIndex] = bone;
+			skeleton.sockets.push_back(boneIndex);
 		}
 		else {
-			skeleton.sockets.erase(boneIndex);
+			skeleton.sockets.erase(socket);
 		}
 	}
 	ImGui::PopStyleVar();

@@ -41,6 +41,7 @@ private:
 	void setLocalTransformFromWorld(Transform& transform, EntityData& entityData);
 
 	void setChildrenDirtyFlag(entt::entity entity);
+	void setSocketDirtyFlag(entt::entity entity);
 
 	// Gets the most updated model matrix of a given entity.
 	// Recalculates the model matrix if required.
