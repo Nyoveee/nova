@@ -10,9 +10,6 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 
-using ShaderVariableName = std::string;
-using ShaderVariableType = std::string;
-
 class ResourceManager;
 
 enum class Pipeline {
@@ -30,8 +27,7 @@ public:
 		DepthTestingMethod depthTestingMethod	= DepthTestingMethod::DepthTest;
 		CullingConfig cullingConfig				= CullingConfig::Enable;
 
-		// Properties(name,type)
-		std::unordered_map<ShaderVariableName, ShaderVariableType> uniforms;
+		std::vector<UniformData> uniformDatas	{};
 		
 		// Code
 		std::string vShaderCode;
@@ -43,7 +39,7 @@ public:
 			blendingConfig,
 			depthTestingMethod,
 			cullingConfig,
-			uniforms,
+			uniformDatas,
 			vShaderCode,
 			fShaderCode,
 			pipeline
@@ -67,25 +63,6 @@ public:
 private:
 	std::optional<Shader> shader;
 
-public:
-	static inline const std::unordered_set<std::string> validGlslPrimitive {
-		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D"
-	};
-
-	static inline const std::unordered_set<std::string> validCustomTypes{
-		"Color", "ColorA", "NormalizedFloat"
-	};
-
-	static inline const std::unordered_map<std::string, std::string> customTypeToGlslPrimitive{
-		{ "Color",			"vec3"		},
-		{ "ColorA",			"vec4"		},
-		{ "NormalizedFloat", "float"	},
-	};
-
-	static inline const std::unordered_set<std::string> allValidShaderTypes = {
-		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D",
-		"Color", "ColorA", "NormalizedFloat"
-	};
 };
 
 template <>

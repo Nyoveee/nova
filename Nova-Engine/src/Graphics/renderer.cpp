@@ -2569,6 +2569,7 @@ void Renderer::shadowPassRender(glm::mat4 const& viewProjectionMatrix) {
 }
 
 void Renderer::setupNormalMapUniforms(Shader& shader, Material const& material) {
+#if 0
 	// Setting up normal map..
 	bool isUsingNormalMap = [&]() -> bool {
 		auto iterator = material.materialData.overridenUniforms.find("toUseNormalMap");
@@ -2601,6 +2602,7 @@ void Renderer::setupNormalMapUniforms(Shader& shader, Material const& material) 
 			}
 		}
 	}
+#endif
 }
 
 void Renderer::constructMeshBuffers(Mesh& mesh) {
@@ -3373,44 +3375,44 @@ void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& m
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
-	for (auto const& [name, overriddenUniformData] : material.materialData.overridenUniforms) {
+	for (auto const& [type, name, uniformValue] : material.materialData.uniformDatas) {
 		std::visit([&](auto&& value) {
 			using Type = std::decay_t<decltype(value)>;
 
 			if constexpr (std::same_as<Type, bool>) {
-				assert(overriddenUniformData.type == "bool");
+				assert(type == "bool");
 				shader.setBool(name, value);
 			}
 			else if constexpr (std::same_as<Type, int>) {
-				assert(overriddenUniformData.type == "int");
+				assert(type == "int");
 				shader.setInt(name, value);
 			}
 			else if constexpr (std::same_as<Type, unsigned int>) {
-				assert(overriddenUniformData.type == "uint");
+				assert(type == "uint");
 				shader.setUInt(name, value);
 			}
 			else if constexpr (std::same_as<Type, float> || std::same_as<Type, NormalizedFloat>) {
-				assert(overriddenUniformData.type == "float" || overriddenUniformData.type == "NormalizedFloat");
+				assert(type == "float" || type == "NormalizedFloat");
 				shader.setFloat(name, value);
 			}
 			else if constexpr (std::same_as<Type, glm::vec2>) {
-				assert(overriddenUniformData.type == "vec2");
+				assert(type == "vec2");
 				shader.setVec2(name, value);
 			}
 			else if constexpr (std::same_as<Type, glm::vec3> || std::same_as<Type, Color>) {
-				assert(overriddenUniformData.type == "vec3" || overriddenUniformData.type == "Color");
+				assert(type == "vec3" || type == "Color");
 				shader.setVec3(name, value);
 			}
 			else if constexpr (std::same_as<Type, glm::vec4> || std::same_as<Type, ColorA>) {
-				assert(overriddenUniformData.type == "vec4" || overriddenUniformData.type == "ColorA");
+				assert(type == "vec4" || type == "ColorA");
 				shader.setVec4(name, value);
 			}
 			else if constexpr (std::same_as<Type, glm::mat3> || std::same_as<Type, glm::mat4>) {
-				assert(overriddenUniformData.type == "mat3" || overriddenUniformData.type == "mat4");
+				assert(type == "mat3" || type == "mat4");
 				shader.setMatrix(name, value);
 			}
 			else if constexpr (std::same_as<Type, TypedResourceID<Texture>>) {
-				assert(overriddenUniformData.type == "sampler2D");
+				assert(type == "sampler2D");
 
 				// Setting texture is a way more complicated step.
 				// We first retrieve the texture from resource manager..
@@ -3434,7 +3436,7 @@ void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& m
 
 				++numOfTextureUnitsUsed;
 			}
-		}, overriddenUniformData.value);
+		}, uniformValue);
 	}
 }
 

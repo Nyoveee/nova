@@ -23,13 +23,71 @@
 
 constexpr int MAXIMUM_RESOURCE_HISOTRY_ENTRIES = 50;
 
+namespace {
+	// We work with 3 containers
+	// 1. The updated shader's uniforms
+	// 2. The outdated material's uniforms
+	// 3. Intermediary output container that will represent the updated uniforms this material will have.
+
+	// We want to update the outdated material uniform if there is a new entry, like
+	// a new identifier or changed type.
+	// We want the material to preserve its original value if that entry did not change.
+	void updateMaterialProperty(Material& material, std::vector<UniformData> const& shaderUniforms /* 1. */) {
+		std::vector<UniformData> newShaderUniforms;												/* 3. */
+		std::vector<UniformData>& oldMaterialUniforms = material.materialData.uniformDatas;	/* 2. */
+
+		// For each uniform..
+		for (auto&& [type, identifier, value] : shaderUniforms) {
+			// Try to find the same identifier..
+			auto iterator = std::find_if(
+				oldMaterialUniforms.begin(),
+				oldMaterialUniforms.end(),
+				[&](auto&& uniformData) {
+					return uniformData.identifier == identifier;
+				}
+			);
+
+			// This entry did not change (same identifier and type).. so let's use the old value..
+			if (iterator != oldMaterialUniforms.end() && iterator->glslType == type && iterator->value.index() == value.index()) {
+				// Re-use the old value..
+				newShaderUniforms.push_back(*iterator);
+				continue;
+			}
+
+			// Entry has changed, let's add some default constructed value to it..
+			auto valueIterator = allValidShaderTypes.find(type);
+
+			if (valueIterator == allValidShaderTypes.end()) {
+				Logger::warn("Shader uniform contains invalid GLSL type of {}! Ignored..", type);
+				continue;
+			}
+
+			auto uniformValue = valueIterator->second;
+
+			// no choice, i gotta hardcode..
+			if (identifier == "UVTiling") {
+				uniformValue = glm::vec2{ 1.0f, 1.0f };
+			}
+
+			newShaderUniforms.push_back(UniformData{
+				type,
+				identifier,
+				uniformValue	// value
+			});
+		}
+
+		// let's update our material's uniform with the new uniforms..
+		oldMaterialUniforms = std::move(newShaderUniforms);
+	};
+}
 AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, ResourceManager& resourceManager) :
 	editor							{ editor },
 	assetManager					{ assetManager },
 	resourceManager					{ resourceManager },
 	selectedResourceId				{ INVALID_RESOURCE_ID },
 	toSerialiseSelectedDescriptor	{ false },
-	toOverrideEditSystemResource	{ false }
+	toOverrideEditSystemResource	{ false },
+	recentlyChangedResource			{ false }
 {}
 
 void AssetViewerUI::update() {
@@ -149,36 +207,6 @@ void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_
 	Logger::info("Successfully updated script name.");
 }
 
-//void AssetViewerUI::broadcast() {
-//	entt::registry& ecsRegistry = editor.engine.ecs.registry;
-//	entt::registry& prefabRegistry = editor.engine.prefabManager.getPrefabRegistry();
-//	std::unordered_map<ResourceID, entt::entity> prefabMap = editor.engine.prefabManager.getPrefabMap();
-//	entt::entity prefabEntity = prefabMap[selectedResourceId];
-//
-//	// find entities with the same prefabID
-//	for (entt::entity en : ecsRegistry.view<entt::entity>()) {
-//		EntityData* entityData = ecsRegistry.try_get<EntityData>(en);
-//		EntityData* prefabData = prefabRegistry.try_get<EntityData>(prefabEntity);
-//		if ((entityData->prefabID == selectedResourceId) && (entityData->name == prefabData->name)) {
-//			updateComponents<ALL_COMPONENTS>(ecsRegistry, prefabRegistry, en, prefabEntity);
-//		}
-//	}
-//}
-//template<typename ...Components>
-//void AssetViewerUI::updateComponents(entt::registry& ecsRegistry, entt::registry& prefabRegistry, entt::entity entity, entt::entity prefabEntity) {
-//
-//	([&]() {
-//		if (!std::is_same<EntityData, Components>::value) {
-//			auto* component = prefabRegistry.try_get<Components>(prefabEntity);
-//
-//			if (component) {
-//				auto* entityComponent = ecsRegistry.try_get<Components>(entity);
-//				*entityComponent = *component;
-//			}
-//		}
-//	}(), ...);
-//}
-
 void AssetViewerUI::selectNewResourceId(ResourceID id) {
 	if (id == selectedResourceId) {
 		return;
@@ -220,51 +248,11 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 		ImGui::Text("No shader selected.");
 	}
 
-	auto updateMaterialProperty = [&](std::unordered_map<std::string, std::string> const& shaderUniforms) {
-		std::unordered_map<std::string, OverriddenUniformData> newShaderUniforms;
-		std::unordered_map<std::string, OverriddenUniformData>& oldShaderUniforms = material->materialData.overridenUniforms;
-
-		for (auto&& [identifier, type] : shaderUniforms) {
-			auto iterator = oldShaderUniforms.find(identifier);
-
-			if (iterator != oldShaderUniforms.end() && iterator->second.type == type) {
-				// use the old value..
-				newShaderUniforms.insert(*iterator);
-				continue;
-			}
-
-			// thank you zhi wei for writing all of the if cases. :)
-			if (type == "bool")
-				newShaderUniforms.insert({ identifier, { type, bool{} } });
-			if (type == "int")
-				newShaderUniforms.insert({ identifier, { type, int{} } });
-			if (type == "uint")
-				newShaderUniforms.insert({ identifier, { type, unsigned{} } });
-			if (type == "float")
-				newShaderUniforms.insert({ identifier, { type, float{} } });
-			if (type == "vec2")
-				newShaderUniforms.insert({ identifier, { type, glm::vec2{} } });
-			if (type == "vec3")
-				newShaderUniforms.insert({ identifier, { type, glm::vec3{} } });
-			if (type == "vec4")
-				newShaderUniforms.insert({ identifier, { type, glm::vec4{} } });
-			if (type == "mat3")
-				newShaderUniforms.insert({ identifier, { type, glm::mat3{} } });
-			if (type == "mat4")
-				newShaderUniforms.insert({ identifier, { type, glm::mat4{} } });
-			if (type == "sampler2D")
-				newShaderUniforms.insert({ identifier, { type, TypedResourceID<Texture>{ NONE_TEXTURE_ID } } });
-
-			// custom glsl types..
-			if (type == "Color")
-				newShaderUniforms.insert({ identifier, { type, Color{ 1.f, 1.f, 1.f } } });
-			if (type == "ColorA")
-				newShaderUniforms.insert({ identifier, { type, ColorA{ 1.f, 1.f, 1.f, 1.f } } });
-			if (type == "NormalizedFloat")
-				newShaderUniforms.insert({ identifier, { type, NormalizedFloat{} } });
-		}
-		oldShaderUniforms = std::move(newShaderUniforms);
-	};
+	// first load..
+	if (recentlyChangedResource) {
+		recentlyChangedResource = false;
+		updateMaterialProperty(*material, customShader->customShaderData.uniformDatas);
+	}
 
 	editor.displayAssetDropDownList<CustomShader>(shaderId, "Shader", [&](ResourceID id) {
 		material->materialData.selectedShader = TypedResourceID<CustomShader>{ id };
@@ -278,7 +266,7 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 			return;
 		}
 
-		updateMaterialProperty(customShader->customShaderData.uniforms);
+		updateMaterialProperty(*material, customShader->customShaderData.uniformDatas);
 	});
 	
 	if (!customShader) {
@@ -314,17 +302,11 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 	});
 
 	ImGui::SeparatorText("Properties");
-	
-	if (ImGui::Button("Update Material Properties From Shader")) {
-		updateMaterialProperty(customShader->customShaderData.uniforms);
-	}
 
 	int imguiCounter = 0;
 
 	// Display the current material values..
-	for (auto&& [name, uniformData] : material->materialData.overridenUniforms) {
-		auto&& [type, uniformValue] = uniformData;
-
+	for (auto&& [type, name, uniformData] : material->materialData.uniformDatas) {
 		ImGui::PushID(imguiCounter++);
 
 		std::visit([&](auto&& value) {
@@ -336,9 +318,37 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 			else {
 				DisplayProperty<Type>(editor, name.c_str(), value);
 			}
-		}, uniformValue);
+		}, uniformData);
 
 		ImGui::PopID();
+	}
+
+	ImGui::SeparatorText("Debug");
+	
+	if (ImGui::Button("Update Material Properties")) {
+		updateMaterialProperty(*material, customShader->customShaderData.uniformDatas);
+	}
+
+	// this updates EVERY SINGLE MATERIAL in the engine.
+	// this is important if the shaders system got reworked, for an example, or if there is a new entry, etc..
+	if (ImGui::Button("MASS UPDATE ALL MATERIALS.")) {
+		for (ResourceID id : resourceManager.getAllResources<Material>()) {
+			auto&& [mat, __] = resourceManager.getResource<Material>(id);
+
+			if (!mat) {
+				continue;
+			}
+
+			// Chosen Shader
+			TypedResourceID<CustomShader> const& customShaderId = mat->materialData.selectedShader;
+			auto&& [shader, ___] = resourceManager.getResource<CustomShader>(customShaderId);
+
+			if (!shader) {
+				continue;
+			}
+
+			updateMaterialProperty(*mat, shader->customShaderData.uniformDatas);
+		}
 	}
 }
 
@@ -812,6 +822,8 @@ void AssetViewerUI::selectResourceID(ResourceID id) {
 
 		selectedPrefabEntity = rootPrefabEntity;
 	}
+
+	recentlyChangedResource = true;
 }
 
 void AssetViewerUI::selectPreviousResourceID() {

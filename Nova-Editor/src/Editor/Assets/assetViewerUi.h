@@ -81,6 +81,7 @@ private:
 	std::list<ResourceID> nextResourceIds;
 
 	bool toOverrideEditSystemResource;
+	bool recentlyChangedResource;
 };
 
 #include "assetViewerUi.ipp"

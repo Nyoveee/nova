@@ -20,11 +20,9 @@ Properties{
 // Vertex shader..
 Vert{    
     // Calculate world space of our local attributes..
-    WorldSpace worldSpace = calculateWorldSpace(position, normal);
+    WorldSpace worldSpace = calculateWorldSpace();
     gl_Position = calculateClipPosition(worldSpace.position);
-
-    // Pass attributes to fragment shader.. 
-    passDataToFragment(worldSpace);
+    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
 }   
 
 // Fragment shader..

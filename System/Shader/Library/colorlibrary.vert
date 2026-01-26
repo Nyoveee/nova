@@ -99,9 +99,9 @@ void passDataToFragment(WorldSpace worldSpace) {
         vsOut.fragCurrentClipPos = cameraProjectionView * worldSpace.position;
         vsOut.fragOldClipPos = previousViewProjection * worldSpace.previousPosition;
     }
-}
+}   
 
-WorldSpace calculateWorldSpace(vec3 position, vec3 normal) {
+WorldSpace calculateWorldSpace() {
     WorldSpace worldSpace;
 
     // this is not a skinned mesh.

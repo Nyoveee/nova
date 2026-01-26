@@ -35,12 +35,15 @@ bool ParseTags(std::string& data, CustomShader::ShaderParserData& shaderParserDa
 	std::regex tagRegex{ R"(Tags\s*\{[\w\s:;]+\})" };
 	auto taxRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data),tagRegex) };
 	ptrdiff_t count{ std::distance(taxRegexBegin,std::sregex_iterator()) };
+	
 	// Check Count
 	if (count > 1) {
 		Logger::error("Unable to Parse Shader, Multiple Tags Found");
 		return false;
 	}
+	
 	if (count == 0) return true;
+	
 	// Parse into shaderparserdata
 	std::string result{ taxRegexBegin->str() };
 
@@ -67,31 +70,53 @@ bool ParseTags(std::string& data, CustomShader::ShaderParserData& shaderParserDa
 
 	return true;
 }
+
 bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
 	// Get full definition
 	std::regex propertiesRegex{ R"(Properties[\s]*\{[\w\s;,]+\})" };
 	auto propertiesRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data),propertiesRegex) };
 	ptrdiff_t count{ std::distance(propertiesRegexBegin,std::sregex_iterator()) };
+
 	// Check Count
 	if (count > 1) {
 		Logger::error("Unable to Parse Shader, Multiple Properties Found");
 		return false;
 	}
+	
 	if (count == 0)
 		return true;
-	// Parse into shaderparserdata
+	
+	// Results contains the whole list of uniforms..
 	std::string result{ propertiesRegexBegin->str() };
-	// Uniforms, not using type since sampler2D conflicts with int
+	
+	// I want to iterate through this result line by line..
+	std::stringstream ss(result);
+	std::string line;
 
-	for (std::string const& propertyType : CustomShader::allValidShaderTypes) {
-		std::string regexInput{ propertyType + R"(\s+([\w]+)\s*;)" };
-		std::regex propertyRegex{ regexInput };
-		std::string properties{ result };
-		for (std::smatch matches; std::regex_search(properties, matches, propertyRegex);) {
-			shaderParserData.uniforms[matches[1]] = propertyType;
-			properties = matches.suffix();
+	while (std::getline(ss, line)) {
+		// For every line, we check if it matches for each valid GLSL shader type..
+		for (auto const& [propertyType, uniformValue] : allValidShaderTypes) {
+			std::string regexInput{ propertyType + R"(\s+([\w]+)\s*;)" };	// this regex extracts the uniform identifier in capture group 0.
+			std::regex propertyRegex{ regexInput };
+
+			std::smatch matches;
+			
+			// Find a match between line and the property regex...	
+			if (std::regex_search(line, matches, propertyRegex)) {
+				UniformData uniformData{
+					propertyType,			// original GLSL type.
+					matches[1],				// identifier of uniform
+					uniformValue			// actual typed value of uniform.
+				};
+
+				shaderParserData.uniformDatas.push_back(uniformData);
+				
+				// no point in checking other GLSL types.
+				continue;
+			}
 		}
 	}
+
 	return true;
 }
 

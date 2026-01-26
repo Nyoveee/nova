@@ -2,15 +2,67 @@
     "blendingConfig": "AlphaBlending",
     "depthTestingMethod": "DepthTest",
     "cullingConfig": "Enable",
-    "uniforms": {
-        "UVTiling": "vec2",
-        "UVOffset": "vec2",
-        "intensity": "float",
-        "transparency": "NormalizedFloat",
-        "color": "Color",
-        "albedo": "sampler2D"
-    },
-    "vShaderCode": "    \n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal);\n    gl_Position = calculateClipPosition(worldSpace.position);\n\n    // Pass attributes to fragment shader.. \n    passDataToFragment(worldSpace);\n",
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedo",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "color",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "intensity",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "transparency",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVTiling",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVOffset",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        }
+    ],
+    "vShaderCode": "    \n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace();\n    gl_Position = calculateClipPosition(worldSpace.position);\n    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. \n",
     "fShaderCode": "\n    vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);\n\n    vec3 finalColor = texture(albedo, uv).rgb * color * intensity;\n    return vec4(finalColor , transparency); // ok\n",
     "pipeline": "Color"
 }

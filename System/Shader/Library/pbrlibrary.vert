@@ -133,7 +133,7 @@ void passDataToFragment(WorldSpace worldSpace) {
     }
 }
 
-WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
+WorldSpace calculateWorldSpace() {
     WorldSpace worldSpace;
 
     // this is not a skinned mesh.

@@ -384,27 +384,10 @@ Properties{
 
 // Vertex shader..
 Vert{
-// ======================================================
-// Uncomment this section of the code if you want to use the Color pipeline.
-#if 0
-    gl_Position = calculateClipPosition(position);
-    vsOut.textureUnit = textureUnit; 
-#endif
-
-// ======================================================
-// Comment this section of the code if you want to use the Color pipeline.
-#if 1
     // Calculate world space of our local attributes..
-    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);
+    WorldSpace worldSpace = calculateWorldSpace();
     gl_Position = calculateClipPosition(worldSpace.position);
-
-    // Pass attributes to fragment shader.. //
-    vsOut.textureUnit = textureUnit;
-    vsOut.fragWorldPos = worldSpace.position.xyz / worldSpace.position.w;
-    vsOut.normal = worldSpace.normal;
-    vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
-#endif
-// ======================================================
+    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
 }
 
 // Fragment shader..
