@@ -248,12 +248,6 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 		ImGui::Text("No shader selected.");
 	}
 
-	// first load..
-	if (recentlyChangedResource) {
-		recentlyChangedResource = false;
-		updateMaterialProperty(*material, customShader->customShaderData.uniformDatas);
-	}
-
 	editor.displayAssetDropDownList<CustomShader>(shaderId, "Shader", [&](ResourceID id) {
 		material->materialData.selectedShader = TypedResourceID<CustomShader>{ id };
 
@@ -271,6 +265,12 @@ void AssetViewerUI::displayMaterialInfo([[maybe_unused]] AssetInfo<Material>& de
 	
 	if (!customShader) {
 		return;
+	}
+
+	// first load..
+	if (recentlyChangedResource) {
+		recentlyChangedResource = false;
+		updateMaterialProperty(*material, customShader->customShaderData.uniformDatas);
 	}
 
 	if (!customShader->getShader() || !customShader->getShader().value().hasCompiled()) {

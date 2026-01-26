@@ -2568,43 +2568,6 @@ void Renderer::shadowPassRender(glm::mat4 const& viewProjectionMatrix) {
 	glCullFace(GL_BACK);
 }
 
-void Renderer::setupNormalMapUniforms(Shader& shader, Material const& material) {
-#if 0
-	// Setting up normal map..
-	bool isUsingNormalMap = [&]() -> bool {
-		auto iterator = material.materialData.overridenUniforms.find("toUseNormalMap");
-
-		if (iterator == material.materialData.overridenUniforms.end()) {
-			return false;
-		}
-
-		if (!std::holds_alternative<bool>(iterator->second.value)) {
-			return false;
-		}
-
-		return std::get<bool>(iterator->second.value);
-	}();
-
-	shader.setBool("toUseNormalMap", isUsingNormalMap);
-
-	if (isUsingNormalMap) {
-		auto normalMapIterator = material.materialData.overridenUniforms.find("normalMap");
-
-		if (
-				normalMapIterator != material.materialData.overridenUniforms.end()
-			&&	std::holds_alternative<TypedResourceID<Texture>>(normalMapIterator->second.value)
-		) {
-			auto [texture, _] = resourceManager.getResource<Texture>(std::get<TypedResourceID<Texture>>(normalMapIterator->second.value));
-
-			if (texture) {
-				glBindTextureUnit(0, texture->getTextureId());
-				shader.setImageUniform("normalMap", 0);
-			}
-		}
-	}
-#endif
-}
-
 void Renderer::constructMeshBuffers(Mesh& mesh) {
 	// Create Buffer Objects for first render
 	if (mesh.meshID) {

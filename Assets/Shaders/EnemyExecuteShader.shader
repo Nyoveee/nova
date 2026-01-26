@@ -1,32 +1,35 @@
 
-    // Specify tags for rendering..
-    Tags{
-        Blending : AlphaBlending;
-        DepthTestingMethod : DepthTest;
-        Culling : Enable;
-    }
+// Specify tags for rendering..
+Tags{
+    Blending : AlphaBlending;
+    DepthTestingMethod : DepthTest;
+    Culling : Enable;
+}
 
-    // Properties for material instances to configure..
-    Properties{
-        sampler2D albedoMap;
-        Color colorTint;
+// Properties for material instances to configure..
+Properties{
+    sampler2D albedoMap;
+    Color colorTint;
 
-        NormalizedFloat roughness;
-        NormalizedFloat metallic;
-        NormalizedFloat occulusion;
+    NormalizedFloat roughness;
+    NormalizedFloat metallic;
+    NormalizedFloat occulusion;
 
-        float outlineThickness;
-    }
+    float outlineThickness;
+}
 
-    // Vertex shader..
-    Vert{
-        gl_Position = calculateClipPosition(position);
-    }
+// Vertex shader..
+Vert{
+    // Calculate world space of our local attributes..
+    WorldSpace worldSpace = calculateWorldSpace();
+    gl_Position = calculateClipPosition(worldSpace.position);
+    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
+}
 
-    // Fragment shader..
-    Frag{
-        vec4 outlineColor = vec4(colorTint.rgb, 1.0);
-        outlineColor.rgb *= 1.5;
-        FragColor = outlineColor;
-        return FragColor;
-    }
+// Fragment shader..
+Frag{
+    vec4 outlineColor = vec4(colorTint.rgb, 1.0);
+    outlineColor.rgb *= 1.5;
+    FragColor = outlineColor;
+    return FragColor;
+}

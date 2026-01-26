@@ -18,42 +18,14 @@ Properties{
 
 // Vertex shader..
 Vert{
-// ======================================================
-// Uncomment this section of the code if you want to use the Color pipeline.
-#if 1
-    gl_Position = calculateClipPosition(position);
-#endif
-
-// ======================================================
-// Comment this section of the code if you want to use the Color pipeline.
-// #if 1
-//     // Calculate world space of our local attributes..
-//     WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);
-//     gl_Position = calculateClipPosition(worldSpace.position);
-
-//     // Pass attributes to fragment shader.. //
-//     vsOut.textureUnit = textureUnit;
-//     vsOut.fragWorldPos = worldSpace.position.xyz / worldSpace.position.w;
-//     vsOut.normal = worldSpace.normal;
-//     vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
-// #endif
-// ======================================================
+    // Calculate world space of our local attributes..
+    WorldSpace worldSpace = calculateWorldSpace();
+    gl_Position = calculateClipPosition(worldSpace.position);
+    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
 }
 
 // Fragment shader..
-Frag{
-// ======================================================
-// Uncomment this section of the code if you want to use the Color pipeline.
-#if 1    
+Frag{ 
 	vec4 outlineColor = vec4(0.0, 0.0, 0.0, 0.0);
     return outlineColor;
-#endif
-
-// ======================================================
-// Comment this section of the code if you want to use the Color pipeline.
-// #if 1
-//     vec4 albedo = texture(albedoMap, fsIn.textureUnit);
-//     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, fsIn.normal, roughness, metallic, occulusion);
-//     FragColor = vec4(pbrColor, 1.0);
-// #endif
 }

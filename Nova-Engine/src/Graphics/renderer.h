@@ -308,9 +308,6 @@ private:
 	// populates the directional light shadow pass
 	void shadowPassRender(glm::mat4 const& viewProjectionMatrix);
 
-	// set up the required uniforms for normal map
-	void setupNormalMapUniforms(Shader& shader, Material const& material);
-
 	// construct all required VBOs and EBO of the meshes if not constructed.
 	void constructMeshBuffers(Mesh& mesh);
 
