@@ -62,7 +62,6 @@ layout(std140, binding = 2) uniform PBRUBO {
 };
 
 layout(std430, binding = 3) buffer Bones {
-    uint isSkinnedMesh;
     mat4 bonesFinalMatrices[];
 };
 
@@ -73,6 +72,7 @@ layout (location = 0) uniform mat4 model;
 layout (location = 4) uniform mat4 localScale;
 layout (location = 8) uniform mat4 previousModel;
 layout (location = 12) uniform mat3 normalMatrix;
+layout (location = 16) uniform uint isSkinnedMesh;
 
 invariant gl_Position;
 
@@ -81,8 +81,8 @@ out VS_OUT {
     vec3 normal;
     vec3 fragWorldPos;
     vec3 fragViewPos;
-    vec4 fragOldClipPos;
-    vec4 fragCurrentClipPos;
+    invariant vec4 fragOldClipPos;
+    invariant vec4 fragCurrentClipPos;
 } vsOut;
 
 // ======= Implementation =======
@@ -105,10 +105,8 @@ void passDataToFragment(WorldSpace worldSpace) {
 
     vsOut.normal = normalize(worldSpace.normal);
 
-    if(isTAAEnabled) {
-        vsOut.fragCurrentClipPos = cameraProjectionView * worldSpace.position;
-        vsOut.fragOldClipPos = previousViewProjection * worldSpace.previousPosition;
-    }
+    vsOut.fragCurrentClipPos = cameraProjectionView * worldSpace.position;
+    vsOut.fragOldClipPos = previousViewProjection * worldSpace.previousPosition;
 }   
 
 WorldSpace calculateWorldSpace() {
@@ -123,6 +121,7 @@ WorldSpace calculateWorldSpace() {
     // this is a skinned mesh.
     else {
         vec4 localPosition = vec4(0.0);
+        vec4 localPreviousPosition  = vec4(0.0);
         vec3 localNormal = vec3(0.0);
 
         for(int i = 0; i < MAX_NUMBER_OF_BONES; ++i) {
@@ -136,8 +135,9 @@ WorldSpace calculateWorldSpace() {
             }
 
             // retrieve the corresponding bone final matrix and scale it according to weight..
-            localPosition += (bonesFinalMatrices[boneId] * vec4(position, 1.0)) * boneWeight;
-
+            localPosition           += (bonesFinalMatrices[boneId]      * vec4(position, 1.0)) * boneWeight;
+            localPreviousPosition   += (oldBonesFinalMatrices[boneId]   * vec4(position, 1.0)) * boneWeight;
+            
             // dealing with normals..
             mat3 normalBoneTransform = inverse(transpose(mat3(bonesFinalMatrices[boneId]))) * boneWeight;
             localNormal += normalBoneTransform * normal;
@@ -145,7 +145,7 @@ WorldSpace calculateWorldSpace() {
 
         worldSpace.position             = model * localScale * localPosition;
         worldSpace.normal               = normalize(normalMatrix * localNormal);
-        worldSpace.previousPosition     = previousModel * localScale * localPosition;
+        worldSpace.previousPosition     = previousModel * localScale * localPreviousPosition;
     }
 
     return worldSpace;

@@ -25,7 +25,7 @@
 using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
 
 using MaterialName		= std::string;
-using MeshID = size_t;
+using MeshID			= size_t;
 
 struct alignas(16) ParticleVertex {
 	glm::vec4 color;

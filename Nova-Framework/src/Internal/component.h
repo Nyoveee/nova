@@ -246,7 +246,12 @@ struct SkinnedMeshRenderer {
 	std::unordered_set<int>					isMaterialInstanced;
 
 	// owns all the bone's final matrices.
-	std::vector<glm::mat4x4> bonesFinalMatrices;
+	// we have two copies for double buffering.. (we keep a copy of the old one)
+	std::array<
+		std::vector<glm::mat4x4>, 2
+	> bonesFinalMatrices;
+
+	int currentBoneMatrixIndex = 0;
 };
 
 struct Animator {

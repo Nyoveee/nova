@@ -272,7 +272,11 @@ void AnimationSystem::calculateBoneMatrixes() {
 
 		Skeleton const& skeleton = model->skeleton.value();
 
-		skinnedMeshRenderer.bonesFinalMatrices.resize(skeleton.bones.size());
+		// let's swap our currentBoneMatrixIndex..
+		skinnedMeshRenderer.currentBoneMatrixIndex == 0 ? skinnedMeshRenderer.currentBoneMatrixIndex = 1 : skinnedMeshRenderer.currentBoneMatrixIndex = 0;
+
+		// make sure we allocate enough memory for all of them. we will be using bone id as indices..
+		skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].resize(skeleton.bones.size());
 
 		// retrieve animation...
 		Animator* animator = registry.try_get<Animator>(entityId);
@@ -317,8 +321,7 @@ void AnimationSystem::calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4
 	// calculate final transformation, if it is a bone.
 	if (node.isBone) {
 		glm::mat4x4 finalTransformation = globalTransformation * skeleton.bones[node.boneIndex].offsetMatrix;
-		 skinnedMeshRenderer.bonesFinalMatrices[node.boneIndex] = finalTransformation;
-		//skinnedMeshRenderer.bonesFinalMatrices[node.boneIndex] = glm::mat4{1.f};
+		 skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex][node.boneIndex] = finalTransformation;
 	}
 		
 	// recurse downwards..

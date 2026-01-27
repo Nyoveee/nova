@@ -32,6 +32,11 @@
 class Engine;
 class ResourceManager;
 
+enum class MeshType {
+	Normal,
+	Skinned
+};
+
 struct MeshBOs {
 	BufferObject positionsVBO{ BufferObject{0} };			// VA 0
 	BufferObject textureCoordinatesVBO{ BufferObject{0} };	// VA 1
@@ -43,18 +48,27 @@ struct MeshBOs {
 	BufferObject EBO{ BufferObject{0} };					// VA 5
 };
 
+struct ModelBatch {
+	entt::entity entity;
+	MeshType meshType;
+	float modelScale;
+	std::vector<std::reference_wrapper<const Mesh>> meshes;
+};
+
+struct MaterialBatch {
+	std::reference_wrapper<const Material> material;
+	std::reference_wrapper<const CustomShader> customShader;
+	std::reference_wrapper<const Shader> shader;
+
+	std::vector<ModelBatch> models;
+};
+
 enum class RenderMode {
 	Editor,
 	Game
 };
 
 class Renderer {
-public:
-	enum class MeshType {
-		Normal,
-		Skinned
-	};
-
 public:
 	Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int gameHeight);
 
@@ -214,14 +228,17 @@ private:
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
 
-	// render all MeshRenderers.
-	void renderModels(Camera const& camera, bool depthPrePass = false);
+	// instead of naively render every game object one by one, we batch all game objects of the same material into
+	// their own render queue. 
+	void setupRenderQueue();
+
+	void createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
+
+	// render all models (normal and skinned).
+	void renderModels(bool depthPrePass = false);
 
 	// render all TranslucentMeshRenderers.
 	void renderTranslucentModels(Camera const& camera);
-
-	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels(Camera const& camera, bool depthPrePass = false);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -263,17 +280,19 @@ private:
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
 
 	// set up the material's chosen shader and supply the proper uniforms..
-	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
-	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale = 1.f);
+	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader);
+
+	// this sets the uniforms of model specific data..
+	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, MeshType meshType);
 
 	// sets up the custom shader to output the mesh into the normal buffer instead.
-	CustomShader* setupMaterialNormalPass(Material const& material, Transform const& transform, float scale = 1.f);
+	void setupMaterialNormalPass(Material const& material, CustomShader const& customShader, Shader const& shader);
 
 	// void set up all the uniforms for the custom shader.
 	void setupCustomShaderUniforms(CustomShader const& customShader, Shader const& shader, Material const& material, int numOfTextureUnitsUsed = 0);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
-	void renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType);
+	void renderMesh(Mesh const& mesh);
 
 	// helper function to obtain the underlying material of a mesh given its renderers.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
@@ -312,7 +331,7 @@ private:
 	void constructMeshBuffers(Mesh& mesh);
 
 	// swap buffers to a new mesh to its respective buffer binding index
-	void swapVertexBuffer(Mesh& mesh);
+	void swapVertexBuffer(Mesh const& mesh);
 
 	// updates the camera UBO with camera information.
 	void updateCameraUBO(Camera const& camera);
@@ -359,6 +378,7 @@ private:
 	BufferObject bonesSSBO;				// SSBO 3, bones SSBO
 	BufferObject clusterSSBO;			// SSBO 7
 	BufferObject volumetricFogSSBO;		// SSBO 8, Volumetric Fog SSBO
+	BufferObject oldBonesSSBO;			// SSBO 9, old bones SSBO (for TAA).
 
 	BufferObject cameraUBO;				// UBO 0
 	BufferObject shadowCasterMatrixes;	// UBO 1 stores the shadow caster matrixes in a UBO.
@@ -422,6 +442,10 @@ private:
 
 	// when a reflection probe is deleted, the index is now free to use.
 	std::unordered_set<int> freeCubeMapArraySlots;
+
+	// holds batches of material, populated during render queue building..
+	std::vector<MaterialBatch> materialBatches;
+	std::unordered_map<ResourceID, int> materialResourceIdToIndex;
 
 private:
 	int numOfPhysicsDebugTriangles;

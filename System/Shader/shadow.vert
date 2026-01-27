@@ -6,12 +6,12 @@ layout (location = 5) in vec4 boneWeights;
 uniform mat4 lightSpaceMatrix;
 uniform mat4 model;
 uniform mat4 localScale;
+uniform uint isSkinnedMesh;
 
 const int MAX_NUMBER_OF_BONES = 4;
 const int INVALID_BONE = -1;
 
 layout(std430, binding = 3) buffer Bones {
-    uint isSkinnedMesh;
     mat4 bonesFinalMatrices[];
 };
 
