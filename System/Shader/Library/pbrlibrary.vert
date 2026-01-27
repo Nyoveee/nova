@@ -71,10 +71,11 @@ layout(std430, binding = 3) buffer Bones {
 const int MAX_NUMBER_OF_BONES = 4;
 const int INVALID_BONE = -1;
 
-uniform mat4 model;
-uniform mat4 previousModel;
-uniform mat3 normalMatrix;
-uniform mat4 localScale;
+layout (location = 0) uniform mat4 model;
+layout (location = 4) uniform mat4 localScale;
+layout (location = 8) uniform mat4 previousModel;
+layout (location = 12) uniform mat3 normalMatrix;
+
 uniform bool toUseNormalMap;
 
 invariant gl_Position;

@@ -112,6 +112,15 @@ void CustomShader::compile()
 	std::string fragmentCode = fShaderLibraryStream.str();
 
 	shader = Shader{ std::move(vertexCode), std::move(fragmentCode) };
+
+	// ========================================================
+	// We cache all uniform location data..
+	// ========================================================
+	uniformLocations.clear();
+
+	for (auto const& uniformData : customShaderData.uniformDatas) {
+		uniformLocations.push_back(shader->getUniformLocation(uniformData.identifier.c_str()));
+	}
 }
 
 std::optional<Shader> const& CustomShader::getShader() const {

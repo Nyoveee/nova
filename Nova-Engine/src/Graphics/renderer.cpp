@@ -113,6 +113,10 @@ constexpr int VOLUMETRIC_FOG_DOWNSCALE 	= 4;
 // TAA..
 constexpr int MAX_HALTON_SEQUENCE = 16;
 
+// Uniform slots..
+constexpr int numOfTextureUnitBound = 7;
+constexpr int numOfUniformSlotsUsed = 4;
+
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
@@ -3229,59 +3233,41 @@ CustomShader* Renderer::setupMaterial(Camera const& camera, Material const& mate
 	// ===========================================================================
 	// Set uniform data..
 	// ===========================================================================
-	shader.setMatrix("normalMatrix", transform.normalMatrix);
 
-	switch (shaderData.pipeline)
+	if(shaderData.pipeline == Pipeline::PBR)
 	{
-	case Pipeline::PBR: {
 		// setup SSAO
 		if (renderConfig.toEnableSSAO) {
-			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]);
-			shader.setImageUniform("ssao", 1);
+			glBindTextureUnit(1, ssaoFrameBuffer.getActiveFrameBuffer().textureIds()[0]); //	SSAO.. (sampler2D)
 		}
 
 		// setup spotlight shadow
-		glBindTextureUnit(3, spotlightShadowMaps.getTextureId());
-		shader.setImageUniform("spotlightShadowMaps", 3);
+		glBindTextureUnit(3, spotlightShadowMaps.getTextureId()); // All spotlight shadow maps.. (sampler2DArray)
 
 		// setup IBL irradiance maps..
 		auto&& [diffuseIrradianceMap, __] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentDiffuseMap);
 		auto&& [prefilteredEnvironmentMap, ___] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentSpecularMap);
 
 		if (renderConfig.toEnableIBL && diffuseIrradianceMap && prefilteredEnvironmentMap) {
-			glBindTextureUnit(2, BRDFLUT->getTextureId());
-			glBindTextureUnit(4, diffuseIrradianceMap->getTextureId());
-			glBindTextureUnit(5, prefilteredEnvironmentMap->getTextureId());
-
-			shader.setImageUniform("brdfLUT", 2);
-			shader.setImageUniform("diffuseIrradianceMap", 4);
-			shader.setImageUniform("prefilterMap", 5);
+			glBindTextureUnit(2, BRDFLUT->getTextureId());						// BRDF Lookup Table texture.. (sampler2D)
+			glBindTextureUnit(4, diffuseIrradianceMap->getTextureId());			// Diffuse irradiance map.. (samplerCube), 
+			glBindTextureUnit(5, prefilteredEnvironmentMap->getTextureId());	// Prefiltered environment map.. (samplerCube)
 		}
 
-		glBindTextureUnit(0, directionalLightShadowFBO.textureId());
-		shader.setImageUniform("directionalShadowMap", 0);
-
-		glBindTextureUnit(6, loadedReflectionProbesMap.getTextureId());
-		shader.setImageUniform("reflectionProbesPrefilterMap", 6);
+		glBindTextureUnit(0, directionalLightShadowFBO.textureId());			// Directional light shadow map.. (sampler2D)
+		glBindTextureUnit(6, loadedReflectionProbesMap.getTextureId());			// All Reflection probes map.. (samplerCubeArray)
 	}
 
-	// both pipeline requires these to be set..
-	[[fallthrough]];
-	case Pipeline::Color:
-		shader.setMatrix("model", transform.modelMatrix);
-		shader.setMatrix("previousModel", transform.lastModelMatrix);
-
-		shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
-		break;
-	default:
-		assert(false && "Unhandled pipeline.");
-		break;
-	}
-
-	// We reserve the very first 6 texture unit for PBR required textures..
-	int numOfTextureUnitBound = 7;
+	glm::mat4 localScale = glm::scale(glm::mat4{ 1.f }, { scale, scale, scale });
 	
-	setupCustomShaderUniforms(shader, material, numOfTextureUnitBound);
+	// we set uniforms with fixed locations..
+											// location
+	glProgramUniformMatrix4fv(shader.id(),	0,				1, GL_FALSE, glm::value_ptr(transform.modelMatrix));	 // Setting the model matrix
+	glProgramUniformMatrix4fv(shader.id(),	4,				1, GL_FALSE, glm::value_ptr(localScale));				 // Setting the local scale matrix
+	glProgramUniformMatrix4fv(shader.id(),	8,				1, GL_FALSE, glm::value_ptr(transform.lastModelMatrix)); // Setting the lastModelMatrix matrix
+	glProgramUniformMatrix3fv(shader.id(),	12,				1, GL_FALSE, glm::value_ptr(transform.normalMatrix));	 // Setting the normal matrix
+
+	setupCustomShaderUniforms(*customShader, shader, material, numOfTextureUnitBound);
 
 	// Use the shader
 	shader.use();
@@ -3319,13 +3305,17 @@ CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transf
 	// ===========================================================================
 	// Set uniform data..
 	// ===========================================================================
-	shader.setMatrix("normalMatrix", transform.normalMatrix);
-	shader.setMatrix("model", transform.modelMatrix);
-	shader.setMatrix("previousModel", transform.lastModelMatrix);
-	shader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { scale, scale, scale }));
+	glm::mat4 localScale = glm::scale(glm::mat4{ 1.f }, { scale, scale, scale });
+	
+	// we set uniforms with fixed locations..
+											// location
+	glProgramUniformMatrix4fv(shader.id(),	0,				1, GL_FALSE, glm::value_ptr(transform.modelMatrix));	 // Setting the model matrix
+	glProgramUniformMatrix4fv(shader.id(),	4,				1, GL_FALSE, glm::value_ptr(localScale));				 // Setting the local scale matrix
+	glProgramUniformMatrix4fv(shader.id(),	8,				1, GL_FALSE, glm::value_ptr(transform.lastModelMatrix)); // Setting the lastModelMatrix matrix
+	glProgramUniformMatrix3fv(shader.id(),	12,				1, GL_FALSE, glm::value_ptr(transform.normalMatrix));	 // Setting the normal matrix
 	
 	// @TODO: Optimise by having a distinction between vertex uniforms and fragment uniforms.
-	setupCustomShaderUniforms(shader, material, 7);
+	setupCustomShaderUniforms(*customShader, shader, material, numOfTextureUnitBound);
 
 	// Use the shader
 	shader.use();
@@ -3333,46 +3323,52 @@ CustomShader* Renderer::setupMaterialNormalPass(Material const& material, Transf
 	return customShader;
 }
 
-void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& material, int numOfTextureUnitsUsed) {
+void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shader const& shader, Material const& material, int numOfTextureUnitsUsed) {
 	// We keep track of the number of texture units bound and make sure it doesn't exceed the driver's cap.
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
-	for (auto const& [type, name, uniformValue] : material.materialData.uniformDatas) {
+	for (int i = 0; i < material.materialData.uniformDatas.size() && i < customShader.uniformLocations.size(); ++i) {
+		// retrieve material value..
+		auto const& [type, name, uniformValue] = material.materialData.uniformDatas[i];
+
+		// retrieve uniform location..
+		GLint uniformLocation = customShader.uniformLocations[i];
+
 		std::visit([&](auto&& value) {
 			using Type = std::decay_t<decltype(value)>;
 
 			if constexpr (std::same_as<Type, bool>) {
 				assert(type == "bool");
-				shader.setBool(name, value);
+				shader.setBool(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, int>) {
 				assert(type == "int");
-				shader.setInt(name, value);
+				shader.setInt(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, unsigned int>) {
 				assert(type == "uint");
-				shader.setUInt(name, value);
+				shader.setUInt(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, float> || std::same_as<Type, NormalizedFloat>) {
 				assert(type == "float" || type == "NormalizedFloat");
-				shader.setFloat(name, value);
+				shader.setFloat(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, glm::vec2>) {
 				assert(type == "vec2");
-				shader.setVec2(name, value);
+				shader.setVec2(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, glm::vec3> || std::same_as<Type, Color>) {
 				assert(type == "vec3" || type == "Color");
-				shader.setVec3(name, value);
+				shader.setVec3(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, glm::vec4> || std::same_as<Type, ColorA>) {
 				assert(type == "vec4" || type == "ColorA");
-				shader.setVec4(name, value);
+				shader.setVec4(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, glm::mat3> || std::same_as<Type, glm::mat4>) {
 				assert(type == "mat3" || type == "mat4");
-				shader.setMatrix(name, value);
+				shader.setMatrix(uniformLocation, value);
 			}
 			else if constexpr (std::same_as<Type, TypedResourceID<Texture>>) {
 				assert(type == "sampler2D");
@@ -3395,7 +3391,7 @@ void Renderer::setupCustomShaderUniforms(Shader const& shader, Material const& m
 
 				// we bind to a unused texture unit..
 				glBindTextureUnit(numOfTextureUnitsUsed, texture->getTextureId());
-				shader.setImageUniform(name, numOfTextureUnitsUsed);
+				shader.setImageUniform(uniformLocation, numOfTextureUnitsUsed);
 
 				++numOfTextureUnitsUsed;
 			}

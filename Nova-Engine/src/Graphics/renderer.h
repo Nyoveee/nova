@@ -270,7 +270,7 @@ private:
 	CustomShader* setupMaterialNormalPass(Material const& material, Transform const& transform, float scale = 1.f);
 
 	// void set up all the uniforms for the custom shader.
-	void setupCustomShaderUniforms(Shader const& shader, Material const& material, int numOfTextureUnitsUsed = 0);
+	void setupCustomShaderUniforms(CustomShader const& customShader, Shader const& shader, Material const& material, int numOfTextureUnitsUsed = 0);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
 	void renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType);

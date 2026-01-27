@@ -50,6 +50,17 @@ layout(std140, binding = 4) uniform TAAUBO {
     bool isTAAEnabled;
 };
 
+layout(std140, binding = 2) uniform PBRUBO {
+    vec4 samples[64];   
+	mat4 directionalLightSpaceMatrix;
+	vec3 directionalLightDir;
+	float timeElapsed;
+	bool toEnableSSAO;
+	bool hasDirectionalLightShadowCaster;
+	bool toEnableIBL;
+	bool toOutputNormal;
+};
+
 layout(std430, binding = 3) buffer Bones {
     uint isSkinnedMesh;
     mat4 bonesFinalMatrices[];
@@ -58,11 +69,10 @@ layout(std430, binding = 3) buffer Bones {
 const int MAX_NUMBER_OF_BONES = 4;
 const int INVALID_BONE = -1;
 
-uniform mat4 model;
-uniform mat4 previousModel;
-uniform mat3 normalMatrix;
-uniform mat4 localScale;
-uniform float timeElapsed;
+layout (location = 0) uniform mat4 model;
+layout (location = 4) uniform mat4 localScale;
+layout (location = 8) uniform mat4 previousModel;
+layout (location = 12) uniform mat3 normalMatrix;
 
 invariant gl_Position;
 

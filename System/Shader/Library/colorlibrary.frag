@@ -11,13 +11,9 @@ in VS_OUT {
     vec4 fragCurrentClipPos;
 } fsIn;
 
-uniform float timeElapsed;
-
 layout (location = 0) out vec4 FragColor; 
 layout (location = 1) out vec3 gNormal;
 layout (location = 2) out vec2 velocityUV;
-
-uniform bool toOutputNormal;
 
 layout(std140, binding = 0) uniform Camera {
     mat4 view;
@@ -34,6 +30,17 @@ layout(std140, binding = 0) uniform Camera {
     uvec2 screenDimensions;
     float zNear;
     float zFar;
+};
+
+layout(std140, binding = 2) uniform PBRUBO {
+    vec4 samples[64];   
+	mat4 directionalLightSpaceMatrix;
+	vec3 directionalLightDir;
+	float timeElapsed;
+	bool toEnableSSAO;
+	bool hasDirectionalLightShadowCaster;
+	bool toEnableIBL;
+	bool toOutputNormal;
 };
 
 vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {

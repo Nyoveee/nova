@@ -150,13 +150,14 @@ layout(std430, binding = 7) buffer clusterSSBO
     Cluster clusters[];
 };
 
-uniform sampler2D directionalShadowMap;
-uniform sampler2D ssao;
-uniform sampler2D brdfLUT;
-uniform sampler2DArray spotlightShadowMaps;
-uniform samplerCube diffuseIrradianceMap;
-uniform samplerCube prefilterMap;
-uniform samplerCubeArray reflectionProbesPrefilterMap;
+// Samplers..
+layout (binding = 0) uniform sampler2D directionalShadowMap;
+layout (binding = 1) uniform sampler2D ssao;
+layout (binding = 2) uniform sampler2D brdfLUT;
+layout (binding = 3) uniform sampler2DArray spotlightShadowMaps;
+layout (binding = 4) uniform samplerCube diffuseIrradianceMap;
+layout (binding = 5) uniform samplerCube prefilterMap;
+layout (binding = 6) uniform samplerCubeArray reflectionProbesPrefilterMap;
 
 layout (location = 0) out vec4 FragColor; 
 layout (location = 1) out vec3 gNormal; // for depth pre pass..
