@@ -176,6 +176,7 @@ void AssetViewerUI::update() {
 
 	ImGui::End();
 
+	handleRecompilation();
 }
 
 void AssetViewerUI::updateScriptFilePath(AssetFilePath const& filepath, [[maybe_unused]] ResourceID id) {
@@ -508,12 +509,10 @@ void AssetViewerUI::displayTextureInfo(AssetInfo<Texture>& textureInfo) {
 	ImGui::Text("Width: %d", texture->getWidth());
 	ImGui::Text("Height: %d", texture->getHeight());
 
-	//float aspectRatio = texture->getWidth() / texture->getHeight();
-
 	ImGui::Image(texture->getTextureId(), ImVec2{ static_cast<float>(texture->getWidth()), static_cast<float>(texture->getHeight()) });
 }
 
-void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descriptor) {
+void AssetViewerUI::displayModelInfo(AssetInfo<Model>& descriptor) {
 	auto&& [model, loadStatus] = resourceManager.getResource<Model>(selectedResourceId);
 
 	if (!model) {
@@ -538,7 +537,7 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 		}
 	}
 
-	if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::CollapsingHeader("Model")) {
 		ImGui::Text("Max dimension: %.2f", model->maxDimension);
 
 		ImGui::BeginDisabled();
@@ -617,53 +616,41 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 			ImGui::PopID();
 			++counter;
 		}
-
-
-		if (!model->skeleton) {
-			ImGui::Text("This mesh has no skeleton.");
-			return;
-		}
-
-		Skeleton const& skeletonConst = model->skeleton.value();
-		Skeleton& skeleton = model->skeleton.value();
-		
-		ImGui::SeparatorText(std::string{ "Bones: " + std::to_string(skeleton.bones.size()) }.c_str());
-		displayBoneHierarchy(skeleton.rootBone, skeleton);
-
-		ImGui::SeparatorText(std::string{ "[Debug] Nodes: " + std::to_string(skeletonConst.nodes.size()) }.c_str());
-		displayNodeHierarchy(skeletonConst.rootNode, skeletonConst);
 	}
 
-	displayAnimationInfo(descriptor);
+	if (model->skeleton) {
+		if (ImGui::CollapsingHeader("Skeleton")) {
+			Skeleton& skeleton = model->skeleton.value();
+
+			// Display socket details..
+			ImGui::SeparatorText("Sockets");
+
+			if (skeleton.sockets.empty()) {
+				ImGui::Text("No sockets.");
+			}
+			else {
+				for (int i = 0; i < skeleton.sockets.size(); ++i) {
+					BoneIndex socket = skeleton.sockets[i];
+					std::string const& boneName = skeleton.bones[socket].name;
+					ImGui::Text(std::string{ "Socket " + std::to_string(i) + " : " + boneName }.c_str());
+				}
+			}
+
+			ImGui::SeparatorText(std::string{ "Bones: " + std::to_string(skeleton.bones.size()) }.c_str());
+			
+			displayBoneHierarchy(descriptor, skeleton.rootBone, skeleton);
+
+			ImGui::SeparatorText(std::string{ "[Debug] Nodes: " + std::to_string(skeleton.nodes.size()) }.c_str());
+			displayNodeHierarchy(skeleton.rootNode, skeleton);
+		}
+	}
+
+	displayAnimationInfo(*model);
 }
 
-void AssetViewerUI::displayAnimationInfo([[maybe_unused]] AssetInfo<Model>& descriptor) {
-	auto&& [animationResource, loadStatus] = resourceManager.getResource<Model>(selectedResourceId);
-
-	if (!animationResource) {
-		switch (loadStatus)
-		{
-		case ResourceManager::QueryResult::Invalid:
-			ImGui::Text("Resource ID is invalid.");
-			return;
-		case ResourceManager::QueryResult::WrongType:
-			ImGui::Text("This should never happened. Resource ID is not a animation?");
-			assert(false && "Resource ID is not a animation.");
-			return;
-		case ResourceManager::QueryResult::Loading:
-			ImGui::Text("Loading..");
-			return;
-		case ResourceManager::QueryResult::LoadingFailed:
-			ImGui::Text("Loading of animation failed.");
-			return;
-		default:
-			assert(false);
-			return;
-		}
-	}
-
-	if (ImGui::CollapsingHeader("Animation", ImGuiTreeNodeFlags_DefaultOpen)) {
-		for (auto&& animation : animationResource->animations) {
+void AssetViewerUI::displayAnimationInfo(Model const& animationResource) {
+	if (ImGui::CollapsingHeader("Animation")) {
+		for (auto&& animation : animationResource.animations) {
 			ImGui::SeparatorText(animation.name.c_str());
 			ImGui::Text("Duration (in seconds): %.2f", animation.durationInSeconds);
 			ImGui::Text("Duration (in ticks): %.2f", animation.durationInTicks);
@@ -758,7 +745,7 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 	editor.componentInspector.displayComponentDropDownList<ALL_COMPONENTS>(selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
 }
 
-void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton& skeleton) {
+void AssetViewerUI::displayBoneHierarchy(AssetInfo<Model>& descriptor, BoneIndex boneIndex, Skeleton& skeleton) {
 	Bone const& bone = skeleton.bones[boneIndex];
 
 	bool isOpen = ImGui::TreeNodeEx(bone.name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap);
@@ -770,19 +757,23 @@ void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton& skeleton
 	float checkboxPadding = ImGui::GetTextLineHeightWithSpacing() * 0.125f;
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ checkboxPadding, checkboxPadding });
 
-	if (ImGui::Checkbox(("Socket" + std::to_string(boneIndex)).c_str(), &isSocket)) {
+	if (ImGui::Checkbox(("Bone " + std::to_string(boneIndex)).c_str(), &isSocket)) {
 		if (isSocket) {
 			skeleton.sockets.push_back(boneIndex);
 		}
 		else {
 			skeleton.sockets.erase(socket);
 		}
+
+		descriptor.sockets = skeleton.sockets;
+		recompileResourceWithUpdatedDescriptor<Model>(descriptor);
 	}
+
 	ImGui::PopStyleVar();
 
 	if (isOpen) {
 		for (auto& boneChildrenIndex : bone.boneChildrens) {
-			displayBoneHierarchy(boneChildrenIndex, skeleton);
+			displayBoneHierarchy(descriptor, boneChildrenIndex, skeleton);
 		}
 
 		ImGui::TreePop();
@@ -939,6 +930,13 @@ void AssetViewerUI::displayNavigationHistory() {
 	ImGui::EndTable();
 
 	ImGui::PopStyleVar();
+}
+
+void AssetViewerUI::handleRecompilation() {
+	if (recompileAssetWithDescriptor) {
+		recompileAssetWithDescriptor();
+		recompileAssetWithDescriptor = nullptr;
+	}
 }
 
 #include "Editor/ComponentInspection/displayComponent.ipp"

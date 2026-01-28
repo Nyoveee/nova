@@ -83,5 +83,8 @@ private:
 
 template <>
 struct AssetInfo<Font> : public BasicAssetInfo {
+	AssetInfo() = default;
+	AssetInfo(BasicAssetInfo assetInfo) : BasicAssetInfo{ std::move(assetInfo) } {};
+
 	unsigned int fontSize;
 };

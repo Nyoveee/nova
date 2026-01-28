@@ -119,10 +119,15 @@ void AssetManager::loadSystemResourceDescriptor(std::unordered_map<ResourceID, R
 		
 		auto optional = AssetIO::parseDescriptorFile<T>(descriptorFilePath, AssetIO::systemResourceDirectory);
 
-		AssetInfo<T> descriptor = [&]() {
-			if (optional) { return optional.value(); }
-			else		  { return AssetInfo<T>{id, static_cast<std::filesystem::path>(filepath).filename().string()}; }
-		}();
+		AssetInfo<T> descriptor;
+		
+		if (optional) {
+			descriptor = optional.value();
+		}
+		else {
+			// descriptor.id = id;
+			descriptor.name = static_cast<std::filesystem::path>(filepath).filename().string();
+		}
 
 		descriptor.id = id;
 		assetToDescriptor.insert({ id, std::make_unique<AssetInfo<T>>(descriptor) });
@@ -195,9 +200,13 @@ void AssetManager::loadAllDescriptorFiles() {
 				createResourceFile<T>(descriptor);
 			}
 			else {
+				BasicAssetInfo assetInfo;
+				assetInfo.id = descriptor.id;
+
 				Logger::debug("A valid resource file exist for this descriptor and asset.\n");
+
 				// we record all encountered intermediary assets with corresponding filepaths.
-				intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, descriptor.id } });
+				intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilepath, std::move(assetInfo) } });
 
 				// we associate resource id with a name.
 				assetToDescriptor.insert({ descriptor.id, std::make_unique<AssetInfo<T>>(descriptor) });
@@ -228,11 +237,14 @@ ResourceID AssetManager::createResourceFile(AssetInfo<T> descriptor) {
 	ResourceID id = resourceManager.addResourceFile<T>(resourceFilePath);
 
 	if (id != INVALID_RESOURCE_ID) {
+		BasicAssetInfo assetInfo;
+		assetInfo.id = descriptor.id;
+
 		// we update cache with the new time..
 		updateAssetCache<T>(descriptor);
 
 		// we record all encountered intermediary assets with corresponding filepaths.
-		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilePath, descriptor.id } });
+		intermediaryAssetsToDescriptor.insert({ descriptor.filepath, { descriptorFilePath, std::move(assetInfo) } });
 
 		// we associate resource id with a name.
 		assetToDescriptor.insert({ id, std::make_unique<AssetInfo<T>>(descriptor) });
@@ -362,6 +374,12 @@ void AssetManager::serializeDescriptor(ResourceID id) {
 	}
 	else if constexpr (std::same_as<T, Model>) {
 		descriptorFile << assetInfo->scale << '\n';
+
+		for (auto&& socket : assetInfo->sockets) {
+			descriptorFile << socket << ' ';
+		}
+
+		descriptorFile << '\n';
 	}
 
 	// ============================

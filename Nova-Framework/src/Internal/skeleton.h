@@ -147,6 +147,7 @@ struct Skeleton {
 		nodes,
 		rootNode,
 		bones,
-		rootBone
+		rootBone,
+		sockets
 	)
 };

@@ -73,5 +73,8 @@ private:
 
 template <>
 struct AssetInfo<CustomShader> : public BasicAssetInfo {
+	AssetInfo() = default;
+	AssetInfo(BasicAssetInfo assetInfo) : BasicAssetInfo{ std::move(assetInfo) } {};
+
 	Pipeline pipeline;
 };

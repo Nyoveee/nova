@@ -47,64 +47,9 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 
 	editor.displayAssetDropDownList<OriginalAssetType>(dataMember, dataMemberName, [&](ResourceID resourceId) {
 		dataMember = DataMemberType{ resourceId };
-
-		// changing model requires updating the mesh renderer component's material vector.
-		if constexpr (std::same_as<OriginalAssetType, Model>) {
-			auto& registry = editor.engine.ecs.registry;
-
-			for (auto entity : editor.getSelectedEntities()) {
-				auto updateMaterial = [&]<typename T>() {
-					// get their component..
-					T* meshRenderer = registry.try_get<T>(entity);
-
-					if (!meshRenderer) {
-						return;
-					}
-
-					auto&& [model, _] = editor.resourceManager.getResource<Model>(resourceId);
-
-					// invalid model..
-					if (!model) {
-						return;
-					}
-
-					std::vector<TypedResourceID<Material>> materialIds{};
-					materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
-					meshRenderer->materialIds = materialIds;
-				};
-
-				updateMaterial.template operator()<MeshRenderer>();
-				updateMaterial.template operator()<TranslucentMeshRenderer>();
-				updateMaterial.template operator()<SkinnedMeshRenderer>();
-
-				// Loads sockets over
-				SkinnedMeshRenderer* mesh = registry.try_get<SkinnedMeshRenderer>(entity);
-				if (!mesh)
-					continue;
-
-				auto&& [model, _] = editor.resourceManager.getResource<Model>(mesh->modelId);
-				if (!model || !model->skeleton) {
-					continue;
-				}
-
-				// Clears old connections
-				for (auto& socketConnection : mesh->socketConnections) {
-					EntityData* entityData = registry.try_get<EntityData>(socketConnection.second);
-					if (!entityData)
-						continue;
-
-					entityData->socketMatrix = nullptr;
-				}
-				// Fills new sockets
-				mesh->socketConnections.clear();
-				entt::entity tmpEnt = entt::null;
-				for (auto& socket : model->skeleton->sockets) {
-					mesh->socketConnections[socket] = tmpEnt;
-				}
-			}
-		}
 	});
 
+#if false
 	// Socket list for skinned mesh
 	auto& registry = editor.engine.ecs.registry;
 	for (auto& entity : editor.getSelectedEntities()) {
@@ -163,7 +108,7 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 			});
 		}
 	}
-
+#endif
 }
 
 template<IsEnum DataMemberType>
@@ -638,8 +583,6 @@ template<>
 inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& editor, const char*, std::vector<TypedResourceID<Material>>& dataMember) {
 	ImGui::SeparatorText("Material");
 
-	ImGui::TextWrapped("If the model has only 1 sub mesh, you can attach multiple materials for additional render passes. Else, the rest will be ignored.");
-
 	for (unsigned int i = 0; i < dataMember.size(); ++i) {
 		TypedResourceID<Material>& id = dataMember[i];
 
@@ -647,10 +590,6 @@ inline void DisplayProperty<std::vector<TypedResourceID<Material>>>(Editor& edit
 		editor.displayAssetDropDownList<Material>(id, label.c_str(), [&](ResourceID resourceId) {
 			id = TypedResourceID<Material>{ resourceId };
 		});
-	}
-
-	if (ImGui::Button("[+]")) {
-		dataMember.push_back(TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
 	}
 }
 

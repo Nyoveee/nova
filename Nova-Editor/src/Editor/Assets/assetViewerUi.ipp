@@ -27,17 +27,19 @@ void AssetViewerUI::displayAssetUI(BasicAssetInfo& descriptor) {
 
 
 template <typename T>
-void AssetViewerUI::recompileResourceWithUpdatedDescriptor(AssetInfo<T> const& assetInfo) {
-	// serialise immediately..
-	assetManager.serialiseDescriptor(selectedResourceId);
+void AssetViewerUI::recompileResourceWithUpdatedDescriptor(AssetInfo<T> const& p_assetInfo) {
+	recompileAssetWithDescriptor = [&, assetInfo = p_assetInfo, id = selectedResourceId]() {
+		// serialise immediately..
+		assetManager.serialiseDescriptor(id);
 
-	// we make a copy of asset info, because the reference is getting invalidated..
-	AssetInfo<T> assetInfoCopy = assetInfo;
+		// we make a copy of asset info, because the reference is getting invalidated..
+		AssetInfo<T> assetInfoCopy = assetInfo;
 
-	// we remove this old resource..
-	resourceManager.removeResource(selectedResourceId);
-	assetManager.removeResource(selectedResourceId);
+		// we remove this old resource..
+		resourceManager.removeResource(id);
+		assetManager.removeResource(id);
 
-	// recompile.., will add to resource manager if compilation is successful.
-	assetManager.createResourceFile<T>(assetInfoCopy);
+		// recompile.., will add to resource manager if compilation is successful.
+		assetManager.createResourceFile<T>(assetInfoCopy);
+	};
 }

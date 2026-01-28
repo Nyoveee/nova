@@ -27,6 +27,15 @@ private:
 
 // this contains descriptor data that points back to the original asset.
 struct BasicAssetInfo {
+	BasicAssetInfo() = default;
+	//BasicAssetInfo(ResourceID id, std::string name, AssetFilePath filepath) :
+	//	id			{ id },
+	//	name		{ std::move(name) },
+	//	filepath	{ std::move(filepath) }
+	//{};
+
+	virtual ~BasicAssetInfo() {};
+
 	ResourceID id;
 	std::string name;
 	AssetFilePath filepath;
@@ -35,7 +44,10 @@ struct BasicAssetInfo {
 // specific asset meta info.
 // 1. each asset type will need to explicitly specialise this asset type, if they require additional info!
 template <typename T> requires std::derived_from<T, Resource>
-struct AssetInfo : public BasicAssetInfo {};
+struct AssetInfo : public BasicAssetInfo {
+	AssetInfo() = default;
+	AssetInfo(BasicAssetInfo assetInfo) : BasicAssetInfo{ std::move(assetInfo) } {};
+};
 
 // A valid asset must
 // 1. Inherit from base class asset

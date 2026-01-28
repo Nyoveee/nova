@@ -93,6 +93,20 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 			catch (std::exception const&) {
 				assetInfo.scale = 1.f;
 			}
+
+			std::string socketString;
+			std::getline(descriptorFile, socketString);
+
+			// the vector of sockets define it with a space delimited list of integers.
+			std::stringstream ss { socketString };
+			
+			std::vector<BoneIndex> sockets;
+			BoneIndex boneIndex;
+			while (ss >> boneIndex) {
+				sockets.push_back(boneIndex);
+			}
+
+			assetInfo.sockets = std::move(sockets);
 		}
 
 		// ============================
@@ -141,7 +155,7 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 		descriptorFile << DEFAULT_FONT_SIZE << '\n';
 	}
 	else if constexpr (std::same_as<T, Model>) {
-		descriptorFile << 1.f << '\n';
+		descriptorFile << 1.f << "\n\n"; // one more newline for empty sockets.
 	}
 
 	// ============================

@@ -2560,7 +2560,6 @@ void Renderer::shadowPassRender(glm::mat4 const& viewProjectionMatrix) {
 		shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
 		shadowMapShader.setUInt("isSkinnedMesh", 1);
 
-
 		// upload all bone matrices..
 		// uploading all current bone matrixes..
 		glNamedBufferSubData(
@@ -2698,7 +2697,6 @@ CubeMap Renderer::captureSurrounding(ReflectionProbe const& reflectionProbe, glm
 	CubeMap inputCubemap{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, 5 };
 
 	bakingCamera.setFarPlaneDistance(reflectionProbe.captureRadius);
-	// bakingCamera.setPos(position);
 
 	glViewport(0, 0, IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT);
 
