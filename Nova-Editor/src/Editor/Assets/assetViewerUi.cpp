@@ -624,13 +624,14 @@ void AssetViewerUI::displayModelInfo([[maybe_unused]] AssetInfo<Model>& descript
 			return;
 		}
 
-		Skeleton const& skeleton = model->skeleton.value();
+		Skeleton const& skeletonConst = model->skeleton.value();
+		Skeleton& skeleton = model->skeleton.value();
 		
 		ImGui::SeparatorText(std::string{ "Bones: " + std::to_string(skeleton.bones.size()) }.c_str());
 		displayBoneHierarchy(skeleton.rootBone, skeleton);
 
-		ImGui::SeparatorText(std::string{ "[Debug] Nodes: " + std::to_string(skeleton.nodes.size()) }.c_str());
-		displayNodeHierarchy(skeleton.rootNode, skeleton);
+		ImGui::SeparatorText(std::string{ "[Debug] Nodes: " + std::to_string(skeletonConst.nodes.size()) }.c_str());
+		displayNodeHierarchy(skeletonConst.rootNode, skeletonConst);
 	}
 
 	displayAnimationInfo(descriptor);
@@ -757,10 +758,27 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 	editor.componentInspector.displayComponentDropDownList<ALL_COMPONENTS>(selectedPrefabEntity, editor.engine.prefabManager.getPrefabRegistry());
 }
 
-void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton) {
+void AssetViewerUI::displayBoneHierarchy(BoneIndex boneIndex, Skeleton& skeleton) {
 	Bone const& bone = skeleton.bones[boneIndex];
 
-	bool isOpen = ImGui::TreeNodeEx(bone.name.c_str());
+	bool isOpen = ImGui::TreeNodeEx(bone.name.c_str(), ImGuiTreeNodeFlags_AllowItemOverlap);
+
+	auto socket = std::find(skeleton.sockets.begin(), skeleton.sockets.end(), boneIndex);
+	bool isSocket = socket != skeleton.sockets.end();
+
+	ImGui::SameLine();
+	float checkboxPadding = ImGui::GetTextLineHeightWithSpacing() * 0.125f;
+	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ checkboxPadding, checkboxPadding });
+
+	if (ImGui::Checkbox(("Socket" + std::to_string(boneIndex)).c_str(), &isSocket)) {
+		if (isSocket) {
+			skeleton.sockets.push_back(boneIndex);
+		}
+		else {
+			skeleton.sockets.erase(socket);
+		}
+	}
+	ImGui::PopStyleVar();
 
 	if (isOpen) {
 		for (auto& boneChildrenIndex : bone.boneChildrens) {

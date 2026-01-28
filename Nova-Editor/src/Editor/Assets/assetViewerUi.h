@@ -34,7 +34,7 @@ private:
 	void displayFontInfo(AssetInfo<Font>& descriptor);
 	void displayPrefabInfo(AssetInfo<Prefab>& descriptor);
 
-	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
+	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
 
 	template <typename T>

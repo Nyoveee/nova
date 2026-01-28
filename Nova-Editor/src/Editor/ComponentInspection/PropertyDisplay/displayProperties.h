@@ -76,9 +76,94 @@ inline void DisplayProperty(Editor& editor, const char* dataMemberName, auto& da
 				updateMaterial.template operator()<MeshRenderer>();
 				updateMaterial.template operator()<TranslucentMeshRenderer>();
 				updateMaterial.template operator()<SkinnedMeshRenderer>();
+
+				// Loads sockets over
+				SkinnedMeshRenderer* mesh = registry.try_get<SkinnedMeshRenderer>(entity);
+				if (!mesh)
+					continue;
+
+				auto&& [model, _] = editor.resourceManager.getResource<Model>(mesh->modelId);
+				if (!model || !model->skeleton) {
+					continue;
+				}
+
+				// Clears old connections
+				for (auto& socketConnection : mesh->socketConnections) {
+					EntityData* entityData = registry.try_get<EntityData>(socketConnection.second);
+					if (!entityData)
+						continue;
+
+					entityData->socketMatrix = nullptr;
+				}
+				// Fills new sockets
+				mesh->socketConnections.clear();
+				entt::entity tmpEnt = entt::null;
+				for (auto& socket : model->skeleton->sockets) {
+					mesh->socketConnections[socket] = tmpEnt;
+				}
 			}
 		}
 	});
+
+	// Socket list for skinned mesh
+	auto& registry = editor.engine.ecs.registry;
+	for (auto& entity : editor.getSelectedEntities()) {
+		SkinnedMeshRenderer* mesh = registry.try_get<SkinnedMeshRenderer>(entity);
+		if (!mesh)
+			continue;
+
+		auto&& [model, _] = editor.resourceManager.getResource<Model>(mesh->modelId);
+		if (!model || !model->skeleton) {
+			continue;
+		}
+
+		auto& meshSockets = mesh->socketConnections;
+		auto& modelSockets = model->skeleton->sockets;
+
+		// Skeleton and mesh sockets dont match
+		if (meshSockets.size() < modelSockets.size()) {
+			entt::entity tmpEnt = entt::null;
+
+			for (const auto& socket : modelSockets) {
+				// only insert missing sockets
+				if (meshSockets.find(socket) == meshSockets.end()) {
+					meshSockets[socket] = tmpEnt;
+				}
+			}
+		}
+		// Remove sockets and sever connection on entity
+		else if (meshSockets.size() > modelSockets.size()) {
+			for (auto it = meshSockets.begin(); it != meshSockets.end(); ) {
+				if (std::find(modelSockets.begin(), modelSockets.end(), it->first) == modelSockets.end()) {
+					// Erase current connection
+					EntityData* entityData = registry.try_get<EntityData>(it->second);
+					if (entityData) {
+						entityData->socketMatrix = nullptr;
+					}
+					it = meshSockets.erase(it); 
+				}
+				else {
+					++it;
+				}
+			}
+
+		}
+
+		// Connect sockets to GO
+		for (auto& socketConnection : meshSockets) {
+			editor.displayAllEntitiesDropDownList(("Socket" + std::to_string(socketConnection.first)).c_str(),
+				socketConnection.second, [&](entt::entity newEntity) {
+				meshSockets[socketConnection.first] = newEntity;
+				EntityData* entityData = registry.try_get<EntityData>(newEntity);
+
+				if (!entityData) {
+					return;
+				}
+				entityData->socketMatrix = &mesh->bonesFinalMatrices[socketConnection.first];
+			});
+		}
+	}
+
 }
 
 template<IsEnum DataMemberType>
