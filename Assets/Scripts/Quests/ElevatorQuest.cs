@@ -22,6 +22,8 @@ class ElevatorQuest : Quest
     [SerializableField]
     private GameUIManager gameUIManager;
     [SerializableField]
+    private string speaker;
+    [SerializableField]
     private List<string> dialogues;
     [SerializableField]
     private List<float> timings;
@@ -39,7 +41,9 @@ class ElevatorQuest : Quest
         Destroy(checkPointIndicator);
         elevator.CloseTutorialDoor();
         audioComponent.PlaySound(elevatorSpeechAudio);
-        gameUIManager.ActivateDialogue(dialogues, timings, finalDialogueTime);
+        gameUIManager.ActivateDialogue(speaker,dialogues, timings, finalDialogueTime);
+        missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
+        questInformationContainer.transform.position = newQuestInformationUILocation;
     }
 
     public override void OnFail(Transform_ playerTransform)

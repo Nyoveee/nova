@@ -176,6 +176,9 @@ public:
 		bool get() { return Interface::engine->isPaused; };
 		void set(bool value) { Interface::engine->isPaused = value; };
 	};
+	static property Vector2 ScreenResolution {
+		Vector2 get() { return Vector2(Interface::engine->getGameWidth(), Interface::engine->getGameHeight()); };
+	}
 
 	static void Restart();
 	static void Quit();
