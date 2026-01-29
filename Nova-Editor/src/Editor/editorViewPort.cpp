@@ -94,10 +94,28 @@ void EditorViewPort::update(float dt) {
 				editor.selectEntities({});
 			}
 			else if (editor.resourceManager.isResource<Video>(id)) {
-				auto&& [video, refCount] = editor.resourceManager.getResource<Video>(id);
+				// Create entity with VideoPlayer component
+				auto entity = engine.ecs.registry.create();
+
+				// Add EntityData
+				auto& entityData = engine.ecs.registry.emplace<EntityData>(entity);
+				entityData.name = name;
+
+				// Add Transform
+				engine.ecs.registry.emplace<Transform>(entity);
+
+				// Add VideoPlayer
+				auto& videoPlayer = engine.ecs.registry.emplace<VideoPlayer>(entity);
+				videoPlayer.videoId = TypedResourceID<Video>{ id };
+
+				// Load the video resource
+				auto [video, refCount] = editor.resourceManager.getResource<Video>(id);
 				if (video) {
-					engine.renderer.loadVideo(video->getFilePath().string);
+					video->load();
 				}
+
+				// Select the new entity
+				editor.selectEntities({ entity });
 			}
 		}
 

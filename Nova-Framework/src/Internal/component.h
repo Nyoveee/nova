@@ -36,6 +36,7 @@ class ScriptAsset;
 class Audio;
 class Material;
 class Sequencer;
+class Video;
 
 // Make sure your components are of aggregate type!!
 // This means it extremely easy for systems to work with these components
@@ -45,7 +46,7 @@ class Sequencer;
 #define ALL_COMPONENTS \
 	EntityData, Transform, Light, MeshRenderer, TranslucentMeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
-	Image, Sequence, Button, Canvas, NavMeshOffLinks
+	Image, Sequence, Button, Canvas, NavMeshOffLinks, VideoPlayer
 
 using ScriptName   = std::string;
 using LayerID	   = int;
@@ -869,4 +870,17 @@ struct Button {
 		isInteractable = false;
 		state = Button::State::Disabled;
 	}
+};
+
+struct VideoPlayer {
+	TypedResourceID<Video> videoId { INVALID_RESOURCE_ID };
+
+	bool isPlaying = true;
+	bool loop = true;
+
+	REFLECTABLE(
+		videoId,
+		isPlaying,
+		loop
+	)
 };

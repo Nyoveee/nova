@@ -29,8 +29,6 @@
 
 #include "materialConfig.h"
 
-#include "Internal/pl_mpeg.h"
-
 class Engine;
 class ResourceManager;
 
@@ -147,9 +145,6 @@ public:
 	ENGINE_DLL_API void submitSelectedObjects(std::vector<entt::entity> const& entities);
 	ENGINE_DLL_API void renderDebugSelectedObjects();
 
-	// load video from file path
-	ENGINE_DLL_API void loadVideo(std::string const& filepath);
-
 public:
 	// =============================================
 	// These interfaces are provided to the physics debug renderer for rendering debug colliders.
@@ -219,8 +214,8 @@ private:
 	// renders the bounding volume to debug frustum culling..
 	void debugRenderBoundingVolume();
 
-	// render video playback
-	void renderVideo();
+	// render video players (entities with VideoPlayer component)
+	void renderVideoPlayers(Camera const& camera);
 
 	// renders all the clusters of the camera..
 	void debugRenderClusters();
@@ -323,13 +318,9 @@ private:
 
 	GLuint ssaoNoiseTextureId;
 
-	// Video playback members
-	plm_t* plm;
+	// Video quad geometry (shared across all VideoPlayer entities)
 	GLuint videoVAO;
 	BufferObject videoVBO;
-	GLuint videoTextureY;
-	GLuint videoTextureCr;
-	GLuint videoTextureCb;
 
 	Camera editorCamera;
 	Camera gameCamera;

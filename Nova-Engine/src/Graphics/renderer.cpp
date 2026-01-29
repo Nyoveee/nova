@@ -1,4 +1,3 @@
-#define PL_MPEG_IMPLEMENTATION
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -20,6 +19,7 @@
 
 #include "RandomRange.h"
 #include "systemResource.h"
+#include "video.h"
 
 #undef max
 
@@ -154,11 +154,7 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	directionalLightDir				{},
 	timeElapsed						{},
 	ssaoNoiseTextureId				{ INVALID_ID },
-	plm								{ nullptr },
 	videoVAO						{},
-	videoTextureY					{ INVALID_ID },
-	videoTextureCr					{ INVALID_ID },
-	videoTextureCb					{ INVALID_ID },
 	hdrExposure						{ 0.9f },
 	toneMappingMethod				{ ToneMappingMethod::ACES },
 															 // main		normal
@@ -302,11 +298,6 @@ Renderer::Renderer(Engine& engine, int gameWidth, int gameHeight) :
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	// Create textures for Y, Cr, Cb planes
-	glGenTextures(1, &videoTextureY);
-	glGenTextures(1, &videoTextureCr);
-	glGenTextures(1, &videoTextureCb);
-
 	initialiseSSAO();
 }
 
@@ -317,12 +308,6 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &videoVAO);
 
 	if (ssaoNoiseTextureId != INVALID_ID) glDeleteTextures(1, &ssaoNoiseTextureId);
-
-	if (videoTextureY != INVALID_ID) glDeleteTextures(1, &videoTextureY);
-	if (videoTextureCr != INVALID_ID) glDeleteTextures(1, &videoTextureCr);
-	if (videoTextureCb != INVALID_ID) glDeleteTextures(1, &videoTextureCb);
-
-	if (plm) plm_destroy(plm);
 }
 
 GLuint Renderer::getObjectId(glm::vec2 normalisedPosition) const {
@@ -372,23 +357,20 @@ GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
 void Renderer::update([[maybe_unused]] float dt) {
 	timeElapsed += dt;
 
-	// Update video playback
-	if (plm) {
-		plm_frame_t* frame = plm_decode_video(plm);
-		if (frame) {
-			// Upload Y plane
-			glBindTexture(GL_TEXTURE_2D, videoTextureY);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->y.width, frame->y.height, GL_RED, GL_UNSIGNED_BYTE, frame->y.data);
+	// Only update video playback during simulation (play mode), not in editor
+	if (!engine.isInSimulationMode()) return;
 
-			// Upload Cr plane
-			glBindTexture(GL_TEXTURE_2D, videoTextureCr);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->cr.width, frame->cr.height, GL_RED, GL_UNSIGNED_BYTE, frame->cr.data);
+	// Update video playback for all VideoPlayer components
+	auto videoView = registry.view<Transform, VideoPlayer>();
+	for (auto entity : videoView) {
+		auto& videoPlayer = videoView.get<VideoPlayer>(entity);
+		if (!videoPlayer.isPlaying) continue;
 
-			// Upload Cb plane
-			glBindTexture(GL_TEXTURE_2D, videoTextureCb);
-			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->cb.width, frame->cb.height, GL_RED, GL_UNSIGNED_BYTE, frame->cb.data);
-
-			glBindTexture(GL_TEXTURE_2D, 0);
+		auto [video, refCount] = resourceManager.getResource<Video>(videoPlayer.videoId);
+		if (video && video->isLoaded()) {
+			// Sync loop setting from component to video resource
+			video->setLoop(videoPlayer.loop);
+			video->decodeFrame(dt);
 		}
 	}
 }
@@ -564,8 +546,8 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 	// Render particles
 	renderParticles();
 
-	// Render video overlay
-	renderVideo();
+	// Render video players
+	renderVideoPlayers(camera);
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -1374,104 +1356,55 @@ void Renderer::renderSkyBox() {
 	}
 }
 
-void Renderer::loadVideo(std::string const& filepath) {
-	// Clean up existing video if any
-	if (plm) {
-		plm_destroy(plm);
-		plm = nullptr;
-	}
-
-	// Initialize plmpeg with the video file
-	plm = plm_create_with_filename(filepath.c_str());
-	if (!plm) {
-		Logger::error("Failed to load video: {}", filepath);
-		return;
-	}
-
-	Logger::info("Video loaded successfully: {}", filepath);
-
-	// Get video dimensions
-	int width = plm_get_width(plm);
-	int height = plm_get_height(plm);
-	Logger::info("Video dimensions: {}x{}", width, height);
-
-	// Set up Y texture (full resolution)
-	glBindTexture(GL_TEXTURE_2D, videoTextureY);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	// Set up Cr texture (half resolution)
-	glBindTexture(GL_TEXTURE_2D, videoTextureCr);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	// Set up Cb texture (half resolution)
-	glBindTexture(GL_TEXTURE_2D, videoTextureCb);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width / 2, height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	// Disable audio and enable looping
-	plm_set_audio_enabled(plm, false);
-	plm_set_loop(plm, true);
-}
-
-void Renderer::renderVideo() {
+void Renderer::renderVideoPlayers(Camera const& camera) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
-	if (!plm) return;
+	auto videoView = registry.view<Transform, VideoPlayer>();
+	if (videoView.size_hint() == 0) return;
 
-	// Disable depth testing for video overlay
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
+	// Enable depth testing so videos render properly in 3D space
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_CULL_FACE);  // Allow viewing from both sides
 
 	videoShader.use();
 
-	// Get video dimensions
-	int videoWidth = plm_get_width(plm);
-	int videoHeight = plm_get_height(plm);
+	for (auto entity : videoView) {
+		auto& transform = videoView.get<Transform>(entity);
+		auto& videoPlayer = videoView.get<VideoPlayer>(entity);
 
-	// Calculate texture crop size for proper aspect ratio
-	glm::vec2 textureCropSize(1.0f, 1.0f);
-	videoShader.setVec2("texture_crop_size", textureCropSize);
+		auto [video, refCount] = resourceManager.getResource<Video>(videoPlayer.videoId);
+		if (!video || !video->isLoaded()) continue;
 
-	// Set up matrices for full screen quad
-	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f);
+		// Calculate texture crop size for proper aspect ratio
+		glm::vec2 textureCropSize(1.0f, 1.0f);
+		videoShader.setVec2("texture_crop_size", textureCropSize);
 
-	videoShader.setMatrix("model", model);
-	videoShader.setMatrix("view", view);
-	videoShader.setMatrix("projection", projection);
+		// Set up matrices using entity's transform
+		videoShader.setMatrix("model", transform.modelMatrix);
+		videoShader.setMatrix("view", camera.view());
+		videoShader.setMatrix("projection", camera.projection());
 
-	// Bind the YCbCr textures
-	videoShader.setImageUniform("texture_y", 0);
-	videoShader.setImageUniform("texture_cr", 1);
-	videoShader.setImageUniform("texture_cb", 2);
+		// Bind YCbCr textures from Video resource
+		videoShader.setImageUniform("texture_y", 0);
+		videoShader.setImageUniform("texture_cr", 1);
+		videoShader.setImageUniform("texture_cb", 2);
 
-	glBindTextureUnit(0, videoTextureY);
-	glBindTextureUnit(1, videoTextureCr);
-	glBindTextureUnit(2, videoTextureCb);
+		glBindTextureUnit(0, video->getTextureY());
+		glBindTextureUnit(1, video->getTextureCr());
+		glBindTextureUnit(2, video->getTextureCb());
 
-	// Draw the video quad
-	glBindVertexArray(videoVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Draw the video quad
+		glBindVertexArray(videoVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+
 	glBindVertexArray(0);
-
-	// Re-enable depth testing
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);     // Restore blend state
+	glEnable(GL_CULL_FACE);  // Restore culling
 }
 
 void Renderer::renderModels(Camera const& camera) {
