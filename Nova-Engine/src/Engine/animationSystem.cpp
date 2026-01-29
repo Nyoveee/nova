@@ -278,6 +278,9 @@ void AnimationSystem::calculateBoneMatrixes() {
 		// make sure we allocate enough memory for all of them. we will be using bone id as indices..
 		skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].resize(skeleton.bones.size());
 
+		// because the bones are moving, we need to update the child potentially attaching to a socket..
+		engine.transformationSystem.setChildrenDirtyFlag(entityId);
+
 		// retrieve animation...
 		Animator* animator = registry.try_get<Animator>(entityId);
 		Animation const* currentAnimation = nullptr;

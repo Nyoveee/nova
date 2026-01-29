@@ -20,7 +20,7 @@ public:
 	ENGINE_DLL_API glm::mat4x4 const& projection() const;
 	ENGINE_DLL_API glm::mat4x4 const& viewProjection() const;
 
-	ENGINE_DLL_API glm::vec3 const& clipToWorldSpace(glm::vec3 const& clipPos);
+	ENGINE_DLL_API glm::vec3 clipToWorldSpace(glm::vec3 const& clipPos);
 
 public:
 	// position related

@@ -10,12 +10,13 @@
 #include <glm/vec3.hpp>
 
 class ECS;
+class Engine;
 struct Transform;
 struct EntityData;
 
 class TransformationSystem {
 public:
-	TransformationSystem(ECS& ecs);
+	TransformationSystem(Engine& engine, ECS& ecs);
 
 public:
 	void update();
@@ -36,11 +37,12 @@ public:
 	ENGINE_DLL_API void updateWorldMatrix(Transform& transform);
 	ENGINE_DLL_API void updateLocalMatrix(Transform& transform);
 
+	void setChildrenDirtyFlag(entt::entity entity);
+
 private:
 	// Sets the local matrix and position, scale and rotation based on the world matrix of the entity.
 	void setLocalTransformFromWorld(Transform& transform, EntityData& entityData);
 
-	void setChildrenDirtyFlag(entt::entity entity);
 	void setSocketDirtyFlag(entt::entity entity);
 
 	// Gets the most updated model matrix of a given entity.
@@ -48,6 +50,7 @@ private:
 	glm::mat4x4 const& getUpdatedModelMatrix(entt::entity entity);
 
 private:
+	Engine& engine;
 	entt::registry& registry;
 	entt::dispatcher& eventDispatcher;
 };

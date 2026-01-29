@@ -6,6 +6,7 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 
 	editor.displayAssetDropDownList<Model>(rendererComponent.modelId, "Model", [&](ResourceID newModelId) {
 		// changing model requires updating the renderer component's material vector.
+		rendererComponent.modelId = TypedResourceID<Model>{ newModelId };
 
 		// get their component..
 		T* rendererComponent = editor.engine.ecs.registry.try_get<T>(entity);
@@ -79,7 +80,14 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 			Bone const& bone = model->skeleton->bones[boneId];
 
 			editor.displayAllEntitiesDropDownList(bone.name.c_str(), attachedEntity, [&](entt::entity selectedEntity) {
+				EntityData* entityData = editor.engine.ecs.registry.try_get<EntityData>(attachedEntity);
+				if (entityData) entityData->attachedSocket = NO_BONE;
+
 				attachedEntity = selectedEntity;
+
+				// 
+				entityData = editor.engine.ecs.registry.try_get<EntityData>(attachedEntity);
+				if(entityData) entityData->attachedSocket = boneId;
 			});
 		}
 	}

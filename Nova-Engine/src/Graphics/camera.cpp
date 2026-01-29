@@ -36,7 +36,7 @@ glm::mat4x4 const& Camera::viewProjection() const {
 	return viewProjectionMatrix;
 }
 
-glm::vec3 const& Camera::clipToWorldSpace(glm::vec3 const& clipPos) {
+glm::vec3 Camera::clipToWorldSpace(glm::vec3 const& clipPos) {
 	glm::vec4 clipPosVec4 = { clipPos, 1.f };
 	glm::vec4 worldPos = glm::inverse(projectionMatrix * viewMatrix) * clipPosVec4;
 

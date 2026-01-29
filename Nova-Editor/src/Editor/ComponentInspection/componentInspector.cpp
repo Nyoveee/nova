@@ -122,6 +122,12 @@ void ComponentInspector::update() {
 		ImGui::SameLine();
 		ImGui::Text(entityData.parent == entt::null ? "None" : registry.get<EntityData>(entityData.parent).name.c_str());
 
+		ImGui::Text("Attached bone socket: %hu", entityData.attachedSocket);
+
+		if (ImGui::Button("Reset bone socket")) {
+			entityData.attachedSocket = NO_BONE;
+		}
+
 		ImGui::Text("Direct children: ");
 
 		ImGui::BeginChild("Direct children", ImVec2{ 0.f, 250.f }, ImGuiChildFlags_Borders);

@@ -75,9 +75,9 @@ struct EntityData {
 	std::string name													{};
 	std::string tag                                                     {};
 	entt::entity parent													= entt::null;
+	BoneIndex attachedSocket											= NO_BONE;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
-	glm::mat4x4* socketMatrix											{ nullptr };
 
 	bool isActive														= true;
 
@@ -91,6 +91,7 @@ struct EntityData {
 		name,
 		tag,
 		parent,
+		attachedSocket,
 		children,
 		layerId,
 		isActive,

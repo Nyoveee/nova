@@ -277,6 +277,11 @@ inline void deserializeFromJson<ControllerNodeID>(ControllerNodeID& dataMember, 
 }
 
 template<>
+inline void deserializeFromJson<unsigned short>(unsigned short& dataMember, Json const& json) {
+	dataMember = static_cast<unsigned short>(json);
+}
+
+template<>
 inline void deserializeFromJson<FieldEnum>(FieldEnum& datamember, Json const& json) {
 	datamember.type = json["Type"];
 	datamember.value = json["Value"];
