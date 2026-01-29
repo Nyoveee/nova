@@ -30,14 +30,14 @@ public:
 
 	// Sets the world matrix and position, scale and rotation based on the local matrix of the entity.
 	// just a more convenient public facing function that doesnt require additional parameters.
-	void setLocalTransformFromWorld(entt::entity entity);
+	ENGINE_DLL_API void setLocalTransformFromWorld(entt::entity entity);
 
 	// Recalculate model matrix due to changes in ancestor's world transform.
 	ENGINE_DLL_API void recalculateModelMatrix(entt::entity entity);
 	ENGINE_DLL_API void updateWorldMatrix(Transform& transform);
 	ENGINE_DLL_API void updateLocalMatrix(Transform& transform);
 
-	void setChildrenDirtyFlag(entt::entity entity);
+	ENGINE_DLL_API void setChildrenDirtyFlag(entt::entity entity);
 
 private:
 	// Sets the local matrix and position, scale and rotation based on the world matrix of the entity.

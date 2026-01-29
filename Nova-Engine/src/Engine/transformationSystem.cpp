@@ -196,10 +196,8 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 				if (model) {
 					auto boneFinalMatrix = skinnedMeshRenderer->bonesFinalMatrices[skinnedMeshRenderer->currentBoneMatrixIndex][entityData.attachedSocket];
 					auto&& [position, rotation, __] = Math::decomposeMatrix(boneFinalMatrix);
-					boneWorldMatrix = glm::translate(boneWorldMatrix, position);
+					boneWorldMatrix = glm::translate(boneWorldMatrix, position * model->scale);	// i dont actually wanna scale the mode, just the offset from local space..
 					boneWorldMatrix = boneWorldMatrix * glm::mat4_cast(rotation);
-					boneWorldMatrix = glm::scale(boneWorldMatrix, glm::vec3{ model->scale, model->scale, model->scale });
-					//boneWorldMatrix = boneFinalMatrix;
 				}
 			} 
 				

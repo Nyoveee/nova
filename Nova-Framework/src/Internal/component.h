@@ -234,20 +234,21 @@ struct TranslucentMeshRenderer {
 };
 
 struct SkinnedMeshRenderer {
-	TypedResourceID<Model>					modelId		{ INVALID_RESOURCE_ID };
-	std::vector<TypedResourceID<Material>>	materialIds {};
+	TypedResourceID<Model>						modelId				{ INVALID_RESOURCE_ID };
+	std::vector<TypedResourceID<Material>>		materialIds			{};
+	std::unordered_map<BoneIndex, entt::entity> socketConnections	{};
 
 	bool castShadow = true;
 
 	REFLECTABLE(
 		modelId,
 		materialIds,
+		socketConnections,
 		castShadow
 	)
 
 	std::unordered_set<int>					isMaterialInstanced;
 
-	std::unordered_map<BoneIndex, entt::entity> socketConnections{};
 
 	// owns all the bone's final matrices.
 	// we have two copies for double buffering.. (we keep a copy of the old one)

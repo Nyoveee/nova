@@ -278,9 +278,6 @@ void AnimationSystem::calculateBoneMatrixes() {
 		// make sure we allocate enough memory for all of them. we will be using bone id as indices..
 		skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].resize(skeleton.bones.size());
 
-		// because the bones are moving, we need to update the child potentially attaching to a socket..
-		engine.transformationSystem.setChildrenDirtyFlag(entityId);
-
 		// retrieve animation...
 		Animator* animator = registry.try_get<Animator>(entityId);
 		Animation const* currentAnimation = nullptr;
@@ -292,6 +289,9 @@ void AnimationSystem::calculateBoneMatrixes() {
 			if (animation && animation->animations.size()) {
 				currentAnimation = &animation->animations[0];
 				timeInTicks = std::min(animator->timeElapsed * currentAnimation->ticksPerSecond, currentAnimation->durationInTicks - 0.01f);
+
+				// because the bones are moving, we need to update the child potentially attaching to a socket..
+				engine.transformationSystem.setChildrenDirtyFlag(entityId);
 			}
 		}
 
@@ -324,7 +324,7 @@ void AnimationSystem::calculateFinalMatrix(ModelNodeIndex nodeIndex, glm::mat4x4
 	// calculate final transformation, if it is a bone.
 	if (node.isBone) {
 		glm::mat4x4 finalTransformation = globalTransformation * skeleton.bones[node.boneIndex].offsetMatrix;
-		 skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex][node.boneIndex] = finalTransformation;
+		skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex][node.boneIndex] = finalTransformation;
 	}
 		
 	// recurse downwards..

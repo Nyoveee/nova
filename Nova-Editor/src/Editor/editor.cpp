@@ -552,7 +552,7 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 		else {
 			return engine.ecs.registry;
 		}
-	}();
+		}();
 
 	ImGui::PushID(++imguiCounter);
 
@@ -576,6 +576,81 @@ void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity 
 		ImGui::PopID();
 
 		for (auto&& [entityId, entityData] : registry.view<EntityData>().each()) {
+			// Let's upper case our entity name..
+			uppercaseEntityName.clear();
+			std::transform(entityData.name.begin(), entityData.name.end(), std::back_inserter(uppercaseEntityName), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+			// attempt to find entity..
+			if (uppercaseEntityName.find(uppercaseEntitySearchQuery) == std::string::npos) {
+				continue;
+			}
+
+			ImGui::PushID(static_cast<int>(entityId));
+
+			if (ImGui::Selectable(entityData.name.empty() ? "<no name>" : entityData.name.c_str(), selectedEntity == entityId)) {
+				onClickCallback(entityId);
+			}
+
+			ImGui::PopID();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	if (ImGui::BeginDragDropTarget()) {
+
+		if (displayingPrefabScripts) {
+			if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("PREFAB_HIERARCHY_ITEM")) {
+				onClickCallback(*((entt::entity*)payload->Data));
+			}
+		}
+		else {
+			if (ImGuiPayload const* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM")) {
+				onClickCallback(*((entt::entity*)payload->Data));
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::PopID();
+}
+
+// lol i just copy and paste haha
+void Editor::displayAllEntitiesDropDownList(const char* labelName, entt::entity selectedEntity, std::vector<entt::entity> const& listOfEntities, std::function<void(entt::entity)> const& onClickCallback) {
+	entt::registry& registry = [&]() -> entt::registry& {
+		if (displayingPrefabScripts) {
+			return engine.prefabManager.getPrefabRegistry();
+		}
+		else {
+			return engine.ecs.registry;
+		}
+	}();
+
+	ImGui::PushID(++imguiCounter);
+
+	EntityData* selectedEntityData = registry.try_get<EntityData>(selectedEntity);
+	const char* selectedEntityName = selectedEntityData ? selectedEntityData->name.c_str() : "<None>";
+
+	// Uppercase search query..
+	// Case insensitive searchQuery..
+	uppercaseEntitySearchQuery.clear();
+	std::transform(entitySearchQuery.begin(), entitySearchQuery.end(), std::back_inserter(uppercaseEntitySearchQuery), [](char c) { return static_cast<char>(std::toupper(c)); });
+
+	if (ImGui::BeginCombo(labelName, selectedEntityName)) {
+		ImGui::InputText("Search", &entitySearchQuery);
+
+		ImGui::PushID(-1);
+
+		if (ImGui::Selectable("<None>", false)) {
+			onClickCallback(entt::null);
+		}
+
+		ImGui::PopID();
+
+		for (auto entityId : listOfEntities) {
+			EntityData const& entityData = registry.get<EntityData>(entityId);
+
 			// Let's upper case our entity name..
 			uppercaseEntityName.clear();
 			std::transform(entityData.name.begin(), entityData.name.end(), std::back_inserter(uppercaseEntityName), [](char c) { return static_cast<char>(std::toupper(c)); });

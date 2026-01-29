@@ -100,6 +100,9 @@ public:
 
 	// display all entities
 	void displayAllEntitiesDropDownList(const char* labelName, entt::entity entity, std::function<void(entt::entity)> const& onClickCallback);
+	
+	// same as above, but onyl display a given list of entities..
+	void displayAllEntitiesDropDownList(const char* labelName, entt::entity entity, std::vector<entt::entity> const& listOfEntities, std::function<void(entt::entity)> const& onClickCallback);
 
 	void launchProfiler();
 

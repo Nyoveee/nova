@@ -117,6 +117,9 @@ inline void deserializeFromJson(DataMemberType& dataMember, Json const& json) {
 			else if constexpr (std::same_as<typename DataMemberType::key_type, int>) {
 				return std::stoi(name);
 			}
+			else if constexpr (std::same_as<typename DataMemberType::key_type, unsigned short>) {
+				return static_cast<unsigned short>(std::stoul(name));
+			}
 			else {
 				return static_cast<typename DataMemberType::key_type>(name);
 			}

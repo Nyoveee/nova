@@ -8,13 +8,6 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 		// changing model requires updating the renderer component's material vector.
 		rendererComponent.modelId = TypedResourceID<Model>{ newModelId };
 
-		// get their component..
-		T* rendererComponent = editor.engine.ecs.registry.try_get<T>(entity);
-
-		if (!rendererComponent) {
-			return;
-		}
-
 		auto&& [model, _] = editor.resourceManager.getResource<Model>(newModelId);
 
 		// invalid model..
@@ -24,7 +17,7 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 
 		std::vector<TypedResourceID<Material>> materialIds{};
 		materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
-		rendererComponent->materialIds = materialIds;
+		rendererComponent.materialIds = materialIds;
 	});
 
 	// ========================================
@@ -75,20 +68,51 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 
 		ImGui::SeparatorText("Bone Sockets");
 
-		// display it..
+		EntityData const& entityData = editor.engine.ecs.registry.get<EntityData>(entity);
+
+		// we keep track of a new entry.. iterate through the renderer component and remove old entry..
+		BoneIndex newBoneIndex = NO_BONE; 
+		entt::entity newAttachedEntity = entt::null;
+
+		// display all children..
 		for (auto&& [boneId, attachedEntity] : rendererComponent.socketConnections) {
 			Bone const& bone = model->skeleton->bones[boneId];
 
-			editor.displayAllEntitiesDropDownList(bone.name.c_str(), attachedEntity, [&](entt::entity selectedEntity) {
-				EntityData* entityData = editor.engine.ecs.registry.try_get<EntityData>(attachedEntity);
-				if (entityData) entityData->attachedSocket = NO_BONE;
+			editor.displayAllEntitiesDropDownList(bone.name.c_str(), attachedEntity, entityData.children, [&](entt::entity selectedEntity) {
+				if (attachedEntity == selectedEntity) {
+					return;
+				}
+
+				newBoneIndex = boneId;
+				newAttachedEntity = selectedEntity;
+
+				// detach..
+				EntityData* attachedEntityData = editor.engine.ecs.registry.try_get<EntityData>(attachedEntity);
+				if (attachedEntityData) {
+					attachedEntityData->attachedSocket = NO_BONE;
+				}
 
 				attachedEntity = selectedEntity;
 
-				// 
-				entityData = editor.engine.ecs.registry.try_get<EntityData>(attachedEntity);
-				if(entityData) entityData->attachedSocket = boneId;
+				// attach..
+				attachedEntityData = editor.engine.ecs.registry.try_get<EntityData>(attachedEntity);
+				if (attachedEntityData) attachedEntityData->attachedSocket = boneId;
 			});
+		}
+		
+		// remember to detach the newly selected entity from the other sockets..
+		if (newAttachedEntity != entt::null) {
+			for (auto&& [boneId, attachedEntity] : rendererComponent.socketConnections) {
+				if (boneId == newBoneIndex) {
+					continue;
+				}
+
+				if (attachedEntity != newAttachedEntity) {
+					continue;
+				}
+
+				attachedEntity = entt::null;
+			}
 		}
 	}
 
