@@ -75,6 +75,7 @@ struct EntityData {
 	std::string name													{};
 	std::string tag                                                     {};
 	entt::entity parent													= entt::null;
+	BoneIndex attachedSocket											= NO_BONE;
 	std::vector<entt::entity> children									{};
 	LayerID layerId														{};
 
@@ -90,6 +91,7 @@ struct EntityData {
 		name,
 		tag,
 		parent,
+		attachedSocket,
 		children,
 		layerId,
 		isActive,
@@ -133,6 +135,7 @@ struct Transform {
 	glm::mat3x3 normalMatrix	{};	// normal matrix is used to transform normals.
 	glm::mat4x4 localMatrix		{};	// transformation matrix in respect to parent!
 
+	glm::mat4x4 lastModelMatrix	{}; // records the previous frame's model matrix. (used for TAA).
 	glm::vec3 lastPosition		{ position };
 	glm::vec3 lastScale			{ scale };
 	glm::quat lastRotation		{ rotation };
@@ -244,8 +247,15 @@ struct SkinnedMeshRenderer {
 
 	std::unordered_set<int>					isMaterialInstanced;
 
+	std::unordered_map<BoneIndex, entt::entity> socketConnections{};
+
 	// owns all the bone's final matrices.
-	std::vector<glm::mat4x4> bonesFinalMatrices;
+	// we have two copies for double buffering.. (we keep a copy of the old one)
+	std::array<
+		std::vector<glm::mat4x4>, 2
+	> bonesFinalMatrices;
+
+	int currentBoneMatrixIndex = 0;
 };
 
 struct Animator {

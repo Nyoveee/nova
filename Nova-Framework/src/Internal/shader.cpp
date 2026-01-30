@@ -185,76 +185,128 @@ void Shader::recompile() {
 	}
 }
 
-void Shader::setBool(const std::string& name, bool const value) const {
-	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), static_cast<int>(value));
+GLuint Shader::id() const {
+	return m_id;
 }
 
-void Shader::setInt(const std::string& name, int const value) const {
-	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), value);
+GLint Shader::getUniformLocation(const char* name) const {
+	return glGetUniformLocation(m_id, name);
 }
 
-void Shader::setUInt(const std::string& name, unsigned int value) const {
-	glProgramUniform1ui(m_id, glGetUniformLocation(m_id, name.c_str()), value);
+// =================================================
+// Query via name..
+void Shader::setBool(const char* name, bool const value) const {
+	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name), static_cast<int>(value));
 }
 
-void Shader::setFloat(const std::string& name, float const value) const {
-	glProgramUniform1f(m_id, glGetUniformLocation(m_id, name.c_str()), value);
+void Shader::setInt(const char* name, int const value) const {
+	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name), value);
 }
 
-void Shader::setVec2(const std::string& name, glm::vec2 const& list) const {
-	glProgramUniform2f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1]);
+void Shader::setUInt(const char* name, unsigned int value) const {
+	glProgramUniform1ui(m_id, glGetUniformLocation(m_id, name), value);
 }
 
-void Shader::setMatrix(const std::string& name, const glm::mat4x4& matrix, bool transpose) const {
-	auto location = glGetUniformLocation(m_id, name.c_str());
+void Shader::setFloat(const char* name, float const value) const {
+	glProgramUniform1f(m_id, glGetUniformLocation(m_id, name), value);	
+}
+
+void Shader::setVec2(const char* name, glm::vec2 const& list) const {
+	glProgramUniform2f(m_id, glGetUniformLocation(m_id, name), list[0], list[1]);
+}
+
+void Shader::setMatrix(const char* name, const glm::mat4x4& matrix, bool transpose) const {
+	auto location = glGetUniformLocation(m_id, name);
 	glProgramUniformMatrix4fv(m_id, location, 1, transpose, glm::value_ptr(matrix));
 }
 
-void Shader::setMatrix(const std::string& name, const glm::mat3x3& matrix, bool transpose) const {
-	auto location = glGetUniformLocation(m_id, name.c_str());
-
-	//GLint count;
-	//glGetProgramiv(m_id, GL_ACTIVE_UNIFORMS, &count);
-	//for (int i = 0; i < count; i++) {
-	//	char name[256];
-	//	GLenum type;
-	//	GLint size;
-	//	glGetActiveUniform(m_id, i, 256, NULL, &size, &type, name);
-	//	printf("Active Uniform #%d: %s\n", i, name);
-	//}
-
+void Shader::setMatrix(const char* name, const glm::mat3x3& matrix, bool transpose) const {
+	auto location = glGetUniformLocation(m_id, name);
 	glProgramUniformMatrix3fv(m_id, location, 1, transpose, glm::value_ptr(matrix));
 }
 
-void Shader::setImageUniform(const std::string& name, int uniform) const {
-	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name.c_str()), uniform);
+void Shader::setImageUniform(const char* name, int uniform) const {
+	glProgramUniform1i(m_id, glGetUniformLocation(m_id, name), uniform);
 }
 
-
-void Shader::setVec3(const std::string& name, glm::vec3 const& list) const {
-	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
+void Shader::setVec3(const char* name, glm::vec3 const& list) const {
+	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name), list[0], list[1], list[2]);
 }
 
-void Shader::setVec2(const std::string& name, float x, float y) const {
-	glProgramUniform2f(m_id, glGetUniformLocation(m_id, name.c_str()), x, y);
+void Shader::setVec2(const char* name, float x, float y) const {
+	glProgramUniform2f(m_id, glGetUniformLocation(m_id, name), x, y);
 }
 
-void Shader::setVec3(const std::string& name, float x, float y, float z) const {
-	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name.c_str()), x, y, z);
+void Shader::setVec3(const char* name, float x, float y, float z) const {
+	glProgramUniform3f(m_id, glGetUniformLocation(m_id, name), x, y, z);
 }
 
-void Shader::setVec4(const std::string& name, glm::vec4 const& list) const {
-	glProgramUniform4f(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2], list[3]);
+void Shader::setVec4(const char* name, glm::vec4 const& list) const {
+	glProgramUniform4f(m_id, glGetUniformLocation(m_id, name), list[0], list[1], list[2], list[3]);
 }
 
-void Shader::setUVec2(const std::string& name, glm::uvec2 const& list) const {
-	glProgramUniform2ui(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1]);
+void Shader::setUVec2(const char* name, glm::uvec2 const& list) const {
+	glProgramUniform2ui(m_id, glGetUniformLocation(m_id, name), list[0], list[1]);
 }
 
-void Shader::setUVec3(const std::string& name, glm::uvec3 const& list) const {
-	glProgramUniform3ui(m_id, glGetUniformLocation(m_id, name.c_str()), list[0], list[1], list[2]);
+void Shader::setUVec3(const char* name, glm::uvec3 const& list) const {
+	glProgramUniform3ui(m_id, glGetUniformLocation(m_id, name), list[0], list[1], list[2]);
 }
 
-GLuint Shader::id() const {
-	return m_id;
+// =================================================
+// Using cached location..
+void Shader::setBool(GLint location, bool const value) const {
+	glProgramUniform1i(m_id, location, static_cast<int>(value));
+}
+
+void Shader::setInt(GLint location, int const value) const {
+	glProgramUniform1i(m_id, location, value);
+}
+
+void Shader::setUInt(GLint location, unsigned int value) const {
+	glProgramUniform1ui(m_id, location, value);
+}
+
+void Shader::setFloat(GLint location, float const value) const {
+	glProgramUniform1f(m_id, location, value);
+}
+
+void Shader::setVec2(GLint location, glm::vec2 const& list) const {
+	glProgramUniform2f(m_id, location, list[0], list[1]);
+}
+
+void Shader::setMatrix(GLint location, const glm::mat4x4& matrix, bool transpose) const {
+	glProgramUniformMatrix4fv(m_id, location, 1, transpose, glm::value_ptr(matrix));
+}
+
+void Shader::setMatrix(GLint location, const glm::mat3x3& matrix, bool transpose) const {
+	glProgramUniformMatrix3fv(m_id, location, 1, transpose, glm::value_ptr(matrix));
+}
+
+void Shader::setImageUniform(GLint location, int uniform) const {
+	glProgramUniform1i(m_id, location, uniform);
+}
+
+void Shader::setVec3(GLint location, glm::vec3 const& list) const {
+	glProgramUniform3f(m_id, location, list[0], list[1], list[2]);
+}
+
+void Shader::setVec2(GLint location, float x, float y) const {
+	glProgramUniform2f(m_id, location, x, y);
+}
+
+void Shader::setVec3(GLint location, float x, float y, float z) const {
+	glProgramUniform3f(m_id, location, x, y, z);
+}
+
+void Shader::setVec4(GLint location, glm::vec4 const& list) const {
+	glProgramUniform4f(m_id, location, list[0], list[1], list[2], list[3]);
+}
+
+void Shader::setUVec2(GLint location, glm::uvec2 const& list) const {
+	glProgramUniform2ui(m_id, location, list[0], list[1]);
+}
+
+void Shader::setUVec3(GLint location, glm::uvec3 const& list) const {
+	glProgramUniform3ui(m_id, location, list[0], list[1], list[2]);
 }

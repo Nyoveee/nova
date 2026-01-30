@@ -23,10 +23,7 @@ class Charger : Enemy
     private ParticleEmitter_? emitter;
     [SerializableField]
     private GameObject? chargeLines;
-    [SerializableField]
-    private Audio enemyHurtSFX;
-    [SerializableField]
-    private List<Audio> footStepSounds;
+
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -222,7 +219,7 @@ class Charger : Enemy
                 {
                     chargerState = ChargerState.Death;
                     animator.PlayAnimation("ChargerDeath");
-                    audioComponent.PlaySound(enemyHurtSFX);
+                    // AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
                     chargingRigidbody.enable = false;
                     navMeshRigidbody.enable = false;
                     chargeLines.SetActive(false);
@@ -234,7 +231,7 @@ class Charger : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (chargerState == ChargerState.Death && !WasRecentlyDamaged())
                 {
-                    audioComponent.PlaySound(enemyHurtSFX);
+                    //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
                     renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
@@ -329,8 +326,8 @@ class Charger : Enemy
         if(currentFootStepTime <= 0)
         {
             currentFootStepTime = chargerstats.timeBetweenChargeSteps;
-            footStepIndex = (footStepIndex + 1) % footStepSounds.Count;
-            audioComponent.PlaySound(footStepSounds[footStepIndex]);
+            footStepIndex = (footStepIndex + 1) % 2;
+            //AudioAPI.PlaySound(gameObject, footStepIndex == 0 ? "sfx_enemyChargeStep_01mono" : "sfx_enemyChargeStep_02mono");
         }
         chargingRigidbody.SetVelocity(chargeDirection * chargerstats.movementSpeed * chargerstats.chargeSpeedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
     }
@@ -432,7 +429,7 @@ class Charger : Enemy
         {
             chargerState = ChargerState.Stagger;
             animator.PlayAnimation("ChargerStagger");
-            audioComponent.PlaySound(enemyHurtSFX);
+            //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
             chargingRigidbody.SetVelocity(Vector3.Zero());
             chargeLines.SetActive(false);
         }

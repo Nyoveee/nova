@@ -12,6 +12,7 @@
 #include "reflection.h"
 
 using GLuint = unsigned int;
+using GLint = int;
 
 class Shader
 {
@@ -47,20 +48,38 @@ public:
 
 public:
 	// setting uniform functions
-	FRAMEWORK_DLL_API void setBool			(const std::string& name, bool value) const;
-	FRAMEWORK_DLL_API void setInt			(const std::string& name, int value) const;
-	FRAMEWORK_DLL_API void setUInt			(const std::string& name, unsigned int value) const;
-	FRAMEWORK_DLL_API void setFloat			(const std::string& name, float value) const;
-	FRAMEWORK_DLL_API void setVec2			(const std::string& name, float x, float y) const;
-	FRAMEWORK_DLL_API void setVec2			(const std::string& name, glm::vec2 const& list) const;
-	FRAMEWORK_DLL_API void setVec3			(const std::string& name, glm::vec3 const& list) const;
-	FRAMEWORK_DLL_API void setVec3			(const std::string& name, float x, float y, float z) const;
-	FRAMEWORK_DLL_API void setVec4			(const std::string& name, glm::vec4 const& list) const;
-	FRAMEWORK_DLL_API void setUVec2			(const std::string& name, glm::uvec2 const& list) const;
-	FRAMEWORK_DLL_API void setUVec3			(const std::string& name, glm::uvec3 const& list) const;
-	FRAMEWORK_DLL_API void setMatrix		(const std::string& name, const glm::mat4x4& matrix, bool transpose = false) const;
-	FRAMEWORK_DLL_API void setMatrix		(const std::string& name, const glm::mat3x3& matrix, bool transpose = false) const;
-	FRAMEWORK_DLL_API void setImageUniform	(const std::string& name, int uniform) const;
+	FRAMEWORK_DLL_API void setBool			(const char* name, bool value) const;
+	FRAMEWORK_DLL_API void setInt			(const char* name, int value) const;
+	FRAMEWORK_DLL_API void setUInt			(const char* name, unsigned int value) const;
+	FRAMEWORK_DLL_API void setFloat			(const char* name, float value) const;
+	FRAMEWORK_DLL_API void setVec2			(const char* name, float x, float y) const;
+	FRAMEWORK_DLL_API void setVec2			(const char* name, glm::vec2 const& list) const;
+	FRAMEWORK_DLL_API void setVec3			(const char* name, glm::vec3 const& list) const;
+	FRAMEWORK_DLL_API void setVec3			(const char* name, float x, float y, float z) const;
+	FRAMEWORK_DLL_API void setVec4			(const char* name, glm::vec4 const& list) const;
+	FRAMEWORK_DLL_API void setUVec2			(const char* name, glm::uvec2 const& list) const;
+	FRAMEWORK_DLL_API void setUVec3			(const char* name, glm::uvec3 const& list) const;
+	FRAMEWORK_DLL_API void setMatrix		(const char* name, const glm::mat4x4& matrix, bool transpose = false) const;
+	FRAMEWORK_DLL_API void setMatrix		(const char* name, const glm::mat3x3& matrix, bool transpose = false) const;
+	FRAMEWORK_DLL_API void setImageUniform	(const char* name, int textureUnit) const;
+
+	FRAMEWORK_DLL_API GLint getUniformLocation(const char* name) const;
+
+	// we set value if we have definite location..
+	FRAMEWORK_DLL_API void setBool			(GLint location, bool value) const;
+	FRAMEWORK_DLL_API void setInt			(GLint location, int value) const;
+	FRAMEWORK_DLL_API void setUInt			(GLint location, unsigned int value) const;
+	FRAMEWORK_DLL_API void setFloat			(GLint location, float value) const;
+	FRAMEWORK_DLL_API void setVec2			(GLint location, float x, float y) const;
+	FRAMEWORK_DLL_API void setVec2			(GLint location, glm::vec2 const& list) const;
+	FRAMEWORK_DLL_API void setVec3			(GLint location, glm::vec3 const& list) const;
+	FRAMEWORK_DLL_API void setVec3			(GLint location, float x, float y, float z) const;
+	FRAMEWORK_DLL_API void setVec4			(GLint location, glm::vec4 const& list) const;
+	FRAMEWORK_DLL_API void setUVec2			(GLint location, glm::uvec2 const& list) const;
+	FRAMEWORK_DLL_API void setUVec3			(GLint location, glm::uvec3 const& list) const;
+	FRAMEWORK_DLL_API void setMatrix		(GLint location, const glm::mat4x4& matrix, bool transpose = false) const;
+	FRAMEWORK_DLL_API void setMatrix		(GLint location, const glm::mat3x3& matrix, bool transpose = false) const;
+	FRAMEWORK_DLL_API void setImageUniform	(GLint location, int textureUnit) const;
 
 public:
 	FRAMEWORK_DLL_API void compile();

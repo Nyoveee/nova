@@ -2,9 +2,9 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
+
 class ElevatorQuest : Quest
 {
-    private AudioComponent_? audioComponent;
     [SerializableField]
     private GameObject checkPointIndicator;
     [SerializableField]
@@ -29,10 +29,13 @@ class ElevatorQuest : Quest
     private List<float> timings;
     [SerializableField]
     private float finalDialogueTime;
+
+    private AudioComponent_ audioComponent;
     protected override void init()
     {
         audioComponent = getComponent<AudioComponent_>();
     }
+
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);

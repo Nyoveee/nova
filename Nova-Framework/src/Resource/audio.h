@@ -23,5 +23,8 @@ private:
 // Try to provide default values if possible!
 template <>
 struct AssetInfo<Audio> : public BasicAssetInfo {
+	AssetInfo() = default;
+	AssetInfo(BasicAssetInfo assetInfo) : BasicAssetInfo{ std::move(assetInfo) } {};
+
 	bool is3D;
 };

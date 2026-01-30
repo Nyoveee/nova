@@ -47,7 +47,7 @@ namespace {
 	}
 }
 
-std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, float scale) {
+std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, float scale, std::vector<BoneIndex> sockets) {
 	constexpr unsigned int PostProcessingFlags {
 		aiProcess_JoinIdenticalVertices | aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace
 	};
@@ -86,6 +86,7 @@ std::optional<ModelData> ModelLoader::loadModel(std::string const& filepath, flo
 	if (bones.size()) {
 		Skeleton skeleton {};
 		skeleton.bones = std::move(bones);
+		skeleton.sockets = std::move(sockets);
 
 		// start recursive processing..
 		processBoneNodeHierarchy(skeleton, scene->mRootNode, NO_NODE);

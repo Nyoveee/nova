@@ -30,11 +30,11 @@ private:
 	void displayShaderInfo(AssetInfo<CustomShader>& descriptor);
 	void displayTextureInfo(AssetInfo<Texture>& descriptor);
 	void displayModelInfo(AssetInfo<Model>& descriptor);
-	void displayAnimationInfo(AssetInfo<Model>& descriptor);
 	void displayFontInfo(AssetInfo<Font>& descriptor);
 	void displayPrefabInfo(AssetInfo<Prefab>& descriptor);
 
-	void displayBoneHierarchy(BoneIndex boneIndex, Skeleton const& skeleton);
+	void displayAnimationInfo(Model const& animationResource);
+	void displayBoneHierarchy(AssetInfo<Model>& descriptor, BoneIndex boneIndex, Skeleton& skeleton);
 	void displayNodeHierarchy(ModelNodeIndex nodeIndex, Skeleton const& skeleton);
 
 	template <typename T>
@@ -48,6 +48,8 @@ private:
 	void selectNextResourceID();
 
 	void displayNavigationHistory();
+
+	void handleRecompilation();
 
 private:
 	ResourceID selectedResourceId;
@@ -81,6 +83,9 @@ private:
 	std::list<ResourceID> nextResourceIds;
 
 	bool toOverrideEditSystemResource;
+	bool recentlyChangedResource;
+
+	std::function<void()> recompileAssetWithDescriptor;
 };
 
 #include "assetViewerUi.ipp"

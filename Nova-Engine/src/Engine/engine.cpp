@@ -21,7 +21,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	cameraSystem			{ *this },
 	ecs						{ *this },
 	scriptingAPIManager		{ *this },
-	transformationSystem	{ ecs },
+	transformationSystem	{ *this, ecs },
 	physicsManager			{ *this },
 	audioSystem				{ *this },
 	navigationSystem		{ *this }, 

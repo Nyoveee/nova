@@ -198,7 +198,7 @@ int Compiler::compileFont(ResourceFilePath const& resourceFilePath, AssetFilePat
 	return 0;
 }
 
-int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePath const& intermediaryAssetFilepath, float scale) {
+int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetInfo<Model> descriptor) {
 	std::ofstream resourceFile{ resourceFilePath.string, std::ios::binary };
 
 	if (!resourceFile) {
@@ -206,7 +206,7 @@ int Compiler::compileModel(ResourceFilePath const& resourceFilePath, AssetFilePa
 		return -1;
 	}
 
-	auto optModelData = ModelLoader::loadModel(intermediaryAssetFilepath, scale);
+	auto optModelData = ModelLoader::loadModel(descriptor.filepath, descriptor.scale, std::move(descriptor.sockets));
 
 	if (!optModelData) {
 		return -1;

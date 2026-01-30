@@ -1,22 +1,17 @@
 {
-    "selectedShader": 3620437173915090947,
-    "overridenUniforms": {
-        "albedoMap": {
-            "type": "sampler2D",
+    "selectedShader": 2859715899220623361,
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
             "value": {
-                "__variant_value": 7,
+                "__variant_value": 8,
                 "__variant_type": 9
             }
         },
-        "roughness": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_value": 0.0,
-                "__variant_type": 12
-            }
-        },
-        "colorTint": {
-            "type": "Color",
+        {
+            "glslType": "Color",
+            "identifier": "colorTint",
             "value": {
                 "__variant_value": {
                     "r": 1.0,
@@ -26,21 +21,39 @@
                 "__variant_type": 10
             }
         },
-        "metallic": {
-            "type": "NormalizedFloat",
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "roughness",
             "value": {
                 "__variant_value": 0.0,
                 "__variant_type": 12
             }
         },
-        "occulusion": {
-            "type": "NormalizedFloat",
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "metallic",
             "value": {
                 "__variant_value": 0.0,
                 "__variant_type": 12
             }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "occulusion",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "bloom",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
         }
-    },
+    ],
     "blendingConfig": "Disabled",
     "depthTestingMethod": "NoDepthWriteTest",
     "cullingConfig": "Enable"

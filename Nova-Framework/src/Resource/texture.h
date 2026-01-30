@@ -28,6 +28,9 @@ private:
 
 template <>
 struct AssetInfo<Texture> : public BasicAssetInfo {
+	AssetInfo() = default;
+	AssetInfo(BasicAssetInfo assetInfo) : BasicAssetInfo{ std::move(assetInfo) } {};
+
 	enum class TextureType {
 		sRGB,
 		sRGBA,

@@ -32,6 +32,11 @@
 class Engine;
 class ResourceManager;
 
+enum class MeshType {
+	Normal,
+	Skinned
+};
+
 struct MeshBOs {
 	BufferObject positionsVBO{ BufferObject{0} };			// VA 0
 	BufferObject textureCoordinatesVBO{ BufferObject{0} };	// VA 1
@@ -43,18 +48,27 @@ struct MeshBOs {
 	BufferObject EBO{ BufferObject{0} };					// VA 5
 };
 
+struct ModelBatch {
+	entt::entity entity;
+	MeshType meshType;
+	float modelScale;
+	std::vector<std::reference_wrapper<const Mesh>> meshes;
+};
+
+struct MaterialBatch {
+	std::reference_wrapper<const Material> material;
+	std::reference_wrapper<const CustomShader> customShader;
+	std::reference_wrapper<const Shader> shader;
+
+	std::vector<ModelBatch> models;
+};
+
 enum class RenderMode {
 	Editor,
 	Game
 };
 
 class Renderer {
-public:
-	enum class MeshType {
-		Normal,
-		Skinned
-	};
-
 public:
 	Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int gameHeight);
 
@@ -71,8 +85,8 @@ public:
 
 	void renderUI();
 
-	// renders the main scene in the perspective of given camera. light storage is provided by lightSSBO.
-	void render(PairFrameBuffer& frameBuffers, Camera const& camera);
+	// renders the main scene in the perspective of given camera. 
+	void render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint TAAhistoryTexture);
 	
 	void renderToDefaultFBO();
 
@@ -84,13 +98,16 @@ public:
 	void shadowPass(int viewportWidth, int viewportHeight);
 
 	// does a depth pre pass and populates the gbuffer for ssao generation.
-	void depthPrePass(Camera const& camera);
+	void depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera);
 
 	// generates the SSAO texture.
 	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
 
 	// initialise the sample kernel and noise texture used in SSAO
-	void initialiseSSAO();	
+	void initialiseSSAO();
+
+	// initialise the data that TAA requires..
+	void initialiseTAA();
 
 	// when changing scene, mark all reflection probes as unloaded.
 	void resetLoadedReflectionProbes();
@@ -110,6 +127,7 @@ public:
 	ENGINE_DLL_API GLuint getUBOId() const;
 
 	ENGINE_DLL_API GLuint getEditorFrameBufferId() const;
+	ENGINE_DLL_API PairFrameBuffer const& getEditorFrameBuffer() const;
 
 	ENGINE_DLL_API void enableWireframeMode(bool toEnable);
 
@@ -210,14 +228,17 @@ private:
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
 
-	// render all MeshRenderers.
-	void renderModels(Camera const& camera, bool normalOnly = false);
+	// instead of naively render every game object one by one, we batch all game objects of the same material into
+	// their own render queue. 
+	void setupRenderQueue();
+
+	void createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
+
+	// render all models (normal and skinned).
+	void renderModels(bool depthPrePass = false);
 
 	// render all TranslucentMeshRenderers.
 	void renderTranslucentModels(Camera const& camera);
-
-	// render all SkinnedMeshRenderers.
-	void renderSkinnedModels(Camera const& camera, bool normalOnly = false);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -250,26 +271,28 @@ private:
 	void debugRender();
 
 	// Calls the relevant compute shader Pre Post Process
-	void computeFog(PairFrameBuffer& frameBuffers, Fog const& fog);
+	void computeFog(PairFrameBuffer& frameBuffers, Fog const& fog, Camera const& camera);
 
 	// renders post processing effect on the pair framebuffer
-	void renderPostProcessing(PairFrameBuffer& frameBuffers);
+	void renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fog);
 
 	// HDR post-processing functions
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
 
 	// set up the material's chosen shader and supply the proper uniforms..
-	// returns the material's underlying custom shader if setup is successful, otherwise nullptr.
-	CustomShader* setupMaterial(Camera const& camera, Material const& material, Transform const& transform, float scale = 1.f);
+	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader);
+
+	// this sets the uniforms of model specific data..
+	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, MeshType meshType);
 
 	// sets up the custom shader to output the mesh into the normal buffer instead.
-	CustomShader* setupMaterialNormalPass(Material const& material, Transform const& transform, float scale = 1.f);
+	void setupMaterialNormalPass(Material const& material, CustomShader const& customShader, Shader const& shader);
 
 	// void set up all the uniforms for the custom shader.
-	void setupCustomShaderUniforms(Shader const& shader, Material const& material, int numOfTextureUnitsUsed = 0);
+	void setupCustomShaderUniforms(CustomShader const& customShader, Shader const& shader, Material const& material, int numOfTextureUnitsUsed = 0);
 
 	// given a mesh and it's material, upload the necessary data to the VBOs and EBOs and issue a draw call.
-	void renderMesh(Mesh& mesh, Pipeline pipeline, MeshType meshType);
+	void renderMesh(Mesh const& mesh);
 
 	// helper function to obtain the underlying material of a mesh given its renderers.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
@@ -281,11 +304,14 @@ private:
 	void frustumCullLight(glm::mat4 const& viewProjectionMatrix);
 
 	// upload lights into SSBO
-	void prepareLights();
+	void prepareLights(Camera const& camera);
 
 	// upload reflection probes into UBO
 	// pass in disable to set reflection probe to 0.
 	void prepareReflectionProbes(Camera const& camera);
+
+	// we set all uniforms that the PBR pipeline requires here once, saving up uniform set up cost.
+	void preparePBRUniforms();
 
 	// builds clusters information for clustered forward rendering..
 	void clusterBuilding(Camera const& camera);
@@ -301,14 +327,11 @@ private:
 	// populates the directional light shadow pass
 	void shadowPassRender(glm::mat4 const& viewProjectionMatrix);
 
-	// set up the required uniforms for normal map
-	void setupNormalMapUniforms(Shader& shader, Material const& material);
-
 	// construct all required VBOs and EBO of the meshes if not constructed.
 	void constructMeshBuffers(Mesh& mesh);
 
 	// swap buffers to a new mesh to its respective buffer binding index
-	void swapVertexBuffer(Mesh& mesh);
+	void swapVertexBuffer(Mesh const& mesh);
 
 	// updates the camera UBO with camera information.
 	void updateCameraUBO(Camera const& camera);
@@ -327,6 +350,9 @@ private:
 	// will return a number greater than MAX_REFLECTION_PROBES if no more slot. (rare imo)
 	int getIndexToCubeMapArray();
 
+	// Resolves TAA, for anti aliasing.. then update the history texture..
+	void resolveTAA(PairFrameBuffer& frameBuffers, GLuint historyTexture);
+	
 private:
 	Engine& engine;
 	ResourceManager& resourceManager;
@@ -352,11 +378,13 @@ private:
 	BufferObject bonesSSBO;				// SSBO 3, bones SSBO
 	BufferObject clusterSSBO;			// SSBO 7
 	BufferObject volumetricFogSSBO;		// SSBO 8, Volumetric Fog SSBO
+	BufferObject oldBonesSSBO;			// SSBO 9, old bones SSBO (for TAA).
 
 	BufferObject cameraUBO;				// UBO 0
 	BufferObject shadowCasterMatrixes;	// UBO 1 stores the shadow caster matrixes in a UBO.
 	BufferObject PBRUBO;				// UBO 2
 	BufferObject reflectionProbesUBO;	// UBO 3
+	BufferObject TAAUBO;				// UBO 4
 
 	// Particle VAO and VBO
 	GLuint particleVAO;
@@ -373,6 +401,9 @@ private:
 	BufferObject textVBO;
 
 	GLuint ssaoNoiseTextureId;
+
+	GLuint editorHistoryTexture;
+	GLuint gameHistoryTexture;
 
 	Camera editorCamera;
 	Camera gameCamera;
@@ -412,8 +443,11 @@ private:
 	// when a reflection probe is deleted, the index is now free to use.
 	std::unordered_set<int> freeCubeMapArraySlots;
 
-private:
+	// holds batches of material, populated during render queue building..
+	std::vector<MaterialBatch> materialBatches;
+	std::unordered_map<ResourceID, int> materialResourceIdToIndex;
 
+private:
 	int numOfPhysicsDebugTriangles;
 	int numOfPhysicsDebugLines;
 	int numOfNavMeshDebugTriangles;
@@ -434,6 +468,8 @@ private:
 	
 	int numOfSpotlightShadowCaster;
 	int numOfLoadedReflectionProbe;
+
+	int haltonFrameIndex;
 
 public:
 	RenderConfig renderConfig;
@@ -473,6 +509,8 @@ public:
 
 	Shader bakeDiffuseIrradianceMapShader;	
 	Shader bakeSpecularIrradianceMapShader;
+
+	Shader TAAResolveShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;

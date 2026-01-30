@@ -47,8 +47,23 @@ struct Cluster
 
 struct PointLight{
     vec3 position;		
+    vec3 viewPosition;
     vec3 color;		
     vec3 attenuation; 
+    float radius;
+    float intensity;
+    int shadowMapIndex;
+};
+
+struct SpotLight {
+    vec3 position;
+    vec3 viewPosition;
+    vec3 direction;
+    vec3 viewDirection;
+    vec3 color;
+    vec3 attenuation;
+	float cutOffAngle;
+	float outerCutOffAngle;
     float radius;
     float intensity;
     int shadowMapIndex;
@@ -57,18 +72,6 @@ struct PointLight{
 struct DirectionalLight {
     vec3 direction;
     vec3 color;
-};
-
-struct SpotLight {
-    vec3 position;
-    vec3 direction;
-    vec3 color;
-    vec3 attenuation;
-	float cutOffAngle;
-	float outerCutOffAngle;
-    float radius;
-    float intensity;
-    int shadowMapIndex;
 };
 
 struct ReflectionProbe {
@@ -88,9 +91,13 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    mat4 inverseView;
+    mat4 inverseProjection;
+    mat4 inverseProjectionView;
+    mat4 previousViewProjection;    // for TAA
+
     vec3 cameraPosition;
 
-    // Clusters related info
     uvec3 gridSize;
     uvec2 screenDimensions;
     float zNear;
@@ -103,6 +110,13 @@ layout(std140, binding = 1) uniform ShadowCasterMatrixes {
 
 layout(std140, binding = 2) uniform PBRUBO {
     vec4 samples[64];   
+	mat4 directionalLightSpaceMatrix;
+	vec3 directionalLightDir;
+	float timeElapsed;
+	bool toEnableSSAO;
+	bool hasDirectionalLightShadowCaster;
+	bool toEnableIBL;
+	bool toOutputNormal;
 };
 
 layout(std140, binding = 3) uniform ReflectionProbes {
@@ -136,31 +150,18 @@ layout(std430, binding = 7) buffer clusterSSBO
     Cluster clusters[];
 };
 
-uniform float timeElapsed;
-
-// Shadows
-uniform bool hasDirectionalLightShadowCaster;
-uniform vec3 directionalLightDir;
-
-// SSAO
-uniform bool toEnableSSAO;
-
-// IBL
-uniform bool toEnableIBL;
-
-uniform sampler2D directionalShadowMap;
-uniform sampler2D ssao;
-uniform sampler2D brdfLUT;
-uniform sampler2DArray spotlightShadowMaps;
-uniform samplerCube diffuseIrradianceMap;
-uniform samplerCube prefilterMap;
-uniform samplerCubeArray reflectionProbesPrefilterMap;
+// Samplers..
+layout (binding = 0) uniform sampler2D directionalShadowMap;
+layout (binding = 1) uniform sampler2D ssao;
+layout (binding = 2) uniform sampler2D brdfLUT;
+layout (binding = 3) uniform sampler2DArray spotlightShadowMaps;
+layout (binding = 4) uniform samplerCube diffuseIrradianceMap;
+layout (binding = 5) uniform samplerCube prefilterMap;
+layout (binding = 6) uniform samplerCubeArray reflectionProbesPrefilterMap;
 
 layout (location = 0) out vec4 FragColor; 
-
-// for depth pre pass..
-layout (location = 1) out vec3 gNormal;
-uniform bool toOutputNormal;
+layout (location = 1) out vec3 gNormal; // for depth pre pass..
+layout (location = 2) out vec2 velocityUV;
 
 in VS_OUT {
     vec2 textureUnit;
@@ -168,6 +169,8 @@ in VS_OUT {
     vec3 fragWorldPos;
     vec3 fragViewPos;
     vec4 fragDirectionalLightPos;
+    vec4 fragOldClipPos;
+    vec4 fragCurrentClipPos;
     mat3 TBN;
 } fsIn;
 
@@ -663,6 +666,18 @@ vec3 getPrefilteredColor(Cluster cluster, float roughness, vec3 reflectDir) {
     return finalPrefilteredColor;
 }
 
+// https://sugulee.wordpress.com/2021/06/21/temporal-anti-aliasingtaa-tutorial/
+vec2 calculateVelocityUV(vec4 fragCurrentClipPos, vec4 fragOldClipPos) {
+    fragOldClipPos /= fragOldClipPos.w;                             // perspective divide..
+    fragOldClipPos.xy = (fragOldClipPos.xy + 1.0) / 2.0;            // transform [-1, 1] to [0, 1] (uv range)
+    
+    fragCurrentClipPos /= fragCurrentClipPos.w;                     // perspective divide..
+    fragCurrentClipPos.xy = (fragCurrentClipPos.xy + 1.0) / 2.0;    // transform [-1, 1] to [0, 1] (uv range)
+    
+    // return delta..
+    return (fragCurrentClipPos - fragOldClipPos).xy;
+}
+
 // User shader entry point.
 vec4 __internal__main__();
 
@@ -670,8 +685,10 @@ vec4 __internal__main__();
 void main() { 
     if(toOutputNormal) {
         gNormal = fsIn.normal;
+        velocityUV = calculateVelocityUV(fsIn.fragCurrentClipPos, fsIn.fragOldClipPos);
     }
     else {
-        FragColor = __internal__main__(); 
+        FragColor = __internal__main__();
+        // FragColor = vec4(calculateVelocityUV(fsIn.fragCurrentClipPos, fsIn.fragOldClipPos) * 10, 0, 1);
     }
 }

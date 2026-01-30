@@ -4,6 +4,7 @@ struct WorldSpace {
     vec4 position;
     vec3 normal;
     vec3 tangent;
+    vec4 previousPosition;
 };
 
 // ======= Function declaration =======
@@ -32,6 +33,11 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    mat4 inverseView;
+    mat4 inverseProjection;
+    mat4 inverseProjectionView;
+    mat4 previousViewProjection;    // for TAA
+
     vec3 cameraPosition;
 
     uvec3 gridSize;
@@ -40,24 +46,44 @@ layout(std140, binding = 0) uniform Camera {
     float zFar;
 };
 
+layout(std140, binding = 2) uniform PBRUBO {
+    vec4 samples[64];   
+	mat4 directionalLightSpaceMatrix;
+	vec3 directionalLightDir;
+	float timeElapsed;
+	bool toEnableSSAO;
+	bool hasDirectionalLightShadowCaster;
+	bool toEnableIBL;
+	bool toOutputNormal;
+};
+
+layout(std140, binding = 4) uniform TAAUBO {
+	vec4 haltonSequence[16]; // only first 2 elements used.
+	int frameIndex;
+    bool isTAAEnabled;
+};
+
 layout(std430, binding = 3) buffer Bones {
-    uint isSkinnedMesh;
     mat4 bonesFinalMatrices[];
+};
+
+layout(std430, binding = 9) buffer OldBones {
+    mat4 oldBonesFinalMatrices[];
 };
 
 const int MAX_NUMBER_OF_BONES = 4;
 const int INVALID_BONE = -1;
 
-uniform mat4 model;
-uniform mat3 normalMatrix;
-uniform mat4 localScale;
-uniform float timeElapsed;
+layout (location = 0) uniform mat4 model;
+layout (location = 4) uniform mat4 localScale;
+layout (location = 8) uniform mat4 previousModel;
+layout (location = 12) uniform mat3 normalMatrix;
+layout (location = 16) uniform uint isSkinnedMesh;
+
+// location will be cached and query in runtime.. 
 uniform bool toUseNormalMap;
 
 invariant gl_Position;
-
-// Shadows
-uniform mat4 directionalLightSpaceMatrix;
 
 out VS_OUT {
     vec2 textureUnit;
@@ -65,6 +91,8 @@ out VS_OUT {
     vec3 fragWorldPos;
     vec3 fragViewPos;
     vec4 fragDirectionalLightPos;
+    invariant vec4 fragOldClipPos;
+    invariant vec4 fragCurrentClipPos;
     mat3 TBN;
 } vsOut;
 
@@ -83,7 +111,13 @@ mat3 calculateTBN(vec3 N, vec3 T) {
 }
 
 vec4 calculateClipPosition(vec4 worldPosition) {
-    return cameraProjectionView * worldPosition;
+    vec4 clipPos = cameraProjectionView * worldPosition;
+
+    if(isTAAEnabled) {
+        clipPos.xy += haltonSequence[frameIndex].xy * clipPos.w; // Apply Jittering;
+    }
+
+    return clipPos;
 }
 
 void passDataToFragment(WorldSpace worldSpace) {
@@ -98,9 +132,12 @@ void passDataToFragment(WorldSpace worldSpace) {
     if(toUseNormalMap) {
         vsOut.TBN = calculateTBN(worldSpace.normal, worldSpace.tangent);
     }
+
+    vsOut.fragCurrentClipPos = cameraProjectionView * worldSpace.position;
+    vsOut.fragOldClipPos = previousViewProjection * worldSpace.previousPosition;
 }
 
-WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
+WorldSpace calculateWorldSpace() {
     WorldSpace worldSpace;
 
     // this is not a skinned mesh.
@@ -108,12 +145,14 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
         worldSpace.position             = model * localScale * vec4(position, 1.0);
         worldSpace.normal               = normalize(normalMatrix * normal);
         worldSpace.tangent              = normalize(normalMatrix * tangent);
+        worldSpace.previousPosition     = previousModel * localScale * vec4(position, 1.0);
     }
     // this is a skinned mesh.
     else {
-        vec4 localPosition = vec4(0.0);
-        vec3 localNormal = vec3(0.0);
-        vec3 localTangent = vec3(0.0);
+        vec4 localPosition          = vec4(0.0);
+        vec4 localPreviousPosition  = vec4(0.0);
+        vec3 localNormal            = vec3(0.0);
+        vec3 localTangent           = vec3(0.0);
 
         for(int i = 0; i < MAX_NUMBER_OF_BONES; ++i) {
             // out of all the max number of bones, we iterate through each bones for each vertex..
@@ -126,7 +165,8 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
             }
 
             // retrieve the corresponding bone final matrix and scale it according to weight..
-            localPosition += (bonesFinalMatrices[boneId] * vec4(position, 1.0)) * boneWeight;
+            localPosition           += (bonesFinalMatrices[boneId]      * vec4(position, 1.0)) * boneWeight;
+            localPreviousPosition   += (oldBonesFinalMatrices[boneId]   * vec4(position, 1.0)) * boneWeight;
 
             // dealing with normals..
             mat3 normalBoneTransform = inverse(transpose(mat3(bonesFinalMatrices[boneId]))) * boneWeight;
@@ -137,6 +177,7 @@ WorldSpace calculateWorldSpace(vec3 position, vec3 normal, vec3 tangent) {
         worldSpace.position             = model * localScale * localPosition;
         worldSpace.normal               = normalize(normalMatrix * localNormal);
         worldSpace.tangent              = normalize(normalMatrix * localTangent);
+        worldSpace.previousPosition     = previousModel * localScale * localPreviousPosition;
     }
 
     return worldSpace;

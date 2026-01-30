@@ -3,6 +3,7 @@
 #include "framebuffer.h"
 #include <array>
 
+#include "export.h"
 /*
 	The idea of a PairFrameBuffer is that we store 2 framebuffers internal, and ping pong between one another
 	when doing post processing passes.
@@ -25,6 +26,9 @@ public:
 
 	FrameBuffer const& getActiveFrameBuffer() const;
 	FrameBuffer const& getReadFrameBuffer() const;
+
+	// THIS IS A HARDCODED FUNCTION MEANT FOR DEBUGGING ONLY.
+	ENGINE_DLL_API GLuint getMotionTexture() const;
 
 private:
 	std::array<FrameBuffer, 2> frameBuffers;

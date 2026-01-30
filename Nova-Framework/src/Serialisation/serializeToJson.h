@@ -296,6 +296,11 @@ inline Json serializeToJson<ControllerNodeID>(ControllerNodeID const& controller
 }
 
 template<>
+inline Json serializeToJson<unsigned short>(unsigned short const& value) {
+	return static_cast<unsigned short>(value);
+}
+
+template<>
 inline Json serializeToJson<FieldEnum>(FieldEnum const& dataMember) {
 	Json json;
 	json["Type"] = dataMember.type;

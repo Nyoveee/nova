@@ -1,53 +1,59 @@
 {
     "selectedShader": 7461717385188458497,
-    "overridenUniforms": {
-        "albedoMap": {
-            "type": "sampler2D",
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
             "value": {
-                "__variant_value": 7,
+                "__variant_value": 8,
                 "__variant_type": 9
             }
         },
-        "roughness": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_value": 0.0,
-                "__variant_type": 12
-            }
-        },
-        "outlineThickness": {
-            "type": "float",
-            "value": {
-                "__variant_value": 0.0,
-                "__variant_type": 3
-            }
-        },
-        "colorTint": {
-            "type": "Color",
+        {
+            "glslType": "Color",
+            "identifier": "colorTint",
             "value": {
                 "__variant_value": {
-                    "r": 0.8569797873497009,
-                    "g": 0.8689655065536499,
-                    "b": 0.0
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
                 },
                 "__variant_type": 10
             }
         },
-        "metallic": {
-            "type": "NormalizedFloat",
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "roughness",
             "value": {
                 "__variant_value": 0.0,
                 "__variant_type": 12
             }
         },
-        "occulusion": {
-            "type": "NormalizedFloat",
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "metallic",
             "value": {
                 "__variant_value": 0.0,
                 "__variant_type": 12
             }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "occulusion",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "outlineThickness",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
         }
-    },
+    ],
     "blendingConfig": "Disabled",
     "depthTestingMethod": "DepthTest",
     "cullingConfig": "Enable"

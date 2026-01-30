@@ -82,22 +82,23 @@ std::filesystem::path const AssetIO::systemResourceDirectory	= std::filesystem::
 
 std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descriptorFile, std::filesystem::path const& rootDirectory) {
 	try {
+		BasicAssetInfo assetInfo;
 		std::string line;
-		ResourceID resourceId;
 
 		// reads the 1st line.
 		std::getline(descriptorFile, line);
-		resourceId = std::stoull(line);
+		assetInfo.id = std::stoull(line);
 
 		// reads the 2nd line, relative filepath.
 		std::string relativeFilepath;
 		std::getline(descriptorFile, relativeFilepath);
-		std::string fullFilepath = std::filesystem::path{ rootDirectory / relativeFilepath }.string();
+		ResourceID resourceId;
+		assetInfo.filepath = std::filesystem::path{ rootDirectory / relativeFilepath }.string();
 
 		// Get the name of the file from the fullFilepath
-		std::string name{ std::filesystem::path{ fullFilepath }.stem().string() };
+		assetInfo.name = std::filesystem::path{ assetInfo.filepath }.stem().string();
 
-		return { { resourceId, std::move(name), std::move(fullFilepath) }};
+		return assetInfo;
 	}
 	catch (std::exception const& ex) {
 		Logger::error("Failed to parse descriptor file, reason: {}", ex.what());
@@ -106,7 +107,10 @@ std::optional<BasicAssetInfo> AssetIO::parseDescriptorFile(std::ifstream& descri
 }
 
 BasicAssetInfo AssetIO::createDescriptorFile(ResourceID id, std::filesystem::path const& path, std::ostream& descriptorFile, std::filesystem::path const& rootDirectory) {
-	BasicAssetInfo assetInfo = { id, std::filesystem::path{ path }.stem().string(), path };
+	BasicAssetInfo assetInfo;
+	assetInfo.id = id;
+	assetInfo.name = std::filesystem::path{ path }.stem().string();
+	assetInfo.filepath = path;
 
 	try {
 		// calculate relative path to the Assets directory.

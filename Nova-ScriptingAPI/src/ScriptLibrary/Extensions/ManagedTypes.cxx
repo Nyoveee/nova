@@ -336,14 +336,21 @@ void SetUniformValue(int index, System::String^ name, std::vector<TypedResourceI
 	}
 
 	std::string parameterName = Convert(name);
-	auto iterator = material->materialData.overridenUniforms.find(parameterName);
 
-	if (iterator == material->materialData.overridenUniforms.end()) {
+	auto iterator = std::find_if(
+		material->materialData.uniformDatas.begin(),
+		material->materialData.uniformDatas.end(),
+		[&](auto&& uniformData) {
+			return uniformData.identifier == parameterName;
+		}
+	);
+
+	if (iterator == material->materialData.uniformDatas.end()) {
 		Logger::warn("Invalid parameter name {} when setting material property", parameterName);
 		return;
 	}
 
-	auto&& [__, uniformData] = *iterator;
+	auto&& uniformData = *iterator;
 	uniformData.value = data;
 }
 

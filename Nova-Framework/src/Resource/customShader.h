@@ -9,16 +9,17 @@
 #include <optional>
 #include <glm/glm.hpp>
 #include <unordered_map>
-
-using ShaderVariableName = std::string;
-using ShaderVariableType = std::string;
+#include <vector>
 
 class ResourceManager;
+class Material;
 
 enum class Pipeline {
 	PBR,			// uses everything.
 	Color,			// only uses albedo.
 };
+
+using GLint = int;
 
 class CustomShader: public Resource
 {
@@ -26,13 +27,12 @@ public:
 	// this struct will be de/serialisation for the construction of this resource custom shader	.
 	struct ShaderParserData {
 		// Tags (Defaulted)
-		BlendingConfig blendingConfig			= BlendingConfig::AdditiveBlending;
-		DepthTestingMethod depthTestingMethod	= DepthTestingMethod::DepthTest;
-		CullingConfig cullingConfig				= CullingConfig::Enable;
+		BlendingConfig blendingConfig = BlendingConfig::AdditiveBlending;
+		DepthTestingMethod depthTestingMethod = DepthTestingMethod::DepthTest;
+		CullingConfig cullingConfig = CullingConfig::Enable;
 
-		// Properties(name,type)
-		std::unordered_map<ShaderVariableName, ShaderVariableType> uniforms;
-		
+		std::vector<UniformData> uniformDatas{};
+
 		// Code
 		std::string vShaderCode;
 		std::string fShaderCode;
@@ -43,13 +43,16 @@ public:
 			blendingConfig,
 			depthTestingMethod,
 			cullingConfig,
-			uniforms,
+			uniformDatas,
 			vShaderCode,
 			fShaderCode,
 			pipeline
 		)
 
 	} customShaderData;
+
+	// we cache the uniform location once compiled.. during runtime.
+	std::vector<GLint> uniformLocations;
 
 public:
 	FRAMEWORK_DLL_API CustomShader(ResourceID id, ResourceFilePath resourceFilePath, ShaderParserData shaderData);
@@ -66,29 +69,12 @@ public:
 
 private:
 	std::optional<Shader> shader;
-
-public:
-	static inline const std::unordered_set<std::string> validGlslPrimitive {
-		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D"
-	};
-
-	static inline const std::unordered_set<std::string> validCustomTypes{
-		"Color", "ColorA", "NormalizedFloat"
-	};
-
-	static inline const std::unordered_map<std::string, std::string> customTypeToGlslPrimitive{
-		{ "Color",			"vec3"		},
-		{ "ColorA",			"vec4"		},
-		{ "NormalizedFloat", "float"	},
-	};
-
-	static inline const std::unordered_set<std::string> allValidShaderTypes = {
-		"bool", "int", "uint", "float", "vec2", "vec3", "vec4", "mat3", "mat4", "sampler2D",
-		"Color", "ColorA", "NormalizedFloat"
-	};
 };
 
 template <>
 struct AssetInfo<CustomShader> : public BasicAssetInfo {
+	AssetInfo() = default;
+	AssetInfo(BasicAssetInfo assetInfo) : BasicAssetInfo{ std::move(assetInfo) } {};
+
 	Pipeline pipeline;
 };

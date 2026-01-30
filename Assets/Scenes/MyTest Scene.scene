@@ -1,0 +1,262 @@
+{
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Parent",
+                "tag": "",
+                "parent": 4294967295,
+                "children": [
+                    4194306
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10014704297755787265,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 10014704297755787265
+                },
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "16652763906952685383": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 0.924138069152832,
+                    "g": 0.0,
+                    "b": 1.0
+                },
+                "intensity": 1.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 50.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "MeshRenderer": {
+                "modelId": 4,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Child",
+                "tag": "",
+                "parent": 0,
+                "children": [
+                    3145729
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10014704297755787265,
+                "prefabMetaData": {
+                    "prefabEntity": 1,
+                    "prefabID": 10014704297755787265
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 5,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": true,
+                "shadowCullFrontFace": true
+            },
+            "id": 4194306
+        },
+        {
+            "EntityData": {
+                "name": "GrandChild",
+                "tag": "",
+                "parent": 4194306,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 10014704297755787265,
+                "prefabMetaData": {
+                    "prefabEntity": 2,
+                    "prefabID": 10014704297755787265
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "intensity": 1.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 50.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
+            },
+            "id": 3145729
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
+        }
+    ]
+}
