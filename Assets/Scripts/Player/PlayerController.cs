@@ -2,6 +2,8 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+using ScriptingAPI;
+
 class PlayerController : Script
 {
 
@@ -35,6 +37,13 @@ class PlayerController : Script
     // ==================================
     private Transform_? transform;
     private Rigidbody_? rigidbody;
+    private AudioComponent_? audioComponent;
+
+    // Audio
+    [SerializableField]
+    private List<Audio> dashSFX;
+    [SerializableField]
+    private List<Audio> jumpSFX;
 
     // WASD
     private bool isMovingForward = false;
@@ -323,6 +332,12 @@ class PlayerController : Script
         dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
+    private void HandleJumpSound()
+    {
+        //count no. of jumps, up to like 5 or 6
+        // play a jump grunt sfx
+        // reset count to 0
+    }
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
     //{
     //    // We rotate our parent in the y axis..

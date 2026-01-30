@@ -22,11 +22,26 @@ class Grunt : Enemy
     private float spawningDuration = 1f;
     [SerializableField]
     private Rigidbody_? rigidbody;
+    [SerializableField]
+    private List<Audio> hurtSFX;
+    [SerializableField]
+    private List<Audio> attackSFX;
+    [SerializableField]
+    private List<Audio> deathSFX;
+    [SerializableField]
+    private List<Audio> spotSFX;
+    [SerializableField]
+    private List<Audio> footstepSFX;
+    [SerializableField]
+    private float footstepDelay = 0.7f;
+    private float timeSinceLastFootstep = 0f;
+    
     /***********************************************************
         Components
     ***********************************************************/
 
     private GruntStats? gruntStats = null;
+    private AudioComponent_ audioComponent;
 
     /***********************************************************
         Runtime variables..
@@ -56,7 +71,8 @@ class Grunt : Enemy
         base.init();
         gameObject.transform.rotation = Quaternion.Identity();
         gruntStats = getScript<GruntStats>();
-
+        audioComponent = getComponent<AudioComponent_>();
+        
         animator.PlayAnimation("Grunt Idle (Base)");
 
         // Populate state machine dispatcher..
@@ -201,6 +217,7 @@ class Grunt : Enemy
                 if (gruntState != GruntState.Death/* && !WasRecentlyDamaged()*/)
                 {
                     gruntState = GruntState.Death;
+                    audioComponent.PlayRandomSound(deathSFX);
                     animator.PlayAnimation("Grunt Death");
                     NavigationAPI.stopAgent(gameObject);
                     rigidbody.enable = false;
@@ -211,7 +228,9 @@ class Grunt : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (gruntState != GruntState.Death && !WasRecentlyDamaged())
                 {
-                    //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
+                    //AudioAPI.PlayRandomSound(gameObject, "Enemy Hurt SFX");
+                    audioComponent.PlayRandomSound(hurtSFX);
+
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
                     renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
@@ -225,6 +244,18 @@ class Grunt : Enemy
         }
     }
 
+    private void HandleFootStep()
+    {
+        if (gruntState == GruntState.Chasing && rigidbody.GetVelocity != Vector3.Zero)
+        {
+            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            if (timeSinceLastFootstep >= footstepDelay)
+            {
+                audioComponent.PlayRandomSound(footstepSFX);
+                timeSinceLastFootstep = 0;
+            }
+        }
+    }
 
     // kills this gameobject..
     /**********************************************************************
@@ -239,6 +270,7 @@ class Grunt : Enemy
         }
         if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(gameObject))
         {
+            audioComponent.PlayRandomSound(spotSFX);
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
         }
@@ -246,6 +278,7 @@ class Grunt : Enemy
     private void Update_ChasingState()
     {
         animator.SetFloat("Range", GetDistanceFromPlayer());
+        HandleFootStep();
         if (IsOnNavMeshOfflink())
         {
             gruntState = GruntState.PreJump;
@@ -305,7 +338,6 @@ class Grunt : Enemy
     ****************************************************************/
     public void Slash()
     {
-
         emitter.emit(1000);
 
         if (hitbox != null)
@@ -321,7 +353,7 @@ class Grunt : Enemy
     }
     public void BeginSwing()
     {
-        //AudioAPI.PlaySound(gameObject, "enemyattack_sfx");
+        audioComponent.PlayRandomSound(attackSFX);
         if (hitboxPrefab == null)
             return;
         hitbox = Instantiate(hitboxPrefab);

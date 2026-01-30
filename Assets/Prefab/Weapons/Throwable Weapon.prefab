@@ -1,17 +1,18 @@
 {
-    "RootEntity": 9,
+    "RootEntity": 1,
     "Entities": [
         {
             "EntityData": {
                 "name": "Rifle_Throwable",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": [
-                    10,
-                    11,
-                    12,
-                    13,
-                    14
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -22,8 +23,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true,
                     "11935986701403193153": false,
+                    "17237801994024849853": true,
                     "13953638462837156301": true,
                     "6919815292445452220": false
                 },
@@ -130,7 +131,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 10,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
@@ -271,13 +272,14 @@
                     }
                 ]
             },
-            "id": 9
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -353,13 +355,14 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 10
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -370,8 +373,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true,
                     "11935986701403193153": false,
+                    "17237801994024849853": true,
                     "13953638462837156301": false
                 },
                 "inactiveComponents": null
@@ -452,7 +455,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 9,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             }
@@ -460,13 +463,14 @@
                     }
                 ]
             },
-            "id": 11
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -631,13 +635,14 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 12
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -802,13 +807,14 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 13
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -973,7 +979,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 14
+            "id": 6
         }
     ]
 }
