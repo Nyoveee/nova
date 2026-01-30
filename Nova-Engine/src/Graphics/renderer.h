@@ -214,9 +214,6 @@ private:
 	// renders the bounding volume to debug frustum culling..
 	void debugRenderBoundingVolume();
 
-	// render video players (entities with VideoPlayer component)
-	void renderVideoPlayers(Camera const& camera);
-
 	// renders all the clusters of the camera..
 	void debugRenderClusters();
 

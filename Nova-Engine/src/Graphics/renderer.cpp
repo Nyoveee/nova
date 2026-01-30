@@ -410,7 +410,11 @@ void Renderer::renderMain(RenderConfig renderConfig) {
 
 		if (isGameScreenShown || isUIScreenShown)
 			renderUI();
-		
+
+		if (isEditorScreenShown) {
+			overlayUIToBuffer(editorMainFrameBuffer);
+		}
+
 		if (isGameScreenShown) {
 			overlayUIToBuffer(gameMainFrameBuffer);
 			renderUiObjectIds();
@@ -471,6 +475,7 @@ void Renderer::renderUI()
 			Image* image = registry.try_get<Image>(entity);
 			Text* text = registry.try_get<Text>(entity);
 			Button* button = registry.try_get<Button>(entity);
+			VideoPlayer* videoPlayer = registry.try_get<VideoPlayer>(entity);
 
 			if (!entityData.isActive) {
 				continue;
@@ -482,6 +487,31 @@ void Renderer::renderUI()
 
 			if (text && engine.ecs.isComponentActive<Text>(entity)) {
 				renderText(transform, *text);
+			}
+
+			if (videoPlayer && engine.ecs.isComponentActive<VideoPlayer>(entity)) {
+				auto [video, refCount] = resourceManager.getResource<Video>(videoPlayer->videoId);
+				if (video && video->isLoaded()) {
+					videoShader.use();
+
+					glm::vec2 textureCropSize(1.0f, 1.0f);
+					videoShader.setVec2("texture_crop_size", textureCropSize);
+					videoShader.setMatrix("model", transform.modelMatrix);
+					videoShader.setMatrix("view", glm::mat4(1.0f));
+					videoShader.setMatrix("projection", UIProjection);
+
+					videoShader.setImageUniform("texture_y", 0);
+					videoShader.setImageUniform("texture_cr", 1);
+					videoShader.setImageUniform("texture_cb", 2);
+
+					glBindTextureUnit(0, video->getTextureY());
+					glBindTextureUnit(1, video->getTextureCr());
+					glBindTextureUnit(2, video->getTextureCb());
+
+					glBindVertexArray(videoVAO);
+					glDrawArrays(GL_TRIANGLES, 0, 6);
+					glBindVertexArray(textVAO);
+				}
 			}
 		}
 	}
@@ -545,9 +575,6 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, Light
 
 	// Render particles
 	renderParticles();
-
-	// Render video players
-	renderVideoPlayers(camera);
 
 	// ======= Post Processing =======
 	glDisable(GL_DEPTH_TEST);
@@ -1354,57 +1381,6 @@ void Renderer::renderSkyBox() {
 		// only render the very first skybox.
 		return;
 	}
-}
-
-void Renderer::renderVideoPlayers(Camera const& camera) {
-#if defined(DEBUG)
-	ZoneScopedC(tracy::Color::PaleVioletRed1);
-#endif
-
-	auto videoView = registry.view<Transform, VideoPlayer>();
-	if (videoView.size_hint() == 0) return;
-
-	// Enable depth testing so videos render properly in 3D space
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_CULL_FACE);  // Allow viewing from both sides
-
-	videoShader.use();
-
-	for (auto entity : videoView) {
-		auto& transform = videoView.get<Transform>(entity);
-		auto& videoPlayer = videoView.get<VideoPlayer>(entity);
-
-		auto [video, refCount] = resourceManager.getResource<Video>(videoPlayer.videoId);
-		if (!video || !video->isLoaded()) continue;
-
-		// Calculate texture crop size for proper aspect ratio
-		glm::vec2 textureCropSize(1.0f, 1.0f);
-		videoShader.setVec2("texture_crop_size", textureCropSize);
-
-		// Set up matrices using entity's transform
-		videoShader.setMatrix("model", transform.modelMatrix);
-		videoShader.setMatrix("view", camera.view());
-		videoShader.setMatrix("projection", camera.projection());
-
-		// Bind YCbCr textures from Video resource
-		videoShader.setImageUniform("texture_y", 0);
-		videoShader.setImageUniform("texture_cr", 1);
-		videoShader.setImageUniform("texture_cb", 2);
-
-		glBindTextureUnit(0, video->getTextureY());
-		glBindTextureUnit(1, video->getTextureCr());
-		glBindTextureUnit(2, video->getTextureCb());
-
-		// Draw the video quad
-		glBindVertexArray(videoVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-	}
-
-	glBindVertexArray(0);
-	glDisable(GL_BLEND);     // Restore blend state
-	glEnable(GL_CULL_FACE);  // Restore culling
 }
 
 void Renderer::renderModels(Camera const& camera) {
