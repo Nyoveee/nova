@@ -17,7 +17,7 @@ class InteractTutorialQuest : InteractableQuest
     public override void OnSuccess(){
         renderer.setMaterialFloat(0, "emissiveStrength", 9f);
         droppingBoxSequencer.play();
-        AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
+        // AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
     }
     public override void OnFail(Transform_ playerTransform){
         if (playerTransform != null && playerCheckpoint != null)

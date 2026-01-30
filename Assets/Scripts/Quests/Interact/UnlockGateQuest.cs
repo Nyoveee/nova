@@ -17,7 +17,7 @@ class UnlockGateQuest : InteractableQuest
     }
     public override void OnSuccess()
     {
-        AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
+        // AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
         buttonRenderer.setMaterialFloat(0, "emissiveStrength", 9f);
         teleporter.SetActive(false);
         gate.SetActive(false);

@@ -66,7 +66,7 @@ class Shotgun : Gun
         onCooldown = true;
         isRecoiling = true;
 
-        AudioAPI.PlaySound(gameObject, "Shotgun Fire SFX");
+        // AudioAPI.PlaySound(gameObject, "Shotgun Fire SFX");
 
         for(int i = 0; i < numOfPellets; ++i)
         {

@@ -74,6 +74,7 @@ class PlayerController : Script
     {
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
+        audioComponent = getComponent<AudioComponent_>();
 
         CameraAPI.LockMouse();
 
@@ -399,7 +400,7 @@ class PlayerController : Script
         if (jumpCount < maxJumpCount && !isDashing)
         {
 
-            AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
+            // AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
@@ -414,7 +415,9 @@ class PlayerController : Script
             return;
         }
 
-        AudioAPI.PlaySound(gameObject, "dash1_sfx");
+        // AudioAPI.PlaySound(gameObject, "dash1_sfx");
+        audioComponent.PlayRandomSound(dashSFX);
+
         // We initialise dashing mechanic..
         isDashing = true;
         dashTimer -= dashCooldown;

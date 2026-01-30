@@ -50,7 +50,7 @@ class UltimateExplosion : Script
         explosionFinalScaleVector   = new Vector3(explosionFinalScale, explosionFinalScale, explosionFinalScale);
         finalScaleVector            = new Vector3(finalScale, finalScale, finalScale);
 
-        AudioAPI.PlaySound(gameObject, "sniper_specialImpact_01");
+        // AudioAPI.PlaySound(gameObject, "sniper_specialImpact_01");
     }
 
     // This function is invoked every update.

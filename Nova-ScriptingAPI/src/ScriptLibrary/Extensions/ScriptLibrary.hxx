@@ -228,6 +228,7 @@ public:
 	};
 };
 
+#if false
 // ======================================
 // This class is responsible for providing audio related APIs to the script.
 // ======================================
@@ -237,3 +238,4 @@ public:
 	static void PlayBGM(GameObject^ gameObject, System::String^ string);
 	static void StopSound(GameObject^ gameObject, System::String^ string);
 };
+#endif

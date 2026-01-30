@@ -10,7 +10,7 @@ class DroppingBox : Script
     public void BeginLift()
     {
         liftingBoxEmitter.SetActive(true);
-        AudioAPI.PlaySound(gameObject, "LaserRifle_SmallRocket_Shot1");
+        // AudioAPI.PlaySound(gameObject, "LaserRifle_SmallRocket_Shot1");
     }
     public void EndLift()
     {
@@ -20,7 +20,7 @@ class DroppingBox : Script
     {
         dropBurstEmitter.emit(100);
         Vector3 position = gameObject.transform.position;
-        AudioAPI.PlaySound(gameObject, "sfx_enemyChargeStep_02mono");
+        // AudioAPI.PlaySound(gameObject, "sfx_enemyChargeStep_02mono");
         
     }
 

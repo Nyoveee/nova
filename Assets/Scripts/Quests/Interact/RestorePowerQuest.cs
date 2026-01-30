@@ -40,7 +40,7 @@ class RestorePowerQuest : InteractableQuest
 
     public override void OnSuccess()
     {
-        AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
+        // AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
         generatorCoreRenderer.setMaterialFloat(0, "emissiveStrength", 9f);
         foreach (Door door in unlockableDoors)
             door.UnlockDoor();

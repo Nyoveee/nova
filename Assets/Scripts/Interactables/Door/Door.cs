@@ -123,14 +123,14 @@ class Door : Script
         doorState = DoorState.Opening;
 
         currentDoorMovingTime = doorMovingDuration;
-        AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
+        // AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
     }
     public void CloseDoor()
     {
         doorState = DoorState.Closing;
 
         currentDoorMovingTime = doorMovingDuration;
-        AudioAPI.PlaySound(gameObject, "slidingDoor_close_01");
+        // AudioAPI.PlaySound(gameObject, "slidingDoor_close_01");
     }
     public void LockDoor()
     {
