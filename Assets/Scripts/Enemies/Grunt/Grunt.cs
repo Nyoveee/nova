@@ -33,7 +33,6 @@ class Grunt : Enemy
     [SerializableField]
     private List<Audio> footstepSFX;
     [SerializableField]
-    private float footstepDelay = 0.7f;
     private float timeSinceLastFootstep = 0f;
     
     /***********************************************************
@@ -249,7 +248,7 @@ class Grunt : Enemy
         if (gruntState == GruntState.Chasing && rigidbody.GetVelocity != Vector3.Zero)
         {
             timeSinceLastFootstep += Time.V_FixedDeltaTime();
-            if (timeSinceLastFootstep >= footstepDelay)
+            if (timeSinceLastFootstep >= gruntStats.timeBetweenSteps)
             {
                 audioComponent.PlayRandomSound(footstepSFX);
                 timeSinceLastFootstep = 0;

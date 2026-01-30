@@ -13,7 +13,7 @@ class ChargerStats : EnemyStats
     public float maxChargeTime;
     public float chargeSpeedMultiplier;
     // Stomping
-    public int stompDamage = 20;
+    public float stompDamage = 12f;
     public float stompCooldown = 20f;
     public float stompHitboxDuration = 0.1f;
     // Detection

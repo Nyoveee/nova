@@ -1,21 +1,22 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 12,
     "Entities": [
         {
             "EntityData": {
                 "name": "Elevator",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": [
-                    2,
-                    5
+                    13,
+                    16
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
+                "prefabID": 14568256858542473223,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 1846010205724705037
+                    "prefabID": 14568256858542473223
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -106,7 +107,7 @@
                             {
                                 "name": "elevatorTransform",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             },
@@ -127,14 +128,14 @@
                             {
                                 "name": "tutorialDoor",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 13,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "hubDoor",
                                 "data": {
-                                    "__variant_value": 5,
+                                    "__variant_value": 16,
                                     "__variant_type": 4
                                 }
                             }
@@ -142,23 +143,132 @@
                     }
                 ]
             },
-            "id": 1
+            "ParticleEmitter": {
+                "texture": 0,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 100.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": true,
+                    "trailTexture": 5391556884225917121,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Tutorial Door",
                 "tag": "",
-                "parent": 1,
+                "parent": 12,
+                "attachedSocket": 65535,
                 "children": [
-                    3,
-                    4
+                    14,
+                    15
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
+                "prefabID": 14568256858542473223,
                 "prefabMetaData": {
                     "prefabEntity": 1,
-                    "prefabID": 1846010205724705037
+                    "prefabID": 14568256858542473223
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -257,14 +367,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 15,
                                     "__variant_type": 4
                                 }
                             },
@@ -286,20 +396,129 @@
                     }
                 ]
             },
-            "id": 2
+            "ParticleEmitter": {
+                "texture": 0,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 100.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": true,
+                    "trailTexture": 5391556884225917121,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 2,
+                "parent": 13,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
+                "prefabID": 14568256858542473223,
                 "prefabMetaData": {
                     "prefabEntity": 2,
-                    "prefabID": 1846010205724705037
+                    "prefabID": 14568256858542473223
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -379,20 +598,129 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 3
+            "ParticleEmitter": {
+                "texture": 0,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 100.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": true,
+                    "trailTexture": 5391556884225917121,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 2,
+                "parent": 13,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
+                "prefabID": 14568256858542473223,
                 "prefabMetaData": {
                     "prefabEntity": 3,
-                    "prefabID": 1846010205724705037
+                    "prefabID": 14568256858542473223
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -472,23 +800,132 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 4
+            "ParticleEmitter": {
+                "texture": 0,
+                "startSize": 1.0,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 1.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": -12.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 100.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": true,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": true,
+                    "trailTexture": 5391556884225917121,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Hub Door",
                 "tag": "",
-                "parent": 1,
+                "parent": 12,
+                "attachedSocket": 65535,
                 "children": [
-                    6,
-                    7
+                    17,
+                    18
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
+                "prefabID": 14568256858542473223,
                 "prefabMetaData": {
                     "prefabEntity": 4,
-                    "prefabID": 1846010205724705037
+                    "prefabID": 14568256858542473223
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -542,6 +979,30 @@
                     "z": 0.0
                 }
             },
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Enemy_HurtSpot",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 1.0,
+                "gravityMultiplier": 0.0,
+                "isRotatable": false,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "SphereCollider": {
+                "radius": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "AudioComponent": {
                 "volume": 1.0,
                 "loop": false
@@ -554,82 +1015,34 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 8255212936417148929,
+                        "scriptId": 12135503810755952677,
                         "fields": [
                             {
-                                "name": "doorOpenSFX",
+                                "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 17941145117363486723,
-                                    "__variant_type": 15
-                                }
-                            },
-                            {
-                                "name": "doorClosedSFX",
-                                "data": {
-                                    "__variant_value": 2953165557474476033,
-                                    "__variant_type": 15
-                                }
-                            },
-                            {
-                                "name": "doorType",
-                                "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
-                                }
-                            },
-                            {
-                                "name": "automaticDoordetectionRange",
-                                "data": {
-                                    "__variant_value": 10.0,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "leftDoor",
-                                "data": {
-                                    "__variant_value": 6,
+                                    "__variant_value": 1048737,
                                     "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "rightDoor",
-                                "data": {
-                                    "__variant_value": 7,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "openOffset",
-                                "data": {
-                                    "__variant_value": 22.0,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "doorMovingDuration",
-                                "data": {
-                                    "__variant_value": 2.0,
-                                    "__variant_type": 18
                                 }
                             }
                         ]
                     }
                 ]
             },
-            "id": 5
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 5,
+                "parent": 16,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
+                "prefabID": 14568256858542473223,
                 "prefabMetaData": {
                     "prefabEntity": 5,
-                    "prefabID": 1846010205724705037
+                    "prefabID": 14568256858542473223
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -692,7 +1105,7 @@
             },
             "Rigidbody": {
                 "motionType": "Kinematic",
-                "layer": "Moving",
+                "layer": "Enemy_HurtSpot",
                 "motionQuality": "Discrete",
                 "initialVelocity": {
                     "x": 0.0,
@@ -701,28 +1114,53 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
-                "isRotatable": true,
+                "isRotatable": false,
                 "isTrigger": false,
                 "dynamicCollider": false,
                 "toScaleWithTransform": true
             },
+            "SphereCollider": {
+                "radius": 3.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 6
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 12135503810755952677,
+                        "fields": [
+                            {
+                                "name": "enemyGameObject",
+                                "data": {
+                                    "__variant_value": 1048737,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 17
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 5,
+                "parent": 16,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
+                "prefabID": 14568256858542473223,
                 "prefabMetaData": {
                     "prefabEntity": 6,
-                    "prefabID": 1846010205724705037
+                    "prefabID": 14568256858542473223
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -802,7 +1240,7 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 7
+            "id": 18
         }
     ]
 }

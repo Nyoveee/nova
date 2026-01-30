@@ -1,18 +1,19 @@
 {
-    "RootEntity": 19,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
                 "name": "Grunt",
                 "tag": "Enemy",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": [
-                    20,
-                    21,
-                    22,
-                    23,
-                    24,
-                    25
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -69,8 +70,37 @@
                     "z": 0.0
                 }
             },
+            "Rigidbody": {
+                "motionType": "Dynamic",
+                "layer": "Enemy_HurtSpot",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 0.0,
+                "gravityMultiplier": 1.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": true,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 2.0,
+                    "y": 2.4000000953674316,
+                    "z": 2.700000047683716
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 2.700000047683716,
+                    "z": 0.0
+                },
+                "scaleWithTransform": false
+            },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.5,
                 "loop": false
             },
             "PositionalAudio": {
@@ -81,40 +111,144 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 15842916263221428229,
+                        "scriptId": 9501847987883769857,
                         "fields": [
+                            {
+                                "name": "chargerAttackHitBoxPrefab",
+                                "data": {
+                                    "__variant_value": 6206435736578506755,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "stompHitBoxPrefab",
+                                "data": {
+                                    "__variant_value": 16070990181531303937,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "attackHitBoxTransform",
+                                "data": {
+                                    "__variant_value": 1048800,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "stompHitBoxTransform",
+                                "data": {
+                                    "__variant_value": 1048797,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "chargingRigidbody",
+                                "data": {
+                                    "__variant_value": 1048737,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "navMeshRigidbody",
+                                "data": {
+                                    "__variant_value": 1048743,
+                                    "__variant_type": 4
+                                }
+                            },
                             {
                                 "name": "emitter",
                                 "data": {
-                                    "__variant_value": 21,
+                                    "__variant_value": 1048792,
                                     "__variant_type": 4
                                 }
                             },
                             {
-                                "name": "hitboxPrefab",
+                                "name": "chargeLines",
                                 "data": {
-                                    "__variant_value": 13123964764219588615,
-                                    "__variant_type": 9
-                                }
-                            },
-                            {
-                                "name": "hitboxPosition",
-                                "data": {
-                                    "__variant_value": 22,
+                                    "__variant_value": 1048790,
                                     "__variant_type": 4
                                 }
                             },
                             {
-                                "name": "spawningDuration",
+                                "name": "attackSFX",
                                 "data": {
-                                    "__variant_value": 1.0,
-                                    "__variant_type": 17
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "hurtSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "spotSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "stompSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "landSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
                                 }
                             },
                             {
                                 "name": "rigidbody",
                                 "data": {
-                                    "__variant_value": 23,
+                                    "__variant_value": 4294967295,
                                     "__variant_type": 4
                                 }
                             },
@@ -122,124 +256,199 @@
                                 "name": "ichorPrefab",
                                 "data": {
                                     "__variant_value": 14493050257245634575,
-                                    "__variant_type": 9
+                                    "__variant_type": 10
                                 }
                             },
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 24,
+                                    "__variant_value": 1048798,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 1048924,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 1048924,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 19,
+                                    "__variant_value": 1048737,
                                     "__variant_type": 4
                                 }
                             }
                         ]
                     },
                     {
-                        "scriptId": 278475951028994057,
+                        "scriptId": 9501847987883769859,
                         "fields": [
-                            {
-                                "name": "attackRadius",
-                                "data": {
-                                    "__variant_value": 7.0,
-                                    "__variant_type": 17
-                                }
-                            },
-                            {
-                                "name": "chasingRadius",
-                                "data": {
-                                    "__variant_value": 200.0,
-                                    "__variant_type": 17
-                                }
-                            },
                             {
                                 "name": "damage",
                                 "data": {
                                     "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "timeBetweenChargeSteps",
+                                "data": {
+                                    "__variant_value": 0.25999999046325684,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "chargingRange",
+                                "data": {
+                                    "__variant_value": 30.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "chargeDamage",
+                                "data": {
+                                    "__variant_value": 20,
                                     "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "chargeCooldown",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "maxChargeTime",
+                                "data": {
+                                    "__variant_value": 5.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "chargeSpeedMultiplier",
+                                "data": {
+                                    "__variant_value": 3.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "stompDamage",
+                                "data": {
+                                    "__variant_value": 12.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "stompCooldown",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "stompHitboxDuration",
+                                "data": {
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "chasingRange",
+                                "data": {
+                                    "__variant_value": 200.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "attackRange",
+                                "data": {
+                                    "__variant_value": 12.5,
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "health",
                                 "data": {
-                                    "__variant_value": 100.0,
-                                    "__variant_type": 17
+                                    "__variant_value": 300.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "movementSpeed",
                                 "data": {
                                     "__variant_value": 10.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "ichorPerDamage",
                                 "data": {
                                     "__variant_value": 30,
-                                    "__variant_type": 16
+                                    "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "ichorExplodeSpawnAmount",
                                 "data": {
                                     "__variant_value": 20,
-                                    "__variant_type": 16
+                                    "__variant_type": 17
                                 }
                             },
                             {
                                 "name": "hurtDuration",
                                 "data": {
                                     "__variant_value": 0.10000000149011612,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "jumpDuration",
                                 "data": {
                                     "__variant_value": 1.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "enemyExecuteThreshold",
                                 "data": {
                                     "__variant_value": 50.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "enemyArmouredMultiplier",
                                 "data": {
                                     "__variant_value": 1.0,
-                                    "__variant_type": 17
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "enemyWeakSpotMultiplier",
                                 "data": {
-                                    "__variant_value": 3.0,
-                                    "__variant_type": 17
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "scriptId": 12135503810755952677,
+                        "fields": [
+                            {
+                                "name": "enemyGameObject",
+                                "data": {
+                                    "__variant_value": 1048737,
+                                    "__variant_type": 4
                                 }
                             }
                         ]
@@ -253,13 +462,14 @@
                 "agentRotationSpeed": 100.0,
                 "separationWeight": 0.0
             },
-            "id": 19
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Grunt Model",
                 "tag": "Enemy",
-                "parent": 19,
+                "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -316,6 +526,10 @@
                     "z": 0.0
                 }
             },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
             "Scripts": {
                 "scriptDatas": [
                     {
@@ -324,42 +538,42 @@
                             {
                                 "name": "triggerMethod1",
                                 "data": {
-                                    "__variant_value": "Slash",
+                                    "__variant_value": "EndStagger",
                                     "__variant_type": 7
                                 }
                             },
                             {
                                 "name": "triggerMethod2",
                                 "data": {
-                                    "__variant_value": "EndAttack",
+                                    "__variant_value": "BeginSwing",
                                     "__variant_type": 7
                                 }
                             },
                             {
                                 "name": "triggerMethod3",
                                 "data": {
-                                    "__variant_value": "BeginSwing",
+                                    "__variant_value": "EndSwing",
                                     "__variant_type": 7
                                 }
                             },
                             {
                                 "name": "triggerMethod4",
                                 "data": {
-                                    "__variant_value": "EndDeath",
+                                    "__variant_value": "EndAttack",
                                     "__variant_type": 7
                                 }
                             },
                             {
                                 "name": "triggerMethod5",
                                 "data": {
-                                    "__variant_value": "BeginJump",
+                                    "__variant_value": "EndDeathAnimation",
                                     "__variant_type": 7
                                 }
                             },
                             {
                                 "name": "triggerMethod6",
                                 "data": {
-                                    "__variant_value": "",
+                                    "__variant_value": "EndStompAnimation",
                                     "__variant_type": 7
                                 }
                             },
@@ -381,23 +595,33 @@
                     }
                 ]
             },
+            "NavMeshAgent": {
+                "agentName": "Humanoid",
+                "agentMaxSpeed": 3.0,
+                "agentMaxAcceleration": 3.0,
+                "agentRotationSpeed": 1.0,
+                "separationWeight": 1.0
+            },
             "SkinnedMeshRenderer": {
-                "modelId": 1688568826965803029,
+                "modelId": 15509887387844050949,
                 "materialIds": [
-                    6202046481197531139
+                    11569123370892279809,
+                    13346461926958546947
                 ],
+                "socketConnections": null,
                 "castShadow": true
             },
             "Animator": {
-                "controllerId": 1112108074662379533
+                "controllerId": 9182558606910275585
             },
-            "id": 20
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Emitter",
                 "tag": "",
-                "parent": 19,
+                "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -481,6 +705,7 @@
                 "lightRadius": 0.0,
                 "looping": true,
                 "randomizedDirection": false,
+                "invertMovement": false,
                 "particleEmissionTypeSelection": {
                     "emissionShape": "Point",
                     "radiusEmitter": {
@@ -561,13 +786,14 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 21
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Hitbox Position",
                 "tag": "",
-                "parent": 19,
+                "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -624,13 +850,59 @@
                     "z": -3.1415927410125732
                 }
             },
-            "id": 22
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Enemy_HurtSpot",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 0.0,
+                "gravityMultiplier": 1.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.2999999523162842,
+                    "z": 1.2999999523162842
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 2.200000047683716,
+                    "z": 0.0
+                },
+                "scaleWithTransform": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 12135503810755952677,
+                        "fields": [
+                            {
+                                "name": "enemyGameObject",
+                                "data": {
+                                    "__variant_value": 4194565,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Grunt Collider",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 19,
+                "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -705,9 +977,9 @@
             },
             "BoxCollider": {
                 "shapeScale": {
-                    "x": 1.2999999523162842,
-                    "y": 2.799999952316284,
-                    "z": 0.5
+                    "x": 2.0,
+                    "y": 2.4000000953674316,
+                    "z": 2.700000047683716
                 },
                 "offset": {
                     "x": 0.0,
@@ -724,7 +996,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 19,
+                                    "__variant_value": 1048737,
                                     "__variant_type": 4
                                 }
                             }
@@ -732,13 +1004,25 @@
                     }
                 ]
             },
-            "id": 23
+            "SkinnedMeshRenderer": {
+                "modelId": 7295743889278828547,
+                "materialIds": [
+                    5507902798148157441
+                ],
+                "socketConnections": null,
+                "castShadow": true
+            },
+            "Animator": {
+                "controllerId": 14235729342422597637
+            },
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Ichor Spawn Point",
                 "tag": "",
-                "parent": 19,
+                "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -795,13 +1079,267 @@
                     "z": 0.0
                 }
             },
-            "id": 24
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
+            "PositionalAudio": {
+                "toggleSphere": false,
+                "innerRadius": 40.0,
+                "maxRadius": 100.0
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 15842916263221428229,
+                        "fields": [
+                            {
+                                "name": "emitter",
+                                "data": {
+                                    "__variant_value": 2097430,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "hitboxPrefab",
+                                "data": {
+                                    "__variant_value": 13123964764219588615,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "hitboxPosition",
+                                "data": {
+                                    "__variant_value": 2097428,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "spawningDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "rigidbody",
+                                "data": {
+                                    "__variant_value": 3146022,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "hurtSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "spotSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ichorPrefab",
+                                "data": {
+                                    "__variant_value": 14493050257245634575,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "ichorSpawnPoint",
+                                "data": {
+                                    "__variant_value": 3146023,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "animator",
+                                "data": {
+                                    "__variant_value": 2097422,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "renderer",
+                                "data": {
+                                    "__variant_value": 2097422,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "navMeshAgent",
+                                "data": {
+                                    "__variant_value": 2097432,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "scriptId": 278475951028994057,
+                        "fields": [
+                            {
+                                "name": "attackRadius",
+                                "data": {
+                                    "__variant_value": 7.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "chasingRadius",
+                                "data": {
+                                    "__variant_value": 200.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "damage",
+                                "data": {
+                                    "__variant_value": 20.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "timeBetweenSteps",
+                                "data": {
+                                    "__variant_value": 0.30000001192092896,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "health",
+                                "data": {
+                                    "__variant_value": 100.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "movementSpeed",
+                                "data": {
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ichorPerDamage",
+                                "data": {
+                                    "__variant_value": 30,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "ichorExplodeSpawnAmount",
+                                "data": {
+                                    "__variant_value": 20,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "hurtDuration",
+                                "data": {
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "jumpDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "enemyExecuteThreshold",
+                                "data": {
+                                    "__variant_value": 50.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "enemyArmouredMultiplier",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "enemyWeakSpotMultiplier",
+                                "data": {
+                                    "__variant_value": 3.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "NavMeshAgent": {
+                "agentName": "Humanoid",
+                "agentMaxSpeed": 10.0,
+                "agentMaxAcceleration": 10.0,
+                "agentRotationSpeed": 100.0,
+                "separationWeight": 0.0
+            },
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Grunt WeakSpot",
                 "tag": "Enemy_WeakSpot",
-                "parent": 19,
+                "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -867,15 +1405,15 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "mass": 10.0,
+                "mass": 1.0,
                 "gravityMultiplier": 0.0,
-                "isRotatable": false,
+                "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
                 "toScaleWithTransform": true
             },
             "SphereCollider": {
-                "radius": 1.5,
+                "radius": 1.0,
                 "offset": {
                     "x": 0.0,
                     "y": 0.0,
@@ -890,7 +1428,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 19,
+                                    "__variant_value": 4194565,
                                     "__variant_type": 4
                                 }
                             }
@@ -898,7 +1436,126 @@
                     }
                 ]
             },
-            "id": 25
+            "ParticleEmitter": {
+                "texture": 5391556884225917121,
+                "startSize": 0.5,
+                "minStartSizeOffset": 0.0,
+                "maxStartSizeOffset": 0.0,
+                "startSpeed": 20.0,
+                "initialAngularVelocity": 0.0,
+                "minAngularVelocityOffset": 0.0,
+                "maxAngularVelocityOffset": 0.0,
+                "force": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "lifeTime": 1.0,
+                "particleRate": 0.0,
+                "burstRate": 0.0,
+                "burstAmount": 30,
+                "lightIntensity": 0.0,
+                "lightattenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "lightRadius": 0.0,
+                "looping": true,
+                "randomizedDirection": false,
+                "invertMovement": false,
+                "particleEmissionTypeSelection": {
+                    "emissionShape": "Point",
+                    "radiusEmitter": {
+                        "radius": 5.0
+                    },
+                    "cubeEmitter": {
+                        "min": {
+                            "x": -5.0,
+                            "y": -5.0,
+                            "z": -5.0
+                        },
+                        "max": {
+                            "x": 5.0,
+                            "y": 5.0,
+                            "z": 5.0
+                        }
+                    },
+                    "coneEmitter": {
+                        "arc": 30.0,
+                        "distance": 5.0
+                    }
+                },
+                "particleColorSelection": {
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "colorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "colorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "emissiveMultiplier": 1.0
+                },
+                "sizeOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endSize": 0.0
+                },
+                "colorOverLifetime": {
+                    "selected": false,
+                    "interpolationType": "Linear",
+                    "endColor": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.0
+                    }
+                },
+                "trails": {
+                    "selected": false,
+                    "trailTexture": 0,
+                    "distancePerEmission": 0.10000000149011612,
+                    "trailSize": 0.10000000149011612,
+                    "trailColor": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "trailColorOffsetMin": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailColorOffsetMax": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "trailEmissiveMultiplier": 1.0
+                }
+            },
+            "SkinnedMeshRenderer": {
+                "modelId": 1688568826965803029,
+                "materialIds": [
+                    6202046481197531139
+                ],
+                "socketConnections": null,
+                "castShadow": true
+            },
+            "Animator": {
+                "controllerId": 1112108074662379533
+            },
+            "id": 6
         }
     ]
 }
