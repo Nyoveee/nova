@@ -240,13 +240,14 @@ bool Editor::isEntitySelected(entt::entity entity) {
 	return std::ranges::find(selectedEntities, entity) != std::end(selectedEntities);
 }
 
-bool Editor::isChildEntitySelected(entt::entity entity,entt::entity root)
+bool Editor::isChildEntitySelected(entt::entity entity,entt::entity root, entt::registry& registry)
 {
 	// Shouldn't expand if the root is selected
 	if(entity != root && isEntitySelected(entity))
 		return true;
-	for (entt::entity child : engine.ecs.registry.get<EntityData>(entity).children)
-		if (isChildEntitySelected(child,root))
+	//for (entt::entity child : engine.ecs.registry.get<EntityData>(entity).children)
+	for (entt::entity child : registry.get<EntityData>(entity).children)
+		if (isChildEntitySelected(child,root, registry))
 			return true;
 	return false;
 }
@@ -761,7 +762,7 @@ void Editor::displayEntityHierarchy(
 		if (selectedPredicate(entity)) {
 			flags |= ImGuiTreeNodeFlags_Selected;
 		}
-		if (isChildEntitySelected(entity, entity)) {
+		if (isChildEntitySelected(entity, entity, registry)) {
 			ImGui::SetNextItemOpen(true);
 		}
 			
