@@ -171,6 +171,7 @@ in VS_OUT {
     vec4 fragDirectionalLightPos;
     vec4 fragOldClipPos;
     vec4 fragCurrentClipPos;
+    vec3 boundingBoxUVW;
     mat3 TBN;
 } fsIn;
 
@@ -191,6 +192,7 @@ vec3  microfacetModelPoint          (vec3 position, vec3 n, vec3 baseColor, floa
 vec3  microfacetModelDir            (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, DirectionalLight light);
 vec3  microfacetModelSpot           (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
 vec3  BRDFCalculation               (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic);
+vec3  getNormalFromMap              (sampler2D normalMap, vec2 uv); 
 
 float directionalShadowCalculation  (sampler2D shadowMap, vec4 fragmentLightPos);
 float spotlightShadowCalculation    (sampler2DArray spotlightShadowMaps, int shadowMapIndex, vec4 fragmentLightPos);
@@ -676,6 +678,19 @@ vec2 calculateVelocityUV(vec4 fragCurrentClipPos, vec4 fragOldClipPos) {
     
     // return delta..
     return (fragCurrentClipPos - fragOldClipPos).xy;
+}
+
+vec3 getNormalFromMap(sampler2D normalMap, vec2 uv) {
+    // We assume that our normal map is compressed into BC5.
+    // Since BC5 only stores 2 channels, we need to calculate z in runtime.
+    vec2 bc5Channels = vec2(texture(normalMap, uv));
+    
+    // We shift the range from [0, 1] to  [-1, 1]
+    bc5Channels = bc5Channels * 2.0 - 1.0; 
+
+    // We calculate the z portion of the normal..
+    vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));
+    return normalize(fsIn.TBN * sampledNormal);
 }
 
 // User shader entry point.

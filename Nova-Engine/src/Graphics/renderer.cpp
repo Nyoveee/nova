@@ -698,10 +698,13 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// [Opaque pass] We render individual game objects..
 	renderModels();
 
-	// Restore default depth testing.
-	glDepthFunc(GL_LESS);
+	// Transparent depth test...
+	glDepthFunc(GL_LEQUAL);
 
 	renderTranslucentModels(camera);
+
+	// Original depth test..
+	glDepthFunc(GL_LESS);
 
 	// Render particles
 	renderParticles();
@@ -1421,6 +1424,24 @@ void Renderer::debugRenderBoundingVolume() {
 		// pointless to do frustum culling on disabled objects.
 		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
 			continue;
+			}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer.modelId);
+
+		if (!model) {
+			// missing model.
+			continue;
+		}
+
+		debugParticleShapeVBO.uploadData(DebugShapes::Cube(transform.boundingBox));
+		glDrawArrays(GL_LINES, 0, 24);
+	}
+
+	for (auto&& [entityID, entityData, transform, meshRenderer] : engine.ecs.registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entityID)) {
+			continue;
 		}
 
 		// Retrieves model asset from asset manager.
@@ -1662,12 +1683,12 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 				continue;
 			}
 
-			// If a model has only one submesh, we render all materials attached to this mesh renderer..
-			if (model->meshes.size() == 1) {
-				auto& mesh = model->meshes[0];
-				
-				for (auto const& materialId : materialIds) {
-					createMaterialBatchEntry(camera, materialId, mesh, entity, model->scale, meshType, renderQueueConfig);
+			// If a model has only one material requirements.., we render all materials attached to this mesh renderer..
+			if (model->materialNames.size() == 1) {
+				for (auto& mesh : model->meshes) {
+					for (auto const& materialId : materialIds) {
+						createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, renderQueueConfig);
+					}
 				}
 			}
 			else {
@@ -1678,7 +1699,7 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 					}
 
 					ResourceID materialId = materialIds[mesh.materialIndex];
-					createMaterialBatchEntry(camera, materialId, mesh, entity, model->scale, meshType, renderQueueConfig);
+					createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, renderQueueConfig);
 				}
 			}
 		}
@@ -1692,7 +1713,7 @@ void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQu
 	}
 }
 
-void Renderer::createMaterialBatchEntry(Camera const& camera, ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType, RenderQueueConfig renderQueueConfig) {
+void Renderer::createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, RenderQueueConfig renderQueueConfig) {
 	// Let's attempt to create a match batch entry for this given material
 	// Check if this material is valid (has material, custom shader and compiled shader)..
 
@@ -1726,15 +1747,15 @@ void Renderer::createMaterialBatchEntry(Camera const& camera, ResourceID materia
 	// let's determine whether material should be part of the opaque or transparent material batch.
 	// we determine by checking its blending..
 	if(material->materialData.blendingConfig == BlendingConfig::Disabled) {
-		createOpaqueMaterialBatchEntry(*material, *customShader, shader, mesh, entity, modelScale, meshType);
+		createOpaqueMaterialBatchEntry(model, *material, *customShader, shader, mesh, entity, meshType);
 	}
 	// we dont create a transparent entry if requested to ignore..
 	else if (renderQueueConfig != RenderQueueConfig::IgnoreTransparent) {
-		createTransparentMaterialEntry(camera, *material, *customShader, shader, mesh, entity, modelScale, meshType);
+		createTransparentMaterialEntry(camera, model, *material, *customShader, shader, mesh, entity, meshType);
 	}
 }
 
-void Renderer::createOpaqueMaterialBatchEntry(Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType) {
+void Renderer::createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType) {
 	// Let's check if the given material id has an index to the material batch vector...
 	// If not, we create one..
 	auto iterator = renderQueue.materialResourceIdToOpaqueIndex.find(material.id());
@@ -1779,10 +1800,12 @@ void Renderer::createOpaqueMaterialBatchEntry(Material const& material, CustomSh
 		// lets add a new entry..
 		modelIndex = static_cast<int>(materialBatch.models.size());
 		materialBatch.models.push_back(ModelBatch{
-			entity,
-			meshType,
-			modelScale,
-			{},	// empty vector..
+			.entity			= entity,
+			.meshType		= meshType,
+			.modelScale		= model.scale,
+			.boundingBoxMin = model.minBound,
+			.boundingBoxMax = model.maxBound,
+			.meshes			= {}, // empty vector..
 		});
 	}
 	else {
@@ -1793,14 +1816,14 @@ void Renderer::createOpaqueMaterialBatchEntry(Material const& material, CustomSh
 	materialBatch.models[modelIndex].meshes.push_back(mesh);
 }
 
-void Renderer::createTransparentMaterialEntry(Camera const& camera, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType) {
+void Renderer::createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType) {
 	// let's check if the given model has already a recorded entry..
 
 	auto modelIterator = std::find_if(
 		renderQueue.transparentMaterials.begin(),
 		renderQueue.transparentMaterials.end(),
 		[&](auto&& transparentEntry) {
-			return transparentEntry.entity == entity;
+			return transparentEntry.model.entity == entity;
 		}
 	);
 
@@ -1817,10 +1840,14 @@ void Renderer::createTransparentMaterialEntry(Camera const& camera, Material con
 			.material			= material,
 			.customShader		= customShader,
 			.shader				= shader,
-			.entity				= entity,
-			.meshType			= meshType,
-			.modelScale			= modelScale,
-			.meshes				= {}, // empty vector..
+			.model				= ModelBatch {
+				.entity			= entity,
+				.meshType		= meshType,
+				.modelScale		= model.scale,
+				.boundingBoxMin = model.minBound,
+				.boundingBoxMax = model.maxBound,
+				.meshes			= {}, // empty vector..
+			},
 			.distanceToCamera	= distance
 		};
 
@@ -1832,7 +1859,7 @@ void Renderer::createTransparentMaterialEntry(Camera const& camera, Material con
 	}
 
 	// add a new mesh entry..
-	renderQueue.transparentMaterials[index].meshes.push_back(mesh);
+	renderQueue.transparentMaterials[index].model.meshes.push_back(mesh);
 }
 
 void Renderer::renderModels(bool depthPrePass) {
@@ -1847,13 +1874,13 @@ void Renderer::renderModels(bool depthPrePass) {
 			setupMaterialNormalPass(materialBatch.material, materialBatch.customShader, materialBatch.shader);
 		}
 		else {
-			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader);
+			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader, DepthConfig::Ignore);
 		}
 
 		// for each model batch..
 		for (auto const& modelBatch : materialBatch.models) {
 			// set the uniforms of the model..
-			setupModelUniforms(modelBatch.entity, materialBatch.shader, modelBatch.modelScale, modelBatch.meshType);
+			setupModelUniforms(modelBatch.entity, materialBatch.shader, modelBatch.modelScale, modelBatch.boundingBoxMin, modelBatch.boundingBoxMax, modelBatch.meshType);
 
 			// for each mesh..
 			for (auto const& mesh : modelBatch.meshes) {
@@ -1863,15 +1890,15 @@ void Renderer::renderModels(bool depthPrePass) {
 	}
 }
 
-void Renderer::renderTranslucentModels(Camera const& camera) {
+void Renderer::renderTranslucentModels([[maybe_unused]] Camera const& camera) {
 	for (auto const& transparentEntry : renderQueue.transparentMaterials) {
-		setupMaterial(transparentEntry.material, transparentEntry.customShader, transparentEntry.shader);
+		setupMaterial(transparentEntry.material, transparentEntry.customShader, transparentEntry.shader, DepthConfig::UseMaterial);
 
 		// set the uniforms of the model..
-		setupModelUniforms(transparentEntry.entity, transparentEntry.shader, transparentEntry.modelScale, transparentEntry.meshType);
+		setupModelUniforms(transparentEntry.model.entity, transparentEntry.shader, transparentEntry.model.modelScale, transparentEntry.model.boundingBoxMin, transparentEntry.model.boundingBoxMax, transparentEntry.model.meshType);
 
 		// for each mesh..
-		for (auto const& mesh : transparentEntry.meshes) {
+		for (auto const& mesh : transparentEntry.model.meshes) {
 			renderMesh(mesh);
 		}
 	}
@@ -3183,7 +3210,7 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader) {
+void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig) {
 	auto const& shaderData = customShader.customShaderData;
 
 	// ===========================================================================
@@ -3191,7 +3218,11 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 	// ===========================================================================
 
 	setBlendMode(material.materialData.blendingConfig);
-	setDepthMode(material.materialData.depthTestingMethod); // We had a depth pre pass.
+
+	if (depthConfig == DepthConfig::UseMaterial) {
+		setDepthMode(material.materialData.depthTestingMethod); // We had a depth pre pass.
+	}
+
 	setCullMode(material.materialData.cullingConfig);
 
 	// ===========================================================================
@@ -3227,7 +3258,7 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 	shader.use();
 }
 
-void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, float modelScale, MeshType meshType) {
+void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, float modelScale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType) {
 	Transform const& transform = registry.get<Transform>(entity);
 
 	unsigned int isSkinnedMesh = meshType == MeshType::Skinned ? 1U : 0U;
@@ -3235,11 +3266,13 @@ void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, flo
 	
 	// we set uniforms with fixed locations..
 											// location
-	glProgramUniformMatrix4fv(shader.id(),	0,				1, GL_FALSE, glm::value_ptr(transform.modelMatrix));	 // Setting the model matrix
-	glProgramUniformMatrix4fv(shader.id(),	4,				1, GL_FALSE, glm::value_ptr(localModelScale));			 // Setting the local scale matrix
-	glProgramUniformMatrix4fv(shader.id(),	8,				1, GL_FALSE, glm::value_ptr(transform.lastModelMatrix)); // Setting the lastModelMatrix matrix
-	glProgramUniformMatrix3fv(shader.id(),	12,				1, GL_FALSE, glm::value_ptr(transform.normalMatrix));	 // Setting the normal matrix
-	glProgramUniform1ui	     (shader.id(),	16,							 isSkinnedMesh);							 // Setting the boolean indicating whether model is skinned..
+	glProgramUniformMatrix4fv(shader.id(),	0,				1, GL_FALSE, glm::value_ptr(transform.modelMatrix));		// Setting the model matrix
+	glProgramUniformMatrix4fv(shader.id(),	4,				1, GL_FALSE, glm::value_ptr(localModelScale));				// Setting the local scale matrix
+	glProgramUniformMatrix4fv(shader.id(),	8,				1, GL_FALSE, glm::value_ptr(transform.lastModelMatrix));	// Setting the lastModelMatrix matrix
+	glProgramUniformMatrix3fv(shader.id(),	12,				1, GL_FALSE, glm::value_ptr(transform.normalMatrix));		// Setting the normal matrix
+	glProgramUniform1ui	     (shader.id(),	16,							 isSkinnedMesh);								// Setting the boolean indicating whether model is skinned..
+	glProgramUniform3f	     (shader.id(),	17,				boundingBoxMin[0], boundingBoxMin[1], boundingBoxMin[2]);	// Setting the models boundary..
+	glProgramUniform3f	     (shader.id(),	18,				boundingBoxMax[0], boundingBoxMax[1], boundingBoxMax[2]);	// Setting the models boundary..
 
 	// upload bone final matrices as wel..
 	if (meshType == MeshType::Skinned) {

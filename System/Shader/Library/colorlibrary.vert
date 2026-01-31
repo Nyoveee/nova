@@ -77,6 +77,8 @@ layout (location = 4) uniform mat4 localScale;
 layout (location = 8) uniform mat4 previousModel;
 layout (location = 12) uniform mat3 normalMatrix;
 layout (location = 16) uniform uint isSkinnedMesh;
+layout (location = 17) uniform vec3 boundingBoxMin;
+layout (location = 18) uniform vec3 boundingBoxMax;
 
 invariant gl_Position;
 
@@ -87,6 +89,7 @@ out VS_OUT {
     vec3 fragViewPos;
     invariant vec4 fragOldClipPos;
     invariant vec4 fragCurrentClipPos;
+    vec3 boundingBoxUVW;
 } vsOut;
 
 // ======= Implementation =======
@@ -111,6 +114,10 @@ void passDataToFragment(WorldSpace worldSpace) {
 
     vsOut.fragCurrentClipPos = cameraProjectionView * worldSpace.position;
     vsOut.fragOldClipPos = previousViewProjection * worldSpace.previousPosition;
+
+    // We calculate bounding box UV here.. (its just range mapping..)
+    vec3 scaledPosition = mat3(localScale) * position;
+    vsOut.boundingBoxUVW = (scaledPosition - boundingBoxMin) / (boundingBoxMax - boundingBoxMin);
 }   
 
 WorldSpace calculateWorldSpace() {

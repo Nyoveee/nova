@@ -60,16 +60,7 @@ Frag{
     // === Handling normal ===
     vec3 _normal;
     if(toUseNormalMap) {
-        // We assume that our normal map is compressed into BC5.
-        // Since BC5 only stores 2 channels, we need to calculate z in runtime.
-        vec2 bc5Channels = vec2(texture(normalMap, uv));
-        
-        // We shift the range from [0, 1] to  [-1, 1]
-        bc5Channels = bc5Channels * 2.0 - 1.0; 
-
-        // We calculate the z portion of the normal..
-        vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));
-        _normal = normalize(fsIn.TBN * sampledNormal);
+        _normal = getNormalFromMap(normalMap, uv); 
     }
     else {
         _normal = normalize(fsIn.normal);

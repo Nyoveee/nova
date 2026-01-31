@@ -9,6 +9,7 @@ in VS_OUT {
     vec3 fragViewPos;
     vec4 fragOldClipPos;
     vec4 fragCurrentClipPos;
+    vec3 boundingBoxUVW;
 } fsIn;
 
 layout (location = 0) out vec4 FragColor; 

@@ -18,6 +18,11 @@ enum class RenderQueueConfig {
 	IgnoreTransparent	// used in shadow pass..
 };
 
+enum class DepthConfig {
+	UseMaterial,
+	Ignore
+};
+
 // We group all buffer objects of a model to a struct, with each buffer object storing the vertex attribute.
 struct MeshBOs {
 	BufferObject positionsVBO			{ BufferObject{0} };	// VA 0
@@ -38,6 +43,8 @@ struct ModelBatch {
 	entt::entity entity;
 	MeshType meshType;
 	float modelScale;
+	glm::vec3 boundingBoxMin;
+	glm::vec3 boundingBoxMax;
 	std::vector<std::reference_wrapper<const Mesh>> meshes;
 };
 
@@ -59,10 +66,7 @@ struct TransparentEntry {
 	std::reference_wrapper<const Shader> shader;
 
 	// Model information..
-	entt::entity entity;
-	MeshType meshType;
-	float modelScale;
-	std::vector<std::reference_wrapper<const Mesh>> meshes;
+	ModelBatch model;
 
 	// our sorting requirement..
 	float distanceToCamera;

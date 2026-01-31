@@ -198,9 +198,9 @@ private:
 	void setupRenderQueue(Camera const& camera, RenderQueueConfig renderQueueConfig = RenderQueueConfig::Normal);
 
 	// attempts to create a material batch..
-	void createMaterialBatchEntry(Camera const& camera, ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType, RenderQueueConfig renderQueueConfig);
-	void createOpaqueMaterialBatchEntry(Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
-	void createTransparentMaterialEntry(Camera const& camera, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
+	void createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, RenderQueueConfig renderQueueConfig);
+	void createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
+	void createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
 
 	// render all models (normal and skinned).
 	void renderModels(bool depthPrePass = false);
@@ -248,10 +248,10 @@ private:
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
 
 	// set up the material's chosen shader and supply the proper uniforms..
-	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader);
+	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig);
 
 	// this sets the uniforms of model specific data..
-	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, MeshType meshType);
+	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType);
 
 	// sets up the custom shader to output the mesh into the normal buffer instead.
 	void setupMaterialNormalPass(Material const& material, CustomShader const& customShader, Shader const& shader);

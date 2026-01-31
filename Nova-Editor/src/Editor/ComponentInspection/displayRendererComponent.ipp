@@ -3,6 +3,12 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 	// ========================================
 	// Display the model asset drop down..
 	// ========================================
+	auto&& [model, _] = editor.resourceManager.getResource<Model>(rendererComponent.modelId);
+
+	if (!model) {
+		ImGui::Text("Invalid model.");
+		return;
+	}
 
 	editor.displayAssetDropDownList<Model>(rendererComponent.modelId, "Model", [&](ResourceID newModelId) {
 		// changing model requires updating the renderer component's material vector.
@@ -25,7 +31,12 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 	// ========================================
 	ImGui::SeparatorText("Material");
 
-	ImGui::TextWrapped("If the model has only 1 sub mesh, you can attach multiple materials for additional render passes. Else, the rest will be ignored.");
+	if (model->materialNames.size() == 1) {
+		ImGui::TextWrapped("This model only requires 1 material. You can add more material to specify multiple render passes.");
+	}
+	else {
+		ImGui::TextWrapped("This model has multiple submesh, with each submesh having their own material specification.");
+	}
 
 	for (unsigned int i = 0; i < rendererComponent.materialIds.size(); ++i) {
 		TypedResourceID<Material>& id = rendererComponent.materialIds[i];
@@ -44,9 +55,7 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 	// Display all the sockets needed..
 	// ========================================
 	if constexpr (std::same_as<T, SkinnedMeshRenderer>) {
-		auto&& [model, _] = editor.resourceManager.getResource<Model>(rendererComponent.modelId);
-
-		if (!model || !model->skeleton) {
+		if (!model->skeleton) {
 			return;
 		}
 
