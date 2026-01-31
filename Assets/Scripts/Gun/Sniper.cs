@@ -1,18 +1,14 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-using ScriptingAPI;
 class Sniper : Gun
 {
     // Inspector variables
     public required Transform_ camera;
-    public required AudioComponent_ audioComponent;
     public required float cooldown = 1f;
     public required float recoilDuration = 0.2f;
     public required float range = 1000f;
     public required float damage = 40f;
-
-    public required Audio sniperFireSFX;
 
     // Runtime variables
     private float timeElapsed = 0f;
@@ -66,7 +62,7 @@ class Sniper : Gun
         isRecoiling = true;
         CurrentAmmo--;
 
-        audioComponent.PlaySound(sniperFireSFX);
+        //AudioAPI.PlaySound(gameObject, "Sniper Fire SFX");
 
         RayCastFire(camera.position, camera.front, range, damage);
 

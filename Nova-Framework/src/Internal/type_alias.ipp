@@ -242,8 +242,8 @@ inline ControllerNodeID::operator std::string() const {
 	return std::to_string(id);
 }
 
-constexpr ControllerNodeID NO_CONTROLLER_NODE	= std::numeric_limits<std::size_t>::max();
-constexpr ControllerNodeID ENTRY_NODE			= 1000;
+constexpr inline ControllerNodeID NO_CONTROLLER_NODE	= std::numeric_limits<std::size_t>::max();
+constexpr inline ControllerNodeID ENTRY_NODE			= 1000;
 
 // ========================================
 // Euler angles

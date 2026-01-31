@@ -86,13 +86,15 @@ void CustomShader::compile()
 	fShaderLibraryStream << "\n// Custom Shader Properties";
 	fShaderLibraryStream << "\n// !! ==========================================\n\n";
 
-	for (auto&& [identifier, type] : customShaderData.uniforms) {
+	for (auto&& [type, identifier, value] : customShaderData.uniformDatas) {
 		std::string comment;
 		std::string glslType = type;
 
 		// map our custom data types back to glsl primitive..
-		if (CustomShader::validCustomTypes.contains(type)) {
-			glslType = customTypeToGlslPrimitive.at(type);
+		auto iterator = customTypeToGlslPrimitive.find(type);
+
+		if (iterator != customTypeToGlslPrimitive.end()) {
+			glslType = iterator->second;
 			comment = "// was " + type;
 		}
 
@@ -110,6 +112,15 @@ void CustomShader::compile()
 	std::string fragmentCode = fShaderLibraryStream.str();
 
 	shader = Shader{ std::move(vertexCode), std::move(fragmentCode) };
+
+	// ========================================================
+	// We cache all uniform location data..
+	// ========================================================
+	uniformLocations.clear();
+
+	for (auto const& uniformData : customShaderData.uniformDatas) {
+		uniformLocations.push_back(shader->getUniformLocation(uniformData.identifier.c_str()));
+	}
 }
 
 std::optional<Shader> const& CustomShader::getShader() const {

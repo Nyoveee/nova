@@ -42,5 +42,9 @@ public:
 
 template <>
 struct AssetInfo<Model> : public BasicAssetInfo {
+	AssetInfo() = default;
+	AssetInfo(BasicAssetInfo assetInfo) : BasicAssetInfo{ std::move(assetInfo) } {};
+
 	float scale = 1.f;
+	std::vector<BoneIndex> sockets;
 };

@@ -1,8 +1,45 @@
 {
     "selectedShader": 2,
-    "overridenUniforms": {
-        "UVTiling": {
-            "type": "vec2",
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedo",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "color",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 0.8328655958175659,
+                    "b": 0.134482741355896
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "intensity",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "transparency",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVTiling",
             "value": {
                 "__variant_value": {
                     "x": 1.0,
@@ -11,8 +48,9 @@
                 "__variant_type": 4
             }
         },
-        "UVOffset": {
-            "type": "vec2",
+        {
+            "glslType": "vec2",
+            "identifier": "UVOffset",
             "value": {
                 "__variant_value": {
                     "x": 0.0,
@@ -20,40 +58,8 @@
                 },
                 "__variant_type": 4
             }
-        },
-        "intensity": {
-            "type": "float",
-            "value": {
-                "__variant_value": 10.0,
-                "__variant_type": 3
-            }
-        },
-        "transparency": {
-            "type": "NormalizedFloat",
-            "value": {
-                "__variant_value": 0.0,
-                "__variant_type": 12
-            }
-        },
-        "albedo": {
-            "type": "sampler2D",
-            "value": {
-                "__variant_value": 8,
-                "__variant_type": 9
-            }
-        },
-        "color": {
-            "type": "Color",
-            "value": {
-                "__variant_value": {
-                    "r": 1.0,
-                    "g": 0.6470588445663452,
-                    "b": 0.0
-                },
-                "__variant_type": 10
-            }
         }
-    },
+    ],
     "blendingConfig": "Disabled",
     "depthTestingMethod": "DepthTest",
     "cullingConfig": "Enable"

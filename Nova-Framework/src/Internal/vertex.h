@@ -25,7 +25,7 @@
 using GlobalVertexIndex = unsigned int;		// global vertex index are like indices per mesh, but we offset by the size of the previous mesh.
 
 using MaterialName		= std::string;
-using MeshID = size_t;
+using MeshID			= size_t;
 
 struct alignas(16) ParticleVertex {
 	glm::vec4 color;
@@ -109,7 +109,8 @@ struct ModelData {
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
 
 struct alignas(16) PointLightData {
-	alignas(16) glm::vec3 lightPos;		// this will represent light position for point light
+	alignas(16) glm::vec3 lightPos;		// this will represent world position for point light
+	alignas(16) glm::vec3 viewPos;		// this will represent view position for point light
 	alignas(16) glm::vec3 color;		// color of the light, limited to range of [0, 1]
 	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
 	float radius;						// Light sphere of influence..
@@ -124,8 +125,10 @@ struct alignas(16) DirectionalLightData{
 
 struct alignas(16) SpotLightData {
 	alignas(16) glm::vec3 lightPos;		// this will represent light position for spot light
+	alignas(16) glm::vec3 viewPos;		// this will represent view position for spot light
 	alignas(16) glm::vec3 lightDir;		// this will represent light direction for spot light
-	alignas(16) glm::vec3 color;		// strength of the light, not limited to range of [0, 1]
+	alignas(16) glm::vec3 lightDirView; // this will represent light direction for spot light (in view space)
+	alignas(16) glm::vec3 color;		// strength of the light, limited to range of [0, 1]
 	alignas(16) glm::vec3 attenuation;  // Constant, linear, quadratic values of attenuation
 	float cutOffAngle;					// Inner cutoff angle which shows full brightness
 	float outerCutOffAngle;				// Outer cutoff angle where the light will dim from inner to outer range

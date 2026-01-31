@@ -1,54 +1,59 @@
 {
     "selectedShader": 550855796467580931,
-    "overridenUniforms": {
-        "albedoMap": {
-            "type": "sampler2D",
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
             "value": {
-                "__variant_value": 7,
+                "__variant_value": 8,
                 "__variant_type": 9
             }
         },
-        "colorAddition": {
-            "type": "Color",
+        {
+            "glslType": "Color",
+            "identifier": "colorTint",
             "value": {
                 "__variant_value": {
-                    "r": 0.0,
-                    "g": 0.0,
-                    "b": 0.0
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
                 },
                 "__variant_type": 10
             }
         },
-        "speedMultiplier": {
-            "type": "float",
+        {
+            "glslType": "Color",
+            "identifier": "colorMultiplier",
             "value": {
-                "__variant_value": 5.0,
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "colorAddition",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "speedMultiplier",
+            "value": {
+                "__variant_value": 0.0,
                 "__variant_type": 3
             }
-        },
-        "colorMultiplier": {
-            "type": "Color",
-            "value": {
-                "__variant_value": {
-                    "r": 1.0,
-                    "g": 0.9931510090827942,
-                    "b": 0.006896555423736572
-                },
-                "__variant_type": 10
-            }
-        },
-        "colorTint": {
-            "type": "Color",
-            "value": {
-                "__variant_value": {
-                    "r": 1.0,
-                    "g": 0.9936028718948364,
-                    "b": 0.07241380214691162
-                },
-                "__variant_type": 10
-            }
         }
-    },
+    ],
     "blendingConfig": "AlphaBlending",
     "depthTestingMethod": "DepthTest",
     "cullingConfig": "Enable"

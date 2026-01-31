@@ -1,7 +1,9 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+
 using ScriptingAPI;
+
 class PlayerController : Script
 {
 
@@ -39,7 +41,7 @@ class PlayerController : Script
 
     // Audio
     [SerializableField]
-    private Audio dashSFX;
+    private List<Audio> dashSFX;
     [SerializableField]
     private List<Audio> jumpSFX;
 
@@ -101,7 +103,7 @@ class PlayerController : Script
         // ===================================
         // Check if its grounded..
         // ===================================
-        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 1f, gameObject);
+        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 14f, gameObject);
         if (result != null)
         {
             isGrounded = true;
@@ -332,6 +334,12 @@ class PlayerController : Script
         dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
+    private void HandleJumpSound()
+    {
+        //count no. of jumps, up to like 5 or 6
+        // play a jump grunt sfx
+        // reset count to 0
+    }
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
     //{
     //    // We rotate our parent in the y axis..
@@ -392,7 +400,8 @@ class PlayerController : Script
 
         if (jumpCount < maxJumpCount && !isDashing)
         {
-            audioComponent.PlaySound(jumpSFX[jumpCount]);
+
+            // AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
@@ -406,7 +415,10 @@ class PlayerController : Script
         {
             return;
         }
-        audioComponent.PlaySound(dashSFX);
+
+        // AudioAPI.PlaySound(gameObject, "dash1_sfx");
+        audioComponent.PlayRandomSound(dashSFX);
+
         // We initialise dashing mechanic..
         isDashing = true;
         dashTimer -= dashCooldown;

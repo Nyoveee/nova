@@ -6,15 +6,6 @@
             "animation": 15509887387844050953,
             "transitions": null,
             "toLoop": true,
-            "name": "ChargerStagger",
-            "animationEvents": [
-                {
-                    "key": 22,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent1"
-                }
-            ],
-            "toLoop": true,
             "name": "Entry Node",
             "animationEvents": null
         },
@@ -77,6 +68,20 @@
                 }
             ]
         },
+        "9625265992367898633": {
+            "id": 9625265992367898633,
+            "animation": 11777696343165779969,
+            "transitions": null,
+            "toLoop": true,
+            "name": "ChargerStomp",
+            "animationEvents": [
+                {
+                    "key": 19,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent6"
+                }
+            ]
+        },
         "16233225301454651393": {
             "id": 16233225301454651393,
             "animation": 12627583626326917121,
@@ -101,17 +106,17 @@
                 }
             ]
         },
-        "9625265992367898633": {
-            "id": 9625265992367898633,
-            "animation": 11777696343165779969,
+        "1165113439645138983": {
+            "id": 1165113439645138983,
+            "animation": 15509887387844050953,
             "transitions": null,
             "toLoop": true,
-            "name": "ChargerStomp",
+            "name": "ChargerStagger",
             "animationEvents": [
                 {
-                    "key": 19,
+                    "key": 23,
                     "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent6"
+                    "functionName": "TriggerEvent1"
                 }
             ]
         }

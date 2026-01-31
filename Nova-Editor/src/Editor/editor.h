@@ -56,7 +56,7 @@ public:
 	void update(float dt);
 	
 	bool isEntitySelected(entt::entity entity);
-	bool isChildEntitySelected(entt::entity entity,entt::entity root);
+	bool isChildEntitySelected(entt::registry& registry, entt::entity entity,entt::entity root);
 	bool hasAnyEntitySelected() const;
 	
 	void selectEntities(std::vector<entt::entity> entities);
@@ -101,6 +101,9 @@ public:
 	// display all entities
 	void displayAllEntitiesDropDownList(const char* labelName, entt::entity entity, std::function<void(entt::entity)> const& onClickCallback);
 
+	// same as above, but onyl display a given list of entities..
+	void displayAllEntitiesDropDownList(const char* labelName, entt::entity entity, std::vector<entt::entity> const& listOfEntities, std::function<void(entt::entity)> const& onClickCallback);
+	
 	void launchProfiler();
 
 public:

@@ -1,0 +1,94 @@
+{
+    "selectedShader": 11553281709438255105,
+    "uniformDatas": [
+        {
+            "glslType": "Color",
+            "identifier": "baseColor",
+            "value": {
+                "__variant_value": {
+                    "r": 0.4208323359489441,
+                    "g": 0.656028151512146,
+                    "b": 0.7724137902259827
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "edgeColor",
+            "value": {
+                "__variant_value": {
+                    "r": 0.1310344934463501,
+                    "g": 0.4426634907722473,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissivemultiplier",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "gridsize",
+            "value": {
+                "__variant_value": {
+                    "x": 300.0,
+                    "y": 300.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "flowDirection",
+            "value": {
+                "__variant_value": {
+                    "x": 1.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "flowSpeed",
+            "value": {
+                "__variant_value": 0.10000000149011612,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "roughness",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "metallic",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "occulusion",
+            "value": {
+                "__variant_value": 0.2630000114440918,
+                "__variant_type": 12
+            }
+        }
+    ],
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
+}

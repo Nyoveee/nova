@@ -8,13 +8,16 @@
 #include "nova_math.h"
 #include "Profiling.h"
 
+#include "Engine/engine.h"
+
 constexpr glm::vec3 defaultFront = { 0.f, 0.f, 1.f };
 constexpr glm::vec3 defaultUp = { 0, 1.f, 0 };
 glm::vec3 defaultRight = { glm::normalize(glm::cross(defaultFront, defaultUp)) };
 
-TransformationSystem::TransformationSystem(ECS& ecs) :
-	registry {ecs.registry},
-	eventDispatcher{ ecs.systemEventDispatcher }
+TransformationSystem::TransformationSystem(Engine& engine, ECS& ecs) :
+	engine			{ engine },
+	registry		{ ecs.registry },
+	eventDispatcher	{ ecs.systemEventDispatcher }
 {}
 
 void TransformationSystem::update() {
@@ -52,6 +55,7 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
+			// setSocketDirtyFlag(entity);
 		}
 
 		// Figure out if the entity requires updating it's local matrix.
@@ -66,6 +70,7 @@ void TransformationSystem::update() {
 
 			// All childrens will have to reupdate their world transform (if it's not modified directly).
 			setChildrenDirtyFlag(entity);
+			//setSocketDirtyFlag(entity);
 
 			// Quartenions changed, let's update our euler angles.
 			if (!glm::all(glm::epsilonEqual(transform.localRotation, transform.lastLocalRotation, 1e-4f))) {
@@ -153,19 +158,50 @@ void TransformationSystem::setChildrenDirtyFlag(entt::entity entity) {
 	}
 }
 
+void TransformationSystem::setSocketDirtyFlag(entt::entity entity)
+{
+	SkinnedMeshRenderer* mesh = registry.try_get<SkinnedMeshRenderer>(entity);
+	if (!mesh)
+		return;
+
+	for (auto& socketConnection : mesh->socketConnections) {
+		entt::entity connectedEntity = socketConnection.second;
+		Transform* trans = registry.try_get<Transform>(connectedEntity);
+		if (trans) {
+			trans->needsRecalculating = true;
+			setChildrenDirtyFlag(connectedEntity);
+		}
+	}
+}
+
 glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity entity) {
 	Transform& transform = registry.get<Transform>(entity);
+	EntityData& entityData = registry.get<EntityData>(entity);
 
 	// Attempts to get the most updated model matrix.
 	if (transform.needsRecalculating) {
-		EntityData& entityData = registry.get<EntityData>(entity);
-
 		if (entityData.parent == entt::null) {
 			// parent to nothing..
 			transform.modelMatrix = transform.localMatrix;
 		}
 		else {
-			transform.modelMatrix = getUpdatedModelMatrix(entityData.parent) * transform.localMatrix;
+			// let's find the bone of this parent if its attached to it's socket
+			SkinnedMeshRenderer const* skinnedMeshRenderer = registry.try_get<SkinnedMeshRenderer>(entityData.parent);
+
+			glm::mat4 boneWorldMatrix{ 1.f };
+
+			if (skinnedMeshRenderer && entityData.attachedSocket < skinnedMeshRenderer->bonesFinalMatrices[skinnedMeshRenderer->currentBoneMatrixIndex].size()) {
+				auto&& [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer->modelId);
+				
+				if (model) {
+					auto boneFinalMatrix = skinnedMeshRenderer->bonesFinalMatrices[skinnedMeshRenderer->currentBoneMatrixIndex][entityData.attachedSocket];
+					auto&& [position, rotation, __] = Math::decomposeMatrix(boneFinalMatrix);
+					boneWorldMatrix = glm::translate(boneWorldMatrix, position * model->scale);	// i dont actually wanna scale the mode, just the offset from local space..
+					boneWorldMatrix = boneWorldMatrix * glm::mat4_cast(rotation);
+				}
+			} 
+				
+			transform.modelMatrix = (getUpdatedModelMatrix(entityData.parent) * boneWorldMatrix) * transform.localMatrix;
 		}
 
 		transform.needsRecalculating = false;

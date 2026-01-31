@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
 
 namespace Serialiser {
 	void Serialiser::serialiseScene(entt::registry& registry, std::vector<Layer> const& layers, const char* fileName) {
@@ -15,7 +16,9 @@ namespace Serialiser {
 			jsonVec.push_back(componentsJson);
 		}
 
-		std::sort(jsonVec.begin(), jsonVec.end(), [](Json& a, Json& b) {return a["id"] < b["id"]; });
+		std::reverse(jsonVec.begin(), jsonVec.end());
+		//std::sort(jsonVec.begin(), jsonVec.end(), [](Json& a, Json& b) {return a["id"] < b["id"]; });
+		
 
 		// save to output file
 		js["entities"] = jsonVec;
@@ -34,7 +37,8 @@ namespace Serialiser {
 			return;
 		}
 
-		file << std::setw(4) << js << std::endl;
+		//file << std::setw(4) << js << std::endl;
+		file << js.dump(4) << std::endl;
 	}
 
 	void deserialiseScene(entt::registry& registry, std::vector<Layer>& layers, const char* fileName) {
@@ -46,7 +50,9 @@ namespace Serialiser {
 
 			Json j;
 
-			file >> j;
+			j = nlohmann::ordered_json::parse(file);
+
+			//file >> j;
 
 			layers.clear();
 

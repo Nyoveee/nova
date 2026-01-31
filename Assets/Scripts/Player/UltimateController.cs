@@ -32,8 +32,6 @@ class UltimateController : Script
     // Runtime variables
     // ==============================================
     private Rigidbody_ rigidbody;
-    private AudioComponent_ audioComponent_;
-
     private bool isCasting = false;
 
     private bool isSlowingDownTime = false;
@@ -43,16 +41,12 @@ class UltimateController : Script
     private bool isAnimatingVignetteFadeOut = false;
     private float vignetteTimeElapsed = 0f;
 
-    [SerializableField]
-    private Audio beginUltimateSequenceSFX;
-
 
     // This function is first invoked when game starts.
     protected override void init()
     {
         MapKey(Key.F, BeginUltimateSequence);
         rigidbody = getComponent<Rigidbody_>();
-        audioComponent_ = getComponent<AudioComponent_>();
         RendererAPI.toPostProcess = true;
         RendererAPI.vignette = 0f;
     }
@@ -102,7 +96,8 @@ class UltimateController : Script
         if (isCasting) {
             return;
         }
-        audioComponent_.PlaySound(beginUltimateSequenceSFX);
+
+        // AudioAPI.PlaySound(gameObject, "sniper_specialFire_01");
 
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
 

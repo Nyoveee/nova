@@ -8,20 +8,20 @@ Tags{
 // Properties for material instances to configure..
 Properties{
     sampler2D albedoMap;
-    Color colorTint;
+    sampler2D packedMap;
+    sampler2D normalMap;
+    sampler2D emissiveMap;
+
+    bool toUsePackedMap;
+    bool toUseNormalMap;
+    bool toUseEmissiveMap;
 
     NormalizedFloat roughness;
     NormalizedFloat metallic;
     NormalizedFloat occulusion;
 
-    bool toUsePackedMap;
-    sampler2D packedMap;
+    Color colorTint;
 
-    bool toUseNormalMap;
-    sampler2D normalMap;
-
-    bool toUseEmissiveMap;
-    sampler2D emissiveMap;
     float emissiveStrength;
 
     vec2 UVTiling; 
@@ -31,10 +31,9 @@ Properties{
 // Vertex shader..
 Vert{
     // Calculate world space of our local attributes..
-    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);
+    WorldSpace worldSpace = calculateWorldSpace();
     gl_Position = calculateClipPosition(worldSpace.position);
-    
-    passDataToFragment(worldSpace);
+    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
 }
 
 // Fragment shader..

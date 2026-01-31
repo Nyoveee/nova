@@ -140,10 +140,14 @@ struct Skeleton {
 	std::vector<Bone> bones		 {};
 	BoneIndex rootBone			 = NO_BONE;
 
+	// Sockets with bone indexes
+	std::vector<BoneIndex> sockets{};
+
 	REFLECTABLE(
 		nodes,
 		rootNode,
 		bones,
-		rootBone
+		rootBone,
+		sockets
 	)
 };

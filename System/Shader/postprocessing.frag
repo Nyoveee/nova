@@ -13,25 +13,29 @@ uniform vec3 offset;
 uniform float vignette;
 uniform uvec2 screenResolution;
 
+uniform vec3 fogColor;
+
 layout(std140, binding = 8) buffer VolumetricFogBuffer {
     FogData[] fogDatas;
 };
 
-
 void main()
 {             
-    vec4 color = texture2D(scene, textureCoords); 
+    vec3 color = texture2D(scene, textureCoords).rgb; 
 
     // Fog
     uvec2 pixelPos = uvec2(textureCoords.x * screenResolution.x, textureCoords.y * screenResolution.y);
     uint fogIndex = pixelPos.x + pixelPos.y * screenResolution.x;
-    color *= fogDatas[fogIndex].transmittance;
-    color += vec4(fogDatas[fogIndex].radiance, 0.0f);
+    
+    float transmittance = clamp(fogDatas[fogIndex].transmittance, 0, 1);
 
-    // Vignette
-    float distance = length(vec2(0.5) - textureCoords);
-    float vignetteMultiplier = clamp(vignette - distance, 0, 1);
-    FragColor = vec4(vec3(color) * vignetteMultiplier, color.a);  
+    // blend scene color with fog color.. based on transmittance value..
+    color = (color * transmittance) + (fogColor * (1 - transmittance));
+    // color = (color * transmittance);
+    // color = (fogColor * (1 - transmittance));
+
+    color += fogDatas[fogIndex].radiance;
     
-    
+    // color = vec3(transmittance);
+    FragColor = vec4(color, 1.0);
 }  

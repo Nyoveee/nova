@@ -1,13 +1,10 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
-using ScriptingAPI;
-
 class Shotgun : Gun
 {
     // Inspector variables
     public required Transform_ camera;
-    public required AudioComponent_ audioComponent;
     public required float cooldown = 1f;
     public required float recoilDuration = 0.2f;
 
@@ -15,8 +12,6 @@ class Shotgun : Gun
     public required float scatterRange = 0.5f;
     public required float damage = 20f;
     public required int numOfPellets = 5;
-
-    public required Audio shotgunFireSFX;
 
     // Runtime variables
     private float timeElapsed = 0f;
@@ -71,7 +66,7 @@ class Shotgun : Gun
         onCooldown = true;
         isRecoiling = true;
 
-        audioComponent.PlaySound(shotgunFireSFX);
+        // AudioAPI.PlaySound(gameObject, "Shotgun Fire SFX");
 
         for(int i = 0; i < numOfPellets; ++i)
         {

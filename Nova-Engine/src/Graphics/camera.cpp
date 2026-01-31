@@ -43,7 +43,7 @@ glm::vec3 Camera::clipToWorldSpace(glm::vec3 const& clipPos) {
 	return glm::vec3(worldPos) / worldPos.w;
 }
 
-glm::vec3 Camera::getPos() const {
+glm::vec3 const& Camera::getPos() const {
 	return cameraPos;
 }
 
@@ -55,7 +55,7 @@ void Camera::addPos(glm::vec3 pos) {
 	cameraPos = cameraPos + pos;
 }
 
-glm::vec3 Camera::getFront() const {
+glm::vec3 const& Camera::getFront() const {
 	return cameraFront;
 }
 
@@ -65,11 +65,11 @@ void Camera::setFront(glm::vec3 front) {
 	cameraUp = glm::normalize(glm::cross(cameraFront, cameraRight));
 }
 
-glm::vec3 Camera::getRight() const {
+glm::vec3 const& Camera::getRight() const {
 	return cameraRight;
 }
 
-glm::vec3 Camera::getUp() const {
+glm::vec3 const& Camera::getUp() const {
 	return cameraUp;
 }
 
@@ -110,6 +110,14 @@ void Camera::setViewMatrix(glm::mat4x4 const& p_viewMatrix) {
 	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
 
+void Camera::recordViewProjectionMatrix() {
+	previousViewProjectionMatrix = viewProjectionMatrix;
+}
+
+glm::mat4 const& Camera::getPreviousViewProjectionMatrix() const {
+	return previousViewProjectionMatrix;
+}
+
 void Camera::recalculateViewMatrix() {
 	viewMatrix = glm::lookAt(cameraPos, cameraPos + cameraFront, Up);
 	viewProjectionMatrix = projectionMatrix * viewMatrix;
@@ -119,11 +127,3 @@ void Camera::recalculateProjectionMatrix() {
 	projectionMatrix = glm::perspective<float>(fovAngle, aspectRatio, nearPlaneDistance, farPlaneDistance);
 	viewProjectionMatrix = projectionMatrix * viewMatrix;
 }
-
-//bool Camera::getStatus() {
-//	return isActive;
-//}
-//
-//void Camera::setStatus(bool newStatus) {
-//	isActive = newStatus;
-//}

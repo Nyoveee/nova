@@ -106,9 +106,9 @@ void ComponentInspector::update() {
 			editor.unpackPrefab(entityData);
 		}
 
-		//if (ImGui::Button("Update Prefab")) {
-		//	editor.engine.prefabManager.updatePrefab(selectedEntity);
-		//}
+		if (ImGui::Button("Update Prefab")) {
+			editor.engine.prefabManager.updatePrefab(selectedEntity);
+		}
 	}
 	else if (entityData.prefabID != TypedResourceID<Prefab>{ INVALID_RESOURCE_ID }) {
 		Logger::warn("Entity {} has invalid prefab id, relegating him back to a normal entity..", entityData.name);
@@ -121,6 +121,12 @@ void ComponentInspector::update() {
 		ImGui::Text("Parent: ");
 		ImGui::SameLine();
 		ImGui::Text(entityData.parent == entt::null ? "None" : registry.get<EntityData>(entityData.parent).name.c_str());
+
+		ImGui::Text("Attached bone socket: %hu", entityData.attachedSocket);
+
+		if (ImGui::Button("Reset bone socket")) {
+			entityData.attachedSocket = NO_BONE;
+		}
 
 		ImGui::Text("Direct children: ");
 
@@ -186,6 +192,7 @@ void ComponentInspector::update() {
 		ImGui::EndChild();
 
 		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
+		ImGui::Text("Prefab Entity: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabEntity));
 	}
 
 	// Display the rest of the components via reflection.

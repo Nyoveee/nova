@@ -275,7 +275,6 @@ void AnimatorController::displaySelectedAnimationTimeline(Animator& animator, Co
 	ImGui::BeginChild("Animation Timeline");
 
 	Animation const& animation = animationResource->animations[0];
-
 	int currentFrame = static_cast<int>(animator.timeElapsed * animation.ticksPerSecond);
 
 	// switch animation..
@@ -283,8 +282,43 @@ void AnimatorController::displaySelectedAnimationTimeline(Animator& animator, Co
 		animator.currentAnimation = node.animation;
 	}
 
+	ImGui::BeginDisabled(editor.isInSimulationMode());
+
+	if (ImGui::Button("Back to start")) {
+		currentFrame = 0;
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Reset to bind pose")) {
+		SkinnedMeshRenderer* skinnedMeshRenderer = editor.engine.ecs.registry.try_get<SkinnedMeshRenderer>(selectedEntity);
+		animator.currentNode = NO_CONTROLLER_NODE;
+		animator.currentAnimation = TypedResourceID<Model>{ INVALID_RESOURCE_ID };
+
+		for (auto const& selectedNodeId : selectedNodes) {
+			ed::DeselectNode(selectedNodeId	);
+		}
+
+		currentFrame = 0;
+
+		selectedNodes.clear();
+
+		if (skinnedMeshRenderer) {
+			for (auto&& doubleBuffer : skinnedMeshRenderer->bonesFinalMatrices) {
+				for (auto&& finalMatrix : doubleBuffer) {
+					finalMatrix = glm::mat4{ 1.f };
+				}
+			}
+		}
+
+		// last update.. to move attached objects to bind pose.
+		editor.engine.transformationSystem.setChildrenDirtyFlag(selectedEntity);
+	}
+
+	ImGui::EndDisabled();
+
 	int startFrame = 0;
-	int endFrame = static_cast<int>(animation.durationInTicks)-1;
+	int endFrame = static_cast<int>(animation.durationInTicks) - 1;
 
 	if (ImGui::BeginNeoSequencer(animation.name.c_str(), &currentFrame, &startFrame, &endFrame, {})) {
 		if (ImGui::BeginNeoTimelineEx("Timeline", nullptr)) {

@@ -13,7 +13,7 @@ struct aiAnimation;
 
 class ModelLoader {
 public:
-	static std::optional<ModelData> loadModel(std::string const& filepath, float scale);
+	static std::optional<ModelData> loadModel(std::string const& filepath, float scale, std::vector<BoneIndex> sockets);
 
 private:
 	static Mesh processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat4x4 const& globalTransformationMatrix);

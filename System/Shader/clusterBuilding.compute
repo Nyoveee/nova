@@ -23,6 +23,11 @@ layout(std140, binding = 0) uniform Camera {
     mat4 view;
     mat4 projection;
     mat4 cameraProjectionView;
+    mat4 inverseView;
+    mat4 inverseProjection;
+    mat4 inverseProjectionView;
+    mat4 previousViewProjection;    // for TAA
+
     vec3 cameraPosition;
 
     uvec3 gridSize;
@@ -30,8 +35,6 @@ layout(std140, binding = 0) uniform Camera {
     float zNear;
     float zFar;
 };
-
-uniform mat4 inverseProjection;
 
 vec3 screenToView(vec2 screenCoord);
 vec3 lineIntersectionWithZPlane(vec3 startPoint, vec3 endPoint, float zDistance);

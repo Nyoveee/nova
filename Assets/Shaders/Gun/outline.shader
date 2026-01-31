@@ -13,10 +13,10 @@ Properties{
 
 // Vertex shader..
 Vert{
-// ======================================================
-// Uncomment this section of the code if you want to use the Color pipeline.
-    gl_Position = calculateClipPosition(position);
-    vsOut.textureUnit = textureUnit; 
+    // Calculate world space of our local attributes..
+    WorldSpace worldSpace = calculateWorldSpace();
+    gl_Position = calculateClipPosition(worldSpace.position);
+    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
 }
 
 // Fragment shader..

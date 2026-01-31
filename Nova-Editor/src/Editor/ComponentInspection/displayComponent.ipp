@@ -5,6 +5,9 @@
 void displayLightComponent(Editor& editor, Light& dataMember);
 void displayReflectionProbeComponent(Editor& editor, ReflectionProbe& dataMember, Transform const& transform);
 
+template <typename T> // T can be either MeshRenderer or SkinnedMeshRenderer.
+void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity entity);
+
 namespace {
 	// https://stackoverflow.com/questions/54182239/c-concepts-checking-for-template-instantiation
 
@@ -97,6 +100,10 @@ namespace {
 			else if constexpr (std::same_as<Component, ReflectionProbe>) {
 				displayReflectionProbeComponent(editor, component, registry.get<Transform>(entity));
 			}
+			// same for renderers..
+			else if constexpr (std::same_as<Component, MeshRenderer> || std::same_as<Component, SkinnedMeshRenderer>) {
+				displayRendererComponent<Component>(editor, component, entity);
+			}
 			else {
 				// Visits each of the component's data member and renders them.
 				reflection::visit(
@@ -130,3 +137,5 @@ namespace {
 
 	}
 }
+
+#include "displayRendererComponent.ipp"

@@ -2,23 +2,131 @@
     "blendingConfig": "AlphaBlending",
     "depthTestingMethod": "DepthTest",
     "cullingConfig": "Enable",
-    "uniforms": {
-        "UVTiling": "vec2",
-        "roughness": "NormalizedFloat",
-        "UVOffset": "vec2",
-        "emissiveStrength": "float",
-        "toUsePackedMap": "bool",
-        "toUseNormalMap": "bool",
-        "toUseEmissiveMap": "bool",
-        "metallic": "NormalizedFloat",
-        "occulusion": "NormalizedFloat",
-        "albedoMap": "sampler2D",
-        "colorTint": "Color",
-        "packedMap": "sampler2D",
-        "normalMap": "sampler2D",
-        "emissiveMap": "sampler2D"
-    },
-    "vShaderCode": "\n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace(position, normal, tangent);\n    gl_Position = calculateClipPosition(worldSpace.position);\n    \n    passDataToFragment(worldSpace);\n",
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "packedMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "normalMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "emissiveMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "toUsePackedMap",
+            "value": {
+                "__variant_value": false,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "toUseNormalMap",
+            "value": {
+                "__variant_value": false,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "toUseEmissiveMap",
+            "value": {
+                "__variant_value": false,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "roughness",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "metallic",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "occulusion",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "colorTint",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissiveStrength",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVTiling",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVOffset",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        }
+    ],
+    "vShaderCode": "\n    // Calculate world space of our local attributes..\n    WorldSpace worldSpace = calculateWorldSpace();\n    gl_Position = calculateClipPosition(worldSpace.position);\n    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. \n",
     "fShaderCode": "\n    // === Handling the 3 properties ===\n    float _roughness; \n    float _metallic; \n    float _occulusion;\n\n    vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);\n\n    if (toUsePackedMap) {\n        vec3 map = texture(packedMap, uv).rgb;\n        _metallic   = map.r;\n        _roughness  = map.g;\n        _occulusion = map.b;\n    } \n    else {\n        _roughness  = roughness;\n        _metallic   = metallic;\n        _occulusion = occulusion;\n    }\n\n    // === Handling normal ===\n    vec3 _normal;\n    if(toUseNormalMap) {\n        // We assume that our normal map is compressed into BC5.\n        // Since BC5 only stores 2 channels, we need to calculate z in runtime.\n        vec2 bc5Channels = vec2(texture(normalMap, uv));\n        \n        // We shift the range from [0, 1] to  [-1, 1]\n        bc5Channels = bc5Channels * 2.0 - 1.0; \n\n        // We calculate the z portion of the normal..\n        vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));\n        _normal = normalize(fsIn.TBN * sampledNormal);\n    }\n    else {\n        _normal = normalize(fsIn.normal);\n    }\n\n    vec3 emissiveColor = vec3(0);\n\n    if(toUseEmissiveMap) {\n        emissiveColor = emissiveStrength * vec3(texture(emissiveMap, uv));\n    }\n\n    vec4 albedo = texture(albedoMap, uv);\n    vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);\n\n    return vec4(emissiveColor + pbrColor, 1.0);\n    // return vec4(fsIn.normal, 1);\n",
     "pipeline": "PBR"
 }
