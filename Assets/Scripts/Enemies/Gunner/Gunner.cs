@@ -328,10 +328,6 @@ class Gunner : Enemy
         gunnerState = GunnerState.Idle;
         animator.PlayAnimation("Gunner_Idle");
     }
-    public void EndDeath()
-    {
-        Destroy(gameObject);
-    }
     public void BeginJump()
     {
         gunnerState = GunnerState.Jump;

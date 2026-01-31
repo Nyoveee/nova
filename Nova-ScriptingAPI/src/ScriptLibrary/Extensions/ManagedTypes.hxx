@@ -237,6 +237,7 @@ ManagedComponentDeclaration(
 	ParticleEmitter
 )
 void emit(int count);
+void emit();
 
 ManagedComponentEnd()
 // ======================================

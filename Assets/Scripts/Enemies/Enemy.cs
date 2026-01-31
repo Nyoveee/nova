@@ -3,6 +3,7 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 using System.Runtime.CompilerServices;
+using Windows.Devices.SerialCommunication;
 public abstract class Enemy : Script
 {
     public enum EnemydamageType
@@ -22,6 +23,8 @@ public abstract class Enemy : Script
 
     [SerializableField]
     private Prefab ichorPrefab;
+    [SerializableField]
+    private Prefab explodeVFXPrefab;
     [SerializableField]
     private GameObject ichorSpawnPoint;
     [SerializableField]
@@ -54,18 +57,18 @@ public abstract class Enemy : Script
     ***********************************************************/
     public void Explode()
     {
-
         for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
         {
             Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
             direction.Normalize();
             float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
-            GameObject ichor = Instantiate(ichorPrefab);
-            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+            Instantiate(ichorPrefab, ichorSpawnPoint.transform.position + direction * spawnDistance);
         }
-
-
-
+        // Explode VFX
+        GameObject explodeVFX = Instantiate(explodeVFXPrefab,ichorSpawnPoint.transform.position);
+        foreach (GameObject emitter in explodeVFX.GetChildren())
+            emitter.getComponent<ParticleEmitter_>().emit();
+            
     }
     /***********************************************************
         Shared Functions

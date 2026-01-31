@@ -7,13 +7,7 @@
             "transitions": null,
             "toLoop": false,
             "name": "Grunt Death",
-            "animationEvents": [
-                {
-                    "key": 67,
-                    "scriptId": 16372493856992313355,
-                    "functionName": "TriggerEvent4"
-                }
-            ]
+            "animationEvents": null
         },
         "1000": {
             "id": 1000,
@@ -27,6 +21,20 @@
             "toLoop": true,
             "name": "Entry Node",
             "animationEvents": null
+        },
+        "13719706650765459499": {
+            "id": 13719706650765459499,
+            "animation": 16985018599458111491,
+            "transitions": null,
+            "toLoop": true,
+            "name": "Grunt Jump",
+            "animationEvents": [
+                {
+                    "key": 0,
+                    "scriptId": 16372493856992313355,
+                    "functionName": "TriggerEvent4"
+                }
+            ]
         },
         "1671856250268090377": {
             "id": 1671856250268090377,

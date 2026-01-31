@@ -174,6 +174,14 @@ void ParticleEmitter_::emit(int count)
 	if(transform && emitter)
 		Interface::engine->particleSystem.emit(*transform, *emitter, count);
 }
+void ParticleEmitter_::emit()
+{
+	Transform* transform = Convert(gameObject->transform);
+	ParticleEmitter* emitter = nativeComponent();
+	if (transform && emitter) 
+		Interface::engine->particleSystem.emit(*transform, *emitter, emitter->burstAmount);
+		
+}
 
 // =================================================================
 // Rigidbody

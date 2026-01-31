@@ -1,75 +1,42 @@
 {
+    "RootEntity": 69,
     "Entities": [
         {
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Sniper Icon",
-                "overridenComponents": null,
-                "overridenProperties": null,
+                "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 13506436489381216259,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 13506436489381216259
                 },
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "texture": 16002072770587590661,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toFlip": false,
-                "toTile": false
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 5.0
-                                },
-                                "name": "yOffset"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 2.0
-                                },
-                                "name": "duration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 10,
-                                    "__variant_value": 1020136155201404935
-                                },
-                                "name": "PodPrefab"
-                            }
-                        ],
-                        "scriptId": 5267320871842562049
-                    }
-                ]
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
+                "position": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
-                "localEulerAngles": {
+                "scale": {
+                    "x": 1.0000004768371582,
+                    "y": 1.000000238418579,
+                    "z": 1.000000238418579
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
@@ -79,36 +46,70 @@
                     "y": 0.0,
                     "z": 0.0
                 },
+                "localScale": {
+                    "x": 1.0000004768371582,
+                    "y": 1.000000238418579,
+                    "z": 1.000000238418579
+                },
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 1.0000004768371582,
-                    "y": 1.000000238418579,
-                    "z": 1.000000238418579
-                },
-                "position": {
+                "localEulerAngles": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.0,
                     "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0000004768371582,
-                    "y": 1.000000238418579,
-                    "z": 1.000000238418579
                 }
             },
-            "id": 36
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 5267320871842562049,
+                        "fields": [
+                            {
+                                "name": "yOffset",
+                                "data": {
+                                    "__variant_value": 5.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "duration",
+                                "data": {
+                                    "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "PodPrefab",
+                                "data": {
+                                    "__variant_value": 1020136155201404935,
+                                    "__variant_type": 10
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 16002072770587590661,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 69
         }
-    ],
-    "RootEntity": 36
+    ]
 }

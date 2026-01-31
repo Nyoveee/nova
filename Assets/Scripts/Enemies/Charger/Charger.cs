@@ -381,10 +381,6 @@ class Charger : Enemy
         animator.PlayAnimation("ChargerWalk");
         ActivateNavMeshAgent();
     }
-    public void EndDeathAnimation()
-    {
-        Destroy(gameObject);
-    }
     public void EndStompAnimation()
     {
         stompHitbox = Instantiate(stompHitBoxPrefab);

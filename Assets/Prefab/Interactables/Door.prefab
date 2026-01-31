@@ -1,5 +1,5 @@
 {
-    "RootEntity": 12,
+    "RootEntity": 25,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    13,
-                    14,
-                    15
+                    26,
+                    27,
+                    28
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -100,14 +100,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 14,
+                                    "__variant_value": 27,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 13,
+                                    "__variant_value": 26,
                                     "__variant_type": 4
                                 }
                             },
@@ -129,13 +129,13 @@
                     }
                 ]
             },
-            "id": 12
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "DoorR",
                 "tag": "",
-                "parent": 12,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -147,8 +147,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "9059764703561530457": true
                 },
@@ -225,13 +225,13 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 13
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "DoorL",
                 "tag": "",
-                "parent": 12,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -243,8 +243,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "17421316227555880647": false,
                     "9059764703561530457": true
@@ -322,13 +322,13 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 14
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "DoorLockingMechanism",
                 "tag": "",
-                "parent": 12,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -427,7 +427,7 @@
                             {
                                 "name": "door",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 25,
                                     "__variant_type": 4
                                 }
                             }
@@ -435,7 +435,7 @@
                     }
                 ]
             },
-            "id": 15
+            "id": 28
         }
     ]
 }
