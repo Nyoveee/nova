@@ -122,8 +122,8 @@
                 },
                 "scale": {
                     "x": 1.0000040531158447,
-                    "y": 0.9998336434364319,
-                    "z": 0.9998303055763245
+                    "y": 0.9998310208320618,
+                    "z": 0.9998276829719543
                 },
                 "rotation": {
                     "w": 0.7071067094802856,
@@ -143,8 +143,8 @@
                 },
                 "localScale": {
                     "x": 1.0000040531158447,
-                    "y": 0.9998335838317871,
-                    "z": 0.9998302459716797
+                    "y": 0.999830961227417,
+                    "z": 0.9998276233673096
                 },
                 "localRotation": {
                     "w": 0.7071067094802856,
@@ -313,7 +313,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 0.699999988079071,
+                "volume": 0.4000000059604645,
                 "loop": true
             },
             "Scripts": {
@@ -331,7 +331,7 @@
                             {
                                 "name": "bufferTime",
                                 "data": {
-                                    "__variant_value": 0.20000000298023224,
+                                    "__variant_value": 1.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -2145,7 +2145,7 @@
             "Transform": {
                 "position": {
                     "x": -103.21882629394531,
-                    "y": 86.64945983886719,
+                    "y": 86.6492919921875,
                     "z": 89.73059844970703
                 },
                 "scale": {
@@ -2166,7 +2166,7 @@
                 },
                 "localPosition": {
                     "x": -1.52587890625e-05,
-                    "y": 6.133354187011719,
+                    "y": 6.133186340332031,
                     "z": 0.47458648681640625
                 },
                 "localScale": {
@@ -3518,7 +3518,7 @@
             "Transform": {
                 "position": {
                     "x": 846.6347045898438,
-                    "y": 119.30046081542969,
+                    "y": 119.30029296875,
                     "z": 0.0
                 },
                 "scale": {
@@ -3539,7 +3539,7 @@
                 },
                 "localPosition": {
                     "x": 16.055908203125,
-                    "y": 24.232498168945313,
+                    "y": 24.232330322265625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -3747,7 +3747,9 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "14828643033174927893": false,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -3796,7 +3798,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -3848,7 +3850,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3859,7 +3870,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3870,7 +3898,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3881,7 +3922,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3892,7 +3954,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4144,14 +4239,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 48.931705474853516,
+                    "x": 48.93209457397461,
                     "y": 18.966014862060547,
                     "z": 258.5397033691406
                 },
                 "scale": {
                     "x": 1.0002641677856445,
                     "y": 0.9999569654464722,
-                    "z": 1.000109314918518
+                    "z": 1.000106692314148
                 },
                 "rotation": {
                     "w": 0.6173373460769653,
@@ -4165,14 +4260,14 @@
                     "z": -2.841420609911438e-06
                 },
                 "localPosition": {
-                    "x": -0.093963623046875,
+                    "x": -0.0941619873046875,
                     "y": 2.7134017944335938,
-                    "z": 2.0136566162109375
+                    "z": 2.0133209228515625
                 },
                 "localScale": {
                     "x": 1.0002636909484863,
                     "y": 0.999956488609314,
-                    "z": 1.000109314918518
+                    "z": 1.000106692314148
                 },
                 "localRotation": {
                     "w": -8.849898449625471e-07,
@@ -4316,7 +4411,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 49.40390396118164,
+                    "x": 49.40435028076172,
                     "y": 19.755321502685547,
                     "z": 258.8588562011719
                 },
@@ -4337,9 +4432,9 @@
                     "z": -4.806590889194773e-12
                 },
                 "localPosition": {
-                    "x": -0.069854736328125,
+                    "x": -0.0700836181640625,
                     "y": 3.5027084350585938,
-                    "z": 1.4442291259765625
+                    "z": 1.44384765625
                 },
                 "localScale": {
                     "x": 0.6369405388832092,
@@ -4380,7 +4475,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 50.98379898071289,
+                    "x": 50.98419952392578,
                     "y": 19.77939224243164,
                     "z": 259.7179870605469
                 },
@@ -4401,9 +4496,9 @@
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
-                    "x": -0.1668853759765625,
+                    "x": -0.167083740234375,
                     "y": 3.5267791748046875,
-                    "z": -0.351531982421875
+                    "z": -0.35186767578125
                 },
                 "localScale": {
                     "x": 1.0,
@@ -4553,7 +4648,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 50.20404815673828,
+                    "x": 50.204437255859375,
                     "y": 22.39185905456543,
                     "z": 259.42681884765625
                 },
@@ -4574,9 +4669,9 @@
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
-                    "x": -0.005859375,
+                    "x": -0.006072998046875,
                     "y": 6.139245986938477,
-                    "z": 0.465087890625
+                    "z": 0.464752197265625
                 },
                 "localScale": {
                     "x": 1.0,
@@ -4660,7 +4755,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -4709,7 +4805,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -4761,7 +4857,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4772,7 +4877,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4783,7 +4905,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4794,7 +4929,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4805,7 +4961,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5130,7 +5319,7 @@
                 "scale": {
                     "x": 1.0002585649490356,
                     "y": 0.9999529123306274,
-                    "z": 1.0001025199890137
+                    "z": 1.0000998973846436
                 },
                 "rotation": {
                     "w": 0.355288565158844,
@@ -5151,7 +5340,7 @@
                 "localScale": {
                     "x": 1.0002585649490356,
                     "y": 0.9999529719352722,
-                    "z": 1.0001025199890137
+                    "z": 1.0000998973846436
                 },
                 "localRotation": {
                     "w": -5.899823349864164e-07,
@@ -5727,7 +5916,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -5776,7 +5966,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -5828,7 +6018,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5839,7 +6038,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5850,7 +6066,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5861,7 +6090,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5872,7 +6122,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6196,18 +6479,18 @@
                 },
                 "scale": {
                     "x": 1.0004253387451172,
-                    "y": 0.9999873042106628,
-                    "z": 1.0001949071884155
+                    "y": 0.9999846816062927,
+                    "z": 1.0001896619796753
                 },
                 "rotation": {
-                    "w": -5.849523745382612e-07,
+                    "w": -5.849523176948423e-07,
                     "x": -1.69776399161492e-07,
                     "y": 0.7071061730384827,
                     "z": 0.7071073651313782
                 },
                 "eulerAngles": {
                     "x": 1.5707945823669434,
-                    "y": -5.871465873497073e-07,
+                    "y": -5.871464736628695e-07,
                     "z": -3.1415915489196777
                 },
                 "localPosition": {
@@ -6217,18 +6500,18 @@
                 },
                 "localScale": {
                     "x": 1.0004253387451172,
-                    "y": 0.9999872446060181,
-                    "z": 1.000194787979126
+                    "y": 0.999984622001648,
+                    "z": 1.0001895427703857
                 },
                 "localRotation": {
-                    "w": -5.849523745382612e-07,
+                    "w": -5.849523176948423e-07,
                     "x": -1.69776399161492e-07,
                     "y": 0.7071061730384827,
                     "z": 0.7071073651313782
                 },
                 "localEulerAngles": {
                     "x": 1.5707945823669434,
-                    "y": -5.871465873497073e-07,
+                    "y": -5.871464736628695e-07,
                     "z": -3.1415915489196777
                 }
             },
@@ -6706,7 +6989,9 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "14828643033174927893": false,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -6755,7 +7040,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -6807,7 +7092,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6818,7 +7112,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6829,7 +7140,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6840,7 +7164,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6851,7 +7196,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -7175,18 +7553,18 @@
                 },
                 "scale": {
                     "x": 1.0004253387451172,
-                    "y": 0.9999873042106628,
-                    "z": 1.0001949071884155
+                    "y": 0.9999846816062927,
+                    "z": 1.0001896619796753
                 },
                 "rotation": {
-                    "w": -5.849523745382612e-07,
+                    "w": -5.849523176948423e-07,
                     "x": -1.69776399161492e-07,
                     "y": 0.7071061730384827,
                     "z": 0.7071073651313782
                 },
                 "eulerAngles": {
                     "x": 1.5707945823669434,
-                    "y": -5.871465873497073e-07,
+                    "y": -5.871464736628695e-07,
                     "z": -3.1415915489196777
                 },
                 "localPosition": {
@@ -7196,18 +7574,18 @@
                 },
                 "localScale": {
                     "x": 1.0004253387451172,
-                    "y": 0.9999872446060181,
-                    "z": 1.000194787979126
+                    "y": 0.999984622001648,
+                    "z": 1.0001895427703857
                 },
                 "localRotation": {
-                    "w": -5.849523745382612e-07,
+                    "w": -5.849523176948423e-07,
                     "x": -1.69776399161492e-07,
                     "y": 0.7071061730384827,
                     "z": 0.7071073651313782
                 },
                 "localEulerAngles": {
                     "x": 1.5707945823669434,
-                    "y": -5.871465873497073e-07,
+                    "y": -5.871464736628695e-07,
                     "z": -3.1415915489196777
                 }
             },
@@ -7961,7 +8339,9 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "6919815292445452220": false,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -8010,7 +8390,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "Scripts": {
@@ -8119,6 +8499,64 @@
                                 "data": {
                                     "__variant_value": 244,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 5599936416612909117,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 12517465444253990975,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 9058700930433433615,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7905779425826586637,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -8913,6 +9351,46 @@
                                 }
                             },
                             {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "ichorPrefab",
                                 "data": {
                                     "__variant_value": 14493050257245634575,
@@ -9296,9 +9774,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 24.986757278442383,
+                    "x": 24.986696243286133,
                     "y": 15.914361953735352,
-                    "z": -22.745359420776367
+                    "z": -22.74538803100586
                 },
                 "scale": {
                     "x": 6.198840618133545,
@@ -9317,9 +9795,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.00212860107421875,
+                    "x": -0.002254486083984375,
                     "y": 0.0,
-                    "z": 0.07914352416992188
+                    "z": 0.07908248901367188
                 },
                 "localScale": {
                     "x": 12.421239852905273,
@@ -9393,9 +9871,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 25.008358001708984,
+                    "x": 25.008264541625977,
                     "y": 15.914361953735352,
-                    "z": -22.66612434387207
+                    "z": -22.666154861450195
                 },
                 "scale": {
                     "x": 6.306555271148682,
@@ -9414,9 +9892,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.051937103271484375,
+                    "x": 0.051746368408203125,
                     "y": 0.0,
-                    "z": 0.2725563049316406
+                    "z": 0.2724952697753906
                 },
                 "localScale": {
                     "x": 12.637078285217285,
@@ -9488,9 +9966,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 25.09945297241211,
+                    "x": 25.099411010742188,
                     "y": 23.6376953125,
-                    "z": -25.3955135345459
+                    "z": -25.39552879333496
                 },
                 "scale": {
                     "x": 36.34971618652344,
@@ -9509,9 +9987,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.14107894897460938,
+                    "x": -0.14116287231445313,
                     "y": 11.399713516235352,
-                    "z": -6.532695770263672
+                    "z": -6.532726287841797
                 },
                 "localScale": {
                     "x": 78.72098541259766,
@@ -10065,6 +10543,46 @@
                                 "data": {
                                     "__variant_value": 307,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -10791,6 +11309,46 @@
                                 }
                             },
                             {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "ichorPrefab",
                                 "data": {
                                     "__variant_value": 14493050257245634575,
@@ -11513,6 +12071,46 @@
                                 "data": {
                                     "__variant_value": 319,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -12562,11 +13160,11 @@
             "Transform": {
                 "position": {
                     "x": -28.2562255859375,
-                    "y": 19.18133544921875,
+                    "y": 19.17999267578125,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400348901748657,
+                    "x": 1.0400378704071045,
                     "y": 1.0638347864151,
                     "z": 1.039999008178711
                 },
@@ -12583,11 +13181,11 @@
                 },
                 "localPosition": {
                     "x": -0.49640288949012756,
-                    "y": -0.4604474902153015,
+                    "y": -0.46044865250587463,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0005208508810028434,
+                    "x": 0.0005208523944020271,
                     "y": 0.0009259259095415473,
                     "z": 0.9999991059303284
                 },
@@ -12629,14 +13227,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1795043945313,
-                    "y": 389.9598693847656,
+                    "x": 970.1827392578125,
+                    "y": 389.95855712890625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0109558105469,
+                    "x": 312.0119323730469,
                     "y": 106.3833999633789,
-                    "z": 1.0399984121322632
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -12650,14 +13248,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0021362304688,
-                    "y": 348.5301818847656,
+                    "x": 960.0025024414063,
+                    "y": 348.53021240234375,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0004577636719,
+                    "x": 300.00054931640625,
                     "y": 99.99992370605469,
-                    "z": 0.9999994039535522
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -12778,14 +13376,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 860.7799072265625,
-                    "y": 363.8666076660156,
+                    "x": 860.782470703125,
+                    "y": 363.8652648925781,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.040037751197815,
-                    "y": 1.0638370513916016,
-                    "z": 1.0399973392486572
+                    "x": 1.040041446685791,
+                    "y": 1.0638372898101807,
+                    "z": 1.0399975776672363
                 },
                 "rotation": {
                     "w": 1.0,
@@ -12799,14 +13397,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.3506276607513428,
-                    "y": -0.24527573585510254,
+                    "x": -0.3506283760070801,
+                    "y": -0.24527621269226074,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.003333337139338255,
-                    "y": 0.010000028647482395,
-                    "z": 0.999998927116394
+                    "x": 0.003333338536322117,
+                    "y": 0.010000030510127544,
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -12854,14 +13452,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1795043945313,
-                    "y": 282.9313659667969,
+                    "x": 970.1827392578125,
+                    "y": 282.929931640625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0109558105469,
+                    "x": 312.0119323730469,
                     "y": 106.3833999633789,
-                    "z": 1.0399984121322632
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -12875,14 +13473,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0021362304688,
-                    "y": 247.92385864257813,
+                    "x": 960.0025024414063,
+                    "y": 247.92376708984375,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0004577636719,
+                    "x": 300.00054931640625,
                     "y": 99.99992370605469,
-                    "z": 0.9999994039535522
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -13003,14 +13601,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 858.8681030273438,
-                    "y": 263.78240966796875,
+                    "x": 858.8707275390625,
+                    "y": 263.7809753417969,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.040037751197815,
-                    "y": 1.0638370513916016,
-                    "z": 1.0399973392486572
+                    "x": 1.040041446685791,
+                    "y": 1.0638372898101807,
+                    "z": 1.0399975776672363
                 },
                 "rotation": {
                     "w": 1.0,
@@ -13024,14 +13622,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.35675501823425293,
+                    "x": -0.35675549507141113,
                     "y": -0.17999935150146484,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.003333337139338255,
-                    "y": 0.010000028647482395,
-                    "z": 0.999998927116394
+                    "x": 0.003333338536322117,
+                    "y": 0.010000030510127544,
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -13079,14 +13677,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1795043945313,
-                    "y": 593.6516723632813,
+                    "x": 970.1827392578125,
+                    "y": 593.6503295898438,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0109558105469,
+                    "x": 312.0119323730469,
                     "y": 106.3833999633789,
-                    "z": 1.0399984121322632
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -13100,14 +13698,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0021362304688,
-                    "y": 539.99951171875,
+                    "x": 960.0025024414063,
+                    "y": 539.9995727539063,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0004577636719,
+                    "x": 300.00054931640625,
                     "y": 99.99992370605469,
-                    "z": 0.9999994039535522
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -13228,13 +13826,13 @@
             },
             "Transform": {
                 "position": {
-                    "x": 888.2401733398438,
-                    "y": 572.9865112304688,
-                    "z": 2.0799946784973145
+                    "x": 888.242919921875,
+                    "y": 572.9851684570313,
+                    "z": 2.0799951553344727
                 },
                 "scale": {
-                    "x": 1.5513228178024292,
-                    "y": 1.5868180990219116,
+                    "x": 1.5513278245925903,
+                    "y": 1.5868186950683594,
                     "z": 1.5512639284133911
                 },
                 "rotation": {
@@ -13249,14 +13847,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.2626168727874756,
+                    "x": -0.2626175880432129,
                     "y": -0.19425153732299805,
-                    "z": 1.999997854232788
+                    "z": 1.999998688697815
                 },
                 "localScale": {
-                    "x": 0.004972013644874096,
-                    "y": 0.014916030690073967,
-                    "z": 1.4916020631790161
+                    "x": 0.004972014110535383,
+                    "y": 0.014916036278009415,
+                    "z": 1.4916024208068848
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -13304,14 +13902,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1795043945313,
-                    "y": 488.580810546875,
+                    "x": 970.1827392578125,
+                    "y": 488.5794982910156,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0109558105469,
+                    "x": 312.0119323730469,
                     "y": 106.3833999633789,
-                    "z": 1.0399984121322632
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -13325,14 +13923,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0021362304688,
-                    "y": 441.2333984375,
+                    "x": 960.0025024414063,
+                    "y": 441.23345947265625,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0004577636719,
+                    "x": 300.00054931640625,
                     "y": 99.99992370605469,
-                    "z": 0.9999994039535522
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -13453,14 +14051,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 887.4686889648438,
-                    "y": 467.46759033203125,
+                    "x": 887.471435546875,
+                    "y": 467.4664306640625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.040037751197815,
-                    "y": 1.0638370513916016,
-                    "z": 1.0399973392486572
+                    "x": 1.040041446685791,
+                    "y": 1.0638372898101807,
+                    "z": 1.0399975776672363
                 },
                 "rotation": {
                     "w": 1.0,
@@ -13474,14 +14072,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.2650895118713379,
-                    "y": -0.19846343994140625,
+                    "x": -0.2650902271270752,
+                    "y": -0.19846200942993164,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.003333337139338255,
-                    "y": 0.010000028647482395,
-                    "z": 0.999998927116394
+                    "x": 0.003333338536322117,
+                    "y": 0.010000030510127544,
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -13527,14 +14125,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 829.5977783203125,
-                    "y": 735.024169921875,
+                    "x": 829.600341796875,
+                    "y": 735.0227661132813,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400340557098389,
+                    "x": 1.0400371551513672,
                     "y": 1.063833236694336,
-                    "z": 1.0399984121322632
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -13548,14 +14146,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 824.8319091796875,
+                    "x": 824.83203125,
                     "y": 672.8890380859375,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999991655349731,
-                    "y": 0.9999985098838806,
-                    "z": 0.9999994039535522
+                    "x": 0.9999992847442627,
+                    "y": 0.9999985694885254,
+                    "z": 0.9999993443489075
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -14052,7 +14650,7 @@
             "Transform": {
                 "position": {
                     "x": 167.52130126953125,
-                    "y": -22.550031661987305,
+                    "y": -22.549972534179688,
                     "z": 194.07266235351563
                 },
                 "scale": {
@@ -14073,7 +14671,7 @@
                 },
                 "localPosition": {
                     "x": 1.52587890625e-05,
-                    "y": 0.09213423728942871,
+                    "y": 0.09214043617248535,
                     "z": 3.814697265625e-06
                 },
                 "localScale": {
@@ -17326,8 +17924,8 @@
                 },
                 "scale": {
                     "x": 1.0000040531158447,
-                    "y": 0.9998336434364319,
-                    "z": 0.9998303055763245
+                    "y": 0.9998310208320618,
+                    "z": 0.9998276829719543
                 },
                 "rotation": {
                     "w": 0.7071067094802856,
@@ -17347,8 +17945,8 @@
                 },
                 "localScale": {
                     "x": 1.0000040531158447,
-                    "y": 0.9998335838317871,
-                    "z": 0.9998302459716797
+                    "y": 0.999830961227417,
+                    "z": 0.9998276233673096
                 },
                 "localRotation": {
                     "w": 0.7071067094802856,
@@ -17494,9 +18092,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9998289346694946,
+                    "x": 0.9998263120651245,
                     "y": 1.0000134706497192,
-                    "z": 0.9998303055763245
+                    "z": 0.9998276829719543
                 },
                 "rotation": {
                     "w": 0.7071067094802856,
@@ -17515,9 +18113,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9998288750648499,
+                    "x": 0.9998262524604797,
                     "y": 1.0000134706497192,
-                    "z": 0.9998302459716797
+                    "z": 0.9998276233673096
                 },
                 "localRotation": {
                     "w": 0.7071067094802856,
@@ -17579,8 +18177,8 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9998289346694946,
-                    "y": 0.9998336434364319,
+                    "x": 0.9998263120651245,
+                    "y": 0.9998310208320618,
                     "z": 1.0000067949295044
                 },
                 "rotation": {
@@ -17600,8 +18198,8 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9998288750648499,
-                    "y": 0.9998335838317871,
+                    "x": 0.9998262524604797,
+                    "y": 0.999830961227417,
                     "z": 1.0000067949295044
                 },
                 "localRotation": {
@@ -17664,8 +18262,8 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9998289346694946,
-                    "y": 0.9998336434364319,
+                    "x": 0.9998263120651245,
+                    "y": 0.9998310208320618,
                     "z": 1.0000067949295044
                 },
                 "rotation": {
@@ -17685,8 +18283,8 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9998288750648499,
-                    "y": 0.9998335838317871,
+                    "x": 0.9998262524604797,
+                    "y": 0.999830961227417,
                     "z": 1.0000067949295044
                 },
                 "localRotation": {
@@ -18667,9 +19265,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": 12.188080787658691,
+                    "x": 12.187973976135254,
                     "y": 2.540367603302002,
-                    "z": -107.01478576660156
+                    "z": -107.0149154663086
                 },
                 "scale": {
                     "x": 3.315070629119873,
@@ -18688,9 +19286,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.03618335723876953,
+                    "x": 0.03616046905517578,
                     "y": 0.09182494878768921,
-                    "z": 0.021816253662109375
+                    "z": 0.02176666259765625
                 },
                 "localScale": {
                     "x": 0.9999998211860657,
@@ -18762,35 +19360,35 @@
             },
             "Transform": {
                 "position": {
-                    "x": 116.83122253417969,
-                    "y": -19.915327072143555,
-                    "z": 218.43145751953125
+                    "x": 116.83121490478516,
+                    "y": -19.915287017822266,
+                    "z": 218.43138122558594
                 },
                 "scale": {
-                    "x": 1.362655758857727,
-                    "y": 5.108743667602539,
-                    "z": 6.553796768188477
+                    "x": 1.3626593351364136,
+                    "y": 5.108744144439697,
+                    "z": 6.5537824630737305
                 },
                 "rotation": {
-                    "w": -0.023420702666044235,
+                    "w": -0.02342059835791588,
                     "x": 0.0,
                     "y": 0.9997256994247437,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -0.0468456968665123,
+                    "y": -0.04684549570083618,
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
-                    "x": -0.1439819484949112,
-                    "y": 11.401448249816895,
-                    "z": -6.532654285430908
+                    "x": -0.14422607421875,
+                    "y": 11.40152359008789,
+                    "z": -6.532623291015625
                 },
                 "localScale": {
-                    "x": 3.3971290588378906,
+                    "x": 3.397120714187622,
                     "y": 9.814496040344238,
-                    "z": 16.91208267211914
+                    "z": 16.91204261779785
                 },
                 "localRotation": {
                     "w": 0.7218748927116394,
@@ -18877,14 +19475,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 114.10235595703125,
-                    "y": -25.849220275878906,
-                    "z": 218.5288848876953
+                    "x": 114.10237884521484,
+                    "y": -25.84918785095215,
+                    "z": 218.52890014648438
                 },
                 "scale": {
-                    "x": 4.896985054016113,
-                    "y": 5.205292224884033,
-                    "z": 4.6481451988220215
+                    "x": 4.896996974945068,
+                    "y": 5.205292701721191,
+                    "z": 4.648174285888672
                 },
                 "rotation": {
                     "w": 0.7092463970184326,
@@ -18898,24 +19496,24 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0647583082318306,
-                    "y": 0.0017433167668059468,
-                    "z": 0.2713928520679474
+                    "x": 0.0648193359375,
+                    "y": 0.001804351806640625,
+                    "z": 0.2713623046875
                 },
                 "localScale": {
-                    "x": 12.637431144714355,
+                    "x": 12.637460708618164,
                     "y": 9.999977111816406,
-                    "z": 11.587234497070313
+                    "z": 11.587246894836426
                 },
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
-                    "y": -2.9478228191770484e-10,
+                    "y": -2.9478156027273883e-10,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -5.895645083242584e-10,
+                    "y": -0.0,
                     "z": 0.0
                 }
             },
@@ -18973,14 +19571,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 114.17947387695313,
-                    "y": -25.849220275878906,
-                    "z": 218.50784301757813
+                    "x": 114.17945861816406,
+                    "y": -25.84918785095215,
+                    "z": 218.50790405273438
                 },
                 "scale": {
-                    "x": 4.8131632804870605,
-                    "y": 5.205292224884033,
-                    "z": 4.629951000213623
+                    "x": 4.813161373138428,
+                    "y": 5.205292701721191,
+                    "z": 4.629979133605957
                 },
                 "rotation": {
                     "w": 0.7092462778091431,
@@ -18994,24 +19592,24 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.011657715775072575,
-                    "y": 0.0017433167668059468,
-                    "z": 0.0788574293255806
+                    "x": 0.0118408203125,
+                    "y": 0.001804351806640625,
+                    "z": 0.078857421875
                 },
                 "localScale": {
-                    "x": 12.421114921569824,
+                    "x": 12.421109199523926,
                     "y": 9.999977111816406,
-                    "z": 11.541877746582031
+                    "z": 11.541889190673828
                 },
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
-                    "y": -1.727515837046667e-07,
+                    "y": -1.7275165475894028e-07,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -1.727515837046667e-07,
+                    "y": -3.4550330951788055e-07,
                     "z": 0.0
                 }
             },
@@ -19065,7 +19663,7 @@
             "Transform": {
                 "position": {
                     "x": 822.0592041015625,
-                    "y": 95.06753540039063,
+                    "y": 95.06736755371094,
                     "z": 0.0
                 },
                 "scale": {
@@ -19086,7 +19684,7 @@
                 },
                 "localPosition": {
                     "x": -0.0001220703125,
-                    "y": -0.0004730224609375,
+                    "y": -0.000640869140625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -20281,7 +20879,7 @@
             "Transform": {
                 "position": {
                     "x": 101.86492919921875,
-                    "y": -18.345600128173828,
+                    "y": -18.34564208984375,
                     "z": 216.21470642089844
                 },
                 "scale": {
@@ -20302,7 +20900,7 @@
                 },
                 "localPosition": {
                     "x": -0.9474639892578125,
-                    "y": 5.376398086547852,
+                    "y": 5.37635612487793,
                     "z": 0.4975318908691406
                 },
                 "localScale": {
@@ -20385,7 +20983,7 @@
             "Transform": {
                 "position": {
                     "x": 103.10081481933594,
-                    "y": -17.6103572845459,
+                    "y": -17.61039924621582,
                     "z": 216.84573364257813
                 },
                 "scale": {
@@ -20406,7 +21004,7 @@
                 },
                 "localPosition": {
                     "x": 0.2453155517578125,
-                    "y": 6.111640930175781,
+                    "y": 6.111598968505859,
                     "z": -0.21160507202148438
                 },
                 "localScale": {
@@ -20489,7 +21087,7 @@
             "Transform": {
                 "position": {
                     "x": 103.02850341796875,
-                    "y": -17.48816680908203,
+                    "y": -17.48819351196289,
                     "z": 218.9235382080078
                 },
                 "scale": {
@@ -20510,7 +21108,7 @@
                 },
                 "localPosition": {
                     "x": 1.7613525390625,
-                    "y": 3.6258544921875,
+                    "y": 3.6258716583251953,
                     "z": 1.151123046875
                 },
                 "localScale": {
@@ -20661,7 +21259,7 @@
             "Transform": {
                 "position": {
                     "x": 101.98226928710938,
-                    "y": -17.511402130126953,
+                    "y": -17.511428833007813,
                     "z": 217.263427734375
                 },
                 "scale": {
@@ -20682,7 +21280,7 @@
                 },
                 "localPosition": {
                     "x": -0.200927734375,
-                    "y": 3.602619171142578,
+                    "y": 3.6026363372802734,
                     "z": 1.1511611938476563
                 },
                 "localScale": {
@@ -20833,7 +21431,7 @@
             "Transform": {
                 "position": {
                     "x": 103.9764404296875,
-                    "y": -19.820518493652344,
+                    "y": -19.820545196533203,
                     "z": 220.42779541015625
                 },
                 "scale": {
@@ -20854,7 +21452,7 @@
                 },
                 "localPosition": {
                     "x": 3.5393829345703125,
-                    "y": 1.2935028076171875,
+                    "y": 1.2935199737548828,
                     "z": 1.151153564453125
                 },
                 "localScale": {
@@ -21005,7 +21603,7 @@
             "Transform": {
                 "position": {
                     "x": 101.61528015136719,
-                    "y": -18.716371536254883,
+                    "y": -18.716398239135742,
                     "z": 216.68104553222656
                 },
                 "scale": {
@@ -21026,7 +21624,7 @@
                 },
                 "localPosition": {
                     "x": -0.8892974853515625,
-                    "y": 2.3976497650146484,
+                    "y": 2.3976669311523438,
                     "z": 1.1511383056640625
                 },
                 "localScale": {
@@ -21177,7 +21775,7 @@
             "Transform": {
                 "position": {
                     "x": 102.54613494873047,
-                    "y": -19.826610565185547,
+                    "y": -19.82665252685547,
                     "z": 216.78033447265625
                 },
                 "scale": {
@@ -21198,7 +21796,7 @@
                 },
                 "localPosition": {
                     "x": -0.105743408203125,
-                    "y": 3.895387649536133,
+                    "y": 3.895345687866211,
                     "z": 0.22278976440429688
                 },
                 "localScale": {
@@ -21241,7 +21839,7 @@
             "Transform": {
                 "position": {
                     "x": 103.58931732177734,
-                    "y": -18.688335418701172,
+                    "y": -18.68836212158203,
                     "z": 219.81346130371094
                 },
                 "scale": {
@@ -21262,7 +21860,7 @@
                 },
                 "localPosition": {
                     "x": 2.8132476806640625,
-                    "y": 2.4256858825683594,
+                    "y": 2.4257030487060547,
                     "z": 1.1511306762695313
                 },
                 "localScale": {
@@ -21413,7 +22011,7 @@
             "Transform": {
                 "position": {
                     "x": 101.22677612304688,
-                    "y": -19.820518493652344,
+                    "y": -19.820545196533203,
                     "z": 216.06448364257813
                 },
                 "scale": {
@@ -21434,7 +22032,7 @@
                 },
                 "localPosition": {
                     "x": -1.6180572509765625,
-                    "y": 1.2935028076171875,
+                    "y": 1.2935199737548828,
                     "z": 1.151092529296875
                 },
                 "localScale": {
@@ -21585,7 +22183,7 @@
             "Transform": {
                 "position": {
                     "x": 104.20619201660156,
-                    "y": -21.114315032958984,
+                    "y": -21.114341735839844,
                     "z": 220.79226684570313
                 },
                 "scale": {
@@ -21606,7 +22204,7 @@
                 },
                 "localPosition": {
                     "x": 3.9702301025390625,
-                    "y": -0.000293731689453125,
+                    "y": -0.0002765655517578125,
                     "z": 1.1511001586914063
                 },
                 "localScale": {
@@ -21759,7 +22357,7 @@
             "Transform": {
                 "position": {
                     "x": 100.95330047607422,
-                    "y": -21.114315032958984,
+                    "y": -21.114341735839844,
                     "z": 215.6306610107422
                 },
                 "scale": {
@@ -21780,7 +22378,7 @@
                 },
                 "localPosition": {
                     "x": -2.1308746337890625,
-                    "y": -0.000293731689453125,
+                    "y": -0.0002765655517578125,
                     "z": 1.1511611938476563
                 },
                 "localScale": {
@@ -21940,7 +22538,7 @@
             "Transform": {
                 "position": {
                     "x": 103.06329345703125,
-                    "y": -21.11402130126953,
+                    "y": -21.114063262939453,
                     "z": 216.81967163085938
                 },
                 "scale": {
@@ -21961,7 +22559,7 @@
                 },
                 "localPosition": {
                     "x": 0.2032623291015625,
-                    "y": 2.6079769134521484,
+                    "y": 2.6079349517822266,
                     "z": -0.19375991821289063
                 },
                 "localScale": {
@@ -22004,7 +22602,7 @@
             "Transform": {
                 "position": {
                     "x": 102.79096221923828,
-                    "y": -23.407852172851563,
+                    "y": -23.407894134521484,
                     "z": 216.75108337402344
                 },
                 "scale": {
@@ -22025,7 +22623,7 @@
                 },
                 "localPosition": {
                     "x": 4.57763671875e-05,
-                    "y": 0.3141460418701172,
+                    "y": 0.3141040802001953,
                     "z": 7.2479248046875e-05
                 },
                 "localScale": {
@@ -22176,7 +22774,7 @@
             "Transform": {
                 "position": {
                     "x": 102.79112243652344,
-                    "y": -22.88779067993164,
+                    "y": -22.887832641601563,
                     "z": 216.75120544433594
                 },
                 "scale": {
@@ -22197,7 +22795,7 @@
                 },
                 "localPosition": {
                     "x": 0.0002288818359375,
-                    "y": 0.8342075347900391,
+                    "y": 0.8341655731201172,
                     "z": -3.814697265625e-06
                 },
                 "localScale": {
@@ -22245,7 +22843,7 @@
             "Transform": {
                 "position": {
                     "x": 102.11904907226563,
-                    "y": -20.52031707763672,
+                    "y": -20.52035903930664,
                     "z": 217.17449951171875
                 },
                 "scale": {
@@ -22266,7 +22864,7 @@
                 },
                 "localPosition": {
                     "x": 3.0517578125e-05,
-                    "y": 3.201681137084961,
+                    "y": 3.201639175415039,
                     "z": 0.7942695617675781
                 },
                 "localScale": {
@@ -22354,7 +22952,7 @@
             "Transform": {
                 "position": {
                     "x": 98.18122863769531,
-                    "y": -20.033203125,
+                    "y": -20.033245086669922,
                     "z": 219.65631103515625
                 },
                 "scale": {
@@ -22375,7 +22973,7 @@
                 },
                 "localPosition": {
                     "x": 0.0001983642578125,
-                    "y": 3.6887950897216797,
+                    "y": 3.688753128051758,
                     "z": 5.448917388916016
                 },
                 "localScale": {
@@ -22423,7 +23021,7 @@
             "Transform": {
                 "position": {
                     "x": 102.79112243652344,
-                    "y": -23.79115867614746,
+                    "y": -23.791200637817383,
                     "z": 216.75120544433594
                 },
                 "scale": {
@@ -22444,7 +23042,7 @@
                 },
                 "localPosition": {
                     "x": 0.0002288818359375,
-                    "y": -0.06916046142578125,
+                    "y": -0.06920242309570313,
                     "z": -3.814697265625e-06
                 },
                 "localScale": {
@@ -23039,7 +23637,7 @@
             "Transform": {
                 "position": {
                     "x": 5.208652496337891,
-                    "y": 1.023634433746338,
+                    "y": 1.0236239433288574,
                     "z": 265.0896911621094
                 },
                 "scale": {
@@ -23060,7 +23658,7 @@
                 },
                 "localPosition": {
                     "x": -0.9476318359375,
-                    "y": 5.376634120941162,
+                    "y": 5.376623630523682,
                     "z": 0.4977569580078125
                 },
                 "localScale": {
@@ -23143,7 +23741,7 @@
             "Transform": {
                 "position": {
                     "x": 6.444779396057129,
-                    "y": 1.7588772773742676,
+                    "y": 1.758866786956787,
                     "z": 265.720703125
                 },
                 "scale": {
@@ -23164,7 +23762,7 @@
                 },
                 "localPosition": {
                     "x": 0.245269775390625,
-                    "y": 6.111876964569092,
+                    "y": 6.111866474151611,
                     "z": -0.2115936279296875
                 },
                 "localScale": {
@@ -23247,7 +23845,7 @@
             "Transform": {
                 "position": {
                     "x": 6.373058795928955,
-                    "y": 1.8809432983398438,
+                    "y": 1.8809328079223633,
                     "z": 267.7984619140625
                 },
                 "scale": {
@@ -23419,7 +24017,7 @@
             "Transform": {
                 "position": {
                     "x": 5.326280117034912,
-                    "y": 1.8577079772949219,
+                    "y": 1.8576974868774414,
                     "z": 266.1383972167969
                 },
                 "scale": {
@@ -23591,7 +24189,7 @@
             "Transform": {
                 "position": {
                     "x": 7.320466995239258,
-                    "y": -0.45140278339385986,
+                    "y": -0.451412558555603,
                     "z": 269.302734375
                 },
                 "scale": {
@@ -23612,7 +24210,7 @@
                 },
                 "localPosition": {
                     "x": 3.53936767578125,
-                    "y": 1.293384075164795,
+                    "y": 1.2933846712112427,
                     "z": 1.1511077880859375
                 },
                 "localScale": {
@@ -23768,7 +24366,7 @@
             "Transform": {
                 "position": {
                     "x": 5.463046073913574,
-                    "y": -1.1510825157165527,
+                    "y": -1.1510930061340332,
                     "z": 266.04949951171875
                 },
                 "scale": {
@@ -23789,7 +24387,7 @@
                 },
                 "localPosition": {
                     "x": 1.52587890625e-05,
-                    "y": 3.2019171714782715,
+                    "y": 3.201906681060791,
                     "z": 0.7942657470703125
                 },
                 "localScale": {
@@ -23877,7 +24475,7 @@
             "Transform": {
                 "position": {
                     "x": 4.959336757659912,
-                    "y": 0.6527385711669922,
+                    "y": 0.6527280807495117,
                     "z": 265.5561218261719
                 },
                 "scale": {
@@ -24049,7 +24647,7 @@
             "Transform": {
                 "position": {
                     "x": 6.933364391326904,
-                    "y": 0.6807746887207031,
+                    "y": 0.6807641983032227,
                     "z": 268.6884765625
                 },
                 "scale": {
@@ -24221,7 +24819,7 @@
             "Transform": {
                 "position": {
                     "x": 4.570784091949463,
-                    "y": -0.45140278339385986,
+                    "y": -0.451412558555603,
                     "z": 264.9394836425781
                 },
                 "scale": {
@@ -24242,7 +24840,7 @@
                 },
                 "localPosition": {
                     "x": -1.6180267333984375,
-                    "y": 1.293384075164795,
+                    "y": 1.2933846712112427,
                     "z": 1.151092529296875
                 },
                 "localScale": {
@@ -24393,7 +24991,7 @@
             "Transform": {
                 "position": {
                     "x": 7.550212860107422,
-                    "y": -1.7451993227005005,
+                    "y": -1.7452090978622437,
                     "z": 269.6672668457031
                 },
                 "scale": {
@@ -24414,7 +25012,7 @@
                 },
                 "localPosition": {
                     "x": 3.9702606201171875,
-                    "y": -0.0004124641418457031,
+                    "y": -0.0004118680953979492,
                     "z": 1.151092529296875
                 },
                 "localScale": {
@@ -24566,8 +25164,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 4.29946231842041,
-                    "y": -1.7451993227005005,
+                    "x": 4.299750328063965,
+                    "y": -1.7452090978622437,
                     "z": 264.50567626953125
                 },
                 "scale": {
@@ -24587,9 +25185,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -2.1296844482421875,
-                    "y": -0.0004124641418457031,
-                    "z": 1.1493377685546875
+                    "x": -2.1295318603515625,
+                    "y": -0.0004118680953979492,
+                    "z": 1.1490936279296875
                 },
                 "localScale": {
                     "x": 0.9999998807907104,
@@ -24748,7 +25346,7 @@
             "Transform": {
                 "position": {
                     "x": 6.407288551330566,
-                    "y": -1.7447867393493652,
+                    "y": -1.7447972297668457,
                     "z": 265.69464111328125
                 },
                 "scale": {
@@ -24769,7 +25367,7 @@
                 },
                 "localPosition": {
                     "x": 0.2032318115234375,
-                    "y": 2.608212947845459,
+                    "y": 2.6082024574279785,
                     "z": -0.1937713623046875
                 },
                 "localScale": {
@@ -24812,7 +25410,7 @@
             "Transform": {
                 "position": {
                     "x": 6.1349616050720215,
-                    "y": -4.0386176109313965,
+                    "y": -4.038628101348877,
                     "z": 265.62603759765625
                 },
                 "scale": {
@@ -24833,7 +25431,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 0.31438207626342773,
+                    "y": 0.31437158584594727,
                     "z": 4.57763671875e-05
                 },
                 "localScale": {
@@ -24984,7 +25582,7 @@
             "Transform": {
                 "position": {
                     "x": 6.135072231292725,
-                    "y": -3.5185561180114746,
+                    "y": -3.518566608428955,
                     "z": 265.6261901855469
                 },
                 "scale": {
@@ -25005,7 +25603,7 @@
                 },
                 "localPosition": {
                     "x": 0.00018310546875,
-                    "y": 0.8344435691833496,
+                    "y": 0.8344330787658691,
                     "z": 3.0517578125e-05
                 },
                 "localScale": {
@@ -25048,7 +25646,7 @@
             "Transform": {
                 "position": {
                     "x": 5.890101432800293,
-                    "y": -0.45737600326538086,
+                    "y": -0.45738649368286133,
                     "z": 265.65533447265625
                 },
                 "scale": {
@@ -25069,7 +25667,7 @@
                 },
                 "localPosition": {
                     "x": -0.1057586669921875,
-                    "y": 3.8956236839294434,
+                    "y": 3.895613193511963,
                     "z": 0.2228240966796875
                 },
                 "localScale": {
@@ -25112,7 +25710,7 @@
             "Transform": {
                 "position": {
                     "x": 1.5250935554504395,
-                    "y": -0.663968563079834,
+                    "y": -0.6639790534973145,
                     "z": 268.5312805175781
                 },
                 "scale": {
@@ -25133,7 +25731,7 @@
                 },
                 "localPosition": {
                     "x": 0.0001068115234375,
-                    "y": 3.6890311241149902,
+                    "y": 3.6890206336975098,
                     "z": 5.4490203857421875
                 },
                 "localScale": {
@@ -26100,7 +26698,7 @@
             "Transform": {
                 "position": {
                     "x": 6.135072231292725,
-                    "y": -4.421924114227295,
+                    "y": -4.421934604644775,
                     "z": 265.6261901855469
                 },
                 "scale": {
@@ -26121,7 +26719,7 @@
                 },
                 "localPosition": {
                     "x": 0.00018310546875,
-                    "y": -0.0689244270324707,
+                    "y": -0.06893491744995117,
                     "z": 3.0517578125e-05
                 },
                 "localScale": {
@@ -26583,45 +27181,45 @@
             },
             "Transform": {
                 "position": {
-                    "x": 160.39456176757813,
+                    "x": 160.3949432373047,
                     "y": -17.88926887512207,
-                    "z": 142.11648559570313
+                    "z": 142.1165008544922
                 },
                 "scale": {
-                    "x": 2.150400161743164,
+                    "x": 2.150402784347534,
                     "y": 4.661861896514893,
-                    "z": 10.22410774230957
+                    "z": 10.224120140075684
                 },
                 "rotation": {
                     "w": 0.5647030472755432,
                     "x": 0.0,
-                    "y": -0.8252941966056824,
+                    "y": -0.8252941370010376,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -1.2001469135284424,
+                    "y": -1.2001466751098633,
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
-                    "x": 0.191436767578125,
+                    "x": 0.1925048828125,
                     "y": 11.399715423583984,
-                    "z": -12.089752197265625
+                    "z": -12.0897216796875
                 },
                 "localScale": {
-                    "x": 5.458363056182861,
+                    "x": 5.458369255065918,
                     "y": 9.814521789550781,
-                    "z": 28.331764221191406
+                    "z": 28.331798553466797
                 },
                 "localRotation": {
-                    "w": 0.5476471185684204,
+                    "w": 0.5476471781730652,
                     "x": 0.0,
                     "y": -0.8367093801498413,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": -1.1590991020202637,
+                    "y": -1.1590993404388428,
                     "z": 3.1415927410125732
                 }
             },
@@ -26709,18 +27307,18 @@
                 "rotation": {
                     "w": 0.9999991655349731,
                     "x": 0.0,
-                    "y": -0.0013567127753049135,
+                    "y": -0.0013567244168370962,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.0027134250849485397,
+                    "y": -0.002713448368012905,
                     "z": 0.0
                 },
                 "localPosition": {
                     "x": 0.015289306640625,
                     "y": 7.62939453125e-06,
-                    "z": 0.078399658203125
+                    "z": 0.078369140625
                 },
                 "localScale": {
                     "x": 12.4213285446167,
@@ -26730,12 +27328,12 @@
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
-                    "y": -0.00018250262655783445,
+                    "y": -0.00018250674474984407,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.0003650046419352293,
+                    "y": -0.00036501302383840084,
                     "z": 0.0
                 }
             },
@@ -26794,7 +27392,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 160.3422088623047,
+                    "x": 160.34254455566406,
                     "y": -23.304088592529297,
                     "z": 147.07452392578125
                 },
@@ -26806,18 +27404,18 @@
                 "rotation": {
                     "w": 0.9999993443489075,
                     "x": 0.0,
-                    "y": -0.0012306668795645237,
+                    "y": -0.001230682129971683,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.0024613335262984037,
+                    "y": -0.002461363561451435,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.075897216796875,
+                    "x": 0.07684326171875,
                     "y": 7.62939453125e-06,
-                    "z": 0.273193359375
+                    "z": 0.273162841796875
                 },
                 "localScale": {
                     "x": 12.637136459350586,
@@ -26827,12 +27425,12 @@
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
-                    "y": -7.108773570507765e-05,
+                    "y": -7.10950989741832e-05,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.0001421751658199355,
+                    "y": -0.00014218961587175727,
                     "z": 0.0
                 }
             },
@@ -27078,7 +27676,7 @@
                 },
                 "scale": {
                     "x": 6.1988325119018555,
-                    "y": 6.775227069854736,
+                    "y": 6.775242328643799,
                     "z": 4.628681659698486
                 },
                 "rotation": {
@@ -27099,7 +27697,7 @@
                 },
                 "localScale": {
                     "x": 12.421244621276855,
-                    "y": 10.0003023147583,
+                    "y": 10.000324249267578,
                     "z": 11.541528701782227
                 },
                 "localRotation": {
@@ -27175,7 +27773,7 @@
                 },
                 "scale": {
                     "x": 6.306556224822998,
-                    "y": 6.775227069854736,
+                    "y": 6.775242328643799,
                     "z": 4.646860599517822
                 },
                 "rotation": {
@@ -27196,7 +27794,7 @@
                 },
                 "localScale": {
                     "x": 12.637101173400879,
-                    "y": 10.0003023147583,
+                    "y": 10.000324249267578,
                     "z": 11.586856842041016
                 },
                 "localRotation": {
@@ -27270,7 +27868,7 @@
                 },
                 "scale": {
                     "x": 391.3005065917969,
-                    "y": 6.3453803062438965,
+                    "y": 6.345394611358643,
                     "z": 801.3916625976563
                 },
                 "rotation": {
@@ -27291,7 +27889,7 @@
                 },
                 "localScale": {
                     "x": 853.60791015625,
-                    "y": 9.365843772888184,
+                    "y": 9.365864753723145,
                     "z": 1835.5155029296875
                 },
                 "localRotation": {
@@ -27378,9 +27976,9 @@
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 0.9998289346694946,
+                    "x": 0.9998263120651245,
                     "y": 1.0000134706497192,
-                    "z": 0.9998303055763245
+                    "z": 0.9998276829719543
                 },
                 "rotation": {
                     "w": 0.7071067094802856,
@@ -27399,9 +27997,9 @@
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9998288750648499,
+                    "x": 0.9998262524604797,
                     "y": 1.0000134706497192,
-                    "z": 0.9998302459716797
+                    "z": 0.9998276233673096
                 },
                 "localRotation": {
                     "w": 0.7071067094802856,
@@ -27765,41 +28363,41 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.5635986328125,
-                    "y": 88.08892059326172,
-                    "z": 74.6423568725586
+                    "x": -236.564208984375,
+                    "y": 88.08887481689453,
+                    "z": 74.64241027832031
                 },
                 "scale": {
-                    "x": 1.2324960231781006,
-                    "y": 1.232734203338623,
-                    "z": 1.2324302196502686
+                    "x": 1.2324987649917603,
+                    "y": 1.2327373027801514,
+                    "z": 1.2324342727661133
                 },
                 "rotation": {
                     "w": 0.6901206970214844,
-                    "x": -3.2651087167323567e-06,
+                    "x": -3.2651357741997344e-06,
                     "y": 0.7236943244934082,
-                    "z": -1.926603727042675e-05
+                    "z": -1.9266126400907524e-05
                 },
                 "eulerAngles": {
                     "x": -3.1409101486206055,
-                    "y": 1.5233129262924194,
+                    "y": 1.5233142375946045,
                     "z": -3.14093279838562
                 },
                 "localPosition": {
-                    "x": 0.42626953125,
-                    "y": 0.791351318359375,
-                    "z": -3.0903854370117188
+                    "x": 0.4267578125,
+                    "y": 0.7913131713867188,
+                    "z": -3.0904006958007813
                 },
                 "localScale": {
-                    "x": 1.0000393390655518,
+                    "x": 1.0000416040420532,
                     "y": 1.0001214742660522,
-                    "z": 0.9999943971633911
+                    "z": 0.9999976754188538
                 },
                 "localRotation": {
                     "w": 0.7052412629127502,
-                    "x": 1.180744766315911e-05,
+                    "x": 1.1807510418293532e-05,
                     "y": -0.7089674472808838,
-                    "z": -1.0867551281990018e-05
+                    "z": -1.0867544915527105e-05
                 },
                 "localEulerAngles": {
                     "x": 3.1355080604553223,
@@ -28019,7 +28617,7 @@
             "Transform": {
                 "position": {
                     "x": -235.3881378173828,
-                    "y": 87.26472473144531,
+                    "y": 87.26455688476563,
                     "z": 71.37274169921875
                 },
                 "scale": {
@@ -28040,7 +28638,7 @@
                 },
                 "localPosition": {
                     "x": -0.03533935546875,
-                    "y": -0.8422927856445313,
+                    "y": -0.8425369262695313,
                     "z": 1.5531768798828125
                 },
                 "localScale": {
@@ -28085,7 +28683,7 @@
             "Transform": {
                 "position": {
                     "x": -236.04150390625,
-                    "y": 87.6543197631836,
+                    "y": 87.6541976928711,
                     "z": 70.5267562866211
                 },
                 "scale": {
@@ -28106,7 +28704,7 @@
                 },
                 "localPosition": {
                     "x": -0.3543663024902344,
-                    "y": 0.18595504760742188,
+                    "y": 0.18597793579101563,
                     "z": 0.36704254150390625
                 },
                 "localScale": {
@@ -28157,20 +28755,20 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.16761779785156,
-                    "y": 87.11321258544922,
-                    "z": 71.74091339111328
+                    "x": -236.16830444335938,
+                    "y": 87.1131820678711,
+                    "z": 71.740966796875
                 },
                 "scale": {
-                    "x": 1.2326326370239258,
-                    "y": 1.232562780380249,
-                    "z": 1.2324542999267578
+                    "x": 1.2326327562332153,
+                    "y": 1.2325652837753296,
+                    "z": 1.2324544191360474
                 },
                 "rotation": {
-                    "w": 0.6727328896522522,
-                    "x": 1.3607338587462436e-05,
-                    "y": -0.7398854494094849,
-                    "z": 5.84497865929734e-06
+                    "w": 0.6727328300476074,
+                    "x": 1.3607308574137278e-05,
+                    "y": -0.7398855090141296,
+                    "z": 5.844924999109935e-06
                 },
                 "eulerAngles": {
                     "x": 3.141490936279297,
@@ -28178,25 +28776,25 @@
                     "z": -3.141463279724121
                 },
                 "localPosition": {
-                    "x": -0.01873779296875,
-                    "y": -0.00023651123046875,
-                    "z": -0.7563896179199219
+                    "x": -0.0181732177734375,
+                    "y": -0.0002593994140625,
+                    "z": -0.7564010620117188
                 },
                 "localScale": {
-                    "x": 1.0001503229141235,
-                    "y": 0.9999824166297913,
-                    "z": 1.0000137090682983
+                    "x": 1.0001505613327026,
+                    "y": 0.9999818801879883,
+                    "z": 1.000013828277588
                 },
                 "localRotation": {
-                    "w": 0.757371187210083,
-                    "x": 1.3760515685135033e-05,
+                    "w": 0.7573712468147278,
+                    "x": 1.3760522051597945e-05,
                     "y": 0.652984619140625,
-                    "z": -2.1544919945881702e-05
+                    "z": -2.15449181268923e-05
                 },
                 "localEulerAngles": {
-                    "x": -4.953985262545757e-05,
-                    "y": 1.4230374097824097,
-                    "z": -9.960583702195436e-05
+                    "x": -4.953969255439006e-05,
+                    "y": 1.423037052154541,
+                    "z": -9.960568422684446e-05
                 }
             },
             "MeshRenderer": {
@@ -28307,7 +28905,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.699999988079071,
                 "loop": false
             },
             "Scripts": {
@@ -28600,15 +29198,15 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 411789645882097769,
+                                                "__variant_value": 10011634472569946113,
                                                 "__variant_type": 15
                                             },
                                             {
-                                                "__variant_value": 7905779425826603115,
+                                                "__variant_value": 211801683411746819,
                                                 "__variant_type": 15
                                             },
                                             {
-                                                "__variant_value": 10211622435040297069,
+                                                "__variant_value": 13470398986390487045,
                                                 "__variant_type": 15
                                             }
                                         ],
@@ -28658,7 +29256,7 @@
             "Transform": {
                 "position": {
                     "x": -235.38926696777344,
-                    "y": 87.26387786865234,
+                    "y": 87.26375579833984,
                     "z": 71.37198638916016
                 },
                 "scale": {
@@ -28679,7 +29277,7 @@
                 },
                 "localPosition": {
                     "x": -0.000278472900390625,
-                    "y": -0.00040435791015625,
+                    "y": -0.0003814697265625,
                     "z": 0.00058746337890625
                 },
                 "localScale": {
@@ -29289,8 +29887,8 @@
                 },
                 "scale": {
                     "x": 1.0004024505615234,
-                    "y": 0.9999815821647644,
-                    "z": 1.0001834630966187
+                    "y": 0.9999789595603943,
+                    "z": 1.0001782178878784
                 },
                 "rotation": {
                     "w": -5.84953681936895e-07,
@@ -29310,8 +29908,8 @@
                 },
                 "localScale": {
                     "x": 1.0004024505615234,
-                    "y": 0.9999815225601196,
-                    "z": 1.000183343887329
+                    "y": 0.9999788999557495,
+                    "z": 1.0001780986785889
                 },
                 "localRotation": {
                     "w": -5.84953681936895e-07,
@@ -29458,6 +30056,7 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
+                    "16861337649669213096": true,
                     "13437837940854190620": true,
                     "17237801994024849853": true
                 },
@@ -29508,7 +30107,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -29560,7 +30159,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29571,7 +30179,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29582,7 +30207,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29593,7 +30231,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29604,7 +30263,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -30600,12 +31292,12 @@
             },
             "Transform": {
                 "position": {
-                    "x": -73.59716033935547,
+                    "x": -73.5973892211914,
                     "y": -40.25613021850586,
                     "z": -159.21173095703125
                 },
                 "scale": {
-                    "x": 4.924349784851074,
+                    "x": 4.9243364334106445,
                     "y": 5.918010711669922,
                     "z": 4.628965377807617
                 },
@@ -30623,22 +31315,22 @@
                 "localPosition": {
                     "x": 0.0001220703125,
                     "y": 7.62939453125e-06,
-                    "z": 0.0988922119140625
+                    "z": 0.099456787109375
                 },
                 "localScale": {
-                    "x": 12.420000076293945,
+                    "x": 12.419966697692871,
                     "y": 10.000006675720215,
                     "z": 11.541525840759277
                 },
                 "localRotation": {
                     "w": 1.0,
                     "x": -0.0,
-                    "y": -5.998856966726862e-10,
+                    "y": -2.9994368100361157e-10,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": -0.0,
-                    "y": -1.19977128232307e-09,
+                    "y": -1.1997747240144463e-09,
                     "z": 0.0
                 }
             },
@@ -30702,7 +31394,7 @@
                     "z": -159.19064331054688
                 },
                 "scale": {
-                    "x": 5.010049819946289,
+                    "x": 5.010039329528809,
                     "y": 5.918010711669922,
                     "z": 4.6471405029296875
                 },
@@ -30723,19 +31415,19 @@
                     "z": 0.2737274169921875
                 },
                 "localScale": {
-                    "x": 12.636150360107422,
+                    "x": 12.636123657226563,
                     "y": 10.000006675720215,
                     "z": 11.586841583251953
                 },
                 "localRotation": {
                     "w": 1.0,
                     "x": -0.0,
-                    "y": -2.9481211916149164e-10,
+                    "y": -2.948127575397308e-10,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": -0.0,
-                    "y": -5.89624182811832e-10,
+                    "y": -5.896254040571591e-10,
                     "z": 0.0
                 }
             },
@@ -30792,17 +31484,17 @@
             },
             "Transform": {
                 "position": {
-                    "x": -69.78755950927734,
+                    "x": -69.7877426147461,
                     "y": -33.50978088378906,
                     "z": -159.23411560058594
                 },
                 "scale": {
-                    "x": 1.3414640426635742,
+                    "x": 1.341477394104004,
                     "y": 5.808241367340088,
-                    "z": 6.538313865661621
+                    "z": 6.538371562957764
                 },
                 "rotation": {
-                    "w": 0.004236627370119095,
+                    "w": 0.0042366269044578075,
                     "x": 0.0,
                     "y": 0.9999911189079285,
                     "z": 0.0
@@ -30815,12 +31507,12 @@
                 "localPosition": {
                     "x": -0.138397216796875,
                     "y": 11.399703979492188,
-                    "z": -9.398880004882813
+                    "z": -9.398422241210938
                 },
                 "localScale": {
-                    "x": 3.344709873199463,
+                    "x": 3.344743251800537,
                     "y": 9.814522743225098,
-                    "z": 16.490684509277344
+                    "z": 16.490829467773438
                 },
                 "localRotation": {
                     "w": 0.7071313858032227,
@@ -30915,7 +31607,7 @@
                 "scale": {
                     "x": 0.38749849796295166,
                     "y": 0.5205304622650146,
-                    "z": 0.4011436402797699
+                    "z": 0.40114569664001465
                 },
                 "rotation": {
                     "w": 0.7092463970184326,
@@ -30936,7 +31628,7 @@
                 "localScale": {
                     "x": 0.38749849796295166,
                     "y": 0.5205304622650146,
-                    "z": 0.4011436700820923
+                    "z": 0.4011457562446594
                 },
                 "localRotation": {
                     "w": 0.7092463970184326,
@@ -31253,7 +31945,7 @@
                 },
                 "scale": {
                     "x": 0.544895350933075,
-                    "y": 0.7075850963592529,
+                    "y": 0.7075873017311096,
                     "z": 0.7974103689193726
                 },
                 "rotation": {
@@ -31274,7 +31966,7 @@
                 },
                 "localScale": {
                     "x": 14.37121868133545,
-                    "y": 20.216745376586914,
+                    "y": 20.216808319091797,
                     "z": 22.775842666625977
                 },
                 "localRotation": {
@@ -31374,19 +32066,19 @@
             },
             "Transform": {
                 "position": {
-                    "x": -71.67752838134766,
+                    "x": -71.6774673461914,
                     "y": 78.90351867675781,
-                    "z": 79.72930908203125
+                    "z": 79.72933959960938
                 },
                 "scale": {
                     "x": 6.874173164367676,
-                    "y": 7.098329544067383,
-                    "z": 11.208624839782715
+                    "y": 7.098349571228027,
+                    "z": 11.208620071411133
                 },
                 "rotation": {
                     "w": 0.7855893969535828,
                     "x": 0.0,
-                    "y": -0.6187481880187988,
+                    "y": -0.618748128414154,
                     "z": 0.0
                 },
                 "eulerAngles": {
@@ -31395,24 +32087,24 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -7.62939453125e-06,
-                    "y": -0.00030517578125,
-                    "z": -3.814697265625e-05
+                    "x": 6.866455078125e-05,
+                    "y": -0.00029754638671875,
+                    "z": -9.918212890625e-05
                 },
                 "localScale": {
                     "x": 12.599159240722656,
-                    "y": 10.031766891479492,
-                    "z": 14.074607849121094
+                    "y": 10.03176498413086,
+                    "z": 14.074599266052246
                 },
                 "localRotation": {
                     "w": 0.9997141361236572,
                     "x": 0.0,
-                    "y": -0.0239093080163002,
+                    "y": -0.023909252136945724,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04782316833734512,
+                    "y": -0.04782317206263542,
                     "z": 0.0
                 }
             },
@@ -31468,17 +32160,17 @@
             },
             "Transform": {
                 "position": {
-                    "x": -71.68199157714844,
+                    "x": -71.68193054199219,
                     "y": 78.90351867675781,
-                    "z": 79.73076629638672
+                    "z": 79.73074340820313
                 },
                 "scale": {
-                    "x": 6.875504016876221,
-                    "y": 7.098329544067383,
-                    "z": 11.210186004638672
+                    "x": 6.875509738922119,
+                    "y": 7.098349571228027,
+                    "z": 11.210193634033203
                 },
                 "rotation": {
-                    "w": 0.7848331332206726,
+                    "w": 0.7848330140113831,
                     "x": 0.0,
                     "y": -0.6197072863578796,
                     "z": 0.0
@@ -31489,24 +32181,24 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 6.866455078125e-05,
-                    "y": -0.00030517578125,
-                    "z": 0.00585174560546875
+                    "x": 5.340576171875e-05,
+                    "y": -0.00029754638671875,
+                    "z": 0.00576019287109375
                 },
                 "localScale": {
-                    "x": 12.600434303283691,
-                    "y": 10.031766891479492,
-                    "z": 14.077871322631836
+                    "x": 12.600443840026855,
+                    "y": 10.03176498413086,
+                    "z": 14.077878952026367
                 },
                 "localRotation": {
                     "w": 0.999693751335144,
                     "x": 0.0,
-                    "y": -0.024745982140302658,
+                    "y": -0.02474597655236721,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04949698969721794,
+                    "y": -0.04949699714779854,
                     "z": 0.0
                 }
             },
@@ -31722,6 +32414,46 @@
                                 }
                             },
                             {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "ichorPrefab",
                                 "data": {
                                     "__variant_value": 14493050257245634575,
@@ -31922,12 +32654,12 @@
                 "rotation": {
                     "w": 0.9999993443489075,
                     "x": 0.0,
-                    "y": -0.0011502440320327878,
+                    "y": -0.0011502510169520974,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.0023004880640655756,
+                    "y": -0.002300501801073551,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -31943,12 +32675,12 @@
                 "localRotation": {
                     "w": 0.9999993443489075,
                     "x": 0.0,
-                    "y": -0.0011502442648634315,
+                    "y": -0.0011502511333674192,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.0023004882968962193,
+                    "y": -0.0023005022667348385,
                     "z": 0.0
                 }
             },
@@ -32431,7 +33163,7 @@
                 },
                 "scale": {
                     "x": 0.544895350933075,
-                    "y": 0.7075850963592529,
+                    "y": 0.7075873017311096,
                     "z": 0.7974103689193726
                 },
                 "rotation": {
@@ -32452,7 +33184,7 @@
                 },
                 "localScale": {
                     "x": 14.37121868133545,
-                    "y": 20.216745376586914,
+                    "y": 20.216808319091797,
                     "z": 22.775842666625977
                 },
                 "localRotation": {
@@ -32552,17 +33284,17 @@
             },
             "Transform": {
                 "position": {
-                    "x": -60.28530502319336,
+                    "x": -60.28532409667969,
                     "y": 78.90351867675781,
-                    "z": 76.0652084350586
+                    "z": 76.065185546875
                 },
                 "scale": {
-                    "x": 6.875504016876221,
-                    "y": 7.098329544067383,
-                    "z": 11.210186004638672
+                    "x": 6.875509738922119,
+                    "y": 7.098349571228027,
+                    "z": 11.210193634033203
                 },
                 "rotation": {
-                    "w": 0.7848331332206726,
+                    "w": 0.7848330140113831,
                     "x": 0.0,
                     "y": -0.6197072863578796,
                     "z": 0.0
@@ -32573,24 +33305,24 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0008087158203125,
-                    "y": -0.00030517578125,
+                    "x": -0.0008697509765625,
+                    "y": -0.00029754638671875,
                     "z": 0.00598907470703125
                 },
                 "localScale": {
-                    "x": 12.600434303283691,
-                    "y": 10.031766891479492,
-                    "z": 14.077871322631836
+                    "x": 12.600443840026855,
+                    "y": 10.03176498413086,
+                    "z": 14.077878952026367
                 },
                 "localRotation": {
                     "w": 0.999693751335144,
                     "x": 0.0,
-                    "y": -0.024745982140302658,
+                    "y": -0.02474597655236721,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04949698969721794,
+                    "y": -0.04949699714779854,
                     "z": 0.0
                 }
             },
@@ -32646,19 +33378,19 @@
             },
             "Transform": {
                 "position": {
-                    "x": -60.28065490722656,
+                    "x": -60.28065872192383,
                     "y": 78.90351867675781,
-                    "z": 76.06391143798828
+                    "z": 76.06388854980469
                 },
                 "scale": {
                     "x": 6.874173164367676,
-                    "y": 7.098329544067383,
-                    "z": 11.208624839782715
+                    "y": 7.098349571228027,
+                    "z": 11.208620071411133
                 },
                 "rotation": {
                     "w": 0.7855893969535828,
                     "x": 0.0,
-                    "y": -0.6187481880187988,
+                    "y": -0.618748128414154,
                     "z": 0.0
                 },
                 "eulerAngles": {
@@ -32667,24 +33399,24 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.00051116943359375,
-                    "y": -0.00030517578125,
-                    "z": -6.103515625e-05
+                    "x": -0.00054168701171875,
+                    "y": -0.00029754638671875,
+                    "z": -7.62939453125e-05
                 },
                 "localScale": {
                     "x": 12.599159240722656,
-                    "y": 10.031766891479492,
-                    "z": 14.074607849121094
+                    "y": 10.03176498413086,
+                    "z": 14.074599266052246
                 },
                 "localRotation": {
                     "w": 0.9997141361236572,
                     "x": 0.0,
-                    "y": -0.0239093080163002,
+                    "y": -0.023909252136945724,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04782316833734512,
+                    "y": -0.04782317206263542,
                     "z": 0.0
                 }
             },
@@ -33735,8 +34467,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 155.3879852294922,
-                    "y": 300.4909973144531,
+                    "x": 155.3876495361328,
+                    "y": 300.4903259277344,
                     "z": 0.0
                 },
                 "scale": {
@@ -33756,8 +34488,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.073516845703125,
-                    "y": -0.2149658203125,
+                    "x": -0.0739898681640625,
+                    "y": -0.21588134765625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -34039,7 +34771,7 @@
             "Transform": {
                 "position": {
                     "x": 200.82943725585938,
-                    "y": 301.5169677734375,
+                    "y": 301.51629638671875,
                     "z": 0.0
                 },
                 "scale": {
@@ -34060,7 +34792,7 @@
                 },
                 "localPosition": {
                     "x": 63.057159423828125,
-                    "y": 1.21038818359375,
+                    "y": 1.20947265625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -34691,7 +35423,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 1283.38037109375,
+                    "x": 1283.377685546875,
                     "y": 126.75751495361328,
                     "z": 0.0
                 },
@@ -34712,7 +35444,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 94.37744903564453,
+                    "x": 94.37390899658203,
                     "y": -0.00012207032705191523,
                     "z": 0.0
                 },
@@ -34773,7 +35505,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 846.9539794921875,
+                    "x": 846.951416015625,
                     "y": 116.39627075195313,
                     "z": 0.0
                 },
@@ -34794,7 +35526,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -479.8673400878906,
+                    "x": -479.8707580566406,
                     "y": -13.633332252502441,
                     "z": 0.0
                 },
@@ -35064,7 +35796,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 836.9674072265625,
+                    "x": 836.9653930664063,
                     "y": 178.95120239257813,
                     "z": 0.0
                 },
@@ -35085,7 +35817,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.006469727028161287,
+                    "x": -0.009155274368822575,
                     "y": -0.00022888185048941523,
                     "z": 0.0
                 },
@@ -35140,7 +35872,7 @@
             },
             "Transform": {
                 "position": {
-                    "x": 836.9674072265625,
+                    "x": 836.9653930664063,
                     "y": 178.95120239257813,
                     "z": 0.0
                 },
@@ -35161,7 +35893,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.006469727028161287,
+                    "x": -0.009155274368822575,
                     "y": -0.00022888185048941523,
                     "z": 0.0
                 },
@@ -35452,7 +36184,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -35501,7 +36234,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -35555,11 +36288,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 13093926196557398037,
+                                                "__variant_value": 735732168193916929,
                                                 "__variant_type": 15
                                             },
                                             {
-                                                "__variant_value": 13670386948860821531,
+                                                "__variant_value": 14570790223476080643,
                                                 "__variant_type": 15
                                             }
                                         ],
@@ -35869,7 +36602,7 @@
             "Transform": {
                 "position": {
                     "x": -102.78182983398438,
-                    "y": 83.65826416015625,
+                    "y": 83.65809631347656,
                     "z": 89.52326965332031
                 },
                 "scale": {
@@ -35890,7 +36623,7 @@
                 },
                 "localPosition": {
                     "x": -0.0946197509765625,
-                    "y": 3.1421585083007813,
+                    "y": 3.1419906616210938,
                     "z": 0.000244140625
                 },
                 "localScale": {
@@ -35935,7 +36668,7 @@
             "Transform": {
                 "position": {
                     "x": -102.46627044677734,
-                    "y": 84.03699493408203,
+                    "y": 84.03682708740234,
                     "z": 89.37567901611328
                 },
                 "scale": {
@@ -35956,7 +36689,7 @@
                 },
                 "localPosition": {
                     "x": -0.1608734130859375,
-                    "y": 3.5208892822265625,
+                    "y": 3.520721435546875,
                     "z": -0.341766357421875
                 },
                 "localScale": {
@@ -36044,7 +36777,7 @@
             "Transform": {
                 "position": {
                     "x": -104.18498229980469,
-                    "y": 84.01292419433594,
+                    "y": 84.01275634765625,
                     "z": 89.9080581665039
                 },
                 "scale": {
@@ -36065,7 +36798,7 @@
                 },
                 "localPosition": {
                     "x": -0.0633087158203125,
-                    "y": 3.4968185424804688,
+                    "y": 3.4966506958007813,
                     "z": 1.454864501953125
                 },
                 "localScale": {
@@ -36108,13 +36841,13 @@
             "Transform": {
                 "position": {
                     "x": -104.74261474609375,
-                    "y": 83.22361755371094,
+                    "y": 83.22344970703125,
                     "z": 90.02291870117188
                 },
                 "scale": {
                     "x": 1.0002740621566772,
                     "y": 0.9999629855155945,
-                    "z": 1.0000988245010376
+                    "z": 1.0000962018966675
                 },
                 "rotation": {
                     "w": 0.4348393976688385,
@@ -36129,13 +36862,13 @@
                 },
                 "localPosition": {
                     "x": -0.0877838134765625,
-                    "y": 2.7075119018554688,
+                    "y": 2.7073440551757813,
                     "z": 2.023681640625
                 },
                 "localScale": {
                     "x": 1.0002743005752563,
                     "y": 0.9999632835388184,
-                    "z": 1.0000988245010376
+                    "z": 1.0000962018966675
                 },
                 "localRotation": {
                     "w": -7.690613870181551e-07,
@@ -36283,7 +37016,7 @@
             "Transform": {
                 "position": {
                     "x": -102.75848388671875,
-                    "y": 80.51021575927734,
+                    "y": 80.51004791259766,
                     "z": 89.61490631103516
                 },
                 "scale": {
@@ -36304,7 +37037,7 @@
                 },
                 "localPosition": {
                     "x": -5.340576171875e-05,
-                    "y": -0.005889892578125,
+                    "y": -0.0060577392578125,
                     "z": -6.866455078125e-05
                 },
                 "localScale": {
@@ -38685,14 +39418,14 @@
                 },
                 "scale": {
                     "x": 1.232437252998352,
-                    "y": 1.2325843572616577,
+                    "y": 1.2325875759124756,
                     "z": 1.2324475049972534
                 },
                 "rotation": {
                     "w": -0.026374077424407005,
                     "x": 1.1072636880271602e-05,
                     "y": 0.9996521472930908,
-                    "z": 1.44622759989943e-07
+                    "z": 1.4462376896062779e-07
                 },
                 "eulerAngles": {
                     "x": -3.141592264175415,
@@ -38701,19 +39434,19 @@
                 },
                 "localPosition": {
                     "x": -0.000213623046875,
-                    "y": 0.002593994140625,
+                    "y": 0.00272369384765625,
                     "z": -1.8543930053710938
                 },
                 "localScale": {
                     "x": 1.0000197887420654,
-                    "y": 1.0001392364501953,
+                    "y": 1.0001418590545654,
                     "z": 1.000028133392334
                 },
                 "localRotation": {
                     "w": -0.06580282002687454,
                     "x": 1.1069893844251055e-05,
                     "y": 0.9978326559066772,
-                    "z": -2.92451517225345e-07
+                    "z": -2.9245060773064324e-07
                 },
                 "localEulerAngles": {
                     "x": -3.1415905952453613,
@@ -38824,7 +39557,7 @@
             "Transform": {
                 "position": {
                     "x": -236.4198455810547,
-                    "y": 87.11030578613281,
+                    "y": 87.11013793945313,
                     "z": 73.08950805664063
                 },
                 "scale": {
@@ -38845,7 +39578,7 @@
                 },
                 "localPosition": {
                     "x": -1.542205810546875,
-                    "y": -1.0678329467773438,
+                    "y": -1.0680770874023438,
                     "z": 4.060600280761719
                 },
                 "localScale": {
@@ -38957,7 +39690,7 @@
             "Transform": {
                 "position": {
                     "x": -236.5414581298828,
-                    "y": 87.4175796508789,
+                    "y": 87.41741180419922,
                     "z": 71.897216796875
                 },
                 "scale": {
@@ -38978,7 +39711,7 @@
                 },
                 "localPosition": {
                     "x": -1.719818115234375,
-                    "y": -0.6190414428710938,
+                    "y": -0.6192855834960938,
                     "z": 2.3191986083984375
                 },
                 "localScale": {
@@ -39024,7 +39757,7 @@
             "Transform": {
                 "position": {
                     "x": -236.419677734375,
-                    "y": 87.11029052734375,
+                    "y": 87.11012268066406,
                     "z": 73.08977508544922
                 },
                 "scale": {
@@ -39045,7 +39778,7 @@
                 },
                 "localPosition": {
                     "x": -1.541961669921875,
-                    "y": -1.0678558349609375,
+                    "y": -1.0680999755859375,
                     "z": 4.0609893798828125
                 },
                 "localScale": {
