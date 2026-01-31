@@ -1,5 +1,5 @@
 {
-    "RootEntity": 21,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,21 +8,21 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    22,
-                    23,
-                    24,
+                    1,
+                    2,
+                    3,
+                    4,
+                    11,
+                    17,
                     25,
-                    32,
-                    38,
-                    46,
-                    58
+                    37
                 ],
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -87,21 +87,21 @@
             "Canvas": {
                 "placeholder": ""
             },
-            "id": 21
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "UI Crosshair",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 1,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -167,21 +167,21 @@
                 },
                 "toTile": false
             },
-            "id": 22
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "UI Base Crosshair",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 2,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -247,25 +247,26 @@
                 },
                 "toTile": false
             },
-            "id": 23
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Damaged Background",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
-                "layerId": 0,
+                "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 3,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "394579324703252227": true
+                    "394579324703252227": true,
+                    "6919815292445452220": false
                 },
                 "inactiveComponents": null
             },
@@ -314,7 +315,7 @@
                 }
             },
             "Image": {
-                "texture": 12643416590882717963,
+                "texture": 15629329532067610719,
                 "colorTint": {
                     "r": 1.0,
                     "g": 1.0,
@@ -329,27 +330,29 @@
                 },
                 "toTile": false
             },
-            "id": 24
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Quest Container",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    26,
-                    29
+                    5,
+                    8
                 ],
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 4,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "6919815292445452220": false
+                },
                 "inactiveComponents": null
             },
             "Transform": {
@@ -396,24 +399,24 @@
                     "z": 0.0
                 }
             },
-            "id": 25
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Mission Objective Container",
                 "tag": "",
-                "parent": 25,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": [
-                    27,
-                    28
+                    6,
+                    7
                 ],
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 5,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -465,21 +468,21 @@
                     "z": 0.0
                 }
             },
-            "id": 26
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Mission Objective Background",
                 "tag": "",
-                "parent": 26,
+                "parent": 5,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 6,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -489,8 +492,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 942.7403564453125,
-                    "y": 201.29127502441406,
+                    "x": 942.7391357421875,
+                    "y": 201.29098510742188,
                     "z": 0.0
                 },
                 "scale": {
@@ -510,8 +513,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0488281287252903,
-                    "y": -0.012268067337572575,
+                    "x": -0.0504150427877903,
+                    "y": -0.012664795853197575,
                     "z": 0.0
                 },
                 "localScale": {
@@ -547,21 +550,21 @@
                 },
                 "toTile": false
             },
-            "id": 27
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "Mission Objective Text",
                 "tag": "",
-                "parent": 26,
+                "parent": 5,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 7,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -569,8 +572,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 854.4081420898438,
-                    "y": 192.2871856689453,
+                    "x": 854.406982421875,
+                    "y": 192.28695678710938,
                     "z": 0.0
                 },
                 "scale": {
@@ -590,8 +593,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -116.27527618408203,
-                    "y": -11.859757423400879,
+                    "x": -116.27686309814453,
+                    "y": -11.860047340393066,
                     "z": 0.0
                 },
                 "localScale": {
@@ -621,24 +624,24 @@
                     "b": 0.6931034326553345
                 }
             },
-            "id": 28
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Quest Information Container",
                 "tag": "",
-                "parent": 25,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": [
-                    30,
-                    31
+                    9,
+                    10
                 ],
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 8,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -690,21 +693,21 @@
                     "z": 0.0
                 }
             },
-            "id": 29
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Quest Background",
                 "tag": "",
-                "parent": 29,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 9,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -772,21 +775,21 @@
                 },
                 "toTile": false
             },
-            "id": 30
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Quest Text",
                 "tag": "",
-                "parent": 29,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 10,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -848,25 +851,25 @@
                     "b": 1.0
                 }
             },
-            "id": 31
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Player UI Container",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    33,
-                    34,
-                    36
+                    12,
+                    13,
+                    15
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 11,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -916,21 +919,21 @@
                     "z": 0.0
                 }
             },
-            "id": 32
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Player UI Image",
                 "tag": "",
-                "parent": 32,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 12,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -996,23 +999,23 @@
                 },
                 "toTile": false
             },
-            "id": 33
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Health Container",
                 "tag": "",
-                "parent": 32,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": [
-                    35
+                    14
                 ],
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 13,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1062,21 +1065,21 @@
                     "z": 0.0
                 }
             },
-            "id": 34
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Health Bar",
                 "tag": "",
-                "parent": 34,
+                "parent": 13,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 14,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -1144,23 +1147,23 @@
                 },
                 "toTile": false
             },
-            "id": 35
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Dash Container",
                 "tag": "",
-                "parent": 32,
+                "parent": 11,
                 "attachedSocket": 65535,
                 "children": [
-                    37
+                    16
                 ],
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 15,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1210,21 +1213,21 @@
                     "z": 0.0
                 }
             },
-            "id": 36
+            "id": 15
         },
         {
             "EntityData": {
                 "name": "Dash Bar",
                 "tag": "",
-                "parent": 36,
+                "parent": 15,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 16,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1290,24 +1293,24 @@
                 },
                 "toTile": false
             },
-            "id": 37
+            "id": 16
         },
         {
             "EntityData": {
                 "name": "Ammo UI Container",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    39,
-                    43
+                    18,
+                    22
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 17,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1357,23 +1360,23 @@
                     "z": 0.0
                 }
             },
-            "id": 38
+            "id": 17
         },
         {
             "EntityData": {
                 "name": "Ammo UI",
                 "tag": "",
-                "parent": 38,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": [
-                    40
+                    19
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 18,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1439,24 +1442,24 @@
                 },
                 "toTile": false
             },
-            "id": 39
+            "id": 18
         },
         {
             "EntityData": {
                 "name": "Ammo Text Container",
                 "tag": "",
-                "parent": 39,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": [
-                    41,
-                    42
+                    20,
+                    21
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 19,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1506,21 +1509,21 @@
                     "z": 0.0
                 }
             },
-            "id": 40
+            "id": 19
         },
         {
             "EntityData": {
                 "name": "Max Ammo Count",
                 "tag": "",
-                "parent": 40,
+                "parent": 19,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 20,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1529,7 +1532,7 @@
             "Transform": {
                 "position": {
                     "x": 200.82943725585938,
-                    "y": 301.520751953125,
+                    "y": 301.5203552246094,
                     "z": 0.0
                 },
                 "scale": {
@@ -1550,7 +1553,7 @@
                 },
                 "localPosition": {
                     "x": 63.057159423828125,
-                    "y": 1.215667724609375,
+                    "y": 1.215118408203125,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1580,21 +1583,21 @@
                     "b": 0.0
                 }
             },
-            "id": 41
+            "id": 20
         },
         {
             "EntityData": {
                 "name": "Current Ammo Count",
                 "tag": "",
-                "parent": 40,
+                "parent": 19,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 21,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1602,8 +1605,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 155.38987731933594,
-                    "y": 300.4947814941406,
+                    "x": 155.38967895507813,
+                    "y": 300.494384765625,
                     "z": 0.0
                 },
                 "scale": {
@@ -1623,8 +1626,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.070892333984375,
-                    "y": -0.209686279296875,
+                    "x": -0.0711669921875,
+                    "y": -0.210235595703125,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1654,24 +1657,24 @@
                     "b": 0.0
                 }
             },
-            "id": 42
+            "id": 21
         },
         {
             "EntityData": {
                 "name": "Ultimate UI BG",
                 "tag": "",
-                "parent": 38,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": [
-                    44,
-                    45
+                    23,
+                    24
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 22,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1721,21 +1724,21 @@
                     "z": 0.0
                 }
             },
-            "id": 43
+            "id": 22
         },
         {
             "EntityData": {
                 "name": "Ultimate UI Frame",
                 "tag": "",
-                "parent": 43,
+                "parent": 22,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 23,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1801,21 +1804,21 @@
                 },
                 "toTile": false
             },
-            "id": 44
+            "id": 23
         },
         {
             "EntityData": {
                 "name": "Ultimate UI Bar",
                 "tag": "",
-                "parent": 43,
+                "parent": 22,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
                 "isActive": true,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 24,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1881,23 +1884,23 @@
                 },
                 "toTile": false
             },
-            "id": 45
+            "id": 24
         },
         {
             "EntityData": {
                 "name": "Pause Menu UI",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    47
+                    26
                 ],
                 "layerId": 0,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 25,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -1949,23 +1952,23 @@
                     "z": 0.0
                 }
             },
-            "id": 46
+            "id": 25
         },
         {
             "EntityData": {
                 "name": "Pause Overlay",
                 "tag": "",
-                "parent": 46,
+                "parent": 25,
                 "attachedSocket": 65535,
                 "children": [
-                    48
+                    27
                 ],
                 "layerId": 4,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 26,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2031,27 +2034,27 @@
                 },
                 "toTile": false
             },
-            "id": 47
+            "id": 26
         },
         {
             "EntityData": {
                 "name": "Buttons Container",
                 "tag": "",
-                "parent": 47,
+                "parent": 26,
                 "attachedSocket": 65535,
                 "children": [
-                    49,
-                    51,
-                    53,
-                    55,
-                    57
+                    28,
+                    30,
+                    32,
+                    34,
+                    36
                 ],
                 "layerId": 0,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 27,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -2062,11 +2065,11 @@
             "Transform": {
                 "position": {
                     "x": -28.2562255859375,
-                    "y": 19.1890869140625,
+                    "y": 19.18829345703125,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400190353393555,
+                    "x": 1.0400205850601196,
                     "y": 1.0638347864151,
                     "z": 1.039999008178711
                 },
@@ -2083,11 +2086,11 @@
                 },
                 "localPosition": {
                     "x": -0.49640288949012756,
-                    "y": -0.4604407548904419,
+                    "y": -0.4604414403438568,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0005208429647609591,
+                    "x": 0.000520843721460551,
                     "y": 0.0009259259095415473,
                     "z": 0.9999991059303284
                 },
@@ -2103,23 +2106,23 @@
                     "z": 0.0
                 }
             },
-            "id": 48
+            "id": 27
         },
         {
             "EntityData": {
                 "name": "MM Box",
                 "tag": "",
-                "parent": 48,
+                "parent": 27,
                 "attachedSocket": 65535,
                 "children": [
-                    50
+                    29
                 ],
                 "layerId": 5,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 28,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -2129,14 +2132,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1630249023438,
-                    "y": 389.96771240234375,
+                    "x": 970.164306640625,
+                    "y": 389.9668273925781,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0061340332031,
-                    "y": 106.3834228515625,
-                    "z": 1.0399984121322632
+                    "x": 312.0066223144531,
+                    "y": 106.3833999633789,
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2150,14 +2153,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0008544921875,
-                    "y": 348.5302429199219,
+                    "x": 960.000732421875,
+                    "y": 348.5301513671875,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0003967285156,
-                    "y": 99.99993896484375,
-                    "z": 0.9999994039535522
+                    "x": 300.00042724609375,
+                    "y": 99.99992370605469,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2213,7 +2216,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 49,
+                    "entity": 28,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2256,21 +2259,21 @@
                     "z": 0.0
                 }
             },
-            "id": 49
+            "id": 28
         },
         {
             "EntityData": {
                 "name": "MM Word",
                 "tag": "",
-                "parent": 49,
+                "parent": 28,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 29,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2278,14 +2281,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 860.7662353515625,
-                    "y": 363.8742980957031,
+                    "x": 860.767333984375,
+                    "y": 363.87347412109375,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400207042694092,
+                    "x": 1.040022373199463,
                     "y": 1.0638353824615479,
-                    "z": 1.0399976968765259
+                    "z": 1.0399973392486572
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2300,13 +2303,13 @@
                 },
                 "localPosition": {
                     "x": -0.35062384605407715,
-                    "y": -0.24527716636657715,
+                    "y": -0.24527668952941895,
                     "z": 0.0
                 },
                 "localScale": {
                     "x": 0.003333334345370531,
-                    "y": 0.010000010952353477,
-                    "z": 0.9999993443489075
+                    "y": 0.010000013746321201,
+                    "z": 0.9999991059303284
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2330,23 +2333,23 @@
                     "b": 1.0
                 }
             },
-            "id": 50
+            "id": 29
         },
         {
             "EntityData": {
                 "name": "Quit Box",
                 "tag": "",
-                "parent": 48,
+                "parent": 27,
                 "attachedSocket": 65535,
                 "children": [
-                    52
+                    31
                 ],
                 "layerId": 5,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 30,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2354,14 +2357,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1630249023438,
-                    "y": 282.9391174316406,
+                    "x": 970.164306640625,
+                    "y": 282.93829345703125,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0061340332031,
-                    "y": 106.3834228515625,
-                    "z": 1.0399984121322632
+                    "x": 312.0066223144531,
+                    "y": 106.3833999633789,
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2375,14 +2378,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0008544921875,
-                    "y": 247.92385864257813,
+                    "x": 960.000732421875,
+                    "y": 247.92381286621094,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0003967285156,
-                    "y": 99.99993896484375,
-                    "z": 0.9999994039535522
+                    "x": 300.00042724609375,
+                    "y": 99.99992370605469,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2438,7 +2441,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 51,
+                    "entity": 30,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2481,21 +2484,21 @@
                     "z": 0.0
                 }
             },
-            "id": 51
+            "id": 30
         },
         {
             "EntityData": {
                 "name": "Quit Word",
                 "tag": "",
-                "parent": 51,
+                "parent": 30,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 31,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2503,14 +2506,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 858.853515625,
-                    "y": 263.7900390625,
+                    "x": 858.8549194335938,
+                    "y": 263.7891845703125,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400207042694092,
+                    "x": 1.040022373199463,
                     "y": 1.0638353824615479,
-                    "z": 1.0399976968765259
+                    "z": 1.0399973392486572
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2524,14 +2527,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.3567540645599365,
+                    "x": -0.3567533493041992,
                     "y": -0.18000078201293945,
                     "z": 0.0
                 },
                 "localScale": {
                     "x": 0.003333334345370531,
-                    "y": 0.010000010952353477,
-                    "z": 0.9999993443489075
+                    "y": 0.010000013746321201,
+                    "z": 0.9999991059303284
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2555,23 +2558,23 @@
                     "b": 1.0
                 }
             },
-            "id": 52
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "Resume Box",
                 "tag": "",
-                "parent": 48,
+                "parent": 27,
                 "attachedSocket": 65535,
                 "children": [
-                    54
+                    33
                 ],
                 "layerId": 5,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 32,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2579,14 +2582,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1630249023438,
-                    "y": 593.6596069335938,
+                    "x": 970.164306640625,
+                    "y": 593.6585083007813,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0061340332031,
-                    "y": 106.3834228515625,
-                    "z": 1.0399984121322632
+                    "x": 312.0066223144531,
+                    "y": 106.3833999633789,
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2600,14 +2603,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0008544921875,
-                    "y": 539.9996948242188,
+                    "x": 960.000732421875,
+                    "y": 539.9993896484375,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0003967285156,
-                    "y": 99.99993896484375,
-                    "z": 0.9999994039535522
+                    "x": 300.00042724609375,
+                    "y": 99.99992370605469,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2663,7 +2666,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 53,
+                    "entity": 32,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2706,21 +2709,21 @@
                     "z": 0.0
                 }
             },
-            "id": 53
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "Resume Word",
                 "tag": "",
-                "parent": 53,
+                "parent": 32,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 33,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2728,14 +2731,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 888.225341796875,
-                    "y": 572.993896484375,
-                    "z": 2.0799953937530518
+                    "x": 888.2268676757813,
+                    "y": 572.9927368164063,
+                    "z": 2.0799946784973145
                 },
                 "scale": {
-                    "x": 1.551296591758728,
-                    "y": 1.586815357208252,
-                    "z": 1.5512622594833374
+                    "x": 1.5512990951538086,
+                    "y": 1.5868158340454102,
+                    "z": 1.5512620210647583
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2749,14 +2752,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.262615442276001,
-                    "y": -0.19425678253173828,
-                    "z": 1.999998688697815
+                    "x": -0.26261448860168457,
+                    "y": -0.19425725936889648,
+                    "z": 1.9999982118606567
                 },
                 "localScale": {
                     "x": 0.004972007125616074,
-                    "y": 0.014916001819074154,
-                    "z": 1.4916006326675415
+                    "y": 0.0149160111322999,
+                    "z": 1.491600513458252
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2780,23 +2783,23 @@
                     "b": 1.0
                 }
             },
-            "id": 54
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "Restart Box",
                 "tag": "",
-                "parent": 48,
+                "parent": 27,
                 "attachedSocket": 65535,
                 "children": [
-                    56
+                    35
                 ],
                 "layerId": 5,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 34,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2804,14 +2807,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 970.1630249023438,
-                    "y": 488.58868408203125,
+                    "x": 970.164306640625,
+                    "y": 488.5877685546875,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0061340332031,
-                    "y": 106.3834228515625,
-                    "z": 1.0399984121322632
+                    "x": 312.0066223144531,
+                    "y": 106.3833999633789,
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2825,14 +2828,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0008544921875,
-                    "y": 441.2335205078125,
+                    "x": 960.000732421875,
+                    "y": 441.2333984375,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0003967285156,
-                    "y": 99.99993896484375,
-                    "z": 0.9999994039535522
+                    "x": 300.00042724609375,
+                    "y": 99.99992370605469,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2888,7 +2891,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 55,
+                    "entity": 34,
                     "script": 4644100093332668417
                 },
                 "normalColor": {
@@ -2931,21 +2934,21 @@
                     "z": 0.0
                 }
             },
-            "id": 55
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "Restart Word",
                 "tag": "",
-                "parent": 55,
+                "parent": 34,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 35,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -2953,14 +2956,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 887.4534912109375,
-                    "y": 467.4750061035156,
+                    "x": 887.4550170898438,
+                    "y": 467.47418212890625,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400207042694092,
+                    "x": 1.040022373199463,
                     "y": 1.0638353824615479,
-                    "z": 1.0399976968765259
+                    "z": 1.0399973392486572
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2974,14 +2977,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.2650892734527588,
-                    "y": -0.19846820831298828,
+                    "x": -0.2650883197784424,
+                    "y": -0.19846677780151367,
                     "z": 0.0
                 },
                 "localScale": {
                     "x": 0.003333334345370531,
-                    "y": 0.010000010952353477,
-                    "z": 0.9999993443489075
+                    "y": 0.010000013746321201,
+                    "z": 0.9999991059303284
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -3005,21 +3008,21 @@
                     "b": 1.0
                 }
             },
-            "id": 56
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "Game Paused Text",
                 "tag": "",
-                "parent": 48,
+                "parent": 27,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
                     "prefabEntity": 36,
-                    "prefabID": 3620657100129943553
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3027,14 +3030,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 829.5843505859375,
-                    "y": 735.0321044921875,
+                    "x": 829.5857543945313,
+                    "y": 735.031005859375,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400183200836182,
-                    "y": 1.0638344287872314,
-                    "z": 1.0399984121322632
+                    "x": 1.0400198698043823,
+                    "y": 1.0638341903686523,
+                    "z": 1.0399982929229736
                 },
                 "rotation": {
                     "w": 1.0,
@@ -3048,14 +3051,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 824.83154296875,
-                    "y": 672.8892211914063,
+                    "x": 824.8317260742188,
+                    "y": 672.888916015625,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999992251396179,
-                    "y": 0.9999995827674866,
-                    "z": 0.9999994039535522
+                    "x": 0.9999992847442627,
+                    "y": 0.9999994039535522,
+                    "z": 0.9999992847442627
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -3079,33 +3082,37 @@
                     "b": 1.0
                 }
             },
-            "id": 57
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "Dialogue",
                 "tag": "",
-                "parent": 21,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    59,
-                    60
+                    38,
+                    39,
+                    40
                 ],
                 "layerId": 0,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 3620657100129943553
+                    "prefabEntity": 37,
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "17237801994024849853": true,
+                    "6919815292445452220": true
+                },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 68.97077941894531,
-                    "y": 512.621337890625,
+                    "x": 831.9710083007813,
+                    "y": 105.62100219726563,
                     "z": 0.0
                 },
                 "scale": {
@@ -3125,8 +3132,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 68.97077941894531,
-                    "y": 512.621337890625,
+                    "x": 831.9710083007813,
+                    "y": 105.62100219726563,
                     "z": 0.0
                 },
                 "localScale": {
@@ -3154,7 +3161,7 @@
                             {
                                 "name": "dialogueTextBackgroundTransform",
                                 "data": {
-                                    "__variant_value": 60,
+                                    "__variant_value": 39,
                                     "__variant_type": 4
                                 }
                             },
@@ -3168,7 +3175,14 @@
                             {
                                 "name": "dialogueText",
                                 "data": {
-                                    "__variant_value": 59,
+                                    "__variant_value": 38,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "speakerText",
+                                "data": {
+                                    "__variant_value": 40,
                                     "__variant_type": 4
                                 }
                             }
@@ -3176,21 +3190,21 @@
                     }
                 ]
             },
-            "id": 58
+            "id": 37
         },
         {
             "EntityData": {
                 "name": "Dialogue Text",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 3620657100129943553
+                    "prefabEntity": 38,
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -3198,8 +3212,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 80.15520477294922,
-                    "y": 534.9901123046875,
+                    "x": 843.1554565429688,
+                    "y": 127.98979949951172,
                     "z": 0.0
                 },
                 "scale": {
@@ -3250,34 +3264,36 @@
                     "b": 0.8901960849761963
                 }
             },
-            "id": 59
+            "id": 38
         },
         {
             "EntityData": {
                 "name": "Dialogue Background",
                 "tag": "",
-                "parent": 58,
+                "parent": 37,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": false,
-                "prefabID": 3620657100129943553,
+                "prefabID": 1046172679372734755,
                 "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 3620657100129943553
+                    "prefabEntity": 39,
+                    "prefabID": 1046172679372734755
                 },
                 "overridenProperties": null,
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "6919815292445452220": true
+                },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 68.97077941894531,
-                    "y": 512.621337890625,
+                    "x": 831.9703369140625,
+                    "y": 105.62100219726563,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 694.998779296875,
+                    "x": 1049.9990234375,
                     "y": 64.99988555908203,
                     "z": 1.0
                 },
@@ -3293,12 +3309,12 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
+                    "x": -0.000732421875,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 695.0,
+                    "x": 1050.0008544921875,
                     "y": 65.0,
                     "z": 1.0
                 },
@@ -3330,7 +3346,84 @@
                 },
                 "toTile": false
             },
-            "id": 60
+            "id": 39
+        },
+        {
+            "EntityData": {
+                "name": "Speaker Text",
+                "tag": "",
+                "parent": 37,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 2,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "prefabMetaData": {
+                    "prefabEntity": 38,
+                    "prefabID": 1046172679372734755
+                },
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false,
+                    "9644886267844571682": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 843.1554565429688,
+                    "y": 189.989990234375,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 0.9999982118606567,
+                    "y": 0.9999982118606567,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 11.1844482421875,
+                    "y": 84.36913299560547,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 436541759683510273,
+                "text": "[Speaker]",
+                "fontSize": 36,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 0.8901960849761963
+                }
+            },
+            "id": 40
         }
     ]
 }
