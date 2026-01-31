@@ -28,45 +28,10 @@
 #include "Detour/Detour/DetourNavMesh.h"
 
 #include "materialConfig.h"
+#include "rendererHeader.h"
 
 class Engine;
 class ResourceManager;
-
-enum class MeshType {
-	Normal,
-	Skinned
-};
-
-struct MeshBOs {
-	BufferObject positionsVBO{ BufferObject{0} };			// VA 0
-	BufferObject textureCoordinatesVBO{ BufferObject{0} };	// VA 1
-	BufferObject normalsVBO{ BufferObject{0} };				// VA 2
-	BufferObject tangentsVBO{ BufferObject{0} };			// VA 3
-
-	// Skeletal animation VBO..
-	BufferObject skeletalVBO{ BufferObject{0} };			// VA 4
-	BufferObject EBO{ BufferObject{0} };					// VA 5
-};
-
-struct ModelBatch {
-	entt::entity entity;
-	MeshType meshType;
-	float modelScale;
-	std::vector<std::reference_wrapper<const Mesh>> meshes;
-};
-
-struct MaterialBatch {
-	std::reference_wrapper<const Material> material;
-	std::reference_wrapper<const CustomShader> customShader;
-	std::reference_wrapper<const Shader> shader;
-
-	std::vector<ModelBatch> models;
-};
-
-enum class RenderMode {
-	Editor,
-	Game
-};
 
 class Renderer {
 public:
@@ -230,9 +195,12 @@ private:
 
 	// instead of naively render every game object one by one, we batch all game objects of the same material into
 	// their own render queue. 
-	void setupRenderQueue();
+	void setupRenderQueue(Camera const& camera, RenderQueueConfig renderQueueConfig = RenderQueueConfig::Normal);
 
-	void createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
+	// attempts to create a material batch..
+	void createMaterialBatchEntry(Camera const& camera, ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType, RenderQueueConfig renderQueueConfig);
+	void createOpaqueMaterialBatchEntry(Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
+	void createTransparentMaterialEntry(Camera const& camera, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
 
 	// render all models (normal and skinned).
 	void renderModels(bool depthPrePass = false);
@@ -296,7 +264,6 @@ private:
 
 	// helper function to obtain the underlying material of a mesh given its renderers.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
-	Material const* obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
 	// performs frustum culling for models and light
@@ -444,8 +411,7 @@ private:
 	std::unordered_set<int> freeCubeMapArraySlots;
 
 	// holds batches of material, populated during render queue building..
-	std::vector<MaterialBatch> materialBatches;
-	std::unordered_map<ResourceID, int> materialResourceIdToIndex;
+	RenderQueue renderQueue;
 
 private:
 	int numOfPhysicsDebugTriangles;

@@ -5,7 +5,7 @@
             "glslType": "sampler2D",
             "identifier": "albedoMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 14570957348370890755,
                 "__variant_type": 9
             }
         },
@@ -13,7 +13,7 @@
             "glslType": "sampler2D",
             "identifier": "packedMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 735899293088727047,
                 "__variant_type": 9
             }
         },
@@ -21,7 +21,7 @@
             "glslType": "sampler2D",
             "identifier": "normalMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 7076967568426385413,
                 "__variant_type": 9
             }
         },
@@ -37,7 +37,7 @@
             "glslType": "bool",
             "identifier": "toUsePackedMap",
             "value": {
-                "__variant_value": false,
+                "__variant_value": true,
                 "__variant_type": 0
             }
         },
@@ -45,7 +45,7 @@
             "glslType": "bool",
             "identifier": "toUseNormalMap",
             "value": {
-                "__variant_value": false,
+                "__variant_value": true,
                 "__variant_type": 0
             }
         },
@@ -77,7 +77,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "occulusion",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 1.0,
                 "__variant_type": 12
             }
         },
@@ -97,7 +97,7 @@
             "glslType": "float",
             "identifier": "emissiveStrength",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 1.0,
                 "__variant_type": 3
             }
         },
@@ -124,7 +124,7 @@
             }
         }
     ],
-    "blendingConfig": "Disabled",
-    "depthTestingMethod": "DepthTest",
+    "blendingConfig": "AlphaBlending",
+    "depthTestingMethod": "NoDepthWrite",
     "cullingConfig": "Enable"
 }

@@ -673,7 +673,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	frustumCullModels(camera.viewProjection());
 
 	// We build our render queue, sorting our game objects into batches, to minimize driver overhead.
-	setupRenderQueue();
+	setupRenderQueue(camera);
 
 	// We bind to the active framebuffer for majority of the in game rendering..
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
@@ -698,12 +698,10 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	// [Opaque pass] We render individual game objects..
 	renderModels();
 
-	glDisable(GL_DEPTH_TEST);
-	renderTranslucentModels(camera);
-
 	// Restore default depth testing.
-	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+
+	renderTranslucentModels(camera);
 
 	// Render particles
 	renderParticles();
@@ -760,7 +758,7 @@ void Renderer::renderCapturePass(Camera const& camera, std::function<void()> set
 	frustumCullModels(camera.viewProjection());
 
 	// build our render queue for batches..
-	setupRenderQueue();
+	setupRenderQueue(camera);
 
 	// We setup, clear and bind to the correct framebuffer for rest of the rendering..
 	setupFramebuffer();
@@ -998,7 +996,7 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 	glViewport(0, 0, viewportWidth, viewportHeight);
 }
 
-void Renderer::depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera) {
+void Renderer::depthPrePass(PairFrameBuffer& frameBuffers, [[maybe_unused]] Camera const& camera) {
 	glEnable(GL_DEPTH_TEST);
 
 	// Disable the color attachment, enable the normal attachment.
@@ -1613,7 +1611,7 @@ std::unique_ptr<std::byte[]> Renderer::getBytes(CubeMap const& cubemap, int face
 }
 #endif
 
-void Renderer::setupRenderQueue() {
+void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQueueConfig) {
 	// Approaching zero driver overhead.
 	// https://gdcvault.com/play/1020791/
 	
@@ -1624,8 +1622,9 @@ void Renderer::setupRenderQueue() {
 
 	// @TODO: Batch render with multi indirect draw call..
 
-	materialBatches.clear();
-	materialResourceIdToIndex.clear();
+	renderQueue.opaqueMaterials.clear();
+	renderQueue.transparentMaterials.clear();
+	renderQueue.materialResourceIdToOpaqueIndex.clear();
 
 	// Let's start sorting all our game objects into these batches..
 	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
@@ -1663,14 +1662,12 @@ void Renderer::setupRenderQueue() {
 				continue;
 			}
 
-			// all material ids of a given renderer.. (mesh or skinned)
-
 			// If a model has only one submesh, we render all materials attached to this mesh renderer..
 			if (model->meshes.size() == 1) {
 				auto& mesh = model->meshes[0];
 				
 				for (auto const& materialId : materialIds) {
-					createMaterialBatchEntry(materialId, mesh, entity, model->scale, meshType);
+					createMaterialBatchEntry(camera, materialId, mesh, entity, model->scale, meshType, renderQueueConfig);
 				}
 			}
 			else {
@@ -1681,14 +1678,21 @@ void Renderer::setupRenderQueue() {
 					}
 
 					ResourceID materialId = materialIds[mesh.materialIndex];
-					createMaterialBatchEntry(materialId, mesh, entity, model->scale, meshType);
+					createMaterialBatchEntry(camera, materialId, mesh, entity, model->scale, meshType, renderQueueConfig);
 				}
 			}
 		}
 	}
+
+	if (renderQueueConfig == RenderQueueConfig::Normal) {
+		// Sort transparent objects by the z value, from camera..
+		std::sort(renderQueue.transparentMaterials.begin(), renderQueue.transparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
+			return lhs.distanceToCamera > rhs.distanceToCamera;
+		});
+	}
 }
 
-void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType) {
+void Renderer::createMaterialBatchEntry(Camera const& camera, ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType, RenderQueueConfig renderQueueConfig) {
 	// Let's attempt to create a match batch entry for this given material
 	// Check if this material is valid (has material, custom shader and compiled shader)..
 
@@ -1719,25 +1723,37 @@ void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt:
 	// construct the mesh's VBO if it's not done so.. we need a valid meshID for our mesh at this point..
 	constructMeshBuffers(mesh);
 
+	// let's determine whether material should be part of the opaque or transparent material batch.
+	// we determine by checking its blending..
+	if(material->materialData.blendingConfig == BlendingConfig::Disabled) {
+		createOpaqueMaterialBatchEntry(*material, *customShader, shader, mesh, entity, modelScale, meshType);
+	}
+	// we dont create a transparent entry if requested to ignore..
+	else if (renderQueueConfig != RenderQueueConfig::IgnoreTransparent) {
+		createTransparentMaterialEntry(camera, *material, *customShader, shader, mesh, entity, modelScale, meshType);
+	}
+}
+
+void Renderer::createOpaqueMaterialBatchEntry(Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType) {
 	// Let's check if the given material id has an index to the material batch vector...
 	// If not, we create one..
-	auto iterator = materialResourceIdToIndex.find(materialId);
+	auto iterator = renderQueue.materialResourceIdToOpaqueIndex.find(material.id());
 	int materialIndex;
 
 	// new material id.. let's give it a new index..
-	if (iterator == materialResourceIdToIndex.end()) {
-		materialIndex = static_cast<int>(materialBatches.size());
-		materialResourceIdToIndex.insert({ materialId, materialIndex });
+	if (iterator == renderQueue.materialResourceIdToOpaqueIndex.end()) {
+		materialIndex = static_cast<int>(renderQueue.opaqueMaterials.size());
+		renderQueue.materialResourceIdToOpaqueIndex.insert({ material.id(), materialIndex });
 
 		// insert a new entry..
 		MaterialBatch materialBatch{
-			*material,
-			*customShader,
+			material,
+			customShader,
 			shader,
 			{} // empty vector..
 		};
 
-		materialBatches.push_back(materialBatch);
+		renderQueue.opaqueMaterials.push_back(materialBatch);
 	}
 	else {
 		materialIndex = iterator->second;
@@ -1745,7 +1761,7 @@ void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt:
 
 	// Similarly, let's check if the given model has an index to the model batch of this particular material batch..
 	// If not, we create one..
-	MaterialBatch& materialBatch = materialBatches[materialIndex];
+	MaterialBatch& materialBatch = renderQueue.opaqueMaterials[materialIndex];
 
 	// let's find if this model already has an entry..
 	auto modelIterator = std::find_if(
@@ -1777,13 +1793,55 @@ void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt:
 	materialBatch.models[modelIndex].meshes.push_back(mesh);
 }
 
+void Renderer::createTransparentMaterialEntry(Camera const& camera, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType) {
+	// let's check if the given model has already a recorded entry..
+
+	auto modelIterator = std::find_if(
+		renderQueue.transparentMaterials.begin(),
+		renderQueue.transparentMaterials.end(),
+		[&](auto&& transparentEntry) {
+			return transparentEntry.entity == entity;
+		}
+	);
+
+	int index; 
+
+	// this model has not been recorded in this particular material batch
+	if (modelIterator == renderQueue.transparentMaterials.end()) {
+		// lets add a new entry..
+		// we need to calculate the distance between camera and game object..
+		Transform& transform = registry.get<Transform>(entity);
+		float distance = glm::dot(transform.position - camera.getPos(), camera.getFront());	// rough distance from object to camera in the z axis.
+
+		TransparentEntry transparentEntry{
+			.material			= material,
+			.customShader		= customShader,
+			.shader				= shader,
+			.entity				= entity,
+			.meshType			= meshType,
+			.modelScale			= modelScale,
+			.meshes				= {}, // empty vector..
+			.distanceToCamera	= distance
+		};
+
+		index = static_cast<int>(renderQueue.transparentMaterials.size());
+		renderQueue.transparentMaterials.push_back(transparentEntry);
+	}
+	else {
+		index = static_cast<int>(std::distance(renderQueue.transparentMaterials.begin(), modelIterator));
+	}
+
+	// add a new mesh entry..
+	renderQueue.transparentMaterials[index].meshes.push_back(mesh);
+}
+
 void Renderer::renderModels(bool depthPrePass) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
 	// for each material batch..
-	for (auto const& materialBatch : materialBatches) {
+	for (auto const& materialBatch : renderQueue.opaqueMaterials) {
 		// we set up the shader and uniforms of this particular material..
 		if (depthPrePass) {
 			setupMaterialNormalPass(materialBatch.material, materialBatch.customShader, materialBatch.shader);
@@ -1805,101 +1863,18 @@ void Renderer::renderModels(bool depthPrePass) {
 	}
 }
 
-void Renderer::renderTranslucentModels([[maybe_unused]] Camera const& camera)
-{
-#if 0
-#if defined(DEBUG)
-	ZoneScopedC(tracy::Color::PaleVioletRed1);
-#endif
+void Renderer::renderTranslucentModels(Camera const& camera) {
+	for (auto const& transparentEntry : renderQueue.transparentMaterials) {
+		setupMaterial(transparentEntry.material, transparentEntry.customShader, transparentEntry.shader);
 
-	glEnable(GL_CULL_FACE);
+		// set the uniforms of the model..
+		setupModelUniforms(transparentEntry.entity, transparentEntry.shader, transparentEntry.modelScale, transparentEntry.meshType);
 
-	// indicate that this is NOT a skinned mesh renderer..
-	static const unsigned int isNotASkinnedMeshRenderer = 0;
-	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
-	const glm::mat4 view = camera.view();
-
-	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
-		std::vector<entt::entity> sortedEntities(entities.begin(), entities.end());
-		std::sort(sortedEntities.begin(), sortedEntities.end(), 
-			[&](entt::entity left, entt::entity right)
-			{
-				const Transform& transLeft = registry.get<Transform>(left);
-				const Transform& transRight = registry.get<Transform>(right);
-
-				float distLeft = (view * glm::vec4(transLeft.position, 1.f)).z;
-				float distRight = (view * glm::vec4(transRight.position, 1.f)).z;
-
-				// Back-to-front for translucency
-				return distLeft < distRight;
-			});
-
-		for (auto const& entity : sortedEntities) {
-			TranslucentMeshRenderer* meshRenderer = registry.try_get<TranslucentMeshRenderer>(entity);
-			Transform const& transform = registry.get<Transform>(entity);
-			EntityData const& entityData = registry.get<EntityData>(entity);
-
-			if (!entityData.isActive || !engine.ecs.isComponentActive<TranslucentMeshRenderer>(entity)) {
-				continue;
-			}
-
-			// frustum culling :)
-			if (!transform.inCameraFrustum) {
-				continue;
-			}
-
-			if (!meshRenderer) {
-				continue;
-			}
-
-			// Retrieves model asset from asset manager.
-			auto [model, _] = resourceManager.getResource<Model>(meshRenderer->modelId);
-
-			if (!model) {
-				// missing model.
-				continue;
-			}
-
-			// If a model has only one submesh, we render all materials attached to this mesh renderer..
-			if (model->meshes.size() == 1) {
-				// Draw every material of a this mesh.
-				auto& mesh = model->meshes[0];
-
-				for (auto const& materialId : meshRenderer->materialIds) {
-					auto&& [material, __] = resourceManager.getResource<Material>(materialId);
-
-					if (!material) {
-						continue;
-					}
-
-					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
-
-					if (shader) {
-						// time to draw!
-						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
-					}
-				}
-			}
-			else {
-				// Draw every mesh of a given model.
-				for (auto& mesh : model->meshes) {
-					Material const* material = obtainMaterial(*meshRenderer, mesh);
-
-					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
-
-					if (shader) {
-						// time to draw!
-						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
-					}
-				}
-			}
+		// for each mesh..
+		for (auto const& mesh : transparentEntry.meshes) {
+			renderMesh(mesh);
 		}
 	}
-	
-	glDisable(GL_CULL_FACE);
-#endif
 }
 
 void Renderer::renderText(Transform const& transform, Text const& text)
@@ -2073,16 +2048,6 @@ Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh 
 	}
 
 	auto&& [material, _] = resourceManager.getResource<Material>(meshRenderer.materialIds[mesh.materialIndex]);
-	return material;
-}
-
-Material const* Renderer::obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh)
-{
-	if (mesh.materialIndex >= transMeshRenderer.materialIds.size()) {
-		return nullptr;
-	}
-
-	auto&& [material, _] = resourceManager.getResource<Material>(transMeshRenderer.materialIds[mesh.materialIndex]);
 	return material;
 }
 

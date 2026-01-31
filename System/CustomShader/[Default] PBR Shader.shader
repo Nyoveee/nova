@@ -50,7 +50,7 @@ Frag{
         _metallic   = map.r;
         _roughness  = map.g;
         _occulusion = map.b;
-    } 
+    }     
     else {
         _roughness  = roughness;
         _metallic   = metallic;
@@ -84,6 +84,5 @@ Frag{
     vec4 albedo = texture(albedoMap, uv);
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);
 
-    return vec4(emissiveColor + pbrColor, 1.0);
-    // return vec4(fsIn.normal, 1);
+    return vec4(emissiveColor + pbrColor, albedo.a);
 }

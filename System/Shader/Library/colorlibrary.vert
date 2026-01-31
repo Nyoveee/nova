@@ -65,6 +65,10 @@ layout(std430, binding = 3) buffer Bones {
     mat4 bonesFinalMatrices[];
 };
 
+layout(std430, binding = 9) buffer OldBones {
+    mat4 oldBonesFinalMatrices[];
+};
+
 const int MAX_NUMBER_OF_BONES = 4;
 const int INVALID_BONE = -1;
 

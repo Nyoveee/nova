@@ -29,6 +29,7 @@ Vert{
 Frag{
     vec2 uv = UVTileAndOffset(fsIn.textureUnit, UVTiling, UVOffset);
 
-    vec3 finalColor = texture(albedo, uv).rgb * color * intensity;
-    return vec4(finalColor , transparency); // ok
+    vec4 sampledColor = texture(albedo, uv);
+    vec3 finalColor = sampledColor.rgb * color * intensity;
+    return vec4(finalColor.rgb, transparency * sampledColor.a); // ok
 }

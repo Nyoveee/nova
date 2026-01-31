@@ -1,5 +1,5 @@
 {
-    "selectedShader": 550855796467580931,
+    "selectedShader": 3426184343905304577,
     "uniformDatas": [
         {
             "glslType": "sampler2D",
@@ -15,8 +15,8 @@
             "value": {
                 "__variant_value": {
                     "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0
+                    "g": 0.7655171751976013,
+                    "b": 0.0
                 },
                 "__variant_type": 10
             }
@@ -26,9 +26,9 @@
             "identifier": "colorMultiplier",
             "value": {
                 "__variant_value": {
-                    "r": 1.0,
+                    "r": 0.9862068891525269,
                     "g": 1.0,
-                    "b": 1.0
+                    "b": 0.0
                 },
                 "__variant_type": 10
             }
@@ -49,12 +49,12 @@
             "glslType": "float",
             "identifier": "speedMultiplier",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 10.0,
                 "__variant_type": 3
             }
         }
     ],
     "blendingConfig": "AlphaBlending",
-    "depthTestingMethod": "DepthTest",
+    "depthTestingMethod": "NoDepthWrite",
     "cullingConfig": "Enable"
 }
