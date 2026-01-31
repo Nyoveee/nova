@@ -78,6 +78,6 @@ Frag{
     align = pow(align, lineSpacing);
 
     // return vec4(vec3(align), 1);
-    vec3 color = mix(emissiveColor, emissiveColorTwo, pow(fresnelFactor, colorLerpPower));
+    vec3 color = mix(emissiveColor, emissiveColorTwo, pow(align, colorLerpPower));
 	return vec4(color * emissiveMultiplier, fresnelFactor * align);
 }

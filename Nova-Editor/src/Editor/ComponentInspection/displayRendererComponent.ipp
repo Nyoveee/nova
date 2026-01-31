@@ -5,11 +5,6 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 	// ========================================
 	auto&& [model, _] = editor.resourceManager.getResource<Model>(rendererComponent.modelId);
 
-	if (!model) {
-		ImGui::Text("Invalid model.");
-		return;
-	}
-
 	editor.displayAssetDropDownList<Model>(rendererComponent.modelId, "Model", [&](ResourceID newModelId) {
 		// changing model requires updating the renderer component's material vector.
 		rendererComponent.modelId = TypedResourceID<Model>{ newModelId };
@@ -25,6 +20,11 @@ void displayRendererComponent(Editor& editor, T& rendererComponent, entt::entity
 		materialIds.resize(model->materialNames.size(), TypedResourceID<Material>{ DEFAULT_PBR_MATERIAL_ID });
 		rendererComponent.materialIds = materialIds;
 	});
+
+	if (!model) {
+		ImGui::Text("Invalid model.");
+		return;
+	}
 
 	// ========================================
 	// Display all the materials needed..

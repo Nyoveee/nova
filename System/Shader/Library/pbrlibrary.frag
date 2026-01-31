@@ -154,10 +154,11 @@ layout(std430, binding = 7) buffer clusterSSBO
 layout (binding = 0) uniform sampler2D directionalShadowMap;
 layout (binding = 1) uniform sampler2D ssao;
 layout (binding = 2) uniform sampler2D brdfLUT;
-layout (binding = 3) uniform sampler2DArray spotlightShadowMaps;
-layout (binding = 4) uniform samplerCube diffuseIrradianceMap;
-layout (binding = 5) uniform samplerCube prefilterMap;
-layout (binding = 6) uniform samplerCubeArray reflectionProbesPrefilterMap;
+layout (binding = 3) uniform sampler2D depthTexture;
+layout (binding = 4) uniform sampler2DArray spotlightShadowMaps;    
+layout (binding = 5) uniform samplerCube diffuseIrradianceMap;
+layout (binding = 6) uniform samplerCube prefilterMap;
+layout (binding = 7) uniform samplerCubeArray reflectionProbesPrefilterMap;
 
 layout (location = 0) out vec4 FragColor; 
 layout (location = 1) out vec3 gNormal; // for depth pre pass..
@@ -192,7 +193,6 @@ vec3  microfacetModelPoint          (vec3 position, vec3 n, vec3 baseColor, floa
 vec3  microfacetModelDir            (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, DirectionalLight light);
 vec3  microfacetModelSpot           (vec3 position, vec3 n, vec3 baseColor, float roughness, float metallic, SpotLight light);
 vec3  BRDFCalculation               (vec3 n, vec3 v, vec3 l, vec3 lightIntensity, vec3 baseColor, float roughness, float metallic);
-vec3  getNormalFromMap              (sampler2D normalMap, vec2 uv); 
 
 float directionalShadowCalculation  (sampler2D shadowMap, vec4 fragmentLightPos);
 float spotlightShadowCalculation    (sampler2DArray spotlightShadowMaps, int shadowMapIndex, vec4 fragmentLightPos);
@@ -203,6 +203,9 @@ vec3 getPrefilteredColor            (Cluster cluster, float roughness, vec3 refl
 
 vec3 boxProjectionReflection        (vec3 reflectDir, vec3 fragmentPos, vec3 probeMin, vec3 probeMax, vec3 probePos);
 float getBlendFactor                (vec3 position, ReflectionProbe reflectionProbe);
+
+float linearizeDepth                (float depth);
+vec3  getNormalFromMap              (sampler2D normalMap, vec2 uv); 
 
 // =================================================================================
 // IMPLEMENTATION DETAILS.
@@ -691,6 +694,11 @@ vec3 getNormalFromMap(sampler2D normalMap, vec2 uv) {
     // We calculate the z portion of the normal..
     vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));
     return normalize(fsIn.TBN * sampledNormal);
+}
+
+float linearizeDepth(float depth) {
+    float ndcDepth = depth * 2.0 - 1.0; 
+    return (2.0 * zNear * zFar) / (zFar + zNear - ndcDepth * (zFar - zNear));
 }
 
 // User shader entry point.

@@ -63,7 +63,7 @@ public:
 	void shadowPass(int viewportWidth, int viewportHeight);
 
 	// does a depth pre pass and populates the gbuffer for ssao generation.
-	void depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera);
+	void depthPrePass(FrameBuffer const& frameBuffer);
 
 	// generates the SSAO texture.
 	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
@@ -188,7 +188,7 @@ private:
 	// =============================================
 
 	// renders object for the purpose of capturing into a cubemap..
-	void renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, bool toCaptureEnvironmentLight);
+	void renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, FrameBuffer const& frameBuffer, bool toCaptureEnvironmentLight);
 
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
@@ -198,15 +198,15 @@ private:
 	void setupRenderQueue(Camera const& camera, RenderQueueConfig renderQueueConfig = RenderQueueConfig::Normal);
 
 	// attempts to create a material batch..
-	void createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, RenderQueueConfig renderQueueConfig);
-	void createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
+	void createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex, RenderQueueConfig renderQueueConfig);
+	void createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex);
 	void createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
 
 	// render all models (normal and skinned).
-	void renderModels(bool depthPrePass = false);
+	void renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId);
 
 	// render all TranslucentMeshRenderers.
-	void renderTranslucentModels(Camera const& camera);
+	void renderTranslucentModels(GLuint frameBufferDepthTexture);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -248,7 +248,7 @@ private:
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
 
 	// set up the material's chosen shader and supply the proper uniforms..
-	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig);
+	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, std::optional<GLuint> depthTextureId);
 
 	// this sets the uniforms of model specific data..
 	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType);
