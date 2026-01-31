@@ -67,7 +67,12 @@ public abstract class Enemy : Script
         // Explode VFX
         GameObject explodeVFX = Instantiate(explodeVFXPrefab,ichorSpawnPoint.transform.position);
         foreach (GameObject emitter in explodeVFX.GetChildren())
-            emitter.getComponent<ParticleEmitter_>().emit();
+        {
+            ParticleEmitter_? particleEmitter_ = emitter.getComponent<ParticleEmitter_>();
+            if (particleEmitter_ != null)
+                particleEmitter_.emit();
+        }
+           
             
     }
     /***********************************************************

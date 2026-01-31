@@ -5,10 +5,17 @@ class EnemyExplosionVFX : Script
 {
     [SerializableField]
     private float explosionTime;
+    [SerializableField]
+    private float lightTime;
+    [SerializableField]
+    private GameObject lightGameobject;
     // This function is invoked once when gameobject is active.
     protected override void init()
     {
-
+        Invoke(() =>
+        {
+            Destroy(lightGameobject);
+        }, lightTime);
         Invoke(() =>
         {
             Destroy(gameObject);
