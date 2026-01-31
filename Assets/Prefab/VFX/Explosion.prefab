@@ -1,5 +1,5 @@
 {
-    "RootEntity": 49,
+    "RootEntity": 8,
     "Entities": [
         {
             "EntityData": {
@@ -8,10 +8,10 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    50,
-                    51,
-                    52,
-                    53
+                    9,
+                    10,
+                    11,
+                    12
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -22,8 +22,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "16652763906952685383": true,
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16652763906952685383": true
                 },
                 "inactiveComponents": null
             },
@@ -93,7 +93,7 @@
                             {
                                 "name": "lightGameobject",
                                 "data": {
-                                    "__variant_value": 53,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             }
@@ -101,13 +101,13 @@
                     }
                 ]
             },
-            "id": 49
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Initial Burst",
                 "tag": "",
-                "parent": 49,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -276,13 +276,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 50
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 49,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -450,13 +450,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 51
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Field",
                 "tag": "",
-                "parent": 49,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -624,13 +624,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 52
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Light Burst",
                 "tag": "",
-                "parent": 49,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -709,7 +709,7 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 53
+            "id": 12
         }
     ]
 }
