@@ -11,6 +11,9 @@ public abstract class Gun : Script
     private GameUIManager gameUIManager;
 
     [SerializableField]
+    private Prefab contactSparkVFXPrefab;
+
+    [SerializableField]
     private int initialMaxAmmo;
 
     [SerializableField]
@@ -127,6 +130,12 @@ public abstract class Gun : Script
         if (enemyColliderScript != null)
         {
             enemyColliderScript.OnColliderShot(damage,Enemy.EnemydamageType.WeaponShot,collidedEntity.tag);
+            direction.y = 0;
+            direction.Normalize();
+            // LookRotation is based on Z axis, rotate the emitter to face the z axis first
+            GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, result.Value.point, Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1,0,0)));
+           
+            contactSparkVFX.getComponent<ParticleEmitter_>().emit();
             return true;
         }
 

@@ -1,6 +1,7 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 using System.ComponentModel;
 using static ThrowableRifle;
 
@@ -23,6 +24,8 @@ class ThrowableRifle : Script
     // ==================================
     // Parameters
     // ==================================
+    [SerializableField]
+    private Prefab contactSparkVFXPrefab;
     [SerializableField]
     private float maxFlyingTime = 1f;
     [SerializableField]
@@ -125,7 +128,7 @@ class ThrowableRifle : Script
 
         weaponRB.SetVelocity(angledFlightPath * weaponFlyingSpeed);
         angledFlightPath.Normalize();
-        gameObject.transform.rotation = Quaternion.LookRotation(angledFlightPath);
+        gameObject.transform.rotation = Quaternion.LookRotation(-angledFlightPath);
 
         
 
@@ -259,7 +262,7 @@ class ThrowableRifle : Script
 
        Vector3 playerPos =  playerGameobject.transform.position;
        playerPos.y += playerHeight;
-       Vector3 directionToTarget = playerPos - gameObject.transform.position;
+       Vector3 directionToTarget = gameObject.transform.position - playerPos;
         directionToTarget.Normalize();
 
         float steerPower = timeElapsed / maxReturnTime;
@@ -370,7 +373,7 @@ class ThrowableRifle : Script
         playerPosition.y += playerHeight;
 
 
-        Vector3 directionToTarget = playerPosition - gameObject.transform.position;
+        Vector3 directionToTarget = gameObject.transform.position - playerPosition;
         directionToTarget.Normalize();
        
        gameObject.transform.rotation = Quaternion.LookRotation(directionToTarget);
@@ -413,6 +416,8 @@ class ThrowableRifle : Script
             {
                 hasDamageList.Add(candidateobject);
                 other.getScript<EnemyCollider>().OnColliderShot(returnDamage, Enemy.EnemydamageType.ThrownWeapon, other.tag);
+                GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, gameObject.transform.position);
+                contactSparkVFX.getComponent<ParticleEmitter_>().emit();
             }
 
         }
@@ -424,7 +429,12 @@ class ThrowableRifle : Script
     { 
         
         targetObject.getScript<EnemyCollider>().OnColliderShot(calculatedTrueDamage,Enemy.EnemydamageType.ThrownWeapon,targetObject.tag);
-    
+        Vector3 direction = targetObject.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+        // LookRotation is based on Z axis, rotate the emitter to face the z axis first
+        GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, gameObject.transform.position,Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1, 0, 0)));
+        contactSparkVFX.getComponent<ParticleEmitter_>().emit();
 
     }
 

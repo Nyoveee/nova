@@ -1,19 +1,19 @@
 {
-    "RootEntity": 2,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
-                "name": "Ichor",
-                "tag": "Ichor",
+                "name": "Contact Spark ",
+                "tag": "",
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 14493050257245634575,
+                "prefabID": 563029678012612857,
                 "prefabMetaData": {
                     "prefabEntity": 0,
-                    "prefabID": 14493050257245634575
+                    "prefabID": 563029678012612857
                 },
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -21,14 +21,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -3.8255276679992676,
+                    "y": 6.37125825881958,
+                    "z": 38.17927932739258
                 },
                 "scale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -42,14 +42,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -3.8255276679992676,
+                    "y": 6.37125825881958,
+                    "z": 38.17927932739258
                 },
                 "localScale": {
-                    "x": 0.20000000298023224,
-                    "y": 0.20000000298023224,
-                    "z": 0.20000000298023224
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -63,86 +63,32 @@
                     "z": 0.0
                 }
             },
-            "MeshRenderer": {
-                "modelId": 4,
-                "materialIds": [
-                    16833312378621526017
-                ],
-                "castShadow": true,
-                "shadowCullFrontFace": true
-            },
-            "Rigidbody": {
-                "motionType": "Dynamic",
-                "layer": "Item",
-                "motionQuality": "Discrete",
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "mass": 0.0,
-                "gravityMultiplier": 1.0,
-                "isRotatable": true,
-                "isTrigger": false,
-                "dynamicCollider": false,
-                "toScaleWithTransform": true
-            },
-            "SphereCollider": {
-                "radius": 0.32499998807907104,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 3870070279982465025,
-                        "fields": [
-                            {
-                                "name": "ichorLifeTime",
-                                "data": {
-                                    "__variant_value": 10.0,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "expandedSizeMultiplier",
-                                "data": {
-                                    "__variant_value": 1.5,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "expandTime",
-                                "data": {
-                                    "__variant_value": 1.0,
-                                    "__variant_type": 18
-                                }
-                            }
-                        ]
+                        "scriptId": 14639373361379885057,
+                        "fields": null
                     }
                 ]
             },
             "ParticleEmitter": {
-                "texture": 0,
-                "startSize": 1.0,
+                "texture": 5391556884225917121,
+                "startSize": 0.20000000298023224,
                 "minStartSizeOffset": 0.0,
                 "maxStartSizeOffset": 0.0,
-                "startSpeed": 1.0,
+                "startSpeed": 10.0,
                 "initialAngularVelocity": 0.0,
                 "minAngularVelocityOffset": 0.0,
                 "maxAngularVelocityOffset": 0.0,
                 "force": {
-                    "x": -107374176.0,
-                    "y": -107374176.0,
-                    "z": -107374176.0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 },
-                "lifeTime": 1.0,
-                "particleRate": 100.0,
+                "lifeTime": 0.4000000059604645,
+                "particleRate": 0.0,
                 "burstRate": 0.0,
-                "burstAmount": 30,
+                "burstAmount": 60,
                 "lightIntensity": 0.0,
                 "lightattenuation": {
                     "x": 1.0,
@@ -154,20 +100,20 @@
                 "randomizedDirection": false,
                 "invertMovement": false,
                 "particleEmissionTypeSelection": {
-                    "emissionShape": "Point",
+                    "emissionShape": "Cone",
                     "radiusEmitter": {
-                        "radius": 5.0
+                        "radius": 0.009999999776482582
                     },
                     "cubeEmitter": {
                         "min": {
-                            "x": -5.0,
-                            "y": -5.0,
-                            "z": -5.0
+                            "x": -1.0,
+                            "y": -1.0,
+                            "z": -1.0
                         },
                         "max": {
-                            "x": 5.0,
-                            "y": 5.0,
-                            "z": 5.0
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
                         }
                     },
                     "coneEmitter": {
@@ -177,9 +123,9 @@
                 },
                 "particleColorSelection": {
                     "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
+                        "r": 0.7529411911964417,
+                        "g": 0.7529411911964417,
+                        "b": 0.7529411911964417,
                         "a": 1.0
                     },
                     "colorOffsetMin": {
@@ -192,10 +138,10 @@
                         "y": 0.0,
                         "z": 0.0
                     },
-                    "emissiveMultiplier": 1.0
+                    "emissiveMultiplier": 50.0
                 },
                 "sizeOverLifetime": {
-                    "selected": false,
+                    "selected": true,
                     "interpolationType": "Linear",
                     "endSize": 0.0
                 },
@@ -233,7 +179,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 2
+            "id": 0
         }
     ]
 }
