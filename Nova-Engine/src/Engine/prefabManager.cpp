@@ -219,7 +219,7 @@ entt::entity PrefabManager::getParent(entt::entity prefabInstance, entt::registr
 		parent = prefabInstance;
 		while (true) {
 			EntityData* parentData = registry.try_get<EntityData>(entityData->parent);
-			if (parentData->prefabID == INVALID_RESOURCE_ID) {
+			if (parentData->prefabID == INVALID_RESOURCE_ID || entityData->parent != entt::null) {
 				break;
 			}
 			parent = entityData->parent;
@@ -278,13 +278,38 @@ void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
 	}
 	//check for the prefab with the same name in the registry
 	entt::entity prefabEntity = entt::null;
-	std::cout << prefabMap.size();
+
 	for (auto prefab : prefabRegistry.view<entt::entity>()) {
 		EntityData* prefabData = getPrefabRegistry().try_get<EntityData>(prefab);
 		if (prefabData->name == entityData->name) {
 			prefabEntity = prefab;
 			break;
 		}
+	}
+	//if new entity is just added into the prefab instance
+	if (prefabEntity == entt::null && entityData->parent != entt::null) {
+		entt::entity newEntity = prefabRegistry.create();
+		EntityData* entityDataComponent = ecsRegistry.try_get<EntityData>(prefabInstance);
+		Transform* transformComponent = ecsRegistry.try_get<Transform>(prefabInstance);
+
+		prefabRegistry.emplace_or_replace<EntityData>(newEntity, *entityDataComponent);
+		prefabRegistry.emplace_or_replace<Transform>(newEntity, *transformComponent);
+		
+		//update the prefabMetaData of the new entity on the ecsRegistry 
+		EntityData* parentData = ecsRegistry.try_get<EntityData>(entityData->parent);
+		entityDataComponent->prefabMetaData.prefabID = parentData->prefabMetaData.prefabID;
+		entityDataComponent->prefabMetaData.prefabEntity = newEntity;
+
+		//update the parent of the new entity in the prefab registry
+		EntityData* newEntityData = prefabRegistry.try_get<EntityData>(newEntity);
+		newEntityData->parent = parentData->prefabMetaData.prefabEntity;
+
+		prefabEntity = newEntity;
+		
+		//update the children of the prefab to take in the new entity
+		EntityData* parentPrefabData = prefabRegistry.try_get<EntityData>(parentData->prefabMetaData.prefabEntity);
+		parentPrefabData->children.push_back(prefabEntity);
+
 	}
 
 	updateComponents<ALL_COMPONENTS>(prefabRegistry, ecsRegistry, prefabEntity, prefabInstance);
