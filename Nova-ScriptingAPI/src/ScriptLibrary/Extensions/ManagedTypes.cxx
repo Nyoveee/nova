@@ -211,6 +211,14 @@ void Rigidbody_::SetVelocity(Vector3 velocity) {
 	}
 }
 
+void Rigidbody_::SetVelocityLimits(Vector3 velocity) {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.setVelocity(*rigidbody, velocity.native());
+	}
+}
+
 Vector3 Rigidbody_::GetVelocity() {
 	Rigidbody const* rigidbody = nativeComponent();
 
