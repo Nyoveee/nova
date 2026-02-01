@@ -20,6 +20,8 @@ class Gunner : Enemy
     [SerializableField]
     private List<Audio> deathSFX;
     [SerializableField]
+    private List<Audio> spotSFX;
+    [SerializableField]
     private List<Audio> footstepSFX;
     [SerializableField]
     private float timeSinceLastFootstep = 0f;
@@ -139,6 +141,7 @@ class Gunner : Enemy
                 Explode();
 
                 gunnerState = GunnerState.Death;
+                audioComponent.PlayRandomSound(deathSFX);
                 Destroy(gameObject);
             }
             else 
@@ -198,9 +201,6 @@ class Gunner : Enemy
 
     void FlushDamageEnemy()
     {
-
-
-
         if (accumulatedDamageInstance > 0)
         {
             SpawnIchorFrame();
@@ -221,7 +221,6 @@ class Gunner : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
                 {
-                    //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
                     renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
@@ -249,6 +248,7 @@ class Gunner : Enemy
             // Walk towards vantage Point
             if (targetVantagePoint != null)
             {
+                audioComponent.PlayRandomSound(spotSFX);
                 gunnerState = GunnerState.Walk;
                 animator.PlayAnimation("Gunner_Walk");
                 MoveToNavMeshPosition(targetVantagePoint.transform.position);
@@ -322,7 +322,7 @@ class Gunner : Enemy
     **********************************************************************/
     public void Shoot()
     {
-        //AudioAPI.PlaySound(gameObject, "Gun1_LaserRifle_Switch_Select5");
+        audioComponent.PlayRandomSound(attackSFX);
         gunShootIndex = (gunShootIndex + 1) % 2;
         // AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
         // Shoot Projectile

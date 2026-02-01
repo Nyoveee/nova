@@ -1,22 +1,46 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+
+using ScriptingAPI;
+
 class Sniper : Gun
 {
-    // Inspector variables
+    /***********************************************************
+        Inspector Variables
+    ***********************************************************/
     public required Transform_ camera;
     public required float cooldown = 1f;
     public required float recoilDuration = 0.2f;
     public required float range = 1000f;
     public required float damage = 40f;
+    [SerializableField]
+    private List<Audio> fireSFX;
+    [SerializableField]
+    private Audio errorAmmoSFX;
+    [SerializableField]
+    private List<Audio> hitMarkerSFX;
 
-    // Runtime variables
+
+    /***********************************************************
+        Components
+    ***********************************************************/
+    private AudioComponent_ audioComponent;
+
+    /***********************************************************
+        Runtime variables..
+    ***********************************************************/
     private float timeElapsed = 0f;
     private bool onCooldown = false;
     private bool isRecoiling = false;
     private Vector3 startPosition;
     private Vector3 backPosition;
 
+    protected override void init()
+    {
+        base.init();
+        audioComponent = getComponent<AudioComponent_>();
+    }
     protected override void update()
     {
         if (!onCooldown)
@@ -62,7 +86,7 @@ class Sniper : Gun
         isRecoiling = true;
         CurrentAmmo--;
 
-        //AudioAPI.PlaySound(gameObject, "Sniper Fire SFX");
+        audioComponent.PlayRandomSound(fireSFX);
 
         RayCastFire(camera.position, camera.front, range, damage);
 

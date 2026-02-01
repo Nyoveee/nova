@@ -65,8 +65,13 @@ class ThrowableRifle : Script
     private float currentAmmoGained = 0;
     private float totalAmmoGained = 0;
 
+    // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_ audioComponent;
+
     // ==================================
-    // private variables
+    // Private Variables
     // ==================================
     [SerializableField]
     private float calculatedTrueDamage;
@@ -97,6 +102,7 @@ class ThrowableRifle : Script
     protected override void init()
     {
         weaponRB = getComponent<Rigidbody_>();
+        audioComponent = getComponent<AudioComponent_>();
         //var gameObjectsChild  = gameObject.GetChildren();
 
         //foreach (var gameObject in gameObjectsChild)
@@ -107,7 +113,7 @@ class ThrowableRifle : Script
         //    }
         //}
 
-       throwingWeaponState = ThrowingWeaponState.Seeking;
+        throwingWeaponState = ThrowingWeaponState.Seeking;
         
 
 

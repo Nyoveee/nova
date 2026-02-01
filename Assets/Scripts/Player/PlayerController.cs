@@ -14,6 +14,12 @@ class PlayerController : Script
     // Jump
     public float jumpStrength = 100f;
     public int maxJumpCount = 2;
+    private int jumpsBeforeSound = 5;
+    private int jumpsDone = 0;
+
+    // Hurt
+    private int hitsBeforeSound = 3;
+    private int hitsTaken = 0;
 
     // Dash
     public float dashDuration = 1f;
@@ -41,9 +47,20 @@ class PlayerController : Script
 
     // Audio
     [SerializableField]
+    private List<Audio> deathSFX;
+    [SerializableField]
+    private List<Audio> hurtSFX;
+    [SerializableField]
     private List<Audio> dashSFX;
     [SerializableField]
+    private List<Audio> jumpVOSFX;
+    [SerializableField]
     private List<Audio> jumpSFX;
+    [SerializableField]
+    private List<Audio> footstepSFX;
+    [SerializableField]
+    private float timeBetweenSteps = 0.24f;
+    private float timeSinceLastFootstep = 0f;
 
     // WASD
     private bool isMovingForward = false;
@@ -226,6 +243,12 @@ class PlayerController : Script
     ***********************************************************/
     public void TakeDamage(float damage)
     {
+        hitsTaken++;
+        if(hitsTaken >= hitsBeforeSound)
+        {
+            audioComponent.PlayRandomSound(hurtSFX);
+            hitsTaken = 0;
+        }
         currentHealth = Mathf.Max(0, currentHealth - damage);
         //Debug.Log("Player health: " + currentHealth);
         if (gameUIManager != null)
@@ -234,6 +257,7 @@ class PlayerController : Script
         // Placeholder for a player death 
         if (currentHealth <= 0f)
         {
+            audioComponent.PlayRandomSound(deathSFX);
             OnPlayerDeath?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -339,6 +363,18 @@ class PlayerController : Script
         // play a jump grunt sfx
         // reset count to 0
     }
+    private void HandleFootstepSound()
+    {
+        if (isGrounded && rigidbody.GetVelocity != Vector3.Zero)
+        {
+            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            if (timeSinceLastFootstep >= timeBetweenSteps)
+            {
+                audioComponent.PlayRandomSound(footstepSFX);
+                timeSinceLastFootstep = 0;
+            }
+        }
+    }
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
     //{
     //    // We rotate our parent in the y axis..
@@ -399,7 +435,11 @@ class PlayerController : Script
 
         if (jumpCount < maxJumpCount && !isDashing)
         {
-
+            jumpsDone++;
+            if(jumpsDone >= jumpsBeforeSound)
+            {
+                audioComponent.PlayRandomSound(jumpVOSFX);
+            }
             // AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
@@ -415,13 +455,12 @@ class PlayerController : Script
             return;
         }
 
-        // AudioAPI.PlaySound(gameObject, "dash1_sfx");
-        audioComponent.PlayRandomSound(dashSFX);
 
         // We initialise dashing mechanic..
         isDashing = true;
         dashTimer -= dashCooldown;
         dashTimeElapsed = 0f;
+        audioComponent.PlayRandomSound(dashSFX);
 
         // Determine dashing vector..
         if (isMovingBackward)

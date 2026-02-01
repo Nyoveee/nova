@@ -6,8 +6,17 @@ using static System.Net.Mime.MediaTypeNames;
 
 class UltimateProjectile : Script
 {
+    // ==================================
+    // Parameters
+    // ==================================
     public Prefab ultimateExplosion;
     public float lifetime = 3f;
+    [SerializableField]
+    private Audio explosionSFX;
+    // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_? audioComponent;
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -16,6 +25,7 @@ class UltimateProjectile : Script
         {
             if (gameObject != null)
             {
+                audioComponent.PlaySound(explosionSFX);
                 Instantiate(ultimateExplosion, gameObject.transform.position);
                 Destroy(gameObject);
             }

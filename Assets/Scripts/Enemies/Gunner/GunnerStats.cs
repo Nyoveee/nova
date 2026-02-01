@@ -6,4 +6,5 @@ class GunnerStats : EnemyStats
     public float shootingRange = 100f;
     // Movement
     public float targetDistanceFromVantagePoint = 3f;
+    public float timeBetweenSteps = 0.3f;
 }
