@@ -383,7 +383,7 @@ class Charger : Enemy
     }
     public void EndStompAnimation()
     {
-        stompHitbox = Instantiate(stompHitBoxPrefab);
+        stompHitbox = Instantiate(stompHitBoxPrefab,stompHitBoxTransform.position);
         emitter.emit(30);
         stompHitbox.getScript<EnemyHitBox>().SetDamage(chargerstats.stompDamage);
         Invoke(() =>
