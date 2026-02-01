@@ -256,7 +256,7 @@ void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 		return;
 	}
 
-	updateFromPrefabInstance(getParent(prefabInstance, ecsRegistry));
+	updateFromPrefabInstance(getParent(prefabInstance, ecsRegistry), getParent(prefabInstance, ecsRegistry));
 }
 
 void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
@@ -269,9 +269,10 @@ void PrefabManager::convertToPrefab(entt::entity entity, ResourceID id) {
 	}
 }
 
-void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
+void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance, entt::entity parentPrefabInstance) {
 
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
+	EntityData* parentEntityData = ecsRegistry.try_get<EntityData>(parentPrefabInstance);
 	
 	if (!entityData) {
 		return;
@@ -280,8 +281,8 @@ void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
 	entt::entity prefabEntity = entt::null;
 
 	for (auto prefab : prefabRegistry.view<entt::entity>()) {
-		EntityData* prefabData = getPrefabRegistry().try_get<EntityData>(prefab);
-		if (prefabData->name == entityData->name) {
+		EntityData* prefabData = prefabRegistry.try_get<EntityData>(prefab);
+		if ((prefabData->name == entityData->name) && (entityData->prefabMetaData.prefabID == parentEntityData->prefabMetaData.prefabID)) {
 			prefabEntity = prefab;
 			break;
 		}
@@ -300,8 +301,9 @@ void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
 		entityDataComponent->prefabMetaData.prefabID = parentData->prefabMetaData.prefabID;
 		entityDataComponent->prefabMetaData.prefabEntity = newEntity;
 
-		//update the parent of the new entity in the prefab registry
+		//clear child vector from the new entity and update the parent of the new entity in the prefab registry
 		EntityData* newEntityData = prefabRegistry.try_get<EntityData>(newEntity);
+		newEntityData->children.clear();
 		newEntityData->parent = parentData->prefabMetaData.prefabEntity;
 
 		prefabEntity = newEntity;
@@ -315,7 +317,7 @@ void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance) {
 	updateComponents<ALL_COMPONENTS>(prefabRegistry, ecsRegistry, prefabEntity, prefabInstance);
 
 	for (entt::entity child : entityData->children) {
-		updateFromPrefabInstance(child);
+		updateFromPrefabInstance(child, parentPrefabInstance);
 	}
 }
 
