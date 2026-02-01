@@ -227,7 +227,6 @@ class Grunt : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (gruntState != GruntState.Death && !WasRecentlyDamaged())
                 {
-                    //AudioAPI.PlayRandomSound(gameObject, "Enemy Hurt SFX");
                     audioComponent.PlayRandomSound(hurtSFX);
 
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));

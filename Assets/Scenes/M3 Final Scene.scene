@@ -313,7 +313,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 0.699999988079071,
+                "volume": 0.4000000059604645,
                 "loop": true
             },
             "Scripts": {
@@ -331,7 +331,7 @@
                             {
                                 "name": "bufferTime",
                                 "data": {
-                                    "__variant_value": 0.20000000298023224,
+                                    "__variant_value": 1.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -3747,7 +3747,9 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "14828643033174927893": false,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -3796,7 +3798,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -3848,7 +3850,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3859,7 +3870,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3870,7 +3898,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3881,7 +3922,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -3892,7 +3954,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4660,7 +4755,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -4709,7 +4805,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -4761,7 +4857,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4772,7 +4877,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4783,7 +4905,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4794,7 +4929,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -4805,7 +4961,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5727,7 +5916,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -5776,7 +5966,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -5828,7 +6018,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5839,7 +6038,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5850,7 +6066,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5861,7 +6090,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -5872,7 +6122,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6706,7 +6989,9 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "14828643033174927893": false,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -6755,7 +7040,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -6807,7 +7092,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6818,7 +7112,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6829,7 +7140,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6840,7 +7164,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -6851,7 +7196,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -7961,7 +8339,9 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "6919815292445452220": false,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -8010,7 +8390,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "Scripts": {
@@ -8119,6 +8499,64 @@
                                 "data": {
                                     "__variant_value": 244,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 5599936416612909117,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 12517465444253990975,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 9058700930433433615,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7905779425826586637,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -8910,6 +9348,46 @@
                                 "data": {
                                     "__variant_value": 297,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -10068,6 +10546,46 @@
                                 }
                             },
                             {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "ichorPrefab",
                                 "data": {
                                     "__variant_value": 14493050257245634575,
@@ -10788,6 +11306,46 @@
                                 "data": {
                                     "__variant_value": 313,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -11513,6 +12071,46 @@
                                 "data": {
                                     "__variant_value": 319,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -28307,7 +28905,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.699999988079071,
                 "loop": false
             },
             "Scripts": {
@@ -28600,15 +29198,15 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 411789645882097769,
+                                                "__variant_value": 10011634472569946113,
                                                 "__variant_type": 15
                                             },
                                             {
-                                                "__variant_value": 7905779425826603115,
+                                                "__variant_value": 211801683411746819,
                                                 "__variant_type": 15
                                             },
                                             {
-                                                "__variant_value": 10211622435040297069,
+                                                "__variant_value": 13470398986390487045,
                                                 "__variant_type": 15
                                             }
                                         ],
@@ -29458,6 +30056,7 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
+                    "16861337649669213096": true,
                     "13437837940854190620": true,
                     "17237801994024849853": true
                 },
@@ -29508,7 +30107,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -29560,7 +30159,16 @@
                                 "name": "hurtSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 735732168193916929,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14570790223476080643,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29571,7 +30179,24 @@
                                 "name": "attackSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 2717632655095775249,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127571,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 7329318673523163159,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 988250398185504793,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29582,7 +30207,20 @@
                                 "name": "deathSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 16552690710377938973,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 17705612214984785951,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 9635161682736857121,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29593,7 +30231,28 @@
                                 "name": "spotSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 14246847701164245027,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006045733,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11941004691950551079,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668521,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5599936416612892715,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -29604,7 +30263,40 @@
                                 "name": "footstepSFX",
                                 "data": {
                                     "__variant_value": {
-                                        "list": null,
+                                        "list": [
+                                            {
+                                                "__variant_value": 15976229958074515501,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 15976229958074515503,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 14823308453467668529,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 2717632655095775283,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 11364543939647127605,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 3294093407399198775,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 4447014912006062137,
+                                                "__variant_type": 15
+                                            },
+                                            {
+                                                "__variant_value": 5023475664309485627,
+                                                "__variant_type": 15
+                                            }
+                                        ],
                                         "enumListType": "",
                                         "index": 15
                                     },
@@ -31719,6 +32411,46 @@
                                 "data": {
                                     "__variant_value": 1048840,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
                                 }
                             },
                             {
@@ -35452,7 +36184,8 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16861337649669213096": true
                 },
                 "inactiveComponents": null
             },
@@ -35501,7 +36234,7 @@
                 }
             },
             "AudioComponent": {
-                "volume": 1.0,
+                "volume": 0.4000000059604645,
                 "loop": false
             },
             "PositionalAudio": {
@@ -35555,11 +36288,11 @@
                                     "__variant_value": {
                                         "list": [
                                             {
-                                                "__variant_value": 13093926196557398037,
+                                                "__variant_value": 735732168193916929,
                                                 "__variant_type": 15
                                             },
                                             {
-                                                "__variant_value": 13670386948860821531,
+                                                "__variant_value": 14570790223476080643,
                                                 "__variant_type": 15
                                             }
                                         ],

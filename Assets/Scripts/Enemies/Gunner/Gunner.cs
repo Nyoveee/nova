@@ -15,6 +15,14 @@ class Gunner : Enemy
     private GameObject? projectileSpawnPoint;
     [SerializableField]
     private Rigidbody_? rigidBody;
+    [SerializableField]
+    private List<Audio> attackSFX;
+    [SerializableField]
+    private List<Audio> deathSFX;
+    [SerializableField]
+    private List<Audio> footstepSFX;
+    [SerializableField]
+    private float timeSinceLastFootstep = 0f;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -40,6 +48,7 @@ class Gunner : Enemy
     ***********************************************************/
     private GunnerStats? gunnerStats = null;
     private GameGlobalReferenceManager gameGlobalReferenceManager = null;
+    private AudioComponent_ audioComponent;
     /**********************************************************************
         Script Functions
     **********************************************************************/
@@ -47,6 +56,7 @@ class Gunner : Enemy
     {
         base.init();
         gunnerStats = getScript<GunnerStats>();
+        audioComponent = getComponent<AudioComponent_>();
         updateState.Add(GunnerState.Idle, Update_Idle);
         updateState.Add(GunnerState.Walk, Update_Walk);
         updateState.Add(GunnerState.Shoot, Update_Shoot);
