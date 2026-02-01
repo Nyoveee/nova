@@ -1,5 +1,5 @@
 {
-    "RootEntity": 23,
+    "RootEntity": 2,
     "Entities": [
         {
             "EntityData": {
@@ -84,6 +84,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": true,
                 "dynamicCollider": false,
@@ -232,7 +233,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 23
+            "id": 2
         }
     ]
 }

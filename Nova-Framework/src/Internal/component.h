@@ -307,6 +307,7 @@ struct Rigidbody {
 	glm::vec3 initialVelocity		{};
 	float mass						{ 10.f };
 	float gravityMultiplier			{ 1.f };
+	NormalizedFloat restitution		{ 0.0f };
 
 	bool isRotatable				{ true };
 	bool isTrigger					{ false };
@@ -320,6 +321,7 @@ struct Rigidbody {
 		initialVelocity,
 		mass,
 		gravityMultiplier,
+		restitution,
 		isRotatable,
 		isTrigger,
 		dynamicCollider,

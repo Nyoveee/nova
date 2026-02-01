@@ -93,30 +93,30 @@ void ComponentInspector::update() {
 	}
 
 
-	//BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
-	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabMetaData.prefabID);
-
-	if (prefabAssetInfo) {
-		ImGui::Separator();
-
-		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", nullptr);
-		
-		ImGui::SameLine();
-
-		if (ImGui::Button(ICON_FA_BOX_OPEN)) {
+	if (ImGui::CollapsingHeader("Prefab")) {
+		if (ImGui::Button("Unpack Prefab")) {
 			editor.unpackPrefab(entityData);
 		}
+
+		ImGui::SameLine();
 
 		if (ImGui::Button("Update Prefab")) {
 			editor.engine.prefabManager.updatePrefab(selectedEntity);
 		}
+
+		ImGui::TextWrapped("You can manually assign a prefab id. Only do this if you know what you are doing.");
+		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", [&](ResourceID newPrefabId) {
+			entityData.prefabID = { newPrefabId };
+		});
 	}
+
+#if 0
 	else if (entityData.prefabID != TypedResourceID<Prefab>{ INVALID_RESOURCE_ID }) {
 		Logger::warn("Entity {} has invalid prefab id, relegating him back to a normal entity..", entityData.name);
 		editor.unpackPrefab(entityData);
 	}
 
-	ImGui::NewLine();
+#endif
 
 	if (ImGui::CollapsingHeader("Entity")) {
 		ImGui::Text("Parent: ");
@@ -195,6 +195,8 @@ void ComponentInspector::update() {
 		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabID));
 		ImGui::Text("Prefab Entity: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabEntity));
 	}
+
+	ImGui::NewLine();
 
 	// Display the rest of the components via reflection.
 	//g_displayComponentFunctor(*this, selectedEntity, registry, true);
