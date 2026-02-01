@@ -201,7 +201,7 @@ struct MeshRenderer {
 	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
-	bool castShadow = true;
+	bool castShadow = false;
 	bool shadowCullFrontFace = true;
 
 	// std::vector<>

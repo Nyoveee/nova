@@ -98,6 +98,19 @@ struct RenderQueue {
 
 // --------------------------------------------- 
 
+struct ShadowModelBatch {
+	entt::entity entity;
+	MeshType meshType;
+	float modelScale;
+	std::vector<std::reference_wrapper<const Mesh>> meshes;
+};
+
+struct ShadowRenderQueue {
+	std::vector<ShadowModelBatch> modelBatches;
+};
+
+// --------------------------------------------- 
+
 enum class RenderMode {
 	Editor,
 	Game

@@ -17,8 +17,6 @@ Vert{
     // Calculate world space of our local attributes..
     WorldSpace worldSpace = calculateWorldSpace();
 
-    worldSpace.position.xyz += worldSpace.normal * 0.01;
-
     gl_Position = calculateClipPosition(worldSpace.position);
     passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
 }

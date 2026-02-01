@@ -54,6 +54,7 @@ void main() {
     
     // Clamp previous color to min/max bounding box
     vec4 historyColorClamp = adjustHDRColor(clamp(historyColor, minColor, maxColor));
+    // vec4 historyColorClamp = vec4(clamp(historyColor, minColor, maxColor), 1);
 
     // Blend.. (alpha was modified by luminance calculation..)
     // We multiply the weight by luminance as a form of tonemapping...

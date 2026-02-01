@@ -197,10 +197,15 @@ private:
 	// their own render queue. 
 	void setupRenderQueue(Camera const& camera, RenderQueueConfig renderQueueConfig = RenderQueueConfig::Normal);
 
+	// This function basically sets up for the upcoming shadow render pass.
+	// The reason why I need the function to perform 2 things at once is because I don't want to iterate through the entities twice.
+	void frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProjectionMatrix);
+
 	// attempts to create a material batch..
 	void createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex, RenderQueueConfig renderQueueConfig);
 	void createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex);
 	void createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
+	void createShadowBatchEntry(Model const& model, Mesh& mesh, entt::entity entity, MeshType meshType);
 
 	// render all models (normal and skinned).
 	void renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId);
@@ -412,6 +417,7 @@ private:
 
 	// holds batches of material, populated during render queue building..
 	RenderQueue renderQueue;
+	ShadowRenderQueue shadowRenderQueue;
 
 private:
 	int numOfPhysicsDebugTriangles;
