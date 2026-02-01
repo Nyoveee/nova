@@ -48,7 +48,7 @@ public:
 	ENGINE_DLL_API void broadcast(entt::entity prefabEntity);
 	ENGINE_DLL_API void prefabBroadcast(ResourceID prefabID);
 	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance, entt::registry& registry);
-	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance);
+	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance, entt::entity parentPrefabInstance);
 	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
 	ENGINE_DLL_API void convertToPrefab(entt::entity entity, ResourceID id);
 
