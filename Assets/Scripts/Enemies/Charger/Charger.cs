@@ -98,9 +98,9 @@ class Charger : Enemy
 
     }
 
-    protected override void update() {
+    protected override void update()
+    {
         updateState[chargerState]();
-
         FlushDamageEnemy();
     }
     /***********************************************************
@@ -271,7 +271,7 @@ class Charger : Enemy
             timeSinceLastFootstep += Time.V_FixedDeltaTime();
             if (timeSinceLastFootstep >= chargerstats.timeBetweenChargeSteps)
             {
-                audioComponent.PlayRandomSound(footstepSFX);
+                //audioComponent.PlayRandomSound(footstepSFX);
                 timeSinceLastFootstep = 0;
             }
         }
@@ -361,7 +361,7 @@ class Charger : Enemy
         {
             currentFootStepTime = chargerstats.timeBetweenChargeSteps;
             footStepIndex = (footStepIndex + 1) % 2;
-            //AudioAPI.PlaySound(gameObject, footStepIndex == 0 ? "sfx_enemyChargeStep_01mono" : "sfx_enemyChargeStep_02mono");
+            audioComponent.PlayRandomSound(footstepSFX);
             HandleFootStep();
         }
         chargingRigidbody.SetVelocity(chargeDirection * chargerstats.movementSpeed * chargerstats.chargeSpeedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));

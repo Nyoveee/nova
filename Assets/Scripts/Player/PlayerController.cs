@@ -59,7 +59,7 @@ class PlayerController : Script
     [SerializableField]
     private List<Audio> footstepSFX;
     [SerializableField]
-    private float timeBetweenSteps = 0.24f;
+    private float timeBetweenSteps = 0.36f;
     private float timeSinceLastFootstep = 0f;
 
     // WASD
@@ -317,6 +317,7 @@ class PlayerController : Script
             {
                 Vector3 newVelocity = new Vector3(movingVector.x, rigidbody.GetVelocity().y, movingVector.z);
                 rigidbody.SetVelocity(newVelocity);
+                HandleFootstepSound();
             }
             else
             {
@@ -357,12 +358,6 @@ class PlayerController : Script
         dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
-    private void HandleJumpSound()
-    {
-        //count no. of jumps, up to like 5 or 6
-        // play a jump grunt sfx
-        // reset count to 0
-    }
     private void HandleFootstepSound()
     {
         if (isGrounded && rigidbody.GetVelocity != Vector3.Zero)
@@ -439,8 +434,8 @@ class PlayerController : Script
             if(jumpsDone >= jumpsBeforeSound)
             {
                 audioComponent.PlayRandomSound(jumpVOSFX);
+                jumpsDone = 0;
             }
-            // AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
