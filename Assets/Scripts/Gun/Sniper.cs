@@ -16,10 +16,7 @@ class Sniper : Gun
     public required float damage = 40f;
     [SerializableField]
     private List<Audio> fireSFX;
-    [SerializableField]
-    private Audio errorAmmoSFX;
-    [SerializableField]
-    private List<Audio> hitMarkerSFX;
+
 
 
     /***********************************************************
