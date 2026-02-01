@@ -93,7 +93,8 @@ void ComponentInspector::update() {
 	}
 
 
-	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
+	//BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
+	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabMetaData.prefabID);
 
 	if (prefabAssetInfo) {
 		ImGui::Separator();
@@ -191,7 +192,7 @@ void ComponentInspector::update() {
 
 		ImGui::EndChild();
 
-		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
+		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabID));
 		ImGui::Text("Prefab Entity: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabEntity));
 	}
 
