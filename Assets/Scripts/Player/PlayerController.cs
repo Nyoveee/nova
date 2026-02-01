@@ -103,7 +103,7 @@ class PlayerController : Script
         // ===================================
         // Check if its grounded..
         // ===================================
-        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 14f, gameObject);
+        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 10f, gameObject);
         if (result != null)
         {
             isGrounded = true;
@@ -111,9 +111,10 @@ class PlayerController : Script
             // this branch is only executed once, per landing..
             if (wasInMidAir)
             {
+
                 wasInMidAir = false;
                 // @TODO: play landing sound..
-                jumpCount = 0;
+            
             }
         }
         else
@@ -397,14 +398,11 @@ class PlayerController : Script
             return;
         }
 
-        if (jumpCount < maxJumpCount && !isDashing)
+        if (isGrounded && !isDashing)
         {
-
-            // AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
-            jumpCount++;
         }
     }
 

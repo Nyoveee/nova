@@ -1,6 +1,173 @@
 {
-    "RootEntity": 0,
-    "Entities": [
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Floor",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.8125758767127991,
+                    "y": 0.07845187187194824,
+                    "z": -0.0169370174407959
+                },
+                "scale": {
+                    "x": 103.41368865966797,
+                    "y": 0.1218784898519516,
+                    "z": 148.19329833984375
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.8125758767127991,
+                    "y": 0.07845187187194824,
+                    "z": -0.0169370174407959
+                },
+                "localScale": {
+                    "x": 103.41368865966797,
+                    "y": 0.1218784898519516,
+                    "z": 148.19329833984375
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Static",
+                "layer": "NonMoving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "id": 1048576
+        },
+        {
+            "EntityData": {
+                "name": "Entity 2",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "prefabMetaData": {
+                    "prefabEntity": 0,
+                    "prefabID": 0
+                },
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.14318715035915375,
+                    "y": -0.11544746905565262,
+                    "z": 0.01855449751019478
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.492982391937403e-06,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.14318715035915375,
+                    "y": -0.11544746905565262,
+                    "z": 0.01855449751019478
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.492982391937403e-06,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "SkyBox": {
+                "equirectangularMap": 12171603057274994911
+            },
+            "id": 1048578
+        },
         {
             "EntityData": {
                 "name": "Player",
@@ -8,8 +175,8 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    12
+                    1048580,
+                    1048599
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -20,15 +187,15 @@
                 },
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": false
+                    "6919815292445452220": true
                 },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": -235.36387634277344,
-                    "y": 81.48983001708984,
-                    "z": 70.30931091308594
+                    "x": 0.0,
+                    "y": 15.482294082641602,
+                    "z": 0.0
                 },
                 "scale": {
                     "x": 0.6846738457679749,
@@ -47,9 +214,9 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -235.36387634277344,
-                    "y": 81.48983001708984,
-                    "z": 70.30931091308594
+                    "x": 0.0,
+                    "y": 15.482294082641602,
+                    "z": 0.0
                 },
                 "localScale": {
                     "x": 0.6846738457679749,
@@ -68,20 +235,20 @@
                     "z": 0.0
                 }
             },
-            "id": 0
+            "id": 1048579
         },
         {
             "EntityData": {
                 "name": "PlayerHead",
                 "tag": "",
-                "parent": 0,
+                "parent": 1048579,
                 "attachedSocket": 65535,
                 "children": [
-                    2,
-                    3,
-                    7,
-                    8,
-                    9
+                    1048581,
+                    1048582,
+                    1048590,
+                    1048591,
+                    1048592
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -99,9 +266,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.3639373779297,
-                    "y": 87.84141540527344,
-                    "z": 70.30931854248047
+                    "x": -6.268376455409452e-05,
+                    "y": 21.833877563476563,
+                    "z": 1.0447293789184187e-05
                 },
                 "scale": {
                     "x": 0.6846737861633301,
@@ -120,7 +287,7 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -9.1552734375e-05,
+                    "x": -9.155274165095761e-05,
                     "y": 9.276802062988281,
                     "z": 1.52587890625e-05
                 },
@@ -156,21 +323,21 @@
                             {
                                 "name": "playerOrientation",
                                 "data": {
-                                    "__variant_value": 14,
+                                    "__variant_value": 1048601,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCameraPos",
                                 "data": {
-                                    "__variant_value": 15,
+                                    "__variant_value": 1048602,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerBody",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 1048599,
                                     "__variant_type": 4
                                 }
                             }
@@ -178,13 +345,13 @@
                     }
                 ]
             },
-            "id": 1
+            "id": 1048580
         },
         {
             "EntityData": {
                 "name": "ThrowPosition",
                 "tag": "",
-                "parent": 1,
+                "parent": 1048580,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -203,9 +370,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.5414581298828,
-                    "y": 87.41885375976563,
-                    "z": 71.897216796875
+                    "x": -1.1775771379470825,
+                    "y": 21.411296844482422,
+                    "z": 1.587904930114746
                 },
                 "scale": {
                     "x": 0.6846715211868286,
@@ -224,8 +391,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -1.719818115234375,
-                    "y": -0.6171798706054688,
+                    "x": -1.7198182344436646,
+                    "y": -0.6172008514404297,
                     "z": 2.3191986083984375
                 },
                 "localScale": {
@@ -248,16 +415,16 @@
             "Scripts": {
                 "scriptDatas": null
             },
-            "id": 2
+            "id": 1048581
         },
         {
             "EntityData": {
                 "name": "Gun Holder",
                 "tag": "",
-                "parent": 1,
+                "parent": 1048580,
                 "attachedSocket": 65535,
                 "children": [
-                    4
+                    1048583
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -274,9 +441,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.4198455810547,
-                    "y": 87.11157989501953,
-                    "z": 73.08950805664063
+                    "x": -1.055970549583435,
+                    "y": 21.10402488708496,
+                    "z": 2.7801973819732666
                 },
                 "scale": {
                     "x": 1.2324128150939941,
@@ -296,8 +463,8 @@
                 },
                 "localPosition": {
                     "x": -1.542205810546875,
-                    "y": -1.0659713745117188,
-                    "z": 4.060600280761719
+                    "y": -1.0659866333007813,
+                    "z": 4.060600757598877
                 },
                 "localScale": {
                     "x": 1.8000000715255737,
@@ -316,17 +483,17 @@
                     "z": 3.5097941220030293e-10
                 }
             },
-            "id": 3
+            "id": 1048582
         },
         {
             "EntityData": {
                 "name": "Sniper Holder",
                 "tag": "",
-                "parent": 3,
+                "parent": 1048582,
                 "attachedSocket": 65535,
                 "children": [
-                    5,
-                    6
+                    1048585,
+                    1048586
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -344,20 +511,20 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.2398681640625,
-                    "y": 87.11416625976563,
-                    "z": 70.81122589111328
+                    "x": -0.8759976625442505,
+                    "y": 21.106643676757813,
+                    "z": 0.5019142627716064
                 },
                 "scale": {
                     "x": 1.232437252998352,
-                    "y": 1.2325598001480103,
+                    "y": 1.2325619459152222,
                     "z": 1.2324475049972534
                 },
                 "rotation": {
                     "w": -0.026374077424407005,
                     "x": 1.1072636880271602e-05,
                     "y": 0.9996521472930908,
-                    "z": 1.44624806353022e-07
+                    "z": 1.446244368707994e-07
                 },
                 "eulerAngles": {
                     "x": -3.141592264175415,
@@ -365,20 +532,20 @@
                     "z": 3.141570568084717
                 },
                 "localPosition": {
-                    "x": -0.000213623046875,
-                    "y": 0.002105712890625,
-                    "z": -1.8543930053710938
+                    "x": -0.00021374225616455078,
+                    "y": 0.0021266937255859375,
+                    "z": -1.8543955087661743
                 },
                 "localScale": {
                     "x": 1.0000197887420654,
-                    "y": 1.0001193284988403,
+                    "y": 1.000120997428894,
                     "z": 1.000028133392334
                 },
                 "localRotation": {
                     "w": -0.06580282002687454,
                     "x": 1.1069893844251055e-05,
                     "y": 0.9978326559066772,
-                    "z": -2.9244969823594147e-07
+                    "z": -2.9245003929645463e-07
                 },
                 "localEulerAngles": {
                     "x": -3.1415905952453613,
@@ -398,14 +565,7 @@
                             {
                                 "name": "camera",
                                 "data": {
-                                    "__variant_value": 8,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "audioComponent",
-                                "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 1048591,
                                     "__variant_type": 4
                                 }
                             },
@@ -435,13 +595,6 @@
                                 "data": {
                                     "__variant_value": 40.0,
                                     "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "sniperFireSFX",
-                                "data": {
-                                    "__variant_value": 3207574917556600883,
-                                    "__variant_type": 15
                                 }
                             },
                             {
@@ -476,13 +629,13 @@
                     }
                 ]
             },
-            "id": 4
+            "id": 1048583
         },
         {
             "EntityData": {
                 "name": "Sniper Mesh",
                 "tag": "",
-                "parent": 4,
+                "parent": 1048583,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -498,20 +651,20 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.16297912597656,
-                    "y": 87.11392974853516,
-                    "z": 71.74053955078125
+                    "x": -0.7991499900817871,
+                    "y": 21.10640525817871,
+                    "z": 1.431229591369629
                 },
                 "scale": {
                     "x": 1.2326327562332153,
-                    "y": 1.2325390577316284,
+                    "y": 1.2325409650802612,
                     "z": 1.2324544191360474
                 },
                 "rotation": {
                     "w": 0.6727328896522522,
-                    "x": 1.3607535947812721e-05,
+                    "x": 1.36075250338763e-05,
                     "y": -0.7398854494094849,
-                    "z": 5.84530698688468e-06
+                    "z": 5.84527106184396e-06
                 },
                 "eulerAngles": {
                     "x": 3.141490936279297,
@@ -519,25 +672,25 @@
                     "z": -3.141463279724121
                 },
                 "localPosition": {
-                    "x": -0.02252197265625,
-                    "y": -0.00018310546875,
-                    "z": -0.7562828063964844
+                    "x": -0.0225068349391222,
+                    "y": -0.00019264222646597773,
+                    "z": -0.7562794089317322
                 },
                 "localScale": {
                     "x": 1.0001505613327026,
-                    "y": 0.9999831318855286,
-                    "z": 1.000013828277588
+                    "y": 0.999983012676239,
+                    "z": 1.0000137090682983
                 },
                 "localRotation": {
                     "w": 0.757371187210083,
-                    "x": 1.376038562739268e-05,
+                    "x": 1.3760390174866188e-05,
                     "y": 0.652984619140625,
-                    "z": -2.1544896299019456e-05
+                    "z": -2.1544905393966474e-05
                 },
                 "localEulerAngles": {
-                    "x": -4.954097676090896e-05,
+                    "x": -4.954102769261226e-05,
                     "y": 1.4230374097824097,
-                    "z": -9.960676106857136e-05
+                    "z": -9.960682655218989e-05
                 }
             },
             "MeshRenderer": {
@@ -549,13 +702,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 5
+            "id": 1048585
         },
         {
             "EntityData": {
                 "name": "Muzzle",
                 "tag": "",
-                "parent": 4,
+                "parent": 1048583,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -571,20 +724,20 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.55906677246094,
-                    "y": 88.08956146240234,
-                    "z": 74.6418228149414
+                    "x": -1.1952518224716187,
+                    "y": 22.08203887939453,
+                    "z": 4.332515716552734
                 },
                 "scale": {
-                    "x": 1.2324641942977905,
-                    "y": 1.2327089309692383,
-                    "z": 1.2323968410491943
+                    "x": 1.232466220855713,
+                    "y": 1.2327110767364502,
+                    "z": 1.2324004173278809
                 },
                 "rotation": {
-                    "w": 0.6901206374168396,
-                    "x": -3.2648176784277894e-06,
-                    "y": 0.723694384098053,
-                    "z": -1.9265495211584494e-05
+                    "w": 0.6901206970214844,
+                    "x": -3.2648695196257904e-06,
+                    "y": 0.7236943244934082,
+                    "z": -1.9265597074991092e-05
                 },
                 "eulerAngles": {
                     "x": -3.1409101486206055,
@@ -592,24 +745,24 @@
                     "z": -3.14093279838562
                 },
                 "localPosition": {
-                    "x": 0.4225616455078125,
-                    "y": 0.7913589477539063,
-                    "z": -3.0901451110839844
+                    "x": 0.4225921928882599,
+                    "y": 0.7913475632667542,
+                    "z": -3.090141773223877
                 },
                 "localScale": {
-                    "x": 1.0000135898590088,
-                    "y": 1.000120997428894,
-                    "z": 0.9999673962593079
+                    "x": 1.0000152587890625,
+                    "y": 1.0001211166381836,
+                    "z": 0.9999702572822571
                 },
                 "localRotation": {
-                    "w": 0.705241322517395,
-                    "x": 1.1807121154561173e-05,
-                    "y": -0.708967387676239,
-                    "z": -1.0867510354728438e-05
+                    "w": 0.7052412629127502,
+                    "x": 1.1807203009084333e-05,
+                    "y": -0.7089674472808838,
+                    "z": -1.0867540368053596e-05
                 },
                 "localEulerAngles": {
                     "x": 3.1355080604553223,
-                    "y": -1.565526008605957,
+                    "y": -1.565537452697754,
                     "z": -3.1355068683624268
                 }
             },
@@ -721,13 +874,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 6
+            "id": 1048586
         },
         {
             "EntityData": {
                 "name": "GunPosition",
                 "tag": "",
-                "parent": 1,
+                "parent": 1048580,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -743,9 +896,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.419677734375,
-                    "y": 87.11156463623047,
-                    "z": 73.08977508544922
+                    "x": -1.0558034181594849,
+                    "y": 21.10401153564453,
+                    "z": 2.780463457107544
                 },
                 "scale": {
                     "x": 0.6846715211868286,
@@ -765,7 +918,7 @@
                 },
                 "localPosition": {
                     "x": -1.541961669921875,
-                    "y": -1.0659942626953125,
+                    "y": -1.0660057067871094,
                     "z": 4.0609893798828125
                 },
                 "localScale": {
@@ -785,13 +938,13 @@
                     "z": 0.0
                 }
             },
-            "id": 7
+            "id": 1048590
         },
         {
             "EntityData": {
                 "name": "Camera",
                 "tag": "",
-                "parent": 1,
+                "parent": 1048580,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -810,9 +963,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.36386108398438,
-                    "y": 87.84137725830078,
-                    "z": 70.30931091308594
+                    "x": 2.0894578483421355e-05,
+                    "y": 21.833831787109375,
+                    "z": 9.094947017729282e-13
                 },
                 "scale": {
                     "x": 0.6846737265586853,
@@ -832,7 +985,7 @@
                 },
                 "localPosition": {
                     "x": 0.0001220703125,
-                    "y": -6.103515625e-05,
+                    "y": -6.67572021484375e-05,
                     "z": -1.52587890625e-05
                 },
                 "localScale": {
@@ -860,7 +1013,7 @@
                             {
                                 "name": "ultimateController",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 1048599,
                                     "__variant_type": 4
                                 }
                             }
@@ -880,17 +1033,17 @@
                 "toLoop": false,
                 "startPlaying": false
             },
-            "id": 8
+            "id": 1048591
         },
         {
             "EntityData": {
                 "name": "Ultimate Pose",
                 "tag": "",
-                "parent": 1,
+                "parent": 1048580,
                 "attachedSocket": 65535,
                 "children": [
-                    10,
-                    11
+                    1048594,
+                    1048598
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -907,9 +1060,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.3881378173828,
-                    "y": 87.26599884033203,
-                    "z": 71.37274169921875
+                    "x": -0.02425861358642578,
+                    "y": 21.258441925048828,
+                    "z": 1.0634299516677856
                 },
                 "scale": {
                     "x": 2.0951216220855713,
@@ -929,7 +1082,7 @@
                 },
                 "localPosition": {
                     "x": -0.03533935546875,
-                    "y": -0.8404312133789063,
+                    "y": -0.8404521942138672,
                     "z": 1.5531768798828125
                 },
                 "localScale": {
@@ -949,13 +1102,13 @@
                     "z": 3.1415927410125732
                 }
             },
-            "id": 9
+            "id": 1048592
         },
         {
             "EntityData": {
                 "name": "SniperPose",
                 "tag": "",
-                "parent": 9,
+                "parent": 1048592,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -973,9 +1126,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -236.04150390625,
-                    "y": 87.65531921386719,
-                    "z": 70.5267562866211
+                    "x": -0.6776273250579834,
+                    "y": 21.647783279418945,
+                    "z": 0.21744763851165771
                 },
                 "scale": {
                     "x": 2.095163345336914,
@@ -995,8 +1148,8 @@
                 },
                 "localPosition": {
                     "x": -0.3543663024902344,
-                    "y": 0.18582916259765625,
-                    "z": 0.36704254150390625
+                    "y": 0.18583393096923828,
+                    "z": 0.3670423924922943
                 },
                 "localScale": {
                     "x": 1.0000197887420654,
@@ -1024,13 +1177,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 10
+            "id": 1048594
         },
         {
             "EntityData": {
                 "name": "PlayerPose",
                 "tag": "",
-                "parent": 9,
+                "parent": 1048592,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1048,9 +1201,9 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.38926696777344,
-                    "y": 87.26487731933594,
-                    "z": 71.37198638916016
+                    "x": -0.025391625240445137,
+                    "y": 21.257343292236328,
+                    "z": 1.0626745223999023
                 },
                 "scale": {
                     "x": 2.0951294898986816,
@@ -1070,8 +1223,8 @@
                 },
                 "localPosition": {
                     "x": -0.000278472900390625,
-                    "y": -0.000530242919921875,
-                    "z": 0.00058746337890625
+                    "y": -0.0005245208740234375,
+                    "z": 0.0005872882902622223
                 },
                 "localScale": {
                     "x": 1.000003695487976,
@@ -1080,13 +1233,13 @@
                 },
                 "localRotation": {
                     "w": 1.0,
-                    "x": -0.0,
+                    "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.0,
                     "z": 0.0
                 }
             },
@@ -1101,18 +1254,18 @@
                 "socketConnections": null,
                 "castShadow": true
             },
-            "id": 11
+            "id": 1048598
         },
         {
             "EntityData": {
                 "name": "PlayerBody",
                 "tag": "Player",
-                "parent": 0,
+                "parent": 1048579,
                 "attachedSocket": 65535,
                 "children": [
-                    13,
-                    14,
-                    15
+                    1048600,
+                    1048601,
+                    1048602
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1133,14 +1286,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.3639373779297,
-                    "y": 81.48980712890625,
-                    "z": 70.30931854248047
+                    "x": -6.268376455409452e-05,
+                    "y": 15.482269287109375,
+                    "z": 1.0447293789184187e-05
                 },
                 "scale": {
                     "x": 0.684673011302948,
                     "y": 0.6846737861633301,
-                    "z": 0.6846908330917358
+                    "z": 3.355103015899658
                 },
                 "rotation": {
                     "w": 1.0,
@@ -1154,14 +1307,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -9.1552734375e-05,
-                    "y": -3.814697265625e-05,
+                    "x": -9.155274165095761e-05,
+                    "y": -3.62396240234375e-05,
                     "z": 1.52587890625e-05
                 },
                 "localScale": {
                     "x": 0.9999988079071045,
                     "y": 0.9999999403953552,
-                    "z": 1.0000247955322266
+                    "z": 4.900293827056885
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -1211,56 +1364,56 @@
                             {
                                 "name": "muzzle",
                                 "data": {
-                                    "__variant_value": 6,
+                                    "__variant_value": 1048586,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "gameUIManager",
                                 "data": {
-                                    "__variant_value": 15,
+                                    "__variant_value": 1048602,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "gunHolder",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 1048582,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "throwPosition",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 1048581,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "gunPosition",
                                 "data": {
-                                    "__variant_value": 7,
+                                    "__variant_value": 1048590,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCamera",
                                 "data": {
-                                    "__variant_value": 8,
+                                    "__variant_value": 1048591,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sniper",
                                 "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 1048583,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCollider",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 1048599,
                                     "__variant_type": 4
                                 }
                             },
@@ -1324,42 +1477,42 @@
                             {
                                 "name": "camera",
                                 "data": {
-                                    "__variant_value": 8,
+                                    "__variant_value": 1048591,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "ultimatePose",
                                 "data": {
-                                    "__variant_value": 9,
+                                    "__variant_value": 1048592,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "originalGun",
                                 "data": {
-                                    "__variant_value": 5,
+                                    "__variant_value": 1048585,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerController",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 1048599,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerWeaponController",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 1048599,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sequence",
                                 "data": {
-                                    "__variant_value": 8,
+                                    "__variant_value": 1048591,
                                     "__variant_type": 4
                                 }
                             },
@@ -1403,13 +1556,6 @@
                                 "data": {
                                     "__variant_value": 0.20000000298023224,
                                     "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "beginUltimateSequenceSFX",
-                                "data": {
-                                    "__variant_value": 6226596393749577731,
-                                    "__variant_type": 15
                                 }
                             }
                         ]
@@ -1483,7 +1629,7 @@
                             {
                                 "name": "playerOrientation",
                                 "data": {
-                                    "__variant_value": 14,
+                                    "__variant_value": 1048601,
                                     "__variant_type": 4
                                 }
                             },
@@ -1497,8 +1643,17 @@
                             {
                                 "name": "dashSFX",
                                 "data": {
-                                    "__variant_value": 1478192660646314001,
-                                    "__variant_type": 15
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 1478192660646314001,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
                                 }
                             },
                             {
@@ -1525,13 +1680,13 @@
                     }
                 ]
             },
-            "id": 12
+            "id": 1048599
         },
         {
             "EntityData": {
                 "name": "PlayerObj",
                 "tag": "",
-                "parent": 12,
+                "parent": 1048599,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1551,24 +1706,24 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.3639373779297,
-                    "y": 84.91317749023438,
-                    "z": 70.30914306640625
+                    "x": -6.268376455409452e-05,
+                    "y": 18.905643463134766,
+                    "z": -0.0008598644635640085
                 },
                 "scale": {
                     "x": 3.4233644008636475,
                     "y": 3.4233686923980713,
-                    "z": 3.423452138900757
+                    "z": 16.77550506591797
                 },
                 "rotation": {
-                    "w": 4.69003413444127e-16,
+                    "w": 2.2981975328193903e-15,
                     "x": 5.344727327383225e-09,
                     "y": 1.0,
-                    "z": 3.260064995735945e-10
+                    "z": 1.5974891409697989e-09
                 },
                 "eulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": 9.345220274641314e-16,
+                    "y": 4.579318881422134e-15,
                     "z": 3.1415927410125732
                 },
                 "localPosition": {
@@ -1582,14 +1737,14 @@
                     "z": 4.999997138977051
                 },
                 "localRotation": {
-                    "w": 4.689912373455102e-16,
+                    "w": 4.68991184405951e-16,
                     "x": 5.344721554223497e-09,
                     "y": 1.0,
-                    "z": 3.2599842270109036e-10
+                    "z": 3.2599861699011967e-10
                 },
                 "localEulerAngles": {
                     "x": 3.1415927410125732,
-                    "y": 9.344977811460162e-16,
+                    "y": 9.344976752668978e-16,
                     "z": 3.1415927410125732
                 }
             },
@@ -1601,13 +1756,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 13
+            "id": 1048600
         },
         {
             "EntityData": {
                 "name": "PlayerOrientation",
                 "tag": "",
-                "parent": 12,
+                "parent": 1048599,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1625,19 +1780,19 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.3639373779297,
-                    "y": 81.48994445800781,
-                    "z": 70.30912780761719
+                    "x": -6.268376455409452e-05,
+                    "y": 15.482410430908203,
+                    "z": -0.0009366566664539278
                 },
                 "scale": {
                     "x": 0.6846729516983032,
                     "y": 0.6846737265586853,
-                    "z": 0.6846736669540405
+                    "z": 3.3550190925598145
                 },
                 "rotation": {
                     "w": 1.0,
                     "x": 0.0,
-                    "y": 4.672593726057304e-16,
+                    "y": 2.2896499115904103e-15,
                     "z": 0.0
                 },
                 "eulerAngles": {
@@ -1658,22 +1813,22 @@
                 "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
-                    "y": 4.672471965071136e-16,
+                    "y": 4.672469318093176e-16,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": 9.344943930142272e-16,
+                    "y": 9.344938636186352e-16,
                     "z": 0.0
                 }
             },
-            "id": 14
+            "id": 1048601
         },
         {
             "EntityData": {
                 "name": "CameraPos",
                 "tag": "",
-                "parent": 12,
+                "parent": 1048599,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1691,14 +1846,14 @@
             },
             "Transform": {
                 "position": {
-                    "x": -235.3639373779297,
-                    "y": 87.27792358398438,
-                    "z": 70.30912780761719
+                    "x": -6.268376455409452e-05,
+                    "y": 21.2703857421875,
+                    "z": -0.0009366566664539278
                 },
                 "scale": {
                     "x": 0.6846737265586853,
                     "y": 0.6846737265586853,
-                    "z": 0.6846736669540405
+                    "z": 3.3550190925598145
                 },
                 "rotation": {
                     "w": 1.0,
@@ -1713,7 +1868,7 @@
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 8.453834533691406,
+                    "y": 8.453832626342773,
                     "z": -0.00028228759765625
                 },
                 "localScale": {
@@ -1733,7 +1888,12 @@
                     "z": 0.0
                 }
             },
-            "id": 15
+            "id": 1048602
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
         }
     ]
 }
