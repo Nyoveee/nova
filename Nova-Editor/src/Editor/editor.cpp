@@ -126,13 +126,14 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<DeleteSelectedEntity>(
 		[&](DeleteSelectedEntity) {
-			if ((!editorViewPort.isHoveringOver || !editorViewPort.isActive) && !navBar.hierarchyList.isHovering) {
-				return;
+			if ((editorViewPort.isHoveringOver && editorViewPort.isActive) || navBar.hierarchyList.isHovering) {
+				for (entt::entity entity : selectedEntities) {
+					deleteEntity(entity);
+				}
 			}
 
-			// @TODO: Confirmation prompt LMAOO
-			for (entt::entity entity : selectedEntities) {
-				deleteEntity(entity);
+			if (assetViewerUi.isHovering && engine.prefabManager.getPrefabRegistry().valid(assetViewerUi.selectedPrefabEntity)) {
+				engine.ecs.deleteEntity(assetViewerUi.selectedPrefabEntity, engine.prefabManager.getPrefabRegistry());
 			}
 		}
 	);

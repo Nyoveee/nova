@@ -148,7 +148,7 @@ namespace Serialiser {
 		file >> j;
 	}
 
-	PrefabEntityID deserialisePrefab(const char* filepath, ResourceID prefabResourceId, entt::registry& prefabRegistry, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping) {
+	PrefabEntityID deserialisePrefab(const char* filepath, ResourceID prefabResourceId, entt::registry& prefabRegistry, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping, std::unordered_map<EntityGUID, PrefabEntityID>& entityGuidToPrefabId) {
 		std::ifstream file(filepath);
 		
 		if (!file) {
@@ -159,7 +159,7 @@ namespace Serialiser {
 		file >> jsonFile;
 
 		PrefabFileEntityID fileRootEntity = jsonFile["RootEntity"];
-		PrefabEntityID prefabEntityId = deserialisePrefabRecursive(jsonFile["Entities"], fileRootEntity, prefabRegistry, prefabResourceId, mapping);
+		PrefabEntityID prefabEntityId = deserialisePrefabRecursive(jsonFile["Entities"], fileRootEntity, prefabRegistry, prefabResourceId, mapping, entityGuidToPrefabId);
 		
 		if (prefabEntityId == entt::null) {
 			Logger::error("Failed to deserialise {}! Please check the prefab file. Prefab not loaded.", filepath);
@@ -171,7 +171,6 @@ namespace Serialiser {
 		EntityData& entityData = prefabRegistry.get<EntityData>(prefabEntityId);
 
 		// Finally, we update prefab entity's prefab metadata..
-		entityData.prefabMetaData.prefabID = { prefabResourceId };
 		entityData.prefabID = { prefabResourceId };
 
 		return prefabEntityId;
@@ -217,7 +216,7 @@ namespace Serialiser {
 		}
 	}
 
-	PrefabEntityID deserialisePrefabRecursive(std::vector<Json> const& jsonVectorOfEntities, PrefabFileEntityID prefabFileEntityID, entt::registry& prefabRegistry, ResourceID prefabResourceId, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping) {
+	PrefabEntityID deserialisePrefabRecursive(std::vector<Json> const& jsonVectorOfEntities, PrefabFileEntityID prefabFileEntityID, entt::registry& prefabRegistry, ResourceID prefabResourceId, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping, std::unordered_map<EntityGUID, PrefabEntityID>& entityGuidToPrefabId) {
 		// In the vector of entities, let's find our json..
 		for (auto const& jsonEntity : jsonVectorOfEntities) {
 			PrefabFileEntityID fileEntityId = static_cast<entt::entity>(static_cast<unsigned>(jsonEntity["id"]));
@@ -239,6 +238,9 @@ namespace Serialiser {
 				return entt::null;
 			}
 
+			// Let's first record the mapping between entity GUID and prefab entity id.. 
+			entityGuidToPrefabId[entityData->entityGUID] = prefabEntityId;
+
 			// Record mapping..
 			mapping[fileEntityId] = prefabEntityId;
 
@@ -247,7 +249,7 @@ namespace Serialiser {
 
 			for (PrefabFileEntityID childPrefabFileEntityId : entityData->children) {
 				// we recursively deserialise it's children..
-				PrefabEntityID childPrefabEntityId = deserialisePrefabRecursive(jsonVectorOfEntities, childPrefabFileEntityId, prefabRegistry, prefabResourceId, mapping);
+				PrefabEntityID childPrefabEntityId = deserialisePrefabRecursive(jsonVectorOfEntities, childPrefabFileEntityId, prefabRegistry, prefabResourceId, mapping, entityGuidToPrefabId);
 
 				if (childPrefabEntityId != entt::null) {
 					prefabEntityChildrens.push_back(childPrefabEntityId);
@@ -265,7 +267,6 @@ namespace Serialiser {
 			}
 
 			// Finally, we update prefab entity's prefab metadata..
-			entityData->prefabMetaData.prefabID = { prefabResourceId };
 			entityData->prefabID = { prefabResourceId };
 
 			// As well as the mapped prefab children!

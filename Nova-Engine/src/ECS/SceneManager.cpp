@@ -28,6 +28,7 @@ void SceneManager::loadScene(ResourceID id) {
 	}
 
 	ecs.registry.clear();
+	//ecs.clearEntityGuidMapping();
 	engine.SystemsUnload();
 	currentScene = NO_SCENE_LOADED;
 

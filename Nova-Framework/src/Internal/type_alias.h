@@ -153,6 +153,20 @@ private:
 	std::size_t id;
 };
 
+struct EntityGUID {
+	// constexpr EntityGUID();
+	constexpr EntityGUID(std::size_t id);
+	constexpr explicit operator std::size_t() const;
+
+public:
+	constexpr friend bool operator==(EntityGUID const& lhs, EntityGUID const& rhs);
+	constexpr friend bool operator<(EntityGUID const& lhs, EntityGUID const& rhs);
+	friend struct std::hash<EntityGUID>;
+
+private:
+	std::size_t id;
+};
+
 // it's essentially AssetID but carrying additional type info of the original asset type. 
 // useful in editor to retrieve the original asset type.
 // TypedAssetID can implicitly convert to AssetID anytime, and vice versa.

@@ -1292,8 +1292,6 @@ void Renderer::debugRenderPhysicsCollider() {
 	glEnable(GL_DEPTH_TEST);
 	
 	debugShader.use();
-	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 0.2f });
-	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	// enable wireframe mode only for debug overlay.
 	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 1.f });
@@ -1303,12 +1301,14 @@ void Renderer::debugRenderPhysicsCollider() {
 	// disable wireframe mode, restoring to normal fill
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#if false
 	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsLineVBO.id(), 0, sizeof(glm::vec3));
 
 	glDisable(GL_CULL_FACE);
 
 	debugShader.setVec4("color", { 1.f, 0.2f, 0.2f, 1.f });
 	glDrawArrays(GL_LINES, 0, numOfPhysicsDebugLines * 2);
+#endif
 
 	numOfPhysicsDebugTriangles = 0;
 	numOfPhysicsDebugLines = 0;

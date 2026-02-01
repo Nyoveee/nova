@@ -102,6 +102,8 @@ void ComponentInspector::update() {
 
 		if (ImGui::Button("Update Prefab")) {
 			editor.engine.prefabManager.updatePrefab(selectedEntity);
+			entityData.overridenComponents.clear();
+			entityData.overridenProperties.clear();
 		}
 
 		ImGui::TextWrapped("You can manually assign a prefab id. Only do this if you know what you are doing.");
@@ -119,6 +121,7 @@ void ComponentInspector::update() {
 #endif
 
 	if (ImGui::CollapsingHeader("Entity")) {
+		ImGui::Text("Entity GUID: %zu", static_cast<std::size_t>(entityData.entityGUID));
 		ImGui::Text("Parent: ");
 		ImGui::SameLine();
 		ImGui::Text(entityData.parent == entt::null ? "None" : registry.get<EntityData>(entityData.parent).name.c_str());
@@ -192,14 +195,13 @@ void ComponentInspector::update() {
 
 		ImGui::EndChild();
 
-		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabID));
-		ImGui::Text("Prefab Entity: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabEntity));
+		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
+		//ImGui::Text("Prefab Entity: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabEntity));
 	}
 
 	ImGui::NewLine();
 
 	// Display the rest of the components via reflection.
-	//g_displayComponentFunctor(*this, selectedEntity, registry, true);
 	g_displayComponentFunctor(editor, selectedEntity, registry, true);
 
 	// Display add component button.

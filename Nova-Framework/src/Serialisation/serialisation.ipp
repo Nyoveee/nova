@@ -66,22 +66,24 @@ namespace Serialiser {
 		std::string originalComponentName = typeid(component).name();
 		std::string componentName = originalComponentName.substr(7);
 
-		if (jsonComponent.find(componentName) == jsonComponent.end())
+		if (jsonComponent.find(componentName) == jsonComponent.end()) {
 			return;
-			reflection::visit([&](auto fieldData) {
-				auto& dataMember = fieldData.get();
-				constexpr const char* dataMemberName = fieldData.name();
-				using DataMemberType = std::decay_t<decltype(dataMember)>;
-				try {
-					deserializeFromJson<DataMemberType>(dataMember, jsonComponent[componentName][dataMemberName]);
-				}
-				catch (std::exception const& ex) {
-					Logger::error("Error parsing [{}]{} for entity {} : {}", componentName, dataMemberName, static_cast<unsigned int>(entity), ex.what());
-				}
+		}
 
-			}, component);
-			registry.emplace<T>(entity, std::move(component));
-		
+		reflection::visit([&](auto fieldData) {
+			auto& dataMember = fieldData.get();
+			constexpr const char* dataMemberName = fieldData.name();
+			using DataMemberType = std::decay_t<decltype(dataMember)>;
+			
+			try {
+				deserializeFromJson<DataMemberType>(dataMember, jsonComponent[componentName][dataMemberName]);
+			}
+			catch (std::exception const& ex) {
+				Logger::error("Error parsing [{}]{} for entity {} : {}", componentName, dataMemberName, static_cast<unsigned int>(entity), ex.what());
+			}
+		}, component);
+
+		registry.emplace<T>(entity, std::move(component));
 	}
 
 	template<typename T>

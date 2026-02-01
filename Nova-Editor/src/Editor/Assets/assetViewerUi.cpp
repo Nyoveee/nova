@@ -93,6 +93,8 @@ AssetViewerUI::AssetViewerUI(Editor& editor, AssetManager& assetManager, Resourc
 void AssetViewerUI::update() {
 	ImGui::Begin(ICON_FA_AUDIO_DESCRIPTION " Asset Viewer");
 
+	isHovering = ImGui::IsWindowHovered();
+
 	if (selectedResourceId == INVALID_RESOURCE_ID) {
 		ImGui::Text("No resource selected.");
 		ImGui::End();
@@ -722,6 +724,9 @@ void AssetViewerUI::displayPrefabInfo([[maybe_unused]] AssetInfo<Prefab>& descri
 
 	if (ImGui::CollapsingHeader("Prefab Data")) {
 		ImGui::InputText("Name", &prefabEntityData->name);
+
+		ImGui::Text("Entity GUID: %zu", static_cast<std::size_t>(prefabEntityData->entityGUID));
+		ImGui::Text("Attached bone socket: %hu", prefabEntityData->attachedSocket);
 
 		ImGui::Text("Prefab Entity ID: %u", static_cast<unsigned>(selectedPrefabEntity));
 		ImGui::Text("Parent: %s", prefabEntityData->parent == entt::null ? "None" : prefabRegistry.get<EntityData>(prefabEntityData->parent).name.c_str());

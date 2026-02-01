@@ -275,6 +275,11 @@ inline void deserializeFromJson<ResourceID>(ResourceID& dataMember, Json const& 
 }
 
 template<>
+inline void deserializeFromJson<EntityGUID>(EntityGUID& dataMember, Json const& json) {
+	dataMember = static_cast<EntityGUID>(static_cast<std::size_t>(json));
+}
+
+template<>
 inline void deserializeFromJson<ControllerNodeID>(ControllerNodeID& dataMember, Json const& json) {
 	dataMember = static_cast<ControllerNodeID>(static_cast<std::size_t>(json));
 }

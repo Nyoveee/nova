@@ -136,6 +136,31 @@ constexpr ResourceID::operator std::size_t() const {
 #undef max
 constexpr inline ResourceID INVALID_RESOURCE_ID{ std::numeric_limits<std::size_t>::max() };
 
+// ================ EntityGUID ==================
+//constexpr EntityGUID::EntityGUID() : id{} {}
+constexpr EntityGUID::EntityGUID(std::size_t id) : id{ id } {}
+
+constexpr bool operator==(EntityGUID const& lhs, EntityGUID const& rhs) {
+	return lhs.id == rhs.id;
+}
+
+constexpr bool operator<(EntityGUID const& lhs, EntityGUID const& rhs) {
+	return lhs.id < rhs.id;
+}
+
+template<>
+struct std::hash<EntityGUID> {
+	std::size_t operator()(EntityGUID const& assetId) const noexcept {
+		return std::hash<std::size_t>{}(assetId.id);
+	}
+};
+
+constexpr EntityGUID::operator std::size_t() const {
+	return id;
+}
+
+constexpr inline EntityGUID INVALID_PREFAB_ID { std::numeric_limits<std::size_t>::max() };
+
 // ================ ResourceTypeID ==================
 constexpr ResourceTypeID::ResourceTypeID() : id{} {}
 constexpr ResourceTypeID::ResourceTypeID(std::size_t id) : id{ id } {}

@@ -65,10 +65,6 @@ enum class InterpolationType : unsigned int {
 	Cubic
 };
 
-struct PrefabMetaData {
-	PrefabEntityID prefabEntity;
-	ResourceID prefabID;
-};
 // ===================================
 
 struct EntityData {
@@ -82,7 +78,8 @@ struct EntityData {
 	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
-	PrefabMetaData prefabMetaData										{};
+	EntityGUID entityGUID												{ Math::getGUID() };
+
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 	std::unordered_map<size_t, bool> overridenComponents				{};
 	std::unordered_set<ComponentID> inactiveComponents                  {};
@@ -96,7 +93,7 @@ struct EntityData {
 		layerId,
 		isActive,
 		prefabID,
-		prefabMetaData,
+		entityGUID,
 		overridenProperties,
 		overridenComponents,
 		inactiveComponents

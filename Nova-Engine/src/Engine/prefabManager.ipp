@@ -24,8 +24,6 @@ entt::entity PrefabManager::instantiatePrefabRecursive(PrefabEntityID prefabEnti
 		return entt::null;
 	}
 
-	entityData->prefabMetaData.prefabEntity = prefabEntity;
-
 	// Contains the mapped entity id for children of the prefab instance.
 	std::vector<entt::entity> childrenEntityIds;
 	childrenEntityIds.reserve(entityData->children.size());
@@ -50,4 +48,39 @@ entt::entity PrefabManager::instantiatePrefabRecursive(PrefabEntityID prefabEnti
 	entityData->children = std::move(childrenEntityIds);
 
 	return ecsEntity;
+}
+
+template<typename ...Components>
+void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity toEntity, entt::entity fromEntity) {
+
+	([&]() {
+		if constexpr (!(std::same_as<EntityData, Components> || std::same_as<Transform, Components>)) {
+			auto* component = fromRegistry.try_get<Components>(fromEntity);
+			bool overrideCheck{ false };
+
+			//check for override check box
+			if (&toRegistry != &prefabRegistry) {
+				EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
+				if (!toEntityData->overridenComponents[Family::id<Components>()]) {
+					overrideCheck = true;
+				}
+			}
+			else {
+				overrideCheck = true;
+			}
+
+			if (component && overrideCheck) {
+				toRegistry.emplace_or_replace<Components>(toEntity, *component);
+			}
+		}
+	}(), ...);
+}
+
+template<typename ...Components>
+void PrefabManager::removeComponents(entt::registry& registry, entt::entity entity) {
+	([&]() {
+		if constexpr (!(std::same_as<EntityData, Components> || std::same_as<Transform, Components>)) {
+			registry.remove<Components>(entity);
+		}
+	}(), ...);
 }
