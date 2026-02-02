@@ -1,5 +1,5 @@
 {
-    "RootEntity": 8,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,8 +8,8 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    9,
-                    20
+                    1,
+                    12
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -65,20 +65,20 @@
                     "z": 0.0
                 }
             },
-            "id": 8
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "PlayerHead",
                 "tag": "",
-                "parent": 8,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    10,
-                    11,
-                    15,
-                    16,
-                    17
+                    2,
+                    3,
+                    7,
+                    8,
+                    9
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -150,21 +150,21 @@
                             {
                                 "name": "playerOrientation",
                                 "data": {
-                                    "__variant_value": 22,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCameraPos",
                                 "data": {
-                                    "__variant_value": 23,
+                                    "__variant_value": 15,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerBody",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             }
@@ -172,13 +172,13 @@
                     }
                 ]
             },
-            "id": 9
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "ThrowPosition",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -211,7 +211,7 @@
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.07894328236579895,
+                    "y": -0.07894325256347656,
                     "z": 0.0
                 },
                 "localPosition": {
@@ -232,23 +232,23 @@
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.07894328236579895,
+                    "y": -0.07894325256347656,
                     "z": 0.0
                 }
             },
             "Scripts": {
                 "scriptDatas": null
             },
-            "id": 10
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Gun Holder",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": [
-                    12
+                    4
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -304,17 +304,17 @@
                     "z": 3.5097941220030293e-10
                 }
             },
-            "id": 11
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Sniper Holder",
                 "tag": "",
-                "parent": 11,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    13,
-                    14
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -383,7 +383,7 @@
                             {
                                 "name": "camera",
                                 "data": {
-                                    "__variant_value": 16,
+                                    "__variant_value": 8,
                                     "__variant_type": 4
                                 }
                             },
@@ -471,13 +471,13 @@
                     }
                 ]
             },
-            "id": 12
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Sniper Mesh",
                 "tag": "",
-                "parent": 12,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -541,13 +541,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 13
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Muzzle",
                 "tag": "",
-                "parent": 12,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -710,13 +710,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 14
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "GunPosition",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -771,13 +771,13 @@
                     "z": 0.0
                 }
             },
-            "id": 15
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Camera",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -786,8 +786,8 @@
                 "entityGUID": 2399258079209947405,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "2785545264285399722": false,
-                    "6919815292445452220": false
+                    "6919815292445452220": false,
+                    "2785545264285399722": false
                 },
                 "inactiveComponents": null
             },
@@ -843,7 +843,7 @@
                             {
                                 "name": "ultimateController",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             }
@@ -863,17 +863,17 @@
                 "toLoop": false,
                 "startPlaying": false
             },
-            "id": 16
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Ultimate Pose",
                 "tag": "",
-                "parent": 9,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": [
-                    18,
-                    19
+                    10,
+                    11
                 ],
                 "layerId": 0,
                 "isActive": false,
@@ -929,13 +929,13 @@
                     "z": 3.1415927410125732
                 }
             },
-            "id": 17
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "SniperPose",
                 "tag": "",
-                "parent": 17,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1001,13 +1001,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 18
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "PlayerPose",
                 "tag": "",
-                "parent": 17,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1075,18 +1075,18 @@
                 "socketConnections": null,
                 "castShadow": true
             },
-            "id": 19
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "PlayerBody",
                 "tag": "Player",
-                "parent": 8,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    21,
-                    22,
-                    23
+                    13,
+                    14,
+                    15
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -1094,8 +1094,8 @@
                 "entityGUID": 11622630116064739605,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "16861337649669213096": true,
                     "452538415452204233": true,
                     "6919815292445452220": false
@@ -1183,56 +1183,56 @@
                             {
                                 "name": "muzzle",
                                 "data": {
-                                    "__variant_value": 14,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "gunHolder",
                                 "data": {
-                                    "__variant_value": 11,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "throwPosition",
                                 "data": {
-                                    "__variant_value": 10,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "gunPosition",
                                 "data": {
-                                    "__variant_value": 15,
+                                    "__variant_value": 7,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCamera",
                                 "data": {
-                                    "__variant_value": 16,
+                                    "__variant_value": 8,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sniper",
                                 "data": {
-                                    "__variant_value": 12,
+                                    "__variant_value": 4,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sniperMesh",
                                 "data": {
-                                    "__variant_value": 13,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerCollider",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             },
@@ -1324,42 +1324,42 @@
                             {
                                 "name": "camera",
                                 "data": {
-                                    "__variant_value": 16,
+                                    "__variant_value": 8,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "ultimatePose",
                                 "data": {
-                                    "__variant_value": 17,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "originalGun",
                                 "data": {
-                                    "__variant_value": 13,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerController",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "playerWeaponController",
                                 "data": {
-                                    "__variant_value": 20,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "sequence",
                                 "data": {
-                                    "__variant_value": 16,
+                                    "__variant_value": 8,
                                     "__variant_type": 4
                                 }
                             },
@@ -1408,61 +1408,110 @@
                         ]
                     },
                     {
-                        "scriptId": 18008479210682990595,
+                        "scriptId": 10783095804117499907,
                         "fields": [
                             {
-                                "name": "maximumMoveSpeed",
+                                "name": "groundAcceleration",
+                                "data": {
+                                    "__variant_value": 40.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "groundMaxMoveSpeed",
                                 "data": {
                                     "__variant_value": 20.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
-                                "name": "accelerationStrength",
+                                "name": "groundDrag",
                                 "data": {
                                     "__variant_value": 20.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
-                                "name": "jumpStrength",
-                                "data": {
-                                    "__variant_value": 50.0,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "maxJumpCount",
-                                "data": {
-                                    "__variant_value": 1,
-                                    "__variant_type": 17
-                                }
-                            },
-                            {
-                                "name": "dashDuration",
-                                "data": {
-                                    "__variant_value": 0.3499999940395355,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "dashCount",
-                                "data": {
-                                    "__variant_value": 3,
-                                    "__variant_type": 17
-                                }
-                            },
-                            {
-                                "name": "dashCooldown",
+                                "name": "groundDetectionRayCast",
                                 "data": {
                                     "__variant_value": 3.0,
                                     "__variant_type": 18
                                 }
                             },
                             {
-                                "name": "dashStrength",
+                                "name": "airAcceleration",
                                 "data": {
-                                    "__variant_value": 200.0,
+                                    "__variant_value": 50.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "aerialMaxMoveSpeed",
+                                "data": {
+                                    "__variant_value": 25.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "airDrag",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "jumpStrength",
+                                "data": {
+                                    "__variant_value": 100000.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "jumpGravityFactor",
+                                "data": {
+                                    "__variant_value": 0.6000000238418579,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "lerpGravityFactorDuration",
+                                "data": {
+                                    "__variant_value": 0.800000011920929,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "desiredDashSpeed",
+                                "data": {
+                                    "__variant_value": 100.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "dashDuration",
+                                "data": {
+                                    "__variant_value": 0.20000000298023224,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "dashCooldown",
+                                "data": {
+                                    "__variant_value": 0.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "speedChangeSmoothTime",
+                                "data": {
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "baseGravityFactor",
+                                "data": {
+                                    "__variant_value": 5.0,
                                     "__variant_type": 18
                                 }
                             },
@@ -1476,195 +1525,28 @@
                             {
                                 "name": "playerOrientation",
                                 "data": {
-                                    "__variant_value": 22,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
                             {
-                                "name": "deathSFX",
+                                "name": "gameUIManager",
                                 "data": {
-                                    "__variant_value": {
-                                        "list": [
-                                            {
-                                                "__variant_value": 10211622435040297037,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 2141171902792368207,
-                                                "__variant_type": 15
-                                            }
-                                        ],
-                                        "enumListType": "",
-                                        "index": 15
-                                    },
-                                    "__variant_type": 20
-                                }
-                            },
-                            {
-                                "name": "hurtSFX",
-                                "data": {
-                                    "__variant_value": {
-                                        "list": [
-                                            {
-                                                "__variant_value": 12517465444253990993,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 10788083187343720531,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 8482240178130026581,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 2717632655095791703,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 11941004691950567513,
-                                                "__variant_type": 15
-                                            }
-                                        ],
-                                        "enumListType": "",
-                                        "index": 15
-                                    },
-                                    "__variant_type": 20
-                                }
-                            },
-                            {
-                                "name": "dashSFX",
-                                "data": {
-                                    "__variant_value": {
-                                        "list": [
-                                            {
-                                                "__variant_value": 10011634472569946113,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 211801683411746819,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 13470398986390487045,
-                                                "__variant_type": 15
-                                            }
-                                        ],
-                                        "enumListType": "",
-                                        "index": 15
-                                    },
-                                    "__variant_type": 20
-                                }
-                            },
-                            {
-                                "name": "jumpVOSFX",
-                                "data": {
-                                    "__variant_value": {
-                                        "list": [
-                                            {
-                                                "__variant_value": 2717632655095791707,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 2717632655095791709,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 14823308453467684959,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 5023475664309485665,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 6176397168916332643,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 17129151462681378917,
-                                                "__variant_type": 15
-                                            }
-                                        ],
-                                        "enumListType": "",
-                                        "index": 15
-                                    },
-                                    "__variant_type": 20
-                                }
-                            },
-                            {
-                                "name": "jumpSFX",
-                                "data": {
-                                    "__variant_value": {
-                                        "list": null,
-                                        "enumListType": "",
-                                        "index": 15
-                                    },
-                                    "__variant_type": 20
-                                }
-                            },
-                            {
-                                "name": "footstepSFX",
-                                "data": {
-                                    "__variant_value": {
-                                        "list": [
-                                            {
-                                                "__variant_value": 13670386948860854383,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 9635161682736889969,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 6176397168916349043,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 5023475664309502069,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 3870554159702655095,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 3870554159702655097,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 7905779425826619515,
-                                                "__variant_type": 15
-                                            },
-                                            {
-                                                "__variant_value": 10211622435040313469,
-                                                "__variant_type": 15
-                                            }
-                                        ],
-                                        "enumListType": "",
-                                        "index": 15
-                                    },
-                                    "__variant_type": 20
-                                }
-                            },
-                            {
-                                "name": "timeBetweenSteps",
-                                "data": {
-                                    "__variant_value": 0.36000001430511475,
-                                    "__variant_type": 18
+                                    "__variant_value": 4294967295,
+                                    "__variant_type": 4
                                 }
                             }
                         ]
                     }
                 ]
             },
-            "id": 20
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "PlayerObj",
                 "tag": "",
-                "parent": 20,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1731,13 +1613,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 21
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "PlayerOrientation",
                 "tag": "",
-                "parent": 20,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1794,13 +1676,13 @@
                     "z": 0.0
                 }
             },
-            "id": 22
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "CameraPos",
                 "tag": "",
-                "parent": 20,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1857,7 +1739,7 @@
                     "z": 0.0
                 }
             },
-            "id": 23
+            "id": 15
         }
     ]
 }

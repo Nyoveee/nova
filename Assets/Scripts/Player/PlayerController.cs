@@ -355,7 +355,8 @@ class PlayerController : Script
         }
 
         // constantly apply velocity.
-        rigidbody.SetVelocity(dashVector * dashStrength);
+        // rigidbody.SetVelocity(dashVector * dashStrength);
+        //rigidbody.AddImpulse(dashVector * dashStrength);
         dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
@@ -477,7 +478,8 @@ class PlayerController : Script
         }
 
         dashVector.Normalize();
-        rigidbody.SetVelocity(dashVector * dashStrength);
+        //rigidbody.SetVelocity(dashVector * dashStrength);
+        rigidbody.AddImpulse(dashVector * dashStrength);
     }
 
     /***********************************************************

@@ -53,17 +53,19 @@ entt::entity PrefabManager::instantiatePrefabRecursive(PrefabEntityID prefabEnti
 
 template<typename ...Components>
 void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity toEntity, entt::entity fromEntity) {
-
 	([&]() {
-		if constexpr ((!(std::same_as<EntityData, Components> || std::same_as<Transform, Components>))) {
+		if constexpr ((!(std::same_as<EntityData, Components>))) {
 			auto* component = fromRegistry.try_get<Components>(fromEntity);
 			bool overrideCheck{ false };
 
 			//check for override check box
 			if (&toRegistry != &prefabRegistry) {
-				EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
-				if (!toEntityData->overridenComponents[Family::id<Components>()]) {
-					overrideCheck = true;
+				// transform should never been overriden.
+				if constexpr (!std::same_as<Transform, Components>) {
+					EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
+					if (!toEntityData->overridenComponents[Family::id<Components>()]) {
+						overrideCheck = true;
+					}
 				}
 			}
 			else {
@@ -73,29 +75,6 @@ void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry&
 			if (component && overrideCheck) {
 				toRegistry.emplace_or_replace<Components>(toEntity, *component);
 			}
-		}
-	}(), ...);
-}
-
-template<typename ...Components>
-inline void PrefabManager::updateComponentsIncludingEntityDataAndTransform(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity toEntity, entt::entity fromEntity) {
-	([&]() {
-		auto* component = fromRegistry.try_get<Components>(fromEntity);
-		bool overrideCheck{ false };
-
-		//check for override check box
-		if (&toRegistry != &prefabRegistry) {
-			EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
-			if (!toEntityData->overridenComponents[Family::id<Components>()]) {
-				overrideCheck = true;
-			}
-		}
-		else {
-			overrideCheck = true;
-		}
-
-		if (component && overrideCheck) {
-			toRegistry.emplace_or_replace<Components>(toEntity, *component);
 		}
 	}(), ...);
 }

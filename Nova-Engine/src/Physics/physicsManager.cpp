@@ -21,6 +21,7 @@
 #include <Jolt/Core/JobSystemThreadPool.h>
 #include <Jolt/Physics/PhysicsSettings.h>
 #include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Body/BodyLockInterface.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/ScaledShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
@@ -225,7 +226,7 @@ void PhysicsManager::updatePhysics(float dt) {
 
 	// =============================================================
 	// 1. Update all physics body to the current object's transform.
-	// @TODO: Don't update every frame! Only update when there is a change in transform. Ray: I tried to refactor this part
+	// @TODO: Don't update every frame! Only update when there is a change in transform. 
 	// =============================================================
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
 		if (rigidbody.bodyId == JPH::BodyID{ JPH::BodyID::cInvalidBodyID }) {
@@ -291,11 +292,18 @@ void PhysicsManager::updatePhysics(float dt) {
 
 	std::lock_guard lock{ onCollisionMutex };
 
-	while (onCollision.size()) {
-		auto [entityOne, entityTwo] = onCollision.front();
-		onCollision.pop();
+	while (onCollisionEnter.size()) {
+		auto [entityOne, entityTwo] = onCollisionEnter.front();
+		onCollisionEnter.pop();
 		
 		engine.scriptingAPIManager.onCollisionEnter(entityOne, entityTwo);
+	}
+
+	while (onCollisionExit.size()) {
+		auto [entityOne, entityTwo] = onCollisionExit.front();
+		onCollisionExit.pop();
+
+		engine.scriptingAPIManager.onCollisionExit(entityOne, entityTwo);
 	}
 }
 
@@ -401,6 +409,19 @@ void PhysicsManager::removeBodiesFromSystem(entt::registry&, entt::entity entity
 	createdBodies.erase(createdBodies.end() - 1);
 
 	rigidBody->bodyId = JPH::BodyID{};
+}
+
+bool PhysicsManager::isBodyAlive(JPH::BodyID id)
+{
+	
+	auto it = std::find(createdBodies.begin(), createdBodies.end(), id);
+
+	if (it == createdBodies.end())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void PhysicsManager::createPrimitiveShapes() {
@@ -605,10 +626,16 @@ JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Trans
 	return shape;
 }
 
-void PhysicsManager::submitCollision(entt::entity entityOne, entt::entity entityTwo) {
+void PhysicsManager::submitCollisionEnter(entt::entity entityOne, entt::entity entityTwo) {
 	std::lock_guard lock{ onCollisionMutex };
-	onCollision.push({ entityOne, entityTwo });
+	onCollisionEnter.push({ entityOne, entityTwo });
 }
+
+void PhysicsManager::submitCollisionExit(entt::entity entityOne, entt::entity entityTwo) {
+	std::lock_guard lock{ onCollisionMutex };
+	onCollisionExit.push({ entityOne, entityTwo });
+}
+
 
 PhysicsRay PhysicsManager::getRayFromMouse() const {
 	glm::vec3 farClipPos = { engine.window.getClipSpacePos(), 1.f };
@@ -644,7 +671,10 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
 		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
 	
-		return PhysicsRayCastResult{ entity, collisionPoint };
+		JPH::BodyLockRead lock(physicsSystem.GetBodyLockInterfaceNoLock(), rayCastResult.mBodyID); //goofy ahh engine, Not lock here
+		glm::vec3 hitSurfaceNormal = toGlmVec3(lock.GetBody().GetWorldSpaceSurfaceNormal(rayCastResult.mSubShapeID2, toJPHVec3(collisionPoint)));
+
+		return PhysicsRayCastResult{ entity, collisionPoint, hitSurfaceNormal};
 	}
 
 	return std::nullopt;
@@ -661,12 +691,16 @@ std::optional<PhysicsRayCastResult> PhysicsManager::rayCast(PhysicsRay ray, floa
 
 		entt::entity entity = static_cast<entt::entity>(bodyInterface.GetUserData(bodyId));
 		glm::vec3 collisionPoint = ray.origin + distanceVector * rayCastResult.mFraction;
+		
+		JPH::BodyLockRead lock(physicsSystem.GetBodyLockInterfaceNoLock(), rayCastResult.mBodyID); //goofy ahh engine, Not lock here
+		glm::vec3 hitSurfaceNormal = toGlmVec3(lock.GetBody().GetWorldSpaceSurfaceNormal(rayCastResult.mSubShapeID2, toJPHVec3(collisionPoint)));
 
-		return PhysicsRayCastResult{ entity, collisionPoint };
+		return PhysicsRayCastResult{ entity, collisionPoint, hitSurfaceNormal};
 	}
 
 	return std::nullopt;
 }
+
 
 void PhysicsManager::addForce(Rigidbody const& rigidbody, glm::vec3 forceVector) {
 	// attempts to retrieve the underlying body id..
@@ -696,6 +730,141 @@ void PhysicsManager::setVelocity(Rigidbody& rigidbody, glm::vec3 velocity) {
 	rigidbody.velocity = velocity;
 }
 
+
+//Access motion properties after locking physics bodies, have to lock first i think,
+// It appears that Jolt dont allow you to modify motion properties without locking first. I assume is a safety feature
+void PhysicsManager::setVelocityLimits(Rigidbody& rigidbody, float maxVelocity) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	//there is also body no lock interface physicsSystem.GetBodyLockInterfacNoLock()
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		motionproperites->SetMaxLinearVelocity(maxVelocity);
+	}
+	
+}
+
+std::optional<float> PhysicsManager::getVelocityLimits(Rigidbody& rigidbody) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return std::nullopt;
+	}
+
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		return motionproperites->GetMaxLinearVelocity();
+	}
+
+	return std::nullopt;
+}
+
+
+//Access motion properties after locking physics bodies, have to lock first i think,
+// It appears that Jolt dont allow you to modify motion properties without locking first. I assume is a safety feature
+void PhysicsManager::setMaxAngularVelocityLimits(Rigidbody& rigidbody, float maxVelocity) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	//there is also body no lock interface physicsSystem.GetBodyLockInterfacNoLock()
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		motionproperites->SetMaxAngularVelocity(maxVelocity);
+	}
+
+}
+
+
+std::optional<float> PhysicsManager::getAngularVelocityLimits(Rigidbody& rigidbody) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return std::nullopt;
+	}
+
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		return motionproperites->GetMaxLinearVelocity();
+	}
+
+	return std::nullopt;
+}
+
+//Access motion properties after locking physics bodies, have to lock first i think,
+// It appears that Jolt dont allow you to modify motion properties without locking first. I assume is a safety feature
+void PhysicsManager::setLinearDamping(Rigidbody& rigidbody, float dampingValue) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	//there is also body no lock interface physicsSystem.GetBodyLockInterfacNoLock()
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		motionproperites->SetLinearDamping(dampingValue);
+	}
+
+}
+
+//Access motion properties after locking physics bodies, have to lock first i think,
+// It appears that Jolt dont allow you to modify motion properties without locking first. I assume is a safety feature
+std::optional<float> PhysicsManager::getLinearDamping(Rigidbody& rigidbody) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return std::nullopt;
+	}
+
+	//there is also body no lock interface physicsSystem.GetBodyLockInterfacNoLock()
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		return motionproperites->GetLinearDamping();
+	}
+
+	return std::nullopt;
+
+}
+
+//Access motion properties after locking physics bodies, have to lock first i think,
+// It appears that Jolt dont allow you to modify motion properties without locking first. I assume is a safety feature
+void PhysicsManager::setAngularDamping(Rigidbody& rigidbody, float dampingValue) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return;
+	}
+
+	//there is also body no lock interface physicsSystem.GetBodyLockInterfacNoLock()
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		motionproperites->SetAngularDamping(dampingValue);
+	}
+
+}
+
+
 void PhysicsManager::setAngularVelocity(Rigidbody& rigidbody, glm::vec3 velocity)
 {
 	if (rigidbody.bodyId == JPH::BodyID{}) {
@@ -704,6 +873,28 @@ void PhysicsManager::setAngularVelocity(Rigidbody& rigidbody, glm::vec3 velocity
 
 	bodyInterface.SetAngularVelocity(rigidbody.bodyId, toJPHVec3(velocity));
 	rigidbody.angularVelocity = velocity;
+}
+
+
+//Access motion properties after locking physics bodies, have to lock first i think,
+// It appears that Jolt dont allow you to modify motion properties without locking first. I assume is a safety feature
+std::optional<float> PhysicsManager::getAngularDamping(Rigidbody& rigidbody) {
+	// attempts to retrieve the underlying body id..
+	if (rigidbody.bodyId == JPH::BodyID{}) {
+		return std::nullopt;
+	}
+
+	//there is also body no lock interface physicsSystem.GetBodyLockInterfacNoLock()
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterface(), rigidbody.bodyId);
+
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		return motionproperites->GetAngularDamping();
+	}
+
+	return std::nullopt;
+
 }
 
 void PhysicsManager::setRotation(Rigidbody& rigidbody, glm::quat quaternion)
@@ -730,6 +921,35 @@ void PhysicsManager::setGravity(float value) {
 }
 
 void PhysicsManager::setGravityFactor(Rigidbody& rigidbody, float value) {
-	bodyInterface.SetGravityFactor(rigidbody.bodyId, rigidbody.gravityMultiplier);
+	bodyInterface.SetGravityFactor(rigidbody.bodyId, value);
 	rigidbody.gravityMultiplier = value;
+}
+
+void PhysicsManager::setMass(Rigidbody& rigidbody, float value) {
+	JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterfaceNoLock(), rigidbody.bodyId);
+	
+	if (lock.Succeeded())
+	{
+		JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+		motionproperites->ScaleToMass(value);
+		
+		rigidbody.mass = value;
+
+	}
+	
+}
+
+
+float PhysicsManager::getMass(Rigidbody& rigidbody) {
+	//JPH::BodyLockWrite lock(physicsSystem.GetBodyLockInterfaceNoLock(), rigidbody.bodyId);
+
+	//if (lock.Succeeded())
+	//{
+	//	JPH::MotionProperties* motionproperites = lock.GetBody().GetMotionProperties();
+	//	return (1/motionproperites->GetInverseMass());
+
+	//}
+
+	return rigidbody.mass;
+
 }

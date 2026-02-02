@@ -23,5 +23,5 @@ public:
 	void OnContactRemoved(const JPH::SubShapeIDPair& inSubShapePair) final;
 
 private:
-	PhysicsManager& physicsManager;
+	 PhysicsManager& physicsManager;
 };

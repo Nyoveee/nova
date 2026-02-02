@@ -94,6 +94,22 @@ void Interface::handleOnCollision(EntityID entityOne, EntityID entityTwo) {
 	}
 }
 
+
+void Interface::handleOnCollisionExit(EntityID entityOne, EntityID entityTwo) {
+	if (gameObjectScripts->ContainsKey(entityOne)) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityOne]->Keys) {
+			gameObjectScripts[entityOne][scriptID]->callOnCollisionExit(entityTwo);
+		}
+	}
+
+	if (gameObjectScripts->ContainsKey(entityTwo)) {
+		for each (System::UInt64 scriptID in gameObjectScripts[entityTwo]->Keys) {
+			gameObjectScripts[entityTwo][scriptID]->callOnCollisionExit(entityOne);
+		}
+	}
+}
+
+
 void Interface::executeEntityScriptFunction(EntityID entityID, ScriptID scriptId, std::string const& name) {
 	System::String^ functionName = msclr::interop::marshal_as<System::String^>(name);
 

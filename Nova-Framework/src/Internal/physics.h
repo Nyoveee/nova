@@ -11,4 +11,5 @@ struct PhysicsRay {
 struct PhysicsRayCastResult {
 	entt::entity entity;
 	glm::vec3 point;
+	glm::vec3 hitSurfaceNormal;
 };

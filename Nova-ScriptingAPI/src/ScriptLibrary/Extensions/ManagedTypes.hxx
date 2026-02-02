@@ -159,7 +159,9 @@ ManagedStructEnd(Ray, PhysicsRay)
 ManagedStruct(
 	RayCastResult, PhysicsRayCastResult,
 	entt::entity, entity,
-	Vector3, point
+	Vector3, point,
+	Vector3, hitSurfaceNormal
+
 )
 
 ManagedStructEnd(RayCastResult, PhysicsRayCastResult)
@@ -245,25 +247,41 @@ ManagedComponentEnd()
 // RigidBody Component
 // ======================================
 ManagedComponentDeclaration(
-	Rigidbody
-)
+	Rigidbody,
+	)
+
+System::String^ GetLayerName();
 
 void AddForce(Vector3 forceVector);
 void AddImpulse(Vector3 forceVector);
 
 void AddVelocity(Vector3 velocity);
 void SetVelocity(Vector3 velocity);
+void SetVelocityLimits(float maxVelocity);
+System::Nullable<float> GetVelocityLimits();
 Vector3 GetVelocity();
 
 
 void AddAngularVelocity(Vector3 velocity);
 void SetAngularVelocity(Vector3 velocity);
+void SetAngularVelocityLimits(float maxAngularVelocity);
+System::Nullable<float> GetAngularVelocityLimits();
 Vector3 GetAngularVelocity();
+
+//Note Damping is synonymous to Drag, acts as a total sum of energy dissipation over time. Acts like global friction :)
+void SetLinearDamping(float dampingValue);
+System::Nullable<float> GetLinearDamping(); //some locking operation being done by jolt physics? possibly null?
+void SetAngularDamping(float dampingValue);
+System::Nullable<float> GetAngularDamping(); //some locking operation being done by jolt physics? possibly null?
+//tbh idk if in our use case we need to null it i am almost 99% sure it will never be null. 
 
 void SetBodyRotation(Quaternion rotation);
 
 void SetGravityFactor(float factor);
 float GetGravityFactor();
+
+void SetMass(float mass);
+float GetMass();
 
 ManagedComponentEnd()
 
