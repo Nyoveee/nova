@@ -1,5 +1,5 @@
 {
-    "RootEntity": 2,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -11,10 +11,7 @@
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 14030885946471890945,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 14030885946471890945
-                },
+                "entityGUID": 2833749890488599585,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -93,15 +90,15 @@
                             {
                                 "name": "killTime",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "totalDuration",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
                                 }
                             }
                         ]
@@ -216,7 +213,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 2
+            "id": 0
         }
     ]
 }

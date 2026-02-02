@@ -1,5 +1,5 @@
 {
-    "RootEntity": 3,
+    "RootEntity": 2,
     "Entities": [
         {
             "EntityData": {
@@ -11,10 +11,7 @@
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 14493050257245634575,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 14493050257245634575
-                },
+                "entityGUID": 4563132147398870051,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -119,6 +116,13 @@
                                 "name": "expandTime",
                                 "data": {
                                     "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "pullTime",
+                                "data": {
+                                    "__variant_value": 0.20000000298023224,
                                     "__variant_type": 18
                                 }
                             }
@@ -234,7 +238,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 3
+            "id": 2
         }
     ]
 }

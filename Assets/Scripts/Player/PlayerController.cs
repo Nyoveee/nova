@@ -35,12 +35,11 @@ class PlayerController : Script
 
     [SerializableField]
     private Transform_? playerOrientation = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
-    [SerializableField]
-    private GameUIManager? gameUIManager = null;
 
     // ==================================
     // Internal / Runtime variables..
     // ==================================
+    private GameUIManager gameUIManager;
     private Transform_? transform;
     private Rigidbody_? rigidbody;
     private AudioComponent_? audioComponent;
@@ -91,6 +90,7 @@ class PlayerController : Script
     {
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         audioComponent = getComponent<AudioComponent_>();
 
         CameraAPI.LockMouse();

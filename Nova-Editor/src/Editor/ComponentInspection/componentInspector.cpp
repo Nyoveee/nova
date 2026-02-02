@@ -100,7 +100,7 @@ void ComponentInspector::update() {
 
 		ImGui::SameLine();
 
-		if (!editor.engine.resourceManager.isResource<Prefab>(entityData.prefabID)) {
+		if (entityData.prefabID != INVALID_RESOURCE_ID && !editor.engine.resourceManager.isResource<Prefab>(entityData.prefabID)) {
 			Logger::warn("Outdated prefab id.. resetting it back to invalid..");
 			entityData.prefabID = { INVALID_RESOURCE_ID };
 		}

@@ -192,8 +192,9 @@ entt::entity PrefabManager::getParent(entt::entity prefabInstance, entt::registr
 	}
 
 	entt::entity parent = entt::null;
+
 	if (&registry == &prefabRegistry) {
-		while (entityData->parent != entt::null) {
+		while (entityData && entityData->parent != entt::null) {
 			parent = entityData->parent;
 			entityData = registry.try_get<EntityData>(parent);
 		}

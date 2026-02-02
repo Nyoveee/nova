@@ -6,8 +6,12 @@ using ScriptingAPI;
 class PauseButtonScript : Script
 {
     public Scene mainMenuScene;
-    public GameUIManager uiManager;
+    private GameUIManager uiManager;
 
+    protected override void init()
+    {
+        uiManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+    }
     public void ResumeGame()
     {
         uiManager.PauseHandler();

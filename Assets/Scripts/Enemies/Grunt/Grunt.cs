@@ -378,4 +378,9 @@ class Grunt : Enemy
             gruntState = GruntState.Idle;
         }, seconds);
     }
+
+    public bool IsDead()
+    {
+        return gruntState == GruntState.Death;
+    }
 }
