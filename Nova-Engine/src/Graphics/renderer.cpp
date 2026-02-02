@@ -644,6 +644,9 @@ void Renderer::renderUI()
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture) {
+	glViewport(0, 0, gameWidth, gameHeight);
+	glDepthMask(GL_TRUE);
+
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
 
@@ -1558,8 +1561,6 @@ void Renderer::prepareRendering() {
 	// Set up initial state..
 	glBindVertexArray(mainVAO);
 	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT);
-	glViewport(0, 0, gameWidth, gameHeight);
-	glDepthMask(GL_TRUE);
 
 	// We calculate AABB for every model.. (to prepare for frustum culling..)
 	for (auto&& [entityID, entityData, transform, meshRenderer] : registry.view<EntityData, Transform, MeshRenderer>().each()) {
