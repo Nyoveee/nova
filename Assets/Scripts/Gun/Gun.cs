@@ -8,9 +8,6 @@ using System;
 public abstract class Gun : Script
 {
     [SerializableField]
-    private GameUIManager gameUIManager;
-
-    [SerializableField]
     private Prefab contactSparkVFXPrefab;
 
     [SerializableField]
@@ -21,6 +18,8 @@ public abstract class Gun : Script
 
     [SerializableField]
     private int initialMaxSp = 30;
+
+    private GameUIManager gameUIManager;
 
     // Private backing field
     private int currentAmmo;
@@ -99,6 +98,7 @@ public abstract class Gun : Script
         currentSp = initialCurrentSp;
 
         player = GameObject.FindWithTag("Player");
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
         gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
     }

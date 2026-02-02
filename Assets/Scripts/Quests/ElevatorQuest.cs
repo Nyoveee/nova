@@ -20,8 +20,6 @@ class ElevatorQuest : Quest
     [SerializableField]
     private Audio elevatorSpeechAudio;
     [SerializableField]
-    private GameUIManager gameUIManager;
-    [SerializableField]
     private string speaker;
     [SerializableField]
     private List<string> dialogues;
@@ -31,9 +29,11 @@ class ElevatorQuest : Quest
     private float finalDialogueTime;
 
     private AudioComponent_ audioComponent;
+    private GameUIManager gameUIManager;
     protected override void init()
     {
         audioComponent = getComponent<AudioComponent_>();
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
     }
 
     public override void OnSuccess()

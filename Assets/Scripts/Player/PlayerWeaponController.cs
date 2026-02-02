@@ -14,7 +14,6 @@ class PlayerWeaponController : Script
     // Inspector variables
     // ===========================================
     public required ParticleEmitter_ muzzle;     // for gun origin.
-    public required GameUIManager gameUIManager;
     public required Transform_ gunHolder;
     public required Transform_ throwPosition;
     public required Transform_ gunPosition;
@@ -32,6 +31,7 @@ class PlayerWeaponController : Script
     // ===========================================
     // Runtime variables
     // ===========================================
+    private GameUIManager gameUIManager;
     private Gun currentlyHeldGun;
     private float timeElapsed;
     private float armTimeElapsed = 0f;
@@ -57,9 +57,9 @@ class PlayerWeaponController : Script
 
     protected override void init()
     {
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         MapKey(Key.MouseLeft, Fire);
         MapKey(Key.MouseRight, Arming,Disarming);
-
 
         //ScrollCallback(SwapWeaponHandler);
         weaponControlStates = WeaponControlStates.WeaponFree;
