@@ -68,8 +68,21 @@ class ThrowableRifle : Script
     private float currentAmmoGained = 0;
     private float totalAmmoGained = 0;
 
+    [SerializableField]
+    private Audio pickupSFX;
+    [SerializableField]
+    private List<Audio> throwSFX;
+    [SerializableField]
+    private List<Audio> hitWallSFX;
+    [SerializableField]
+    private List<Audio> hitSFX;
+    // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_ audioComponent;
+
     // ==================================
-    // private variables
+    // Private Variables
     // ==================================
     [SerializableField]
     private float calculatedTrueDamage;
@@ -100,6 +113,7 @@ class ThrowableRifle : Script
     protected override void init()
     {
         weaponRB = getComponent<Rigidbody_>();
+        audioComponent = getComponent<AudioComponent_>();
         //var gameObjectsChild  = gameObject.GetChildren();
 
         //foreach (var gameObject in gameObjectsChild)
@@ -110,7 +124,7 @@ class ThrowableRifle : Script
         //    }
         //}
 
-       throwingWeaponState = ThrowingWeaponState.Seeking;
+        throwingWeaponState = ThrowingWeaponState.Seeking;
         
 
 
@@ -214,6 +228,7 @@ class ThrowableRifle : Script
                 
                 if(weaponSpinSequence != null)
                 weaponSpinSequence.play();
+                //audioComponent.PlayRandomSound(hitWallSFX);
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
                 break;
@@ -393,6 +408,7 @@ class ThrowableRifle : Script
 
         if ( (other.tag == "Wall" || other.tag == "Floor") && throwingWeaponState == ThrowingWeaponState.Flying)
         {
+            //audioComponent.PlayRandomSound(hitWallSFX);
             weaponRB.SetVelocity(Vector3.Zero());
             throwingWeaponState = ThrowingWeaponState.HitEnviroment;
 
@@ -426,8 +442,8 @@ class ThrowableRifle : Script
 
 
     void DamageEnemy()
-    { 
-        
+    {
+        //audioComponent.PlayRandomSound(hitSFX);
         targetObject.getScript<EnemyCollider>().OnColliderShot(calculatedTrueDamage,Enemy.EnemydamageType.ThrownWeapon,targetObject.tag);
         Vector3 direction = targetObject.transform.position - gameObject.transform.position;
         direction.y = 0;
@@ -441,6 +457,7 @@ class ThrowableRifle : Script
     void Receive()
     {
         playerGameobject.getScript<PlayerWeaponController>().WeaponCollected(mappedWeapon);
+        //audioComponent.PlaySound(pickupSFX);
 
         //update player health
         if (playerGameobject.getScript<PlayerController>() != null)

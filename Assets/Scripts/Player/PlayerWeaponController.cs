@@ -30,6 +30,11 @@ class PlayerWeaponController : Script
     public float swapWeaponCooldown = 0.2f;
 
     // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_ audioComponent;
+
+    // ===========================================
     // Runtime variables
     // ===========================================
     private Gun currentlyHeldGun;
@@ -64,6 +69,8 @@ class PlayerWeaponController : Script
         //ScrollCallback(SwapWeaponHandler);
         weaponControlStates = WeaponControlStates.WeaponFree;
         currentlyHeldGun = sniper;
+
+        audioComponent = getComponent<AudioComponent_>();
     }
 
     // This function is invoked every fixed update.

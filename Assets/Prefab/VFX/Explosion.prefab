@@ -1,5 +1,5 @@
 {
-    "RootEntity": 12,
+    "RootEntity": 18,
     "Entities": [
         {
             "EntityData": {
@@ -8,22 +8,19 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    13,
-                    14,
-                    15,
-                    16
+                    19,
+                    20,
+                    21,
+                    22
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 15964249687668785153,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 15964249687668785153
-                },
+                "entityGUID": 10702708319697372321,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "16652763906952685383": true,
-                    "17237801994024849853": true
+                    "17237801994024849853": true,
+                    "16652763906952685383": true
                 },
                 "inactiveComponents": null
             },
@@ -93,7 +90,7 @@
                             {
                                 "name": "lightGameobject",
                                 "data": {
-                                    "__variant_value": 16,
+                                    "__variant_value": 22,
                                     "__variant_type": 4
                                 }
                             }
@@ -101,22 +98,19 @@
                     }
                 ]
             },
-            "id": 12
+            "id": 18
         },
         {
             "EntityData": {
                 "name": "Initial Burst",
                 "tag": "",
-                "parent": 12,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 15964249687668785153,
-                "prefabMetaData": {
-                    "prefabEntity": 1,
-                    "prefabID": 15964249687668785153
-                },
+                "entityGUID": 9549786815090525347,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": false,
@@ -276,22 +270,19 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 13
+            "id": 19
         },
         {
             "EntityData": {
                 "name": "Spark",
                 "tag": "",
-                "parent": 12,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 15964249687668785153,
-                "prefabMetaData": {
-                    "prefabEntity": 2,
-                    "prefabID": 15964249687668785153
-                },
+                "entityGUID": 7243943805876831397,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "3548010661223935717": true
@@ -450,22 +441,19 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 14
+            "id": 20
         },
         {
             "EntityData": {
                 "name": "Field",
                 "tag": "",
-                "parent": 12,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 15964249687668785153,
-                "prefabMetaData": {
-                    "prefabEntity": 3,
-                    "prefabID": 15964249687668785153
-                },
+                "entityGUID": 5514561548966560935,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "3548010661223935717": true
@@ -624,22 +612,19 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 15
+            "id": 21
         },
         {
             "EntityData": {
                 "name": "Light Burst",
                 "tag": "",
-                "parent": 12,
+                "parent": 18,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 15964249687668785153,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 15964249687668785153
-                },
+                "entityGUID": 10702708319697372329,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -709,7 +694,7 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 16
+            "id": 22
         }
     ]
 }

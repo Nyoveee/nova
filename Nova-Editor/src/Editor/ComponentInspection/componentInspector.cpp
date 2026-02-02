@@ -113,9 +113,19 @@ void ComponentInspector::update() {
 			entityData.overridenProperties.clear();
 		}
 
+		ImGui::SeparatorText("Admin debug. Only do these if you know what you are doing.");
+
+		if (ImGui::Button("Prefab Total Override. ")) {
+			editor.engine.prefabManager.prefabOverride(selectedEntity);
+			entityData.overridenComponents.clear();
+			entityData.overridenProperties.clear();
+
+			editor.assetViewerUi.selectNewResourceId(INVALID_RESOURCE_ID);
+		}
+
 		ImGui::EndDisabled();
 
-		ImGui::TextWrapped("You can manually assign a prefab id. Only do this if you know what you are doing.");
+		ImGui::TextWrapped("You can manually assign a prefab id.");
 		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", [&](ResourceID newPrefabId) {
 			entityData.prefabID = { newPrefabId };
 		});

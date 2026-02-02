@@ -41,6 +41,9 @@ public:
 	void updateComponents(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity entity, entt::entity prefabEntity);
 	
 	template<typename ...Components>
+	void updateComponentsIncludingEntityDataAndTransform(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity entity, entt::entity prefabEntity);
+
+	template<typename ...Components>
 	void removeComponents(entt::registry& registry, entt::entity entity);
 
 	ENGINE_DLL_API PrefabEntityID loadPrefab(ResourceID id);
@@ -55,6 +58,8 @@ public:
 	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance, entt::registry& registry);
 
 	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
+	ENGINE_DLL_API void prefabOverride(entt::entity prefabInstance);
+
 
 private:
 	// Maps the serialized field of an entity and his children to other value in a specified registry.
@@ -68,6 +73,12 @@ private:
 	// does nothing to parameter if invalid.
 	ENGINE_DLL_API void remapEntityId(entt::entity& ecsEntityId);
 	
+	// recursively removes prefab from registry.. and removes from the guid entry..
+	ENGINE_DLL_API void deletePrefab(PrefabEntityID prefabInstance);
+	
+	// recursively repopulates prefab from entity id..
+	ENGINE_DLL_API void repopulatesPrefab(entt::entity prefabInstance, PrefabEntityID prefabId);
+
 	template<typename ...Components>
 	entt::entity instantiatePrefabRecursive(PrefabEntityID prefabEntity);
 

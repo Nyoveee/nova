@@ -22,8 +22,10 @@ public abstract class Gun : Script
     [SerializableField]
     private int initialMaxSp = 30;
 
+
     // Private backing field
     private int currentAmmo;
+
 
     // Public property with get and set accessors
     public int CurrentAmmo
@@ -101,6 +103,7 @@ public abstract class Gun : Script
         player = GameObject.FindWithTag("Player");
         gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
         gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
+
     }
 
     public abstract bool Fire();

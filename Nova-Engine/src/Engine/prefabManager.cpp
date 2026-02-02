@@ -156,8 +156,6 @@ void PrefabManager::broadcastHierarchy(entt::entity ecsEntity, std::unordered_ma
 
 	updateComponents<ALL_COMPONENTS>(ecsRegistry, prefabRegistry, ecsEntity, prefabEntity);
 
-	EntityData& prefabEntityData = prefabRegistry.get<EntityData>(prefabEntity);
-
 	for (entt::entity child : ecsEntityData.children) {
 		broadcastHierarchy(child, mapping);
 	}
@@ -240,6 +238,101 @@ void PrefabManager::updatePrefab(entt::entity prefabInstance) {
 	}
 }
 
+void PrefabManager::prefabOverride(entt::entity prefabInstance) {
+	// We want to override the original prefab, so we have to first clear the whole prefab registry with this associated prefab id..
+	// Check prefab id of prefab instance..
+	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
+
+	if (!entityData) {
+		return;
+	}
+
+	if (entityData->prefabID == INVALID_RESOURCE_ID) {
+		return;
+	}
+
+	// prefab not loaded..
+	if (prefabMap.find(entityData->prefabID) == prefabMap.end()) {
+		loadPrefab(entityData->prefabID);
+	}
+
+	auto iterator = prefabMap.find(entityData->prefabID);
+
+	// loading of prefab failed..
+	if (iterator == prefabMap.end()) {
+		return;
+	}
+
+	PrefabEntityID prefabId = iterator->second;
+
+	auto guidIterator = entityGUIDToPrefabEntity.find(entityData->entityGUID);
+
+	if (guidIterator != entityGUIDToPrefabEntity.end()) {
+		prefabId = guidIterator->second;
+		entityGUIDToPrefabEntity.erase(guidIterator);
+	}
+
+	// we delete the prefab..
+	deletePrefab(prefabId);
+
+	prefabMap.erase(entityData->prefabID);
+
+	// we repopulate prefab with new data..
+	prefabId = prefabRegistry.create(prefabId);
+	prefabMap.insert({ entityData->prefabID, prefabId });
+
+	repopulatesPrefab(prefabInstance, prefabId);
+
+	// update prefab to ensure mapping..
+	updatePrefab(prefabInstance);
+}
+
+
+void PrefabManager::deletePrefab(PrefabEntityID prefabId) {
+	EntityData const& prefabEntityData = prefabRegistry.get<EntityData>(prefabId);
+	
+	for (PrefabEntityID child : prefabEntityData.children) {
+		deletePrefab(child);
+	}
+
+	entityGUIDToPrefabEntity.erase(prefabEntityData.entityGUID);
+	prefabRegistry.destroy(prefabId);
+}
+
+void PrefabManager::repopulatesPrefab(entt::entity prefabInstance, PrefabEntityID prefabId) {
+	EntityData& entityData = ecsRegistry.get<EntityData>(prefabInstance);
+
+	updateComponents<ALL_COMPONENTS>(prefabRegistry, ecsRegistry, prefabId, prefabInstance);
+	entityGUIDToPrefabEntity[entityData.entityGUID] = prefabId;
+
+	// Make a copy of the entityData and Transform..
+	EntityData& newEntityData = prefabRegistry.emplace<EntityData>(prefabId, entityData);
+	prefabRegistry.emplace<Transform>(prefabId, ecsRegistry.get<Transform>(prefabInstance));
+
+	// clear child vector from the new entity.. we will recursively update it..
+	newEntityData.children.clear();
+
+	// Let's check if the parent of this new entity's GUID is valid..
+	if (entityData.parent != entt::null) {
+		EntityData const& parentEntityData = ecsRegistry.get<EntityData>(entityData.parent);
+		auto iterator = entityGUIDToPrefabEntity.find(parentEntityData.entityGUID);
+
+		// Valid.. let's integrate this new entity to part of the prefab..
+		if (iterator != entityGUIDToPrefabEntity.end()) {
+			// update this new prefab entity's parent.. 
+			newEntityData.parent = iterator->second;
+
+			EntityData& parentPrefabData = prefabRegistry.get<EntityData>(iterator->second);
+			parentPrefabData.children.push_back(prefabId);
+		}
+	}
+
+	for (entt::entity child : entityData.children) {
+		PrefabEntityID newPrefabId = prefabRegistry.create();
+		repopulatesPrefab(child, newPrefabId);
+	}
+}
+
 void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance, ResourceID prefabId) {
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
 	
@@ -252,35 +345,37 @@ void PrefabManager::updateFromPrefabInstance(entt::entity prefabInstance, Resour
 	// We locate the corresponding prefab id via the entity GUID. entity GUID is shared between ecs entity and prefab entity.
 	auto iterator = entityGUIDToPrefabEntity.find(entityData->entityGUID);
 
-	if (iterator == entityGUIDToPrefabEntity.end() && entityData->parent != entt::null) {
-		// No prefab entity found for corresponding entity.
-		// This means that the entity we encounter is a new entity.. let's update the prefab to include this new entity..
+	if (iterator == entityGUIDToPrefabEntity.end()) {
+		if (entityData->parent != entt::null) {
+			// No prefab entity found for corresponding entity.
+			// This means that the entity we encounter is a new entity.. let's update the prefab to include this new entity..
 
-		// Let's check if the parent of this new entity's GUID is valid..
-		EntityData const& parentEntityData = ecsRegistry.get<EntityData>(entityData->parent);
-		iterator = entityGUIDToPrefabEntity.find(parentEntityData.entityGUID);
+			// Let's check if the parent of this new entity's GUID is valid..
+			EntityData const& parentEntityData = ecsRegistry.get<EntityData>(entityData->parent);
+			iterator = entityGUIDToPrefabEntity.find(parentEntityData.entityGUID);
 
-		// Valid.. let's integrate this new entity to part of the prefab..
-		if (iterator != entityGUIDToPrefabEntity.end()) {
-			// Update its prefab metadata..
-			entityData->prefabID = { prefabId };
+			// Valid.. let's integrate this new entity to part of the prefab..
+			if (iterator != entityGUIDToPrefabEntity.end()) {
+				// Update its prefab metadata..
+				entityData->prefabID = { prefabId };
 
-			// Create the new prefab, and make a copy of the entityData and Transform..
-			prefabEntity = prefabRegistry.create();
-			EntityData& newEntityData = prefabRegistry.emplace<EntityData>(prefabEntity, *entityData);
-			prefabRegistry.emplace<Transform>(prefabEntity, ecsRegistry.get<Transform>(prefabInstance));
+				// Create the new prefab, and make a copy of the entityData and Transform..
+				prefabEntity = prefabRegistry.create();
+				EntityData& newEntityData = prefabRegistry.emplace<EntityData>(prefabEntity, *entityData);
+				prefabRegistry.emplace<Transform>(prefabEntity, ecsRegistry.get<Transform>(prefabInstance));
 
-			// clear child vector from the new entity.. we will recursively update it..
-			newEntityData.children.clear();
+				// clear child vector from the new entity.. we will recursively update it..
+				newEntityData.children.clear();
 
-			// update this new prefab entity's parent.. 
-			newEntityData.parent = iterator->second;
+				// update this new prefab entity's parent.. 
+				newEntityData.parent = iterator->second;
 
-			EntityData& parentPrefabData = prefabRegistry.get<EntityData>(iterator->second);
-			parentPrefabData.children.push_back(prefabEntity);
+				EntityData& parentPrefabData = prefabRegistry.get<EntityData>(iterator->second);
+				parentPrefabData.children.push_back(prefabEntity);
 
-			// remember to update guid database..
-			entityGUIDToPrefabEntity.insert({ entityData->entityGUID, prefabEntity });
+				// remember to update guid database..
+				entityGUIDToPrefabEntity.insert({ entityData->entityGUID, prefabEntity });
+			}
 		}
 	}
 	else {
