@@ -11,7 +11,7 @@
                     1,
                     2,
                     3,
-                    6
+                    5
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -189,7 +189,7 @@
                             {
                                 "name": "projectileSpawnPoint",
                                 "data": {
-                                    "__variant_value": 6,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
@@ -297,6 +297,20 @@
                 "agentMaxAcceleration": 3.0,
                 "agentRotationSpeed": 1.0,
                 "separationWeight": 1.0
+            },
+            "Fog": {
+                "absorptionDensity": 0.05000000074505806,
+                "inscatteringDensity": 0.5,
+                "scatteringDistribution": 0.5,
+                "heightFallOff": 1.0,
+                "fogInscatteringColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "startDistance": 1.0,
+                "endDistance": 150.0,
+                "rayMarchingStepSize": 1.0
             },
             "id": 0
         },
@@ -532,6 +546,27 @@
                     "y": -0.0,
                     "z": 0.0
                 }
+            },
+            "Light": {
+                "type": "PointLight",
+                "color": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "intensity": 1.0,
+                "cutOffAngle": 0.21816615760326385,
+                "outerCutOffAngle": 0.30543261766433716,
+                "attenuation": {
+                    "x": 1.0,
+                    "y": 0.09000000357627869,
+                    "z": 0.03200000151991844
+                },
+                "radius": 50.0,
+                "shadowCaster": false,
+                "orthogonalShadowCasterSize": 35.0,
+                "shadowNearPlane": 0.10000000149011612,
+                "shadowFarPlane": 750.0
             },
             "Scripts": {
                 "scriptDatas": [
@@ -775,7 +810,7 @@
                     "z": 0.0
                 }
             },
-            "id": 6
+            "id": 5
         }
     ]
 }

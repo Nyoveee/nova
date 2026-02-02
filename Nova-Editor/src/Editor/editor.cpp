@@ -793,16 +793,7 @@ void Editor::displayEntityHierarchy(
 
 		// Else, render green or white 
 		return [&]() {
-			EntityData const* root = &entityData;
-
-			while (root->parent != entt::null) {
-				if (root->prefabID != INVALID_RESOURCE_ID)
-					return prefabColor;
-
-				root = registry.try_get<EntityData>(root->parent);
-			}
-
-			if (root->prefabID != INVALID_RESOURCE_ID) {
+			if (entityData.prefabID != INVALID_RESOURCE_ID) {
 				return prefabColor;
 			}
 			else {

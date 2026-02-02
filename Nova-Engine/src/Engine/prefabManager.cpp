@@ -6,8 +6,7 @@
 PrefabManager::PrefabManager(Engine& engine) :
 	resourceManager { engine.resourceManager },
 	ecsRegistry		{ engine.ecs.registry },
-	ecs				{ engine.ecs },
-	firstTimeLoad	{ false }
+	ecs				{ engine.ecs }
 {}
 
 entt::registry& PrefabManager::getPrefabRegistry() {
@@ -216,34 +215,20 @@ entt::entity PrefabManager::getParent(entt::entity prefabInstance, entt::registr
 
 
 void PrefabManager::updatePrefab(entt::entity prefabInstance) {
-	//load every prefab based on the Instance
-	if (!firstTimeLoad) {
-		for (entt::entity en : ecsRegistry.view<entt::entity>()) {
-			EntityData* ed = ecsRegistry.try_get<EntityData>(en);
-			if (ed->prefabID != INVALID_RESOURCE_ID) {
-				auto it = prefabMap.find(ed->prefabID);
-				if (it == prefabMap.end()) {
-					loadPrefab(ed->prefabID);
-				}
-			}
-		}
-		firstTimeLoad = true;
-	}
-
-	//get the root prefab
+	// Check prefab id of prefab instance..
 	EntityData* entityData = ecsRegistry.try_get<EntityData>(prefabInstance);
 
 	if (!entityData) {
 		return;
 	}
 
-	auto iterator = prefabMap.find(entityData->prefabID);
-	if (iterator == prefabMap.end()) {
+	if (entityData->prefabID == INVALID_RESOURCE_ID) {
 		return;
 	}
 
-	if (entityData->prefabID == INVALID_RESOURCE_ID) {
-		return;
+	// prefab not loaded..
+	if (prefabMap.find(entityData->prefabID) == prefabMap.end()) {
+		loadPrefab(entityData->prefabID);
 	}
 
 	updateFromPrefabInstance(getParent(prefabInstance, ecsRegistry), entityData->prefabID);

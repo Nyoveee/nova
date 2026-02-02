@@ -100,11 +100,20 @@ void ComponentInspector::update() {
 
 		ImGui::SameLine();
 
+		if (!editor.engine.resourceManager.isResource<Prefab>(entityData.prefabID)) {
+			Logger::warn("Outdated prefab id.. resetting it back to invalid..");
+			entityData.prefabID = { INVALID_RESOURCE_ID };
+		}
+
+		ImGui::BeginDisabled(entityData.prefabID == INVALID_RESOURCE_ID); 
+
 		if (ImGui::Button("Update Prefab")) {
 			editor.engine.prefabManager.updatePrefab(selectedEntity);
 			entityData.overridenComponents.clear();
 			entityData.overridenProperties.clear();
 		}
+
+		ImGui::EndDisabled();
 
 		ImGui::TextWrapped("You can manually assign a prefab id. Only do this if you know what you are doing.");
 		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", [&](ResourceID newPrefabId) {
@@ -194,9 +203,6 @@ void ComponentInspector::update() {
 		}
 
 		ImGui::EndChild();
-
-		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
-		//ImGui::Text("Prefab Entity: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabEntity));
 	}
 
 	ImGui::NewLine();

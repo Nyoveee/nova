@@ -78,7 +78,6 @@ private:
 	ResourceManager& resourceManager;
 	entt::registry& ecsRegistry;
 	ECS& ecs;
-	bool firstTimeLoad;
 	
 	// maps a prefab entity to a ecs entity
 	std::unordered_map<PrefabEntityID, entt::entity> prefabEntityIdToInstanceId;
