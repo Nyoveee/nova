@@ -91,10 +91,15 @@ void EditorViewPort::update(float dt) {
 				editor.loadScene(id);
 			}
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
-				engine.prefabManager.instantiatePrefab(id);
+				entt::entity prefabInstance = engine.prefabManager.instantiatePrefab(id);
+				Transform& transform = engine.ecs.registry.get<Transform>(prefabInstance);
+				
+				auto& editorCamera = engine.cameraSystem.getLevelEditorCamera();
+				transform.localPosition = editorCamera.position + editorCamera.front;
+
 				editor.selectEntities({});
 			}
-			// add 1 more for model
+			// add 1 more for model	
 			else if (editor.resourceManager.isResource<Model>(id)) {
 				// create a model here
 				entt::entity new_model = engine.ecs.registry.create();

@@ -183,6 +183,10 @@ void PrefabManager::prefabBroadcast(ResourceID prefabID) {
 entt::entity PrefabManager::getParent(entt::entity prefabInstance, entt::registry& registry) {
 	EntityData* entityData = registry.try_get<EntityData>(prefabInstance);
 
+	if (!entityData) {
+		return entt::null;
+	}
+
 	if (entityData->parent == entt::null) {
 		return prefabInstance;
 	}
@@ -287,6 +291,42 @@ void PrefabManager::prefabOverride(entt::entity prefabInstance) {
 	updatePrefab(prefabInstance);
 }
 
+void PrefabManager::guidRemap(ResourceID prefabId) {
+#if 0
+	// prefab not loaded..
+	if (prefabMap.find(prefabId) == prefabMap.end()) {
+		loadPrefab(prefabId);
+	}
+
+	auto iterator = prefabMap.find(prefabId);
+
+	// loading of prefab failed..
+	if (iterator == prefabMap.end()) {
+		return;
+	}
+
+	// we retrieve the corresponding root prefab entity..
+	PrefabEntityID rootPrefabEntityId = iterator->second;
+	EntityData const& prefabEntityData = prefabRegistry.get<EntityData>(rootPrefabEntityId);
+
+	// In the existing scene, we find all entiy with this prefab id..
+	for (entt::entity entity : ecsRegistry.view<entt::entity>()) {
+		EntityData* ecsEntityData = ecsRegistry.try_get<EntityData>(entity);
+
+		if (!ecsEntityData) {
+			continue;
+		}
+
+		// we only want to update ancestor.. we recurse down..
+		if (getParent(entity, ecsRegistry) == entity) {
+			// let's recurse downwards..
+			for (int i = 0; i < prefabEntityData.children.size() && i < ecsEntityData->children.size(); ++i) {
+
+			}
+		}
+	}
+#endif
+}
 
 void PrefabManager::deletePrefab(PrefabEntityID prefabId) {
 	EntityData const& prefabEntityData = prefabRegistry.get<EntityData>(prefabId);

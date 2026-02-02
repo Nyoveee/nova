@@ -123,11 +123,36 @@ void ComponentInspector::update() {
 			editor.assetViewerUi.selectNewResourceId(INVALID_RESOURCE_ID);
 		}
 
+#if 0
+		if (ImGui::Button("GUID Remap.")) {
+			editor.engine.prefabManager.guidRemap(entityData.prefabID);
+		}
+#endif
+
 		ImGui::EndDisabled();
 
 		ImGui::TextWrapped("You can manually assign a prefab id.");
+
 		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", [&](ResourceID newPrefabId) {
-			entityData.prefabID = { newPrefabId };
+			auto recursivelyPrefabIdAssgiment = [&](entt::entity entityId) {
+				auto impl = [&](entt::entity entityId, auto& func) {
+					EntityData* data = registry.try_get<EntityData>(entityId);
+
+					if (!data) {
+						return;
+					}
+
+					data->prefabID = { newPrefabId };
+
+					for (entt::entity child : data->children) {
+						func(child, func);
+					}
+				};
+
+				impl(entityId, impl);
+			};
+
+			recursivelyPrefabIdAssgiment(selectedEntity);
 		});
 	}
 
