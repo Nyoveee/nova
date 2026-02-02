@@ -15,16 +15,15 @@ T* Interface::getNativeComponent(System::UInt32 entityID) {
 template<typename Type, typename ...Types>
 bool Interface::ObtainPrimitiveDataFromScript(serialized_field_type& fieldData, Object^ object)
 {
-	try {
-		Type^ value = safe_cast<Type^>(object);
-		fieldData = safe_cast<Type>(*value);
-		return true;
+	Type^ value = dynamic_cast<Type^>(object);
+	if (!value) {
+		if constexpr (sizeof...(Types) > 0)
+			return ObtainPrimitiveDataFromScript<Types...>(fieldData, object);
+		else
+			return false;
 	}
-	catch(...){}
-	if constexpr (sizeof...(Types) > 0)
-		return ObtainPrimitiveDataFromScript<Types...>(fieldData, object);
-	else
-		return false;
+	fieldData = safe_cast<Type>(*value);
+	return true;
 }
 
 template<typename Type, typename ...Types>
