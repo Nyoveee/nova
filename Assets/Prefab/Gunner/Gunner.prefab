@@ -1,5 +1,5 @@
 {
-    "RootEntity": 24,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,15 +8,15 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    25,
-                    26,
-                    27,
-                    28,
-                    29
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 12431034955156455427,
+                "prefabID": 7282593835722735621,
                 "entityGUID": 11031154432337477843,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -297,18 +297,18 @@
                 "agentRotationSpeed": 1.0,
                 "separationWeight": 1.0
             },
-            "id": 24
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Ichor Spawn Point",
                 "tag": "",
-                "parent": 24,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 12431034955156455427,
+                "prefabID": 7282593835722735621,
                 "entityGUID": 9878232927730630869,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -333,12 +333,12 @@
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localPosition": {
                     "x": 0.0,
-                    "y": 2.6524269580841064,
+                    "y": 2.6524276733398438,
                     "z": 0.0
                 },
                 "localScale": {
@@ -358,18 +358,18 @@
                     "z": 0.0
                 }
             },
-            "id": 25
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Gunner Collider",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 24,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 12431034955156455427,
+                "prefabID": 7282593835722735621,
                 "entityGUID": 2960703900089549015,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -457,7 +457,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 24,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -465,18 +465,18 @@
                     }
                 ]
             },
-            "id": 26
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Gunner Model",
                 "tag": "",
-                "parent": 24,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 12431034955156455427,
+                "prefabID": 7282593835722735621,
                 "entityGUID": 16219301203068289241,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -602,18 +602,18 @@
             "Animator": {
                 "controllerId": 14235729342422597637
             },
-            "id": 27
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Projectile Spawn Point",
                 "tag": "",
-                "parent": 24,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 12431034955156455427,
+                "prefabID": 7282593835722735621,
                 "entityGUID": 3537164652392972507,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -663,18 +663,18 @@
                     "z": 0.0
                 }
             },
-            "id": 28
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Gunner_ColliderWeak",
                 "tag": "Enemy_WeakSpot",
-                "parent": 24,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 12431034955156455427,
+                "prefabID": 7282593835722735621,
                 "entityGUID": 4690086156999819485,
                 "overridenProperties": null,
                 "overridenComponents": null,
@@ -757,7 +757,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 24,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -765,7 +765,7 @@
                     }
                 ]
             },
-            "id": 29
+            "id": 5
         }
     ]
 }

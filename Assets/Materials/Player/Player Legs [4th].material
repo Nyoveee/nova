@@ -5,7 +5,7 @@
             "glslType": "sampler2D",
             "identifier": "albedoMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 11942596701675552775,
                 "__variant_type": 9
             }
         },
@@ -13,16 +13,16 @@
             "glslType": "sampler2D",
             "identifier": "packedMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 16554282720102973451,
                 "__variant_type": 9
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "NormalMap",
             "identifier": "normalMap",
             "value": {
-                "__variant_value": 8,
-                "__variant_type": 9
+                "__variant_value": 10789675197068722185,
+                "__variant_type": 13
             }
         },
         {
@@ -37,15 +37,7 @@
             "glslType": "bool",
             "identifier": "toUsePackedMap",
             "value": {
-                "__variant_value": false,
-                "__variant_type": 0
-            }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "toUseNormalMap",
-            "value": {
-                "__variant_value": false,
+                "__variant_value": true,
                 "__variant_type": 0
             }
         },

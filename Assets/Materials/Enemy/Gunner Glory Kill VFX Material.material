@@ -94,23 +94,15 @@
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "NormalMap",
             "identifier": "normalMap",
             "value": {
                 "__variant_value": 16004518098229559301,
-                "__variant_type": 9
-            }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "toUseNormalMap",
-            "value": {
-                "__variant_value": false,
-                "__variant_type": 0
+                "__variant_type": 13
             }
         }
     ],
     "blendingConfig": "AlphaBlending",
-    "depthTestingMethod": "NoDepthWriteTest",
+    "depthTestingMethod": "NoDepthWrite",
     "cullingConfig": "Enable"
 }

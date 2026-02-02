@@ -33,8 +33,10 @@ enum class CullingConfig {
 
 class Texture;
 
+struct NormalMap : TypedResourceID<Texture> {};
+
 #define AllUniformTypes \
-	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>, Color, ColorA, NormalizedFloat
+	bool, int, unsigned int, float, glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, TypedResourceID<Texture>, Color, ColorA, NormalizedFloat, NormalMap
 
 using UniformValue = std::variant<AllUniformTypes>;
 
@@ -65,6 +67,7 @@ static inline const std::unordered_map<std::string, std::string> customTypeToGls
 	{ "Color",				"vec3"		},
 	{ "ColorA",				"vec4"		},
 	{ "NormalizedFloat",	"float"		},
+	{ "NormalMap",			"sampler2D"	},
 };
 
 // maps all glsl type to the correct corresponding uniform value/
@@ -83,5 +86,6 @@ static inline const std::unordered_map<std::string, UniformValue> allValidShader
 	// custom glsl type..
 	{ "Color",				Color{ 1.f, 1.f, 1.f }						},
 	{ "ColorA",				ColorA{ 1.f, 1.f, 1.f, 1.f }				},
-	{ "NormalizedFloat",	NormalizedFloat{}							}
+	{ "NormalizedFloat",	NormalizedFloat{}							},
+	{ "NormalMap",			NormalMap{ NONE_TEXTURE_ID }				}
 };

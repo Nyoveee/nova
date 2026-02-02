@@ -119,16 +119,12 @@ Quaternion Quaternion::Slerp(Quaternion a, Quaternion b, float t) {
 
 Quaternion Quaternion::LookRotation(Vector3 directionTOLook) {
 	directionTOLook.Normalize();
-	return Quaternion{ glm::quatLookAt( (-directionTOLook).native(), glm::vec3{0,1,0} )};
+	// quatlookat is rotating based on z axis, rotate the object so it aligns with z axis first
+	return Quaternion{ glm::quatLookAtRH(directionTOLook.native(), glm::vec3{0,1,0})};
 }
 
-Quaternion Quaternion::AngleAxis(float angle, Vector3 axis)
-{
-
-	return Quaternion{ glm::angleAxis(angle, axis.native()) };
-
-
-}
+Quaternion Quaternion::AngleAxis(float angle, Vector3 axis){ return Quaternion{ glm::angleAxis(angle, axis.native()) }; }
+Quaternion Quaternion::operator*(Quaternion lhs, Quaternion rhs){ return Quaternion(lhs.native() * rhs.native());}
 
 
 
@@ -173,6 +169,14 @@ void ParticleEmitter_::emit(int count)
 	ParticleEmitter* emitter = nativeComponent();
 	if(transform && emitter)
 		Interface::engine->particleSystem.emit(*transform, *emitter, count);
+}
+void ParticleEmitter_::emit()
+{
+	Transform* transform = Convert(gameObject->transform);
+	ParticleEmitter* emitter = nativeComponent();
+	if (transform && emitter) 
+		Interface::engine->particleSystem.emit(*transform, *emitter, emitter->burstAmount);
+		
 }
 
 // =================================================================
@@ -534,4 +538,5 @@ void AudioComponent_::PlayBGM(ScriptingAPI::Audio^ audio) {
 void AudioComponent_::StopSound(ScriptingAPI::Audio^ audio) {
 	Interface::engine->audioSystem.stopSound(Convert(gameObject), audio->getId());
 }
+
 

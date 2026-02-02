@@ -3469,6 +3469,8 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
+	bool isNormalMapUsed = false;
+
 	for (int i = 0; i < material.materialData.uniformDatas.size() && i < customShader.uniformLocations.size(); ++i) {
 		// retrieve material value..
 		auto const& [type, name, uniformValue] = material.materialData.uniformDatas[i];
@@ -3511,8 +3513,17 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 				assert(type == "mat3" || type == "mat4");
 				shader.setMatrix(uniformLocation, value);
 			}
-			else if constexpr (std::same_as<Type, TypedResourceID<Texture>>) {
-				assert(type == "sampler2D");
+			else if constexpr (std::same_as<Type, TypedResourceID<Texture>> || std::same_as<Type, NormalMap>) {
+				if constexpr (std::same_as<Type, NormalMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID) {
+						return;
+					}
+
+					isNormalMapUsed = true;
+				}
+
+				assert(type == "sampler2D" || type == "NormalMap");
 
 				// Setting texture is a way more complicated step.
 				// We first retrieve the texture from resource manager..
@@ -3538,6 +3549,8 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 			}
 		}, uniformValue);
 	}
+
+	shader.setBool("toUseNormalMap", isNormalMapUsed);
 }
 
 void Renderer::renderMesh(Mesh const& mesh) {

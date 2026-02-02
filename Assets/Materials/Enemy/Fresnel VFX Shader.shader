@@ -23,8 +23,7 @@ Properties{
 
     NormalizedFloat colorLerpPower;
 
-    sampler2D normalMap;
-    bool toUseNormalMap;
+    NormalMap normalMap;
 }
 
 // Vertex shader..

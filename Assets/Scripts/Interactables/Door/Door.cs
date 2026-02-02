@@ -22,7 +22,7 @@ class Door : Script
 
 
     [SerializableField]
-    private int doorType;
+    private DoorType doorType;
     [SerializableField]
     private float automaticDoordetectionRange = 10f;
     // Left and right door panels
@@ -60,7 +60,7 @@ class Door : Script
     }
     protected override void update()
     {
-        switch ((DoorType)doorType)
+        switch (doorType)
         {
             // Door will open depending on player 
             case DoorType.Automatic:
@@ -134,10 +134,10 @@ class Door : Script
     }
     public void LockDoor()
     {
-        doorType = (int)DoorType.Locked;
+        doorType = DoorType.Locked;
     }
     public void UnlockDoor()
     {
-        doorType = (int)DoorType.Automatic;
+        doorType = DoorType.Automatic;
     }
 }

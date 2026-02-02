@@ -362,20 +362,11 @@ class Grunt : Enemy
                 enemyHitBox.SetDamage(gruntStats.damage);
         }
     }
-    public void EndDeath()
-    {
-       if(gameObject != null)
-       Destroy(gameObject);
-    }
     public void BeginJump()
     {
         gruntState = GruntState.Jump;
         navMeshAgent.enable = false;
     }
-
-
-
-
     // ------------
     public override void SetSpawningDuration(float seconds)
     {

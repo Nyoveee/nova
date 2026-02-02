@@ -17,10 +17,10 @@
                 "entityGUID": 669875822299676911,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": false,
                     "6919815292445452220": true,
-                    "11935986701403193153": true,
+                    "10106385962890515953": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": true,
                     "9059764703561530457": true
                 },
                 "inactiveComponents": null
@@ -226,8 +226,11 @@
                             {
                                 "name": "doorType",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": {
+                                        "Type": "DoorType",
+                                        "Value": "Elevator"
+                                    },
+                                    "__variant_type": 9
                                 }
                             },
                             {
@@ -393,9 +396,9 @@
                     "z": 11.21019458770752
                 },
                 "rotation": {
-                    "w": 0.7848330140113831,
+                    "w": 0.7848330736160278,
                     "x": 0.0,
-                    "y": -0.6197072863578796,
+                    "y": -0.6197072267532349,
                     "z": 0.0
                 },
                 "eulerAngles": {
@@ -538,8 +541,11 @@
                             {
                                 "name": "doorType",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": {
+                                        "Type": "DoorType",
+                                        "Value": "Elevator"
+                                    },
+                                    "__variant_type": 9
                                 }
                             },
                             {
@@ -705,9 +711,9 @@
                     "z": 11.21019458770752
                 },
                 "rotation": {
-                    "w": 0.7848330140113831,
+                    "w": 0.7848330736160278,
                     "x": 0.0,
-                    "y": -0.6197072863578796,
+                    "y": -0.6197072267532349,
                     "z": 0.0
                 },
                 "eulerAngles": {

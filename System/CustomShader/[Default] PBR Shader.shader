@@ -9,11 +9,10 @@ Tags{
 Properties{
     sampler2D albedoMap;
     sampler2D packedMap;
-    sampler2D normalMap;
+    NormalMap normalMap;
     sampler2D emissiveMap;
 
     bool toUsePackedMap;
-    bool toUseNormalMap;
     bool toUseEmissiveMap;
 
     NormalizedFloat roughness;

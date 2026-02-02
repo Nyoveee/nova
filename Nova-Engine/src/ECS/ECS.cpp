@@ -110,8 +110,8 @@ void ECS::deleteEntity(entt::entity entity) {
 	deleteEntity(entity, registry);
 }
 
-void ECS::deleteEntity(entt::entity entity, entt::registry& registry) {
-	EntityData* entityData = registry.try_get<EntityData>(entity);
+void ECS::deleteEntity(entt::entity entity, entt::registry& p_registry) {
+	EntityData* entityData = p_registry.try_get<EntityData>(entity);
 	
 	if (entityData) {
 		for (entt::entity child : entityData->children) {
@@ -124,7 +124,7 @@ void ECS::deleteEntity(entt::entity entity, entt::registry& registry) {
 		// =======================
 		if (entityData->parent != entt::null) {
 			// Remove this entity from list of children
-			EntityData& parentEntityData = registry.get<EntityData>(entityData->parent);
+			EntityData& parentEntityData = p_registry.get<EntityData>(entityData->parent);
 
 			auto iterator = std::ranges::find(parentEntityData.children, entity);
 			
@@ -138,7 +138,7 @@ void ECS::deleteEntity(entt::entity entity, entt::registry& registry) {
 	}
 
 	// Delete the entity!
-	registry.destroy(entity);
+	p_registry.destroy(entity);
 }
 
 void ECS::setActive(entt::entity entity, bool isActive) {

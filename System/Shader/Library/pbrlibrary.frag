@@ -149,6 +149,9 @@ layout(std430, binding = 7) buffer clusterSSBO
 {
     Cluster clusters[];
 };
+layout(std430, binding = 9) buffer OldBones {
+    mat4 oldBonesFinalMatrices[];
+};
 
 // Samplers..
 layout (binding = 0) uniform sampler2D directionalShadowMap;
@@ -175,6 +178,9 @@ in VS_OUT {
     vec3 boundingBoxUVW;
     mat3 TBN;
 } fsIn;
+
+// location will be cached and query in runtime.. (no this is a lie)
+uniform bool toUseNormalMap;
 
 // ====================================
 // End of pipeline setup. 

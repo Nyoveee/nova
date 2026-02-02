@@ -61,16 +61,6 @@ void CustomShader::compile()
 	vShaderLibraryStream << vShaderLibraryFile.rdbuf();
 
 	// ========================================================
-	// We attach the vertex shader's fragment code and wrap it in main..
-	// ========================================================
-	vShaderLibraryStream << "\n// !! ==========================================";
-	vShaderLibraryStream << "\n// Custom Shader Vertex Code";
-	vShaderLibraryStream << "\n// !! ==========================================\n\n";
-	vShaderLibraryStream << "void main(){" << customShaderData.vShaderCode << "}";
-	
-	std::string vertexCode = vShaderLibraryStream.str();
-
-	// ========================================================
 	// We retrieve the string contents from our fragment shader library file..
 	// ========================================================
 	std::ifstream fShaderLibraryFile{};
@@ -97,9 +87,18 @@ void CustomShader::compile()
 			glslType = iterator->second;
 			comment = "// was " + type;
 		}
-
+		vShaderLibraryStream << "uniform " << glslType << " " << identifier << "; " << comment << '\n';
 		fShaderLibraryStream << "uniform " << glslType << " " << identifier << "; " << comment << '\n';
 	}
+	// ========================================================
+	// We attach the Custom shader's Vertex code and wrap it in main..
+	// ========================================================
+	vShaderLibraryStream << "\n// !! ==========================================";
+	vShaderLibraryStream << "\n// Custom Shader Vertex Code";
+	vShaderLibraryStream << "\n// !! ==========================================\n\n";
+	vShaderLibraryStream << "void main(){" << customShaderData.vShaderCode << "}";
+
+	std::string vertexCode = vShaderLibraryStream.str();
 
 	// ========================================================
 	// We attach the custom shader's fragment code and wrap it in main..

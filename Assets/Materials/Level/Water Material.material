@@ -6,9 +6,9 @@
             "identifier": "baseColor",
             "value": {
                 "__variant_value": {
-                    "r": 0.4208323359489441,
-                    "g": 0.656028151512146,
-                    "b": 0.7724137902259827
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 1.0
                 },
                 "__variant_type": 10
             }
@@ -18,8 +18,8 @@
             "identifier": "edgeColor",
             "value": {
                 "__variant_value": {
-                    "r": 0.1310344934463501,
-                    "g": 0.4426634907722473,
+                    "r": 0.0,
+                    "g": 0.10980392247438431,
                     "b": 1.0
                 },
                 "__variant_type": 10
@@ -29,7 +29,7 @@
             "glslType": "float",
             "identifier": "emissivemultiplier",
             "value": {
-                "__variant_value": 1.0,
+                "__variant_value": 200.0,
                 "__variant_type": 3
             }
         },
@@ -38,8 +38,8 @@
             "identifier": "gridsize",
             "value": {
                 "__variant_value": {
-                    "x": 300.0,
-                    "y": 300.0
+                    "x": 20.0,
+                    "y": 43.0
                 },
                 "__variant_type": 4
             }
@@ -64,6 +64,38 @@
             }
         },
         {
+            "glslType": "float",
+            "identifier": "waveSpeed",
+            "value": {
+                "__variant_value": 50.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "waveAmplitude",
+            "value": {
+                "__variant_value": 1.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "waveLength",
+            "value": {
+                "__variant_value": 20.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "int",
+            "identifier": "numberOfWaveSamples",
+            "value": {
+                "__variant_value": 16,
+                "__variant_type": 1
+            }
+        },
+        {
             "glslType": "NormalizedFloat",
             "identifier": "roughness",
             "value": {
@@ -75,7 +107,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "metallic",
             "value": {
-                "__variant_value": 1.0,
+                "__variant_value": 0.0,
                 "__variant_type": 12
             }
         },
@@ -83,7 +115,7 @@
             "glslType": "NormalizedFloat",
             "identifier": "occulusion",
             "value": {
-                "__variant_value": 0.2630000114440918,
+                "__variant_value": 1.0,
                 "__variant_type": 12
             }
         }

@@ -1,11 +1,12 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 4,
     "Entities": [
         {
             "EntityData": {
                 "name": "StompHitBox",
                 "tag": "EnemyHitBox",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
@@ -99,7 +100,7 @@
                     }
                 ]
             },
-            "id": 0
+            "id": 4
         }
     ]
 }

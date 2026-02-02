@@ -3,29 +3,21 @@
     "uniformDatas": [
         {
             "glslType": "Color",
-            "identifier": "intersectionEmissiveColor",
+            "identifier": "color",
             "value": {
                 "__variant_value": {
                     "r": 1.0,
-                    "g": 0.9348394274711609,
-                    "b": 0.05517244338989258
+                    "g": 1.0,
+                    "b": 1.0
                 },
                 "__variant_type": 10
             }
         },
         {
             "glslType": "float",
-            "identifier": "intersectionColorMultiplier",
+            "identifier": "colorMultiplier",
             "value": {
-                "__variant_value": 10.0,
-                "__variant_type": 3
-            }
-        },
-        {
-            "glslType": "float",
-            "identifier": "threshold",
-            "value": {
-                "__variant_value": 0.5,
+                "__variant_value": 0.0,
                 "__variant_type": 3
             }
         }

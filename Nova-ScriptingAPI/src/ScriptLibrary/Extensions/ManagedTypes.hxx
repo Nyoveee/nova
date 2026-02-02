@@ -140,7 +140,7 @@ static Quaternion Identity();
 static Quaternion Slerp(Quaternion a, Quaternion b, float t);
 static Quaternion LookRotation(Vector3 directionToLook);
 static Quaternion AngleAxis(float angle, Vector3 axis);
-
+static Quaternion operator*(Quaternion lhs,Quaternion rhs);
 ManagedStructEnd(Quaternion, glm::quat)
 
 // ======================================
@@ -234,9 +234,11 @@ ManagedComponentEnd()
 // ParticleEmitter Component
 // ======================================
 ManagedComponentDeclaration(
-	ParticleEmitter
+	ParticleEmitter,
+	float, lifeTime
 )
 void emit(int count);
+void emit();
 
 ManagedComponentEnd()
 // ======================================

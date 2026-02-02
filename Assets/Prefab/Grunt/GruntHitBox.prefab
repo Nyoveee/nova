@@ -1,66 +1,42 @@
 {
+    "RootEntity": 11,
     "Entities": [
         {
-            "BoxCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scaleWithTransform": true,
-                "shapeScale": {
-                    "x": 2.0,
-                    "y": 3.5,
-                    "z": 1.5
-                }
-            },
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "GruntHitBox",
-                "overridenComponents": null,
-                "overridenProperties": null,
+                "tag": "EnemyHitBox",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 13123964764219588615,
                 "prefabMetaData": {
                     "prefabEntity": 0,
                     "prefabID": 13123964764219588615
                 },
-                "tag": "EnemyHitBox"
-            },
-            "Rigidbody": {
-                "dynamicCollider": false,
-                "gravityMultiplier": 1.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "Moving",
-                "mass": 0.0,
-                "motionQuality": "Discrete",
-                "motionType": "Dynamic",
-                "toScaleWithTransform": true
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": null,
-                        "scriptId": 16742835744522895361
-                    }
-                ]
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": 3.1415927410125732,
-                    "y": -0.0,
-                    "z": 3.1415927410125732
+                "position": {
+                    "x": -37.88800048828125,
+                    "y": 4.5690531730651855,
+                    "z": -44.173099517822266
                 },
-                "localEulerAngles": {
+                "scale": {
+                    "x": 0.6369426846504211,
+                    "y": 0.6369112730026245,
+                    "z": 0.6369426846504211
+                },
+                "rotation": {
+                    "w": 0.0,
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
                     "x": 3.1415927410125732,
                     "y": -0.0,
                     "z": 3.1415927410125732
@@ -70,36 +46,61 @@
                     "y": 4.5690531730651855,
                     "z": -44.173099517822266
                 },
+                "localScale": {
+                    "x": 0.6369426846504211,
+                    "y": 0.6369112730026245,
+                    "z": 0.6369426846504211
+                },
                 "localRotation": {
                     "w": 0.0,
                     "x": 0.0,
                     "y": 1.0,
                     "z": 0.0
                 },
-                "localScale": {
-                    "x": 0.6369426846504211,
-                    "y": 0.6369112730026245,
-                    "z": 0.6369426846504211
-                },
-                "position": {
-                    "x": -37.88800048828125,
-                    "y": 4.5690531730651855,
-                    "z": -44.173099517822266
-                },
-                "rotation": {
-                    "w": 0.0,
-                    "x": 0.0,
-                    "y": 1.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.6369426846504211,
-                    "y": 0.6369112730026245,
-                    "z": 0.6369426846504211
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -0.0,
+                    "z": 3.1415927410125732
                 }
             },
-            "id": 38
+            "Rigidbody": {
+                "motionType": "Dynamic",
+                "layer": "Moving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 0.0,
+                "gravityMultiplier": 1.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 2.0,
+                    "y": 3.5,
+                    "z": 1.5
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scaleWithTransform": true
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 16742835744522895361,
+                        "fields": null
+                    }
+                ]
+            },
+            "id": 11
         }
-    ],
-    "RootEntity": 38
+    ]
 }

@@ -14,6 +14,10 @@ Properties{
     vec2 gridsize;
     vec2 flowDirection;
     float flowSpeed;
+    float waveSpeed;
+    float waveAmplitude;
+    float waveLength;
+    int numberOfWaveSamples;
 
     NormalizedFloat roughness;
     NormalizedFloat metallic;
@@ -22,17 +26,31 @@ Properties{
 
 // Vertex shader..
 Vert{
-    // Calculate world space of our local attributes..
     WorldSpace worldSpace = calculateWorldSpace();
+
+    vec2 flowDirectionNorm = normalize(flowDirection);
+    vec2 direction = flowDirectionNorm;
+    float phase = waveSpeed * (2.f/ waveLength);
+    float frequency = 2/waveLength;
+    float directionIter = 2; // In radians
+    float amplitude = waveAmplitude;
+    for(int i = 0; i < numberOfWaveSamples;++i){
+        float x = dot(direction, worldSpace.position.xz) * frequency + timeElapsed * phase;
+        worldSpace.position.y += amplitude * sin(x);
+        direction = normalize(vec2(cos(directionIter*i),sin(directionIter*i)));
+        amplitude *= 0.82;
+        frequency *= 1.12;
+    }
+    
     gl_Position = calculateClipPosition(worldSpace.position);
-    passDataToFragment(worldSpace);     // Pass attributes to fragment shader.. 
+    passDataToFragment(worldSpace);
 }
 
 // Fragment shader..
 Frag{
     // Reference thebookofshaders.com/12/
     vec2 flowDirectionNorm = normalize(flowDirection);
-    vec2 st = fsIn.textureUnit - timeElapsed * flowSpeed * flowDirectionNorm;
+    vec2 st = fsIn.textureUnit + timeElapsed * flowSpeed * flowDirectionNorm;
 
     // scale by gridSize
     st *= gridsize;
