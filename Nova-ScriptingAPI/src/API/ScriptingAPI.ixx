@@ -66,19 +66,19 @@ bool Interface::ObtainTypedResourceIDFromScript(serialized_field_type& fieldData
 
 template<typename Type, typename ...Types>
 bool Interface::SetTypedResourceIDFromScript(serialized_field_type const& fieldData, Object^% object) {
-	try {
-		// this step is just to check if the field info is of this Type..
-		Type^ value = safe_cast<Type^>(object);
-			
-		using variantType = decltype(value->getId());
-		variantType const& varantValue = std::get<variantType>(fieldData);
+	Type^ value = dynamic_cast<Type^>(object);
 
-		value = gcnew Type{ { varantValue } };
-		
-		object = value;
-		return true;
+	if (!value) {
+		using variantType = decltype(value->getId());
+
+		if (std::holds_alternative<variantType>(fieldData)) {
+			// this step is just to check if the field info is of this Type..
+			variantType const& varantValue = std::get<variantType>(fieldData);
+			value = gcnew Type{ { varantValue } };
+			object = value;
+			return true;
+		}
 	}
-	catch (...) {}
 
 	if constexpr (sizeof...(Types) > 0)
 		return SetTypedResourceIDFromScript<Types...>(fieldData, object);
