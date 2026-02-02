@@ -131,6 +131,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		getScriptFieldDatas_                    = GetFunctionPtr<GetScriptFieldsFunctionPtr>("Interface", "getScriptFieldDatas");
 		setScriptFieldData		                = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
 		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
+		handleOnCollisionExit_				    = GetFunctionPtr<handleOnCollisionExitFunctionPtr>("Interface", "handleOnCollisionExit");
 		executeFunction_						= GetFunctionPtr<ExecuteFunctionPtr>("Interface", "executeEntityScriptFunction");
 		getHierarchyModifiedScripts_            = GetFunctionPtr<GetHierarchyModifiedScriptsFunctionPtr>("Interface", "GetHierarchyModifiedScripts");
 		getEnumNames							= GetFunctionPtr<GetEnumNamesFunctionPtr>("Interface", "getEnumNames");
@@ -467,7 +468,9 @@ void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity 
 	handleOnCollision_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
 }
 
-void ScriptingAPIManager::onCollisionExit([[maybe_unused]] entt::entity entityOne, [[maybe_unused]] entt::entity entityTwo) {}
+void ScriptingAPIManager::onCollisionExit(entt::entity entityOne, entt::entity entityTwo) {
+	handleOnCollisionExit_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
+}
 
 void ScriptingAPIManager::executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName) {
 	executeFunction_(static_cast<unsigned>(entityOne), static_cast<unsigned long long>(scriptID), functionName);

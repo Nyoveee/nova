@@ -41,6 +41,7 @@ internal:
 	static void removeEntityScript(EntityID entityID, ScriptID scriptId);
 
 	static void handleOnCollision(EntityID entityOne, EntityID entityTwo);
+	static void handleOnCollisionExit(EntityID entityOne, EntityID entityTwo);
 
 	// This function is called when a particular function name needs to be invoked.
 	static void executeEntityScriptFunction(EntityID entityID, ScriptID scriptId, std::string const& functionName);

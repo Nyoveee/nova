@@ -22,6 +22,7 @@ internal:
 	void callExit();
 
 	void callOnCollisionEnter(unsigned otherEntityID);
+	void callOnCollisionExit(unsigned otherEntityID);
 
 protected:
 	virtual void awake() {};
@@ -31,6 +32,7 @@ protected:
 	virtual void exit() {};
 
 	virtual void onCollisionEnter([[maybe_unused]] GameObject^ other) {};
+	virtual void onCollisionExit([[maybe_unused]] GameObject^ other) {};
 
 protected:
 	// Subscribing to input manager..

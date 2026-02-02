@@ -469,4 +469,5 @@ class Charger : Enemy
             chargeLines.SetActive(false);
         }
     }
+
 }

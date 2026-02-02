@@ -91,3 +91,17 @@ void Script::callOnCollisionEnter(unsigned otherEntityID) {
 	}
 }
 
+void Script::callOnCollisionExit(unsigned otherEntityID) {
+	try {
+		GameObject^ other = gcnew GameObject(otherEntityID);
+		onCollisionExit(other);
+	}
+	catch (const std::exception& e) {
+		Logger::error("{}Unable to call onCollisionEnter(): {}", gameObject->GetNameID(), e.what());
+	}
+	catch (System::Exception^ e) {
+		Logger::error("{}Unable to call onCollisionEnter(): {}", gameObject->GetNameID(), msclr::interop::marshal_as<std::string>(e->Message));
+		Interface::engine->stopSimulation();
+	}
+}
+

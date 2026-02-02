@@ -40,6 +40,7 @@ using GetScriptFieldsFunctionPtr             = std::vector<FieldData> (*)(std::s
 using SetScriptFieldFunctionPtr		         = void (*)(unsigned int, unsigned long long, FieldData const& fieldData);
 
 using handleOnCollisionFunctionPtr		     = void (*)(unsigned int, unsigned int);
+using handleOnCollisionExitFunctionPtr       = void (*)(unsigned int, unsigned int);
 using ExecuteFunctionPtr			         = void (*)(unsigned int, unsigned long long, std::string const&);
 using GetHierarchyModifiedScriptsFunctionPtr = std::unordered_set<ResourceID>(*)(std::size_t);
 using GetEnumNamesFunctionPtr				 = std::vector<std::string> (*)(const char*);
@@ -149,6 +150,7 @@ private:
 	GetScriptFieldsFunctionPtr				 getScriptFieldDatas_;
 	SetScriptFieldFunctionPtr				 setScriptFieldData;
 	handleOnCollisionFunctionPtr			 handleOnCollision_;
+	handleOnCollisionExitFunctionPtr	     handleOnCollisionExit_;
 	ExecuteFunctionPtr				         executeFunction_;
 	GetHierarchyModifiedScriptsFunctionPtr   getHierarchyModifiedScripts_;
 	GetEnumNamesFunctionPtr                  getEnumNames;

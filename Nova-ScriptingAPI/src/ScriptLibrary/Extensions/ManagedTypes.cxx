@@ -179,6 +179,22 @@ void ParticleEmitter_::emit(int count)
 // Rigidbody
 // =================================================================
 
+
+System::String^  Rigidbody_::GetLayerName()
+{
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody)
+	{
+		
+		std::string_view name = magic_enum::enum_name(rigidbody->layer);
+
+		return gcnew System::String(name.data());
+	}
+
+	return nullptr;
+}
+
 void Rigidbody_::AddForce(Vector3 forceVector) {
 	Rigidbody* rigidbody = nativeComponent();
 
@@ -211,13 +227,34 @@ void Rigidbody_::SetVelocity(Vector3 velocity) {
 	}
 }
 
-void Rigidbody_::SetVelocityLimits(Vector3 velocity) {
+void Rigidbody_::SetVelocityLimits(float maxVelocity) {
 	Rigidbody* rigidbody = nativeComponent();
 
 	if (rigidbody) {
-		Interface::engine->physicsManager.setVelocity(*rigidbody, velocity.native());
+		Interface::engine->physicsManager.setVelocityLimits(*rigidbody, maxVelocity);
 	}
 }
+
+System::Nullable<float> Rigidbody_::GetVelocityLimits() {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		auto opt = Interface::engine->physicsManager.getVelocityLimits(*rigidbody);
+
+		if (!opt)
+		{
+			return System::Nullable<float>();
+		}
+		else
+		{
+			return opt.value();
+		}
+
+	}
+
+	return System::Nullable<float>();
+}
+
 
 Vector3 Rigidbody_::GetVelocity() {
 	Rigidbody const* rigidbody = nativeComponent();
@@ -247,6 +284,33 @@ void  Rigidbody_::SetAngularVelocity(Vector3 velocity) {
 
 }
 
+void Rigidbody_::SetAngularVelocityLimits(float maxVelocity) {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.setMaxAngularVelocityLimits(*rigidbody, maxVelocity);
+	}
+}
+
+System::Nullable<float> Rigidbody_::GetAngularVelocityLimits() {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		auto opt = Interface::engine->physicsManager.getAngularVelocityLimits(*rigidbody);
+
+		if (!opt)
+		{
+			return System::Nullable<float>();
+		}
+		else
+		{
+			return opt.value();
+		}
+
+	}
+	return System::Nullable<float>();
+}
+
 Vector3  Rigidbody_::GetAngularVelocity() {
 	Rigidbody * rigidbody = nativeComponent();
 
@@ -256,6 +320,66 @@ Vector3  Rigidbody_::GetAngularVelocity() {
 
 	return Vector3{};
 }
+
+
+
+void  Rigidbody_::SetLinearDamping(float dampingValue) {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.setLinearDamping(*rigidbody, dampingValue);
+	}
+
+}
+
+System::Nullable<float> Rigidbody_::GetLinearDamping() {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		auto opt = Interface::engine->physicsManager.getLinearDamping(*rigidbody);
+
+		if (!opt)
+		{
+			return System::Nullable<float>();
+		}
+		else
+		{
+			return opt.value();
+		}
+
+	}
+
+}
+
+
+void  Rigidbody_::SetAngularDamping(float dampingValue) {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		Interface::engine->physicsManager.setAngularDamping(*rigidbody, dampingValue);
+	}
+
+}
+
+System::Nullable<float> Rigidbody_::GetAngularDamping() {
+	Rigidbody* rigidbody = nativeComponent();
+
+	if (rigidbody) {
+		auto opt = Interface::engine->physicsManager.getAngularDamping(*rigidbody);
+
+		if (!opt)
+		{
+			return System::Nullable<float>();
+		}
+		else
+		{
+			return opt.value();
+		}
+
+	}
+
+}
+
 void Rigidbody_::SetBodyRotation(Quaternion rotation)
 {
 	Rigidbody* rigidbody = nativeComponent();
@@ -273,6 +397,17 @@ void Rigidbody_::SetGravityFactor(float factor) {
 
 float Rigidbody_::GetGravityFactor() {
 	return nativeComponent()->gravityMultiplier;
+}
+
+
+void Rigidbody_::SetMass(float mass)
+{
+	Interface::engine->physicsManager.setMass(*nativeComponent(), mass);
+}
+
+float Rigidbody_::GetMass()
+{
+	return Interface::engine->physicsManager.getMass(*nativeComponent());
 }
 
 // =================================================================
