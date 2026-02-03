@@ -6,6 +6,7 @@
                 "name": "Teleporter",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": [
                     1,
                     2
@@ -13,10 +14,7 @@
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 13386396206500134913,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 13386396206500134913
-                },
+                "entityGUID": 1361653356400443413,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": false
@@ -74,14 +72,12 @@
                 "name": "Teleporter Destination",
                 "tag": "",
                 "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 13386396206500134913,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 13386396206500134913
-                },
+                "entityGUID": 6549800127131254807,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -145,14 +141,12 @@
                 "name": "Teleporter Source",
                 "tag": "",
                 "parent": 0,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 13386396206500134913,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 13386396206500134913
-                },
+                "entityGUID": 8855643136344965145,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -212,6 +206,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": true,
                 "dynamicCollider": false,
