@@ -22,7 +22,16 @@ class RestorePowerQuest : InteractableQuest
     [SerializableField]
     public Material lockedDoorMaterial;
 
+    private AudioComponent_ audioComponent;
+    [SerializableField]
+    private Audio interactClickSFX;
+
     // This function is first invoked when game starts.
+    protected override void init()
+    {
+        base.init();
+        audioComponent = getComponent<AudioComponent_>();
+    }
     public override void OnEnter()
     {
         MapKey(Key.E, CheckInteraction);
@@ -41,6 +50,7 @@ class RestorePowerQuest : InteractableQuest
     public override void OnSuccess()
     {
         // AudioAPI.PlaySound(gameObject, "sfx_menuClick_01");
+        audioComponent.PlaySound(interactClickSFX);
         generatorCoreRenderer.setMaterialFloat(0, "emissiveStrength", 9f);
         foreach (Door door in unlockableDoors)
             door.UnlockDoor();
