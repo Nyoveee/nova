@@ -23,7 +23,7 @@ class PlayerController_V2 : Script
     [SerializableField]
     public float airDrag = 0f; //lost of speed per second when in the air, note this should be zero at all times??? otherwise this messes up gravity as well, so player falls slower than intended
     [SerializableField]
-    public float jumpStrength =   10f;
+    public float jumpStrength =   1000f;
     [SerializableField]
     public float jumpGravityFactor = 1f; //should be =< than base gravity factor
     [SerializableField]
@@ -71,6 +71,7 @@ class PlayerController_V2 : Script
     private bool jumpEnabled = false;
     private bool onDashTrigger = false;
     private bool isLerpingGravity = false;
+    private bool isDashKeyHeld = false; //we dw to chain dash if key is held down.
     private float jumpCD = 0.5f;
     private int contactSurfaces = 0;
 
@@ -115,7 +116,7 @@ class PlayerController_V2 : Script
 
         MapKey(Key.Space, triggerJump);
 
-        MapKey(Key.LeftShift, triggerDash);
+        MapKey(Key.LeftShift, triggerDash, dashkeyUpHandler);
 
     }
 
@@ -132,8 +133,9 @@ class PlayerController_V2 : Script
         jumpTimer += Time.V_FixedDeltaTime();
         dashCooldownTimer += Time.V_FixedDeltaTime();
 
-        Debug.Log(GetCurrentHorizontalVelocity());
-
+        Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
+        //Debug.Log(contactSurfaces);
+        //Debug.Log("Jump Speed: " + rigidbody.GetVelocity().y);
 
         //gravitylerp for jumps
         if (isLerpingGravity)
@@ -157,8 +159,9 @@ class PlayerController_V2 : Script
 
 
         if (PlayerMoveStates.InitState != playerMoveStates &&
-            PlayerMoveStates.Jumping != playerMoveStates   &&
-            PlayerMoveStates.Dashing != playerMoveStates)
+            PlayerMoveStates.StartJump != playerMoveStates &&
+            PlayerMoveStates.Jumping   != playerMoveStates &&
+            PlayerMoveStates.Dashing   != playerMoveStates)
         {
             CheckMovementTypeState(); //do something when the player is on the ground and not on the ground,
             //we should check gravity controls here as well
@@ -200,9 +203,14 @@ class PlayerController_V2 : Script
                     Dashing();
                 }
                 break;
-            case PlayerMoveStates.Jumping:
+            case PlayerMoveStates.StartJump:
                 {
                     InitiateJump();
+                }
+                break;
+            case PlayerMoveStates.Jumping: //we need one frame of jump, to prevent grounded from being called
+                {
+                    playerMoveStates = PlayerMoveStates.AirborneMovement;
                 }
                 break;
             case PlayerMoveStates.Death:
@@ -269,16 +277,7 @@ class PlayerController_V2 : Script
             rigidbody.SetLinearDamping(groundDrag);
             rigidbody.SetVelocityLimits(groundMaxMoveSpeed);
             jumpEnabled = true;
-           // Debug.Log("Grounded");
-
-            //if stil in lerping gravityfactor change gravity to jump gravity now
-            //if (isLerpingGravity)
-            //{
-            //    rigidbody.SetGravityFactor(baseGravityFactor);
-            //    isLerpingGravity = false;
-            //    gravityLerpTimer = 0f;
-            //}
-
+            // Debug.Log("Grounded");
 
 
         }
@@ -381,7 +380,15 @@ class PlayerController_V2 : Script
 
         }
 
-            
+        //if stil in lerping gravityfactor change gravity to jump gravity now
+        if (isLerpingGravity)
+        {
+            //Debug.Log("STOPPED LERPING GRAVITY FACTOR");
+            rigidbody.SetGravityFactor(baseGravityFactor);
+            isLerpingGravity = false;
+            gravityLerpTimer = 0f;
+        }
+
 
         //we work with forward MS first 
         if (directionVector != Vector3.Zero())
@@ -410,8 +417,16 @@ class PlayerController_V2 : Script
             Vector3 currentHorizontalVelocity = rigidbody.GetVelocity();
             currentHorizontalVelocity.y = 0f;
 
+
+            bool isAllowedtoAddForce = true;
+
+            //do a quick check if applying
+            Vector3 forceapplied = directionVector * airAcceleration;
+
+            Vector3 predictedVelocity = currentHorizontalVelocity + (forceapplied/rigidbody.GetMass()) * Time.V_FixedDeltaTime();
+
             //player is moving faster than allowed, stop accelerating
-            if (currentHorizontalVelocity.Length() < aerialMaxMoveSpeed)
+            if (predictedVelocity.Length() < aerialMaxMoveSpeed)
             {
                 rigidbody.AddForce(directionVector * airAcceleration);
             }
@@ -458,9 +473,15 @@ class PlayerController_V2 : Script
         desiredSpeed = desiredDashSpeed;
 
         //target impulse = (targetSpeed - currentSpeed) * mass
-        float targetImpulseStrength = desiredDashSpeed - GetCurrentHorizontalVelocity() * rigidbody.GetMass();
 
-        rigidbody.AddImpulse(directionVector * targetImpulseStrength);
+        Vector3 desireDashVeclocity = directionVector * desiredDashSpeed;
+
+        Vector3 currentVelocity = rigidbody.GetVelocity();
+        currentVelocity.y = 0f;
+
+        Vector3 targetImpulseStrength = desireDashVeclocity - currentVelocity * rigidbody.GetMass();
+
+        rigidbody.AddImpulse(directionVector * targetImpulseStrength.Length());
     }
 
     void Dashing() 
@@ -480,12 +501,13 @@ class PlayerController_V2 : Script
     {
 
         //rigidbody.AddVelocity(Vector3.Up() * jumpStrength);
-        playerMoveStates = PlayerMoveStates.AirborneMovement;
+        playerMoveStates = PlayerMoveStates.Jumping;
 
         Vector3 currentVelocity = rigidbody.GetVelocity();
-        currentVelocity.y = 1f * jumpStrength;
-        rigidbody.SetVelocity(currentVelocity);
-
+        //currentVelocity.y = 1f * jumpStrength;
+        rigidbody.AddImpulse(Vector3.Up() * jumpStrength);
+        rigidbody.SetLinearDamping(airDrag);
+        rigidbody.SetVelocityLimits(100000); //player movespeed is uncapped in air
         isLerpingGravity = true;
         jumpTimer = 0;
     }
@@ -507,7 +529,7 @@ class PlayerController_V2 : Script
 
             float resitiveForce = (rigidbody.GetMass() * (newSpeed - currentHorizontalVelocity.Length())) /Time.V_FixedDeltaTime();
 
-            Debug.Log("Resitive Force: " + Math.Abs(resitiveForce));
+            //Debug.Log("Resitive Force: " + Math.Abs(resitiveForce));
             rigidbody.AddForce(-resistiveDirection * Math.Abs(resitiveForce));
         }
 
@@ -552,7 +574,7 @@ class PlayerController_V2 : Script
         //check jump conditions
         if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && jumpEnabled && (jumpTimer > jumpCD))
         {
-            playerMoveStates = PlayerMoveStates.Jumping;
+            playerMoveStates = PlayerMoveStates.StartJump;
         }
 
     }
@@ -560,12 +582,18 @@ class PlayerController_V2 : Script
     //dash callback
     void triggerDash()
     {
-        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown)
+        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false)
         {
             playerMoveStates = PlayerMoveStates.Dashing;
             //rigidbody.SetVelocity(Vector3.Zero());
             onDashTrigger = true;
+            isDashKeyHeld = true;
         }
+    }
+
+    void dashkeyUpHandler()
+    {
+        isDashKeyHeld = false;
     }
 
 
@@ -579,7 +607,7 @@ class PlayerController_V2 : Script
             return;
         }
 
-        if(otherRigidBody.GetLayerName() == "Floor" || otherRigidBody.GetLayerName() == "NonMoving")
+        if(otherRigidBody.GetLayerName() == "Floor")
         {
             contactSurfaces++;
         }
@@ -601,13 +629,15 @@ class PlayerController_V2 : Script
         // Debug.Log("Collision Exit: " + other.name);
 
         Rigidbody_ otherRigidBody = other.getComponent<Rigidbody_>();
+        
 
         if(otherRigidBody == null)
         {
+
             return;
         }
 
-        if (otherRigidBody.GetLayerName() == "Floor" || otherRigidBody.GetLayerName() == "NonMoving")
+        if (otherRigidBody.GetLayerName() == "Floor")
         {
             contactSurfaces--;
         }
@@ -649,6 +679,7 @@ enum PlayerMoveStates
     InitState,
     GroundedMovement,
     AirborneMovement,
+    StartJump,
     Jumping,
     Dashing,
     Death,
