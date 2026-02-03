@@ -1,0 +1,482 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Ranged & Pump Room",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12181982469941743695,
+                "entityGUID": 9299678708419350605,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -38.80086135864258,
+                    "y": 0.0,
+                    "z": 21.258474349975586
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -38.80086135864258,
+                    "y": 0.0,
+                    "z": 21.258474349975586
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Origin Offset",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12181982469941743695,
+                "entityGUID": 16793668488363053131,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -113.7011947631836,
+                    "y": 0.0,
+                    "z": -23.407773971557617
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -74.90032958984375,
+                    "y": 0.0,
+                    "z": -44.6662483215332
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Ranged_Fall",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12181982469941743695,
+                "entityGUID": 4687992689990553657,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -84.20170593261719,
+                    "y": 15.229338645935059,
+                    "z": 44.674964904785156
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 29.499492645263672,
+                    "y": 15.229338645935059,
+                    "z": 68.0827407836914
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9314456143784706259,
+                "materialIds": [
+                    10202544879878570003
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "RangedEntry_Walls",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12181982469941743695,
+                "entityGUID": 11029060965328179255,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -84.20170593261719,
+                    "y": 15.229338645935059,
+                    "z": 44.674964904785156
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 29.499492645263672,
+                    "y": 15.229338645935059,
+                    "z": 68.0827407836914
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 11620299152998400209,
+                "materialIds": [
+                    4437937356844335129,
+                    14237770146002534423
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 3
+        },
+        {
+            "EntityData": {
+                "name": "RangedEntry_Floor",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12181982469941743695,
+                "entityGUID": 12181982469934993461,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -84.20170593261719,
+                    "y": 15.229338645935059,
+                    "z": 44.674964904785156
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 29.499492645263672,
+                    "y": 15.229338645935059,
+                    "z": 68.0827407836914
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4702770125357318351,
+                "materialIds": [
+                    5590858861451182101
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "name": "PumpRoom_Walls",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12181982469941743695,
+                "entityGUID": 2382149680776728627,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -84.20170593261719,
+                    "y": 15.229338645935059,
+                    "z": 44.674964904785156
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 29.499492645263672,
+                    "y": 15.229338645935059,
+                    "z": 68.0827407836914
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 16231985171425788109,
+                "materialIds": [
+                    16543613155216228369,
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "name": "PumpRoom_Floor",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 12181982469941743695,
+                "entityGUID": 1805688928473272369,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -84.20170593261719,
+                    "y": 15.229338645935059,
+                    "z": 44.674964904785156
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 29.499492645263672,
+                    "y": 15.229338645935059,
+                    "z": 68.0827407836914
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 667544859233353931,
+                "materialIds": [
+                    12508387889092263951
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 6
+        }
+    ]
+}
