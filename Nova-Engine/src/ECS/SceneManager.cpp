@@ -35,6 +35,7 @@ void SceneManager::loadScene(ResourceID id) {
 	Serialiser::deserialiseScene(ecs.registry, layers, scene->getFilePath().string.c_str());
 	currentScene = scene->id();
 
+	engine.scriptingAPIManager.cleanPreviousSceneScriptState();
 	engine.SystemsOnLoad();
 }
 
