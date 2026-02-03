@@ -35,6 +35,9 @@ public abstract class Enemy : Script
     protected NavMeshAgent_? navMeshAgent = null;
     [SerializableField]
     public GameObject [] enemyColliders;
+    // 1f = 100% 
+    [SerializableField]
+    public float spotCallSFXChance =  0.5f;
     /***********************************************************
         Local Variables
     ***********************************************************/

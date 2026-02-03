@@ -11,10 +11,7 @@
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 11921019885713047693,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 11921019885713047693
-                },
+                "entityGUID": 5919498488883315385,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -137,6 +134,13 @@
                                 "name": "explosionDuration",
                                 "data": {
                                     "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "collapseDuration",
+                                "data": {
+                                    "__variant_value": 0.5,
                                     "__variant_type": 18
                                 }
                             },

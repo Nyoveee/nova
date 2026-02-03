@@ -60,9 +60,6 @@ class Grunt : Enemy
     private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
     private float spawningTimeElapsed = 0f;
     private GameObject? hitbox = null;
-    /***********************************************************
-        Inspector Variables
-    ***********************************************************/
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -268,7 +265,11 @@ class Grunt : Enemy
         }
         if(GetDistanceFromPlayer() <= gruntStats.chasingRadius && HasLineOfSightToPlayer(gameObject))
         {
-            audioComponent.PlayRandomSound(spotSFX);
+            //roll a float between 0f and 1f, if it falls under SpotChance% play SpotSFX
+            if(Random.Range(0, 1) <= this.spotCallSFXChance)
+            {
+                audioComponent.PlayRandomSound(spotSFX);
+            }
             animator.PlayAnimation("Grunt Running");
             gruntState = GruntState.Chasing;
         }

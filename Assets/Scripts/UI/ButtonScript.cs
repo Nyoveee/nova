@@ -6,10 +6,23 @@ using ScriptingAPI;
 class ButtonScript : Script
 {
     public Scene nextScene;
+    /***********************************************************
+    Components
+    ***********************************************************/
+    private AudioComponent_ audioComponent;
 
+    /***********************************************************
+    Inspector Variables
+    ***********************************************************/
+    [SerializableField]
+    private Audio onHoverSFX;
+    [SerializableField]
+    private Audio onClickSFX;
     // This function is first invoked when game starts.
     protected override void init()
-    { }
+    {
+        audioComponent = getComponent<AudioComponent_>();
+    }
 
     // This function is invoked every fixed update.
     protected override void update()
@@ -17,6 +30,7 @@ class ButtonScript : Script
 
     public void onHover()
     {
+        audioComponent.PlaySound(onHoverSFX);
         Debug.Log("Hover");
     }
 
@@ -28,6 +42,7 @@ class ButtonScript : Script
 
     public void onReleased()
     {
+        audioComponent.PlaySound(onClickSFX);
         Debug.Log("Released");
 
         SceneAPI.ChangeScene(nextScene);
