@@ -6,6 +6,8 @@
 #include "resource.h"
 #include "animation.h"
 
+#include "systemResource.h"
+
 // If data members do not require explicit memory management, move semantics can be defaulted.
 // ModelAsset is an asset specific to the asset manager wrapping a model and indicates whether it is loaded or not.
 // Model is the a struct containing actual data for rendering.
@@ -40,6 +42,8 @@ public:
 	glm::vec3 extents;
 };
 
+class Material;
+
 template <>
 struct AssetInfo<Model> : public BasicAssetInfo {
 	AssetInfo() = default;
@@ -47,4 +51,5 @@ struct AssetInfo<Model> : public BasicAssetInfo {
 
 	float scale = 1.f;
 	std::vector<BoneIndex> sockets;
+	std::vector<TypedResourceID<Material>> materials { DEFAULT_PBR_MATERIAL_ID };
 };

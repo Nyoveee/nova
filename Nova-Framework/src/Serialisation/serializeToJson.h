@@ -291,6 +291,16 @@ inline Json serializeToJson<ResourceID>(ResourceID const& dataMember) {
 }
 
 template<>
+inline Json serializeToJson<NormalMap>(NormalMap const& dataMember) {
+	return static_cast<std::size_t>(static_cast<TypedResourceID<Texture>>(dataMember));
+}
+
+template<>
+inline Json serializeToJson<EntityGUID>(EntityGUID const& dataMember) {
+	return static_cast<size_t>(dataMember);
+}
+
+template<>
 inline Json serializeToJson<ControllerNodeID>(ControllerNodeID const& controllerId) {
 	return static_cast<size_t>(controllerId);
 }

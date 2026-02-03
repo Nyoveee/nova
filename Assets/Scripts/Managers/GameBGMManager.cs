@@ -1,6 +1,7 @@
 // Make sure the class name matches the asset name.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 using System.Runtime.CompilerServices;
 
 class GameBGMManager : Script
@@ -8,14 +9,17 @@ class GameBGMManager : Script
     private delegate void CurrentState();
     private enum BGMState
     {
+        Normal,
+        EndLevel,
         NonCombat,
         Transition,
         Combat,
     }
-    private BGMState bgmState = BGMState.NonCombat;
+    private BGMState bgmState = BGMState.Normal;
     private Dictionary<BGMState, CurrentState> updateState = new Dictionary<BGMState, CurrentState>();
     private float currentTransitionTimer = 0f;
     private float currentBufferTime;
+    private AudioComponent_ audioComponent;
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -23,11 +27,20 @@ class GameBGMManager : Script
     private float transitionTime;
     [SerializableField]
     private float bufferTime;
- 
+    [SerializableField]
+    private Audio bgmTrack1;
+    [SerializableField]
+    private Audio endTrackTransitBGM;
+
+
     // This function is first invoked when game starts.
     protected override void init()
     {
-        //AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-1st-Part_Loop_140bpm");
+        audioComponent = getComponent<AudioComponent_>();
+        //Play 'Vestigal_Perc-Action_BGM_Loop_140bpm'
+        audioComponent.PlayBGM(bgmTrack1);
+        updateState.Add(BGMState.Normal, NormalState);
+        updateState.Add(BGMState.EndLevel, EndLevelState);
         updateState.Add(BGMState.NonCombat, NonCombatState);
         updateState.Add(BGMState.Transition, TransitionState);
         updateState.Add(BGMState.Combat, CombatState);
@@ -55,9 +68,53 @@ class GameBGMManager : Script
         }
         return false;
     }
+    private bool IsLevelEnd()
+    {
+        GameObject[] gameObjects = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach(GameObject gameObject in gameObjects)
+        {
+            Enemy? enemy = gameObject.getScript<Enemy>();
+            if (enemy == null)
+                continue;
+        }
+        return true;
+    }
     /**********************************************************************
        Enemy States
    **********************************************************************/
+    private void NormalState()
+    {
+        if(!IsLevelEnd())
+        {
+            currentBufferTime -= Time.V_DeltaTime();
+            if(currentBufferTime <= 0f)
+            {
+                bgmState = BGMState.EndLevel;
+                currentTransitionTimer = 0f;
+            }
+        }
+        else
+            currentBufferTime = bufferTime;
+        //transition to EndLevelState at the end of level
+    }
+    private void EndLevelState()
+    {
+        //to be updated to at end of level
+        if (!IsInCombat())
+        {
+            currentBufferTime -= Time.V_DeltaTime();
+            if (currentBufferTime <= 0f)
+            {
+                bgmState = BGMState.Transition;
+                //Play 'Vestigal_Perc-Action_End-Hit_Fire-Every_1.714sec_From-Loop-Start_140bpm' at end of action/level
+                audioComponent.PlayBGM(endTrackTransitBGM);
+                currentTransitionTimer = 0f;
+                return;
+            }
+        }
+        else
+            currentBufferTime = bufferTime;
+    }
     private void NonCombatState()
     {
         if (IsInCombat())
@@ -66,7 +123,8 @@ class GameBGMManager : Script
             if (currentBufferTime <= 0f)
             {
                 bgmState = BGMState.Transition;
-                //AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-Transition_Linear_140bpm");
+                //Play 'Vestigal_Perc-Action_BGM_Loop_140bpm'
+                
                 currentTransitionTimer = 0f;
             }
         }
@@ -79,7 +137,6 @@ class GameBGMManager : Script
         if(currentTransitionTimer >= transitionTime){
             if (IsInCombat()){
                 bgmState = BGMState.Combat;
-                //AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-2nd-Part_DubStep_Loop_140bpm");
                 currentBufferTime = bufferTime;
                 return;
             }
@@ -95,7 +152,8 @@ class GameBGMManager : Script
             if (currentBufferTime <= 0f)
             {
                 bgmState = BGMState.Transition;
-                //AudioAPI.PlayBGM(gameObject, "BGM_Vestigial_Nu_BGM-Transition_Linear_140bpm");
+                //Play 'Vestigal_Perc-Action_End-Hit_Fire-Every_1.714sec_From-Loop-Start_140bpm' at end of action/level
+                audioComponent.PlayBGM(endTrackTransitBGM);
                 currentTransitionTimer = 0f;
                 return;
             }

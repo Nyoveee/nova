@@ -14,7 +14,7 @@ class UltimateController : Script
     
     public GameObject ultimatePose;
     public MeshRenderer_ originalGun;
-    public PlayerController playerController;
+    public PlayerController_V2 playerController;
     public PlayerWeaponController playerWeaponController;
 
     public Sequence_ sequence;
@@ -97,7 +97,7 @@ class UltimateController : Script
             return;
         }
 
-        AudioAPI.PlaySound(gameObject, "sniper_specialFire_01");
+        // AudioAPI.PlaySound(gameObject, "sniper_specialFire_01");
 
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
 

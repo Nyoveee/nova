@@ -1,19 +1,17 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 4,
     "Entities": [
         {
             "EntityData": {
                 "name": "Ichor",
                 "tag": "Ichor",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 14493050257245634575,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 14493050257245634575
-                },
+                "entityGUID": 4563132147398870051,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -81,6 +79,7 @@
                 },
                 "mass": 0.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -117,6 +116,13 @@
                                 "name": "expandTime",
                                 "data": {
                                     "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "pullTime",
+                                "data": {
+                                    "__variant_value": 0.20000000298023224,
                                     "__variant_type": 18
                                 }
                             }
@@ -232,7 +238,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 1
+            "id": 4
         }
     ]
 }

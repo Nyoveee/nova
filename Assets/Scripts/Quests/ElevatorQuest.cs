@@ -20,26 +20,37 @@ class ElevatorQuest : Quest
     [SerializableField]
     private Audio elevatorSpeechAudio;
     [SerializableField]
-    private GameUIManager gameUIManager;
+    private string speaker;
     [SerializableField]
     private List<string> dialogues;
     [SerializableField]
     private List<float> timings;
     [SerializableField]
     private float finalDialogueTime;
+    [SerializableField]
+    private float delayForDialogue = 3;
 
     private AudioComponent_ audioComponent;
+    private GameUIManager gameUIManager;
     protected override void init()
     {
         audioComponent = getComponent<AudioComponent_>();
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
     }
 
     public override void OnSuccess()
     {
         Destroy(checkPointIndicator);
         elevator.CloseTutorialDoor();
-        audioComponent.PlaySound(elevatorSpeechAudio);
-        gameUIManager.ActivateDialogue(dialogues, timings, finalDialogueTime);
+
+        Invoke(() =>
+        {
+            audioComponent.PlaySound(elevatorSpeechAudio);
+            gameUIManager.ActivateDialogue(speaker, dialogues, timings, finalDialogueTime);
+        }, delayForDialogue);
+        
+        missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
+        questInformationContainer.transform.position = newQuestInformationUILocation;
     }
 
     public override void OnFail(Transform_ playerTransform)

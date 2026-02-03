@@ -1,5 +1,5 @@
 {
-    "selectedShader": 1,
+    "selectedShader": 9989213234511709241,
     "uniformDatas": [
         {
             "glslType": "sampler2D",
@@ -18,11 +18,11 @@
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "NormalMap",
             "identifier": "normalMap",
             "value": {
                 "__variant_value": 64889219875176535,
-                "__variant_type": 9
+                "__variant_type": 13
             }
         },
         {
@@ -36,14 +36,6 @@
         {
             "glslType": "bool",
             "identifier": "toUsePackedMap",
-            "value": {
-                "__variant_value": true,
-                "__variant_type": 0
-            }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "toUseNormalMap",
             "value": {
                 "__variant_value": true,
                 "__variant_type": 0
@@ -96,6 +88,22 @@
         {
             "glslType": "float",
             "identifier": "emissiveStrength",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "sniperBarrelGlow",
+            "value": {
+                "__variant_value": 10133143704692950005,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "glowStrength",
             "value": {
                 "__variant_value": 0.0,
                 "__variant_type": 3

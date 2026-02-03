@@ -8,7 +8,7 @@ using System;
 public abstract class Gun : Script
 {
     [SerializableField]
-    private GameUIManager gameUIManager;
+    private Prefab contactSparkVFXPrefab;
 
     [SerializableField]
     private int initialMaxAmmo;
@@ -19,8 +19,12 @@ public abstract class Gun : Script
     [SerializableField]
     private int initialMaxSp = 30;
 
+    private GameUIManager gameUIManager;
+
+
     // Private backing field
     private int currentAmmo;
+
 
     // Public property with get and set accessors
     public int CurrentAmmo
@@ -96,8 +100,10 @@ public abstract class Gun : Script
         currentSp = initialCurrentSp;
 
         player = GameObject.FindWithTag("Player");
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         gameUIManager?.SetAmmoText(currentAmmo, maxAmmo);
         gameUIManager?.SetUltimateBarUI(currentSp, maxSp);
+
     }
 
     public abstract bool Fire();
@@ -127,6 +133,12 @@ public abstract class Gun : Script
         if (enemyColliderScript != null)
         {
             enemyColliderScript.OnColliderShot(damage,Enemy.EnemydamageType.WeaponShot,collidedEntity.tag);
+            direction.y = 0;
+            direction.Normalize();
+            // LookRotation is based on Z axis, rotate the emitter to face the z axis first
+            GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, result.Value.point, Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1,0,0)));
+           
+            contactSparkVFX.getComponent<ParticleEmitter_>().emit();
             return true;
         }
 

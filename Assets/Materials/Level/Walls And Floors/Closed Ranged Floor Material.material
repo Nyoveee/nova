@@ -1,0 +1,122 @@
+{
+    "selectedShader": 1,
+    "uniformDatas": [
+        {
+            "glslType": "sampler2D",
+            "identifier": "albedoMap",
+            "value": {
+                "__variant_value": 15415971528419819593,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "packedMap",
+            "value": {
+                "__variant_value": 9866877080848941059,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "NormalMap",
+            "identifier": "normalMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 13
+            }
+        },
+        {
+            "glslType": "sampler2D",
+            "identifier": "emissiveMap",
+            "value": {
+                "__variant_value": 8,
+                "__variant_type": 9
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "toUsePackedMap",
+            "value": {
+                "__variant_value": true,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "bool",
+            "identifier": "toUseEmissiveMap",
+            "value": {
+                "__variant_value": false,
+                "__variant_type": 0
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "roughness",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "metallic",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "NormalizedFloat",
+            "identifier": "occulusion",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 12
+            }
+        },
+        {
+            "glslType": "Color",
+            "identifier": "colorTint",
+            "value": {
+                "__variant_value": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                },
+                "__variant_type": 10
+            }
+        },
+        {
+            "glslType": "float",
+            "identifier": "emissiveStrength",
+            "value": {
+                "__variant_value": 0.0,
+                "__variant_type": 3
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVTiling",
+            "value": {
+                "__variant_value": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "__variant_type": 4
+            }
+        },
+        {
+            "glslType": "vec2",
+            "identifier": "UVOffset",
+            "value": {
+                "__variant_value": {
+                    "x": 0.0,
+                    "y": 0.0
+                },
+                "__variant_type": 4
+            }
+        }
+    ],
+    "blendingConfig": "Disabled",
+    "depthTestingMethod": "DepthTest",
+    "cullingConfig": "Enable"
+}

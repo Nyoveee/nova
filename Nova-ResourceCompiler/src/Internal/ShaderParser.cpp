@@ -122,7 +122,7 @@ bool ParseUniforms(std::string& data, CustomShader::ShaderParserData& shaderPars
 
 bool ParseVertexShader(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
 	// Get full definition
-	std::regex vertexShaderRegex{ R"(Vert\s*\{[\#\{\}\<\>\_\*\-\+/\w\s=(.,);\[\]]+\}[\#\{\}\<\>\_\*\-\+/\w\s=(.,);\[\]]*Frag\{)" };
+	std::regex vertexShaderRegex{ R"(Vert\s*\{[\#\{\}\<\>\_\*\-\'\@\:\?\#\^\&\+/\w\s=(.,);\[\]]+\}[\#\{\}\<\>\_\*\-\'\@\:\?\#\^\&\+/\w\s=(.,);\[\]]*Frag\{)" };
 
 	auto vertexShaderRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data), vertexShaderRegex) };
 	ptrdiff_t count{ std::distance(vertexShaderRegexBegin,std::sregex_iterator()) };
@@ -151,7 +151,7 @@ bool ParseVertexShader(std::string& data, CustomShader::ShaderParserData& shader
 
 bool ParseFragmentShader(std::string& data, CustomShader::ShaderParserData& shaderParserData) {
 	// Get full definition
-	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\#\{\}\<\>\_\*\-\+/\w\s=(.,);\[\]]+\})" };
+	std::regex fragmentShaderRegex{ R"(Frag\s*\{[\#\{\}\<\>\_\*\-\'\@\:\?\#\^\&\+/\w\s=(.,);\[\]]+\})" };
 	auto fragmentShaderRegexBegin{ std::sregex_iterator(std::begin(data),std::end(data),fragmentShaderRegex) };
 	ptrdiff_t count{ std::distance(fragmentShaderRegexBegin,std::sregex_iterator()) };
 	// Check Count

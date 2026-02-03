@@ -1,6 +1,7 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
 using System.ComponentModel;
 using static ThrowableRifle;
 
@@ -23,6 +24,8 @@ class ThrowableRifle : Script
     // ==================================
     // Parameters
     // ==================================
+    [SerializableField]
+    private Prefab contactSparkVFXPrefab;
     [SerializableField]
     private float maxFlyingTime = 1f;
     [SerializableField]
@@ -65,8 +68,21 @@ class ThrowableRifle : Script
     private float currentAmmoGained = 0;
     private float totalAmmoGained = 0;
 
+    [SerializableField]
+    private Audio pickupSFX;
+    [SerializableField]
+    private List<Audio> throwSFX;
+    [SerializableField]
+    private List<Audio> hitWallSFX;
+    [SerializableField]
+    private List<Audio> hitSFX;
+    // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_ audioComponent;
+
     // ==================================
-    // private variables
+    // Private Variables
     // ==================================
     [SerializableField]
     private float calculatedTrueDamage;
@@ -97,6 +113,7 @@ class ThrowableRifle : Script
     protected override void init()
     {
         weaponRB = getComponent<Rigidbody_>();
+        audioComponent = getComponent<AudioComponent_>();
         //var gameObjectsChild  = gameObject.GetChildren();
 
         //foreach (var gameObject in gameObjectsChild)
@@ -107,7 +124,7 @@ class ThrowableRifle : Script
         //    }
         //}
 
-       throwingWeaponState = ThrowingWeaponState.Seeking;
+        throwingWeaponState = ThrowingWeaponState.Seeking;
         
 
 
@@ -125,7 +142,7 @@ class ThrowableRifle : Script
 
         weaponRB.SetVelocity(angledFlightPath * weaponFlyingSpeed);
         angledFlightPath.Normalize();
-        gameObject.transform.rotation = Quaternion.LookRotation(angledFlightPath);
+        gameObject.transform.rotation = Quaternion.LookRotation(-angledFlightPath);
 
         
 
@@ -211,6 +228,7 @@ class ThrowableRifle : Script
                 
                 if(weaponSpinSequence != null)
                 weaponSpinSequence.play();
+                //audioComponent.PlayRandomSound(hitWallSFX);
                 throwingWeaponState = ThrowingWeaponState.HitDelay;
                 timeElapsed = 0;
                 break;
@@ -259,7 +277,7 @@ class ThrowableRifle : Script
 
        Vector3 playerPos =  playerGameobject.transform.position;
        playerPos.y += playerHeight;
-       Vector3 directionToTarget = playerPos - gameObject.transform.position;
+       Vector3 directionToTarget = gameObject.transform.position - playerPos;
         directionToTarget.Normalize();
 
         float steerPower = timeElapsed / maxReturnTime;
@@ -370,7 +388,7 @@ class ThrowableRifle : Script
         playerPosition.y += playerHeight;
 
 
-        Vector3 directionToTarget = playerPosition - gameObject.transform.position;
+        Vector3 directionToTarget = gameObject.transform.position - playerPosition;
         directionToTarget.Normalize();
        
        gameObject.transform.rotation = Quaternion.LookRotation(directionToTarget);
@@ -390,6 +408,7 @@ class ThrowableRifle : Script
 
         if ( (other.tag == "Wall" || other.tag == "Floor") && throwingWeaponState == ThrowingWeaponState.Flying)
         {
+            //audioComponent.PlayRandomSound(hitWallSFX);
             weaponRB.SetVelocity(Vector3.Zero());
             throwingWeaponState = ThrowingWeaponState.HitEnviroment;
 
@@ -413,6 +432,8 @@ class ThrowableRifle : Script
             {
                 hasDamageList.Add(candidateobject);
                 other.getScript<EnemyCollider>().OnColliderShot(returnDamage, Enemy.EnemydamageType.ThrownWeapon, other.tag);
+                GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, gameObject.transform.position);
+                contactSparkVFX.getComponent<ParticleEmitter_>().emit();
             }
 
         }
@@ -421,16 +442,22 @@ class ThrowableRifle : Script
 
 
     void DamageEnemy()
-    { 
-        
+    {
+        //audioComponent.PlayRandomSound(hitSFX);
         targetObject.getScript<EnemyCollider>().OnColliderShot(calculatedTrueDamage,Enemy.EnemydamageType.ThrownWeapon,targetObject.tag);
-    
+        Vector3 direction = targetObject.transform.position - gameObject.transform.position;
+        direction.y = 0;
+        direction.Normalize();
+        // LookRotation is based on Z axis, rotate the emitter to face the z axis first
+        GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, gameObject.transform.position,Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1, 0, 0)));
+        contactSparkVFX.getComponent<ParticleEmitter_>().emit();
 
     }
 
     void Receive()
     {
         playerGameobject.getScript<PlayerWeaponController>().WeaponCollected(mappedWeapon);
+        //audioComponent.PlaySound(pickupSFX);
 
         //update player health
         if (playerGameobject.getScript<PlayerController>() != null)

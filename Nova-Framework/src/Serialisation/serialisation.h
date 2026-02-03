@@ -34,10 +34,10 @@ namespace Serialiser {
 
 	// Given the prefab file path, this loads all the details of into the prefab registry, and returning the root entity for easy instantiation in the future.
 	// Also returns the mapping of prefab file entity to prefab entity.
-	FRAMEWORK_DLL_API PrefabEntityID deserialisePrefab(const char* filepath, ResourceID prefabResourceId, entt::registry& prefabRegistry, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping);
+	FRAMEWORK_DLL_API PrefabEntityID deserialisePrefab(const char* filepath, ResourceID prefabResourceId, entt::registry& prefabRegistry, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping, std::unordered_map<EntityGUID, PrefabEntityID>& entityGuidToPrefabId);
 	
 	// Deserialise a given prefab file entity ID in the json file (json file is represented by `jsonVectorOfEntities`), and returns the mapped prefab entity id.
-	FRAMEWORK_DLL_API PrefabEntityID deserialisePrefabRecursive(std::vector<Json> const& jsonVectorOfEntities, PrefabFileEntityID prefabFileEntityID, entt::registry& prefabRegistry, ResourceID prefabResourceId, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping);
+	FRAMEWORK_DLL_API PrefabEntityID deserialisePrefabRecursive(std::vector<Json> const& jsonVectorOfEntities, PrefabFileEntityID prefabFileEntityID, entt::registry& prefabRegistry, ResourceID prefabResourceId, std::unordered_map<PrefabFileEntityID, PrefabEntityID>& mapping, std::unordered_map<EntityGUID, PrefabEntityID>& entityGuidToPrefabId);
 	
 	FRAMEWORK_DLL_API void serialisePrefab(entt::registry& registry, entt::entity entity, std::ofstream& file);
 	FRAMEWORK_DLL_API void serialisePrefabRecursive(entt::registry& registry, entt::entity entity, std::vector<Json>& jsonVec, bool checkParent);

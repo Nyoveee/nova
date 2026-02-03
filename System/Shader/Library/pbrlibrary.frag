@@ -149,15 +149,19 @@ layout(std430, binding = 7) buffer clusterSSBO
 {
     Cluster clusters[];
 };
+layout(std430, binding = 9) buffer OldBones {
+    mat4 oldBonesFinalMatrices[];
+};
 
 // Samplers..
 layout (binding = 0) uniform sampler2D directionalShadowMap;
 layout (binding = 1) uniform sampler2D ssao;
 layout (binding = 2) uniform sampler2D brdfLUT;
-layout (binding = 3) uniform sampler2DArray spotlightShadowMaps;
-layout (binding = 4) uniform samplerCube diffuseIrradianceMap;
-layout (binding = 5) uniform samplerCube prefilterMap;
-layout (binding = 6) uniform samplerCubeArray reflectionProbesPrefilterMap;
+layout (binding = 3) uniform sampler2D depthTexture;
+layout (binding = 4) uniform sampler2DArray spotlightShadowMaps;    
+layout (binding = 5) uniform samplerCube diffuseIrradianceMap;
+layout (binding = 6) uniform samplerCube prefilterMap;
+layout (binding = 7) uniform samplerCubeArray reflectionProbesPrefilterMap;
 
 layout (location = 0) out vec4 FragColor; 
 layout (location = 1) out vec3 gNormal; // for depth pre pass..
@@ -171,8 +175,12 @@ in VS_OUT {
     vec4 fragDirectionalLightPos;
     vec4 fragOldClipPos;
     vec4 fragCurrentClipPos;
+    vec3 boundingBoxUVW;
     mat3 TBN;
 } fsIn;
+
+// location will be cached and query in runtime.. (no this is a lie)
+uniform bool toUseNormalMap;
 
 // ====================================
 // End of pipeline setup. 
@@ -201,6 +209,9 @@ vec3 getPrefilteredColor            (Cluster cluster, float roughness, vec3 refl
 
 vec3 boxProjectionReflection        (vec3 reflectDir, vec3 fragmentPos, vec3 probeMin, vec3 probeMax, vec3 probePos);
 float getBlendFactor                (vec3 position, ReflectionProbe reflectionProbe);
+
+float linearizeDepth                (float depth);
+vec3  getNormalFromMap              (sampler2D normalMap, vec2 uv); 
 
 // =================================================================================
 // IMPLEMENTATION DETAILS.
@@ -676,6 +687,24 @@ vec2 calculateVelocityUV(vec4 fragCurrentClipPos, vec4 fragOldClipPos) {
     
     // return delta..
     return (fragCurrentClipPos - fragOldClipPos).xy;
+}
+
+vec3 getNormalFromMap(sampler2D normalMap, vec2 uv) {
+    // We assume that our normal map is compressed into BC5.
+    // Since BC5 only stores 2 channels, we need to calculate z in runtime.
+    vec2 bc5Channels = vec2(texture(normalMap, uv));
+    
+    // We shift the range from [0, 1] to  [-1, 1]
+    bc5Channels = bc5Channels * 2.0 - 1.0; 
+
+    // We calculate the z portion of the normal..
+    vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));
+    return normalize(fsIn.TBN * sampledNormal);
+}
+
+float linearizeDepth(float depth) {
+    float ndcDepth = depth * 2.0 - 1.0; 
+    return (2.0 * zNear * zFar) / (zFar + zNear - ndcDepth * (zFar - zNear));
 }
 
 // User shader entry point.

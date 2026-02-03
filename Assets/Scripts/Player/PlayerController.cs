@@ -2,6 +2,8 @@
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
 
+using ScriptingAPI;
+
 class PlayerController : Script
 {
 
@@ -12,6 +14,12 @@ class PlayerController : Script
     // Jump
     public float jumpStrength = 100f;
     public int maxJumpCount = 2;
+    private int jumpsBeforeSound = 5;
+    private int jumpsDone = 0;
+
+    // Hurt
+    private int hitsBeforeSound = 3;
+    private int hitsTaken = 0;
 
     // Dash
     public float dashDuration = 1f;
@@ -27,14 +35,31 @@ class PlayerController : Script
 
     [SerializableField]
     private Transform_? playerOrientation = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
-    [SerializableField]
-    private GameUIManager? gameUIManager = null;
 
     // ==================================
     // Internal / Runtime variables..
     // ==================================
+    private GameUIManager gameUIManager;
     private Transform_? transform;
     private Rigidbody_? rigidbody;
+    private AudioComponent_? audioComponent;
+
+    // Audio
+    [SerializableField]
+    private List<Audio> deathSFX;
+    [SerializableField]
+    private List<Audio> hurtSFX;
+    [SerializableField]
+    private List<Audio> dashSFX;
+    [SerializableField]
+    private List<Audio> jumpVOSFX;
+    [SerializableField]
+    private List<Audio> jumpSFX;
+    [SerializableField]
+    private List<Audio> footstepSFX;
+    [SerializableField]
+    private float timeBetweenSteps = 0.36f;
+    private float timeSinceLastFootstep = 0f;
 
     // WASD
     private bool isMovingForward = false;
@@ -65,6 +90,8 @@ class PlayerController : Script
     {
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
+        audioComponent = getComponent<AudioComponent_>();
 
         CameraAPI.LockMouse();
 
@@ -93,7 +120,7 @@ class PlayerController : Script
         // ===================================
         // Check if its grounded..
         // ===================================
-        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 14f, gameObject);
+        var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), 10f, gameObject);
         if (result != null)
         {
             isGrounded = true;
@@ -101,9 +128,10 @@ class PlayerController : Script
             // this branch is only executed once, per landing..
             if (wasInMidAir)
             {
+
                 wasInMidAir = false;
                 // @TODO: play landing sound..
-                jumpCount = 0;
+            
             }
         }
         else
@@ -216,6 +244,12 @@ class PlayerController : Script
     ***********************************************************/
     public void TakeDamage(float damage)
     {
+        hitsTaken++;
+        if(hitsTaken >= hitsBeforeSound)
+        {
+            audioComponent.PlayRandomSound(hurtSFX);
+            hitsTaken = 0;
+        }
         currentHealth = Mathf.Max(0, currentHealth - damage);
         //Debug.Log("Player health: " + currentHealth);
         if (gameUIManager != null)
@@ -224,6 +258,7 @@ class PlayerController : Script
         // Placeholder for a player death 
         if (currentHealth <= 0f)
         {
+            audioComponent.PlayRandomSound(deathSFX);
             OnPlayerDeath?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -283,6 +318,7 @@ class PlayerController : Script
             {
                 Vector3 newVelocity = new Vector3(movingVector.x, rigidbody.GetVelocity().y, movingVector.z);
                 rigidbody.SetVelocity(newVelocity);
+                HandleFootstepSound();
             }
             else
             {
@@ -319,10 +355,23 @@ class PlayerController : Script
         }
 
         // constantly apply velocity.
-        rigidbody.SetVelocity(dashVector * dashStrength);
+        // rigidbody.SetVelocity(dashVector * dashStrength);
+        //rigidbody.AddImpulse(dashVector * dashStrength);
         dashTimeElapsed += Time.V_FixedDeltaTime();
     }
 
+    private void HandleFootstepSound()
+    {
+        if (isGrounded && rigidbody.GetVelocity != Vector3.Zero)
+        {
+            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            if (timeSinceLastFootstep >= timeBetweenSteps)
+            {
+                audioComponent.PlayRandomSound(footstepSFX);
+                timeSinceLastFootstep = 0;
+            }
+        }
+    }
     //private void CameraMovement(float deltaMouseX, float deltaMouseY)
     //{
     //    // We rotate our parent in the y axis..
@@ -381,14 +430,17 @@ class PlayerController : Script
             return;
         }
 
-        if (jumpCount < maxJumpCount && !isDashing)
+        if (isGrounded && !isDashing)
         {
-
-            AudioAPI.PlaySound(gameObject, jumpCount == 0 ? "jump1_sfx" : "jump2_sfx");
+            jumpsDone++;
+            if(jumpsDone >= jumpsBeforeSound)
+            {
+                audioComponent.PlayRandomSound(jumpVOSFX);
+                jumpsDone = 0;
+            }
             Vector3 currentVelocity = rigidbody.GetVelocity();
             currentVelocity.y = 1f * jumpStrength;
             rigidbody.SetVelocity(currentVelocity);
-            jumpCount++;
         }
     }
 
@@ -399,11 +451,12 @@ class PlayerController : Script
             return;
         }
 
-        AudioAPI.PlaySound(gameObject, "dash1_sfx");
+
         // We initialise dashing mechanic..
         isDashing = true;
         dashTimer -= dashCooldown;
         dashTimeElapsed = 0f;
+        audioComponent.PlayRandomSound(dashSFX);
 
         // Determine dashing vector..
         if (isMovingBackward)
@@ -425,7 +478,8 @@ class PlayerController : Script
         }
 
         dashVector.Normalize();
-        rigidbody.SetVelocity(dashVector * dashStrength);
+        //rigidbody.SetVelocity(dashVector * dashStrength);
+        rigidbody.AddImpulse(dashVector * dashStrength);
     }
 
     /***********************************************************

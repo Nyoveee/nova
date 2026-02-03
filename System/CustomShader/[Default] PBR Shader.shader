@@ -9,11 +9,10 @@ Tags{
 Properties{
     sampler2D albedoMap;
     sampler2D packedMap;
-    sampler2D normalMap;
+    NormalMap normalMap;
     sampler2D emissiveMap;
 
     bool toUsePackedMap;
-    bool toUseNormalMap;
     bool toUseEmissiveMap;
 
     NormalizedFloat roughness;
@@ -50,7 +49,7 @@ Frag{
         _metallic   = map.r;
         _roughness  = map.g;
         _occulusion = map.b;
-    } 
+    }     
     else {
         _roughness  = roughness;
         _metallic   = metallic;
@@ -60,16 +59,7 @@ Frag{
     // === Handling normal ===
     vec3 _normal;
     if(toUseNormalMap) {
-        // We assume that our normal map is compressed into BC5.
-        // Since BC5 only stores 2 channels, we need to calculate z in runtime.
-        vec2 bc5Channels = vec2(texture(normalMap, uv));
-        
-        // We shift the range from [0, 1] to  [-1, 1]
-        bc5Channels = bc5Channels * 2.0 - 1.0; 
-
-        // We calculate the z portion of the normal..
-        vec3 sampledNormal = vec3(bc5Channels, sqrt(max(0.0, 1.0 - dot(bc5Channels.xy, bc5Channels.xy))));
-        _normal = normalize(fsIn.TBN * sampledNormal);
+        _normal = getNormalFromMap(normalMap, uv); 
     }
     else {
         _normal = normalize(fsIn.normal);
@@ -84,6 +74,5 @@ Frag{
     vec4 albedo = texture(albedoMap, uv);
     vec3 pbrColor = PBRCaculation(vec3(albedo) * colorTint, _normal, _roughness, _metallic, _occulusion);
 
-    return vec4(emissiveColor + pbrColor, 1.0);
-    // return vec4(fsIn.normal, 1);
+    return vec4(emissiveColor + pbrColor, albedo.a);
 }

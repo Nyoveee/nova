@@ -5,6 +5,12 @@ class ShootTutorialQuest : Quest
 {
     [SerializableField]
     private GameObject grunt;
+
+    [SerializableField]
+    private float questCompleteDelay = 3f;
+
+    private bool succeeded;
+
     public override void OnFail(Transform_ playerTransform)
     {
         if (playerTransform != null && playerCheckpoint != null)
@@ -12,8 +18,15 @@ class ShootTutorialQuest : Quest
     }
 
     public override void UpdateQuest() {
-        if (grunt == null)
-            SetQuestState(QuestState.Success);
+        if (!succeeded && grunt != null && grunt.getScript<Grunt>().IsDead())
+        {
+            succeeded = true;
+
+            Invoke(() =>
+            {
+                SetQuestState(QuestState.Success);
+            }, questCompleteDelay);
+        }
     }
 
 }

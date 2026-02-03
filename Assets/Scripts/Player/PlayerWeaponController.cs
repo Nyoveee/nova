@@ -14,12 +14,12 @@ class PlayerWeaponController : Script
     // Inspector variables
     // ===========================================
     public required ParticleEmitter_ muzzle;     // for gun origin.
-    public required GameUIManager gameUIManager;
     public required Transform_ gunHolder;
     public required Transform_ throwPosition;
     public required Transform_ gunPosition;
     public required Transform_ playerCamera;
     public required Sniper sniper;
+    public required MeshRenderer_ sniperMesh;
     public required GameObject playerCollider;
     public required Prefab thrownRiflePrefab;
     public required Prefab ammoTrailPrefab;
@@ -28,15 +28,34 @@ class PlayerWeaponController : Script
     public float armingTime = 0.3f;
     public float bulletSpeed;
     public float swapWeaponCooldown = 0.2f;
+    
+    public float glowDownDuration = 1f;
+    public float peakGlowStrength = 1.5f;
+    public float noAmmoGlowStrength = 0.6f;
+    public float ammoGlowScalePower = 2f;
+
+    // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_ audioComponent;
 
     // ===========================================
     // Runtime variables
     // ===========================================
+    private GameUIManager gameUIManager;
     private Gun currentlyHeldGun;
     private float timeElapsed;
     private float armTimeElapsed = 0f;
 
     public WeaponControlStates weaponControlStates;
+
+    private float glowChangeDuration = 0f;
+    private float glowTimeElapsed = 0f;
+    private float initialGlowStrength;
+    private float finalGlowStrength;
+
+    const int SNIPER_MATERIAL_MATERIAL_INDEX = 0;
+    const int SNIPER_BARREL_MATERIAL_INDEX = 1;
 
     public enum WeaponControlStates
     { 
@@ -47,50 +66,34 @@ class PlayerWeaponController : Script
         ThrowReady,
         AwaitWeaponReturn,
         WeaponRecieve,
-    
-    
-    
-    
     }
 
    // private SetWeaponActive setWeaponActiveDelegate;
 
     protected override void init()
     {
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         MapKey(Key.MouseLeft, Fire);
         MapKey(Key.MouseRight, Arming,Disarming);
-
 
         //ScrollCallback(SwapWeaponHandler);
         weaponControlStates = WeaponControlStates.WeaponFree;
         currentlyHeldGun = sniper;
+
+        audioComponent = getComponent<AudioComponent_>();
     }
 
-    // This function is invoked every fixed update.
+    // This function is invoked every update.
     protected override void update()
     {
-        //if (recentlySwappedWeapon)
-        //{
-        //    if (timeElapsed < swapWeaponCooldown) {
-        //        timeElapsed += Time.V_DeltaTime();
-        //    }
-        //    else
-        //    {
-        //        recentlySwappedWeapon = false;
-        //        timeElapsed = 0;
-
-        //        // after some duration, set weapon active..
-        //        setWeaponActiveDelegate();
-        //    }
-            
-        //    return;
-        //}
+        // Regardless of weapon state, we handle the glow VFX of sniper..
+        handleWeaponGlow();
 
         switch (weaponControlStates)
         {
             case WeaponControlStates.Busy:
                 { //anystate you want to lock weaponcontrols
-                 
+
                 }
                 break;
             case WeaponControlStates.WeaponFree:
@@ -100,18 +103,18 @@ class PlayerWeaponController : Script
 
                     }
                     else if (currentlyHeldGun.CurrentAmmo <= 0)
-                    { 
+                    {
                         weaponControlStates = WeaponControlStates.ArmingThrow;
-                        
+
                     }
-                
+
                 }
                 break;
             case WeaponControlStates.ArmingThrow:
-                { 
+                {
                     armTimeElapsed += Time.V_DeltaTime();
 
-                    float t  = armTimeElapsed / armingTime;
+                    float t = armTimeElapsed / armingTime;
 
 
                     if (t >= 1)
@@ -124,7 +127,7 @@ class PlayerWeaponController : Script
                         gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
 
                     }
-                    
+
 
                 }
                 break;
@@ -139,7 +142,7 @@ class PlayerWeaponController : Script
                         weaponControlStates = WeaponControlStates.WeaponFree;
                         armTimeElapsed = 0;
                     }
-                    else 
+                    else
                     {
                         gunHolder.localPosition = Vector3.Lerp(gunPosition.localPosition, throwPosition.localPosition, t);
                     }
@@ -152,29 +155,39 @@ class PlayerWeaponController : Script
                 break;
             case WeaponControlStates.AwaitWeaponReturn:
                 {
-                    
+
                 }
                 break;
             case WeaponControlStates.WeaponRecieve:
                 break;
         }
-
-
-
-        
     }
 
+    // There are 3 parameters guiding the weapon glow
+    // Initial glow strength, final glow strength, and current time.
+
+    // The purpose of this function is to lerp between the 2 based on current time, and set the material's glow
+    // strength accordingly.
+    private void handleWeaponGlow()
+    {
+        if(glowTimeElapsed < glowChangeDuration)
+        {
+            float interval = glowTimeElapsed / glowChangeDuration;
+            float glowIntensity = Mathf.Interpolate(initialGlowStrength, finalGlowStrength, interval, 1);
+
+            sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "glowStrength", glowIntensity);
+            sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "glowStrength", glowIntensity);
+        }
+
+        glowTimeElapsed += Time.V_DeltaTime();
+    }
 
     private void Arming()
     {
         if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree ) )
         {
-
             weaponControlStates = WeaponControlStates.ArmingThrow;
-
         }
-    
-    
     }
 
     private void Disarming()
@@ -185,28 +198,36 @@ class PlayerWeaponController : Script
             weaponControlStates = WeaponControlStates.DisarmingFree;
 
         }
-
-
     }
 
 
     private void Fire()
     {
-        //if (weaponControlStates != WeaponControlStates.WeaponFree)
-        //{
-        //    return;
-
-        //}
-
-
         if(weaponControlStates == WeaponControlStates.WeaponFree && currentlyHeldGun.Fire())
         {
+            // ---------------------------------------------------------------
+            // The moment this gun fires, the brightness of the glow spikes.
+            sniperMesh.setMaterialFloat(SNIPER_BARREL_MATERIAL_INDEX, "glowStrength", peakGlowStrength);
+            sniperMesh.setMaterialFloat(SNIPER_MATERIAL_MATERIAL_INDEX, "glowStrength", peakGlowStrength);
+
+            // Specify lerp properties..
+            glowChangeDuration = glowDownDuration;
+            glowTimeElapsed = 0;
+
+            initialGlowStrength = peakGlowStrength;
+
+            // The final glow strength scales with how low the ammo count is..
+            finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
+            Debug.Log(finalGlowStrength);
+            // ---------------------------------------------------------------
+
+            // Emit particles at muzzle position..
             muzzle.emit(30);
 
-
+            // We raycast only to specific physics layers..
             string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
-            // Raycast..
             RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f, mask);
+            
             if (result != null)
             { 
                 GameObject ammoTrail = Instantiate(ammoTrailPrefab, muzzle.gameObject.transform.position, muzzle.gameObject.transform.rotation);

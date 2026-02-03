@@ -28,45 +28,10 @@
 #include "Detour/Detour/DetourNavMesh.h"
 
 #include "materialConfig.h"
+#include "rendererHeader.h"
 
 class Engine;
 class ResourceManager;
-
-enum class MeshType {
-	Normal,
-	Skinned
-};
-
-struct MeshBOs {
-	BufferObject positionsVBO{ BufferObject{0} };			// VA 0
-	BufferObject textureCoordinatesVBO{ BufferObject{0} };	// VA 1
-	BufferObject normalsVBO{ BufferObject{0} };				// VA 2
-	BufferObject tangentsVBO{ BufferObject{0} };			// VA 3
-
-	// Skeletal animation VBO..
-	BufferObject skeletalVBO{ BufferObject{0} };			// VA 4
-	BufferObject EBO{ BufferObject{0} };					// VA 5
-};
-
-struct ModelBatch {
-	entt::entity entity;
-	MeshType meshType;
-	float modelScale;
-	std::vector<std::reference_wrapper<const Mesh>> meshes;
-};
-
-struct MaterialBatch {
-	std::reference_wrapper<const Material> material;
-	std::reference_wrapper<const CustomShader> customShader;
-	std::reference_wrapper<const Shader> shader;
-
-	std::vector<ModelBatch> models;
-};
-
-enum class RenderMode {
-	Editor,
-	Game
-};
 
 class Renderer {
 public:
@@ -98,7 +63,7 @@ public:
 	void shadowPass(int viewportWidth, int viewportHeight);
 
 	// does a depth pre pass and populates the gbuffer for ssao generation.
-	void depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera);
+	void depthPrePass(FrameBuffer const& frameBuffer);
 
 	// generates the SSAO texture.
 	void generateSSAO(PairFrameBuffer& frameBuffers, Camera const& camera);
@@ -223,22 +188,30 @@ private:
 	// =============================================
 
 	// renders object for the purpose of capturing into a cubemap..
-	void renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, bool toCaptureEnvironmentLight);
+	void renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, FrameBuffer const& frameBuffer, bool toCaptureEnvironmentLight);
 
 	// set up proper configurations and clear framebuffers..
 	void prepareRendering();
 
 	// instead of naively render every game object one by one, we batch all game objects of the same material into
 	// their own render queue. 
-	void setupRenderQueue();
+	void setupRenderQueue(Camera const& camera, RenderQueueConfig renderQueueConfig = RenderQueueConfig::Normal);
 
-	void createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType);
+	// This function basically sets up for the upcoming shadow render pass.
+	// The reason why I need the function to perform 2 things at once is because I don't want to iterate through the entities twice.
+	void frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProjectionMatrix);
+
+	// attempts to create a material batch..
+	void createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex, RenderQueueConfig renderQueueConfig);
+	void createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex);
+	void createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType);
+	void createShadowBatchEntry(Model const& model, Mesh& mesh, entt::entity entity, MeshType meshType);
 
 	// render all models (normal and skinned).
-	void renderModels(bool depthPrePass = false);
+	void renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId);
 
 	// render all TranslucentMeshRenderers.
-	void renderTranslucentModels(Camera const& camera);
+	void renderTranslucentModels(GLuint frameBufferDepthTexture);
 
 	// render all Texts.
 	void renderText(Transform const& transform, Text const& text);
@@ -280,10 +253,10 @@ private:
 	void renderHDRTonemapping(PairFrameBuffer& frameBuffers);
 
 	// set up the material's chosen shader and supply the proper uniforms..
-	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader);
+	void setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, std::optional<GLuint> depthTextureId);
 
 	// this sets the uniforms of model specific data..
-	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, MeshType meshType);
+	void setupModelUniforms(entt::entity entity, Shader const& shader, float scale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType);
 
 	// sets up the custom shader to output the mesh into the normal buffer instead.
 	void setupMaterialNormalPass(Material const& material, CustomShader const& customShader, Shader const& shader);
@@ -296,7 +269,6 @@ private:
 
 	// helper function to obtain the underlying material of a mesh given its renderers.
 	Material const* obtainMaterial(MeshRenderer const& meshRenderer, Mesh const& mesh);
-	Material const* obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh);
 	Material const* obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh);
 
 	// performs frustum culling for models and light
@@ -444,8 +416,8 @@ private:
 	std::unordered_set<int> freeCubeMapArraySlots;
 
 	// holds batches of material, populated during render queue building..
-	std::vector<MaterialBatch> materialBatches;
-	std::unordered_map<ResourceID, int> materialResourceIdToIndex;
+	RenderQueue renderQueue;
+	ShadowRenderQueue shadowRenderQueue;
 
 private:
 	int numOfPhysicsDebugTriangles;

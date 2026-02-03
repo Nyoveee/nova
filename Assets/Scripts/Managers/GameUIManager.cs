@@ -159,9 +159,9 @@ class GameUIManager : Script
     /***********************************************************
        Dialogue 
     ***********************************************************/
-    public void ActivateDialogue(List<string> text, List<float> times, float finalDialogueTime)
+    public void ActivateDialogue(string speaker, List<string> text, List<float> times, float finalDialogueTime)
     {
         dialogueScript.gameObject.SetActive(true);
-        dialogueScript.BeginDialogueSequence(text, times, finalDialogueTime);
+        dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
     }
 }

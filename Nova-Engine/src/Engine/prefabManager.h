@@ -40,21 +40,44 @@ public:
 	template<typename ...Components>
 	void updateComponents(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity entity, entt::entity prefabEntity);
 	
+	template<typename ...Components>
+	void updateComponentsIncludingEntityDataAndTransform(entt::registry& toRegistry, entt::registry& fromRegistry, entt::entity entity, entt::entity prefabEntity);
+
+	template<typename ...Components>
+	void removeComponents(entt::registry& registry, entt::entity entity);
+
 	ENGINE_DLL_API PrefabEntityID loadPrefab(ResourceID id);
 
 	// This public facing variant maps the serialised fields of an entity and his children in the ECS registry.
 	ENGINE_DLL_API void mapSerializedField(entt::entity entity, std::unordered_map<PrefabEntityID, entt::entity> const& entityMapping);
 
 	ENGINE_DLL_API void broadcast(entt::entity prefabEntity);
+	ENGINE_DLL_API void broadcastHierarchy(entt::entity ecsEntity, std::unordered_map<PrefabEntityID, entt::entity>& mapping);
+
 	ENGINE_DLL_API void prefabBroadcast(ResourceID prefabID);
 	ENGINE_DLL_API entt::entity getParent(entt::entity prefabInstance, entt::registry& registry);
-	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance);
+
 	ENGINE_DLL_API void updatePrefab(entt::entity prefabInstance);
-	ENGINE_DLL_API void convertToPrefab(entt::entity entity, ResourceID id);
+	ENGINE_DLL_API void prefabOverride(entt::entity prefabInstance);
+	ENGINE_DLL_API void guidRemap(ResourceID prefabId);
 
 private:
 	// Maps the serialized field of an entity and his children to other value in a specified registry.
 	ENGINE_DLL_API void mapSerializedField(entt::registry& registry, entt::entity entity, std::unordered_map<entt::entity, entt::entity> const& entityMapping);
+	ENGINE_DLL_API void updateFromPrefabInstance(entt::entity prefabInstance, ResourceID prefabId);
+
+	// used in update prefab..
+	ENGINE_DLL_API void mapSerializedField(entt::entity);
+
+	// remaps id from ecs registry to prefab id.. if available.. via entityGUIDToPrefabEntity
+	// does nothing to parameter if invalid.
+	ENGINE_DLL_API void remapEntityId(entt::entity& ecsEntityId);
+	
+	// recursively removes prefab from registry.. and removes from the guid entry..
+	ENGINE_DLL_API void deletePrefab(PrefabEntityID prefabInstance);
+	
+	// recursively repopulates prefab from entity id..
+	ENGINE_DLL_API void repopulatesPrefab(entt::entity prefabInstance, PrefabEntityID prefabId);
 
 	template<typename ...Components>
 	entt::entity instantiatePrefabRecursive(PrefabEntityID prefabEntity);
@@ -66,10 +89,10 @@ private:
 	ResourceManager& resourceManager;
 	entt::registry& ecsRegistry;
 	ECS& ecs;
-	bool firstTimeLoad;
 	
 	// maps a prefab entity to a ecs entity
 	std::unordered_map<PrefabEntityID, entt::entity> prefabEntityIdToInstanceId;
+	std::unordered_map<EntityGUID, PrefabEntityID> entityGUIDToPrefabEntity;
 };
 
 #include "prefabManager.ipp"

@@ -319,7 +319,7 @@ void Systems::Quit()
 	Interface::engine->quit();
 }
 
-
+#if false
 // ======================================
 // Audio APIs..
 // ======================================
@@ -332,3 +332,4 @@ void AudioAPI::PlayBGM(GameObject^ gameObject, System::String^ string) {
 void AudioAPI::StopSound(GameObject^ gameObject, System::String^ string) {
 	//Interface::engine->audioSystem.stopSound(Convert(gameObject), Convert(string));
 }
+#endif

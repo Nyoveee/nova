@@ -98,15 +98,31 @@ std::optional<AssetInfo<T>> AssetIO::parseDescriptorFile(DescriptorFilePath cons
 			std::getline(descriptorFile, socketString);
 
 			// the vector of sockets define it with a space delimited list of integers.
-			std::stringstream ss { socketString };
+			std::stringstream socketSS { socketString };
 			
 			std::vector<BoneIndex> sockets;
 			BoneIndex boneIndex;
-			while (ss >> boneIndex) {
+			while (socketSS >> boneIndex) {
 				sockets.push_back(boneIndex);
 			}
 
 			assetInfo.sockets = std::move(sockets);
+
+			// read material id..
+			std::string resourceIdLine;
+			std::getline(descriptorFile, resourceIdLine);
+
+			// the vector of resource id is defined with a space delimited list of std::size_t.
+			std::stringstream resourceIdSS{ resourceIdLine };
+			std::size_t resourceId;
+
+			std::vector<TypedResourceID<Material>> materials;
+			
+			while (resourceIdSS >> resourceId) {
+				materials.push_back({ resourceId });
+			}
+			
+			assetInfo.materials = std::move(materials);
 		}
 
 		// ============================
@@ -155,7 +171,8 @@ static AssetInfo<T> AssetIO::createDescriptorFile(ResourceID id, std::filesystem
 		descriptorFile << DEFAULT_FONT_SIZE << '\n';
 	}
 	else if constexpr (std::same_as<T, Model>) {
-		descriptorFile << 1.f << "\n\n"; // one more newline for empty sockets.
+		descriptorFile << 1.f << "\n"; // newline for empty sockets.
+		descriptorFile << DEFAULT_PBR_MATERIAL_ID << '\n';
 	}
 
 	// ============================

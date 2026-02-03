@@ -5,7 +5,7 @@
             "glslType": "sampler2D",
             "identifier": "albedoMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 6754449930944823315,
                 "__variant_type": 9
             }
         },
@@ -13,23 +13,23 @@
             "glslType": "sampler2D",
             "identifier": "packedMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 7330910683248279577,
                 "__variant_type": 9
             }
         },
         {
-            "glslType": "sampler2D",
+            "glslType": "NormalMap",
             "identifier": "normalMap",
             "value": {
-                "__variant_value": 8,
-                "__variant_type": 9
+                "__variant_value": 6754449930944839703,
+                "__variant_type": 13
             }
         },
         {
             "glslType": "sampler2D",
             "identifier": "emissiveMap",
             "value": {
-                "__variant_value": 8,
+                "__variant_value": 12519057453979058197,
                 "__variant_type": 9
             }
         },
@@ -37,15 +37,7 @@
             "glslType": "bool",
             "identifier": "toUsePackedMap",
             "value": {
-                "__variant_value": false,
-                "__variant_type": 0
-            }
-        },
-        {
-            "glslType": "bool",
-            "identifier": "toUseNormalMap",
-            "value": {
-                "__variant_value": false,
+                "__variant_value": true,
                 "__variant_type": 0
             }
         },
@@ -53,7 +45,7 @@
             "glslType": "bool",
             "identifier": "toUseEmissiveMap",
             "value": {
-                "__variant_value": false,
+                "__variant_value": true,
                 "__variant_type": 0
             }
         },
@@ -97,7 +89,7 @@
             "glslType": "float",
             "identifier": "emissiveStrength",
             "value": {
-                "__variant_value": 0.0,
+                "__variant_value": 10.0,
                 "__variant_type": 3
             }
         },

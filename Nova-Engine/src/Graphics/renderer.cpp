@@ -114,8 +114,7 @@ constexpr int VOLUMETRIC_FOG_DOWNSCALE 	= 4;
 constexpr int MAX_HALTON_SEQUENCE = 16;
 
 // Uniform slots..
-constexpr int numOfTextureUnitBound = 7;
-constexpr int numOfUniformSlotsUsed = 4;
+constexpr int numOfTextureUnitBound = 8;
 
 #pragma warning( push )
 #pragma warning(disable : 4324)			// disable warning about structure being padded, that's exactly what i wanted.
@@ -185,10 +184,11 @@ struct alignas(16) TAAUBOData {
 	0 - TEXTURE_2D				directionalShadowMap;
 	1 - TEXTURE_2D				ssao;
 	2 - TEXTURE_2D				brdfLUT;
-	3 - TEXTURE_2D_ARRAY		spotlightShadowMaps;
-	4 - TEXTURE_CUBE_MAP		diffuseIrradianceMap;
-	5 - TEXTURE_CUBE_MAP		prefilterMap;
-	6 - TEXTURE_CUBE_MAP_ARRAY	reflectionProbesPrefilterMap;
+	3 - TEXTURE_2D				sceneDepthTexture;
+	4 - TEXTURE_2D_ARRAY		spotlightShadowMaps;
+	5 - TEXTURE_CUBE_MAP		diffuseIrradianceMap;
+	6 - TEXTURE_CUBE_MAP		prefilterMap;
+	7 - TEXTURE_CUBE_MAP_ARRAY	reflectionProbesPrefilterMap;
 */
 
 // this struct is used to represent the memory layout of the ReflectionProbeUBO, location = 3.
@@ -287,7 +287,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	uiObjectIdFrameBuffer			{ gameWidth, gameHeight, { GL_R32UI } },
 	bloomFrameBuffer				{ gameWidth, gameHeight, 5 },
 	ssaoFrameBuffer					{ gameWidth / 2, gameHeight / 2, { GL_R8 } },
-	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGB16F } },
+	cubeMapFrameBuffer				{ IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT, { GL_RGBA16F, GL_RGB8_SNORM, GL_RG16F } },
 	diffuseIrradianceMapFrameBuffer	{ DIFFUSE_IRRADIANCE_MAP_WIDTH, DIFFUSE_IRRADIANCE_MAP_HEIGHT },
 	directionalLightShadowFBO		{ DIRECTIONAL_SHADOW_MAP_WIDTH, DIRECTIONAL_SHADOW_MAP_HEIGHT },
 	shadowFBO						{ SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT },
@@ -644,6 +644,9 @@ void Renderer::renderUI()
 }
 
 void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuint historyTexture) {
+	glViewport(0, 0, gameWidth, gameHeight);
+	glDepthMask(GL_TRUE);
+
 	// We clear this pair frame buffer..
 	frameBuffers.clearFrameBuffers();
 
@@ -673,7 +676,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	frustumCullModels(camera.viewProjection());
 
 	// We build our render queue, sorting our game objects into batches, to minimize driver overhead.
-	setupRenderQueue();
+	setupRenderQueue(camera);
 
 	// We bind to the active framebuffer for majority of the in game rendering..
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.getActiveFrameBuffer().fboId());
@@ -681,7 +684,7 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	setBlendMode(BlendingConfig::Disabled);
 
 	// We perform a depth pre pass.. and output the normal into a separate attachment..
-	depthPrePass(frameBuffers, camera);
+	depthPrePass(frameBuffers.getActiveFrameBuffer());
 
 	// We generate SSAO texture for forward rendering later..
 	if(renderConfig.toEnableSSAO) generateSSAO(frameBuffers, camera);
@@ -696,13 +699,15 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	glDepthFunc(GL_EQUAL);
 
 	// [Opaque pass] We render individual game objects..
-	renderModels();
+	// We provide the current depth texture as well, since we did a depth pre pass earlier..
+	renderModels(RenderPass::ColorPass, frameBuffers.getActiveFrameBuffer().depthStencilId());
 
-	glDisable(GL_DEPTH_TEST);
-	renderTranslucentModels(camera);
+	// Transparent depth test...
+	glDepthFunc(GL_LEQUAL);
 
-	// Restore default depth testing.
-	glEnable(GL_DEPTH_TEST);
+	renderTranslucentModels(frameBuffers.getActiveFrameBuffer().depthStencilId());
+
+	// Original depth test..
 	glDepthFunc(GL_LESS);
 
 	// Render particles
@@ -734,18 +739,20 @@ void Renderer::render(PairFrameBuffer& frameBuffers, Camera const& camera, GLuin
 	renderBloom(frameBuffers);
 }
 
-void Renderer::renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, bool toCaptureEnvironmentLight) {
+void Renderer::renderCapturePass(Camera const& camera, std::function<void()> setupFramebuffer, FrameBuffer const& frameBuffer, bool toCaptureEnvironmentLight) {
 	// We upload camera data to the UBO..
 	updateCameraUBO(camera);
 
 	// We perform frustum culling for lights, this is for our cluster building to minimize the number of lights involved.
 	frustumCullLight(camera.viewProjection());
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer.fboId());
 
 	// Main function to handle shadow pass for all light types.. 
 	// We run a shadow pass first so we can pass shadow related data in prepareLights..
 	if (renderConfig.toEnableShadows) shadowPass(IRRADIANCE_MAP_WIDTH, IRRADIANCE_MAP_HEIGHT);
 
-	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lights..
+	// We prepare our lights for rendering, setting up SSBOs, and removing those culled lig	hts..
 	prepareLights(camera);
 
 	// We DO NOT want to capture other reflection probes.. (i think?)
@@ -760,10 +767,15 @@ void Renderer::renderCapturePass(Camera const& camera, std::function<void()> set
 	frustumCullModels(camera.viewProjection());
 
 	// build our render queue for batches..
-	setupRenderQueue();
+	setupRenderQueue(camera);
 
 	// We setup, clear and bind to the correct framebuffer for rest of the rendering..
 	setupFramebuffer();
+
+	setBlendMode(BlendingConfig::Disabled);
+
+	// We perform a depth pre pass.. and output the normal into a separate attachment..
+	depthPrePass(frameBuffer);
 
 	// W Skybox	.
 	renderSkyBox();
@@ -775,7 +787,7 @@ void Renderer::renderCapturePass(Camera const& camera, std::function<void()> set
 	renderConfig.toEnableIBL = toCaptureEnvironmentLight && renderConfig.toEnableIBL;
 
 	// We render individual game objects..
-	renderModels();
+	renderModels(RenderPass::ColorPass, frameBuffer.depthStencilId());
 
 	renderConfig.toEnableIBL = oldValue;
 }
@@ -920,24 +932,15 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 
 		light.shadowMapIndex = NO_SHADOW_MAP;
 
-		if (!renderConfig.toEnableShadows) {
-			continue;
-		}
-
-		// light not in camera frustum
-		if (!transform.inCameraFrustum) {
-			continue;
-		}
-
-		// not a shadow caster..
-		if (!light.shadowCaster) {
-			continue;
-		}
+		if (!renderConfig.toEnableShadows)	continue;
+		if (!transform.inCameraFrustum)		continue;
+		if (!light.shadowCaster)			continue;
 
 		// We calculate the respective light matrix to generate our shadow maps..
 		switch (light.type)
 		{
 		case Light::Type::Directional: {
+#if false
 			if (hasDirectionalLightShadowCaster) {
 				Logger::warn("We support only 1 directional light shadow caster.");
 				continue;
@@ -958,6 +961,7 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 			directionalLightDir = transform.front;
 
 			shadowPassRender(directionalLightViewMatrix);
+#endif
 			break;
 		}
 
@@ -982,6 +986,8 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 			glm::mat4 lightProjection	= glm::perspective(static_cast<float>(light.outerCutOffAngle), 1.0f, 0.1f, light.radius);
 			glm::mat4 lightView			= glm::lookAt(transform.position, transform.position + transform.front, glm::vec3(0.0f, 1.0f, 0.0f));
 			glm::mat4 viewProjection	= lightProjection * lightView;
+
+			frustumCullAndSetupShadowRenderQueue(viewProjection);
 			shadowPassRender(viewProjection);
 
 			light.shadowMapIndex = numOfSpotlightShadowCaster;
@@ -998,22 +1004,22 @@ void Renderer::shadowPass(int viewportWidth, int viewportHeight) {
 	glViewport(0, 0, viewportWidth, viewportHeight);
 }
 
-void Renderer::depthPrePass(PairFrameBuffer& frameBuffers, Camera const& camera) {
+void Renderer::depthPrePass(FrameBuffer const& frameBuffer) {
 	glEnable(GL_DEPTH_TEST);
 
 	// Disable the color attachment, enable the normal attachment.
 	static constexpr GLenum buffers[] = { GL_NONE, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-	glNamedFramebufferDrawBuffers(frameBuffers.getActiveFrameBuffer().fboId(), 3, buffers);
+	glNamedFramebufferDrawBuffers(frameBuffer.fboId(), 3, buffers);
 
 	// Set PBR UBO to output normals only..
 	int toOutputNormalOnly = true;
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toOutputNormal), sizeof(int), &toOutputNormalOnly);
 
 	// Render pass..
-	renderModels(true);
+	renderModels(RenderPass::DepthPrePass, std::nullopt);
 
 	// Reset color attachment active back to original..
-	frameBuffers.getActiveFrameBuffer().setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
+	frameBuffer.setColorAttachmentActive(1);	// we restore back to default, writing to the 1st color attachment
 
 	// Reset PBR UBO uniform..
 	toOutputNormalOnly = false;
@@ -1289,8 +1295,6 @@ void Renderer::debugRenderPhysicsCollider() {
 	glEnable(GL_DEPTH_TEST);
 	
 	debugShader.use();
-	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 0.2f });
-	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
 	// enable wireframe mode only for debug overlay.
 	debugShader.setVec4("color", { 0.f, 1.f, 0.f, 1.f });
@@ -1300,12 +1304,14 @@ void Renderer::debugRenderPhysicsCollider() {
 	// disable wireframe mode, restoring to normal fill
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+#if false
 	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsLineVBO.id(), 0, sizeof(glm::vec3));
 
 	glDisable(GL_CULL_FACE);
 
 	debugShader.setVec4("color", { 1.f, 0.2f, 0.2f, 1.f });
 	glDrawArrays(GL_LINES, 0, numOfPhysicsDebugLines * 2);
+#endif
 
 	numOfPhysicsDebugTriangles = 0;
 	numOfPhysicsDebugLines = 0;
@@ -1423,6 +1429,24 @@ void Renderer::debugRenderBoundingVolume() {
 		// pointless to do frustum culling on disabled objects.
 		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
 			continue;
+			}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer.modelId);
+
+		if (!model) {
+			// missing model.
+			continue;
+		}
+
+		debugParticleShapeVBO.uploadData(DebugShapes::Cube(transform.boundingBox));
+		glDrawArrays(GL_LINES, 0, 24);
+	}
+
+	for (auto&& [entityID, entityData, transform, meshRenderer] : engine.ecs.registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
+		// pointless to do frustum culling on disabled objects.
+		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entityID)) {
+			continue;
 		}
 
 		// Retrieves model asset from asset manager.
@@ -1533,11 +1557,37 @@ void Renderer::prepareRendering() {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
+
+	// Set up initial state..
 	glBindVertexArray(mainVAO);
 	engine.particleSystem.populateParticleLights(MAX_NUMBER_OF_LIGHT);
-	glViewport(0, 0, gameWidth, gameHeight);
-	glDepthMask(GL_TRUE);
 
+	// We calculate AABB for every model.. (to prepare for frustum culling..)
+	for (auto&& [entityID, entityData, transform, meshRenderer] : registry.view<EntityData, Transform, MeshRenderer>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+			continue;
+		}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(meshRenderer.modelId);
+		
+		if (model) {
+			transform.boundingBox = calculateAABB(*model, transform);
+		}
+	}
+
+	for (auto&& [entityID, entityData, transform, skinnedMeshRenderer] : registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
+		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entityID)) {
+			continue;
+		}
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
+
+		if (model) {
+			transform.boundingBox = calculateAABB(*model, transform);
+		}
+	}
 }
 
 void Renderer::renderSkyBox() {
@@ -1613,7 +1663,7 @@ std::unique_ptr<std::byte[]> Renderer::getBytes(CubeMap const& cubemap, int face
 }
 #endif
 
-void Renderer::setupRenderQueue() {
+void Renderer::setupRenderQueue(Camera const& camera, RenderQueueConfig renderQueueConfig) {
 	// Approaching zero driver overhead.
 	// https://gdcvault.com/play/1020791/
 	
@@ -1624,11 +1674,16 @@ void Renderer::setupRenderQueue() {
 
 	// @TODO: Batch render with multi indirect draw call..
 
-	materialBatches.clear();
-	materialResourceIdToIndex.clear();
+	renderQueue.opaqueMaterials.clear();
+	renderQueue.transparentMaterials.clear();
+	renderQueue.materialResourceIdToOpaqueIndex.clear();
 
 	// Let's start sorting all our game objects into these batches..
+	int layerIndex = 0;
+
 	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
+		renderQueue.materialResourceIdToOpaqueIndex.push_back({});
+
 		for (auto const& entity : entities) {
 			Transform& transform = registry.get<Transform>(entity);
 			EntityData const& entityData = registry.get<EntityData>(entity);
@@ -1647,7 +1702,11 @@ void Renderer::setupRenderQueue() {
 			}
 
 			// inactive..
-			if (!entityData.isActive || (!engine.ecs.isComponentActive<MeshRenderer>(entity) && !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) ) {
+			if (
+					!entityData.isActive 
+				||	(meshRenderer		 && !engine.ecs.isComponentActive<MeshRenderer>(entity)) 
+				||  (skinnedMeshRenderer && !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) ) 
+			{
 				continue;
 			}
 
@@ -1663,32 +1722,94 @@ void Renderer::setupRenderQueue() {
 				continue;
 			}
 
-			// all material ids of a given renderer.. (mesh or skinned)
-
-			// If a model has only one submesh, we render all materials attached to this mesh renderer..
-			if (model->meshes.size() == 1) {
-				auto& mesh = model->meshes[0];
-				
-				for (auto const& materialId : materialIds) {
-					createMaterialBatchEntry(materialId, mesh, entity, model->scale, meshType);
+			// Draw every mesh of a given model.
+			for (auto& mesh : model->meshes) {
+				if (mesh.materialIndex >= materialIds.size()) {
+					continue;
 				}
+
+				ResourceID materialId = materialIds[mesh.materialIndex];
+				createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);
 			}
-			else {
-				// Draw every mesh of a given model.
+
+			// If a mesh renderer has more materials than what the model requires,
+			// We perform additional render passes..
+			for (auto i = model->materialNames.size(); i < materialIds.size(); ++i) {
+				auto materialId = materialIds[i];
+
 				for (auto& mesh : model->meshes) {
-					if (mesh.materialIndex >= materialIds.size()) {
-						continue;
-					}
-
-					ResourceID materialId = materialIds[mesh.materialIndex];
-					createMaterialBatchEntry(materialId, mesh, entity, model->scale, meshType);
+					createMaterialBatchEntry(camera, *model, materialId, mesh, entity, meshType, layerIndex, renderQueueConfig);
 				}
 			}
+		}
+
+		layerIndex++;
+	}
+
+	if (renderQueueConfig == RenderQueueConfig::Normal) {
+		// Sort transparent objects by the z value, from camera..
+		std::sort(renderQueue.transparentMaterials.begin(), renderQueue.transparentMaterials.end(), [&](auto&& lhs, auto&& rhs) {
+			return lhs.distanceToCamera > rhs.distanceToCamera;
+		});
+	}
+}
+
+void Renderer::frustumCullAndSetupShadowRenderQueue(glm::mat4 const& viewProjectionMatrix) {
+	Frustum const& cameraFrustum = calculateCameraFrustum(viewProjectionMatrix);
+
+	shadowRenderQueue.modelBatches.clear();
+
+	for (auto&& [entity] : registry.view<entt::entity>().each()) {
+		Transform& transform = registry.get<Transform>(entity);
+		EntityData const& entityData = registry.get<EntityData>(entity);
+
+		MeshRenderer* meshRenderer = registry.try_get<MeshRenderer>(entity);
+		SkinnedMeshRenderer* skinnedMeshRenderer = registry.try_get<SkinnedMeshRenderer>(entity);
+
+		// doesnt have any renderer component..
+		if (!meshRenderer && !skinnedMeshRenderer) {
+			continue;
+		}
+
+		// inactive..
+		if (
+				!entityData.isActive 
+			||	(meshRenderer		 && !engine.ecs.isComponentActive<MeshRenderer>(entity)) 
+			||  (skinnedMeshRenderer && !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) ) 
+		{
+			continue;
+		}
+
+		// let's perform frustum culling :)
+		if (!cameraFrustum.isAABBInFrustum(transform.boundingBox)) {
+			continue;
+		}
+
+		TypedResourceID<Model> modelId = skinnedMeshRenderer ? skinnedMeshRenderer->modelId : meshRenderer->modelId;
+		auto const& materialIds = skinnedMeshRenderer ? skinnedMeshRenderer->materialIds : meshRenderer->materialIds;
+		MeshType meshType = skinnedMeshRenderer ? MeshType::Skinned : MeshType::Normal;
+
+		// Retrieves model asset from asset manager.
+		auto [model, _] = resourceManager.getResource<Model>(modelId);
+
+		if (!model) {
+			// missing model.
+			continue;	
+		}
+
+		// Draw every mesh of a given model.
+		for (auto& mesh : model->meshes) {
+			if (mesh.materialIndex >= materialIds.size()) {
+				continue;
+			}
+
+			ResourceID materialId = materialIds[mesh.materialIndex];
+			createShadowBatchEntry(*model, mesh, entity, meshType);
 		}
 	}
 }
 
-void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt::entity entity, float modelScale, MeshType meshType) {
+void Renderer::createMaterialBatchEntry(Camera const& camera, Model const& model, ResourceID materialId, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex, RenderQueueConfig renderQueueConfig) {
 	// Let's attempt to create a match batch entry for this given material
 	// Check if this material is valid (has material, custom shader and compiled shader)..
 
@@ -1719,25 +1840,38 @@ void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt:
 	// construct the mesh's VBO if it's not done so.. we need a valid meshID for our mesh at this point..
 	constructMeshBuffers(mesh);
 
+	// let's determine whether material should be part of the opaque or transparent material batch.
+	// we determine by checking its blending..
+	if(material->materialData.blendingConfig == BlendingConfig::Disabled) {
+		createOpaqueMaterialBatchEntry(model, *material, *customShader, shader, mesh, entity, meshType, layerIndex);
+	}
+	// we dont create a transparent entry if requested to ignore..
+	else if (renderQueueConfig != RenderQueueConfig::IgnoreTransparent) {
+		createTransparentMaterialEntry(camera, model, *material, *customShader, shader, mesh, entity, meshType);
+	}
+}
+
+void Renderer::createOpaqueMaterialBatchEntry(Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType, int layerIndex) {
 	// Let's check if the given material id has an index to the material batch vector...
 	// If not, we create one..
-	auto iterator = materialResourceIdToIndex.find(materialId);
+	auto iterator = renderQueue.materialResourceIdToOpaqueIndex[layerIndex].find(material.id());
 	int materialIndex;
 
 	// new material id.. let's give it a new index..
-	if (iterator == materialResourceIdToIndex.end()) {
-		materialIndex = static_cast<int>(materialBatches.size());
-		materialResourceIdToIndex.insert({ materialId, materialIndex });
+	if (iterator == renderQueue.materialResourceIdToOpaqueIndex[layerIndex].end()) {
+		materialIndex = static_cast<int>(renderQueue.opaqueMaterials.size());
+		renderQueue.materialResourceIdToOpaqueIndex[layerIndex].insert({ material.id(), materialIndex });
 
 		// insert a new entry..
 		MaterialBatch materialBatch{
-			*material,
-			*customShader,
+			material,
+			customShader,
 			shader,
-			{} // empty vector..
+			{}, // empty vector..
+			layerIndex 
 		};
 
-		materialBatches.push_back(materialBatch);
+		renderQueue.opaqueMaterials.push_back(materialBatch);
 	}
 	else {
 		materialIndex = iterator->second;
@@ -1745,9 +1879,9 @@ void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt:
 
 	// Similarly, let's check if the given model has an index to the model batch of this particular material batch..
 	// If not, we create one..
-	MaterialBatch& materialBatch = materialBatches[materialIndex];
+	auto&& materialBatch = renderQueue.opaqueMaterials[materialIndex]; 
 
-	// let's find if this model already has an entry..
+	// let's find if this model already has an entry.. (and is in the same layer..)
 	auto modelIterator = std::find_if(
 		materialBatch.models.begin(),
 		materialBatch.models.end(),
@@ -1763,10 +1897,12 @@ void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt:
 		// lets add a new entry..
 		modelIndex = static_cast<int>(materialBatch.models.size());
 		materialBatch.models.push_back(ModelBatch{
-			entity,
-			meshType,
-			modelScale,
-			{},	// empty vector..
+			.entity			= entity,
+			.meshType		= meshType,
+			.modelScale		= model.scale,
+			.boundingBoxMin = model.minBound,
+			.boundingBoxMax = model.maxBound,
+			.meshes			= {}, // empty vector..
 		});
 	}
 	else {
@@ -1777,25 +1913,128 @@ void Renderer::createMaterialBatchEntry(ResourceID materialId, Mesh& mesh, entt:
 	materialBatch.models[modelIndex].meshes.push_back(mesh);
 }
 
-void Renderer::renderModels(bool depthPrePass) {
+void Renderer::createTransparentMaterialEntry(Camera const& camera, Model const& model, Material const& material, CustomShader const& customShader, Shader const& shader, Mesh& mesh, entt::entity entity, MeshType meshType) {
+	// let's check if the given model has already a recorded entry..
+	auto modelIterator = std::find_if(
+		renderQueue.transparentMaterials.begin(),
+		renderQueue.transparentMaterials.end(),
+		[&](auto&& transparentEntry) {
+			return transparentEntry.entity == entity;
+		}
+	);
+
+	int index; 
+
+	// this model has not been recorded in this particular material batch
+	if (modelIterator == renderQueue.transparentMaterials.end()) {
+		// lets add a new entry..
+		// we need to calculate the distance between camera and game object..
+		Transform& transform = registry.get<Transform>(entity);
+		float distance = glm::dot(transform.position - camera.getPos(), camera.getFront());	// rough distance from object to camera in the z axis.
+
+		TransparentEntry transparentEntry{
+			.entity				= entity,
+			.meshType			= meshType,
+			.modelScale			= model.scale,
+			.boundingBoxMin		= model.minBound,
+			.boundingBoxMax		= model.maxBound,
+			.materials			= {}, // empty vector..
+			.distanceToCamera	= distance
+		};
+
+		index = static_cast<int>(renderQueue.transparentMaterials.size());
+		renderQueue.transparentMaterials.push_back(transparentEntry);
+	}
+	else {
+		index = static_cast<int>(std::distance(renderQueue.transparentMaterials.begin(), modelIterator));
+	}
+
+	std::vector<TransparentMaterial>& materials = renderQueue.transparentMaterials[index].materials;
+	
+	// Let's now find the correct material entry in this model entry..
+	auto materialIterator = std::find_if(
+		materials.begin(),
+		materials.end(),
+		[&](auto&& transparentMaterialEntry) {
+			Material const& transparentMaterial = transparentMaterialEntry.material;
+			return transparentMaterial.id() == material.id();
+		}
+	);
+
+	// This material has not been recorded in this entry..
+	if (materialIterator == materials.end()) {
+		// Let's add a new entry..
+		index = static_cast<int>(materials.size());
+		materials.push_back(TransparentMaterial{
+			.material = material,
+			.customShader = customShader,
+			.shader = shader,
+			.meshes = {} // empty vector..
+		});
+	}
+	else {
+		index = static_cast<int>(std::distance(materials.begin(), materialIterator));
+	}
+
+	// finally, add the mesh entry..
+	materials[index].meshes.push_back(mesh);
+}
+
+void Renderer::createShadowBatchEntry(Model const& model, Mesh& mesh, entt::entity entity, MeshType meshType) {
+	// construct the mesh's VBO if it's not done so.. we need a valid meshID for our mesh at this point..
+	constructMeshBuffers(mesh);
+
+	// let's check if the given model has already a recorded entry..
+	auto modelIterator = std::find_if(
+		shadowRenderQueue.modelBatches.begin(),
+		shadowRenderQueue.modelBatches.end(),
+		[&](auto&& modelEntry) {
+			return modelEntry.entity == entity;
+		}
+	);
+
+	int index;
+
+	// this model has not been recorded in this particular material batch
+	if (modelIterator == shadowRenderQueue.modelBatches.end()) {
+		// lets add a new entry..
+		// we need to calculate the distance between camera and game object..
+		ShadowModelBatch shadowModelBatch{
+			.entity = entity,
+			.meshType = meshType,
+			.modelScale = model.scale,
+			.meshes = {}, // empty vector..
+		};
+
+		index = static_cast<int>(shadowRenderQueue.modelBatches.size());
+		shadowRenderQueue.modelBatches.push_back(shadowModelBatch);
+	}
+	else {
+		index = static_cast<int>(std::distance(shadowRenderQueue.modelBatches.begin(), modelIterator));
+	}
+
+	shadowRenderQueue.modelBatches[index].meshes.push_back(mesh);
+}
+
+void Renderer::renderModels(RenderPass renderPass, std::optional<GLuint> depthTextureId) {
 #if defined(DEBUG)
 	ZoneScopedC(tracy::Color::PaleVioletRed1);
 #endif
 
 	// for each material batch..
-	for (auto const& materialBatch : materialBatches) {
+	for (auto const& materialBatch : renderQueue.opaqueMaterials) {
 		// we set up the shader and uniforms of this particular material..
-		if (depthPrePass) {
+		if (renderPass == RenderPass::DepthPrePass) {
 			setupMaterialNormalPass(materialBatch.material, materialBatch.customShader, materialBatch.shader);
 		}
 		else {
-			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader);
+			setupMaterial(materialBatch.material, materialBatch.customShader, materialBatch.shader, DepthConfig::Ignore, depthTextureId);
 		}
 
 		// for each model batch..
 		for (auto const& modelBatch : materialBatch.models) {
 			// set the uniforms of the model..
-			setupModelUniforms(modelBatch.entity, materialBatch.shader, modelBatch.modelScale, modelBatch.meshType);
+			setupModelUniforms(modelBatch.entity, materialBatch.shader, modelBatch.modelScale, modelBatch.boundingBoxMin, modelBatch.boundingBoxMax, modelBatch.meshType);
 
 			// for each mesh..
 			for (auto const& mesh : modelBatch.meshes) {
@@ -1805,105 +2044,33 @@ void Renderer::renderModels(bool depthPrePass) {
 	}
 }
 
-void Renderer::renderTranslucentModels([[maybe_unused]] Camera const& camera)
-{
-#if 0
-#if defined(DEBUG)
-	ZoneScopedC(tracy::Color::PaleVioletRed1);
-#endif
+void Renderer::renderTranslucentModels(GLuint frameBufferDepthTexture) {
+	auto previousMaterialId = INVALID_RESOURCE_ID;
+	auto previousEntity = entt::null;
 
-	glEnable(GL_CULL_FACE);
+	for (auto const& transparentEntry : renderQueue.transparentMaterials) {
+		for (auto const& material : transparentEntry.materials) {
 
-	// indicate that this is NOT a skinned mesh renderer..
-	static const unsigned int isNotASkinnedMeshRenderer = 0;
-	glNamedBufferSubData(bonesSSBO.id(), 0, sizeof(glm::vec4), &isNotASkinnedMeshRenderer);
-	const glm::mat4 view = camera.view();
-
-	for (auto const& [layerName, entities] : engine.ecs.sceneManager.layers) {
-		std::vector<entt::entity> sortedEntities(entities.begin(), entities.end());
-		std::sort(sortedEntities.begin(), sortedEntities.end(), 
-			[&](entt::entity left, entt::entity right)
-			{
-				const Transform& transLeft = registry.get<Transform>(left);
-				const Transform& transRight = registry.get<Transform>(right);
-
-				float distLeft = (view * glm::vec4(transLeft.position, 1.f)).z;
-				float distRight = (view * glm::vec4(transRight.position, 1.f)).z;
-
-				// Back-to-front for translucency
-				return distLeft < distRight;
-			});
-
-		for (auto const& entity : sortedEntities) {
-			TranslucentMeshRenderer* meshRenderer = registry.try_get<TranslucentMeshRenderer>(entity);
-			Transform const& transform = registry.get<Transform>(entity);
-			EntityData const& entityData = registry.get<EntityData>(entity);
-
-			if (!entityData.isActive || !engine.ecs.isComponentActive<TranslucentMeshRenderer>(entity)) {
-				continue;
+			// set the uniforms of the material.. if it's different..
+			if (previousMaterialId != material.material.get().id()) {
+				setupMaterial(material.material, material.customShader, material.shader, DepthConfig::NoWrite, frameBufferDepthTexture);
+				previousMaterialId = material.material.get().id();
 			}
 
-			// frustum culling :)
-			if (!transform.inCameraFrustum) {
-				continue;
+			// set the uniforms of the model.. if it's different..
+			if (previousEntity != transparentEntry.entity) {
+				setupModelUniforms(transparentEntry.entity, material.shader, transparentEntry.modelScale, transparentEntry.boundingBoxMin, transparentEntry.boundingBoxMax, transparentEntry.meshType);
 			}
 
-			if (!meshRenderer) {
-				continue;
-			}
-
-			// Retrieves model asset from asset manager.
-			auto [model, _] = resourceManager.getResource<Model>(meshRenderer->modelId);
-
-			if (!model) {
-				// missing model.
-				continue;
-			}
-
-			// If a model has only one submesh, we render all materials attached to this mesh renderer..
-			if (model->meshes.size() == 1) {
-				// Draw every material of a this mesh.
-				auto& mesh = model->meshes[0];
-
-				for (auto const& materialId : meshRenderer->materialIds) {
-					auto&& [material, __] = resourceManager.getResource<Material>(materialId);
-
-					if (!material) {
-						continue;
-					}
-
-					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
-
-					if (shader) {
-						// time to draw!
-						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
-					}
-				}
-			}
-			else {
-				// Draw every mesh of a given model.
-				for (auto& mesh : model->meshes) {
-					Material const* material = obtainMaterial(*meshRenderer, mesh);
-
-					// Use the correct shader and configure it's required uniforms..
-					CustomShader* shader = setupMaterial(camera, *material, transform, model->scale);
-
-					if (shader) {
-						// time to draw!
-						renderMesh(mesh, shader->customShaderData.pipeline, MeshType::Normal);
-					}
-				}
+			// for each mesh..
+			for (auto const& mesh : material.meshes) {
+				renderMesh(mesh);
 			}
 		}
 	}
-	
-	glDisable(GL_CULL_FACE);
-#endif
 }
 
-void Renderer::renderText(Transform const& transform, Text const& text)
-{
+void Renderer::renderText(Transform const& transform, Text const& text) {
 	struct Vertex {
 		GLfloat x, y;   // screen position
 		GLfloat s, t;   // texture coordinates
@@ -2076,16 +2243,6 @@ Material const* Renderer::obtainMaterial(MeshRenderer const& meshRenderer, Mesh 
 	return material;
 }
 
-Material const* Renderer::obtainMaterial(TranslucentMeshRenderer const& transMeshRenderer, Mesh const& mesh)
-{
-	if (mesh.materialIndex >= transMeshRenderer.materialIds.size()) {
-		return nullptr;
-	}
-
-	auto&& [material, _] = resourceManager.getResource<Material>(transMeshRenderer.materialIds[mesh.materialIndex]);
-	return material;
-}
-
 Material const* Renderer::obtainMaterial(SkinnedMeshRenderer const& skinnedMeshRenderer, Mesh const& mesh) {
 	if (mesh.materialIndex >= skinnedMeshRenderer.materialIds.size()) {
 		return nullptr;
@@ -2106,8 +2263,6 @@ void Renderer::frustumCullModels(glm::mat4 const& viewProjectionMatrix) {
 			return;
 		}
 
-		// Calculate appropriate bounding box.
-		transform.boundingBox = calculateAABB(*model, transform);
 		transform.inCameraFrustum = cameraFrustum.isAABBInFrustum(transform.boundingBox);
 	};
 
@@ -2496,94 +2651,32 @@ void Renderer::printOpenGLDriverDetails() const {
 void Renderer::shadowPassRender(glm::mat4 const& viewProjectionMatrix) {
 	shadowMapShader.setMatrix("lightSpaceMatrix", viewProjectionMatrix);
 
-	// ===========================================================
-	// 1. Render mesh renderer shadows
-	// ===========================================================
-
-	for (auto const& [entity, entityData, transform, meshRenderer] : registry.view<EntityData, Transform, MeshRenderer>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
-			continue;
-		}
-
-		// not a shadow caster..
-		if (!meshRenderer.castShadow) {
-			continue;
-		}
-
-		// Retrieves model asset from asset manager.
-		auto [model, _] = resourceManager.getResource<Model>(meshRenderer.modelId);
-
-		if (!model) {
-			// missing model.
-			continue;
-		}
-
-		shadowMapShader.setMatrix("model", transform.modelMatrix);
-		shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
-		shadowMapShader.setUInt("isSkinnedMesh", 0);
-
-		meshRenderer.shadowCullFrontFace ? glCullFace(GL_FRONT) : glCullFace(GL_BACK);
-
-		// Draw every mesh of a given model.
-		for (auto& mesh : model->meshes) {
-			constructMeshBuffers(mesh);
-			swapVertexBuffer(mesh);
-			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
-		}
-	}
-	
-	// ===========================================================
-	// 2. Render skinned mesh renderer shadows
-	// ===========================================================
-	// indicate that this is A skinned mesh renderer..
 	glCullFace(GL_FRONT);
 
-	for (auto const& [entity, entityData, transform, skinnedMeshRenderer] : registry.view<EntityData, Transform, SkinnedMeshRenderer>().each()) {
-		if (!entityData.isActive || !engine.ecs.isComponentActive<SkinnedMeshRenderer>(entity)) {
-			continue;
-		}
-
-		// not a shadow caster..
-		if (!skinnedMeshRenderer.castShadow) {
-			continue;
-		}
-
-		// Retrieves model asset from asset manager.
-		auto [model, _] = resourceManager.getResource<Model>(skinnedMeshRenderer.modelId);
-
-		if (!model) {
-			// missing model.
-			continue;
-		}
+	for (auto&& modelBatch : shadowRenderQueue.modelBatches) {
+		// Set up model uniform specific stuff..
+		Transform const& transform = registry.get<Transform>(modelBatch.entity);
 
 		shadowMapShader.setMatrix("model", transform.modelMatrix);
-		shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { model->scale, model->scale, model->scale }));
-		shadowMapShader.setUInt("isSkinnedMesh", 1);
+		shadowMapShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { modelBatch.modelScale, modelBatch.modelScale, modelBatch.modelScale }));
+		shadowMapShader.setUInt("isSkinnedMesh", modelBatch.meshType == MeshType::Skinned ? 1U : 0U);
 
-		// upload all bone matrices..
-		// uploading all current bone matrixes..
-		glNamedBufferSubData(
-			bonesSSBO.id(), 
-			0, 
-			skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].size() * sizeof(glm::mat4x4),
-			skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].data()
-		);
+		// upload bone final matrices as well..
+		if (modelBatch.meshType == MeshType::Skinned) {
+			SkinnedMeshRenderer const& skinnedMeshRenderer = registry.get<SkinnedMeshRenderer>(modelBatch.entity);
 
-		int inactiveBoneIndex = skinnedMeshRenderer.currentBoneMatrixIndex == 0 ? 1 : 0;
+			// upload all bone matrices..
+			glNamedBufferSubData(
+				bonesSSBO.id(),
+				0,
+				skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].size() * sizeof(glm::mat4x4),
+				skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].data()
+			);
+		}
 
-		// uploading all old bone matrixes..
-		glNamedBufferSubData(
-			oldBonesSSBO.id(),
-			0,
-			skinnedMeshRenderer.bonesFinalMatrices[inactiveBoneIndex].size() * sizeof(glm::mat4x4),
-			skinnedMeshRenderer.bonesFinalMatrices[inactiveBoneIndex].data()
-		);
-
-		// Draw every mesh of a given model.
-		for (auto& mesh : model->meshes) {
-			constructMeshBuffers(mesh);
+		for (auto& mesh : modelBatch.meshes) {
 			swapVertexBuffer(mesh);
-			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, mesh.get().numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
 
@@ -2707,7 +2800,7 @@ CubeMap Renderer::captureSurrounding(ReflectionProbe const& reflectionProbe, glm
 			glBindFramebuffer(GL_FRAMEBUFFER, cubeMapFrameBuffer.fboId());
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, inputCubemap.getTextureId(), 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		}, toCaptureEnvironmentLight);
+		}, cubeMapFrameBuffer, toCaptureEnvironmentLight);
 	}
 
 	// automatically generates mipmap from the captured scene..
@@ -2947,6 +3040,41 @@ void Renderer::renderObjectIds() {
 	glClearNamedFramebufferuiv(objectIdFrameBuffer.fboId(), GL_COLOR, 0, &nullEntity);
 	glClearNamedFramebufferfi(objectIdFrameBuffer.fboId(), GL_DEPTH_STENCIL, 0, initialDepth, initialStencilValue);
 	
+	// for each material batch..
+	for (auto const& materialBatch : renderQueue.opaqueMaterials) {
+		setBlendMode(materialBatch.material.get().materialData.blendingConfig);
+		setDepthMode(materialBatch.material.get().materialData.depthTestingMethod);
+		setCullMode(materialBatch.material.get().materialData.cullingConfig);
+
+		// for each model batch..
+		for (auto const& modelBatch : materialBatch.models) {
+			Transform const& transform = registry.get<Transform>(modelBatch.entity);
+
+			objectIdShader.setMatrix("model", transform.modelMatrix);
+			objectIdShader.setMatrix("localScale", glm::scale(glm::mat4{ 1.f }, { modelBatch.modelScale, modelBatch.modelScale, modelBatch.modelScale }));
+			objectIdShader.setUInt("objectId", static_cast<GLuint>(modelBatch.entity));
+
+			// upload bone final matrices as well..
+			if (modelBatch.meshType == MeshType::Skinned) {
+				SkinnedMeshRenderer const& skinnedMeshRenderer = registry.get<SkinnedMeshRenderer>(modelBatch.entity);
+
+				// upload all bone matrices..
+				glNamedBufferSubData(
+					bonesSSBO.id(),
+					0,
+					skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].size() * sizeof(glm::mat4x4),
+					skinnedMeshRenderer.bonesFinalMatrices[skinnedMeshRenderer.currentBoneMatrixIndex].data()
+				);
+			}
+
+			// for each mesh..
+			for (auto const& mesh : modelBatch.meshes) {
+				renderMesh(mesh);
+			}
+		}
+	}
+
+#if 0
 	for (auto&& [entity, transform, entityData, meshRenderer] : registry.view<Transform, EntityData, MeshRenderer>().each()) {
 		if (!entityData.isActive || !engine.ecs.isComponentActive<MeshRenderer>(entity)) {
 			continue;
@@ -3008,6 +3136,7 @@ void Renderer::renderObjectIds() {
 			glDrawElements(GL_TRIANGLES, mesh.numOfTriangles * 3, GL_UNSIGNED_INT, 0);
 		}
 	}
+#endif
 }
 
 void Renderer::renderUiObjectIds() {
@@ -3218,7 +3347,7 @@ void Renderer::renderPostProcessing(PairFrameBuffer& frameBuffers, Fog const& fo
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader) {
+void Renderer::setupMaterial(Material const& material, CustomShader const& customShader, Shader const& shader, DepthConfig depthConfig, std::optional<GLuint> depthTextureId) {
 	auto const& shaderData = customShader.customShaderData;
 
 	// ===========================================================================
@@ -3226,7 +3355,16 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 	// ===========================================================================
 
 	setBlendMode(material.materialData.blendingConfig);
-	setDepthMode(material.materialData.depthTestingMethod); // We had a depth pre pass.
+
+	//if (depthConfig != DepthConfig::Ignore) {
+		if (!(depthConfig == DepthConfig::NoWrite && material.materialData.depthTestingMethod == DepthTestingMethod::DepthTest)) {
+			setDepthMode(material.materialData.depthTestingMethod);
+		}
+	//}
+	//else {
+
+	//}
+
 	setCullMode(material.materialData.cullingConfig);
 
 	// ===========================================================================
@@ -3240,7 +3378,7 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 		}
 
 		// setup spotlight shadow
-		glBindTextureUnit(3, spotlightShadowMaps.getTextureId()); // All spotlight shadow maps.. (sampler2DArray)
+		glBindTextureUnit(4, spotlightShadowMaps.getTextureId()); // All spotlight shadow maps.. (sampler2DArray)
 
 		// setup IBL irradiance maps..
 		auto&& [diffuseIrradianceMap, __] = resourceManager.getResource<CubeMap>(engine.gameConfig.environmentDiffuseMap);
@@ -3248,12 +3386,17 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 
 		if (renderConfig.toEnableIBL && diffuseIrradianceMap && prefilteredEnvironmentMap) {
 			glBindTextureUnit(2, BRDFLUT->getTextureId());						// BRDF Lookup Table texture.. (sampler2D)
-			glBindTextureUnit(4, diffuseIrradianceMap->getTextureId());			// Diffuse irradiance map.. (samplerCube), 
-			glBindTextureUnit(5, prefilteredEnvironmentMap->getTextureId());	// Prefiltered environment map.. (samplerCube)
+			glBindTextureUnit(5, diffuseIrradianceMap->getTextureId());			// Diffuse irradiance map.. (samplerCube), 
+			glBindTextureUnit(6, prefilteredEnvironmentMap->getTextureId());	// Prefiltered environment map.. (samplerCube)
 		}
 
 		glBindTextureUnit(0, directionalLightShadowFBO.textureId());			// Directional light shadow map.. (sampler2D)
-		glBindTextureUnit(6, loadedReflectionProbesMap.getTextureId());			// All Reflection probes map.. (samplerCubeArray)
+		glBindTextureUnit(7, loadedReflectionProbesMap.getTextureId());			// All Reflection probes map.. (samplerCubeArray)
+	}
+
+	// attach depth texture if available..
+	if (depthTextureId) {
+		glBindTextureUnit(3, depthTextureId.value());
 	}
 
 	setupCustomShaderUniforms(customShader, shader, material, numOfTextureUnitBound);
@@ -3262,7 +3405,7 @@ void Renderer::setupMaterial(Material const& material, CustomShader const& custo
 	shader.use();
 }
 
-void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, float modelScale, MeshType meshType) {
+void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, float modelScale, glm::vec3 boundingBoxMin, glm::vec3 boundingBoxMax, MeshType meshType) {
 	Transform const& transform = registry.get<Transform>(entity);
 
 	unsigned int isSkinnedMesh = meshType == MeshType::Skinned ? 1U : 0U;
@@ -3270,11 +3413,13 @@ void Renderer::setupModelUniforms(entt::entity entity, Shader const& shader, flo
 	
 	// we set uniforms with fixed locations..
 											// location
-	glProgramUniformMatrix4fv(shader.id(),	0,				1, GL_FALSE, glm::value_ptr(transform.modelMatrix));	 // Setting the model matrix
-	glProgramUniformMatrix4fv(shader.id(),	4,				1, GL_FALSE, glm::value_ptr(localModelScale));			 // Setting the local scale matrix
-	glProgramUniformMatrix4fv(shader.id(),	8,				1, GL_FALSE, glm::value_ptr(transform.lastModelMatrix)); // Setting the lastModelMatrix matrix
-	glProgramUniformMatrix3fv(shader.id(),	12,				1, GL_FALSE, glm::value_ptr(transform.normalMatrix));	 // Setting the normal matrix
-	glProgramUniform1ui	     (shader.id(),	16,							 isSkinnedMesh);							 // Setting the boolean indicating whether model is skinned..
+	glProgramUniformMatrix4fv(shader.id(),	0,				1, GL_FALSE, glm::value_ptr(transform.modelMatrix));		// Setting the model matrix
+	glProgramUniformMatrix4fv(shader.id(),	4,				1, GL_FALSE, glm::value_ptr(localModelScale));				// Setting the local scale matrix
+	glProgramUniformMatrix4fv(shader.id(),	8,				1, GL_FALSE, glm::value_ptr(transform.lastModelMatrix));	// Setting the lastModelMatrix matrix
+	glProgramUniformMatrix3fv(shader.id(),	12,				1, GL_FALSE, glm::value_ptr(transform.normalMatrix));		// Setting the normal matrix
+	glProgramUniform1ui	     (shader.id(),	16,							 isSkinnedMesh);								// Setting the boolean indicating whether model is skinned..
+	glProgramUniform3f	     (shader.id(),	17,				boundingBoxMin[0], boundingBoxMin[1], boundingBoxMin[2]);	// Setting the models boundary..
+	glProgramUniform3f	     (shader.id(),	18,				boundingBoxMax[0], boundingBoxMax[1], boundingBoxMax[2]);	// Setting the models boundary..
 
 	// upload bone final matrices as wel..
 	if (meshType == MeshType::Skinned) {
@@ -3325,6 +3470,8 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 	GLint maxTextureUnits;
 	glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
 
+	bool isNormalMapUsed = false;
+
 	for (int i = 0; i < material.materialData.uniformDatas.size() && i < customShader.uniformLocations.size(); ++i) {
 		// retrieve material value..
 		auto const& [type, name, uniformValue] = material.materialData.uniformDatas[i];
@@ -3367,8 +3514,17 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 				assert(type == "mat3" || type == "mat4");
 				shader.setMatrix(uniformLocation, value);
 			}
-			else if constexpr (std::same_as<Type, TypedResourceID<Texture>>) {
-				assert(type == "sampler2D");
+			else if constexpr (std::same_as<Type, TypedResourceID<Texture>> || std::same_as<Type, NormalMap>) {
+				if constexpr (std::same_as<Type, NormalMap>) {
+					// no normal map set.
+					if (static_cast<std::size_t>(value) == NONE_TEXTURE_ID) {
+						return;
+					}
+
+					isNormalMapUsed = true;
+				}
+
+				assert(type == "sampler2D" || type == "NormalMap");
 
 				// Setting texture is a way more complicated step.
 				// We first retrieve the texture from resource manager..
@@ -3394,6 +3550,8 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 			}
 		}, uniformValue);
 	}
+
+	shader.setBool("toUseNormalMap", isNormalMapUsed);
 }
 
 void Renderer::renderMesh(Mesh const& mesh) {

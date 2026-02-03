@@ -1,19 +1,17 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 1,
     "Entities": [
         {
             "EntityData": {
                 "name": "AmmoTrails",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 14030885946471890945,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 14030885946471890945
-                },
+                "entityGUID": 2833749890488599585,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -92,15 +90,15 @@
                             {
                                 "name": "killTime",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
                                 }
                             },
                             {
                                 "name": "totalDuration",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": 0.10000000149011612,
+                                    "__variant_type": 18
                                 }
                             }
                         ]
@@ -215,7 +213,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 0
+            "id": 1
         }
     ]
 }

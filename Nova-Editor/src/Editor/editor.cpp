@@ -126,13 +126,14 @@ Editor::Editor(Window& window, Engine& engine, InputManager& inputManager, Asset
 
 	inputManager.subscribe<DeleteSelectedEntity>(
 		[&](DeleteSelectedEntity) {
-			if ((!editorViewPort.isHoveringOver || !editorViewPort.isActive) && !navBar.hierarchyList.isHovering) {
-				return;
+			if ((editorViewPort.isHoveringOver && editorViewPort.isActive) || navBar.hierarchyList.isHovering) {
+				for (entt::entity entity : selectedEntities) {
+					deleteEntity(entity);
+				}
 			}
 
-			// @TODO: Confirmation prompt LMAOO
-			for (entt::entity entity : selectedEntities) {
-				deleteEntity(entity);
+			if (assetViewerUi.isHovering && engine.prefabManager.getPrefabRegistry().valid(assetViewerUi.selectedPrefabEntity)) {
+				engine.ecs.deleteEntity(assetViewerUi.selectedPrefabEntity, engine.prefabManager.getPrefabRegistry());
 			}
 		}
 	);
@@ -245,9 +246,17 @@ bool Editor::isChildEntitySelected(entt::registry& registry, entt::entity entity
 	// Shouldn't expand if the root is selected
 	if(entity != root && isEntitySelected(entity))
 		return true;
-	for (entt::entity child : registry.get<EntityData>(entity).children)
+
+	EntityData* entityData = registry.try_get<EntityData>(entity);
+
+	if (!entityData) {
+		return false;
+	}
+
+	for (entt::entity child : entityData->children)
 		if (isChildEntitySelected(registry,child,root))
 			return true;
+
 	return false;
 }
 
@@ -777,7 +786,11 @@ void Editor::displayEntityHierarchy(
 		return;
 	}
 
-	EntityData const& entityData = registry.get<EntityData>(entity);
+	EntityData const* entityData = registry.try_get<EntityData>(entity);
+
+	if (!entityData) {
+		return;
+	}
 
 	bool toDisplayTreeNode = false;
 
@@ -786,22 +799,13 @@ void Editor::displayEntityHierarchy(
 	// We use IILE to conditionally initialise a variable :)
 	ImVec4 color = [&]() {
 		// If the current entity is disabled, render gray..
-		if (!entityData.isActive) {
+		if (!entityData->isActive) {
 			return grayColor;
 		}
 
 		// Else, render green or white 
 		return [&]() {
-			EntityData const* root = &entityData;
-
-			while (root->parent != entt::null) {
-				if (root->prefabID != INVALID_RESOURCE_ID)
-					return prefabColor;
-
-				root = registry.try_get<EntityData>(root->parent);
-			}
-
-			if (root->prefabID != INVALID_RESOURCE_ID) {
+			if (entityData->prefabID != INVALID_RESOURCE_ID) {
 				return prefabColor;
 			}
 			else {
@@ -812,11 +816,11 @@ void Editor::displayEntityHierarchy(
 
 	ImGui::PushStyleColor(ImGuiCol_Text, color);
 
-	if (!toRecurse || entityData.children.empty()) {
+	if (!toRecurse || entityData->children.empty()) {
 		ImGui::Indent(27.5f);
 		if (ImGui::Selectable((
-			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
-			+ std::string{ " " } + entityData.name).c_str(), selectedPredicate(entity))) {
+			(entityData->prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData->name).c_str(), selectedPredicate(entity))) {
 			onClickFunction({ entity });
 		}
 
@@ -842,8 +846,8 @@ void Editor::displayEntityHierarchy(
 			
 
 		toDisplayTreeNode = ImGui::TreeNodeEx((
-			(entityData.prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
-			+ std::string{ " " } + entityData.name).c_str(), flags
+			(entityData->prefabID == INVALID_RESOURCE_ID ? ICON_FA_CUBE : ICON_FA_CUBE)
+			+ std::string{ " " } + entityData->name).c_str(), flags
 		);
 
 		if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
@@ -866,7 +870,7 @@ void Editor::displayEntityHierarchy(
 		ImGui::SetDragDropPayload(dragAndDropIdentifier, &entity, sizeof(entt::entity*));
 
 		// Draw tooltip-style preview while dragging
-		ImGui::Text(entityData.name.c_str());
+		ImGui::Text(entityData->name.c_str());
 
 		ImGui::EndDragDropSource();
 	}
@@ -885,7 +889,7 @@ void Editor::displayEntityHierarchy(
 
 	// recursively displays tree hierarchy..
 	if (toDisplayTreeNode) {
-		for (entt::entity child : entityData.children) {
+		for (entt::entity child : entityData->children) {
 			displayEntityHierarchy(registry, child, toRecurse, dragAndDropIdentifier, onClickFunction, selectedPredicate);
 		}
 

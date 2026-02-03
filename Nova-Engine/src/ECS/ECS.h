@@ -16,10 +16,10 @@ public:
 	ENGINE_DLL_API ECS(Engine& engine);
 
 	ENGINE_DLL_API ~ECS();
-	ENGINE_DLL_API ECS(ECS const& other)				= delete;
+	ENGINE_DLL_API ECS(ECS const& other)			= delete;
 	ENGINE_DLL_API ECS(ECS&& other)					= delete;
 	ENGINE_DLL_API ECS& operator=(ECS const& other)	= delete;
-	ENGINE_DLL_API ECS& operator=(ECS&& other)			= delete;
+	ENGINE_DLL_API ECS& operator=(ECS&& other)		= delete;
 
 public:
 	// Set newParentEntity as the new parent for childEntity.
@@ -34,6 +34,7 @@ public:
 
 	// this deletes an entity whilst preserving transform hierarchy invariant.
 	ENGINE_DLL_API void deleteEntity(entt::entity entity);
+	ENGINE_DLL_API void deleteEntity(entt::entity entity, entt::registry& registry);
 
 	// this recursively disables or enables an entity hierarchy..
 	ENGINE_DLL_API void setActive(entt::entity entity, bool isActive);
@@ -57,6 +58,11 @@ public:
 
 	ENGINE_DLL_API entt::entity copyEntity(entt::entity en);
 
+#if false
+	ENGINE_DLL_API entt::entity getEntityId(EntityGUID entityGuid);
+	ENGINE_DLL_API void clearEntityGuidMapping();
+#endif
+
 	template<typename ...Components>
 	entt::entity copyEntityRecursively(entt::entity en, std::unordered_map<entt::entity, entt::entity>& map);
 
@@ -71,19 +77,14 @@ public:
 private:
 	ENGINE_DLL_API void deleteEntityRecursively(entt::entity entity);
 
-#if false
-	ENGINE_DLL_API void onCanvasCreation(entt::registry&, entt::entity entityID);
-	ENGINE_DLL_API void onCanvasDestruction(entt::registry&, entt::entity entityID);
-#endif
-
 public:
 	// public!
 	entt::registry registry;
 	entt::dispatcher systemEventDispatcher; //note we probably only need one just giga dump all events in here lol. 
 
-	entt::entity canvasUi;
 	SceneManager sceneManager;
 	ResourceID originalScene;	// we store the original scene when starting simulation..
+
 
 private:
 	Engine& engine;
@@ -91,7 +92,9 @@ private:
 	// We make a copy of the registry when the engine stars simulation mode.
 	// We rollback to the original state when we end simulation mode.
 	entt::registry copiedRegistry;
-	PrefabManager prefabManager;
+
+	// we maintain mapping from entity guid to loaded entity..
+	std::unordered_map<EntityGUID, entt::entity> entityGuidToEntityId;
 };
 
 template <typename ...Components>

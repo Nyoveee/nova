@@ -18,6 +18,8 @@ class DialogueScript : Script
     private float dialogueBoxTransitionTime;
     [SerializableField]
     private Text_ dialogueText;
+    [SerializableField]
+    private Text_ speakerText;
 
     private enum DialogueState
     {
@@ -28,7 +30,7 @@ class DialogueScript : Script
     private DialogueState dialogueState;
     protected override void init()
     {
-        startPosition = gameObject.transform.position - new Vector3(dialogueTextBackgroundTransform.scale.x, 0, 0);
+        startPosition = new Vector3(Systems.ScreenResolution.x + dialogueTextBackgroundTransform.scale.x, 0, 0);
         endPosition = gameObject.transform.position;
         if (dialogueBoxTransitionTime <= 0)
             Debug.LogError("Transition time must be more than zero");
@@ -63,12 +65,12 @@ class DialogueScript : Script
                 gameObject.SetActive(false);
         }
     }
-    public void BeginDialogueSequence(List<string> text, List<float> times, float finalDialogueTime)
+    public void BeginDialogueSequence(string speaker, List<string> text, List<float> times, float finalDialogueTime)
     {
         dialogueState = DialogueState.StartTransition;
         dialogue = text;
         currentIndex = 0;
-
+        speakerText.SetText(speaker);
         // There's a chance if this function is called during another dialogue it might mess up due to invokes still existing
         // if that's the case can replace with a normal update
         for(int i = 0;i < dialogue.Count; ++i){

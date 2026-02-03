@@ -3,6 +3,7 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 using System.Runtime.CompilerServices;
+using Windows.Devices.SerialCommunication;
 public abstract class Enemy : Script
 {
     public enum EnemydamageType
@@ -23,6 +24,8 @@ public abstract class Enemy : Script
     [SerializableField]
     private Prefab ichorPrefab;
     [SerializableField]
+    private Prefab explodeVFXPrefab;
+    [SerializableField]
     private GameObject ichorSpawnPoint;
     [SerializableField]
     protected Animator_? animator = null;
@@ -32,6 +35,9 @@ public abstract class Enemy : Script
     protected NavMeshAgent_? navMeshAgent = null;
     [SerializableField]
     public GameObject [] enemyColliders;
+    // 1f = 100% 
+    [SerializableField]
+    public float spotCallSFXChance =  0.5f;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -54,18 +60,23 @@ public abstract class Enemy : Script
     ***********************************************************/
     public void Explode()
     {
-
         for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)
         {
             Vector3 direction = new Vector3(0, Random.Range(-1f, 1f), 0);
             direction.Normalize();
             float spawnDistance = Random.Range(0, ichorSpawnPositionVariance);
-            GameObject ichor = Instantiate(ichorPrefab);
-            ichor.transform.position = ichorSpawnPoint.transform.position + direction * spawnDistance;
+            Instantiate(ichorPrefab, ichorSpawnPoint.transform.position + direction * spawnDistance);
         }
-
-
-
+        // Explode VFX
+        GameObject explodeVFX = Instantiate(explodeVFXPrefab,ichorSpawnPoint.transform.position);
+        foreach (GameObject emitter in explodeVFX.GetChildren())
+        {
+            ParticleEmitter_? particleEmitter_ = emitter.getComponent<ParticleEmitter_>();
+            if (particleEmitter_ != null)
+                particleEmitter_.emit();
+        }
+           
+            
     }
     /***********************************************************
         Shared Functions

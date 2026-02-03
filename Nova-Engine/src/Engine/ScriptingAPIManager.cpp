@@ -131,6 +131,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		getScriptFieldDatas_                    = GetFunctionPtr<GetScriptFieldsFunctionPtr>("Interface", "getScriptFieldDatas");
 		setScriptFieldData		                = GetFunctionPtr<SetScriptFieldFunctionPtr>("Interface", "setScriptFieldData");
 		handleOnCollision_						= GetFunctionPtr<handleOnCollisionFunctionPtr>("Interface", "handleOnCollision");
+		handleOnCollisionExit_				    = GetFunctionPtr<handleOnCollisionExitFunctionPtr>("Interface", "handleOnCollisionExit");
 		executeFunction_						= GetFunctionPtr<ExecuteFunctionPtr>("Interface", "executeEntityScriptFunction");
 		getHierarchyModifiedScripts_            = GetFunctionPtr<GetHierarchyModifiedScriptsFunctionPtr>("Interface", "GetHierarchyModifiedScripts");
 		getEnumNames							= GetFunctionPtr<GetEnumNamesFunctionPtr>("Interface", "getEnumNames");
@@ -226,41 +227,46 @@ void ScriptingAPIManager::UpdateAllScriptComponentFields(ResourceID scriptID)
 	// We include Inheritted Scripts
 	std::unordered_set<ResourceID> hierarchyScripts{ getHierarchyModifiedScripts_(static_cast<std::size_t>(scriptID)) };
 
-	// update the field data of all entities with affected scripts..(Very Cursed Nested Loops)
-	for (auto&& [entity, scripts] : engine.ecs.registry.view<Scripts>().each()) {
-		for (auto&& script : scripts.scriptDatas) {
+	auto updateSerializedFields = [&](entt::registry& registry) {
+		// update the field data of all entities with affected scripts..(Very Cursed Nested Loops)
+		for (auto&& [entity, scripts] : registry.view<Scripts>().each()) {
+			for (auto&& script : scripts.scriptDatas) {
 
-			// only get script field data if this script itself has been modified.
-			if (!hierarchyScripts.count(script.scriptId))
-				continue;
+				// only get script field data if this script itself has been modified.
+				if (!hierarchyScripts.count(script.scriptId))
+					continue;
 
-			std::vector<FieldData> oldFieldData{ script.fields };
-			script.fields.clear();
+				std::vector<FieldData> oldFieldData{ script.fields };
+				script.fields.clear();
 
-			for (FieldData& newFields : getScriptFieldDatas(script.scriptId)) {
-				bool b_IsExistingField{ false };
+				for (FieldData& newFields : getScriptFieldDatas(script.scriptId)) {
+					bool b_IsExistingField{ false };
 
-				for (FieldData const& oldFields : oldFieldData) {
-					if (oldFields.name != newFields.name)
-						continue;
+					for (FieldData const& oldFields : oldFieldData) {
+						if (oldFields.name != newFields.name)
+							continue;
 
-					if (!hasFieldChanged(oldFields.data, newFields.data)) {
-						// We already have an old field containing data, let's reuse it.
-						script.fields.push_back(oldFields);
-						b_IsExistingField = true;
-						break;
+						if (!hasFieldChanged(oldFields.data, newFields.data)) {
+							// We already have an old field containing data, let's reuse it.
+							script.fields.push_back(oldFields);
+							b_IsExistingField = true;
+							break;
+						}
+						else {
+							// The type of the old field has changed, let's override it.
+							break;
+						}
 					}
-					else {
-						// The type of the old field has changed, let's override it.
-						break;
-					}
+					// Override the new fieflds
+					if (!b_IsExistingField)
+						script.fields.push_back(newFields);
 				}
-				// Override the new fieflds
-				if (!b_IsExistingField) 
-					script.fields.push_back(newFields);
 			}
 		}
-	}
+	};
+	
+	updateSerializedFields(engine.ecs.registry);
+	updateSerializedFields(engine.prefabManager.getPrefabRegistry());
 }
 
 bool ScriptingAPIManager::compileScriptAssembly()
@@ -467,7 +473,9 @@ void ScriptingAPIManager::onCollisionEnter(entt::entity entityOne, entt::entity 
 	handleOnCollision_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
 }
 
-void ScriptingAPIManager::onCollisionExit([[maybe_unused]] entt::entity entityOne, [[maybe_unused]] entt::entity entityTwo) {}
+void ScriptingAPIManager::onCollisionExit(entt::entity entityOne, entt::entity entityTwo) {
+	handleOnCollisionExit_(static_cast<unsigned>(entityOne), static_cast<unsigned>(entityTwo));
+}
 
 void ScriptingAPIManager::executeFunction(entt::entity entityOne, ResourceID scriptID, std::string const& functionName) {
 	executeFunction_(static_cast<unsigned>(entityOne), static_cast<unsigned long long>(scriptID), functionName);

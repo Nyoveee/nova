@@ -9,17 +9,10 @@
 ECS::ECS(Engine& engine) : 
 	registry		{}, 
 	engine			{ engine },
-	sceneManager	{ *this, engine, engine.resourceManager },
-	prefabManager	{ engine },
-	canvasUi		{ entt::null }
+	sceneManager	{ *this, engine, engine.resourceManager }
 {}
 
-ECS::~ECS() {
-#if false
-	registry.on_construct<Canvas>().connect<&ECS::onCanvasCreation>(*this);
-	registry.on_destroy<Canvas>().connect<&ECS::onCanvasDestruction>(*this);
-#endif
-}
+ECS::~ECS() {}
 
 void ECS::setEntityParent(entt::entity childEntity, entt::entity newParentEntity, bool recalculateLocalTransform) {
 	setEntityParent(childEntity, newParentEntity, recalculateLocalTransform, registry);
@@ -114,7 +107,11 @@ bool ECS::isDescendantOf(entt::entity entity, entt::entity parent) {
 }
 
 void ECS::deleteEntity(entt::entity entity) {
-	EntityData* entityData = registry.try_get<EntityData>(entity);
+	deleteEntity(entity, registry);
+}
+
+void ECS::deleteEntity(entt::entity entity, entt::registry& p_registry) {
+	EntityData* entityData = p_registry.try_get<EntityData>(entity);
 	
 	if (entityData) {
 		for (entt::entity child : entityData->children) {
@@ -127,7 +124,7 @@ void ECS::deleteEntity(entt::entity entity) {
 		// =======================
 		if (entityData->parent != entt::null) {
 			// Remove this entity from list of children
-			EntityData& parentEntityData = registry.get<EntityData>(entityData->parent);
+			EntityData& parentEntityData = p_registry.get<EntityData>(entityData->parent);
 
 			auto iterator = std::ranges::find(parentEntityData.children, entity);
 			
@@ -141,7 +138,7 @@ void ECS::deleteEntity(entt::entity entity) {
 	}
 
 	// Delete the entity!
-	registry.destroy(entity);
+	p_registry.destroy(entity);
 }
 
 void ECS::setActive(entt::entity entity, bool isActive) {
@@ -238,34 +235,39 @@ entt::entity ECS::copyEntity(entt::entity oldEntity) {
 		registry.get<EntityData>(entityData.parent).children.push_back(newCopiedEntity);
 	}
 
-	prefabManager.mapSerializedField(newCopiedEntity, map);
+	engine.prefabManager.mapSerializedField(newCopiedEntity, map);
 
 	return newCopiedEntity;
 }
 
+#if false
+entt::entity ECS::getEntityId(EntityGUID entityGuid) {
+	auto iterator = entityGuidToEntityId.find(entityGuid);
+
+	if (iterator == entityGuidToEntityId.end()) {
+		// we search the current registry..
+		auto guidIterator = std::find_if(registry.view<EntityData>().begin(), registry.view<EntityData>().end(), [&](entt::entity entity) {
+			return registry.get<EntityData>(entity).entityGUID == entityGuid;
+		});
+
+		if (guidIterator == registry.view<EntityData>().end()) {
+			return entt::null;
+		}
+
+		entityGuidToEntityId.insert({ entityGuid, *guidIterator });
+		return *guidIterator;
+	}
+
+	return iterator->second;
+}
+
+void ECS::clearEntityGuidMapping() {
+	entityGuidToEntityId.clear();
+}
+#endif
 
 void ECS::copyVectorEntities(std::vector<entt::entity> const& entityVec) {
 	for (auto en : entityVec) {
 		copyEntity(en);
 	}
 }
-
-#if false
-void ECS::onCanvasCreation(entt::registry&, entt::entity entityID) {
-	if (canvasUi != entt::null) {
-		Logger::error("Scene already contains an entity with the Canvas component! Removing another canvas component from entity {}", static_cast<unsigned>(entityID));
-		registry.remove<Canvas>(entityID);
-		return;
-	}
-
-	canvasUi = entityID;
-}
-
-void ECS::onCanvasDestruction(entt::registry&, entt::entity entityID) {
-	if (canvasUi != entityID) {
-		return;
-	}
-	
-	canvasUi = entt::null;
-}
-#endif

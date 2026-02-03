@@ -9,6 +9,7 @@ in VS_OUT {
     vec3 fragViewPos;
     vec4 fragOldClipPos;
     vec4 fragCurrentClipPos;
+    vec3 boundingBoxUVW;
 } fsIn;
 
 layout (location = 0) out vec4 FragColor; 
@@ -43,8 +44,15 @@ layout(std140, binding = 2) uniform PBRUBO {
 	bool toOutputNormal;
 };
 
+layout (binding = 3) uniform sampler2D depthTexture;
+
 vec2 UVTileAndOffset(vec2 textureCoordinates, vec2 UVTiling, vec2 UVOffset) {
     return textureCoordinates * UVTiling + UVOffset;
+}
+
+float linearizeDepth(float depth) {
+    float ndcDepth = depth * 2.0 - 1.0; 
+    return (2.0 * zNear * zFar) / (zFar + zNear - ndcDepth * (zFar - zNear));
 }
 
 // https://sugulee.wordpress.com/2021/06/21/temporal-anti-aliasingtaa-tutorial/

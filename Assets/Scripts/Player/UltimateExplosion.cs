@@ -24,6 +24,9 @@ class UltimateExplosion : Script
 
     public float angularVelocity = 100f;
 
+    //[SerializableField]
+    //private Audio ultExplodeSFX;
+
     // ======================================
     // Runtime variables.
     // ======================================
@@ -36,6 +39,11 @@ class UltimateExplosion : Script
     private Vector3 explosionInitialScaleVector;
     private Vector3 explosionFinalScaleVector;
     private Vector3 finalScaleVector;
+
+    // ===========================================
+    // Components
+    // ===========================================
+    private AudioComponent_? audioComponent;
 
     // This function is first invoked when game starts.
     protected override void init()
@@ -50,7 +58,8 @@ class UltimateExplosion : Script
         explosionFinalScaleVector   = new Vector3(explosionFinalScale, explosionFinalScale, explosionFinalScale);
         finalScaleVector            = new Vector3(finalScale, finalScale, finalScale);
 
-        AudioAPI.PlaySound(gameObject, "sniper_specialImpact_01");
+        audioComponent = getComponent<AudioComponent_>();
+        //audioComponent.PlaySound(ultExplodeSFX);
     }
 
     // This function is invoked every update.

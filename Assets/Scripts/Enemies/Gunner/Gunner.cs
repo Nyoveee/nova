@@ -15,6 +15,16 @@ class Gunner : Enemy
     private GameObject? projectileSpawnPoint;
     [SerializableField]
     private Rigidbody_? rigidBody;
+    [SerializableField]
+    private List<Audio> attackSFX;
+    [SerializableField]
+    private List<Audio> deathSFX;
+    [SerializableField]
+    private List<Audio> spotSFX;
+    [SerializableField]
+    private List<Audio> footstepSFX;
+    [SerializableField]
+    private float timeSinceLastFootstep = 0f;
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -40,6 +50,7 @@ class Gunner : Enemy
     ***********************************************************/
     private GunnerStats? gunnerStats = null;
     private GameGlobalReferenceManager gameGlobalReferenceManager = null;
+    private AudioComponent_ audioComponent;
     /**********************************************************************
         Script Functions
     **********************************************************************/
@@ -47,6 +58,7 @@ class Gunner : Enemy
     {
         base.init();
         gunnerStats = getScript<GunnerStats>();
+        audioComponent = getComponent<AudioComponent_>();
         updateState.Add(GunnerState.Idle, Update_Idle);
         updateState.Add(GunnerState.Walk, Update_Walk);
         updateState.Add(GunnerState.Shoot, Update_Shoot);
@@ -57,7 +69,12 @@ class Gunner : Enemy
 
         updateState.Add(GunnerState.Spawning, () => { });
 
-        gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
+        GameObject gameObject = GameObject.FindWithTag("Game Global Reference Manager");
+
+        if(gameObject != null)
+        {
+            gameGlobalReferenceManager = gameObject.getScript<GameGlobalReferenceManager>();
+        }
     }
 
     // This function is invoked every fixed update.
@@ -74,7 +91,7 @@ class Gunner : Enemy
     {
         targetVantagePoint = null;
         float closestVantagePoint = Single.MaxValue;
-        if (gameGlobalReferenceManager.vantagePoints == null)
+        if (gameGlobalReferenceManager == null || gameGlobalReferenceManager.vantagePoints == null)
             return;
         foreach (GameObject vantagePoint in gameGlobalReferenceManager.vantagePoints)
         {
@@ -129,6 +146,7 @@ class Gunner : Enemy
                 Explode();
 
                 gunnerState = GunnerState.Death;
+                audioComponent.PlayRandomSound(deathSFX);
                 Destroy(gameObject);
             }
             else 
@@ -188,9 +206,6 @@ class Gunner : Enemy
 
     void FlushDamageEnemy()
     {
-
-
-
         if (accumulatedDamageInstance > 0)
         {
             SpawnIchorFrame();
@@ -211,7 +226,6 @@ class Gunner : Enemy
                 TriggerRecentlyDamageCountdown();
                 if (gunnerState != GunnerState.Death && !WasRecentlyDamaged())
                 {
-                    //AudioAPI.PlaySound(gameObject, "Enemy Hurt SFX");
                     renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 0f, 0f));
                     renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 0f, 0f));
                     Invoke(() =>
@@ -239,6 +253,7 @@ class Gunner : Enemy
             // Walk towards vantage Point
             if (targetVantagePoint != null)
             {
+                audioComponent.PlayRandomSound(spotSFX);
                 gunnerState = GunnerState.Walk;
                 animator.PlayAnimation("Gunner_Walk");
                 MoveToNavMeshPosition(targetVantagePoint.transform.position);
@@ -312,9 +327,9 @@ class Gunner : Enemy
     **********************************************************************/
     public void Shoot()
     {
-        //AudioAPI.PlaySound(gameObject, "Gun1_LaserRifle_Switch_Select5");
+        audioComponent.PlayRandomSound(attackSFX);
         gunShootIndex = (gunShootIndex + 1) % 2;
-        AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
+        // AudioAPI.PlaySound(gameObject, gunShootIndex == 0 ? "LaserRifle_SmallRocket_Shot1" : "LaserRifle_SmallRocket_Shot2");
         // Shoot Projectile
         GameObject projectile = Instantiate(projectilePrefab);
         projectile.transform.position = projectileSpawnPoint.transform.position;
@@ -327,10 +342,6 @@ class Gunner : Enemy
       
         gunnerState = GunnerState.Idle;
         animator.PlayAnimation("Gunner_Idle");
-    }
-    public void EndDeath()
-    {
-        Destroy(gameObject);
     }
     public void BeginJump()
     {

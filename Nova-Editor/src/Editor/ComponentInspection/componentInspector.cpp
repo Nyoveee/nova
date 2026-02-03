@@ -93,31 +93,79 @@ void ComponentInspector::update() {
 	}
 
 
-	BasicAssetInfo* prefabAssetInfo = editor.assetManager.getDescriptor(entityData.prefabID);
-
-	if (prefabAssetInfo) {
-		ImGui::Separator();
-
-		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", nullptr);
-		
-		ImGui::SameLine();
-
-		if (ImGui::Button(ICON_FA_BOX_OPEN)) {
+	if (ImGui::CollapsingHeader("Prefab")) {
+		if (ImGui::Button("Unpack Prefab")) {
 			editor.unpackPrefab(entityData);
 		}
 
+		ImGui::SameLine();
+
+		if (entityData.prefabID != INVALID_RESOURCE_ID && !editor.engine.resourceManager.isResource<Prefab>(entityData.prefabID)) {
+			Logger::warn("Outdated prefab id.. resetting it back to invalid..");
+			entityData.prefabID = { INVALID_RESOURCE_ID };
+		}
+
+		ImGui::BeginDisabled(entityData.prefabID == INVALID_RESOURCE_ID); 
+
 		if (ImGui::Button("Update Prefab")) {
 			editor.engine.prefabManager.updatePrefab(selectedEntity);
+			entityData.overridenComponents.clear();
+			entityData.overridenProperties.clear();
 		}
+
+		ImGui::SeparatorText("Admin debug. Only do these if you know what you are doing.");
+
+		if (ImGui::Button("Prefab Total Override. ")) {
+			editor.engine.prefabManager.prefabOverride(selectedEntity);
+			entityData.overridenComponents.clear();
+			entityData.overridenProperties.clear();
+
+			editor.assetViewerUi.selectNewResourceId(INVALID_RESOURCE_ID);
+		}
+
+#if 0
+		if (ImGui::Button("GUID Remap.")) {
+			editor.engine.prefabManager.guidRemap(entityData.prefabID);
+		}
+#endif
+
+		ImGui::EndDisabled();
+
+		ImGui::TextWrapped("You can manually assign a prefab id.");
+
+		editor.displayAssetDropDownList<Prefab>(entityData.prefabID, "Prefab", [&](ResourceID newPrefabId) {
+			auto recursivelyPrefabIdAssgiment = [&](entt::entity entityId) {
+				auto impl = [&](entt::entity entityId, auto& func) {
+					EntityData* data = registry.try_get<EntityData>(entityId);
+
+					if (!data) {
+						return;
+					}
+
+					data->prefabID = { newPrefabId };
+
+					for (entt::entity child : data->children) {
+						func(child, func);
+					}
+				};
+
+				impl(entityId, impl);
+			};
+
+			recursivelyPrefabIdAssgiment(selectedEntity);
+		});
 	}
+
+#if 0
 	else if (entityData.prefabID != TypedResourceID<Prefab>{ INVALID_RESOURCE_ID }) {
 		Logger::warn("Entity {} has invalid prefab id, relegating him back to a normal entity..", entityData.name);
 		editor.unpackPrefab(entityData);
 	}
 
-	ImGui::NewLine();
+#endif
 
 	if (ImGui::CollapsingHeader("Entity")) {
+		ImGui::Text("Entity GUID: %zu", static_cast<std::size_t>(entityData.entityGUID));
 		ImGui::Text("Parent: ");
 		ImGui::SameLine();
 		ImGui::Text(entityData.parent == entt::null ? "None" : registry.get<EntityData>(entityData.parent).name.c_str());
@@ -190,13 +238,11 @@ void ComponentInspector::update() {
 		}
 
 		ImGui::EndChild();
-
-		ImGui::Text("Prefab ID: %zu", static_cast<std::size_t>(entityData.prefabID));
-		ImGui::Text("Prefab Entity: %zu", static_cast<std::size_t>(entityData.prefabMetaData.prefabEntity));
 	}
 
+	ImGui::NewLine();
+
 	// Display the rest of the components via reflection.
-	//g_displayComponentFunctor(*this, selectedEntity, registry, true);
 	g_displayComponentFunctor(editor, selectedEntity, registry, true);
 
 	// Display add component button.

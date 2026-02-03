@@ -1,250 +1,38 @@
 {
+    "RootEntity": 41,
     "Entities": [
         {
-            "AudioComponent": {
-                "data": {
-                    "Enemy Hurt SFX": {
-                        "audioId": 13583868459018207259,
-                        "stopAudio": false,
-                        "volume": 1.0
-                    },
-                    "Gun1_LaserRifle_Switch_Select5": {
-                        "audioId": 15702433874408062983,
-                        "stopAudio": false,
-                        "volume": 1.0
-                    },
-                    "LaserRifle_SmallRocket_Shot1": {
-                        "audioId": 2443836571429388297,
-                        "stopAudio": false,
-                        "volume": 1.0
-                    },
-                    "LaserRifle_SmallRocket_Shot2": {
-                        "audioId": 14549512369801281547,
-                        "stopAudio": false,
-                        "volume": 1.0
-                    }
-                },
-                "loop": false
-            },
             "EntityData": {
-                "children": [
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Gunner",
-                "overridenComponents": null,
-                "overridenProperties": null,
+                "tag": "Enemy",
                 "parent": 4294967295,
-                "prefabID": 12431034955156455427,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 12431034955156455427
+                "attachedSocket": 65535,
+                "children": [
+                    42,
+                    43,
+                    44,
+                    46
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7282593835722735621,
+                "entityGUID": 16814277731064774729,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "17237801994024849853": false
                 },
-                "tag": "Enemy"
-            },
-            "NavMeshAgent": {
-                "agentMaxAcceleration": 3.0,
-                "agentMaxSpeed": 3.0,
-                "agentName": "Humanoid",
-                "agentRotationSpeed": 1.0,
-                "separationWeight": 1.0
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "shootingRange"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 3.5
-                                },
-                                "name": "targetDistanceFromVantagePoint"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 100.0
-                                },
-                                "name": "health"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 10.0
-                                },
-                                "name": "movementSpeed"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 17,
-                                    "__variant_value": 30
-                                },
-                                "name": "ichorPerDamage"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 17,
-                                    "__variant_value": 20
-                                },
-                                "name": "ichorExplodeSpawnAmount"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 0.20000000298023224
-                                },
-                                "name": "hurtDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "jumpDuration"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 50.0
-                                },
-                                "name": "enemyExecuteThreshold"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 1.0
-                                },
-                                "name": "enemyArmouredMultiplier"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 18,
-                                    "__variant_value": 3.0
-                                },
-                                "name": "enemyWeakSpotMultiplier"
-                            }
-                        ],
-                        "scriptId": 977132039435386883
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 10,
-                                    "__variant_value": 16421558470677561431
-                                },
-                                "name": "projectilePrefab"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 5
-                                },
-                                "name": "projectileSpawnPoint"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 3
-                                },
-                                "name": "rigidBody"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 10,
-                                    "__variant_value": 14493050257245634575
-                                },
-                                "name": "ichorPrefab"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 2
-                                },
-                                "name": "ichorSpawnPoint"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 4
-                                },
-                                "name": "animator"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 4
-                                },
-                                "name": "renderer"
-                            },
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 1
-                                },
-                                "name": "navMeshAgent"
-                            }
-                        ],
-                        "scriptId": 13082807837807067137
-                    },
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 1
-                                },
-                                "name": "enemyGameObject"
-                            }
-                        ],
-                        "scriptId": 12135503810755952677
-                    }
-                ]
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
+                "position": {
+                    "x": 3.5458390712738037,
+                    "y": -0.0001220703125,
+                    "z": -14.778861999511719
                 },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 12.20724868774414,
-                    "y": 1.2595694065093994,
-                    "z": -49.88798904418945
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
+                "scale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
-                },
-                "position": {
-                    "x": 12.20724868774414,
-                    "y": 1.2595694065093994,
-                    "z": -49.88798904418945
                 },
                 "rotation": {
                     "w": 1.0,
@@ -252,38 +40,336 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Ichor Spawn Point",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1,
-                "prefabID": 12431034955156455427,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 12431034955156455427
-                },
-                "tag": ""
-            },
-            "Transform": {
                 "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
+                "localPosition": {
+                    "x": 3.5458390712738037,
+                    "y": -0.0001220703125,
+                    "z": -14.778861999511719
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
                 "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 977132039435386883,
+                        "fields": [
+                            {
+                                "name": "shootingRange",
+                                "data": {
+                                    "__variant_value": 100.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "targetDistanceFromVantagePoint",
+                                "data": {
+                                    "__variant_value": 3.5,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "timeBetweenSteps",
+                                "data": {
+                                    "__variant_value": 0.30000001192092896,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "health",
+                                "data": {
+                                    "__variant_value": 100.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "movementSpeed",
+                                "data": {
+                                    "__variant_value": 10.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ichorPerDamage",
+                                "data": {
+                                    "__variant_value": 30,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "ichorExplodeSpawnAmount",
+                                "data": {
+                                    "__variant_value": 20,
+                                    "__variant_type": 17
+                                }
+                            },
+                            {
+                                "name": "hurtDuration",
+                                "data": {
+                                    "__variant_value": 0.20000000298023224,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "jumpDuration",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "enemyExecuteThreshold",
+                                "data": {
+                                    "__variant_value": 50.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "enemyArmouredMultiplier",
+                                "data": {
+                                    "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "enemyWeakSpotMultiplier",
+                                "data": {
+                                    "__variant_value": 3.0,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "scriptId": 13082807837807067137,
+                        "fields": [
+                            {
+                                "name": "projectilePrefab",
+                                "data": {
+                                    "__variant_value": 16421558470677561431,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "projectileSpawnPoint",
+                                "data": {
+                                    "__variant_value": 46,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "rigidBody",
+                                "data": {
+                                    "__variant_value": 43,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "attackSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "deathSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "spotSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": [
+                                            {
+                                                "__variant_value": 15364602434819096577,
+                                                "__variant_type": 15
+                                            }
+                                        ],
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "footstepSFX",
+                                "data": {
+                                    "__variant_value": {
+                                        "list": null,
+                                        "enumListType": "",
+                                        "index": 15
+                                    },
+                                    "__variant_type": 20
+                                }
+                            },
+                            {
+                                "name": "timeSinceLastFootstep",
+                                "data": {
+                                    "__variant_value": 0.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "ichorPrefab",
+                                "data": {
+                                    "__variant_value": 14493050257245634575,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "explodeVFXPrefab",
+                                "data": {
+                                    "__variant_value": 15964249687668785153,
+                                    "__variant_type": 10
+                                }
+                            },
+                            {
+                                "name": "ichorSpawnPoint",
+                                "data": {
+                                    "__variant_value": 42,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "animator",
+                                "data": {
+                                    "__variant_value": 44,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "renderer",
+                                "data": {
+                                    "__variant_value": 44,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "navMeshAgent",
+                                "data": {
+                                    "__variant_value": 41,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "scriptId": 12135503810755952677,
+                        "fields": [
+                            {
+                                "name": "enemyGameObject",
+                                "data": {
+                                    "__variant_value": 41,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "NavMeshAgent": {
+                "agentName": "Humanoid",
+                "agentMaxSpeed": 3.0,
+                "agentMaxAcceleration": 3.0,
+                "agentRotationSpeed": 1.0,
+                "separationWeight": 1.0
+            },
+            "id": 41
+        },
+        {
+            "EntityData": {
+                "name": "Ichor Spawn Point",
+                "tag": "",
+                "parent": 41,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7282593835722735621,
+                "entityGUID": 10473209455727116359,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "15908289914940614865": false,
+                    "16652763906952685383": false,
+                    "9059764703561530457": false,
+                    "452538415452204233": false,
+                    "10599230719904143524": false,
+                    "17421316227555880647": false,
+                    "6152912775364972041": false,
+                    "13953638462837156301": false,
+                    "394579324703252227": false,
+                    "10106385962890515953": false,
+                    "17464486586416021590": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "2785545264285399722": false,
+                    "16533173024327387273": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "8302729333555196098": false,
+                    "13437837940854190620": false,
+                    "7111564935354361005": false,
+                    "13484132868097894827": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 3.5458390712738037,
+                    "y": 2.6523048877716064,
+                    "z": -14.778861999511719
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
@@ -293,8 +379,91 @@
                     "y": 2.6524269580841064,
                     "z": 0.0
                 },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
                 "localRotation": {
                     "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 42
+        },
+        {
+            "EntityData": {
+                "name": "Gunner Collider",
+                "tag": "Enemy_ArmouredSpot",
+                "parent": 41,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7282593835722735621,
+                "entityGUID": 4708601932692881477,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "15908289914940614865": false,
+                    "16652763906952685383": false,
+                    "9059764703561530457": false,
+                    "452538415452204233": false,
+                    "10599230719904143524": false,
+                    "17421316227555880647": false,
+                    "6152912775364972041": false,
+                    "13953638462837156301": false,
+                    "394579324703252227": false,
+                    "10106385962890515953": false,
+                    "17464486586416021590": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "2785545264285399722": false,
+                    "16533173024327387273": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "8302729333555196098": false,
+                    "13437837940854190620": false,
+                    "7111564935354361005": false,
+                    "13484132868097894827": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 3.5458390712738037,
+                    "y": -0.0001220703125,
+                    "z": -14.778861999511719
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
@@ -304,118 +473,121 @@
                     "y": 1.0,
                     "z": 1.0
                 },
-                "position": {
-                    "x": 12.20724868774414,
-                    "y": 3.911996364593506,
-                    "z": -49.88798904418945
-                },
-                "rotation": {
+                "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 2
-        },
-        {
-            "BoxCollider": {
-                "offset": {
+                "localEulerAngles": {
                     "x": 0.0,
-                    "y": 2.200000047683716,
+                    "y": -0.0,
                     "z": 0.0
-                },
-                "scaleWithTransform": false,
-                "shapeScale": {
-                    "x": 1.0,
-                    "y": 1.2999999523162842,
-                    "z": 1.2999999523162842
                 }
-            },
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Gunner Collider",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1,
-                "prefabID": 12431034955156455427,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 12431034955156455427
-                },
-                "tag": "Enemy_ArmouredSpot"
             },
             "Rigidbody": {
-                "dynamicCollider": false,
-                "gravityMultiplier": 1.0,
+                "motionType": "Kinematic",
+                "layer": "Enemy_HurtSpot",
+                "motionQuality": "Discrete",
                 "initialVelocity": {
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
+                "mass": 0.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
-                "layer": "Enemy_HurtSpot",
-                "mass": 0.0,
-                "motionQuality": "Discrete",
-                "motionType": "Kinematic",
+                "dynamicCollider": false,
                 "toScaleWithTransform": true
+            },
+            "BoxCollider": {
+                "shapeScale": {
+                    "x": 1.0,
+                    "y": 1.2999999523162842,
+                    "z": 1.2999999523162842
+                },
+                "offset": {
+                    "x": 0.0,
+                    "y": 2.200000047683716,
+                    "z": 0.0
+                },
+                "scaleWithTransform": false
             },
             "Scripts": {
                 "scriptDatas": [
                     {
+                        "scriptId": 12135503810755952677,
                         "fields": [
                             {
+                                "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 1
-                                },
-                                "name": "enemyGameObject"
+                                    "__variant_value": 41,
+                                    "__variant_type": 4
+                                }
                             }
-                        ],
-                        "scriptId": 12135503810755952677
+                        ]
                     }
                 ]
             },
+            "id": 43
+        },
+        {
+            "EntityData": {
+                "name": "Gunner Model",
+                "tag": "",
+                "parent": 41,
+                "attachedSocket": 65535,
+                "children": [
+                    45
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7282593835722735621,
+                "entityGUID": 13355513217244233795,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "16652763906952685383": false,
+                    "15908289914940614865": false,
+                    "452538415452204233": false,
+                    "9059764703561530457": false,
+                    "17421316227555880647": false,
+                    "10599230719904143524": true,
+                    "13953638462837156301": false,
+                    "6152912775364972041": false,
+                    "10106385962890515953": false,
+                    "394579324703252227": false,
+                    "17464486586416021590": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "16533173024327387273": false,
+                    "2785545264285399722": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "13437837940854190620": false,
+                    "8302729333555196098": false,
+                    "13484132868097894827": false,
+                    "7111564935354361005": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
+            },
             "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
+                "position": {
+                    "x": 3.5458390712738037,
+                    "y": -0.00012177228927612305,
+                    "z": -14.778861999511719
                 },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
+                "scale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
-                },
-                "position": {
-                    "x": 12.20724868774414,
-                    "y": 1.2595694065093994,
-                    "z": -49.88798904418945
                 },
                 "rotation": {
                     "w": 1.0,
@@ -423,136 +595,297 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 2.980232238769531e-07,
+                    "z": 0.0
+                },
+                "localScale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
-                }
-            },
-            "id": 3
-        },
-        {
-            "Animator": {
-                "controllerId": 14235729342422597637
-            },
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Gunner Model",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1,
-                "prefabID": 12431034955156455427,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 12431034955156455427
                 },
-                "tag": ""
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
             },
             "Scripts": {
                 "scriptDatas": [
                     {
+                        "scriptId": 16372493856992313355,
                         "fields": [
                             {
+                                "name": "triggerMethod1",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": "Shoot"
-                                },
-                                "name": "triggerMethod1"
+                                    "__variant_value": "Shoot",
+                                    "__variant_type": 7
+                                }
                             },
                             {
+                                "name": "triggerMethod2",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": "EndStagger"
-                                },
-                                "name": "triggerMethod2"
+                                    "__variant_value": "EndStagger",
+                                    "__variant_type": 7
+                                }
                             },
                             {
+                                "name": "triggerMethod3",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": "EndDeath"
-                                },
-                                "name": "triggerMethod3"
+                                    "__variant_value": "EndDeath",
+                                    "__variant_type": 7
+                                }
                             },
                             {
+                                "name": "triggerMethod4",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": "BeginJump"
-                                },
-                                "name": "triggerMethod4"
+                                    "__variant_value": "BeginJump",
+                                    "__variant_type": 7
+                                }
                             },
                             {
+                                "name": "triggerMethod5",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": ""
-                                },
-                                "name": "triggerMethod5"
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
                             },
                             {
+                                "name": "triggerMethod6",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": ""
-                                },
-                                "name": "triggerMethod6"
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
                             },
                             {
+                                "name": "triggerMethod7",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": ""
-                                },
-                                "name": "triggerMethod7"
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
                             },
                             {
+                                "name": "triggerMethod8",
                                 "data": {
-                                    "__variant_type": 7,
-                                    "__variant_value": ""
-                                },
-                                "name": "triggerMethod8"
+                                    "__variant_value": "",
+                                    "__variant_type": 7
+                                }
                             }
-                        ],
-                        "scriptId": 16372493856992313355
+                        ]
                     }
                 ]
             },
             "SkinnedMeshRenderer": {
+                "modelId": 7295743889278828547,
                 "materialIds": [
-                    5507902798148157441
+                    5507902798148157441,
+                    16494205496544559107
                 ],
-                "modelId": 7295743889278828547
+                "socketConnections": {
+                    "5": 4294967295
+                },
+                "castShadow": true
+            },
+            "Animator": {
+                "controllerId": 14235729342422597637
+            },
+            "id": 44
+        },
+        {
+            "EntityData": {
+                "name": "Gunner_ColliderWeak",
+                "tag": "Enemy_WeakSpot",
+                "parent": 44,
+                "attachedSocket": 5,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7282593835722735621,
+                "entityGUID": 13355513217244233803,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "15908289914940614865": false,
+                    "16652763906952685383": false,
+                    "9059764703561530457": false,
+                    "452538415452204233": false,
+                    "10599230719904143524": false,
+                    "17421316227555880647": false,
+                    "6152912775364972041": false,
+                    "13953638462837156301": false,
+                    "394579324703252227": false,
+                    "10106385962890515953": false,
+                    "17464486586416021590": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "2785545264285399722": false,
+                    "16533173024327387273": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "8302729333555196098": false,
+                    "13437837940854190620": false,
+                    "7111564935354361005": false,
+                    "13484132868097894827": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
+                "position": {
+                    "x": -0.7817866802215576,
+                    "y": 0.9517514705657959,
+                    "z": -13.929044723510742
                 },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
+                "scale": {
+                    "x": 0.8714923858642578,
+                    "y": 0.8714938163757324,
+                    "z": 0.8714931011199951
+                },
+                "rotation": {
+                    "w": 0.07115430384874344,
+                    "x": 0.9644560217857361,
+                    "y": 0.030482515692710876,
+                    "z": -0.25265127420425415
+                },
+                "eulerAngles": {
+                    "x": 2.723156690597534,
+                    "y": 0.5038747787475586,
+                    "z": -0.04600843787193298
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
+                    "x": -4.327625751495361,
+                    "y": 0.951873242855072,
+                    "z": 0.8498172760009766
                 },
                 "localScale": {
+                    "x": 0.8714923858642578,
+                    "y": 0.8714941740036011,
+                    "z": 0.871493399143219
+                },
+                "localRotation": {
+                    "w": 0.07115428149700165,
+                    "x": 0.9644559025764465,
+                    "y": 0.030482515692710876,
+                    "z": -0.2526513338088989
+                },
+                "localEulerAngles": {
+                    "x": 2.723156690597534,
+                    "y": 0.5038748979568481,
+                    "z": -0.046008456498384476
+                }
+            },
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Enemy_HurtSpot",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 1.0,
+                "gravityMultiplier": 0.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "SphereCollider": {
+                "radius": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 12135503810755952677,
+                        "fields": [
+                            {
+                                "name": "enemyGameObject",
+                                "data": {
+                                    "__variant_value": 41,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 45
+        },
+        {
+            "EntityData": {
+                "name": "Projectile Spawn Point",
+                "tag": "",
+                "parent": 41,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7282593835722735621,
+                "entityGUID": 2979219675782611009,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "11935986701403193153": false,
+                    "15908289914940614865": false,
+                    "16652763906952685383": false,
+                    "9059764703561530457": false,
+                    "452538415452204233": false,
+                    "10599230719904143524": false,
+                    "17421316227555880647": false,
+                    "6152912775364972041": false,
+                    "13953638462837156301": false,
+                    "394579324703252227": false,
+                    "10106385962890515953": false,
+                    "17464486586416021590": false,
+                    "16861337649669213096": false,
+                    "14828643033174927893": false,
+                    "17237801994024849853": false,
+                    "2785545264285399722": false,
+                    "16533173024327387273": false,
+                    "11834285525760392891": false,
+                    "3548010661223935717": false,
+                    "9644886267844571682": false,
+                    "8302729333555196098": false,
+                    "13437837940854190620": false,
+                    "7111564935354361005": false,
+                    "13484132868097894827": false,
+                    "9204931689134171219": false,
+                    "17461210185115697313": false,
+                    "16921322617277318829": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 3.4164950847625732,
+                    "y": 3.582026720046997,
+                    "z": -11.16153335571289
+                },
+                "scale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
-                },
-                "position": {
-                    "x": 12.20724868774414,
-                    "y": 1.2595694065093994,
-                    "z": -49.88798904418945
                 },
                 "rotation": {
                     "w": 1.0,
@@ -560,38 +893,7 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 4
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Projectile Spawn Point",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1,
-                "prefabID": 12431034955156455427,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 12431034955156455427
-                },
-                "tag": ""
-            },
-            "Transform": {
                 "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
@@ -601,139 +903,24 @@
                     "y": 3.582148790359497,
                     "z": 3.617328643798828
                 },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
                 "localScale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
                 },
-                "position": {
-                    "x": 12.07790470123291,
-                    "y": 4.8417181968688965,
-                    "z": -46.270660400390625
-                },
-                "rotation": {
+                "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 5
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Gunner_ColliderWeak",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1,
-                "prefabID": 12431034955156455427,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 12431034955156455427
-                },
-                "tag": "Enemy_WeakSpot"
-            },
-            "Rigidbody": {
-                "dynamicCollider": false,
-                "gravityMultiplier": 0.0,
-                "initialVelocity": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "isRotatable": true,
-                "isTrigger": false,
-                "layer": "Enemy_HurtSpot",
-                "mass": 1.0,
-                "motionQuality": "Discrete",
-                "motionType": "Kinematic",
-                "toScaleWithTransform": true
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 4,
-                                    "__variant_value": 1
-                                },
-                                "name": "enemyGameObject"
-                            }
-                        ],
-                        "scriptId": 12135503810755952677
-                    }
-                ]
-            },
-            "SphereCollider": {
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "radius": 1.0
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 3.9555604457855225,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 12.20724868774414,
-                    "y": 5.215129852294922,
-                    "z": -49.88798904418945
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
                 }
             },
-            "id": 6
+            "id": 46
         }
-    ],
-    "RootEntity": 1
+    ]
 }

@@ -51,6 +51,13 @@ private:
 
 	void handleRecompilation();
 
+public:
+	bool isHovering = false;
+
+	// Selected prefab entity
+	entt::entity rootPrefabEntity;
+	entt::entity selectedPrefabEntity;
+
 private:
 	ResourceID selectedResourceId;
 	Editor& editor;
@@ -70,10 +77,6 @@ private:
 
 	// Model
 	float copyOfScale = 1.f;
-
-	// Selected prefab entity
-	entt::entity rootPrefabEntity;
-	entt::entity selectedPrefabEntity;
 
 	// ---------------------------------------------------
 	bool toSerialiseSelectedDescriptor;

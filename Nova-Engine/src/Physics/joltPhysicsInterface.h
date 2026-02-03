@@ -100,13 +100,18 @@ public:
 			return inLayer2 == BroadPhaseLayers::MOVING || inLayer2 == BroadPhaseLayers::ITEM || inLayer2 == BroadPhaseLayers::ENEMY_HURTSPOT;
 		case Layers::FLOOR:
 		case Layers::NON_MOVING:
-			return inLayer2 == BroadPhaseLayers::MOVING || inLayer2 == BroadPhaseLayers::ITEM; // Non moving only collides with moving
+			return inLayer2 == BroadPhaseLayers::MOVING 
+				|| inLayer2 == BroadPhaseLayers::ITEM 
+				|| inLayer2 == BroadPhaseLayers::ENEMY_HURTSPOT;
 		case Layers::MOVING:
 			return inLayer2 != BroadPhaseLayers::ITEM;	 // Moving collides with everything except item
 		case Layers::ITEM:
 			return inLayer2 == BroadPhaseLayers::NON_MOVING || inLayer2 == BroadPhaseLayers::ITEM_INTERACTOR;
 		case Layers::ENEMY_HURTSPOT:
-			return inLayer2 == BroadPhaseLayers::NON_MOVING || inLayer2 == BroadPhaseLayers::MOVING || inLayer2 == BroadPhaseLayers::WALL;//need to collide with weapons
+			return inLayer2 == BroadPhaseLayers::NON_MOVING 
+				|| inLayer2 == BroadPhaseLayers::MOVING 
+				|| inLayer2 == BroadPhaseLayers::WALL 
+				|| inLayer2 == BroadPhaseLayers::FLOOR;
 		case Layers::ITEM_INTERACTOR:
 			return inLayer2 == BroadPhaseLayers::ITEM; //item interactor requires collision with items like ichor only
 		default:
@@ -130,13 +135,18 @@ public:
 			return inObject2 == Layers::MOVING || inObject2 == Layers::ITEM || inObject2 == Layers::ENEMY_HURTSPOT;
 		case Layers::FLOOR:
 		case Layers::NON_MOVING:
-			return inObject2 == Layers::MOVING || inObject2 == Layers::ITEM; // Non moving only collides with moving
+			return inObject2 == Layers::MOVING 
+				|| inObject2 == Layers::ITEM
+				|| inObject2 == Layers::ITEM_INTERACTOR;
 		case Layers::MOVING:
 			return inObject2 != Layers::ITEM;   // Moving collides with everything except item
 		case Layers::ITEM:
 			return inObject2 == Layers::NON_MOVING || inObject2 == Layers::ITEM_INTERACTOR;
 		case Layers::ENEMY_HURTSPOT:
-			return inObject2 == Layers::NON_MOVING || inObject2 == Layers::MOVING || inObject2 == Layers::WALL;//need to collide with weapons
+			return inObject2 == Layers::NON_MOVING 
+				|| inObject2 == Layers::MOVING
+				|| inObject2 == Layers::WALL
+				|| inObject2 == Layers::FLOOR;
 		case Layers::ITEM_INTERACTOR:
 			return inObject2 == Layers::ITEM; //item interactor requires collision with items like ichor only
 		default:

@@ -195,10 +195,10 @@ Mesh ModelLoader::processMesh(aiMesh const* mesh, aiScene const* scene, glm::mat
 
 		if (mesh->mTangents) {
 			if (mesh->mNumBones) {
-				normal = toGlmVec3(mesh->mTangents[i]);
+				tangent = toGlmVec3(mesh->mTangents[i]);
 			}
 			else {
-				normal = normalMatrix * toGlmVec3(mesh->mTangents[i]);
+				tangent = normalMatrix * toGlmVec3(mesh->mTangents[i]);
 			}
 		}
 		else {

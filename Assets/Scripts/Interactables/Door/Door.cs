@@ -1,3 +1,4 @@
+using ScriptingAPI;
 using System;
 
 class Door : Script
@@ -21,8 +22,11 @@ class Door : Script
     private Dictionary<DoorState, CurrentState> updateState = new Dictionary<DoorState, CurrentState>();
 
 
+    /***********************************************************
+        Inspector Variables
+    ***********************************************************/
     [SerializableField]
-    private int doorType;
+    private DoorType doorType;
     [SerializableField]
     private float automaticDoordetectionRange = 10f;
     // Left and right door panels
@@ -30,7 +34,15 @@ class Door : Script
     private Transform_ leftDoor;
     [SerializableField]
     private Transform_ rightDoor;
+    [SerializableField]
+    private Audio openSFX;
+    [SerializableField]
+    private Audio closeSFX;
 
+    /***********************************************************
+    Components
+    ***********************************************************/
+    private AudioComponent_ audioComponent;
     // Editable 
     [SerializableField]
     private float openOffset = 2f;
@@ -57,10 +69,11 @@ class Door : Script
         updateState.Add(DoorState.Closed, Update_Closed);
         updateState.Add(DoorState.Opening, Update_Opening);
         updateState.Add(DoorState.Closing, Update_Closing);
+        audioComponent = getComponent<AudioComponent_>();
     }
     protected override void update()
     {
-        switch ((DoorType)doorType)
+        switch (doorType)
         {
             // Door will open depending on player 
             case DoorType.Automatic:
@@ -123,21 +136,23 @@ class Door : Script
         doorState = DoorState.Opening;
 
         currentDoorMovingTime = doorMovingDuration;
-        AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
+        audioComponent.PlaySound(openSFX);
+        // AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
     }
     public void CloseDoor()
     {
         doorState = DoorState.Closing;
 
         currentDoorMovingTime = doorMovingDuration;
-        AudioAPI.PlaySound(gameObject, "slidingDoor_close_01");
+        audioComponent.PlaySound(closeSFX);
+        // AudioAPI.PlaySound(gameObject, "slidingDoor_close_01");
     }
     public void LockDoor()
     {
-        doorType = (int)DoorType.Locked;
+        doorType = DoorType.Locked;
     }
     public void UnlockDoor()
     {
-        doorType = (int)DoorType.Automatic;
+        doorType = DoorType.Automatic;
     }
 }

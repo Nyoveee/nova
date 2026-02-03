@@ -1,19 +1,17 @@
 {
-    "RootEntity": 2,
+    "RootEntity": 3,
     "Entities": [
         {
             "EntityData": {
                 "name": "Ultimate Explosion",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 11921019885713047693,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 11921019885713047693
-                },
+                "entityGUID": 5919498488883315385,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -102,6 +100,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": true,
                 "dynamicCollider": true,
@@ -135,6 +134,13 @@
                                 "name": "explosionDuration",
                                 "data": {
                                     "__variant_value": 1.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "collapseDuration",
+                                "data": {
+                                    "__variant_value": 0.5,
                                     "__variant_type": 18
                                 }
                             },
@@ -198,7 +204,7 @@
                     }
                 ]
             },
-            "id": 2
+            "id": 3
         }
     ]
 }

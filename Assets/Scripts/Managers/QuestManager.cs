@@ -9,12 +9,13 @@ public class QuestManager : Script
     private Quest? currentQuest;
     private int questIndex;
     private PlayerController? player;
-    [SerializableField]
     private GameUIManager gameUIManager;
+
     [SerializableField]
     private GameObject questContainer;
     protected override void init()
     {
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         GameObject[] children = gameObject.GetChildren();
         foreach (var child in children)
         {

@@ -43,7 +43,7 @@ class Sequencer;
 
 // List all the component types. This is used as a variadic argument to certain functions.
 #define ALL_COMPONENTS \
-	EntityData, Transform, Light, MeshRenderer, TranslucentMeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
+	EntityData, Transform, Light, MeshRenderer, Rigidbody, BoxCollider, SphereCollider, CapsuleCollider, MeshCollider, SkyBox, AudioComponent, PositionalAudio, Scripts,   \
 	NavMeshModifier, CameraComponent, NavMeshSurface, NavMeshAgent, ParticleEmitter, Text, SkinnedMeshRenderer, Animator, \
 	Image, Sequence, Button, Canvas, NavMeshOffLinks, SkyboxCubeMap, ReflectionProbe, Fog
 
@@ -65,10 +65,6 @@ enum class InterpolationType : unsigned int {
 	Cubic
 };
 
-struct PrefabMetaData {
-	PrefabEntityID prefabEntity;
-	ResourceID prefabID;
-};
 // ===================================
 
 struct EntityData {
@@ -82,7 +78,8 @@ struct EntityData {
 	bool isActive														= true;
 
 	TypedResourceID<Prefab> prefabID									{ INVALID_RESOURCE_ID };
-	PrefabMetaData prefabMetaData										{};
+	EntityGUID entityGUID												{ Math::getGUID() };
+
 	std::unordered_map<size_t, std::vector<int>> overridenProperties	{};
 	std::unordered_map<size_t, bool> overridenComponents				{};
 	std::unordered_set<ComponentID> inactiveComponents                  {};
@@ -96,7 +93,7 @@ struct EntityData {
 		layerId,
 		isActive,
 		prefabID,
-		prefabMetaData,
+		entityGUID,
 		overridenProperties,
 		overridenComponents,
 		inactiveComponents
@@ -201,25 +198,7 @@ struct MeshRenderer {
 	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
 	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
 
-	bool castShadow = true;
-	bool shadowCullFrontFace = true;
-
-	// std::vector<>
-	REFLECTABLE(
-		modelId,
-		materialIds,
-		castShadow,
-		shadowCullFrontFace
-	)
-
-	std::unordered_set<int>					isMaterialInstanced;
-};
-
-struct TranslucentMeshRenderer {
-	TypedResourceID<Model>					modelId		{ SPHERE_MODEL_ID };
-	std::vector<TypedResourceID<Material>>	materialIds	{ { DEFAULT_PBR_MATERIAL_ID } };
-
-	bool castShadow = true;
+	bool castShadow = false;
 	bool shadowCullFrontFace = true;
 
 	// std::vector<>
@@ -325,6 +304,7 @@ struct Rigidbody {
 	glm::vec3 initialVelocity		{};
 	float mass						{ 10.f };
 	float gravityMultiplier			{ 1.f };
+	NormalizedFloat restitution		{ 0.0f };
 
 	bool isRotatable				{ true };
 	bool isTrigger					{ false };
@@ -338,6 +318,7 @@ struct Rigidbody {
 		initialVelocity,
 		mass,
 		gravityMultiplier,
+		restitution,
 		isRotatable,
 		isTrigger,
 		dynamicCollider,

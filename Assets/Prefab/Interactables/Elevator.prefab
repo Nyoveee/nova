@@ -1,28 +1,26 @@
 {
-    "RootEntity": 1,
+    "RootEntity": 31,
     "Entities": [
         {
             "EntityData": {
                 "name": "Elevator",
                 "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
                 "children": [
-                    2,
-                    5
+                    32,
+                    35
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 1846010205724705037
-                },
+                "prefabID": 15155985497701761311,
+                "entityGUID": 669875822299676911,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": false,
                     "6919815292445452220": true,
-                    "11935986701403193153": true,
+                    "10106385962890515953": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": true,
                     "9059764703561530457": true
                 },
                 "inactiveComponents": null
@@ -90,6 +88,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -106,7 +105,7 @@
                             {
                                 "name": "elevatorTransform",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 31,
                                     "__variant_type": 4
                                 }
                             },
@@ -127,14 +126,14 @@
                             {
                                 "name": "tutorialDoor",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 32,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "hubDoor",
                                 "data": {
-                                    "__variant_value": 5,
+                                    "__variant_value": 35,
                                     "__variant_type": 4
                                 }
                             }
@@ -142,24 +141,22 @@
                     }
                 ]
             },
-            "id": 1
+            "id": 31
         },
         {
             "EntityData": {
                 "name": "Tutorial Door",
                 "tag": "",
-                "parent": 1,
+                "parent": 31,
+                "attachedSocket": 65535,
                 "children": [
-                    3,
-                    4
+                    33,
+                    34
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
-                "prefabMetaData": {
-                    "prefabEntity": 1,
-                    "prefabID": 1846010205724705037
-                },
+                "prefabID": 15155985497701761311,
+                "entityGUID": 9316787106851029233,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "16861337649669213096": false,
@@ -176,7 +173,7 @@
                 },
                 "scale": {
                     "x": 0.544895350933075,
-                    "y": 0.707575798034668,
+                    "y": 0.707587718963623,
                     "z": 0.7974103689193726
                 },
                 "rotation": {
@@ -197,7 +194,7 @@
                 },
                 "localScale": {
                     "x": 14.37121868133545,
-                    "y": 20.216480255126953,
+                    "y": 20.216819763183594,
                     "z": 22.775842666625977
                 },
                 "localRotation": {
@@ -227,24 +224,13 @@
                         "scriptId": 8255212936417148929,
                         "fields": [
                             {
-                                "name": "doorOpenSFX",
-                                "data": {
-                                    "__variant_value": 17941145117363486723,
-                                    "__variant_type": 15
-                                }
-                            },
-                            {
-                                "name": "doorClosedSFX",
-                                "data": {
-                                    "__variant_value": 2953165557474476033,
-                                    "__variant_type": 15
-                                }
-                            },
-                            {
                                 "name": "doorType",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": {
+                                        "Type": "DoorType",
+                                        "Value": "Elevator"
+                                    },
+                                    "__variant_type": 9
                                 }
                             },
                             {
@@ -257,14 +243,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 33,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 34,
                                     "__variant_type": 4
                                 }
                             },
@@ -286,21 +272,19 @@
                     }
                 ]
             },
-            "id": 2
+            "id": 32
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 2,
+                "parent": 32,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
-                "prefabMetaData": {
-                    "prefabEntity": 2,
-                    "prefabID": 1846010205724705037
-                },
+                "prefabID": 15155985497701761311,
+                "entityGUID": 5281561840727064819,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": true,
@@ -310,45 +294,45 @@
             },
             "Transform": {
                 "position": {
-                    "x": -71.67749786376953,
+                    "x": -71.6774673461914,
                     "y": 78.90351867675781,
-                    "z": 79.72924041748047
+                    "z": 79.72935485839844
                 },
                 "scale": {
-                    "x": 6.874173164367676,
-                    "y": 7.098247051239014,
-                    "z": 11.208613395690918
+                    "x": 6.874172687530518,
+                    "y": 7.098352909088135,
+                    "z": 11.20862102508545
                 },
                 "rotation": {
-                    "w": 0.7855895161628723,
+                    "w": 0.7855893969535828,
                     "x": 0.0,
-                    "y": -0.6187480092048645,
+                    "y": -0.618748128414154,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -1.3342959880828857,
+                    "y": -1.334296464920044,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -9.1552734375e-05,
+                    "x": 0.00011444091796875,
                     "y": -0.00029754638671875,
-                    "z": -9.1552734375e-05
+                    "z": -8.392333984375e-05
                 },
                 "localScale": {
-                    "x": 12.599161148071289,
-                    "y": 10.031783103942871,
-                    "z": 14.074590682983398
+                    "x": 12.599159240722656,
+                    "y": 10.031764030456543,
+                    "z": 14.074601173400879
                 },
                 "localRotation": {
                     "w": 0.9997141361236572,
                     "x": 0.0,
-                    "y": -0.023909151554107666,
+                    "y": -0.023909252136945724,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04782286286354065,
+                    "y": -0.047823090106248856,
                     "z": 0.0
                 }
             },
@@ -371,6 +355,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -379,21 +364,19 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 3
+            "id": 33
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 2,
+                "parent": 32,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
-                "prefabMetaData": {
-                    "prefabEntity": 3,
-                    "prefabID": 1846010205724705037
-                },
+                "prefabID": 15155985497701761311,
+                "entityGUID": 669875822299676917,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": true,
@@ -403,45 +386,45 @@
             },
             "Transform": {
                 "position": {
-                    "x": -71.6820297241211,
+                    "x": -71.68191528320313,
                     "y": 78.90351867675781,
-                    "z": 79.730712890625
+                    "z": 79.73072814941406
                 },
                 "scale": {
-                    "x": 6.875487327575684,
-                    "y": 7.098247051239014,
-                    "z": 11.210188865661621
+                    "x": 6.875512599945068,
+                    "y": 7.098352909088135,
+                    "z": 11.21019458770752
                 },
                 "rotation": {
-                    "w": 0.7848330140113831,
+                    "w": 0.7848330736160278,
                     "x": 0.0,
-                    "y": -0.6197072863578796,
+                    "y": -0.6197072267532349,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -1.336739420890808,
+                    "y": -1.3367398977279663,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -3.814697265625e-05,
+                    "x": 3.814697265625e-05,
                     "y": -0.00029754638671875,
-                    "z": 0.00588226318359375
+                    "z": 0.00574493408203125
                 },
                 "localScale": {
-                    "x": 12.60040283203125,
-                    "y": 10.031783103942871,
-                    "z": 14.077872276306152
+                    "x": 12.600448608398438,
+                    "y": 10.031764030456543,
+                    "z": 14.077879905700684
                 },
                 "localRotation": {
                     "w": 0.999693751335144,
                     "x": 0.0,
-                    "y": -0.024745965376496315,
+                    "y": -0.024745972827076912,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04949698969721794,
+                    "y": -0.049497004598379135,
                     "z": 0.0
                 }
             },
@@ -464,6 +447,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -472,24 +456,22 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 4
+            "id": 34
         },
         {
             "EntityData": {
                 "name": "Hub Door",
                 "tag": "",
-                "parent": 1,
+                "parent": 31,
+                "attachedSocket": 65535,
                 "children": [
-                    6,
-                    7
+                    36,
+                    37
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
-                "prefabMetaData": {
-                    "prefabEntity": 4,
-                    "prefabID": 1846010205724705037
-                },
+                "prefabID": 15155985497701761311,
+                "entityGUID": 9893247859154452727,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "16861337649669213096": false,
@@ -506,7 +488,7 @@
                 },
                 "scale": {
                     "x": 0.544895350933075,
-                    "y": 0.707575798034668,
+                    "y": 0.707587718963623,
                     "z": 0.7974103689193726
                 },
                 "rotation": {
@@ -527,7 +509,7 @@
                 },
                 "localScale": {
                     "x": 14.37121868133545,
-                    "y": 20.216480255126953,
+                    "y": 20.216819763183594,
                     "z": 22.775842666625977
                 },
                 "localRotation": {
@@ -557,24 +539,13 @@
                         "scriptId": 8255212936417148929,
                         "fields": [
                             {
-                                "name": "doorOpenSFX",
-                                "data": {
-                                    "__variant_value": 17941145117363486723,
-                                    "__variant_type": 15
-                                }
-                            },
-                            {
-                                "name": "doorClosedSFX",
-                                "data": {
-                                    "__variant_value": 2953165557474476033,
-                                    "__variant_type": 15
-                                }
-                            },
-                            {
                                 "name": "doorType",
                                 "data": {
-                                    "__variant_value": 0,
-                                    "__variant_type": 17
+                                    "__variant_value": {
+                                        "Type": "DoorType",
+                                        "Value": "Elevator"
+                                    },
+                                    "__variant_type": 9
                                 }
                             },
                             {
@@ -587,14 +558,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 6,
+                                    "__variant_value": 36,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 7,
+                                    "__variant_value": 37,
                                     "__variant_type": 4
                                 }
                             },
@@ -616,21 +587,19 @@
                     }
                 ]
             },
-            "id": 5
+            "id": 35
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 5,
+                "parent": 35,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
-                "prefabMetaData": {
-                    "prefabEntity": 5,
-                    "prefabID": 1846010205724705037
-                },
+                "prefabID": 15155985497701761311,
+                "entityGUID": 7010944097637335289,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": true,
@@ -640,45 +609,45 @@
             },
             "Transform": {
                 "position": {
-                    "x": -60.28066635131836,
+                    "x": -60.28065490722656,
                     "y": 78.90351867675781,
-                    "z": 76.06391143798828
+                    "z": 76.06387329101563
                 },
                 "scale": {
-                    "x": 6.874173164367676,
-                    "y": 7.098247051239014,
-                    "z": 11.208613395690918
+                    "x": 6.874172687530518,
+                    "y": 7.098352909088135,
+                    "z": 11.20862102508545
                 },
                 "rotation": {
-                    "w": 0.7855895161628723,
+                    "w": 0.7855893969535828,
                     "x": 0.0,
-                    "y": -0.6187480092048645,
+                    "y": -0.618748128414154,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -1.3342959880828857,
+                    "y": -1.334296464920044,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.00048828125,
+                    "x": -0.00057220458984375,
                     "y": -0.00029754638671875,
-                    "z": -6.103515625e-05
+                    "z": -8.392333984375e-05
                 },
                 "localScale": {
-                    "x": 12.599161148071289,
-                    "y": 10.031783103942871,
-                    "z": 14.074590682983398
+                    "x": 12.599159240722656,
+                    "y": 10.031764030456543,
+                    "z": 14.074601173400879
                 },
                 "localRotation": {
                     "w": 0.9997141361236572,
                     "x": 0.0,
-                    "y": -0.023909151554107666,
+                    "y": -0.023909252136945724,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04782286286354065,
+                    "y": -0.047823090106248856,
                     "z": 0.0
                 }
             },
@@ -701,6 +670,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -709,21 +679,19 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 6
+            "id": 36
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 5,
+                "parent": 35,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 1846010205724705037,
-                "prefabMetaData": {
-                    "prefabEntity": 6,
-                    "prefabID": 1846010205724705037
-                },
+                "prefabID": 15155985497701761311,
+                "entityGUID": 15081394629885264123,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": true,
@@ -733,45 +701,45 @@
             },
             "Transform": {
                 "position": {
-                    "x": -60.28528594970703,
+                    "x": -60.28530502319336,
                     "y": 78.90351867675781,
-                    "z": 76.06529998779297
+                    "z": 76.06517028808594
                 },
                 "scale": {
-                    "x": 6.875487327575684,
-                    "y": 7.098247051239014,
-                    "z": 11.210188865661621
+                    "x": 6.875512599945068,
+                    "y": 7.098352909088135,
+                    "z": 11.21019458770752
                 },
                 "rotation": {
-                    "w": 0.7848330140113831,
+                    "w": 0.7848330736160278,
                     "x": 0.0,
-                    "y": -0.6197072863578796,
+                    "y": -0.6197072267532349,
                     "z": 0.0
                 },
                 "eulerAngles": {
                     "x": 0.0,
-                    "y": -1.336739420890808,
+                    "y": -1.3367398977279663,
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0006256103515625,
+                    "x": -0.00087738037109375,
                     "y": -0.00029754638671875,
-                    "z": 0.00598907470703125
+                    "z": 0.0059661865234375
                 },
                 "localScale": {
-                    "x": 12.60040283203125,
-                    "y": 10.031783103942871,
-                    "z": 14.077872276306152
+                    "x": 12.600448608398438,
+                    "y": 10.031764030456543,
+                    "z": 14.077879905700684
                 },
                 "localRotation": {
                     "w": 0.999693751335144,
                     "x": 0.0,
-                    "y": -0.024745965376496315,
+                    "y": -0.024745972827076912,
                     "z": 0.0
                 },
                 "localEulerAngles": {
                     "x": 0.0,
-                    "y": -0.04949698969721794,
+                    "y": -0.049497004598379135,
                     "z": 0.0
                 }
             },
@@ -794,6 +762,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -802,7 +771,7 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 7
+            "id": 37
         }
     ]
 }

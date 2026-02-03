@@ -12,6 +12,10 @@ class EnemyCollider : Script
     }
     public void OnColliderShot(float damage,Enemy.EnemydamageType type,string colliderTag)
     {
-        enemy.TakeDamage(damage,type,colliderTag);
+        if(enemy != null)
+        {
+            enemy.TakeDamage(damage, type, colliderTag);
+
+        }
     }
 }
