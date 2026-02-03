@@ -9,6 +9,8 @@ public abstract class Gun : Script
 {
     [SerializableField]
     private Prefab contactSparkVFXPrefab;
+    [SerializableField]
+    private ColorAlpha weakPointHitSparkColour;
 
     [SerializableField]
     private int initialMaxAmmo;
@@ -137,7 +139,13 @@ public abstract class Gun : Script
             direction.Normalize();
             // LookRotation is based on Z axis, rotate the emitter to face the z axis first
             GameObject contactSparkVFX = Instantiate(contactSparkVFXPrefab, result.Value.point, Quaternion.LookRotation(direction) * Quaternion.AngleAxis(Mathf.Deg2Rad * 90, new Vector3(1,0,0)));
-           
+            ParticleEmitter_ emitter = contactSparkVFX.getComponent<ParticleEmitter_>();
+            if (collidedEntity.tag == "Enemy_WeakSpot")
+            {
+                Debug.Log("Called");
+                emitter.setParticleColor(weakPointHitSparkColour);
+            }
+            
             contactSparkVFX.getComponent<ParticleEmitter_>().emit();
             return true;
         }

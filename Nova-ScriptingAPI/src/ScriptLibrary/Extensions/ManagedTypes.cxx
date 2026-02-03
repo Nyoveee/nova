@@ -178,6 +178,12 @@ void ParticleEmitter_::emit()
 		Interface::engine->particleSystem.emit(*transform, *emitter, emitter->burstAmount);
 		
 }
+void ParticleEmitter_::setParticleColor(ColorAlpha color)
+{
+	ParticleEmitter* emitter = nativeComponent();
+	emitter->particleColorSelection.color = color.native();
+}
+
 
 // =================================================================
 // Rigidbody
@@ -683,5 +689,4 @@ void AudioComponent_::PlayBGM(ScriptingAPI::Audio^ audio) {
 void AudioComponent_::StopSound(ScriptingAPI::Audio^ audio) {
 	Interface::engine->audioSystem.stopSound(Convert(gameObject), audio->getId());
 }
-
 

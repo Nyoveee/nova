@@ -241,6 +241,7 @@ ManagedComponentDeclaration(
 )
 void emit(int count);
 void emit();
+void setParticleColor(ColorAlpha color);
 
 ManagedComponentEnd()
 // ======================================
@@ -248,7 +249,7 @@ ManagedComponentEnd()
 // ======================================
 ManagedComponentDeclaration(
 	Rigidbody,
-	)
+)
 
 System::String^ GetLayerName();
 

@@ -58,6 +58,10 @@ public abstract class Enemy : Script
     /***********************************************************
        Public Functions
     ***********************************************************/
+    public void UpdateExecutableMaterialState()
+    {
+        renderer.setMaterialBool(1, "isActive", enemyStats.health <= enemyStats.enemyExecuteThreshold && enemyStats.health > 0);
+    }
     public void Explode()
     {
         for (int i = 0; i < enemyStats.ichorExplodeSpawnAmount; ++i)

@@ -252,7 +252,6 @@ inline void DisplayProperty<glm::vec4>(Editor&, const char* dataMemberName, glm:
 		ImGui::TableNextColumn();
 		ImGui::Text(dataMemberName);
 
-		ImGui::BeginDisabled();
 		ImGui::TableNextColumn();
 		ImGui::DragFloat("x", &dataMember.x);
 
@@ -264,7 +263,6 @@ inline void DisplayProperty<glm::vec4>(Editor&, const char* dataMemberName, glm:
 
 		ImGui::TableNextColumn();
 		ImGui::DragFloat("w", &dataMember.w);
-		ImGui::EndDisabled();
 
 		ImGui::EndTable();
 	}

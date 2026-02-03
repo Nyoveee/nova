@@ -135,7 +135,6 @@ class Gunner : Enemy
             //    rigidBody.enable = false;
             //}
 
-
         }
 
 
@@ -185,8 +184,6 @@ class Gunner : Enemy
 
         }
 
-
-
         //    if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
         //    return;
         //SpawnIchor();
@@ -211,6 +208,7 @@ class Gunner : Enemy
             SpawnIchorFrame();
 
             gunnerStats.health -= accumulatedDamageInstance;
+            UpdateExecutableMaterialState();
             if (gunnerStats.health <= 0)
             {
                 if (gunnerState != GunnerState.Death/* && !WasRecentlyDamaged()*/)

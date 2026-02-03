@@ -27,6 +27,8 @@ class ThrowableRifle : Script
     [SerializableField]
     private Prefab contactSparkVFXPrefab;
     [SerializableField]
+    private ColorAlpha weakPointHitSparkColour;
+    [SerializableField]
     private float maxFlyingTime = 1f;
     [SerializableField]
     private float maxReturnTime = 1f;
