@@ -292,7 +292,7 @@ void PrefabManager::prefabOverride(entt::entity prefabInstance) {
 	updatePrefab(prefabInstance);
 }
 
-void PrefabManager::guidRemap(ResourceID prefabId) {
+void PrefabManager::guidRemap(ResourceID  prefabId) {
 #if 0
 	// prefab not loaded..
 	if (prefabMap.find(prefabId) == prefabMap.end()) {

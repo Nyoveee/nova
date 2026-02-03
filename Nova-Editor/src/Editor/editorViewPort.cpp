@@ -101,12 +101,28 @@ void EditorViewPort::update(float dt) {
 			}
 			// add 1 more for model	
 			else if (editor.resourceManager.isResource<Model>(id)) {
-				// create a model here
-				entt::entity new_model = engine.ecs.registry.create();
-				engine.ecs.registry.emplace<EntityData>(new_model , EntityData{ "New Model" });
-				engine.ecs.registry.emplace<Transform>(new_model);
-				engine.ecs.registry.emplace<MeshRenderer>(new_model, id);
-				
+				auto const* descriptor = editor.assetManager.getDescriptor(id);
+				AssetInfo<Model> const* typedDescriptor = dynamic_cast<AssetInfo<Model> const*>(descriptor);
+
+				if (typedDescriptor) {
+					// create a model here
+
+					entt::entity new_model = engine.ecs.registry.create();
+					engine.ecs.registry.emplace<EntityData>(new_model, EntityData{ typedDescriptor->name });
+					engine.ecs.registry.emplace<Transform>(new_model);
+
+					// inherit materials..
+					MeshRenderer& meshRenderer = engine.ecs.registry.emplace<MeshRenderer>(new_model, id);
+
+					for (int i = 0; i < typedDescriptor->materials.size(); ++i) {
+						meshRenderer.materialIds[i] = typedDescriptor->materials[i];
+					}
+
+					Transform& transform = engine.ecs.registry.get<Transform>(new_model);
+
+					auto& editorCamera = engine.cameraSystem.getLevelEditorCamera();
+					transform.localPosition = editorCamera.position + editorCamera.front;
+				}
 			}
 		}
 

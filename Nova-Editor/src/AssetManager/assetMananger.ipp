@@ -380,6 +380,12 @@ void AssetManager::serializeDescriptor(ResourceID id) {
 		}
 
 		descriptorFile << '\n';
+
+		for (auto&& material : assetInfo->materials) {
+			descriptorFile << static_cast<std::size_t>(material) << ' ';
+		}
+
+		descriptorFile << '\n';
 	}
 
 	// ============================

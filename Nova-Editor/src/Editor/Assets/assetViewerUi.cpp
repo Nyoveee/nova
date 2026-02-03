@@ -564,11 +564,47 @@ void AssetViewerUI::displayModelInfo(AssetInfo<Model>& descriptor) {
 			}
 		}
 
+		// Resize material descriptor to match the number of models..
+		if (descriptor.materials.size() != model->materialNames.size()) {
+			descriptor.materials.resize(model->materialNames.size(), { DEFAULT_PBR_MATERIAL_ID });
+			
+			// serialise immediately..
+			assetManager.serializeDescriptor<Material>(selectedResourceId);
+		}
+
 		ImGui::SeparatorText(std::string{ "Materials: " + std::to_string(model->materialNames.size()) }.c_str());
+
+		if (ImGui::Button("Apply Material To All")) {
+			for (auto&& [entity] : editor.engine.ecs.registry.view<entt::entity>().each()) {
+				MeshRenderer* meshRenderer				 = editor.engine.ecs.registry.try_get<MeshRenderer>(entity);
+				SkinnedMeshRenderer* skinnedMeshRenderer = editor.engine.ecs.registry.try_get<SkinnedMeshRenderer>(entity);
+				
+				if (!meshRenderer && !skinnedMeshRenderer) {
+					continue;
+				}
+
+				TypedResourceID<Model> modelId = meshRenderer ? meshRenderer->modelId : skinnedMeshRenderer->modelId;
+
+				// only affects renderer with the same model id..
+				if (modelId != selectedResourceId) {
+					continue;
+				}
+
+				auto&& materialIds = meshRenderer ? meshRenderer->materialIds : skinnedMeshRenderer->materialIds;
+				materialIds = descriptor.materials;
+			}
+		}
 
 		for (unsigned int i = 0; i < model->materialNames.size(); ++i) {
 			std::string const& materialName = model->materialNames[i];
-			ImGui::Text("[%u] %s", i, materialName.c_str());
+			TypedResourceID<Material>& material = descriptor.materials[i];
+
+			editor.displayAssetDropDownList<Material>(material, materialName.c_str(), [&](ResourceID newMaterialId) {
+				material = { newMaterialId };
+
+				// serialise immediately..
+				assetManager.serializeDescriptor<Material>(selectedResourceId);
+			});
 		}
 
 		ImGui::SeparatorText(std::string{ "Sub meshes: " + std::to_string(model->meshes.size()) }.c_str());
