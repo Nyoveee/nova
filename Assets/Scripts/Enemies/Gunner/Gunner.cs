@@ -69,7 +69,12 @@ class Gunner : Enemy
 
         updateState.Add(GunnerState.Spawning, () => { });
 
-        gameGlobalReferenceManager = GameObject.FindWithTag("Game Global Reference Manager").getScript<GameGlobalReferenceManager>();
+        GameObject gameObject = GameObject.FindWithTag("Game Global Reference Manager");
+
+        if(gameObject != null)
+        {
+            gameGlobalReferenceManager = gameObject.getScript<GameGlobalReferenceManager>();
+        }
     }
 
     // This function is invoked every fixed update.
@@ -86,7 +91,7 @@ class Gunner : Enemy
     {
         targetVantagePoint = null;
         float closestVantagePoint = Single.MaxValue;
-        if (gameGlobalReferenceManager.vantagePoints == null)
+        if (gameGlobalReferenceManager == null || gameGlobalReferenceManager.vantagePoints == null)
             return;
         foreach (GameObject vantagePoint in gameGlobalReferenceManager.vantagePoints)
         {

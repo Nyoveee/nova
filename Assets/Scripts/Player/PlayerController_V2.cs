@@ -88,6 +88,7 @@ class PlayerController_V2 : Script
     // ==================================
     private float currentHealth = 0f;
 
+    public bool ToEnable = true;
 
     // This function is invoked once when gameobject is active.
     protected override void init()
