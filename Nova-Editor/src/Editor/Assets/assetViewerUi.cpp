@@ -569,7 +569,7 @@ void AssetViewerUI::displayModelInfo(AssetInfo<Model>& descriptor) {
 			descriptor.materials.resize(model->materialNames.size(), { DEFAULT_PBR_MATERIAL_ID });
 			
 			// serialise immediately..
-			assetManager.serializeDescriptor<Material>(selectedResourceId);
+			assetManager.serializeDescriptor<Model>(selectedResourceId);
 		}
 
 		ImGui::SeparatorText(std::string{ "Materials: " + std::to_string(model->materialNames.size()) }.c_str());
@@ -603,7 +603,7 @@ void AssetViewerUI::displayModelInfo(AssetInfo<Model>& descriptor) {
 				material = { newMaterialId };
 
 				// serialise immediately..
-				assetManager.serializeDescriptor<Material>(selectedResourceId);
+				assetManager.serializeDescriptor<Model>(selectedResourceId);
 			});
 		}
 
@@ -934,7 +934,9 @@ void AssetViewerUI::displayNavigationHistory() {
 	ImGui::TableNextColumn();
 
 	if (ImGui::Button(ICON_FA_ARROW_LEFT, buttonSize)) {
-		selectPreviousResourceID();
+		recompileAssetWithDescriptor = [&]() {
+			selectPreviousResourceID();
+		};
 	}
 
 	if (previousResourceIds.size()) {
@@ -964,7 +966,9 @@ void AssetViewerUI::displayNavigationHistory() {
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetColumnWidth() - buttonSize.x);
 
 	if (ImGui::Button(ICON_FA_ARROW_RIGHT, buttonSize)) {
-		selectNextResourceID();
+		recompileAssetWithDescriptor = [&]() {
+			selectNextResourceID();
+		};
 	}
 
 	ImGui::EndDisabled();
