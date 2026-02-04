@@ -7,5 +7,5 @@ class GruntStats : EnemyStats
     public float chasingRadius = 20f;
     public float damage = 5f;
     // Movement
-    public float timeBetweenSteps = 2f;
+    public float timeBetweenSteps = 4f;
 }
