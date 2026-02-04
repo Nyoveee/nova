@@ -344,6 +344,8 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "CubeMap") {
 		return compileAsset.template operator()<CubeMap>();
+	else if (resourceType == "Video") {
+		return compileAsset.template operator()<Video>();
 	}
 	else {
 		Logger::warn("Unable to determine asset type of descriptor {}, resourceType {}", descriptorFilepath.string, resourceType);

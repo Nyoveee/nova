@@ -95,6 +95,7 @@ private:
 	std::unique_ptr<Texture> sequencerIcon;
 	std::unique_ptr<Texture> animationControllerIcon;
 	std::unique_ptr<Texture> fontIcon;
+	std::unique_ptr<Texture> videoIcon;
 private:
 	float columnWidth = 100.f;
 

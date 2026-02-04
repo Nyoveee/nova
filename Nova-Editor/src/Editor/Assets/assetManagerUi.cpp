@@ -66,6 +66,9 @@ AssetManagerUI::AssetManagerUI(Editor& editor, AssetViewerUI& assetViewerUi) :
 
 	auto fontPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/font" }).value()();
 	fontIcon.reset(static_cast<Texture*>(fontPtr.release()));
+
+	auto videoPtr = ResourceLoader<Texture>::load(INVALID_RESOURCE_ID,					std::string{ "System/Image/video" }).value()();
+	videoIcon.reset(static_cast<Texture*>(videoPtr.release()));
 }
 
 void AssetManagerUI::update() {
@@ -647,6 +650,9 @@ ImTextureID AssetManagerUI::getAssetThumbnailImage(ResourceID resourceId) {
 	}
 	else if (resourceManager.isResource<Font>(resourceId)) {
 		return fontIcon->getTextureId();
+	}
+	else if (resourceManager.isResource<Video>(resourceId)) {
+		return videoIcon->getTextureId();
 	}
 	else {
 		return NO_TEXTURE;
