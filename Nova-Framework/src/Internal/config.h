@@ -38,6 +38,8 @@ enum class ToneMappingMethod {
 
 struct RenderConfig {
 	ToneMappingMethod	toneMappingMethod		= ToneMappingMethod::ACES;
+	NormalizedFloat		iblDiffuseStrength		= 1.f;
+	NormalizedFloat		iblSpecularStrength		= 1.f;
 	bool				toEnableSSAO			= true;
 	bool				toEnableFog				= true;
 	bool				toEnableVsync			= true;
@@ -47,6 +49,8 @@ struct RenderConfig {
 
 	REFLECTABLE(
 		toneMappingMethod,
+		iblDiffuseStrength,
+		iblSpecularStrength,
 		toEnableSSAO,
 		toEnableFog,
 		toEnableVsync,

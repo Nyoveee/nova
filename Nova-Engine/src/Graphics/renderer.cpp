@@ -159,6 +159,8 @@ struct alignas(16) PBR_UBO {
 				int hasDirectionalLightShadowCaster;
 				int toEnableIBL;
 				int toOutputNormal;
+				float iblDiffuseStrength;
+				float iblSpecularStrength;
 };
 
 // these are in world space..
@@ -2539,6 +2541,8 @@ void Renderer::preparePBRUniforms() {
 	int ssao					= renderConfig.toEnableSSAO;
 	int directionalLightCaster	= hasDirectionalLightShadowCaster;
 	int ibl						= renderConfig.toEnableIBL;
+	float iblDiffuseStrength	= renderConfig.iblDiffuseStrength;
+	float iblSpecularStrength	= renderConfig.iblSpecularStrength;
 
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightSpaceMatrix), sizeof(glm::mat4x4), glm::value_ptr(directionalLightViewMatrix));
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, directionalLightDir), sizeof(glm::vec3), glm::value_ptr(directionalLightDir));
@@ -2546,6 +2550,8 @@ void Renderer::preparePBRUniforms() {
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toEnableSSAO), sizeof(int), &ssao);
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, hasDirectionalLightShadowCaster), sizeof(int), &directionalLightCaster);
 	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, toEnableIBL), sizeof(int), &ibl);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, iblDiffuseStrength), sizeof(float), &iblDiffuseStrength);
+	glNamedBufferSubData(PBRUBO.id(), offsetof(PBR_UBO, iblSpecularStrength), sizeof(float), &iblSpecularStrength);
 }
 
 void Renderer::clusterBuilding([[maybe_unused]] Camera const& camera) {
@@ -3551,7 +3557,7 @@ void Renderer::setupCustomShaderUniforms(CustomShader const& customShader, Shade
 		}, uniformValue);
 	}
 
-	shader.setBool("toUseNormalMap", isNormalMapUsed);
+	glProgramUniform1i(shader.id(), 20, isNormalMapUsed);
 }
 
 void Renderer::renderMesh(Mesh const& mesh) {

@@ -117,6 +117,8 @@ layout(std140, binding = 2) uniform PBRUBO {
 	bool hasDirectionalLightShadowCaster;
 	bool toEnableIBL;
 	bool toOutputNormal;
+    float iblDiffuseStrength;
+    float iblSpecularStrength;
 };
 
 layout(std140, binding = 3) uniform ReflectionProbes {
@@ -179,8 +181,8 @@ in VS_OUT {
     mat3 TBN;
 } fsIn;
 
-// location will be cached and query in runtime.. (no this is a lie)
-uniform bool toUseNormalMap;
+// explicit location.
+layout (location = 20) uniform bool toUseNormalMap;
 
 // ====================================
 // End of pipeline setup. 
@@ -283,12 +285,12 @@ vec3 PBRCaculation(vec3 albedoColor, vec3 normal, float roughness, float metalli
         
         // IBL Diffuse..
         vec3 irradiance = texture(diffuseIrradianceMap, normal).rgb;
-        vec3 diffuse    = irradiance * albedoColor * occulusion;
+        vec3 diffuse    = irradiance * albedoColor * occulusion * iblDiffuseStrength;
 
         // IBL Specular..
         vec2 envBRDF  = texture(brdfLUT, vec2(NdotV, roughness)).rg;
         vec3 prefilteredColor = getPrefilteredColor(cluster, roughness, reflectDir);  
-        vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y);
+        vec3 specular = prefilteredColor * (kS * envBRDF.x + envBRDF.y) * iblSpecularStrength;
 
         ambient         = (kD * diffuse + specular); 
     }
