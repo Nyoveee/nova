@@ -14,7 +14,8 @@ class GameUIManager : Script
     private float currentFadeTime;
     private Dictionary<ProgressBarType, Image_> progressBars = new ();
 
-    private bool isPaused = false;  
+    private bool isPaused = false;
+    public event Action RestartFromCheckpointButton;
     /***********************************************************
         Inspector Variables
     ***********************************************************/
@@ -43,6 +44,9 @@ class GameUIManager : Script
 
     [SerializableField]
     private DialogueScript? dialogueScript = null;
+
+    [SerializableField]
+    private GameObject? deathUI = null;
 
     protected override void init()
     {
@@ -163,5 +167,26 @@ class GameUIManager : Script
     {
         dialogueScript.gameObject.SetActive(true);
         dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
+    }
+    /***********************************************************
+       Death 
+    ***********************************************************/
+    public void TriggerDeathScreen()
+    {
+        if (deathUI != null)
+        {
+            deathUI.SetActive(true);
+            CameraAPI.UnlockMouse();
+        }
+    }
+
+    public void OnRestartButtonPressed()
+    {
+        if (deathUI != null)
+        {
+            deathUI.SetActive(false);
+            CameraAPI.LockMouse();
+        }
+        RestartFromCheckpointButton?.Invoke();
     }
 }
