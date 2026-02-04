@@ -592,18 +592,8 @@ void Renderer::renderMain(RenderMode renderMode) {
 			renderObjectIds();
 		}
 
-		if (isGameScreenShown || isUIScreenShown)
+		if (isUIScreenShown)
 			renderUI();
-
-		if (isEditorScreenShown) {
-			overlayUIToBuffer(editorMainFrameBuffer);
-		}
-
-		if (isGameScreenShown) {
-			overlayUIToBuffer(gameMainFrameBuffer);
-			renderUiObjectIds();
-		}
-		
 		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.

@@ -47,8 +47,3 @@ private:
 	float timeAccumulator;
 	bool looping;
 };
-
-// Explicitly define an extension of the asset metadata
-template <>
-struct AssetInfo<Video> : public BasicAssetInfo {
-};

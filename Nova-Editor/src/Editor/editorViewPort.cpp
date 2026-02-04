@@ -94,7 +94,7 @@ void EditorViewPort::update(float dt) {
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
 				entt::entity prefabInstance = engine.prefabManager.instantiatePrefab(id);
 				Transform& transform = engine.ecs.registry.get<Transform>(prefabInstance);
-				
+
 				auto& editorCamera = engine.cameraSystem.getLevelEditorCamera();
 				transform.localPosition = editorCamera.position + editorCamera.front;
 
@@ -124,6 +124,7 @@ void EditorViewPort::update(float dt) {
 					auto& editorCamera = engine.cameraSystem.getLevelEditorCamera();
 					transform.localPosition = editorCamera.position + editorCamera.front;
 				}
+			}
 			else if (editor.resourceManager.isResource<Video>(id)) {
 				// Create entity with VideoPlayer component
 				auto entity = engine.ecs.registry.create();
@@ -141,15 +142,11 @@ void EditorViewPort::update(float dt) {
 
 				// Load the video resource
 				auto [video, refCount] = editor.resourceManager.getResource<Video>(id);
-				if (video) {
-					video->load();
-				}
 
 				// Select the new entity
 				editor.selectEntities({ entity });
 			}
 		}
-
 		ImGui::EndDragDropTarget();
 	}
 

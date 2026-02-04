@@ -344,6 +344,7 @@ int Compiler::compile(DescriptorFilePath const& descriptorFilepath) {
 	}
 	else if (resourceType == "CubeMap") {
 		return compileAsset.template operator()<CubeMap>();
+	}
 	else if (resourceType == "Video") {
 		return compileAsset.template operator()<Video>();
 	}

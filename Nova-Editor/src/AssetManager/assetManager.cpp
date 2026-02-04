@@ -262,7 +262,8 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 		return initialiseResourceFile.template operator()<Sequencer>();
 	}
 	else if (fileExtension == ".dds") {
-		return initialiseResourceFile.template operator()<CubeMap>();
+		return initialiseResourceFile.template operator() < CubeMap > ();
+	}
 	else if (fileExtension == ".mpeg") {
 		return initialiseResourceFile.template operator()<Video>();
 	}

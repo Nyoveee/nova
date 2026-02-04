@@ -43,14 +43,16 @@ class ElevatorQuest : Quest
         Destroy(checkPointIndicator);
         elevator.CloseTutorialDoor();
 
+        missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
+        questInformationContainer.transform.position = newQuestInformationUILocation;
+
         Invoke(() =>
         {
             audioComponent.PlaySound(elevatorSpeechAudio);
             gameUIManager.ActivateDialogue(speaker, dialogues, timings, finalDialogueTime);
         }, delayForDialogue);
         
-        missionObjectiveContainer.transform.position = newMissionObjectiveUILocation;
-        questInformationContainer.transform.position = newQuestInformationUILocation;
+
     }
 
     public override void OnFail(Transform_ playerTransform)

@@ -163,5 +163,6 @@ class GameUIManager : Script
     {
         dialogueScript.gameObject.SetActive(true);
         dialogueScript.BeginDialogueSequence(speaker, text, times, finalDialogueTime);
+
     }
 }

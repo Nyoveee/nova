@@ -4,7 +4,7 @@
 #pragma warning(disable: 4267) // conversion from 'size_t' to 'type', possible loss of data
 #include <stdio.h>
 #define PL_MPEG_IMPLEMENTATION
-#include "Internal/pl_mpeg.h"
+#include "Imported/pl_mpeg.h"
 #pragma warning(pop)
 
 #include "video.h"
