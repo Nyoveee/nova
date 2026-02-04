@@ -396,10 +396,10 @@ void play();
 void pause();
 
 ManagedComponentEnd()
+// ======================================
+// Light Component
+// ======================================
 
-// ======================================
-// Audio Component
-// ======================================
 ManagedComponentDeclaration(
 	Light,
 	float, intensity,
@@ -407,7 +407,9 @@ ManagedComponentDeclaration(
 )
 
 ManagedComponentEnd()
-
+// ======================================
+// Audio Component
+// ======================================
 #undef PlaySound
 ManagedComponentDeclaration(
 	AudioComponent,
@@ -418,4 +420,13 @@ void PlayRandomSound(System::Collections::Generic::List<ScriptingAPI::Audio^>^ a
 void PlayBGM(ScriptingAPI::Audio^ audio);
 void StopSound(ScriptingAPI::Audio^ audio);
 
+ManagedComponentEnd()
+
+// ======================================
+// Video Player Component
+// ======================================
+ManagedComponentDeclaration(
+	VideoPlayer
+)
+bool IsVideoFinished();
 ManagedComponentEnd()

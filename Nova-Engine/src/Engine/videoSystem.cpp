@@ -40,3 +40,11 @@ void VideoSystem::Reload() {
 			videoPlayer.isPlaying = true;
 	}
 }
+
+bool VideoSystem::IsVideoFinished(VideoPlayer& videoPlayer)
+{
+	auto&& [video, result] = engine.resourceManager.getResource<Video>(videoPlayer.videoId);
+	if (result != ResourceManager::QueryResult::Success)
+		return false;
+	return video->decodingFinished();
+}

@@ -1,0 +1,168 @@
+{
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Canva",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    2097183
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 11586786039828349375,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1920.0,
+                    "y": 1080.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1920.0,
+                    "y": 1080.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Canvas": {
+                "placeholder": ""
+            },
+            "id": 1048577
+        },
+        {
+            "EntityData": {
+                "name": "Video Player",
+                "tag": "",
+                "parent": 1048577,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 16774932810559390145,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.5,
+                    "y": 0.5,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 9827593824018563079,
+                        "fields": [
+                            {
+                                "name": "sceneToChange",
+                                "data": {
+                                    "__variant_value": 11975942690478555137,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "videoAudio",
+                                "data": {
+                                    "__variant_value": 13356920596077232129,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "VideoPlayer": {
+                "videoId": 6723435004464693249,
+                "playOnStart": true,
+                "loop": false
+            },
+            "id": 2097183
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
+        }
+    ]
+}
