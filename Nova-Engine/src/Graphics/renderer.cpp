@@ -536,23 +536,6 @@ GLuint Renderer::getObjectUiId(glm::vec2 normalisedPosition) const {
 
 void Renderer::update(float dt) {
 	timeElapsed += dt;
-
-	// Only update video playback during simulation (play mode), not in editor
-	if (!engine.isInSimulationMode()) return;
-
-	// Update video playback for all VideoPlayer components
-	auto videoView = registry.view<Transform, VideoPlayer>();
-	for (auto entity : videoView) {
-		auto& videoPlayer = videoView.get<VideoPlayer>(entity);
-		if (!videoPlayer.isPlaying) continue;
-
-		auto [video, refCount] = resourceManager.getResource<Video>(videoPlayer.videoId);
-		if (video && video->isLoaded()) {
-			// Sync loop setting from component to video resource
-			video->setLoop(videoPlayer.loop);
-			video->decodeFrame(dt);
-		}
-	}
 }
 
 void Renderer::renderMain(RenderMode renderMode) {
@@ -689,29 +672,29 @@ void Renderer::renderUI()
 				renderText(transform, *text);
 			}
 
-			if (videoPlayer && engine.ecs.isComponentActive<VideoPlayer>(entity)) {
+			if (engine.isInSimulationMode() && videoPlayer && engine.ecs.isComponentActive<VideoPlayer>(entity)) {
 				auto [video, refCount] = resourceManager.getResource<Video>(videoPlayer->videoId);
-				if (video && video->isLoaded()) {
-					videoShader.use();
+				video->decodeFrame(videoPlayer->timeAccumulator);
+				videoShader.use();
 
-					glm::vec2 textureCropSize(1.0f, 1.0f);
-					videoShader.setVec2("texture_crop_size", textureCropSize);
-					videoShader.setMatrix("model", transform.modelMatrix);
-					videoShader.setMatrix("view", glm::mat4(1.0f));
-					videoShader.setMatrix("projection", UIProjection);
+				glm::vec2 textureCropSize(1.0f, 1.0f);
+				videoShader.setVec2("texture_crop_size", textureCropSize);
+				videoShader.setMatrix("model", transform.modelMatrix);
+				videoShader.setMatrix("view", glm::mat4(1.0f));
+				videoShader.setMatrix("projection", UIProjection);
 
-					videoShader.setImageUniform("texture_y", 0);
-					videoShader.setImageUniform("texture_cr", 1);
-					videoShader.setImageUniform("texture_cb", 2);
+				videoShader.setImageUniform("texture_y", 0);
+				videoShader.setImageUniform("texture_cr", 1);
+				videoShader.setImageUniform("texture_cb", 2);
 
-					glBindTextureUnit(0, video->getTextureY());
-					glBindTextureUnit(1, video->getTextureCr());
-					glBindTextureUnit(2, video->getTextureCb());
+				glBindTextureUnit(0, video->getTextureY());
+				glBindTextureUnit(1, video->getTextureCr());
+				glBindTextureUnit(2, video->getTextureCb());
 
-					glBindVertexArray(videoVAO);
-					glDrawArrays(GL_TRIANGLES, 0, 6);
-					glBindVertexArray(textVAO);
-				}
+				glBindVertexArray(videoVAO);
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+				glBindVertexArray(textVAO);
+				
 			}
 		}
 	}

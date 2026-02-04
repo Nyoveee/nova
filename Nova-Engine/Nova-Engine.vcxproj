@@ -218,6 +218,7 @@
     <ClInclude Include="src\Physics\physicsManager.h" />
     <ClInclude Include="src\ResourceManager\resourceManager.h" />
     <ClInclude Include="src\ResourceManager\resourceManager.ipp" />
+    <ClInclude Include="src\Engine\videoSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine\animationSystem.cpp" />
@@ -251,6 +252,7 @@
     <ClCompile Include="src\Physics\physicsManager.cpp" />
     <ClCompile Include="src\ResourceManager\resourceManager.cpp" />
     <ClCompile Include="src\Engine\window.cpp" />
+    <ClCompile Include="src\Engine\videoSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\InputManager\inputManager.ipp" />

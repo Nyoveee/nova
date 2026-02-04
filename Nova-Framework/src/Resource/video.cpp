@@ -26,25 +26,14 @@ Video::Video(ResourceID id, ResourceFilePath resourceFilePath) :
 	videoTextureCr		{ TEXTURE_NOT_LOADED },
 	videoTextureCb		{ TEXTURE_NOT_LOADED },
 	width				{ 0 },
-	height				{ 0 },
-	timeAccumulator		{ 0.0f },
-	looping				{ true }
-{}
-
-Video::~Video() {
-	unload();
-}
-
-bool Video::load() {
-	// Clean up existing video if any
-	unload();
-
+	height				{ 0 }
+{
 	// Initialize plmpeg with the video file
 	std::string filepath = getFilePath().string;
 	plm = plm_create_with_filename(filepath.c_str());
 	if (!plm) {
 		Logger::error("Failed to load video: {}", filepath);
-		return false;
+		return;
 	}
 
 	Logger::info("Video loaded successfully: {}", filepath);
@@ -85,16 +74,14 @@ bool Video::load() {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	// Disable audio and set looping
+	// Disable audio
 	plm_set_audio_enabled(plm, false);
-	plm_set_loop(plm, looping);
-
-	timeAccumulator = 0.0f;
-
-	return true;
+	framerate = plm_get_framerate(plm);
+	if (framerate <= 0.0) framerate = 30.0; // Default fallback
+	frameDuration = 1.0f / static_cast<float>(framerate);
 }
 
-void Video::unload() {
+Video::~Video() {
 	if (plm) {
 		plm_destroy(plm);
 		plm = nullptr;
@@ -114,34 +101,24 @@ void Video::unload() {
 		glDeleteTextures(1, &videoTextureCb);
 		videoTextureCb = TEXTURE_NOT_LOADED;
 	}
-
-	width = 0;
-	height = 0;
-	timeAccumulator = 0.0f;
 }
 
-bool Video::decodeFrame(float dt) {
-	if (!plm) return false;
-
-	// Accumulate time
-	timeAccumulator += dt;
-
-	// Get video framerate and calculate frame duration
-	double framerate = plm_get_framerate(plm);
-	if (framerate <= 0.0) framerate = 30.0; // Default fallback
-	float frameDuration = 1.0f / static_cast<float>(framerate);
+void Video::decodeFrame(float& timeAccumulator) {
+	if (!plm) return;
 
 	// Only decode if enough time has passed
-	if (timeAccumulator < frameDuration) {
-		return false;
-	}
+	if (timeAccumulator < frameDuration)
+		return;
 
-	// Decode the next frame
-	plm_frame_t* frame = plm_decode_video(plm);
-	if (!frame) {
-		return false;
+	// Decode the latest frame
+	plm_frame_t* frame{};
+	while (timeAccumulator >= frameDuration) {
+		frame = plm_decode_video(plm);
+		if (!frame)
+			return;
+		// Subtract frame duration, keeping remainder for smooth playback
+		timeAccumulator -= frameDuration;
 	}
-
 	// Upload Y plane
 	glBindTexture(GL_TEXTURE_2D, videoTextureY);
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->y.width, frame->y.height, GL_RED, GL_UNSIGNED_BYTE, frame->y.data);
@@ -155,44 +132,21 @@ bool Video::decodeFrame(float dt) {
 	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, frame->cb.width, frame->cb.height, GL_RED, GL_UNSIGNED_BYTE, frame->cb.data);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	// Subtract frame duration, keeping remainder for smooth playback
-	timeAccumulator -= frameDuration;
-
-	return true;
 }
 
-GLuint Video::getTextureY() const {
-	return videoTextureY;
-}
+bool Video::decodingFinished() { return plm_has_ended(plm); }
 
-GLuint Video::getTextureCr() const {
-	return videoTextureCr;
-}
+plm_t* const Video::getPLM() const{ return plm; }
 
-GLuint Video::getTextureCb() const {
-	return videoTextureCb;
-}
+GLuint Video::getTextureY() const { return videoTextureY; }
 
-int Video::getWidth() const {
-	return width;
+GLuint Video::getTextureCr() const { return videoTextureCr; }
+
+GLuint Video::getTextureCb() const { return videoTextureCb; }
+
+int Video::getWidth() const { return width;
 }
 
 int Video::getHeight() const {
 	return height;
-}
-
-bool Video::isLoaded() const {
-	return plm != nullptr;
-}
-
-void Video::setLoop(bool loop) {
-	looping = loop;
-	if (plm) {
-		plm_set_loop(plm, looping);
-	}
-}
-
-bool Video::getLoop() const {
-	return looping;
 }

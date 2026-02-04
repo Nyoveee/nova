@@ -18,25 +18,17 @@ public:
 	FRAMEWORK_DLL_API Video& operator=(Video&& other)		= default;
 
 public:
-	// Load/unload video from file
-	FRAMEWORK_DLL_API bool load();
-	FRAMEWORK_DLL_API void unload();
-
-	// Decode next frame using delta time, returns true if frame was decoded
-	FRAMEWORK_DLL_API bool decodeFrame(float dt);
+	// Decode next frame using delta time
+	FRAMEWORK_DLL_API void decodeFrame(float& timeAccumulator);
+	FRAMEWORK_DLL_API bool decodingFinished();
 
 	// Accessors
+	FRAMEWORK_DLL_API plm_t* const getPLM() const;
 	FRAMEWORK_DLL_API GLuint getTextureY() const;
 	FRAMEWORK_DLL_API GLuint getTextureCr() const;
 	FRAMEWORK_DLL_API GLuint getTextureCb() const;
 	FRAMEWORK_DLL_API int getWidth() const;
 	FRAMEWORK_DLL_API int getHeight() const;
-	FRAMEWORK_DLL_API bool isLoaded() const;
-
-	// Playback control
-	FRAMEWORK_DLL_API void setLoop(bool loop);
-	FRAMEWORK_DLL_API bool getLoop() const;
-
 private:
 	plm_t* plm;
 	GLuint videoTextureY;
@@ -44,6 +36,6 @@ private:
 	GLuint videoTextureCb;
 	int width;
 	int height;
-	float timeAccumulator;
-	bool looping;
+	double framerate;
+	float frameDuration;
 };

@@ -924,14 +924,17 @@ struct Fog {
 	)
 };
 struct VideoPlayer {
+	// Update
+	float timeAccumulator{};
+	bool isPlaying = false;
+
+	// Data
 	TypedResourceID<Video> videoId { INVALID_RESOURCE_ID };
-
-	bool isPlaying = true;
-	bool loop = true;
-
+	bool playOnStart = true;
+	bool loop = false;
 	REFLECTABLE(
 		videoId,
-		isPlaying,
+		playOnStart,
 		loop
 	)
 };

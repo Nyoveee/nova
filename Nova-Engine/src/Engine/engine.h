@@ -20,6 +20,7 @@
 #include "Engine/prefabManager.h"
 #include "Engine/uiSystem.h"
 #include "Engine/dataManager.h"
+#include "Engine/videoSystem.h"
 
 #define _CRTDBG_MAP_ALLOC
 
@@ -94,6 +95,7 @@ public:
 	AnimationSystem			animationSystem;
 	PrefabManager			prefabManager;
 	UISystem				uiSystem;
+	VideoSystem             videoSystem;
 	DataManager				dataManager;
 
 	// allows direct modification to render debug info for physics.

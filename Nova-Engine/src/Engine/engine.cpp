@@ -27,6 +27,7 @@ Engine::Engine(Window& window, InputManager& inputManager, ResourceManager& reso
 	navigationSystem		{ *this }, 
 	particleSystem          { *this },
 	animationSystem			{ *this },
+	videoSystem             { *this },
 	uiSystem				{ *this },
 	gameConfig				{ gameConfig },
 	inSimulationMode		{ false },
@@ -82,14 +83,15 @@ void Engine::update(float dt) {
 		scriptingAPIManager.checkIfRecompilationNeeded(dt); // real time checking if scripts need to recompile.
 	}
 	else {
-		scriptingAPIManager.update();
+		scriptingAPIManager.update();	
 	}
 
 	if (!isPaused) {
 		animationSystem.update(dt * deltaTimeMultiplier);
 		particleSystem.update(dt * deltaTimeMultiplier);
 	}
-
+	if(inSimulationMode && !isPaused)
+		videoSystem.update(dt);
 	transformationSystem.update();
 	cameraSystem.update(dt); // dt is only used in editor.
 	uiSystem.update(dt);
@@ -138,7 +140,6 @@ void Engine::startSimulation() {
 		ecs.recordOriginalScene();
 
 		cameraSystem.startSimulation();
-
 		// Load all systems that needs to be done per scene.
 		SystemsOnLoad();
 	};
@@ -238,6 +239,9 @@ void Engine::SystemsOnLoad() {
 	// Create all the bodies, then run simulation setup..
 	physicsManager.resetPhysicsState();
 	physicsManager.simulationInitialise();
+
+	// Resets the Video Players
+	videoSystem.Reload();
 
 	// Load all sounds..
 	audioSystem.loadAllSounds();
