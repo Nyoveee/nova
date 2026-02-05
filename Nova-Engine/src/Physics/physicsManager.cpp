@@ -496,6 +496,7 @@ void PhysicsManager::createBody(entt::entity const& entityID)
 	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody.initialVelocity));
 	bodyInterface.SetIsSensor(bodyId, rigidBody.isTrigger);
 	bodyInterface.SetRestitution(bodyId, rigidBody.restitution);
+	bodyInterface.SetGravityFactor(bodyId, rigidBody.gravityMultiplier);
 
 	if (rigidBody.motionQuality == Rigidbody::MotionQuality::Continuous) {
 		bodyInterface.SetMotionQuality(bodyId, JPH::EMotionQuality::LinearCast);

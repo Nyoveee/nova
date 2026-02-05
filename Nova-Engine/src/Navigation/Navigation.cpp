@@ -354,15 +354,28 @@ void NavigationSystem::InstantiateAgentsToSystem(entt::entity, Transform const* 
 void NavigationSystem::SetAgentActive(entt::entity entityID)
 {
 	auto&& [transform, navMeshAgent] = engine.ecs.registry.try_get<Transform, NavMeshAgent>(entityID);
-
-	if (navMeshAgent == nullptr || navMeshAgent->agentIndex < 0)
+	if (navMeshAgent == nullptr || navMeshAgent->agentIndex<0)
 		return;
-	int dtIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
-    crowdManager[navMeshAgent->agentName]->getEditableAgent(dtIndex)->active = true;
-	
-	// Set Target Position to current transform so it wouldn't teleport back
-	crowdManager[navMeshAgent->agentName]->setTargetPosition(navMeshAgent->agentIndex, transform->position.x, transform->position.y, transform->position.z);
+	auto iterator = crowdManager.find(navMeshAgent->agentName);
+	dtCrowdAgent* dtAgent = iterator->second->getEditableAgent(GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex));
+	// Try to add invalid agent if it's now in the navmesh
+	if (dtAgent->state == DT_CROWDAGENT_STATE_INVALID) {
+		auto&& [navMeshAsset, _] = resourceManager.getResource<NavMesh>(sceneNavMeshes[navMeshAgent->agentName]);
+		int dtCrowdIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+		dtCrowdAgentParams params = ConfigureDTParams(*navMeshAsset, *navMeshAgent);
+		float pos[3] = { transform->position.x, transform->position.y, transform->position.z };
+		crowdManager[navMeshAgent->agentName].get()->addAgent(dtCrowdIndex, pos, &params);
+	}
+	else
+	{
+		int dtCrowdIndex = GetDTCrowdIndex(navMeshAgent->agentName, navMeshAgent->agentIndex);
+		crowdManager[navMeshAgent->agentName]->getEditableAgent(dtCrowdIndex)->active = true;
 
+		// Set Target Position to current transform so it wouldn't teleport back
+		crowdManager[navMeshAgent->agentName]->setTargetPosition(navMeshAgent->agentIndex, transform->position.x, transform->position.y, transform->position.z);
+	}
+	
+		
 }
 
 ENGINE_DLL_API void NavigationSystem::SetAgentInactive(entt::entity entityID)

@@ -11,11 +11,7 @@ public abstract class Enemy : Script
         WeaponShot,
         ThrownWeapon,
         Ultimate,
-    
-    
     }
-
-
 
     /***********************************************************
         Inspector Variables
@@ -38,6 +34,11 @@ public abstract class Enemy : Script
     // 1f = 100% 
     [SerializableField]
     public float spotCallSFXChance =  0.5f;
+    [SerializableField]
+    protected Rigidbody_ physicsRigidbody;
+    [SerializableField]
+    protected Rigidbody_ navMeshRigidBody;
+
     /***********************************************************
         Local Variables
     ***********************************************************/
@@ -78,9 +79,33 @@ public abstract class Enemy : Script
             ParticleEmitter_? particleEmitter_ = emitter.getComponent<ParticleEmitter_>();
             if (particleEmitter_ != null)
                 particleEmitter_.emit();
-        }
-           
-            
+        } 
+    }
+    public bool IsTouchingGround()
+    {
+        string[] mask = { "Floor" };
+        var result = PhysicsAPI.Raycast(gameObject.transform.position, Vector3.Down(), enemyStats.groundDetectionRayCast, mask);
+
+        return result != null;
+    }
+
+    public void ActivateRigidbody()
+    {
+        physicsRigidbody.SetVelocity(Vector3.Zero());
+        navMeshAgent.enable = false;
+        physicsRigidbody.enable = true;
+        navMeshRigidBody.enable = false;
+    }
+    public void ActivateNavMeshAgent()
+    {
+        navMeshAgent.enable = true;
+        physicsRigidbody.enable = false;
+        navMeshRigidBody.enable = true;
+    }
+    public void DisablePhysicalInteraction()
+    {
+        physicsRigidbody.enable = false;
+        navMeshAgent.enable = false;
     }
     /***********************************************************
         Shared Functions

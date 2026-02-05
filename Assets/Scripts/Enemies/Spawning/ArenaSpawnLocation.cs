@@ -3,10 +3,10 @@
 // Editor will automatically rename and recompile this file.
 using ScriptingAPI;
 
-class SpawnPodLocation : Script
+class ArenaSpawnLocation : Script
 {
-    public List<Prefab> enemies;
-
+    public Prefab enemy;
+#if false
     protected override void init()
     {
         // we use a mesh renderer to visualise where they will be spawning..
@@ -17,4 +17,5 @@ class SpawnPodLocation : Script
             meshRenderer.enable = false;
         }
     }
+#endif
 }

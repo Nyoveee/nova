@@ -1,5 +1,5 @@
 {
-    "RootEntity": 99,
+    "RootEntity": 9,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    100,
-                    102,
-                    103,
-                    104,
-                    105
+                    10,
+                    12,
+                    13,
+                    14,
+                    15
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -20,8 +20,8 @@
                 "entityGUID": 15864537180317254659,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "13953638462837156301": true,
                     "6919815292445452220": false
                 },
@@ -129,7 +129,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 100,
+                                    "__variant_value": 10,
                                     "__variant_type": 4
                                 }
                             },
@@ -329,16 +329,16 @@
                     }
                 ]
             },
-            "id": 99
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 99,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": [
-                    101
+                    11
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -346,8 +346,8 @@
                 "entityGUID": 9523468904979596293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "13484132868097894827": true,
                     "9059764703561530457": true,
+                    "13484132868097894827": true,
                     "17237801994024849853": true,
                     "6919815292445452220": true
                 },
@@ -412,13 +412,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 100
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 100,
+                "parent": 10,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -482,13 +482,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 101
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 99,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -497,8 +497,8 @@
                 "entityGUID": 4911782886552208391,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "11935986701403193153": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": false,
                     "13953638462837156301": false
                 },
                 "inactiveComponents": null
@@ -580,7 +580,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 99,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             }
@@ -588,13 +588,13 @@
                     }
                 ]
             },
-            "id": 102
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 99,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -757,13 +757,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 103
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 99,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -926,13 +926,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 104
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 99,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1095,7 +1095,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 105
+            "id": 15
         }
     ]
 }
