@@ -410,6 +410,7 @@ class ThrowableRifle : Script
 
         if ( (other.tag == "Wall" || other.tag == "Floor") && throwingWeaponState == ThrowingWeaponState.Flying)
         {
+            Debug.Log("HIT SMTH");
             //audioComponent.PlayRandomSound(hitWallSFX);
             weaponRB.SetVelocity(Vector3.Zero());
             throwingWeaponState = ThrowingWeaponState.HitEnviroment;

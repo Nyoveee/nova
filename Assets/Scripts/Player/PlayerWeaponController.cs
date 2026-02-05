@@ -40,6 +40,8 @@ class PlayerWeaponController : Script
     // ===========================================
     private AudioComponent_ audioComponent;
 
+
+
     // ===========================================
     // Runtime variables
     // ===========================================
@@ -301,11 +303,11 @@ class PlayerWeaponController : Script
         thrownRifle.getScript<ThrowableRifle>().mappedWeapon = currentlyHeldGun;
         weaponControlStates = WeaponControlStates.AwaitWeaponReturn;
 
-        //string[] layerMask = { "Enemy", "Wall", "Ground" };
+        string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
 
-       // RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front,500f,layerMask);
+        // RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front,500f,layerMask);
 
-        RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f,playerCollider);
+        RayCastResult? result = PhysicsAPI.Raycast(playerCamera.position, playerCamera.front, 500f, mask);
 
 
        
@@ -314,6 +316,7 @@ class PlayerWeaponController : Script
         //Do a raycast to objects
         if (result != null)
         {
+            Debug.Log("Hit: " + result.Value.point.ToString());
             Vector3 targetDirection = (result.Value.point - throwPosition.position);
             targetDirection.Normalize();
 

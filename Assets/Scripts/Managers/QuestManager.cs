@@ -112,7 +112,7 @@ public class QuestManager : Script
             gameUIManager.TriggerDeathScreen(); 
             if (player != null)
             {
-                player.ToEnable = false;
+                player.playerMoveStates = PlayerMoveStates.Disabled;
             }
             // Disable player keys
         }
@@ -126,7 +126,7 @@ public class QuestManager : Script
         }
         if (player != null)
         {
-            player.ToEnable = true;
+            player.playerMoveStates = PlayerMoveStates.GroundedMovement;
         }
         // Enable player keys
     }

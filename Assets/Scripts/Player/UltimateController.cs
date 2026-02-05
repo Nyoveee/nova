@@ -13,6 +13,7 @@ class UltimateController : Script
     public Transform_ camera;
     
     public GameObject ultimatePose;
+    public GameObject muzzle;
     public MeshRenderer_ originalGun;
     public PlayerController_V2 playerController;
     public PlayerWeaponController playerWeaponController;
@@ -102,8 +103,9 @@ class UltimateController : Script
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.Busy;
 
         isCasting = true;
-        rigidbody.enable = false;
-        playerController.ToEnable = false;
+        //rigidbody.enable = false;
+        playerController.GravityFreeze(true);
+        playerController.playerMoveStates = PlayerMoveStates.Disabled;
 
         Invoke(() =>
         {
@@ -121,11 +123,13 @@ class UltimateController : Script
     {
         playerWeaponController.weaponControlStates = PlayerWeaponController.WeaponControlStates.WeaponFree;
         playerWeaponController.ResetGunPosition();
+        playerController.GravityFreeze(false);
 
         isCasting = false;
         originalGun.enable = true;
-        playerController.ToEnable = true;
-        rigidbody.enable = true;
+        playerController.playerMoveStates = PlayerMoveStates.GroundedMovement;
+        //rigidbody.enable = true;
+        Time.timeScale = 1f;
         ultimatePose.SetActive(false);
     }
 
@@ -144,8 +148,20 @@ class UltimateController : Script
         isAnimatingVignetteFadeOut = true;
         vignetteTimeElapsed = 0f;
 
-        GameObject projectile = Instantiate(ultimate, ultimatePose.transform.position);
+        GameObject projectile = Instantiate(ultimate, muzzle.transform.position);
 
-        projectile.getComponent<Rigidbody_>().SetVelocity(camera.front * projectileSpeed);
+        string[] mask = { "Enemy_HurtSpot", "NonMoving", "Floor" };
+        // Raycast..
+        RayCastResult? result = PhysicsAPI.Raycast(camera.position, camera.front, 500f, mask);
+
+        Vector3 direction = muzzle.transform.front;
+
+        if (result != null)
+        {
+            direction = result.Value.point - muzzle.transform.position;            
+        }
+
+        direction.Normalize();
+        projectile.getComponent<Rigidbody_>().SetVelocity(direction * projectileSpeed);
     }
 }

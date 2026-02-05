@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 class PlayerController_V2 : Script
 {
     // ==================================
@@ -41,8 +43,13 @@ class PlayerController_V2 : Script
     [SerializableField]
     public float baseGravityFactor = 1f; //gravity factor for groundbased movements
 
-    [SerializableField] //health
-    public float maxHealth = 100f;
+
+
+    // ==================================
+    // Events
+    // ==================================
+    public event EventHandler OnPlayerDeath;
+
 
     // ==================================
     // References
@@ -89,9 +96,40 @@ class PlayerController_V2 : Script
     // ==================================
     // Player Stats
     // ==================================
+    [SerializableField] //health
+    public float maxHealth = 100f;
     private float currentHealth = 0f;
+    [SerializableField]
+    public float maxStamina = 3f;
+    [SerializableField]
+    public float dashStaminaConsumption = 1f;
+    [SerializableField]
+    public float dashStaminaRecovery = 1.0f;
+    public float currentStamina;
 
-    public bool ToEnable = true;
+    //public bool ToEnable = true;
+
+
+    // Hurt
+    private int hitsBeforeSound = 3;
+    private int hitsTaken = 0;
+
+    // Audio
+    [SerializableField]
+    private List<Audio> deathSFX;
+    [SerializableField]
+    private List<Audio> hurtSFX;
+    [SerializableField]
+    private List<Audio> dashSFX;
+    [SerializableField]
+    private List<Audio> jumpVOSFX;
+    [SerializableField]
+    private List<Audio> jumpSFX;
+    [SerializableField]
+    private List<Audio> footstepSFX;
+    [SerializableField]
+    private float timeBetweenSteps = 0.36f;
+    private float timeSinceLastFootstep = 0f;
 
     // This function is invoked once when gameobject is active.
     protected override void init()
@@ -107,6 +145,7 @@ class PlayerController_V2 : Script
 
         // Health
         currentHealth = maxHealth;
+        currentStamina = maxStamina;
 
         rigidbody.SetGravityFactor(baseGravityFactor);
         
@@ -126,6 +165,7 @@ class PlayerController_V2 : Script
     // This function is invoked every update.
     protected override void update()
     {
+        currentStamina = Mathf.Clamp(currentStamina + Time.V_DeltaTime() * dashStaminaRecovery, 0f, maxStamina);
 
     }
 
@@ -281,7 +321,7 @@ class PlayerController_V2 : Script
             rigidbody.SetLinearDamping(groundDrag);
             rigidbody.SetVelocityLimits(groundMaxMoveSpeed);
             jumpEnabled = true;
-            // Debug.Log("Grounded");
+            //Debug.Log("Grounded");
 
 
         }
@@ -291,7 +331,7 @@ class PlayerController_V2 : Script
             rigidbody.SetLinearDamping(airDrag);
             rigidbody.SetVelocityLimits(100000); //player movespeed is uncapped in air
             jumpEnabled = false;
-           // Debug.Log("Airborne");
+            //Debug.Log("Airborne");
         }
     }
 
@@ -369,7 +409,7 @@ class PlayerController_V2 : Script
 
         UpdateMovementVector();
         desiredSpeed = groundMaxMoveSpeed;
-
+        HandleFootstepSound();
         //alter direction vector if player is on a slope
         string[] mask = {"NonMoving", "Floor" };
         var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), groundDetectionRayCast, mask);
@@ -586,8 +626,9 @@ class PlayerController_V2 : Script
     //dash callback
     void triggerDash()
     {
-        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false)
+        if (playerMoveStates != PlayerMoveStates.Disabled && playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false && currentStamina >= dashStaminaConsumption)
         {
+            currentStamina -= dashStaminaConsumption;
             playerMoveStates = PlayerMoveStates.Dashing;
             //rigidbody.SetVelocity(Vector3.Zero());
             onDashTrigger = true;
@@ -599,6 +640,7 @@ class PlayerController_V2 : Script
     {
         isDashKeyHeld = false;
     }
+
 
 
     protected override void onCollisionEnter(GameObject other)
@@ -649,6 +691,30 @@ class PlayerController_V2 : Script
     }
 
 
+    // ============ public function==========
+
+    public void TakeDamage(float damage)
+    {
+        hitsTaken++;
+        if (hitsTaken >= hitsBeforeSound)
+        {
+            audioComponent.PlayRandomSound(hurtSFX);
+            hitsTaken = 0;
+        }
+        currentHealth = Mathf.Max(0, currentHealth - damage);
+        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+        if (gameUIManager != null)
+            gameUIManager.ActivateDamageUI();
+
+        // Placeholder for a player death 
+        if (currentHealth <= 0f)
+        {
+            audioComponent.PlayRandomSound(deathSFX);
+            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+
     //Helper function
     float CalculateSmoothDampVelocityChange(float currentVel,float desiredVel, float smoothTime, float deltaTime)
     {
@@ -678,6 +744,51 @@ class PlayerController_V2 : Script
     {
         return directionVector;
     }
+
+
+    //Sound function
+    private void HandleFootstepSound()
+    {
+        if (isGrounded && IsMoving())
+        {
+            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            if (timeSinceLastFootstep >= timeBetweenSteps)
+            {
+                audioComponent.PlayRandomSound(footstepSFX);
+                timeSinceLastFootstep = 0;
+            }
+        }
+    }
+
+
+    private bool IsMoving() => isMovingBackward || isMovingForward || isMovingLeft || isMovingRight;
+    /****************************************************************
+    Public Functions
+    ****************************************************************/
+
+    public void GravityFreeze(bool value)
+    {
+        if (value)
+        {
+            isLerpingGravity = false;
+            rigidbody.SetGravityFactor(0f);
+        }
+        else
+        {
+            isLerpingGravity = true;
+            rigidbody.SetGravityFactor(float.Lerp(jumpGravityFactor, baseGravityFactor, gravityLerpTimer / lerpGravityFactorDuration));
+        }
+
+
+    }
+    public void Reset()
+    {
+        isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
+        rigidbody.SetVelocity(Vector3.Zero());
+        currentHealth = maxHealth;
+        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+    }
+
 }
 
 

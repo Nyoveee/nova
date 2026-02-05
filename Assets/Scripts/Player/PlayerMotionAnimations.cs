@@ -224,7 +224,8 @@ class PlayerMotionAnimations : Script
     void triggerParticleEffects()
     {
         //check which direction to trigger
-        if (playerController.playerMoveStates != PlayerMoveStates.Disabled && playerController.playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false)
+        if (playerController.playerMoveStates != PlayerMoveStates.Disabled && playerController.playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false && 
+            playerController.currentStamina >= playerController.dashStaminaConsumption)
         {
             isDashKeyHeld = true;
 
