@@ -16,10 +16,6 @@ class Charger : Enemy
     [SerializableField]
     private Transform_? stompHitBoxTransform;
     [SerializableField]
-    private Rigidbody_? chargingRigidbody;
-    [SerializableField]
-    private Rigidbody_? navMeshRigidbody;
-    [SerializableField]
     private ParticleEmitter_? emitter;
     [SerializableField]
     private GameObject? chargeLines;
@@ -72,7 +68,7 @@ class Charger : Enemy
         Jump,
         Death
     }
-    private ChargerState chargerState = ChargerState.Idle;
+    private ChargerState chargerState = ChargerState.Spawning;
     private Dictionary<ChargerState, CurrentState> updateState = new Dictionary<ChargerState, CurrentState>();
     /***********************************************************
         Inspector Variables
@@ -82,6 +78,7 @@ class Charger : Enemy
         base.init();
         chargerstats = getScript<ChargerStats>();
         audioComponent = getComponent<AudioComponent_>();
+        updateState.Add(ChargerState.Spawning, Update_Spawning);
         updateState.Add(ChargerState.Idle, Update_Idle);
         updateState.Add(ChargerState.Walk, Update_Walk);
         updateState.Add(ChargerState.Charging, Update_Charging);
@@ -91,10 +88,7 @@ class Charger : Enemy
         updateState.Add(ChargerState.Jump, Update_Jump);
         updateState.Add(ChargerState.Death, Update_Death);
 
-        // spawning afk...
-        updateState.Add(ChargerState.Spawning, () => { });
-        
-        ActivateNavMeshAgent();
+        ActivateRigidbody();
 
     }
 
@@ -106,20 +100,6 @@ class Charger : Enemy
     /***********************************************************
         Helper Functions
     ***********************************************************/
-    private void ActivateRigidbody()
-    {
-        navMeshAgent.enable = false;
-        chargingRigidbody.enable = true;
-        navMeshRigidbody.enable = false;
-        NavigationAPI.stopAgent(gameObject);
-    }
-    private void ActivateNavMeshAgent()
-    {
-        navMeshAgent.enable = true;
-        chargingRigidbody.enable = false;
-        navMeshRigidbody.enable = true;
-        chargingRigidbody.SetVelocity(Vector3.Zero());
-    }
     /***********************************************************
         Inherited Functions
     ***********************************************************/
@@ -239,10 +219,8 @@ class Charger : Enemy
                 {
                     chargerState = ChargerState.Death;
                     audioComponent.PlayRandomSound(deathSFX);
-                    chargingRigidbody.enable = false;
-                    navMeshRigidbody.enable = false;
                     chargeLines.SetActive(false);
-                    NavigationAPI.stopAgent(gameObject);
+                    DisablePhysicalInteraction();
                 }
             }
             else
@@ -280,6 +258,15 @@ class Charger : Enemy
     /***********************************************************
         State
     ***********************************************************/
+    private void Update_Spawning()
+    {
+        if (IsTouchingGround())
+        {
+            ActivateNavMeshAgent();
+            chargerState = ChargerState.Idle;
+            //gameObject.transform.position = new Vector3(gameObject.transform.position.x, 0, gameObject.transform.position.z);
+        }
+    }
     private void Update_Idle(){
         currentChargeCooldown -= Time.V_DeltaTime();
         if (GetDistanceFromPlayer() < chargerstats.chasingRange && HasLineOfSightToPlayer(gameObject))
@@ -338,7 +325,6 @@ class Charger : Enemy
             animator.PlayAnimation("ChargerAttack");
             audioComponent.PlayRandomSound(attackSFX);
             ActivateRigidbody();
-            chargingRigidbody.SetVelocity(Vector3.Zero());
             return;
         }
         // Move Enemy 
@@ -364,7 +350,7 @@ class Charger : Enemy
             audioComponent.PlayRandomSound(footstepSFX);
             HandleFootStep();
         }
-        chargingRigidbody.SetVelocity(chargeDirection * chargerstats.movementSpeed * chargerstats.chargeSpeedMultiplier + new Vector3(0, chargingRigidbody.GetVelocity().y, 0));
+        physicsRigidbody.SetVelocity(chargeDirection * chargerstats.movementSpeed * chargerstats.chargeSpeedMultiplier + new Vector3(0, physicsRigidbody.GetVelocity().y, 0));
     }
     private void Update_Attack()
     {
@@ -453,7 +439,7 @@ class Charger : Enemy
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");
             currentChargeCooldown = chargerstats.chargeCooldown;
-            chargingRigidbody.SetVelocity(Vector3.Zero());
+            ActivateNavMeshAgent();
             chargeLines.SetActive(false);
         }
         if (other.tag == "Wall" && chargerState == ChargerState.Charging)
@@ -461,7 +447,7 @@ class Charger : Enemy
             chargerState = ChargerState.Stagger;
             animator.PlayAnimation("ChargerStagger");
             audioComponent.PlayRandomSound(hurtSFX);
-            chargingRigidbody.SetVelocity(Vector3.Zero());
+            ActivateNavMeshAgent();
             chargeLines.SetActive(false);
         }
     }
