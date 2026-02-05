@@ -39,7 +39,7 @@ public class QuestManager : Script
             StartCurrentQuest();
         }
 
-            GameObject playerGO = GameObject.FindWithTag("Player");
+        GameObject playerGO = GameObject.FindWithTag("Player");
         if (playerGO != null)
         {
             player = playerGO.getScript<PlayerController>();
@@ -47,6 +47,11 @@ public class QuestManager : Script
             {
                 player.OnPlayerDeath += HandlePlayerDeath;
             }
+        }
+
+        if (gameUIManager != null)
+        {
+            gameUIManager.RestartFromCheckpointButton += FailCurrentQuest;
         }
     }
 
@@ -100,12 +105,29 @@ public class QuestManager : Script
             gameUIManager.SetQuestText(currentQuest.GetQuestInformation());
     }
 
-    // Automatically fails current quest
     private void HandlePlayerDeath(object sender, EventArgs e)
+    {
+        if (gameUIManager != null)
+        { 
+            gameUIManager.TriggerDeathScreen(); 
+            if (player != null)
+            {
+                player.ToEnable = false;
+            }
+            // Disable player keys
+        }
+    }
+
+    private void FailCurrentQuest()
     {
         if (currentQuest != null)
         {
             currentQuest.SetQuestState(Quest.QuestState.Fail);
         }
+        if (player != null)
+        {
+            player.ToEnable = true;
+        }
+        // Enable player keys
     }
 }
