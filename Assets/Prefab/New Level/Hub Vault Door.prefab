@@ -1,0 +1,343 @@
+{
+    "RootEntity": 1,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Hub Vault Door",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    2,
+                    3
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 17228591310439389067,
+                "entityGUID": 18290983424125195481,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.8813924789428711,
+                    "y": 1.79094398021698,
+                    "z": -20.802396774291992
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.8813924789428711,
+                    "y": 1.79094398021698,
+                    "z": -20.802396774291992
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 8255212936417148929,
+                        "fields": [
+                            {
+                                "name": "doorType",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "DoorType",
+                                        "Value": "Automatic"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
+                                "name": "doorOpeningMode",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "DoorOpeningMode",
+                                        "Value": "Translation"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
+                                "name": "automaticDoordetectionRange",
+                                "data": {
+                                    "__variant_value": 100.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "leftDoor",
+                                "data": {
+                                    "__variant_value": 2,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "rightDoor",
+                                "data": {
+                                    "__variant_value": 3,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "openSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "closeSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "openOffset",
+                                "data": {
+                                    "__variant_value": 7.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "rotation",
+                                "data": {
+                                    "__variant_value": 90.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "doorMovingDuration",
+                                "data": {
+                                    "__variant_value": 7.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "lerpPower",
+                                "data": {
+                                    "__variant_value": 0.6000000238418579,
+                                    "__variant_type": 18
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Hub_ElevatorLeft",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 17228591310439389067,
+                "entityGUID": 12526375901089797333,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.8813848495483398,
+                    "y": 1.7908238172531128,
+                    "z": -20.802396774291992
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -7.62939453125e-06,
+                    "y": -0.0001201629638671875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3549848620750422139,
+                "materialIds": [
+                    10779005632181993509
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Moving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "Hub_ElevatorRight",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 17228591310439389067,
+                "entityGUID": 15985140414910354647,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.8813848495483398,
+                    "y": 1.7908238172531128,
+                    "z": -20.802396774291992
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -7.62939453125e-06,
+                    "y": -0.0001201629638671875,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 16231985171425738877,
+                "materialIds": [
+                    10779005632181993509
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "Rigidbody": {
+                "motionType": "Kinematic",
+                "layer": "Moving",
+                "motionQuality": "Discrete",
+                "initialVelocity": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "mass": 10.0,
+                "gravityMultiplier": 1.0,
+                "restitution": 0.0,
+                "isRotatable": true,
+                "isTrigger": false,
+                "dynamicCollider": false,
+                "toScaleWithTransform": true
+            },
+            "MeshCollider": {
+                "shapeScale": 1.0
+            },
+            "id": 3
+        }
+    ]
+}

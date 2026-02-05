@@ -15,7 +15,7 @@ class Elevator : Script
     private Door tutorialDoor;
     [SerializableField]
     private Door hubDoor;
-    [SerializableField]
+
     private GameObject playerBody;
 
     /**********************************************************************
@@ -41,6 +41,8 @@ class Elevator : Script
         topPosition = elevatorTransform.position;
         bottomPosition = topPosition - new Vector3(0, moveHeight, 0);
         tutorialDoor.OpenDoor();
+
+        playerBody = GameObject.FindWithTag("Player");
     }
 
     protected override void update()
@@ -59,8 +61,11 @@ class Elevator : Script
         elevatorTransform.position = Vector3.Lerp(topPosition, bottomPosition, t);
 
         Vector3 distanceMoved = elevatorTransform.position - prevPos;
-        playerBody.getComponent<Transform_>().position += distanceMoved;
-        //playerBody.getComponent<Rigidbody_>().AddVelocity(distanceMoved);
+        
+        if(playerBody != null)
+        {
+            playerBody.getComponent<Transform_>().position += distanceMoved;
+        }
 
         if (t >= 1f)
         {

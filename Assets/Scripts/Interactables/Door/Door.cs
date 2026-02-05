@@ -161,8 +161,8 @@ class Door : Script
         switch (doorOpeningMode)
         {
             case DoorOpeningMode.Translation:
-                leftDoor.localPosition = Vector3.Lerp(leftStartOpen, leftStartClosed, Mathf.Pow(interval, lerpPower));
-                rightDoor.localPosition = Vector3.Lerp(rightStartOpen, rightStartClosed, Mathf.Pow(interval, lerpPower));
+                leftDoor.localPosition = Vector3.Lerp(leftStartClosed, leftStartOpen, Mathf.Pow(interval, lerpPower));
+                rightDoor.localPosition = Vector3.Lerp(rightStartClosed, rightStartOpen, Mathf.Pow(interval, lerpPower));
 
                 break;
             case DoorOpeningMode.Rotation:
@@ -210,14 +210,14 @@ class Door : Script
     public void OpenDoor()
     {
         doorState = DoorState.Opening;
-        audioComponent.PlaySound(openSFX);
+        audioComponent?.PlaySound(openSFX);
         // AudioAPI.PlaySound(gameObject, "slidingDoor_open_01");
     }
 
     public void CloseDoor()
     {
         doorState = DoorState.Closing;
-        audioComponent.PlaySound(closeSFX);
+        audioComponent?.PlaySound(closeSFX);
     }
 
     public void LockDoor()

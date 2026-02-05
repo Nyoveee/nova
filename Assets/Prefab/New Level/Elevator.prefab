@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 8,
     "Entities": [
         {
             "EntityData": {
@@ -8,9 +8,9 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    4,
-                    7
+                    9,
+                    12,
+                    15
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -18,10 +18,10 @@
                 "entityGUID": 16581286820009231079,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": false,
                     "6919815292445452220": true,
-                    "11935986701403193153": true,
+                    "10106385962890515953": false,
                     "17237801994024849853": true,
+                    "11935986701403193153": true,
                     "9059764703561530457": true
                 },
                 "inactiveComponents": null
@@ -106,7 +106,7 @@
                             {
                                 "name": "elevatorTransform",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 8,
                                     "__variant_type": 4
                                 }
                             },
@@ -127,21 +127,14 @@
                             {
                                 "name": "tutorialDoor",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 9,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "hubDoor",
                                 "data": {
-                                    "__variant_value": 4,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "playerBody",
-                                "data": {
-                                    "__variant_value": 51380479,
+                                    "__variant_value": 12,
                                     "__variant_type": 4
                                 }
                             }
@@ -149,17 +142,17 @@
                     }
                 ]
             },
-            "id": 0
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "Tutorial Door",
                 "tag": "",
-                "parent": 0,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": [
-                    2,
-                    3
+                    10,
+                    11
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -242,6 +235,16 @@
                                 }
                             },
                             {
+                                "name": "doorOpeningMode",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "DoorOpeningMode",
+                                        "Value": "Translation"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
                                 "name": "automaticDoordetectionRange",
                                 "data": {
                                     "__variant_value": 10.0,
@@ -251,14 +254,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 2,
+                                    "__variant_value": 10,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 11,
                                     "__variant_type": 4
                                 }
                             },
@@ -284,9 +287,23 @@
                                 }
                             },
                             {
+                                "name": "rotation",
+                                "data": {
+                                    "__variant_value": 90.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "doorMovingDuration",
                                 "data": {
                                     "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "lerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
                                     "__variant_type": 18
                                 }
                             }
@@ -294,13 +311,13 @@
                     }
                 ]
             },
-            "id": 1
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 1,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -386,13 +403,13 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 2
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 1,
+                "parent": 9,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -478,17 +495,17 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 3
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "Hub Door",
                 "tag": "",
-                "parent": 0,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": [
-                    5,
-                    6
+                    13,
+                    14
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -571,6 +588,16 @@
                                 }
                             },
                             {
+                                "name": "doorOpeningMode",
+                                "data": {
+                                    "__variant_value": {
+                                        "Type": "DoorOpeningMode",
+                                        "Value": "Translation"
+                                    },
+                                    "__variant_type": 9
+                                }
+                            },
+                            {
                                 "name": "automaticDoordetectionRange",
                                 "data": {
                                     "__variant_value": 10.0,
@@ -580,14 +607,14 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 5,
+                                    "__variant_value": 13,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 6,
+                                    "__variant_value": 14,
                                     "__variant_type": 4
                                 }
                             },
@@ -613,9 +640,23 @@
                                 }
                             },
                             {
+                                "name": "rotation",
+                                "data": {
+                                    "__variant_value": 90.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
                                 "name": "doorMovingDuration",
                                 "data": {
                                     "__variant_value": 2.0,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "lerpPower",
+                                "data": {
+                                    "__variant_value": 0.699999988079071,
                                     "__variant_type": 18
                                 }
                             }
@@ -623,13 +664,13 @@
                     }
                 ]
             },
-            "id": 4
+            "id": 12
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 4,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -715,13 +756,13 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 5
+            "id": 13
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 4,
+                "parent": 12,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -807,13 +848,13 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 6
+            "id": 14
         },
         {
             "EntityData": {
                 "name": "Entity 1",
                 "tag": "",
-                "parent": 0,
+                "parent": 8,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -889,7 +930,7 @@
                 "shadowNearPlane": 0.10000000149011612,
                 "shadowFarPlane": 750.0
             },
-            "id": 7
+            "id": 15
         }
     ]
 }

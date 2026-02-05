@@ -24,7 +24,6 @@ class Switch : Script
     private Audio switchSfx;
 
     private GameObject player;
-    private bool isActivated = false;
 
     private bool isAnimating = false;
     private float timeElapsed = 0f;
@@ -35,6 +34,8 @@ class Switch : Script
     private Quaternion finalRotation;
 
     private AudioComponent_ audioComponent;
+
+    public bool isActivated = false;
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
