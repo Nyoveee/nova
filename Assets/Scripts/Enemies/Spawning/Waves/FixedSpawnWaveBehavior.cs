@@ -18,8 +18,9 @@ public class FixedSpawnWaveBehavior : WaveBehavior
         // populate our pod locations..
         foreach (GameObject spawnLocation in gameObject.GetChildren()) {
             ArenaSpawnLocation arenaSpawnLocationScript = spawnLocation.getScript<ArenaSpawnLocation>();
-            GameObject.Instantiate(arenaSpawnLocationScript.enemy, spawnLocation.transform.position);
+            RegisterSpawn(GameObject.Instantiate(arenaSpawnLocationScript.enemy, spawnLocation.transform.position));
         }
+        
 
 #if false
         foreach (SpawnPodLocation pod in podLocations)
@@ -42,8 +43,17 @@ public class FixedSpawnWaveBehavior : WaveBehavior
     public override void UpdateWave(int aliveCount)
     { }
 
-    public override bool IsWaveComplete(int aliveCount)
+    public override bool IsWaveComplete(List<GameObject> enemies)
     {
-        return aliveCount <= 0;
+        if (AliveCount == 0)
+            return false;
+        bool allDead = true;
+        foreach (GameObject enemy in enemies)
+        {
+            Enemy enemyScript = enemy.getScript<Enemy>();
+            if (enemyScript != null && !enemyScript.IsDead())
+                allDead = false;
+        }
+        return allDead;
     }
 }

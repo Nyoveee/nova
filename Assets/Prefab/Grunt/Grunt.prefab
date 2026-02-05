@@ -1,5 +1,5 @@
 {
-    "RootEntity": 49,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    50,
-                    52,
-                    53,
-                    54,
-                    55
+                    1,
+                    3,
+                    4,
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -113,7 +113,7 @@
                             {
                                 "name": "emitter",
                                 "data": {
-                                    "__variant_value": 52,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             },
@@ -127,7 +127,7 @@
                             {
                                 "name": "hitboxPosition",
                                 "data": {
-                                    "__variant_value": 53,
+                                    "__variant_value": 4,
                                     "__variant_type": 4
                                 }
                             },
@@ -310,28 +310,28 @@
                             {
                                 "name": "ichorSpawnPoint",
                                 "data": {
-                                    "__variant_value": 55,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "animator",
                                 "data": {
-                                    "__variant_value": 50,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "renderer",
                                 "data": {
-                                    "__variant_value": 50,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshAgent",
                                 "data": {
-                                    "__variant_value": 49,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             },
@@ -345,14 +345,14 @@
                             {
                                 "name": "physicsRigidbody",
                                 "data": {
-                                    "__variant_value": 49,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "navMeshRigidBody",
                                 "data": {
-                                    "__variant_value": 54,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             }
@@ -470,16 +470,16 @@
                 "agentRotationSpeed": 100.0,
                 "separationWeight": 0.0
             },
-            "id": 49
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Grunt Model",
                 "tag": "Enemy",
-                "parent": 49,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    51
+                    2
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -614,13 +614,13 @@
             "Animator": {
                 "controllerId": 1112108074662379533
             },
-            "id": 50
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Grunt WeakSpot",
                 "tag": "Enemy_WeakSpot",
-                "parent": 50,
+                "parent": 1,
                 "attachedSocket": 1,
                 "children": null,
                 "layerId": 0,
@@ -718,13 +718,13 @@
                     }
                 ]
             },
-            "id": 51
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Emitter",
                 "tag": "",
-                "parent": 49,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -887,13 +887,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 52
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Hitbox Position",
                 "tag": "",
-                "parent": 49,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -948,13 +948,13 @@
                     "z": -3.1415927410125732
                 }
             },
-            "id": 53
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Navmesh Collider",
                 "tag": "Enemy_ArmouredSpot",
-                "parent": 49,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1047,7 +1047,7 @@
                             {
                                 "name": "enemyGameObject",
                                 "data": {
-                                    "__variant_value": 49,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             }
@@ -1055,13 +1055,13 @@
                     }
                 ]
             },
-            "id": 54
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Ichor Spawn Point",
                 "tag": "",
-                "parent": 49,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1144,7 +1144,7 @@
                     "z": 0.0
                 }
             },
-            "id": 55
+            "id": 6
         }
     ]
 }
