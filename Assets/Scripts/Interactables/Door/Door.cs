@@ -110,6 +110,11 @@ class Door : Script
 
     protected override void update()
     {
+        if(player == null)
+        {
+            return;
+        }
+
         switch (doorType)
         {
             // Door will open depending on player 

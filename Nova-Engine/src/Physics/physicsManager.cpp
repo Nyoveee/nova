@@ -545,7 +545,7 @@ JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Trans
 			scale = transformScale;
 		}
 		else {
-			scale = transformScale * glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
+			scale = transformScale * model->scale;
 		}
 	}
 	else
@@ -609,7 +609,7 @@ JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Trans
 				return nullptr;
 			}
 			else {
-				glm::vec3 shapeScale = meshCollider->shapeScale * transform.scale;
+				glm::vec3 shapeScale = meshCollider->shapeScale * scale;
 
 				bool anyComponentZero = false;
 				for (int i = 0; i < 3; ++i) {
