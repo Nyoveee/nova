@@ -1,5 +1,5 @@
 {
-    "RootEntity": 3,
+    "RootEntity": 6,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    4,
-                    6,
                     7,
-                    8,
-                    9
+                    9,
+                    10,
+                    11,
+                    12
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -129,27 +129,15 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 4,
+                                    "__variant_value": 7,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "contactSparkVFXPrefab",
                                 "data": {
-                                    "__variant_value": 563029678012612857,
+                                    "__variant_value": 18446744073709551615,
                                     "__variant_type": 10
-                                }
-                            },
-                            {
-                                "name": "weakPointHitSparkColour",
-                                "data": {
-                                    "__variant_value": {
-                                        "x": 0.0,
-                                        "y": 0.0,
-                                        "z": 0.0,
-                                        "w": 0.0
-                                    },
-                                    "__variant_type": 2
                                 }
                             },
                             {
@@ -329,16 +317,16 @@
                     }
                 ]
             },
-            "id": 3
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 3,
+                "parent": 6,
                 "attachedSocket": 65535,
                 "children": [
-                    5
+                    8
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -412,13 +400,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 4
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 4,
+                "parent": 7,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -482,13 +470,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 5
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 3,
+                "parent": 6,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -580,7 +568,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 3,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
                                 }
                             }
@@ -588,13 +576,13 @@
                     }
                 ]
             },
-            "id": 6
+            "id": 9
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 6,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -757,13 +745,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 7
+            "id": 10
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 6,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -926,13 +914,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 8
+            "id": 11
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 3,
+                "parent": 6,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1095,7 +1083,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 9
+            "id": 12
         }
     ]
 }

@@ -1,6 +1,8 @@
 // Make sure the class name matches the filepath, without space!!.
 // If you want to change class name, change the asset name in the editor!
 // Editor will automatically rename and recompile this file.
+using ScriptingAPI;
+
 class PlayerController_V2 : Script
 {
     // ==================================
@@ -83,6 +85,27 @@ class PlayerController_V2 : Script
     private float dashCooldownTimer = 0.0f;
     private float gravityLerpTimer = 0.0f;
     private float dashTimeElapsed = 0.0f;
+
+    // Hurt
+    private int hitsBeforeSound = 3;
+    private int hitsTaken = 0;
+
+    // Audio
+    [SerializableField]
+    private List<Audio> deathSFX;
+    [SerializableField]
+    private List<Audio> hurtSFX;
+    [SerializableField]
+    private List<Audio> dashSFX;
+    [SerializableField]
+    private List<Audio> jumpVOSFX;
+    [SerializableField]
+    private List<Audio> jumpSFX;
+    [SerializableField]
+    private List<Audio> footstepSFX;
+    [SerializableField]
+    private float timeBetweenSteps = 0.36f;
+    private float timeSinceLastFootstep = 0f;
 
     // ==================================
     // Player Stats
@@ -365,7 +388,7 @@ class PlayerController_V2 : Script
 
         UpdateMovementVector();
         desiredSpeed = groundMaxMoveSpeed;
-
+        HandleFootstepSound();
         //alter direction vector if player is on a slope
         string[] mask = {"NonMoving", "Floor" };
         var result = PhysicsAPI.Raycast(transform.position, Vector3.Down(), groundDetectionRayCast, mask);
@@ -455,7 +478,29 @@ class PlayerController_V2 : Script
 
 
     }
+    /***********************************************************
+    Public Functions
+    ***********************************************************/
+    public void TakeDamage(float damage)
+    {
+        hitsTaken++;
+        if (hitsTaken >= hitsBeforeSound)
+        {
+            audioComponent.PlayRandomSound(hurtSFX);
+            hitsTaken = 0;
+        }
+        currentHealth = Mathf.Max(0, currentHealth - damage);
+        
+        if (gameUIManager != null)
+            gameUIManager.ActivateDamageUI();
 
+        // Placeholder for a player death 
+        if (currentHealth <= 0f)
+        {
+            audioComponent.PlayRandomSound(deathSFX);
+            //OnPlayerDeath?.Invoke(this, EventArgs.Empty);
+        }
+    }
     void InitiateDashing()
     {
         UpdateMovementVector();
@@ -596,6 +641,18 @@ class PlayerController_V2 : Script
         isDashKeyHeld = false;
     }
 
+    private void HandleFootstepSound()
+    {
+        if (isGrounded && rigidbody.GetVelocity != Vector3.Zero)
+        {
+            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            if (timeSinceLastFootstep >= timeBetweenSteps)
+            {
+                audioComponent.PlayRandomSound(footstepSFX);
+                timeSinceLastFootstep = 0;
+            }
+        }
+    }
 
     protected override void onCollisionEnter(GameObject other)
     {
