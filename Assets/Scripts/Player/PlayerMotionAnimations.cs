@@ -8,7 +8,12 @@ class PlayerMotionAnimations : Script
     // References
     // ===========================================
     public PlayerWeaponController playerWeaponController;
+    public PlayerController_V2    playerController;
 
+    public GameObject dashEmitter_Front;
+    public GameObject dashEmitter_Left;
+    public GameObject dashEmitter_Right;
+    public GameObject dashEmitter_Back;
 
     // ===========================================
     // Inspector variables
@@ -39,10 +44,24 @@ class PlayerMotionAnimations : Script
     private bool isMovingLeft = false;
     private bool isMovingRight = false;
 
+    //For Dashing
+    private float dashDuration = 0f;
+    private float dashCooldown = 0;
+    private float dashCooldownTimer = 0f;
+    private bool isDashKeyHeld = false;
+    private float dashTimeElapsed = 0f;
+
 
     // This function is invoked once before init when gameobject is active.
     protected override void awake()
-    {}
+    {
+        //Particle Hnadling
+        dashEmitter_Front.SetActive(false);
+        dashEmitter_Left.SetActive(false);
+        dashEmitter_Right.SetActive(false);
+        dashEmitter_Back.SetActive(false);
+    }
+
 
     // This function is invoked once when gameobject is active.
     protected override void init()
@@ -62,8 +81,12 @@ class PlayerMotionAnimations : Script
         MapKey(Key.S, beginWalkingBackward, endWalkingBackward);
         MapKey(Key.D, beginWalkingRight, endWalkingRight);
 
+        dashCooldown = playerController.dashCooldown;
+        dashDuration = playerController.dashDuration;
+        MapKey(Key.LeftShift, triggerParticleEffects, dashkeyUpHandler);
 
 
+  
     }
 
     // This function is invoked every update.
@@ -93,16 +116,34 @@ class PlayerMotionAnimations : Script
         gunPosition.localPosition = gunPositionBasePosition + currentOffset;
         throwPosition.localPosition = throwPositionBasePosition + currentOffset;
 
+    }
+
+    protected override void fixedUpdate()
+    {
+        dashCooldownTimer += Time.V_FixedDeltaTime();
+
+        dashTimeElapsed += Time.V_FixedDeltaTime();
+
+
+
+        if (dashTimeElapsed >  dashDuration)
+        {
+            dashEmitter_Front.SetActive(false);
+            dashEmitter_Left.SetActive(false);
+            dashEmitter_Back.SetActive(false);
+            dashEmitter_Right.SetActive(false);
+            // dashTimeElapsed = 0f;
+        }
 
     }
 
 
-    //public void SetGunMotionChange(Vector3 desiredVelocity)
-    //{
-    //    this.movementVelocity = desiredVelocity;
-    //}
+        //public void SetGunMotionChange(Vector3 desiredVelocity)
+        //{
+        //    this.movementVelocity = desiredVelocity;
+        //}
 
-    Vector3 CalculateSmoothDampPositionChange(Vector3 currentPosition, Vector3 desiredPosition, float smoothTime, float deltaTime)
+        Vector3 CalculateSmoothDampPositionChange(Vector3 currentPosition, Vector3 desiredPosition, float smoothTime, float deltaTime)
     {
         float omega = 2.0f / smoothTime;
         float x = omega * deltaTime;
@@ -177,6 +218,88 @@ class PlayerMotionAnimations : Script
         }
 
         directionVector.Normalize();
+    }
+
+
+    void triggerParticleEffects()
+    {
+        //check which direction to trigger
+        if (playerController.playerMoveStates != PlayerMoveStates.Disabled && playerController.playerMoveStates != PlayerMoveStates.Death && dashCooldownTimer > dashCooldown && isDashKeyHeld == false)
+        {
+            isDashKeyHeld = true;
+
+            Vector3 orientedFront = Vector3.Front();
+            Vector3 orientedRight = Vector3.Left();
+
+            directionVector = Vector3.Zero();
+
+
+            bool isMoving = false;
+            if (isMovingForward)
+            {
+                directionVector += orientedFront;
+                isMoving = true;
+            }
+            if (isMovingBackward)
+            {
+                directionVector -= orientedFront;
+                isMoving = true;
+
+            }
+            if (isMovingLeft)
+            {
+                directionVector -= orientedRight;
+                isMoving = true;
+
+            }
+            if (isMovingRight)
+            {
+                directionVector += orientedRight;
+                isMoving = true;
+            }
+
+            if (isMoving == false)
+            {
+                directionVector = Vector3.Zero();
+            }
+
+            if (directionVector.z > 0)
+            {
+                dashEmitter_Front.SetActive(true);
+                dashTimeElapsed = 0f;
+            }
+            else if (directionVector.z < 0)
+            {
+                dashEmitter_Back.SetActive(true);
+                dashTimeElapsed = 0f;
+            }
+            else if (directionVector.x > 0)
+            {
+                dashEmitter_Left.SetActive(true);
+               
+                dashTimeElapsed = 0f;
+            }
+            else if (directionVector.x < 0)
+            {
+                dashEmitter_Right.SetActive(true);
+                dashTimeElapsed = 0f;
+            }
+
+            if (directionVector == Vector3.Zero())
+            {
+                dashEmitter_Front.SetActive(true);
+                dashTimeElapsed = 0f;
+            }
+
+            //dashTimeElapsed = 0f;
+            //Debug.Log("Dash Triggered");
+        }
+    }
+
+    void dashkeyUpHandler()
+    {
+        //check which direction to trigger
+        isDashKeyHeld = false;
     }
 
 
