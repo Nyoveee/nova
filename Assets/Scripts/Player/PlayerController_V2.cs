@@ -160,7 +160,7 @@ class PlayerController_V2 : Script
         jumpTimer += Time.V_FixedDeltaTime();
         dashCooldownTimer += Time.V_FixedDeltaTime();
 
-        //Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
+        Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
         //Debug.Log(contactSurfaces);
         //Debug.Log("Jump Speed: " + rigidbody.GetVelocity().y);
 
@@ -253,8 +253,6 @@ class PlayerController_V2 : Script
 
 
     }
-
-
     void CheckMovementTypeState()
     {
         //NOTE due to using raycast to check for groundedness, there is a probably a couple of frame where
@@ -339,8 +337,6 @@ class PlayerController_V2 : Script
         rigidbody.SetVelocityLimits(groundMaxMoveSpeed);
 
     }
-
-
     void UpdateMovementVector()
     {
         // ==============================
@@ -385,7 +381,6 @@ class PlayerController_V2 : Script
             directionVector = Vector3.Zero();
         }
     }
-
 
     void UpdateGroundedMovement()
     {
@@ -561,7 +556,6 @@ class PlayerController_V2 : Script
         jumpTimer = 0;
     }
 
-
     void SpeedModulator()
     {
         //calculate player current speed
@@ -647,7 +641,7 @@ class PlayerController_V2 : Script
 
     private void HandleFootstepSound()
     {
-        if (isGrounded && rigidbody.GetVelocity != Vector3.Zero)
+        if (isGrounded && IsMoving())
         {
             timeSinceLastFootstep += Time.V_FixedDeltaTime();
             if (timeSinceLastFootstep >= timeBetweenSteps)
@@ -730,6 +724,8 @@ class PlayerController_V2 : Script
         currentVelocity.y = 0f;
         return currentVelocity.Length();
     }
+
+    private bool IsMoving() => isMovingBackward || isMovingForward || isMovingLeft || isMovingRight;
 
 }
 
