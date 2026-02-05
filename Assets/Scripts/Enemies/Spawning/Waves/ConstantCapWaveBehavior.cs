@@ -50,7 +50,7 @@ public class ConstantCapWaveBehavior : WaveBehavior
         }
     }
 
-    public override bool IsWaveComplete(int aliveCount)
+    public override bool IsWaveComplete(List<GameObject> enemies)
     {
         // Never completed, handled by arena 
         return false;

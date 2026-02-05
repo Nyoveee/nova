@@ -9,7 +9,7 @@ public abstract class WaveBehavior : Script
 {
     private ArenaManager arenaManager;
 
-    private List<GameObject> aliveEnemies = new List<GameObject>();
+    private List<GameObject> enemies = new List<GameObject>();
     private bool active = false;
 
     protected override void init()
@@ -26,7 +26,7 @@ public abstract class WaveBehavior : Script
             return;
         }
 
-        aliveEnemies.Clear();
+        enemies.Clear();
         active = true;
     }
 
@@ -35,17 +35,17 @@ public abstract class WaveBehavior : Script
         if (!active)
             return;
 
-        for (int i = aliveEnemies.Count - 1; i >= 0; i--)
+        for (int i = enemies.Count - 1; i >= 0; i--)
         {
-            if (aliveEnemies[i] == null) // enemy died / destroyed
+            if (enemies[i] == null) // enemy died / destroyed
             {
-                aliveEnemies.RemoveAt(i);
+                enemies.RemoveAt(i);
             }
         }
 
-        UpdateWave(aliveEnemies.Count);
+        UpdateWave(enemies.Count);
 
-        if (IsWaveComplete(aliveEnemies.Count))
+        if (IsWaveComplete(enemies))
         {
             active = false;
 
@@ -59,26 +59,29 @@ public abstract class WaveBehavior : Script
 
     public abstract void UpdateWave(int aliveCount);
 
-    public abstract bool IsWaveComplete(int aliveCount);
+    public abstract bool IsWaveComplete(List<GameObject> aliveEnemies);
 
-    public void EndWave()
+    public void ResetWave()
     {
         active = false;
-        foreach (GameObject enemy in aliveEnemies)
+        foreach (GameObject enemy in enemies)
         {
             if (enemy != null)
                 Destroy(enemy);
         }
-        aliveEnemies.Clear();
+        enemies.Clear();
+    }
+    public void EndWave()
+    {
+        active = false;
     }
 
  
 
     public void RegisterSpawn(GameObject enemy)
     {
-        aliveEnemies.Add(enemy);
+        enemies.Add(enemy);
     }
 
-    public int AliveCount => aliveEnemies.Count;
-    public List<GameObject> GetAliveEnemies() => aliveEnemies;
+    public int AliveCount => enemies.Count;
 }

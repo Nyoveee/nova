@@ -59,6 +59,7 @@ public abstract class Enemy : Script
     /***********************************************************
        Public Functions
     ***********************************************************/
+    public bool IsDead() => (enemyStats.health <= 0); 
     public void UpdateExecutableMaterialState()
     {
         renderer.setMaterialBool(1, "isActive", enemyStats.health <= enemyStats.enemyExecuteThreshold && enemyStats.health > 0);

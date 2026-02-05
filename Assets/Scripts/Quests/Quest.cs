@@ -28,7 +28,6 @@ public abstract class Quest : Script
         }
     }
     public event EventHandler<QuestStateChangedEventArgs> OnQuestStateChanged;
-
     private QuestState questState = QuestState.InProgress;
 
     [SerializableField]
@@ -56,5 +55,5 @@ public abstract class Quest : Script
         }
     }
     public string GetQuestInformation() => questText;
-
+    public Vector3 GetCheckpointPosition() => playerCheckpoint.position;
 }

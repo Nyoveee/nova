@@ -9,50 +9,49 @@ class PlayerController_V2 : Script
     // Parameters
     // ==================================
     [SerializableField]
-    public float groundAcceleration = 2f; //rate of change of player speed
+    private float groundAcceleration = 2f; //rate of change of player speed
     [SerializableField]
-    public float groundMaxMoveSpeed = 10f; //the max speed/ the desirable speed of the player on ground
+    private float groundMaxMoveSpeed = 10f; //the max speed/ the desirable speed of the player on ground
     [SerializableField]
-    public float groundDrag = 20.0f; //deceleration
+    private float groundDrag = 20.0f; //deceleration
     [SerializableField]
-    public float groundDetectionRayCast = 3.0f; //raycast detection distance to ground. ideally to crosscheck with player height. (Not this is not use for airborne/ground movement checking)
+    private float groundDetectionRayCast = 3.0f; //raycast detection distance to ground. ideally to crosscheck with player height. (Not this is not use for airborne/ground movement checking)
     [SerializableField]
-    public float airAcceleration = 2f; //rate of change of player speed
+    private float airAcceleration = 2f; //rate of change of player speed
     [SerializableField]
-    public float aerialMaxMoveSpeed = 8f; //the max speed/ the desirable speed of the player in air
+    private float aerialMaxMoveSpeed = 8f; //the max speed/ the desirable speed of the player in air
     //[SerializableField]
     //public float aerialResistiveForceFactor = 1f; //resistive force when the player is moving too fast
     [SerializableField]
-    public float airDrag = 0f; //lost of speed per second when in the air, note this should be zero at all times??? otherwise this messes up gravity as well, so player falls slower than intended
+    private float airDrag = 0f; //lost of speed per second when in the air, note this should be zero at all times??? otherwise this messes up gravity as well, so player falls slower than intended
     [SerializableField]
-    public float jumpStrength =   1000f;
+    private float jumpStrength =   1000f;
     [SerializableField]
-    public float jumpGravityFactor = 1f; //should be =< than base gravity factor
+    private float jumpGravityFactor = 1f; //should be =< than base gravity factor
     [SerializableField]
-    public float lerpGravityFactorDuration = 1f;
+    private float lerpGravityFactorDuration = 1f;
     //[SerializableField]
     //public float dashStrength = 10f;
     [SerializableField]
-    public float desiredDashSpeed = 100f;
+    private float desiredDashSpeed = 100f;
     [SerializableField]
-    public float dashDuration = 1f;
+    private float dashDuration = 1f;
     [SerializableField]
-    public float dashCooldown = 0.5f;
+    private float dashCooldown = 0.5f;
     [SerializableField]
-    public float speedChangeSmoothTime = 0.1f;
+    private float speedChangeSmoothTime = 0.1f;
     [SerializableField]
-    public float baseGravityFactor = 1f; //gravity factor for groundbased movements
+    private float baseGravityFactor = 1f; //gravity factor for groundbased movements
 
     [SerializableField] //health
-    public float maxHealth = 100f;
+    private float maxHealth = 100f;
 
     // ==================================
     // References
     // ==================================
+    private GameUIManager gameUIManager;
     [SerializableField]
     private Transform_? playerOrientation = null;
-    [SerializableField]
-    private GameUIManager? gameUIManager = null;
     private Transform_? transform;
     private Rigidbody_? rigidbody;
     private AudioComponent_? audioComponent;
@@ -125,6 +124,7 @@ class PlayerController_V2 : Script
         transform = getComponent<Transform_>();
         rigidbody = getComponent<Rigidbody_>();
         audioComponent = getComponent<AudioComponent_>();
+        gameUIManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
 
         //TBH should get other system to check for lockedmouse
         CameraAPI.LockMouse();
@@ -160,7 +160,7 @@ class PlayerController_V2 : Script
         jumpTimer += Time.V_FixedDeltaTime();
         dashCooldownTimer += Time.V_FixedDeltaTime();
 
-        //Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
+        // Debug.Log("Horizontal Velocity: " + GetCurrentHorizontalVelocity());
         //Debug.Log(contactSurfaces);
         //Debug.Log("Jump Speed: " + rigidbody.GetVelocity().y);
 
@@ -245,16 +245,12 @@ class PlayerController_V2 : Script
 
                 }
                 break;
-
-
-
         }
 
-
+        if (gameUIManager != null)
+            gameUIManager.SetProgress(GameUIManager.ProgressBarType.DashBar, dashCooldownTimer, dashCooldown);
 
     }
-
-
     void CheckMovementTypeState()
     {
         //NOTE due to using raycast to check for groundedness, there is a probably a couple of frame where
@@ -339,8 +335,6 @@ class PlayerController_V2 : Script
         rigidbody.SetVelocityLimits(groundMaxMoveSpeed);
 
     }
-
-
     void UpdateMovementVector()
     {
         // ==============================
@@ -385,7 +379,6 @@ class PlayerController_V2 : Script
             directionVector = Vector3.Zero();
         }
     }
-
 
     void UpdateGroundedMovement()
     {
@@ -494,7 +487,7 @@ class PlayerController_V2 : Script
             hitsTaken = 0;
         }
         currentHealth = Mathf.Max(0, currentHealth - damage);
-        
+        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
         if (gameUIManager != null)
             gameUIManager.ActivateDamageUI();
 
@@ -560,7 +553,6 @@ class PlayerController_V2 : Script
         isLerpingGravity = true;
         jumpTimer = 0;
     }
-
 
     void SpeedModulator()
     {
@@ -643,11 +635,12 @@ class PlayerController_V2 : Script
     void dashkeyUpHandler()
     {
         isDashKeyHeld = false;
+        dashCooldownTimer = 0;
     }
 
     private void HandleFootstepSound()
     {
-        if (isGrounded && rigidbody.GetVelocity != Vector3.Zero)
+        if (isGrounded && IsMoving())
         {
             timeSinceLastFootstep += Time.V_FixedDeltaTime();
             if (timeSinceLastFootstep >= timeBetweenSteps)
@@ -673,14 +666,15 @@ class PlayerController_V2 : Script
             contactSurfaces++;
         }
 
+        if (other.tag == "EnemyHitBox")
+        {
+            EnemyHitBox enemyHitBox = other.getScript<EnemyHitBox>();
 
-        //if ( == null)
-        //{
-        //    otherRigidBody.GetLayerName()
-        //}
-
-        //Debug.Log("Layer Exit: " + otherRigidBody.GetLayerName());
-        //otherRigidBody.GetLayerName();
+            if (enemyHitBox == null || enemyHitBox.HasHitPlayerThisAttack())
+                return;
+            TakeDamage(enemyHitBox.GetDamage());
+            enemyHitBox.OnPlayerHit();
+        }
 
     }
 
@@ -731,6 +725,16 @@ class PlayerController_V2 : Script
         return currentVelocity.Length();
     }
 
+    private bool IsMoving() => isMovingBackward || isMovingForward || isMovingLeft || isMovingRight;
+    /****************************************************************
+       Public Functions
+    ****************************************************************/
+    public void Reset() { 
+        isMovingBackward = isMovingForward = isMovingLeft = isMovingRight = false;
+        rigidbody.SetVelocity(Vector3.Zero());
+        currentHealth = maxHealth;
+        gameUIManager?.SetProgress(GameUIManager.ProgressBarType.HealthBar, currentHealth, maxHealth);
+    }
 }
 
 

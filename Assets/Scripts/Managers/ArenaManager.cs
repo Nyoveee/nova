@@ -117,11 +117,12 @@ public class ArenaManager : Script
         }
     }
 
-    public void ResetArena()
+    public void ResetArenaQuest()
     {
         foreach (var w in activeWaves)
-            w.EndWave();
-
+            w.ResetWave();
+        currentWave = 0;
+        survivalTimer = 0;
         StartArena(arenaQuest);
     }
 

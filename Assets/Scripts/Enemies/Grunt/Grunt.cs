@@ -238,7 +238,7 @@ class Grunt : Enemy
     {
         if (gruntState == GruntState.Chasing && physicsRigidbody.GetVelocity != Vector3.Zero)
         {
-            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            timeSinceLastFootstep += Time.V_DeltaTime();
             if (timeSinceLastFootstep >= gruntStats.timeBetweenSteps)
             {
                 audioComponent.PlayRandomSound(footstepSFX);

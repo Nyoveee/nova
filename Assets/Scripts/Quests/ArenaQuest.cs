@@ -21,7 +21,7 @@ public class ArenaQuest : Quest
 	public override void OnFail(Transform_ playerTransform)
     {
         Debug.Log("Arena failed");
-		arenaManager.ResetArena();
+		arenaManager.ResetArenaQuest();
 		if (playerTransform != null && playerCheckpoint != null)
 		{
 			playerTransform.position = playerCheckpoint.position;
