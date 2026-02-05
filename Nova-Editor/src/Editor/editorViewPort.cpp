@@ -114,10 +114,7 @@ void EditorViewPort::update(float dt) {
 
 					// inherit materials..
 					MeshRenderer& meshRenderer = engine.ecs.registry.emplace<MeshRenderer>(new_model, id);
-
-					for (int i = 0; i < typedDescriptor->materials.size(); ++i) {
-						meshRenderer.materialIds[i] = typedDescriptor->materials[i];
-					}
+					meshRenderer.materialIds = typedDescriptor->materials;
 
 					Transform& transform = engine.ecs.registry.get<Transform>(new_model);
 

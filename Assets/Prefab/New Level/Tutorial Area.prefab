@@ -1,0 +1,1026 @@
+{
+    "RootEntity": 12,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Tutorial Area",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    13,
+                    19,
+                    23
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 11279063521130860555,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 12
+        },
+        {
+            "EntityData": {
+                "name": "Wall",
+                "tag": "",
+                "parent": 12,
+                "attachedSocket": 65535,
+                "children": [
+                    14,
+                    15,
+                    16,
+                    17,
+                    18
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 12431985025737838605,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 13
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Start_Wall",
+                "tag": "",
+                "parent": 13,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 17043671044164964351,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4142071972273242135,
+                "materialIds": [
+                    7061029053432004631
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 14
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Mechanic_Wall2",
+                "tag": "",
+                "parent": 13,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 6090916750399885307,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 13365444009128017937,
+                "materialIds": [
+                    10519793567256346655
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 15
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Mechanic_Wall1",
+                "tag": "",
+                "parent": 13,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 8973220511916969977,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 15094826266038288399,
+                "materialIds": [
+                    3025803787311530013
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 16
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Corridor_Wall",
+                "tag": "",
+                "parent": 13,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 3208612988882702315,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 17400669275251965957,
+                "materialIds": [
+                    4178725291922538539
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 17
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Elevator",
+                "tag": "",
+                "parent": 13,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 3785073741202034781,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 12212522504521154567,
+                "materialIds": [
+                    16860861842598346797
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 18
+        },
+        {
+            "EntityData": {
+                "name": "Floor",
+                "tag": "",
+                "parent": 12,
+                "attachedSocket": 65535,
+                "children": [
+                    20,
+                    21,
+                    22
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 7820299007310663695,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 19
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Mechanic_Floor",
+                "tag": "",
+                "parent": 19,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 10126142016523800567,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 11059600999914323981,
+                "materialIds": [
+                    8790411310346879011
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 20
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Corridor_Floor",
+                "tag": "",
+                "parent": 19,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 326309227365552095,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 2989150467666378755,
+                "materialIds": [
+                    9943332814955888679
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 21
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Start_Floor",
+                "tag": "",
+                "parent": 19,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 17043671044164849641,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9330218743004053525,
+                "materialIds": [
+                    15131479585678344213
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 22
+        },
+        {
+            "EntityData": {
+                "name": "Ceiling",
+                "tag": "",
+                "parent": 12,
+                "attachedSocket": 65535,
+                "children": [
+                    24,
+                    25,
+                    26
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 15314288787255382033,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 23
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Start_Ceiling",
+                "tag": "",
+                "parent": 23,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 18196592548771794941,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9330218743004053523,
+                "materialIds": [
+                    5331646796522127385
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 24
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Mechanic_Ceiling",
+                "tag": "",
+                "parent": 23,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 14737828034951122909,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 2412689715362955275,
+                "materialIds": [
+                    15131479585683963937
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 25
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Corridor_Ceiling",
+                "tag": "",
+                "parent": 23,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 3785073741199069203,
+                "entityGUID": 3785073741186060243,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3803495764732361,
+                    "y": -0.019142083823680878,
+                    "z": 0.5015567541122437
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 12788983256824578049,
+                "materialIds": [
+                    4178725291922538539
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 26
+        }
+    ]
+}

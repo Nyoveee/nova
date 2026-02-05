@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 3,
     "Entities": [
         {
             "EntityData": {
@@ -8,11 +8,11 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    3,
                     4,
-                    5,
-                    6
+                    6,
+                    7,
+                    8,
+                    9
                 ],
                 "layerId": 0,
                 "isActive": true,
@@ -129,7 +129,7 @@
                             {
                                 "name": "weaponSpinSequence",
                                 "data": {
-                                    "__variant_value": 1,
+                                    "__variant_value": 4,
                                     "__variant_type": 4
                                 }
                             },
@@ -329,16 +329,16 @@
                     }
                 ]
             },
-            "id": 0
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "RifleModel",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": [
-                    2
+                    5
                 ],
                 "layerId": 1,
                 "isActive": true,
@@ -412,13 +412,13 @@
                 "toLoop": true,
                 "startPlaying": false
             },
-            "id": 1
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Rifle Outline",
                 "tag": "",
-                "parent": 1,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -482,13 +482,13 @@
                 "castShadow": true,
                 "shadowCullFrontFace": true
             },
-            "id": 2
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "IchorCollector",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -580,7 +580,7 @@
                             {
                                 "name": "weaponRef",
                                 "data": {
-                                    "__variant_value": 0,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
                                 }
                             }
@@ -588,13 +588,13 @@
                     }
                 ]
             },
-            "id": 3
+            "id": 6
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -757,13 +757,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 4
+            "id": 7
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -926,13 +926,13 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 5
+            "id": 8
         },
         {
             "EntityData": {
                 "name": "ParticleTrail",
                 "tag": "",
-                "parent": 0,
+                "parent": 3,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
@@ -1095,7 +1095,7 @@
                     "trailEmissiveMultiplier": 1.0
                 }
             },
-            "id": 6
+            "id": 9
         }
     ]
 }

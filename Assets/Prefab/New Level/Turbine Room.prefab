@@ -1,0 +1,340 @@
+{
+    "RootEntity": 0,
+    "Entities": [
+        {
+            "EntityData": {
+                "name": "Turbine Room",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    1
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7433147769821630569,
+                "entityGUID": 10738367683801141359,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 99.55534362792969,
+                    "y": -34.65015411376953,
+                    "z": -30.908231735229492
+                },
+                "scale": {
+                    "x": 0.9999819397926331,
+                    "y": 1.0,
+                    "z": 0.9999826550483704
+                },
+                "rotation": {
+                    "w": 0.9778353571891785,
+                    "x": 0.0,
+                    "y": -0.20937524735927582,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.42187198996543884,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 99.55534362792969,
+                    "y": -34.65015411376953,
+                    "z": -30.908231735229492
+                },
+                "localScale": {
+                    "x": 0.9999819397926331,
+                    "y": 1.0,
+                    "z": 0.9999826550483704
+                },
+                "localRotation": {
+                    "w": 0.9778353571891785,
+                    "x": 0.0,
+                    "y": -0.20937524735927582,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.42187198996543884,
+                    "z": 0.0
+                }
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Orgin Offset",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    2,
+                    3,
+                    4
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7433147769821630569,
+                "entityGUID": 2091456399252885623,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -55.55952453613281,
+                    "y": -6.637664794921875,
+                    "z": -125.16343688964844
+                },
+                "scale": {
+                    "x": 0.9999822974205017,
+                    "y": 1.0,
+                    "z": 0.999983012676239
+                },
+                "rotation": {
+                    "w": 0.9778353571891785,
+                    "x": 0.0,
+                    "y": -0.2093752771615982,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.42187201976776123,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -180.11285400390625,
+                    "y": 28.012493133544922,
+                    "z": -22.476951599121094
+                },
+                "localScale": {
+                    "x": 1.0000003576278687,
+                    "y": 1.0,
+                    "z": 1.0000003576278687
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -4.4703469370688254e-08,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -5.960462345910855e-08,
+                    "z": 0.0
+                }
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Turbine_Floor",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7433147769821630569,
+                "entityGUID": 3820838656159961193,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 104.96080017089844,
+                    "y": -31.33956527709961,
+                    "z": -30.24591064453125
+                },
+                "scale": {
+                    "x": 0.999982476234436,
+                    "y": 1.0,
+                    "z": 0.9999833106994629
+                },
+                "rotation": {
+                    "w": 0.9778353571891785,
+                    "x": 0.0,
+                    "y": -0.2093753069639206,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.4218720495700836,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 185.31561279296875,
+                    "y": -24.701900482177734,
+                    "z": 20.867782592773438
+                },
+                "localScale": {
+                    "x": 1.000000238418579,
+                    "y": 1.0,
+                    "z": 1.0000003576278687
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -1.4901157641133977e-08,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -5.960463766996327e-08,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 3820838656158580739,
+                "materialIds": [
+                    15390691650609414227
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "Turbine_Ceiling",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7433147769821630569,
+                "entityGUID": 4973760160766840939,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 104.96080017089844,
+                    "y": -31.33956527709961,
+                    "z": -30.24591064453125
+                },
+                "scale": {
+                    "x": 0.999982476234436,
+                    "y": 1.0,
+                    "z": 0.9999833106994629
+                },
+                "rotation": {
+                    "w": 0.9778353571891785,
+                    "x": 0.0,
+                    "y": -0.2093753069639206,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.4218720495700836,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 185.31561279296875,
+                    "y": -24.701900482177734,
+                    "z": 20.867782592773438
+                },
+                "localScale": {
+                    "x": 1.000000238418579,
+                    "y": 1.0,
+                    "z": 1.0000003576278687
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -1.4901157641133977e-08,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -5.960463766996327e-08,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 6126681665372274689,
+                "materialIds": [
+                    15390691650609414227
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 3
+        },
+        {
+            "EntityData": {
+                "name": "Turbine_Wall",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 7433147769821630569,
+                "entityGUID": 15350053702228512877,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 104.96080017089844,
+                    "y": -31.33956527709961,
+                    "z": -30.24591064453125
+                },
+                "scale": {
+                    "x": 0.999982476234436,
+                    "y": 1.0,
+                    "z": 0.9999833106994629
+                },
+                "rotation": {
+                    "w": 0.9778353571891785,
+                    "x": 0.0,
+                    "y": -0.2093753069639206,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.4218720495700836,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 185.31561279296875,
+                    "y": -24.701900482177734,
+                    "z": 20.867782592773438
+                },
+                "localScale": {
+                    "x": 1.000000238418579,
+                    "y": 1.0,
+                    "z": 1.0000003576278687
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": -1.4901157641133977e-08,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -5.960463766996327e-08,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 15926514454530473989,
+                "materialIds": [
+                    9626084127575179361
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 4
+        }
+    ]
+}
