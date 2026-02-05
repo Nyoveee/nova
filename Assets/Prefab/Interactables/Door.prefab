@@ -1,5 +1,5 @@
 {
-    "RootEntity": 73,
+    "RootEntity": 17,
     "Entities": [
         {
             "EntityData": {
@@ -8,17 +8,14 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    74,
-                    75,
-                    76
+                    18,
+                    19,
+                    20
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 14618781617769611293,
-                "prefabMetaData": {
-                    "prefabEntity": 48234765,
-                    "prefabID": 14618781617769611293
-                },
+                "prefabID": 10957627888528212255,
+                "entityGUID": 4569711629026088289,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "16861337649669213096": true,
@@ -82,8 +79,11 @@
                             {
                                 "name": "doorType",
                                 "data": {
-                                    "__variant_value": 1,
-                                    "__variant_type": 17
+                                    "__variant_value": {
+                                        "Type": "DoorType",
+                                        "Value": "Elevator"
+                                    },
+                                    "__variant_type": 9
                                 }
                             },
                             {
@@ -96,15 +96,29 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 75,
+                                    "__variant_value": 19,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 74,
+                                    "__variant_value": 18,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "openSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "closeSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
                                 }
                             },
                             {
@@ -125,26 +139,23 @@
                     }
                 ]
             },
-            "id": 73
+            "id": 17
         },
         {
             "EntityData": {
                 "name": "DoorR",
                 "tag": "",
-                "parent": 73,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 14618781617769611293,
-                "prefabMetaData": {
-                    "prefabEntity": 48234766,
-                    "prefabID": 14618781617769611293
-                },
+                "prefabID": 10957627888528212255,
+                "entityGUID": 9181397647453476195,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "9059764703561530457": true
                 },
@@ -213,6 +224,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -221,26 +233,23 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 74
+            "id": 18
         },
         {
             "EntityData": {
                 "name": "DoorL",
                 "tag": "",
-                "parent": 73,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 14618781617769611293,
-                "prefabMetaData": {
-                    "prefabEntity": 48234767,
-                    "prefabID": 14618781617769611293
-                },
+                "prefabID": 10957627888528212255,
+                "entityGUID": 4569711629026088293,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "10106385962890515953": true,
                     "6919815292445452220": true,
+                    "10106385962890515953": true,
                     "11935986701403193153": true,
                     "17421316227555880647": false,
                     "9059764703561530457": true
@@ -310,6 +319,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -318,22 +328,19 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 75
+            "id": 19
         },
         {
             "EntityData": {
                 "name": "DoorLockingMechanism",
                 "tag": "",
-                "parent": 73,
+                "parent": 17,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 14618781617769611293,
-                "prefabMetaData": {
-                    "prefabEntity": 49283357,
-                    "prefabID": 14618781617769611293
-                },
+                "prefabID": 10957627888528212255,
+                "entityGUID": 10910779904363746663,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "11935986701403193153": false,
@@ -397,6 +404,7 @@
                 },
                 "mass": 10.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": false,
                 "isTrigger": true,
                 "dynamicCollider": false,
@@ -423,7 +431,7 @@
                             {
                                 "name": "door",
                                 "data": {
-                                    "__variant_value": 73,
+                                    "__variant_value": 17,
                                     "__variant_type": 4
                                 }
                             }
@@ -431,7 +439,7 @@
                     }
                 ]
             },
-            "id": 76
+            "id": 20
         }
     ]
 }

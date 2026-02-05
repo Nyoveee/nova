@@ -156,6 +156,7 @@
     <ClInclude Include="src\Internal\config.h" />
     <ClInclude Include="src\Internal\frustum.h" />
     <ClInclude Include="src\Internal\Interpolation.h" />
+    <ClInclude Include="src\Imported\pl_mpeg.h" />
     <ClInclude Include="src\Internal\RandomRange.h" />
     <ClInclude Include="src\Internal\assetIO.h" />
     <ClInclude Include="src\Internal\assetIO.ipp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="src\Resource\sequencer.ipp" />
     <ClInclude Include="src\Resource\systemResource.h" />
     <ClInclude Include="src\Resource\texture.h" />
+    <ClInclude Include="src\Resource\video.h" />
     <ClInclude Include="src\Serialisation\deserializeFromBinary.h" />
     <ClInclude Include="src\Loader\loader.h" />
     <ClInclude Include="src\Internal\Logger.h" />
@@ -261,6 +263,7 @@
     <ClCompile Include="src\Loader\customShaderLoader.cpp" />
     <ClCompile Include="src\Loader\sequencerLoader.cpp" />
     <ClCompile Include="src\Loader\textureLoader.cpp" />
+    <ClCompile Include="src\Loader\videoLoader.cpp" />
     <ClCompile Include="src\Resource\animation.cpp" />
     <ClCompile Include="src\Resource\assetIO.cpp" />
     <ClCompile Include="src\Resource\audio.cpp" />
@@ -277,6 +280,7 @@
     <ClCompile Include="src\Resource\sequencer.cpp" />
     <ClCompile Include="src\Resource\systemResource.cpp" />
     <ClCompile Include="src\Resource\texture.cpp" />
+    <ClCompile Include="src\Resource\video.cpp" />
     <ClCompile Include="src\Serialisation\serialisation.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

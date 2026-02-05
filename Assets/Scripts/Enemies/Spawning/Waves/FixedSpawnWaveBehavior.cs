@@ -7,22 +7,21 @@ using System;
 
 public class FixedSpawnWaveBehavior : WaveBehavior
 {
+#if false
     public Prefab fixedPodScript;
     private List<SpawnPodLocation> podLocations = new List<SpawnPodLocation>();
-
+#endif
     public override void StartWave(ArenaManager arenaManager)
     {
         base.StartWave(arenaManager);
 
         // populate our pod locations..
-        foreach (GameObject podLocation in gameObject.GetChildren()) {
-            SpawnPodLocation podLocationScript = podLocation.getScript<SpawnPodLocation>();
-
-            if (podLocationScript != null) { 
-                podLocations.Add(podLocationScript);
-            }
+        foreach (GameObject spawnLocation in gameObject.GetChildren()) {
+            ArenaSpawnLocation arenaSpawnLocationScript = spawnLocation.getScript<ArenaSpawnLocation>();
+            GameObject.Instantiate(arenaSpawnLocationScript.enemy, spawnLocation.transform.position);
         }
 
+#if false
         foreach (SpawnPodLocation pod in podLocations)
         {
             GameObject createdPod = Instantiate(fixedPodScript, pod.gameObject.transform.position);
@@ -37,6 +36,7 @@ public class FixedSpawnWaveBehavior : WaveBehavior
                 Debug.LogWarning("Pod prefab does not contain pod script or spawn pod location list is empty!");
             }
         }
+#endif
     }
 
     public override void UpdateWave(int aliveCount)

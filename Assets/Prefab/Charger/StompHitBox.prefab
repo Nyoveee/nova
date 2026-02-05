@@ -1,5 +1,5 @@
 {
-    "RootEntity": 4,
+    "RootEntity": 10,
     "Entities": [
         {
             "EntityData": {
@@ -11,10 +11,7 @@
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 16070990181531303937,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 16070990181531303937
-                },
+                "entityGUID": 16890020891997765805,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -74,6 +71,7 @@
                 },
                 "mass": 0.0,
                 "gravityMultiplier": 1.0,
+                "restitution": 0.0,
                 "isRotatable": true,
                 "isTrigger": false,
                 "dynamicCollider": false,
@@ -100,7 +98,7 @@
                     }
                 ]
             },
-            "id": 4
+            "id": 10
         }
     ]
 }

@@ -376,6 +376,9 @@ private:
 
 	GLuint editorHistoryTexture;
 	GLuint gameHistoryTexture;
+	// Video quad geometry (shared across all VideoPlayer entities)
+	GLuint videoVAO;
+	BufferObject videoVBO;
 
 	Camera editorCamera;
 	Camera gameCamera;
@@ -483,6 +486,8 @@ public:
 	Shader bakeSpecularIrradianceMapShader;
 
 	Shader TAAResolveShader;
+	// Video shader
+	Shader videoShader;
 
 	// Compute shaders..
 	ComputeShader clusterBuildingCompute;

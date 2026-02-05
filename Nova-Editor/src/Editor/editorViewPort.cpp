@@ -8,6 +8,7 @@
 #include "Serialisation/serialisation.h"
 #include "IconsFontAwesome6.h"
 #include "AssetManager/assetManager.h"
+#include "video.h"
 
 EditorViewPort::EditorViewPort(Editor& editor) :
 	editor					{ editor },
@@ -93,7 +94,7 @@ void EditorViewPort::update(float dt) {
 			else if (editor.resourceManager.isResource<Prefab>(id)) {
 				entt::entity prefabInstance = engine.prefabManager.instantiatePrefab(id);
 				Transform& transform = engine.ecs.registry.get<Transform>(prefabInstance);
-				
+
 				auto& editorCamera = engine.cameraSystem.getLevelEditorCamera();
 				transform.localPosition = editorCamera.position + editorCamera.front;
 
@@ -113,10 +114,7 @@ void EditorViewPort::update(float dt) {
 
 					// inherit materials..
 					MeshRenderer& meshRenderer = engine.ecs.registry.emplace<MeshRenderer>(new_model, id);
-
-					for (int i = 0; i < typedDescriptor->materials.size(); ++i) {
-						meshRenderer.materialIds[i] = typedDescriptor->materials[i];
-					}
+					meshRenderer.materialIds = typedDescriptor->materials;
 
 					Transform& transform = engine.ecs.registry.get<Transform>(new_model);
 
@@ -124,8 +122,28 @@ void EditorViewPort::update(float dt) {
 					transform.localPosition = editorCamera.position + editorCamera.front;
 				}
 			}
-		}
+			else if (editor.resourceManager.isResource<Video>(id)) {
+				// Create entity with VideoPlayer component
+				auto entity = engine.ecs.registry.create();
 
+				// Add EntityData
+				auto& entityData = engine.ecs.registry.emplace<EntityData>(entity);
+				entityData.name = name;
+
+				// Add Transform
+				engine.ecs.registry.emplace<Transform>(entity);
+
+				// Add VideoPlayer
+				auto& videoPlayer = engine.ecs.registry.emplace<VideoPlayer>(entity);
+				videoPlayer.videoId = TypedResourceID<Video>{ id };
+
+				// Load the video resource
+				auto [video, refCount] = editor.resourceManager.getResource<Video>(id);
+
+				// Select the new entity
+				editor.selectEntities({ entity });
+			}
+		}
 		ImGui::EndDragDropTarget();
 	}
 

@@ -89,7 +89,7 @@ public:
 public:
 	// displays a ImGui combo drop down box of all the assets related to type T.
 	// first parameter is used to specific which asset id is selected.
-	template <typename T, bool showNone = false>
+	template <typename T, bool showNone = true>
 	void displayAssetDropDownList(std::optional<ResourceID> id, const char* labelName, std::function<void(ResourceID)> const& onClickCallback);
 	
 	// similar to asset dropdown list, but only displays scripts the current entity has.

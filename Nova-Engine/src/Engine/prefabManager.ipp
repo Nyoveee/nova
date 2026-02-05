@@ -56,17 +56,17 @@ void PrefabManager::updateComponents(entt::registry& toRegistry, entt::registry&
 	([&]() {
 		if constexpr ((!(std::same_as<EntityData, Components>))) {
 			auto* component = fromRegistry.try_get<Components>(fromEntity);
+			EntityData* fromEntityData = fromRegistry.try_get<EntityData>(fromEntity);
 			bool overrideCheck{ false };
 
 			//check for override check box
 			if (&toRegistry != &prefabRegistry) {
-				// transform should never been overriden.
-				if constexpr (!std::same_as<Transform, Components>) {
-					EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
-					if (!toEntityData->overridenComponents[Family::id<Components>()]) {
-						overrideCheck = true;
-					}
-				}
+				EntityData* toEntityData = toRegistry.try_get<EntityData>(toEntity);
+				// transform should never been overriden. Except for child
+				if constexpr (std::same_as<Transform, Components>)
+					overrideCheck = (fromEntityData->parent != entt::null && !toEntityData->overridenComponents[Family::id<Components>()]);
+				if constexpr (!std::same_as<Transform, Components>)
+					overrideCheck = !toEntityData->overridenComponents[Family::id<Components>()];
 			}
 			else {
 				overrideCheck = true;

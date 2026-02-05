@@ -1,5 +1,5 @@
 {
-    "RootEntity": 31,
+    "RootEntity": 0,
     "Entities": [
         {
             "EntityData": {
@@ -8,19 +8,19 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    32,
-                    35
+                    1,
+                    4
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 15155985497701761311,
+                "prefabID": 14568256858542473223,
                 "entityGUID": 669875822299676911,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": true,
                     "10106385962890515953": false,
-                    "17237801994024849853": true,
+                    "6919815292445452220": true,
                     "11935986701403193153": true,
+                    "17237801994024849853": true,
                     "9059764703561530457": true
                 },
                 "inactiveComponents": null
@@ -105,7 +105,7 @@
                             {
                                 "name": "elevatorTransform",
                                 "data": {
-                                    "__variant_value": 31,
+                                    "__variant_value": 0,
                                     "__variant_type": 4
                                 }
                             },
@@ -126,14 +126,21 @@
                             {
                                 "name": "tutorialDoor",
                                 "data": {
-                                    "__variant_value": 32,
+                                    "__variant_value": 1,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "hubDoor",
                                 "data": {
-                                    "__variant_value": 35,
+                                    "__variant_value": 4,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "playerBody",
+                                "data": {
+                                    "__variant_value": 4294967295,
                                     "__variant_type": 4
                                 }
                             }
@@ -141,21 +148,21 @@
                     }
                 ]
             },
-            "id": 31
+            "id": 0
         },
         {
             "EntityData": {
                 "name": "Tutorial Door",
                 "tag": "",
-                "parent": 31,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    33,
-                    34
+                    2,
+                    3
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 15155985497701761311,
+                "prefabID": 14568256858542473223,
                 "entityGUID": 9316787106851029233,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -243,15 +250,29 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 33,
+                                    "__variant_value": 2,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 34,
+                                    "__variant_value": 3,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "openSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "closeSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
                                 }
                             },
                             {
@@ -272,18 +293,18 @@
                     }
                 ]
             },
-            "id": 32
+            "id": 1
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 32,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 15155985497701761311,
+                "prefabID": 14568256858542473223,
                 "entityGUID": 5281561840727064819,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -364,18 +385,18 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 33
+            "id": 2
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 32,
+                "parent": 1,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 15155985497701761311,
+                "prefabID": 14568256858542473223,
                 "entityGUID": 669875822299676917,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -456,21 +477,21 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 34
+            "id": 3
         },
         {
             "EntityData": {
                 "name": "Hub Door",
                 "tag": "",
-                "parent": 31,
+                "parent": 0,
                 "attachedSocket": 65535,
                 "children": [
-                    36,
-                    37
+                    5,
+                    6
                 ],
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 15155985497701761311,
+                "prefabID": 14568256858542473223,
                 "entityGUID": 9893247859154452727,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -558,15 +579,29 @@
                             {
                                 "name": "leftDoor",
                                 "data": {
-                                    "__variant_value": 36,
+                                    "__variant_value": 5,
                                     "__variant_type": 4
                                 }
                             },
                             {
                                 "name": "rightDoor",
                                 "data": {
-                                    "__variant_value": 37,
+                                    "__variant_value": 6,
                                     "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "openSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "closeSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
                                 }
                             },
                             {
@@ -587,18 +622,18 @@
                     }
                 ]
             },
-            "id": 35
+            "id": 4
         },
         {
             "EntityData": {
                 "name": "Tutorial Door L",
                 "tag": "",
-                "parent": 35,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 15155985497701761311,
+                "prefabID": 14568256858542473223,
                 "entityGUID": 7010944097637335289,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -679,18 +714,18 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 36
+            "id": 5
         },
         {
             "EntityData": {
                 "name": "Tutorial Door R",
                 "tag": "",
-                "parent": 35,
+                "parent": 4,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
-                "prefabID": 15155985497701761311,
+                "prefabID": 14568256858542473223,
                 "entityGUID": 15081394629885264123,
                 "overridenProperties": null,
                 "overridenComponents": {
@@ -771,7 +806,7 @@
             "MeshCollider": {
                 "shapeScale": 0.004999999888241291
             },
-            "id": 37
+            "id": 6
         }
     ]
 }

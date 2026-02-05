@@ -26,10 +26,8 @@ inline System::String^ Convert(std::string str) {
 public delegate void EventCallback();
 template<typename T> 
 inline std::function<void(T)> Convert(EventCallback^ callback, Key key, bool toExecuteEvenWhenPaused) {
-	gcroot<EventCallback^> callbackWrapper; // For Wrapping the callback function in a native class gcroot since lambda can't use the callbacks directly
+	gcroot<EventCallback^> callbackWrapper{ callback }; // For Wrapping the callback function in a native class gcroot since lambda can't use the callbacks directly
 	int keyValue = safe_cast<int>(key);
-	// Press
-	callbackWrapper = callback;
 
 	auto pressCallbackFunction = [callbackWrapper, keyValue, toExecuteEvenWhenPaused](T inputEvent) {
 		// Don't broadcast input event if engine is paused.s
@@ -37,8 +35,16 @@ inline std::function<void(T)> Convert(EventCallback^ callback, Key key, bool toE
 			return;
 		}
 
-		if (callbackWrapper && static_cast<int>(inputEvent) == keyValue)
-			callbackWrapper.operator->()(); // Bit of a weird syntax, first get the object of type InputCallback^, then call the function 
+		if (callbackWrapper && static_cast<int>(inputEvent) == keyValue) {
+			try {
+				callbackWrapper.operator->()(); // Bit of a weird syntax, first get the object of type InputCallback^, then call the function 
+			}
+			catch (System::Exception^ e) {
+				Logger::error("Unable to call InputEvent: {}", msclr::interop::marshal_as<std::string>(e->Message));
+				Interface::engine->stopSimulation();
+			}
+		}
+			
 	};
 	return pressCallbackFunction;
 }
@@ -56,10 +62,18 @@ inline std::function<void(MousePosition)> CreateMouseCallback(MouseEventCallback
 			return;
 		}
 
-		if (callbackWrapper)
-			callbackWrapper.operator->()(static_cast<float>(mousePosition.xPos), static_cast<float>(mousePosition.yPos)); 
-			// Bit of a weird syntax, first get the object of type InputCallback^, then call the function 
-			// hmpf! average C++ syntax >:(
+		if (callbackWrapper) {
+			try {
+				callbackWrapper.operator->()(static_cast<float>(mousePosition.xPos), static_cast<float>(mousePosition.yPos));
+				// Bit of a weird syntax, first get the object of type InputCallback^, then call the function 
+				// hmpf! average C++ syntax >:(
+			}
+			catch (System::Exception^ e) {
+				Logger::error("Unable to call MouseEvent: {}", msclr::interop::marshal_as<std::string>(e->Message));
+				Interface::engine->stopSimulation();
+			}
+		}
+			
 	};
 
 	return callbackFunction;
@@ -76,9 +90,15 @@ inline std::function<void(Scroll)> CreateScrollCallback(ScrollEventCallback^ cal
 		if (!toExecuteEvenWhenPaused && Interface::engine->isPaused) {
 			return;
 		}
-
-		if (callbackWrapper)
-			callbackWrapper.operator->()(static_cast<float>(scroll.value));
+		if (callbackWrapper) {
+			try {
+				callbackWrapper.operator->()(static_cast<float>(scroll.value));
+			}
+			catch (System::Exception^ e) {
+				Logger::error("Unable to call ScrollEvent: {}", msclr::interop::marshal_as<std::string>(e->Message));
+				Interface::engine->stopSimulation();
+			}
+		}	
 	};
 
 	return callbackFunction;

@@ -21,8 +21,6 @@ class Grunt : Enemy
     [SerializableField]
     private float spawningDuration = 1f;
     [SerializableField]
-    private Rigidbody_? rigidbody;
-    [SerializableField]
     private List<Audio> hurtSFX;
     [SerializableField]
     private List<Audio> attackSFX;
@@ -56,7 +54,7 @@ class Grunt : Enemy
         Death
     }
     // State machine
-    private GruntState gruntState = GruntState.Idle;
+    private GruntState gruntState = GruntState.Spawning;
     private Dictionary<GruntState, CurrentState> updateState = new Dictionary<GruntState, CurrentState>();
     private float spawningTimeElapsed = 0f;
     private GameObject? hitbox = null;
@@ -68,10 +66,9 @@ class Grunt : Enemy
         gameObject.transform.rotation = Quaternion.Identity();
         gruntStats = getScript<GruntStats>();
         audioComponent = getComponent<AudioComponent_>();
-        
-        animator.PlayAnimation("Grunt Idle (Base)");
-
+ 
         // Populate state machine dispatcher..
+        updateState.Add(GruntState.Spawning, Update_Spawning);
         updateState.Add(GruntState.Idle, Update_IdleState);
         updateState.Add(GruntState.Chasing, Update_ChasingState);
         updateState.Add(GruntState.Attacking, Update_AttackState);
@@ -79,10 +76,9 @@ class Grunt : Enemy
         updateState.Add(GruntState.PreJump, Update_PreJump);
         updateState.Add(GruntState.Jump, Update_Jump);
 
-        // spawning afk...
-        updateState.Add(GruntState.Spawning, () => { });
+        animator.PlayAnimation("Grunt Idle (Base)");
 
-        LookAt(player);
+        ActivateRigidbody();
     }
 
     // This function is invoked every fixed update.
@@ -179,7 +175,6 @@ class Grunt : Enemy
             //}
 
         }
-
         //    // blud already died let him die in peace dont take anymore damage..
         //    if (gruntState == GruntState.Death || WasRecentlyDamaged())
         //    return;
@@ -208,6 +203,7 @@ class Grunt : Enemy
             SpawnIchorFrame();
 
             gruntStats.health -= accumulatedDamageInstance;
+            UpdateExecutableMaterialState();
             if (gruntStats.health <= 0)
             {
                 if (gruntState != GruntState.Death/* && !WasRecentlyDamaged()*/)
@@ -215,8 +211,7 @@ class Grunt : Enemy
                     gruntState = GruntState.Death;
                     audioComponent.PlayRandomSound(deathSFX);
                     animator.PlayAnimation("Grunt Death");
-                    NavigationAPI.stopAgent(gameObject);
-                    rigidbody.enable = false;
+                    DisablePhysicalInteraction();
                 }
             }
             else
@@ -241,7 +236,7 @@ class Grunt : Enemy
 
     private void HandleFootStep()
     {
-        if (gruntState == GruntState.Chasing && rigidbody.GetVelocity != Vector3.Zero)
+        if (gruntState == GruntState.Chasing && physicsRigidbody.GetVelocity != Vector3.Zero)
         {
             timeSinceLastFootstep += Time.V_FixedDeltaTime();
             if (timeSinceLastFootstep >= gruntStats.timeBetweenSteps)
@@ -256,6 +251,14 @@ class Grunt : Enemy
     /**********************************************************************
         Enemy States
     **********************************************************************/
+    private void Update_Spawning()
+    {
+        if (IsTouchingGround())
+        {
+            ActivateNavMeshAgent();
+            gruntState = GruntState.Idle;
+        }
+    }
     private void Update_IdleState()
     {
         if (player == null || gruntStats == null || animator == null)

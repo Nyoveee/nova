@@ -15,5 +15,6 @@ public abstract class EnemyStats : Script
     public float enemyArmouredMultiplier = 1f;
     public float enemyWeakSpotMultiplier = 1f;
 
+    public float groundDetectionRayCast = 0.5f;
 
 }

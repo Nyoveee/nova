@@ -103,7 +103,7 @@ void Editor::displayEnumDropDownList(T value, const char* labelName, std::functi
 			if (ImGui::Selectable(std::string{ enumInString }.c_str(), enumValue == value)) {
 				onClickCallback(enumValue);
 			}
-		}
+		}	
 
 		ImGui::EndCombo();
 	}

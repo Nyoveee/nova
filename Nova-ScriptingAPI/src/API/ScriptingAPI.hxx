@@ -27,6 +27,8 @@ internal:
 	static void init(Engine& p_engine, const char* p_runtimeDirectory);
 	static void loadAssembly();
 	static void unloadAssembly();
+	// Clean existing scripts and callbacks
+	static void clearCurrentScriptingState();
 
 	static void update();
 	static void fixedUpdate();

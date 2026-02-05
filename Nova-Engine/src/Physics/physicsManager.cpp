@@ -199,6 +199,10 @@ void PhysicsManager::simulationInitialise() {
 
 void PhysicsManager::systemInitialise() {
 	for (auto&& [entityId, transform, entityData, rigidbody] : registry.view<Transform, EntityData, Rigidbody>().each()) {
+		if (!entityData.isActive) {
+			continue;
+		}
+
 		// due to the listener system it is possible the the objects have already been created on scene create 
 		// if that is the case do not double add objects
 		if (rigidbody.bodyId == JPH::BodyID{} && hasRequiredPhysicsComponents(entityId))
@@ -496,6 +500,7 @@ void PhysicsManager::createBody(entt::entity const& entityID)
 	bodyInterface.SetLinearVelocity(bodyId, toJPHVec3(rigidBody.initialVelocity));
 	bodyInterface.SetIsSensor(bodyId, rigidBody.isTrigger);
 	bodyInterface.SetRestitution(bodyId, rigidBody.restitution);
+	bodyInterface.SetGravityFactor(bodyId, rigidBody.gravityMultiplier);
 
 	if (rigidBody.motionQuality == Rigidbody::MotionQuality::Continuous) {
 		bodyInterface.SetMotionQuality(bodyId, JPH::EMotionQuality::LinearCast);
@@ -540,7 +545,7 @@ JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Trans
 			scale = transformScale;
 		}
 		else {
-			scale = transformScale * glm::vec3(model->maxDimension, model->maxDimension, model->maxDimension);
+			scale = transformScale * model->scale;
 		}
 	}
 	else
@@ -604,7 +609,7 @@ JPH::ScaledShape* PhysicsManager::recreateScaledShape(entt::entity entity, Trans
 				return nullptr;
 			}
 			else {
-				glm::vec3 shapeScale = meshCollider->shapeScale * transform.scale;
+				glm::vec3 shapeScale = meshCollider->shapeScale * scale;
 
 				bool anyComponentZero = false;
 				for (int i = 0; i < 3; ++i) {

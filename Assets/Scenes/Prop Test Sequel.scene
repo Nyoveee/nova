@@ -1,0 +1,3374 @@
+{
+    "entities": [
+        {
+            "EntityData": {
+                "name": "Skybox",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 13775693787802373605,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "SkyBox": {
+                "equirectangularMap": 17591087065804193799
+            },
+            "id": 2097170
+        },
+        {
+            "EntityData": {
+                "name": "Ranged_Floors",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 4552321750948105705,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 13994786872856412169,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2097153
+        },
+        {
+            "EntityData": {
+                "name": "Entity 1",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 2822939494037851661,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 8230179349822177281,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048576
+        },
+        {
+            "EntityData": {
+                "name": "Ranged_Walls",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 2822939494037868047,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 7077257845215330315,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048578
+        },
+        {
+            "EntityData": {
+                "name": "Close_Walls",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7434625512465256569,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 5347875588305059843,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 3
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Wall",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 13775693787802931323,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 13994786872856412175,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 4
+        },
+        {
+            "EntityData": {
+                "name": "Hub_Floors",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 14928615292409778301,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.6014156341552734,
+                    "y": 0.20000000298023224,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.6014156341552734,
+                    "y": 0.20000000298023224,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 736189569877671941,
+                "materialIds": [
+                    6,
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 5
+        },
+        {
+            "EntityData": {
+                "name": "Tut_Floors",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 3399400246341324927,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 7653718597518753805,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 6
+        },
+        {
+            "EntityData": {
+                "name": "Hub_Walls",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 2822939494037901441,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 5347875588305059847,
+                "materialIds": [
+                    6,
+                    6,
+                    14237770146002534445,
+                    8473162622968299561
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 7
+        },
+        {
+            "EntityData": {
+                "name": "Level Container",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    7,
+                    6,
+                    5,
+                    4,
+                    3,
+                    1048578,
+                    1048576,
+                    2097153,
+                    1048590
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 14352154540107600079,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 8
+        },
+        {
+            "EntityData": {
+                "name": "[Grouped] Sewer_Props",
+                "tag": "",
+                "parent": 12,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 15259049322949394619,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 74.73880767822266,
+                    "y": -54.02577590942383,
+                    "z": -42.24894714355469
+                },
+                "scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0,
+                    "z": 1.0000001192092896
+                },
+                "rotation": {
+                    "w": 0.9865686297416687,
+                    "x": 0.0,
+                    "y": -0.16334739327430725,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.32816535234451294,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 1.9073486328125e-05,
+                    "y": 4.9591064453125e-05,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 2.9802322387695313e-08,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 5.960464477539063e-08,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 11217121433846824961,
+                "materialIds": [
+                    4437937356844351541,
+                    11931927136788856883,
+                    15967152402912804913,
+                    402712090720387127,
+                    11355466384485433401,
+                    3285015852237504571,
+                    11355466384485433421,
+                    5590858861451198543,
+                    402712090720403537,
+                    7320241118361469003,
+                    8473162622968315967,
+                    11931927136788856905,
+                    17696534659823091773,
+                    10202544879878586433,
+                    11355466384485433411,
+                    16543613155216244807,
+                    5014398109147775045
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 9
+        },
+        {
+            "EntityData": {
+                "name": "[Grouped] Turbine_Props",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10647363304522058763,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 103.9504165649414,
+                    "y": -26.034616470336914,
+                    "z": -28.86981773376465
+                },
+                "scale": {
+                    "x": 1.0000004768371582,
+                    "y": 1.0,
+                    "z": 1.0000004768371582
+                },
+                "rotation": {
+                    "w": 0.9461817145347595,
+                    "x": 0.0,
+                    "y": -0.32363584637641907,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.6591392755508423,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 103.9504165649414,
+                    "y": -26.034616470336914,
+                    "z": -28.86981773376465
+                },
+                "localScale": {
+                    "x": 1.0000004768371582,
+                    "y": 1.0,
+                    "z": 1.0000004768371582
+                },
+                "localRotation": {
+                    "w": 0.9461817145347595,
+                    "x": 0.0,
+                    "y": -0.32363584637641907,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.6591392755508423,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 12946503690757210115,
+                "materialIds": [
+                    2708555099934097503,
+                    13661309393699143765,
+                    7896701870664908893,
+                    15390691650609414231,
+                    1555633595327250521,
+                    10779005632182026331
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 10
+        },
+        {
+            "EntityData": {
+                "name": "Sewer_Walls",
+                "tag": "",
+                "parent": 12,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 3153373524578880709,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 60.87293243408203,
+                    "y": -64.17643737792969,
+                    "z": -1.5239067077636719
+                },
+                "scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0,
+                    "z": 1.0000001192092896
+                },
+                "rotation": {
+                    "w": 0.9865686297416687,
+                    "x": 0.0,
+                    "y": -0.16334739327430725,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.32816535234451294,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 5.340576171875e-05,
+                    "y": -10.150611877441406,
+                    "z": 43.02082061767578
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 2.9802322387695313e-08,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 5.960464477539063e-08,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 16820470183604158465,
+                "materialIds": [
+                    6,
+                    6,
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2097163
+        },
+        {
+            "EntityData": {
+                "name": "Sewer Room",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    2097163,
+                    9
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1832490623716002997,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 74.7387924194336,
+                    "y": -54.025821685791016,
+                    "z": -42.24895477294922
+                },
+                "scale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0,
+                    "z": 1.0000001192092896
+                },
+                "rotation": {
+                    "w": 0.9865686297416687,
+                    "x": 0.0,
+                    "y": -0.16334743797779083,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.3281654417514801,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 74.7387924194336,
+                    "y": -54.025821685791016,
+                    "z": -42.24895477294922
+                },
+                "localScale": {
+                    "x": 1.0000001192092896,
+                    "y": 1.0,
+                    "z": 1.0000001192092896
+                },
+                "localRotation": {
+                    "w": 0.9865686297416687,
+                    "x": 0.0,
+                    "y": -0.16334743797779083,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.3281654417514801,
+                    "z": 0.0
+                }
+            },
+            "id": 12
+        },
+        {
+            "EntityData": {
+                "name": "[Grouped] Hub Props",
+                "tag": "",
+                "parent": 8,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7918445813181288479,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 69.6459732055664,
+                    "y": -19.408967971801758,
+                    "z": 13.427146911621094
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 69.6459732055664,
+                    "y": -19.408967971801758,
+                    "z": 13.427146911621094
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 2374277177349095425,
+                "materialIds": [
+                    9626084127575146543,
+                    10202544879878570017,
+                    15967152402912804899,
+                    18272995412126498845,
+                    2132094347630641183,
+                    5590858861451182123,
+                    17120073907519651867,
+                    6167319613754605607,
+                    11931927136788873325
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048590
+        },
+        {
+            "EntityData": {
+                "name": "[Grouped] Tutorial Props",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9747215125171932409,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -0.3808435797691345,
+                    "y": -0.019856199622154236,
+                    "z": 0.460122674703598
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.3808435797691345,
+                    "y": -0.019856199622154236,
+                    "z": 0.460122674703598
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 18217474473513566209,
+                "materialIds": [
+                    3025803787313528869,
+                    17696534659823108207,
+                    14814230898305990755,
+                    402712090720403557,
+                    17696534659823124597,
+                    5590858861451182123,
+                    5590858861451214951,
+                    7896701870664925303
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048591
+        },
+        {
+            "EntityData": {
+                "name": "[Grouped] Generator_Props",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 4730240324658597405,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 77.4884033203125,
+                    "y": -23.562833786010742,
+                    "z": 48.386539459228516
+                },
+                "scale": {
+                    "x": 1.0000132322311401,
+                    "y": 1.0,
+                    "z": 1.0000131130218506
+                },
+                "rotation": {
+                    "w": 0.80901700258255,
+                    "x": 0.0,
+                    "y": 0.5877853035926819,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2566373348236084,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 77.4884033203125,
+                    "y": -23.562833786010742,
+                    "z": 48.386539459228516
+                },
+                "localScale": {
+                    "x": 1.0000132322311401,
+                    "y": 1.0,
+                    "z": 1.0000131130218506
+                },
+                "localRotation": {
+                    "w": 0.80901700258255,
+                    "x": 0.0,
+                    "y": 0.5877853035926819,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2566373348236084,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 1407269894692945923,
+                "materialIds": [
+                    10202544879878619251,
+                    6,
+                    6,
+                    6202046481197531139,
+                    3025803787297865741,
+                    8213950558027038729,
+                    9366872062634737675,
+                    16284401090274459655
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 13
+        },
+        {
+            "EntityData": {
+                "name": "Props",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    2097169,
+                    20,
+                    1048595,
+                    21,
+                    1048599,
+                    24,
+                    25,
+                    1048602,
+                    27,
+                    29,
+                    2097180,
+                    30,
+                    31,
+                    32,
+                    2097185,
+                    34,
+                    35,
+                    36,
+                    3145765,
+                    1048614,
+                    39
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17009480630595162051,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 16
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Big",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 3174422575334625229,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -18.86553955078125,
+                    "y": -12.293476104736328,
+                    "z": 59.09043502807617
+                },
+                "scale": {
+                    "x": 1.0000005960464478,
+                    "y": 1.0,
+                    "z": 1.0000005960464478
+                },
+                "rotation": {
+                    "w": 0.8228979706764221,
+                    "x": 0.0,
+                    "y": 0.5681891441345215,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2086071968078613,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -18.86553955078125,
+                    "y": -12.293476104736328,
+                    "z": 59.09043502807617
+                },
+                "localScale": {
+                    "x": 1.0000005960464478,
+                    "y": 1.0,
+                    "z": 1.0000005960464478
+                },
+                "localRotation": {
+                    "w": 0.8228979706764221,
+                    "x": 0.0,
+                    "y": 0.5681891441345215,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2086071968078613,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 8604382723023847451,
+                "materialIds": [
+                    11931927136788840453
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2097169
+        },
+        {
+            "EntityData": {
+                "name": "Long_Lamp",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 5480265584550973393,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 56.72806930541992,
+                    "y": -14.79155158996582,
+                    "z": 54.937469482421875
+                },
+                "scale": {
+                    "x": 1.0000149011611938,
+                    "y": 1.0,
+                    "z": 1.0000149011611938
+                },
+                "rotation": {
+                    "w": 0.7933533787727356,
+                    "x": 0.0,
+                    "y": 0.6087614297866821,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3089971542358398,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 56.72806930541992,
+                    "y": -14.79155158996582,
+                    "z": 54.937469482421875
+                },
+                "localScale": {
+                    "x": 1.0000149011611938,
+                    "y": 1.0,
+                    "z": 1.0000149011611938
+                },
+                "localRotation": {
+                    "w": 0.7933533787727356,
+                    "x": 0.0,
+                    "y": 0.6087614297866821,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3089971542358398,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4569157456899883031,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 20
+        },
+        {
+            "EntityData": {
+                "name": "Long_Lamp",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 5480265584550973393,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 62.60128402709961,
+                    "y": -14.79155158996582,
+                    "z": 33.018463134765625
+                },
+                "scale": {
+                    "x": 1.0000149011611938,
+                    "y": 1.0,
+                    "z": 1.0000149011611938
+                },
+                "rotation": {
+                    "w": 0.7933533787727356,
+                    "x": 0.0,
+                    "y": 0.6087614297866821,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3089971542358398,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 62.60128402709961,
+                    "y": -14.79155158996582,
+                    "z": 33.018463134765625
+                },
+                "localScale": {
+                    "x": 1.0000149011611938,
+                    "y": 1.0,
+                    "z": 1.0000149011611938
+                },
+                "localRotation": {
+                    "w": 0.7933533787727356,
+                    "x": 0.0,
+                    "y": 0.6087614297866821,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3089971542358398,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4569157456899883031,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048595
+        },
+        {
+            "EntityData": {
+                "name": "Long_Lamp",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 5480265584550973393,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 59.924034118652344,
+                    "y": -14.79155158996582,
+                    "z": 43.01007080078125
+                },
+                "scale": {
+                    "x": 1.0000149011611938,
+                    "y": 1.0,
+                    "z": 1.0000149011611938
+                },
+                "rotation": {
+                    "w": 0.7933533787727356,
+                    "x": 0.0,
+                    "y": 0.6087614297866821,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3089971542358398,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 59.924034118652344,
+                    "y": -14.79155158996582,
+                    "z": 43.01007080078125
+                },
+                "localScale": {
+                    "x": 1.0000149011611938,
+                    "y": 1.0,
+                    "z": 1.0000149011611938
+                },
+                "localRotation": {
+                    "w": 0.7933533787727356,
+                    "x": 0.0,
+                    "y": 0.6087614297866821,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3089971542358398,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4569157456899883031,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 21
+        },
+        {
+            "EntityData": {
+                "name": "Boiler",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 2021501070748914709,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 75.15582275390625,
+                    "y": -23.39899444580078,
+                    "z": -1.110557198524475
+                },
+                "scale": {
+                    "x": 0.9999998807907104,
+                    "y": 1.0,
+                    "z": 0.9999995231628418
+                },
+                "rotation": {
+                    "w": 0.9824116230010986,
+                    "x": 0.0,
+                    "y": -0.18672822415828705,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.3756614625453949,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 75.15582275390625,
+                    "y": -23.39899444580078,
+                    "z": -1.110557198524475
+                },
+                "localScale": {
+                    "x": 0.9999998807907104,
+                    "y": 1.0,
+                    "z": 0.9999995231628418
+                },
+                "localRotation": {
+                    "w": 0.9824116230010986,
+                    "x": 0.0,
+                    "y": -0.18672822415828705,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.3756614625453949,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 10467377648391553225,
+                "materialIds": [
+                    402712090720370701
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 6291478
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_3",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6881720697937220429,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 59.75828170776367,
+                    "y": -16.410655975341797,
+                    "z": 52.797019958496094
+                },
+                "scale": {
+                    "x": 0.9999991655349731,
+                    "y": 1.0,
+                    "z": 0.9999991655349731
+                },
+                "rotation": {
+                    "w": 0.8095775842666626,
+                    "x": 0.0,
+                    "y": 0.5870128870010376,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2547283172607422,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 59.75828170776367,
+                    "y": -16.410655975341797,
+                    "z": 52.797019958496094
+                },
+                "localScale": {
+                    "x": 0.9999991655349731,
+                    "y": 1.0,
+                    "z": 0.9999991655349731
+                },
+                "localRotation": {
+                    "w": 0.8095775842666626,
+                    "x": 0.0,
+                    "y": 0.5870128870010376,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2547283172607422,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 15521911750664929317,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048599
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_3",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6881720697937220429,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 65.75595092773438,
+                    "y": -16.410655975341797,
+                    "z": 34.457298278808594
+                },
+                "scale": {
+                    "x": 0.9999991655349731,
+                    "y": 1.0,
+                    "z": 0.9999991655349731
+                },
+                "rotation": {
+                    "w": 0.8095775842666626,
+                    "x": 0.0,
+                    "y": 0.5870128870010376,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2547283172607422,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 65.75595092773438,
+                    "y": -16.410655975341797,
+                    "z": 34.457298278808594
+                },
+                "localScale": {
+                    "x": 0.9999991655349731,
+                    "y": 1.0,
+                    "z": 0.9999991655349731
+                },
+                "localRotation": {
+                    "w": 0.8095775842666626,
+                    "x": 0.0,
+                    "y": 0.5870128870010376,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2547283172607422,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 15521911750664929317,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 24
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_5",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1693573927208833873,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 59.425682067871094,
+                    "y": -16.471935272216797,
+                    "z": 31.260047912597656
+                },
+                "scale": {
+                    "x": 1.0000009536743164,
+                    "y": 1.0,
+                    "z": 1.0000009536743164
+                },
+                "rotation": {
+                    "w": 0.5816758871078491,
+                    "x": 0.0,
+                    "y": -0.8134206533432007,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.241575002670288,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 59.425682067871094,
+                    "y": -16.471935272216797,
+                    "z": 31.260047912597656
+                },
+                "localScale": {
+                    "x": 1.0000009536743164,
+                    "y": 1.0,
+                    "z": 1.0000009536743164
+                },
+                "localRotation": {
+                    "w": 0.5816758871078491,
+                    "x": 0.0,
+                    "y": -0.8134206533432007,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.241575002670288,
+                    "z": 3.1415927410125732
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9890916896088014871,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 25
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Small_8",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9187563707155649369,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 49.81816482543945,
+                    "y": -16.774112701416016,
+                    "z": 61.779563903808594
+                },
+                "scale": {
+                    "x": 0.9999998807907104,
+                    "y": 1.0,
+                    "z": 0.9999998807907104
+                },
+                "rotation": {
+                    "w": 0.9860537648200989,
+                    "x": 0.0,
+                    "y": -0.16642704606056213,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.3344101309776306,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 49.81816482543945,
+                    "y": -16.774112701416016,
+                    "z": 61.779563903808594
+                },
+                "localScale": {
+                    "x": 0.9999998807907104,
+                    "y": 1.0,
+                    "z": 0.9999998807907104
+                },
+                "localRotation": {
+                    "w": 0.9860537648200989,
+                    "x": 0.0,
+                    "y": -0.16642704606056213,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.3344101309776306,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 12773220657605148717,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048602
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Small_2",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 10340485211762529117,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 49.80412673950195,
+                    "y": -16.776714324951172,
+                    "z": 61.81269836425781
+                },
+                "scale": {
+                    "x": 0.9999998807907104,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 0.9868394136428833,
+                    "x": 0.0,
+                    "y": -0.161703422665596,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.32483309507369995,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 49.80412673950195,
+                    "y": -16.776714324951172,
+                    "z": 61.81269836425781
+                },
+                "localScale": {
+                    "x": 0.9999998807907104,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 0.9868394136428833,
+                    "x": 0.0,
+                    "y": -0.161703422665596,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.32483309507369995,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 2263314447686189113,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 27
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Horizontal_Small_R",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17834474991720256353,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 66.56159973144531,
+                    "y": -16.480236053466797,
+                    "z": 30.919921875
+                },
+                "scale": {
+                    "x": 1.0000056028366089,
+                    "y": 1.000000238418579,
+                    "z": 1.000006914138794
+                },
+                "rotation": {
+                    "w": 0.5918169021606445,
+                    "x": 0.0,
+                    "y": -0.8060724139213562,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.2666218280792236,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 66.56159973144531,
+                    "y": -16.480236053466797,
+                    "z": 30.919921875
+                },
+                "localScale": {
+                    "x": 1.0000056028366089,
+                    "y": 1.000000238418579,
+                    "z": 1.000006914138794
+                },
+                "localRotation": {
+                    "w": 0.5918169021606445,
+                    "x": 0.0,
+                    "y": -0.8060724139213562,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.2666218280792236,
+                    "z": 3.1415927410125732
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 15655524419122249739,
+                "materialIds": [
+                    11931927136788840453
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 29
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Horizontal_Small_2",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 540652422620025703,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 52.780357360839844,
+                    "y": -14.815176010131836,
+                    "z": 53.35769271850586
+                },
+                "scale": {
+                    "x": 1.0000230073928833,
+                    "y": 1.0,
+                    "z": 1.0000230073928833
+                },
+                "rotation": {
+                    "w": 0.6016349792480469,
+                    "x": 0.0,
+                    "y": -0.7987711429595947,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.2910926342010498,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 52.780357360839844,
+                    "y": -14.815176010131836,
+                    "z": 53.35769271850586
+                },
+                "localScale": {
+                    "x": 1.0000230073928833,
+                    "y": 1.0,
+                    "z": 1.0000230073928833
+                },
+                "localRotation": {
+                    "w": 0.6016349792480469,
+                    "x": 0.0,
+                    "y": -0.7987711429595947,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.2910926342010498,
+                    "z": 3.1415927410125732
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 5145618209203306527,
+                "materialIds": [
+                    11931927136788840453
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2097180
+        },
+        {
+            "EntityData": {
+                "name": "Generator_Lamp",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1807782399053829063,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 63.00441360473633,
+                    "y": -15.562373161315918,
+                    "z": 64.90123748779297
+                },
+                "scale": {
+                    "x": 0.9999993443489075,
+                    "y": 1.0,
+                    "z": 0.9999993443489075
+                },
+                "rotation": {
+                    "w": 0.9890158772468567,
+                    "x": 0.0,
+                    "y": -0.14780940115451813,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.296705961227417,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 63.00441360473633,
+                    "y": -15.562373161315918,
+                    "z": 64.90123748779297
+                },
+                "localScale": {
+                    "x": 0.9999993443489075,
+                    "y": 1.0,
+                    "z": 0.9999993443489075
+                },
+                "localRotation": {
+                    "w": 0.9890158772468567,
+                    "x": 0.0,
+                    "y": -0.14780940115451813,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.296705961227417,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 6432152382267523165,
+                "materialIds": [
+                    6
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 30
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_3",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9878232931307968319,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 64.07553100585938,
+                    "y": -17.5915470123291,
+                    "z": 55.785736083984375
+                },
+                "scale": {
+                    "x": 1.000032901763916,
+                    "y": 1.000334620475769,
+                    "z": 1.0000004768371582
+                },
+                "rotation": {
+                    "w": 3.531732417627609e-08,
+                    "x": 0.5892212390899658,
+                    "y": 2.575563939899439e-08,
+                    "z": 0.807971715927124
+                },
+                "eulerAngles": {
+                    "x": 2.7234656840846583e-07,
+                    "y": -1.2601892948150635,
+                    "z": 3.141592264175415
+                },
+                "localPosition": {
+                    "x": 64.07553100585938,
+                    "y": -17.5915470123291,
+                    "z": 55.785736083984375
+                },
+                "localScale": {
+                    "x": 1.000032901763916,
+                    "y": 1.000334620475769,
+                    "z": 1.0000004768371582
+                },
+                "localRotation": {
+                    "w": 3.531732417627609e-08,
+                    "x": 0.5892212390899658,
+                    "y": 2.575563939899439e-08,
+                    "z": 0.807971715927124
+                },
+                "localEulerAngles": {
+                    "x": 2.7234656840846583e-07,
+                    "y": -1.2601892948150635,
+                    "z": 3.141592264175415
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 15521911750664929317,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 31
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Horizontal_Small_L",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1231321646760449857,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 60.737525939941406,
+                    "y": -18.65354347229004,
+                    "z": 52.67687225341797
+                },
+                "scale": {
+                    "x": 1.000000238418579,
+                    "y": 1.0,
+                    "z": 1.000000238418579
+                },
+                "rotation": {
+                    "w": 0.7818092107772827,
+                    "x": 0.0,
+                    "y": 0.6235177516937256,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3464683294296265,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 60.737525939941406,
+                    "y": -18.65354347229004,
+                    "z": 52.67687225341797
+                },
+                "localScale": {
+                    "x": 1.000000238418579,
+                    "y": 1.0,
+                    "z": 1.000000238418579
+                },
+                "localRotation": {
+                    "w": 0.7818092107772827,
+                    "x": 0.0,
+                    "y": 0.6235177516937256,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.3464683294296265,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 6432152382267473929,
+                "materialIds": [
+                    11931927136788840453
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 32
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Curved_6",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 8148850674406086477,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 58.69527816772461,
+                    "y": -16.287517547607422,
+                    "z": 34.73506164550781
+                },
+                "scale": {
+                    "x": 1.0000178813934326,
+                    "y": 1.0,
+                    "z": 1.0000178813934326
+                },
+                "rotation": {
+                    "w": 0.5959972739219666,
+                    "x": 0.0,
+                    "y": -0.8029864430427551,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.2770144939422607,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 58.69527816772461,
+                    "y": -16.287517547607422,
+                    "z": 34.73506164550781
+                },
+                "localScale": {
+                    "x": 1.0000178813934326,
+                    "y": 1.0,
+                    "z": 1.0000178813934326
+                },
+                "localRotation": {
+                    "w": 0.5959972739219666,
+                    "x": 0.0,
+                    "y": -0.8029864430427551,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.2770140171051025,
+                    "z": 3.1415927410125732
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9314456143784607777,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 2097185
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Small_6",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9301772179012949839,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 58.44911193847656,
+                    "y": -14.169862747192383,
+                    "z": 34.16416549682617
+                },
+                "scale": {
+                    "x": 1.0000181198120117,
+                    "y": 1.0000953674316406,
+                    "z": 1.000014305114746
+                },
+                "rotation": {
+                    "w": -7.314801564461959e-07,
+                    "x": 0.5948227047920227,
+                    "y": 5.412670134319342e-07,
+                    "z": 0.8038569092750549
+                },
+                "eulerAngles": {
+                    "x": 1.555373017880779e-12,
+                    "y": -1.274090051651001,
+                    "z": -3.1415908336639404
+                },
+                "localPosition": {
+                    "x": 58.44911193847656,
+                    "y": -14.169862747192383,
+                    "z": 34.16416549682617
+                },
+                "localScale": {
+                    "x": 1.0000181198120117,
+                    "y": 1.0000953674316406,
+                    "z": 1.000014305114746
+                },
+                "localRotation": {
+                    "w": -7.314801564461959e-07,
+                    "x": 0.5948227047920227,
+                    "y": 5.412670134319342e-07,
+                    "z": 0.8038569092750549
+                },
+                "localEulerAngles": {
+                    "x": 1.555373017880779e-12,
+                    "y": -1.274090051651001,
+                    "z": -3.1415908336639404
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 7585073886874337321,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 34
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Curved_5",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 8725311426709559123,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 63.32823944091797,
+                    "y": -19.508054733276367,
+                    "z": 57.156280517578125
+                },
+                "scale": {
+                    "x": 1.0000029802322388,
+                    "y": 1.0,
+                    "z": 1.0000029802322388
+                },
+                "rotation": {
+                    "w": 0.8084592819213867,
+                    "x": 0.002813318744301796,
+                    "y": 0.5885433554649353,
+                    "z": -0.0015466876793652773
+                },
+                "eulerAngles": {
+                    "x": 0.008880513720214367,
+                    "y": 1.25851571559906,
+                    "z": 0.0026385895907878876
+                },
+                "localPosition": {
+                    "x": 63.32823944091797,
+                    "y": -19.508054733276367,
+                    "z": 57.156280517578125
+                },
+                "localScale": {
+                    "x": 1.0000029802322388,
+                    "y": 1.0,
+                    "z": 1.0000029802322388
+                },
+                "localRotation": {
+                    "w": 0.8084592819213867,
+                    "x": 0.002813318744301796,
+                    "y": 0.5885433554649353,
+                    "z": -0.0015466876793652773
+                },
+                "localEulerAngles": {
+                    "x": 0.008880513720214367,
+                    "y": 1.25851571559906,
+                    "z": 0.0026385895907878876
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9314456143784591391,
+                "materialIds": [
+                    11931927136788840453
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 35
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Small_6",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 9301772179012949839,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 58.378684997558594,
+                    "y": -14.169862747192383,
+                    "z": 34.39454650878906
+                },
+                "scale": {
+                    "x": 1.0000181198120117,
+                    "y": 1.0000953674316406,
+                    "z": 1.000014305114746
+                },
+                "rotation": {
+                    "w": -7.314801564461959e-07,
+                    "x": 0.5948227047920227,
+                    "y": 5.412670134319342e-07,
+                    "z": 0.8038569092750549
+                },
+                "eulerAngles": {
+                    "x": 1.555373017880779e-12,
+                    "y": -1.274090051651001,
+                    "z": -3.1415908336639404
+                },
+                "localPosition": {
+                    "x": 58.378684997558594,
+                    "y": -14.169862747192383,
+                    "z": 34.39454650878906
+                },
+                "localScale": {
+                    "x": 1.0000181198120117,
+                    "y": 1.0000953674316406,
+                    "z": 1.000014305114746
+                },
+                "localRotation": {
+                    "w": -7.314801564461959e-07,
+                    "x": 0.5948227047920227,
+                    "y": 5.412670134319342e-07,
+                    "z": 0.8038569092750549
+                },
+                "localEulerAngles": {
+                    "x": 1.555373017880779e-12,
+                    "y": -1.274090051651001,
+                    "z": -3.1415908336639404
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 7585073886874337321,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 36
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Curved_5",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 8725311426709559123,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 59.614322662353516,
+                    "y": -19.339752197265625,
+                    "z": 31.59222984313965
+                },
+                "scale": {
+                    "x": 1.0000029802322388,
+                    "y": 1.0,
+                    "z": 1.0000029802322388
+                },
+                "rotation": {
+                    "w": 0.7997097373008728,
+                    "x": 0.0,
+                    "y": 0.6003869771957397,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2879704236984253,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 59.614322662353516,
+                    "y": -19.339752197265625,
+                    "z": 31.59222984313965
+                },
+                "localScale": {
+                    "x": 1.0000030994415283,
+                    "y": 1.0,
+                    "z": 1.0000030994415283
+                },
+                "localRotation": {
+                    "w": 0.7997096180915833,
+                    "x": 0.0,
+                    "y": 0.6003869771957397,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2879698276519775,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9314456143784591391,
+                "materialIds": [
+                    11931927136788840453
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 3145765
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_4",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12184075940540733285,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 61.836212158203125,
+                    "y": -16.449501037597656,
+                    "z": 62.619388580322266
+                },
+                "scale": {
+                    "x": 1.0000014305114746,
+                    "y": 1.0,
+                    "z": 1.0000014305114746
+                },
+                "rotation": {
+                    "w": 0.8061966896057129,
+                    "x": 0.0,
+                    "y": 0.5916476249694824,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2662019729614258,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 61.836212158203125,
+                    "y": -16.449501037597656,
+                    "z": 62.619388580322266
+                },
+                "localScale": {
+                    "x": 1.0000014305114746,
+                    "y": 1.0,
+                    "z": 1.0000014305114746
+                },
+                "localRotation": {
+                    "w": 0.8061966896057129,
+                    "x": 0.0,
+                    "y": 0.5916476249694824,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2662019729614258,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4126309373053779989,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048614
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_4",
+                "tag": "",
+                "parent": 16,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12184075940540733285,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 60.74164581298828,
+                    "y": -16.449501037597656,
+                    "z": 66.10110473632813
+                },
+                "scale": {
+                    "x": 1.0000014305114746,
+                    "y": 1.0,
+                    "z": 1.0000014305114746
+                },
+                "rotation": {
+                    "w": 0.8061966896057129,
+                    "x": 0.0,
+                    "y": 0.5916476249694824,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2662019729614258,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 60.74164581298828,
+                    "y": -16.449501037597656,
+                    "z": 66.10110473632813
+                },
+                "localScale": {
+                    "x": 1.0000014305114746,
+                    "y": 1.0,
+                    "z": 1.0000014305114746
+                },
+                "localRotation": {
+                    "w": 0.8061966896057129,
+                    "x": 0.0,
+                    "y": 0.5916476249694824,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2662019729614258,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4126309373053779989,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 39
+        },
+        {
+            "EntityData": {
+                "name": "SteelDrum",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 1231321646780929899,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 60.97829818725586,
+                    "y": -19.493335723876953,
+                    "z": 55.12919235229492
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 60.97829818725586,
+                    "y": -19.493335723876953,
+                    "z": 55.12919235229492
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 4429053297147101357,
+                "materialIds": [
+                    9626084127575179377
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 1048616
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Small_3",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 17948683463584323445,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 59.52700424194336,
+                    "y": -16.41988754272461,
+                    "z": 30.96515464782715
+                },
+                "scale": {
+                    "x": 1.0000022649765015,
+                    "y": 1.0,
+                    "z": 1.0000022649765015
+                },
+                "rotation": {
+                    "w": 0.562454879283905,
+                    "x": 0.0,
+                    "y": -0.8268280029296875,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.1947040557861328,
+                    "z": 3.1415927410125732
+                },
+                "localPosition": {
+                    "x": 59.52700424194336,
+                    "y": -16.41988754272461,
+                    "z": 30.96515464782715
+                },
+                "localScale": {
+                    "x": 1.0000022649765015,
+                    "y": 1.0,
+                    "z": 1.0000022649765015
+                },
+                "localRotation": {
+                    "w": 0.562454879283905,
+                    "x": 0.0,
+                    "y": -0.8268280029296875,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 3.1415927410125732,
+                    "y": -1.1947040557861328,
+                    "z": 3.1415927410125732
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 5722078961506730043,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 41
+        },
+        {
+            "EntityData": {
+                "name": "Pipe_Vertical_Small_8",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 4113625408302290809,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 59.60334014892578,
+                    "y": -16.77004051208496,
+                    "z": 30.708309173583984
+                },
+                "scale": {
+                    "x": 1.0000133514404297,
+                    "y": 1.0,
+                    "z": 1.0000133514404297
+                },
+                "rotation": {
+                    "w": 0.8048229813575745,
+                    "x": 0.0,
+                    "y": 0.5935149192810059,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2708383798599243,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 59.60334014892578,
+                    "y": -16.77004051208496,
+                    "z": 30.708309173583984
+                },
+                "localScale": {
+                    "x": 1.0000133514404297,
+                    "y": 1.0,
+                    "z": 1.0000133514404297
+                },
+                "localRotation": {
+                    "w": 0.8048229813575745,
+                    "x": 0.0,
+                    "y": 0.5935149192810059,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": 1.2708383798599243,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 12773220657605148717,
+                "materialIds": [
+                    9049623375271723015
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 42
+        },
+        {
+            "EntityData": {
+                "name": "Stand",
+                "tag": "",
+                "parent": 47,
+                "attachedSocket": 65535,
+                "children": [
+                    3145771
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12184075940559886213,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 99.59378051757813,
+                    "y": -30.660491943359375,
+                    "z": -48.78523254394531
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 99.59378051757813,
+                    "y": -30.660491943359375,
+                    "z": -48.78523254394531
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 7451461218417000531,
+                "materialIds": [
+                    14237770146002534445
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 46
+        },
+        {
+            "EntityData": {
+                "name": "Switch",
+                "tag": "",
+                "parent": 47,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 4113625408308565889,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 114.45672607421875,
+                    "y": -32.52334213256836,
+                    "z": -30.461807250976563
+                },
+                "scale": {
+                    "x": 1.0000046491622925,
+                    "y": 1.0000046491622925,
+                    "z": 0.999998927116394
+                },
+                "rotation": {
+                    "w": 0.857888400554657,
+                    "x": 0.0994047150015831,
+                    "y": -0.06407057493925095,
+                    "z": 0.500041127204895
+                },
+                "eulerAngles": {
+                    "x": 0.10910966992378235,
+                    "y": -0.21090373396873474,
+                    "z": 1.0439038276672363
+                },
+                "localPosition": {
+                    "x": 114.45672607421875,
+                    "y": -32.52334213256836,
+                    "z": -30.461807250976563
+                },
+                "localScale": {
+                    "x": 1.0000046491622925,
+                    "y": 1.0000046491622925,
+                    "z": 0.999998927116394
+                },
+                "localRotation": {
+                    "w": 0.857888400554657,
+                    "x": 0.0994047150015831,
+                    "y": -0.06407057493925095,
+                    "z": 0.500041127204895
+                },
+                "localEulerAngles": {
+                    "x": 0.10910966992378235,
+                    "y": -0.21090373396873474,
+                    "z": 1.0439038276672363
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9180843475327270997,
+                "materialIds": [
+                    8473162622968299561
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 44
+        },
+        {
+            "EntityData": {
+                "name": "Switch",
+                "tag": "",
+                "parent": 47,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 4113625408308565889,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 112.38075256347656,
+                    "y": -19.603883743286133,
+                    "z": -23.943729400634766
+                },
+                "scale": {
+                    "x": 1.000073790550232,
+                    "y": 1.000016450881958,
+                    "z": 1.0000463724136353
+                },
+                "rotation": {
+                    "w": 0.7349433302879333,
+                    "x": -0.16262288391590118,
+                    "y": -0.4075350761413574,
+                    "z": 0.5170369744300842
+                },
+                "eulerAngles": {
+                    "x": -0.8210744261741638,
+                    "y": -0.4454525411128998,
+                    "z": 1.4226782321929932
+                },
+                "localPosition": {
+                    "x": 112.38075256347656,
+                    "y": -19.603883743286133,
+                    "z": -23.943729400634766
+                },
+                "localScale": {
+                    "x": 1.000073790550232,
+                    "y": 1.000016450881958,
+                    "z": 1.0000463724136353
+                },
+                "localRotation": {
+                    "w": 0.7349433302879333,
+                    "x": -0.16262288391590118,
+                    "y": -0.4075350761413574,
+                    "z": 0.5170369744300842
+                },
+                "localEulerAngles": {
+                    "x": -0.8210744261741638,
+                    "y": -0.4454525411128998,
+                    "z": 1.4226782321929932
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9180843475327270997,
+                "materialIds": [
+                    8473162622968299561
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 45
+        },
+        {
+            "EntityData": {
+                "name": "Switch",
+                "tag": "",
+                "parent": 46,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 15066379702078543753,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 105.89728546142578,
+                    "y": -25.033634185791016,
+                    "z": -29.99432373046875
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 6.303504943847656,
+                    "y": 5.626857757568359,
+                    "z": 18.790908813476563
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "MeshRenderer": {
+                "modelId": 9180843475327270997,
+                "materialIds": [
+                    8473162622968299561
+                ],
+                "castShadow": false,
+                "shadowCullFrontFace": true
+            },
+            "id": 3145771
+        },
+        {
+            "EntityData": {
+                "name": "Turbine_Puzzle",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    45,
+                    44,
+                    46
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6419468417533433739,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 47
+        }
+    ],
+    "layers": [
+        {
+            "name": "Default"
+        }
+    ]
+}

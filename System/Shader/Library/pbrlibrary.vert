@@ -55,6 +55,8 @@ layout(std140, binding = 2) uniform PBRUBO {
 	bool hasDirectionalLightShadowCaster;
 	bool toEnableIBL;
 	bool toOutputNormal;
+    float iblDiffuseStrength;
+    float iblSpecularStrength;
 };
 
 layout(std140, binding = 4) uniform TAAUBO {

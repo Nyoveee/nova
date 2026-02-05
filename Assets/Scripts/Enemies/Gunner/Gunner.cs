@@ -40,7 +40,7 @@ class Gunner : Enemy
         Jump,
         Death
     }
-    private GunnerState gunnerState = GunnerState.Idle;
+    private GunnerState gunnerState = GunnerState.Spawning;
     private Dictionary<GunnerState, CurrentState> updateState = new Dictionary<GunnerState, CurrentState>();
     GameObject? targetVantagePoint = null;
     int gunShootIndex = 0;
@@ -59,6 +59,7 @@ class Gunner : Enemy
         base.init();
         gunnerStats = getScript<GunnerStats>();
         audioComponent = getComponent<AudioComponent_>();
+        updateState.Add(GunnerState.Spawning, Update_Spawning);
         updateState.Add(GunnerState.Idle, Update_Idle);
         updateState.Add(GunnerState.Walk, Update_Walk);
         updateState.Add(GunnerState.Shoot, Update_Shoot);
@@ -67,14 +68,10 @@ class Gunner : Enemy
         updateState.Add(GunnerState.Jump, Update_Jump);
         updateState.Add(GunnerState.Death, Update_Death);
 
-        updateState.Add(GunnerState.Spawning, () => { });
+        ActivateRigidbody();
 
         GameObject gameObject = GameObject.FindWithTag("Game Global Reference Manager");
-
-        if(gameObject != null)
-        {
-            gameGlobalReferenceManager = gameObject.getScript<GameGlobalReferenceManager>();
-        }
+        gameGlobalReferenceManager = gameObject?.getScript<GameGlobalReferenceManager>();
     }
 
     // This function is invoked every fixed update.
@@ -135,7 +132,6 @@ class Gunner : Enemy
             //    rigidBody.enable = false;
             //}
 
-
         }
 
 
@@ -185,8 +181,6 @@ class Gunner : Enemy
 
         }
 
-
-
         //    if (gunnerState == GunnerState.Death || WasRecentlyDamaged())
         //    return;
         //SpawnIchor();
@@ -211,14 +205,14 @@ class Gunner : Enemy
             SpawnIchorFrame();
 
             gunnerStats.health -= accumulatedDamageInstance;
+            UpdateExecutableMaterialState();
             if (gunnerStats.health <= 0)
             {
                 if (gunnerState != GunnerState.Death/* && !WasRecentlyDamaged()*/)
                 {
                     gunnerState = GunnerState.Death;
                     animator.PlayAnimation("Gunner_Death");
-                    NavigationAPI.stopAgent(gameObject);
-                    rigidBody.enable = false;
+                    DisablePhysicalInteraction();
                 }
             }
             else
@@ -245,6 +239,14 @@ class Gunner : Enemy
     /**********************************************************************
        Enemy States
     **********************************************************************/
+    private void Update_Spawning()
+    {
+        if (IsTouchingGround())
+        {
+            ActivateNavMeshAgent();
+            gunnerState = GunnerState.Idle;
+        }
+    }
     private void Update_Idle()
     {
         if(GetDistanceFromPlayer() <= gunnerStats.shootingRange)

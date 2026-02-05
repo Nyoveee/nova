@@ -28,17 +28,10 @@ class DialogueScript : Script
         EndTransition
     }
     private DialogueState dialogueState;
-    protected override void init()
-    {
-        startPosition = new Vector3(Systems.ScreenResolution.x + dialogueTextBackgroundTransform.scale.x, 0, 0);
-        endPosition = gameObject.transform.position;
-        if (dialogueBoxTransitionTime <= 0)
-            Debug.LogError("Transition time must be more than zero");
-    }
     protected override void update()
     {
         currentTransitionTime -= Time.V_DeltaTime();
-  
+        currentTransitionTime = Mathf.Max(currentTransitionTime, 0);
         if (dialogueState == DialogueState.StartTransition)
         {
             gameObject.transform.position = Vector3.Lerp(endPosition, startPosition, currentTransitionTime / dialogueBoxTransitionTime);
@@ -67,13 +60,19 @@ class DialogueScript : Script
     }
     public void BeginDialogueSequence(string speaker, List<string> text, List<float> times, float finalDialogueTime)
     {
+        // Set the position
+        startPosition = new Vector3(Systems.ScreenResolution.x + dialogueTextBackgroundTransform.scale.x, 0, 0);
+        endPosition = gameObject.transform.position;
+        gameObject.transform.position = startPosition;
+        // Set the Dialogues to run
         dialogueState = DialogueState.StartTransition;
         dialogue = text;
         currentIndex = 0;
         speakerText.SetText(speaker);
+        currentTransitionTime = dialogueBoxTransitionTime;
         // There's a chance if this function is called during another dialogue it might mess up due to invokes still existing
         // if that's the case can replace with a normal update
-        for(int i = 0;i < dialogue.Count; ++i){
+        for (int i = 0;i < dialogue.Count; ++i){
             Invoke(() =>
             {
                 if (currentIndex == dialogue.Count - 1)
@@ -81,7 +80,8 @@ class DialogueScript : Script
                 dialogueText.SetText(dialogue[currentIndex++]);
             }, times[i]);
         }
-        currentTransitionTime = dialogueBoxTransitionTime;
+
+     
     }
 
 }

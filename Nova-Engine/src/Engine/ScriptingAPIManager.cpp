@@ -135,6 +135,7 @@ ScriptingAPIManager::ScriptingAPIManager(Engine& p_engine)
 		executeFunction_						= GetFunctionPtr<ExecuteFunctionPtr>("Interface", "executeEntityScriptFunction");
 		getHierarchyModifiedScripts_            = GetFunctionPtr<GetHierarchyModifiedScriptsFunctionPtr>("Interface", "GetHierarchyModifiedScripts");
 		getEnumNames							= GetFunctionPtr<GetEnumNamesFunctionPtr>("Interface", "getEnumNames");
+		clearCurrentScriptingState              = GetFunctionPtr<ClearCurrentScriptingStateFunctionPtr>("Interface", "clearCurrentScriptingState");
 		// Intialize the scriptingAPI
 		initScriptAPIFuncPtr(engine, runtimeDirectory.c_str());
 
@@ -442,6 +443,8 @@ void ScriptingAPIManager::stopSimulation(){
 	unloadAssembly();
 	loadAssembly();
 }
+
+void ScriptingAPIManager::cleanPreviousSceneScriptState(){ clearCurrentScriptingState(); }
 
 void ScriptingAPIManager::OnAssetContentAddedCallback(std::string absPath) {
 	if (std::filesystem::path(absPath).extension() == ".cs") {

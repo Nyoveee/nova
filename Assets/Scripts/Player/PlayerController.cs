@@ -30,9 +30,6 @@ class PlayerController : Script
     // Health
     public float maxHealth = 100f;
 
-    // Empty death event
-    public event EventHandler OnPlayerDeath;
-
     [SerializableField]
     private Transform_? playerOrientation = null; //Movement (XYZ) handled by this script + inheritence. Camera rotation is handled by PlayerRotateController which in unaffected by inheritence 
 
@@ -259,7 +256,6 @@ class PlayerController : Script
         if (currentHealth <= 0f)
         {
             audioComponent.PlayRandomSound(deathSFX);
-            OnPlayerDeath?.Invoke(this, EventArgs.Empty);
         }
     }
     /***********************************************************
