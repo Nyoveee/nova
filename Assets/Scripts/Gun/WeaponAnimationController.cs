@@ -73,8 +73,8 @@ class WeaponAnimationController : Script
                         playerMovementController.GetDirectionVector() != Vector3.Zero() &&
                         playerWeaponController.weaponControlStates == PlayerWeaponController.WeaponControlStates.WeaponFree)
                     {
-                        StartSwayAnimation();
-                        weaponAnimationStates = WeaponAnimationStates.Swaying;
+                        //StartSwayAnimation();
+                        //weaponAnimationStates = WeaponAnimationStates.Swaying;
                     }
 
 
@@ -86,13 +86,13 @@ class WeaponAnimationController : Script
                         playerMovementController.GetDirectionVector() == Vector3.Zero() ||
                         playerWeaponController.weaponControlStates != PlayerWeaponController.WeaponControlStates.WeaponFree)
                     {
-                        StopSwayAnimation();
+                       // StopSwayAnimation();
                         weaponAnimationStates = WeaponAnimationStates.Idle;
 
                     }
                     else 
                     {
-                        SwayingAnimation();
+                       // SwayingAnimation();
                     }
 
                 }
