@@ -246,7 +246,7 @@ class Charger : Enemy
     {
         if (chargerState == ChargerState.Charging && rigidbody.GetVelocity != Vector3.Zero)
         {
-            timeSinceLastFootstep += Time.V_FixedDeltaTime();
+            timeSinceLastFootstep += Time.V_DeltaTime();
             if (timeSinceLastFootstep >= chargerstats.timeBetweenChargeSteps)
             {
                 //audioComponent.PlayRandomSound(footstepSFX);
