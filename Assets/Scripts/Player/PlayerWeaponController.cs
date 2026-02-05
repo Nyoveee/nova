@@ -33,6 +33,7 @@ class PlayerWeaponController : Script
     public float peakGlowStrength = 1.5f;
     public float noAmmoGlowStrength = 0.6f;
     public float ammoGlowScalePower = 2f;
+    
 
     // ===========================================
     // Components
@@ -46,6 +47,8 @@ class PlayerWeaponController : Script
     private Gun currentlyHeldGun;
     private float timeElapsed;
     private float armTimeElapsed = 0f;
+    private bool isArmingDisabled = false; //required by animation controller disable animations while other animation are playing
+    private bool isArmingRequest = false;
 
     public WeaponControlStates weaponControlStates;
 
@@ -81,7 +84,7 @@ class PlayerWeaponController : Script
         //ScrollCallback(SwapWeaponHandler);
         weaponControlStates = WeaponControlStates.WeaponFree;
         currentlyHeldGun = sniper;
-
+        
         audioComponent = getComponent<AudioComponent_>();
     }
 
@@ -103,14 +106,22 @@ class PlayerWeaponController : Script
                 break;
             case WeaponControlStates.WeaponFree:
                 {
-                    if (currentlyHeldGun.CurrentAmmo != 0)
+                    if (currentlyHeldGun.CurrentAmmo != 0 && isArmingDisabled == false)
                     {
 
                     }
-                    else if (currentlyHeldGun.CurrentAmmo <= 0)
+                    else if (currentlyHeldGun.CurrentAmmo <= 0 && isArmingDisabled == false)
                     {
+                        
                         weaponControlStates = WeaponControlStates.ArmingThrow;
 
+                    }
+
+                    //player is trying to arm while weapon is busy with animation, now animation is over play arming
+                    if (isArmingRequest == true && isArmingDisabled == false)
+                    { 
+                        weaponControlStates = WeaponControlStates.ArmingThrow;
+                        isArmingRequest = false;
                     }
 
                 }
@@ -191,9 +202,16 @@ class PlayerWeaponController : Script
 
     private void Arming()
     {
-        if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree ) )
+        if (currentlyHeldGun.CurrentAmmo != 0 && (weaponControlStates == WeaponControlStates.WeaponFree || weaponControlStates == WeaponControlStates.DisarmingFree ) && isArmingDisabled == false)
         {
             weaponControlStates = WeaponControlStates.ArmingThrow;
+
+        }
+
+
+        if (isArmingDisabled)
+        {
+            isArmingRequest = true;
         }
     }
 
@@ -203,6 +221,7 @@ class PlayerWeaponController : Script
         {
 
             weaponControlStates = WeaponControlStates.DisarmingFree;
+            isArmingRequest = false;
 
         }
     }
@@ -225,11 +244,13 @@ class PlayerWeaponController : Script
 
             // The final glow strength scales with how low the ammo count is..
             finalGlowStrength = noAmmoGlowStrength * Mathf.Pow(1f - (float)currentlyHeldGun.CurrentAmmo / (float)currentlyHeldGun.MaxAmmo, ammoGlowScalePower);
-            Debug.Log(finalGlowStrength);
+            //Debug.Log(finalGlowStrength);
             // ---------------------------------------------------------------
 
             // Emit particles at muzzle position..
             muzzle.emit(30);
+            isArmingDisabled = true;
+
 
             // We raycast only to specific physics layers..
             string[] mask = { "Enemy_HurtSpot", "NonMoving", "Wall" };
@@ -329,6 +350,7 @@ class PlayerWeaponController : Script
         {
             currentlyHeldGun.gameObject.SetActive(true);
             gunHolder.localPosition =  gunPosition.localPosition;
+            lerpVariable = 0;
             weaponControlStates = WeaponControlStates.WeaponFree;
 
         }
@@ -338,9 +360,19 @@ class PlayerWeaponController : Script
 
     }
 
+
     public void ResetGunPosition()
     {
         gunHolder.localPosition = gunPosition.localPosition;
+    }
+    public void DisableWeaponArm()
+    {
+        isArmingDisabled = true;
+    }
+
+    public void EnableWeaponArm()
+    {
+        isArmingDisabled = false;
     }
 
 

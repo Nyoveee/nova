@@ -86,7 +86,7 @@ class PlayerMotionAnimations : Script
 
 
         UpdateMotionVector();
-        Debug.Log("Y velcoity: "+ rigidbody.GetVelocity().y);
+        //Debug.Log("Y velcoity: "+ rigidbody.GetVelocity().y);
         currentOffset = CalculateSmoothDampPositionChange(currentOffset, gunMotionOffsetAmount * -directionVector, motionChangeDuration, Time.V_DeltaTime());
 
 

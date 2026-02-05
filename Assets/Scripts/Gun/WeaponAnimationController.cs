@@ -73,8 +73,8 @@ class WeaponAnimationController : Script
                         playerMovementController.GetDirectionVector() != Vector3.Zero() &&
                         playerWeaponController.weaponControlStates == PlayerWeaponController.WeaponControlStates.WeaponFree)
                     {
-                        //StartSwayAnimation();
-                        //weaponAnimationStates = WeaponAnimationStates.Swaying;
+                        StartSwayAnimation();
+                        weaponAnimationStates = WeaponAnimationStates.Swaying;
                     }
 
 
@@ -86,13 +86,13 @@ class WeaponAnimationController : Script
                         playerMovementController.GetDirectionVector() == Vector3.Zero() ||
                         playerWeaponController.weaponControlStates != PlayerWeaponController.WeaponControlStates.WeaponFree)
                     {
-                       // StopSwayAnimation();
+                        StopSwayAnimation();
                         weaponAnimationStates = WeaponAnimationStates.Idle;
 
                     }
                     else 
                     {
-                       // SwayingAnimation();
+                       SwayingAnimation();
                     }
 
                 }
@@ -160,6 +160,20 @@ class WeaponAnimationController : Script
     }
 
 
+    public void EnableThrow()
+    {
+        playerWeaponController.EnableWeaponArm();
+
+        Debug.Log("EnableThrow!!!");
+    }
+
+    public void DisableThrow()
+    {
+        Debug.Log("DisableThrow!!!");
+        playerWeaponController.DisableWeaponArm();
+    }
+
+
     // ===========================================
     // Private Functions
     // ===========================================
@@ -196,7 +210,7 @@ class WeaponAnimationController : Script
     
     }
 
-
+    
 
 
     enum WeaponAnimationStates 
