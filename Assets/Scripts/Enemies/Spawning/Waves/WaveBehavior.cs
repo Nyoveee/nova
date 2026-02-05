@@ -61,17 +61,19 @@ public abstract class WaveBehavior : Script
 
     public abstract bool IsWaveComplete(List<GameObject> aliveEnemies);
 
-    public void EndWave()
+    public void ResetWave()
     {
         active = false;
-#if false
         foreach (GameObject enemy in enemies)
         {
             if (enemy != null)
                 Destroy(enemy);
         }
         enemies.Clear();
-#endif
+    }
+    public void EndWave()
+    {
+        active = false;
     }
 
  

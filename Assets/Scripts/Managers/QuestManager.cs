@@ -51,7 +51,7 @@ public class QuestManager : Script
 
         if (gameUIManager != null)
         {
-            gameUIManager.RestartFromCheckpointButton += FailCurrentQuest;
+            gameUIManager.RestartFromCheckpointButton += RestartQuest;
         }
     }
 
@@ -108,26 +108,25 @@ public class QuestManager : Script
     private void HandlePlayerDeath(object sender, EventArgs e)
     {
         if (gameUIManager != null)
-        { 
+        {
+            currentQuest.SetQuestState(Quest.QuestState.Fail);
             gameUIManager.TriggerDeathScreen(); 
             if (player != null)
-            {
                 player.ToEnable = false;
-            }
-            // Disable player keys
         }
     }
 
-    private void FailCurrentQuest()
+    private void RestartQuest()
     {
         if (currentQuest != null)
-        {
-            currentQuest.SetQuestState(Quest.QuestState.Fail);
-        }
+            currentQuest.SetQuestState(Quest.QuestState.InProgress);
         if (player != null)
         {
+            player.gameObject.transform.position = currentQuest.GetCheckpointPosition();
             player.ToEnable = true;
+            player.Reset();
+            foreach (GameObject hitbox in GameObject.FindGameObjectsWithTag("EnemyHitBox"))
+                Destroy(hitbox);
         }
-        // Enable player keys
     }
 }

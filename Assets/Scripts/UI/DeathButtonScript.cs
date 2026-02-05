@@ -6,14 +6,9 @@ using ScriptingAPI;
 class DeathButtonScript : Script
 {
     public Scene mainMenuScene;
-    private GameUIManager uiManager;
-
-    protected override void init()
-    {
-        uiManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
-    }
     public void RestartFromCheckpoint()
     {
+        GameUIManager uiManager = GameObject.FindWithTag("Game UI Manager")?.getScript<GameUIManager>();
         uiManager.OnRestartButtonPressed();
     }
 

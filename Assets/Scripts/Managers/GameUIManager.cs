@@ -147,6 +147,8 @@ class GameUIManager : Script
     ***********************************************************/
     public void PauseHandler()
     {
+        if (deathUI.IsActive())
+            return;
         isPaused = !isPaused;
         Systems.Pause = isPaused;
         pauseUI?.SetActive(isPaused);
@@ -176,6 +178,8 @@ class GameUIManager : Script
     {
         if (deathUI != null)
         {
+            isPaused = true;
+            Systems.Pause = isPaused;
             deathUI.SetActive(true);
             CameraAPI.UnlockMouse();
         }
@@ -185,6 +189,8 @@ class GameUIManager : Script
     {
         if (deathUI != null)
         {
+            isPaused = false;
+            Systems.Pause = isPaused;
             deathUI.SetActive(false);
             CameraAPI.LockMouse();
         }
