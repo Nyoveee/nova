@@ -1,5 +1,5 @@
 {
-    "RootEntity": 0,
+    "RootEntity": 41943220,
     "Entities": [
         {
             "EntityData": {
@@ -8,23 +8,22 @@
                 "parent": 4294967295,
                 "attachedSocket": 65535,
                 "children": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    11,
-                    17,
-                    25,
-                    37
+                    41943238,
+                    41943242,
+                    41943244,
+                    41943243,
+                    41943237,
+                    41943228,
+                    251,
+                    3145759,
+                    102
                 ],
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 5445072416159269761,
+                "entityGUID": 1593307260120253205,
                 "overridenProperties": null,
-                "overridenComponents": {
-                    "8302729333555196098": false
-                },
+                "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
@@ -84,19 +83,19 @@
             "Canvas": {
                 "placeholder": ""
             },
-            "id": 0
+            "id": 41943220
         },
         {
             "EntityData": {
                 "name": "UI Crosshair",
                 "tag": "",
-                "parent": 0,
+                "parent": 41943220,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 7174454673069540227,
+                "entityGUID": 7357914783154488121,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -161,19 +160,19 @@
                 },
                 "toTile": false
             },
-            "id": 1
+            "id": 41943238
         },
         {
             "EntityData": {
                 "name": "UI Base Crosshair",
                 "tag": "",
-                "parent": 0,
+                "parent": 41943220,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 13515522948407198597,
+                "entityGUID": 440385755513406273,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -238,22 +237,21 @@
                 },
                 "toTile": false
             },
-            "id": 2
+            "id": 41943242
         },
         {
             "EntityData": {
                 "name": "Damaged Background",
                 "tag": "",
-                "parent": 0,
+                "parent": 41943220,
                 "attachedSocket": 65535,
                 "children": null,
-                "layerId": 1,
+                "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 16397826709924316039,
+                "entityGUID": 14851904563099009861,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "6919815292445452220": false,
                     "394579324703252227": true
                 },
                 "inactiveComponents": null
@@ -303,7 +301,7 @@
                 }
             },
             "Image": {
-                "texture": 15629329532067610719,
+                "texture": 12643416590882717963,
                 "colorTint": {
                     "r": 1.0,
                     "g": 1.0,
@@ -318,32 +316,30 @@
                 },
                 "toTile": false
             },
-            "id": 3
+            "id": 41943244
         },
         {
             "EntityData": {
                 "name": "Quest Container",
                 "tag": "",
-                "parent": 0,
+                "parent": 41943220,
                 "attachedSocket": 65535,
                 "children": [
-                    5,
-                    8
+                    41943239,
+                    41943231
                 ],
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 5445072416159269769,
+                "entityGUID": 17734208324616127299,
                 "overridenProperties": null,
-                "overridenComponents": {
-                    "6919815292445452220": false
-                },
+                "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 1220.91015625,
-                    "y": 135.2146759033203,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "scale": {
@@ -363,8 +359,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 1220.91015625,
-                    "y": 135.2146759033203,
+                    "x": 0.0,
+                    "y": 0.0,
                     "z": 0.0
                 },
                 "localScale": {
@@ -384,22 +380,22 @@
                     "z": 0.0
                 }
             },
-            "id": 4
+            "id": 41943243
         },
         {
             "EntityData": {
                 "name": "Mission Objective Container",
                 "tag": "",
-                "parent": 4,
+                "parent": 41943243,
                 "attachedSocket": 65535,
                 "children": [
-                    6,
-                    7
+                    41943241,
+                    41943240
                 ],
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 6021533168462693259,
+                "entityGUID": 9087297040064758587,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": false
@@ -408,8 +404,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 942.77734375,
-                    "y": 201.3005828857422,
+                    "x": 836.9722290039063,
+                    "y": 178.9513702392578,
                     "z": 0.0
                 },
                 "scale": {
@@ -429,8 +425,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -365.9642333984375,
-                    "y": 86.95513916015625,
+                    "x": 1101.279296875,
+                    "y": 235.46234130859375,
                     "z": 0.0
                 },
                 "localScale": {
@@ -450,19 +446,19 @@
                     "z": 0.0
                 }
             },
-            "id": 5
+            "id": 41943239
         },
         {
             "EntityData": {
                 "name": "Mission Objective Background",
                 "tag": "",
-                "parent": 5,
+                "parent": 41943239,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 13515522948407198605,
+                "entityGUID": 11393140049278452543,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "394579324703252227": false
@@ -471,8 +467,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 942.7377319335938,
-                    "y": 201.29063415527344,
+                    "x": 836.9555053710938,
+                    "y": 178.95120239257813,
                     "z": 0.0
                 },
                 "scale": {
@@ -492,8 +488,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0521240271627903,
-                    "y": -0.013092041946947575,
+                    "x": -0.02209472842514515,
+                    "y": -0.00022888185048941523,
                     "z": 0.0
                 },
                 "localScale": {
@@ -529,27 +525,29 @@
                 },
                 "toTile": false
             },
-            "id": 6
+            "id": 41943241
         },
         {
             "EntityData": {
                 "name": "Mission Objective Text",
                 "tag": "",
-                "parent": 5,
+                "parent": 41943239,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 1986307902338728847,
+                "entityGUID": 440385755513406269,
                 "overridenProperties": null,
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "9644886267844571682": true
+                },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 854.4055786132813,
-                    "y": 192.2866668701172,
+                    "x": 836.9555053710938,
+                    "y": 178.95120239257813,
                     "z": 0.0
                 },
                 "scale": {
@@ -569,8 +567,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -116.27857208251953,
-                    "y": -11.860398292541504,
+                    "x": -0.02209472842514515,
+                    "y": -0.00022888185048941523,
                     "z": 0.0
                 },
                 "localScale": {
@@ -600,22 +598,22 @@
                     "b": 0.6931034326553345
                 }
             },
-            "id": 7
+            "id": 41943240
         },
         {
             "EntityData": {
                 "name": "Quest Information Container",
                 "tag": "",
-                "parent": 4,
+                "parent": 41943243,
                 "attachedSocket": 65535,
                 "children": [
-                    9,
-                    10
+                    41943235,
+                    41943236
                 ],
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 14091983700710622097,
+                "entityGUID": 8510836287761335083,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": false
@@ -624,8 +622,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 1220.91015625,
-                    "y": 135.2146759033203,
+                    "x": 1211.6533203125,
+                    "y": 126.75760650634766,
                     "z": 0.0
                 },
                 "scale": {
@@ -645,8 +643,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
+                    "x": 1594.28076171875,
+                    "y": 166.7863311767578,
                     "z": 0.0
                 },
                 "localScale": {
@@ -666,19 +664,19 @@
                     "z": 0.0
                 }
             },
-            "id": 8
+            "id": 41943231
         },
         {
             "EntityData": {
                 "name": "Quest Background",
                 "tag": "",
-                "parent": 8,
+                "parent": 41943231,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 10633219186890081171,
+                "entityGUID": 13698983058492146483,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "394579324703252227": true
@@ -687,8 +685,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 1292.6435546875,
-                    "y": 135.21470642089844,
+                    "x": 1283.36474609375,
+                    "y": 126.75751495361328,
                     "z": 0.0
                 },
                 "scale": {
@@ -708,8 +706,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 94.38599395751953,
-                    "y": 3.051758176297881e-05,
+                    "x": 94.35694122314453,
+                    "y": -0.00012207032705191523,
                     "z": 0.0
                 },
                 "localScale": {
@@ -745,19 +743,19 @@
                 },
                 "toTile": false
             },
-            "id": 9
+            "id": 41943235
         },
         {
             "EntityData": {
                 "name": "Quest Text",
                 "tag": "",
-                "parent": 8,
+                "parent": 41943231,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 18127208966834586517,
+                "entityGUID": 14275443810795569973,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "9644886267844571682": true
@@ -766,8 +764,8 @@
             },
             "Transform": {
                 "position": {
-                    "x": 856.2168579101563,
-                    "y": 124.85350036621094,
+                    "x": 846.9390869140625,
+                    "y": 116.39627075195313,
                     "z": 0.0
                 },
                 "scale": {
@@ -787,8 +785,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -479.8592834472656,
-                    "y": -13.633118629455566,
+                    "x": -479.8869934082031,
+                    "y": -13.633332252502441,
                     "z": 0.0
                 },
                 "localScale": {
@@ -818,23 +816,23 @@
                     "b": 1.0
                 }
             },
-            "id": 10
+            "id": 41943236
         },
         {
             "EntityData": {
                 "name": "Player UI Container",
                 "tag": "",
-                "parent": 0,
+                "parent": 41943220,
                 "attachedSocket": 65535,
                 "children": [
-                    12,
-                    13,
-                    15
+                    41943232,
+                    41943233,
+                    41943230
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 14091983700710622103,
+                "entityGUID": 3899150269333947191,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -883,19 +881,19 @@
                     "z": 0.0
                 }
             },
-            "id": 11
+            "id": 41943237
         },
         {
             "EntityData": {
                 "name": "Player UI Image",
                 "tag": "",
-                "parent": 11,
+                "parent": 41943237,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 18127208966834586521,
+                "entityGUID": 7934375535457911597,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -960,21 +958,21 @@
                 },
                 "toTile": false
             },
-            "id": 12
+            "id": 41943232
         },
         {
             "EntityData": {
                 "name": "Health Container",
                 "tag": "",
-                "parent": 11,
+                "parent": 41943237,
                 "attachedSocket": 65535,
                 "children": [
-                    14
+                    41943234
                 ],
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 4868611663855846299,
+                "entityGUID": 18310669076919534383,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1023,19 +1021,19 @@
                     "z": 0.0
                 }
             },
-            "id": 13
+            "id": 41943233
         },
         {
             "EntityData": {
                 "name": "Health Bar",
                 "tag": "",
-                "parent": 13,
+                "parent": 41943233,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 16974287462227739549,
+                "entityGUID": 3899150269333947185,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "394579324703252227": false
@@ -1102,21 +1100,21 @@
                 },
                 "toTile": false
             },
-            "id": 14
+            "id": 41943234
         },
         {
             "EntityData": {
                 "name": "Dash Container",
                 "tag": "",
-                "parent": 11,
+                "parent": 41943237,
                 "attachedSocket": 65535,
                 "children": [
-                    16
+                    41943229
                 ],
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 4292150911552422815,
+                "entityGUID": 7934375535457911593,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1165,19 +1163,19 @@
                     "z": 0.0
                 }
             },
-            "id": 15
+            "id": 41943230
         },
         {
             "EntityData": {
                 "name": "Dash Bar",
                 "tag": "",
-                "parent": 15,
+                "parent": 41943230,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 2562768654642152353,
+                "entityGUID": 2169768012423676711,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1242,22 +1240,22 @@
                 },
                 "toTile": false
             },
-            "id": 16
+            "id": 41943229
         },
         {
             "EntityData": {
                 "name": "Ammo UI Container",
                 "tag": "",
-                "parent": 0,
+                "parent": 41943220,
                 "attachedSocket": 65535,
                 "children": [
-                    18,
-                    22
+                    41943225,
+                    41943224
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 7750915425372980131,
+                "entityGUID": 5052071773940794149,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1306,21 +1304,21 @@
                     "z": 0.0
                 }
             },
-            "id": 17
+            "id": 41943228
         },
         {
             "EntityData": {
                 "name": "Ammo UI",
                 "tag": "",
-                "parent": 17,
+                "parent": 41943228,
                 "attachedSocket": 65535,
                 "children": [
-                    19
+                    41943227
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 13515522948407215013,
+                "entityGUID": 1593307260120253215,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1385,22 +1383,22 @@
                 },
                 "toTile": false
             },
-            "id": 18
+            "id": 41943225
         },
         {
             "EntityData": {
                 "name": "Ammo Text Container",
                 "tag": "",
-                "parent": 18,
+                "parent": 41943225,
                 "attachedSocket": 65535,
                 "children": [
-                    20,
-                    21
+                    41943226,
+                    41943222
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 6021533168462709671,
+                "entityGUID": 10240218544671605539,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1449,27 +1447,29 @@
                     "z": 0.0
                 }
             },
-            "id": 19
+            "id": 41943227
         },
         {
             "EntityData": {
                 "name": "Max Ammo Count",
                 "tag": "",
-                "parent": 19,
+                "parent": 41943227,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 8327376177676403625,
+                "entityGUID": 5052071773940794145,
                 "overridenProperties": null,
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "9644886267844571682": true
+                },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
                     "x": 200.82943725585938,
-                    "y": 301.5198974609375,
+                    "y": 301.5130615234375,
                     "z": 0.0
                 },
                 "scale": {
@@ -1490,7 +1490,7 @@
                 },
                 "localPosition": {
                     "x": 63.057159423828125,
-                    "y": 1.214508056640625,
+                    "y": 1.204986572265625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1520,27 +1520,30 @@
                     "b": 0.0
                 }
             },
-            "id": 20
+            "id": 41943226
         },
         {
             "EntityData": {
                 "name": "Current Ammo Count",
                 "tag": "",
-                "parent": 19,
+                "parent": 41943227,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 7750915425372980139,
+                "entityGUID": 16004826067705840409,
                 "overridenProperties": null,
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "6919815292445452220": false,
+                    "9644886267844571682": true
+                },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 155.3894500732422,
-                    "y": 300.4939270019531,
+                    "x": 155.3860321044922,
+                    "y": 300.4870910644531,
                     "z": 0.0
                 },
                 "scale": {
@@ -1560,8 +1563,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.0714569091796875,
-                    "y": -0.210845947265625,
+                    "x": -0.07623291015625,
+                    "y": -0.220367431640625,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1591,22 +1594,22 @@
                     "b": 0.0
                 }
             },
-            "id": 21
+            "id": 41943222
         },
         {
             "EntityData": {
                 "name": "Ultimate UI BG",
                 "tag": "",
-                "parent": 17,
+                "parent": 41943228,
                 "attachedSocket": 65535,
                 "children": [
-                    23,
-                    24
+                    41943223,
+                    41943221
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 1409847150035321773,
+                "entityGUID": 10816679296975029021,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1655,19 +1658,19 @@
                     "z": 0.0
                 }
             },
-            "id": 22
+            "id": 41943224
         },
         {
             "EntityData": {
                 "name": "Ultimate UI Frame",
                 "tag": "",
-                "parent": 22,
+                "parent": 41943224,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 2,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 4292150911552439215,
+                "entityGUID": 10240218544671605531,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1732,19 +1735,19 @@
                 },
                 "toTile": false
             },
-            "id": 23
+            "id": 41943223
         },
         {
             "EntityData": {
                 "name": "Ultimate UI Bar",
                 "tag": "",
-                "parent": 22,
+                "parent": 41943224,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 12362601443800368049,
+                "entityGUID": 11393140049278452503,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1809,21 +1812,21 @@
                 },
                 "toTile": false
             },
-            "id": 24
+            "id": 41943221
         },
         {
             "EntityData": {
                 "name": "Pause Menu UI",
                 "tag": "",
-                "parent": 0,
+                "parent": 41943220,
                 "attachedSocket": 65535,
                 "children": [
-                    26
+                    330
                 ],
                 "layerId": 0,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 15821365957620908979,
+                "entityGUID": 12546061553885069643,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": [
@@ -1874,23 +1877,1503 @@
                     "z": 0.0
                 }
             },
-            "id": 25
+            "id": 251
         },
         {
             "EntityData": {
                 "name": "Pause Overlay",
                 "tag": "",
-                "parent": 25,
+                "parent": 251,
                 "attachedSocket": 65535,
                 "children": [
-                    27
+                    333
                 ],
                 "layerId": 4,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 8903836929979827125,
+                "entityGUID": 2169768012423479695,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": true,
+                    "394579324703252227": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1996.7999267578125,
+                    "y": 1148.941650390625,
+                    "z": 1.0399999618530273
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1996.7999267578125,
+                    "y": 1148.941650390625,
+                    "z": 1.0399999618530273
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.8823529481887817
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 330
+        },
+        {
+            "EntityData": {
+                "name": "Buttons Container",
+                "tag": "",
+                "parent": 330,
+                "attachedSocket": 65535,
+                "children": [
+                    334,
+                    336,
+                    338,
+                    340,
+                    342
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 11969600801581678993,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": -31.21722412109375,
+                    "y": 10.9647216796875,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0400516986846924,
+                    "y": 1.0638347864151,
+                    "z": 1.039999008178711
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.49640288949012756,
+                    "y": -0.46045443415641785,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.0005208592629060149,
+                    "y": 0.0009259259095415473,
+                    "z": 0.9999991059303284
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 333
+        },
+        {
+            "EntityData": {
+                "name": "MM Box",
+                "tag": "",
+                "parent": 333,
+                "attachedSocket": 65535,
+                "children": [
+                    335
+                ],
+                "layerId": 5,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 3322689517030326675,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "17237801994024849853": false,
+                    "6919815292445452220": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 926.2361450195313,
+                    "y": 589.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 312.01611328125,
+                    "y": 106.38343048095703,
+                    "z": 1.0399984121322632
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 920.58251953125,
+                    "y": 543.3506469726563,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0005798339844,
+                    "y": 99.99995422363281,
+                    "z": 0.999999463558197
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4644100093332668417,
+                        "fields": [
+                            {
+                                "name": "mainMenuScene",
+                                "data": {
+                                    "__variant_value": 12767626241908719617,
+                                    "__variant_type": 14
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 334,
+                    "script": 4644100093332668417
+                },
+                "normalColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "highlightedColor": {
+                    "r": 0.03921568766236305,
+                    "g": 0.03921568766236305,
+                    "b": 0.03921568766236305,
+                    "a": 0.7843137383460999
+                },
+                "pressedColor": {
+                    "r": 0.11372549086809158,
+                    "g": 0.11372549086809158,
+                    "b": 0.11372549086809158,
+                    "a": 0.7843137383460999
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "MainMenu",
+                "onPressFunction": "",
+                "onHoverFunction": "",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 334
+        },
+        {
+            "EntityData": {
+                "name": "MM Word",
+                "tag": "",
+                "parent": 334,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 6,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 2746228764726903189,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "9644886267844571682": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 816.834716796875,
+                    "y": 562.9064331054688,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0400547981262207,
+                    "y": 1.0638377666473389,
+                    "z": 1.0399974584579468
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.35062742233276367,
+                    "y": -0.24527859687805176,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.0033333369065076113,
+                    "y": 0.010000032372772694,
+                    "z": 0.9999991059303284
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Main Menu",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                }
+            },
+            "id": 335
+        },
+        {
+            "EntityData": {
+                "name": "Quit Box",
+                "tag": "",
+                "parent": 333,
+                "attachedSocket": 65535,
+                "children": [
+                    337
+                ],
+                "layerId": 5,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 7934375535457714583,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 926.2361450195313,
+                    "y": 378.7139892578125,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 312.01611328125,
+                    "y": 106.38343048095703,
+                    "z": 1.0399984121322632
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 920.58251953125,
+                    "y": 345.68267822265625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0005798339844,
+                    "y": 99.99995422363281,
+                    "z": 0.999999463558197
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4644100093332668417,
+                        "fields": [
+                            {
+                                "name": "mainMenuScene",
+                                "data": {
+                                    "__variant_value": 12767626241908719617,
+                                    "__variant_type": 14
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 336,
+                    "script": 4644100093332668417
+                },
+                "normalColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "highlightedColor": {
+                    "r": 0.03921568766236305,
+                    "g": 0.03921568766236305,
+                    "b": 0.03921568766236305,
+                    "a": 0.7843137383460999
+                },
+                "pressedColor": {
+                    "r": 0.11372549086809158,
+                    "g": 0.11372549086809158,
+                    "b": 0.11372549086809158,
+                    "a": 0.7843137383460999
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "QuitGame",
+                "onPressFunction": "",
+                "onHoverFunction": "",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 336
+        },
+        {
+            "EntityData": {
+                "name": "Quit Word",
+                "tag": "",
+                "parent": 336,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 6,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 10240218544671408537,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": false,
+                    "9644886267844571682": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 814.9232788085938,
+                    "y": 359.56512451171875,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0400547981262207,
+                    "y": 1.0638377666473389,
+                    "z": 1.0399974584579468
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.3567535877227783,
+                    "y": -0.17999863624572754,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.0033333369065076113,
+                    "y": 0.010000032372772694,
+                    "z": 0.9999991059303284
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Quit Game",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                }
+            },
+            "id": 337
+        },
+        {
+            "EntityData": {
+                "name": "Resume Box",
+                "tag": "",
+                "parent": 333,
+                "attachedSocket": 65535,
+                "children": [
+                    339
+                ],
+                "layerId": 5,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 18310669076919337371,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 926.2361450195313,
+                    "y": 686.4349975585938,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 312.01611328125,
+                    "y": 106.38343048095703,
+                    "z": 1.0399984121322632
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 920.58251953125,
+                    "y": 634.9390869140625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0005798339844,
+                    "y": 99.99995422363281,
+                    "z": 0.999999463558197
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4644100093332668417,
+                        "fields": [
+                            {
+                                "name": "mainMenuScene",
+                                "data": {
+                                    "__variant_value": 12767626241908719617,
+                                    "__variant_type": 14
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 338,
+                    "script": 4644100093332668417
+                },
+                "normalColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "highlightedColor": {
+                    "r": 0.03921568766236305,
+                    "g": 0.03921568766236305,
+                    "b": 0.03921568766236305,
+                    "a": 0.7843137383460999
+                },
+                "pressedColor": {
+                    "r": 0.11372549086809158,
+                    "g": 0.11372549086809158,
+                    "b": 0.11372549086809158,
+                    "a": 0.7843137383460999
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "ResumeGame",
+                "onPressFunction": "",
+                "onHoverFunction": "",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 338
+        },
+        {
+            "EntityData": {
+                "name": "Resume Word",
+                "tag": "",
+                "parent": 338,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 6,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 2746228764726903197,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "9644886267844571682": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 844.2952880859375,
+                    "y": 665.7711181640625,
+                    "z": 2.0799949169158936
+                },
+                "scale": {
+                    "x": 1.5513490438461304,
+                    "y": 1.5868202447891235,
+                    "z": 1.551262617111206
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.2626173496246338,
+                    "y": -0.19423961639404297,
+                    "z": 1.9999982118606567
+                },
+                "localScale": {
+                    "x": 0.0049720159731805325,
+                    "y": 0.01491604745388031,
+                    "z": 1.4916009902954102
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Resume",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                }
+            },
+            "id": 339
+        },
+        {
+            "EntityData": {
+                "name": "Restart Box",
+                "tag": "",
+                "parent": 333,
+                "attachedSocket": 65535,
+                "children": [
+                    341
+                ],
+                "layerId": 5,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 3899150269333750175,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "6919815292445452220": true,
+                    "394579324703252227": false,
+                    "7111564935354361005": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 926.2361450195313,
+                    "y": 480.36431884765625,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 312.01611328125,
+                    "y": 106.38343048095703,
+                    "z": 1.0399984121322632
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 920.5824584960938,
+                    "y": 441.2335510253906,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0005798339844,
+                    "y": 99.99995422363281,
+                    "z": 0.999999463558197
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 4644100093332668417,
+                        "fields": [
+                            {
+                                "name": "mainMenuScene",
+                                "data": {
+                                    "__variant_value": 12767626241908719617,
+                                    "__variant_type": 14
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 340,
+                    "script": 4644100093332668417
+                },
+                "normalColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "highlightedColor": {
+                    "r": 0.03793102502822876,
+                    "g": 0.03793102502822876,
+                    "b": 0.03793102502822876,
+                    "a": 0.7843137383460999
+                },
+                "pressedColor": {
+                    "r": 0.11379307508468628,
+                    "g": 0.11379307508468628,
+                    "b": 0.11379307508468628,
+                    "a": 0.7843137383460999
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "RestartGame",
+                "onPressFunction": "",
+                "onHoverFunction": "",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 340
+        },
+        {
+            "EntityData": {
+                "name": "Restart Word",
+                "tag": "",
+                "parent": 340,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 6,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 8510836287761154465,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "9644886267844571682": true
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 843.523681640625,
+                    "y": 459.2510986328125,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0400547981262207,
+                    "y": 1.0638377666473389,
+                    "z": 1.0399974584579468
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.2650904655456543,
+                    "y": -0.19846343994140625,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.0033333369065076113,
+                    "y": 0.010000032372772694,
+                    "z": 0.9999991059303284
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 11263476825637552129,
+                "text": "Restart",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                }
+            },
+            "id": 341
+        },
+        {
+            "EntityData": {
+                "name": "Game Paused Text",
+                "tag": "",
+                "parent": 333,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 6,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 18310669076919353763,
                 "overridenProperties": null,
                 "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 826.6507568359375,
+                    "y": 726.8076782226563,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.040050983428955,
+                    "y": 1.0638333559036255,
+                    "z": 1.0399984121322632
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 824.83203125,
+                    "y": 672.8892211914063,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999992847442627,
+                    "y": 0.9999986886978149,
+                    "z": 0.999999463558197
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 4736291944169553927,
+                "text": "Game Paused",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                }
+            },
+            "id": 342
+        },
+        {
+            "EntityData": {
+                "name": "Dialogue",
+                "tag": "",
+                "parent": 41943220,
+                "attachedSocket": 65535,
+                "children": [
+                    105,
+                    1048659,
+                    106
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 9663757792368149201,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "17237801994024849853": false
+                },
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 822.0593872070313,
+                    "y": 95.06800079345703,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.5306079387664795,
+                    "y": 0.9999982118606567,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 822.0593872070313,
+                    "y": 95.06800079345703,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.5306079387664795,
+                    "y": 0.9999982118606567,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 12212953500108079397,
+                        "fields": [
+                            {
+                                "name": "dialogueTextBackgroundTransform",
+                                "data": {
+                                    "__variant_value": 1048659,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "dialogueBoxTransitionTime",
+                                "data": {
+                                    "__variant_value": 0.20000000298023224,
+                                    "__variant_type": 18
+                                }
+                            },
+                            {
+                                "name": "dialogueText",
+                                "data": {
+                                    "__variant_value": 105,
+                                    "__variant_type": 4
+                                }
+                            },
+                            {
+                                "name": "speakerText",
+                                "data": {
+                                    "__variant_value": 106,
+                                    "__variant_type": 4
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "id": 3145759
+        },
+        {
+            "EntityData": {
+                "name": "Dialogue Text",
+                "tag": "",
+                "parent": 3145759,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 2,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 13122522306188460281,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 846.6347045898438,
+                    "y": 119.29948425292969,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.5306077003479004,
+                    "y": 0.9999982118606567,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 16.055908203125,
+                    "y": 24.231521606445313,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.9999998211860657,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 436541759683510273,
+                "text": "[Dialogue]",
+                "fontSize": 32,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 0.8901960849761963
+                }
+            },
+            "id": 105
+        },
+        {
+            "EntityData": {
+                "name": "Dialogue Background",
+                "tag": "",
+                "parent": 3145759,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 6204993278547526177,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 822.0592041015625,
+                    "y": 95.06655883789063,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 958.4259643554688,
+                    "y": 67.90899658203125,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.0001220703125,
+                    "y": -0.0014495849609375,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 626.1734008789063,
+                    "y": 67.90911865234375,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Image": {
+                "texture": 8,
+                "colorTint": {
+                    "r": 0.0,
+                    "g": 0.0117647061124444,
+                    "b": 0.0,
+                    "a": 0.8784313797950745
+                },
+                "anchorMode": "BottomLeft",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "id": 1048659
+        },
+        {
+            "EntityData": {
+                "name": "Speaker Text",
+                "tag": "",
+                "parent": 3145759,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 1593307260119990523,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 846.2926025390625,
+                    "y": 180.81552124023438,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 15.8323974609375,
+                    "y": 85.74766540527344,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.6533351540565491,
+                    "y": 1.0000017881393433,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 436541759683510273,
+                "text": "[Speaker]",
+                "fontSize": 30,
+                "fontColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0
+                }
+            },
+            "id": 106
+        },
+        {
+            "EntityData": {
+                "name": "Death Menu UI",
+                "tag": "",
+                "parent": 41943220,
+                "attachedSocket": 65535,
+                "children": [
+                    104
+                ],
+                "layerId": 0,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 12546061553885069643,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": [
+                    8302729333555196098
+                ]
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 102
+        },
+        {
+            "EntityData": {
+                "name": "Death Overlay",
+                "tag": "",
+                "parent": 102,
+                "attachedSocket": 65535,
+                "children": [
+                    114
+                ],
+                "layerId": 4,
+                "isActive": false,
+                "prefabID": 1046172679372734755,
+                "entityGUID": 2169768012423479695,
+                "overridenProperties": null,
+                "overridenComponents": {
+                    "394579324703252227": false
+                },
                 "inactiveComponents": null
             },
             "Transform": {
@@ -1953,25 +3436,23 @@
                 },
                 "toTile": false
             },
-            "id": 26
+            "id": 104
         },
         {
             "EntityData": {
                 "name": "Buttons Container",
                 "tag": "",
-                "parent": 26,
+                "parent": 104,
                 "attachedSocket": 65535,
                 "children": [
-                    28,
-                    30,
-                    32,
-                    34,
-                    36
+                    115,
+                    137,
+                    139
                 ],
                 "layerId": 0,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 7750915425372980151,
+                "entityGUID": 11969600801581678993,
                 "overridenProperties": null,
                 "overridenComponents": {
                     "6919815292445452220": false
@@ -1980,12 +3461,12 @@
             },
             "Transform": {
                 "position": {
-                    "x": -22.0,
-                    "y": 118.18753051757813,
+                    "x": -28.2562255859375,
+                    "y": 19.17333984375,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400224924087524,
+                    "x": 1.0400515794754028,
                     "y": 1.0638347864151,
                     "z": 1.039999008178711
                 },
@@ -2001,12 +3482,12 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.49326974153518677,
-                    "y": -0.3742757737636566,
+                    "x": -0.49640288949012756,
+                    "y": -0.46045443415641785,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0005208445945754647,
+                    "x": 0.0005208592629060149,
                     "y": 0.0009259259095415473,
                     "z": 0.9999991059303284
                 },
@@ -2022,37 +3503,38 @@
                     "z": 0.0
                 }
             },
-            "id": 27
+            "id": 114
         },
         {
             "EntityData": {
                 "name": "MM Box",
                 "tag": "",
-                "parent": 27,
+                "parent": 114,
                 "attachedSocket": 65535,
                 "children": [
-                    29
+                    116
                 ],
                 "layerId": 5,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 7174454673069556665,
+                "entityGUID": 3322689517030326675,
                 "overridenProperties": null,
                 "overridenComponents": {
-                    "17237801994024849853": false
+                    "17237801994024849853": false,
+                    "6919815292445452220": false
                 },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 934.2633666992188,
-                    "y": 488.9661560058594,
+                    "x": 929.197021484375,
+                    "y": 458.9519958496094,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0072937011719,
-                    "y": 106.38343048095703,
-                    "z": 1.0399984121322632
+                    "x": 312.0160827636719,
+                    "y": 106.38343811035156,
+                    "z": 1.0399985313415527
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2066,14 +3548,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 919.464111328125,
-                    "y": 348.5302734375,
+                    "x": 920.5824584960938,
+                    "y": 413.38995361328125,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0005187988281,
+                    "x": 300.0005798339844,
                     "y": 99.99995422363281,
-                    "z": 0.9999994039535522
+                    "z": 0.999999463558197
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2090,12 +3572,12 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 4644100093332668417,
+                        "scriptId": 10337081121383874561,
                         "fields": [
                             {
                                 "name": "mainMenuScene",
                                 "data": {
-                                    "__variant_value": 12767626241908719617,
+                                    "__variant_value": 18446744073709551615,
                                     "__variant_type": 14
                                 }
                             }
@@ -2122,8 +3604,8 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 28,
-                    "script": 4644100093332668417
+                    "entity": 115,
+                    "script": 10337081121383874561
                 },
                 "normalColor": {
                     "r": 0.0,
@@ -2165,33 +3647,35 @@
                     "z": 0.0
                 }
             },
-            "id": 28
+            "id": 115
         },
         {
             "EntityData": {
                 "name": "MM Word",
                 "tag": "",
-                "parent": 28,
+                "parent": 115,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 17550748214531179451,
+                "entityGUID": 2746228764726903189,
                 "overridenProperties": null,
-                "overridenComponents": null,
+                "overridenComponents": {
+                    "9644886267844571682": false
+                },
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 824.8665161132813,
-                    "y": 462.8728942871094,
+                    "x": 819.795654296875,
+                    "y": 432.8584289550781,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400245189666748,
-                    "y": 1.0638360977172852,
-                    "z": 1.0399976968765259
+                    "x": 1.0400546789169312,
+                    "y": 1.0638377666473389,
+                    "z": 1.0399975776672363
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2205,14 +3689,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.35062265396118164,
-                    "y": -0.24527549743652344,
+                    "x": -0.35062742233276367,
+                    "y": -0.24527859687805176,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0033333338797092438,
-                    "y": 0.010000016540288925,
-                    "z": 0.9999993443489075
+                    "x": 0.0033333369065076113,
+                    "y": 0.010000032372772694,
+                    "z": 0.9999991059303284
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2227,7 +3711,7 @@
                 }
             },
             "Text": {
-                "font": 8230891833028771841,
+                "font": 11263476825637552129,
                 "text": "Main Menu",
                 "fontSize": 50,
                 "fontColor": {
@@ -2236,459 +3720,35 @@
                     "b": 1.0
                 }
             },
-            "id": 29
-        },
-        {
-            "EntityData": {
-                "name": "Quit Box",
-                "tag": "",
-                "parent": 27,
-                "attachedSocket": 65535,
-                "children": [
-                    31
-                ],
-                "layerId": 5,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 12939062196103791549,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 945.2632446289063,
-                    "y": 381.93756103515625,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 312.0072937011719,
-                    "y": 106.38343048095703,
-                    "z": 1.0399984121322632
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 930.0407104492188,
-                    "y": 247.92385864257813,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 300.0005187988281,
-                    "y": 99.99995422363281,
-                    "z": 0.9999994039535522
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "scriptId": 4644100093332668417,
-                        "fields": [
-                            {
-                                "name": "mainMenuScene",
-                                "data": {
-                                    "__variant_value": 18446744073709551615,
-                                    "__variant_type": 14
-                                }
-                            }
-                        ]
-                    }
-                ]
-            },
-            "Image": {
-                "texture": 7,
-                "colorTint": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0,
-                    "a": 1.0
-                },
-                "anchorMode": "Center",
-                "toFlip": false,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toTile": false
-            },
-            "Button": {
-                "isInteractable": true,
-                "reference": {
-                    "entity": 30,
-                    "script": 4644100093332668417
-                },
-                "normalColor": {
-                    "r": 0.0,
-                    "g": 0.0,
-                    "b": 0.0,
-                    "a": 0.0
-                },
-                "highlightedColor": {
-                    "r": 0.03921568766236305,
-                    "g": 0.03921568766236305,
-                    "b": 0.03921568766236305,
-                    "a": 0.7843137383460999
-                },
-                "pressedColor": {
-                    "r": 0.11372549086809158,
-                    "g": 0.11372549086809158,
-                    "b": 0.11372549086809158,
-                    "a": 0.7843137383460999
-                },
-                "disabledColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0,
-                    "a": 1.0
-                },
-                "onClickReleasedFunction": "QuitGame",
-                "onPressFunction": "",
-                "onHoverFunction": "",
-                "fadeDuration": 0.10000000149011612,
-                "colorMultiplier": 1.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 30
-        },
-        {
-            "EntityData": {
-                "name": "Quit Word",
-                "tag": "",
-                "parent": 30,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 6,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 1409847150035321791,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 833.9537963867188,
-                    "y": 362.7884826660156,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0400245189666748,
-                    "y": 1.0638360977172852,
-                    "z": 1.0399976968765259
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.3567526340484619,
-                    "y": -0.18000054359436035,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.0033333338797092438,
-                    "y": 0.010000016540288925,
-                    "z": 0.9999993443489075
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 8230891833028771841,
-                "text": "Quit Game",
-                "fontSize": 50,
-                "fontColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0
-                }
-            },
-            "id": 31
-        },
-        {
-            "EntityData": {
-                "name": "Resume Box",
-                "tag": "",
-                "parent": 27,
-                "attachedSocket": 65535,
-                "children": [
-                    33
-                ],
-                "layerId": 5,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 14091983700710638529,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 946.2630615234375,
-                    "y": 692.657958984375,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 312.0072937011719,
-                    "y": 106.38343048095703,
-                    "z": 1.0399984121322632
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 931.0020141601563,
-                    "y": 539.9996948242188,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 300.0005187988281,
-                    "y": 99.99995422363281,
-                    "z": 0.9999994039535522
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "scriptId": 4644100093332668417,
-                        "fields": [
-                            {
-                                "name": "mainMenuScene",
-                                "data": {
-                                    "__variant_value": 18446744073709551615,
-                                    "__variant_type": 14
-                                }
-                            }
-                        ]
-                    }
-                ]
-            },
-            "Image": {
-                "texture": 7,
-                "colorTint": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0,
-                    "a": 1.0
-                },
-                "anchorMode": "Center",
-                "toFlip": false,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toTile": false
-            },
-            "Button": {
-                "isInteractable": true,
-                "reference": {
-                    "entity": 32,
-                    "script": 4644100093332668417
-                },
-                "normalColor": {
-                    "r": 0.0,
-                    "g": 0.0,
-                    "b": 0.0,
-                    "a": 0.0
-                },
-                "highlightedColor": {
-                    "r": 0.03921568766236305,
-                    "g": 0.03921568766236305,
-                    "b": 0.03921568766236305,
-                    "a": 0.7843137383460999
-                },
-                "pressedColor": {
-                    "r": 0.11372549086809158,
-                    "g": 0.11372549086809158,
-                    "b": 0.11372549086809158,
-                    "a": 0.7843137383460999
-                },
-                "disabledColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0,
-                    "a": 1.0
-                },
-                "onClickReleasedFunction": "ResumeGame",
-                "onPressFunction": "",
-                "onHoverFunction": "",
-                "fadeDuration": 0.10000000149011612,
-                "colorMultiplier": 1.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 32
-        },
-        {
-            "EntityData": {
-                "name": "Resume Word",
-                "tag": "",
-                "parent": 32,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 6,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 17550748214531179459,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 864.3253173828125,
-                    "y": 671.9927978515625,
-                    "z": 2.0799953937530518
-                },
-                "scale": {
-                    "x": 1.5513027906417847,
-                    "y": 1.5868169069290161,
-                    "z": 1.551262378692627
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.26261472702026367,
-                    "y": -0.19425153732299805,
-                    "z": 1.9999985694885254
-                },
-                "localScale": {
-                    "x": 0.004972008056938648,
-                    "y": 0.014916015788912773,
-                    "z": 1.491600751876831
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 8230891833028771841,
-                "text": "Resume",
-                "fontSize": 50,
-                "fontColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0
-                }
-            },
-            "id": 33
+            "id": 116
         },
         {
             "EntityData": {
                 "name": "Restart Box",
                 "tag": "",
-                "parent": 27,
+                "parent": 114,
                 "attachedSocket": 65535,
                 "children": [
-                    35
+                    138
                 ],
                 "layerId": 5,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 15244905205317485509,
+                "entityGUID": 3899150269333750175,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 946.2630615234375,
-                    "y": 587.5872802734375,
+                    "x": 929.197021484375,
+                    "y": 585.572998046875,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 312.0072937011719,
-                    "y": 106.38343048095703,
-                    "z": 1.0399984121322632
+                    "x": 312.0160827636719,
+                    "y": 106.38343811035156,
+                    "z": 1.0399985313415527
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2702,14 +3762,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 931.0020141601563,
-                    "y": 441.23370361328125,
+                    "x": 920.5824584960938,
+                    "y": 532.4131469726563,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 300.0005187988281,
+                    "x": 300.0005798339844,
                     "y": 99.99995422363281,
-                    "z": 0.9999994039535522
+                    "z": 0.999999463558197
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2726,7 +3786,7 @@
             "Scripts": {
                 "scriptDatas": [
                     {
-                        "scriptId": 4644100093332668417,
+                        "scriptId": 10337081121383874561,
                         "fields": [
                             {
                                 "name": "mainMenuScene",
@@ -2758,8 +3818,8 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 34,
-                    "script": 4644100093332668417
+                    "entity": 137,
+                    "script": 10337081121383874561
                 },
                 "normalColor": {
                     "r": 0.0,
@@ -2785,7 +3845,7 @@
                     "b": 1.0,
                     "a": 1.0
                 },
-                "onClickReleasedFunction": "RestartGame",
+                "onClickReleasedFunction": "RestartFromCheckpoint",
                 "onPressFunction": "",
                 "onHoverFunction": "",
                 "fadeDuration": 0.10000000149011612,
@@ -2801,33 +3861,33 @@
                     "z": 0.0
                 }
             },
-            "id": 34
+            "id": 137
         },
         {
             "EntityData": {
                 "name": "Restart Word",
                 "tag": "",
-                "parent": 34,
+                "parent": 137,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 256925645428474823,
+                "entityGUID": 8510836287761154465,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 863.553466796875,
-                    "y": 566.4739379882813,
+                    "x": 846.4845581054688,
+                    "y": 564.4597778320313,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400245189666748,
-                    "y": 1.0638360977172852,
-                    "z": 1.0399976968765259
+                    "x": 1.0400546789169312,
+                    "y": 1.0638377666473389,
+                    "z": 1.0399975776672363
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2841,14 +3901,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": -0.2650885581970215,
-                    "y": -0.19846439361572266,
+                    "x": -0.2650904655456543,
+                    "y": -0.19846343994140625,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.0033333338797092438,
-                    "y": 0.010000016540288925,
-                    "z": 0.9999993443489075
+                    "x": 0.0033333369065076113,
+                    "y": 0.010000032372772694,
+                    "z": 0.9999991059303284
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2863,7 +3923,7 @@
                 }
             },
             "Text": {
-                "font": 8230891833028771841,
+                "font": 11263476825637552129,
                 "text": "Restart",
                 "fontSize": 50,
                 "fontColor": {
@@ -2872,33 +3932,33 @@
                     "b": 1.0
                 }
             },
-            "id": 35
+            "id": 138
         },
         {
             "EntityData": {
                 "name": "Game Paused Text",
                 "tag": "",
-                "parent": 27,
+                "parent": 114,
                 "attachedSocket": 65535,
                 "children": null,
                 "layerId": 6,
                 "isActive": false,
                 "prefabID": 1046172679372734755,
-                "entityGUID": 15821365957620909001,
+                "entityGUID": 18310669076919353763,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 835.84375,
-                    "y": 834.030517578125,
+                    "x": 829.6116943359375,
+                    "y": 735.0162963867188,
                     "z": 0.0
                 },
                 "scale": {
-                    "x": 1.0400217771530151,
-                    "y": 1.0638344287872314,
-                    "z": 1.0399984121322632
+                    "x": 1.0400508642196655,
+                    "y": 1.063833475112915,
+                    "z": 1.0399985313415527
                 },
                 "rotation": {
                     "w": 1.0,
@@ -2912,14 +3972,14 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 824.8319091796875,
-                    "y": 672.8892822265625,
+                    "x": 824.83203125,
+                    "y": 672.8892211914063,
                     "z": 0.0
                 },
                 "localScale": {
-                    "x": 0.9999993443489075,
-                    "y": 0.9999996423721313,
-                    "z": 0.9999994039535522
+                    "x": 0.9999992847442627,
+                    "y": 0.9999986886978149,
+                    "z": 0.999999463558197
                 },
                 "localRotation": {
                     "w": 1.0,
@@ -2934,8 +3994,8 @@
                 }
             },
             "Text": {
-                "font": 4736291944169553927,
-                "text": "Game Paused",
+                "font": 11263476825637552129,
+                "text": "You Died!",
                 "fontSize": 50,
                 "fontColor": {
                     "r": 1.0,
@@ -2943,336 +4003,7 @@
                     "b": 1.0
                 }
             },
-            "id": 36
-        },
-        {
-            "EntityData": {
-                "name": "Dialogue",
-                "tag": "",
-                "parent": 0,
-                "attachedSocket": 65535,
-                "children": [
-                    38,
-                    39,
-                    40
-                ],
-                "layerId": 0,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 256925645428474827,
-                "overridenProperties": null,
-                "overridenComponents": {
-                    "17237801994024849853": true,
-                    "6919815292445452220": true
-                },
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 831.9710083007813,
-                    "y": 105.62100219726563,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999982118606567,
-                    "y": 0.9999982118606567,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 831.9710083007813,
-                    "y": 105.62100219726563,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.9999982118606567,
-                    "y": 0.9999982118606567,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "scriptId": 12212953500108079397,
-                        "fields": [
-                            {
-                                "name": "dialogueTextBackgroundTransform",
-                                "data": {
-                                    "__variant_value": 39,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "dialogueBoxTransitionTime",
-                                "data": {
-                                    "__variant_value": 0.20000000298023224,
-                                    "__variant_type": 18
-                                }
-                            },
-                            {
-                                "name": "dialogueText",
-                                "data": {
-                                    "__variant_value": 38,
-                                    "__variant_type": 4
-                                }
-                            },
-                            {
-                                "name": "speakerText",
-                                "data": {
-                                    "__variant_value": 40,
-                                    "__variant_type": 4
-                                }
-                            }
-                        ]
-                    }
-                ]
-            },
-            "id": 37
-        },
-        {
-            "EntityData": {
-                "name": "Dialogue Text",
-                "tag": "",
-                "parent": 37,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 2,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 5445072416159286221,
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 843.1554565429688,
-                    "y": 127.98979949951172,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999982118606567,
-                    "y": 0.9999982118606567,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 11.1844482421875,
-                    "y": 22.36883544921875,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 11263476825637552129,
-                "text": "[Dialogue]",
-                "fontSize": 36,
-                "fontColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 0.8901960849761963
-                }
-            },
-            "id": 38
-        },
-        {
-            "EntityData": {
-                "name": "Dialogue Background",
-                "tag": "",
-                "parent": 37,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 0,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 12939062196103791567,
-                "overridenProperties": null,
-                "overridenComponents": {
-                    "6919815292445452220": true
-                },
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 831.9694213867188,
-                    "y": 105.62100219726563,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1049.9990234375,
-                    "y": 64.99988555908203,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.0015869140625,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1050.0008544921875,
-                    "y": 65.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Image": {
-                "texture": 8,
-                "colorTint": {
-                    "r": 0.0,
-                    "g": 0.0117647061124444,
-                    "b": 0.0,
-                    "a": 0.32549020648002625
-                },
-                "anchorMode": "BottomLeft",
-                "toFlip": false,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toTile": false
-            },
-            "id": 39
-        },
-        {
-            "EntityData": {
-                "name": "Speaker Text",
-                "tag": "",
-                "parent": 37,
-                "attachedSocket": 65535,
-                "children": null,
-                "layerId": 2,
-                "isActive": false,
-                "prefabID": 1046172679372734755,
-                "entityGUID": 11209679939193521105,
-                "overridenProperties": null,
-                "overridenComponents": {
-                    "6919815292445452220": false,
-                    "9644886267844571682": true
-                },
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 843.1554565429688,
-                    "y": 189.989990234375,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 0.9999982118606567,
-                    "y": 0.9999982118606567,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 11.1844482421875,
-                    "y": 84.36913299560547,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 11263476825637552129,
-                "text": "[Speaker]",
-                "fontSize": 36,
-                "fontColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 0.8901960849761963
-                }
-            },
-            "id": 40
+            "id": 139
         }
     ]
 }
