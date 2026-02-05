@@ -21,6 +21,7 @@
 
 #include "RandomRange.h"
 #include "systemResource.h"
+#include "video.h"
 
 #include <glm/gtx/io.hpp> // Required for operator<< overload
 
@@ -235,6 +236,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	ssaoShader						{ "System/Shader/squareOverlay.vert",				"System/Shader/ssaoGeneration.frag" },
 	TAAResolveShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/TAAResolveShader.frag" },
 	gaussianBlurShader				{ "System/Shader/squareOverlay.vert",				"System/Shader/gaussianBlur.frag" },
+	videoShader						{ "System/Shader/video.vert",						"System/Shader/video.frag" },
 	clusterBuildingCompute			{ "System/Shader/clusterBuilding.compute" },
 	clusterLightCompute				{ "System/Shader/clusterLightAssignment.compute" },
 	rayMarchingVolumetricFogCompute	{ "System/Shader/rayMarchingVolumetricFog.compute" },
@@ -249,6 +251,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	debugNavMeshVBO					{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	debugParticleShapeVBO			{ AMOUNT_OF_MEMORY_FOR_DEBUG },
 	textVBO							{ AMOUNT_OF_MEMORY_FOR_DEBUG },
+	videoVBO						{ 1024 },
 	EBO								{ AMOUNT_OF_MEMORY_ALLOCATED },
 	
 	lightSSBO						{ MAX_NUMBER_OF_LIGHT },
@@ -279,6 +282,7 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	timeElapsed						{},
 	haltonFrameIndex				{},
 	ssaoNoiseTextureId				{ INVALID_ID },
+	videoVAO						{},
 	hdrExposure						{ 0.9f },
 															 // main		normal			velocity
 	editorMainFrameBuffer			{ gameWidth, gameHeight, { GL_RGBA16F,	GL_RGB8_SNORM,	GL_RG16F } },
@@ -439,6 +443,36 @@ Renderer::Renderer(Engine& engine, RenderConfig renderConfig, int gameWidth, int
 	postprocessingShader.setUVec2("screenResolution", { gameWidth / VOLUMETRIC_FOG_DOWNSCALE, gameHeight / VOLUMETRIC_FOG_DOWNSCALE });
 #endif
 
+	// ======================================================
+	// Video VAO configuration
+	// ======================================================
+	glGenVertexArrays(1, &videoVAO);
+	glBindVertexArray(videoVAO);
+
+	// Create quad vertices for video rendering
+	float videoVertices[] = {
+		// positions    // texCoords
+		-1.0f,  1.0f,   0.0f, 1.0f,
+		-1.0f, -1.0f,   0.0f, 0.0f,
+		 1.0f, -1.0f,   1.0f, 0.0f,
+		-1.0f,  1.0f,   0.0f, 1.0f,
+		 1.0f, -1.0f,   1.0f, 0.0f,
+		 1.0f,  1.0f,   1.0f, 1.0f
+	};
+
+	glBindBuffer(GL_ARRAY_BUFFER, videoVBO.id());
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(videoVertices), videoVertices);
+
+	// Position attribute
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	// TexCoord attribute
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
 	initialiseSSAO();
 	initialiseTAA();
 
@@ -450,6 +484,7 @@ Renderer::~Renderer() {
 	glDeleteVertexArrays(1, &mainVAO);
 	glDeleteVertexArrays(1, &textVAO);
 	glDeleteVertexArrays(1, &particleVAO);
+	glDeleteVertexArrays(1, &videoVAO);
 
 	if (ssaoNoiseTextureId != INVALID_ID) glDeleteTextures(1, &ssaoNoiseTextureId);
 
@@ -542,10 +577,8 @@ void Renderer::renderMain(RenderMode renderMode) {
 			renderObjectIds();
 		}
 
-		if (isUIScreenShown) {
-			renderUiObjectIds();
-		}
-		
+		if (isUIScreenShown)
+			renderUI();
 		break;
 	// ===============================================
 	// In this case, we focus on rendering to the game's FBO.
@@ -627,6 +660,7 @@ void Renderer::renderUI()
 			Image* image = registry.try_get<Image>(entity);
 			Text* text = registry.try_get<Text>(entity);
 			Button* button = registry.try_get<Button>(entity);
+			VideoPlayer* videoPlayer = registry.try_get<VideoPlayer>(entity);
 
 			if (!entityData.isActive) {
 				continue;
@@ -638,6 +672,31 @@ void Renderer::renderUI()
 
 			if (text && engine.ecs.isComponentActive<Text>(entity)) {
 				renderText(transform, *text);
+			}
+
+			if (engine.isInSimulationMode() && videoPlayer && engine.ecs.isComponentActive<VideoPlayer>(entity)) {
+				auto [video, refCount] = resourceManager.getResource<Video>(videoPlayer->videoId);
+				video->decodeFrame(videoPlayer->timeAccumulator);
+				videoShader.use();
+
+				glm::vec2 textureCropSize(1.0f, 1.0f);
+				videoShader.setVec2("texture_crop_size", textureCropSize);
+				videoShader.setMatrix("model", transform.modelMatrix);
+				videoShader.setMatrix("view", glm::mat4(1.0f));
+				videoShader.setMatrix("projection", UIProjection);
+
+				videoShader.setImageUniform("texture_y", 0);
+				videoShader.setImageUniform("texture_cr", 1);
+				videoShader.setImageUniform("texture_cb", 2);
+
+				glBindTextureUnit(0, video->getTextureY());
+				glBindTextureUnit(1, video->getTextureCr());
+				glBindTextureUnit(2, video->getTextureCb());
+
+				glBindVertexArray(videoVAO);
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+				glBindVertexArray(textVAO);
+				
 			}
 		}
 	}
@@ -1303,17 +1362,12 @@ void Renderer::debugRenderPhysicsCollider() {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawArrays(GL_TRIANGLES, 0, numOfPhysicsDebugTriangles * 3);
 
-	// disable wireframe mode, restoring to normal fill
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-#if false
 	glVertexArrayVertexBuffer(mainVAO, positionBindingIndex, debugPhysicsLineVBO.id(), 0, sizeof(glm::vec3));
 
 	glDisable(GL_CULL_FACE);
 
 	debugShader.setVec4("color", { 1.f, 0.2f, 0.2f, 1.f });
 	glDrawArrays(GL_LINES, 0, numOfPhysicsDebugLines * 2);
-#endif
 
 	numOfPhysicsDebugTriangles = 0;
 	numOfPhysicsDebugLines = 0;
@@ -1325,6 +1379,8 @@ void Renderer::debugRenderPhysicsCollider() {
 	// 2. We overlay this resulting debug shapes into our main FBO, with alpha blending.
 	// (so post processing)
 	// ================================================
+	// disable wireframe mode, restoring to normal fill
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	setBlendMode(BlendingConfig::AlphaBlending);
 	glBindFramebuffer(GL_FRAMEBUFFER, editorMainFrameBuffer.getActiveFrameBuffer().fboId());

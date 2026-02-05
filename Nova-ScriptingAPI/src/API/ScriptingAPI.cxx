@@ -796,25 +796,12 @@ void Interface::unloadAssembly()
 	if (!assemblyLoadContext)
 		return;
 
-	// Clear existing scripts
-	if (gameObjectScripts)
-		gameObjectScripts->Clear();
+	clearCurrentScriptingState();
 
-	if (timeoutDelegates)
-		timeoutDelegates->Clear();
-	if (executeTimeoutDelegates)
-		executeTimeoutDelegates->Clear();
-	if (createdGameObjectScripts)
-		createdGameObjectScripts->Clear();
 	if (enumTypeNamesToValues)
 		enumTypeNamesToValues->Clear();
 	if (enumTypes)
 		enumTypes->Clear();
-
-	deleteGameObjectQueue.Clear();
-
-	// Clear all input mapping..
-	Input::ClearAllKeyMapping();
 
 	// non runtime containers..
 	if (availableScripts)
@@ -831,4 +818,23 @@ void Interface::unloadAssembly()
 	System::GC::Collect();
 	// Wait from assembly to finish unloading
 	System::GC::WaitForPendingFinalizers();
+}
+
+
+void Interface::clearCurrentScriptingState()
+{
+	if (gameObjectScripts)
+		gameObjectScripts->Clear();
+
+	if (timeoutDelegates)
+		timeoutDelegates->Clear();
+	if (executeTimeoutDelegates)
+		executeTimeoutDelegates->Clear();
+	if (createdGameObjectScripts)
+		createdGameObjectScripts->Clear();
+
+	deleteGameObjectQueue.Clear();
+
+	// Clear all input mapping..
+	Input::ClearAllKeyMapping();
 }

@@ -207,7 +207,6 @@ class Charger : Enemy
 
 
         }
-
         //    if (chargerState == ChargerState.Death || WasRecentlyDamaged())
         //    return;
         //TriggerRecentlyDamageCountdown();
@@ -219,7 +218,7 @@ class Charger : Enemy
         //    renderer.setMaterialVector3(0, "colorTint", new Vector3(1f, 1f, 1f));
         //    renderer.setMaterialVector3(1, "colorTint", new Vector3(1f, 1f, 1f));
         //}, chargerstats.hurtDuration);
-        
+
     }
     public override bool IsEngagedInBattle()
     {
@@ -233,6 +232,7 @@ class Charger : Enemy
             SpawnIchorFrame();
 
             chargerstats.health -= accumulatedDamageInstance;
+            UpdateExecutableMaterialState();
             if (chargerstats.health <= 0)
             {
                 if (chargerState != ChargerState.Death)
@@ -448,7 +448,7 @@ class Charger : Enemy
     {
         if(other.tag == "Player" && chargerState == ChargerState.Charging)
         {
-            PlayerController playerController = other.getScript<PlayerController>();
+            PlayerController_V2 playerController = other.getScript<PlayerController_V2>();
             playerController.TakeDamage(chargerstats.chargeDamage);
             chargerState = ChargerState.Attack;
             animator.PlayAnimation("ChargerAttack");

@@ -190,7 +190,7 @@ glm::mat4x4 const& TransformationSystem::getUpdatedModelMatrix(entt::entity enti
 
 			glm::mat4 boneWorldMatrix{ 1.f };
 
-			if (skinnedMeshRenderer && entityData.attachedSocket < skinnedMeshRenderer->bonesFinalMatrices[skinnedMeshRenderer->currentBoneMatrixIndex].size()) {
+			if (engine.isInSimulationMode() && skinnedMeshRenderer && entityData.attachedSocket < skinnedMeshRenderer->bonesFinalMatrices[skinnedMeshRenderer->currentBoneMatrixIndex].size()) {
 				auto&& [model, _] = engine.resourceManager.getResource<Model>(skinnedMeshRenderer->modelId);
 				
 				if (model) {

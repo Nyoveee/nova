@@ -2,62 +2,29 @@
     "entities": [
         {
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
                 "name": "Title",
-                "overridenComponents": null,
-                "overridenProperties": null,
+                "tag": "",
                 "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 0,
+                "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
-                    "b": 0.6901960968971252,
-                    "g": 0.6901960968971252,
-                    "r": 0.7333333492279053
-                },
-                "fontSize": 100,
-                "text": "Pause Menu"
+                "entityGUID": 8631852937635250199,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 649.0,
+                "position": {
+                    "x": 698.0,
                     "y": 813.0,
                     "z": 0.0
                 },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
+                "scale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
-                },
-                "position": {
-                    "x": 649.0,
-                    "y": 813.0,
-                    "z": 0.0
                 },
                 "rotation": {
                     "w": 1.0,
@@ -65,61 +32,85 @@
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 698.0,
+                    "y": 813.0,
+                    "z": 0.0
+                },
+                "localScale": {
                     "x": 1.0,
                     "y": 1.0,
                     "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 8230891833028771841,
+                "text": "Pause Menu",
+                "fontSize": 100,
+                "fontColor": {
+                    "r": 0.7333333492279053,
+                    "g": 0.6901960968971252,
+                    "b": 0.6901960968971252
                 }
             },
             "id": 42991787
         },
         {
             "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 1,
                 "name": "MM Word",
-                "overridenComponents": null,
-                "overridenProperties": null,
+                "tag": "",
                 "parent": 1048580,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 1,
+                "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
-                    "b": 0.0,
-                    "g": 0.0,
-                    "r": 0.0
-                },
-                "fontSize": 50,
-                "text": "Main Menu"
+                "entityGUID": 4020166919207862297,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
             },
             "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
+                "position": {
+                    "x": 824.0,
+                    "y": 317.99993896484375,
                     "z": 0.0
                 },
-                "localEulerAngles": {
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
                     "x": 0.0,
                     "y": -0.0,
                     "z": 0.0
                 },
                 "localPosition": {
                     "x": -0.3966667652130127,
-                    "y": -0.2200000286102295,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
+                    "y": -0.2200007438659668,
                     "z": 0.0
                 },
                 "localScale": {
@@ -127,914 +118,51 @@
                     "y": 0.009999999776482582,
                     "z": 1.0
                 },
-                "position": {
-                    "x": 841.0,
-                    "y": 218.0,
-                    "z": 0.0
-                },
-                "rotation": {
+                "localRotation": {
                     "w": 1.0,
                     "x": 0.0,
                     "y": 0.0,
                     "z": 0.0
                 },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 8230891833028771841,
+                "text": "Main Menu",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0
                 }
             },
             "id": 1048584
         },
         {
-            "Button": {
-                "colorMultiplier": 1.0,
-                "disabledColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "fadeDuration": 0.10000000149011612,
-                "highlightedColor": {
-                    "a": 1.0,
-                    "b": 0.6627451181411743,
-                    "g": 0.9215686321258545,
-                    "r": 1.0
-                },
-                "isInteractable": true,
-                "normalColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "onClickReleasedFunction": "onReleased",
-                "onHoverFunction": "onHover",
-                "onPressFunction": "onPressed",
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "pressedColor": {
-                    "a": 1.0,
-                    "b": 0.5058823823928833,
-                    "g": 0.5058823823928833,
-                    "r": 0.5058823823928833
-                },
-                "reference": {
-                    "entity": 1048580,
-                    "script": 1986501316973068289
-                }
-            },
             "EntityData": {
+                "name": "MM Box",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
                 "children": [
                     1048584
                 ],
-                "inactiveComponents": null,
-                "isActive": true,
                 "layerId": 0,
-                "name": "MM Box",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.6901960968971252,
-                    "g": 0.6901960968971252,
-                    "r": 0.7333333492279053
-                },
-                "texture": 7,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toFlip": false,
-                "toTile": false
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 10862084634423558145
-                                },
-                                "name": "nextScene"
-                            }
-                        ],
-                        "scriptId": 1986501316973068289
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 960.0,
-                    "y": 240.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 960.0,
-                    "y": 240.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048580
-        },
-        {
-            "Button": {
-                "colorMultiplier": 1.0,
-                "disabledColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "fadeDuration": 0.10000000149011612,
-                "highlightedColor": {
-                    "a": 1.0,
-                    "b": 0.6627451181411743,
-                    "g": 0.9215686321258545,
-                    "r": 1.0
-                },
-                "isInteractable": true,
-                "normalColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "onClickReleasedFunction": "onReleased",
-                "onHoverFunction": "onHover",
-                "onPressFunction": "onPressed",
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "pressedColor": {
-                    "a": 1.0,
-                    "b": 0.5058823823928833,
-                    "g": 0.5058823823928833,
-                    "r": 0.5058823823928833
-                },
-                "reference": {
-                    "entity": 1048602,
-                    "script": 1986501316973068289
-                }
-            },
-            "EntityData": {
-                "children": [
-                    39846050
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Resume Box",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.6888942122459412,
-                    "g": 0.6888942122459412,
-                    "r": 0.7344827651977539
-                },
-                "texture": 7,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toFlip": false,
-                "toTile": false
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 10862084634423558145
-                                },
-                                "name": "nextScene"
-                            }
-                        ],
-                        "scriptId": 1986501316973068289
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 960.0,
-                    "y": 540.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 960.0,
-                    "y": 540.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048602
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 1,
-                "name": "Resume Word",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 1048602,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
-                    "b": 0.01034480333328247,
-                    "g": 0.01034480333328247,
-                    "r": 0.01034480333328247
-                },
-                "fontSize": 50,
-                "text": "Resume"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.2626194953918457,
-                    "y": -0.19426774978637695,
-                    "z": 1.9999998807907104
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.004971999675035477,
-                    "y": 0.01491599902510643,
-                    "z": 1.4915999174118042
-                },
-                "position": {
-                    "x": 881.2141723632813,
-                    "y": 520.5732421875,
-                    "z": 1.9999998807907104
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.4915999174118042,
-                    "y": 1.4915999174118042,
-                    "z": 1.4915999174118042
-                }
-            },
-            "id": 39846050
-        },
-        {
-            "Button": {
-                "colorMultiplier": 1.0,
-                "disabledColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "fadeDuration": 0.10000000149011612,
-                "highlightedColor": {
-                    "a": 1.0,
-                    "b": 0.6620689630508423,
-                    "g": 0.920760989189148,
-                    "r": 1.0
-                },
-                "isInteractable": true,
-                "normalColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "onClickReleasedFunction": "onReleased",
-                "onHoverFunction": "onHover",
-                "onPressFunction": "onPressed",
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "pressedColor": {
-                    "a": 1.0,
-                    "b": 0.5068965554237366,
-                    "g": 0.5068965554237366,
-                    "r": 0.5068965554237366
-                },
-                "reference": {
-                    "entity": 38797470,
-                    "script": 1986501316973068289
-                }
-            },
-            "EntityData": {
-                "children": [
-                    1048587
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Quit Box",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.6901960968971252,
-                    "g": 0.6901960968971252,
-                    "r": 0.7333333492279053
-                },
-                "texture": 7,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toFlip": false,
-                "toTile": false
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 10862084634423558145
-                                },
-                                "name": "nextScene"
-                            }
-                        ],
-                        "scriptId": 1986501316973068289
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 960.0,
-                    "y": 390.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 960.0,
-                    "y": 390.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                }
-            },
-            "id": 38797470
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 1,
-                "name": "Quit Word",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 38797470,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "fontColor": {
-                    "b": 0.0,
-                    "g": 0.0,
-                    "r": 0.0
-                },
-                "fontSize": 50,
-                "text": "Quit Game"
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.36333322525024414,
-                    "y": -0.18000006675720215,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.009999999776482582,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 851.0,
-                    "y": 372.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1048587
-        },
-        {
-            "Canvas": {
-                "placeholder": ""
-            },
-            "EntityData": {
-                "children": [
-                    38797470,
-                    1048602,
-                    1048580,
-                    1
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Pause Menu UI",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 4294967295,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                }
-            },
-            "id": 0
-        },
-        {
-            "Button": {
-                "colorMultiplier": 1.0,
-                "disabledColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "fadeDuration": 0.10000000149011612,
-                "highlightedColor": {
-                    "a": 1.0,
-                    "b": 0.6627451181411743,
-                    "g": 0.9215686321258545,
-                    "r": 1.0
-                },
-                "isInteractable": true,
-                "normalColor": {
-                    "a": 1.0,
-                    "b": 1.0,
-                    "g": 1.0,
-                    "r": 1.0
-                },
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "onClickReleasedFunction": "onReleased",
-                "onHoverFunction": "onHover",
-                "onPressFunction": "onPressed",
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "pressedColor": {
-                    "a": 1.0,
-                    "b": 0.5058823823928833,
-                    "g": 0.5058823823928833,
-                    "r": 0.5058823823928833
-                },
-                "reference": {
-                    "entity": 1,
-                    "script": 1986501316973068289
-                }
-            },
-            "EntityData": {
-                "children": [
-                    2
-                ],
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 0,
-                "name": "Settings Box",
-                "overridenComponents": null,
-                "overridenProperties": null,
-                "parent": 0,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "tag": ""
-            },
-            "Image": {
-                "anchorMode": "Center",
-                "colorTint": {
-                    "a": 1.0,
-                    "b": 0.6901960968971252,
-                    "g": 0.6901960968971252,
-                    "r": 0.7333333492279053
-                },
-                "texture": 7,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toFlip": false,
-                "toTile": false
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "fields": [
-                            {
-                                "data": {
-                                    "__variant_type": 14,
-                                    "__variant_value": 18140640504096129025
-                                },
-                                "name": "nextScene"
-                            }
-                        ],
-                        "scriptId": 1986501316973068289
-                    }
-                ]
-            },
-            "Transform": {
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 960.0,
-                    "y": 90.0,
-                    "z": 0.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                },
-                "position": {
-                    "x": 960.0,
-                    "y": 90.0,
-                    "z": 0.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                }
-            },
-            "id": 1
-        },
-        {
-            "EntityData": {
-                "children": null,
-                "inactiveComponents": null,
-                "isActive": true,
-                "layerId": 1,
-                "name": "Settings Word",
-                "tag": "",
-                "parent": 1,
-                "children": null,
-                "layerId": 1,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
+                "entityGUID": 4596627671511285787,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 872.580078125,
-                    "y": 70.15168762207031,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.2913997173309326,
-                    "y": -0.1984831690788269,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.009999999776482582,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 11657576889657032705,
-                "text": "Settings",
-                "fontSize": 50,
-                "fontColor": {
-                    "r": 0.02758622169494629,
-                    "g": 0.02682522125542164,
-                    "b": 0.02682522125542164
-                }
-            },
-            "id": 2
-        },
-        {
-            "EntityData": {
-                "name": "Settings Box",
-                "tag": "",
-                "parent": 0,
-                "children": [
-                    2
-                ],
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 960.0,
-                    "y": 90.0,
+                    "x": 943.0,
+                    "y": 340.0,
                     "z": 0.0
                 },
                 "scale": {
@@ -1054,8 +182,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0,
-                    "y": 90.0,
+                    "x": 943.0,
+                    "y": 340.0,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1074,6 +202,10 @@
                     "y": -0.0,
                     "z": 0.0
                 }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
             },
             "Scripts": {
                 "scriptDatas": [
@@ -1083,8 +215,22 @@
                             {
                                 "name": "nextScene",
                                 "data": {
-                                    "__variant_value": 18140640504096129025,
-                                    "__variant_type": 13
+                                    "__variant_value": 10862084634423558145,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18282072967288242303,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 5023475664309502081,
+                                    "__variant_type": 15
                                 }
                             }
                         ]
@@ -1110,7 +256,7 @@
             "Button": {
                 "isInteractable": true,
                 "reference": {
-                    "entity": 1,
+                    "entity": 1048580,
                     "script": 1986501316973068289
                 },
                 "normalColor": {
@@ -1153,391 +299,29 @@
                     "z": 0.0
                 }
             },
-            "id": 1
-        },
-        {
-            "EntityData": {
-                "name": "Pause Menu UI",
-                "tag": "",
-                "parent": 4294967295,
-                "children": [
-                    38797470,
-                    1048602,
-                    1048580,
-                    1
-                ],
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Canvas": {
-                "placeholder": ""
-            },
-            "id": 0
-        },
-        {
-            "EntityData": {
-                "name": "Quit Word",
-                "tag": "",
-                "parent": 38797470,
-                "children": null,
-                "layerId": 1,
-                "isActive": true,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 851.0,
-                    "y": 372.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.36333322525024414,
-                    "y": -0.18000006675720215,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 0.0033333334140479565,
-                    "y": 0.009999999776482582,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "text": "Quit Game",
-                "fontSize": 50,
-                "fontColor": {
-                    "r": 0.0,
-                    "g": 0.0,
-                    "b": 0.0
-                }
-            },
-            "id": 1048587
-        },
-        {
-            "EntityData": {
-                "name": "Quit Box",
-                "tag": "",
-                "parent": 0,
-                "children": [
-                    1048587
-                ],
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 960.0,
-                    "y": 390.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 960.0,
-                    "y": 390.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 300.0,
-                    "y": 100.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Scripts": {
-                "scriptDatas": [
-                    {
-                        "scriptId": 1986501316973068289,
-                        "fields": [
-                            {
-                                "name": "nextScene",
-                                "data": {
-                                    "__variant_value": 10862084634423558145,
-                                    "__variant_type": 13
-                                }
-                            }
-                        ]
-                    }
-                ]
-            },
-            "Image": {
-                "texture": 7,
-                "colorTint": {
-                    "r": 0.7333333492279053,
-                    "g": 0.6901960968971252,
-                    "b": 0.6901960968971252,
-                    "a": 1.0
-                },
-                "anchorMode": "Center",
-                "toFlip": false,
-                "textureCoordinatesRange": {
-                    "x": 1.0,
-                    "y": 1.0
-                },
-                "toTile": false
-            },
-            "Button": {
-                "isInteractable": true,
-                "reference": {
-                    "entity": 38797470,
-                    "script": 1986501316973068289
-                },
-                "normalColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0,
-                    "a": 1.0
-                },
-                "highlightedColor": {
-                    "r": 1.0,
-                    "g": 0.920760989189148,
-                    "b": 0.6620689630508423,
-                    "a": 1.0
-                },
-                "pressedColor": {
-                    "r": 0.5068965554237366,
-                    "g": 0.5068965554237366,
-                    "b": 0.5068965554237366,
-                    "a": 1.0
-                },
-                "disabledColor": {
-                    "r": 1.0,
-                    "g": 1.0,
-                    "b": 1.0,
-                    "a": 1.0
-                },
-                "onClickReleasedFunction": "onReleased",
-                "onPressFunction": "onPressed",
-                "onHoverFunction": "onHover",
-                "fadeDuration": 0.10000000149011612,
-                "colorMultiplier": 1.0,
-                "offset": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "padding": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                }
-            },
-            "id": 38797470
-        },
-        {
-            "EntityData": {
-                "name": "Resume Word",
-                "tag": "",
-                "parent": 1048602,
-                "children": null,
-                "layerId": 1,
-                "isActive": true,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 881.2141723632813,
-                    "y": 520.5732421875,
-                    "z": 1.9999998807907104
-                },
-                "scale": {
-                    "x": 1.4915999174118042,
-                    "y": 1.4915999174118042,
-                    "z": 1.4915999174118042
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": -0.2626194953918457,
-                    "y": -0.19426774978637695,
-                    "z": 1.9999998807907104
-                },
-                "localScale": {
-                    "x": 0.004971999675035477,
-                    "y": 0.01491599902510643,
-                    "z": 1.4915999174118042
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "text": "Resume",
-                "fontSize": 50,
-                "fontColor": {
-                    "r": 0.01034480333328247,
-                    "g": 0.01034480333328247,
-                    "b": 0.01034480333328247
-                }
-            },
-            "id": 39846050
+            "id": 1048580
         },
         {
             "EntityData": {
                 "name": "Resume Box",
                 "tag": "",
                 "parent": 0,
+                "attachedSocket": 65535,
                 "children": [
                     39846050
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
+                "entityGUID": 10361235194545520669,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 960.0,
-                    "y": 540.0,
+                    "x": 943.0,
+                    "y": 640.0,
                     "z": 0.0
                 },
                 "scale": {
@@ -1557,8 +341,8 @@
                     "z": 0.0
                 },
                 "localPosition": {
-                    "x": 960.0,
-                    "y": 540.0,
+                    "x": 943.0,
+                    "y": 640.0,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1578,6 +362,10 @@
                     "z": 0.0
                 }
             },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
             "Scripts": {
                 "scriptDatas": [
                     {
@@ -1586,8 +374,22 @@
                             {
                                 "name": "nextScene",
                                 "data": {
-                                    "__variant_value": 10862084634423558145,
-                                    "__variant_type": 13
+                                    "__variant_value": 12767626241908719617,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18282072967288242303,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 5023475664309502081,
+                                    "__variant_type": 15
                                 }
                             }
                         ]
@@ -1660,19 +462,1069 @@
         },
         {
             "EntityData": {
+                "name": "Resume Word",
+                "tag": "",
+                "parent": 1048602,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 1,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 5749549176118132767,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 864.2141723632813,
+                    "y": 620.5732421875,
+                    "z": 1.9999998807907104
+                },
+                "scale": {
+                    "x": 1.4915999174118042,
+                    "y": 1.4915999174118042,
+                    "z": 1.4915999174118042
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.2626194953918457,
+                    "y": -0.19426774978637695,
+                    "z": 1.9999998807907104
+                },
+                "localScale": {
+                    "x": 0.004971999675035477,
+                    "y": 0.01491599902510643,
+                    "z": 1.4915999174118042
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 9534094568727281667,
+                "text": "Resume",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 0.01034480333328247,
+                    "g": 0.01034480333328247,
+                    "b": 0.01034480333328247
+                }
+            },
+            "id": 39846050
+        },
+        {
+            "EntityData": {
+                "name": "Quit Box",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    1048587
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 4596627671511302177,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 943.0,
+                    "y": 490.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 943.0,
+                    "y": 490.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 1986501316973068289,
+                        "fields": [
+                            {
+                                "name": "nextScene",
+                                "data": {
+                                    "__variant_value": 10862084634423558145,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 0.7333333492279053,
+                    "g": 0.6901960968971252,
+                    "b": 0.6901960968971252,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 38797470,
+                    "script": 1986501316973068289
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 0.920760989189148,
+                    "b": 0.6620689630508423,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 0.5068965554237366,
+                    "g": 0.5068965554237366,
+                    "b": 0.5068965554237366,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 38797470
+        },
+        {
+            "EntityData": {
+                "name": "Quit Word",
+                "tag": "",
+                "parent": 38797470,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 1,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7478931433028419619,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 833.9999389648438,
+                    "y": 471.9999694824219,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.36333346366882324,
+                    "y": -0.18000030517578125,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.0033333334140479565,
+                    "y": 0.009999999776482582,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 8230891833028771841,
+                "text": "Quit Game",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0
+                }
+            },
+            "id": 1048587
+        },
+        {
+            "EntityData": {
+                "name": "Settings Word",
+                "tag": "",
+                "parent": 1,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 1,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 2290784662297608229,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 855.580078125,
+                    "y": 170.1516876220703,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.2913997173309326,
+                    "y": -0.19848310947418213,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.0033333334140479565,
+                    "y": 0.009999999776482582,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 8230891833028771841,
+                "text": "Settings",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0
+                }
+            },
+            "id": 2
+        },
+        {
+            "EntityData": {
+                "name": "Settings Box",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    2
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 8055392185331843111,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 943.0,
+                    "y": 190.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 943.0,
+                    "y": 190.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "AudioComponent": {
+                "volume": 1.0,
+                "loop": false
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 1986501316973068289,
+                        "fields": [
+                            {
+                                "name": "nextScene",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18282072967288242303,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 5023475664309502081,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 0.7333333492279053,
+                    "g": 0.6901960968971252,
+                    "b": 0.6901960968971252,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 1,
+                    "script": 1986501316973068289
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 0.9215686321258545,
+                    "b": 0.6627451181411743,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 0.5058823823928833,
+                    "g": 0.5058823823928833,
+                    "b": 0.5058823823928833,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 1
+        },
+        {
+            "EntityData": {
+                "name": "Pause Menu UI",
+                "tag": "",
+                "parent": 4294967295,
+                "attachedSocket": 65535,
+                "children": [
+                    38797470,
+                    1048602,
+                    1048580,
+                    1
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12090617451455807529,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Canvas": {
+                "placeholder": ""
+            },
+            "id": 0
+        },
+        {
+            "EntityData": {
+                "name": "Quit Word",
+                "tag": "",
+                "parent": 38797470,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 1,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7478931433028419627,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 833.9999389648438,
+                    "y": 471.9999694824219,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 1.0,
+                    "y": 1.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.36333346366882324,
+                    "y": -0.18000030517578125,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 0.0033333334140479565,
+                    "y": 0.009999999776482582,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 5724840809338667009,
+                "text": "Quit Game",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0
+                }
+            },
+            "id": 45088948
+        },
+        {
+            "EntityData": {
+                "name": "Quit Box",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    1048587
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 6326009928421572653,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 390.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 390.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 1986501316973068289,
+                        "fields": [
+                            {
+                                "name": "nextScene",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 0.7333333492279053,
+                    "g": 0.6901960968971252,
+                    "b": 0.6901960968971252,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 38797470,
+                    "script": 1986501316973068289
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 0.920760989189148,
+                    "b": 0.6620689630508423,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 0.5068965554237366,
+                    "g": 0.5068965554237366,
+                    "b": 0.5068965554237366,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 42991781
+        },
+        {
+            "EntityData": {
+                "name": "Resume Word",
+                "tag": "",
+                "parent": 1048602,
+                "attachedSocket": 65535,
+                "children": null,
+                "layerId": 1,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 7478931433028419631,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 864.2141723632813,
+                    "y": 620.5732421875,
+                    "z": 1.9999998807907104
+                },
+                "scale": {
+                    "x": 1.4915999174118042,
+                    "y": 1.4915999174118042,
+                    "z": 1.4915999174118042
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": -0.2626194953918457,
+                    "y": -0.19426774978637695,
+                    "z": 1.9999998807907104
+                },
+                "localScale": {
+                    "x": 0.004971999675035477,
+                    "y": 0.01491599902510643,
+                    "z": 1.4915999174118042
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Text": {
+                "font": 5724840809338667009,
+                "text": "Resume",
+                "fontSize": 50,
+                "fontColor": {
+                    "r": 0.01034480333328247,
+                    "g": 0.01034480333328247,
+                    "b": 0.01034480333328247
+                }
+            },
+            "id": 45088938
+        },
+        {
+            "EntityData": {
+                "name": "Resume Box",
+                "tag": "",
+                "parent": 0,
+                "attachedSocket": 65535,
+                "children": [
+                    39846050
+                ],
+                "layerId": 0,
+                "isActive": true,
+                "prefabID": 18446744073709551615,
+                "entityGUID": 12090617451455807537,
+                "overridenProperties": null,
+                "overridenComponents": null,
+                "inactiveComponents": null
+            },
+            "Transform": {
+                "position": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "scale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "rotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "eulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                },
+                "localPosition": {
+                    "x": 960.0,
+                    "y": 540.0,
+                    "z": 0.0
+                },
+                "localScale": {
+                    "x": 300.0,
+                    "y": 100.0,
+                    "z": 1.0
+                },
+                "localRotation": {
+                    "w": 1.0,
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "localEulerAngles": {
+                    "x": 0.0,
+                    "y": -0.0,
+                    "z": 0.0
+                }
+            },
+            "Scripts": {
+                "scriptDatas": [
+                    {
+                        "scriptId": 1986501316973068289,
+                        "fields": [
+                            {
+                                "name": "nextScene",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "Image": {
+                "texture": 7,
+                "colorTint": {
+                    "r": 0.7344827651977539,
+                    "g": 0.6888942122459412,
+                    "b": 0.6888942122459412,
+                    "a": 1.0
+                },
+                "anchorMode": "Center",
+                "toFlip": false,
+                "textureCoordinatesRange": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "toTile": false
+            },
+            "Button": {
+                "isInteractable": true,
+                "reference": {
+                    "entity": 1048602,
+                    "script": 1986501316973068289
+                },
+                "normalColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "highlightedColor": {
+                    "r": 1.0,
+                    "g": 0.9215686321258545,
+                    "b": 0.6627451181411743,
+                    "a": 1.0
+                },
+                "pressedColor": {
+                    "r": 0.5058823823928833,
+                    "g": 0.5058823823928833,
+                    "b": 0.5058823823928833,
+                    "a": 1.0
+                },
+                "disabledColor": {
+                    "r": 1.0,
+                    "g": 1.0,
+                    "b": 1.0,
+                    "a": 1.0
+                },
+                "onClickReleasedFunction": "onReleased",
+                "onPressFunction": "onPressed",
+                "onHoverFunction": "onHover",
+                "fadeDuration": 0.10000000149011612,
+                "colorMultiplier": 1.0,
+                "offset": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "padding": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "id": 41943203
+        },
+        {
+            "EntityData": {
                 "name": "MM Box",
                 "tag": "",
                 "parent": 0,
+                "attachedSocket": 65535,
                 "children": [
                     1048584
                 ],
                 "layerId": 0,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
+                "entityGUID": 6902470680724996147,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
@@ -1729,8 +1581,22 @@
                             {
                                 "name": "nextScene",
                                 "data": {
-                                    "__variant_value": 10862084634423558145,
-                                    "__variant_type": 13
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 14
+                                }
+                            },
+                            {
+                                "name": "onHoverSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
+                                }
+                            },
+                            {
+                                "name": "onClickSFX",
+                                "data": {
+                                    "__variant_value": 18446744073709551615,
+                                    "__variant_type": 15
                                 }
                             }
                         ]
@@ -1799,29 +1665,27 @@
                     "z": 0.0
                 }
             },
-            "id": 1048580
+            "id": 45088947
         },
         {
             "EntityData": {
                 "name": "MM Word",
                 "tag": "",
                 "parent": 1048580,
+                "attachedSocket": 65535,
                 "children": null,
                 "layerId": 1,
                 "isActive": true,
                 "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
+                "entityGUID": 4020166919207878709,
                 "overridenProperties": null,
                 "overridenComponents": null,
                 "inactiveComponents": null
             },
             "Transform": {
                 "position": {
-                    "x": 841.0,
-                    "y": 218.0,
+                    "x": 824.0,
+                    "y": 317.99993896484375,
                     "z": 0.0
                 },
                 "scale": {
@@ -1842,7 +1706,7 @@
                 },
                 "localPosition": {
                     "x": -0.3966667652130127,
-                    "y": -0.2200000286102295,
+                    "y": -0.2200007438659668,
                     "z": 0.0
                 },
                 "localScale": {
@@ -1872,80 +1736,7 @@
                     "b": 0.0
                 }
             },
-            "id": 1048584
-        },
-        {
-            "EntityData": {
-                "name": "Title",
-                "tag": "",
-                "parent": 4294967295,
-                "children": null,
-                "layerId": 0,
-                "isActive": true,
-                "prefabID": 18446744073709551615,
-                "prefabMetaData": {
-                    "prefabEntity": 0,
-                    "prefabID": 18446744073709551615
-                },
-                "overridenProperties": null,
-                "overridenComponents": null,
-                "inactiveComponents": null
-            },
-            "Transform": {
-                "position": {
-                    "x": 649.0,
-                    "y": 813.0,
-                    "z": 0.0
-                },
-                "scale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "rotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "eulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                },
-                "localPosition": {
-                    "x": 649.0,
-                    "y": 813.0,
-                    "z": 0.0
-                },
-                "localScale": {
-                    "x": 1.0,
-                    "y": 1.0,
-                    "z": 1.0
-                },
-                "localRotation": {
-                    "w": 1.0,
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
-                },
-                "localEulerAngles": {
-                    "x": 0.0,
-                    "y": -0.0,
-                    "z": 0.0
-                }
-            },
-            "Text": {
-                "font": 5724840809338667009,
-                "text": "Pause Menu",
-                "fontSize": 100,
-                "fontColor": {
-                    "r": 0.7333333492279053,
-                    "g": 0.6901960968971252,
-                    "b": 0.6901960968971252
-                }
-            },
-            "id": 42991787
+            "id": 4194320
         }
     ],
     "layers": [

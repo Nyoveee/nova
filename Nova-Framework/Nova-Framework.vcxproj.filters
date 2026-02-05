@@ -240,6 +240,9 @@
     <ClInclude Include="src\Resource\texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resource\video.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Internal\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -288,6 +291,9 @@
     <ClInclude Include="src\Resource\cubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Imported\pl_mpeg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Imported\glad.cpp">
@@ -309,6 +315,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Loader\textureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader\videoLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Detour\Detour\DetourAlloc.cpp">
@@ -447,6 +456,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Resource\texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\video.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Internal\shader.cpp">

@@ -264,6 +264,9 @@ ResourceID AssetManager::parseIntermediaryAssetFile(AssetFilePath const& assetFi
 	else if (fileExtension == ".dds") {
 		return initialiseResourceFile.template operator()<CubeMap>();
 	}
+	else if (fileExtension == ".mpeg") {
+		return initialiseResourceFile.template operator()<Video>();
+	}
 	else {
 		Logger::warn("Unsupported file type of: {} has been found.", assetFilePath.string);
 		return INVALID_RESOURCE_ID;

@@ -179,7 +179,6 @@ class Grunt : Enemy
             //}
 
         }
-
         //    // blud already died let him die in peace dont take anymore damage..
         //    if (gruntState == GruntState.Death || WasRecentlyDamaged())
         //    return;
@@ -208,6 +207,7 @@ class Grunt : Enemy
             SpawnIchorFrame();
 
             gruntStats.health -= accumulatedDamageInstance;
+            UpdateExecutableMaterialState();
             if (gruntStats.health <= 0)
             {
                 if (gruntState != GruntState.Death/* && !WasRecentlyDamaged()*/)

@@ -36,6 +36,7 @@ using RemoveEntityFunctionPtr                = void (*)(unsigned int);
 using LoadScriptsFunctionPtr		         = void (*)(void);
 using UnloadScriptsFunctionPtr	 	         = void (*)(void);
 using IntializeScriptsFunctionPtr	         = void (*)(void);
+using ClearCurrentScriptingStateFunctionPtr  = void (*)(void);
 using GetScriptFieldsFunctionPtr             = std::vector<FieldData> (*)(std::size_t);
 using SetScriptFieldFunctionPtr		         = void (*)(unsigned int, unsigned long long, FieldData const& fieldData);
 
@@ -44,6 +45,7 @@ using handleOnCollisionExitFunctionPtr       = void (*)(unsigned int, unsigned i
 using ExecuteFunctionPtr			         = void (*)(unsigned int, unsigned long long, std::string const&);
 using GetHierarchyModifiedScriptsFunctionPtr = std::unordered_set<ResourceID>(*)(std::size_t);
 using GetEnumNamesFunctionPtr				 = std::vector<std::string> (*)(const char*);
+
 
 class Engine;
 
@@ -75,6 +77,7 @@ public:
 	// Simulation
 	ENGINE_DLL_API bool startSimulation();
 	ENGINE_DLL_API void stopSimulation();
+	ENGINE_DLL_API void cleanPreviousSceneScriptState();
 
 	// Update
 	ENGINE_DLL_API void update();
@@ -147,6 +150,7 @@ private:
 	LoadScriptsFunctionPtr					 loadAssembly;
 	UnloadScriptsFunctionPtr				 unloadAssembly;
 	IntializeScriptsFunctionPtr				 initalizeScripts;
+	ClearCurrentScriptingStateFunctionPtr    clearCurrentScriptingState;
 	GetScriptFieldsFunctionPtr				 getScriptFieldDatas_;
 	SetScriptFieldFunctionPtr				 setScriptFieldData;
 	handleOnCollisionFunctionPtr			 handleOnCollision_;
